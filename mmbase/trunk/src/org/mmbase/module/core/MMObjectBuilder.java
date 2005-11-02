@@ -63,7 +63,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.349 2005-10-23 17:59:41 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.350 2005-11-02 19:15:39 ernst Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
 
@@ -3977,12 +3977,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         boolean eventLocal = mmb.getMachineName().equals(event.getMachine());
         if(eventLocal) {
             // backwards compatibilty
-            nodeLocalChanged(event.getMachine(), "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), ctype);
-            updateCacheForNodeEvent("" + event.getNode().getNumber(), ctype, MMObjectBuilder.EVENT_TYPE_LOCAL);
+            nodeLocalChanged(event.getMachine(), "" + event.getNodeNumber(), event.getBuilderName(), ctype);
+            updateCacheForNodeEvent("" + event.getNodeNumber(), ctype, MMObjectBuilder.EVENT_TYPE_LOCAL);
         } else {
             // backwards compatibilty
-            nodeRemoteChanged(event.getMachine(), "" + event.getNode().getNumber(), event.getNode().getBuilder().getTableName(), ctype);
-            updateCacheForNodeEvent("" + event.getNode().getNumber(), ctype, MMObjectBuilder.EVENT_TYPE_REMOTE);
+            nodeRemoteChanged(event.getMachine(), "" + event.getNodeNumber(), event.getBuilderName(), ctype);
+            updateCacheForNodeEvent("" + event.getNodeNumber(), ctype, MMObjectBuilder.EVENT_TYPE_REMOTE);
         }
 
 

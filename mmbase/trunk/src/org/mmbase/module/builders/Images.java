@@ -31,7 +31,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.108 2005-10-12 00:58:02 michiel Exp $
+ * @version $Id: Images.java,v 1.109 2005-11-02 19:15:39 ernst Exp $
  */
 public class Images extends AbstractImages {
 
@@ -345,10 +345,10 @@ public class Images extends AbstractImages {
      */
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Changed " + event.getMachine() + " " + event.getNode().getNumber() +
-                " " + event.getNode().getBuilder().getTableName() + " "+ NodeEvent.newTypeToOldType(event.getType()));
+            log.debug("Changed " + event.getMachine() + " " + event.getNodeNumber() +
+                " " + event.getBuilderName() + " "+ NodeEvent.newTypeToOldType(event.getType()));
         }
-        invalidateTemplateCacheNumberCache(event.getNode().getNumber());
+        invalidateTemplateCacheNumberCache(event.getNodeNumber());
         super.notify(event);
     }
 

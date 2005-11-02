@@ -26,7 +26,7 @@ import org.mmbase.bridge.Node;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.6 2005-10-17 17:32:18 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.7 2005-11-02 19:15:40 ernst Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -201,7 +201,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * If so, {@link #onChange} is called.
      */
     public void notify(NodeEvent event) {
-        String number = "" + event.getNode().getNumber();
+        String number = "" + event.getNodeNumber();
         switch(event.getType()) {
         case NodeEvent.EVENT_TYPE_DELETE: {
             // hard..

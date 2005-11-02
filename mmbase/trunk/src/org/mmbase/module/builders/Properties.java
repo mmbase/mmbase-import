@@ -14,7 +14,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @version $Id: Properties.java,v 1.11 2005-09-22 19:51:07 ernst Exp $
+ * @version $Id: Properties.java,v 1.12 2005-11-02 19:15:39 ernst Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -33,13 +33,13 @@ public class Properties extends MMObjectBuilder {
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
     public void notify(NodeEvent event) {
-        if (event.getNode().getBuilder() == this) {
-            log.debug("nodeChanged(): Property change ! "+ event.getMachine() + " " + event.getNode().getNumber() +
-                " " + event.getNode().getBuilder().getTableName() + " "+ NodeEvent.newTypeToOldType(event.getType()));
+        if (event.getBuilderName().equals(this.getTableName())) {
+            log.debug("nodeChanged(): Property change ! "+ event.getMachine() + " " + event.getNodeNumber() +
+                " " + event.getBuilderName() + " "+ NodeEvent.newTypeToOldType(event.getType()));
                 if (event.getType() == NodeEvent.EVENT_TYPE_CHANGED || event.getType() == NodeEvent.EVENT_TYPE_NEW ) { 
                 // The passed node number is node of prop node
                 
-                    int parent=event.getNode().getIntValue("parent");
+                    int parent = getNode(event.getNodeNumber()).getIntValue("parent");
                     if (isNodeCached(parent)) {
                         log.debug("nodeChanged(): Zapping node properties cache for "+parent);
                         MMObjectNode pnode=getNode(parent); 

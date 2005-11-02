@@ -11,11 +11,10 @@ package org.mmbase.cache;
 
 import java.util.*;
 
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.RelationEvent;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.BasicSearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -23,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.8 2005-10-31 19:53:49 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.9 2005-11-02 19:15:39 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -76,7 +75,7 @@ public class BetterStrategy extends ReleaseStrategy {
          */
         
         //check if this event matches the path of the query
-        if(getStepsForType(query, event.getNode().getBuilder()).size() == 0 ){
+        if(getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()) ).size() == 0 ){
             log.debug("no flush: type of event is not found in query path");
             return false;
         }
@@ -219,8 +218,7 @@ public class BetterStrategy extends ReleaseStrategy {
         for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
             String fieldName = (String) i.next();
             //first test the constraints
-            String builderName =event.getNode().getBuilder().getTableName();
-            List constraintsForFieldList = getConstraintsForField(fieldName, builderName, query.getConstraint(), query); 
+            List constraintsForFieldList = getConstraintsForField(fieldName, event.getBuilderName(), query.getConstraint(), query); 
             if(constraintsForFieldList.size() > 0){
                 constraintsFound = true;
                 log.debug("matching constraint found: " + constraintsForFieldList.size());
@@ -231,7 +229,7 @@ public class BetterStrategy extends ReleaseStrategy {
             for (Iterator fieldIterator = query.getFields().iterator(); fieldIterator.hasNext();) {
                 StepField field = (StepField) fieldIterator.next();
                 if (field.getFieldName().equals(fieldName)
-                    && field.getStep().getTableName().equals(event.getNode().getBuilder().getTableName())) {
+                    && field.getStep().getTableName().equals(event.getBuilderName())) {
                     fieldsFound = true;
                     if(log.isDebugEnabled())log.debug("matching field found: " + field.getStep().getTableName() + "." + field.getFieldName());
                     break search;
@@ -259,11 +257,11 @@ public class BetterStrategy extends ReleaseStrategy {
      */
     private boolean checkNodesSet(NodeEvent event, SearchQuery query){
         //this simple optimization only works for nodeEvents
-        List steps = getStepsForType(query, event.getNode().getBuilder());
+        List steps = getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()));
         for (Iterator i = steps.iterator(); i.hasNext();) {
             Step step = (Step) i.next();
             Set nodes = step.getNodes();
-            if (nodes == null || nodes.size() == 0 || nodes.contains(new Integer(event.getNode().getNumber()))) {
+            if (nodes == null || nodes.size() == 0 || nodes.contains(new Integer(event.getNodeNumber()))) {
                 //we're done. if one of the steps dous not meet one of the abouve conditions:
                 return false;
             }

@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.9 2005-10-09 14:55:02 ernst Exp $
+ * @version $Id: ChangeManager.java,v 1.10 2005-11-02 19:15:39 ernst Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
@@ -53,7 +53,7 @@ public final class ChangeManager {
         MMObjectBuilder builder = node.getBuilder();
         if (builder.broadcastChanges()) {
             //create a new local node event
-            NodeEvent event = new NodeEvent(node, NodeEvent.oldTypeToNewType(change));
+            NodeEvent event = NodeEventHelper.createNodeEventInstance(node, NodeEvent.oldTypeToNewType(change), null);
 
             //regardless of wether this is a relatione event we fire a node event first
             EventManager.getInstance().propagateEvent(event);
@@ -61,7 +61,7 @@ public final class ChangeManager {
            
             //if the changed node is a relation, we fire a relation event as well
             if(builder instanceof InsRel) {
-                RelationEvent relEvent = new RelationEvent(node, NodeEvent.oldTypeToNewType(change));
+                RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(node,NodeEvent.oldTypeToNewType(change), null);
 
                 //the relation event broker will make shure that listeners
                 //for node-relation changes to a specific builder, will be

@@ -8,6 +8,7 @@
 package org.mmbase.core.event;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.mmbase.bridge.NotFoundException;
 import org.mmbase.module.core.*;
@@ -25,65 +26,42 @@ import org.mmbase.module.corebuilders.InsRel;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.6 2005-10-31 13:20:02 ernst Exp $
+ * @version $Id: RelationEvent.java,v 1.7 2005-11-02 19:15:39 ernst Exp $
  */
 public class RelationEvent extends NodeEvent implements Serializable {
 
-    private String relationSourceNumber, relationDestinationNumber;
+    private int relationSourceNumber, relationDestinationNumber;
 
     private String relationSourceType, relationDestinationType;
 
-    private String sourceRoleName, destinationRoleName;
-
     private int relationEventType;
 
-    private int role;
-    /**
-     * @param nodeNumber valid node number
-     * @param type event type
-     * @param machineName valid machine name or null (than the local machine name is used)
-     * @return new NodeEvent instance
-     * @throws NotFoundException when node of given number can not be found
-     */
-    public static RelationEvent getRelationEventInstance(int nodeNumber, int type, String machineName)throws NotFoundException{
-        MMObjectNode node = MMBase.getMMBase().getBuilder("object").getNode(nodeNumber);
-        if( node == null) throw new NotFoundException("node with number " + nodeNumber + "was not found in cloud");
-        if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
-        return new RelationEvent(node, type, machineName);
-    }
+    private int role; //the reldef node number
+  
     
     /**
-     * @param node the relation node
-     * @param eventType the type of relation event
+     * Constructor for relation event 
+     * @param machineName
+     * @param builderName
+     * @param nodeNumber
+     * @param oldValues
+     * @param newValues
+     * @param relationEventType
+     * @param relationSourceNumber the nodenumber of the 'soucre' node
+     * @param relationDestinationNumber the nodenumber of the 'destination' node
+     * @param relationSourceType the builder name of the 'source' node
+     * @param relationDestinationType the builder name of the 'destination' node
+     * @param role the nodenumber of the reldef node
      */
-    public RelationEvent(MMObjectNode node, int eventType) {
-        this(node, eventType, MMBase.getMMBase().getMachineName());
-    }
-    /**
-     * @param node the changed relation node
-     * @param eventType the type of change
-     * @throws IllegalArgumentException if the node is not of type InsRel
-     */
-    public RelationEvent(MMObjectNode node, int eventType, String machineName) {
-        super(node, NodeEvent.EVENT_TYPE_RELATION_CHANGED, machineName);
-        if (!(node.getBuilder() instanceof InsRel)) {
-            throw new IllegalArgumentException( "you can not create a relation changed event with this node");
-        }
-
-        relationEventType = eventType;
-        eventType = NodeEvent.EVENT_TYPE_RELATION_CHANGED;
-        MMObjectNode reldef = node.getNodeValue("rnumber");
-        MMObjectBuilder relationSourceBuilder = node.getNodeValue("snumber").getBuilder();
-        MMObjectBuilder relationDestinationBuilder = node.getNodeValue("dnumber").getBuilder();
-
-        relationSourceNumber = node.getStringValue("snumber");
-        relationDestinationNumber = node.getStringValue("dnumber");
-        relationSourceType = relationSourceBuilder.getTableName();
-        relationDestinationType = relationDestinationBuilder.getTableName();
-
-        role = reldef.getNumber();
-        sourceRoleName = reldef.getStringValue("sname");
-        destinationRoleName = reldef.getStringValue("dname");
+    public RelationEvent(String machineName, String builderName, int nodeNumber, Map oldValues, Map newValues, int relationEventType,
+        int relationSourceNumber, int relationDestinationNumber, String relationSourceType, String relationDestinationType, int role) {
+        super(machineName, builderName, nodeNumber, oldValues, newValues, NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+        
+        this.relationSourceNumber = relationSourceNumber;
+        this.relationDestinationNumber = relationDestinationNumber;
+        this.relationSourceType = relationSourceType;
+        this.relationDestinationType = relationDestinationType;
+        this.role = role;
     }
 
     public String getName() {
@@ -107,14 +85,14 @@ public class RelationEvent extends NodeEvent implements Serializable {
     /**
      * @return Returns the relationSourceNumber.
      */
-    public String getRelationSourceNumber() {
+    public int getRelationSourceNumber() {
         return relationSourceNumber;
     }
 
     /**
      * @return Returns the relationDestinationNumber.
      */
-    public String getRelationDestinationNumber() {
+    public int getRelationDestinationNumber() {
         return relationDestinationNumber;
     }
 
@@ -122,17 +100,6 @@ public class RelationEvent extends NodeEvent implements Serializable {
         return relationEventType;
     }
 
-    /**
-     * 
-     * @return rolename of changed relation
-     * @throws UnsupportedOperationException if source and destination role
-     *         names are not similar
-     */
-    public String getRoleName() throws UnsupportedOperationException {
-        if (!getDestinationRoleName().equals(getSourceRoleName())) { throw new UnsupportedOperationException(
-            "the source and destination rolenames are not the same. Please specify"); }
-        return getDestinationRoleName();
-    }
 
     /**
      * @return the role number
@@ -141,13 +108,9 @@ public class RelationEvent extends NodeEvent implements Serializable {
         return role;
     }
 
-    public String getDestinationRoleName() {
-        return destinationRoleName;
-    }
+  
 
-    public String getSourceRoleName() {
-        return sourceRoleName;
-    }
+   
 
     public String toString() {
         return super.toString() + ", relation eventtype: "

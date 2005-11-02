@@ -24,9 +24,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.13 2005-10-31 13:20:02 ernst Exp $
+ * @version $Id: NodeEvent.java,v 1.14 2005-11-02 19:15:39 ernst Exp $
  */
 public class NodeEvent extends Event implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
 
@@ -38,14 +43,18 @@ public class NodeEvent extends Event implements Serializable {
 
     public static final int EVENT_TYPE_RELATION_CHANGED = 3;
 
-    private MMObjectNode node;
 
     private int eventType;
-
+    
+    private int nodeNumber;
+    
+    private String builderName;
+    
     private Map oldValues = new HashMap();
     private Map newValues = new HashMap();
 
     // implementation of serializable
+    /*
     private void writeObject(ObjectOutputStream out) throws IOException {
         if (node.getNumber() < 0) throw new IOException("Cannot serialize " + node);
         out.writeUTF(node.getBuilder().getTableName());
@@ -75,22 +84,9 @@ public class NodeEvent extends Event implements Serializable {
             }
         }
     }
+    */
 
-    /**
-     * @param nodeNumber valid node number
-     * @param type event type
-     * @param machineName valid machine name or null (than the local machine name is used)
-     * @return new NodeEvent instance
-     * @throws NotFoundException when node of given number can not be found
-     */
-    public static NodeEvent getNodeEventInstance(int nodeNumber, int type, String machineName)throws NotFoundException{
-        MMObjectNode node = MMBase.getMMBase().getBuilder("object").getNode(nodeNumber);
-        if( node == null) throw new NotFoundException("node with number " + nodeNumber + "was not found in cloud");
-        if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
-        return new NodeEvent(node, type, machineName);
-    }
-    
-
+    /*
     public NodeEvent(MMObjectNode node, int eventType) {
         this(node, eventType, MMBase.getMMBase().getMachineName());
     }
@@ -105,27 +101,44 @@ public class NodeEvent extends Event implements Serializable {
         oldValues.putAll(node.getOldValues());
         newValues.putAll(node.getValues());
     }
-
+    */
+    
+    public NodeEvent(String machineName, String builderName, int nodeNumber, Map oldValues, Map newValues, int eventType ){
+        super(machineName);
+        this.builderName = builderName;
+        this.nodeNumber = nodeNumber;
+        this.eventType = eventType;
+        this.oldValues.putAll(oldValues);
+        //we only want the new values for fields that have actually been changed
+        for (Iterator i = oldValues.keySet().iterator(); i.hasNext();) {
+            Object key = i.next();
+            this.newValues.put(key, oldValues.get(key));
+        }
+    }
+    
     public String getName() {
-        return "Node Event";
+        return "node event";
     }
 
 
     /**
-     * Adds the name and old value of a changed field, But only if this event
+     * Adds the name, old and new value of a changed field, But only if this event
      * type supports changed fields (i.e. node changed, relation changed)
      *
      * @param fieldName
      * @param oldValue
+     * @deprecated we dont need this
      */
-    public void addChangedField(String fieldName, Object oldValue) {
+    public void addChangedField(String fieldName, Object oldValue, Object newValue) {
         if (canHaveChangedFields()) {
             oldValues.put(fieldName, oldValue);
+            newValues.put(fieldName, newValue);
         }
     }
 
     /**
      * @return an iterator of the names of the changed fields.
+     * @deprecated use #getChangedFields()
      */
     public Iterator changedFieldIterator() {
         return oldValues.keySet().iterator();
@@ -162,6 +175,34 @@ public class NodeEvent extends Event implements Serializable {
     }
 
 
+    /**
+     * @return Returns the builderName.
+     */
+    public String getBuilderName() {
+        return builderName;
+    }
+
+    /**
+     * @param builderName The builderName to set.
+     */
+    public void setBuilderName(String builderName) {
+        this.builderName = builderName;
+    }
+
+    /**
+     * @return Returns the nodeNumber.
+     */
+    public int getNodeNumber() {
+        return nodeNumber;
+    }
+
+    /**
+     * @param nodeNumber The nodeNumber to set.
+     */
+    public void setNodeNumber(int nodeNumber) {
+        this.nodeNumber = nodeNumber;
+    }
+
     protected boolean canHaveChangedFields() {
         return eventType == NodeEvent.EVENT_TYPE_CHANGED
             || eventType == NodeEvent.EVENT_TYPE_RELATION_CHANGED;
@@ -172,7 +213,7 @@ public class NodeEvent extends Event implements Serializable {
         for (Iterator i = changedFieldIterator(); i.hasNext();) {
             changedFields = changedFields + (String) i.next() + ",";
         }
-        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + node.getNumber() + ", nodetype: " + node.getBuilder() + ", changedfields: " + changedFields;
+        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", changedfields: " + changedFields;
     }
 
     protected static String getEventTypeGuiName(int eventType) {
@@ -227,13 +268,6 @@ public class NodeEvent extends Event implements Serializable {
         }
     }
 
-    /**
-     * @return Returns the node.
-     */
-    public MMObjectNode getNode() {
-        return node;
-    }
-    
     /**
      * utility method: check if a certain field has changed
      * @param fieldName
