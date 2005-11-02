@@ -44,6 +44,14 @@ See http://www.MMBase.org/license
 				<j:when test="${projectType == 'war'}">
 					<j:set var="projectFinalName" value="${projectPom}" />
 				</j:when>
+				<j:when test="${projectType == 'mmbase-module'}">
+					<j:set var="projectFinalName" value="${reactorProject.context.getVariable('maven.final.name')}" />
+				    <artifact:install-snapshot
+				      artifact="${projectBuildDir}/${projectFinalName}.jar"
+				      type="jar"
+				      project="${projectPom}"
+				    />
+				</j:when>
 				<j:otherwise>
 					<j:set var="projectFinalName" value="${reactorProject.context.getVariable('maven.final.name')}" />
 				</j:otherwise>
@@ -54,6 +62,7 @@ See http://www.MMBase.org/license
 		      type="${projectType}"
 		      project="${projectPom}"
 		    />
+
 		</j:forEach>
 	</goal>
 
