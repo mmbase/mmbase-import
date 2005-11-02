@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.13 2005-10-27 15:18:49 pierre Exp $
+ * @version $Id: SendMail.java,v 1.14 2005-11-02 16:40:54 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -87,29 +87,35 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             if (encoding != null && !encoding.equals(""))
                 mailEncoding = encoding;
 
-            String smtphost = getInitParameter("mailhost");
+            String smtpHost = getInitParameter("mailhost");
             String context = getInitParameter("context");
-            String datasource = getInitParameter("datasource");
+            String dataSource = getInitParameter("datasource");
             session = null;
-            if (smtphost == null) {
+            if (smtpHost == null) {
                 if (context == null) {
                     context = "java:comp/env";
                     log.warn("The property 'context' is missing, taking default " + context);
                 }
-                if (datasource == null) {
-                    datasource = "mail/Session";
-                    log.warn("The property 'datasource' is missing, taking default " + datasource);
+                if (dataSource == null) {
+                    dataSource = "mail/Session";
+                    log.warn("The property 'datasource' is missing, taking default " + dataSource);
                 }
 
                 Context initCtx = new InitialContext();
                 Context envCtx = (Context)initCtx.lookup(context);
-                session = (Session)envCtx.lookup(datasource);
-                log.info("Module SendMail started (datasource = " + datasource + ")");
+                Object o = envCtx.lookup(dataSource);
+                if (o instanceof Session) {
+                    session = (Session) o;
+                } else {
+                    log.fatal("Configured dataSource '" + dataSource + "' of context '" + context + "' is not a Session but " + (o == null ? "NULL" : "a " + o.getClass().getName()));
+                    return;
+                }
+                log.info("Module SendMail started (datasource = " + dataSource + ")");
             } else {
                 if (context != null) {
                     log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
                 }
-                if (datasource != null) {
+                if (dataSource != null) {
                     log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
                 log.info(
@@ -125,9 +131,9 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                         + " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)");
 
                 Properties prop = System.getProperties();
-                prop.put("mail.smtp.host", smtphost);
+                prop.put("mail.smtp.host", smtpHost);
                 session = Session.getInstance(prop, null);
-                log.info("Module SendMail started (smtphost = " + smtphost + ")");
+                log.info("Module SendMail started (smtphost = " + smtpHost + ")");
             }
 
         } catch (javax.naming.NamingException e) {
