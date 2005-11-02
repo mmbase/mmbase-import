@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.139 2005-10-05 10:41:38 michiel Exp $
+ * @version $Id: Wizard.java,v 1.140 2005-11-02 10:39:28 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -544,7 +544,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("cloud", cloud);
 
         if (templatesDir != null) {
-            params.put("templatedir", context + templatesDir);
+            params.put("templatedir", templatesDir);
         }
 
         if (externParams != null && !externParams.isEmpty()) {
