@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.48 2005-11-01 22:13:52 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.49 2005-11-02 07:42:48 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -925,7 +925,7 @@ public class BuilderReader extends DocumentReader {
     /**
      * For testing only
      */
-    public static void main(String[] argv) throws  org.xml.sax.SAXException, java.io.IOException {
+    public static void main(String[] argv) throws Exception {
         org.mmbase.util.ResourceLoader rl = org.mmbase.util.ResourceLoader.getSystemRoot();
         Document doc = rl.getDocument(argv[0], true, BuilderReader.class);
         new BuilderReader(doc, null);
