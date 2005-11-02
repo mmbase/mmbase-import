@@ -15,6 +15,8 @@ import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * <p>
@@ -26,7 +28,7 @@ import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.7 2005-10-31 21:38:58 andre Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.8 2005-11-02 19:15:39 ernst Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -36,6 +38,8 @@ public abstract class ReleaseStrategy {
     private long totalEvaluationTimeInMillis = 0;
 
     private boolean isActive = true;
+    
+    private static final Logger log = Logging.getLoggerInstance(ReleaseStrategy.class);
 
     public ReleaseStrategy() {
     }
@@ -136,11 +140,13 @@ public abstract class ReleaseStrategy {
     protected static List getConstraintsForField(String  fieldName, String builderName, Constraint constraint, SearchQuery query){
         List result = new ArrayList();
         if(constraint instanceof BasicCompositeConstraint){
+            log.debug("constraint is composite.");
             for (Iterator i = ((BasicCompositeConstraint)constraint).getChilds().iterator(); i.hasNext();) {
                 Constraint c = (Constraint) i.next();
                 result.addAll(getConstraintsForField(fieldName, builderName, c, query));
             }
         }else if(constraint instanceof LegacyConstraint){
+            log.debug("constraint is legacy.");
             if(query.getSteps().size() > 1){
                 fieldName = builderName + "." + fieldName;
             }
@@ -149,6 +155,7 @@ public abstract class ReleaseStrategy {
                 return result;
             }
         }else if(constraint instanceof FieldConstraint){
+            log.debug("constraint is field constraint.");
             StepField sf = ((FieldConstraint)constraint).getField();
             if(sf.getFieldName().equals(fieldName) && sf.getStep().getTableName().equals(builderName)){
                 result.add(constraint);
@@ -178,11 +185,11 @@ public abstract class ReleaseStrategy {
      * @param step
      * @return
      */
-    protected static List getFieldSteps(SearchQuery query, Step step){
+    protected static List getFieldSteps(SearchQuery query){
         List result = new ArrayList();
         for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
-            StepField  field = (StepField) i.next();
-            if(field.getStep().equals(step))result.add(field);
+            Object step =  i.next();
+            if(! (step instanceof RelationStep))result.add(step);
         }
         return result;
     }
@@ -194,12 +201,10 @@ public abstract class ReleaseStrategy {
      */
     protected static List getStepsForType(SearchQuery query, MMObjectBuilder type){
         List result = new ArrayList(10);
-        for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
+        for (Iterator i = getFieldSteps(query).iterator(); i.hasNext();) {
             Step step = (Step) i.next();
-            if (! (step instanceof RelationStep)) {
-                if(type == null || step.getTableName().equals(type.getTableName()))
-                    result.add(step);
-            }
+            if( step.getTableName().equals(type.getTableName()))
+                result.add(step);
         }
         return result;
     }

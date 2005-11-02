@@ -12,6 +12,7 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.core.event.NodeEvent;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.SearchQuery;
 import org.mmbase.storage.search.Step;
 
@@ -26,7 +27,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.8 2005-10-31 19:53:49 ernst Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.9 2005-11-02 19:15:39 ernst Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -54,13 +55,14 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         //this simple optimization only works for nodeEvents
+        
         int shouldKeep = 0;
         if(event.getType() != NodeEvent.EVENT_TYPE_RELATION_CHANGED){
-            List steps = getStepsForType(query, event.getNode().getBuilder());
+            List steps = getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()));
             for (Iterator i = steps.iterator(); i.hasNext();) {
                 Step step = (Step) i.next();
                 Set nodes = step.getNodes();
-                if(nodes != null && nodes.size() > 0 && ! nodes.contains(new Integer(event.getNode().getNumber()))) {
+                if(nodes != null && nodes.size() > 0 && ! nodes.contains(new Integer(event.getNodeNumber()))) {
                     shouldKeep ++; 
                 }
             }

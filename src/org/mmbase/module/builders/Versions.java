@@ -20,7 +20,7 @@ import org.mmbase.storage.search.implementation.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.15 2005-09-22 20:53:21 michiel Exp $
+ * @version $Id: Versions.java,v 1.16 2005-11-02 19:15:39 ernst Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -146,12 +146,12 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
      */
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Changed " + event.getMachine() + " " + event.getNode().getNumber() + " "
-                + event.getNode().getBuilder().getTableName() + " " + NodeEvent.newTypeToOldType(event.getType()));
+            log.debug("Changed " + event.getMachine() + " " + event.getNodeNumber() + " "
+                + event.getBuilderName() + " " + NodeEvent.newTypeToOldType(event.getType()));
         }
-        String builder = event.getNode().getBuilder().getTableName();
+        String builder = event.getBuilderName();
         Vector subs = (Vector) cacheVersionHandlers.get(builder);
-        int inumber = event.getNode().getNumber();
+        int inumber = event.getNodeNumber();
         if (subs != null) {
             for (Enumeration e = subs.elements(); e.hasMoreElements();) {
                 VersionCacheNode cnode = (VersionCacheNode) e.nextElement();
