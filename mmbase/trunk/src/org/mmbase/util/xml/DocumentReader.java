@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.17 2005-11-01 23:35:16 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.18 2005-11-02 07:42:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -478,7 +478,7 @@ public class DocumentReader  {
         return v.iterator();
     }
 
-    public static void main(String[] argv) throws java.io.FileNotFoundException {
+    public static void main(String[] argv) throws Exception {
         DocumentReader doc =  new DocumentReader(new InputSource(new java.io.FileInputStream(argv[0])));
         System.out.println(XMLWriter.write(toDocument(doc.getRootElement()), true, false));
     }
