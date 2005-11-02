@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.176 2005-10-28 13:42:16 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.177 2005-11-02 00:01:33 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -824,7 +824,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             if (deleteRelations) {
                 // option set, remove relations
                 deleteRelations(-1);
-                assert(hasRelations());
             } else {
                 // option unset, fail if any relations exit
                 if (getNode().hasRelations()) {
