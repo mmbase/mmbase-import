@@ -30,6 +30,35 @@ See http://www.MMBase.org/license
 		<attainGoal name="multiproject:install" />
 	</goal>
 
+<!-- prereqs="all:install"  -->
+
+	<goal name="all:install-snapshot" description="Install snapshot ALL Subprojects">
+		<maven:reactor basedir="${maven.multiproject.basedir}" banner="Gathering project list"
+			includes="${maven.multiproject.includes}" excludes="${maven.multiproject.excludes}" postProcessing="true"
+			ignoreFailures="${maven.multiproject.ignoreFailures}" collectOnly="true" />
+
+		<j:forEach var="reactorProject" items="${reactorProjects}">
+			<j:set var="projectType" value="${reactorProject.context.getVariable('maven.multiproject.type')}" />
+			<j:set var="projectBuildDir" value="${reactorProject.context.getVariable('maven.build.dir')}" />
+			<j:set var="projectPom" value="${reactorProject.context.getVariable('pom')}" />
+
+			<j:choose>
+				<j:when test="${projectType == 'war'}">
+					<j:set var="projectFinalName" value="${projectPom}" />
+				</j:when>
+				<j:otherwise>
+					<j:set var="projectFinalName" value="${reactorProject.context.getVariable('maven.final.name')}" />
+				</j:otherwise>
+			</j:choose>
+
+		    <artifact:install-snapshot
+		      artifact="${projectBuildDir}/${projectFinalName}.${projectType}"
+		      type="${projectType}"
+		      project="${projectPom}"
+		    />
+		</j:forEach>
+	</goal>
+
 	<!--
 		===========================================================================
 		ALL:CLEAN Performs a Maven 'clean' on all projects.
@@ -55,6 +84,11 @@ See http://www.MMBase.org/license
 	<goal name="all:clean-install" description="Clean and install ALL Subprojects">
 		<attainGoal name="all:clean" />
 		<attainGoal name="all:install" />
+	</goal>
+
+	<goal name="all:clean-install-snapshot" description="Clean and install snapshot ALL Subprojects">
+		<attainGoal name="all:clean" />
+		<attainGoal name="all:install-snapshot" />
 	</goal>
 
 	<goal name="all:site" description="Generate sites ALL Subprojects">
