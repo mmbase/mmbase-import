@@ -166,9 +166,7 @@
           <search>2</search>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
-      </datatype>
+      <datatype name="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" /> <!-- should actually be limited to extensions of insrel, but how? -->
       <db>
         <name>builder</name>
         <type required="true" state="persistent">NODE</type>
