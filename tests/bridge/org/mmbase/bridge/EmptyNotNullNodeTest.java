@@ -21,11 +21,11 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmptyNotNullNodeTest.java,v 1.10 2005-10-31 12:47:47 ernst Exp $
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.11 2005-11-03 11:55:39 michiel Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
-    private static final String EMPTY_XML = "<p/>\r\n";
+    private static final String EMPTY_XML = "<p/>";
 
     public EmptyNotNullNodeTest(String name) {
         super(name);
