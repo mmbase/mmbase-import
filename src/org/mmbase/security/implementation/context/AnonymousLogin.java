@@ -13,11 +13,10 @@ import org.mmbase.security.Rank;
 import java.util.Map;
 
 /**
- * Class AnonymousLogin
+ * The anonymous login module of the context security implementation only creates the 'anonymous' user with the rank {@Rank.ANONYMOUS}.
  *
- * @javadoc
  * @author Eduard Witteveen
- * @version $Id: AnonymousLogin.java,v 1.4 2002-06-07 12:56:59 pierre Exp $
+ * @version $Id: AnonymousLogin.java,v 1.5 2005-11-03 14:04:19 michiel Exp $
  */
 public class AnonymousLogin extends ContextLoginModule {
     public ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
