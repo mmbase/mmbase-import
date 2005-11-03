@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.31 2005-10-18 21:57:32 michiel Exp $
+ * @version $Id: Authentication.java,v 1.32 2005-11-03 14:03:00 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -96,7 +96,7 @@ public abstract class Authentication extends Configurable implements Authenticat
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @since MMBase-1.8
      */
     public int getDefaultMethod(String protocol) {
@@ -108,14 +108,14 @@ public abstract class Authentication extends Configurable implements Authenticat
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @since MMBase-1.8
      */
     public String[] getTypes() {
         return getTypes(METHOD_UNSET);
     }
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @since MMBase-1.8
      */
     public String[] getTypes(int method) {
