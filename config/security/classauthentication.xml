@@ -6,12 +6,14 @@
       As long as MMObjectNode does not implement Node itself, this works around.
   -->
 
-  <authenticate class="org\.mmbase\.util\.functions\.NodeFunction">
+  <!-- for node-function that are implemented on Core, and did't have Cloud..-->
+  <authenticate class="org\.mmbase\.util\.functions\.NodeFunction\$NodeInstanceFunction">
     <property name="rank" value="administrator" />
   </authenticate>
 
+  <!--
   <authenticate class="org\.mmbase\.datatypes\.BasicDataType">
     <property name="rank" value="administrator" />
   </authenticate>
-
+  -->
 </security>
