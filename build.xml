@@ -476,6 +476,7 @@ builddate=${builddate}
         <include name="storage/**/*.xml"/>
         <include name="modules/mmbaseroot.xml"/>
         <include name="modules/mmadmin.xml"/>
+        <include name="security/classauthentication.xml" />
         <include name="utils/**/*.xml"/>
         <include name="xslt/**/*.xsl"/>
         <include name="xslt/**/*.xslt"/>
