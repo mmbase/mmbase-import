@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.17 2005-10-28 09:56:34 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.18 2005-11-03 14:04:39 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -60,8 +60,8 @@ public abstract class ContextLoginModule {
     /**
      * @since MMBase-1.8
      */
-    protected Rank getRank(String username, String identifyType) throws SecurityException {
-        String xpath;
+    protected Rank getRank(final String username, final String identifyType) throws SecurityException {
+        final String xpath;
         if (identifyType != null) {
             xpath = "/contextconfig/accounts/user[@name='" + username + "']/identify[@type='" + identifyType + "']";
         } else {
@@ -114,24 +114,32 @@ public abstract class ContextLoginModule {
      * @return The user Element.
      * @since MMBase-1.8
      */
-    protected Element getAccount(String userName, String identifyType, String rank) throws SecurityException {
-        String xpath;
-        StringBuffer userCons = new StringBuffer(userName != null ? "@name='" + userName + "'" : "");
-        if (rank != null) {
-            if (userCons.length() > 0) userCons.append(" and ");
-            userCons.append("@rank='" + rank + "'");
+    protected Element getAccount(final String userName, final String identifyType, final String rank) throws SecurityException {
+        String userCons = "";
+        if (userName != null) {
+            userCons = "[@name='" + userName + "']";
         }
-        if (identifyType != null) {
-            xpath = "/contextconfig/accounts/user[" + userCons + "]/identify[@type='" + identifyType + "']";
+
+        final String xpath;
+        if (identifyType != null || rank != null) {
+            StringBuffer identifyCons = new StringBuffer();
+            if (identifyType != null) {
+                identifyCons.append("@type='").append(identifyType).append("'");
+            }
+            if (rank != null) {
+                if (identifyCons.length() > 0) identifyCons.append(" and ");
+                identifyCons.append("@rank='").append(rank).append("'");                
+            }
+            xpath = "/contextconfig/accounts/user" + userCons + "/identify[" + identifyCons + "]";
         } else {
-            xpath = "/contextconfig/accounts/user[" + userCons + "]";
+            xpath = "/contextconfig/accounts/user" + userCons;
         }
         
         if (log.isDebugEnabled()) {
             log.debug("going to execute the query: " + xpath);
         }
         
-        Element found;
+        final Element found;
         try {
             found = (Element) XPathAPI.selectSingleNode(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
@@ -141,10 +149,14 @@ public abstract class ContextLoginModule {
             throw new java.lang.SecurityException(msg);
         }
         if(found == null) {
-            log.warn("user '" + userName + "' was not found for identify type: '" + identifyType  + "'");
+            if (rank != null) {
+                log.warn("No user with rank '" + rank + "' " + (userName != null ? "and username '" + userName + "'": "") + "was not found for identify type: '" + identifyType  + "'");
+            } else {
+                log.warn("No user with username '" + userName + "' was not found for identify type: '" + identifyType  + "'");
+            }
             return null;
         }
-        if (identifyType != null) {
+        if (identifyType != null || rank != null) {
             return (Element) found.getParentNode();
         } else {
             return (Element) found;
