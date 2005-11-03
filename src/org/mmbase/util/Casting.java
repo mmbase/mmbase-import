@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.71 2005-10-20 11:45:19 michiel Exp $
+ * @version $Id: Casting.java,v 1.72 2005-11-03 11:53:31 michiel Exp $
  */
 
 import java.util.*;
@@ -31,6 +31,7 @@ import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.MapNode;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.XMLWriter;
 
 import org.w3c.dom.*;
 
@@ -276,9 +277,9 @@ public class Casting {
                         return escape(escaper, r);
                     }
                 };
-        } else if (o instanceof Document) {
+        } else if (o instanceof org.w3c.dom.Node) {
             // don't know how to wrap
-            return escape(escaper, convertXmlToString(null, (Document)o));
+            return escape(escaper, XMLWriter.write((org.w3c.dom.Node) o, false, true));
         } else if (o instanceof List) {
             return new ListWrapper((List) o, escaper);
         } else if (o instanceof byte[]) {
@@ -831,7 +832,7 @@ public class Casting {
                 doc = DOCUMENTBUILDER.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
             }
             if (log.isDebugEnabled()) {
-                log.trace("parsed: " + convertXmlToString(null, doc));
+                log.trace("parsed: " + XMLWriter.write(doc, false, true));
             }
             if (!errorHandler.foundNothing()) {
                 throw new IllegalArgumentException("xml invalid:\n" + errorHandler.getMessageBuffer() + "for xml:\n" + value);
@@ -847,62 +848,6 @@ public class Casting {
         }
     }
 
-    /**
-     * Convert a xml document to a String
-     * if tehd oceument is <code>null</code>, an empty string is returned.
-     * @param docType the xml document type
-     * @param xml the Document
-     * @return  the value as a string
-     * @throws  IllegalArgumentException if the value could not be converted
-     */
-    static private String convertXmlToString(String doctype, Document xml) {
-        log.debug("converting from xml to string");
-
-        // check for null values
-        if (xml == null) {
-            log.debug("field was empty");
-            // string with null isnt allowed in mmbase...
-            return "";
-        }
-        // check if we are using the right DOC-type for this field....
-        //String doctype = parent.getField(fieldName).getDBDocType();
-        if (doctype != null) {
-            // we have a doctype... the doctype of the document has to mach the doctype of the doctype which is needed..
-            org.w3c.dom.DocumentType type = xml.getDoctype();
-            String publicId = type.getPublicId();
-            if (doctype.indexOf(publicId) == -1) {
-                //throw new RuntimeException("doctype('"+doctype+"') required by field '"+fieldName+"' and public id was NOT in it : '"+publicId+"'");
-            }
-            log.warn("doctype check can not completely be trusted");
-        }
-
-        try {
-            //make a string from the XML
-            TransformerFactory tfactory = TransformerFactory.newInstance();
-            Transformer serializer = tfactory.newTransformer();
-
-            // for now, we save everything in ident form, this since it makes debugging a little bit more handy
-            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-
-            // store as less as possible, otherthings should be resolved from gui-type
-            serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-
-            java.io.StringWriter str = new java.io.StringWriter();
-            serializer.transform(new javax.xml.transform.dom.DOMSource(xml), new javax.xml.transform.stream.StreamResult(str));
-            if (log.isDebugEnabled()) {
-                log.debug("xml -> string:\n" + str.toString());
-            }
-            return str.toString();
-        } catch (TransformerConfigurationException tce) {
-            String message = tce.toString() + " " + Logging.stackTrace(tce);
-            log.error(message);
-            throw new IllegalArgumentException(message);
-        } catch (TransformerException te) {
-            String message = te.toString() + " " + Logging.stackTrace(te);
-            log.error(message);
-            throw new IllegalArgumentException(message);
-        }
-    }
 
     /*
      * Wraps a List with an 'Escaper'.
