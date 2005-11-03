@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.12 2005-11-01 23:39:30 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.13 2005-11-03 10:54:59 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -84,8 +84,8 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     
     /**
      * Add entry to 'localized' 
-     * @param object the object, which has not Locale suppoft of itself (Entry, DocumentSerializable)
-     * @param locale Can be <code>null</code> too, in which case default locale is used
+     * @param object the object, which has not Locale support of itself (Entry, DocumentSerializable)
+     * @param locale Can be <code>null</code> too, in which case the default locale is used
      * @return List of currently unused keys for this locale.
      */
 
@@ -131,7 +131,6 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     public void addQuery(Locale locale, Document queryElement) {
         DocumentSerializable doc = new DocumentSerializable(queryElement);
         add(locale, doc);
-        log.info("NOW:" + this);
     }
 
    
@@ -164,7 +163,9 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                     return new Iterator() {
                             Locale useLocale = locale;
                             {
-                                if (useLocale == null) useLocale = cloud.getLocale();
+                                if (useLocale == null) {
+                                    useLocale = cloud != null ? cloud.getLocale() : LocalizedString.getDefault();
+                                }
                             }
                             private ChainedIterator iterator = new ChainedIterator();
                             private Iterator subIterator = null;
