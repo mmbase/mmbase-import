@@ -155,4 +155,10 @@ public class EmptyNodeTest extends NodeTest {
        }
     }
 
+    public void testSetField() {
+        node.setValue("stringfield", "");
+        node.commit();
+        testGetStringValue();
+    }
+
 }
