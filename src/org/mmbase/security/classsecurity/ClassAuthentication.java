@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.9 2005-10-12 19:06:17 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.10 2005-11-03 14:03:57 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -68,6 +68,7 @@ public class ClassAuthentication {
      */
     protected static void load(String configFile) throws SecurityException {
         List resourceList = MMBaseCopConfig.securityLoader.getResourceList(configFile);
+        log.info("Loading " + configFile + "( " + resourceList + ")");
         authenticatedClasses = new ArrayList();
         ListIterator it = resourceList.listIterator();
         while (it.hasNext()) it.next();
@@ -76,7 +77,6 @@ public class ClassAuthentication {
                 URL u = (URL) it.previous();
                 URLConnection con = u.openConnection();
                 if (! con.getDoInput()) continue;
-                log.service("Reading " + u);
                 InputSource in = new InputSource(con.getInputStream());
                 Document document = DocumentReader.getDocumentBuilder(true, // validate aggresively, because no further error-handling will be done
                                                                       new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
@@ -106,7 +106,7 @@ public class ClassAuthentication {
             }
         }
 
-
+        log.service("Class authentication: " + authenticatedClasses);
 
     }
 
@@ -135,7 +135,9 @@ public class ClassAuthentication {
             watcher.start();
 
         }
-        log.debug("Class authenticating (" + authenticatedClasses + ")");
+        if (log.isDebugEnabled()) {
+            log.trace("Class authenticating (" + authenticatedClasses + ")");
+        }
         Throwable t = new Throwable();
         StackTraceElement[] stack = t.getStackTrace();
 
@@ -159,6 +161,9 @@ public class ClassAuthentication {
                 }
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Failed to authenticate " + Arrays.asList(stack) + " with " + authenticatedClasses);
+        }
         return null;
     }
 
@@ -179,7 +184,7 @@ public class ClassAuthentication {
             return map;
         }
         public String toString() {
-            return classPattern + (application.equals("class") ? "" : ": " + application);
+            return classPattern.pattern() + (application.equals("class") ? "" : ": " + application);
         }
     }
 
