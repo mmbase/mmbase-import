@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.13 2005-10-09 14:56:17 ernst Exp $
+ * @version $Id: ClusterManager.java,v 1.14 2005-11-03 10:31:48 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable{
 
@@ -114,7 +114,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
             out.writeObject(event);
             return bytes.toByteArray();
         } catch (IOException ioe) {
-            log.error(ioe);
+            log.error(ioe.getMessage(), ioe);
             return null;
         }
         
@@ -163,7 +163,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
                             if (!ctype.equals("s")) {
                                 MMObjectBuilder builder = mmbase.getBuilder(tb);
                                 MMObjectNode    node    = builder.getNode(id);
-                                return new NodeEvent(node, NodeEvent.oldTypeToNewType(ctype),machine);
+                                return new NodeEvent(machine, tb, node.getNumber(), node.getOldValues(), node.getValues(), NodeEvent.oldTypeToNewType(ctype));
                             } else {
                                 /// XXXX should we?
                                 log.error("XML messages not suppported any more");
