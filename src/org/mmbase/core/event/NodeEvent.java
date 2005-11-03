@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.14 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: NodeEvent.java,v 1.15 2005-11-03 10:50:03 ernst Exp $
  */
 public class NodeEvent extends Event implements Serializable {
 
@@ -112,7 +112,7 @@ public class NodeEvent extends Event implements Serializable {
         //we only want the new values for fields that have actually been changed
         for (Iterator i = oldValues.keySet().iterator(); i.hasNext();) {
             Object key = i.next();
-            this.newValues.put(key, oldValues.get(key));
+            this.newValues.put(key, newValues.get(key));
         }
     }
     
