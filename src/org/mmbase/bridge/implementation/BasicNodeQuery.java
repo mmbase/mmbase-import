@@ -30,7 +30,7 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.22 2005-09-01 14:06:01 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.23 2005-11-04 23:24:03 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -38,7 +38,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     protected Step step = null;
 
-    BasicNodeQuery(BasicCloud c) {
+    BasicNodeQuery(Cloud c) {
         super(c);
     }
 
@@ -60,7 +60,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
      * Makes a multi-step node-query, based on a normal query. As a default, all fields of last steps are added (if at least there are steps already)
      *
      */
-    BasicNodeQuery(BasicCloud cloud, SearchQuery q) {
+    BasicNodeQuery(Cloud cloud, SearchQuery q) {
         super(cloud);
         query = new BasicSearchQuery(q);
         List steps = query.getSteps();
@@ -171,6 +171,10 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         clone.used = false;
         clone.aggregating = false;
         return clone;
+    }
+
+    public NodeList getList() {
+        return getNodeManager().getList(this);
     }
 
 
