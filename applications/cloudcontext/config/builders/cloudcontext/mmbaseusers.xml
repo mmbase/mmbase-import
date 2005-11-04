@@ -178,7 +178,7 @@
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="today + 100 year" />
         <minInclusive enforce="never" value="yesterday"  />
-        <maxInclusive enformce="never" value="today + 199 year"  />
+        <maxInclusive enforce="never" value="today + 199 year"  />
       </datatype>
       <db>
         <name>validto</name>
@@ -194,13 +194,17 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
           <list>6</list>
         </positions>
       </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="toyear - 100 year" />
+        <minInclusive enforce="never" value="toyear - 100 year"  />
+        <maxInclusive enforce="never" value="now"  />
+      </datatype>
       <db>
         <name>lastlogon</name>
-        <type notnull="true" state="persistent">DATETIME</type>
+        <type notnull="true" state="system">DATETIME</type>
       </db>
     </field>
 
