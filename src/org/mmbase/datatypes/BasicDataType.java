@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.22 2005-11-01 23:41:52 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.23 2005-11-04 23:12:51 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -57,8 +57,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private Class classType;
     private Object defaultValue;
 
-    //private CommitProcessor commitProcessor;
-    private Processor commitProcessor;
+    private CommitProcessor commitProcessor = EmptyCommitProcessor.getInstance();
     private Processor[]     getProcessors;
     private Processor[]     setProcessors;
 
@@ -204,7 +203,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * cast to Number.
      */
     protected Object castToValidate(Object value, Node node, Field field) {
-        return Casting.toType(classType,  preCast(value, node, field));
+        return cast(value, node, field);
     }
 
     /**
@@ -453,50 +452,25 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public Object process(int action, Node node, Field field, Object value, int processingType) {
-        Object result = value;
-        Processor processor = getProcessor(action, processingType);
-        if (processor == null) processor = getProcessor(action);
-        if (processor == null && action == PROCESS_SET) {
-            processor = getProcessor(PROCESS_COMMIT, processingType);
-            if (processor == null) {
-                processor = getProcessor(PROCESS_COMMIT);
-            }
-        }
-        if (processor != null) {
-            if (action == PROCESS_COMMIT && processor instanceof CommitProcessor) {
-                if (log.isDebugEnabled()) {
-                    log.debug("commit:" + processor.getClass().getName());
-                }
-                ((CommitProcessor)processor).commit(node, field);
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("process for " + this + processor.getClass().getName());
-                }
 
-                result = processor.process(node, field, value);
-            }
-        }
-        return result;
+    public CommitProcessor getCommitProcessor() {
+        return commitProcessor == null ? EmptyCommitProcessor.getInstance() : commitProcessor;
     }
-
+    public void setCommitProcessor(CommitProcessor cp) {
+        commitProcessor = cp;
+    }
 
     /**
      * {@inheritDoc}
      */
     public Processor getProcessor(int action) {
-        Processor processor = null;
-        if (action == PROCESS_COMMIT) {
-            processor =  commitProcessor;
-        } else if (action == PROCESS_GET) {
+        Processor processor;
+        if (action == PROCESS_GET) {
             processor =  getProcessors == null ? null : getProcessors[0];
         } else {
             processor =  setProcessors == null ? null : setProcessors[0];
         }
-        return processor;
+        return processor == null ? CopyProcessor.getInstance() : processor;
     }
 
     /**
@@ -506,15 +480,13 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         if (processingType == Field.TYPE_UNKNOWN) {
             return getProcessor(action);
         } else {
-            Processor processor = null;
-            if (action == PROCESS_COMMIT) {
-                processor =  commitProcessor;
-            } else if (action == PROCESS_GET) {
+            Processor processor;
+            if (action == PROCESS_GET) {
                 processor =  getProcessors == null ? null : getProcessors[processingType];
             } else {
                 processor =  setProcessors == null ? null : setProcessors[processingType];
             }
-            return processor;
+            return processor == null ? getProcessor(action) : processor;
         }
     }
 
@@ -540,9 +512,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         if (processingType == Field.TYPE_UNKNOWN) {
             processingType = 0;
         }
-        if (action == PROCESS_COMMIT) {
-            commitProcessor = processor;
-        } else if (action == PROCESS_GET) {
+        if (action == PROCESS_GET) {
             if (getProcessors == null) getProcessors = newProcessorsArray();
             getProcessors[processingType] = processor;
         } else {
@@ -642,16 +612,22 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
          * Restriction. If this error-collection is unmodifiable (VALID), it is replaced with a new
          * empty one first.
          */
-        protected final Collection addError(Collection errors, Object v) {
+        protected final Collection addError(Collection errors, Object v, Node node, Field field) {
             if (errors == VALID) errors = new ArrayList();
             ReplacingLocalizedString error = new ReplacingLocalizedString(getErrorDescription());
             error.replaceAll("\\$\\{NAME\\}",       error.makeLiteral(getName()));
-            error.replaceAll("\\$\\{CONSTRAINT\\}", error.makeLiteral(toString()));
+            error.replaceAll("\\$\\{CONSTRAINT\\}", error.makeLiteral(toString(node, field)));
             error.replaceAll("\\$\\{VALUE\\}",      error.makeLiteral("" + v));
             errors.add(error);
             return errors;
         }
 
+        /**
+         * If toString a restriction depends on node, field, then you can override this
+         */
+        protected String toString(Node node, Field field) {
+            return toString();
+        }
 
         /**
          * Whether {@link #validate} must enforce this condition
@@ -673,7 +649,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                 // no new error to add.
                 return errors;
             } else {
-                return addError(errors, v);
+                return addError(errors, v, node, field);
             }
         }
 
@@ -780,10 +756,17 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             }
             return (LocalizedEntryListFactory) value;
         }
-        public Collection getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field) {
+        public Collection getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
             if (value == null) return null;
             LocalizedEntryListFactory ef = (LocalizedEntryListFactory) value;
-            if (ef.size() == 0) return null;
+            if (cloud == null) {
+                if (node != null) {
+                    cloud = node.getCloud();
+                } else if (field != null) {
+                    cloud = field.getNodeManager().getCloud();
+                }
+            }
+            if (ef.size(cloud) == 0) return null;
             return ef.get(locale, cloud);
         }
 
@@ -791,17 +774,32 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             if (getValue() == null) return v;
             return ((LocalizedEntryListFactory) value).castKey(v);
         }
+
         public boolean valid(Object v, Node node, Field field) {
-            Collection validValues = getEnumerationValues(null, node != null ? node.getCloud() : null, node, field);
+            Cloud cloud;
+            if (node != null) {
+                cloud = node.getCloud();
+            } else if (field != null) {
+                cloud = field.getNodeManager().getCloud();
+            } else {
+                cloud = null;
+            }
+            Collection validValues = getEnumeration(null, cloud, node, field);
             if (validValues == null) return true;
             Object key = cast(v);
-            key = Casting.toType(BasicDataType.this.getTypeAsClass(), key);
+            key = BasicDataType.this.castToValidate(key, node, field);
             Iterator i = validValues.iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
-                if (e.getKey().equals(key)) return true;
+                if (e.getKey().equals(key)) {
+                    return true;
+                }
             }
             return false;
+        }
+
+        protected String toString(Node node, Field field) {
+            return getEnumeration(null, null, node, field).toString();
         }
 
     }
@@ -817,7 +815,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         private Object next = null;
 
         RestrictedEnumerationIterator(Locale locale, Cloud cloud, Node node, Field field) {
-            Collection col = enumerationRestriction.getEnumerationValues(locale, cloud, node, field);            
+            Collection col = enumerationRestriction.getEnumeration(locale, cloud, node, field);            
             baseIterator =  col != null ? col.iterator() : Collections.EMPTY_LIST.iterator();
             this.node = node;
             this.field = field;
@@ -848,6 +846,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
         public void remove() {
             throw new UnsupportedOperationException("Cannot remove entries from " + getClass());
+        }
+        public String toString() {
+            return "restricted iterator(" + enumerationRestriction + ")";
         }
     }
 
