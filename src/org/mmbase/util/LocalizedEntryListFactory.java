@@ -14,7 +14,7 @@ import java.io.*;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.xml.query.QueryReader;
+import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.xml.DocumentSerializable;
 import org.mmbase.util.logging.*;
 
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.13 2005-11-03 10:54:59 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.14 2005-11-04 23:16:27 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -63,9 +63,9 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * @return The created Map.Entry.
      */
     public Map.Entry add(Locale locale, Serializable key, Serializable value) {
+        if (locale == null) locale = LocalizedString.getDefault();
         Entry entry = new Entry(key, value);
         List unused = add(locale, entry);
-
         if (! fallBack.contains(key)) {
             size++;
             fallBack.add(key);
@@ -112,7 +112,6 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * specific locale.
      */
     public void addBundle(String baseName, ClassLoader classLoader, Class constantsProvider, Class wrapper, Comparator comparator) {
-        // just for the count
         Bundle b = new Bundle(baseName, classLoader, constantsProvider, wrapper, comparator);
         if (bundles.contains(b)) {
             log.info("Adding bundle " + b + " for second time in " + b + ", because " + Logging.stackTrace());
@@ -126,7 +125,6 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     }
     
     /**
-     * XXX locale is ignored
      */
     public void addQuery(Locale locale, Document queryElement) {
         DocumentSerializable doc = new DocumentSerializable(queryElement);
@@ -138,15 +136,20 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * Defaulting version of {@link #get(Locale, Cloud)}. Using default anonymous cloud.
      */
     public Collection get(final Locale locale) {
-        Cloud cloud = null;
-        try {
-            cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-            cloud.setLocale(locale);
-        } catch (Exception e) {
-            // could find no cloud whatsoever. Trying without one.
-        }
-        return get(locale, cloud);
+        return get(locale, getCloud(locale));
     }
+
+    protected Cloud getCloud(Locale locale) {
+        CloudContext context = ContextProvider.getDefaultCloudContext();
+        if (context.isUp()) {
+            Cloud cloud = context.getCloud("mmbase");
+            if (locale != null) cloud.setLocale(locale);
+            return cloud;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
      * it only reflects the underlying memory structures.
@@ -162,9 +165,10 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                 public Iterator iterator() {
                     return new Iterator() {
                             Locale useLocale = locale;
+                            Cloud useCloud = cloud;
                             {
                                 if (useLocale == null) {
-                                    useLocale = cloud != null ? cloud.getLocale() : LocalizedString.getDefault();
+                                    useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
                                 }
                             }
                             private ChainedIterator iterator = new ChainedIterator();
@@ -206,10 +210,17 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                     } else if (candidate instanceof DocumentSerializable) {
                                         Element element = ((DocumentSerializable) candidate).getDocument().getDocumentElement();
                                         try {
-                                            final Query query = QueryReader.parseQuery(element, cloud, null).query;
-                                            log.info("Executing query " + query);
+                                            if (useCloud == null) {
+                                                useCloud = getCloud(useLocale);
+                                                if (useCloud == null) {
+                                                    log.warn("Defined query for " + this + " but no cloud provided. Skipping results" + Logging.stackTrace(100));
+                                                    continue;
+                                                }
+                                            }
+                                            final Query query = QueryReader.parseQuery(element, useCloud, null).query;
+                                            log.debug("Executing query " + query);
                                             subIterator = new Iterator() {
-                                                    final NodeIterator nodeIterator = cloud.getList(query).nodeIterator();
+                                                    final NodeIterator nodeIterator = query.getList().nodeIterator();
                                                     public boolean hasNext() {
                                                         return nodeIterator.hasNext();
                                                     }
@@ -227,7 +238,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                                 subIterator = null;
                                             }
                                         } catch (Exception e) {
-                                            log.error(e);
+                                            log.error(e.getMessage(), e);
                                         }
                                     }
                                 }
@@ -261,8 +272,9 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * The size of the collections returned by {@link #get}
      */
     public int size(Cloud cloud) {
+        if (cloud == null) cloud = getCloud(LocalizedString.getDefault());
         int queriesSize = 0;
-        Locale locale = cloud.getLocale();
+        Locale locale = cloud == null ? LocalizedString.getDefault() : cloud.getLocale();
         List localizedList = (List) localized.get(locale);
         if (localizedList == null) {
             locale = LocalizedString.getDefault();
@@ -275,6 +287,13 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                 if (o instanceof Bundle) {
                     queriesSize += ((Bundle) o).get(locale).size();
                 } else if (o instanceof DocumentSerializable) {
+                    if (cloud == null) {
+                        cloud = getCloud(null);
+                        if (cloud == null) {
+                            log.warn("Found query but didn't provide cloud, skipping");
+                            continue;
+                        }
+                    }
                     Element element = ((DocumentSerializable) o).getDocument().getDocumentElement();
                     try {
                         queriesSize += Queries.count(QueryReader.parseQuery(element, cloud, null).query);
@@ -334,11 +353,11 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return "" + localized;
+        return "" + get(null, null);
     }
 
     private static class Bundle implements Serializable {
-        private static final int serialVersionUID = 1; // increase this if object serialization changes (which we shouldn't do!)
+        private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
         
         private String      resource;
         private ClassLoader classLoader;
@@ -422,18 +441,22 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         Locale nl = new Locale("nl");
         Locale en = new Locale("en");
         Locale dk = new Locale("dk");
+        Locale eo = new Locale("eo");
         fact.add(nl, "a", "hallo");
-        fact.add(nl, "b", "daag");
+        fact.add(new Locale("nl"), "b", "daag");
         fact.add(en, "b", "hello");
         fact.add(en, "a", "good bye");
         fact.addBundle(resource1, null, SortedBundle.NO_CONSTANTSPROVIDER, Boolean.class, SortedBundle.NO_COMPARATOR);
         fact.add(nl, "c", "doegg");
+        fact.add(dk, "d", "dk");
+        fact.add(null, "e", "oi");
         fact.addBundle(resource2, null, SortedBundle.NO_CONSTANTSPROVIDER, String.class, SortedBundle.NO_COMPARATOR);
 
-        System.out.println("size: " + fact.size());
-        System.out.println("" + fact.get(en));
-        System.out.println("" + fact.get(nl));
-        System.out.println("" + fact.get(dk));
+        System.out.println("size: " + fact.size() + " " + fact);
+        System.out.println("en" + fact.get(en));
+        System.out.println("nl" + fact.get(nl));
+        System.out.println("dk" + fact.get(dk));
+        System.out.println("eo" + fact.get(eo));
 
         LocalizedEntryListFactory fact2 = new LocalizedEntryListFactory();
         fact2.addBundle("org.mmbase.module.builders.resources.states", null, org.mmbase.module.builders.MMServers.class, SortedBundle.NO_WRAPPER, SortedBundle.NO_COMPARATOR);
