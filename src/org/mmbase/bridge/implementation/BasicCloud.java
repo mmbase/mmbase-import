@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.139 2005-10-31 13:53:38 simon Exp $
+ * @version $Id: BasicCloud.java,v 1.140 2005-11-04 23:22:11 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -217,7 +217,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
         } catch (RuntimeException e) {
-            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage(), e);
+            throw new NotFoundException("Something went wrong while getting node with number '" + nodeNumber + "': " + e.getMessage() + " by cloud with account " + account, e);
         }
         if (node == null) {
             throw new NotFoundException("Node with number '" + nodeNumber + "' does not exist.");
@@ -292,7 +292,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         MMObjectBuilder bul = BasicCloudContext.mmb.getMMObject(nodeManagerName);
         // always look if builder exists, since otherwise
         if (bul == null) {
-            throw new NotFoundException("Node manager with name " + nodeManagerName + " does not exist.");
+            throw new NotFoundException("Node manager with name '" + nodeManagerName + "' does not exist.");
         }
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
         BasicNodeManager nodeManager = (BasicNodeManager)nodeManagerCache.get(nodeManagerName);
@@ -993,5 +993,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return new BasicRelationManagerList(Collections.EMPTY_LIST, this);
     }
 
+    /**
+     * Checks wether the current transaction contains the given node.
+     */
+    boolean contains(MMObjectNode node) {
+        return false;
+    }
 
 }
