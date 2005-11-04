@@ -9,11 +9,26 @@
  */
 package org.mmbase.cache;
 
-import org.mmbase.bridge.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NotFoundException;
+import org.mmbase.bridge.Query;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.core.event.*;
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.NodeEventHelper;
+import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.storage.search.AggregatedField;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicLegacyConstraint;
 import org.mmbase.tests.BridgeTest;
 import org.mmbase.util.logging.Logger;
@@ -183,7 +198,7 @@ public class ReleaseStrategyTest extends BridgeTest {
     
     
     
-    public void testMultiStepQueryNewNode(){
+    public void testNewNode(){
         log.debug("method: testMultiStepQueryNewNode()");
         Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title,urls.name",null, null, null, null, false);
         
@@ -195,7 +210,7 @@ public class ReleaseStrategyTest extends BridgeTest {
     }
     
     
-    public void testMultiStepQueryNewRelation(){
+    public void testNewRelation(){
         log.debug("method: testMultiStepQueryNewRelation()");
         Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title,urls.name",null, null, null, null, false);
         
@@ -214,15 +229,16 @@ public class ReleaseStrategyTest extends BridgeTest {
     
     
     
-    public void testMultiStepQueryChangedNode(){
+    public void testChangedNode(){
         log.debug("method: testMultiStepQueryChangedNode()");
         
         //if none of the fields that have changed are part of the select or the constraint part of the query it should not be flushed
        
-        MMObjectNode testNode = MMBase.getMMBase().getBuilder("object").getNode(newsNode.getNumber());
-        testNode.setValue("title", "another title");
+        //MMObjectNode testNode = MMBase.getMMBase().getBuilder("object").getNode(newsNode.getNumber());
+        //testNode.setValue("title", "another title");
         
-        NodeEvent event = NodeEventHelper.createNodeEventInstance(testNode, NodeEvent.EVENT_TYPE_CHANGED, null);
+        NodeEvent event = new NodeEvent(null, "news", 0, getMap("title", "oldTitle"), getMap("title", "newtitle"), NodeEvent.EVENT_TYPE_CHANGED);
+        
         Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000", null, null, null, false);
         Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title = 'hallo'", null, null, null, false);
         Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.title", "news.number < 1000", null, null, null, false);
@@ -254,11 +270,80 @@ public class ReleaseStrategyTest extends BridgeTest {
         
         assertTrue("changed field is used by (legacy) constraint: it should be flused",
             strategy.evaluate(event, q6, null).shouldRelease());
+        
+        //*************************
+        //if the step(s) of the changed field(s) are (all) aggregate fields of type count, and this field is not used
+        //in the constraint as well, the query shouldn't be flushed.
+        
+        Query q7;
+        Step newsStep;
+        q7 = cloud.createAggregatedQuery();
+        newsStep = q7.addStep(newsManager);
+        AggregatedField titleField = q7.addAggregatedField(newsStep, newsManager.getField("title"), 2);
+        
+        assertFalse("aggregate queries (type count) where the changed field(s) match the step(s) should not be flushed",
+        		strategy.evaluate(event, q7, null).shouldRelease());
+        
+        //but whit this field in the constraint it should be flushed
+        q7.setConstraint(new BasicFieldValueConstraint(titleField, "disco"));
+        assertTrue("aggregate queries (type count) where the changed field(s) match the step(s) but there are constraints on the step(s) should be flushed",
+        		strategy.evaluate(event, q7, null).shouldRelease());
+        
+        //but other types of aggregation should flush (they deal with the contents of the field
+        int[] aggregations = new int[] {
+        		AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT,
+        		AggregatedField.AGGREGATION_TYPE_GROUP_BY,
+        		AggregatedField.AGGREGATION_TYPE_MAX,
+        		AggregatedField.AGGREGATION_TYPE_MIN};
+        for(int i = 0; i < aggregations.length; i++){
+        	q7 = cloud.createAggregatedQuery();
+            newsStep = q7.addStep(newsManager);
+            q7.addAggregatedField(newsStep, newsManager.getField("title"),aggregations[i]);
+            
+            assertTrue ("aggregate queries (type " + AggregatedField.AGGREGATION_TYPE_DESCRIPTIONS[i] + ") where the changed field(s) match the step(s) should be flushed",
+            		strategy.evaluate(event, q7, null).shouldRelease());
+        }
     }
     
-    public void testMultiStepQueryChangedRelation(){
+    
+    public void testChangedRelation(){
         //if a none of the fields that have changed are part of the select or the constraint part of the query it should not be flushed
-        //TODO: implementation
+    	
+    	RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, NodeEvent.EVENT_TYPE_CHANGED, null);
+    	relEvent.addChangedField("pos", new Integer(0), new Integer(1));
+    	
+    	Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 10 ", null, null, null, false);
+    	Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "posrel.pos < 10 ", null, null, null, false);
+    	Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle,posrel.pos", "news.number < 10 ", null, null, null, false);
+    	
+    	assertFalse("changed relation field is not used by query: it should not be flused",
+                strategy.evaluate(relEvent, q1, null).shouldRelease());
+        assertTrue("changed relation field is in constraints section of query: it should be flused",
+                strategy.evaluate(relEvent, q2, null).shouldRelease());
+        assertTrue("changed relation field is in select section of query: it should be flused",
+                strategy.evaluate(relEvent, q3, null).shouldRelease());
+        
+        //also test  composite constraints
+        Query q4 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000 AND urls.name = 'hi'", null, null, null, false);
+        Query q5 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "posrel.pos < 1 AND urls.name = 'hi'", null, null, null, false);
+        
+        assertFalse("changed relation field is not used by (composite) constraint: it should not be flused",
+            strategy.evaluate(relEvent, q4, null).shouldRelease());
+        assertTrue("changed relation field is used by (composite) constraint: it should be flused",
+            strategy.evaluate(relEvent, q5, null).shouldRelease());
+        
+        //also test legacy constraints
+        Query q6 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", null, null, null, null, false);
+        q6.setConstraint(new BasicLegacyConstraint("news.number < 1000 AND urls.name = 'hi'"));
+        
+        assertFalse("changed relation field is not used by (legacy) constraint: it should not be flused",
+            strategy.evaluate(relEvent, q6, null).shouldRelease());
+        
+        q6.setConstraint(new BasicLegacyConstraint("news.title='something' AND posrel.pos < 1"));
+        
+        assertTrue("changed relation field is used by (legacy) constraint: it should be flused",
+            strategy.evaluate(relEvent, q6, null).shouldRelease());
+        
     }
     
     
@@ -274,6 +359,12 @@ public class ReleaseStrategyTest extends BridgeTest {
         reldef.commit();
         createdNodes.add(reldef);
         return reldef;
+    }
+    
+    private Map getMap(Object key, Object value){
+    	Map m = new HashMap();
+    	m.put(key, value);
+    	return m;
     }
   
 }
