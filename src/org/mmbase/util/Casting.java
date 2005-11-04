@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.72 2005-11-03 11:53:31 michiel Exp $
+ * @version $Id: Casting.java,v 1.73 2005-11-04 23:15:57 michiel Exp $
  */
 
 import java.util.*;
@@ -164,6 +164,10 @@ public class Casting {
             } else if (type.equals(Collection.class)) {
                 return toCollection(value);
             } else {
+                if (value == null || "".equals(value)) {
+                    // just to avoid the error
+                    return null;
+                }
                 log.error("Dont now how to convert to " + type);
                 // don't know
                 return value;
