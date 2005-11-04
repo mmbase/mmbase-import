@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.9 2005-06-07 12:02:37 michiel Exp $
+ * @version $Id: ContextProvider.java,v 1.10 2005-11-04 23:20:25 michiel Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider {
@@ -59,10 +59,10 @@ public class ContextProvider {
      **/
      public static String getDefaultCloudContextName() {
          //first choice.. set the cloud context using system properties
-         if (defaultCloudContextName == null){
+         if (defaultCloudContextName == null) {
              defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
          }
-         if (defaultCloudContextName == null){
+         if (defaultCloudContextName == null) {
              defaultCloudContextName = DEFAULT_CLOUD_CONTEXT_NAME;
          }
          return defaultCloudContextName;
@@ -75,7 +75,9 @@ public class ContextProvider {
      **/
     public static CloudContext getDefaultCloudContext() {
         String uri = System.getProperty("mmbase.defaultcloudcontext");
-        if (uri != null) return getCloudContext(uri);
+        if (uri != null) {
+            return getCloudContext(uri);
+        }
 
         try {        
             return getCloudContext(getDefaultCloudContextName());
@@ -85,4 +87,5 @@ public class ContextProvider {
             throw new BridgeException(be.getMessage() + " You may want to specify -Dmmbase.defaultcloudcontext=<URI>", be);
         }
     }
+
 }
