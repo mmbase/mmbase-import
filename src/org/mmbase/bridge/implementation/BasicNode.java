@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.177 2005-11-02 00:01:33 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.178 2005-11-04 23:21:13 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -59,11 +59,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     protected BasicCloud cloud;
 
-    /**
-     * Reference to MMBase root.
-     * @scope private
-     */
-    protected MMBase mmb;
 
     /**
      * Reference to actual MMObjectNode object.
@@ -103,6 +98,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @throws IllegalArgumentException If node is null
      */
     BasicNode(MMObjectNode node, BasicNodeManager nodeManager) {
+        cloud = nodeManager.cloud;
         this.nodeManager = nodeManager;
         setNode(node);
         init();
@@ -118,6 +114,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     BasicNode(MMObjectNode node, BasicCloud cloud) {
         this.cloud =  cloud;
         setNode(node);
+        setNodeManager(node);
         init();
     }
 
@@ -130,6 +127,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     BasicNode(MMObjectNode node, BasicCloud cloud, int id) {
         this.cloud = cloud;
         setNode(node);
+        setNodeManager(node);
         temporaryNodeId = id;
         isNew = true;
         init();
@@ -137,59 +135,46 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     /**
-     * Initializes the node.
-     * Determines nodemanager and cloud (depending on information available),
-     * Sets references to MMBase modules and initializes state in case of a transaction.
+     * @since MMBase-1.8
+     */
+    protected void setNodeManager(MMObjectNode node) {
+        nodeManager = cloud.getBasicNodeManager(node.getBuilder().getTableName());
+        assert(nodeManager != null);
+    }
+
+    /**
+     * Initializes state in case of a transaction.
      */
     protected void init() {
-
-        if (cloud == null) {
-            cloud = nodeManager.cloud;
-        }
-
-        if (nodeManager == null) {
-            // determine nodemanager, unless the node is the 'typedef' node
-            // (needs to point towards itself)
-            if (getNode().getBuilder().oType != getNode().getNumber()) {
-                nodeManager = (BasicNodeManager) cloud.getNodeManager(getNode().getBuilder().getTableName());
-            } else {
-                nodeManager = (BasicNodeManager) this;
-            }
-        }
-
-        mmb = BasicCloudContext.mmb;
-
         // check whether the node is currently in transaction
         // and intialize temporaryNodeId if that is the case
-        if ((cloud instanceof BasicTransaction) && (((BasicTransaction)cloud).contains(getNode()))) {
-            if (temporaryNodeId == -1) {
-                temporaryNodeId = getNode().getNumber();
-            }
+        if (cloud.contains(getNode()) && temporaryNodeId == -1) {
+            temporaryNodeId = getNode().getNumber();
         }
     }
 
     public boolean isRelation() {
-        return this instanceof Relation;
+        return false;
     }
 
     public Relation toRelation() {
-        return (Relation)this;
+        throw new ClassCastException("The node " + this + " is not a relation, (but a " + getClass() + ")");
     }
 
     public boolean isNodeManager() {
-        return this instanceof NodeManager;
+        return false;
     }
 
     public NodeManager toNodeManager() {
-        return (NodeManager)this;
+        throw new ClassCastException("The node " + this + " is not a node manager , (but a " + getClass() + ")");
     }
 
     public boolean isRelationManager() {
-        return this instanceof RelationManager;
+        return false;
     }
 
     public RelationManager toRelationManager() {
-        return (RelationManager)this;
+        throw new ClassCastException("The node " + this + " is not a relation manager , (but a " + getClass() + ")");
     }
 
     public int getByteSize() {
@@ -404,31 +389,31 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setObjectValue(String fieldName, Object value) {
         Field field = nodeManager.getField(fieldName);
-        value = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_UNKNOWN);
+        value = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_UNKNOWN).process(this, field, value);
         setValueWithoutProcess(fieldName, value);
     }
 
     public void setBooleanValue(String fieldName,final  boolean value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, Boolean.valueOf(value), Field.TYPE_BOOLEAN);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BOOLEAN).process(this, field, Boolean.valueOf(value));
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setDateValue(String fieldName, final Date value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_DATETIME);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DATETIME).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setListValue(String fieldName, final List value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_LIST);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LIST).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setNodeValue(String fieldName, final Node value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_NODE);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_NODE).process(this, field, value);
         if (v == null) {
             setValueWithoutProcess(fieldName, null);
         } else if (v instanceof Node) {
@@ -442,31 +427,31 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setIntValue(String fieldName, final int value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, new Integer(value), Field.TYPE_INTEGER);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_INTEGER).process(this, field, new Integer(value));
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setLongValue(String fieldName, final long value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, new Long(value), Field.TYPE_LONG);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LONG).process(this, field, new Long(value));
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setFloatValue(String fieldName, final float value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, new Float(value), Field.TYPE_FLOAT);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_FLOAT).process(this, field, new Float(value));
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setDoubleValue(String fieldName, final double value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, new Double(value), Field.TYPE_DOUBLE);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DOUBLE).process(this, field, new Double(value));
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setByteValue(String fieldName, final byte[] value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_BINARY);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
@@ -485,7 +470,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                     log.debug("Mark supported and using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
                 }
                 value.mark(readLimit);
-                v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_BINARY);
+                v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, value);
                 value.reset();
             } else {
                 if (field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY) != null) {
@@ -499,7 +484,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                         b.write(c);
                     }
                     byte[] byteArray = b.toByteArray();
-                    v = field.getDataType().process(DataType.PROCESS_SET, this, field, byteArray, Field.TYPE_BINARY);
+                    v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, byteArray);
                 } else {
                     log.debug("Mark not support but no need for processing");
                     v = value;
@@ -514,16 +499,17 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     }
 
-    public void setStringValue(String fieldName, final String value) {
+    public void setStringValue(final String fieldName, final String value) {
         Field field = nodeManager.getField(fieldName);        
         Object setValue = field.getDataType().preCast(value, this, field);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, setValue, Field.TYPE_STRING);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_STRING).process(this, field, setValue);
+        log.info(fieldName + "FOUND processoed " + v);
         setValueWithoutProcess(fieldName, v);
     }
 
     public void setXMLValue(String fieldName, final Document value) {
         Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().process(DataType.PROCESS_SET, this, field, value, Field.TYPE_XML);
+        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_XML).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
 
@@ -574,7 +560,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Object result = getValueWithoutProcess(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            Object r = field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_UNKNOWN);
+            Object r = field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_UNKNOWN).process(this, field, result);
             if ((result != null && (! result.equals(r)))) {
                 log.info("getObjectvalue was processed! " + result + " != " + r);
                 result = r;
@@ -587,7 +573,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (Boolean) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_BOOLEAN);
+            result = (Boolean) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BOOLEAN).process(this, field, result);
         }
         return result.booleanValue();
     }
@@ -596,7 +582,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Date result =  noderef.getDateValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (Date) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_BOOLEAN);
+            result = (Date) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DATETIME).process(this, field, result);
         }
         return result;
     }
@@ -605,7 +591,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         List result =  noderef.getListValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (List) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_BOOLEAN);
+            result = (List) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LIST).process(this, field, result);
         }
 
         return result;
@@ -631,8 +617,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
             Field field = nodeManager.getField(fieldName);
-            result = (Node) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_NODE);
+            result = (Node) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(this, field, result);
         }
+        
         return result;
     }
 
@@ -640,7 +627,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Integer result = new Integer(getNode().getIntValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (Integer) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_INTEGER);
+            result = (Integer) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result);
         }
         return result.intValue();
 
@@ -650,7 +637,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Float result = new Float(getNode().getFloatValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (Float) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_FLOAT);
+            result = (Float) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(this, field, result);
         }
         return result.floatValue();
     }
@@ -659,7 +646,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Long result = new Long(getNode().getLongValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (Long) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_LONG);
+            result = (Long) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(this, field, result);
         }
         return result.longValue();
     }
@@ -668,7 +655,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Double result = new Double(getNode().getDoubleValue(fieldName));
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (Double) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_DOUBLE);
+            result = (Double) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(this, field, result);
         }
         return result.doubleValue();
     }
@@ -677,7 +664,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         byte[] result = getNode().getByteValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (byte[]) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_BINARY);
+            result = (byte[]) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(this, field, result);
         }
         return result;
     }
@@ -685,7 +672,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         java.io.InputStream result = getNode().getInputStreamValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (java.io.InputStream) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_BINARY);
+            result = (java.io.InputStream) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(this, field, result);
         }
         return result;
     }
@@ -694,7 +681,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         String result = getNode().getStringValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (String) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_STRING);
+            result = (String) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING).process(this, field, result);
         }
         return result;
     }
@@ -703,7 +690,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Document result = getNode().getXMLValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
-            result = (Document) field.getDataType().process(DataType.PROCESS_GET, this, field, result, Field.TYPE_XML);
+            result = (Document) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_XML).process(this, field, result);
         }
         return result;
     }
@@ -730,7 +717,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         FieldIterator fi = nodeManager.getFields().fieldIterator();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            field.getDataType().process(DataType.PROCESS_COMMIT, this, field, null, Field.TYPE_UNKNOWN); // idiotic implementation
+            field.getDataType().getCommitProcessor().commit(this, field); 
         }
     }
 
@@ -755,7 +742,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void commit() {
         if (isNew) {
-            cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
+            cloud.verify(Operation.CREATE, BasicCloudContext.mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
         edit(ACTION_COMMIT);
         processCommit();
@@ -778,7 +765,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
             temporaryNodeId = -1;
             // invalid nodereference, so retrieve node anew
-            setNode(mmb.getTypeDef().getNode(getNode().getNumber()));
+            setNode(BasicCloudContext.mmb.getTypeDef().getNode(getNode().getNumber()));
         }
         changed = false;
     }
@@ -796,7 +783,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 invalidateNode();
             } else {
                 // update the node, reset fields etc...
-                setNode(mmb.getTypeDef().getNode(noderef.getNumber()));
+                setNode(BasicCloudContext.mmb.getTypeDef().getNode(noderef.getNumber()));
             }
             temporaryNodeId = -1;
         }
@@ -857,7 +844,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public String toString() {
         //return getNode().toString() + "(" + getNode().getClass().getName() + ")";
-        return getNode().toString();
+        //return getNode().toString();
+        return "" + super.toString() + " " + getNode().getNumber();
     }
 
     /**
@@ -868,9 +856,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     private void deleteRelations(int type) {        
         List relations = null;
         if (type == -1) {
-            relations = mmb.getInsRel().getAllRelationsVector(getNode().getNumber());
+            relations = BasicCloudContext.mmb.getInsRel().getAllRelationsVector(getNode().getNumber());
         } else {
-            relations = mmb.getInsRel().getRelationsVector(getNode().getNumber());
+            relations = BasicCloudContext.mmb.getInsRel().getRelationsVector(getNode().getNumber());
         }
         if (relations != null) {
             // check first
@@ -900,7 +888,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void deleteRelations(String type) throws NotFoundException {
-        RelDef reldef = mmb.getRelDef();
+        RelDef reldef = BasicCloudContext.mmb.getRelDef();
         int rType = reldef.getNumberByName(type);
         if (rType == -1) {
             throw new NotFoundException("Relation with role : " + type + " does not exist.");
@@ -920,10 +908,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @return an Enumeration with the relations
      */
     private Enumeration getRelationEnumeration(int role, int otype, boolean usedirectionality) {
-        InsRel relbuilder = mmb.getInsRel();
+        InsRel relbuilder = BasicCloudContext.mmb.getInsRel();
         if ((role != 1) || (otype != -1)) {
             if (role != -1) {
-                relbuilder = mmb.getRelDef().getBuilder(role);
+                relbuilder = BasicCloudContext.mmb.getRelDef().getBuilder(role);
             }
             return relbuilder.getRelations(getNumber(), otype, role, usedirectionality);
         } else {
@@ -963,14 +951,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
         int otype = -1;
         if (nodeManager != null) {
-            otype = mmb.getTypeDef().getIntValue(nodeManager);
+            otype = BasicCloudContext.mmb.getTypeDef().getIntValue(nodeManager);
             if (otype == -1) {
                 throw new NotFoundException("NodeManager " + nodeManager + " does not exist.");
             }
         }
         int rolenr = -1;
         if (role != null) {
-            rolenr = mmb.getRelDef().getNumberByName(role);
+            rolenr = BasicCloudContext.mmb.getRelDef().getNumberByName(role);
             if (rolenr == -1) {
                 throw new NotFoundException("Relation with role " + role + " does not exist.");
             }
