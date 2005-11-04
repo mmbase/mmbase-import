@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.167 2005-10-19 13:28:02 michiel Exp $
+ * @version $Id: MMBase.java,v 1.168 2005-11-04 19:10:55 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -479,9 +479,12 @@ public class MMBase extends ProcessorModule {
      */
     public static MMBase getMMBase() {
         if (mmbaseroot == null) {
-            mmbaseroot = (MMBase) getModule("mmbaseroot", true);
-            if (mmbaseroot == null) {
-                log.fatal("The mmbaseroot module could not be found. Perhaps 'mmbaseroot.xml' is missing?");
+            synchronized(builderLoader) { // make sure only one mmbaseroot is instantiated (synchronized on random static member...)
+                mmbaseroot = (MMBase) getModule("mmbaseroot");
+                if (mmbaseroot == null) {
+                    log.fatal("The mmbaseroot module could not be found. Perhaps 'mmbaseroot.xml' is missing?");
+                }
+                mmbaseroot.startModule();
             }
         }
         return mmbaseroot;
