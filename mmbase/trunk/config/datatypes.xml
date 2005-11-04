@@ -33,15 +33,13 @@
   <datatype id="string">
     <class name="org.mmbase.datatypes.StringDataType" />
 
-    <!-- no new lines -->
     <!-- The pattern is defined on this level for backwards compatibility of editors -->  
     <pattern enforce="never" value="\A[^\n\r]*\z" />
 
     <specialization id="lastmodifier">
       <unique value="false" />
       <setprocessor>
-        <!-- only makes it unmodifiable -->
-        <class name="org.mmbase.datatypes.processors.LastModifier" />
+        <class name="org.mmbase.datatypes.processors.Readonly" />
       </setprocessor>
       <commitprocessor>
         <class name="org.mmbase.datatypes.processors.LastModifier" />
@@ -49,15 +47,26 @@
     </specialization>
 
     <specialization id="md5password">
+      <password value="true" />
       <setprocessor>
         <class name="org.mmbase.util.transformers.MD5" />
       </setprocessor>
     </specialization>
 
+    <specialization id="confirmpassword">
+      <password value="true" />
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.ConfirmPasswordFactory">
+          <param name="field">password</param>
+        </class>       
+      </commitprocessor>
+    </specialization>
+
     <specialization id="lowercaseuppercase">
-      <!-- Silly example (also used to test)
-           Strings are stored all lowercase, but showed all uppercase
-      -->
+      <description>
+        Silly example (also used to test)
+        Strings are stored all lowercase, but showed all uppercase
+      </description>
       <setprocessor>
         <class name="org.mmbase.util.transformers.LowerCaser" />
       </setprocessor>
@@ -110,8 +119,10 @@
     </specialization>
 
     <specialization id="checksum">
+      <description>
+        The default 'checksum' datatype checksums the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields        
+      </description>
       <commitprocessor>
-        <!-- the default 'checksum' datatype checksum the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields -->
         <class name="org.mmbase.datatypes.processors.ChecksumProcessorFactory">
           <param name="field">handle</param>
         </class>
@@ -126,6 +137,7 @@
     <pattern value="yyyy-MM-dd HH:mm" />
     <pattern xml:lang="nl-NL" value="dd MMMM yyyy HH:mm" />
     <pattern xml:lang="eo" value="dd'-a de' MMMM yyyy 'je' HH:mm" />
+
     <getprocessor type="string">
       <class name="org.mmbase.datatypes.processors.FormatDateTime" />
     </getprocessor>
@@ -135,11 +147,11 @@
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.Readonly" />
       </setprocessor>
-	</specialization>
+    </specialization>
 
     <specialization id="lastmodified">
       <setprocessor>
-        <class name="org.mmbase.datatypes.processors.LastModified" />
+        <class name="org.mmbase.datatypes.processors.Readonly" />
       </setprocessor>
       <commitprocessor>
         <class name="org.mmbase.datatypes.processors.LastModified" />
@@ -150,23 +162,18 @@
     <specialization id="time">
       <default value="100" />
       <pattern value="HH:mm:ss" />
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatDateTime" />
-      </getprocessor>
     </specialization>
 
     <specialization id="date">
-      <default value="now" />
+      <default value="today" />
       <pattern value="yyyy-MM-dd" />
       <pattern xml:lang="nl-NL" value="dd MMMM yyyy" />
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatDateTime" />
-      </getprocessor>
 
       <specialization id="20th-century">
-        <!-- Silly example (also used to test)
-             Allow only dates from the previous century..
-        -->
+        <description>
+          Silly example (also used to test)
+          Allow only dates from the previous century..
+        </description>
         <minInclusive value="1900-01-01"  />
         <maxExclusive value="2000-01-01"  />
       </specialization>
@@ -196,7 +203,10 @@
   <datatype id="long">
     <class name="org.mmbase.datatypes.LongDataType" />
     <specialization id="duration">
-      <minInclusive value="0" /> <!-- durations are positive -->
+      <description>
+        Durations are positive longs.        
+      </description>
+      <minInclusive value="0" />
       <!-- I have no idea how to do this -->
     </specialization>
   </datatype>
