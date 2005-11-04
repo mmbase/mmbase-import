@@ -37,13 +37,12 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.41 2005-11-01 23:41:52 michiel Exp $
+ * @version $Id: DataType.java,v 1.42 2005-11-04 23:12:51 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
 
     // XXXX MM: I think 'action' must be gone; it is silly.
-    static final int PROCESS_COMMIT = 0;
     static final int PROCESS_GET    = 1;
     static final int PROCESS_SET    = 2;
 
@@ -242,36 +241,15 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
 
 
 
-    // XXXX MM: I think 'action' must be gone; it is silly.
+    public CommitProcessor getCommitProcessor();
+
     /**
-     * Processes a value, according to the processors set on this datatype.
-     * Also, when committing, if the value is <code>null</code>, but is required,
-     * the default value (if one exists) is assigned instead.
-     * <br />
-     * If you ask for a PROCESS_COMMIT action, and the commit processor is defined,
-     * eitehr the commit() action is called (if the processor is a Commitprocessor),
-     * or the process() method on the commit processor (with <code>null</code> passed
-     * as a value.
-     * <br />
-     * If you ask for a PROCESS_GET action, and a get processor is defined, the process()
-     * method of that processor is called.
-     * <br />
-     * If you ask for a PROCESS_SET action, and a set processor is defined, the process()
-     * method of that processor is called. If a set processor is not defnied but a
-     * commitProcessor is, the process() method on the commit processor is called.
-     * <br />
-     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
-     * @param node the node for which the values should be processed
-     * @param field the field for wich the values should be processed
-     * @param value The value to process
-     * @param processingType the MMBase type defining the type of value to process
-     * @return the processed value
      */
-    public Object process(int action, Node node, Field field, Object value, int processingType);
+    public void setCommitProcessor(CommitProcessor cp);
 
     /**
      * Returns the default processor for this action
-     * @param action either {@link #PROCESS_COMMIT}, {@link #PROCESS_GET}, or {@link #PROCESS_SET}
+     * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
      * XXX What exactly would be against getCommitProcessor(), getGetProcesor(), getSetProcessor() ?
      */
     public Processor getProcessor(int action);

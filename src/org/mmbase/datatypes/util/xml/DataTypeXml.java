@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.3 2005-10-25 17:43:51 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.4 2005-11-04 23:12:51 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -113,12 +113,31 @@ public abstract class DataTypeXml {
 
     public static Processor chainProcessors(Processor processor1, Processor processor2) {
         Processor processor = processor1;
-        if (processor == null) {
+        if (processor == null || processor instanceof CopyProcessor) {
             processor = processor2;
+        } else if (processor2 instanceof CopyProcessor) {
+            processor = processor1;
         } else if (processor instanceof ChainedProcessor) {
             ((ChainedProcessor) processor).add(processor2);
         } else {
             ChainedProcessor chain = new ChainedProcessor();
+            chain.add(processor1);
+            chain.add(processor2);
+            processor = chain;
+        }
+        return processor;
+    }
+
+    public static CommitProcessor chainProcessors(CommitProcessor processor1, CommitProcessor processor2) {
+        CommitProcessor processor = processor1;
+        if (processor == null || processor instanceof EmptyCommitProcessor) {
+            processor = processor2;
+        } else if (processor2 instanceof EmptyCommitProcessor) {
+            processor = processor1;
+        } else if (processor instanceof ChainedCommitProcessor) {
+            ((ChainedCommitProcessor) processor).add(processor2);
+        } else {
+            ChainedCommitProcessor chain = new ChainedCommitProcessor();
             chain.add(processor1);
             chain.add(processor2);
             processor = chain;
@@ -178,11 +197,13 @@ public abstract class DataTypeXml {
                     }
                     try {
                         Class claz = Class.forName(clazString);
-                        Processor newProcessor = null;
+                        Processor newProcessor;
                         if (CharTransformer.class.isAssignableFrom(claz)) {
                             CharTransformer charTransformer = Transformers.getCharTransformer(clazString, null, " valueintercepter ", false);
                             if (charTransformer != null) {
                                 newProcessor = new CharTransformerProcessor(charTransformer);
+                            } else {
+                                continue;
                             }
                         } else if (Processor.class.isAssignableFrom(claz)) {
                             newProcessor = (Processor)claz.newInstance();
@@ -199,6 +220,7 @@ public abstract class DataTypeXml {
                             newProcessor = factory.createProcessor(params);
                         } else {
                             log.error("Found class " + clazString + " is not a Processor or a CharTransformer, nor a factory for those.");
+                            continue;
                         }
                         processor = chainProcessors(processor, newProcessor);
                     } catch (ClassNotFoundException cnfe) {
@@ -212,7 +234,47 @@ public abstract class DataTypeXml {
                 }
             }
         }
-        return processor;
+        return processor == null ? CopyProcessor.getInstance() : processor;
+    }
+    public static CommitProcessor createCommitProcessor(Element processorElement) {
+        CommitProcessor processor = null;
+        NodeList childNodes = processorElement.getChildNodes();
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            if (childNodes.item(k) instanceof Element) {
+                Element classElement = (Element) childNodes.item(k);
+                if ("class".equals(classElement.getLocalName())) {
+                    String clazString = classElement.getAttribute("name");
+                    if (clazString.equals("")) {
+                        log.warn("No 'name' attribute on " + org.mmbase.util.xml.XMLWriter.write(classElement, true) + ", trying body");
+                        clazString = DocumentReader.getNodeTextValue(classElement);
+                    }
+                    try {
+                        Class claz = Class.forName(clazString);
+                        CommitProcessor newProcessor;
+                        if (CommitProcessor.class.isAssignableFrom(claz)) {
+                            newProcessor = (CommitProcessor)claz.newInstance();
+                        } else if (ParameterizedCommitProcessorFactory.class.isAssignableFrom(claz)) {
+                            ParameterizedCommitProcessorFactory factory = (ParameterizedCommitProcessorFactory) claz.newInstance();
+                            Parameters params = factory.createParameters();
+                            fillParameters(classElement, params);
+                            newProcessor = factory.createProcessor(params);
+                        } else {
+                            log.error("Found class " + clazString + " is not a CommitProcessor or a factory for that.");
+                            continue;
+                        }
+                        processor = chainProcessors(processor, newProcessor);
+                    } catch (ClassNotFoundException cnfe) {
+                        log.error("Class '" + clazString + "' could not be found");
+                    } catch (IllegalAccessException iae) {
+                        log.error("Class " + clazString + " may  not be instantiated");
+                    } catch (InstantiationException ie) {
+                        log.error("Class " + clazString + " can not be instantiated");
+                    }
+
+                }
+            }
+        }
+        return processor == null ? EmptyCommitProcessor.getInstance() : processor;
     }
 
 
