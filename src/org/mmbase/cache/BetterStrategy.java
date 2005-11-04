@@ -9,12 +9,19 @@
  */
 package org.mmbase.cache;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.AggregatedField;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.SearchQuery;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.9 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.10 2005-11-04 15:31:39 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -89,7 +96,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
         switch (event.getType()) {
             case NodeEvent.EVENT_TYPE_NEW:
-                log.debug("node event type new");
+                log.debug(">> node event type new");
                 /*
                  * Put all the rules that apply for new node events
                  */
@@ -101,7 +108,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 break;
 
             case NodeEvent.EVENT_TYPE_DELETE:
-                log.debug("node event type delete");
+                log.debug(">> node event type delete");
                 /*
                  * Put all rules here that apply to removed node events
                  */
@@ -109,14 +116,18 @@ public class BetterStrategy extends ReleaseStrategy {
                 break;
 
             case NodeEvent.EVENT_TYPE_CHANGED:
-                log.debug("node event type changed");
+                log.debug(">> node event type changed");
                 /*
                 * Put all rules here that apply to changede nodes
                 */
                 
-                //if the changed field(s) do not occur in the fields or constraint secion
+                //if the changed field(s) do not occur in the fields or constraint section
                 //of the query, it dous not have to be flushed
                 if(! checkChangedFieldsMatch(event, query)) return false;
+                
+                //if the query is aggregating, and of type count, and the changed fields(s) do 
+                //not occur in the constraint: don't flush the query
+                if(checkAggregationCount(event, query))return false;
                 
         }
         return true;
@@ -152,7 +163,7 @@ public class BetterStrategy extends ReleaseStrategy {
              
          switch (event.getRelationEventType()) {
             case NodeEvent.EVENT_TYPE_NEW:
-                log.debug("relation event type new");
+                log.debug(">> relation event type new");
                 /*
                  * Put all rules here that apply to new relation events
                  */
@@ -160,7 +171,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 break;
 
             case NodeEvent.EVENT_TYPE_DELETE:
-                log.debug("relation event type delete");
+                log.debug(">> relation event type delete");
                 /*
                  * Put all rules here that apply to removed relation events
                  */
@@ -168,10 +179,14 @@ public class BetterStrategy extends ReleaseStrategy {
                 break;
 
             case NodeEvent.EVENT_TYPE_CHANGED:
-                log.debug("relation event type changed");
+                log.debug(">> relation event type changed");
                 /*
                  * Put all rules here that apply to changed relation events
                  */
+                
+                //if the changed field(s) do not occur in the fields or constraint section
+                //of the query, it dous not have to be flushed
+                if(! checkChangedFieldsMatch(event, query)) return false;
 
                 break;
 
@@ -179,7 +194,45 @@ public class BetterStrategy extends ReleaseStrategy {
         return true;
     }
 
-    private boolean checkPathMatches(RelationEvent event, SearchQuery query){
+    /**
+	 * @param event
+	 * @param query
+	 * @return true if query is aggragating, of type count, and the changed fields do 
+	 * not occur in the constraint (no flush)
+	 */
+	private boolean checkAggregationCount(NodeEvent event, SearchQuery query) {
+		log.debug("method: checkAggregationCount()");
+		if(!query.isAggregating()){
+			return false;
+		}
+		//test if all changed fields are aggreagting and of type count, if not: return false;
+		for(Iterator i = query.getFields().iterator();  i.hasNext(); ){
+			StepField field = (StepField) i.next();
+			if(event.getChangedFields().contains(field.getFieldName()) ){
+				if( ! (field instanceof AggregatedField)) {
+					return false;
+				}
+				if( ! (((AggregatedField)field).getAggregationType() == AggregatedField.AGGREGATION_TYPE_COUNT) ){
+					return false;
+				}
+			}
+		}
+		//now check the constraints: if there are any constraints for any of the changed fields: false;
+		Constraint constraint = query.getConstraint();
+		if(constraint == null){
+			return true;
+		}
+		for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
+			String fieldName = (String) i.next();
+			if(getConstraintsForField(fieldName, event.getBuilderName(), constraint, query).size() > 0){
+				return false;
+			}
+		}
+		//all tests survived, query should not be flused
+		return true;
+	}
+
+	private boolean checkPathMatches(RelationEvent event, SearchQuery query){
         // check if the path in the query maches the relation event:
         // - the source and destination objects should be there
         // - the role either matches or is not specified 
