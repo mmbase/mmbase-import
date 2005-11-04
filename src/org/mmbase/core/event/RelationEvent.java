@@ -10,12 +10,6 @@ package org.mmbase.core.event;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.mmbase.bridge.NotFoundException;
-import org.mmbase.module.core.*;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.corebuilders.InsRel;
-
 /**
  * This class reflects a change relation event. it contains information about
  * the kind of event (new, delete, change), and it contains a reference to the
@@ -26,11 +20,16 @@ import org.mmbase.module.corebuilders.InsRel;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.7 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: RelationEvent.java,v 1.8 2005-11-04 15:30:56 ernst Exp $
  */
 public class RelationEvent extends NodeEvent implements Serializable {
 
-    private int relationSourceNumber, relationDestinationNumber;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private int relationSourceNumber, relationDestinationNumber;
 
     private String relationSourceType, relationDestinationType;
 
@@ -62,6 +61,7 @@ public class RelationEvent extends NodeEvent implements Serializable {
         this.relationSourceType = relationSourceType;
         this.relationDestinationType = relationDestinationType;
         this.role = role;
+        this.relationEventType = relationEventType;
     }
 
     public String getName() {
