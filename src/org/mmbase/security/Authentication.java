@@ -23,20 +23,20 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.32 2005-11-03 14:03:00 michiel Exp $
+ * @version $Id: Authentication.java,v 1.33 2005-11-04 23:17:55 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
     static {
         try {
-            PARAMETER_USERNAME.setBundle(STRINGS);
-            PARAMETER_PASSWORD.setBundle(STRINGS);
-            PARAMETER_USERNAMES.setBundle(STRINGS);
-            PARAMETER_RANK.setBundle(STRINGS);
-            PARAMETER_SESSIONNAME.setBundle(STRINGS);
-            PARAMETER_LOGOUT.setBundle(STRINGS);
-            PARAMETER_AUTHENTICATE.setBundle(STRINGS);
+            PARAMETER_USERNAME.getLocalizedDescription().setBundle(STRINGS);
+            PARAMETER_PASSWORD.getLocalizedDescription().setBundle(STRINGS);
+            PARAMETER_USERNAMES.getLocalizedDescription().setBundle(STRINGS);
+            PARAMETER_RANK.getLocalizedDescription().setBundle(STRINGS);
+            PARAMETER_SESSIONNAME.getLocalizedDescription().setBundle(STRINGS);
+            PARAMETER_LOGOUT.getLocalizedDescription().setBundle(STRINGS);
+            PARAMETER_AUTHENTICATE.getLocalizedDescription().setBundle(STRINGS);
         } catch (Exception e) {
             log.error(e);
         }
