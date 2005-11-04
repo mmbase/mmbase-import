@@ -12,9 +12,7 @@ package org.mmbase.bridge.util;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-// TODO should not depend on implementation-stuff.
 import org.mmbase.bridge.implementation.BasicQuery;
-import org.mmbase.bridge.implementation.BasicCloud;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.*;
@@ -28,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.65 2005-10-30 23:50:30 michiel Exp $
+ * @version $Id: Queries.java,v 1.66 2005-11-04 23:32:59 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -146,7 +144,7 @@ abstract public class Queries {
             // pitty that we can't use cloud.createQuery for this.
             // but all essential methods are on ClusterBuilder
             // XXX need casting here, something's wrong!!!
-            Query query = new BasicQuery((BasicCloud) cloud, clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
+            Query query = new BasicQuery(cloud, clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
             return query;
         } catch (IllegalArgumentException iae) {
             throw new BridgeException(iae.getMessage() + ". (arguments: startNodes='" + startNodes + "', path='" + nodePath + "', fields='" + fields + "', constraints='" + constraints + "' orderby='" + orderby + "', directions='" + directions + "', searchdir='" + searchDir + "')" , iae);
