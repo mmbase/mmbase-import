@@ -150,3 +150,10 @@ div.quote {
 div.caption { 
   background-color: #ddd;
 }
+ul, ol { 
+  list-style-position: outside;
+}
+
+li { 
+  margin-left: 20px;
+}
