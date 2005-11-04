@@ -22,15 +22,12 @@ import org.mmbase.util.logging.*;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Id: ResultBuilder.java,v 1.7 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: ResultBuilder.java,v 1.8 2005-11-04 23:34:42 michiel Exp $
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(ResultBuilder.class);
-
-    /** Map, maps fields by field alias. */
-    private Map fieldsByAlias = null;
 
     /**
      * Creator.
@@ -44,30 +41,16 @@ public class ResultBuilder extends VirtualBuilder {
         super(mmbase);
 
         // Create fieldsByAlias map.
-        List fields = query.getFields();
-        fieldsByAlias = new HashMap(16);
-        Iterator iFields = fields.iterator();
-        while (iFields.hasNext()) {
-            StepField field = (StepField) iFields.next();
+        List queryFields = query.getFields();
+        Iterator i = queryFields.iterator();
+        while (i.hasNext()) {
+            StepField field = (StepField) i.next();
             String fieldAlias = field.getAlias();
             if (fieldAlias == null) {
                 fieldAlias = field.getFieldName();
             }
-            fieldsByAlias.put(fieldAlias, field);
+            fields.put(fieldAlias, org.mmbase.core.util.Fields.createField(fieldAlias, field.getType(), -1, Field.STATE_VIRTUAL, null));;
         }
-    }
-
-    // javadoc is inherited
-    public int getDBType(String fieldName) {
-        int result;
-        StepField stepField = (StepField) fieldsByAlias.get(fieldName);
-        if (stepField == null) {
-            log.error("not a known stepfield with name " + fieldName + " " + fieldsByAlias);
-            result = Field.TYPE_UNKNOWN;
-        } else {
-            result = stepField.getType();
-        }
-        return result;
     }
 
     // javadoc is inherited
