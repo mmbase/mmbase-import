@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.168 2005-11-04 19:10:55 michiel Exp $
+ * @version $Id: MMBase.java,v 1.169 2005-11-04 23:19:44 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -50,14 +50,19 @@ public class MMBase extends ProcessorModule {
      * State of MMBase after shutdown
      * @since MMBase-1.7
      */
-    private static final int STATE_SHUT_DOWN = -2;
-
+    private static final int STATE_SHUT_DOWN = -3;
 
     /**
-     * State of MMBase at the beginning of startup
+     * State of MMBase before the beginning of startup
      * @since MMBase-1.6
      */
-    private static final int STATE_START_UP = -1;
+    private static final int STATE_START_UP = -2;
+
+    /**
+     * State of MMBase 
+     * @since MMBase-1.8
+     */
+    private static final int STATE_STARTED_INIT = -1;
     /**
      * State of MMBase before builders are loaded
      * @since MMBase-1.6
@@ -229,9 +234,14 @@ public class MMBase extends ProcessorModule {
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
      * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
      */
-    public void init() {
+    public synchronized void init() {
+        if (mmbaseState >= STATE_STARTED_INIT) {
+            log.debug("Already initing");
+            return;
+        }
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
+        mmbaseState = STATE_STARTED_INIT;
        
         DataTypes.initialize();
 
