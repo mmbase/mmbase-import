@@ -16,11 +16,11 @@ import java.io.StringWriter;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.1 2005-10-25 12:30:26 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.2 2005-11-04 23:11:52 michiel Exp $
  * @since MMBase-1.8
  */
 
-public class ChecksumProcessorFactory implements ParameterizedProcessorFactory {
+public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFactory {
 
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter.Wrapper(ChecksumFactory.PARAMS),
@@ -32,14 +32,11 @@ public class ChecksumProcessorFactory implements ParameterizedProcessorFactory {
     /**
      * Creates a parameterized processor.
      */
-    public Processor createProcessor(Parameters parameters) {
+    public CommitProcessor createProcessor(Parameters parameters) {
         final ByteToCharTransformer transformer = (ByteToCharTransformer) factory.createTransformer(parameters);
         final String  sourceField = (String) parameters.get("field");
         return new CommitProcessor() {
 
-                public Object process(Node node, Field field, Object value) {
-                    return value;
-                }
                 public void commit(Node node, Field field) {
                     if (node.isNull(sourceField)) return; // leave checksum null too.
                     StringWriter writer = new StringWriter();
