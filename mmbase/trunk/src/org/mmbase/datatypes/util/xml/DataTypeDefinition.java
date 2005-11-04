@@ -11,6 +11,8 @@ package org.mmbase.datatypes.util.xml;
 
 import java.util.*;
 import org.w3c.dom.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.datatypes.processors.*;
@@ -32,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.39 2005-11-01 23:41:52 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.40 2005-11-04 23:12:51 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -172,7 +174,7 @@ public class DataTypeDefinition {
         baseDataType = requestBaseDataType;
         getImplementation(dataTypeElement, id);
         LocalizedString description = dataType.getLocalizedDescription();
-        DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());        
+        DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());
         configureConditions(dataTypeElement);
 
         return this;
@@ -214,12 +216,14 @@ public class DataTypeDefinition {
     /**
      * Uses one subelement of a datatype xml configuration element and interpret it. Possibly this
      * method is a good candidate to override.
-     * @return <code>childElement</code>
+     * @return whether successfully read the element.
      */
     protected boolean addCondition(Element childElement) {
         boolean ret = false;
         String childTag = childElement.getLocalName();
-        if ("required".equals(childTag)) {
+        if ("property".equals(childTag)) {
+            ret = setProperty(childElement);
+        } else if ("required".equals(childTag)) {
             boolean value = DataTypeXml.getBooleanValue(childElement, false);
             setRestrictionData(dataType.setRequired(value), childElement);
             ret = true;
@@ -234,7 +238,7 @@ public class DataTypeDefinition {
             addProcessor(DataType.PROCESS_SET, childElement);
             ret = true;
         } else if ("commitprocessor".equals(childTag)) {
-            addProcessor(DataType.PROCESS_COMMIT, childElement);
+            addCommitProcessor(childElement);
             ret = true;
         } else if ("enumeration".equals(childTag)) {
             addEnumeration(childElement);
@@ -244,6 +248,8 @@ public class DataTypeDefinition {
             dataType.setDefaultValue(value);
             ret = true;
         } else if (addPatternCondition(childElement)) {
+            ret = true;
+        } else if (addPasswordProperty(childElement)) {
             ret = true;
         } else if (addLengthDataCondition(childElement)) {
             ret =  true;
@@ -257,6 +263,7 @@ public class DataTypeDefinition {
     private void addProcessor(int action, int processingType, Processor newProcessor) {
         Processor oldProcessor = dataType.getProcessor(action, processingType);
         newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
+        log.info(dataType + " Found processor " + oldProcessor + "--> " + newProcessor);
         dataType.setProcessor(action, newProcessor, processingType);
     }
 
@@ -264,25 +271,28 @@ public class DataTypeDefinition {
     protected  void addProcessor(int action, Element processorElement) {
         Processor newProcessor = DataTypeXml.createProcessor(processorElement);
         if (newProcessor != null) {
-            if (action != DataType.PROCESS_COMMIT) {
-                String type = processorElement.getAttribute("type");
-                if (!type.equals("") && !type.equals("*")) { // "" was not equal to "*" !
-                    int processingType = Field.TYPE_UNKNOWN;
-                    BasicDataType basicDataType = DataTypes.getDataType(type); // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
-                    if (basicDataType != null) {
-                        processingType = Fields.classToType(basicDataType.getTypeAsClass());
-                    } else {
-                        log.warn("Datatype " + type + " is unknown, create processor as a default processor");
-                    }
-                    addProcessor(action, processingType, newProcessor);
+            String type = processorElement.getAttribute("type");
+            if (!type.equals("") && !type.equals("*")) { // "" was not equal to "*" !
+                int processingType = Field.TYPE_UNKNOWN;
+                BasicDataType basicDataType = DataTypes.getDataType(type); // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
+                if (basicDataType != null) {
+                    processingType = Fields.classToType(basicDataType.getTypeAsClass());
                 } else {
-                    // todo: iterate through all types?
-                    addProcessor(action, Field.TYPE_UNKNOWN, newProcessor);
+                    log.warn("Datatype " + type + " is unknown, create processor as a default processor");
                 }
+                addProcessor(action, processingType, newProcessor);
             } else {
+                // todo: iterate through all types?
                 addProcessor(action, Field.TYPE_UNKNOWN, newProcessor);
             }
         }
+    }
+
+    protected void addCommitProcessor(Element processorElement) {
+        CommitProcessor newProcessor = DataTypeXml.createCommitProcessor(processorElement);
+        CommitProcessor oldProcessor = dataType.getCommitProcessor();
+        newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
+        dataType.setCommitProcessor(newProcessor);
     }
 
     protected void setRestrictionData(DataType.Restriction restriction, Element element) {
@@ -318,7 +328,6 @@ public class DataTypeDefinition {
         for (int i = 0; i < childNodes.getLength(); i++) {
             Element queryElement = (Element) childNodes.item(i);
             Locale locale = DataTypeXml.getLocale(queryElement);
-            log.info("XXX " + XMLWriter.write(queryElement, true) + " -->  " + XMLWriter.write(DocumentReader.toDocument(queryElement), true));
             fact.addQuery(locale, DocumentReader.toDocument(queryElement));
         }
         childNodes = enumerationElement.getElementsByTagName("entry");
@@ -331,6 +340,7 @@ public class DataTypeDefinition {
                 if (display.equals("")) display = value;
                 Object key = Casting.toType(dataType.getTypeAsClass(), value);
                 if (key instanceof java.io.Serializable) {
+                    log.info("Adding " + key + "/" + display + " for " + locale);
                     fact.add(locale, (java.io.Serializable) key, display);
                 } else {
                     log.error("key " + key + " for " + dataType + " is not serializable, cannot be added to entrylist factory.");
@@ -343,7 +353,7 @@ public class DataTypeDefinition {
                     if (! Comparable.class.isAssignableFrom(wrapper)) {
                         wrapper = null;
                     }
-                    
+
                     {
                         String sorterClass = entryElement.getAttribute("sorterclass");
                         if (!sorterClass.equals("")) {
@@ -380,9 +390,34 @@ public class DataTypeDefinition {
                     throw new IllegalArgumentException("no 'value' or 'basename' attribute on enumeration entry element");
                 }
             }
+            log.info("Foudn enumeration values now" + fact);
         }
+        log.info("--" );
     }
 
+    protected boolean setProperty(Element element) {
+        try {
+            String name = DataTypeXml.getAttribute(element, "name");
+            String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+            String value = DataTypeXml.getAttribute(element, "value");
+            Class claz = dataType.getClass();
+            Method method = claz.getMethod(methodName, new Class[] {String.class});
+            method.invoke(dataType, new Object[] { value });
+        } catch (NoSuchMethodException nsme) {
+            log.warn(nsme);
+            return false;
+        } catch (SecurityException se) {
+            log.warn(se);
+            return false;
+        } catch (IllegalAccessException iae) {
+            log.warn(iae);
+            return false;
+        } catch (InvocationTargetException ite) {
+            log.warn(ite);
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Considers length related condition elements ('minLength', 'maxLength' , 'length')
@@ -410,6 +445,18 @@ public class DataTypeDefinition {
         return false;
     }
 
+
+
+    protected boolean addPasswordProperty(Element propertyElement) {
+        String localName = propertyElement.getLocalName();
+        if ("password".equals(localName) && (dataType instanceof StringDataType)) {
+            StringDataType stringDataType = (StringDataType) dataType;
+            boolean value = Casting.toBoolean(DataTypeXml.getAttribute(propertyElement, "value"));
+            stringDataType.setPassword(value);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Considers the 'pattern' condition element.

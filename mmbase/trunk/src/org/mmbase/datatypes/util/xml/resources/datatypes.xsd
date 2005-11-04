@@ -30,6 +30,17 @@
       <xsd:element ref="description" maxOccurs="unbounded" minOccurs="0" />
       <xsd:element ref="class"       maxOccurs="1" minOccurs="0" />
 
+      <xsd:element name="property"  maxOccurs="unbounded" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>
+            Generic property, calls set-method with givnen name on DataType.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:attribute name="name"  type="xsd:string" />
+          <xsd:attribute name="value" type="xsd:string" />
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="default"  maxOccurs="1" minOccurs="0">
         <xsd:complexType>
           <xsd:attribute name="value" type="xsd:string" />
@@ -38,43 +49,42 @@
       <xsd:element name="unique"   type="Condition" maxOccurs="1" minOccurs="0" />
       <xsd:element name="required" type="Condition" maxOccurs="1" minOccurs="0" />
 
-      <xsd:choice maxOccurs="1" minOccurs="0">
-        <xsd:sequence>
-          <xsd:choice minOccurs="0">
-            <xsd:element name="minExclusive" type="Comparable" />
-            <xsd:element name="minInclusive" type="Comparable" />
-          </xsd:choice>
-          <xsd:choice minOccurs="0">
-            <xsd:element name="maxExclusive" type="Comparable" />
-            <xsd:element name="maxInclusive" type="Comparable" />
-          </xsd:choice>
-        </xsd:sequence>
-        <xsd:sequence>
-          <xsd:element name="minLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
-          <xsd:element name="maxLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
-          <xsd:element name="length"     type="Comparable" minOccurs="0" maxOccurs="1" />
-          <xsd:element name="pattern"    minOccurs="0" maxOccurs="unbounded">
-            <xsd:annotation>
-              <xsd:documentation>
-                Currently, the pattern is interpreted as a Condition for Strings and for DateTimes it
-                is interpreted a format indication (like the pattern of SimpleDateFormat). In this
-                last case there can also be more than one pattern: for every locale a different one.
-              </xsd:documentation>
-            </xsd:annotation>
-            <xsd:complexType>
-              <xsd:complexContent>
-                <xsd:extension base ="Comparable">
-                  <xsd:attribute ref="xml:lang" />
-                </xsd:extension>
-              </xsd:complexContent>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:sequence>
-        <xsd:sequence>
-          <xsd:element ref="enumeration" maxOccurs="unbounded" minOccurs="1" />
-        </xsd:sequence>
+      <xsd:choice minOccurs="0">
+        <xsd:element name="minExclusive" type="Comparable" />
+        <xsd:element name="minInclusive" type="Comparable" />
+      </xsd:choice>
+      <xsd:choice minOccurs="0">
+        <xsd:element name="maxExclusive" type="Comparable" />
+        <xsd:element name="maxInclusive" type="Comparable" />
       </xsd:choice>
 
+      <xsd:element name="minLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="maxLength"  type="Comparable" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="length"     type="Comparable" minOccurs="0" maxOccurs="1" />
+      
+      <xsd:element name="pattern"    minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>
+            Currently, the pattern is interpreted as a Condition for Strings and for DateTimes it
+            is interpreted a format indication (like the pattern of SimpleDateFormat). In this
+            last case there can also be more than one pattern: for every locale a different one.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base ="Comparable">
+              <xsd:attribute ref="xml:lang" />
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="password"  maxOccurs="1" minOccurs="0">
+        <xsd:complexType>
+          <xsd:attribute name="value" type="xsd:boolean" />
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element ref="enumeration" maxOccurs="unbounded" minOccurs="0" />
       <xsd:element name="setprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
       <xsd:element name="getprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
       <xsd:element name="commitprocessor" type="Processor" maxOccurs="unbounded" minOccurs="0" />
