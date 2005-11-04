@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.37 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.38 2005-11-04 23:25:18 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static final Logger log = Logging.getLoggerInstance(BasicRelation.class);
@@ -46,8 +46,8 @@ public class BasicRelation extends BasicNode implements Relation {
     /**
      * @javadoc
      */
-    BasicRelation(MMObjectNode node, BasicNodeManager nodeManager) {
-        super(node, nodeManager);
+    BasicRelation(MMObjectNode node, BasicRelationManager nodeManager) {
+        super(node, nodeManager);        
     }
 
     /**
@@ -55,6 +55,13 @@ public class BasicRelation extends BasicNode implements Relation {
      */
     BasicRelation(MMObjectNode node, BasicCloud cloud, int id) {
         super(node, cloud, id);
+    }
+
+    public final boolean isRelation() {
+        return true;
+    }
+    public Relation toRelation() {
+        return this;
     }
 
     /**
@@ -65,7 +72,7 @@ public class BasicRelation extends BasicNode implements Relation {
     protected void init() {
         super.init();
         if (nodeManager instanceof RelationManager) {
-            relationManager= (RelationManager)nodeManager;
+            relationManager = (RelationManager)nodeManager;
         }
         snum = getIntValue("snumber");
         dnum = getIntValue("dnumber");
@@ -93,7 +100,7 @@ public class BasicRelation extends BasicNode implements Relation {
         int source=node.getIntValue("number");
         if (source==-1) {
             // set a temporary field, transactionmanager resolves this
-            getNode().setValue("_snumber",node.getValue("_number"));
+            getNode().setValue("_snumber", node.getValue(MMObjectBuilder.TMP_FIELD_NUMBER));
         } else {
           getNode().setValue("snumber",source);
         }
@@ -109,7 +116,7 @@ public class BasicRelation extends BasicNode implements Relation {
         int dest=node.getIntValue("number");
         if (dest==-1) {
             // set a temporary field, transactionmanager resolves this
-            getNode().setValue("_dnumber",node.getValue("_number"));
+            getNode().setValue("_dnumber", node.getValue(MMObjectBuilder.TMP_FIELD_NUMBER));
         } else {
           getNode().setValue("dnumber",dest);
         }
@@ -119,8 +126,8 @@ public class BasicRelation extends BasicNode implements Relation {
 
     public RelationManager getRelationManager() {
         if (relationManager == null) {
-            int stypenum = mmb.getTypeRel().getNodeType(snum);
-            int dtypenum = mmb.getTypeRel().getNodeType(dnum);
+            int stypenum = BasicCloudContext.mmb.getTypeRel().getNodeType(snum);
+            int dtypenum = BasicCloudContext.mmb.getTypeRel().getNodeType(dnum);
             if (log.isDebugEnabled()) {
                 log.debug(stypenum + ", " + dtypenum + ", " + getNode().getIntValue("rnumber"));
             }
@@ -144,16 +151,16 @@ public class BasicRelation extends BasicNode implements Relation {
         
         if (sourceNodeType == UNSET) {
             sourceNodeType = -1;
-            if (snum != -1) sourceNodeType = mmb.getTypeDef().getNodeType(snum);
+            if (snum != -1) sourceNodeType = BasicCloudContext.mmb.getTypeDef().getNodeType(snum);
         }
         if (destinationNodeType == UNSET) {
             destinationNodeType = -1;
-            if (dnum!=-1) destinationNodeType = mmb.getTypeDef().getNodeType(dnum);
+            if (dnum!=-1) destinationNodeType = BasicCloudContext.mmb.getTypeDef().getNodeType(dnum);
         }
 
         int rnumber = getNode().getIntValue("rnumber");
-        if (!mmb.getTypeRel().contains(sourceNodeType, destinationNodeType, rnumber)) {
-            if (!mmb.getTypeRel().contains(destinationNodeType, sourceNodeType, rnumber)) {
+        if (!BasicCloudContext.mmb.getTypeRel().contains(sourceNodeType, destinationNodeType, rnumber)) {
+            if (!BasicCloudContext.mmb.getTypeRel().contains(destinationNodeType, sourceNodeType, rnumber)) {
                 throw new BridgeException("Source and/or Destination node are not of the correct type, or relation not allowed ("
                                           + cloud.getNode(sourceNodeType).getValue("name") + ","
                                           + cloud.getNode(destinationNodeType).getValue("name") + ","
@@ -178,7 +185,7 @@ public class BasicRelation extends BasicNode implements Relation {
         checkValid();
         if (! (BasicCloud.isTemporaryId(snum) || BasicCloud.isTemporaryId(dnum))) {
             if (isNew()) {
-                cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
+                cloud.verify(Operation.CREATE, BasicCloudContext.mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
                 relationChanged = false;
             } else {
                 if (relationChanged) {
