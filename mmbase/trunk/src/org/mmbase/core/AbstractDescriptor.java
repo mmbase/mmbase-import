@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.6 2005-10-18 21:05:23 michiel Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.7 2005-11-04 23:18:41 michiel Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {
@@ -87,11 +87,7 @@ abstract public class AbstractDescriptor implements Descriptor, Cloneable {
     public void setDescription(String desc) {
         setDescription(desc,null);
     }
-
-    public void setBundle(String b) {
-        if (description == null) description = new LocalizedString(key);
-        description.setBundle(b);
-    }
+    
 
     /**
      * Retrieve the GUI name of the field depending on specified langauge.
