@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.124 2005-11-01 22:13:51 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.125 2005-11-04 23:31:21 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -119,8 +119,11 @@ public class MMAdmin extends ProcessorModule {
         StringTokenizer tok = new StringTokenizer(line, "-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken();
-            if (!checkUserLoggedOn(sp, cmd, false))
+            log.info("Cmd '" + cmd + "'");
+            if (!checkUserLoggedOn(sp, cmd, false)) {
+                log.warn("Could not find cloud for " + sp + " returning empty list for " + tagger + "/" + value);
                 return new Vector();
+            }
             if (cmd.equals("APPLICATIONS")) {
                 tagger.setValue("ITEMS", "5");
                 try {
@@ -134,6 +137,7 @@ public class MMAdmin extends ProcessorModule {
                 if ((tok != null) && (tok.hasMoreTokens())) {
                     tok.nextToken();
                 }
+                log.info("Getting bulider list");
                 return getBuildersList();
             }
             if (cmd.equals("FIELDS")) {
@@ -183,7 +187,10 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private boolean checkUserLoggedOn(PageInfo sp, String cmd, boolean adminonly) {
-
+        
+        if (sp.getCloud() != null) {
+            return (!adminonly) || sp.getCloud().getUser().getRank().getInt() >= Rank.ADMIN.getInt();
+        }
         // check if the we are using jsp, and logged on as user with rank is admin, this means that
         // there is some user with rank Administrator in the session...
 
@@ -680,12 +687,13 @@ public class MMAdmin extends ProcessorModule {
         while (builders.hasNext()) {
             String builderResource = (String) builders.next();
             String builderName = ResourceLoader.getName(builderResource);
-            String builderPath = ResourceLoader.getDirectory(builderResource) + "/";
-            BuilderReader reader = mmb.getBuilderReader(builderPath + builderName);
+            BuilderReader reader = mmb.getBuilderReader(builderResource);
             if (reader == null) {
                 continue;
+            } else {
+                log.error("Did not find reader for " + builderResource);
             }
-            results.add(builderPath + builderName);
+            results.add(builderResource);
             results.add("" + reader.getVersion());
             int installedversion = -1;
             try {
