@@ -34,7 +34,8 @@
     <class name="org.mmbase.datatypes.StringDataType" />
 
     <!-- no new lines -->
-    <pattern value="\A[^\n\r]*\z" /> 
+    <!-- The pattern is defined on this level for backwards compatibility of editors -->  
+    <pattern enforce="never" value="\A[^\n\r]*\z" />
 
     <specialization id="lastmodifier">
       <unique value="false" />
@@ -74,6 +75,11 @@
 
     <specialization id="field">
       <pattern value="(?s)\A.*\z" />
+    </specialization>
+
+    <specialization id="line">
+      <!-- no new lines -->
+      <pattern enforce="always" value="\A[^\n\r]*\z" /> 
     </specialization>
 
     <specialization id="owner">
@@ -123,6 +129,13 @@
     <getprocessor type="string">
       <class name="org.mmbase.datatypes.processors.FormatDateTime" />
     </getprocessor>
+
+    <specialization id="created">
+      <default value="now" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+	</specialization>
 
     <specialization id="lastmodified">
       <setprocessor>
