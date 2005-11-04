@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
+import org.mmbase.bridge.Cloud;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @since MMBase 1.8
  * @author Pierre van Rooden
- * @version $Id: PageInfo.java,v 1.2 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: PageInfo.java,v 1.3 2005-11-04 23:28:02 michiel Exp $
  */
 public class PageInfo {
     /**
@@ -36,6 +37,8 @@ public class PageInfo {
      */
     public HttpServletResponse res;
 
+    private Cloud cloud;
+
     /**
      * Empty constructor, needed for call from scanpage
      */
@@ -46,6 +49,11 @@ public class PageInfo {
      * @param request the HttpServletRequest object for this request
      * @param response the HttpServletResponse object for this request
      */
+    public PageInfo(HttpServletRequest request, HttpServletResponse response, Cloud cloud) {
+        setRequest(request);
+        setResponse(response);
+        this.cloud = cloud;
+    }
     public PageInfo(HttpServletRequest request, HttpServletResponse response) {
         setRequest(request);
         setResponse(response);
@@ -81,6 +89,14 @@ public class PageInfo {
      */
     protected void setResponse(HttpServletResponse response) {
         res = response;
+    }
+
+    public Cloud getCloud() {
+        return cloud;
+    }
+
+    public String toString() {
+        return "" + req + " " + res + " " + cloud + (cloud != null ? ("" + cloud.getUser()) : "");
     }
 
 }
