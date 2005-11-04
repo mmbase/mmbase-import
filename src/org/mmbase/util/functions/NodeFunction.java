@@ -11,6 +11,7 @@ package org.mmbase.util.functions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.*;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.14 2005-11-03 14:38:02 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.15 2005-11-04 13:11:05 nklasens Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -44,21 +45,27 @@ public abstract class NodeFunction extends AbstractFunction {
             log.warn("Tried to execute node-function on null!");
             return null;
         }
-        java.util.List args = null;
+        List args = new ArrayList();
+        String functionName = getFunctionNameAndFillArgs(function, args);
+        if (log.isDebugEnabled()) {
+            log.debug("Executing " + functionName + " " + args + " on " + node.getNumber());
+        }
+
+        return node.getFunctionValue(functionName, args);
+    }
+
+    public static String getFunctionNameAndFillArgs(String function, java.util.List args) {
         String functionName = function;
         int pos1 = function.indexOf('(');
         if (pos1 != -1) {
             int pos2 = function.lastIndexOf(')');
             if (pos2 != -1) {
                 functionName = function.substring(0, pos1);
-                args = org.mmbase.util.StringSplitter.splitFunctions(function.subSequence(pos1 + 1, pos2));
+                java.util.List args2 = org.mmbase.util.StringSplitter.splitFunctions(function.subSequence(pos1 + 1, pos2));
+                args.addAll(args2);
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Executing " + functionName + " " + args + " on " + node.getNumber());
-        }
-
-        return node.getFunctionValue(functionName, args);
+        return functionName;
     }
 
 

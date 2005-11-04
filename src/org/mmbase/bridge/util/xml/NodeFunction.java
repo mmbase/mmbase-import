@@ -10,6 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util.xml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
@@ -48,7 +51,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.15 2005-10-27 15:41:02 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.16 2005-11-04 13:11:06 nklasens Exp $
  * @since   MMBase-1.6
  */
 
@@ -140,8 +143,21 @@ public  class NodeFunction {
         Node node;
         try {
             node = cloud.getNode(number);
-            Function func = node.getFunction(function);
-            Parameters params = func.createParameters();
+
+            Function func = null;
+            Parameters params = null;
+            if (function.indexOf("(") > -1) { 
+                List args = new ArrayList();
+                String functionName = org.mmbase.util.functions.NodeFunction.getFunctionNameAndFillArgs(function, args);
+                func = node.getFunction(functionName);
+                params = func.createParameters();
+                params.setAll(args);
+            }
+            else {
+                func = node.getFunction(function);
+                params = func.createParameters();
+            }
+            
             params.setIfDefined(Parameter.CLOUD, cloud);
             if (request instanceof HttpServletRequest) {
                 params.setIfDefined(Parameter.REQUEST, request);
