@@ -14,6 +14,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.datatypes.StringDataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.Encode;
 import org.mmbase.util.transformers.Sql;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.45 2005-09-26 09:29:40 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.46 2005-11-04 23:28:23 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -52,71 +53,36 @@ public class StringHandler extends AbstractTypeHandler {
 
         StringBuffer buffer = new StringBuffer();
         if(! search) {
-            if (field.getDataType().validate("\n").isEmpty()) {
+            StringDataType dataType = (StringDataType) field.getDataType();
+            String value = "";
+            if (node != null) {
+                value = node.getStringValue(field.getName()); 
+            } else {
+                value = org.mmbase.util.Casting.toString(dataType.getDefaultValue());
+            }
+            if (value.equals("")) {
+                String opt = tag.getOptions();
+                if (opt != null && opt.indexOf("noempty") > -1) {
+                    value = " ";
+                }
+            }
+            value = tag.decode(value, node);
+            if (dataType.getPattern().matcher("\n").matches()) {
                 if(field.getMaxLength() > 2048)  {
                     // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                     buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
-                    addExtraAttributes(buffer);
-                    buffer.append(" name=\"");
-                    buffer.append(prefix(field.getName()));
-                    buffer.append("\">");
-                    String value = "";
-                    if (node != null) {
-                        value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
-                    }
-                    if (value.equals("")) {
-                        String opt = tag.getOptions();
-                        if (opt != null && opt.indexOf("noempty") > -1) {
-                            value = " ";
-                        }
-                    }
-                    buffer.append(value);
-                    buffer.append("</textarea>");
                 } else {
                     buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
-                    addExtraAttributes(buffer);
-                    buffer.append(" name=\"");
-                    buffer.append(prefix(field.getName()));
-                    buffer.append("\">");
-                    String value = "";
-                    if (node != null) {
-                        value = Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
-                    }
-                    if (value.equals("")) {
-                        String opt = tag.getOptions();
-                        if (opt != null && opt.indexOf("noempty") > -1) {
-                            value = " ";
-                        }
-                    }
-                    buffer.append(value);
-                    buffer.append("</textarea>");
                 } 
+                addExtraAttributes(buffer);
+                buffer.append(" name=\"");
+                buffer.append(prefix(field.getName()));
+                buffer.append("\">");          
+                buffer.append(Encode.encode("ESCAPE_XML", value));
+                buffer.append("</textarea>");
             } else { // not 'field' perhaps it's 'string'.
-                String guiType = field.getGUIType();
-
-                String value;
-                // need something generic for these password fields!!
-                if (guiType.indexOf("password") > -1) { 
-                    buffer.append("<input type =\"password\" class=\"small\" size=\"80\" ");
-                    buffer.append("name=\"");
-                    if (guiType.indexOf("md5") > -1) {
-                        value = "";
-                    } else {
-                        value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
-                    }
-                } else {
-                    buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
-                    if (guiType.indexOf("confirmpassword") > -1) {
-                        value = " ";
-                    } else {
-                        if (node != null) {
-                            value = tag.decode(node.getStringValue(field.getName()), node);
-                        } else {
-                            value = tag.decode(org.mmbase.util.Casting.toString(field.getDataType().getDefaultValue()), null);
-                        }
-                        value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", value) : "";
-                    }
-                }
+                buffer.append("<input type =\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
+                buffer.append("name=\"");                
                 buffer.append(prefix(field.getName()));
                 buffer.append("\" ");
                 String opt = tag.getOptions();
@@ -125,7 +91,7 @@ public class StringHandler extends AbstractTypeHandler {
                 }                    
                 addExtraAttributes(buffer);
                 buffer.append(" value=\"");
-                buffer.append(value);
+                buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", value));
                 buffer.append("\" />");
             }
             
@@ -147,10 +113,6 @@ public class StringHandler extends AbstractTypeHandler {
             log.debug("Received '" + fieldValue + "' for " + field);
         }
 
-        if (guiType.indexOf("confirmpassword") > -1) {
-            // do not store 'confirm password' fields
-            return true;
-        }
         if (guiType.indexOf('.') > 0) {
             EnumHandler eh = new EnumHandler(tag, node, field);
             if (eh.isAvailable()) {
@@ -161,14 +123,6 @@ public class StringHandler extends AbstractTypeHandler {
         fieldValue = tag.encode(fieldValue, field);
         if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
             if (fieldValue.equals("") && node.getValue(fieldName) == null) return false;
-            if (guiType.indexOf("password") > -1) {
-                String confirmValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix("confirmpassword"));
-                if (confirmValue != null) {
-                    if (!confirmValue.equals(fieldValue)) {
-                        throw new JspTagException("Confirmation password not equal to new password value.");
-                    }
-                }
-            }
             node.setStringValue(fieldName,  fieldValue);
             return true;
         }

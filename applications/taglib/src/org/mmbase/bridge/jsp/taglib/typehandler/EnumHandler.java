@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.util.Casting;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.25 2005-10-26 20:12:38 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.26 2005-11-04 23:28:23 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -121,7 +122,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             Map.Entry entry = (Map.Entry) bundle.next();
             buffer.append("<option value=\"");
             Object key = entry.getKey();
-            buffer.append(key);
+            buffer.append(Casting.toString(key));
             buffer.append("\"");
             if ((node != null) && (key.equals(value))) {
                 buffer.append(" selected=\"selected\"");

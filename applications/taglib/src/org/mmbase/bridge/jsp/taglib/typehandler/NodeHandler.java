@@ -26,13 +26,14 @@ import org.mmbase.util.functions.*;
 /**
  * Taglibs handler for Node typed fields.
  *
- * Currently this recognized node manager names for the guitype (produces dropdowns). If gui-type is not another builder,
- * this falls back to 'AbstractTypeHandler'.
+ *
+ * Currently this recognizes node manager names for the guitype (produces dropdowns). If gui-type is not another builder,
+ * this falls back to 'AbstractTypeHandler'. This behaviour is legacy. AbstractTypeHandler deals with enumerations genericly.
  *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.31 2005-10-18 22:01:45 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.32 2005-11-04 23:28:23 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -71,12 +72,21 @@ public class NodeHandler extends AbstractTypeHandler {
     }
 
     /**
+     * @since MMBase-1.8
+     */
+    protected boolean useLegacy(Node node, Field field) {
+        return field.getDataType().getEnumerationValues(null, field.getNodeManager().getCloud(), node, field) == null;
+    }
+
+    /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-
+                
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
-        if(tag.getCloudVar().hasNodeManager(field.getGUIType())) {
+        if(useLegacy(node, field) &&
+           // backwards compatibility. super should deal correctly with enumerations, also for node-fields
+           tag.getCloudVar().hasNodeManager(field.getGUIType())) { 
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
             buffer.append("<select name=\"" + prefix(field.getName()) + "\"");
@@ -156,7 +166,8 @@ public class NodeHandler extends AbstractTypeHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        if (tag.getCloudVar().hasNodeManager(field.getGUIType())) {
+        if(useLegacy(null, field) &&           
+            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
@@ -167,7 +178,8 @@ public class NodeHandler extends AbstractTypeHandler {
 
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
-        if (tag.getCloudVar().hasNodeManager(field.getGUIType())) {
+        if(useLegacy(null, field) &&
+           tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
