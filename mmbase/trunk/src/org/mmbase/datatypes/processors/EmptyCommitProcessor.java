@@ -11,29 +11,28 @@ package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
 /**
- * The Processor that does nothing.
+ * The CommitProcessor that does nothing.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CopyProcessor.java,v 1.2 2005-11-04 23:11:52 michiel Exp $
- * @since MMBase-1.7
+ * @version $Id: EmptyCommitProcessor.java,v 1.1 2005-11-04 23:11:52 michiel Exp $
+ * @since MMBase-1.8
  */
 
-public class CopyProcessor implements Processor {
+public class EmptyCommitProcessor  implements CommitProcessor {
 
     private static final int serialVersionUID = 1;
 
-    private static CopyProcessor instance = new CopyProcessor();
-    public static CopyProcessor getInstance() {
+    private static EmptyCommitProcessor instance = new EmptyCommitProcessor();
+
+    public static EmptyCommitProcessor getInstance() {
         return instance;
     }
 
-    public final Object process(Node node, Field field, Object value) {
-        return value;
+    public final void commit(Node node, Field field) {
+        return;
     }
 
     public String toString() {
-        return "COPY";
+        return "EMPTY";
     }
 }
-
-
