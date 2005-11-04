@@ -24,8 +24,11 @@ import org.mmbase.security.Authorization;
 /**
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
+ * This  implementation is actually ussuable with other implementations of bridge too, because it has the public constructor:
+ * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.53 2005-11-04 08:00:30 ernst Exp $
+ * @version $Id: BasicQuery.java,v 1.54 2005-11-04 23:21:13 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -74,7 +77,7 @@ public class BasicQuery implements Query  {
     /**
      * reference to the cloud.
      */
-    protected BasicCloud cloud;
+    protected Cloud cloud;
 
 
     /**
@@ -88,18 +91,18 @@ public class BasicQuery implements Query  {
      */
     protected List explicitFields = new ArrayList();
 
-    BasicQuery(BasicCloud c) {
+    BasicQuery(Cloud c) {
         query = new BasicSearchQuery();
         cloud = c;
     }
 
-    BasicQuery(BasicCloud c, boolean aggregating) {
+    BasicQuery(Cloud c, boolean aggregating) {
         query = new BasicSearchQuery(aggregating);
         this.aggregating = aggregating;
         cloud = c;
     }
 
-    public BasicQuery(BasicCloud c, BasicSearchQuery q) { // public for org.mmbase.bridge.util
+    public BasicQuery(Cloud c, BasicSearchQuery q) { // public for org.mmbase.bridge.util
         query = q;
         cloud = c;
         this.aggregating = q.isAggregating();
@@ -408,7 +411,8 @@ public class BasicQuery implements Query  {
         }
     }
 
-    public StepField createStepField(Step step, Field field) {
+    public StepField createStepField(Step step, Field field) {        
+        if (field == null) throw new BridgeException("Field is null");
         return new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
     }
 
@@ -440,7 +444,7 @@ public class BasicQuery implements Query  {
         BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField)field).coreField, aggregationType); /// XXX Casting is wrong
         // aggregatedField.setAlias(field.getName());
 
-        if (this instanceof NodeQuery) {
+        if (this instanceof NodeQuery) { // UGLY!
             NodeQuery nodeQuery = (NodeQuery) this;
             ((BasicStep) step).setAlias(nodeQuery.getNodeManager().getName());
             // Step needs alias, because otherwise clusterbuilder chokes.
@@ -545,12 +549,12 @@ public class BasicQuery implements Query  {
     }
     public CompositeConstraint createConstraint(Constraint c1, int operator, Constraint c2) {
         if ((!used) && c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
-            ((BasicCompositeConstraint) c1).addChild(c2);
+            if (c2 != null) ((BasicCompositeConstraint) c1).addChild(c2);
             return (CompositeConstraint) c1;
         } else {
             BasicCompositeConstraint c = new BasicCompositeConstraint(operator);
-            c.addChild(c1);
-            c.addChild(c2);
+            if (c1 != null) c.addChild(c1);
+            if (c2 != null) c.addChild(c2);
             return c;
         }
     }
@@ -566,6 +570,7 @@ public class BasicQuery implements Query  {
     }
     public SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive) {
         if (used) throw new BridgeException("Query was used already");
+        if (f == null) throw new BridgeException("Cannot add sortorder on 'null' step field");
         BasicSortOrder s = query.addSortOrder(f);
         s.setDirection(direction);
         s.setCaseSensitive(caseSensitive);
@@ -593,8 +598,9 @@ public class BasicQuery implements Query  {
     public boolean markUsed() {
         boolean wasUsed = used;
         if (queryCheck == null) {  // if called manually
+            /// XXXX CASTING HERE. Is this really necessary!
             // apply security constraints first, if not yet done, because the query gets unmodifiable from now on.
-            ((BasicCloud) cloud).setSecurityConstraint(this);
+            //((BasicCloud) cloud).setSecurityConstraint(this);
         }
         used = true;
         return wasUsed;
@@ -657,6 +663,10 @@ public class BasicQuery implements Query  {
 
     public Cloud getCloud() {
         return cloud;
+    }
+
+    public NodeList getList() {
+        return cloud.getList(this);
     }
 
     public boolean equals(Object obj) {
