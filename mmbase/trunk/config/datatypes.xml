@@ -54,12 +54,9 @@
     </specialization>
 
     <specialization id="confirmpassword">
+      <class name="org.mmbase.datatypes.ConfirmPasswordDataType" />      
+      <property name="field" value="password" />
       <password value="true" />
-      <commitprocessor>
-        <class name="org.mmbase.datatypes.processors.ConfirmPasswordFactory">
-          <param name="field">password</param>
-        </class>       
-      </commitprocessor>
     </specialization>
 
     <specialization id="lowercaseuppercase">
