@@ -41,14 +41,9 @@
     <div class="tree" id="node_${n}">
       <mm:listrelationscontainer type="segments" role="index" searchdir="destination">
         <mm:sortorder field="pos" />       
-        <mm:size>
-          <mm:isgreaterthan value="0">
-            <a href="javascript: unloadRelated(${n});">
-              <img class="icon" src="icons/map-open.gif" />
-            </a>
-          </mm:isgreaterthan>
-          <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
-        </mm:size>
+        <a href="javascript: unloadRelated(${n});">
+          <img class="icon" src="icons/map-open.gif" />
+        </a>
         <a href="javascript: loadNode(${n});" id="a_${n}"> ${n.title}</a>
         <ul>          
         <mm:listrelations id="rel">
@@ -57,15 +52,12 @@
               <div id="node_${segment}" class="tree">
                 <mm:listrelationscontainer type="segments" role="index" searchdir="destination">                     
                   <mm:sortorder field="pos" />
-                  <mm:size>
-                    <mm:isgreaterthan value="0">
-                      <a  href="javascript: loadRelated(${segment});">                    
-                        <img class="icon" src="icons/map.gif" />
-                      </a>
-                    </mm:isgreaterthan>
-                    <mm:compare value="0"><img class="icon" src="icons/empty.gif" /></mm:compare>
-                  </mm:size>
-                  <mm:function name="index" id="index" write="false" />
+                  <a  href="javascript: loadRelated(${segment});">                    
+                    <img class="icon" src="icons/map.gif" />
+                  </a>
+                  <mm:hasfunction name="index">
+                    <mm:function name="index" id="index" write="false" />
+                  </mm:hasfunction>
                   <a href="javascript: loadNode(${segment});" id="a_${segment}" title="${index}"> ${segment.title}</a>
                 </mm:listrelationscontainer>
               </div>
