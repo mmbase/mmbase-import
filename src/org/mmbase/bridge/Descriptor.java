@@ -14,7 +14,7 @@ import java.util.*;
 
 
 /**
- * XXX A descriptor does not describe. It has descriptions.
+ * XXX A descriptor does not describe. It has descriptions. Perhaps 'UserPresentable'?
  * @since MMBase-1.8
  */
 public interface Descriptor {
@@ -107,10 +107,5 @@ public interface Descriptor {
      */
     public void setDescription(String description);
 
-    /**
-     * Associates a resource-bundle with the description of this Descriptor. The description can be
-     * looked up using this resource-bundle if no description for a Locale was specified explicitely.
-     */
-    public void setBundle(String bundle);
 
 }
