@@ -16,29 +16,31 @@ import java.util.*;
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedProcessor.java,v 1.2 2005-11-04 23:11:52 michiel Exp $
+ * @version $Id: ChainedCommitProcessor.java,v 1.1 2005-11-04 23:11:52 michiel Exp $
  * @since MMBase-1.7
  */
 
-public class ChainedProcessor implements Processor {
+public class ChainedCommitProcessor implements  CommitProcessor {
 
     private static final int serialVersionUID = 1;
 
     private List processors = new ArrayList();
 
-    public ChainedProcessor add(Processor proc) {
+    public ChainedCommitProcessor add(CommitProcessor proc) {
         processors.add(proc);
         return this;
     }
 
-    public Object process(Node node, Field field, Object value) {
-
+    public void commit(Node node, Field field) {
         Iterator i = processors.iterator();
         while (i.hasNext()) {
-            Processor proc = (Processor) i.next();
-            value = proc.process(node, field, value);
+            Object proc = i.next();
+            if (i instanceof CommitProcessor) {
+                CommitProcessor commitProc = (CommitProcessor) proc;
+                commitProc.commit(node, field);
+            }
         }
-        return value;
+        return;
     }
 
     public String toString() {
