@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryDefinition.java,v 1.4 2005-11-01 18:01:44 michiel Exp $
+ * @version $Id: QueryDefinition.java,v 1.5 2005-11-04 23:33:20 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryDefinition {
@@ -84,5 +84,13 @@ public class QueryDefinition {
     public void configure(Element queryElement) {
     }
 
+
+    public String toString() {
+        return 
+            (query == null ? "NULL" : (query.getClass().getName() + " " + query)) + 
+            " " + (isMultiLevel ? "(MULTILEVEL)" : "") + 
+            fields + 
+            elementStep;
+    }
 }
 
