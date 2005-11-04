@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.110 2005-10-25 12:27:32 nklasens Exp $
+ * @version $Id: BasicNodeManager.java,v 1.111 2005-11-04 23:24:48 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -90,7 +90,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * Instantiates a NodeManager based on a builder.
      * The constructor attempts to retrieve an MMObjectNode (from typedef)
      * which represents this builder.
-     * @param builder the MMObjectBuidler to base the NodeManager on.
+     * @param builder the MMObjectBuilder to base the NodeManager on.
      * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
@@ -105,7 +105,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      */
     private static MMObjectNode getNodeForBuilder(MMObjectBuilder builder) {
         if (builder.isVirtual()) {
-            return  new org.mmbase.module.core.VirtualNode(BasicCloudContext.mmb.getTypeDef());
+            return new org.mmbase.module.core.VirtualNode(BasicCloudContext.mmb.getTypeDef());
         } else {
             MMObjectNode typedefNode = builder.getNode(builder.oType);
             if (typedefNode == null) {
@@ -113,6 +113,23 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             }
             return typedefNode;
         }
+    }
+
+    protected void setNodeManager(MMObjectNode node) {
+        int nodeNumber = node.getNumber();
+        if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().oType) { // this is the typedef itself
+            nodeManager = this;
+        } else {
+            nodeManager = cloud.getBasicNodeManager("typedef");
+        }
+    }
+
+    public final boolean isNodeManager() {
+        return true;
+    }
+
+    public final NodeManager toNodeManager() {
+        return this;
     }
 
     /**
@@ -310,7 +327,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             resultList = (List) nodeListCache.get(query);
 
             if (resultList == null) {
-                resultList = mmb.getSearchQueryHandler().getNodes(query, builder);
+                resultList = BasicCloudContext.mmb.getSearchQueryHandler().getNodes(query, builder);
                 builder.processSearchResults(resultList);
                 nodeListCache.put(query, resultList);
             }
@@ -380,7 +397,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         int thisOType = getMMObjectBuilder().oType;
         int requestedRole = -1;
         if (role != null) {
-            requestedRole = mmb.getRelDef().getNumberByName(role);
+            requestedRole = BasicCloudContext.mmb.getRelDef().getNumberByName(role);
             if (requestedRole == -1) {
                 throw new NotFoundException("Could not get role '" + role + "'");
             }
@@ -391,9 +408,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         Enumeration typerelNodes;
         if (nodeManager != null) {
             int otherOType = nodeManager.getNumber();
-            typerelNodes = mmb.getTypeRel().getAllowedRelations(thisOType, otherOType);
+            typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType, otherOType);
         } else {
-            typerelNodes = mmb.getTypeRel().getAllowedRelations(thisOType);
+            typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType);
         }
 
         List nodes = new ArrayList();
@@ -426,7 +443,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
         MMObjectBuilder builder = getMMObjectBuilder();
         StringTokenizer tokens = new StringTokenizer(command,"-");
-        return builder.replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),tokens);
+        return builder.replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()),tokens);
     }
 
     public NodeList getList(String command, Map parameters){
@@ -450,7 +467,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
-            List v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp), params, tokens);
+            List v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()), params, tokens);
             if (v == null) {
                 v = new ArrayList();
             }
