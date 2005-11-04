@@ -13,11 +13,11 @@ package org.mmbase.util;
 import java.util.*;
 
 /**
- * Like commons.collections.iterator.IteratorChain, to avoid the dependency....
+ * Like org.apache.commons.collections.iterators.IteratorChain, to avoid the dependency....
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.8
- * @version $Id: ChainedIterator.java,v 1.1 2005-11-01 23:34:22 michiel Exp $
+ * @version $Id: ChainedIterator.java,v 1.2 2005-11-04 23:30:01 michiel Exp $
  */
 public class ChainedIterator implements Iterator {
 
@@ -67,6 +67,9 @@ public class ChainedIterator implements Iterator {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Just testing
+     */
     public static void main(String argv[]) {
         ChainedIterator it = new ChainedIterator();
         List o = new ArrayList();

@@ -13,16 +13,20 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ *<p>
  * A String which is localized. There are two mechanisms to find and provide translations: They can
  * explicitely be set with {@link #set} (e.g. during parsing an XML), or a resource bundle can be
  * associated with {@link #setBundle}, which will be used to find translations based on the key of
  * this object.
- *
+ *</p>
+ *<p>
  * The idea is that objects of this type can be used in stead of normal String objects, for error
- * messages, descriptions and other texts which need localization.
+ * messages, descriptions and other texts which need localization (e.g. because they are exposed to 
+ * end-users).
+ *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.17 2005-10-25 17:43:31 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.18 2005-11-04 23:29:33 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString  implements java.io.Serializable, Cloneable {
@@ -71,7 +75,7 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
         return res;
     }
 
-    //    private final String key;
+    //    private final String key; cannot be final if cloneable: java sucks.
     private String key;
 
     private Map    values = null;
@@ -208,6 +212,11 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
         bundle = b;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * For LocalizedString this returns the String for the default Locale (see {@link #getDefault}).
+     */
     public String toString() {
         return get(null);
     }
