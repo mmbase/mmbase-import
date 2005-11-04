@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.35 2005-10-02 16:19:25 michiel Exp $
+ * @version $Id: Query.java,v 1.36 2005-11-04 23:21:13 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -177,8 +177,8 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
      * It is adviced that you use this in stead of SearchQuery#getConstraint, because that function
      * is used by the Query handlers, which <em>do</em> need the security constraints. But otherwise
      * you don't want to see those.
-     * @return Constraint
      *
+     * @return Constraint
      * @since MMBase-1.7.1
      */
     Constraint getCleanConstraint();
@@ -362,5 +362,11 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
      * @return Cloned Query
      */
     Query aggregatingClone();
+
+    /**
+     * Executes the query and returns the resulting node list.
+     * @since MMBase-1.8
+     */
+    NodeList getList();
 
 }
