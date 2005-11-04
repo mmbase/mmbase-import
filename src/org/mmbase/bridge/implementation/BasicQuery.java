@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.52 2005-10-19 20:14:45 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.53 2005-11-04 08:00:30 ernst Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -102,6 +102,7 @@ public class BasicQuery implements Query  {
     public BasicQuery(BasicCloud c, BasicSearchQuery q) { // public for org.mmbase.bridge.util
         query = q;
         cloud = c;
+        this.aggregating = q.isAggregating();
     }
 
 
