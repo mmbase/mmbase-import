@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.71 2005-10-12 01:01:30 michiel Exp $
+ * @version $Id: Module.java,v 1.72 2005-11-04 17:18:23 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -319,13 +319,12 @@ public abstract class Module extends FunctionProvider {
     /**
      * Retrieves a reference to a Module.
      * This call does not ensure that the requested module has been initialized.
-     * XXX: return type Object in stead of Module?
      *
      * @param name the name of the module to retrieve
      * @return a refernce to a <code>Module</code>, or <code>null</code> if the
      *      module does not exist or is inactive.
      */
-    public static Object getModule(String name) {
+    public static Module getModule(String name) {
         return getModule(name, false);
     }
 
@@ -337,14 +336,13 @@ public abstract class Module extends FunctionProvider {
      * This is needed if you need to call Module methods from the init() of
      * another module.
      *
-     * XXX: return type Object in stead of Module?
      *
      * @param name the name of the module to retrieve
      * @param startOnLoad whetehr to make sure the module has been started or not.
      * @return a reference to a <code>Module</code>, or <code>null</code> if the
      *      module does not exist or is inactive.
      */
-    public static Object getModule(String name, boolean startOnLoad) {
+    public static Module getModule(String name, boolean startOnLoad) {
         // are the modules loaded yet ? if not load them
         if (modules == null) {
             synchronized(Module.class) {
@@ -361,15 +359,15 @@ public abstract class Module extends FunctionProvider {
             }
         }
         // try to obtain the ref to the wanted module
-        Object obj = modules.get(name.toLowerCase());
+        Module obj = (Module) modules.get(name.toLowerCase());
         if (obj == null) { // try case sensitivily as well?
-            obj = modules.get(name);
+            obj = (Module) modules.get(name);
         }
         if (obj != null) {
             // make sure the module is started, as this method could
             // have been called from the init() of another Module
             if (startOnLoad) {
-                ((Module) obj).startModule();
+                obj.startModule();
             }
             return obj;
         } else {
