@@ -94,9 +94,7 @@
           <search>3</search>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
-      </datatype>
+      <datatype base="reldef" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
       <db>
         <name>rnumber</name>
         <type required="true" state="system">NODE</type>
