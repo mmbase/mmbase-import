@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmptyNotNullNodeTest.java,v 1.11 2005-11-03 11:55:39 michiel Exp $
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.12 2005-11-05 08:55:20 michiel Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 
@@ -149,7 +149,7 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
             } else if (fieldTypes[i].equals("datetime")) {
                 // not-null 'empty' dates return a date string
                 Field field = node.getNodeManager().getField(fieldTypes[i] + "field");
-                String dateValue = (String) field.getDataType().process(DataType.PROCESS_GET, node, field, Casting.toString(new Date(-1)), Field.TYPE_STRING);
+                String dateValue = (String) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING).process(node, field, Casting.toString(new Date(-1)));
                 assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return \"" + dateValue + "\", but \"" + value +"\" " , dateValue.equals(value));
             } else if (fieldTypes[i].equals("xml")) {
                 // not-null 'empty' xml values return <p/>
