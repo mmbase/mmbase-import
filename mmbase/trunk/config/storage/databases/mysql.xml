@@ -52,8 +52,8 @@
     <type-mapping name="XML" min-size="1" max-size="255" type="varchar({0})" />
     <type-mapping name="XML" min-size="256" max-size="65535" type="blob" />
     <type-mapping name="XML" min-size="65536" max-size="16777216" type="mediumblob" />
-    <type-mapping name="BYTE" min-size="1" max-size="65535" type="blob" />
-    <type-mapping name="BYTE" min-size="65536" max-size="16777216" type="mediumblob" />
+    <type-mapping name="BINARY" min-size="1" max-size="65535" type="blob" />
+    <type-mapping name="BINARY" min-size="65536" max-size="16777216" type="mediumblob" />
     <type-mapping name="DATETIME" type="DATETIME" />
     <type-mapping name="BOOLEAN"  type="BIT" />
   </type-mappings>
