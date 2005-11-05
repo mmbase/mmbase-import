@@ -565,7 +565,7 @@ public class ApplicationInstaller {
         try {
             is = applicationLoader.getInputSource(path);
         } catch (Exception e) {
-            log.error(e);
+            log.info("No datasource resource " + path);
         }
         if (is != null) {
             nodeReader = new XMLNodeReader(is, applicationLoader.getChildResourceLoader(appName));
@@ -582,7 +582,7 @@ public class ApplicationInstaller {
         try {
             is = applicationLoader.getInputSource(path);
         } catch (Exception e) {
-            log.error(e);
+            log.info("No relationsource resource " + path);
         }
         if (is != null) {
             //TODO change "applications/"  + appname + "/" to applicationLoader.getChildResourceLoader(appName)
