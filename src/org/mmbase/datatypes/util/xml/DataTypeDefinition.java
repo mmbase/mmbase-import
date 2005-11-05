@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.40 2005-11-04 23:12:51 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.41 2005-11-05 19:05:34 nklasens Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -390,7 +390,7 @@ public class DataTypeDefinition {
                     throw new IllegalArgumentException("no 'value' or 'basename' attribute on enumeration entry element");
                 }
             }
-            log.info("Foudn enumeration values now" + fact);
+            log.info("Found enumeration values now" + fact);
         }
         log.info("--" );
     }
