@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.39 2005-10-26 20:18:12 andre Exp $
+ * @version $Id: XMLNodeReader.java,v 1.40 2005-11-05 19:04:51 nklasens Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -188,6 +188,8 @@ public class XMLNodeReader extends XMLBasicReader {
                                             }
                                         } else if (type == Field.TYPE_DATETIME) {                                            
                                             newNode.setValue(key, Casting.toDate(value));
+                                        } else if (type == Field.TYPE_BOOLEAN) {                                            
+                                            newNode.setValue(key, Casting.toBoolean(value));
                                         } else if (type == Field.TYPE_BINARY) {
                                             NamedNodeMap nm2 = n5.getAttributes();
                                             Node n7 = nm2.getNamedItem("file");
