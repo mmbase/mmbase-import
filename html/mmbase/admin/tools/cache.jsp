@@ -7,6 +7,14 @@
          return "";
       }
    }
+	 
+	 String savePercentage(float f1, float f2){
+      try{
+         return "" + ((100f /f1) * f2);
+      }catch(ArithmeticException e){
+         return "";
+      }
+   }
    
    String saveName(String name){
       return name.replace(' ', '_');
@@ -196,8 +204,8 @@
                         <div class="data" style="<mm:write referid="textStyle"/>"><%="" + saveDevide(strategy.getTotalEvaluationTimeMillis(), strategy.getTotalEvaluated())%></div>
                      </div>
                      <div class="row">
-                        <div class="label" style="<mm:write referid="textStyle"/>">avarage performance:</div>
-                        <div class="data" style="<mm:write referid="textStyle"/>"><%="" + saveDevide(strategy.getTotalEvaluated(), strategy.getTotalPreserved())%></div>
+                        <div class="label" style="<mm:write referid="textStyle"/>">percentatge performance:</div>
+                        <div class="data" style="<mm:write referid="textStyle"/>"><%="" + savePercentage(strategy.getTotalEvaluated(), strategy.getTotalPreserved())%> %</div>
                      </div>                  
                </td>
             </tr>
