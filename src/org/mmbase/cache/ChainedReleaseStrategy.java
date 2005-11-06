@@ -9,10 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.storage.search.SearchQuery;
@@ -25,11 +24,12 @@ import org.mmbase.storage.search.SearchQuery;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.5 2005-10-14 21:44:03 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.6 2005-11-06 08:34:31 ernst Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
 
-    private Map cacheReleaseStrategies = new HashMap(10);
+    private List cacheReleaseStrategies = new ArrayList(10);
+    private List cacheReleaseStrategyNames = new ArrayList(10);
 
     private String basicStrategyName;
 
@@ -46,13 +46,17 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * @param strategy
      */
     public void addReleaseStrategy(ReleaseStrategy strategy) {
-        if (cacheReleaseStrategies.get(strategy.getName()) == null)
-            cacheReleaseStrategies.put(strategy.getName(), strategy);
+        if (! cacheReleaseStrategyNames.contains(strategy.getName())){
+        	cacheReleaseStrategies.add(strategy);
+        	cacheReleaseStrategyNames.add(strategy.getName());
+        }
+        	
     }
 
     public void removeReleaseStrategy(ReleaseStrategy strategy) {
         if (!strategy.getName().equals(basicStrategyName)) {
-            cacheReleaseStrategies.remove(strategy.getName());
+            cacheReleaseStrategies.remove(strategy);
+            cacheReleaseStrategyNames.remove(strategy.getName());
         }
     }
 
@@ -82,7 +86,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      *         contains the strategies added by the user.
      */
     public Iterator iterator() {
-        return cacheReleaseStrategies.values().iterator();
+        return cacheReleaseStrategies.iterator();
     }
 
     /*
@@ -95,7 +99,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
             List cachedResult) {
         // first do the 'basic' strategy that is allways there. (see
         // constructor)
-        Iterator i = cacheReleaseStrategies.values().iterator();
+        Iterator i = cacheReleaseStrategies.iterator();
         StrategyResult result = ((ReleaseStrategy) i.next()).evaluate(
             event, query, cachedResult);
 
