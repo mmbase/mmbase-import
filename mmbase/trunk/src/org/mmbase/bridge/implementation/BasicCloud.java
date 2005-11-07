@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.140 2005-11-04 23:22:11 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.141 2005-11-07 18:35:18 nklasens Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -428,7 +428,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (n1 == -1) return false;
         int n2 = typedef.getIntValue(destinationManagerName);
         if (n2 == -1) return false;
-        return getRelationManager(n1, n2, r) != null;
+        
+        return BasicCloudContext.mmb.getTypeRel().contains(n1, n2, r);
+        // return getRelationManager(n1, n2, r) != null;
     }
 
     public boolean hasRole(String roleName) {
@@ -438,7 +440,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     public boolean  hasRelationManager(NodeManager source, NodeManager destination, String roleName) {
         int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r == -1) return false;
-        return getRelationManager(source.getNumber(), destination.getNumber(), r) != null;
+        return BasicCloudContext.mmb.getTypeRel().contains(source.getNumber(), destination.getNumber(), r);
+        // return getRelationManager(source.getNumber(), destination.getNumber(), r) != null;
     }
 
     public RelationManager getRelationManager(String roleName) throws NotFoundException {
