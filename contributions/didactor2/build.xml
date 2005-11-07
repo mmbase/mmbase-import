@@ -415,6 +415,7 @@
   <target name="precompiledwar" depends="precompile,war" />
 
   <target name="srcdist">
+    <mkdir dir="${build.dir}" />
     <zip destfile="${build.dir}/didactor-src.zip"
          basedir=".">
       <include name="src/**"/>
@@ -422,6 +423,7 @@
       <include name="build.properties"/>
       <include name="*.xml" />
       <exclude name="**/CVS"/>
+      <exclude name="src/netg"/>
     </zip>
   </target>
 
