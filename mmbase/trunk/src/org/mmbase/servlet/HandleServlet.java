@@ -11,6 +11,7 @@ package org.mmbase.servlet;
 
 import java.io.*;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.22 2005-07-11 08:20:01 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.23 2005-11-07 18:02:42 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -76,6 +77,8 @@ public class HandleServlet extends BridgeServlet {
         return "application/x-binary";
     }
 
+
+    protected static final Pattern legalizeFileName = Pattern.compile("[ \\.\\/\\:\\\\]+");
     /**
      * Sets the content disposition header.
      * @return true on success
@@ -105,7 +108,7 @@ public class HandleServlet extends BridgeServlet {
         } else {
             disposition = "attachment";
         }
-        query.getResponse().setHeader("Content-Disposition", disposition + "; filename=\""  + fileName.replace(' ', '_') + "\"");
+        query.getResponse().setHeader("Content-Disposition", disposition + "; filename=\""  + legalizeFileName.matcher(fileName).replaceAll("_") + "\"");
         //res.setHeader("X-MMBase-1", "Not sending Content-Disposition because this might confuse Microsoft Internet Explorer");
         return true;
     }
@@ -259,6 +262,10 @@ public class HandleServlet extends BridgeServlet {
         log.debug("ready wrote " + count + " bytes");
         out.flush();
         bytes.close();
+    }
+
+    public static void main(String argv[]) {
+        System.out.println(legalizeFileName.matcher(argv[0]).replaceAll("_"));
     }
 
 }
