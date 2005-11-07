@@ -198,8 +198,9 @@ function loadNode(nodeNumber) {
     var currentA;
 
     if (currentNode != undefined) {
-        // store corrent values in loaded-values maps.
+        // store current values in loaded-values maps.
         loadedNodes.add(currentNode, nodeDiv.innerHTML);
+        //alert("Storing for later user " + nodeDiv.innerHTML);
         loadedNodeBodies.add(currentNode, kupu.getHTMLBody());
         currentA = document.getElementById('a_' + currentNode);
         if (currentA != undefined) {
