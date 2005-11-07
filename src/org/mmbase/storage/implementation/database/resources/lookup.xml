@@ -36,4 +36,8 @@
 		<driver-class>org.sourceforge.jxdbcon</driver-class>
 	</filter>
 
+	<filter resource="/org/mmbase/storage/implementation/database/resources/mssql.xml">
+		<driver-class>com.microsoft.jdbc.sqlserver.SQLServerDriver</driver-class>
+	</filter>
+
 </database-filters>
