@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.11 2005-05-23 21:44:40 michiel Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.12 2005-11-07 18:35:18 nklasens Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
@@ -48,19 +48,14 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
     }
 
     public int doStartTag() throws JspTagException {
-        RelationManager rm   = getCloudVar().getRelationManager(role.getString(this));
+        String roleStr = role.getString(this);
+        RelationManager rm   = getCloudVar().getRelationManager(roleStr);
         Node sourceNode      = getNode(source.getString(this));
         Node destinationNode = getNode(destination.getString(this));
         
-        // I think we should not use core-functionality in taglib implemenation
-        org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
-        int snumber = sourceNode.getNodeManager().getNumber();
-        int dnumber = destinationNode.getNodeManager().getNumber();
-        int rnumber = rm.getNumber();
-        if (log.isDebugEnabled()) log.debug("snumber: " +  snumber + " dnumber: " + dnumber + " rnumber: " + rnumber);
-        
-        if ((rm.mayCreateRelation(sourceNode, destinationNode) && mmb.getTypeRel().contains(snumber, dnumber, rnumber)) != getInverse()) {
-            // perhaps this mmb.getTypeRel must simply be moved to implementation of mayCreateRelation?
+        boolean hasRelationManager = getCloudVar().hasRelationManager(sourceNode.getNodeManager(), 
+                                                            destinationNode.getNodeManager(), roleStr);
+        if (hasRelationManager && (rm.mayCreateRelation(sourceNode, destinationNode)) != getInverse()) {
             return EVAL_BODY;
         } else {
             return SKIP_BODY;
