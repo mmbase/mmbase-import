@@ -1,5 +1,14 @@
 Migratie issues
 
+2005-11-08
+    ALTER TABLE mmb_preassessments ADD always_online INT(11) NOT NULL DEFAULT '1';
+    ALTER TABLE mmb_preassessments ADD online_date BIGINT(20) NOT NULL DEFAULT '0';
+    ALTER TABLE mmb_preassessments ADD offline_date BIGINT(20) NOT NULL DEFAULT '0';
+
+    ALTER TABLE mmb_postassessments ADD always_online INT(11) NOT NULL DEFAULT '1';
+    ALTER TABLE mmb_postassessments ADD online_date BIGINT(20) NOT NULL DEFAULT '0';
+    ALTER TABLE mmb_postassessments ADD offline_date BIGINT(20) NOT NULL DEFAULT '0';
+
 2005-11-07
 
     Please run /migrate/migrate-2005-11-07.jsp for removing old agendas and workspaces
