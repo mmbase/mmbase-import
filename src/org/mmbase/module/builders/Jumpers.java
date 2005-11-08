@@ -21,6 +21,8 @@ import org.mmbase.util.functions.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.mmbase.module.corebuilders.FieldDefs;
+
 /**
  * Maintains jumpers for redirecting urls. The data stored in this builder is
  * used to redirect urls based ons a specific key. The jumpers builder is called
@@ -41,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.33 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: Jumpers.java,v 1.34 2005-11-08 10:50:11 marcel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -144,15 +146,25 @@ public class Jumpers extends MMObjectBuilder {
         }
     }
 
-    protected String getJumpByField(String fieldName, String key) {
+    // jump on content of 'name' or 'id' field 
+    private String getJumpByField(String fieldName, String key) {
         NodeSearchQuery query = new NodeSearchQuery(this);
-        StepField field = query.getField(getField("name"));
+        FieldDefs fieldDefs = getField(fieldName); // "name");
+        StepField field = query.getField(fieldDefs);
         StepField numberField = query.getField(getField(FIELD_NUMBER));
-        query.addSortOrder(numberField); // use 'oldest' jumper
-        BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, key);
+        BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
+        BasicFieldValueConstraint cons = null;
+        if(fieldDefs.getDBType() == FieldDefs.TYPE_STRING)
+            cons = new BasicFieldValueConstraint(field, key);
+        else if(fieldDefs.getDBType() == FieldDefs.TYPE_INTEGER) {
+            try {
+                cons = new BasicFieldValueConstraint(field, new Integer(key));
+            } catch(NumberFormatException e) { log.error("this key("+key+") should be a number because field("+fieldName+") is of type int!");
+                cons = null;
+            }
+        }
         query.setConstraint(cons);
         query.setMaxNumber(1);
-
         try {
             List resultList = getNodes(query);
             if (resultList.size() > 0) {
@@ -230,21 +242,6 @@ public class Jumpers extends MMObjectBuilder {
             }
         }
         return url;
-    }
-
-    /**
-     * Clears the jump cache if a jumper was added, removed, or changed.
-     * 
-     * @param machine Name of the machine that changed the node.
-     * @param number the number of the node that was added, removed, or changed.
-     * @param builder the name of the builder of the changed node (should be
-     * 'jumpers')
-     * @param ctype the type of change
-     */
-    public boolean nodeChanged(String machine, String number, String builder, String ctype) {
-        log.debug("Jumpers=" + machine + " " + builder + " no=" + number + " " + ctype);
-        jumpCache.clear();
-        return true;
     }
 
     /*
