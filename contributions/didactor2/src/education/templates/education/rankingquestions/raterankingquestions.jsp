@@ -28,11 +28,11 @@
     <mm:field id="answer" name="number" write="false"/>
 
     <mm:import id="givenrankId"><mm:write referid="question"/>_<mm:write referid="answer"/></mm:import>
-    <mm:import jspvar="givenrank" id="givenrank" externid="$givenrankId" vartype="Integer"/>
-    <% if (pos != givenrank.intValue()) { %>
+    <mm:import id="givenrank" externid="$givenrankId"/>
+    <mm:compare referid="givenrank" value="<%= ""+pos %>" inverse="true">
        <mm:remove referid="correct"/>
        <mm:import id="correct">0</mm:import>
-    <% } %>
+    </mm:compare>
 
     <mm:createrelation role="posrel" source="givenanswer" destination="answer">
       <mm:setfield name="pos"><mm:write referid="givenrank"/></mm:setfield>
