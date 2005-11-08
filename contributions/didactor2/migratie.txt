@@ -1,5 +1,13 @@
 Migratie issues
 
+2005-10-18
+
+    Please run /migrate/migrate-2005-11-07.jsp for removing old agendas and workspaces
+
+2005-10-18
+
+    Please run /migrate/migrate-2005-10-18.jsp for classes-classrel-educations
+
 2005-10-25
     ALTER TABLE mmb_providers ADD locale VARCHAR(12);
 
