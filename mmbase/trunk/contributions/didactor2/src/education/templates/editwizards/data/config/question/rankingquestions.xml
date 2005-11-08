@@ -19,7 +19,7 @@
 
   <action type="load">
     <relation destination="rankinganswers" role="posrel" />
-    <relation destination="images" role="related" />
+    <!-- <relation destination="images" role="related" /> -->
     <relation destination="feedback" role="related" />
     &extra_loads;
   </action>
@@ -52,7 +52,7 @@
       <prompt xml:lang="en">Text</prompt>
     </field>
 
-    <list role="related" extends="config/image/images.xml" />
+    <!-- <list role="related" extends="config/image/images.xml" /> -->
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="rankinganswers">
       <title xml:lang="nl">Bijbehorende antwoorden</title>
       <title xml:lang="en">Related answers</title>
