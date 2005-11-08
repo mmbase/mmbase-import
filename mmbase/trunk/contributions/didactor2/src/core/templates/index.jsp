@@ -4,7 +4,7 @@
 <mm:content postprocessor="reducespace" expires="0" type="text/html" encoding="UTF-8" escaper="entities">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<mm:treefile page="/cockpit.jsp" objectlist="$includePath" referids="$referids" write="false" id="redirpage" />
+<mm:treefile page="cockpit.jsp" objectlist="$includePath" referids="$referids" write="false" id="redirpage" />
 <mm:redirect page="$redirpage" />
 </mm:cloud>
 </mm:content>
