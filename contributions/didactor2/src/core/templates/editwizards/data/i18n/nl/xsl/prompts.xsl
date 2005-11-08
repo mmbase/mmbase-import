@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform" >
 
   <xsl:import href="ew:xsl/prompts.xsl" />
@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.1 2004-11-01 12:52:42 jdiepenmaat Exp $
+  @version $Id: prompts.xsl,v 1.2 2005-11-08 11:24:49 nbukharev Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -99,7 +99,7 @@
 <xsl:template name="prompt_search_term" >Termen</xsl:template>
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" alt="Zoek" /></xsl:template>
 <xsl:variable name="tooltip_search" >Zoek een toe te voegen item</xsl:variable>
-<xsl:template name="prompt_search_title" >Titel bevat</xsl:template>
+<xsl:template name="prompt_search_title" >Bevat</xsl:template>
 <xsl:template name="prompt_search_owner" >Eigenaar is</xsl:template>
 <xsl:template name="prompt_search_number" >Nummer is</xsl:template>
 <xsl:variable name="filter_required" >Het is verplicht een zoekterm in te vullen.</xsl:variable>
