@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.7 2005-07-27 13:59:58 pierre Exp $
+ * @version $Id: Searcher.java,v 1.8 2005-11-09 13:44:19 pierre Exp $
  **/
 public class Searcher {
 
@@ -52,6 +52,20 @@ public class Searcher {
 
     public List search(Cloud cloud, String value, Query extraQuery, int offset, int max) {
         return search(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
+    }
+
+    public List search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max) {
+        Sort sort = null;
+        if (sortFields != null && sortFields.length > 0) {
+            if (sortFields.length == 1 && sortFields[0].equals("RELEVANCE")) {
+                sort = null;
+            } else if (sortFields.length == 1 && sortFields[0].equals("INDEXORDER")) {
+                sort = Sort.INDEXORDER;
+            } else {
+                sort = new Sort(sortFields);
+            }
+        }
+        return search(cloud, value, null, sort, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
     }
 
     public List search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
