@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.14 2005-09-02 12:34:37 pierre Exp $
+ * @version $Id: Lucene.java,v 1.15 2005-11-09 13:44:19 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -138,6 +138,7 @@ public class Lucene extends Module implements MMBaseObserver {
      protected Function searchFunction = new AbstractFunction("search",
                               new Parameter[] { new Parameter("value",String.class),
                                                 new Parameter("index",String.class),
+                                                new Parameter("sortfields",String.class),
                                                 new Parameter("offset",Integer.class),
                                                 new Parameter("max",Integer.class),
                                                 new Parameter("extraconstraints",String.class),
@@ -146,6 +147,7 @@ public class Lucene extends Module implements MMBaseObserver {
         public Object getFunctionValue(Parameters arguments) {
             String value = arguments.getString("value");
             String index = arguments.getString("index");
+            List sortFieldList = Casting.toList(arguments.getString("sortfields"));
             // offset
             int offset = 0;
             Integer offsetParameter = (Integer)arguments.get("offset");
@@ -157,7 +159,7 @@ public class Lucene extends Module implements MMBaseObserver {
             if (maxParameter != null) max = maxParameter.intValue();
             String extraConstraints = arguments.getString("extraconstraints");
             Cloud cloud = (Cloud)arguments.get("cloud");
-            return search(cloud, value, index, extraConstraints, offset, max);
+            return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
         }
     };
 
@@ -291,7 +293,7 @@ public class Lucene extends Module implements MMBaseObserver {
                     indexName = Lucene.getAttribute(indexElement,"name");
                 }
                 if (indexerMap.containsKey(indexName)) {
-                    log.warn("Index with name " + indexName + "already exists");
+                    log.warn("Index with name " + indexName + " already exists");
                 } else {
                     boolean storeText = false; // default: no text fields are stored in the index unless noted otherwise
                     boolean mergeText = true; // default: all text fields have the "fulltext" alias unless noted otherwise
@@ -339,8 +341,12 @@ public class Lucene extends Module implements MMBaseObserver {
         return searcher;
     }
 
-    public List search(Cloud cloud, String value, String indexName, String extraConstraints, int offset, int max) {
-        return getSearcher(indexName).search(cloud, value, Searcher.createQuery(extraConstraints), offset, max);
+    public List search(Cloud cloud, String value, String indexName, String extraConstraints, List sortFieldList, int offset, int max) {
+        String[] sortFields = null;
+        if (sortFieldList != null) {
+            sortFields = (String[]) sortFieldList.toArray(new String[sortFieldList.size()]);
+        }
+        return getSearcher(indexName).search(cloud, value, sortFields, Searcher.createQuery(extraConstraints), offset, max);
     }
 
     public int searchSize(Cloud cloud, String value, String indexName, String extraConstraints) {

@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * which are eventually returned by the Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.8 2005-07-27 13:59:58 pierre Exp $
+ * @version $Id: Indexer.java,v 1.9 2005-11-09 13:44:19 pierre Exp $
  **/
 public class Indexer {
 
@@ -278,7 +278,7 @@ public class Indexer {
                 String value = cursor.getFieldDataAsString(fieldName);
                 if (fieldDefinition.keyWord) {
                     if (log.isDebugEnabled()) {
-                        log.trace("add " + fieldName + " text, keyword" + value);
+                        log.debug("add " + fieldName + " text, keyword" + value);
                     }
                     document.add(Field.Keyword(fieldName, value));
                 } else if (fieldDefinition.storeText) {
@@ -300,15 +300,15 @@ public class Indexer {
         }
     }
 
-    boolean shouldIndex(Node node, IndexCursor cursor, String fieldName) {
+    boolean shouldIndex(Node node, IndexCursor cursor, String fieldName, String alias) {
         // determine number
         int pos = fieldName.indexOf(".");
         if (pos != -1) {
             node = node.getNodeValue(fieldName.substring(0,pos));
         }
         int number = (node == null) ? -1 : node.getNumber();
-        if (!cursor.isIndexed(number, fieldName)) {
-            cursor.addToIndexed(number, fieldName);
+        if (!cursor.isIndexed(number, fieldName, alias)) {
+            cursor.addToIndexed(number, fieldName, alias);
             return true;
         } else {
             return false;
@@ -327,7 +327,7 @@ public class Indexer {
             String alias = fieldDefinition.alias;
             if (alias == null)  alias = fieldDefinition.fieldName;
             String decryptionPassword = fieldDefinition.decryptionPassword;
-            if (shouldIndex(node, cursor, fieldName)) {
+            if (shouldIndex(node, cursor, fieldName, alias)) {
                 // some hackery
                 int type = org.mmbase.bridge.Field.TYPE_UNKNOWN;
                 if (fieldDefinition.stepField != null) type = fieldDefinition.stepField.getType();
@@ -493,18 +493,20 @@ public class Indexer {
          * Add a name of a node with the specified number as having been indexed (so it won't be attempted to index it again)
          * @param number the number of the node
          * @param fieldName the name of the field
+         * @param alias the alias under which the field is indexed
          */
-        void addToIndexed(int number, String fieldName) {
-            indexed.add(number + "_" + fieldName);
+        void addToIndexed(int number, String fieldName, String alias) {
+            indexed.add(number + "_" + fieldName + "_" + alias);
         }
 
         /**
-         * Returns <code>true</code> if a field ofg a node indicated by the number has already been indexed.
+         * Returns <code>true</code> if a field of a node indicated by the number has already been indexed.
          * @param number the number of the node
          * @param fieldName the name of the field
+         * @param alias the alias under which the field is indexed
          */
-        boolean isIndexed(int number, String fieldName) {
-            return indexed.contains(number + "_" + fieldName);
+        boolean isIndexed(int number, String fieldName, String alias) {
+            return indexed.contains(number + "_" + fieldName + "_" + alias);
         }
 
         /**
