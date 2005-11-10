@@ -86,7 +86,7 @@
                <a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
                            <mm:param name="contact"><mm:field name="people.number"/></mm:param>
                         </mm:treefile>" target="_top">
-                  <b><mm:field name="posters.account" /></b>  (<mm:field name="posters.firstname" /> <mm:field name="posters.lastname" />)
+                  <b><mm:field name="posters.firstname" /> <mm:field name="posters.lastname" /></b>
                </a>
             </mm:list>
             <br />
