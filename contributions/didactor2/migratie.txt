@@ -1,9 +1,12 @@
 Migratie issues
 
 2005-10-11
+    ALTER TABLE mmb_metastandard ADD isused TINYINT(1);
+
+2005-10-11
     ALTER TABLE mmb_contacts ADD islogged TINYINT(1);
     ALTER TABLE mmb_contacts ADD person_status TINYINT(1);
-    
+
 2005-11-08
     ALTER TABLE mmb_preassessments ADD always_online INT(11) NOT NULL DEFAULT '1';
     ALTER TABLE mmb_preassessments ADD online_date BIGINT(20) NOT NULL DEFAULT '0';
