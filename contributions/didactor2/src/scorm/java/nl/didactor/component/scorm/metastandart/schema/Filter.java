@@ -104,6 +104,7 @@ public class Filter
             {//at least two, so we can't simply rename it
                Node nodeCopyOfMetaStandart = nmMetaStandart.createNode();
                nodeCopyOfMetaStandart.setValue("name", nodeRelatedMetaStandart.getValue("name") + "-" + nodeThisSingleMetaStandart.getValue("name"));
+               nodeCopyOfMetaStandart.setValue("isused", "0");
                nodeCopyOfMetaStandart.commit();
 
                //creating relation to the parent node
@@ -132,6 +133,7 @@ public class Filter
                   Node nodeMetaDefinitionToCopy = (Node) it2.next();
                   Node nodeCopyOfMetaDefinition = nmMetaDefinition.createNode();
                   nodeCopyOfMetaDefinition.setValue("name", nodeMetaDefinitionToCopy.getValue("name"));
+                  nodeCopyOfMetaDefinition.setValue("type", "3");
                   nodeCopyOfMetaDefinition.commit();
                   Relation relMetaDefinition = nodeCopyOfMetaStandart.createRelation(nodeCopyOfMetaDefinition, cloud.getRelationManager("posrel"));
                   relMetaDefinition.setValue("pos", this.getPosrelNode(nodeThisSingleMetaStandart.getNumber(), nodeMetaDefinitionToCopy.getNumber()).getValue("pos"));
@@ -189,6 +191,7 @@ public class Filter
 
                Node nodeNewMetaDefinitionCopy = nmMetaDefinition.createNode();
                nodeNewMetaDefinitionCopy.setValue("name", nodeRelatedMetaStandart.getValue("name") + "-" + nodeThisSingleMetaDefinition.getValue("name"));
+               nodeNewMetaDefinitionCopy.setValue("type", "3");
                nodeNewMetaDefinitionCopy.commit();
                //Connecting it to the parent
                Relation relation = nodeParentMetaStandart.createRelation(nodeNewMetaDefinitionCopy, cloud.getRelationManager("posrel"));
