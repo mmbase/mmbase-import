@@ -184,6 +184,7 @@ public class Importer
       //In this case lets create a new one
       Node nodeMetaStandart = nmMetaStandart.createNode();
       nodeMetaStandart.setValue("name", sName);
+      nodeMetaStandart.setValue("isused", "0");
       nodeMetaStandart.commit();
 
       //mark this node as our metastandart
@@ -230,6 +231,7 @@ public class Importer
 
          nodeMetaDefinition = cloud.getNodeManager("metadefinition").createNode();
          nodeMetaDefinition.setValue("name", sMetadefinitionName);
+         nodeMetaDefinition.setValue("type", "3");
          nodeMetaDefinition.commit();
 
          Relation relation = nodeParent.createRelation(nodeMetaDefinition, cloud.getRelationManager("posrel"));
