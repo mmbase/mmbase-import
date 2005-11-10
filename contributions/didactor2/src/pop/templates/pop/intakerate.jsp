@@ -28,7 +28,10 @@
   <%@ include file="getids.jsp" %>
 
   <div class="rows">
-    <%@ include file="leftpanel.jsp" %>
+    <mm:treeinclude page="/pop/leftpanel.jsp" objectlist="$includePath" referids="$popreferids">
+      <mm:param name="wgroup"><mm:write referid="wgroup"/></mm:param>
+      <mm:param name="whatselected"><mm:write referid="whatselected"/></mm:param>
+    </mm:treeinclude>
 
 <%-- find student's copybook --%>
 <mm:node number="$student">
