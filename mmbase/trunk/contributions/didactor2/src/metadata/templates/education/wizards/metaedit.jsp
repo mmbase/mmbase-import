@@ -1,4 +1,5 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <%@page import = "java.util.Date" %>
@@ -10,31 +11,6 @@
 
 <html>
    <head>
-   <script>
-   function toggleDiv(thisDiv)
-   {  var style2 = null;
-      if (document.getElementById)
-      {
-         // this is the way the standards work
-         style2 = document.getElementById(thisDiv).style;
-      }
-      else if (document.all)
-      {
-         // this is the way old msie versions work
-         style2 = document.all[thisDiv].style;
-      }
-      else if (document.layers)
-      {
-         // this is the way nn4 works
-         style2 = document.layers[thisDiv].style;
-      }
-      if(style2.display=="block" ) {
-         style2.display="none";
-      } else {
-         style2.display="block";
-      }
-   }
-   </script>
    <head>
 
    <body style="padding-left:10px">
@@ -51,8 +27,6 @@
          {//Empty form
             if (request.getParameter("set_defaults") != null)
             {
-
-
                %>
                   <jsp:include page="metaedit_form.jsp">
                      <jsp:param name="node" value="<%= sNode %>" />
@@ -62,9 +36,6 @@
             }
             else
             {
-
-
-
                %>
                   <jsp:include page="metaedit_form.jsp">
                      <jsp:param name="node" value="<%= sNode %>" />
@@ -73,188 +44,517 @@
             }
          }
          else
-         {
-            //Submit has been pressed
+         {//Submit has been pressed
             //------------------------------- Check form -------------------------------
             HashSet hsetPassedNodes = new HashSet();
             HashSet hsetHaveToBeNotEmpty = new HashSet();
-            HashSet hsetAssignedMetadefinitions = new HashSet();
-            HashSet hsetAssignedVocabularies = new HashSet();
-
-            Enumeration enumParamNames;
-            ArrayList arlistParVals = new ArrayList();
-            ArrayList arliConstraintErrors = new ArrayList();
-            ArrayList arliRelVocVals = new ArrayList();
-            ArrayList arliRelVocNumbers = new ArrayList();
-
             boolean bFillOk = true;
             boolean bSizeOk = true;
-            boolean bConstraintOk = true;
-
             %>
                <mm:content postprocessor="reducespace">
                   <mm:cloud>
-                   <%@include file="metaedit_standard_init.jsp" %>
-                   <%
-
-                      if ((!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove")) &&
-                          (request.getParameter("set_defaults") == null)) {
-                         %>
-                         <%@include file="metaedit_processparams.jsp" %>
-                         <%
-                      } // end of if .....
-
-                      //If we set only defaults values, always redirect
-                      if((request.getParameter("set_defaults") != null) && (!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove"))){
-                            String sParList = "";
-
-                                 enumParamNames = request.getParameterNames();
-
-                                 while(enumParamNames.hasMoreElements()){
-                                      String sParameter = (String) enumParamNames.nextElement();
-                                      String[] arrstrParameters = request.getParameterValues(sParameter);
-
-                                      if(sParameter.charAt(0) == 'm'){
-                                                for(int i=0; i < arrstrParameters.length; i++){
-                                                     sParList += "&" + sParameter + "=" + arrstrParameters[i] ;
-                                                }
-
-                                       }// end of if(sParameter.charAt(0) == 'm')
-
-                                 } // end of while
-
+                     <mm:listnodes type="metastandard" orderby="name">
+                        <mm:relatednodes type="metadefinition">
+                           <mm:field name="required" jspvar="sRequired" vartype="String">
+                              <mm:field name="number" jspvar="sNumber" vartype="String">
+                                 <%
+                                    if(sRequired.equals("1"))
+                                    {
+                                       hsetHaveToBeNotEmpty.add(sNumber);
+                                    }
                                  %>
+                              </mm:field>
+                           </mm:field>
+                        </mm:relatednodes>
+                     </mm:listnodes>
+                     <%
+                        Enumeration enumParamNames;
 
+
+                        if ((!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove")) && (request.getParameter("set_defaults") == null))
+                        {//If we are not adding or delete a langstring:
+                           //Check for all required metadefinitions
+                           //If the metadefinition is present, we remove it from "hsetHaveToBeNotEmpty"
+                           enumParamNames = request.getParameterNames();
+                           ArrayList arliSizeErrors = new ArrayList();
+                           while(enumParamNames.hasMoreElements())
+                           {
+                              String sParameter = (String) enumParamNames.nextElement();
+                              String[] arrstrParameters = request.getParameterValues(sParameter);
+                              if(sParameter.charAt(0) == 'm')
+                              {
+                                 String sMetadataDefinitionID = sParameter.substring(1);
+                                 %>
+                                    <mm:node number="<%= sMetadataDefinitionID %>">
+                                       <mm:field name="type" jspvar="sType" vartype="String">
+                                          <mm:field name="required" jspvar="sReq" vartype="String">
+                                             <%
+                                                if(sType.equals("1"))
+                                                {//Vocabulary
+                                                   %>
+                                                      <mm:field name="maxvalues" jspvar="max" vartype="Integer">
+                                                         <mm:field name="minvalues" jspvar="min" vartype="Integer">
+                                                            <%
+                                                               if ((arrstrParameters.length > 1) || (!arrstrParameters[0].equals(EMPTY_VALUE)))
+                                                               {
+                                                                  if((max.intValue() < arrstrParameters.length) || (min.intValue() > arrstrParameters.length ))
+                                                                  {
+                                                                     bSizeOk = false;
+                                                                     %>
+                                                                        <mm:field name="name" jspvar="name" vartype="String">
+                                                                           <mm:field name="number" jspvar="number" vartype="String">
+                                                                              <%
+                                                                                 arliSizeErrors.add("Voor " + name + " moeten minimaal " + min + " en maximaal " + max + " waarden worden ingevuld.");
+                                                                              %>
+                                                                           </mm:field>
+                                                                        </mm:field>
+                                                                     <%
+                                                                  }
+                                                               }
+                                                               else
+                                                               {
+                                                                  bFillOk = false;
+                                                               }
+                                                            %>
+                                                         </mm:field>
+                                                      </mm:field>
+                                                   <%
+                                                }
+                                                if(sType.equals("2"))
+                                                {//Date
+                                                   try
+                                                   {
+                                                      String sDate = arrstrParameters[0] + "-" + arrstrParameters[1] + "-" + arrstrParameters[2] + "|" + arrstrParameters[3] + ":" + arrstrParameters[4];
+                                                      SimpleDateFormat df  = new SimpleDateFormat("dd-MM-yyyy|hh:mm");
+                                                      Date date = df.parse(sDate);
+                                                      hsetHaveToBeNotEmpty.remove(sMetadataDefinitionID);
+                                                   }
+                                                   catch(Exception e)
+                                                   {
+                                                      if(sReq.equals("1")) {
+                                                         bFillOk = false;
+                                                      }
+                                                   }
+                                                }
+                                                if(sType.equals("4"))
+                                                {//Duration
+                                                   try
+                                                   {
+                                                      String sDateBegin = arrstrParameters[0] + "-" + arrstrParameters[1] + "-" + arrstrParameters[2] + "|" + arrstrParameters[3] + ":" + arrstrParameters[4];
+                                                      String sDateEnd   = arrstrParameters[5] + "-" + arrstrParameters[6] + "-" + arrstrParameters[7] + "|" + arrstrParameters[8] + ":" + arrstrParameters[9];
+                                                      SimpleDateFormat df  = new SimpleDateFormat("dd-MM-yyyy|hh:mm");
+                                                      Date date = df.parse(sDateBegin);
+                                                      date = df.parse(sDateEnd);
+                                                      hsetHaveToBeNotEmpty.remove(sMetadataDefinitionID);
+                                                   }
+                                                   catch(Exception e)
+                                                   {
+                                                      if(sReq.equals("1")) {
+                                                         bFillOk = false;
+                                                      }
+                                                   }
+                                                }
+                                             %>
+                                          </mm:field>
+                                       </mm:field>
+                                    </mm:node>
+                                 <%
+                                 if ((bFillOk) && (hsetHaveToBeNotEmpty.contains(sMetadataDefinitionID)))
+                                 {
+                                    hsetHaveToBeNotEmpty.remove(sMetadataDefinitionID);
+                                 }
+                              }
+                           }
+
+                           %>
+                              <%@include file="metaedit_header.jsp" %>
+                              <br/>
+                           <%
+                           //Header, if error
+                           if((hsetHaveToBeNotEmpty.size() > 0) || (arliSizeErrors.size() > 0))
+                           {
+                              %>
+                                 <style type="text/css">
+                                    body{
+                                       font-family:arial;
+                                       font-size:12px;
+                                    }
+                                 </style>
+
+
+                                 <font style="color:red; font-size:11px; font-weight:bold; text-decoration:none; letter-spacing:1px;"><font style="font-size:15px">O</font>NTBREKENDE VERPLICHTE VELDEN!</font>
+                                 <br/>
+                              <%
+                           }
+                           //List of errors for empty nodes
+                           if(hsetHaveToBeNotEmpty.size() > 0)
+                           {
+                              %>
+                                 U wordt verzocht de volgende onvolkomendheden te herstellen:
+                                 <br/>
+                                 <ul>
+                              <%
+                           }
+                           for(Iterator it = hsetHaveToBeNotEmpty.iterator(); it.hasNext();)
+                           {
+                              String sIsEmpty = (String) it.next();
+                              %>
+                                 <li>
+                                    <mm:node number="<%= sIsEmpty %>">
+                                       <mm:field name="name"/>
+                                       <br/>
+                                    </mm:node>
+                                 </li>
+                              <%
+                           }
+                           //List of error for errors with "size"
+                           for(Iterator it = arliSizeErrors.iterator(); it.hasNext();)
+                           {
+                              String sSizeError = (String) it.next();
+                              %><li><%= sSizeError %></li><%
+                           }
+                           %></ul><%
+
+
+
+                           //Use JS to synchronize values in tree
+                           if((!bFillOk) || (!bSizeOk) || (hsetHaveToBeNotEmpty.size() > 0))
+                           {
+                              %>
+                                 <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier</font></a>
+                                 <script>
+                                    try
+                                    {
+                                       top.frames['menu'].document.images['img_<%= sNode %>'].src='gfx/metaerror.gif';
+                                    }
+                                    catch(err)
+                                    {
+                                    }
+                                 </script>
+                              <%
+                           }
+                           else
+                           {
+                              if(session.getAttribute("show_metadata_in_list") == null)
+                              {//We use metaeditor from content_metadata or not?
+                                 %>
+                                    Metadata is opgeslagen.
+                                    <script>
+                                       try
+                                       {
+                                          top.frames['menu'].document.images['img_<%= sNode %>'].src='gfx/metavalid.gif';
+                                       }
+                                       catch(err)
+                                       {
+                                       }
+                                       window.setInterval("document.location.href='metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime()%>;'", 3000);
+                                    </script>
+                                    <br/><br/>
+                                    <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier</font></a>
+                                 <%
+                              }
+                              else
+                              {
+                                 if ((sRequest_DoCloseMetaeditor != null) && (sRequest_DoCloseMetaeditor.equals("yes")))
+                                 {//User has selected "SAVE&CLOSE"
+                                    response.sendRedirect((String) session.getAttribute("metalist_url"));
+                                 }
+                                 else
+                                 {
+                                    response.sendRedirect("metaedit.jsp?number=" + sNode + "&random=" + (new Date()).getTime());
+                                 }
+                              }
+                           }
+
+                        }
+
+                        //If we set only defaults values, always redirect
+                        if((request.getParameter("set_defaults") != null) && (!sRequest_Submitted.equals("add")) && (!sRequest_Submitted.equals("remove")))
+                        {
+                              %>
                                  <%@include file="metaedit_header.jsp" %>
                                  <br/>
                                  Standaard metadata waarden zijn opgeslagen.
                                  <script>
-                                    window.setInterval("document.location.href='metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime()%>&set_defaults=true<%=sParList%>;'", 3000);
+                                    window.setInterval("document.location.href='metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime()%>&set_defaults=true;'", 3000);
                                  </script>
                                  <br/><br/>
                                  <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none">Terug naar het metadata formulier</font></a>
+                              <%
+                        }
 
-                      <%
-                      } // end of if((request.getParameter("set_defaults") != null)
-
-                      //---------------- Process parameters and store values ---------------
-                      enumParamNames = request.getParameterNames();
-                      while(enumParamNames.hasMoreElements()){
-                         //Go throw all parameters from http-request
-                         String sParameter = (String) enumParamNames.nextElement();
-
-                         if((sParameter.equals("add")) && (sRequest_Submitted.equals("remove"))){
-                            //we have got "remove lang string" command
-                         }
-
-                         if(sParameter.charAt(0) == 'm'){
-                            String sMetadataDefinitionID = sParameter.substring(1);
-                            //It creates a new or gets exist metadata
-                            %>
-                                <jsp:include page="metaedit_metaget.jsp" flush="true">
-                                   <jsp:param name="node" value="<%= sNode %>" />
-                                   <jsp:param name="metadata_definition" value="<%= sMetadataDefinitionID%>" />
-                                </jsp:include>
-                            <%
-                            String sMetadataID = (String) session.getAttribute("metadata_id");
-
-                            //Add this node to the "passed" list
-                            //We shouldn't erase values from it in future
-                            hsetPassedNodes.add(sMetadataID);
-
-                            String sMetadataDefinitionType = "";
-                            boolean bIsRelated = false;
-                            //Type of metadata
-                            %>
-                            <%@include file="metaedit_definition_process.jsp" %>
-                            <%
-                         } // end of if(sParameter.charAt(0) == 'm')
-                      } // end of  while(enumParamNames.hasMoreElements())
+                        //---------------- Process parameters and store values ---------------
+                        enumParamNames = request.getParameterNames();
+                        while(enumParamNames.hasMoreElements())
+                        {//Go throw all parameters from http-request
+                           String sParameter = (String) enumParamNames.nextElement();
 
 
-                      if(sRequest_Submitted.equals("add")){
-                        //we have got "add lang string" command
-                        //It creates a new or gets exist metadata
+                           if((sParameter.equals("add")) && (sRequest_Submitted.equals("remove")))
+                           {//we have got "remove lang string" command
+                           }
 
-                      %>
-                         <jsp:include page="metaedit_metaget.jsp" flush="true">
-                             <jsp:param name="node" value="<%= sNode %>" />
-                             <jsp:param name="metadata_definition" value="<%= request.getParameter("add") %>" />
-                         </jsp:include>
-                      <%
-                         String sMetadataID = (String) session.getAttribute("metadata_id");
 
-                         //add a new field
-                      %>
-                      <mm:remove referid="lang_id" />
-                      <mm:remove referid="metadata_id" />
-                      <mm:createnode type="metalangstring" id="lang_id"/>
+                           if(sParameter.charAt(0) == 'm')
+                           {
+                              String sMetadataDefinitionID = sParameter.substring(1);
 
-                         <mm:node number="<%= sMetadataID %>" id="metadata_id">
-                            <mm:createrelation source="metadata_id" destination="lang_id" role="posrel">
-                               <mm:setfield name="pos"><%= 1000000 %></mm:setfield>
-                            </mm:createrelation>
-                         </mm:node>
-                      <%
-                      } //end of if(sRequest_Submitted.equals("add"))
-                      %>
-                      <mm:node number="<%= sNode %>">
-                         <mm:relatednodes type="metadata">
-                            <mm:field name="number" jspvar="sID" vartype="String">
+                              //It creates a new or gets exist metadata
+                              %>
+                                 <jsp:include page="metaedit_metaget.jsp" flush="true">
+                                    <jsp:param name="node" value="<%= sNode %>" />
+                                    <jsp:param name="metadata_definition" value="<%= sMetadataDefinitionID%>" />
+                                 </jsp:include>
+                              <%
+                              String sMetadataID = (String) session.getAttribute("metadata_id");
 
-                                <mm:relatednodes type="metavocabulary">
-                                   <mm:field name="number" jspvar="sNum" vartype="String">
-                                      <mm:listrelations type="metadata" role="posrel">
-                                         <mm:field name="snumber" jspvar="sSource" vartype="String">
-                                            <%
-                                            if(!hsetAssignedVocabularies.contains(sNum) &&
-                                               sSource.equals(sID)&&
-                                               sRequest_Submitted != null){
-                                            %>
-                                            <mm:deletenode />
-                                            <%
-                                            } // end of if(!hsetAssignedVocabularies.contains(sNum) &&
-                                            %>
-                                         </mm:field>
-                                      </mm:listrelations>
-                                   </mm:field>
-                                </mm:relatednodes>
-                            <%
-                            if(!hsetPassedNodes.contains(sID)){
-                               // ------------ Remove old values ---------------
-                               %>
-                               <mm:relatednodes type="metadate">
-                                   <mm:deletenode deleterelations="true"/>
-                               </mm:relatednodes>
-                               <mm:relatednodes type="metalangstring">
-                                    <mm:deletenode deleterelations="true"/>
-                               </mm:relatednodes>
-                            <%
-                            } // end of if(!hsetPassedNodes.contains(sID)){
-                            %>
-                            </mm:field>
-                         </mm:relatednodes>
-                      </mm:node>
-                      <%
 
-                      if((sRequest_Submitted.equals("add")) || (sRequest_Submitted.equals("remove"))){
-                         String sParList = "";
-                         enumParamNames = request.getParameterNames();
-                         while(enumParamNames.hasMoreElements()){
-                            String sParameter = (String) enumParamNames.nextElement();
-                            String[] arrstrParameters = request.getParameterValues(sParameter);
-                            if(sParameter.charAt(0) == 'm'){
-                               for(int i=0; i < arrstrParameters.length; i++){
-                                  sParList += "&" + sParameter + "=" + arrstrParameters[i] ;
-                               } // end of for
-                            } // end of if
-                         }// end of while
-                         %>
-                         <jsp:include page="metaedit_form.jsp?node=<%= sNode %><%= sParList %>" flush="true" />
+                              //Add this node to the "passed" list
+                              //We shouldn't erase values from it in future
+                              hsetPassedNodes.add(sMetadataID);
+
+                              String sMetadataDefinitionType = "";
+                              //Type of metadata
+                              %>
+                                 <mm:node number="<%= sMetadataDefinitionID%>">
+                                    <mm:field name="type" jspvar="sType" vartype="String" write="false">
+                                       <%
+                                          sMetadataDefinitionType = sType;
+                                       %>
+                                    </mm:field>
+                                 </mm:node>
+                              <%
+
+                              if(sMetadataDefinitionType.equals("1"))
+                              {//Vocabulary
+                                 %>
+                                    <mm:node number="<%= sMetadataID %>">
+                                       <mm:relatednodes type="metavocabulary">
+                                          <mm:deletenode deleterelations="true"/>
+                                       </mm:relatednodes>
+                                    </mm:node>
+                                 <%
+                                 String[] arrstrParameters = request.getParameterValues(sParameter);
+                                 if ((arrstrParameters.length > 1) || (!arrstrParameters[0].equals(EMPTY_VALUE)))
+                                 {
+                                    for(int f = 0; f < arrstrParameters.length; f++)
+                                    {
+                                       %>
+                                          <mm:remove referid="vocabulary_id" />
+                                          <mm:remove referid="metadata_id" />
+                                          <mm:createnode type="metavocabulary" id="vocabulary_id">
+                                             <mm:setfield name="value"><%= arrstrParameters[f] %></mm:setfield>
+                                          </mm:createnode>
+                                          <mm:node number="<%= sMetadataID %>" id="metadata_id">
+                                             <mm:createrelation source="metadata_id" destination="vocabulary_id" role="posrel" />
+                                          </mm:node>
+                                       <%
+                                    }
+                                 }
+                              }
+                              if(sMetadataDefinitionType.equals("2"))
+                              {//Date
+                                 %>
+                                    <mm:node number="<%= sMetadataID %>">
+                                       <mm:relatednodes type="metadate">
+                                          <mm:deletenode deleterelations="true"/>
+                                       </mm:relatednodes>
+                                    </mm:node>
+                                 <%
+                                 String[] arrstrParameters = request.getParameterValues(sParameter);
+                                 try
+                                 {
+                                    String sDate = arrstrParameters[0] + "-" + arrstrParameters[1] + "-" + arrstrParameters[2] + "|" + arrstrParameters[3] + ":" + arrstrParameters[4];
+                                    SimpleDateFormat df  = new SimpleDateFormat("dd-MM-yyyy|hh:mm");
+                                    Date date = df.parse(sDate);
+                                    %>
+                                       <mm:remove referid="date_id" />
+                                       <mm:remove referid="metadata_id" />
+                                       <mm:createnode type="metadate" id="date_id">
+                                          <mm:setfield name="value"><%= date.getTime() / 1000 %></mm:setfield>
+                                       </mm:createnode>
+                                       <mm:node number="<%= sMetadataID %>" id="metadata_id">
+                                          <mm:createrelation source="metadata_id" destination="date_id" role="posrel" />
+                                       </mm:node>
+                                    <%
+                                 }
+                                 catch(Exception e)
+                                 {
+                                    %>
+                                       <mm:node number="<%= sMetadataID %>">
+                                          <mm:relatednodes type="metadate">
+                                             <mm:deletenode deleterelations="true"/>
+                                          </mm:relatednodes>
+                                       </mm:node>
+                                    <%
+                                 }
+                              }
+
+                              if(sMetadataDefinitionType.equals("3"))
+                              {//Strings with langs code
+                                 boolean bNoData = true;
+                                 %>
+                                    <mm:node number="<%= sMetadataID %>">
+                                       <mm:relatednodes type="metalangstring">
+                                          <mm:deletenode deleterelations="true"/>
+                                          <%
+                                             bNoData = false;
+                                          %>
+                                       </mm:relatednodes>
+                                    </mm:node>
+                                 <%
+                                 String[] arrstrParameters = request.getParameterValues(sParameter);
+                                 for(int f = 0; f < arrstrParameters.length ; f += 2)
+                                 {// in cycle we are getting all values from request
+                                    if(sRequest_Submitted.equals("remove"))
+                                    {// if we have got "remove" command, we should skip the
+                                       String[] sTarget = request.getParameter("add").split("\\,");
+                                       if (sMetadataDefinitionID.equals(sTarget[0]))
+                                       {
+                                          if (sTarget[1].equals("" + f/2)) continue;
+                                       }
+                                    }
+
+                                    String sLang = arrstrParameters[f];
+                                    String sCode = arrstrParameters[f + 1];
+                                    if ((sCode.equals("")) && (arrstrParameters.length == 2) && (bNoData))
+                                    {// if we have got only one paramter and it is empty, and there are no existing nodes in db then we shouldn't store this lang string
+                                       break;
+                                    }
+
+                                    %>
+                                       <mm:remove referid="lang_id" />
+                                       <mm:remove referid="metadata_id" />
+                                       <mm:createnode type="metalangstring" id="lang_id">
+                                          <mm:setfield name="language"><%= sLang %></mm:setfield>
+                                          <mm:setfield name="value"><%= sCode %></mm:setfield>
+                                       </mm:createnode>
+                                       <mm:node number="<%= sMetadataID %>" id="metadata_id">
+                                          <mm:createrelation source="metadata_id" destination="lang_id" role="posrel">
+                                             <mm:setfield name="pos"><%= f + 1 %></mm:setfield>
+                                          </mm:createrelation>
+                                       </mm:node>
+                                    <%
+                                 }
+                              }
+                              if(sMetadataDefinitionType.equals("4"))
+                              {//Duration
+                                 boolean bNotEmpty = false;
+                                 %>
+                                    <mm:node number="<%= sMetadataID %>">
+                                       <mm:relatednodes type="metadate">
+                                          <%
+                                             bNotEmpty = true;
+                                          %>
+                                          <mm:deletenode deleterelations="true"/>
+                                       </mm:relatednodes>
+                                    </mm:node>
+                                 <%
+                                 String[] arrstrParameters = request.getParameterValues(sParameter);
+                                 try
+                                 {
+                                    String sDateBegin = arrstrParameters[0] + "-" + arrstrParameters[1] + "-" + arrstrParameters[2] + "|" + arrstrParameters[3] + ":" + arrstrParameters[4];
+                                    String sDateEnd   = arrstrParameters[5] + "-" + arrstrParameters[6] + "-" + arrstrParameters[7] + "|" + arrstrParameters[8] + ":" + arrstrParameters[9];
+                                    SimpleDateFormat df  = new SimpleDateFormat("dd-MM-yyyy|hh:mm");
+
+                                    Date dateBegin = df.parse(sDateBegin);
+                                    Date dateEnd   = df.parse(sDateEnd);
+                                    %>
+                                       <mm:remove referid="date_id" />
+                                       <mm:remove referid="metadata_id" />
+                                       <mm:createnode type="metadate" id="date_id">
+                                          <mm:setfield name="value"><%= dateBegin.getTime() / 1000 %></mm:setfield>
+                                       </mm:createnode>
+                                       <mm:node number="<%= sMetadataID %>" id="metadata_id">
+                                          <mm:createrelation source="metadata_id" destination="date_id" role="posrel">
+                                             <mm:setfield name="pos">1</mm:setfield>
+                                          </mm:createrelation>
+                                       </mm:node>
+
+                                       <mm:remove referid="date_id" />
+                                       <mm:remove referid="metadata_id" />
+                                       <mm:createnode type="metadate" id="date_id">
+                                          <mm:setfield name="value"><%= dateEnd.getTime() / 1000 %></mm:setfield>
+                                       </mm:createnode>
+                                       <mm:node number="<%= sMetadataID %>" id="metadata_id">
+                                          <mm:createrelation source="metadata_id" destination="date_id" role="posrel">
+                                             <mm:setfield name="pos">2</mm:setfield>
+                                          </mm:createrelation>
+                                       </mm:node>
+                                    <%
+                                 }
+                                 catch(Exception e)
+                                 {
+                                    %>
+                                       <mm:node number="<%= sMetadataID %>">
+                                          <mm:relatednodes type="metadate">
+                                             <mm:deletenode deleterelations="true"/>
+                                          </mm:relatednodes>
+                                       </mm:node>
+                                    <%
+                                 }
+                              }
+                           }
+                        }
+
+                        if(sRequest_Submitted.equals("add"))
+                        {//we have got "add lang string" command
+                         //It creates a new or gets exist metadata
+                           %>
+                              <jsp:include page="metaedit_metaget.jsp" flush="true">
+                                 <jsp:param name="node" value="<%= sNode %>" />
+                                 <jsp:param name="metadata_definition" value="<%= request.getParameter("add") %>" />
+                              </jsp:include>
+                           <%
+                           String sMetadataID = (String) session.getAttribute("metadata_id");
+
+                           //add a new field
+                           %>
+                              <mm:remove referid="lang_id" />
+                              <mm:remove referid="metadata_id" />
+                              <mm:createnode type="metalangstring" id="lang_id"/>
+
+                              <mm:node number="<%= sMetadataID %>" id="metadata_id">
+                                 <mm:createrelation source="metadata_id" destination="lang_id" role="posrel">
+                                    <mm:setfield name="pos"><%= 1000000 %></mm:setfield>
+                                 </mm:createrelation>
+                              </mm:node>
+                           <%
+                        }
+                     %>
+                     <mm:node number="<%= sNode %>">
+                        <mm:relatednodes type="metadata">
+                           <mm:field name="number" jspvar="sID" vartype="String">
+                              <%
+                                 if(!hsetPassedNodes.contains(sID))
+                                 {// ------------ Remove old values ---------------
+                                    %>
+                                       <mm:relatednodes type="metavocabulary">
+                                          <mm:deletenode deleterelations="true"/>
+                                       </mm:relatednodes>
+                                       <mm:relatednodes type="metadate">
+                                          <mm:deletenode deleterelations="true"/>
+                                       </mm:relatednodes>
+                                       <mm:relatednodes type="metalangstring">
+                                          <mm:deletenode deleterelations="true"/>
+                                       </mm:relatednodes>
+                                    <%
+                                 }
+                              %>
+                           </mm:field>
+                        </mm:relatednodes>
+                     </mm:node>
                      <%
-                     }  // end of if((sRequest_Submitted.equals("add")) ||
-
-                     // We have to update metadate.value field (it is handled by metadata builder) %>
+                        if((sRequest_Submitted.equals("add")) || (sRequest_Submitted.equals("remove")))
+                        {
+                           %>
+                              <jsp:include page="metaedit_form.jsp" flush="true">
+                                 <jsp:param name="node" value="<%= sNode %>" />
+                              </jsp:include>
+                           <%
+                        }
+                     %>
+                     <% // We have to update metadate.value field (it is handled by metadata builder) %>
                      <mm:node number="<%= sNode %>">
                         <mm:relatednodes type="metadata">
                            <mm:setfield name="value">-</mm:setfield>
@@ -263,8 +563,7 @@
                   </mm:cloud>
                </mm:content>
             <%
-         } // end of Submit has been pressed
-         %>
+         }
+      %>
    </body>
 </html>
-
