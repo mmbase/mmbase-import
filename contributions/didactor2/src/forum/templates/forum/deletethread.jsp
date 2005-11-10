@@ -7,16 +7,21 @@ This page allows a teacher or administrator to completely remove a thread, inclu
 <%@taglib uri="oscache" prefix="os" %>
 <mm:cloud jspvar="cloud" name="mmbase" loginpage="/login.jsp">
   <%@ include file="/shared/setImports.jsp"%>
+
+  <%@include file="/education/wizards/roles_defs.jsp" %>
+  <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+  <%@include file="/education/wizards/roles_chk.jsp" %>
+
   <mm:import id="name" externid="name" />
   <mm:import id="forum" externid="forum" jspvar="forum"/>
   <mm:import id="delthread" externid="delthread" />
 
-  <di:hasrole role="teacher" inverse="false">
+  <mm:islessthan referid="rights" referid2="RIGHTS_RW" inverse="true">
     <mm:import id="isTeacher">true</mm:import>
-  </di:hasrole>
-  <di:hasrole role="teacher" inverse="true">
+  </mm:islessthan>
+  <mm:islessthan referid="rights" referid2="RIGHTS_RW">
     <mm:import id="isTeacher">false</mm:import>
-  </di:hasrole>
+  </mm:islessthan>
 
   <mm:isnotempty referid="delthread">
     <mm:compare referid="isTeacher" value="true">
