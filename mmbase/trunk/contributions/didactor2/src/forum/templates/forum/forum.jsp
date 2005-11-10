@@ -9,23 +9,27 @@
 
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
-<%@include file="/shared/setImports.jsp" %>
+  <%@include file="/shared/setImports.jsp" %>
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-  <mm:param name="extraheader">
-    <title>Forum</title>
-  </mm:param>
-</mm:treeinclude>
+  <%@include file="/education/wizards/roles_defs.jsp" %>
+  <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+  <%@include file="/education/wizards/roles_chk.jsp" %>
+
+  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="extraheader">
+      <title>Forum</title>
+    </mm:param>
+  </mm:treeinclude>
 
   <mm:import id="forum" externid="forum"/>
 
   <mm:node referid="class">
-     <di:hasrole role="teacher">
+    <mm:islessthan referid="rights" referid2="RIGHTS_RW" inverse="true">
       <mm:relatednodes type="forums" id="forumlist" orderby="name"/>
-    </di:hasrole>
-    <di:hasrole role="teacher" inverse="true">
+    </mm:islessthan>
+    <mm:islessthan referid="rights" referid2="RIGHTS_RW">
       <mm:relatednodes type="forums" id="forumlist" orderby="name" constraints="[type] = 0"/>
-    </di:hasrole>
+    </mm:islessthan>
 
     <mm:list referid="forumlist">
       <mm:first>
@@ -49,16 +53,16 @@
         <td class="tableheader"><di:translate key="forum.forum" /></td>
   </div>
   <div class="folderBody">
-     <di:hasrole role="teacher">
+     <mm:islessthan referid="rights" referid2="RIGHTS_RW" inverse="true">
           <mm:treeinclude write="true" page="/forum/headerlink.jsp" objectlist="$includePath" referids="$referids">
             <mm:param name="icon" value="nieuw forum"/>
             <mm:param name="text"><di:translate key="forum.newforum" /></mm:param>
             <mm:param name="link"><mm:treefile write="true" page="/forum/createforum.jsp" objectlist="$includePath" referids="$referids"/></mm:param>
           </mm:treeinclude>
-     </di:hasrole>
-     <di:hasrole role="teacher" inverse="true">
+     </mm:islessthan>
+     <mm:islessthan referid="rights" referid2="RIGHTS_RW">
        &nbsp;
-     </di:hasrole>
+     </mm:islessthan>
 
 
 
@@ -71,9 +75,9 @@
       <mm:import jspvar="forum" vartype="String"><mm:write referid="forum"/></mm:import>
 
   <mm:import jspvar="isTeacher" vartype="String">false</mm:import>
-  <di:hasrole role="teacher">
+  <mm:islessthan referid="rights" referid2="RIGHTS_RW" inverse="true">
       <mm:import jspvar="isTeacher" vartype="String">true</mm:import>
-  </di:hasrole>
+  </mm:islessthan>
   <br /><br />
           <!-- linker navigatie -->
           <%-- cache this part, only to be reset by the creating a new forum
@@ -128,7 +132,7 @@
                   </mm:treefile></mm:param>
               </mm:treeinclude>
 
-              <di:hasrole role="teacher">
+              <mm:islessthan referid="rights" referid2="RIGHTS_RW" inverse="true">
                 <mm:node referid="forum">
                   <mm:field name="type" id="type" write="false"/>
                   <mm:compare referid="type" value="0">
@@ -155,7 +159,7 @@
                     </mm:treeinclude>
                   </mm:compare>
                 </mm:node>
-              </di:hasrole>
+              </mm:islessthan>
     </mm:isnotempty>
     <mm:isempty referid="forum">
 &nbsp;

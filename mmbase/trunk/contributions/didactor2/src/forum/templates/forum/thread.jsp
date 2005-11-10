@@ -8,16 +8,21 @@ This message is also create by this page.
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="oscache" prefix="os" %>
+
 <mm:content postprocessor="none" expires="0"><%-- postprocess="none" because of textarea interaction --%>
 
 <mm:cloud name="mmbase" loginpage="/login.jsp" jspvar="cloud">
   <%@ include file="/shared/setImports.jsp"%>
 
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-  <mm:param name="extraheader">
-    <title>Forum</title>
-  </mm:param>
-</mm:treeinclude>
+  <%@include file="/education/wizards/roles_defs.jsp" %>
+  <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+  <%@include file="/education/wizards/roles_chk.jsp" %>
+
+  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="extraheader">
+      <title>Forum</title>
+    </mm:param>
+  </mm:treeinclude>
 
   <mm:import id="forum" externid="forum" jspvar="forum"/>
   <mm:import id="thread" externid="thread" jspvar="thread"/>
@@ -28,12 +33,12 @@ This message is also create by this page.
   </mm:present>
 
   
-  <di:hasrole role="teacher">
+  <mm:islessthan referid="rights" referid2="RIGHTS_RW" inverse="true">
     <mm:import id="isTeacher">true</mm:import>
-  </di:hasrole>
-  <di:hasrole role="teacher" inverse="true">
+  </mm:islessthan>
+  <mm:islessthan referid="rights" referid2="RIGHTS_RW">
     <mm:import id="isTeacher">false</mm:import>
-  </di:hasrole>
+  </mm:islessthan>
 
   <mm:import id="insertedmessageok"></mm:import>
   <mm:import id="message" externid="message" />
