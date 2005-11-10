@@ -35,13 +35,13 @@
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=components" style="font-weight:bold;"><di:translate key="education.educationmenucomponents" /></a>
+     <a <mm:compare referid="mode" value="components">class="education_top_menu_selected"</mm:compare> href="?mode=components" style="font-weight:bold;"><di:translate key="education.educationmenucomponents" /></a>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">rollen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=roles" style="font-weight:bold;"><di:translate key="education.educationmenupersons" /></a>
+     <a <mm:compare referid="mode" value="roles">class="education_top_menu_selected"</mm:compare> href="?mode=roles" style="font-weight:bold;"><di:translate key="education.educationmenupersons" /></a>
    </mm:islessthan>
 
    <mm:node number="component.pop" notfound="skipbody">
@@ -50,7 +50,7 @@
        <mm:import id="editcontextname" reset="true">competentie</mm:import>
        <%@include file="/education/wizards/roles_chk.jsp" %>
        <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-         <a href="?mode=competence" style="font-weight:bold;"><di:translate key="education.educationmenucompetence" /></a>
+         <a <mm:compare referid="mode" value="competence">class="education_top_menu_selected"</mm:compare> href="?mode=competence" style="font-weight:bold;"><di:translate key="education.educationmenucompetence" /></a>
        </mm:islessthan>
      </mm:relatednodes>
    </mm:node>
@@ -59,31 +59,32 @@
      <mm:import id="editcontextname" reset="true">metadata</mm:import>
      <%@include file="/education/wizards/roles_chk.jsp" %>
      <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-       <a href="?mode=metadata" style="font-weight:bold;"><di:translate key="education.educationmenumetadata" /></a>
+       <a <mm:compare referid="mode" value="metadata">class="education_top_menu_selected"</mm:compare> href="?mode=metadata" style="font-weight:bold;"><di:translate key="education.educationmenumetadata" /></a>
      </mm:islessthan>
    </mm:node>
 
    <mm:import id="editcontextname" reset="true">contentelementen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=content_metadata" style="font-weight:bold;"><di:translate key="education.educationmenucontentmetadata" /></a>
+     <a <mm:compare referid="mode" value="content_metadata">class="education_top_menu_selected"</mm:compare> href="?mode=content_metadata" style="font-weight:bold;"><di:translate key="education.educationmenucontentmetadata" /></a>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=filemanagement" style="font-weight:bold;"><di:translate key="education.educationmenufilemanagement" /></a>
+     <a <mm:compare referid="mode" value="filemanagement">class="education_top_menu_selected"</mm:compare> href="?mode=filemanagement" style="font-weight:bold;"><di:translate key="education.educationmenufilemanagement" /></a>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">toetsen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <a href="?mode=tests" style="font-weight:bold;"><di:translate key="education.educationmenutests" /></a>
+     <a <mm:compare referid="mode" value="tests">class="education_top_menu_selected"</mm:compare> href="?mode=tests" style="font-weight:bold;"><di:translate key="education.educationmenutests" /></a>
    </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+     <span <mm:compare referid="mode" value="educations">class="education_top_menu_selected"</mm:compare>>
      <% if (hsetEducations.size() < 2) { %>
        <a href="?mode=educations" style="font-weight:bold;"><di:translate key="education.educationmenueducations" /></a>
      <% } else { %>
@@ -95,7 +96,18 @@
            }
          }
        </script>
-       <select name="course" onChange="chooseEducation(this.value)">
+       <style>
+         .navigationbar {
+           height: 25px;
+         }
+         .folders {
+           top: 30px;
+         }
+         .maincontent {
+           top: 30px;
+         }
+       </style>
+       <select name="course" id="course">
          <option value="0">--------</option>
          <%
          for(Iterator it = hsetEducations.iterator(); it.hasNext();) {
@@ -110,6 +122,8 @@
          }
        %>
        </select>
+       <img src="gfx/ga.gif" alt="Ga" onclick="chooseEducation(document.getElementById('course').value)" />
      <% } %>
+     </span>
   </mm:islessthan>
 </mm:cloud>
