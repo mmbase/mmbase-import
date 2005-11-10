@@ -1,3 +1,17 @@
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+
+<mm:content postprocessor="reducespace">
+<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+
+<%@include file="/shared/setImports.jsp" %>
+
+<%@include file="getids.jsp" %>
+
+<%@include file="/education/wizards/roles_defs.jsp" %>
+<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
+<%@include file="/education/wizards/roles_chk.jsp" %>
+
 <div class="folders">
   <div class="folderHeader">
   </div>
@@ -5,7 +19,7 @@
 
 <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
   <mm:import externid="wgroup"/>
-  <mm:compare referid="wgroup" value="">  <mm:import id="wgroup" reset="true">0</mm:import></mm:compare>
+  <mm:compare referid="wgroup" value=""><mm:import id="wgroup" reset="true">0</mm:import></mm:compare>
   <form name="teacherform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
         referids="$popreferids">
       </mm:treefile>" method="post">
@@ -286,3 +300,6 @@
 
   </div>
 </div>
+
+</mm:cloud>
+</mm:content>

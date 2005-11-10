@@ -27,7 +27,7 @@
       </tr>
       <tr style="vertical-align:top;">
         <td width="100" style="vertical-align:top;"><di:translate key="pop.description" /></td>
-        <td><b><mm:field name="description"/></b></td>
+        <td><b><mm:field name="description" escape="pp"/></b></td>
       </tr>
       <tr style="vertical-align:top;">
         <td nowrap><di:translate key="pop.compeditfeedback1" /></td>
@@ -86,31 +86,29 @@
         </tr>
         <mm:related>
           <mm:node element="popfeedback">
-            <mm:relatedcontainer path="people">
-              <mm:constraint field="people.number" referid="student" operator="EQUAL" inverse="true"/>
-              <mm:related>
-                <tr>
+            <tr>
+              <mm:relatedcontainer path="people">
+                <mm:constraint field="people.number" referid="student" operator="EQUAL" inverse="true"/>
+                <mm:related>
                   <td class="listItem"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></td>
-                  <mm:node element="popfeedback">
-                    <mm:field name="status" jspvar="isAnswered" vartype="String">
-                      <% if (!isAnswered.equals("0")) { %>
-                        <td class="listItem"><mm:field name="rank"/></td>
-                        <td class="listItem">
-                          <mm:related path="ratings">
-                            <mm:field name="ratings.name" id="rating" write="true"/>
-                          </mm:related>
-                        </td>
-                        <td class="listItem"><mm:field name="text"/></td>
-                      <% } else { %>
-                        <td class="listItem"><i><di:translate key="pop.notanswered" /></i></td>
-                        <td class="listItem">&nbsp;</td>
-                        <td class="listItem">&nbsp;</td>
-                      <% } %>
-                    </mm:field>
-                  </mm:node>
-                </tr>
-              </mm:related>
-            </mm:relatedcontainer>
+                </mm:related>
+              </mm:relatedcontainer>
+              <mm:field name="status" jspvar="isAnswered" vartype="String">
+                <% if (!isAnswered.equals("0")) { %>
+                  <td class="listItem"><mm:field name="rank"/></td>
+                  <td class="listItem">
+                    <mm:related path="ratings">
+                      <mm:field name="ratings.name" id="rating" write="true"/>
+                    </mm:related>
+                  </td>
+                  <td class="listItem"><mm:field name="text"/></td>
+                <% } else { %>
+                  <td class="listItem"><i><di:translate key="pop.notanswered" /></i></td>
+                  <td class="listItem">&nbsp;</td>
+                  <td class="listItem">&nbsp;</td>
+                <% } %>
+              </mm:field>
+            </tr>
           </mm:node>
         </mm:related>
       </table></div>

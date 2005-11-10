@@ -14,7 +14,7 @@
                     <% isEmpty = false; %>
                     <mm:import id="thisfeedback" reset="true"><%= thisFeedback %></mm:import>
                     <td class="listItem"><mm:field name="popfeedback.rank"/></td>
-                    <td class="listItem"><mm:field name="popfeedback.text"/></td>
+                    <td class="listItem"><mm:field name="popfeedback.text" escape="pp"/></td>
                   </mm:list>
                 </mm:field>
               </mm:list>
