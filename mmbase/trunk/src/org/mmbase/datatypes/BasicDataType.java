@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.23 2005-11-04 23:12:51 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.24 2005-11-11 10:44:35 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -188,7 +188,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     public Object preCast(Object value, Node node, Field field) {
         return enumerationRestriction.cast(value);
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -336,7 +336,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * This method is final, override {@link #clone(String)} in stead.
      */
     public final Object clone() {
-        return clone(getName() + "_clone");
+//        return clone(getName() + "_clone");
+        return clone(getName());
     }
 
     /**
@@ -671,7 +672,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
 
         public String toString() {
-            return name + " : " + 
+            return name + " : " +
                 (enforceStrength == DataType.ENFORCE_NEVER ? "*" : "") +
                 value + ( fixed ? "." : "");
         }
@@ -815,7 +816,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         private Object next = null;
 
         RestrictedEnumerationIterator(Locale locale, Cloud cloud, Node node, Field field) {
-            Collection col = enumerationRestriction.getEnumeration(locale, cloud, node, field);            
+            Collection col = enumerationRestriction.getEnumeration(locale, cloud, node, field);
             baseIterator =  col != null ? col.iterator() : Collections.EMPTY_LIST.iterator();
             this.node = node;
             this.field = field;
