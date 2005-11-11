@@ -82,7 +82,7 @@
 
     <specialization id="line">
       <!-- no new lines -->
-      <pattern enforce="always" value="\A[^\n\r]*\z" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
     </specialization>
 
     <specialization id="owner">
