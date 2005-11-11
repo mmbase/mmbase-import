@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
-<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+   <!ENTITY extra_steps SYSTEM "extra_steps.xml">
+   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+   <!ENTITY extra_lists SYSTEM "extra_lists.xml">
+]>
 <wizard-schema id="empty">
   <title xml:lang="nl">Personen Editor</title>
   <title xml:lang="en">People Editor</title>
@@ -14,6 +20,7 @@
     <relation destinationtype="classes" role="classrel"/>
     <relation destinationtype="workgroups" role="related"/>
     <relation destinationtype="educations" role="classrel"/>
+    &extra_loads;
   </action>
 
   <action type="delete"/>
@@ -24,6 +31,7 @@
 
   <steps>
     <step form-schema="step1" />
+    &extra_steps;
   </steps>
 
   <form-schema id="step1">
@@ -107,6 +115,8 @@
     <list extends="config/workgroup/workgroups-list.xml" />
     <list extends="config/class/classes-classrelrelated.xml" />
     <list extends="config/education/educations-classrelrelated.xml" />
-
+    &extra_lists;
   </form-schema>
+
+  &extra_schemas;
 </wizard-schema>
