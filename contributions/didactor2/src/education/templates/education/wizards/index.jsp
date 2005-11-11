@@ -25,7 +25,7 @@
     <mm:treeinclude page="/education/wizards/code.jsp" objectlist="$includePath" />
   </div>
   <div class="mainContent">
-    <iframe id="text" name="text" width="100%" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
+    <iframe id="text" name="text" width="100%" height="90%" marginwidth="0" marginheight="0" border="1" src="<mm:treefile page="/education/wizards/ok.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
   </div>
 </div>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids"/>
