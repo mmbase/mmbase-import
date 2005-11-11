@@ -33,9 +33,6 @@
   <datatype id="string">
     <class name="org.mmbase.datatypes.StringDataType" />
 
-    <!-- The pattern is defined on this level for backwards compatibility of editors -->  
-    <pattern enforce="never" value="\A[^\n\r]*\z" />
-
     <specialization id="lastmodifier">
       <unique value="false" />
       <setprocessor>
@@ -54,7 +51,7 @@
     </specialization>
 
     <specialization id="confirmpassword">
-      <class name="org.mmbase.datatypes.ConfirmPasswordDataType" />      
+      <class name="org.mmbase.datatypes.ConfirmPasswordDataType" />
       <property name="field" value="password" />
       <password value="true" />
     </specialization>
@@ -85,7 +82,7 @@
 
     <specialization id="line">
       <!-- no new lines -->
-      <pattern enforce="always" value="\A[^\n\r]*\z" /> 
+      <pattern enforce="always" value="\A[^\n\r]*\z" />
     </specialization>
 
     <specialization id="owner">
@@ -117,7 +114,7 @@
 
     <specialization id="checksum">
       <description>
-        The default 'checksum' datatype checksums the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields        
+        The default 'checksum' datatype checksums the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields
       </description>
       <commitprocessor>
         <class name="org.mmbase.datatypes.processors.ChecksumProcessorFactory">
@@ -174,7 +171,7 @@
         <minInclusive value="1900-01-01"  />
         <maxExclusive value="2000-01-01"  />
       </specialization>
-      
+
       <specialization id="birthdate">
         <default value="today- 30 year" />
         <maxInclusive value="today" />
@@ -186,11 +183,11 @@
         <maxInclusive value="today"    />
       </specialization>
 
-      <specialization id="weeknumbers">        
+      <specialization id="weeknumbers">
         <pattern value="'dag: 'EEEEE 'week :'ww 'jaar: 'yyyy" xml:lang="nl" />
         <pattern value="'day: 'EEEEE 'week :'ww 'year: 'yyyy" xml:lang="en" />
       </specialization>
-      
+
     </specialization>
 
 
@@ -201,7 +198,7 @@
     <class name="org.mmbase.datatypes.LongDataType" />
     <specialization id="duration">
       <description>
-        Durations are positive longs.        
+        Durations are positive longs.
       </description>
       <minInclusive value="0" />
       <!-- I have no idea how to do this -->
