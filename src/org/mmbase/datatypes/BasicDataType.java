@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.24 2005-11-11 10:44:35 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.25 2005-11-11 14:29:20 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -820,16 +820,18 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             baseIterator =  col != null ? col.iterator() : Collections.EMPTY_LIST.iterator();
             this.node = node;
             this.field = field;
-            determinNext();
+            determineNext();
         }
-        protected void determinNext() {
+        protected void determineNext() {
             next = null;
-            while(baseIterator.hasNext()) {
+            while (baseIterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) baseIterator.next();
                 Object value = entry.getKey();
                 if (BasicDataType.this.validate(value, node, field) == VALID) {
                     next = entry;
                     break;
+                } else {
+                    log.warn("Value " + value + " does not validate.");
                 }
             }
         }
@@ -842,7 +844,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                 throw new NoSuchElementException();
             }
             Object n = next;
-            determinNext();
+            determineNext();
             return n;
         }
         public void remove() {
