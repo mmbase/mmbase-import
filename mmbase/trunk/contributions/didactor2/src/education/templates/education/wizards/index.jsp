@@ -6,10 +6,13 @@
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title><di:translate key="education.editwizards" /></title>
-    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/calendar.css" objectlist="$includePath" referids="$referids"/>" />
     <style type="text/css">
       a {
         font-size: 11px;
+      }
+      .folderBodyTree {
+         width: 20%;
+         overflow: hidden;
       }
     </style>
   </mm:param>
@@ -22,7 +25,9 @@
     </div>
   </div>
   <div class="folders">
-    <mm:treeinclude page="/education/wizards/code.jsp" objectlist="$includePath" />
+    <div class="folderBodyTree">
+      <mm:treeinclude page="/education/wizards/code.jsp" objectlist="$includePath" />
+    </div>
   </div>
   <div class="mainContent">
     <iframe id="text" name="text" width="100%" height="90%" marginwidth="0" marginheight="0" border="1" src="<mm:treefile page="/education/wizards/ok.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
