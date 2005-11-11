@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.17 2005-11-11 14:28:11 michiel Exp $
+ * @version $Id: TreeList.java,v 1.18 2005-11-11 15:16:35 pierre Exp $
  * @since   MMBase-1.7
  */
 
@@ -355,6 +355,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
                 nodeIterators.add(iterator);
                 previousNodes.add(null);     // just prepared iterator never has a previous node already
                 if (iterator == null) {
+                    nextNodes.add(null);
                     return false;
                 } else {
                     if (iterator.hasNext()) {
@@ -436,9 +437,9 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
          next iterator (the arrow in the above scheme). If the last used node is 'contained' by
          this next node, then this next node of the next iterator will be 'next()' otherwise current
          is decreased by one and next is called recursively. This means that the next node is always
-         one longer then the current one, equally long, or shorter.
+         one longer than the current one, equally long, or shorter.
 
-         If 'leaf constraints' are in use, than the implementation jumps to getNextLeafNode, which simply returns the 'smallest node' of all iterators.
+         If 'leaf constraints' are in use, then the implementation jumps to getNextLeafNode, which simply returns the 'smallest node' of all iterators.
         */
         protected final Node getNextNode() {
             prepare(currentIterator);
