@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.16 2005-10-31 13:04:20 michiel Exp $
+ * @version $Id: TreeList.java,v 1.17 2005-11-11 14:28:11 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -438,7 +438,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
          is decreased by one and next is called recursively. This means that the next node is always
          one longer then the current one, equally long, or shorter.
 
-         If 'leaf constraints' are in use, than the implementation jumpst to getNextLeafNode, which simply returns the 'smallest node' of all iterators.
+         If 'leaf constraints' are in use, than the implementation jumps to getNextLeafNode, which simply returns the 'smallest node' of all iterators.
         */
         protected final Node getNextNode() {
             prepare(currentIterator);
@@ -456,8 +456,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
                 return node;
             }
 
-            prepare(currentIterator + 1);
-            Node nextListNextNode = nextNodes.getNode(currentIterator + 1);
+            Node nextListNextNode =  prepare(currentIterator + 1) ? nextNodes.getNode(currentIterator + 1) : null;
 
             if (nextListNextNode == null) {
                 if (currentIterator > 0) {
@@ -571,14 +570,14 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
     protected static NodeQuery getQuery(String[] args) {
         if (args.length == 0) {
-            System.err.println("Usage " + TreeList.class.getName() + " <startnode>");
+            System.err.println("Usage: java -Dmmbase.defaultcloudcontext=rmi://localhost:1111/remotecontext " + TreeList.class.getName() + " <startnode>");
             System.exit(1);
         }
 
         String startNodes = args[0];
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
 
-        NodeManager object = cloud.getNodeManager("segments");
+        NodeManager object = cloud.getNodeManager("object");
 
         NodeQuery q = cloud.createNodeQuery();
         Step step = q.addStep(object);
@@ -597,7 +596,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
     public static void doTest(java.io.Writer writer, NodeQuery q) {
         Cloud cloud = q.getCloud();
 
-        NodeManager object = cloud.getNodeManager("segments");
+        NodeManager object = cloud.getNodeManager("object");
         try {
 
             long startTime = System.currentTimeMillis();
