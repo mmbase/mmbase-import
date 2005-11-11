@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.42 2005-11-11 14:29:20 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.43 2005-11-11 16:01:37 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -300,19 +300,17 @@ public class DataTypeDefinition {
             boolean isFixed = Boolean.valueOf(DataTypeXml.getAttribute(element, "fixed")).booleanValue();
             restriction.setFixed(isFixed);
         }
-        if (DataTypeXml.hasAttribute(element, "enforce")) {
-            String enforce = DataTypeXml.getAttribute(element, "enforce").toLowerCase();
-            if (enforce.equals("always")) {
-                restriction.setEnforceStrength(DataType.ENFORCE_ALWAYS);
-            } else if (enforce.equals("onchange")) {
-                restriction.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
-            } else if (enforce.equals("oncreate")) {
-                restriction.setEnforceStrength(DataType.ENFORCE_ONCREATE);
-            } else if (enforce.equals("never")) {
-                restriction.setEnforceStrength(DataType.ENFORCE_NEVER);
-            } else {
-                log.warn("Unrecognised value for 'enforce' attribute '" + enforce + "' in " + XMLWriter.write(element, true, true));
-            }
+        String enforce = DataTypeXml.getAttribute(element, "enforce").toLowerCase();
+        if (enforce.equals("always") || enforce.equals("")) {
+            restriction.setEnforceStrength(DataType.ENFORCE_ALWAYS);
+        } else if (enforce.equals("onchange")) {
+            restriction.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
+        } else if (enforce.equals("oncreate")) {
+            restriction.setEnforceStrength(DataType.ENFORCE_ONCREATE);
+        } else if (enforce.equals("never")) {
+            restriction.setEnforceStrength(DataType.ENFORCE_NEVER);
+        } else {
+            log.warn("Unrecognised value for 'enforce' attribute '" + enforce + "' in " + XMLWriter.write(element, true, true));
         }
         LocalizedString descriptions = restriction.getErrorDescription();
         restriction.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions, null));
