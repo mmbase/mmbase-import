@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
@@ -53,6 +53,7 @@
           <search>1</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>name</name>
         <type size="32" state="persistent">STRING</type>
@@ -132,6 +133,7 @@
           <search>4</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>host</name>
         <type size="80" state="persistent">STRING</type>
@@ -156,6 +158,7 @@
           <search>5</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>os</name>
         <type size="80" state="persistent">STRING</type>
@@ -180,6 +183,7 @@
           <search>6</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>jdk</name>
         <type size="80" state="persistent">STRING</type>

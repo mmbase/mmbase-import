@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
@@ -50,6 +50,7 @@
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>name</name>
         <type unique="true" required="true" size="32" state="system">STRING</type>
@@ -74,6 +75,7 @@
           <list>2</list>
         </positions>
       </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>description</name>
         <type size="255" state="persistent">STRING</type>
