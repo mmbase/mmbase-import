@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.15 2005-11-11 10:43:56 pierre Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.16 2005-11-11 14:29:21 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -96,12 +96,11 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         if (localizedList == null) {
             localizedList = new ArrayList();
             localizedList.addAll(bundles);
-            localized.put(locale, localizedList);
+            localized.put(LocalizedString.getDefault(), localizedList);
             unused = new ArrayList();
             unused.addAll(fallBack);
             unusedKeys.put(locale, unused);
         }
-
         localizedList.add(entry);
         return unused;
     }
@@ -118,7 +117,16 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         }
         bundles.add(b);
         Iterator i = localized.values().iterator();
-        while(i.hasNext()) {
+        if (!i.hasNext()) {
+            // adding very first localizedlist
+            Locale locale = LocalizedString.getDefault();
+            List localizedList = new ArrayList();
+            localizedList.add(b);
+            localized.put(locale, localizedList);
+            List unused = new ArrayList();
+            unused.addAll(fallBack);
+            unusedKeys.put(locale, unused);
+        } else while(i.hasNext()) {
             List localizedList = (List) i.next();
             localizedList.add(b);
         }
@@ -306,7 +314,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             }
         }
 
-        return size + queriesSize;
+        return queriesSize;
     }
 
     public int size() {
