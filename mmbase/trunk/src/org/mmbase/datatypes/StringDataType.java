@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.23 2005-11-04 23:12:51 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.24 2005-11-11 15:40:22 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -142,8 +142,9 @@ public class StringDataType extends ComparableDataType implements LengthDataType
 
     protected StringBuffer toStringBuffer() {
         StringBuffer buf = super.toStringBuffer();
-        if (getPattern() != null) {
-            buf.append(" pattern:").append(getPattern());
+        Pattern p = getPattern();
+        if (p != null && ! (p.pattern().equals(".*"))) {
+            buf.append(" pattern:").append(p.pattern());
         }
         if (isPassword()) {
             buf.append(" password");
