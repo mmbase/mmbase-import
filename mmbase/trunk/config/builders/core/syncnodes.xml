@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="syncnodes" maintainer="mmbase.org" version="0" extends="object">
   <searchage>14</searchage>
   <names>
@@ -44,6 +44,7 @@
           <search>1</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>exportsource</name>
         <type required="true" size="255" state="persistent">STRING</type>
