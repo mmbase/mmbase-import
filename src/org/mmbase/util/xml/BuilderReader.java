@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.49 2005-11-02 07:42:48 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.50 2005-11-11 10:45:31 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -324,7 +324,7 @@ public class BuilderReader extends DocumentReader {
             CoreField def = (CoreField) oldset.get(getElementValue(getElementByPath(field, "field.db.name")));
             if (def != null) {
                 def.rewrite();
-                DataType dataType = decodeDataType(collector, def.getName(), field, def.getType(), def.getListItemType(), false);
+                DataType dataType = decodeDataType(builder, collector, def.getName(), field, def.getType(), def.getListItemType(), false);
                 if (dataType != null) {
                     def.setDataType(dataType); // replace datatype
                 }
@@ -464,7 +464,7 @@ public class BuilderReader extends DocumentReader {
                                 }
                                 public  Object getFunctionValue(Parameters parameters) {
                                     return f.getFunctionValue(parameters);
-                                } 
+                                }
                             };
                     }
                 }
@@ -476,7 +476,7 @@ public class BuilderReader extends DocumentReader {
 
         }
 
-        
+
         return results;
 
     }
@@ -589,7 +589,8 @@ public class BuilderReader extends DocumentReader {
 
     /**
      * Determine a data type instance based on the given gui element
-     * @todo  perhaps 'guitype' must be deprecated in favour of 'datatype' element
+     * @todo  'guitype' may become deprecated in favour of the 'datatype' element
+     * @param builder the MMObjectBuilder to which the field belongs
      * @param collector The DataTypeCollector of the bulider.
      * @param fieldName unused
      * @param field     The 'field' element of the builder xml
@@ -598,7 +599,7 @@ public class BuilderReader extends DocumentReader {
      * @param forceInstance If true, it will never return <code>null</code>, but will return (a clone) of the DataType associated with the database type.
      * @since MMBase-1.8
      */
-    protected DataType decodeDataType(final DataTypeCollector collector, final String fieldName, final Element field, final int type, final int listItemType, final boolean forceInstance) {
+    protected DataType decodeDataType(final MMObjectBuilder builder, final DataTypeCollector collector, final String fieldName, final Element field, final int type, final int listItemType, final boolean forceInstance) {
         final BasicDataType baseDataType;
         if (type == Field.TYPE_LIST) {
             baseDataType = DataTypes.getListDataType(listItemType);
@@ -616,6 +617,13 @@ public class BuilderReader extends DocumentReader {
         // Backwards compatible 'guitype' support
         if (guiTypeElement != null && collector != null) {
             String guiType = getElementValue(guiTypeElement);
+            // the guitype 'string' is deperecated, and replaced with teh guitype 'line'
+            // This only appleid to values entered for tehd eprecated guitype elmenet, as these were used in old builders
+            if ("string".equals(guiType)) {
+                guiType="line";
+                log.warn("Replaced deprecated guitype 'string' for field " + builder.getTableName() + "." + fieldName + " with guitype 'line'.");
+            }
+
             dataType = collector.getDataTypeInstance(guiType, baseDataType);
             if (dataType == null) {
                 log.warn("Could not find data type for " + baseDataType + " / " + guiType);
@@ -688,7 +696,7 @@ public class BuilderReader extends DocumentReader {
         }
         int state = Fields.getState(getElementAttributeValue(dbtype,"state"));
 
-        DataType dataType = decodeDataType(collector, fieldName, field, type, listItemType, true);
+        DataType dataType = decodeDataType(builder, collector, fieldName, field, type, listItemType, true);
 
         CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
         def.setParent(builder);
