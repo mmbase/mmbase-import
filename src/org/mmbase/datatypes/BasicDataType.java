@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.25 2005-11-11 14:29:20 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.26 2005-11-11 16:04:46 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -788,7 +788,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             Collection validValues = getEnumeration(null, cloud, node, field);
             if (validValues == null) return true;
             Object key = cast(v);
-            key = BasicDataType.this.castToValidate(key, node, field);
             Iterator i = validValues.iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
@@ -822,16 +821,22 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             this.field = field;
             determineNext();
         }
+
         protected void determineNext() {
             next = null;
             while (baseIterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) baseIterator.next();
                 Object value = entry.getKey();
-                if (BasicDataType.this.validate(value, node, field) == VALID) {
+                Collection validationResult = BasicDataType.this.validate(value, node, field);
+                if (validationResult == VALID) {
                     next = entry;
                     break;
-                } else {
-                    log.warn("Value " + value + " does not validate.");
+                } else if (log.isDebugEnabled()) {
+                    String errors = "";
+                    for (Iterator i = validationResult.iterator(); i.hasNext();) {
+                        errors += ((LocalizedString)i.next()).get(null);
+                    }
+                    log.debug("Value " + value + " does not validate : " + errors);
                 }
             }
         }
