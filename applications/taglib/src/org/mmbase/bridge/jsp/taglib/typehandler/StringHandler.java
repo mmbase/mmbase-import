@@ -15,6 +15,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.datatypes.StringDataType;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.Encode;
 import org.mmbase.util.transformers.Sql;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.46 2005-11-04 23:28:23 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.47 2005-11-11 10:46:19 pierre Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -51,50 +52,55 @@ public class StringHandler extends AbstractTypeHandler {
             return eh.htmlInput(node, field, search);
         }
 
-        StringBuffer buffer = new StringBuffer();
         if(! search) {
-            StringDataType dataType = (StringDataType) field.getDataType();
-            String value = "";
-            if (node != null) {
-                value = node.getStringValue(field.getName()); 
-            } else {
-                value = org.mmbase.util.Casting.toString(dataType.getDefaultValue());
-            }
-            if (value.equals("")) {
-                String opt = tag.getOptions();
-                if (opt != null && opt.indexOf("noempty") > -1) {
-                    value = " ";
-                }
-            }
-            value = tag.decode(value, node);
-            if (dataType.getPattern().matcher("\n").matches()) {
-                if(field.getMaxLength() > 2048)  {
-                    // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-                    buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
+            StringBuffer buffer = new StringBuffer();
+            try {
+                StringDataType dataType = (StringDataType) field.getDataType();
+                String value = "";
+                if (node != null) {
+                    value = node.getStringValue(field.getName());
                 } else {
-                    buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
-                } 
-                addExtraAttributes(buffer);
-                buffer.append(" name=\"");
-                buffer.append(prefix(field.getName()));
-                buffer.append("\">");          
-                buffer.append(Encode.encode("ESCAPE_XML", value));
-                buffer.append("</textarea>");
-            } else { // not 'field' perhaps it's 'string'.
-                buffer.append("<input type =\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
-                buffer.append("name=\"");                
-                buffer.append(prefix(field.getName()));
-                buffer.append("\" ");
-                String opt = tag.getOptions();
-                if (opt != null && opt.indexOf("noautocomplete") > -1) { 
-                    buffer.append("autocomplete=\"off\" ");
-                }                    
-                addExtraAttributes(buffer);
-                buffer.append(" value=\"");
-                buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", value));
-                buffer.append("\" />");
+                    value = org.mmbase.util.Casting.toString(dataType.getDefaultValue());
+                }
+                if (value.equals("")) {
+                    String opt = tag.getOptions();
+                    if (opt != null && opt.indexOf("noempty") > -1) {
+                        value = " ";
+                    }
+                }
+                value = tag.decode(value, node);
+                if (dataType.getPattern().matcher("\n").matches()) {
+                    if(field.getMaxLength() > 2048)  {
+                        // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
+                        buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
+                    } else {
+                        buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
+                    }
+                    addExtraAttributes(buffer);
+                    buffer.append(" name=\"");
+                    buffer.append(prefix(field.getName()));
+                    buffer.append("\">");
+                    buffer.append(Encode.encode("ESCAPE_XML", value));
+                    buffer.append("</textarea>");
+                } else { // not 'field' perhaps it's 'string'.
+                    buffer.append("<input type =\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
+                    buffer.append("name=\"");
+                    buffer.append(prefix(field.getName()));
+                    buffer.append("\" ");
+                    String opt = tag.getOptions();
+                    if (opt != null && opt.indexOf("noautocomplete") > -1) {
+                        buffer.append("autocomplete=\"off\" ");
+                    }
+                    addExtraAttributes(buffer);
+                    buffer.append(" value=\"");
+                    buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", value));
+                    buffer.append("\" />");
+                }
+            } catch (ClassCastException cce) {
+                DataType dt = field.getDataType();
+                log.error("Expected StringDataType for field " + field + " but found " + dt.getClass().getName() + ":"+ dt);
+                throw cce;
             }
-            
             return buffer.toString();
         } else { // in case of search
             return super.htmlInput(node, field, search);
