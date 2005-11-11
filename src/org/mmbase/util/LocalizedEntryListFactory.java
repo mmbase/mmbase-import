@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.16 2005-11-11 14:29:21 pierre Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.17 2005-11-11 15:28:54 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -96,7 +96,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         if (localizedList == null) {
             localizedList = new ArrayList();
             localizedList.addAll(bundles);
-            localized.put(LocalizedString.getDefault(), localizedList);
+            localized.put(locale, localizedList);
             unused = new ArrayList();
             unused.addAll(fallBack);
             unusedKeys.put(locale, unused);
