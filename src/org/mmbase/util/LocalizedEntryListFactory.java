@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.14 2005-11-04 23:16:27 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.15 2005-11-11 10:43:56 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -55,7 +55,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
 
     public LocalizedEntryListFactory() {
-        
+
     }
 
     /**
@@ -81,9 +81,9 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         unused.remove(key);
         return entry;
     }
-    
+
     /**
-     * Add entry to 'localized' 
+     * Add entry to 'localized'
      * @param object the object, which has not Locale support of itself (Entry, DocumentSerializable)
      * @param locale Can be <code>null</code> too, in which case the default locale is used
      * @return List of currently unused keys for this locale.
@@ -123,7 +123,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             localizedList.add(b);
         }
     }
-    
+
     /**
      */
     public void addQuery(Locale locale, Document queryElement) {
@@ -131,7 +131,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         add(locale, doc);
     }
 
-   
+
     /**
      * Defaulting version of {@link #get(Locale, Cloud)}. Using default anonymous cloud.
      */
@@ -182,12 +182,12 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                     loc = (List) localized.get(LocalizedString.getDefault());
                                     uu  = (List) unusedKeys.get(LocalizedString.getDefault());
                                 }
-                                
+
                                 if (loc == null) {
                                     loc = bundles;
                                     assert(uu == null);
                                     uu = fallBack;
-                                }                                    
+                                }
                                 iterator.addIterator(loc.iterator());
                                 iterator.addIterator(uu.iterator());
                                 findNext();
@@ -201,7 +201,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                     } else if (candidate instanceof Map.Entry) {
                                         next = (Map.Entry) candidate;
                                     } else if (candidate instanceof Bundle) {
-                                        subIterator = ((Bundle) candidate).get(useLocale).iterator(); 
+                                        subIterator = ((Bundle) candidate).get(useLocale).iterator();
                                         if (subIterator.hasNext()) {
                                             break;
                                         } else {
@@ -213,7 +213,9 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                             if (useCloud == null) {
                                                 useCloud = getCloud(useLocale);
                                                 if (useCloud == null) {
-                                                    log.warn("Defined query for " + this + " but no cloud provided. Skipping results" + Logging.stackTrace(100));
+                                                    if (log.isDebugEnabled()) {
+                                                        log.debug("Defined query for " + this + " but no cloud provided. Skipping results.");
+                                                    }
                                                     continue;
                                                 }
                                             }
@@ -282,7 +284,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         }
         if (localizedList != null) {
             Iterator i = localizedList.iterator();
-            while (i.hasNext()) {   
+            while (i.hasNext()) {
                 Object o = i.next();
                 if (o instanceof Bundle) {
                     queriesSize += ((Bundle) o).get(locale).size();
@@ -303,7 +305,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                 }
             }
         }
-        
+
         return size + queriesSize;
     }
 
@@ -358,7 +360,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     private static class Bundle implements Serializable {
         private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
-        
+
         private String      resource;
         private ClassLoader classLoader;
         private Class       constantsProvider;
@@ -385,9 +387,9 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             wrapper           = (Class) in.readObject();
             comparator        = (Comparator) in.readObject();
         }
-        
-        
-        
+
+
+
         Bundle(String r, ClassLoader cl, Class cp, Class w, Comparator comp) {
             resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
         }
@@ -409,13 +411,13 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         public boolean equals(Object o) {
             if (o instanceof Bundle) {
                 Bundle b = (Bundle) o;
-                return 
+                return
                     (resource == null ? b.resource == null : resource.equals(b.resource)) &&
                     (classLoader == null ? b.classLoader == null : classLoader.equals(b.classLoader)) &&
                     (constantsProvider == null ? b.constantsProvider == null : constantsProvider.equals(b.constantsProvider)) &&
                     (wrapper == null ? b.wrapper == null : wrapper.equals(b.wrapper)) &&
                     (comparator == null ? b.comparator == null : comparator.equals(b.comparator));
-                    
+
             } else {
                 return false;
             }
@@ -460,14 +462,14 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
         LocalizedEntryListFactory fact2 = new LocalizedEntryListFactory();
         fact2.addBundle("org.mmbase.module.builders.resources.states", null, org.mmbase.module.builders.MMServers.class, SortedBundle.NO_WRAPPER, SortedBundle.NO_COMPARATOR);
-        
+
         System.out.println("size: " + fact2.size());
         System.out.println("" + fact2.get(en));
         System.out.println("" + fact2.get(nl));
         Object error = fact2.castKey("ERROR");
         System.out.println("ERROR=" + error.getClass().getName() + " " + error);
 
-        
+
     }
 
 }
