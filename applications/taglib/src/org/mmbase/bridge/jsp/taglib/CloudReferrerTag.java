@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import java.util.Locale;
+
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -30,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class. 
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CloudReferrerTag.java,v 1.26 2005-05-09 10:54:36 michiel Exp $ 
+ * @version $Id: CloudReferrerTag.java,v 1.27 2005-11-11 09:24:34 nklasens Exp $ 
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -134,6 +136,18 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
                 p.setIfDefined(Parameter.CLOUD, cloud);
                 p.setIfDefined(Parameter.USER, cloud.getUser());
             }
+        }
+    }
+    
+    /**
+     * @since MMBase-1.8
+     */
+    public Locale getLocale() throws JspTagException {
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+        if (localeTag != null) {
+            return localeTag.getLocale();
+        } else {
+            return  getCloudVar().getLocale();
         }
     }
 
