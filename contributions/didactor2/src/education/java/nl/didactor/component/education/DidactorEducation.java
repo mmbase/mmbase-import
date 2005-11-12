@@ -38,7 +38,7 @@ public class DidactorEducation extends Component {
     public Component[] dependsOn() {
         return new Component[0];
     }
-    
+
     public int castIdentifier( Object object)
         throws JspTagException
     {
@@ -46,7 +46,7 @@ public class DidactorEducation extends Component {
 //      obtain education via context
          if (object != null) {
              if (object instanceof Integer) {
-                 value= ((Integer) object ).intValue();    
+                 value= ((Integer) object ).intValue();
              } else if (object instanceof String) {
                  value= Integer.parseInt( (String) object);
              } else {
@@ -55,44 +55,62 @@ public class DidactorEducation extends Component {
          }
          return value;
     }
-    
+
     // javadoc inherited
     public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments)
-    {   
+    {
         boolean mayvalue[]= new boolean[] {false, false};
-        try {
-            if (operation.equals( "isSelfOrTeacherOf")
-            ||operation.equals( "isTeacherOf")) {
-    
+        try
+        {
+            if (operation.equals( "isSelfOrTeacherOf") || operation.equals( "isTeacherOf"))
+            {
+
                 Object user = context.get( "user");
                 Object educationobj= context.get( "education");
                 Object classobj= context.get( "class");
 
                 MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode(  ((Integer)user).intValue());
-                if (usernode == null) {
+                if (usernode == null)
+                {
                     throw new JspTagException("User with number '" + user + "' not found");
                 }
-                int educationno= castIdentifier( educationobj);  
-                int classno=    castIdentifier( classobj); 
-                int subjectno= 0;
-                if ((arguments.length>0) && (arguments[0] != null)) {
+                int educationno = castIdentifier( educationobj);
+
+
+                int classno;
+                if((classobj != null) && ( (classobj instanceof String) && (!classobj.equals("null"))) )
+                {//the class is a number
+                   classno = castIdentifier(classobj);
+                }
+                else
+                {//the class is null
+                   classno = -1;
+                }
+
+
+                int subjectno = 0;
+
+                if ((arguments.length > 0) && (arguments[0] != null))
+                {
                     subjectno= castIdentifier( context.get( arguments[0]));
-                } else {
+                }
+                else
+                {
                     throw new JspTagException("1 argument required: subject person ID");
                 }
                 //System.out.println( subjectno);
                 //System.out.println( usernode.getNumber());
-                
-                boolean isTeacherOf= ClassRoom.isClassMember(
-                        usernode, subjectno, classno, educationno, "teacher", cloud
-                ) || ClassRoom.isWorkgroupMember( 
-                        usernode, subjectno, classno, educationno, "teacher", cloud
-                );
-                 
-                if (operation.equals( "isTeacherOf")) {
+
+                boolean isTeacherOf= ClassRoom.isClassMember(usernode, subjectno, classno, educationno, "teacher", cloud)
+                || ClassRoom.isWorkgroupMember(usernode, subjectno, classno, educationno, "teacher", cloud);
+
+                if (operation.equals( "isTeacherOf"))
+                {
                     mayvalue[0]= isTeacherOf;
-                } else {
-                    mayvalue[0]= (subjectno == usernode.getNumber()) || isTeacherOf; 
+                }
+                else
+                {
+                    mayvalue[0]= (subjectno == usernode.getNumber()) || isTeacherOf;
                 }
             }
             return mayvalue;
