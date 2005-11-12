@@ -32,12 +32,12 @@
       <prompt xml:lang="en">Name</prompt>
    </field>
 
-   <field name="general_description" ftype="html" rows="8" dtminlength="0" dtmaxlength="255">
+   <field name="general_description" ftype="html" rows="8" dtminlength="0">
       <prompt xml:lang="nl">Algemene omschrijving</prompt>
       <prompt xml:lang="en">General description</prompt>
    </field>
 
-   <field name="description_of_profession" ftype="html" rows="8" dtminlength="0" dtmaxlength="255">
+   <field name="description_of_profession" ftype="html" rows="8" dtminlength="0">
       <prompt xml:lang="nl">Beroepsbeschrijving</prompt>
       <prompt xml:lang="en">Description of profession</prompt>
    </field>
@@ -69,7 +69,7 @@
 
       <command name="startwizard" inline="true" wizardname="config/competency/competencies" objectnumber="new">
          <prompt xml:lang="nl">Nieuw</prompt>
-         <prompt xml:lang="en">New</prompt>        
+         <prompt xml:lang="en">New</prompt>
       </command>
 
       <action type="create">
