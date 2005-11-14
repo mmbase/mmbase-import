@@ -31,13 +31,13 @@
       <mm:import id="whatselected" reset="true">student</mm:import>
     </mm:islessthan>
 
-    <mm:treeinclude page="/pop/leftpanel.jsp" objectlist="$includePath" referids="$popreferids">
+    <mm:treeinclude page="/pop/leftpanel.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="wgroup"><mm:write referid="wgroup"/></mm:param>
       <mm:param name="whatselected"><mm:write referid="whatselected"/></mm:param>
     </mm:treeinclude>
 
     <%-- right section --%>
-    <mm:treeinclude page="/pop/rightpanel.jsp" objectlist="$includePath" referids="$popreferids">
+    <mm:treeinclude page="/pop/rightpanel.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="wgroup"><mm:write referid="wgroup"/></mm:param>
       <mm:param name="whatselected"><mm:write referid="whatselected"/></mm:param>
     </mm:treeinclude>
