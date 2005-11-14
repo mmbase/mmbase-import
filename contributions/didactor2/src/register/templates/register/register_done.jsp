@@ -10,9 +10,6 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
-  <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
-   <mm:param name="extraheader"><style>.columns {height: 100%;}</style></mm:param>
-  </mm:treeinclude>
 
   <mm:import externid="uname"/>
   <mm:import externid="password"/>
