@@ -12,7 +12,8 @@
       }
       .folderBodyTree {
          width: 20%;
-         overflow: hidden;
+         height: 90%;
+         overflow: scroll;
       }
       .contentBody {
         top: 0em;
