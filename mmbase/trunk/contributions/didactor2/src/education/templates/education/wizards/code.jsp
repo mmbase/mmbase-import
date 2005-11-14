@@ -20,10 +20,14 @@
    <%//education-people connector
       EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
    %>
+   <mm:import id="wizardlang">en</mm:import>
+   <mm:compare referid="language" value="nl">
+     <mm:import id="wizardlang" reset="true">nl</mm:import>
+   </mm:compare>
 
    <mm:import externid="showcode">false</mm:import>
-   <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&language=<mm:write referid="language" /></mm:import>
-   <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" />?language=<mm:write referid="language" /></mm:import>
+   <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&language=<mm:write referid="wizardlang" /></mm:import>
+   <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" />?language=<mm:write referid="wizardlang" /></mm:import>
    <mm:import externid="mode">components</mm:import>
       <mm:node number="component.pdf" notfound="skip">
          <mm:relatednodes type="providers" constraints="providers.number=$provider">
