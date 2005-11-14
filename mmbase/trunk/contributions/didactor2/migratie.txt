@@ -1,9 +1,9 @@
 Migratie issues
 
-2005-10-11
+2005-11-10
     ALTER TABLE mmb_metastandard ADD isused TINYINT(1);
 
-2005-10-11
+2005-11-10
     ALTER TABLE mmb_contacts ADD islogged TINYINT(1);
     ALTER TABLE mmb_contacts ADD person_status TINYINT(1);
 
