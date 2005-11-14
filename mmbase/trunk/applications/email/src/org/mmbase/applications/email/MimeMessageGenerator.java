@@ -101,7 +101,7 @@ public class MimeMessageGenerator {
                 }
                 return root;
             } catch (MessagingException e) {
-                log.error("Root generation error", e);
+                log.error("Root generation error" + e.getMessage());
             }
     	} else {
                 log.error("Don't have a root node");

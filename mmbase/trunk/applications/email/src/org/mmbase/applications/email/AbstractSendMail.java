@@ -18,7 +18,6 @@ import org.mmbase.util.*;
  * This module provides mail functionality
  *
  * @application Mail
- * @deprecated use the Mail application code instead
  * @author Michiel Meeuwissen
  */
 abstract public class AbstractSendMail extends Module implements SendMailInterface {
