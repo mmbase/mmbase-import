@@ -37,7 +37,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
      var newhref = '<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>&year='+year+
           '&month='+month+
           '&day='+day+
-	  '&calmonth='+<mm:write referid="calmonth"/>;
+     '&calmonth='+<mm:write referid="calmonth"/>;
       document.location.href = newhref;
     }
 
@@ -70,8 +70,8 @@ this stylesheet can be overridden in the same manner as other parts of the site.
 
 <%--    <link rel=StyleSheet href="<mm:treefile page="/agenda/css/calendar.css" objectlist="$includePath" referids="$referids"/>" type="text/css">--%>
     <cal:calendar view="month" language="nl" country="NL" date="<%=format.format(calendar.getTime())%>">
-     <di:usercalwriter /> 
-    
+     <di:usercalwriter />
+
       <table width="130" class="cal" cellspacing="0">
         <tr>
           <td bgcolor="#DDDDDD" align="center" class="calMonth">
@@ -83,9 +83,9 @@ this stylesheet can be overridden in the same manner as other parts of the site.
           </td>
         </tr>
         <tr>
-          <td>
-            <table width="100%" class="calWeek" cellspacing="0">
-              <tr>
+          <td >
+            <table width="100%" cellspacing="0">
+              <tr class="calWeek">
                 <td class="calWeek" align="center">&nbsp;&nbsp;</td>
                 <td class="calWeek" align="center"><di:translate key="agenda.sunday" /></td>
                 <td class="calWeek" align="center"><di:translate key="agenda.monday" /></td>
@@ -96,14 +96,8 @@ this stylesheet can be overridden in the same manner as other parts of the site.
                 <td class="calWeek" align="center"><di:translate key="agenda.saturday" /></td>
                 <td class="calWeek" align="center">&nbsp;&nbsp;</td>
               </tr>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td >
-            <table width="100%" class="calDay" cellspacing="0">
               <st:dataset name="week">
-                <tr>
+                <tr class="calDay">
                   <td class="calDaySpacing" align="center">&nbsp;&nbsp;</td>
                   <st:dataset name="day">
                     <mm:remove referid="class"/>
@@ -120,7 +114,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
                     </st:isset>
 
                     <td align="center" onclick="selectDate(<st:data name="date"/>)"  class="<mm:write referid="class"/>">
-                      <st:data name="dayofmonth"/>
+                      <st:data name="dayofmonth"/>  
                     </td>
                   </st:dataset>
                   <td class="calDaySpacing" align="center">&nbsp;&nbsp;</td>
