@@ -174,7 +174,7 @@
 <mm:compare referid="currentfolder" value="-1" inverse="true">
   <img src="<mm:treefile page="/pop/gfx/mapdicht.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderclosed" />" />
 </mm:compare>
-<a href="index.jsp"><di:translate key="pop.competencies" /></a><br/>
+<a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,whatselected,wgroup,class"/>"><di:translate key="pop.competencies" /></a><br/>
 
      <mm:node number="$student">
      	<mm:relatedcontainer path="pop,profiles">
