@@ -10,9 +10,6 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
-  <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
-   <mm:param name="extraheader"><style>.columns {height: 100%;}</style></mm:param>
-  </mm:treeinclude>
 
   <mm:import externid="firstname" jspvar="firstname" />
   <mm:import externid="lastname" jspvar="lastname" />
@@ -92,7 +89,7 @@
                         <mm:first>
                           <select name="education">
                         </mm:first>
-                        <option value="<mm:field name="number" />"><mm:field name="name" /></option> 
+                        <option value="<mm:field name="number" />"><mm:field name="name" /></option>
                         <mm:last>
                           </select>
                         </mm:last>
