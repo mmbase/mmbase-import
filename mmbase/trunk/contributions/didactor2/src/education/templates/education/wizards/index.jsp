@@ -14,6 +14,12 @@
          width: 20%;
          overflow: hidden;
       }
+      .contentBody {
+        top: 0em;
+        left: 0em;
+        right: 0em;
+        padding: 0em;
+      }
     </style>
   </mm:param>
 </mm:treeinclude>
@@ -30,8 +36,11 @@
     </div>
   </div>
   <div class="mainContent">
-    <iframe id="text" name="text" width="100%" height="90%" marginwidth="0" marginheight="0" border="1" src="<mm:treefile page="/education/wizards/ok.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
+    <div class="contentBody">
+      <iframe id="text" name="text" width="100%" height="90%" marginwidth="0" marginheight="0" border="1" src="<mm:treefile page="/education/wizards/ok.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
+    </div>
   </div>
+
 </div>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids"/>
 </mm:cloud>
