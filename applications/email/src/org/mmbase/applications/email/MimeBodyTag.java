@@ -253,7 +253,7 @@ public class MimeBodyTag {
             if (relatednodes!=null) return relatednodes;
         }
         catch (MessagingException e) {
-            log.debug("Failed to get Multipart",e);
+            log.debug("Failed to get Multipart" + e.getMessage());
         }
         return null;
     }
