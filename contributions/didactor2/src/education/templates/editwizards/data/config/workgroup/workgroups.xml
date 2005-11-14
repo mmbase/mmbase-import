@@ -17,6 +17,7 @@
             </relation>
           </object>
         </relation>
+        <relation destination="classes" role="related" />
     </action>
 
     <action type="delete" />
@@ -44,5 +45,6 @@
       </field>
         
       <list destination="people" role="related" extends="config/people/people-workgroup.xml" />
+      <list destination="classes" extends="config/class/classes-related.xml" />
     </form-schema>
 </wizard-schema>
