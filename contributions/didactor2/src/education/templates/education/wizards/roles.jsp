@@ -7,8 +7,12 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/wizards/roles_defs.jsp" %>
 
+<mm:import id="wizardlang">en</mm:import>
+<mm:compare referid="language" value="nl">
+  <mm:import id="wizardlang" reset="true">nl</mm:import>
+</mm:compare>
 
-<mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&language=<mm:write referid="language" /></mm:import>
+<mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&language=<mm:write referid="wizardlang" /></mm:import>
 <mm:import externid="command">-1</mm:import>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
