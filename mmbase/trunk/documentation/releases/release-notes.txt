@@ -31,9 +31,12 @@ General New Features:
 
 - Crontab is a new application that provides scheduling.
 
-- Class security provides authentication wrapping based on calling class
+- Packaging application.
 
-- It's easier to make security independen code because of new features about default authentication
+- Class security provides authentication wrapping based on calling class
+  -> classauthentication.xml
+
+- It's easier to make security independent code because of new features about default authentication
   methods.
 
 - Richtext application provides support for kupu-editor, and we basicly have 'rich text' now,
@@ -43,33 +46,87 @@ General New Features:
    Several improvements
    - Support for height and width (predicted before conversion, determined after conversion, and
      stored if corresponding fields are available) (This was ported to 1.7.4 too)
-   - Transformations are postponed to when actually served
-   - FileName of upload can be stored, and be added to the URL
+	 'modes' of mm:image.
+   - Transformations are postponed to when actually served --> with new image-servlet is possible to
+     set up separate image server.
+
+   - FileName of upload can be stored, and be added to the URL (/mmbase/attachments/1234/myfile.pdf)
 
 - ResourceLoader was created, MMBase can more easily be deployed as war now. Most configuration can also
   be shipped inside jars, and be overriden. This means the most applications can principally be installed by
   placing one jar in WEB-INF/lib plus placing jsp's if any.
+  --> Some resources are 'mergeable' now
 
 - DataTypes and Field improvements.
    New datatypes 'datetime' and 'boolean'. Support for 'constraints' on all types, default values,
    uniqueness etc. All on field level.
 
+   DataType 'list' is not yet tested/working.
+
    This gave rise to complete new package org.mmbase.datatypes which is also part of 'bridge'
    because its classes are accessible through several methods in bridge.
+
+   --> 'typehandlers' of taglib are based on datatypes now.
+   --> DateParser
+   --> updated builder xml format (using XSD)
 
 - Functions. The function framework was completed. Among others you can now add functions in the
   builder xml (without the need to override the builder class).
 
+- Events. Because of the 'cache release strategy' project, event object were created (in
+  org.mmbase.core.events). Work is being done release-strategies. You can also implement different
+  cache-backings --> e.g. oscache-impl of Johannes.
+
+- Several new methods on bridge. -> see api-doc
+
+- Tests. The junit test-cases will all succeed when we release 1.8.
+
+- Contributions:   select/  mmbar/  mmbob/  multilanguagegui/   thememanager/
+
+- External libraries:  concurrency support (anticipating jdk 1.5)
+                       we ship jstl/standard
+
+- Support for oracle / mssql.
+
+- Definition of 'bridge': The classes in mmbase-rmmci.jar.
+
+- Clustering is pluggable: clustering application: jgroups, unicast, multicast.
+
+- Cleaning: The cleaning project has made some progress, and quite a lot dissappeared. Most
+  noticably the multitude of database layers. There's just one now. Pierre? Nico?
+
+- maven build. Nico?
+
+- better blob-caching.
+
+- cp1252 work arounds. (also in 1.7.x)
+
+
+
+
 Taglib New Features:
 -------------------
-- Bunch of new tags/attributes (see documentation)
+- Bunch of new tags/attributes (see documentation). E.g. more complete set of has- tags
+ (hasnodemanager, hasfunction etc..)
+
+- FileItem
 
 - Compatibility with EL. MMBase Taglib variables are now EL variables.
   This may give minor compatibility issues. If this gives too many issues for you, you can switch
   this behaviour off (this needs some testing still though).
 
 - 'escapers' can be more easily added, and they can also be configured on the page (mm:escaper)
+  This uses the concept of TransformerFactories and so on. A bit similar to functions.
 
+- EditTag
+
+
+Editwizard New Features:
+------------------------
+
+- Several small improvements
+
+- The editwizard are about to receive a refactoring, which is anticipated for 1.8.1
 
 --------------------
 Obsolete Features:
@@ -87,6 +144,8 @@ Obsolete Features:
   application makeup, but were considered outdated.
   References to these modules have been removed from the MMBase admin pages.
 
+- Old database layers have been dropped.
+
 
 ------------------
 Bug Fixes:
@@ -100,7 +159,7 @@ Known API incompatibilities of bridge, between 1.7 to 1.8.
 Of course we try to mimimize this, but sometimes it happens...
 
 - org.mmbase.bridge.Cloud#getUser().getRank() does not return a String any more, but an actual Rank
-  object --> rankString.equals(Rank.ANONYMOUS.toString()); still compiles but doesn't work any
+  object --> cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString()); still compiles but doesn't work any
   more!!
   So, if grep your code for that. And see that the change is, though incompatible, a real
   improvement... Quickest fixes are to change getUser().getRank() by getUser().getRank().toString(),
@@ -114,6 +173,14 @@ Of course we try to mimimize this, but sometimes it happens...
   fields (which for example could still be null in a node which is only commited in the transaction,
   and not yet to the database).
 
+- Processors have been moved to org.mmbase.datatypes.processors (from
+  org.mmbase.bridge.util.fields).
+  If you used those in 1.7, then you need to recompile, and reconfigure in datatypes.xml.
+
+
+- Implement 'node' functions on bridge, not core. This ensure awareness, and that functions can be
+  called through MMCI.
+  
 
 
 ========================
@@ -126,7 +193,7 @@ Know Issues and Problems:
   collides with the Expression language of mmbase taglib.
 
   MMBase Taglib JSP's using the ${} syntax might work then, because this is also EL. To locally
- disable, avoid {} (letting it away, or replacing them by []) or add <%@page
+  disable, avoid {} (letting it away, or replacing them by []) or add <%@page
   isELIgnored="true" %> to the page.
 
 - Orion version < 2.x doesn't support the final servlet api 2.3,
