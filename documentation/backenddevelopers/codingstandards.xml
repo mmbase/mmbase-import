@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>2003-02-14</date>
-    <edition>$Id: codingstandards.xml,v 1.8 2005-09-05 13:57:26 michiel Exp $</edition>
+    <edition>$Id: codingstandards.xml,v 1.9 2005-11-15 11:43:20 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -339,7 +339,7 @@
           <formalpara>
             <title>debug</title>
             <para>
-              log.trace can be used for things which happen not very often, but still are only
+              log.debug can be used for things which happen not very often, but still are only
               interesing during debugging. log.debug should be protected by log.isDebugEnabled,
               especially if the argument is costly (complicated toStrings, may concatations). In
               inner-loops log.debug should not be used at all (or commented out).
