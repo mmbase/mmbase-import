@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.21 2005-08-16 14:08:34 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.22 2005-11-15 11:42:45 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -1204,6 +1204,28 @@
           <glossseealso otherterm="package" />
           <glossseealso otherterm="bundle" />
           <glossseealso otherterm="application" />
+        </glossdef>
+      </glossentry>
+      <glossentry id="datatype">
+        <glossterm>data type</glossterm>
+        <glossdef>
+          <para>
+            Since MMBase 1.8, with mmbase values are associated 'data types', which assign
+            restrictions, a default value and processors. Generic data types are specified in the
+            'datatypes.xml' configuration file, but they can also be defined `on the fly' in builder
+            xmls and editwizard xmls.
+          </para>
+          <glossseealso otherterm="restriction" />
+        </glossdef>
+      </glossentry>
+      <glossentry id="restriction">
+        <glossterm>restriction</glossterm>
+        <glossdef>
+          <para>
+            The value of a certain field for parameter in MMBase can be `restricted'. It can
+            e.g. have a minimal or maximal value, or be one of the values of an 'enumeration'.
+          </para>
+          <glossseealso otherterm="datatype" />
         </glossdef>
       </glossentry>
     </glosslist>
