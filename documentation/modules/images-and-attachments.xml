@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Images and Attachments</title>
     <date>2005-05-09</date>
-    <edition>$Id: images-and-attachments.xml,v 1.8 2005-07-21 12:40:11 michiel Exp $</edition>
+    <edition>$Id: images-and-attachments.xml,v 1.9 2005-11-15 11:44:35 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -13,7 +13,7 @@
     </authorgroup>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
-      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.MMBase.org/license">http://www.MMBase.org/license</ulink>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
       </para>
     </legalnotice>
   </articleinfo>
@@ -312,12 +312,12 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       that it would become quite hard to perform the XSLT not on the server itself.
     </para>
     <para>
-      For this to work the utility class org.MMBase.bridge.util.xml.NodeFunction was created, which
+      For this to work the utility class org.mmbase.bridge.util.xml.NodeFunction was created, which
       can be installed in your XSL like this:
       <programlisting><![CDATA[
 <xsl:stylesheet  
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:node="org.MMBase.bridge.util.xml.NodeFunction"
+    xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
     ....
 ]]>
       </programlisting>
@@ -328,7 +328,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       </programlisting>
 
       We refer to the javadoc  of       
-      <ulink url="http://www.MMBase.org/api/org/MMBase/bridge/util/xml/NodeFunction.html">NodeFunction</ulink>
+      <ulink url="http://www.mmbase.org/api/org/mmbase/bridge/util/xml/NodeFunction.html">NodeFunction</ulink>
       for more information on how to use it.      
     </para>
   </section>
@@ -406,6 +406,12 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         This means that a request on the image-server will block until the image-conversion is
         ready. In stead of the page on which appeares the URL to the image-server, as happened in
         earlier MMBase versions.
+      </para>
+    </section>
+    <section>
+      <title>Configuration</title>
+      <para>
+        The following configurations are possible.
       </para>
     </section>
   </section>
