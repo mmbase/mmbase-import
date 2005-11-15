@@ -9,5 +9,9 @@ JDK version    Application server    Action                                     
                Resin                 I don't know, probably nothing
                etc..
 
+
+Some applications like context-security, editwizards need xalan's xpath. The xalan.renametojar can
+be renamed.
+
 MMBase release team
 
