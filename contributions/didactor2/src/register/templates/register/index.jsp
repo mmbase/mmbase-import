@@ -125,6 +125,7 @@
       <mm:import id="edu" externid="education" />
 
       <mm:present referid="edu">
+         <mm:remove referid="edu" />
          <mm:node number="$education" id="edu" />
          <mm:createrelation role="classrel" source="edu" destination="person" />
          <mm:remove referid="edu" />

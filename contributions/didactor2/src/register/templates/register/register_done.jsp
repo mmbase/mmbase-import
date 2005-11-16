@@ -28,6 +28,5 @@
     <div class="columnRight">
     </div>
   </div>
-  <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 </mm:cloud>
 </mm:content>
