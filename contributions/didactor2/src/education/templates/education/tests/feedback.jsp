@@ -93,14 +93,18 @@
                 <mm:isempty referid="description">
                   <mm:import id="description" reset="true">Voor meer uitleg, zie deze pagina</mm:import>
                 </mm:isempty>
+                <mm:node element="learnobjects">
+                  <mm:import id="feedback_lotype" reset="true"><mm:nodeinfo type="type"/></mm:import>
+                </mm:node>
                 
-                <a target="_blank" href="<mm:treefile 
+                <a target="_top" href="<mm:treefile 
                     page="/education/index.jsp" 
                     objectlist="$includePath" 
                     referids="$referids">
                     
                         <mm:param name="learnobject"><mm:field name="learnobjects.number" /></mm:param>
-                    </mm:treefile>"><mm:write referid="description"/></a>
+                        <mm:param name="learnobjecttype"><mm:write referid="feedback_lotype" /></mm:param>
+                    </mm:treefile>"><mm:write referid="description"/></a><br/>
             </mm:list>
             </mm:field>
          </mm:relatednodes>
