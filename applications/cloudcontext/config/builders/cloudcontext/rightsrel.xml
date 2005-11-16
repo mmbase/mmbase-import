@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="insrel" maintainer="www.mmbase.org" name="rightsrel" version="1">
+<?xml version="1.0" ?>
+<builder 
+  xmlns="http://www.mmbase.org/xmlns/builder"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                      http://www.mmbase.org/xmlns/builder.xsd"                        
+  name="rightsrel" maintainer="www.mmbase.org" version="1" extends="insrel">
   <status>active</status>
-  <classfile>org.mmbase.security.implementation.cloudcontext.builders.RightsRel</classfile>
+  <class>org.mmbase.security.implementation.cloudcontext.builders.RightsRel</class>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">Rights relation</singular>
@@ -22,7 +26,6 @@
         <guiname xml:lang="nl">Operatie</guiname>
         <guiname xml:lang="eo">Ago</guiname>
         <guiname xml:lang="en">Operation</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
