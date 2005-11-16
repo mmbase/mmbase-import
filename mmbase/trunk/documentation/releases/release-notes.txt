@@ -58,7 +58,7 @@ General New Features:
   --> Some resources are 'mergeable' now
 
 - DataTypes and Field improvements.
-   New datatypes 'datetime' and 'boolean'. Support for 'constraints' on all types, default values,
+   New datatypes 'datetime' and 'boolean'. Support for 'restrictions' on all types, default values,
    uniqueness etc. All on field level.
 
    DataType 'list' is not yet tested/working.
@@ -81,12 +81,12 @@ General New Features:
 
 - Tests. The junit test-cases will all succeed when we release 1.8.
 
-- Contributions:   select/  mmbar/  mmbob/  multilanguagegui/   thememanager/
+- Contributions:   aselect /  mmbar/  mmbob/  multilanguagegui/   thememanager/
 
 - External libraries:  concurrency support (anticipating jdk 1.5)
                        we ship jstl/standard
 
-- Support for oracle / mssql.
+- Support for oracle / mssql. views.
 
 - Definition of 'bridge': The classes in mmbase-rmmci.jar.
 
@@ -109,7 +109,7 @@ Taglib New Features:
 - Bunch of new tags/attributes (see documentation). E.g. more complete set of has- tags
  (hasnodemanager, hasfunction etc..)
 
-- FileItem
+- FileItem. HttpPost useage was dropped. common fileupload's 'FileItem' can be gotten as a jspvar.
 
 - Compatibility with EL. MMBase Taglib variables are now EL variables.
   This may give minor compatibility issues. If this gives too many issues for you, you can switch
@@ -179,7 +179,8 @@ Of course we try to mimimize this, but sometimes it happens...
 
 
 - Implement 'node' functions on bridge, not core. This ensure awareness, and that functions can be
-  called through MMCI.
+  called through MMCI. It seems a bit odd to use node interfaces in an otherwise core context, but
+  functions are exposed through the bridge, and exposing core object to the outside is even odder.
   
 
 
@@ -263,7 +264,7 @@ Know Issues and Problems:
 - Hsqldb uses the current dir for writing the database-files. This can
   be the bin dir from where you're starting the servlet-engine. You
   can change this to a dir you want, by changing the database-property
-  in jdbc.xml.
+  in jdbc.xml (perhaps using $DATADIR)
 
 - Resin provides its own XSL-transformation implementation, on this
   area are some known problems.
@@ -328,6 +329,7 @@ Databases
 
 - Mysql 4.1.8
 - Hsqldb 1.7.0RC2
+- Hsqldb 1.8.0
 - Postgresql
 - Informix
 
