@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.29 2005-11-04 23:25:30 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.30 2005-11-16 16:09:48 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -87,17 +87,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         super.initManager();
     }
 
-    public Node createNode() {
-        Node relation = super.createNode();
-        if(relation == null) {
-            throw new RuntimeException("relation node is null");
-        }
-        if(relDefNode == null) {
-            throw new RuntimeException("reldef node is null");
-        }
-        ((BasicNode)relation).setValueWithoutChecks("rnumber", new Integer(relDefNode.getNumber()));
-        return relation;
-    }
+
 
     public String getForwardRole() {
         return relDefNode.getStringValue("sname");
@@ -124,23 +114,41 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
     public NodeManager getSourceManager() {
-        if (typeRelNode==null) {
+        if (typeRelNode == null) {
             throw new BridgeException("This relationmanager does not contain source information.");
         }
-        int nr=typeRelNode.getIntValue("snumber");
+        int nr = typeRelNode.getIntValue("snumber");
         return cloud.getNodeManager(nr);
     }
 
     public NodeManager getDestinationManager() {
-        if (typeRelNode==null) {
+        if (typeRelNode == null) {
             throw new BridgeException("This relationmanager does not contain destination information.");
         }
-        int nr=typeRelNode.getIntValue("dnumber");
+        int nr = typeRelNode.getIntValue("dnumber");
         return cloud.getNodeManager(nr);
     }
 
-    public Relation createRelation(Node sourceNode, RelationManager relationManager) {
-        return super.createRelation(sourceNode, relationManager);
+
+    protected final BasicNode createBasicNode() {
+        return createBasicRelation();
+    }
+
+    /**
+     * BasicRelationManager is garantueed to create BasicRelations. Extension therefore most override this and not {@link #createBasicNode}.
+     * @since MMBase-1.8
+     */
+    protected BasicRelation createBasicRelation() {
+        NodeAndId n = createMMObjectNode();
+        BasicRelation relation =  new BasicRelation(n.node, cloud, n.id);
+        if(relation == null) {
+            throw new RuntimeException("relation node is null");
+        }
+        if(relDefNode == null) {
+            throw new RuntimeException("reldef node is null");
+        }
+        relation.setValueWithoutChecks("rnumber", new Integer(relDefNode.getNumber()));
+        return relation;
     }
 
     public Relation createRelation(Node sourceNode, Node destinationNode) {
@@ -158,7 +166,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
             throw new BridgeException("Cannot add a relation to a new node that has not been committed.");
         }
 
-       BasicRelation relation = (BasicRelation)createNode();
+       BasicRelation relation = createBasicRelation();
        relation.setSource(sourceNode);
        relation.setDestination(destinationNode);
        relation.checkValid();
