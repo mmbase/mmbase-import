@@ -1,7 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="object" maintainer="www.mmbase.org" name="mmbaseranks" version="1">
-  <classfile>org.mmbase.security.implementation.cloudcontext.builders.Ranks</classfile>
+<?xml version="1.0" ?>
+<builder 
+  xmlns="http://www.mmbase.org/xmlns/builder"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                      http://www.mmbase.org/xmlns/builder.xsd"                        
+  name="mmbaseranks" maintainer="www.mmbase.org" version="0" extends="object">
+  <class>org.mmbase.security.implementation.cloudcontext.builders.Ranks</class>
   <names>
     <singular xml:lang="en">Security Rank</singular>
     <singular xml:lang="nl">Security rang</singular>
@@ -55,8 +59,8 @@
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
-        <guitype>field</guitype>
       </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>description</name>
         <type notnull="false" size="1024" state="persistent">STRING</type>
