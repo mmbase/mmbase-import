@@ -28,10 +28,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
 /**
- * Implementation of Node. Simply wraps virtual node of core into an bridge Node.
+ * Implementation of Node. Simply wraps virtual node of core into an bridge Node. This class can be
+ * used even if you don't know the precise implementation of the Cloud object (in contradiction to {@link BasicNode}, and therefore has a public constructor 
+ * {@link VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.6 2005-10-26 20:10:57 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.7 2005-11-16 15:56:55 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -346,7 +348,20 @@ public class VirtualNode implements Node {
     }
 
     public String toString() {
-        return "VIRTUAL" + getNode().toString();
+        /*
+        Map values = getNode().getValues();
+        List res = new ArrayList();
+        Iterator i = values.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            if (((String) entry.getKey()).endsWith("number")) {
+                res.add(entry.getValue());
+            }
+        }
+        
+        return "VIRTUAL" + res + values.keySet();
+        */
+        return "VIRTUAL" + getNode();
     }
 
     public void deleteRelations() {
