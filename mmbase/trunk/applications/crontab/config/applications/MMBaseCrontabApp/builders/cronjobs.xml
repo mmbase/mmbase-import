@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<!-- cronjobs -->
-<builder version="1" name="cronjobs" maintainer="mmbase.org" extends="object">
-  <classfile>org.mmbase.applications.crontab.builders.CronJobs</classfile>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    version="1" name="cronjobs" maintainer="mmbase.org" extends="object">
+  <class>org.mmbase.applications.crontab.builders.CronJobs</class>
   <searchage>360</searchage>
 
   <names>
@@ -18,45 +20,45 @@
         <description xml:lang="en">A identifying name for this job</description>
         <description xml:lang="nl">Een naam voor deze cron-taak</description>
       </descriptions>
-      
+
       <gui>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="en">Name</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>name</name>
         <type size="127" key="false" state="persistent" notnull="false">STRING</type>
       </db>
     </field>
-    
+
     <field>
       <descriptions>
         <description xml:lang="en">When the cronjob must be executed, using the 'crontab' syntax (see crontab(5))</description>
         <description xml:lang="nl">Op welke tijdstippen deze cron-taak moetn worden uitgevoerd volgens de 'crontab' syntax (zie crontab(5))</description>
       </descriptions>
-      
+
       <gui>
         <guiname xml:lang="nl">Crontijd</guiname>
         <guiname xml:lang="en">Cron time</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>2</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>crontime</name>
         <type size="127" key="false" state="persistent" notnull="false">STRING</type>
       </db>
     </field>
-    
+
     <field>
       <descriptions>
         <description xml:lang="en">The name of the implementating class (implementation Runnable or CronJob)</description>
@@ -66,13 +68,13 @@
       <gui>
         <guiname xml:lang="nl">Class</guiname>
         <guiname xml:lang="en">Class</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>3</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>classfile</name>
         <type size="127" key="false" state="persistent" notnull="false">STRING</type>
@@ -87,8 +89,8 @@
       <gui>
         <guiname xml:lang="nl">Configuratie</guiname>
         <guiname xml:lang="en">Configuration</guiname>
-        <guitype>string</guitype>
       </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>config</name>
         <type size="127" key="false" state="persistent" notnull="false">STRING</type>
@@ -102,8 +104,12 @@
       <gui>
         <guiname xml:lang="nl">Tiepe jobs</guiname>
         <guiname xml:lang="en">job type</guiname>
-        <guitype>org.mmbase.applications.crontab.builders.resources.jobtypes</guitype>
       </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.crontab.builders.resources.jobtypes" />
+        </enumeration>
+      </datatype>
       <db>
         <name>type</name>
         <type state="persistent" notnull="true" key="false">STRING</type>
@@ -111,3 +117,4 @@
     </field>
   </fieldlist>
 </builder>
+
