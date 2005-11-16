@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="urls" maintainer="mmbase.org" version="0" extends="object">
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="urls" maintainer="www.mmbase.org" version="0" extends="object">
   <status>active</status>
-  
-  <classfile>Urls</classfile>  
+  <class>org.mmbase.module.builders.Urls</class>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">URL</singular>
@@ -31,7 +34,6 @@
       <gui>
         <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -52,7 +54,6 @@
       <gui>
         <guiname xml:lang="en">Url</guiname>
         <guiname xml:lang="nl">Url</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -73,8 +74,8 @@
       <gui>
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
-        <guitype>field</guitype>
       </gui> 
+     <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>description</name>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
