@@ -18,7 +18,7 @@
   </mm:treeinclude>
 </mm:cloud>
 
-<mm:cloud jspvar="cloud" username="admin" password="${cloudprovider.adminpassword}">
+<mm:cloud jspvar="cloud" username="admin" password="admin2k">
   <mm:import externid="firstname" jspvar="firstname" />
   <mm:import externid="lastname" jspvar="lastname" />
   <mm:import externid="address" />
@@ -120,11 +120,18 @@
          <mm:setfield name="country"><mm:write referid="country" /></mm:setfield>
          <mm:setfield name="email"><mm:write referid="email" /></mm:setfield>
       </mm:createnode>
-      <mm:node number="$education" id="edu" />
-      <mm:createrelation role="classrel" source="edu" destination="person" />
+
+
+      <mm:import id="edu" externid="education" />
+
+      <mm:present referid="edu">
+         <mm:node number="$education" id="edu" />
+         <mm:createrelation role="classrel" source="edu" destination="person" />
+         <mm:remove referid="edu" />
+      </mm:present>
 
       <mm:remove referid="person" />
-      <mm:remove referid="edu" />
+      
 
       <mm:treeinclude page="/register/register_done.jsp" objectlist="$includePath" referids="$referids">
         <mm:param name="uname"><%=constraint%></mm:param>
