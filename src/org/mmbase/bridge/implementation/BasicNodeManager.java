@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.111 2005-11-04 23:24:48 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.112 2005-11-16 16:09:48 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -192,31 +192,60 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return fieldTypes;
     }
 
-    public Node createNode() {
+    /**
+     * Structure to temporary contain an MMObjectNode and a {@link BaicCloud#uniqueId}
+     * @since MMBase-1.8
+     */
+    protected final class NodeAndId {
+        final MMObjectNode node;
+        final int id;
+        NodeAndId(MMObjectNode n, int i) {
+            node = n; id = i;
+        }
+    }
+
+
+    /**
+     * Creates new MMObjectNode for the current node manager.
+     * @return MMObjectNode wrapped in a {@link NodeAndId}
+     * @since MMBase-1.8
+     */
+    protected NodeAndId createMMObjectNode() {
         // create object as a temporary node
         int id = BasicCloud.uniqueId();
-        String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), ""+id);
-        // if we are in a transaction, add the node to the transaction;
-        if (cloud instanceof BasicTransaction) {
-            ((BasicTransaction)cloud).add(currentObjectContext);
+        {
+            String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), ""+id);
+            // if we are in a transaction, add the node to the transaction;
+            cloud.add(currentObjectContext);
         }
+
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), "" + id);
         // odd this MMObjectNode does _not_ have the right builder?!
 
         // XXX this should somehow be the default value of the owner field!!
         // set the owner to the owner field as indicated by the user
         node.setValue("owner", cloud.getUser().getOwnerField());
+        
+        return new NodeAndId(node, id);
+    }
 
+    /**
+     * BasicNodeManager is garantueed to return BasicNode's. So extendsion must override this, and not {@link #createNode}
+     * @since MMBase-1.8
+     */
+    protected BasicNode createBasicNode() {     
+        NodeAndId n = createMMObjectNode();
         if (getMMObjectBuilder() instanceof TypeDef) {
-            return new BasicNodeManager(node, cloud, id);
-        } else if (getMMObjectBuilder() instanceof RelDef || getMMObjectBuilder() instanceof TypeRel) {
-            return new BasicRelationManager(node, cloud, id);
-        } else if (getMMObjectBuilder() instanceof InsRel) {
-            return new BasicRelation(node, cloud, id);
+            // I wonder if this is necessary.
+            return new BasicNodeManager(n.node, cloud, n.id);
         } else {
-            return new BasicNode(node, cloud, id);
+            return new BasicNode(n.node, cloud, n.id);
         }
     }
+    public final Node createNode() {
+        return createBasicNode();
+    }
+
 
     public NodeManager getParent() throws NotFoundException {
         MMObjectBuilder bul = getMMObjectBuilder().getParentBuilder();
