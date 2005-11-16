@@ -71,7 +71,7 @@
     <property name="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
     -->
     <!-- Oracle
-         MM: I don' think this is regularly tested. 
+         MM: I don' think this is regularly tested.
     <property name="url">jdbc:oracle:oci8:@$DBM</property>
     -->
     <!-- Informix
@@ -85,16 +85,19 @@
     <property name="url">jdbc:pgsql:net//$HOST:$PORT/$DBM</property>
     -->
     <!-- MS Sql Server
-         MM: I don' think this is regularly tested. 
+         MM: I don' think this is regularly tested.
     <property name="url">jdbc:microsoft:sqlserver://$HOST:$PORT;DatabaseName=$DBM</property>
     -->
 
-    <!-- Stand alone Hsql which was started with:   
-     java -cp ~/mmbase/1.7/head/mmbase/mmbase-webapp/WEB-INF/lib/hsqldb.jar org.hsqldb.Server -database.0 /tmp/test -dbname.0 mmbase
+    <!-- Stand alone Hsql which was started with:
+     java -cp ~/mmbase/head/mmbase/mmbase-webapp/WEB-INF/lib/hsqldb.jar org.hsqldb.Server -database.0 /tmp/test -dbname.0 mmbase
 
-    <property name="url">jdbc:hsqldb:hsql://$HOST/$DBM</property>     
+    <property name="url">jdbc:hsqldb:hsql://$HOST/$DBM</property>
     -->
-    
+    <!--
+        HSQL with files under WEB-INF/data
+        <property name="url">jdbc:hsqldb:file:$DATADIR/$DBM;shutdown=true</property>
+    -->
 
     <!-- Default hsqldb driver -->
     <property name="url">jdbc:hsqldb:$DBM;shutdown=true</property>
