@@ -21,7 +21,7 @@ Applications build file
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
-  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+  <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
 
   <property name="applications.dir"       location="." />
   <property name="applications.build.dir" value="${applications.dir}/build" />
@@ -39,12 +39,12 @@ Applications build file
 
 
   <target name="jars" depends="all">
-    <copy todir="${applications.build.dir}/jars" flatten="true">
+    <copy todir="${applications.build.dir}/jars" flatten="true" preservelastmodified="true" >
       <fileset dir=".">
         <include name="**/*.jar" />
       </fileset>
     </copy>
-    <copy todir="${applications.build.dir}/jars" file="${mmbase.jar}" />
+    <copy todir="${applications.build.dir}/jars" file="${mmbase.jar}" overwrite="true" preservelastmodified="true" />
   </target>
 
   <target name="mmbase" depends="init">
