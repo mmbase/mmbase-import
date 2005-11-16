@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.3 2005-01-03 13:08:32 michiel Exp $ -->
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="email" maintainer="mmbase.org" version="0" extends="object">
+  <!-- @version $Id: email.xml,v 1.4 2005-11-16 15:46:36 pierre Exp $ -->
 
-  <classfile>org.mmbase.applications.email.EmailBuilder</classfile>
-
+  <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
 
   <names>
@@ -21,15 +23,15 @@
     <description xml:lang="eo">Sendotaj retmesaĝoj</description>
   </descriptions>
 
-	<properties>
+  <properties>
     <!--
     'email-lists' are implemetned by relateing a group of users to the email node before sending it.
     You can configure which builders are used for that here
-    -->    
-		<property name="groups-builder">groups</property>
-		<property name="users-builder">users</property> <!-- you might want to use 'people' -->
-		<property name="users-email-field">email</property>
-	</properties>
+    -->
+    <property name="groups-builder">groups</property>
+    <property name="users-builder">users</property> <!-- you might want to use 'people' -->
+    <property name="users-email-field">email</property>
+  </properties>
 
   <fieldlist>
     <field>
@@ -41,13 +43,13 @@
         <guiname xml:lang="en">Onderwerp</guiname>
         <guiname xml:lang="nl">Subject</guiname>
         <guiname xml:lang="eo">Temo</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>subject</name>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
@@ -62,13 +64,13 @@
         <guiname xml:lang="en">From</guiname>
         <guiname xml:lang="nl">Van</guiname>
         <guiname xml:lang="eo">Sendanto</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>2</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>from</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -83,13 +85,13 @@
         <guiname xml:lang="en">To</guiname>
         <guiname xml:lang="nl">Naar</guiname>
         <guiname xml:lang="eo">Sendato</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>3</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>to</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -104,8 +106,8 @@
         <guiname xml:lang="en">Cc</guiname>
         <guiname xml:lang="nl">Cc</guiname>
         <guiname xml:lang="eo">Kromsendato</guiname>
-        <guitype>string</guitype>
       </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>cc</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -120,8 +122,8 @@
         <guiname xml:lang="en">Bcc</guiname>
         <guiname xml:lang="nl">Bcc</guiname>
         <guiname xml:lang="eo">Kaŝkromsendato</guiname>
-        <guitype>string</guitype>
       </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>bcc</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -136,8 +138,8 @@
         <guiname xml:lang="en">Reply To</guiname>
         <guiname xml:lang="nl">Antwoord Naar</guiname>
         <guiname xml:lang="eo">Respondoto</guiname>
-        <guitype>string</guitype>
       </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>replyto</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -152,8 +154,8 @@
         <guiname xml:lang="en">Body Url</guiname>
         <guiname xml:lang="nl">Tekst Url</guiname>
         <guiname xml:lang="eo">Teksta URL</guiname>
-        <guitype>string</guitype>
       </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>bodyurl</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -168,8 +170,8 @@
         <guiname xml:lang="en">Body</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="eo">Teksto</guiname>
-        <guitype>string</guitype>
       </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>body</name>
         <type state="persistent" size="32000" notnull="false" key="false">STRING</type>
@@ -184,13 +186,17 @@
         <guiname xml:lang="en">Type</guiname>
         <guiname xml:lang="nl">Type</guiname>
         <guiname xml:lang="eo">Tipo</guiname>
-        <guitype>org.mmbase.applications.email.resources.mailtype</guitype>
       </gui>
       <editor>
         <positions>
           <list>4</list>
         </positions>
       </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.email.resources.mailtype" />
+        </enumeration>
+      </datatype>
       <db>
         <name>mailtype</name>
         <type state="persistent" notnull="false" key="false">INTEGER</type>
@@ -205,13 +211,17 @@
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Status</guiname>
         <guiname xml:lang="eo">Stato</guiname>
-        <guitype>org.mmbase.applications.email.resources.mailstatus</guitype>
       </gui>
       <editor>
         <positions>
           <list>5</list>
         </positions>
       </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.email.resources.mailstatus" />
+        </enumeration>
+      </datatype>
       <db>
         <name>mailstatus</name>
         <type state="persistent" notnull="false" key="false">INTEGER</type>
@@ -226,8 +236,8 @@
         <guiname xml:lang="en">Send Time</guiname>
         <guiname xml:lang="nl">Verzendtijd</guiname>
         <guiname xml:lang="eo">Sendtempo</guiname>
-        <guitype>eventtime</guitype>
       </gui>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>mailtime</name>
         <type state="persistent" notnull="false" key="false">INTEGER</type>
@@ -242,8 +252,8 @@
         <guiname xml:lang="en">Build Time</guiname>
         <guiname xml:lang="nl">Bouwtijd</guiname>
         <guiname xml:lang="eo">Konstrutempo</guiname>
-        <guitype>eventtime</guitype>
       </gui>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>buildtime</name>
         <type state="persistent" notnull="false" key="false">INTEGER</type>
@@ -258,8 +268,8 @@
         <guiname xml:lang="en">Repeat Time</guiname>
         <guiname xml:lang="nl">Herhaaltijd</guiname>
         <guiname xml:lang="eo">Ripettempo</guiname>
-        <guitype>eventtime</guitype>
       </gui>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name xml:lang="en">repeattime</name>
         <type state="persistent" notnull="false" key="false">INTEGER</type>
@@ -274,13 +284,13 @@
         <guiname xml:lang="en">Last Mailed</guiname>
         <guiname xml:lang="nl">Laatst Verstuurd</guiname>
         <guiname xml:lang="eo">Lasta sendo</guiname>
-        <guitype>eventtime</guitype>
       </gui>
       <editor>
         <positions>
           <search>-1</search>
         </positions>
       </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>mailedtime</name>
         <type state="persistent" notnull="false" key="false">INTEGER</type>
