@@ -86,9 +86,9 @@
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
      <span <mm:compare referid="mode" value="educations">class="education_top_menu_selected"</mm:compare>>
      <% if (hsetEducations.size() < 2) { %>
-       <a href="?mode=educations" style="font-weight:bold;"><di:translate key="education.educationmenueducations" /></a>
+       <a href="?mode=educations" style="font-weight:bold;" class="education_top_menu_selected"><di:translate key="education.educationmenueducations" /></a>
      <% } else { %>
-       <di:translate key="education.educationmenueducations" />
+       <span class="menu_font"><di:translate key="education.educationmenueducations" /></span>
        <script>
          function chooseEducation(eid) {
            if (eid != 0) {
@@ -113,8 +113,8 @@
          for(Iterator it = hsetEducations.iterator(); it.hasNext();) {
            String sEducationID = (String) it.next();
            %>
-           <option 
-              <% if((request.getParameter("education_topmenu_course") != null) && (request.getParameter("education_topmenu_course").equals(sEducationID))) out.print(" selected=\"selected\" "); %> 
+           <option
+              <% if((request.getParameter("education_topmenu_course") != null) && (request.getParameter("education_topmenu_course").equals(sEducationID))) out.print(" selected=\"selected\" "); %>
               value="<%=sEducationID%>">
                 <mm:node number="<%=sEducationID%>"><mm:field name="name"/></mm:node>
            </option>
