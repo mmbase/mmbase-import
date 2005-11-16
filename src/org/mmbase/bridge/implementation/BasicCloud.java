@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.141 2005-11-07 18:35:18 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.142 2005-11-16 16:07:12 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -40,7 +40,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // used to generate a temporary ID number
     // The Id starts at - 2 and is decremented each time a new id is asked
     // until Integer.MIN_VALUE is reached (after which counting starts again at -2).
-    private static int lastRequestId = -2;
+    private static int lastRequestId = Integer.MIN_VALUE;
 
     // link to cloud context
     private CloudContext cloudContext = null;
@@ -1001,6 +1001,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      */
     boolean contains(MMObjectNode node) {
         return false;
+    }
+
+    /**
+     * Ignored by basic cloud. See {@link BasicTransaction#add(String)}.
+     */
+    void add(String currentObjectContext) {
     }
 
 }
