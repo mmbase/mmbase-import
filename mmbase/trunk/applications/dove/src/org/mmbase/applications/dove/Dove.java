@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.68 2005-11-01 22:13:52 nklasens Exp $
+ * @version $Id: Dove.java,v 1.69 2005-11-16 15:45:25 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -151,7 +151,7 @@ public class Dove extends AbstractDove {
                     } else if (f.getDataType() instanceof org.mmbase.datatypes.DateTimeDataType) {
                         fel = addContentElement(FIELD, "" + node.getDateValue(fname).getTime() / 1000, out);
                     } else {
-                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
+                        fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
                     }
                     fel.setAttribute(ELM_TYPE, getTypeDescription(type));
                     fel.setAttribute(ELM_NAME, fname);
@@ -992,7 +992,6 @@ public class Dove extends AbstractDove {
                             value = null;
                         }
                     }
-
                     if ((originalValue != null ) && !originalValue.equals(mmbaseValue)) {
                         // give error node was changed in cloud
                         Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name '" + key + "' value found: '" + mmbaseValue + "' value expected '" + originalValue + "'", out);
@@ -1005,7 +1004,7 @@ public class Dove extends AbstractDove {
                 }
                 if (value instanceof byte[]) {
                     node.setValue(key, value);
-                } else {                    
+                } else {
                     node.setStringValue(key, value != null ? org.mmbase.util.Casting.toString(value) : null);
                 }
                 Element fieldElement = doc.createElement(FIELD);
@@ -1048,7 +1047,7 @@ public class Dove extends AbstractDove {
                 }
                 newnode.commit();
                 int number = newnode.getNumber();
-                if (log.isDebugEnabled()) 
+                if (log.isDebugEnabled())
                     log.debug("Created new node " + number);
                 aliases.put(alias,new Integer(number));
                 objectelement.setAttribute(ELM_NUMBER,""+number);
