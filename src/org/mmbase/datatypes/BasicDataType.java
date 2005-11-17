@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.26 2005-11-11 16:04:46 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.27 2005-11-17 12:46:34 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -672,7 +672,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
 
         public String toString() {
-            return name + " : " +
+            return name + ": " +
                 (enforceStrength == DataType.ENFORCE_NEVER ? "*" : "") +
                 value + ( fixed ? "." : "");
         }
@@ -787,7 +787,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             }
             Collection validValues = getEnumeration(null, cloud, node, field);
             if (validValues == null) return true;
-            Object key = cast(v);
+            Object key = BasicDataType.this.preCast(v, node, field);            
             Iterator i = validValues.iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
