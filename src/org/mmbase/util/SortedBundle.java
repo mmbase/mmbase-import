@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.11 2005-10-17 15:26:40 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.12 2005-11-17 18:12:25 michiel Exp $
  */
 public class SortedBundle {
 
@@ -63,7 +63,6 @@ public class SortedBundle {
 
     /**
      * You can specify ValueWrapper.class as a value for the wrapper argument. The keys will be objects with natural order of the values.
-     * @todo EXPERIMENTAL
      */
 
     public static class ValueWrapper implements Comparable {
@@ -149,6 +148,9 @@ public class SortedBundle {
     }
 
 
+    /**
+     * Casts a key of the bundle the the specified key-type. This type is defined by the combination of the arguments. See {@link #getResource}.
+     */
     public static Object castKey(final String bundleKey, final Object value, final Class constantsProvider, final Class wrapper) {
         if (bundleKey == null) return null;
         Object key;
