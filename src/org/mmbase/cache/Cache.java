@@ -19,12 +19,13 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.bridge.Cacheable;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.30 2005-10-12 16:56:51 michiel Exp $
+ * @version $Id: Cache.java,v 1.31 2005-11-17 09:54:26 johannes Exp $
  */
 abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
 
@@ -73,12 +74,22 @@ abstract public class Cache extends AbstractMap implements SizeMeasurable, Map {
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
             } else {
-                String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation"));
+                String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation.class"));
                 if(!"".equals(clazz)) {
                     try {
                         Class clas = Class.forName(clazz);
                         if (cache.implementation == null || (! clas.equals(cache.implementation.getClass()))) {
                             cache.implementation = (CacheImplementationInterface) clas.newInstance();
+                            Element cacheImpl = xmlReader.getElementByPath(cacheElement, "cache.implementation");
+                            Iterator it = xmlReader.getChildElements(cacheImpl, "param");
+                            HashMap configValues = new HashMap();
+                            while (it.hasNext()) {
+                                Element attrNode = (Element)it.next();
+                                String paramName = xmlReader.getElementAttributeValue(attrNode, "name");
+                                String paramValue = xmlReader.getElementValue(attrNode);
+                                configValues.put(paramName, paramValue);
+                            }
+                            cache.implementation.config(configValues);
                         }
                     } catch (ClassNotFoundException cnfe) {
                         log.error("For cache " + cache + " " + cnfe.getClass().getName() + ": " + cnfe.getMessage());
