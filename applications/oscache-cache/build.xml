@@ -16,7 +16,7 @@
 
   <property name="project.jars.dir"        location="${project.download.dir}" />
   <property name="project.jars.includes"   value="oscache-2.2.jar" />
-  <property name="project.jar.dir"        location="build/" />
+  <property name="project.jar.dir"        location="." />
   &base;
   
   <target name="dependent.package"       depends="dependent.jar,package" />
