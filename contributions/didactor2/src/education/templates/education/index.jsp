@@ -18,6 +18,8 @@
 <mm:import externid="learnobject" jspvar="learnObject"/>
 <mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
 <mm:import jspvar="educationNumber"><mm:write referid="education"/></mm:import>
+<mm:import externid="fb_madetest"/>
+
 <%
     if (educationNumber != null && educationNumber.length() > 0) {
         session.setAttribute("lasteducation",educationNumber);
@@ -113,16 +115,16 @@
         frames['content'].location.href='<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&edu='+number;
         break;
       case "learnblocks":
-        frames['content'].location.href='<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
         break;
       case "tests":
-        frames['content'].location.href='<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
         break;
       case "pages":
-        frames['content'].location.href='<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
         break;
       case "flashpages":
-        frames['content'].location.href='<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>'+'&learnobject='+number;
+        frames['content'].location.href='<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
         break;
     }
   }
