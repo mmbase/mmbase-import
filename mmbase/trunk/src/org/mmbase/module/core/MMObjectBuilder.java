@@ -63,9 +63,9 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.350 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.351 2005-11-17 09:16:10 johannes Exp $
  */
-public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener{
+public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
     /**
      * Name of the field containing the object number, which uniquely identifies the node.
