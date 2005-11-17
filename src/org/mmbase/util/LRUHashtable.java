@@ -20,7 +20,7 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.20 2005-09-22 18:34:40 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.21 2005-11-17 14:11:43 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface {
@@ -348,6 +348,10 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
             i++;
         }
         return Collections.unmodifiableList(results);
+    }
+
+    public void config(Map map) {
+        // lru needs no configuration.
     }
 
     /**
