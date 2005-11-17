@@ -24,14 +24,16 @@
 
 <mm:import externid="fb_madetest"/>
 <mm:present referid="fb_madetest">
-    <mm:list nodes="$fb_madetest" path="madetests,tests">
-        <mm:import id="page">/education/tests/feedback.jsp</mm:import>
-        <a href="<mm:treefile page="$page" objectlist="$includePath" referids="$referids">
-                     <mm:param name="tests"><mm:field name="tests.number"/></mm:param>
-                     <mm:param name="madetest"><mm:write referid="fb_madetest"/></mm:param>
-                 </mm:treefile>"><di:translate key="education.backtotestresults" /></a><br/>
-        <mm:remove referid="page"/>
-    </mm:list>
+    <mm:node number="$fb_madetest" notfound="skip">
+        <mm:relatednodes type="tests">
+            <mm:import id="page">/education/tests/feedback.jsp</mm:import>
+            <a href="<mm:treefile page="$page" objectlist="$includePath" referids="$referids">
+                         <mm:param name="tests"><mm:field name="number"/></mm:param>
+                         <mm:param name="madetest"><mm:write referid="fb_madetest"/></mm:param>
+                     </mm:treefile>"><di:translate key="education.backtotestresults" /></a><br/>
+            <mm:remove referid="page"/>
+        </mm:relatednodes>
+    </mm:node>
 </mm:present>
 
 <mm:node number="$learnobject" jspvar="flash">
