@@ -37,10 +37,10 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.166 2005-11-01 12:57:01 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.167 2005-11-17 09:57:21 johannes Exp $
  */
 
-public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
+public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
 
     /**
@@ -1760,4 +1760,63 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable  {
         return super.equals(n); // compare as objects.
     }
 
+    /**
+     * Custom serialize method for MMObjectNode. The main reason this method exists is
+     * that the builder for an object will not be serialized, but the tablename for
+     * the object will be saved instead. During deserialization the builder will
+     * be recovered using that name.
+     * @since MMBase-1.8.0
+     */
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeObject(oldValues);
+        out.writeObject(values);
+        out.writeObject(sizes);
+        out.writeBoolean(initializing);
+        out.writeObject(properties);
+        out.writeObject(changed);
+
+        // Save parent and builder by name, not by object
+        if (parent == null) {
+            out.writeObject(null);
+        } else { 
+            out.writeObject(parent.getTableName());
+        }
+        if (builder == null) {
+            out.writeObject(null);
+        } else {
+            out.writeObject(builder.getTableName());
+        }
+        out.writeBoolean(isNew);
+        out.writeObject(aliases);
+        out.writeObject(newContext);
+    }
+
+    /**
+     * Custom deserialize method for MMObjectNode. The main reason this method exists is
+     * that the builder for an object will not be serialized, but the tablename for
+     * the object will be saved instead. During deserialization the builder will
+     * be recovered using that name.
+     * @since MMBase-1.8.0
+     */
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        oldValues = (Map)in.readObject();
+        values = (Map)in.readObject();
+        sizes = (Map)in.readObject();
+        initializing = in.readBoolean();
+        properties = (Hashtable)in.readObject();
+        changed = (Set)in.readObject();
+
+        // Retrieve parent and builder by name, not by object
+        String parentName = (String)in.readObject();
+        if (parentName != null) {
+            parent = MMBase.getMMBase().getBuilder(parentName);
+        }
+        String builderName = (String)in.readObject();
+        if (builderName != null) {
+            builder = MMBase.getMMBase().getBuilder(builderName);
+        }
+        isNew = in.readBoolean();
+        aliases = (Set)in.readObject();
+        newContext = (String)in.readObject();
+    }
 }
