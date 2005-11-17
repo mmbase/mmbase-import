@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.73 2005-11-04 23:15:57 michiel Exp $
+ * @version $Id: Casting.java,v 1.74 2005-11-17 18:09:23 michiel Exp $
  */
 
 import java.util.*;
@@ -99,12 +99,13 @@ public class Casting {
      * type passed is Integer, then the string is act to an Integer.
      * If the type passed is a primitive type, the object is cast to an Object Types that is representative
      * for that type (i.e. Integer for int).
-     * @param value The value to be converted
      * @param type the type (class)
+     * @param cloud When casting to Node, a cloud may be needed. May be <code>null</code>, for an anonymous cloud to be tried.
+     * @param value The value to be converted
      * @return value the converted value
      * @since MMBase-1.8
      */
-    public static Object toType(Class type, Object value) {
+    public static Object toType(Class type, Cloud cloud, Object value) {
         if (value != null && isType(type, value))  {
             return value;
         } else {
@@ -149,7 +150,9 @@ public class Casting {
                 return toDate(value);
             } else if (type.equals(Node.class)) {
                 try {
-                    Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                    if (cloud == null) {
+                        cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                    } 
                     return toNode(value, cloud);
                 } catch (Exception e) {
                     // suppose that that was because mmbase not running
