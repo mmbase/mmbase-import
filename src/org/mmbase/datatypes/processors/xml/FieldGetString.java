@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.1 2005-10-25 12:30:26 michiel Exp $
+ * @version $Id: FieldGetString.java,v 1.2 2005-11-17 18:10:21 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -61,7 +61,7 @@ public class FieldGetString implements  Processor {
                         log.warn(e);
                         string = e.getMessage();
                     }
-                    return Casting.toType(value.getClass(), string);
+                    return Casting.toType(value.getClass(), node.getCloud(), string);
                     
                 }                    
                 default: {

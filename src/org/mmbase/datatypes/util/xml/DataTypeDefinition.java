@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.43 2005-11-11 16:01:37 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.44 2005-11-17 18:10:21 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -336,7 +336,7 @@ public class DataTypeDefinition {
                 Locale locale = DataTypeXml.getLocale(entryElement);
                 String display = entryElement.getAttribute("display");
                 if (display.equals("")) display = value;
-                Object key = Casting.toType(dataType.getTypeAsClass(), value);
+                Object key = Casting.toType(dataType.getTypeAsClass(), null, value);
                 if (key instanceof java.io.Serializable) {
                     log.info("Adding " + key + "/" + display + " for " + locale);
                     fact.add(locale, (java.io.Serializable) key, display);
