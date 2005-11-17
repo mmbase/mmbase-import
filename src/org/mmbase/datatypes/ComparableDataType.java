@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.11 2005-10-26 20:07:43 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.12 2005-11-17 18:10:21 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -73,6 +73,21 @@ public abstract class ComparableDataType extends BasicDataType {
         return maxRestriction.isInclusive();
     }
 
+    /**
+     * @inheritDoc
+     *
+     * If the default value of comparable datatype is somewhy out the range, it will be truncated into it.
+     */
+    public Object getDefaultValue() {
+        Object def = super.getDefaultValue();
+        Object castedDef = castToValidate(def, null, null);
+        if (! minRestriction.valid(castedDef, null, null)) {
+            def = minRestriction.getValue();
+        } else if (! maxRestriction.valid(castedDef, null, null)) {
+            def = maxRestriction.getValue();
+        }
+        return def;
+    }
 
     /**
      * Sets the minimum Date value for this data type.

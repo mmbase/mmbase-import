@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.17 2005-11-04 23:12:51 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.18 2005-11-17 18:10:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -32,13 +32,6 @@ public class NodeDataType extends BasicDataType {
         super(name, Node.class);
     }
 
-
-    public Object preCast(Object value, Node node, Field field) {
-        Cloud cloud = null;
-        if (node != null) cloud = node.getCloud();
-        if (field != null && cloud == null) cloud = field.getNodeManager().getCloud();
-        return org.mmbase.util.Casting.toNode(enumerationRestriction.cast(value), cloud);
-    }
 
     public void inherit(BasicDataType origin) {
         super.inherit(origin);
