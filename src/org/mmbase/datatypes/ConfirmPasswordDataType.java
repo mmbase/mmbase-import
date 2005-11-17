@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.1 2005-11-04 23:12:51 michiel Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.2 2005-11-17 14:52:19 michiel Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
@@ -50,6 +50,10 @@ public class ConfirmPasswordDataType extends StringDataType {
         return errors;
     }
 
+    /**
+     * The field property is the name of the other password field that this fields 'confirms'. It default to 'password'.
+     * In datatype XML it can be set with the generic &lt;property name="field" value="..." /&gt;
+     */
     public void setField(String field) {
         passwordRestriction.setValue(field);
     }
