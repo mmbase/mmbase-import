@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="oscache" default="dependent.jar" basedir=".">
+  
+  <property name="project.name"      value="oscache"/>
+  <property name="project.package"   value="org/mmbase/cache/oscache" />
+  <property name="project.comment"   value="MMBase OSCache cache implementation" />
+  <property name="project.download.dir" value="download" />
+  <property file="build.properties.default" />
+  <property name="project.target.templates.dir"   value="oscache" />
+  <property name="project.config.dir.includes"   value="utils/**" />
+  <property name="project.config.jar.includes"   value="**" />
+
+  <property name="project.jars.dir"        location="${project.download.dir}" />
+  <property name="project.jars.includes"   value="oscache-2.2.jar" />
+  <property name="project.jar.dir"        location="build/" />
+  &base;
+  
+  <target name="dependent.package"       depends="dependent.jar,package" />
+
+  <target name="dependent.jar" description="Create mmbase-oscache.jar" depends="oscache.jar,project.manifest,jar">
+  </target>
+
+  <target name="dependent.install" description="Install oscache implementation" 
+	  depends="dependent.jar,install" />
+
+  <target name="oscache.jar" description="Get OSCache jar">
+    <antcall target="download">
+      <param name="sourcefile" value="${oscache.loc}"/>
+      <param name="destfile" value="${oscache.dest}"/>
+    </antcall>
+
+    <echo message="${project.jars.dir}${project.jars.includes}" />
+  </target>
+
+  <!--
+      Well it is not very complicated, this download stuff,
+      but should we reuse the code of the main build.xml rather then copying it?
+  -->
+  <target name="download" unless="exist" depends="testexist">
+  <!-- Download the package -->
+    <mkdir dir="${project.download.dir}" />
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  </target>
+
+  <target name="testexist">
+    <echo message="Testing  for ${destfile}"/>
+    <available file="${destfile}" property="exist"/>
+  </target>
+
+</project>
