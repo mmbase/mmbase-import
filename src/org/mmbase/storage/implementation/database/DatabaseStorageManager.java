@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.133 2005-10-31 14:10:37 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.134 2005-11-17 10:23:48 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2230,7 +2230,7 @@ public class DatabaseStorageManager implements StorageManager {
                                       + ", but in storage " + Fields.getTypeDescription(type)
                                       + " (" + colInfo.get("TYPE_NAME") + "). Storage type will be used.");
                             DataType originalDataType = field.getDataType();
-                            DataType newDataType      = (DataType)DataTypes.getDataType(type).clone();
+                            DataType newDataType      = (DataType)DataTypes.getDataType(type).clone(originalDataType.getName());
                             field.setType(Fields.classToType(newDataType.getTypeAsClass()));
                             if (originalDataType instanceof BasicDataType) {
                                 newDataType.inherit((BasicDataType) originalDataType); // takes as much possible...
@@ -2238,7 +2238,7 @@ public class DatabaseStorageManager implements StorageManager {
                                 // cannot happen, I think
                                 log.warn("original data type is no BasicDataType, but a " + originalDataType.getClass());
                             }
-                            field.setDataType(newDataType);
+                            field.setDataType(newDataType);                            
                             log.info("" + originalDataType + " -> " + field.getDataType());
 
                         }
