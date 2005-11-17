@@ -16,7 +16,7 @@ import java.util.*;
  * Classes which can be used as a cache implementation need to implement this interface.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.1 2005-09-22 18:28:21 michiel Exp $
+ * @version $Id: CacheImplementationInterface.java,v 1.2 2005-11-17 09:54:26 johannes Exp $
  * @since MMBase-1.8
  */
 public interface CacheImplementationInterface extends Map {
@@ -35,5 +35,10 @@ public interface CacheImplementationInterface extends Map {
      * Returns the hit-count on a certain key (if implementable).
      */
     int getCount(Object key);
+
+    /**
+     * Configure the implementation with the given configuration values
+     */
+    void config(Map configuration);
 
 }
