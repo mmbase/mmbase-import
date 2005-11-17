@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.27 2005-11-17 12:46:34 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.28 2005-11-17 18:10:21 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -184,17 +184,53 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
     /**
      * {@inheritDoc}
+     *
+     * Tries to determin  cloud by node and field if possible and wraps {@link preCast(Object, Cloud, Node, Field}.
      */
-    public Object preCast(Object value, Node node, Field field) {
-        return enumerationRestriction.cast(value);
+    public final Object preCast(Object value, Node node, Field field) {
+        return preCast(value, getCloud(node, field), node, field);
+    }
+
+    /**
+     * This method is as yet unused, but can be anticipated
+     */
+    public final Object preCast(Object value, Cloud cloud) {
+        return preCast(value, cloud, null, null);
+    }
+
+    /**
+     * This method implements 'precasting', which can be seen as a kind of datatype specific
+     * casting.  It should anticipated that every argument can be <code>null</code>. It should not
+     * change the actual type of the value.
+     */
+    protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
+        return enumerationRestriction.preCast(value, cloud);
     }
 
 
     /**
      * {@inheritDoc}
+     *
+     * No need to override this. It is garantueed by javadoc that cast should work out of preCast
+     * using Casting.toType. So that is what this final implementation is doing.
+     *
+     * Override {@link preCast(Object, Cloud, Node, Field)}
      */
-    public Object cast(Object value, Node node, Field field) {
-        return Casting.toType(classType, preCast(value, node, field));
+    public final Object cast(Object value, Node node, Field field) {
+        return cast(value, getCloud(node, field), node, field);
+    }
+
+    /**
+     * Utility to avoid repitive calling of getCloud
+     */
+    protected final Object cast(Object value, Cloud cloud, Node node, Field field) {
+        return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
+    }
+
+    protected final Cloud getCloud(Node node, Field field) {
+        if (node != null) return node.getCloud();
+        if (field != null) return field.getNodeManager().getCloud();
+        return null;
     }
 
     /**
@@ -771,27 +807,25 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return ef.get(locale, cloud);
         }
 
-        protected Object cast(Object v) {
+        /**
+         * @see BasicDataType#preCast
+         */
+        protected Object preCast(Object v, Cloud cloud) {
             if (getValue() == null) return v;
-            return ((LocalizedEntryListFactory) value).castKey(v);
+            Object res =  ((LocalizedEntryListFactory) value).castKey(v);
+            return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
         }
 
         public boolean valid(Object v, Node node, Field field) {
-            Cloud cloud;
-            if (node != null) {
-                cloud = node.getCloud();
-            } else if (field != null) {
-                cloud = field.getNodeManager().getCloud();
-            } else {
-                cloud = null;
-            }
+            Cloud cloud = BasicDataType.this.getCloud(node, field);
             Collection validValues = getEnumeration(null, cloud, node, field);
             if (validValues == null) return true;
-            Object key = BasicDataType.this.preCast(v, node, field);            
+            Object candidate = BasicDataType.this.cast(v, cloud, node, field);            
             Iterator i = validValues.iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
-                if (e.getKey().equals(key)) {
+                Object valid = BasicDataType.this.cast(e.getKey(), cloud, node, field);
+                if (valid.equals(candidate)) {
                     return true;
                 }
             }
@@ -806,13 +840,16 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     /**
-     * Iterates over the collection provided by the EnumerationRestriction, but skips the values which are invalid because of the other restrictions on this DataType
+     * Iterates over the collection provided by the EnumerationRestriction, but skips the values
+     * which are invalid because of the other restrictions on this DataType. 
      */
+    //Also, it 'preCasts' the * keys to the right type.
+
     protected class RestrictedEnumerationIterator implements Iterator {
         private final Iterator baseIterator;
         private final Node node;
         private final Field field;
-        private Object next = null;
+        private Map.Entry next = null;
 
         RestrictedEnumerationIterator(Locale locale, Cloud cloud, Node node, Field field) {
             Collection col = enumerationRestriction.getEnumeration(locale, cloud, node, field);
@@ -825,11 +862,24 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected void determineNext() {
             next = null;
             while (baseIterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) baseIterator.next();
+                final Map.Entry entry = (Map.Entry) baseIterator.next();
                 Object value = entry.getKey();
                 Collection validationResult = BasicDataType.this.validate(value, node, field);
                 if (validationResult == VALID) {
                     next = entry;
+                    /*
+                    new Map.Entry() {
+                            public Object getKey() {
+                                return BasicDataType.this.preCast(entry.getKey(), node, field);
+                            }
+                            public Object getValue() {
+                                return entry.getValue();
+                            }
+                            public Object setValue(Object v) {
+                                return entry.setValue(v);
+                            }
+                        };
+                    */
                     break;
                 } else if (log.isDebugEnabled()) {
                     String errors = "";
