@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.42 2005-11-04 23:12:51 michiel Exp $
+ * @version $Id: DataType.java,v 1.43 2005-11-17 18:06:51 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
@@ -105,22 +105,38 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     /**
      * Tries to 'cast' an object for use with this parameter. E.g. if value is a String, but this
      * parameter is of type Integer, then the string can be parsed to Integer.
+     *
+     *
      * @param value The value to be filled in a value with this DataType.
-     * @param cloud A coud wich may be needed to this correctly (to cast to Node, mainly).
+     * @param node  Sometimes a node might be needed.
+     * @param field Sometimes a (or 'the') field might be needed.
      */
     public Object cast(Object value, Node node, Field field);
+
+    /**
+     * If datatypes outside 'fields' are imaginable, which still need cloud, then the following may need addition
+     */
+    // public Object cast(Object value, Cloud cloud);
 
 
     /**
      * Before actually 'cast' an object to the right type, it may undergo some conversion by the
-     * datatype, e.g. enumerations may get resolved.
+     * datatype, e.g. enumerations may get resolved (enumeration have the feature that they can
+     * e.g. resolve java-constants to their values).
      *
-     * This does not yet garantuee that the value is the right type, but only that it now can be
-     * casted to the right type without further problems. (Casting.toType should often do).
+     * This does not garantuee that the value has the 'proper' type, but only that it now can be
+     * casted to the right type without further problems. (Casting.toType should do).
      * 
-     * XXX: perhaps this can be removed and replaced by processors.
+     * preCast should not change the actual type of value. It is e.g. used in the
+     * Node#setStringValue, and the processor may expect a String there.
      */
     public Object preCast(Object value, Node node, Field field);
+
+    /**
+     * If datatypes outside 'fields' are imaginable, which still need cloud, then the following may need addition (implemented already as a util in BasicDataType)
+     */
+    // public Object preCast(Object value, Cloud cloud);
+
 
 
     /**
