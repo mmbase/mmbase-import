@@ -79,7 +79,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
   <property name="mmdocs.dir"      value="${webapp.dir}/mmdocs"/>
   <property name="release.lib.dir" value="${web.dir}/lib"/>
-  <property name="mmbase.jar"      value="${release.lib.dir}/mmbase.jar"/>
+  <property name="mmbase.jar"      value="${build.dir}/mmbase.jar"/>
   <property name="mmbase.config"   value="${web.dir}/config"/>
   <property name="documentation.home" value="../../documentation" />
   <property name="build.documentation" value="true" />
@@ -429,7 +429,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="install.templates" depends="init" if="templates.available">
-    <copy todir="${templates.dir}/${project.target.templates.dir}">
+    <copy todir="${templates.dir}/${project.target.templates.dir}" preservelastmodified="true">
       <fileset dir="${project.templates.dir}">
         <include name="${project.templates.include}" />
       </fileset>
@@ -437,7 +437,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="install.examples" depends="init" if="examples.available">
-    <copy todir="${examples.dir}/${project.target.examples.dir}">
+    <copy todir="${examples.dir}/${project.target.examples.dir}" preservelastmodified="true">
       <fileset dir="${project.examples.dir}">
       </fileset>
     </copy>
@@ -446,7 +446,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="install.config" depends="init" if="config.available">
-    <copy todir="${mmbase.config}">
+    <copy todir="${mmbase.config}" preservelastmodified="true">
       <fileset dir="${project.config.dir}"
                includes="${project.config.dir.includes}"
                >
@@ -457,14 +457,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="install.documentation" depends="documentation" if="documentation.build.available">
-    <copy todir="${mmdocs.dir}">
+    <copy todir="${mmdocs.dir}" preservelastmodified="true">
       <fileset dir="${project.build.dir}/documentation">
       </fileset>
     </copy>
   </target>
 
   <target name="install" depends="jar,install.templates,install.examples,install.config,install.documentation">
-    <copy todir="${release.lib.dir}">
+    <copy todir="${release.lib.dir}" preservelastmodified="true" flatten="true">
       <fileset dir="${project.jar.dir}">
         <include name="**/*.jar" />
       </fileset>
