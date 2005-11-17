@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.178 2005-11-04 23:21:13 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.179 2005-11-17 17:15:44 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -503,7 +503,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Field field = nodeManager.getField(fieldName);        
         Object setValue = field.getDataType().preCast(value, this, field);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_STRING).process(this, field, setValue);
-        log.info(fieldName + "FOUND processoed " + v);
         setValueWithoutProcess(fieldName, v);
     }
 
@@ -553,6 +552,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     public Object getValueWithoutProcess(String fieldName) {
         Object result = getNode().getValue(fieldName);
+        if (result instanceof MMObjectNode) {
+            MMObjectNode mmnode = (MMObjectNode) result;
+            result = cloud.makeNode(mmnode, "" + mmnode.getNumber());
+        }
         return result;
     }
 
@@ -596,6 +599,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
         return result;
     }
+
 
     public Node getNodeValue(String fieldName) {
         if (fieldName == null || fieldName.equals("number")) {
