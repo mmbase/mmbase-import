@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.142 2005-11-16 16:07:12 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.143 2005-11-18 22:45:55 nklasens Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -279,8 +279,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     public NodeManagerList getNodeManagers() {
         List nodeManagers = new ArrayList();
-        for (Enumeration builders = BasicCloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
-            MMObjectBuilder bul = (MMObjectBuilder)builders.nextElement();
+        for (Iterator builders = BasicCloudContext.mmb.getBuilders().iterator(); builders.hasNext();) {
+            MMObjectBuilder bul = (MMObjectBuilder)builders.next();
             if (!bul.isVirtual() && check(Operation.READ, bul.oType)) {
                 nodeManagers.add(bul.getTableName());
             }

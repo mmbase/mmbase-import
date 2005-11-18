@@ -9,17 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util.xml.query;
 
-import java.util.Collection;
-import org.w3c.dom.*;
-
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.StepField;
+import org.w3c.dom.Element;
 
 /**
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: FieldDefinition.java,v 1.4 2005-11-01 18:01:44 michiel Exp $
+ * @version $Id: FieldDefinition.java,v 1.5 2005-11-18 22:45:18 nklasens Exp $
  * @since MMBase-1.8
  **/
 public class FieldDefinition {

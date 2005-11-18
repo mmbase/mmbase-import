@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
@@ -12,15 +13,13 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Reads <config>/magic.xml
  */
-public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
+public class MagicXMLReader extends DocumentReader implements DetectorProvider {
 
     private static Logger log = Logging.getLoggerInstance(MagicXMLReader.class);
 
     private static MagicXMLReader reader = null;
     protected static final String MAGICXMLFILE = "magic.xml";
     // Name of the XML magic file - should reside in top config dir
-
-    private static ResourceWatcher watcher;
 
     private static void setReader(String config) throws IllegalArgumentException {
         try {

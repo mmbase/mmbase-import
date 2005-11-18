@@ -12,8 +12,10 @@ package org.mmbase.bridge.implementation;
 
 import java.util.List;
 import java.util.ArrayList;
+
 import org.mmbase.bridge.*;
 import org.mmbase.security.*;
+import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
@@ -23,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.30 2005-11-16 16:09:48 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.31 2005-11-18 22:45:55 nklasens Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -177,8 +179,12 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     public RelationList getRelations(Node node) {
         // XXX: no caching is done here?
         List result = new ArrayList();
-        InsRel insRel = (InsRel) builder;
-        result.addAll(insRel.getRelationsVector(node.getNumber()));
+        try {
+            InsRel insRel = (InsRel) builder;
+            result.addAll(insRel.getRelationNodes(node.getNumber()));
+        } catch (SearchQueryException  sqe) {
+            log.error(sqe.getMessage()); // should not happen
+        }
         return new BasicRelationList(result, this);
     }
 
