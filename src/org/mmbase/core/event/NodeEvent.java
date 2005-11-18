@@ -24,13 +24,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.15 2005-11-03 10:50:03 ernst Exp $
+ * @version $Id: NodeEvent.java,v 1.16 2005-11-18 15:11:30 ernst Exp $
  */
-public class NodeEvent extends Event implements Serializable {
+public class NodeEvent extends Event implements Serializable, Cloneable {
 
-    /**
-     * 
-     */
+  
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
@@ -122,29 +120,6 @@ public class NodeEvent extends Event implements Serializable {
 
 
     /**
-     * Adds the name, old and new value of a changed field, But only if this event
-     * type supports changed fields (i.e. node changed, relation changed)
-     *
-     * @param fieldName
-     * @param oldValue
-     * @deprecated we dont need this
-     */
-    public void addChangedField(String fieldName, Object oldValue, Object newValue) {
-        if (canHaveChangedFields()) {
-            oldValues.put(fieldName, oldValue);
-            newValues.put(fieldName, newValue);
-        }
-    }
-
-    /**
-     * @return an iterator of the names of the changed fields.
-     * @deprecated use #getChangedFields()
-     */
-    public Iterator changedFieldIterator() {
-        return oldValues.keySet().iterator();
-    }
-
-    /**
      * @param fieldName the field you want to get the old value of
      * @return an Object containing the old value (in case of change event), or
      *         null if the fieldName was not found in the old value list
@@ -157,7 +132,7 @@ public class NodeEvent extends Event implements Serializable {
      * @return a set containing the names of the fields that have changed
      */
     public Set getChangedFields(){
-        return oldValues.keySet();
+        return Collections.unmodifiableSet(oldValues.keySet());
     }
 
     /**
@@ -203,17 +178,12 @@ public class NodeEvent extends Event implements Serializable {
         this.nodeNumber = nodeNumber;
     }
 
-    protected boolean canHaveChangedFields() {
-        return eventType == NodeEvent.EVENT_TYPE_CHANGED
-            || eventType == NodeEvent.EVENT_TYPE_RELATION_CHANGED;
-    }
-
     public String toString() {
         String changedFields = "";
-        for (Iterator i = changedFieldIterator(); i.hasNext();) {
+        for (Iterator i = getChangedFields().iterator(); i.hasNext();) {
             changedFields = changedFields + (String) i.next() + ",";
         }
-        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", changedfields: " + changedFields;
+        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", changedfields: [" + changedFields + "]";
     }
 
     protected static String getEventTypeGuiName(int eventType) {
@@ -277,5 +247,28 @@ public class NodeEvent extends Event implements Serializable {
         if(oldValues.keySet().contains(fieldName))return true;
         return false;
     }
-
+    
+    public Object clone(){
+        Object clone = null;
+        clone = super.clone();
+        //  deep clone the fields that can be changed
+        builderName = new String(builderName);
+        return clone;
+    }
+    
+    public static void main(String[] args) {
+        //test serializable
+        Map  oldv = new HashMap(), newv = new HashMap();
+        oldv.put("een","veen");
+        oldv.put("twee","vtwee");
+        newv.putAll(oldv);
+        
+        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, NodeEvent.EVENT_TYPE_CHANGED);
+        System.out.println("event 1: " + event.toString());
+        NodeEvent event2 = (NodeEvent) event.clone();
+        event2.setBuilderName("otherbuilder");
+        System.out.println("clone: " + event2.toString());
+        System.out.println("event 1: " + event.toString());
+        
+    }
 }
