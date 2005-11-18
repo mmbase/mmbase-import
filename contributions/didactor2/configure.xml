@@ -103,10 +103,6 @@
              token="$${cloudprovider.adminpassword}"
              value="${cloudprovider.adminpassword}"/>
 
-    <replace file="${build.dir}/webapp/register/index.jsp"
-             token="$${cloudprovider.adminpassword}"
-             value="${cloudprovider.adminpassword}"/>
-
     <if>
       <available file="${build.config.dir}/modules/sendmail.xml" />
       <then>
@@ -148,6 +144,17 @@
              summary="true"
              includes="**/*.xml"
     />
+
+
+    <if>
+      <available file="${build.dir}/webapp/register/index.jsp" />
+      <then>
+        <replace file="${build.dir}/webapp/register/index.jsp"
+                 token="$${cloudprovider.adminpassword}"
+                 value="${cloudprovider.adminpassword}"/>
+      </then>
+    </if>
+
 
   </target>
 </project>
