@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@page import="org.mmbase.bridge.*,org.mmbase.cache.Cache,java.util.*,java.util.regex.*" 
+%><%@page import="org.mmbase.bridge.*,org.mmbase.cache.Cache,java.util.*,java.util.regex.*,org.mmbase.storage.search.implementation.database.BasicSqlHandler,org.mmbase.storage.search.SearchQuery" 
 %><%@include file="../../settings.jsp" %>
 <mm:content expires="0">
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
@@ -18,6 +18,7 @@
 <form action="<mm:url referids="cache" />" method="post">
 <table summary="applications">
 <%
+	BasicSqlHandler sqlHandler = new BasicSqlHandler();
 
  Cache cache = Cache.getCache(cacheName);
  if (cache != null) {
@@ -67,7 +68,7 @@ synchronized(cache) {
 <tr>
   <td class="data"><%=j%></td>
   <td class="data"><%=cache.getCount(k)%></td>
-  <td class="data"><%=k%></td>
+  <td class="data"><p><%=k%></p><hr/><p><%=sqlHandler.toSql((SearchQuery)entry.getKey(), sqlHandler)%></p></td>
   <td class="data"><%=v%></td>
   <td class="data"><a href="<mm:url referids="cache"><mm:param name="deletekey" value="<%=k%>" /><mm:param name="deleteentry" value="<%="" + j%>" /></mm:url>">remove</a></td>
   <% j++; %>
