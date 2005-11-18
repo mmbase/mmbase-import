@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.179 2005-11-17 17:15:44 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.180 2005-11-18 22:45:55 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -859,10 +859,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     private void deleteRelations(int type) {        
         List relations = null;
-        if (type == -1) {
-            relations = BasicCloudContext.mmb.getInsRel().getAllRelationsVector(getNode().getNumber());
-        } else {
-            relations = BasicCloudContext.mmb.getInsRel().getRelationsVector(getNode().getNumber());
+        try {
+            if (type == -1) {
+                relations = BasicCloudContext.mmb.getInsRel().getRelationNodes(getNode().getNumber(), false);
+            } else {
+                relations = BasicCloudContext.mmb.getInsRel().getRelationNodes(getNode().getNumber());
+            }
+        } catch (SearchQueryException  sqe) {
+            log.error(sqe.getMessage()); // should not happen
         }
         if (relations != null) {
             // check first

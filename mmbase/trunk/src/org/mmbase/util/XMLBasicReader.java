@@ -32,7 +32,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.44 2005-09-02 15:02:44 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.45 2005-11-18 22:45:55 nklasens Exp $
  */
 public class XMLBasicReader extends DocumentReader {
 
@@ -98,14 +98,6 @@ public class XMLBasicReader extends DocumentReader {
                                                    "<error>" + path + " not found</error>"));
          }
         return is;
-    }
-
-    /**
-     * Obtain a DocumentBuilder
-     * @deprecated use {!link DocumentReader.getDocumentBuilder(boolean)}
-     */
-    public static DocumentBuilder getDocumentBuilder(boolean validating) {
-        return DocumentReader.getDocumentBuilder(validating, null, null);
     }
 
     /**

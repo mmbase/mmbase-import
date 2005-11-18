@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.18 2005-11-02 07:42:48 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.19 2005-11-18 22:45:55 nklasens Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -206,6 +206,14 @@ public class DocumentReader  {
         return getDocumentBuilder(validate(), null, null);
     }
 
+
+    /**
+     * Obtain a DocumentBuilder
+     */
+    public static DocumentBuilder getDocumentBuilder(boolean validating) {
+        return DocumentReader.getDocumentBuilder(validating, null, null);
+    }
+    
     /**
      * See {@link #getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
      */

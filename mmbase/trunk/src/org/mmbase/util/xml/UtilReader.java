@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.16 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: UtilReader.java,v 1.17 2005-11-18 22:45:55 nklasens Exp $
  */
 public class UtilReader {
 
@@ -133,7 +133,7 @@ public class UtilReader {
             return;
         }
         if (is != null) {
-            XMLBasicReader reader = new XMLBasicReader(is, UtilReader.class);
+            DocumentReader reader = new DocumentReader(is, UtilReader.class);
             Element e = reader.getElementByPath("util.properties");
             if (e != null) {
                 for (Iterator iter = reader.getChildElements(e, "property"); iter.hasNext();) {

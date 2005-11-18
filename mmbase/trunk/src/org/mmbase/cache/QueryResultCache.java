@@ -17,7 +17,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.database.BasicQueryHandler;
+
 import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 
 /**
@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.20 2005-10-13 17:35:03 ernst Exp $
+ * @version $Id: QueryResultCache.java,v 1.21 2005-11-18 22:44:53 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -105,8 +105,7 @@ abstract public class QueryResultCache extends Cache {
      * @param releaseStrategy A releaseStrategy to add.
      */
     public void addReleaseStrategy(ReleaseStrategy releaseStrategy) {
-        ((ChainedReleaseStrategy) this.releaseStrategy)
-            .addReleaseStrategy(releaseStrategy);
+        this.releaseStrategy.addReleaseStrategy(releaseStrategy);
     }
 
     /**

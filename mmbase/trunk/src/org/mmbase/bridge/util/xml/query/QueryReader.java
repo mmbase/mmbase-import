@@ -18,12 +18,11 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.5 2005-11-01 18:01:44 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.6 2005-11-18 22:45:18 nklasens Exp $
  * @since MMBase-1.8
  **/
 public class QueryReader {
@@ -63,7 +62,7 @@ public class QueryReader {
     }
 
 
-    static protected void addField(Element fieldElement, QueryDefinition queryDefinition, QueryConfigurer configurer) {
+    protected static void addField(Element fieldElement, QueryDefinition queryDefinition, QueryConfigurer configurer) {
         if (hasAttribute(fieldElement,"name")) {
             FieldDefinition fieldDefinition = configurer.getFieldDefinition(queryDefinition);
             fieldDefinition.fieldName = fieldElement.getAttribute("name");
@@ -86,7 +85,7 @@ public class QueryReader {
         }
     }
 
-    static protected Constraint getConstraint(Element constraintElement, QueryDefinition queryDefinition) throws SearchQueryException {
+    protected static Constraint getConstraint(Element constraintElement, QueryDefinition queryDefinition) {
         if (!hasAttribute(constraintElement,"field")) {
             throw new IllegalArgumentException("A constraint tag must have a 'field' attribute");
         }
@@ -130,7 +129,7 @@ public class QueryReader {
         return Queries.createConstraint(queryDefinition.query, fieldName, operator, value, value2, caseSensitive, part);
     }
 
-    static protected int getDayMark(Cloud cloud, int age) {
+    protected static int getDayMark(Cloud cloud, int age) {
         // find day mark
         NodeManager dayMarks = cloud.getNodeManager("daymarks");
         NodeQuery query = dayMarks.createQuery();
@@ -150,7 +149,7 @@ public class QueryReader {
         return daymark;
     }
 
-    static protected Constraint getAgeConstraint(Element constraintElement, QueryDefinition queryDefinition) throws SearchQueryException {
+    protected static Constraint getAgeConstraint(Element constraintElement, QueryDefinition queryDefinition) {
         // find day mark
         int minAge = -1;
         if (hasAttribute(constraintElement,"minage")) {
@@ -209,12 +208,12 @@ public class QueryReader {
     }
 
 
-    static protected Integer getAlias(Cloud cloud, String name) {
+    protected static Integer getAlias(Cloud cloud, String name) {
         org.mmbase.bridge.Node node = cloud.getNode(name);
         return new Integer(node.getNumber());
     }
 
-    static protected SortedSet getAliases(Cloud cloud, List names) {
+    protected static SortedSet getAliases(Cloud cloud, List names) {
         SortedSet set = new TreeSet();
         Iterator i = names.iterator();
         while (i.hasNext()) {
@@ -223,7 +222,7 @@ public class QueryReader {
         return set;
     }
 
-    static protected Constraint getAliasConstraint(Element constraintElement, QueryDefinition queryDefinition) throws SearchQueryException {
+    protected static Constraint getAliasConstraint(Element constraintElement, QueryDefinition queryDefinition) {
         if (!hasAttribute(constraintElement,"name")) {
             throw new IllegalArgumentException("An aliasconstraint tag must have a 'name' attribute");
         }
@@ -242,7 +241,7 @@ public class QueryReader {
         return queryDefinition.query.createConstraint(stepField, getAliases(queryDefinition.query.getCloud(),names));
     }
 
-    static protected SortedSet getOTypes(Cloud cloud, List names, boolean descendants) {
+    protected static SortedSet getOTypes(Cloud cloud, List names, boolean descendants) {
         SortedSet set = new TreeSet();
         Iterator i = names.iterator();
         while (i.hasNext()) {
@@ -258,7 +257,7 @@ public class QueryReader {
         return set;
     }
 
-    static protected Constraint getTypeConstraint(Element constraintElement, QueryDefinition queryDefinition) throws SearchQueryException {
+    protected static Constraint getTypeConstraint(Element constraintElement, QueryDefinition queryDefinition) {
         if (!hasAttribute(constraintElement,"name")) {
             throw new IllegalArgumentException("A typeconstraint tag must have a 'name' attribute");
         }
@@ -280,7 +279,7 @@ public class QueryReader {
         return queryDefinition.query.createConstraint(stepField, getOTypes(queryDefinition.query.getCloud(), names, descendants));
     }
 
-    static protected Constraint getCompositeConstraint(Element constraintElement, QueryDefinition queryDefinition) throws SearchQueryException {
+    protected static Constraint getCompositeConstraint(Element constraintElement, QueryDefinition queryDefinition) throws SearchQueryException {
         int operator = CompositeConstraint.LOGICAL_AND;
         if (hasAttribute(constraintElement,"operator")) {
             String sOperator = getAttribute(constraintElement,"operator");
@@ -302,7 +301,7 @@ public class QueryReader {
         return constraint;
     }
 
-    static protected void addConstraint(Element constraintElement, QueryDefinition queryDefinition, CompositeConstraint parentConstraint) throws SearchQueryException {
+    protected static void addConstraint(Element constraintElement, QueryDefinition queryDefinition, CompositeConstraint parentConstraint) throws SearchQueryException {
         Constraint constraint = null;
         if ("constraint".equals(constraintElement.getLocalName())) {
             constraint = getConstraint(constraintElement, queryDefinition);
@@ -327,7 +326,7 @@ public class QueryReader {
         }
     }
 
-    static protected void addDistinct(Element distinctElement, QueryDefinition queryDefinition) throws SearchQueryException {
+    protected static void addDistinct(Element distinctElement, QueryDefinition queryDefinition) {
         boolean distinct = true;
         if (hasAttribute(distinctElement,"value")) {
             distinct = "true".equals(getAttribute(distinctElement,"value"));
@@ -335,7 +334,7 @@ public class QueryReader {
         queryDefinition.query.setDistinct(distinct);
     }
 
-    static protected void addSortOrder(Element sortOrderElement, QueryDefinition queryDefinition) throws SearchQueryException {
+    protected static void addSortOrder(Element sortOrderElement, QueryDefinition queryDefinition) {
         if (!hasAttribute(sortOrderElement,"field")) {
             throw new IllegalArgumentException("A sortorder tag must have a 'field' attribute");
         }
@@ -400,7 +399,6 @@ public class QueryReader {
 
             QueryDefinition queryDefinition = configurer.getQueryDefinition();
             queryDefinition.isMultiLevel = !path.equals(element);
-            Step elementStep = null;
 
             if (element != null) {
                 queryDefinition.elementManager = cloud.getNodeManager(element);
