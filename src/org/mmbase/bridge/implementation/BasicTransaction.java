@@ -13,18 +13,16 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 
 /**
- * The absic implementation for a Transaction cLoud.
+ * The basic implementation for a Transaction cLoud.
  * A Transaction cloud is a cloud which buffers allc hanegs made to nodes -
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.18 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.19 2005-11-18 22:45:55 nklasens Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
-    private static final Logger log = Logging.getLoggerInstance(BasicTransaction.class);
 
     /**
      * The id of the transaction for use with the transaction manager.

@@ -10,9 +10,6 @@ package org.mmbase.core.event;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NotFoundException;
-import org.mmbase.module.core.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.16 2005-11-18 15:11:30 ernst Exp $
+ * @version $Id: NodeEvent.java,v 1.17 2005-11-18 22:45:55 nklasens Exp $
  */
 public class NodeEvent extends Event implements Serializable, Cloneable {
 

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.ResourceWatcher;
 
@@ -22,7 +21,7 @@ import org.mmbase.util.xml.DocumentReader;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.25 2005-10-12 19:06:42 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.26 2005-11-18 22:45:55 nklasens Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);

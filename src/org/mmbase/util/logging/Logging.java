@@ -12,9 +12,9 @@ package org.mmbase.util.logging;
 import java.util.Iterator;
 import java.lang.reflect.Method;
 
-import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.xml.DocumentReader;
 
 /** 
  * With this class the logging is configured and it supplies the `Logger' objects.
@@ -57,7 +57,7 @@ import org.mmbase.util.ResourceLoader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.35 2005-09-15 12:07:50 michiel Exp $
+ * @version $Id: Logging.java,v 1.36 2005-11-18 22:45:55 nklasens Exp $
  */
 
 
@@ -122,9 +122,9 @@ public class Logging {
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
 
-        XMLBasicReader reader;
+        DocumentReader reader;
         try {
-            reader = new XMLBasicReader(resourceLoader.getInputSource(configFile), Logging.class);
+            reader = new DocumentReader(resourceLoader.getInputSource(configFile), Logging.class);
         } catch (Exception e) {
             log.error("Could not open " + configFile + " " + e);
             log.error(stackTrace(e));

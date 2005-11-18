@@ -10,22 +10,17 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.io.InputStream;
 import java.util.*;
-import java.io.*;
 
-import org.mmbase.security.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.datatypes.DataType;
-import org.mmbase.storage.search.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-
-import org.w3c.dom.Element;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node. This class can be
@@ -33,7 +28,7 @@ import org.w3c.dom.Document;
  * {@link VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.7 2005-11-16 15:56:55 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.8 2005-11-18 22:45:55 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8

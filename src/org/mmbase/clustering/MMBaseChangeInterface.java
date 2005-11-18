@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.clustering;
 
 import org.mmbase.core.event.NodeEvent;
-import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 
@@ -18,7 +17,7 @@ import org.mmbase.module.core.MMObjectNode;
 /**
  * Builds a Thread to receive from and send changes to other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.4 2005-09-20 17:48:11 michiel Exp $
+ * @version $Id: MMBaseChangeInterface.java,v 1.5 2005-11-18 22:45:55 nklasens Exp $
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {

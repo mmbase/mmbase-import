@@ -27,7 +27,6 @@ import java.util.*;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
-import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.xml.DocumentReader;
@@ -38,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.42 2005-10-02 17:10:54 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.43 2005-11-18 22:45:55 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
