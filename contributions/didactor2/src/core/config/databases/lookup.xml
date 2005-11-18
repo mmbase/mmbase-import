@@ -58,6 +58,10 @@
 		<driver-class>org.hsqldb.</driver-class>
 	</filter>
 
+	<filter database-config="mssql.xml">
+		<driver-class>com.microsoft.jdbc.sqlserver.SQLServerDriver</driver-class>
+	</filter>
+
 	<!-- when no rules, then it will always be used when no previous rules apply -->
 	<filter database-config="relational" />
 </database-filters>
