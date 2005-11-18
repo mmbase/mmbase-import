@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.74 2005-11-17 18:09:23 michiel Exp $
+ * @version $Id: Casting.java,v 1.75 2005-11-18 14:06:19 pierre Exp $
  */
 
 import java.util.*;
@@ -100,6 +100,20 @@ public class Casting {
      * If the type passed is a primitive type, the object is cast to an Object Types that is representative
      * for that type (i.e. Integer for int).
      * @param type the type (class)
+     * @param value The value to be converted
+     * @return value the converted value
+     * @since MMBase-1.8
+     */
+    public static Object toType(Class type, Object value) {
+        return toType(type, null, value);
+    }
+
+    /**
+     * Tries to 'cast' an object for use with the provided class. E.g. if value is a String, but the
+     * type passed is Integer, then the string is act to an Integer.
+     * If the type passed is a primitive type, the object is cast to an Object Types that is representative
+     * for that type (i.e. Integer for int).
+     * @param type the type (class)
      * @param cloud When casting to Node, a cloud may be needed. May be <code>null</code>, for an anonymous cloud to be tried.
      * @param value The value to be converted
      * @return value the converted value
@@ -152,7 +166,7 @@ public class Casting {
                 try {
                     if (cloud == null) {
                         cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-                    } 
+                    }
                     return toNode(value, cloud);
                 } catch (Exception e) {
                     // suppose that that was because mmbase not running
@@ -475,7 +489,7 @@ public class Casting {
      * If the value is Numeric, the method
      * tries to obtrain the object with that number.
      * If it is a String, the method tries to obtain the object with
-     * that alias. 
+     * that alias.
      * All remaining situations return <code>null</code>.
      * @param i the object to convert
      * @param cloud the Cloud to use for loading a node
@@ -564,7 +578,7 @@ public class Casting {
 
     /**
      * Convert an object to a <code>boolean</code>.
-     * If the value is numeric, this call returns <code>true</code> 
+     * If the value is numeric, this call returns <code>true</code>
      * if the value is a positive, non-zero, value. In other words, values '0'
      * and '-1' are considered <code>false</code>.
      * If the value is a string, this call returns <code>true</code> if
@@ -756,7 +770,7 @@ public class Casting {
         Date date = null;
 
         if (d instanceof Date) {
-            date = (Date) d;            
+            date = (Date) d;
         } else {
             try {
                 long dateInSeconds = -1;
@@ -799,7 +813,7 @@ public class Casting {
             }
         }
         return date;
-        
+
     }
 
 
