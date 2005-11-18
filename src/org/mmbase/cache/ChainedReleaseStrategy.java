@@ -24,7 +24,7 @@ import org.mmbase.storage.search.SearchQuery;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.6 2005-11-06 08:34:31 ernst Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.7 2005-11-18 15:22:30 ernst Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
 
@@ -95,19 +95,14 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    public boolean doEvaluate(NodeEvent event, SearchQuery query,
-            List cachedResult) {
-        // first do the 'basic' strategy that is allways there. (see
-        // constructor)
+    public boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+        // first do the 'basic' strategy that is allways there. (see constructor)
         Iterator i = cacheReleaseStrategies.iterator();
-        StrategyResult result = ((ReleaseStrategy) i.next()).evaluate(
-            event, query, cachedResult);
+        StrategyResult result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
 
-        // while the outcome of getResult is true (the cache should be fluhed),
-        // we have to keep trying.
+        // while the outcome of getResult is true (the cache should be fluhed), we have to keep trying.
         while (i.hasNext() && result.shouldRelease() == true) {
-            result = ((ReleaseStrategy) i.next()).evaluate(event,
-                query, cachedResult);
+            result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
         }
         return result.shouldRelease();
     }
