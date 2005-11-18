@@ -45,8 +45,7 @@ public class RelationEventBroker extends AbstractEventBroker {
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
     public boolean canBrokerForEvent(Event event) {
-        if (event.getClass().equals(RelationEvent.class)) return true;
-        return false;
+        return (event.getClass().equals(RelationEvent.class));
     }
 
     /*

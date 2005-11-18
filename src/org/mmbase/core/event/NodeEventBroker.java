@@ -46,7 +46,7 @@ public class NodeEventBroker extends AbstractEventBroker {
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
     public boolean canBrokerForEvent(Event event) {
-        return event instanceof NodeEvent;
+        return (event.getClass().equals(NodeEvent.class));
     }
 
     /*
