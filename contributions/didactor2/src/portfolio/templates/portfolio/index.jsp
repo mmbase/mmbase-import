@@ -516,22 +516,6 @@ Mijn gegevens:
           <td>Achternaam:</td>
           <td><mm:field name="lastname"/></td>
         </tr>
-<%--        <tr>
-          <td>Adres:</td>
-          <td><mm:field name="address"/></td>
-        </tr>
-        <tr>
-          <td>Postcode:</td>
-          <td><mm:field name="zipcode"/></td>
-        </tr>
-        <tr>
-          <td>Plaats:</td>
-          <td><mm:field name="city"/></td>
-        </tr>
-        <tr>
-          <td>Telefoonnummer:</td>
-          <td><mm:field name="telephone"/></td>
-        </tr> --%>
         <tr>
           <td style="vertical-align: top">Opmerkingen:</td>
           <td><mm:field name="remarks" escape="p"/></td>
@@ -575,12 +559,14 @@ Mijn gegevens:
     <td>
       <table class="Font">
         <mm:node number="$user">
-          <mm:fieldlist fields="initials,firstname,lastname,address,zipcode,city,telephone,remarks">
-            <tr>
-              <td style="vertical-align: top"><mm:fieldinfo type="guiname"/></td>
-              <td><mm:fieldinfo type="input"/></td>
-            </tr>
-          </mm:fieldlist>
+          <mm:locale language="$language">
+            <mm:fieldlist fields="initials,firstname,lastname,email,address,zipcode,city,telephone,remarks">
+              <tr>
+                <td style="vertical-align: top"><mm:fieldinfo type="guiname"/></td>
+                <td><mm:fieldinfo type="input"/></td>
+              </tr>
+            </mm:fieldlist>
+          </mm:locale>
           <tr>
             <td>
               <mm:relatednodes type="images">
@@ -593,6 +579,7 @@ Mijn gegevens:
             </td>
             <td><input type="file" name="_handle"/></td>
           </tr>
+          <mm:treeinclude page="/admin/render_settings.jsp" objectlist="$includePath" referids="$referids" />
         </mm:node>
       </table>
     </td>
