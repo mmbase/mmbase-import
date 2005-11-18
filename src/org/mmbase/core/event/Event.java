@@ -14,9 +14,9 @@ import java.io.Serializable;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.4 2005-10-12 16:42:24 michiel Exp $
+ * @version $Id: Event.java,v 1.5 2005-11-18 15:11:30 ernst Exp $
  */
-public abstract class Event implements Serializable{
+public abstract class Event implements Serializable, Cloneable{
 
     protected String machine;
 
@@ -39,6 +39,14 @@ public abstract class Event implements Serializable{
      */
     public Event(String machine) {
         this.machine = machine;
+    }
+    
+    public Object clone(){
+        Object clone = null;
+        try {
+            clone = super.clone();
+        } catch (CloneNotSupportedException e) {}
+        return clone;
     }
 
 }

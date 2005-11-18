@@ -8,6 +8,7 @@
 package org.mmbase.core.event;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,9 +21,9 @@ import java.util.Map;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.8 2005-11-04 15:30:56 ernst Exp $
+ * @version $Id: RelationEvent.java,v 1.9 2005-11-18 15:11:30 ernst Exp $
  */
-public class RelationEvent extends NodeEvent implements Serializable {
+public class RelationEvent extends NodeEvent implements Serializable, Cloneable {
 
     /**
 	 * 
@@ -74,12 +75,20 @@ public class RelationEvent extends NodeEvent implements Serializable {
     public String getRelationSourceType() {
         return relationSourceType;
     }
+    
+    public void setRelationSourceType(String type){
+        relationSourceType = type;
+    }
 
     /**
      * @return Returns the relationDestinationType.
      */
     public String getRelationDestinationType() {
         return relationDestinationType;
+    }
+    
+    public void setRelationDestinationType(String type){
+        relationDestinationType = type;
     }
 
     /**
@@ -119,6 +128,28 @@ public class RelationEvent extends NodeEvent implements Serializable {
             + relationDestinationType + ", source-node number: "
             + relationSourceNumber + ", destination-node number: "
             + relationDestinationNumber;
+    }
+    
+    public Object clone(){
+        Object clone = null;
+        clone = super.clone();
+        //deep clone the fields that can change
+        relationSourceType = new String(relationSourceType);
+        relationDestinationType = new String(relationDestinationType);
+        return clone;
+    }
+    
+    public static void main(String[] args) {
+        Map  oldv = new HashMap(), newv = new HashMap();
+        oldv.put("een","veen");
+        oldv.put("twee","vtwee");
+        newv.putAll(oldv);
+        
+        RelationEvent event1 = new RelationEvent("local", "builder", 0, oldv, newv, NodeEvent.EVENT_TYPE_CHANGED, 10, 11, "stype", "dtype", 40);
+        RelationEvent event2 = (RelationEvent)event1.clone();
+        event2.setBuilderName("anoterbuilder");
+        System.out.println(" event 1: " + event1);
+        System.out.println(" event 2: " + event2);
     }
 
 }
