@@ -24,11 +24,7 @@ import org.mmbase.datatypes.DataTypeCollector;
 import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.core.*;
-import org.mmbase.core.event.Event;
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.core.event.NodeEventListener;
-import org.mmbase.core.event.RelationEvent;
-import org.mmbase.core.event.RelationEventListener;
+import org.mmbase.core.event.*;
 import org.mmbase.core.util.Fields;
 
 import org.mmbase.storage.StorageException;
@@ -63,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.351 2005-11-17 09:16:10 johannes Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.352 2005-11-18 15:48:05 ernst Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -639,7 +635,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // This should in the new event-mechanism not be needed, because the NodeEvent
             // contains the node.
 
-            log.warn("New node '" + nodeNumber + "' of type " + node.parent.getTableName() + " is already in node-cache!" + Logging.stackTrace());
+            //log.warn("New node '" + nodeNumber + "' of type " + node.parent.getTableName() + " is already in node-cache!" + Logging.stackTrace());
         } else {
             safeCache(new Integer(n), node);
         }
@@ -3986,16 +3982,39 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
 
 
-        //and now notify the parent builders
+        //and now refire the event for the parent builders
         MMObjectBuilder pb = getParentBuilder();
-        if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
-            if (log.isDebugEnabled()) {
-                log.debug("Builder " + tableName + " sending signal to builder " + pb.tableName + " for event "+event.toString());
+        send_event:
+        if(pb != null){
+            if(event instanceof RelationEvent){
+                RelationEvent revent = (RelationEvent)event;
+                RelationEvent parentBuilderEvent = (RelationEvent)revent.clone();
+                log.debug(getTableName() + "creating relation event for parent builder: " + pb.getTableName());
+                
+                if(getTableName().equals(parentBuilderEvent.getRelationSourceType())){
+                    log.debug(">> overwriting the relation source type");
+                    parentBuilderEvent.setRelationSourceType(pb.getTableName());
+                }else if(getTableName().equals(parentBuilderEvent.getRelationDestinationType())){
+                    log.debug(">> overwriting the relation destination type");
+                    parentBuilderEvent.setRelationDestinationType(pb.getTableName());
+                }else{
+                    log.error(" relation source and destination type do not match builder "+ getTableName());
+                    break send_event;
+                }
+               
+                EventManager.getInstance().propagateEvent(parentBuilderEvent);
+                
+            }else{
+                log.debug(getTableName() + "creating node event for parent builder: " + pb.getTableName());
+                NodeEvent parentBuilderEvent = (NodeEvent) event.clone();
+                parentBuilderEvent.setBuilderName(pb.getTableName());
+                EventManager.getInstance().propagateEvent(parentBuilderEvent);
+                
             }
-            pb.notify(event);
         }
-
     }
+    
+  
 
     /**
      * @since MMBase-1.8
