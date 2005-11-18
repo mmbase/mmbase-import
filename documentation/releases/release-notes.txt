@@ -23,27 +23,30 @@ NEW FEATURES:
 General New Features:
 --------------------
 [1.8.0]
-- Vwms (virtual web masters) have been removed from the core and placed in a
-  separate 'vwms' application.
+- Applications:
+  Code in mmbase is mroe clearly separted in 'core' and 'applications'. 
 
-- SCAN is now a separate application. The application depends on the vwms
-  application.
+  Some code has moved to a separate application:
+   - Vwms (virtual web masters) have been removed from the core and placed in a
+     separate 'vwms' application.
+   - SCAN is now a separate application. The application depends on the vwms
+     application.
 
-- Crontab is a new application that provides scheduling.
+  New applications:
+   - Crontab is a new application that provides scheduling.
+   - Oscache-cache is a new application that implements teh MMAbse cache using oscache
+   - Packaging is an application that offers an alternative for the sharing and distribution of 
+     'packages' of mmbase code and data.
+   - Richtext application provides support for kupu-editor, and we basicly have 'rich text' now,
+     including inline urls, attachments, images, cross-links and 'blocks' (notes, intermezzo's)
 
-- Packaging application.
+- Security improvments:
+   - Class security provides authentication wrapping based on calling class
+     -> classauthentication.xml
+   - It's easier to make security independent code because of new features about default authentication
+     methods.
 
-- Class security provides authentication wrapping based on calling class
-  -> classauthentication.xml
-
-- It's easier to make security independent code because of new features about default authentication
-  methods.
-
-- Richtext application provides support for kupu-editor, and we basicly have 'rich text' now,
-  including inline urls, attachments, images, cross-links and 'blocks' (notes, intermezzo's)
-
-- Images
-   Several improvements
+- Images improvements
    - Support for height and width (predicted before conversion, determined after conversion, and
      stored if corresponding fields are available) (This was ported to 1.7.4 too)
 	 'modes' of mm:image.
@@ -92,8 +95,11 @@ General New Features:
 
 - Clustering is pluggable: clustering application: jgroups, unicast, multicast.
 
-- Cleaning: The cleaning project has made some progress, and quite a lot dissappeared. Most
-  noticably the multitude of database layers. There's just one now. Pierre? Nico?
+- Optimization: The optimizationproject has made some progress, and quite a lot dissappeared. Most
+  noticably the multitude of database layers. There's just one now.
+  TODO:  Additional work remains, specifically fasing out of deprecated methods, renaming of 
+  classes, improvement of performance, and the simplifixation (or elimination) of JDBC module 
+  in favor of a stand-alone datasource implementation.
 
 - maven build. Nico?
 
@@ -101,8 +107,8 @@ General New Features:
 
 - cp1252 work arounds. (also in 1.7.x)
 
-
-
+- Core improvements:
+   - MMObjectNode can now be serialized
 
 Taglib New Features:
 -------------------
@@ -137,7 +143,8 @@ Obsolete Features:
   typedef.xml builder configuration file.
 
 - The storage configuration files were originally located in the mmbase.jar.
-  In 1.8, these files have been moved to the storage/database directory in the mmbase config directory. Files that override the storage configuration need to be moved to the new directory.
+  In 1.8, these files have been moved to the storage/database directory in the mmbase config 
+  directory. Files that override the storage configuration need to be moved to the new directory.
 
 - The 'Config' module and the 'AppTool' utility have been dropped from the
   code. Both tools provided visual input regarding configuration or
@@ -193,9 +200,11 @@ Know Issues and Problems:
   web.xml or resin 3), then the new EL (Expression Language) syntax
   collides with the Expression language of mmbase taglib.
 
-  MMBase Taglib JSP's using the ${} syntax might work then, because this is also EL. To locally
-  disable, avoid {} (letting it away, or replacing them by []) or add <%@page
-  isELIgnored="true" %> to the page.
+  MMBase Taglib JSP's using the ${} syntax might continue to work, provided it follows EL syntax.
+  Some of the more complex expressions may not work - specifically those where multiple contaxt variables
+  are used in one expression.
+  If expressions fail to work udner EL, either replace ${...} expressions with the alternate (non EL) 
+  syntax: $[...], or add <%@page isELIgnored="true" %> to the page to turn off EL.
 
 - Orion version < 2.x doesn't support the final servlet api 2.3,
   because of this the jumpersFilter will not work. You will need to
