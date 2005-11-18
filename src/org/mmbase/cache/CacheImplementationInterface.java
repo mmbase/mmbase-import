@@ -14,9 +14,10 @@ import java.util.*;
 
 /**
  * Classes which can be used as a cache implementation need to implement this interface.
+ * An implementation of this interface has to be thread-safe to guarantee correctness.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.2 2005-11-17 09:54:26 johannes Exp $
+ * @version $Id: CacheImplementationInterface.java,v 1.3 2005-11-18 22:43:59 nklasens Exp $
  * @since MMBase-1.8
  */
 public interface CacheImplementationInterface extends Map {
