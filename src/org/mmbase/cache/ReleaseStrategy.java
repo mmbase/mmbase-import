@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.8 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.9 2005-11-19 15:19:54 ernst Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -128,6 +128,10 @@ public abstract class ReleaseStrategy {
        return isActive;
     }
     
+    public boolean equals(ReleaseStrategy rs){
+        return (getName().equals(rs.getName()));
+    }
+    
 
     /**
      * utility for specializations: get all the constraints in the query that apply to 
@@ -138,7 +142,9 @@ public abstract class ReleaseStrategy {
      * @return
      */
     protected static List getConstraintsForField(String  fieldName, String builderName, Constraint constraint, SearchQuery query){
+        if(constraint == null)constraint = query.getConstraint();
         List result = new ArrayList();
+        if(constraint == null)return result;
         if(constraint instanceof BasicCompositeConstraint){
             log.debug("constraint is composite.");
             for (Iterator i = ((BasicCompositeConstraint)constraint).getChilds().iterator(); i.hasNext();) {
@@ -216,13 +222,13 @@ public abstract class ReleaseStrategy {
      */
     public static class StrategyResult {
         private boolean shouldRelease;
-
         private long cost;
 
         StrategyResult(boolean shouldRelease, Timer cost) {
             this.shouldRelease = shouldRelease;
             this.cost = cost.getTimeMillis();
         }
+        
 
         StrategyResult(boolean shouldRelease, long cost) {
             this.shouldRelease = shouldRelease;
@@ -242,7 +248,6 @@ public abstract class ReleaseStrategy {
         public boolean shouldRelease() {
             return shouldRelease;
         }
-
     }
 
     /**

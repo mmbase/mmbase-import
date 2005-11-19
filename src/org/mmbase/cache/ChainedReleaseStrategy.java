@@ -24,12 +24,11 @@ import org.mmbase.storage.search.SearchQuery;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.7 2005-11-18 15:22:30 ernst Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.8 2005-11-19 15:19:54 ernst Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
 
     private List cacheReleaseStrategies = new ArrayList(10);
-    private List cacheReleaseStrategyNames = new ArrayList(10);
 
     private String basicStrategyName;
 
@@ -46,17 +45,24 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * @param strategy
      */
     public void addReleaseStrategy(ReleaseStrategy strategy) {
-        if (! cacheReleaseStrategyNames.contains(strategy.getName())){
+        if (! cacheReleaseStrategies.contains(strategy)){
         	cacheReleaseStrategies.add(strategy);
-        	cacheReleaseStrategyNames.add(strategy.getName());
         }
         	
     }
 
-    public void removeReleaseStrategy(ReleaseStrategy strategy) {
+    public void removeStrategy(ReleaseStrategy strategy) {
         if (!strategy.getName().equals(basicStrategyName)) {
             cacheReleaseStrategies.remove(strategy);
-            cacheReleaseStrategyNames.remove(strategy.getName());
+        }
+    }
+    
+    /**
+     * removes all strategies but the base one
+     */
+    public void removeAllStrategies(){
+        for (Iterator i = iterator(); i.hasNext(); ){
+            if( ! ((ReleaseStrategy)i.next()).getName().equals(basicStrategyName)) i.remove();
         }
     }
 
