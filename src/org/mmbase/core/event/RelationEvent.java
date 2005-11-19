@@ -21,7 +21,7 @@ import java.util.Map;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.9 2005-11-18 15:11:30 ernst Exp $
+ * @version $Id: RelationEvent.java,v 1.10 2005-11-19 15:21:46 ernst Exp $
  */
 public class RelationEvent extends NodeEvent implements Serializable, Cloneable {
 
@@ -127,7 +127,7 @@ public class RelationEvent extends NodeEvent implements Serializable, Cloneable 
             + relationSourceType + ", destinationtype: "
             + relationDestinationType + ", source-node number: "
             + relationSourceNumber + ", destination-node number: "
-            + relationDestinationNumber;
+            + relationDestinationNumber+", role: "+role;
     }
     
     public Object clone(){
