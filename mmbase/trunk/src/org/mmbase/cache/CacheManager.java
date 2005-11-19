@@ -138,6 +138,8 @@ public class CacheManager {
                     cache.maxEntrySize = cache.getDefaultMaxEntrySize();
                     //now see if we have to load cache release strategies for this lovely cache...
                     if(cache instanceof QueryResultCache){
+                        //first remove all present strategies (this might be a reconfiguration)
+                        ((QueryResultCache)cache).getReleaseStrategy().removeAllStrategies();
                         log.debug("found a SearchQueryCache: " + cacheName);
                         //see if there are globally configured release strategies
                         List strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));

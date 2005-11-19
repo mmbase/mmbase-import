@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.21 2005-11-18 22:44:53 nklasens Exp $
+ * @version $Id: QueryResultCache.java,v 1.22 2005-11-19 15:19:54 ernst Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -111,9 +111,11 @@ abstract public class QueryResultCache extends Cache {
     /**
      * @return Returns the releaseStrategy.
      */
-    public ReleaseStrategy getReleaseStrategy() {
+    public ChainedReleaseStrategy getReleaseStrategy() {
         return releaseStrategy;
     }
+    
+    
 
     /**
      * @throws ClassCastException if key not a SearchQuery or value not a List.
