@@ -16,12 +16,9 @@ import java.util.Set;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.storage.search.AggregatedField;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.RelationStep;
-import org.mmbase.storage.search.SearchQuery;
-import org.mmbase.storage.search.Step;
-import org.mmbase.storage.search.StepField;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.10 2005-11-04 15:31:39 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.11 2005-11-19 14:45:10 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
-    public BetterStrategy() {}
-
+    //public BetterStrategy() {}
+    BasicSqlHandler sqlHandler = new BasicSqlHandler();
     private static Logger log = Logging.getLoggerInstance(BetterStrategy.class);
 
     // inheritdoc
@@ -83,14 +80,14 @@ public class BetterStrategy extends ReleaseStrategy {
         
         //check if this event matches the path of the query
         if(getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()) ).size() == 0 ){
-            log.debug("no flush: type of event is not found in query path");
+            logResult("no flush: type of event is not found in query path", query, event);
             return false;
         }
         
         //check if the step(s) matching this event's node type have 'nodes' set, and if so, check
         //if changed node is included
         if(checkNodesSet(event, query)){
-            log.debug("no flush: the query has nodes set and this event's node is not one of them");
+            logResult("no flush: the query has nodes set and this event's node is not one of them", query, event);
             return false;
         }
 
@@ -103,7 +100,10 @@ public class BetterStrategy extends ReleaseStrategy {
 
                 // query has more than one step, all 'new node' events can be ignored, becouse this
                 // node has no relations yet.
-                if (query.getSteps().size() > 1) return false; // don't release
+                if (query.getSteps().size() > 1){
+                    logResult("no flush: 'new node' event in multistep query", query, event);
+                    return false; // don't release
+                }
 
                 break;
 
@@ -123,13 +123,20 @@ public class BetterStrategy extends ReleaseStrategy {
                 
                 //if the changed field(s) do not occur in the fields or constraint section
                 //of the query, it dous not have to be flushed
-                if(! checkChangedFieldsMatch(event, query)) return false;
+                if(! checkChangedFieldsMatch(event, query)){
+                    logResult("no flush: the fields that have changed are not used in the querie", query, event);
+                    return false;
+                }
                 
                 //if the query is aggregating, and of type count, and the changed fields(s) do 
                 //not occur in the constraint: don't flush the query
-                if(checkAggregationCount(event, query))return false;
+                if(checkAggregationCount(event, query)){
+                    logResult("query is aggregating and fields are of type count, changed fields do not affect the query result", query, event);
+                    return false;
+                }
                 
         }
+        logResult("flush: no reason not to", query, event);
         return true;
     }
 
@@ -149,14 +156,14 @@ public class BetterStrategy extends ReleaseStrategy {
 
          //query has one step and the event is a relation event
          if (query.getSteps().size() == 1 ){
-             log.debug("no flush: query has one step and event is relation event");
+             logResult("no flush: query has one step and event is relation event", query, event);
              return false ;//don't release
          }
          
          // if a query has more steps that one and the event is a relation event
          // we check if the role of the relation is allso in the query.
          if (! checkPathMatches(event, query)){
-             log.debug("no flush: either source, destination or role dous not match to the query");
+             logResult("no flush: either source, destination or role dous not match to the query", query, event);
              return false;
          }
 
@@ -186,11 +193,15 @@ public class BetterStrategy extends ReleaseStrategy {
                 
                 //if the changed field(s) do not occur in the fields or constraint section
                 //of the query, it dous not have to be flushed
-                if(! checkChangedFieldsMatch(event, query)) return false;
+                if(! checkChangedFieldsMatch(event, query)) {
+                    logResult("the changed (relation) fields do not match the fields or constraints of the query", query, event);
+                    return false;
+                }
 
                 break;
 
         }
+         logResult("flush: no reason not to", query, event);
         return true;
     }
 
@@ -232,6 +243,11 @@ public class BetterStrategy extends ReleaseStrategy {
 		return true;
 	}
 
+	/**
+	 * @param event
+	 * @param query
+	 * @return true if sourcetype, role and destination from relation event match query
+	 */
 	private boolean checkPathMatches(RelationEvent event, SearchQuery query){
         // check if the path in the query maches the relation event:
         // - the source and destination objects should be there
@@ -242,8 +258,12 @@ public class BetterStrategy extends ReleaseStrategy {
         boolean match = false;
         for (Iterator i = getRelationSteps(query).iterator(); i.hasNext();) {
             RelationStep step = (RelationStep) i.next();
-            if (step.getPrevious().getTableName().equals(event.getRelationSourceType())
-                && step.getNext().getTableName().equals(event.getRelationDestinationType())) {
+            
+            //check this relation step
+            String stepSource = step.getPrevious().getTableName();
+            String stepDestination = step.getNext().getTableName();
+            if (( stepSource.equals(event.getRelationSourceType()) && stepDestination.equals(event.getRelationDestinationType()) ) ||
+                ( stepDestination.equals(event.getRelationSourceType()) && stepSource.equals(event.getRelationDestinationType()) )) {
                 if (step.getRole() == null || step.getRole().intValue() == event.getRole()) 
                     match = true;
             }
@@ -320,5 +340,28 @@ public class BetterStrategy extends ReleaseStrategy {
             }
         }
         return true; 
+    }
+    
+    private void logResult(String comment, SearchQuery query, NodeEvent event){
+        if(log.isDebugEnabled()){
+            String role="";
+            // a small hack to limit the output
+            if (event instanceof RelationEvent) {
+                //get the role name
+                RelationEvent revent = (RelationEvent) event;
+                MMObjectNode relDef = MMBase.getMMBase().getBuilder("reldef").getNode(revent.getRole());
+                role = " role: " + relDef.getStringValue("sname") + "/" + relDef.getStringValue("dname"); 
+                //filter the 'object' events
+                if (revent.getRelationSourceType().equals("object")
+                        || revent.getRelationDestinationType().equals("object"))
+                    return;
+            }
+            try {
+                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**"
+                        + sqlHandler.toSql(query, sqlHandler) + "\n******");
+            } catch (SearchQueryException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

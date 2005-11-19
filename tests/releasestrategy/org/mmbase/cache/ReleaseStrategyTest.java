@@ -157,6 +157,7 @@ public class ReleaseStrategyTest extends BridgeTest {
      */
     public void testRelaionEvent(){
         
+        //type: posrel, sourceType: news, destinationType: urls
         RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, RelationEvent.EVENT_TYPE_NEW, null);
         
         //if the query has one step, a relaion event should not flush the query
@@ -176,6 +177,17 @@ public class ReleaseStrategyTest extends BridgeTest {
             strategy.evaluate(relEvent, q3, null).shouldRelease());
         assertFalse("relation event of new relation between nodes in multi step query (where destinantion dous not match) should not be flushed",
             strategy.evaluate(relEvent, q4, null).shouldRelease());
+        
+        //but when they do it should be flushed, allso if source and destination are the other way around
+        
+        Query q4a = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title", null, null, null, null, false);
+        Query q4b = Queries.createQuery(cloud, null, "urls,posrel,news", "news.title", null, null, null, null, false);
+        
+        assertTrue("when path of query matches relation event, query should be flushed",
+                strategy.evaluate(relEvent, q4a, null).shouldRelease());
+        assertTrue("when path of query matches relation event, query should be flushed, allso when source and relation are swapped",
+                strategy.evaluate(relEvent, q4b, null).shouldRelease());
+        
         
         //but if the role is not specified the query should be flushed
         Query q5 = Queries.createQuery(cloud, null, "news,urls", "urls.name", null, null, null, null, false);
@@ -309,8 +321,12 @@ public class ReleaseStrategyTest extends BridgeTest {
     public void testChangedRelation(){
         //if a none of the fields that have changed are part of the select or the constraint part of the query it should not be flushed
     	
-    	RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, NodeEvent.EVENT_TYPE_CHANGED, null);
-    	relEvent.addChangedField("pos", new Integer(0), new Integer(1));
+    //stupid hack to create a changed field for the event. for some reason settin the field on an Node dous not alter the 
+    //changedField collection on MMObjectNode
+    MMObjectNode pos = MMBase.getMMBase().getBuilder( posrelNode.getNodeManager().getName() ).getNode(posrelNode.getNumber());
+    pos.setValue( "pos", new Integer(100));
+    //now create a relation event
+    RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, NodeEvent.EVENT_TYPE_CHANGED, null);
     	
     	Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 10 ", null, null, null, false);
     	Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "posrel.pos < 10 ", null, null, null, false);
@@ -344,6 +360,22 @@ public class ReleaseStrategyTest extends BridgeTest {
         assertTrue("changed relation field is used by (legacy) constraint: it should be flused",
             strategy.evaluate(relEvent, q6, null).shouldRelease());
         
+    }
+    
+    public void testGetConstraintsforField(){
+        Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.number", "news.title = 'hallo'", null, null, null, false);
+        Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.number", "news.subtitle = 'hallo'", null, null, null, false);
+        Query q3 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.number", "news.title = 'hallo' AND news.subtitle='hi'", null, null, null, false);
+        Query q4 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.number", null, null, null, null, false);
+        
+        assertTrue("title field of news builder is in constraints", 
+                strategy.getConstraintsForField("title", "news", null, q1).size() == 1);
+        assertTrue("title field of news builder is not in constraints", 
+                strategy.getConstraintsForField("title", "news", null, q2).size() == 0);
+        assertTrue("title field of news builder is one of the constraints.", 
+                strategy.getConstraintsForField("title", "news", null, q3).size() == 1);
+        assertTrue("there are no constraints.", 
+                strategy.getConstraintsForField("title", "news", null, q4).size() == 0);
     }
     
     
