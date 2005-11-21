@@ -86,7 +86,7 @@
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
      <span <mm:compare referid="mode" value="educations">class="education_top_menu_selected"</mm:compare>>
      <% if (hsetEducations.size() < 2) { %>
-       <a href="?mode=educations" style="font-weight:bold;" class="education_top_menu_selected"><di:translate key="education.educationmenueducations" /></a>
+       <a href="?mode=educations" style="font-weight:bold;"><di:translate key="education.educationmenueducations" /></a>
      <% } else { %>
        <span class="menu_font"><di:translate key="education.educationmenueducations" /></span>
        <script>
