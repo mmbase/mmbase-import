@@ -270,20 +270,27 @@
                   </tr>
                </table>
                 <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
-							
-						<% // add portalpages %>         								                   
-						<mm:treeinclude page="/portalpages/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
-						<% // add help %>         
-			            <mm:treeinclude page="/cmshelp/backoffice/add_help.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
-						<% // add faq %>
-						<mm:treeinclude page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />   
-						<% // add news %>													
-						<mm:treeinclude page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />  
-																					
-				 <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
-               
+              
+            <% // add portalpages %>
+            <mm:node number="component.portalpages" notfound="skip">
+              <mm:treeinclude page="/portalpages/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
+            </mm:node>
 
+            <% // add help %>
+            <mm:node number="component.cmshelp" notfound="skip">
+              <mm:treeinclude page="/cmshelp/backoffice/add_help.jsp" objectlist="" referids="listjsp,wizardjsp" />
+            </mm:node>
 
+            <% // add faq %>
+            <mm:node number="component.faq" notfound="skip">
+              <mm:treeinclude page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />   
+            </mm:node>
+
+            <% // add news %>                          
+            <mm:node number="component.news" notfound="skip">
+              <mm:treeinclude page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />  
+            </mm:node>
+         <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
       </div>
    </mm:islessthan>
 </mm:compare>
