@@ -252,16 +252,7 @@
                <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
                      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                     <%
-                        if(f == arrstrContentMetadataConfig.length - 1)
-                        {
-                           %><td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td><%
-                        }
-                        else
-                        {
-                           %><td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td><%
-                        }
-                     %>
+                     <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                      <mm:import id="template" reset="true"><mm:write referid="listjsp"/>&wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes<mm:write referid="forbidtemplate" escape="text/plain" /></mm:import>
                      <td><nobr>&nbsp;<a href='<mm:write referid="template" escape="text/plain" />' title='Bewerk <%= arrstrContentMetadataConfig[f][0] %>' target="text"><%= arrstrContentMetadataConfig[f][0] %></a></nobr></td>
@@ -273,11 +264,24 @@
                <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
                      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                     <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
+                     <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                      <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/provider/providers&nodepath=providers&searchfields=name&fields=name&orderby=name' target="text">Content paginas (CMS)</a></nobr></td>
                   </tr>
                </table>
+                <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
+							
+						<% // add portalpages %>         								                   
+						<mm:treeinclude page="/portalpages/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
+						<% // add help %>         
+			            <mm:treeinclude page="/cmshelp/backoffice/add_help.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
+						<% // add faq %>
+						<mm:treeinclude page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />   
+						<% // add news %>													
+						<mm:treeinclude page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />  
+																					
+				 <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
+               
 
 
       </div>
