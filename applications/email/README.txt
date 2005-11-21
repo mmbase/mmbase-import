@@ -46,6 +46,10 @@ in tomcat do (in this example its the ROOT app):
               <value>smtp.xs4all.nl</value>
             </parameter>
           </ResourceParams>
+      <!-- You should use the following with Tomcat 5.5 :
+		   <Resource name="mail/Session" auth="Container"
+			 type="javax.mail.Session"
+			 mail.smtp.host="smtp.xs4all.nl" />  -->
           <ResourceLink name="linkToGlobalResource"
                     global="simpleValue"
                     type="java.lang.Integer"/>
