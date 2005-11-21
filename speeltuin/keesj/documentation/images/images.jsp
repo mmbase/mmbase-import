@@ -8,6 +8,11 @@
 <head>
 </head>
 </body>
+<mm:node number="images_sample" notfound="skip">
+  <mm:import id="imported">true</mm:import>
+</mm:node>
+<mm:notpresent referid="imported">
+</mm:notpresent>
 <mm:node number="images_sample">
 images is a builder that can hold images and some meta-data. The images
 builder can perform operations on images. To perform the operations the
@@ -96,11 +101,6 @@ upload tif/bmp/ps etc... .
   <mm:param name="image"><mm:field name="number"/></mm:param>
 </mm:include>
 
-<mm:include page="image_template.jsp">
-  <mm:param name="comment">Append an exclamation point to the geometry to force the image size to exactly the size you specify. For example, if you specify 200x200! the image width is set to 200 pixels and height to 200.</mm:param>
-  <mm:param name="template">s(200x200!)</mm:param>
-  <mm:param name="image"><mm:field name="number"/></mm:param>
-</mm:include>
 
 <mm:include page="image_template.jsp">
   <mm:param name="comment">If only the width is specified, the width assumes the value and the height is chosen to maintain the aspect ratio of the image. </mm:param>
@@ -126,7 +126,7 @@ upload tif/bmp/ps etc... .
   <mm:param name="template">-geometry(20x20)</mm:param>
   <mm:param name="image"><mm:field name="number"/></mm:param>
 </mm:include>
-<%--
+
 <mm:include page="image_template.jsp">
   <mm:param name="comment">resize the image so that the fits in a  200x200 pixel box and rotate it 30 degrees</mm:param>
   <mm:param name="template">s(200x200)+r(30)</mm:param>
@@ -135,7 +135,7 @@ upload tif/bmp/ps etc... .
 
 <mm:include page="image_template.jsp">
   <mm:param name="comment">resize the image so that the fits in a  200x200 pixel box and rotate it 30 degrees, also save the image in png format(Portable Network Graphics). Png supports transparancy so the ugly border is now gone.</mm:param>
-  <mm:param name="template">s(200x200)+r(30)+f(png)</mm:param>
+  <mm:param name="template">s(200x200)+r(30)+t(white)+f(png)</mm:param>
   <mm:param name="image"><mm:field name="number"/></mm:param>
 </mm:include>
 
@@ -145,12 +145,12 @@ upload tif/bmp/ps etc... .
   pixels width. The order of the transformation does matter! But keep in
   mind first rotating a huge image and only later resize it is more work
   for the transformer</mm:param>
-  <mm:param name="template">r(30)+s(200x200)+f(png)</mm:param>
+  <mm:param name="template">r(30)+s(200x200)+t(white)+f(png)</mm:param>
   <mm:param name="image"><mm:field name="number"/></mm:param>
 </mm:include>
 
 <mm:include page="image_template.jsp">
-  <mm:param name="comment">lest take a look a my girl friend</mm:param>
+  <mm:param name="comment">It is possible to only take a part of an image using the part command. Let's take a look a my girl friend</mm:param>
   <mm:param name="template">part(140x0x200x100)</mm:param>
   <mm:param name="image"><mm:field name="number"/></mm:param>
 </mm:include>
@@ -160,7 +160,36 @@ upload tif/bmp/ps etc... .
   <mm:param name="template">part(140x0x200x100)+s(200x200)</mm:param>
   <mm:param name="image"><mm:field name="number"/></mm:param>
 </mm:include>
---%>
+
+<mm:include page="image_template.jsp">
+  <mm:param name="comment">We can also create borders</mm:param>
+  <mm:param name="template">border(10x10)</mm:param>
+  <mm:param name="image"><mm:field name="number"/></mm:param>
+</mm:include>
+
+<mm:include page="image_template.jsp">
+  <mm:param name="comment">We can also create borders and give them a color</mm:param>
+  <mm:param name="template">bordercolor(13370)+border(10x10)</mm:param>
+  <mm:param name="image"><mm:field name="number"/></mm:param>
+</mm:include>
+
+<mm:include page="image_template.jsp">
+  <mm:param name="comment">Remember that te order does matter. here are two borders</mm:param>
+  <mm:param name="template">bordercolor(13370)+border(10x10)+bordercolor(ff0000)+border(10x10)</mm:param>
+  <mm:param name="image"><mm:field name="number"/></mm:param>
+</mm:include>
+
+<mm:include page="image_template.jsp">
+  <mm:param name="comment">flipx and flipy can be used to flip an image</mm:param>
+  <mm:param name="template">flipx+flipy</mm:param>
+  <mm:param name="image"><mm:field name="number"/></mm:param>
+</mm:include>
+
+<mm:include page="image_template.jsp">
+  <mm:param name="comment">and even drawing</mm:param>
+  <mm:param name="template">draw(line 0,0 20,20)</mm:param>
+  <mm:param name="image"><mm:field name="number"/></mm:param>
+</mm:include>
 </tr>
 </td>
 </table>
@@ -169,6 +198,7 @@ upload tif/bmp/ps etc... .
 
 <h1>Images</h1>
 
+<pre>
 When used in combination with ImageMagic
         if (a.equals("s")) return "geometry";
         if (a.equals("r")) return "rotate";
@@ -184,6 +214,7 @@ When used in combination with ImageMagic
         // can be diapositive as well... But well, we are backwards compatible.
         if (a.equals("dia")) return "negate";
 
+	</pre>
   </mm:node>
 </mm:cloud>
 </body>
