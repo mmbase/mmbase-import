@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.180 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: BasicNode.java,v 1.181 2005-11-21 17:28:03 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -55,14 +55,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Reference to the Cloud.
-     * @scope private
      */
     protected BasicCloud cloud;
 
 
     /**
      * Reference to actual MMObjectNode object.
-     * @scope private
      */
     protected MMObjectNode noderef;
 
@@ -72,22 +70,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * whether a node is in 'edit' mode (i.e. has a temporary node).
      * Basically, a temporarynodeid is either -1 (invalid), or a negative number smaller than -1
      * (a temporary number assigend by the system).
-     * @scope private
      */
-    protected int temporaryNodeId = -1;
+    private int temporaryNodeId = -1;
 
     /**
      * The account this node is edited under.
      * This is needed to check whether people have not switched users during an edit.
-     * @scope private
      */
-    protected String account = null;
+    private String account = null;
 
     /**
      * Determines whether this node was created for insert.
-     * @scope private
      */
-    protected boolean isNew = false;
+    private boolean isNew = false;
 
     /**
      * Instantiates a node, linking it to a specified node manager.
