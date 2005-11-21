@@ -23,6 +23,10 @@
           <li>Username: <mm:write referid="uname" /></li>
           <li>Password: <mm:write referid="password" /></li>
         </ul>
+          <a href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids">
+                      <mm:param name="uname"><mm:write referid="uname" /></mm:param>
+                      <mm:param name="password"><mm:write referid="password" /></mm:param>
+                   </mm:treefile>">To login page</a>
       </p>
     </div>
     <div class="columnRight">

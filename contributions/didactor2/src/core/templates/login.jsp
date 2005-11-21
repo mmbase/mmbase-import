@@ -1,4 +1,4 @@
-<%@page session="true" language="java" contentType="text/html; charset=UTF-8" %>
+<%@page session="true" language="java" contentType="text/html; charset=ISO-8859-1" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
@@ -14,6 +14,8 @@
     </mm:compare>
   </mm:field>
 </mm:node>
+<mm:import externid="uname"/>
+<mm:import externid="password"/>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -78,9 +80,9 @@
                   <input type="hidden" name="authenticate"  value="name/password"  />
                   <input type="hidden" name="command" value="login" />
                     <di:translate key="core.username" /><br />
-                    <input id="loginUsername" type="text" size="20" name="username" /> <br />
+                    <input id="loginUsername" type="text" size="20" name="username" value="<mm:write referid="uname"/>" /> <br />
                     <di:translate key="core.password" /><br />
-                    <input id="loginPassword" type="password" size="20" name="password" /> <br /><br />
+                    <input id="loginPassword" type="password" size="20" name="password" value="<mm:write referid="password"/>" /> <br /><br />
                     <input class="formbutton" id="loginSubmit" type="submit" value="<di:translate key="core.login" />" />
                   </form>
 		  <mm:node number="component.register" notfound="skipbody">
