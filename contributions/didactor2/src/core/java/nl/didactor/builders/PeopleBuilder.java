@@ -3,9 +3,11 @@ import nl.didactor.component.Component;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.*;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
@@ -140,12 +142,57 @@ public class PeopleBuilder extends DidactorBuilder {
         }
 
         if (getField(field) == null) {
-            // it is a virtual field, to be retrieved from the related 'fields' object
-            Vector fieldNodes = node.getRelatedNodes("fields");
-            for (int i=0; i<fieldNodes.size(); i++) {
-                MMObjectNode fieldNode = (MMObjectNode)fieldNodes.get(i);
-                if (field.equals(fieldNode.getStringValue("name"))) {
-                    return fieldNode.getStringValue("value");
+            // Is it a component setting?
+            if (field.indexOf("-") > 0) {
+                String componentName = field.substring(0, field.indexOf("-"));
+                String settingName = field.substring(field.indexOf("-") + 1, field.length());
+                Enumeration e = node.getRelations("settingrel");
+                MMBase mmbase = MMBase.getMMBase();
+
+                // Check all relations, to see if they go to the right component
+                while (e.hasMoreElements()) {
+                    MMObjectNode srel = (MMObjectNode)e.nextElement();
+                    int snumber = srel.getIntValue("snumber");
+                    int dnumber = srel.getIntValue("dnumber");
+                    MMObjectNode sourceNode = mmbase.getBuilder("object").getNode(snumber);
+                    MMObjectNode destNode = mmbase.getBuilder("object").getNode(dnumber);
+                    MMObjectNode relNode = null;
+                    if (snumber == node.getNumber() && "components".equalsIgnoreCase(destNode.getBuilder().getTableName())) {
+                        String cName = destNode.getStringValue("name");
+                        if (componentName.equalsIgnoreCase(cName)) {
+                            relNode = srel;
+                        }
+                    } else if (dnumber == node.getNumber() && "components".equalsIgnoreCase(destNode.getBuilder().getTableName())) {
+                        String cName = destNode.getStringValue("name");
+                        if (componentName.equalsIgnoreCase(cName)) {
+                            relNode = srel;
+                        }
+                    }
+
+                    // We found the settingrel from the user to the right component, now we
+                    // look for all related settings
+                    if (relNode != null) {
+                        Enumeration e2 = relNode.getRelatedNodes("settings").elements();
+                        while (e2.hasMoreElements()) {
+                            MMObjectNode set = (MMObjectNode)e2.nextElement();
+                            String name = set.getStringValue("name");
+                            String value = set.getStringValue("value");
+
+                            // Setting found: return the value
+                            if (settingName.equalsIgnoreCase(name)) {
+                                return value;
+                            }
+                        }
+                    }
+                }
+            } else {
+                // it is a virtual field, to be retrieved from the related 'fields' object
+                Vector fieldNodes = node.getRelatedNodes("fields");
+                for (int i=0; i<fieldNodes.size(); i++) {
+                    MMObjectNode fieldNode = (MMObjectNode)fieldNodes.get(i);
+                    if (field.equals(fieldNode.getStringValue("name"))) {
+                        return fieldNode.getStringValue("value");
+                    }
                 }
             }
         }
