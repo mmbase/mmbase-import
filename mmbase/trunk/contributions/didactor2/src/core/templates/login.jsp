@@ -14,8 +14,8 @@
     </mm:compare>
   </mm:field>
 </mm:node>
-<mm:import externid="uname"/>
-<mm:import externid="password"/>
+<mm:import externid="newusername"/>
+<mm:import externid="newpassword"/>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -80,9 +80,9 @@
                   <input type="hidden" name="authenticate"  value="name/password"  />
                   <input type="hidden" name="command" value="login" />
                     <di:translate key="core.username" /><br />
-                    <input id="loginUsername" type="text" size="20" name="username" value="<mm:write referid="uname"/>" /> <br />
+                    <input id="loginUsername" type="text" size="20" name="username" value="<mm:write referid="newusername"/>" /> <br />
                     <di:translate key="core.password" /><br />
-                    <input id="loginPassword" type="password" size="20" name="password" value="<mm:write referid="password"/>" /> <br /><br />
+                    <input id="loginPassword" type="password" size="20" name="password" value="<mm:write referid="newpassword"/>" /> <br /><br />
                     <input class="formbutton" id="loginSubmit" type="submit" value="<di:translate key="core.login" />" />
                   </form>
 		  <mm:node number="component.register" notfound="skipbody">
