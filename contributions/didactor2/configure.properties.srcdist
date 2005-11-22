@@ -53,7 +53,7 @@ imageconvert.convertercommand=convert
 # some default settings
 email.classfile=Dummy
 web.enable.error-page=false
-wizards.pages.text.ftype=ftype="html"
+wizards.pages.text.ftype=html
 
 # Settings for the 'file management' component.
 internalUrl=http://localhost:8080/didactor
