@@ -21,7 +21,10 @@
                                 "config/couple/couplingquestions-origin",
                                 "config/question/hotspotquestions-origin",
                                 "config/question/valuequestions-origin",
-                                "config/question/dropquestions-origin"};
+                                "config/question/dropquestions-origin",
+   								"config/question/fillquestions-origin",
+   								"config/question/fillselectquestions-origin"};
+
 
       String[] arrstrNames = {"education.createnewmcquestions",
                               "education.createnewopenquestions",
@@ -29,14 +32,19 @@
                               "education.createnewcouplingquestions",
                               "education.createnewhotspotquestions",
                               "education.createnewvaluequestions",
-                              "education.createnewdropquestions"};
+                              "education.createnewdropquestions",
+                              "education.createNewFillquestions",
+                              "education.createNewFillselectquestions"};
+      
       String[] arrstrDescriptionsIDs = {"education.createnewmcquestionsdescription",
                                         "education.createnewopenquestionsdescription",
                                         "education.createnewrankingquestionsdescription",
                                         "education.createnewcouplingquestionsdescription",
                                         "education.createnewhotspotquestionsdescription",
                                         "education.createnewvaluequestionsdescription",
-                                        "education.createnewdropquestionsdescription"};
+                                        "education.createnewdropquestionsdescription",
+                                        "education.createNewFillquestionsDescription",
+                                        "education.createNewFillselectquestionsDescription"};
 
       for(int f = 0; f < arrstrBuilders.length; f++)
       {
