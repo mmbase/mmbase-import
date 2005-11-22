@@ -724,6 +724,14 @@
                             <mm:compare referid="type_of_node" value="valuequestions">
                                <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/valuequestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
+                            
+                            <mm:compare referid="type_of_node" value="fillquestions">
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/fillquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                            </mm:compare>
+
+                            <mm:compare referid="type_of_node" value="fillselectquestions">
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/fillselectquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                            </mm:compare>
                         </mm:nodeinfo>
                      </tr>
                   </table>

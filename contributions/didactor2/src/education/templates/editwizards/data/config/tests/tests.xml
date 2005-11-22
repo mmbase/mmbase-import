@@ -184,6 +184,15 @@
         <prompt xml:lang="nl">Nieuwe drag en drop vraag</prompt>
         <prompt xml:lang="en">New drag and drop question</prompt>
       </command>
+
+     <command name="startwizard" inline="true" wizardname="config/question/fillquestions" objectnumber="new">
+        <prompt>Fill in the gaps</prompt>
+    </command>
+    
+     <command name="startwizard" inline="true" wizardname="config/question/fillselectquestions" objectnumber="new">
+        <prompt>Select in the gaps</prompt>
+    </command> 
+
     </list>
     &extra_lists;
 
