@@ -416,14 +416,16 @@
 
   <target name="srcdist">
     <mkdir dir="${build.dir}" />
+    <delete file="${build.dir}/didactor-src.zip" quiet="true"/>
     <zip destfile="${build.dir}/didactor-src.zip"
          basedir=".">
-      <include name="src/**"/>
+      <includesfile name="sourcedistfiles.properties" />
       <include name="lib/**"/>
-      <include name="build.properties"/>
       <include name="*.xml" />
+      <include name="README.txt" />
+      <zipfileset dir="." includes="configure.properties.srcdist" fullpath="configure.properties" />
+      <zipfileset dir="." includes="build.properties.srcdist" fullpath="build.properties" />
       <exclude name="**/CVS"/>
-      <exclude name="src/netg"/>
     </zip>
   </target>
 
