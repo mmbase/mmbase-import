@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.41 2005-10-07 20:33:20 michiel Exp $
+ * @version $Id: Users.java,v 1.42 2005-11-22 14:40:23 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -48,6 +48,7 @@ public class Users extends MMObjectBuilder {
     public final static String FIELD_LAST_LOGON    = "lastlogon";
 
     public final static long VALID_TO_DEFAULT      = 4102441200L; // 2100-1-1
+
 
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
@@ -158,14 +159,6 @@ public class Users extends MMObjectBuilder {
         }
         return rank;
     }
-
-    /**
-     * Notify the cache that the rank of user node changed
-     * this is fixed by CacheInvalidator alreayd ?
-     public void rankChanged(MMObjectNode node) {
-        rankCache.remove(node);
-    }
-    */
 
 
     //javadoc inherited
@@ -425,6 +418,7 @@ public class Users extends MMObjectBuilder {
      * Makes sure unique values and not-null's are filed
      */
     public void setDefaults(MMObjectNode node) {
+        super.setDefaults(node);
         MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(node.getStringValue("owner"));
         node.setValue(FIELD_DEFAULTCONTEXT, defaultDefaultContext);
         node.setValue(FIELD_PASSWORD, "");
@@ -434,10 +428,10 @@ public class Users extends MMObjectBuilder {
             currentUserName = "user";
         }
         setUniqueValue(node, FIELD_USERNAME, currentUserName);
-        if (getField(FIELD_VALID_FROM) != null) {
+        if (getField(FIELD_VALID_FROM) != null && node.isNull(FIELD_VALID_FROM)) {
             node.setValue(FIELD_VALID_FROM, System.currentTimeMillis()/1000);
         }
-        if (getField(FIELD_VALID_TO) != null) {
+        if (getField(FIELD_VALID_TO) != null && node.isNull(FIELD_VALID_TO)) {
             node.setValue(FIELD_VALID_TO, VALID_TO_DEFAULT);
         }
      }
