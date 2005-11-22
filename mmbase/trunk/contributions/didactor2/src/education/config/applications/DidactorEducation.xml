@@ -35,6 +35,9 @@
         <builder maintainer="didactor.nl" version="2">rankingquestions</builder>
         <builder maintainer="didactor.nl" version="2">rankinganswers</builder>
 
+        <builder maintainer="didactor.nl" version="2">fillquestions</builder>
+        <builder maintainer="didactor.nl" version="2">fillselectquestions</builder>
+
         <builder maintainer="didactor.nl" version="2">couplingquestions</builder>
         <builder maintainer="didactor.nl" version="2">couplinganswers</builder>
 
@@ -143,6 +146,19 @@
         <!-- Reuse questions -->
         <relation from="reusequestions" to="valuequestions" type="related" />
         <relation from="reusequestions" to="valueanswers" type="posrel" />
+
+
+        <!-- Fill questions -->
+        <relation from="fillquestions" to="openanswers" type="related" />
+        <relation from="fillquestions" to="images" type="posrel" />
+        <relation from="fillquestions" to="attachments" type="related" />
+        
+        <!-- Fill-Select questions -->
+        <relation from="fillselectquestions" to="openanswers" type="related" />
+        <relation from="fillselectquestions" to="images" type="posrel" />
+        <relation from="fillselectquestions" to="attachments" type="related" />
+        <relation from="fillselectquestions" to="mcanswers" type="posrel" />
+
 
         <relation from="givenanswers" to="mcanswers" type="related" />
         <relation from="givenanswers" to="rankinganswers" type="posrel" />
