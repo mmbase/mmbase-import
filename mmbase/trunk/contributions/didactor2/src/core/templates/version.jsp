@@ -4,6 +4,7 @@
 </head>
 <body>
 <br/><br/><br/>
+<b>Didactor version:</b> 2.0<br/>
 <b>Build name:</b> ${war.name}<br/>
 <b>Build date:</b> ${war.time}<br/>
 <b>Components:</b> ${components}<br/>
