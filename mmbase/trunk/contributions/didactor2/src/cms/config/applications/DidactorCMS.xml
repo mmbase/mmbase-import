@@ -3,7 +3,7 @@
 <application name="DidactorCMS" maintainer="didactor.nl" version="2" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
-        <requires name="DidactorEducation" maintainer="didactor.nl" version="2" />
+        <requires name="DidactorEducation" maintainer="didactor.nl" version="19" />
     </requirements>  
 
     <neededbuilderlist>
