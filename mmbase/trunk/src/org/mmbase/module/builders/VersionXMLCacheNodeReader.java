@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionXMLCacheNodeReader.java,v 1.5 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: VersionXMLCacheNodeReader.java,v 1.6 2005-11-23 15:45:13 pierre Exp $
  */
 public class VersionXMLCacheNodeReader {
 
@@ -82,7 +82,7 @@ public class VersionXMLCacheNodeReader {
                                 versionnode = (MMObjectNode)b.nextElement();
                             }
                             if (log.isDebugEnabled()) log.debug("versionnode=" + versionnode);
-                            VersionCacheNode cnode = new VersionCacheNode(parent.mmb);
+                            VersionCacheNode cnode = new VersionCacheNode(parent.getMMBase());
                             cnode.setVersionNode(versionnode);
 
                             n3 = n2.getFirstChild();

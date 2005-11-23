@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.31 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: BasicRelationManager.java,v 1.32 2005-11-23 15:45:13 pierre Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -189,7 +189,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
     public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {
-        return cloud.check(Operation.CREATE, builder.oType,
+        return cloud.check(Operation.CREATE, builder.getNumber(),
                            sourceNode.getNumber(), destinationNode.getNumber());
     }
 }

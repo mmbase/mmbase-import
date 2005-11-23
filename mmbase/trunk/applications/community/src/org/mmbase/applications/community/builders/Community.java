@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.20 2005-10-05 10:59:39 michiel Exp $
+ * @version $Id: Community.java,v 1.21 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class Community extends MMObjectBuilder {
@@ -110,7 +110,7 @@ public class Community extends MMObjectBuilder {
             log.error("No channel builder");
             return;
         }
-        Enumeration relatedChannels = mmb.getInsRel().getRelated(community.getNumber(), channelBuilder.oType);
+        Enumeration relatedChannels = mmb.getInsRel().getRelated(community.getNumber(), channelBuilder.getNumber());
         while (relatedChannels.hasMoreElements()) {
             channelBuilder.open((MMObjectNode)relatedChannels.nextElement());
         }
@@ -126,7 +126,7 @@ public class Community extends MMObjectBuilder {
             log.error("No channel builder");
             return;
         }
-        Enumeration relatedChannels = mmb.getInsRel().getRelated(community.getNumber(), channelBuilder.oType);
+        Enumeration relatedChannels = mmb.getInsRel().getRelated(community.getNumber(), channelBuilder.getNumber());
         while (relatedChannels.hasMoreElements()) {
             channelBuilder.close((MMObjectNode)relatedChannels.nextElement());
         }
@@ -173,7 +173,7 @@ public class Community extends MMObjectBuilder {
      */
     public String getDefaultUrl(int src) {
         if (mapBuilder==null) return null;
-        Enumeration e= mmb.getInsRel().getRelated(src, mapBuilder.oType);
+        Enumeration e= mmb.getInsRel().getRelated(src, mapBuilder.getNumber());
         if (!e.hasMoreElements()) {
             log.debug("GetDefaultURL Could not find related map for community node " + src);
             return null;

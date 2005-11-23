@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.143 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.144 2005-11-23 15:45:13 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -281,7 +281,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         List nodeManagers = new ArrayList();
         for (Iterator builders = BasicCloudContext.mmb.getBuilders().iterator(); builders.hasNext();) {
             MMObjectBuilder bul = (MMObjectBuilder)builders.next();
-            if (!bul.isVirtual() && check(Operation.READ, bul.oType)) {
+            if (!bul.isVirtual() && check(Operation.READ, bul.getNumber())) {
                 nodeManagers.add(bul.getTableName());
             }
         }
@@ -342,14 +342,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             Iterator i = set.iterator();
             MMObjectNode typeRel = (MMObjectNode) i.next();
             if (set.size() > 1 && (sourceManagerId != -1 || destinationManagerId != -1)) {
-                int quality = 
-                    (typeRel.getIntValue("snumber") == sourceManagerId ? 1 : 0) + 
+                int quality =
+                    (typeRel.getIntValue("snumber") == sourceManagerId ? 1 : 0) +
                     (typeRel.getIntValue("dnumber") == destinationManagerId ? 1 : 0);
-                    
+
                 while(i.hasNext()) {
                     MMObjectNode candidate = (MMObjectNode) i.next();
-                    int candidateQuality = 
-                        (candidate.getIntValue("snumber") == sourceManagerId ? 1 : 0) + 
+                    int candidateQuality =
+                        (candidate.getIntValue("snumber") == sourceManagerId ? 1 : 0) +
                         (candidate.getIntValue("dnumber") == destinationManagerId ? 1 : 0);
                     if (candidateQuality > quality) {
                         typeRel = candidate;
@@ -357,7 +357,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                     }
                 }
             }
-            
+
             return new BasicRelationManager(typeRel, this);
         } else {
             log.error("Relation " + sourceManagerId + "/" + destinationManagerId + "/" + roleId + " does not exist");
@@ -428,7 +428,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (n1 == -1) return false;
         int n2 = typedef.getIntValue(destinationManagerName);
         if (n2 == -1) return false;
-        
+
         return BasicCloudContext.mmb.getTypeRel().contains(n1, n2, r);
         // return getRelationManager(n1, n2, r) != null;
     }

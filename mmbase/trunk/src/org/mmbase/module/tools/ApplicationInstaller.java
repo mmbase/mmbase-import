@@ -29,7 +29,7 @@ public class ApplicationInstaller {
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(ApplicationInstaller.class.getName());
-    
+
     /**
      * reference to MMBase
      */
@@ -50,7 +50,7 @@ public class ApplicationInstaller {
             }
         }
     }
-    
+
     /**
      * Installs the application
      * @param applicationName Name of the application file, without the xml extension
@@ -216,7 +216,7 @@ public class ApplicationInstaller {
         for (Iterator n = nodeReader.getNodes(mmb).iterator(); n.hasNext();) {
             try {
                 MMObjectNode newNode = (MMObjectNode)n.next();
-   
+
                 int exportnumber = newNode.getIntValue("number");
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
                     // XXX To do : we may want to load the node and check/change the fields
@@ -244,13 +244,13 @@ public class ApplicationInstaller {
         Iterator i = fields.iterator();
         while (i.hasNext()) {
             CoreField field = (CoreField) i.next();
-   
+
             // Fields with type NODE and notnull=true will be handled
             // by the doKeyMergeNode() method.
             if (field.getType() == Field.TYPE_NODE
                     && ! field.getName().equals("number")
                     && ! field.isRequired()) {
-   
+
                 newNode.storeValue("__exportsource", exportsource);
                 nodeFieldNodes.add(newNode);
                 break;
@@ -390,7 +390,7 @@ public class ApplicationInstaller {
       importedNode.storeValue("__" + fieldname, null);
 
       int localNumber = -1;
-      
+
       List syncnodes = null;
       try {
           syncnodes = getSyncnodes(syncbul, exportsource, exportnumber);
@@ -440,7 +440,7 @@ public class ApplicationInstaller {
             try {
                 MMObjectNode newNode = (MMObjectNode)n.nextElement();
                 int exportnumber = newNode.getIntValue("number");
-                
+
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
                     // XXX To do : we may want to load the relation node and check/change the fields
                     log.debug("node allready installed : " + exportnumber);
@@ -453,7 +453,7 @@ public class ApplicationInstaller {
                     // Due to the order in which syncing takles place, it is possible that such structures will fail
                     // to get imported.
                     // ye be warned.
-        
+
                     // find snumber
                     int snumber = newNode.getIntValue("snumber");
                     List snumberNodes = getSyncnodes(syncbul, exportsource, snumber);
@@ -464,7 +464,7 @@ public class ApplicationInstaller {
                         snumber = -1;
                     }
                     newNode.setValue("snumber", snumber);
-        
+
                     // find dnumber
                     int dnumber = newNode.getIntValue("dnumber");
                     List dnumberNodes = getSyncnodes(syncbul, exportsource, dnumber);
@@ -555,7 +555,7 @@ public class ApplicationInstaller {
             return null;
         }
     }
-    
+
     private XMLNodeReader getNodeReader(Map bh, String appName) {
         XMLNodeReader nodeReader = null;
 
@@ -572,10 +572,10 @@ public class ApplicationInstaller {
         }
         return nodeReader;
     }
-    
+
     private XMLRelationNodeReader getRelationNodeReader(String appname, Hashtable bh) {
         XMLRelationNodeReader nodereader = null;
-        
+
         String path = (String)bh.get("path");
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
         InputSource is = null;
@@ -602,7 +602,7 @@ public class ApplicationInstaller {
                 String newFieldName = (String) entry.getKey();
                 if (!insRel.hasField(newFieldName)) {
                     Object newValue = entry.getValue();
-                    Object testValue = testNode.getValue(newFieldName); 
+                    Object testValue = testNode.getValue(newFieldName);
                     if (!newValue.equals(testValue)) {
                         relationAlreadyExists = false;
                     }
@@ -750,7 +750,7 @@ public class ApplicationInstaller {
      */
     private boolean installRelDef(String sname, String dname, int dir, String sguiname,
             String dguiname, int builder, ApplicationResult result) {
-        
+
         RelDef reldef = mmb.getRelDef();
         if (reldef != null) {
             if (reldef.getNumberByName(sname + "/" + dname) == -1) {
@@ -763,7 +763,7 @@ public class ApplicationInstaller {
                 if (RelDef.usesbuilder) {
                     // if builder is unknown (falsely specified), use the InsRel builder
                     if (builder <= 0) {
-                        builder = mmb.getInsRel().oType;
+                        builder = mmb.getInsRel().getNumber();
                     }
                     node.setValue("builder", builder);
                 }
@@ -836,5 +836,5 @@ public class ApplicationInstaller {
             return result.error("Can't get typerel builder");
         }
     }
-    
+
 }

@@ -13,6 +13,7 @@ package org.mmbase.module.gui.html;
 import java.util.*;
 import java.io.*;
 
+import org.mmbase.core.CoreField;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.Jumpers;
@@ -31,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.53 2005-10-06 14:07:32 michiel Exp $
+ * @version $Id: HtmlBase.java,v 1.54 2005-11-23 15:45:13 pierre Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -59,6 +60,53 @@ public class HtmlBase extends ProcessorModule {
         multilevel_cache=new MultilevelCacheHandler(mmb,multilevel_cachesize);
     }
 
+    static Enumeration search(MMObjectBuilder bul, String where, String sorted, boolean direction) {
+        // In order to support this method:
+        // - Exceptions of type SearchQueryExceptions are caught.
+        // - The result is converted to a vector.
+        String directions = (direction? "UP": "DOWN");
+        Vector result = new Vector();
+        NodeSearchQuery query = getSearchQuery(bul, where, sorted, directions);
+        try {
+            List nodes = bul.getNodes(query);
+            result.addAll(nodes);
+        } catch (SearchQueryException e) {
+            log.error(e);
+        }
+        return result.elements();
+    }
+
+    static NodeSearchQuery getSearchQuery(MMObjectBuilder bul, String where, String sorted, String directions) {
+        NodeSearchQuery query = bul.getStorageConnector().getSearchQuery(where);
+
+        if (directions == null) {
+            directions = "";
+        }
+        StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
+        StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
+
+        String direction = "UP";
+        while (sortedTokenizer.hasMoreElements()) {
+            String fieldName = sortedTokenizer.nextToken().trim();
+            CoreField coreField = bul.getField(fieldName);
+            if (coreField == null) {
+                throw new IllegalArgumentException(
+                "Not a known field of builder " + bul.getTableName()
+                + ": '" + fieldName + "'");
+            }
+            StepField field = query.getField(coreField);
+            BasicSortOrder sortOrder = query.addSortOrder(field);
+            if (directionsTokenizer.hasMoreElements()) {
+                direction = directionsTokenizer.nextToken().trim();
+            }
+            if (direction.equalsIgnoreCase("DOWN")) {
+                sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
+            } else {
+                sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
+            }
+        }
+        return query;
+    }
 
     /**
      */
@@ -98,15 +146,15 @@ public class HtmlBase extends ProcessorModule {
         long begin=(long)System.currentTimeMillis(),len;
         Enumeration e=null;
         if (dbsort==null) {
-            e=bul.search(where);
+            e = bul.search(where);
         } else {
             if (dbdir==null) {
-                e=bul.search(where,dbsort);
+                e = search(bul,where,dbsort, true);
             } else {
                 if (dbdir.equals("DOWN")) {
-                    e=bul.search(where,dbsort,false);
+                    e = search(bul,where,dbsort,false);
                 } else {
-                    e=bul.search(where,dbsort,true);
+                    e = search(bul,where,dbsort,true);
                 }
             }
         }
@@ -363,7 +411,7 @@ public class HtmlBase extends ProcessorModule {
                 if (bul==null) {
                     throw new Exception("cannot find object type : "+type);
                 }
-                otype=bul.oType;
+                otype=bul.getNumber();
             }
             if ((where != null) && (bul != null)) {
                 wherevector = searchNumbers(bul,where);
@@ -577,7 +625,7 @@ public class HtmlBase extends ProcessorModule {
         try {
             String type=tok.nextToken();
             bul=mmb.getMMObject(type);
-            otype=bul.oType;
+            otype=bul.getNumber();
 
             snode=Integer.parseInt(tok.nextToken());
             MMObjectNode node2=bul.getNode(snode);
@@ -695,15 +743,19 @@ public class HtmlBase extends ProcessorModule {
 
     String doCache(scanpage sp, StringTokenizer tok) {
         String result="";
-        String cmd=tok.nextToken();
+        String cmd = tok.nextToken();
         if (cmd.equals("SIZE")) {
             if (tok.hasMoreTokens()) {
-                String type=tok.nextToken();
-                MMObjectBuilder bul=mmb.getMMObject("fielddef");
-                result=""+bul.getCacheSize(type);
+                String type = tok.nextToken();
+                int i = mmb.getTypeDef().getIntValue(type);
+                int j = 0;
+                for (Iterator e = org.mmbase.cache.NodeCache.getCache().values().iterator(); e.hasNext();) {
+                    MMObjectNode n=(MMObjectNode)e.next();
+                    if (n.getOType()==i) j++;
+                }
+                result = "" + j;
             } else {
-                MMObjectBuilder bul=mmb.getMMObject("fielddef");
-                result=""+bul.getCacheSize();
+                result = "" + org.mmbase.cache.NodeCache.getCache().size();
             }
         }
         return result;
@@ -1100,15 +1152,15 @@ public class HtmlBase extends ProcessorModule {
         long begin=(long)System.currentTimeMillis(),len;
         Enumeration e=null;
         if (dbsort==null) {
-            e=bul.search(where);
+            e = bul.search(where);
         } else {
             if (dbdir==null) {
-                e=bul.search(where,dbsort);
+                e = search(bul,where,dbsort, true);
             } else {
                 if (dbdir.equals("DOWN")) {
-                    e=bul.search(where,dbsort,false);
+                    e = search(bul,where,dbsort,false);
                 } else {
-                    e=bul.search(where,dbsort,true);
+                    e = search(bul,where,dbsort,true);
                 }
             }
         }

@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.113 2005-11-23 11:57:10 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.114 2005-11-23 15:45:13 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -107,9 +107,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         if (builder.isVirtual()) {
             return new org.mmbase.module.core.VirtualNode(BasicCloudContext.mmb.getTypeDef());
         } else {
-            MMObjectNode typedefNode = builder.getNode(builder.oType);
+            MMObjectNode typedefNode = builder.getNode(builder.getNumber());
             if (typedefNode == null) {
-                throw new RuntimeException("Could not find typedef node for builder " + builder + " with otype " + builder.oType);
+                throw new RuntimeException("Could not find typedef node for builder " + builder + " with otype " + builder.getNumber());
             }
             return typedefNode;
         }
@@ -117,7 +117,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     protected void setNodeManager(MMObjectNode node) {
         int nodeNumber = node.getNumber();
-        if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().oType) { // this is the typedef itself
+        if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().getNumber()) { // this is the typedef itself
             nodeManager = this;
         } else {
             nodeManager = cloud.getBasicNodeManager("typedef");
@@ -225,7 +225,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // XXX this should somehow be the default value of the owner field!!
         // set the owner to the owner field as indicated by the user
         node.setValue("owner", cloud.getUser().getOwnerField());
-        
+
         return new NodeAndId(node, id);
     }
 
@@ -233,7 +233,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * BasicNodeManager is garantueed to return BasicNode's. So extendsion must override this, and not {@link #createNode}
      * @since MMBase-1.8
      */
-    protected BasicNode createBasicNode() {     
+    protected BasicNode createBasicNode() {
         NodeAndId n = createMMObjectNode();
         if (getMMObjectBuilder() instanceof TypeDef) {
             // I wonder if this is necessary.
@@ -347,22 +347,13 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return new BasicNodeQuery(this);
     }
 
-
     public NodeList getList(NodeQuery query) {
         try {
             boolean checked = cloud.setSecurityConstraint(query);
 
-            List resultList = null;
-            resultList = (List) nodeListCache.get(query);
-
-            if (resultList == null) {
-                resultList = BasicCloudContext.mmb.getSearchQueryHandler().getNodes(query, builder);
-                builder.processSearchResults(resultList);
-                nodeListCache.put(query, resultList);
-            }
+            List resultList = builder.getStorageConnector().getNodes(query);
 
             BasicNodeList resultNodeList;
-
             if (query.getNodeManager() instanceof RelationManager) {
                 resultNodeList = new BasicRelationList(resultList, cloud);
             } else {
@@ -423,7 +414,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) {
-        int thisOType = getMMObjectBuilder().oType;
+        int thisOType = getMMObjectBuilder().getNumber();
         int requestedRole = -1;
         if (role != null) {
             requestedRole = BasicCloudContext.mmb.getRelDef().getNumberByName(role);
@@ -532,7 +523,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public boolean mayCreateNode() {
         if (builder == null) return false;
-        return cloud.check(Operation.CREATE, builder.oType);
+        return cloud.check(Operation.CREATE, builder.getNumber());
     }
 
     MMObjectBuilder getMMObjectBuilder() {
@@ -568,7 +559,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // it may be gui on a typedef node or so.
         Function function = getNode().getFunction(functionName);
         if (function == null || functionName.equals("info") || functionName.equals("getFunctions")) {
-            function = builder != null ? builder.getFunction(functionName) : null;            
+            function = builder != null ? builder.getFunction(functionName) : null;
         }
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist in " + builder.getFunctions());

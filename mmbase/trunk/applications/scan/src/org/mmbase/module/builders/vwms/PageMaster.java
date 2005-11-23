@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PageMaster.java,v 1.16 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: PageMaster.java,v 1.17 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -83,7 +83,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
         } else {
             // handle up to 10 pages/main fileservice requests
             try {
-                Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+                Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
                 //Enumeration e=bul.search("WHERE service='pages' AND subservice='main' AND status="+Netfiles.STATUS_REQUEST+" ORDER BY number DESC");
                 Enumeration e=bul.search("service=='pages'+subservice=='main'+status="+Netfiles.STATUS_REQUEST);
                 int i=0;
@@ -97,7 +97,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
             }
             // handle up to 50 pages/mirror fileservice requests
             try {
-                Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+                Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
                 Enumeration e=bul.search("service=='pages'+subservice=='mirror'+status="+Netfiles.STATUS_REQUEST);
                 //Enumeration e=bul.search("WHERE service='pages' AND subservice='mirror' AND status="+Netfiles.STATUS_REQUEST+" ORDER BY number DESC");
                 int i=0;
@@ -181,7 +181,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
     public boolean fileChange(String number, String ctype) {
         // log.debug("fileChange="+number+" "+ctype);
         // first get the change node so we can see what is the matter with it.
-        Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+        Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
         MMObjectNode filenode=bul.getNode(number);
         if (filenode!=null) {
             // obtain all the basic info on the file.
@@ -310,7 +310,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
         String filename = filenode.getStringValue("filename");
 
         // find and change all the mirror nodes so they get resend
-        Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+        Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
         Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='pages' AND subservice='mirror'");
         while (e.hasMoreElements()) {
             MMObjectNode mirrornode=(MMObjectNode)e.nextElement();
@@ -331,7 +331,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
      */
     public void handleMainCheck(String service,String subservice,String filename) {
         log.debug("Reached handleMainCheck");
-        Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+        Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
         Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='"+subservice+"'");
         if (e.hasMoreElements()) {
             MMObjectNode mainnode=(MMObjectNode)e.nextElement();
@@ -340,7 +340,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
         } else {
             MMObjectNode mainnode=bul.getNewNode("system");
             mainnode.setValue("filename",filename);
-            mainnode.setValue("mmserver",Vwms.mmb.getMachineName());
+            mainnode.setValue("mmserver",Vwms.getMMBase().getMachineName());
             mainnode.setValue("service",service);
             mainnode.setValue("subservice",subservice);
             mainnode.setValue("status",Netfiles.STATUS_REQUEST);
@@ -370,7 +370,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
      * @return the property value
      */
     public String getProperty(String machine,String key) {
-        MMServers mmservers=(MMServers)Vwms.mmb.getMMObject("mmservers");
+        MMServers mmservers=(MMServers)Vwms.getMMBase().getMMObject("mmservers");
         return mmservers.getMMServerProperty(machine,key);
     }
 
@@ -382,7 +382,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
      * @param the url of the page to cache
      */
     public void calcPage(String url) {
-        scanparser m=(scanparser)Vwms.mmb.getModule("SCANPARSER");
+        scanparser m=(scanparser)Vwms.getMMBase().getModule("SCANPARSER");
         url=url.substring(0,url.length()-5);
         url=url.replace(':','?');
         log.debug("getPage="+url);
@@ -401,7 +401,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
      */
     public Vector getMirrorNodes(String service) {
         if (mirrornodes!=null) return mirrornodes;
-        NetFileSrv bul=(NetFileSrv)Vwms.mmb.getMMObject("netfilesrv");
+        NetFileSrv bul=(NetFileSrv)Vwms.getMMBase().getMMObject("netfilesrv");
         if (bul!=null) {
             Enumeration e=bul.search("service=='pages'+subservice=='mirror'");
             if (e.hasMoreElements()) {

@@ -25,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.54 2005-10-06 17:46:39 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.55 2005-11-23 15:45:13 pierre Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -120,7 +120,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      *             use getIndexes() to return set of Index objects to which this key belongs
      */
     public boolean isKey() {
-        return getParent() != null && getParent().isInIndex(Index.MAIN,this);
+        return getParent() != null && getParent().getStorageConnector().isInIndex(Index.MAIN,this);
     }
     /**
      * Temporary implementation for backwards-compatibility.
@@ -333,7 +333,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      */
     public void setDBKey(boolean value) {
         if (getParent() != null) {
-            getParent().addToIndex(Index.MAIN, this);
+            getParent().getStorageConnector().addToIndex(Index.MAIN, this);
         }
     }
 
