@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.181 2005-11-21 17:28:03 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.182 2005-11-23 10:22:41 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -199,6 +199,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     protected void invalidateNode() {
         org.mmbase.module.core.VirtualNode n = new org.mmbase.module.core.VirtualNode(noderef.getBuilder());
         n.setValue("number", noderef.getNumber());
+        n.clearChanged();
         noderef = n;
     }
 
@@ -243,6 +244,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public boolean isChanged(String fieldName) {
         return getNode().getChanged().contains(fieldName);
+    }
+    public boolean isChanged() {
+        return getNode().isChanged();
     }
     
 
@@ -356,14 +360,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         if ("number".equals(fieldName) || "otype".equals(fieldName)) {
             throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
-        }
-        if (this instanceof Relation) {
-            if ("rnumber".equals(fieldName)) {
-                throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
-            } else if ("snumber".equals(fieldName) || "dnumber".equals(fieldName)) {
-                BasicRelation relation = (BasicRelation) this;
-                relation.relationChanged = true;
-            }
         }
         setValueWithoutChecks(fieldName, value);
     }
@@ -750,7 +746,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             throw new IllegalArgumentException("node " + getNumber() + ", builder '" + nodeManager.getName() + "' " + errors.toString());
         }
         // ignore commit in transaction (transaction commits)
-        if (!(cloud instanceof Transaction)) {
+        if (!(cloud instanceof Transaction)) { // sigh sigh sigh.
             MMObjectNode node = getNode();
             if (isNew) {
                 node.insert(cloud.getUser());
@@ -764,7 +760,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
             temporaryNodeId = -1;
             // invalid nodereference, so retrieve node anew
-            setNode(BasicCloudContext.mmb.getTypeDef().getNode(getNode().getNumber()));
+            MMObjectNode newNode = BasicCloudContext.mmb.getTypeDef().getNode(node.getNumber());
+            if (newNode == null) {
+                throw new RuntimeException("Could not find node " + node.getNumber());
+            }
+            log.info("Found new node after commit " + newNode);
+            setNode(newNode);
         }
         changed = false;
     }
@@ -1135,7 +1136,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // call list: note: role can be null
         // XXX. Should perhaps not depend on core's getRelatedNodes becasue then the query remains unknown
 
-        List mmnodes = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
+        List mmnodes = isNew() 
+            ? new Vector()  // new nodes have no relations
+            : getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
 
         // remove the elements which may not be read:
         ListIterator li = mmnodes.listIterator();
@@ -1269,27 +1272,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public boolean mayWrite() {
-        if (isNew()) {
-            return true;
-        } else {
-            return cloud.check(Operation.WRITE, getNode().getNumber());
-        }
+        return isNew || cloud.check(Operation.WRITE, getNode().getNumber());
     }
 
     public boolean mayDelete() {
-        if (isNew()) {
-            return true;
-        } else {
-            return cloud.check(Operation.DELETE, getNode().getNumber());
-        }
+        return isNew || cloud.check(Operation.DELETE, getNode().getNumber());
     }
 
     public boolean mayChangeContext() {
-        if (isNew()) {
-            return true;
-        } else {
-            return cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
-        }
+        return isNew || cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
     }
 
     /**
