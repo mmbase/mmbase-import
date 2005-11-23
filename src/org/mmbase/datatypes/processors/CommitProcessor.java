@@ -15,11 +15,9 @@ import org.mmbase.bridge.*;
 /**
  * If the processor defined for the field is of this type, then the {@link #commit} method will be called
  * on commit of the Node.
- * You should also implement the {@link #process} method of a CommitProcessor as the action to peform
- * when the value is processed for setting data on the field.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CommitProcessor.java,v 1.2 2005-11-04 23:11:52 michiel Exp $
+ * @version $Id: CommitProcessor.java,v 1.3 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.24 2005-11-11 15:40:22 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.25 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -30,7 +30,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
 
     protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile(".*"));
     private boolean isPassword = false;
-    protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, 0);
+    protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this/* I hate java, no m.i. */, 0);
     protected AbstractLengthDataType.MaxRestriction maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, Long.MAX_VALUE);
 
     /**
@@ -41,14 +41,30 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         super(name, String.class);
     }
 
-    public void inherit(BasicDataType origin) {
-        super.inherit(origin);
+    protected void inheritProperties(BasicDataType origin) {
+        super.inheritProperties(origin);
         if (origin instanceof StringDataType) {
             StringDataType dataType = (StringDataType)origin;
-            patternRestriction = new PatternRestriction(dataType.patternRestriction);
             isPassword = dataType.isPassword();
-            minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, dataType.getMinLengthRestriction());
-            maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, dataType.getMaxLengthRestriction());
+        }
+    }
+    protected void inheritRestrictions(BasicDataType origin) {
+        super.inheritRestrictions(origin);
+        if (origin instanceof StringDataType) {
+            StringDataType dataType = (StringDataType)origin;
+            patternRestriction.inherit(dataType.patternRestriction);            
+            minLengthRestriction.inherit(dataType.minLengthRestriction);
+            maxLengthRestriction.inherit(dataType.maxLengthRestriction);
+        }
+    }
+
+    protected void cloneRestrictions(BasicDataType origin) {
+        super.cloneRestrictions(origin);
+        if (origin instanceof StringDataType) {
+            StringDataType dataType = (StringDataType)origin;
+            patternRestriction = new PatternRestriction(dataType.patternRestriction);            
+            minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, dataType.minLengthRestriction);
+            maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, dataType.maxLengthRestriction);
         }
     }
 
@@ -72,8 +88,8 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction setMinLength(long value) {
-        return getMinLengthRestriction().setValue(new Long(value));
+    public void setMinLength(long value) {
+        getMinLengthRestriction().setValue(new Long(value));
     }
 
     /**
@@ -92,8 +108,8 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction setMaxLength(long value) {
-        return getMaxLengthRestriction().setValue(new Long(value));
+    public void setMaxLength(long value) {
+        getMaxLengthRestriction().setValue(new Long(value));
     }
 
 
@@ -119,8 +135,8 @@ public class StringDataType extends ComparableDataType implements LengthDataType
      * @param value the pattern as a <code>Pattern</code>, or <code>null</code> if no pattern should be applied.
      * @throws java.lang.UnsupportedOperationException if this datatype is read-only (i.e. defined by MMBase)
      */
-    public DataType.Restriction setPattern(Pattern value) {
-        return getPatternRestriction().setValue(value);
+    public void setPattern(Pattern value) {
+        getPatternRestriction().setValue(value);
     }
 
     /**
@@ -162,7 +178,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         Pattern getPattern() {
             return (Pattern) value;
         }
-        public boolean valid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             String s = Casting.toString(v);
             return value == null ? true : getPattern().matcher(s).matches();
         }

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LengthDataType.java,v 1.3 2005-10-21 16:41:53 michiel Exp $
+ * @version $Id: LengthDataType.java,v 1.4 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public interface LengthDataType extends DataType {
@@ -50,9 +50,8 @@ public interface LengthDataType extends DataType {
      * Sets the minimum length of binary values for this datatype.
      * @param value the minimum length as an <code>long</code>, or 0 if there is no minimum length.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
-     * @return the datatype restriction that was just set
      */
-    public DataType.Restriction setMinLength(long value);
+    public void setMinLength(long value);
 
     /**
      * Returns the maximum length of binary values for this datatype.
@@ -71,8 +70,7 @@ public interface LengthDataType extends DataType {
      * Sets the maximum length of binary values for this datatype.
      * @param value see {@link #getMaxLength}
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
-     * @return the datatype restriction that was just set
      */
-    public DataType.Restriction setMaxLength(long value);
+    public void setMaxLength(long value);
 
 }
