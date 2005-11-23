@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.16 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: Groups.java,v 1.17 2005-11-23 15:45:13 pierre Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
@@ -102,13 +102,11 @@ public class Groups extends MMObjectBuilder {
 
             List resultList;
             try {
-                resultList = mmb.getSearchQueryHandler().getNodes(query, this); // not cached, but no need, because total result is cached.
-                processSearchResults(resultList);
+                resultList = storageConnector.getNodes(query, false);
             } catch (SearchQueryException sqe) {
                 log.error(sqe.getMessage());
                 resultList = new ArrayList();
             }
-
 
             Iterator i = resultList.iterator();
 

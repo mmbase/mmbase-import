@@ -23,7 +23,7 @@ import org.mmbase.module.corebuilders.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: FieldSelector.java,v 1.9 2004-10-01 08:43:45 pierre Exp $
+ * @version $Id: FieldSelector.java,v 1.10 2005-11-23 15:45:13 pierre Exp $
  */
 public class FieldSelector implements CommandHandlerInterface {
 
@@ -66,8 +66,8 @@ public class FieldSelector implements CommandHandlerInterface {
         for (Enumeration h=stateMngr.mmBase.mmobjs.elements();h.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
             if (bul instanceof InsRel) {
-                results.addElement(""+bul.oType);
-                results.addElement(bul.tableName);
+                results.addElement(""+bul.getNumber());
+                results.addElement(bul.getTableName());
                 results.addElement(bul.description);
             }
         }
@@ -80,8 +80,8 @@ public class FieldSelector implements CommandHandlerInterface {
         for (Enumeration h=stateMngr.mmBase.mmobjs.elements();h.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
             if (!(bul instanceof InsRel)) {
-                results.addElement(""+bul.oType);
-                results.addElement(bul.tableName);
+                results.addElement(""+bul.getNumber());
+                results.addElement(bul.getTableName());
                 results.addElement(bul.description);
             }
         }

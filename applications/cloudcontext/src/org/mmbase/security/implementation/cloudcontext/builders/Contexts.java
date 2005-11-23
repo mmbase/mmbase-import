@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.44 2005-10-30 15:32:07 michiel Exp $
+ * @version $Id: Contexts.java,v 1.45 2005-11-23 15:45:13 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -587,14 +587,11 @@ public class Contexts extends MMObjectBuilder {
         query.addFields(relationStep.getNext());
 
         try {
-            List resultList = mmb.getSearchQueryHandler().getNodes(query, groupsOrUsers); // not cached, but no need
-            groupsOrUsers.processSearchResults(resultList);
-            return resultList;
+            return groupsOrUsers.getStorageConnector().getNodes(query, false);
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage());
             return new ArrayList();
         }
-
 
     }
 

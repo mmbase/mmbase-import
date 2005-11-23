@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.28 2005-10-06 14:20:33 michiel Exp $
+ * @version $Id: Channel.java,v 1.29 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -356,7 +356,7 @@ public class Channel extends MMObjectBuilder {
          * the recursive parameter set to true for all messages in the channel.
          */
         if (messageBuilder != null) {
-            for (Enumeration messages = mmb.getInsRel().getRelated(channel.getNumber(), messageBuilder.oType);
+            for (Enumeration messages = mmb.getInsRel().getRelated(channel.getNumber(), messageBuilder.getNumber());
                  messages.hasMoreElements();) {
                 messageBuilder.removeNode((MMObjectNode)messages.nextElement(), true);
             }
@@ -678,11 +678,11 @@ public class Channel extends MMObjectBuilder {
      *  channel is not associated with a community.
      */
     public MMObjectNode communityParent(MMObjectNode channel) {
-        // During call to Channel.init(), communityBuilder.oType can still be 0
+        // During call to Channel.init(), communityBuilder.getNumber() can still be 0
         // So need to check it before using it
         // When openChannels is removed from init this can be removed
         if (communityBuilder != null) {
-            int oType = communityBuilder.oType;
+            int oType = communityBuilder.getNumber();
             if (oType == 0) oType = mmb.getTypeDef().getIntValue("community");
             Enumeration relatedCommunity = mmb.getInsRel().getRelated(channel.getNumber(), oType);
             if (relatedCommunity.hasMoreElements()) {
@@ -831,7 +831,7 @@ public class Channel extends MMObjectBuilder {
      */
     public String getDefaultUrl(int src) {
         if (communityBuilder != null) {
-            Enumeration e = mmb.getInsRel().getRelated(src, communityBuilder.oType);
+            Enumeration e = mmb.getInsRel().getRelated(src, communityBuilder.getNumber());
             if (!e.hasMoreElements()) {
                 log.warn("GetDefaultURL Could not find related community for channel node " + src);
                 return null;

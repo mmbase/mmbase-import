@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: AudioSources.java,v 1.4 2003-07-15 12:50:23 vpro Exp $
+ * @version $Id: AudioSources.java,v 1.5 2005-11-23 15:45:13 pierre Exp $
  * @since MMBase-1.7
  */
 public class AudioSources extends MediaSources {    
@@ -57,7 +57,7 @@ public class AudioSources extends MediaSources {
         MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
         insrel.setValue("snumber", audiofragment.getValue("number"));
         insrel.setValue("dnumber", audioSourceNumber);
-        insrel.setValue("rnumber", mmb.getInsRel().oType);
+        insrel.setValue("rnumber", mmb.getInsRel().getNumber());
         int insrelnumber = insrel.insert(owner);
         if(insrelnumber<0) {
             log.error("Cannot create relation between audiosource and audiofragment.");

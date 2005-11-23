@@ -28,7 +28,7 @@ import org.mmbase.module.builders.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.17 2004-10-01 08:43:46 pierre Exp $
+ * @version $Id: StateManager.java,v 1.18 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {
@@ -305,7 +305,7 @@ public class StateManager implements CommandHandlerInterface {
                         try {
                             ival=Integer.parseInt(val);
                         } catch(Exception e) {}
-                        DayMarkers daym=(DayMarkers)bul.mmb.getMMObject("daymarks");
+                        DayMarkers daym=(DayMarkers)bul.getMMBase().getMMObject("daymarks");
                         int mark=daym.getDayCountAge(ival);
                         if (where.equals("MMNODE ")) {
                             where+=name+".number=G"+mark;

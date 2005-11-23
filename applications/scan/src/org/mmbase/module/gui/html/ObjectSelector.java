@@ -32,7 +32,7 @@ import org.mmbase.util.scanpage;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.21 2005-10-06 14:07:32 michiel Exp $
+ * @version $Id: ObjectSelector.java,v 1.22 2005-11-23 15:45:13 pierre Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -230,7 +230,7 @@ public class ObjectSelector implements CommandHandlerInterface {
                         other=(MMObjectNode)h.nextElement();
                         rel=(MMObjectNode)h.nextElement();
                         results.add(name);
-                        results.add(obj.mmb.getTypeDef().getValue(rel.getOType()));
+                        results.add(obj.getMMBase().getTypeDef().getValue(rel.getOType()));
                         results.add(""+rel.getIntValue("number"));
                         results.add("");
                         results.add(other.getGUIIndicator());
@@ -332,7 +332,7 @@ public class ObjectSelector implements CommandHandlerInterface {
             Vector vals = builder.getSortedListFields();
             //searchResult = builder.search(conditions);
             //searchResult = builder.search(conditions,"number");
-            searchResult = builder.search(conditions,"number",false);
+            searchResult = HtmlBase.search(builder,conditions,"number",false);
 
             while (searchResult.hasMoreElements()) {
                 node = (MMObjectNode)searchResult.nextElement();
