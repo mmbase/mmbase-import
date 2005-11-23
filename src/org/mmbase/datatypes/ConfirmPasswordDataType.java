@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.3 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.4 2005-11-23 15:07:48 michiel Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
@@ -87,8 +87,8 @@ public class ConfirmPasswordDataType extends StringDataType {
                 Field passwordField = node.getNodeManager().getField(getField());
                 Processor setProcessor = passwordField.getDataType().getProcessor(PROCESS_SET);
                 v = setProcessor.process(node, field, v);
-                String passwordValue = node.getStringValue(getField());
-                log.info("Comparing '" + passwordValue + "' with '" + v + "'");
+                String passwordValue = (String) node.getObjectValue(getField());
+                log.debug("Comparing '" + passwordValue + "' with '" + v + "'");
                 return passwordValue.equals(v);
             } else {
                 return true;
