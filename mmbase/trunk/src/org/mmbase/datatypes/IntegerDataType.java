@@ -8,12 +8,13 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.datatypes;
+import org.mmbase.util.Casting;
 
 /**
  * A NumberDataType, but provides getMin and getMax as int.
  *
  * @author Pierre van Rooden
- * @version $Id: IntegerDataType.java,v 1.6 2005-11-01 23:41:26 michiel Exp $
+ * @version $Id: IntegerDataType.java,v 1.7 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class IntegerDataType extends NumberDataType {
@@ -24,23 +25,25 @@ public class IntegerDataType extends NumberDataType {
     public IntegerDataType(String name, boolean primitive) {
         super(name, primitive ? Integer.TYPE : Integer.class);
         setMin(new Integer(Integer.MIN_VALUE), true);
+        minRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
         setMax(new Integer(Integer.MAX_VALUE), true);
+        maxRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 
     /**
      * @return the minimum value as an <code>int</code>, or a very very small number if there is no minimum.
      */
     public int getMin() {
-        Number min = (Number) getMinRestriction().getValue();
-        return min == null ? Integer.MIN_VALUE : min.intValue();
+        Object min = getMinRestriction().getValue();
+        return min == null ? Integer.MIN_VALUE : Casting.toInt(min);
     }
 
     /**
      * @return the maximum value as an <code>int</code>, or a very very big number if there is no maximum.
      */
     public int getMax() {
-        Number max = (Number) getMaxRestriction().getValue();
-        return max == null ? Integer.MAX_VALUE  : max.intValue();
+        Object max = getMaxRestriction().getValue();
+        return max == null ? Integer.MAX_VALUE : Casting.toInt(max);
     }
 
 }

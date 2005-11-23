@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.2 2005-11-17 14:52:19 michiel Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.3 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
@@ -36,8 +36,15 @@ public class ConfirmPasswordDataType extends StringDataType {
         super(name);
     }
 
-    public void inherit(BasicDataType origin) {
-        super.inherit(origin);
+    protected void inheritRestrictions(BasicDataType origin) {
+        super.inheritRestrictions(origin);
+        if (origin instanceof ConfirmPasswordDataType) {
+            ConfirmPasswordDataType dataType = (ConfirmPasswordDataType) origin;
+            passwordRestriction.inherit(dataType.passwordRestriction);
+        }
+    }
+    protected void cloneRestrictions(BasicDataType origin) {
+        super.cloneRestrictions(origin);
         if (origin instanceof ConfirmPasswordDataType) {
             ConfirmPasswordDataType dataType = (ConfirmPasswordDataType) origin;
             passwordRestriction = new PasswordRestriction(dataType.passwordRestriction);
@@ -75,13 +82,13 @@ public class ConfirmPasswordDataType extends StringDataType {
             return (String) value;
         }
 
-        public boolean valid(Object v, Node node, Field field) {
-            if (node != null && field != null && value != null) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
+            if (node != null && field != null && v != null) {
                 Field passwordField = node.getNodeManager().getField(getField());
                 Processor setProcessor = passwordField.getDataType().getProcessor(PROCESS_SET);
                 v = setProcessor.process(node, field, v);
                 String passwordValue = node.getStringValue(getField());
-                log.info("Comparing " + passwordValue + " with " + v);
+                log.info("Comparing '" + passwordValue + "' with '" + v + "'");
                 return passwordValue.equals(v);
             } else {
                 return true;

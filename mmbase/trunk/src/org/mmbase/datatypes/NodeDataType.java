@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.18 2005-11-17 18:10:21 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.19 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -33,8 +33,14 @@ public class NodeDataType extends BasicDataType {
     }
 
 
-    public void inherit(BasicDataType origin) {
-        super.inherit(origin);
+    protected void inheritRestrictions(BasicDataType origin) {
+        super.inheritRestrictions(origin);
+        if (origin instanceof NodeDataType) {
+            mustExistRestriction.inherit(((NodeDataType)origin).mustExistRestriction);
+        }
+    }
+    protected void cloneRestrictions(BasicDataType origin) {
+        super.cloneRestrictions(origin);
         if (origin instanceof NodeDataType) {
             mustExistRestriction = new MustExistRestriction(((NodeDataType)origin).mustExistRestriction);
         }
@@ -68,7 +74,7 @@ public class NodeDataType extends BasicDataType {
         MustExistRestriction() {
             super("mustExist", Boolean.TRUE);
         }
-        public boolean valid(Object value, Node node, Field field) {
+        protected boolean simpleValid(Object value, Node node, Field field) {
             if (getValue().equals(Boolean.TRUE)) {
                 if (value != null) {
                     if (value instanceof String) {

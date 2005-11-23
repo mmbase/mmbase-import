@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.7 2005-10-21 16:41:53 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.8 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -37,16 +37,27 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
      */
     public AbstractLengthDataType(String name, Class classType) {
         super(name, classType);
+        minLengthRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 
 
-    public void inherit(BasicDataType origin) {
-        super.inherit(origin);
-        if (origin instanceof LengthDataType) {
-            LengthDataType dataType = (LengthDataType)origin;
+    protected void cloneRestrictions(BasicDataType origin) {
+        super.cloneRestrictions(origin);
+        if (origin instanceof AbstractLengthDataType) {
+            AbstractLengthDataType dataType = (AbstractLengthDataType)origin;
             // make new instances because of this can be called from a clone .. We hate java.
-            minLengthRestriction = new MinRestriction(this, dataType.getMinLengthRestriction());
-            maxLengthRestriction = new MaxRestriction(this, dataType.getMaxLengthRestriction());
+            minLengthRestriction = new MinRestriction(this, dataType.minLengthRestriction);
+            maxLengthRestriction = new MaxRestriction(this, dataType.maxLengthRestriction);
+        }
+    }
+
+    protected void inheritRestrictions(BasicDataType origin) {
+        super.inheritRestrictions(origin);
+        if (origin instanceof AbstractLengthDataType) {
+            AbstractLengthDataType dataType = (AbstractLengthDataType)origin;
+            // make new instances because of this can be called from a clone .. We hate java.
+            minLengthRestriction.inherit(dataType.minLengthRestriction);
+            maxLengthRestriction.inherit(dataType.maxLengthRestriction);
         }
     }
 
@@ -73,8 +84,8 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction setMinLength(long value) {
-        return getMinLengthRestriction().setValue(new Long(value));
+    public void setMinLength(long value) {
+        getMinLengthRestriction().setValue(new Long(value));
     }
 
     /**
@@ -97,8 +108,8 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
      * @return the datatype restriction that was just set
      */
-    public DataType.Restriction setMaxLength(long value) {
-        return getMaxLengthRestriction().setValue(new Long(value));
+    public void setMaxLength(long value) {
+        getMaxLengthRestriction().setValue(new Long(value));
     }
 
     protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
@@ -121,25 +132,25 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
     }
 
     static class MinRestriction extends StaticAbstractRestriction {
-        MinRestriction(BasicDataType dt, DataType.Restriction source) {
+        MinRestriction(BasicDataType dt, MinRestriction source) {
             super(dt, source);
         }
         MinRestriction(BasicDataType dt, long min) {
             super(dt, "minLength", new Long(min));
         }
-        public boolean valid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             long min = Casting.toLong(getValue());
             return ((LengthDataType) parent).getLength(v) >= min;
         }
     }
     static class MaxRestriction extends StaticAbstractRestriction {
-        MaxRestriction(BasicDataType dt, DataType.Restriction source) {
+        MaxRestriction(BasicDataType dt, MaxRestriction source) {
             super(dt, source);
         }
         MaxRestriction(BasicDataType dt, long max) {
             super(dt, "maxLength", new Long(max));
         }
-        public boolean valid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             long max = Casting.toLong(getValue());
             long length = ((LengthDataType) parent).getLength(v);
             return length <= max;

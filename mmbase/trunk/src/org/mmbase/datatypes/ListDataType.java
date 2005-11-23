@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.15 2005-11-04 23:12:51 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.16 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType {
@@ -33,8 +33,15 @@ public class ListDataType extends AbstractLengthDataType {
     }
 
 
-    public void inherit(BasicDataType origin) {
-        super.inherit(origin);
+    protected void inheritRestrictions(BasicDataType origin) {
+        super.inheritRestrictions(origin);
+        if (origin instanceof ListDataType) {
+            ListDataType dataType = (ListDataType)origin;
+            itemRestriction.inherit(dataType.itemRestriction);
+         }
+    }
+    protected void cloneRestrictions(BasicDataType origin) {
+        super.cloneRestrictions(origin);
         if (origin instanceof ListDataType) {
             ListDataType dataType = (ListDataType)origin;
             itemRestriction = new ItemRestriction(dataType.itemRestriction);
@@ -65,8 +72,8 @@ public class ListDataType extends AbstractLengthDataType {
      * Sets the datatype of items in this list.
      * @param value the datatype as a DataType object, <code>null</code> if there are no restrictions
      */
-    public DataType.Restriction setItemDataType(DataType value) {
-        return itemRestriction.setValue(value);
+    public void setItemDataType(DataType value) {
+        itemRestriction.setValue(value);
     }
 
     protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
@@ -92,7 +99,7 @@ public class ListDataType extends AbstractLengthDataType {
             return (DataType) value;
         }
 
-        public boolean valid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             DataType itemDataType = getItemDataType();
             if (itemDataType == Constants.DATATYPE_UNKNOWN) return true;
             List listValue = Casting.toList(v);

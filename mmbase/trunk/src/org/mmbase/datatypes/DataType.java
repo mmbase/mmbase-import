@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 import java.util.*;
+import java.io.Serializable;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.*;
@@ -37,10 +38,10 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.43 2005-11-17 18:06:51 michiel Exp $
+ * @version $Id: DataType.java,v 1.44 2005-11-23 12:11:25 michiel Exp $
  */
 
-public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Serializable {
+public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
 
     // XXXX MM: I think 'action' must be gone; it is silly.
     static final int PROCESS_GET    = 1;
@@ -48,9 +49,18 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
 
 
     /**
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value
+     * must be enforced always, and furthermore, that extensions (based on clone) cannot loosen
+     * it. For example, the absolute maximum for any datatype backed by a integer is
+     * Integer.MAX_VALUE, there is no way you can even store a bigger value in this, so this restriction is 'absolute'.
+     */
+    static final int ENFORCE_ABSOLUTE  = Integer.MAX_VALUE;
+
+
+    /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced always.
      */
-    static final int ENFORCE_ALWAYS   = Integer.MAX_VALUE;
+    static final int ENFORCE_ALWAYS   = 100000;
 
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced only if it was changed.
@@ -69,18 +79,12 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     static final int ENFORCE_NEVER    = 0;
 
     /**
-     * An empty Parameter array.
-     */
-    static final DataType[] EMPTY  = new DataType[0];
-
-    /**
-     * Returned by {@link #validate} if no errors.
+     * Returned by {@link #validate} if no errors: an empty (nonmodifiable) Collection.
      */
     public static final Collection VALID = Collections.EMPTY_LIST;
 
     /**
-     * Inherit properties and processors from the passed datatype and
-     * sets the passed datatype as the origin for this datatype.
+     * Inherit properties and processors from the passed datatype.
      */
     public void inherit(BasicDataType origin);
 
@@ -145,7 +149,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      */
     public Object getDefaultValue();
 
-    public DataType setDefaultValue(Object def);
+    public void setDefaultValue(Object def);
 
     /**
      * @javadoc
@@ -158,7 +162,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     /**
      * @javadoc
      */
-    public DataType finish(Object owner);
+    public void finish(Object owner);
 
 
     /**
@@ -199,9 +203,8 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      * Sets whether the data type requires a value, which means that it may not remain unfilled.
      * @param required <code>true</code> if a value is required
      * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
-     * @return the datatype restriction that was just set
      */
-    public DataType.Restriction setRequired(boolean required);
+    public void setRequired(boolean required);
 
     /**
      * Returns whether this field has a unique restriction.
@@ -224,9 +227,8 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
      * Sets whether the data type requires a value.
      * @param unique <code>true</code> if a value is unique
      * @throws InvalidStateException if the datatype was finished (and thus can no longer be changed)
-     * @return the datatype restricton that was just set
      */
-    public DataType.Restriction setUnique(boolean unique);
+    public void setUnique(boolean unique);
 
     /**
      * Returns an iterator over all possible values for this datatype, as {@link java.util.Map.Entry}s, or
@@ -266,25 +268,25 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     /**
      * Returns the default processor for this action
      * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
-     * XXX What exactly would be against getCommitProcessor(), getGetProcesor(), getSetProcessor() ?
+     * XXX What exactly would be against getGetProcesor(), getSetProcessor() ?
      */
     public Processor getProcessor(int action);
     /**
      * Returns the processor for this action and processing type
-     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
-     * @param processingType the MMBase type defining the type of value to process, ignored if action - PROCESS_COMMIT
+     * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
+     * @param processingType the MMBase type defining the type of value to process
      */
     public Processor getProcessor(int action, int processingType);
     /**
      * Sets the processor for this action
-     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
+     * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
      */
     public void setProcessor(int action, Processor processor);
 
     /**
      * Sets the processor for this action
-     * @param action either PROCESS_COMMIT, PROCESS_GET, or PROCESS_SET
-     * @param processingType the MMBase type defining the type of value to process, ignored if action - PROCESS_COMMIT
+     * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
+     * @param processingType the MMBase type defining the type of value to process
      */
     public void setProcessor(int action, Processor processor, int processingType);
 
@@ -306,15 +308,15 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
     /**
      * A restriction controls the acceptable values of a DataType.
      */
-    public interface Restriction extends java.io.Serializable {
+    public interface Restriction extends Serializable {
 
         public String getName();
         /** 
          * A Value describing the restriction, so depending on the semantics of this restriction, it
-         * can have virtually every type.
+         * can have virtually every type (as long as it is Serializable)
          */
-        public Object getValue();
-        public Restriction setValue(java.io.Serializable value);
+        public Serializable getValue();
+        public void setValue(Serializable value);
         /**
          * If the restriction does not hold, the following error description can be used. On default
          * these descriptions are searched in a resource bundle based on the name of this
@@ -342,6 +344,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, java.io.Ser
          */
         public int getEnforceStrength();
         public void setEnforceStrength(int v);
+
     }
 
 }

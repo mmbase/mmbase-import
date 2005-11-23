@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.28 2005-11-17 18:10:21 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.29 2005-11-23 12:11:25 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -123,18 +123,25 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         return Fields.getTypeDescription(Fields.classToType(classType)).toLowerCase();
     }
 
+
     /**
      * {@inheritDoc}
+     * Calls both {@link #inheritProperties} and {@link #inheritRestrictions}.
      */
-    public void inherit(BasicDataType origin) {
+    public final void inherit(BasicDataType origin) {
         edit();
-        this.origin = origin;
-        defaultValue = origin.getDefaultValue();
-        commitProcessor = origin.commitProcessor;
-        enumerationRestriction = new EnumerationRestriction(origin.enumerationRestriction);
-        requiredRestriction = new RequiredRestriction(origin.requiredRestriction);
-        uniqueRestriction   = new UniqueRestriction(origin.uniqueRestriction);
+        inheritProperties(origin);
+        inheritRestrictions(origin);
+    }
 
+    /**
+     * Properties are members of the datatype that can easily be copied/clones.
+     */
+    protected void inheritProperties(BasicDataType origin) {
+        this.origin     = origin;
+        defaultValue    = origin.getDefaultValue();
+
+        commitProcessor = origin.commitProcessor;
         if (origin.getProcessors == null) {
             getProcessors = null;
         } else {
@@ -145,6 +152,24 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         } else {
             setProcessors = (Processor[])origin.setProcessors.clone();
         }
+    }
+   
+    /**
+     * If a datatype is cloned, the restrictions of it (normally implemented as inner classes), but be reinstantiated.
+     */
+    protected void cloneRestrictions(BasicDataType origin) {
+        enumerationRestriction = new EnumerationRestriction(origin.enumerationRestriction);
+        requiredRestriction    = new RequiredRestriction(origin.requiredRestriction);
+        uniqueRestriction      = new UniqueRestriction(origin.uniqueRestriction);
+    }
+
+    /**
+     * If a datatype inherits from another datatype all its restrictions inherit too.
+     */
+    protected void inheritRestrictions(BasicDataType origin) {
+        enumerationRestriction.inherit(origin.enumerationRestriction);
+        requiredRestriction.inherit(origin.requiredRestriction);
+        uniqueRestriction.inherit(origin.uniqueRestriction);
     }
 
     /**
@@ -185,7 +210,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * {@inheritDoc}
      *
-     * Tries to determin  cloud by node and field if possible and wraps {@link preCast(Object, Cloud, Node, Field}.
+     * Tries to determin  cloud by node and field if possible and wraps {@link #preCast(Object, Cloud, Node, Field)}.
      */
     public final Object preCast(Object value, Node node, Field field) {
         return preCast(value, getCloud(node, field), node, field);
@@ -204,6 +229,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * change the actual type of the value.
      */
     protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
+        if (value == null) return null;
         return enumerationRestriction.preCast(value, cloud);
     }
 
@@ -214,7 +240,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * No need to override this. It is garantueed by javadoc that cast should work out of preCast
      * using Casting.toType. So that is what this final implementation is doing.
      *
-     * Override {@link preCast(Object, Cloud, Node, Field)}
+     * Override {@link #preCast(Object, Cloud, Node, Field)}
      */
     public final Object cast(Object value, Node node, Field field) {
         return cast(value, getCloud(node, field), node, field);
@@ -246,16 +272,16 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * {@inheritDoc}
      */
     public Object getDefaultValue() {
-        return defaultValue;
+        if (defaultValue == null) return null;
+        return cast(defaultValue, null, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public DataType setDefaultValue(Object def) {
+    public void setDefaultValue(Object def) {
         edit();
         defaultValue = cast(def, null, null);
-        return this;
     }
 
     public boolean isFinished() {
@@ -265,16 +291,15 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * @javadoc
      */
-    public DataType finish() {
-        return finish(new Object());
+    public void finish() {
+        finish(new Object());
     }
 
     /**
      * @javadoc
      */
-    public DataType finish(Object owner) {
+    public void finish(Object owner) {
         this.owner = owner;
-        return this;
     }
 
     /**
@@ -369,6 +394,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
     /**
      * {@inheritDoc}
+     *
      * This method is final, override {@link #clone(String)} in stead.
      */
     public final Object clone() {
@@ -376,17 +402,25 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         return clone(getName());
     }
 
+
+
     /**
      * {@inheritDoc}
+     *
+     * Besides super.clone, it calls {@link #inheritProperties(BasicDataType)} and {@link
+     * #cloneRestrictions(BasicDataType)}. A clone is not finished. See {@link #isFinished()}.
      */
     public Object clone(String name) {
         try {
-            BasicDataType clone = (BasicDataType)super.clone(name);
+            BasicDataType clone = (BasicDataType) super.clone(name);
             // reset owner if it was set, so this datatype can be changed
             clone.owner = null;
             // properly inherit from this datatype (this also clones properties and processor arrays)
-            clone.inherit(this);
-            log.debug("Cloned " + this + " -> " + clone);
+            clone.inheritProperties(this);
+            clone.cloneRestrictions(this);
+            if (log.isDebugEnabled()) {
+                log.debug("Cloned " + this + " -> " + clone);
+            }
             return clone;
         } catch (CloneNotSupportedException cnse) {
             // should not happen
@@ -440,8 +474,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction setRequired(boolean required) {
-        return getRequiredRestriction().setValue(Boolean.valueOf(required));
+    public void setRequired(boolean required) {
+        getRequiredRestriction().setValue(Boolean.valueOf(required));
     }
 
     /**
@@ -461,8 +495,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction setUnique(boolean unique) {
-        return getUniqueRestriction().setValue(Boolean.valueOf(unique));
+    public void setUnique(boolean unique) {
+        getUniqueRestriction().setValue(Boolean.valueOf(unique));
     }
 
 
@@ -563,7 +597,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * Abstract inner class Restriction. Based on static StaticAbstractRestriction
      */
     protected abstract class AbstractRestriction extends StaticAbstractRestriction {
-        protected AbstractRestriction(DataType.Restriction source) {
+        protected AbstractRestriction(AbstractRestriction source) {
             super(BasicDataType.this, source);
         }
         protected AbstractRestriction(String name, Serializable value) {
@@ -574,6 +608,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * A Restriction is represented by these kind of objects.
      * When you override this class, take care of cloning of outer class!
      * This class itself is not cloneable. Cloning is hard when you have inner classes.
+     *
+     * All resctrictions extend from this.
      *
      * See <a href="http://www.adtmag.com/java/articleold.asp?id=364">article about inner classes,
      * cloning in java</a>
@@ -586,10 +622,32 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected boolean fixed = false;
         protected int    enforceStrength = DataType.ENFORCE_ALWAYS;
 
-        protected StaticAbstractRestriction(BasicDataType parent, DataType.Restriction source) {
+        /**
+         * If a restriction has an 'absolute' parent restriction, then also that restriction must be
+         * valid (because it was 'absolute'). A restriction gets an absolute parent if its
+         * surrounding DataType is clone of DataType in which the same restriction is marked with
+         * {@link DataType#ENFORCE_ABSOLUTE}.
+         */
+        protected StaticAbstractRestriction absoluteParent = null;
+
+        /**
+         * Instantaties new restriction for a clone of the parent DataType. If the source
+         * restriction is 'absolute' it will remain to be enforced even if the clone gets a new
+         * value.
+         */
+        protected StaticAbstractRestriction(BasicDataType parent, StaticAbstractRestriction source) {
             this.name = source.getName();
             this.parent = parent;
+            if (source.enforceStrength == DataType.ENFORCE_ABSOLUTE) {
+                absoluteParent = source;
+            } else {
+                absoluteParent = source.absoluteParent;
+            }
             inherit(source);
+            if (source.enforceStrength == DataType.ENFORCE_ABSOLUTE) {
+                enforceStrength = DataType.ENFORCE_ALWAYS;
+            }
+
         }
 
         protected StaticAbstractRestriction(BasicDataType parent, String name, Serializable value) {
@@ -602,18 +660,18 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return name;
         }
 
-        public Object getValue() {
+        public Serializable getValue() {
             return value;
         }
 
-        public Restriction setValue(Serializable value) {
-            log.debug("Setting restriction " + name + " on " + parent);
+
+        public void setValue(Serializable v) {
             parent.edit();
             if (fixed) {
                 throw new IllegalStateException("Restriction '" + name + "' is fixed, cannot be changed");
-            }
-            this.value = value;
-            return this;
+            }         
+   
+            this.value = v;
         }
 
         public LocalizedString getErrorDescription() {
@@ -660,17 +718,21 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
 
         /**
-         * If toString a restriction depends on node, field, then you can override this
+         * If value of a a restriction depends on node, field, then you can override this
          */
-        protected String toString(Node node, Field field) {
-            return toString();
+
+
+        protected String valueString(Node node, Field field) {
+            return "" + value;
         }
+        
 
         /**
          * Whether {@link #validate} must enforce this condition
          */
         protected final boolean enforce(Node node, Field field) {
             switch(enforceStrength) {
+            case DataType.ENFORCE_ABSOLUTE:
             case DataType.ENFORCE_ALWAYS:   return true;
             case DataType.ENFORCE_ONCHANGE: if (node == null || field == null || node.isChanged(field.getName())) return true;
             case DataType.ENFORCE_ONCREATE: if (node == null || node.isNew()) return true;
@@ -682,6 +744,13 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
          * This method is called by {@link BasicDataType#validate(Object, Node, Field)} for each of its conditions.
          */
         protected Collection validate(Collection errors, Object v, Node node, Field field) {
+            if (absoluteParent != null && ! absoluteParent.valid(v, node, field)) {
+                int sizeBefore = errors.size();
+                Collection res = absoluteParent.addError(errors, v,  node, field);
+                if (res.size() > sizeBefore) {
+                    return res;
+                }
+            }
             if ((! enforce(node, field)) ||  valid(v, node, field) || v == null) {
                 // no new error to add.
                 return errors;
@@ -690,14 +759,24 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             }
         }
 
-        public abstract boolean valid(Object value, Node node, Field field);
+        
+
+        public final boolean valid(Object v, Node node, Field field) {
+            if (absoluteParent != null) {
+                if (! absoluteParent.valid(v, node, field)) return false;
+            }            
+            return simpleValid(parent.castToValidate(v, node, field), node, field);
+
+        }
+
+        protected abstract boolean simpleValid(Object v, Node node, Field field);
 
 
-        protected void inherit(DataType.Restriction source) {
-            value = (Serializable) source.getValue();
+        protected final void inherit(StaticAbstractRestriction source) {
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
-            errorDescription = (LocalizedString) source.getErrorDescription().clone();
+            setValue((Serializable) source.getValue());
             enforceStrength = source.getEnforceStrength();
+            errorDescription = (LocalizedString) source.getErrorDescription().clone();
         }
 
         public int getEnforceStrength() {
@@ -707,10 +786,13 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             enforceStrength = e;
         }
 
-        public String toString() {
+        public final String toString() {
+            return toString(null, null);
+        }
+        public final String toString(Node node, Field field) {
             return name + ": " +
-                (enforceStrength == DataType.ENFORCE_NEVER ? "*" : "") +
-                value + ( fixed ? "." : "");
+                (enforceStrength == DataType.ENFORCE_NEVER ? "*" : "") + 
+                valueString(node, field) + ( fixed ? "." : "");
         }
 
     }
@@ -725,7 +807,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         final boolean isRequired() {
             return value.equals(Boolean.TRUE);
         }
-        public boolean valid(Object v, Node node, Field field) {
+
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if(!isRequired()) return true;
             return v != null || BasicDataType.this.commitProcessor != null;
         }
@@ -741,7 +824,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         final boolean isUnique() {
             return value.equals(Boolean.TRUE);
         }
-        public boolean valid(Object v, Node node, Field field) {
+
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if (! isUnique()) return true;
             if (node != null && field != null && value != null) {
                 // create a query and query for the value
@@ -770,7 +854,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         TypeRestriction() {
             super("type", BasicDataType.this.getClass());
         }
-        public boolean valid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             try {
                 BasicDataType.this.cast(v, node, field);
                 return true;
@@ -816,7 +900,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
         }
 
-        public boolean valid(Object v, Node node, Field field) {
+
+        protected boolean simpleValid(Object v, Node node, Field field) {
             Cloud cloud = BasicDataType.this.getCloud(node, field);
             Collection validValues = getEnumeration(null, cloud, node, field);
             if (validValues == null) return true;
@@ -832,8 +917,10 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return false;
         }
 
-        protected String toString(Node node, Field field) {
-            return getEnumeration(null, null, node, field).toString();
+        protected String valueString(Node node, Field field) {
+            Collection col = getEnumeration(null, null, node, field);
+            if(col == null) return "";
+            return col.toString(); 
         }
 
     }

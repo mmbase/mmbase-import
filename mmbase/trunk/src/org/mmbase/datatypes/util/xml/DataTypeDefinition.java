@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.44 2005-11-17 18:10:21 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.45 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -225,11 +225,13 @@ public class DataTypeDefinition {
             ret = setProperty(childElement);
         } else if ("required".equals(childTag)) {
             boolean value = DataTypeXml.getBooleanValue(childElement, false);
-            setRestrictionData(dataType.setRequired(value), childElement);
+            dataType.setRequired(value);
+            setRestrictionData(dataType.getRequiredRestriction(), childElement);
             ret = true;
         } else if ("unique".equals(childTag)) {
             boolean value = DataTypeXml.getBooleanValue(childElement, false);
-            setRestrictionData(dataType.setUnique(value), childElement);
+            dataType.setUnique(value);
+            setRestrictionData(dataType.getUniqueRestriction(), childElement);
             ret = true;
         } else if ("getprocessor".equals(childTag)) {
             addProcessor(DataType.PROCESS_GET, childElement);
@@ -301,7 +303,9 @@ public class DataTypeDefinition {
             restriction.setFixed(isFixed);
         }
         String enforce = DataTypeXml.getAttribute(element, "enforce").toLowerCase();
-        if (enforce.equals("always") || enforce.equals("")) {
+        if (enforce.equals("absolute")) {
+            restriction.setEnforceStrength(DataType.ENFORCE_ABSOLUTE);
+        } else if (enforce.equals("always") || enforce.equals("")) {
             restriction.setEnforceStrength(DataType.ENFORCE_ALWAYS);
         } else if (enforce.equals("onchange")) {
             restriction.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
@@ -427,16 +431,20 @@ public class DataTypeDefinition {
             LengthDataType bDataType = (LengthDataType) dataType;
             if ("minLength".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
-                setRestrictionData(bDataType.setMinLength(value), conditionElement);
+                bDataType.setMinLength(value);
+                setRestrictionData(bDataType.getMinLengthRestriction(), conditionElement);
                 return true;
             } else if ("maxLength".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
-                setRestrictionData(bDataType.setMaxLength(value), conditionElement);
+                bDataType.setMaxLength(value);
+                setRestrictionData(bDataType.getMaxLengthRestriction(), conditionElement);
                 return true;
             } else if ("length".equals(localName)) {
                 long value = DataTypeXml.getLongValue(conditionElement);
-                setRestrictionData(bDataType.setMinLength(value), conditionElement);
-                setRestrictionData(bDataType.setMaxLength(value), conditionElement);
+                bDataType.setMinLength(value);
+                setRestrictionData(bDataType.getMinLengthRestriction(), conditionElement);
+                bDataType.setMaxLength(value);
+                setRestrictionData(bDataType.getMaxLengthRestriction(), conditionElement);
                 return true;
             }
         }
@@ -468,7 +476,8 @@ public class DataTypeDefinition {
             if ("pattern".equals(localName)) {
                 String value = DataTypeXml.getAttribute(conditionElement, "value");
                 log.debug("Setting pattern on " + sDataType);
-                setRestrictionData(sDataType.setPattern(java.util.regex.Pattern.compile(value)), conditionElement);
+                sDataType.setPattern(java.util.regex.Pattern.compile(value));
+                    setRestrictionData(sDataType.getPatternRestriction(), conditionElement);
                 return true;
             }
         } else if (dataType instanceof DateTimeDataType) {
@@ -495,11 +504,13 @@ public class DataTypeDefinition {
             ComparableDataType dDataType = (ComparableDataType) dataType;
             if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
                 Comparable value = (Comparable) dDataType.cast(DataTypeXml.getValue(conditionElement), null, null);
-                setRestrictionData(dDataType.setMin(value, "minInclusive".equals(localName)), conditionElement);
+                dDataType.setMin(value, "minInclusive".equals(localName));
+                setRestrictionData(dDataType.getMinRestriction(), conditionElement);
                 return true;
             } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
                 Comparable value = (Comparable) dDataType.cast(DataTypeXml.getValue(conditionElement), null, null);
-                setRestrictionData(dDataType.setMax(value, "maxInclusive".equals(localName)), conditionElement);
+                dDataType.setMax(value, "maxInclusive".equals(localName));
+                setRestrictionData(dDataType.getMaxRestriction(), conditionElement);
                 return true;
             }
         }

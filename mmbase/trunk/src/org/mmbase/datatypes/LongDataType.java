@@ -14,7 +14,7 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.5 2005-10-27 17:12:19 simon Exp $
+ * @version $Id: LongDataType.java,v 1.6 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {
@@ -25,7 +25,9 @@ public class LongDataType extends NumberDataType {
     public LongDataType(String name, boolean primitive) {
         super(name, primitive ? Long.TYPE : Long.class);
         setMin(new Long(Long.MIN_VALUE), true);
+        minRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
         setMax(new Long(Long.MAX_VALUE), true);
+        maxRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 
 
