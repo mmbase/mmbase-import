@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.11 2005-05-11 14:45:22 pierre Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.12 2005-11-23 10:27:36 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -34,6 +34,9 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
     protected Attribute cachePolicy  = Attribute.NULL;
     protected Attribute role      = Attribute.NULL;
 
+    /**
+     * @since MMBase-1.8
+     */
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
     }
