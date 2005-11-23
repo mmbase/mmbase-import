@@ -9,7 +9,7 @@
 <p>
   <c:choose>
     <c:when test="${h == 'hoi'}">
-      h is default.
+      h is default.     
       <mm:link>
         <mm:param name="h">hallo</mm:param>
         <a href="${_}">Change</a>
