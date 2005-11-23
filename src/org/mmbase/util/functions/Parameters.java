@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.18 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: Parameters.java,v 1.19 2005-11-23 12:18:30 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -192,7 +192,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
         for (int i = fromIndex; i < toIndex; i++) {
             Parameter a = definition[i];
             if (a.isRequired() && (get(a.getName()) == null)) {
-                throw new IllegalArgumentException("Required parameter '" + a.getName() + "' is null");
+                throw new IllegalArgumentException("Required parameter '" + a.getName() + "' is null (of (" + toString() + ")");
             }
         }
     }
