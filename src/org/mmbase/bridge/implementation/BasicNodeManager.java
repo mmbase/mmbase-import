@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.112 2005-11-16 16:09:48 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.113 2005-11-23 11:57:10 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -193,7 +193,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     /**
-     * Structure to temporary contain an MMObjectNode and a {@link BaicCloud#uniqueId}
+     * Structure to temporary contain an MMObjectNode and a {@link BasicCloud#uniqueId()}
      * @since MMBase-1.8
      */
     protected final class NodeAndId {

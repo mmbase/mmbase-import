@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.9 2005-11-19 15:19:54 ernst Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.10 2005-11-23 11:58:02 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -62,10 +62,10 @@ public abstract class ReleaseStrategy {
     }
 
     /**
-     * this method checks if evaluation should happen (active), keeps the time
-     * of the operation and updates the statistics.<br/> to implement you own
+     * This method checks if evaluation should happen (active), keeps the time
+     * of the operation and updates the statistics. To implement you own
      * strategy override
-     * <code>doEvaluate(NodeEvent event, SearchQuery query, List cachedResult)</code>
+     * {@link #doEvaluate(NodeEvent event, SearchQuery query, List cachedResult)}.
      *
      */
     public final StrategyResult evaluate(NodeEvent event, SearchQuery query, List cachedResult) {
@@ -136,10 +136,9 @@ public abstract class ReleaseStrategy {
     /**
      * utility for specializations: get all the constraints in the query that apply to 
      * a certain field
-     * @param field
+     * @param fieldName
      * @param constraint
      * @param query
-     * @return
      */
     protected static List getConstraintsForField(String  fieldName, String builderName, Constraint constraint, SearchQuery query){
         if(constraint == null)constraint = query.getConstraint();
@@ -174,7 +173,6 @@ public abstract class ReleaseStrategy {
     /**
      * utility for specializations: get all the relation steps of a query
      * @param query
-     * @return
      */
     protected   static List getRelationSteps(SearchQuery query) {
         List result = new ArrayList(10);
@@ -188,8 +186,6 @@ public abstract class ReleaseStrategy {
     /**
      * utility for specializations: get all the field steps of a query
      * @param query
-     * @param step
-     * @return
      */
     protected static List getFieldSteps(SearchQuery query){
         List result = new ArrayList();
@@ -203,7 +199,6 @@ public abstract class ReleaseStrategy {
     /**
      * utility for specializations: get all the steps in a query of a give type
      * @param query
-     * @return
      */
     protected static List getStepsForType(SearchQuery query, MMObjectBuilder type){
         List result = new ArrayList(10);
