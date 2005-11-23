@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.50 2005-11-11 10:45:31 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.51 2005-11-23 12:21:32 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -322,19 +322,23 @@ public class BuilderReader extends DocumentReader {
         for(Iterator ns = getChildElements("builder.fieldlist", "field"); ns.hasNext(); ) {
             Element field = (Element) ns.next();
             CoreField def = (CoreField) oldset.get(getElementValue(getElementByPath(field, "field.db.name")));
-            if (def != null) {
-                def.rewrite();
-                DataType dataType = decodeDataType(builder, collector, def.getName(), field, def.getType(), def.getListItemType(), false);
-                if (dataType != null) {
-                    def.setDataType(dataType); // replace datatype
+            try {
+                if (def != null) {
+                    def.rewrite();
+                    DataType dataType = decodeDataType(builder, collector, def.getName(), field, def.getType(), def.getListItemType(), false);
+                    if (dataType != null) {
+                        def.setDataType(dataType); // replace datatype
+                    }
+                    decodeFieldDef(field, def, collector);
+                    def.finish();
+                } else {
+                    def = decodeFieldDef(builder, collector, field);
+                    def.setStoragePosition(pos++);
+                    def.finish();
+                    results.add(def);
                 }
-                decodeFieldDef(field, def, collector);
-                def.finish();
-            } else {
-                def = decodeFieldDef(builder, collector, field);
-                def.setStoragePosition(pos++);
-                def.finish();
-                results.add(def);
+            } catch (Exception e) {
+                log.error("During parsing of " + XMLWriter.write(field, true, true) + " " + e.getMessage(), e);
             }
         }
 
