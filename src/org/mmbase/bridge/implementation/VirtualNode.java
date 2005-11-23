@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * {@link VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.8 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.9 2005-11-23 10:22:41 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -120,6 +120,9 @@ public class VirtualNode implements Node {
     }
 
     public boolean isChanged(String fieldName) {
+        return false;
+    }
+    public boolean isChanged() {
         return false;
     }
     
