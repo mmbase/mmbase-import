@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.327 2005-11-01 10:55:14 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.328 2005-11-23 10:29:39 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -491,6 +491,22 @@ version: $Id: mmbase-taglib.xml,v 1.327 2005-11-01 10:55:14 michiel Exp $
       <info>
         A jspvar of type Node can be created.
       </info>
+    </attribute>
+    <attribute>
+      <name>commitonclose</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Whether the node must be committed after the body. The
+        default is true.
+      </info>
+      <possiblevalue>
+        <value>true</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>false</value>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
     </attribute>
   </taginterface>
   <taginterface>
@@ -2905,8 +2921,8 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-       If the transaction must be committed after the body. The
-       default is true.
+        Whether the transaction must be committed after the body. The
+        default is true.
       </info>
       <possiblevalue>
         <value>true</value>

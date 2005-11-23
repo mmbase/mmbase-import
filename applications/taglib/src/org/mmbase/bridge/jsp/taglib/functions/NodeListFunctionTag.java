@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.10 2005-09-19 12:24:21 pierre Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.11 2005-11-23 10:29:39 michiel Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
 
@@ -43,12 +43,14 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
         return nodeHelper.getNodeVar();
     }
 
-    public void setModified() {
-        nodeHelper.setModified();
-    }
-
     public Query getGeneratingQuery() throws JspTagException {
         return nodeHelper.getGeneratingQuery();
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public void setCommitonclose(String c) throws JspTagException {
+        nodeHelper.setCommitonclose(c);
     }
 
     public void setJspvar(String jv) {
