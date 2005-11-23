@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.17 2005-06-20 16:03:38 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.18 2005-11-23 10:27:15 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -36,6 +36,9 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     protected  Attribute   element     = Attribute.NULL;
     protected  Attribute   nodes       = Attribute.NULL;
 
+    /**
+     * @since MMBase-1.8
+     */
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
     }
