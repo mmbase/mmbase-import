@@ -25,7 +25,7 @@ import org.mmbase.bridge.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: LeafConstraintsTag.java,v 1.2 2005-10-31 19:32:20 andre Exp $
+ * @version $Id: LeafConstraintsTag.java,v 1.3 2005-11-23 10:24:13 michiel Exp $
  */
 public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryContainer, QueryContainerReferrer { 
 
@@ -49,7 +49,7 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
 
     public int doStartTag() throws JspTagException {
         TreeContainerTag c = (TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), false);
-        tree = (GrowingTreeList) c.getTree();
+        tree = c.getTree();
         return EVAL_BODY;
     }
 
