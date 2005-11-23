@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.30 2005-11-23 10:28:22 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.31 2005-11-23 16:49:57 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -67,8 +67,8 @@ public class DateHandler extends AbstractTypeHandler {
         }
     }
 
-    protected DateTimePattern getPattern(DataType dt) throws JspTagException {
 
+    protected DateTimePattern getPattern(DataType dt) throws JspTagException {
         DateTimePattern dateTimePattern;
         if (! (dt instanceof DateTimeDataType)) {
             // backwards compatibility
@@ -274,22 +274,8 @@ public class DateHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
-
         String fieldName = field.getName();
-
-        DataType dt = field.getDataType();
-        if (log.isDebugEnabled()) {
-            log.debug("Using " + dt);
-        }
-        Calendar minDate = Calendar.getInstance(); 
-        minDate.setTime(DateTimeDataType.MIN_VALUE);
-        Calendar maxDate = Calendar.getInstance();
-        maxDate.setTime(DateTimeDataType.MAX_VALUE);
-
-        DateTimePattern dateTimePattern = getPattern(dt);
-
         Calendar cal = Calendar.getInstance();
-
         Object oldValue = node.getValue(fieldName);
         if (oldValue != null) {
             oldValue = node.getDateValue(fieldName);
@@ -298,9 +284,35 @@ public class DateHandler extends AbstractTypeHandler {
             cal.setTimeInMillis(0);
         }
 
+        Date newValue = getSpecifiedValue(field, cal);
+        if (oldValue == null) {
+            if (newValue != null) {
+                node.setDateValue(fieldName, newValue);
+                return true;
+            }
+        } else if (!oldValue.equals(newValue)) {
+            node.setDateValue(fieldName, newValue);
+            return true;
+        }
+        
+        return false;
+    }
+
+    protected Date getSpecifiedValue(Field field, Calendar cal) throws JspTagException {
+        String fieldName = field.getName();
+        DataType dt = field.getDataType();
+        if (log.isDebugEnabled()) {
+            log.debug("Using " + dt);
+        }
+        DateTimePattern dateTimePattern = getPattern(dt);
+        Calendar minDate = Calendar.getInstance(); 
+        minDate.setTime(DateTimeDataType.MIN_VALUE);
+        Calendar maxDate = Calendar.getInstance();
+        maxDate.setTime(DateTimeDataType.MAX_VALUE);
+
+
         Locale locale = tag.getLocale();
         List parsed = dateTimePattern.getList(locale);
-
         Iterator parsedPattern = parsed.iterator();
         boolean first = true;
         while(parsedPattern.hasNext()) {
@@ -333,44 +345,7 @@ public class DateHandler extends AbstractTypeHandler {
             }
         }
 
-        Date newValue = cal == null ? null : cal.getTime();
-        if (oldValue == null) {
-            if (newValue != null) {
-                node.setDateValue(fieldName, newValue);
-                return true;
-            }
-        } else if (!oldValue.equals(newValue)) {
-            node.setDateValue(fieldName, newValue);
-            return true;
-        }
-        
-        return false;
-    }
-
-    protected Date getSpecifiedValue(Field field) throws JspTagException {
-        String fieldName = field.getName();
-        Calendar cal = Calendar.getInstance();
-        String input_day    =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_day"));
-        String input_month  =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_month"));
-        String input_year   =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_year"));
-        String input_hour   =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hour"));
-        String input_minute =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute"));
-        String input_second =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second"));
-        if (input_day == null || input_hour == null) {
-            return NODATE;
-        }
-        try {
-            int day    = Integer.parseInt(input_day);
-            int month  = Integer.parseInt(input_month);
-            int year   = Integer.parseInt(input_year);
-            int hour   = Integer.parseInt(input_hour);
-            int minute = Integer.parseInt(input_minute);
-            int second = Integer.parseInt(input_second);
-            cal.set(checkYear(year, fieldName), month - 1, day, hour, minute, second);
-        } catch (java.lang.NumberFormatException e) {
-            throw new JspTagException("Not a valid number (" + e.toString() + ")");
-        }
-        return cal.getTime();
+        return  cal == null ? null : cal.getTime();
     }
 
     /**
@@ -383,7 +358,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Date timeValue = getSpecifiedValue(field);
+        Date timeValue = getSpecifiedValue(field, Calendar.getInstance());
         if (timeValue == NODATE) return null;
 
         String time;
@@ -418,7 +393,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Object time = getSpecifiedValue(field);
+        Object time = getSpecifiedValue(field, Calendar.getInstance());
         if (field.getType() != Field.TYPE_DATETIME) {
             time = new Long(Casting.toLong(time));
         }
