@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.29 2005-11-01 23:41:52 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.30 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -48,12 +48,12 @@ public class DateTimeDataType extends ComparableDataType {
         setMax(MAX_VALUE, true);
     }
 
-    public DataType setDefaultValue(Object o) {
-        return super.setDefaultValue(Casting.toDate(o));
+    public void setDefaultValue(Object o) {
+        super.setDefaultValue(Casting.toDate(o));
     }
 
-    public void inherit(BasicDataType origin) {
-        super.inherit(origin);
+    protected void inheritProperties(BasicDataType origin) {
+        super.inheritProperties(origin);
         if (origin instanceof DateTimeDataType) {
             DateTimeDataType dataType = (DateTimeDataType)origin;
             if (weakPattern) {

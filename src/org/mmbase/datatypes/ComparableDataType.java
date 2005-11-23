@@ -20,12 +20,12 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.12 2005-11-17 18:10:21 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.13 2005-11-23 12:11:25 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
 
-    private static final Logger log = Logging.getLoggerInstance(DateTimeDataType.class);
+    private static final Logger log = Logging.getLoggerInstance(ComparableDataType.class);
 
     protected MinRestriction minRestriction  = new MinRestriction(true);
     protected MaxRestriction maxRestriction  = new MaxRestriction(true);
@@ -34,10 +34,18 @@ public abstract class ComparableDataType extends BasicDataType {
         super(name, classType);
     }
 
-    public void inherit(BasicDataType origin) {
-        super.inherit(origin);
+    protected void inheritRestrictions(BasicDataType origin) {
+        super.inheritRestrictions(origin);
         if (origin instanceof ComparableDataType) {
-            ComparableDataType dataType = (ComparableDataType)origin;
+            ComparableDataType dataType = (ComparableDataType) origin;
+            minRestriction.inherit(dataType.minRestriction);
+            maxRestriction.inherit(dataType.maxRestriction);
+        }
+    }
+    protected void cloneRestrictions(BasicDataType origin) {
+        super.cloneRestrictions(origin);
+        if (origin instanceof ComparableDataType) {
+            ComparableDataType dataType = (ComparableDataType) origin;
             minRestriction  = new MinRestriction(dataType.minRestriction);
             maxRestriction  = new MaxRestriction(dataType.maxRestriction);
         }
@@ -78,12 +86,11 @@ public abstract class ComparableDataType extends BasicDataType {
      *
      * If the default value of comparable datatype is somewhy out the range, it will be truncated into it.
      */
-    public Object getDefaultValue() {
+    public final Object getDefaultValue() {
         Object def = super.getDefaultValue();
-        Object castedDef = castToValidate(def, null, null);
-        if (! minRestriction.valid(castedDef, null, null)) {
+        if (! minRestriction.valid(def, null, null)) {
             def = minRestriction.getValue();
-        } else if (! maxRestriction.valid(castedDef, null, null)) {
+        } else if (! maxRestriction.valid(def, null, null)) {
             def = maxRestriction.getValue();
         }
         return def;
@@ -93,13 +100,13 @@ public abstract class ComparableDataType extends BasicDataType {
      * Sets the minimum Date value for this data type.
      * @param value the minimum as an <code>Comparable</code> (and <code>Serializable</code>), or <code>null</code> if there is no minimum.
      * @param inclusive whether the minimum value is inclusive or not
-     * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMxbBase)
+     * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMBase)
      */
-    public DataType.Restriction setMin(Comparable value, boolean inclusive) {
+    public void setMin(Comparable value, boolean inclusive) {
         edit();
         checkType(value);
         if (inclusive != minRestriction.isInclusive()) minRestriction = new MinRestriction(inclusive);
-        return minRestriction.setValue((java.io.Serializable) value);
+        minRestriction.setValue((java.io.Serializable) value);
     }
 
 
@@ -107,13 +114,13 @@ public abstract class ComparableDataType extends BasicDataType {
      * Sets the maximum Date value for this data type.
      * @param value the maximum as an <code>Comparable</code> (and <code>Serializable</code>), or <code>null</code> if there is no maximum.
      * @param inclusive whether the maximum value is inclusive or not
-     * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MBase)
+     * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMBase)
      */
-    public DataType.Restriction setMax(Comparable value, boolean inclusive) {
+    public void setMax(Comparable value, boolean inclusive) {
         edit();
         checkType(value);
         if (inclusive != maxRestriction.isInclusive()) maxRestriction = new MaxRestriction(inclusive);
-        return getMaxRestriction().setValue((java.io.Serializable) value);
+        maxRestriction.setValue((java.io.Serializable) value);
     }
 
 
@@ -143,8 +150,9 @@ public abstract class ComparableDataType extends BasicDataType {
                 if (cal.get(Calendar.ERA) == GregorianCalendar.BC) {
                     buf.append(" BC");
                 }
-                buf.append(minRestriction.enforceStrength == DataType.ENFORCE_NEVER ? "*" : "");
             }
+            buf.append(minRestriction.enforceStrength == DataType.ENFORCE_NEVER ? "*" : "");
+            buf.append(" ").append(minRestriction.getEnforceStrength());
         }
         if (minValue != null || maxValue != null) {
             buf.append("...");
@@ -153,23 +161,23 @@ public abstract class ComparableDataType extends BasicDataType {
             buf.append(maxValue);
             buf.append(maxRestriction.enforceStrength == DataType.ENFORCE_NEVER ? "*" : "");
             buf.append(maxRestriction.isInclusive() ? ']' : '>');
+            buf.append(" ").append(maxRestriction.getEnforceStrength());
         }
         return buf;
     }
 
-    private class MinRestriction extends AbstractRestriction {
+    protected class MinRestriction extends AbstractRestriction {
         private boolean inclusive;
         MinRestriction(MinRestriction source) {
-            super(source.getName(), null);
+            super(source);
             inclusive = source.inclusive;
-            inherit(source);
         }
         MinRestriction(boolean inc) {
             super("min" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }
 
-        public boolean valid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
             Comparable minimum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
@@ -180,18 +188,17 @@ public abstract class ComparableDataType extends BasicDataType {
             return inclusive;
         }
     }
-    private class MaxRestriction extends AbstractRestriction {
+    protected class MaxRestriction extends AbstractRestriction {
         private boolean inclusive;
         MaxRestriction(MaxRestriction source) {
-            super(source.getName(), null);
+            super(source);
             inclusive = source.inclusive;
-            inherit(source);
         }
         MaxRestriction(boolean inc) {
             super("max" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }
-        public boolean valid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
             Comparable maximum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
@@ -199,6 +206,7 @@ public abstract class ComparableDataType extends BasicDataType {
             boolean res = comparable.compareTo(maximum) < 0;
             return res;
         }
+
 
         public boolean isInclusive() {
             return inclusive;
