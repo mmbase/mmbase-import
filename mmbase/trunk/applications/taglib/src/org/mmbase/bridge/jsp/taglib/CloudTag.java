@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.127 2005-11-01 12:17:31 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.128 2005-11-23 10:23:51 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -1132,7 +1132,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
         case AuthenticationData.METHOD_SESSIONDELEGATE:
         case AuthenticationData.METHOD_DELEGATE:
-            log.debug("delegate for " + getAuthenticate());
+            if (log.isDebugEnabled()) {
+                log.debug("delegate for " + getAuthenticate());
+            }
             user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             if (logon != null) {
                 user.setIfDefined(AuthenticationData.PARAMETER_USERNAMES, logon);
