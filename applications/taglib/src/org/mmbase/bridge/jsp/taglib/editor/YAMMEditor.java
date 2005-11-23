@@ -28,7 +28,7 @@ import org.mmbase.util.Entry;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.2 2005-11-01 11:00:55 andre Exp $
+ * @version $Id: YAMMEditor.java,v 1.3 2005-11-23 13:07:53 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  */
@@ -57,7 +57,7 @@ public class YAMMEditor extends Editor {
     Map fld2snMap = new HashMap();
     
     /**
-     * @param parameters Parameters of the edittag.
+     * @param params	List with the parameters of the edittag.
      */
     public void setParameters(List params) {
        this.parameters = params;
@@ -266,9 +266,10 @@ public class YAMMEditor extends Editor {
     }
     
     /**
-    * Creates a ; seperated string for the url with paths, fields or startnodes.
+    * Creates a ; seperated string for the url with paths, fields or startnodes
+    * from an ArrayList.
     * 
-    * @param    ArrayList   One of the ArrayLists
+    * @param	al One of the ArrayLists to use
     * @return   A ; seperated string with the elements from the ArrayList
     *
     */
