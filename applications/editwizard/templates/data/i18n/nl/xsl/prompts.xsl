@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.17 2005-06-03 14:10:18 pierre Exp $
+  @version $Id: prompts.xsl,v 1.18 2005-11-23 15:23:16 henk Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -115,7 +115,7 @@
   <xsl:if test="$age=7"> van de laatste 7 dagen</xsl:if>
   <xsl:if test="$age=31"> van de laatste maand</xsl:if>
   <xsl:if test="$age=356"> van het afgelopen jaar</xsl:if>
-  <xsl:if test="$age=-1"> over de hele cloud</xsl:if>
+  <xsl:if test="$age=-1"> alle</xsl:if>
 </xsl:template>
 
 <!-- prompts and tooltips for lists -->
