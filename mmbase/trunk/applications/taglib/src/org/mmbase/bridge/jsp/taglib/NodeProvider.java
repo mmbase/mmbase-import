@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * Interface designed to make it possible for child tags to access a node defined in a tag
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeProvider.java,v 1.10 2005-06-20 16:03:38 michiel Exp $ 
+ * @version $Id: NodeProvider.java,v 1.11 2005-11-23 10:29:39 michiel Exp $ 
  */
 
 public interface NodeProvider extends TagIdentifier, FunctionContainerOrNodeProvider {
@@ -29,11 +29,6 @@ public interface NodeProvider extends TagIdentifier, FunctionContainerOrNodeProv
      * we use tag attributes with name "node" and type String 
      **/
     Node getNodeVar() throws JspTagException;	
-
-    /**
-     * Marks the Node as being modified. It will have to be committed (in a doEndTag e.g.).
-     */
-    void setModified();
 
     /**
      * NodeProviders support the jspvar attribute (giving a Node jsp var object).
@@ -48,5 +43,11 @@ public interface NodeProvider extends TagIdentifier, FunctionContainerOrNodeProv
      */
     Query getGeneratingQuery() throws JspTagException; 
 
+
+    /**
+     * Whether the node must be commited after the body of the tag if any changes occured
+     * @since MMBase-1.8
+     */
+    public void setCommitonclose(String c) throws JspTagException;
 
 }

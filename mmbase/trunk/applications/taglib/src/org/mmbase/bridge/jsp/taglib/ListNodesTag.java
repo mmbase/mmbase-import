@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.27 2005-05-12 16:15:08 michiel Exp $
+ * @version $Id: ListNodesTag.java,v 1.28 2005-11-23 10:29:39 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -76,11 +76,12 @@ public class ListNodesTag extends AbstractNodeListTag {
     }
 
     /**
-     * @since MMBase-8
+     * @since MMBase-1.8
      */
     public void setDistinct(String d) throws JspTagException {
         distinct = getAttribute(d);
     }
+
 
 
     /**

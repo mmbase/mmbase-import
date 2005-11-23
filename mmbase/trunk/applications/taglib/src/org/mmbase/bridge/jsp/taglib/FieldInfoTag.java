@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.87 2005-11-04 23:28:46 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.88 2005-11-23 10:29:39 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -164,18 +164,20 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected TypeHandler getTypeHandler(Field field) {
         DataType dataType = field.getDataType();
         Class handler = (Class) handlers.get(dataType.getName());
+        log.debug("Looking for typehandler for " + dataType.getName());
         while (handler == null) {
+            log.debug("No handler found for " + dataType.getName());
             dataType = dataType.getOrigin();
             if(dataType == null) break;
             handler = (Class) handlers.get(dataType.getName());
         }
         
         if (handler == null) {
-            log.warn("Could not find typehandler for type " + field.getDataType() + " using default for type");
+            log.warn("Could not find typehandler for type " + field.getDataType() + " using default for type.");
             handler = (Class) handlers.get(Fields.getTypeDescription(field.getType()));
         }
         if (handler == null) {
-            log.error("Could not even find typehandler for type " + Fields.getTypeDescription(field.getType()) + " using default for type");
+            log.error("Could not even find typehandler for type " + Fields.getTypeDescription(field.getType()) + " using default.");
             handler = getDefaultTypeHandler();
         }
         if (log.isDebugEnabled()) {
@@ -321,9 +323,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = htmlInput(node, field, false);
             break;
         case TYPE_USEINPUT:
-            if (useHtmlInput(node, field)) {
-                fieldProvider.setModified();
-            }
+            useHtmlInput(node, field);
             show = "";
             break;
         case TYPE_SEARCHINPUT:
