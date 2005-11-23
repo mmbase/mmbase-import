@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.Cloud#hasRelationManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasRelationManagerTag.java,v 1.1 2005-11-01 10:55:14 michiel Exp $
+ * @version $Id: HasRelationManagerTag.java,v 1.2 2005-11-23 10:26:31 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -54,8 +54,9 @@ public class HasRelationManagerTag extends CloudReferrerTag implements Condition
 
     protected NodeManager getNodeManager(Cloud cloud, Attribute a) throws JspTagException {
         Object id = a.getValue(this);
+        if ("".equals(id)) id = null;
         if (id == null) {
-            return null;
+            return cloud.getNodeManager("object");
         } else {
             if (id instanceof String) {
                 return cloud.getNodeManager((String) id);
