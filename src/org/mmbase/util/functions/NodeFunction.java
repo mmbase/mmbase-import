@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.15 2005-11-04 13:11:05 nklasens Exp $
+ * @version $Id: NodeFunction.java,v 1.16 2005-11-23 12:19:26 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -121,7 +121,7 @@ public abstract class NodeFunction extends AbstractFunction {
                 String tmpNumber = coreNode.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER);
                 node = cloud.getNode(tmpNumber);
             } else {
-                node = cloud.getNode(coreNode.getNumber());
+                node = cloud.getNode(number);
             }
         }
         return getFunctionValue(node, parameters);
