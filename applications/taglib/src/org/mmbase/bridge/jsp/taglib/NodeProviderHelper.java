@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.10 2005-09-01 16:15:23 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.11 2005-11-23 10:29:39 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -39,8 +39,8 @@ public class NodeProviderHelper implements NodeProvider {
     private   Node   node;        
     private   Query  query = null;
     private   String jspvar = null;
-    private   boolean  modified = false;
     private   ContextReferrerTag thisTag;
+    private Attribute commit = Attribute.NULL;
 
     /**
      * 'underscore' stack, containing the values for '_node'.
@@ -60,6 +60,9 @@ public class NodeProviderHelper implements NodeProvider {
     public void setJspvar(String jv) {
         jspvar = jv;
         if ("".equals(jspvar)) jspvar = null;
+    }
+    public void setCommitonclose(String c) throws JspTagException {
+        commit = thisTag.getAttribute(c);
     }
 
         
@@ -145,14 +148,6 @@ public class NodeProviderHelper implements NodeProvider {
         return field;
     }
 
-    public void setModified() {
-        //log.info(Logging.stackTrace());
-        modified = true;
-    }
-
-    public boolean getModified() {
-        return modified;
-    }
     /**
     * Does everything needed on the afterbody tag of every
     * NodeProvider.  Normally this function would be overrided with
@@ -162,10 +157,10 @@ public class NodeProviderHelper implements NodeProvider {
     * something without a body.
     **/
     public int doAfterBody() throws JspTagException {
-        if (modified) {
-            log.service("Committing node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier());
+        if ((node.isChanged() || node.isNew()) && commit.getBoolean(thisTag, true)) {
             node.commit();
         }
+        log.service("Committed node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier());
         if (_Stack != null) {
             Object pop = _Stack.pop();
             if (_Stack.empty()) {
@@ -181,7 +176,6 @@ public class NodeProviderHelper implements NodeProvider {
     public int doEndTag() throws JspTagException {
         // to enable gc:
         node     = null;
-        modified = false;
         checked  = false;
         return BodyTagSupport.EVAL_PAGE;
     }

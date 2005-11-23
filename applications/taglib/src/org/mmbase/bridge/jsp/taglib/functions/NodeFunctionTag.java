@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.10 2005-06-09 21:17:48 michiel Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.11 2005-11-23 10:29:39 michiel Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
@@ -47,16 +47,14 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         nodeHelper.fillVars();
     }
 
-    public void setModified() {
-        nodeHelper.setModified();
-    }
-
-    protected boolean getModified() {
-        return nodeHelper.getModified();
-    }
-
     public Query getGeneratingQuery() throws JspTagException {
         return nodeHelper.getGeneratingQuery();
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public void setCommitonclose(String c) throws JspTagException {
+        nodeHelper.setCommitonclose(c);
     }
 
 

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.30 2005-11-04 23:28:23 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.31 2005-11-23 10:29:39 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -175,6 +175,11 @@ public class IntegerHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+        log.debug("using html-input");
+        EnumHandler eh = getEnumHandler(node, field);
+        if (eh != null) {
+            return eh.useHtmlInput(node, field);
+        }
         String guiType = field.getGUIType();
         String fieldName = field.getName();
         long currentValue = node.getLongValue(fieldName);
@@ -193,11 +198,6 @@ public class IntegerHandler extends AbstractTypeHandler {
             return dateHandler.useHtmlInput(node, field);
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.useHtmlInput(node, field);
-        } else {
-            EnumHandler eh = new EnumHandler(tag, node, field);
-            if (eh.isAvailable()) {
-                return eh.useHtmlInput(node, field);
-            }
         }
 
         return super.useHtmlInput(node, field);

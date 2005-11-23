@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.33 2005-08-25 12:33:18 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.34 2005-11-23 10:29:39 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -108,7 +108,6 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
                 getContextProvider().getContextContainer().register(getId(), value);
             }
         }
-        findNodeProvider().setModified();
 
         return EVAL_PAGE;
     }

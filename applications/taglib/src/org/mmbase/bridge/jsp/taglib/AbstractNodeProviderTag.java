@@ -28,7 +28,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.34 2005-03-14 19:02:35 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.35 2005-11-23 10:29:39 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -61,6 +61,13 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     protected void setNodeVar(Node node) {        
         nodeHelper.setNodeVar(node);
     }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public void setCommitonclose(String c) throws JspTagException {
+        nodeHelper.setCommitonclose(c);
+    }
     
     /**
      * Fill the jsp and context vars
@@ -71,19 +78,10 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
         nodeHelper.fillVars();
     }
                
-    public void setModified() {
-        nodeHelper.setModified();
-    }
     public  Query getGeneratingQuery() throws JspTagException {
         return nodeHelper.getGeneratingQuery();
     }
 
-    /**
-     * @since MMBase-1.7
-     */
-    protected boolean getModified() {
-        return nodeHelper.getModified();
-    }
 
     /**
     * Does everything needed on the afterbody tag of every
