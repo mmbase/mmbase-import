@@ -421,7 +421,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
                 if (RelDef.usesbuilder) {
                     // if builder is unknown (falsely specified), use the InsRel builder
                     if (builder <= 0) {
-                        builder = mmb.getInsRel().oType;
+                        builder = mmb.getInsRel().getNumber();
                     }
                     node.setValue("builder", builder);
                 }

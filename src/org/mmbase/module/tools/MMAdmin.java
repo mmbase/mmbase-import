@@ -15,8 +15,7 @@ import java.util.*;
 import javax.servlet.http.HttpSession;
 
 import org.mmbase.bridge.*;
-import org.mmbase.cache.MultilevelCache;
-import org.mmbase.cache.RelationsCache;
+import org.mmbase.cache.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.DataType;
@@ -39,7 +38,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.125 2005-11-04 23:31:21 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.126 2005-11-23 15:45:13 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -77,8 +76,8 @@ public class MMAdmin extends ProcessorModule {
             log.info("*** Server started in kiosk mode ***");
         }
         mmb = (MMBase)getModule("MMBASEROOT");
-        
-        
+
+
         new MMAdminProbe(this, mmb);
     }
 
@@ -187,7 +186,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private boolean checkUserLoggedOn(PageInfo sp, String cmd, boolean adminonly) {
-        
+
         if (sp.getCloud() != null) {
             return (!adminonly) || sp.getCloud().getUser().getRank().getInt() >= Rank.ADMIN.getInt();
         }
@@ -406,15 +405,15 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
                 return ("" + (MultilevelCache.getCache().maxSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
-                return ("" + MMObjectBuilder.nodeCache.getHits());
+                return ("" + NodeCache.getCache().getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
-                return ("" + MMObjectBuilder.nodeCache.getMisses());
+                return ("" + NodeCache.getCache().getMisses());
             } else if (cmd.equals("NODECACHEREQUESTS")) {
-                return ("" + (MMObjectBuilder.nodeCache.getHits() + MMObjectBuilder.nodeCache.getMisses()));
+                return ("" + (NodeCache.getCache().getHits() + NodeCache.getCache().getMisses()));
             } else if (cmd.equals("NODECACHEPERFORMANCE")) {
-                return ("" + (MMObjectBuilder.nodeCache.getRatio() * 100));
+                return ("" + (NodeCache.getCache().getRatio() * 100));
             } else if (cmd.equals("NODECACHESIZE")) {
-                return ("" + (MMObjectBuilder.nodeCache.maxSize()));
+                return ("" + (NodeCache.getCache().maxSize()));
             } else if (cmd.equals("TEMPORARYNODECACHESIZE")) {
                 return ("" + (MMObjectBuilder.temporaryNodes.size()));
             } else if (cmd.equals("RELATIONCACHEHITS")) {
@@ -627,7 +626,7 @@ public class MMAdmin extends ProcessorModule {
             return null;
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -1462,10 +1461,10 @@ public class MMAdmin extends ProcessorModule {
      */
     public Vector getNodeCacheEntries() {
         Vector results = new Vector();
-        Iterator iter = MMObjectBuilder.nodeCache.entrySet().iterator();
+        Iterator iter = NodeCache.getCache().entrySet().iterator();
         while (iter.hasNext()) {
             MMObjectNode node = (MMObjectNode)iter.next();
-            results.add("" + MMObjectBuilder.nodeCache.getCount(node.getIntegerValue("number")));
+            results.add("" + NodeCache.getCache().getCount(node.getIntegerValue("number")));
             results.add("" + node.getIntValue("number"));
             results.add(node.getStringValue("owner"));
             results.add(mmb.getTypeDef().getValue(node.getIntValue("otype")));

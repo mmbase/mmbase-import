@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.27 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: ImageMaster.java,v 1.28 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -90,7 +90,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
             }
         } else {
             try {
-                Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+                Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
                 // note: order Descending means last file is transferred first.
                 // Theoretically, some files may never be handled due to use of maxsweep
                 Enumeration e=bul.search("WHERE service='images' AND subservice='main' AND status="+Netfiles.STATUS_REQUEST+" ORDER BY number DESC");
@@ -184,7 +184,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     public boolean fileChange(String number, String ctype) {
         // debug("fileChange="+number+" "+ctype);
         // first get the change node so we can see what is the matter with it.
-        Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+        Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
         MMObjectNode filenode=bul.getNode(number);
         if (filenode!=null) {
             // obtain all the basic info on the file.
@@ -271,7 +271,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
                 String dstserver=filenode.getStringValue("mmserver");
 
                 // save the image to disk
-                ImageCaches bul=(ImageCaches)Vwms.mmb.getMMObject("icaches");
+                ImageCaches bul=(ImageCaches)Vwms.getMMBase().getMMObject("icaches");
                 if (bul==null) {
                     log.error("ImageCaches builder is null");
                     return true;
@@ -293,7 +293,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
                     while (st.hasMoreTokens()) {
                         ckeyVec.addElement(st.nextElement());
                     }
-                    Images imagesBuilder = (Images)Vwms.mmb.getMMObject("images");
+                    Images imagesBuilder = (Images)Vwms.getMMBase().getMMObject("images");
                     if (imagesBuilder==null) {
                         log.error("handleMirror images builder not found");
                         return true;
@@ -390,7 +390,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
         String service = filenode.getStringValue("service");
 
         // find and change all the mirror node so they get resend
-        Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+        Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
         Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='mirror'");
         if (!e.hasMoreElements()) {
             log.debug("doMainRequest: No mirror nodes found for : "+filenode.toString()+" !!");
@@ -415,7 +415,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      * @param filename the filename to service
      */
     public synchronized void handleMainCheck(String service,String subservice,String filename) {
-        Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");
+        Netfiles bul=(Netfiles)Vwms.getMMBase().getMMObject("netfiles");
         Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='"+subservice+"'");
         if (e.hasMoreElements()) {
             log.debug("handleMainCheck: existing file");
@@ -551,7 +551,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
         if (format == null) format = images.getDefaultImageType();
         String mimetype = Imaging.getMimeTypeByExtension(format);
         if (log.isDebugEnabled()) {
-            log.debug("getImageMimeType: mmb.getMimeType(" + format + ") = " + mimetype);
+            log.debug("getImageMimeType: getMMBase().getMimeType(" + format + ") = " + mimetype);
         }
         return mimetype;
     }

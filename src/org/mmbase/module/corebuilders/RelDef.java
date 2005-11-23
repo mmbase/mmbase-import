@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * Relations that are not directly mapped to a builder are mapped (internally) to the {@link InsRel} builder instead.
  * </p><p>
  * The new system uses an additional field to map to a builder.
- * This 'builder' field contains a reference (otype) to teh builder to be used.
+ * This 'builder' field contains a reference (otype) to the builder to be used.
  * If null or 0, the builder is assumed to refer to the {@link InsRel} builder.
  * <code>sname</code> is now the name of the relation and serves no function.
  * </p><p>
@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.36 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: RelDef.java,v 1.37 2005-11-23 15:45:13 pierre Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -250,7 +250,7 @@ public class RelDef extends MMObjectBuilder {
     public MMObjectNode getDefaultForBuilder(InsRel relBuilder) {
         Enumeration e;
           if (usesbuilder) {
-            e=search("WHERE builder="+relBuilder.oType+"");
+            e=search("WHERE builder="+relBuilder.getNumber()+"");
           } else {
             e=search("WHERE (sname='"+relBuilder.getTableName()+"') OR (dname='"+relBuilder.getTableName()+"')");
           }
@@ -274,7 +274,7 @@ public class RelDef extends MMObjectBuilder {
         if (usesbuilder) {
             int builder=node.getIntValue("builder");
             if (builder<=0) {
-                builder=mmb.getInsRel().oType;
+                builder=mmb.getInsRel().getNumber();
             }
             if (!isRelationBuilder(builder)) {
                 throw new InvalidDataException("Builder ("+builder+") is not a relationbuilder","builder");
@@ -350,7 +350,7 @@ public class RelDef extends MMObjectBuilder {
     public void setDefaults(MMObjectNode node) {
         node.setValue("dir", DIR_BIDIRECTIONAL);
         if (usesbuilder) {
-            node.setValue("builder", mmb.getInsRel().oType);
+            node.setValue("builder", mmb.getInsRel().getNumber());
         }
     }
 
@@ -410,7 +410,7 @@ public class RelDef extends MMObjectBuilder {
             while (buls.hasMoreElements()) {
                 MMObjectBuilder fbul = (MMObjectBuilder)buls.nextElement();
                 if (fbul instanceof InsRel) {
-                    relBuilderCache.put(new Integer(fbul.oType), fbul);
+                    relBuilderCache.put(new Integer(fbul.getNumber()), fbul);
                 }
             }
         }
@@ -540,7 +540,7 @@ public class RelDef extends MMObjectBuilder {
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         if (builder.equals(getTableName())) {
             if (ctype.equals("c") || ctype.equals("n")) {
-                // should remove roles referencing this number from relCache here                
+                // should remove roles referencing this number from relCache here
                 int rnumber = Integer.parseInt(number);
                 removeFromCache(rnumber);
                 addToCache(getNode(rnumber));

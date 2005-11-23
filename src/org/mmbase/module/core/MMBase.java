@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.169 2005-11-04 23:19:44 michiel Exp $
+ * @version $Id: MMBase.java,v 1.170 2005-11-23 15:45:13 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -59,7 +59,7 @@ public class MMBase extends ProcessorModule {
     private static final int STATE_START_UP = -2;
 
     /**
-     * State of MMBase 
+     * State of MMBase
      * @since MMBase-1.8
      */
     private static final int STATE_STARTED_INIT = -1;
@@ -242,7 +242,7 @@ public class MMBase extends ProcessorModule {
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
         mmbaseState = STATE_STARTED_INIT;
-       
+
         DataTypes.initialize();
 
         // Set the mmbaseroot singleton var
@@ -307,7 +307,7 @@ public class MMBase extends ProcessorModule {
             // try to incorporate the hostname (if needed)
             int pos = machineNameParam.indexOf("${HOST}");
             if (pos != -1) {
-                machineNameParam = 
+                machineNameParam =
                     machineNameParam.substring(0, pos) +
                     machineName + machineNameParam.substring(pos + 7);
             }
@@ -335,7 +335,7 @@ public class MMBase extends ProcessorModule {
 
         log.service("Initializing  storage:");
         initializeStorage();
-        
+
         //log.service("Initializing clustering:");
         //initClustering();
         log.debug("initializing the event system");
@@ -586,7 +586,7 @@ public class MMBase extends ProcessorModule {
         if (rootBuilder == null) {
             return -1;
         } else {
-            return rootBuilder.oType;
+            return rootBuilder.getNumber();
         }
     }
 
@@ -788,7 +788,7 @@ public class MMBase extends ProcessorModule {
         if (builder == null) {
             throw new BuilderConfigurationException("The core builder " + name + " is mandatory but inactive.");
         } else {
-            log.debug("Loaded core builder " + builder + " with otype " + builder.oType);
+            log.debug("Loaded core builder " + builder + " with otype " + builder.getNumber());
             return builder;
         }
     }
@@ -800,7 +800,7 @@ public class MMBase extends ProcessorModule {
     private void loadBuilders() {
         // first load the core builders
         // remarks:
-        //  - If nodescaches inactive, in init of typerel reldef nodes are created wich uses InsRel.oType, so typerel must be started after insrel and reldef. (bug #6237)
+        //  - If nodescaches inactive, in init of typerel reldef nodes are created wich uses InsRel.getNumber(), so typerel must be started after insrel and reldef. (bug #6237)
 
         getRootBuilder(); // loads object.xml if present.
 
@@ -833,7 +833,7 @@ public class MMBase extends ProcessorModule {
         log.debug("Starting Cluster Builder");
         clusterBuilder = new ClusterBuilder(this);
     }
-    
+
 //    private void initClustering(){
 //        String clusterClass = getInitParameter("CLUSTERING");
 //        if (clusterClass != null) {
@@ -1087,7 +1087,7 @@ public class MMBase extends ProcessorModule {
                 builder.setInitParameters(parser.getProperties());
                 parser.getDataTypes(builder.getDataTypeCollector());
                 builder.setFields(parser.getFields(builder, builder.getDataTypeCollector()));
-                builder.addIndices(parser.getIndices(builder));
+                builder.getStorageConnector().addIndices(parser.getIndices(builder));
                 Iterator f = parser.getFunctions().iterator();
                 while (f.hasNext()) {
                     Function func = (Function) f.next();

@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.51 2005-11-23 12:21:32 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.52 2005-11-23 15:45:13 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -358,7 +358,7 @@ public class BuilderReader extends DocumentReader {
         Index mainIndex = null;
         if (parentBuilder != null) {
             // create the
-            Index parentIndex = parentBuilder.getIndex(Index.MAIN);
+            Index parentIndex = parentBuilder.getStorageConnector().getIndex(Index.MAIN);
             if (parentIndex != null) {
                 mainIndex = new Index(builder, Index.MAIN);
                 mainIndex.setUnique(true);

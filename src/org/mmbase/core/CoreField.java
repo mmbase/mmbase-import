@@ -180,7 +180,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
 
     public Collection validate(Object value) {
         Collection errors = getDataType().validate(value, null, this);
-        return LocalizedString.toStrings(errors, parent.mmb.getLocale());
+        return LocalizedString.toStrings(errors, parent.getMMBase().getLocale());
     }
 
 
