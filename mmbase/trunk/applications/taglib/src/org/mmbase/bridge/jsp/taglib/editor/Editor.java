@@ -24,9 +24,9 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.2 2005-11-01 11:00:55 andre Exp $
+ * @version $Id: Editor.java,v 1.3 2005-11-23 13:07:53 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
- * @see org.mmbase.bridge.jsp.taglib.editor.EditTagYAMMe
+ * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  */
 public class Editor {
     
@@ -39,7 +39,7 @@ public class Editor {
     protected List parameters;
         
     /**
-     * @param parameters Parameters of the EditTag.
+     * @params A List with the parameters of the EditTag.
      */
     public void setParameters(List params) {
        this.parameters = params;
@@ -60,9 +60,9 @@ public class Editor {
      * nodenumbers and fieldnames it received from the FieldTags with the 
      * implementing editor class.
      *
-     * @param queryList     SearchQuery that delivered the field
-     * @param nodenr    Nodenumber of the node the field belongs to
-     * @param field     Name of the field
+     * @param queryList     List with SearchQuery's that delivered the field
+     * @param nodenrList    List with nodenumbers of the node the field belongs to
+     * @param fieldList     List with the fieldnames
      */ 
     public void registerFields(List queryList, List nodenrList, List fieldList) {
         // do something usefull with this information

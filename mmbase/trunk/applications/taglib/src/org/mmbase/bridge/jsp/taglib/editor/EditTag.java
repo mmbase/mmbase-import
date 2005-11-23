@@ -37,7 +37,7 @@ import org.mmbase.util.XMLBasicReader;
  * to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.2 2005-11-01 11:00:55 andre Exp $
+ * @version $Id: EditTag.java,v 1.3 2005-11-23 13:07:53 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  */
@@ -176,7 +176,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      *
      * @param query     SearchQuery object that delivered the field
      * @param nodenr    int with the number of the node the field belongs to
-     * @param field     String with the fieldname
+     * @param fieldName String with the fieldname
      */ 
     public void registerField(Query query, int nodenr, String fieldName) {
         log.debug("query: " + query);
