@@ -40,7 +40,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.57 2005-09-16 18:32:29 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.58 2005-11-23 10:25:28 michiel Exp $ 
  */
 public class FormatterTag extends CloudReferrerTag   {
 
@@ -496,6 +496,7 @@ public class FormatterTag extends CloudReferrerTag   {
         CloudProvider cp = findCloudProvider(false);
         if (cp != null) {
             params.put("cloud", cp.getCloudVar());
+            params.put("request", pageContext.getRequest());
         }
 
         //other options
