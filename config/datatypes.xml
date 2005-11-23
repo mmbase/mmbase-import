@@ -48,12 +48,18 @@
       <setprocessor>
         <class name="org.mmbase.util.transformers.MD5" />
       </setprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.util.transformers.Swallower" /> <!-- No need to show md5 -->
+      </getprocessor>
     </specialization>
 
     <specialization id="confirmpassword">
       <class name="org.mmbase.datatypes.ConfirmPasswordDataType" />
       <property name="field" value="password" />
       <password value="true" />
+      <getprocessor type="string">
+        <class name="org.mmbase.util.transformers.Swallower" /> <!-- No need to show md5 -->
+      </getprocessor>
     </specialization>
 
     <specialization id="lowercaseuppercase">
