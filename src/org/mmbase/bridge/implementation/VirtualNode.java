@@ -25,10 +25,10 @@ import org.w3c.dom.Element;
 /**
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node. This class can be
  * used even if you don't know the precise implementation of the Cloud object (in contradiction to {@link BasicNode}, and therefore has a public constructor 
- * {@link VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
+ * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.9 2005-11-23 10:22:41 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.10 2005-11-23 11:57:10 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
