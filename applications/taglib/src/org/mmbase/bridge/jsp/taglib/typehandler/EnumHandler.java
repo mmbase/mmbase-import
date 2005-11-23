@@ -28,13 +28,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.26 2005-11-04 23:28:23 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.27 2005-11-23 12:51:32 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EnumHandler.class);
-    private Iterator bundle;
+    private Iterator iterator;
     private boolean available;
     /**
      * @param tag
@@ -44,8 +44,8 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         super(tag);
         DataType dataType = field.getDataType();
         Locale locale = tag.getLocale();
-        bundle = dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
-        if (bundle == null) {
+        iterator = dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
+        if (iterator == null) {
             // backwards compatibility mode
             String enumType = field.getGUIType();
             try {
@@ -80,14 +80,14 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                     }
 
 
-                    bundle    = SortedBundle.getResource(resource, tag.getLocale(), getClass().getClassLoader(),
+                    iterator    = SortedBundle.getResource(resource, tag.getLocale(), getClass().getClassLoader(),
                                                          SortedBundle.NO_CONSTANTSPROVIDER, type, SortedBundle.NO_COMPARATOR).entrySet().iterator();
                 } catch (java.util.MissingResourceException e) {
                     log.warn(e.toString() + " for field " + field.getName() + " of builder " + field.getNodeManager().getName());
                 }
             }
         }
-        available = bundle != null;
+        available = iterator != null;
     }
 
 
@@ -118,13 +118,13 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             buffer.append(">--</option>");
         }
 
-        while(bundle.hasNext()) {
-            Map.Entry entry = (Map.Entry) bundle.next();
+        while(iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
             buffer.append("<option value=\"");
             Object key = entry.getKey();
             buffer.append(Casting.toString(key));
             buffer.append("\"");
-            if ((node != null) && (key.equals(value))) {
+            if (key.equals(value)) {
                 buffer.append(" selected=\"selected\"");
             } else if (search) {
                 String searchs = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));

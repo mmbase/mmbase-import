@@ -7,7 +7,7 @@
     </mm:functioncontainer>
   </p>
   <p>All instance functions:</p>
-  <mm:functioncontainer name="info">
+  <mm:functioncontainer name="getFunctions">
     <ul>
       <mm:listfunction>
         <li><mm:write /></li>
@@ -20,7 +20,7 @@
   'nodemanager functions' include also the node-functions. (with a 'node' argument).
 </p>
 <ul>
-  <mm:listfunction nodemanager="news" name="info">
+  <mm:listfunction nodemanager="news" name="getFunctions">
     <li><mm:write /></li>
   </mm:listfunction>
 </ul>
