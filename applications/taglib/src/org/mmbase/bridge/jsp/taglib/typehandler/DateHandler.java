@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.29 2005-11-04 23:28:23 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.30 2005-11-23 10:28:22 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -136,7 +136,7 @@ public class DateHandler extends AbstractTypeHandler {
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
         if (cal != null) {
-            buffer.append(cal.getTime());
+            buffer.append(cal.getTime().getTime());
         }
         buffer.append("\" />");
         // give also present value, this makes it possible to see if user changed this field.
@@ -332,7 +332,6 @@ public class DateHandler extends AbstractTypeHandler {
                 throw new JspTagException("Not a valid number (" + e.toString() + ") in field " + fieldName);
             }
         }
-
 
         Date newValue = cal == null ? null : cal.getTime();
         if (oldValue == null) {
