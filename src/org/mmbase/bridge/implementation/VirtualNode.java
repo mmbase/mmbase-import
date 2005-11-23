@@ -24,11 +24,11 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of Node. Simply wraps virtual node of core into an bridge Node. This class can be
- * used even if you don't know the precise implementation of the Cloud object (in contradiction to {@link BasicNode}, and therefore has a public constructor 
+ * used even if you don't know the precise implementation of the Cloud object (in contradiction to {@link BasicNode}, and therefore has a public constructor
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.10 2005-11-23 11:57:10 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.11 2005-11-23 15:37:22 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -43,7 +43,7 @@ public class VirtualNode implements Node {
      * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
      * besides real nodes also virtual nodes, like typedef (cluster nodes) and typerel (allowed relations because of inheritance).
      */
-    final protected NodeManager nodeManager; 
+    final protected NodeManager nodeManager;
     final protected Cloud cloud;
 
 
@@ -51,7 +51,7 @@ public class VirtualNode implements Node {
         this.cloud = cloud;
         this.noderef = node;
         nodeManager = nm;
-        
+
     }
 
     public VirtualNode(org.mmbase.module.core.VirtualNode node, Cloud cloud) {
@@ -116,7 +116,7 @@ public class VirtualNode implements Node {
     }
 
     public boolean isNew() {
-        return true;
+        return false;
     }
 
     public boolean isChanged(String fieldName) {
@@ -125,7 +125,7 @@ public class VirtualNode implements Node {
     public boolean isChanged() {
         return false;
     }
-    
+
 
     public void setValue(String fieldName, Object value) {
         throw new UnsupportedOperationException("Cannot edit virtual node");
@@ -251,7 +251,7 @@ public class VirtualNode implements Node {
     public Node getNodeValue(String fieldName) {
         if (fieldName == null || fieldName.equals("number")) {
             return this;
-        }        
+        }
         Node result = null;
         MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
         if (mmobjectNode != null) {
@@ -356,7 +356,7 @@ public class VirtualNode implements Node {
                 res.add(entry.getValue());
             }
         }
-        
+
         return "VIRTUAL" + res + values.keySet();
         */
         return "VIRTUAL" + getNode();
