@@ -190,6 +190,23 @@ upload tif/bmp/ps etc... .
   <mm:param name="template">draw(line 0,0 20,20)</mm:param>
   <mm:param name="image"><mm:field name="number"/></mm:param>
 </mm:include>
+<br/>
+<b>ImageMagick</b> provides very powerfull commands and most can be used inside mmbase (with some hacks).
+The convert module accecpts any image magick parameter but there are some conventions to rember
+first of all paramters are given between braces.<br/><br/>
+
+and image magick command like<br/>
+-pointsize 16 -channel RGBA -fill "rgb(255,106,00)" -stroke "rgb(255,106,00)" -strokewidth 8 -draw "text 20,20 'Scores'"  -stroke white -strokewidth 1 -fill white -draw "text 20,20 'Scores'"<br/>  will become<br/>
+scale(200x26!)+pointsize(16)+channel(RGBA)+fill(ffae00)+stroke(ffae00)+strokewidth(8)+draw(text 20,20 'Scores')+stroke(white)+stro
+kewidth(1)+fill(white)+draw(text 20,20 'Scores')
+<br/>
+<br/>
+
+<mm:include page="image_template.jsp">
+  <mm:param name="comment">a nice button</mm:param>
+  <mm:param name="template">scale(100x26!)+pointsize(16)+channel(RGBA)+fill(ffae00)+stroke(ffae00)+strokewidth(8)+draw(text 20,20 'Scores')+stroke(white)+strokewidth(1)+fill(white)+draw(text 20,20 'Scores')</mm:param>
+  <mm:param name="image"><mm:field name="number"/></mm:param>
+</mm:include>
 </tr>
 </td>
 </table>
