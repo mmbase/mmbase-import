@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.12 2005-11-23 15:09:00 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.13 2005-11-24 09:17:25 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -157,7 +157,7 @@ public class NodeProviderHelper implements NodeProvider {
     * something without a body.
     **/
     public int doAfterBody() throws JspTagException {
-        if ((node.isChanged() || node.isNew()) && commit.getBoolean(thisTag, true)) {
+        if ((node != null) && (node.isChanged() || node.isNew()) && commit.getBoolean(thisTag, true)) {
             node.commit();
             log.service("Committed node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier());
         }
