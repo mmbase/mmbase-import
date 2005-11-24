@@ -48,6 +48,7 @@
         <relation from="people" to="profiles" type="related" />
         <relation from="profiles" to="competencies" type="related" />
         <relation from="profiles" to="competencies" type="needcomp" />
+        <relation from="profiles" to="preassessments" type="related" />
         <relation from="learnobjects" to="competencies" type="needcomp" />
         <relation from="learnobjects" to="competencies" type="developcomp" />
         <relation from="educations" to="competencies" type="needcomp" />
