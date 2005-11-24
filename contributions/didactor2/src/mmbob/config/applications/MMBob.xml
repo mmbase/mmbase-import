@@ -40,7 +40,7 @@
         <relation from="classes" to="forums" type="related" />
         <relation from="people" to="posters" type="related" />
 
-        <relation from="posters" to="attachments" type="related" />
+        <relation from="postings" to="attachments" type="related" />
 
         <relation from="classes" to="components" type="settingrel" />
 
