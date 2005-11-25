@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.19 2005-10-21 14:42:42 michiel Exp $
+# $Id: build.properties.default,v 1.20 2005-11-25 15:14:56 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -126,7 +126,7 @@ xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
 fileupload.version=commons-fileupload-1.0
 fileupload.file=${fileupload.version}.tar.gz
 fileupload.dest=${download.dir}/${fileupload.file}
-fileupload.loc=http://apache.mirror.rokscom.nl/jakarta/commons/fileupload/binaries/${fileupload.file}
+fileupload.loc=http://www.mmbase.org/downloads/${fileupload.file}
 fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
 
 
