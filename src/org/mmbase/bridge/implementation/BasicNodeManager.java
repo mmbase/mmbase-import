@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.114 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.115 2005-11-25 12:39:08 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -120,7 +120,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().getNumber()) { // this is the typedef itself
             nodeManager = this;
         } else {
-            nodeManager = cloud.getBasicNodeManager("typedef");
+            super.setNodeManager(node);
         }
     }
 
@@ -139,9 +139,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     protected void initManager() {
         if (builder == null) {
             if(noderef == null) {
-                String msg = "node reference was null, could not continue";
-                log.error(msg);
-                throw new BridgeException(msg);
+                throw new BridgeException("node reference was null, could not continue");
             }
             // look which node we represent, and
             // what the builder is that this

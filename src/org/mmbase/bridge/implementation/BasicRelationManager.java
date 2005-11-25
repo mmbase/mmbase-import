@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.32 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: BasicRelationManager.java,v 1.33 2005-11-25 12:39:08 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -67,29 +67,40 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     /**
      * Initializes the NodeManager: determines the MMObjectBuilder from the
-     * passed node (reldef or typerel), and fillls temporary variables to maintain status.
+     * passed node (reldef or typerel), and fills temporary variables to maintain status.
      */
     protected void initManager() {
-        if (noderef.getBuilder() instanceof RelDef) {
-            relDefNode= noderef;
-        } else {
+        MMObjectBuilder bul = noderef.getBuilder();        
+        if (bul instanceof RelDef) {
+            relDefNode = noderef;
+        } else if (bul instanceof TypeRel) {
             typeRelNode = noderef;
-            relDefNode= typeRelNode.getBuilder().getNode(typeRelNode.getIntValue("rnumber"));
-        }
-        if (relDefNode == null) {
-            log.warn("No node found for 'rnumber'" + typeRelNode.getIntValue("rnumber"));
-        } else {
-            RelDef relDef = (RelDef) relDefNode.getBuilder();
-            if (relDef != null) {
-                builder = relDef.getBuilder(relDefNode.getNumber());
-            } else {
-                log.warn("builder of " + relDefNode + " was  null");
+            relDefNode = typeRelNode.getBuilder().getNode(typeRelNode.getIntValue("rnumber"));
+            if (relDefNode == null) {
+                log.warn("No node found for 'rnumber'" + typeRelNode.getIntValue("rnumber"));
             }
+        } else {
+            throw new RuntimeException("The builder of node " + noderef.getNumber() + " is not reldef or typerel, but " + bul.getTableName() + " cannot instantiate a relation manager with this");
+        }
+        
+        RelDef relDef = (RelDef) relDefNode.getBuilder();
+        if (relDef != null) {
+            builder = relDef.getBuilder(relDefNode.getNumber());
+        } else {
+            log.warn("builder of " + relDefNode + " was  null");
         }
         super.initManager();
     }
 
 
+    protected void setNodeManager(MMObjectNode node) {
+        int nodeNumber = node.getNumber();
+        if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().getNumber()) { // this is the typedef itself
+            nodeManager = this;
+        } else {
+            super.setNodeManager(node);
+        }
+    }
 
     public String getForwardRole() {
         return relDefNode.getStringValue("sname");

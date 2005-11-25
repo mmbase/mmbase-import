@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.182 2005-11-23 10:22:41 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.183 2005-11-25 12:39:08 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -133,7 +133,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @since MMBase-1.8
      */
     protected void setNodeManager(MMObjectNode node) {
-        nodeManager = cloud.getBasicNodeManager(node.getBuilder().getTableName());
+        nodeManager = cloud.getBasicNodeManager(node.getBuilder());
         assert(nodeManager != null);
     }
 
@@ -741,9 +741,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         edit(ACTION_COMMIT);
         processCommit();
+        log.info("committing " + noderef.getChanged());
         Collection errors = validate();
         if (errors.size() > 0) {
-            throw new IllegalArgumentException("node " + getNumber() + ", builder '" + nodeManager.getName() + "' " + errors.toString());
+            throw new IllegalArgumentException("node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString());
         }
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) { // sigh sigh sigh.
