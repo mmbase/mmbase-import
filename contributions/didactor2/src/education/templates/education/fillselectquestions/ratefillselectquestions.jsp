@@ -17,13 +17,6 @@
 --%>
 
 <mm:node number="$question" id="my_question">
-   <mm:relatednodescontainer path="givenanswers,madetests" element="givenanswers">
-      <mm:constraint field="madetests.number" referid="madetest"/>
-      <mm:relatednodes>
-         <mm:deletenode deleterelations="true"/>
-      </mm:relatednodes>
-   </mm:relatednodescontainer>
-
 <mm:createnode type="givenanswers" id="my_givenanswers">
   <mm:setfield name="score">0</mm:setfield>
 </mm:createnode>

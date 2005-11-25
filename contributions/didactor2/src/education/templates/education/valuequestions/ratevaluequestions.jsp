@@ -8,15 +8,6 @@
 
 <%@include file="/shared/setImports.jsp" %>
 
-<mm:node number="$question">
-   <mm:relatednodescontainer path="givenanswers,madetests" element="givenanswers">
-      <mm:constraint field="madetests.number" referid="madetest"/>
-      <mm:relatednodes>
-         <mm:deletenode deleterelations="true"/>
-      </mm:relatednodes>
-   </mm:relatednodescontainer>
-</mm:node>
-
 <mm:createnode type="givenanswers" id="givenanswer">
   <mm:setfield name="score">1</mm:setfield>
 </mm:createnode>
