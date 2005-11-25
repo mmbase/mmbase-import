@@ -10,8 +10,10 @@
 <mm:import externid="learnobject" required="true"/>
 <mm:import externid="thismadetest" required="true"/>
 <mm:import externid="questionsshowed" jspvar="questionsShowed" required="true"/>
-<mm:import externid="pagecounter" jspvar="pageCounter" vartype="Integer"/>
+<mm:import externid="testpath" jspvar="testPath" required="true"/>
 <mm:import externid="questionamount" jspvar="questionAmount" vartype="Integer"/>
+<mm:import externid="questionperpageamount"/>
+<mm:import externid="command" jspvar="sCommand" vartype="String">next</mm:import>
 
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
@@ -26,6 +28,7 @@
       <% long currentDate = System.currentTimeMillis() / 1000; %>
       <mm:setfield name="date"><%=currentDate%></mm:setfield>
       <mm:setfield name="score"><mm:write referid="TESTSCORE_INCOMPLETE"/></mm:setfield>
+      <mm:setfield name="testpath"><mm:write referid="testpath"/></mm:setfield>
     </mm:createnode>
 
     <mm:createrelation role="related" source="my_tests" destination="madetest"/>
@@ -127,7 +130,7 @@
     //
     Iterator i = list.iterator();
     while (i.hasNext()) {
-      String qNumber = ((String) i.next()).replaceAll("_","");
+      String qNumber = (String) i.next();
     %>
     <%-- Examine different questions and save the given answers --%>
     <mm:node number="<%= qNumber %>">
@@ -138,13 +141,14 @@
 
       <%-- Only rate the answered question --%>
       <mm:compare referid="shownquestion" referid2="possiblequestion">
+        <%-- implementation of back button
         <mm:relatednodescontainer path="givenanswers,madetests" element="givenanswers">
           <mm:constraint field="madetests.number" referid="madetest"/>
           <mm:relatednodes>
-            <%-- Already an answer given to this question --%>
+            // Already an answer given to this question 
             <mm:deletenode deleterelations="true"/>
           </mm:relatednodes>
-        </mm:relatednodescontainer>
+        </mm:relatednodescontainer> --%>
 
         <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
         <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
@@ -158,8 +162,8 @@
     </mm:node>
   <% } %>
 
-  <%-- If all questions are answerd then show the feedback else show next question set --%>
-  <% if ( list.size() == questionAmount.intValue() ) { %>
+  <%-- If "done" pressed then show the feedback else show next question set --%>
+  <% if ( sCommand.equals("done") ) { %>
      <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids">
        <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
        <mm:param name="tests"><mm:write referid="tests"/></mm:param>
@@ -175,7 +179,10 @@
        <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>
        <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
        <mm:param name="questionsshowed"><mm:write referid="questionsshowed"/></mm:param>
-       <mm:param name="pagecounter"><mm:write referid="pagecounter"/></mm:param>
+       <mm:param name="testpath"><mm:write referid="testpath"/></mm:param>
+       <mm:param name="command"><mm:write referid="command"/></mm:param>
+       <mm:param name="questionamount"><mm:write referid="questionamount"/></mm:param>
+       <mm:param name="questionperpageamount"><mm:write referid="questionperpageamount"/></mm:param>
      </mm:treeinclude>
   <% } %>
 </mm:node>

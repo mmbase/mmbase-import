@@ -9,6 +9,12 @@
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:node number="$question">
+   <mm:relatednodescontainer path="givenanswers,madetests" element="givenanswers">
+      <mm:constraint field="madetests.number" referid="madetest"/>
+      <mm:relatednodes>
+         <mm:deletenode deleterelations="true"/>
+      </mm:relatednodes>
+   </mm:relatednodescontainer>
 
   <%int counter = 0;%>
   
