@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.20 2005-11-25 15:14:56 michiel Exp $
+# $Id: build.properties.default,v 1.21 2005-11-25 15:23:35 pierre Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -126,7 +126,7 @@ xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
 fileupload.version=commons-fileupload-1.0
 fileupload.file=${fileupload.version}.tar.gz
 fileupload.dest=${download.dir}/${fileupload.file}
-fileupload.loc=http://www.mmbase.org/downloads/${fileupload.file}
+fileupload.loc=http://www.mmbase.org/download/jars/${fileupload.file}
 fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
 
 
@@ -135,7 +135,7 @@ fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
 taglibs-standard.version=jakarta-taglibs-standard-1.1.2
 taglibs-standard.file=${taglibs-standard.version}.tar.gz
 taglibs-standard.dest=${download.dir}/${taglibs-standard.file}
-taglibs-standard.loc=http://apache.mirror.rokscom.nl/jakarta/taglibs/standard/binaries/${taglibs-standard.file}
+taglibs-standard.loc=http://www.mmbase.org/download/jars/${taglibs-standard.file}
 taglibs-standard-jstl.jar=${expand.dir}/${taglibs-standard.version}/lib/jstl.jar
 taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/standard.jar
 
