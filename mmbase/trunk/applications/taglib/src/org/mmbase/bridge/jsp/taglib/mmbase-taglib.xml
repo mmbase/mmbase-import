@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.328 2005-11-23 10:29:39 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.329 2005-11-25 09:31:57 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6013,6 +6013,7 @@ The 0 is just counter, which starts at 0 on every page.
     </info>
     <see tag="querycontainer" />
     <see tag="ageconstraint" />
+    <see tag="composite" />
     <since>MMBase-1.7</since>
     <attribute>
       <name>field</name>
