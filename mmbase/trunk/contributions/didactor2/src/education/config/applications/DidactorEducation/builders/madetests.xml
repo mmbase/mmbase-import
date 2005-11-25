@@ -88,5 +88,36 @@
         <type state="persistent" notnull="true">INTEGER</type>
       </db>
     </field>
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Test path</description>
+        <description xml:lang="en">Test path</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Test path</guiname>
+        <guiname xml:lang="en">Test path</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in list area of the editor -->
+          <list>3</list>
+          <!-- position in search area of the editor -->
+          <search>-1</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>testpath</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="2000">STRING</type>
+      </db>
+    </field>
   </fieldlist>
 </builder>

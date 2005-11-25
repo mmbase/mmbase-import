@@ -9,6 +9,15 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
+<mm:node number="$question">
+   <mm:relatednodescontainer path="givenanswers,madetests" element="givenanswers">
+      <mm:constraint field="madetests.number" referid="madetest"/>
+      <mm:relatednodes>
+         <mm:deletenode deleterelations="true"/>
+      </mm:relatednodes>
+   </mm:relatednodescontainer>
+</mm:node>
+
 <mm:createnode type="givenanswers" id="givenanswer">
   <mm:setfield name="score"><mm:write referid="TESTSCORE_INCOMPLETE"/></mm:setfield>
 </mm:createnode>
