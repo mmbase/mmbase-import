@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.144 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.145 2005-11-25 12:39:08 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -288,12 +288,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return new BasicNodeManagerList(nodeManagers, this);
     }
 
-    BasicNodeManager getBasicNodeManager(String nodeManagerName) throws NotFoundException {
-        MMObjectBuilder bul = BasicCloudContext.mmb.getMMObject(nodeManagerName);
-        // always look if builder exists, since otherwise
-        if (bul == null) {
-            throw new NotFoundException("Node manager with name '" + nodeManagerName + "' does not exist.");
-        }
+    /**
+     * @since MMBase-1.8
+     */
+    BasicNodeManager getBasicNodeManager(MMObjectBuilder bul) throws NotFoundException {
+        String nodeManagerName = bul.getTableName();
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
         BasicNodeManager nodeManager = (BasicNodeManager)nodeManagerCache.get(nodeManagerName);
         if (nodeManager == null) {
@@ -307,6 +306,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             nodeManagerCache.put(nodeManagerName, nodeManager);
         }
         return nodeManager;
+    }
+    
+    BasicNodeManager getBasicNodeManager(String nodeManagerName) throws NotFoundException {
+        MMObjectBuilder bul = BasicCloudContext.mmb.getMMObject(nodeManagerName);
+        // always look if builder exists, since otherwise
+        if (bul == null) {
+            throw new NotFoundException("Node manager with name '" + nodeManagerName + "' does not exist.");
+        }
+        return getBasicNodeManager(bul);
+
     }
 
     public final NodeManager getNodeManager(String nodeManagerName) throws NotFoundException {
