@@ -141,14 +141,13 @@
 
       <%-- Only rate the answered question --%>
       <mm:compare referid="shownquestion" referid2="possiblequestion">
-        <%-- implementation of back button
+
         <mm:relatednodescontainer path="givenanswers,madetests" element="givenanswers">
           <mm:constraint field="madetests.number" referid="madetest"/>
           <mm:relatednodes>
-            // Already an answer given to this question 
             <mm:deletenode deleterelations="true"/>
           </mm:relatednodes>
-        </mm:relatednodescontainer> --%>
+        </mm:relatednodescontainer>
 
         <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/rate<mm:nodeinfo type="type"/>.jsp</mm:import>
         <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
