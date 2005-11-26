@@ -12,10 +12,12 @@ See http://www.MMBase.org/license
   <preGoal name="java:jar-resources">
     <ant:echo>C R E A T I N G   T L D</ant:echo>
     <ant:echo>${basedir}</ant:echo>
-    <!--
+    <!-- 1.5 TransformerFactory class -->
      ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
-    -->
+
+    <!-- 1.4 TransformerFactory class
     ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')} 
+    -->
     <ant:mkdir dir="${maven.build.dir}/generated-tld"/> 
 
     <ant:xslt in="${basedir}/src/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"
