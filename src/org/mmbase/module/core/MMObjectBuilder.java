@@ -26,6 +26,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.core.*;
 import org.mmbase.core.event.*;
 import org.mmbase.core.util.Fields;
+import org.mmbase.core.util.StorageConnector;
 
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.StorageNotFoundException;
@@ -59,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.353 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.354 2005-11-26 17:35:05 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
