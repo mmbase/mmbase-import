@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.core;
+package org.mmbase.core.util;
 
 import java.util.*;
 
@@ -15,6 +15,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.cache.AggregatedResultCache;
 import org.mmbase.cache.NodeListCache;
+import org.mmbase.core.CoreField;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.*;
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden (javadoc)
- * @version $Id: StorageConnector.java,v 1.1 2005-11-23 15:46:44 pierre Exp $
+ * @version $Id: StorageConnector.java,v 1.2 2005-11-26 17:35:05 nklasens Exp $
  */
 public class StorageConnector {
 
