@@ -12,6 +12,7 @@ package org.mmbase.module.core;
 import java.util.*;
 
 import org.mmbase.core.*;
+import org.mmbase.core.util.StorageConnector;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.*;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.20 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: MMTable.java,v 1.21 2005-11-26 17:35:05 nklasens Exp $
  */
 public abstract class MMTable extends FunctionProvider {
 
