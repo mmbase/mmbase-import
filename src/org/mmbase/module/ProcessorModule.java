@@ -59,7 +59,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         Iterator i = arguments.iterator();
         while (i.hasNext()) {
             Object argument = i.next();
-            if (argument instanceof String) {
+            if (argument instanceof String && ! "".equals(argument)) {
                 buf.append('-').append(argument);
             }
         }
