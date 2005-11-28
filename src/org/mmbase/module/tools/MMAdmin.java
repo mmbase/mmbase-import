@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.129 2005-11-28 22:12:36 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.130 2005-11-28 22:37:58 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -61,6 +61,9 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private boolean kioskmode = false;
+
+    private static final Parameter PARAM_BUILDER = new Parameter("builder", String.class);    
+    private static final Parameter[] PARAMS_BUILDER = new Parameter[] { PARAM_BUILDER, new Parameter.Wrapper(PARAMS_PAGEINFO)}; 
     
     {
         addFunction(new GetNodeListFunction("APPLICATIONS", PARAMS_PAGEINFO));
@@ -69,6 +72,12 @@ public class MMAdmin extends ProcessorModule {
         addFunction(new GetNodeListFunction("DATABASES", PARAMS_PAGEINFO));
         addFunction(new GetNodeListFunction("MULTILEVELCACHEENTRIES", PARAMS_PAGEINFO));
         addFunction(new GetNodeListFunction("NODECACHEENTRIES", PARAMS_PAGEINFO));
+        addFunction(new GetNodeListFunction("FIELDS", PARAMS_BUILDER));
+
+        addFunction(new ReplaceFunction("BUILDERVERSION", PARAMS_BUILDER));
+        addFunction(new ReplaceFunction("BUILDERCLASSFILE", PARAMS_BUILDER));
+        addFunction(new ReplaceFunction("BUILDERDESCRIPTION", PARAMS_BUILDER));
+
     }
     
 
