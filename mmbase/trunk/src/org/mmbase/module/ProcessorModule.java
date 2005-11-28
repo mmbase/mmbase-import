@@ -37,6 +37,35 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
 
     /**
+     * Used by function wrappers.
+     * @since MMBase-1.8
+     */
+    private static PageInfo getPageInfo(Parameters arguments) {
+        PageInfo pageInfo = null;
+        if (arguments.indexOfParameter(Parameter.REQUEST)> -1) {
+            HttpServletRequest req  = (HttpServletRequest) arguments.get(Parameter.REQUEST);
+            HttpServletResponse res = (HttpServletResponse) arguments.get(Parameter.RESPONSE);
+            Cloud cloud = (Cloud) arguments.get(Parameter.CLOUD);
+            pageInfo = new PageInfo(req, res, cloud);
+        }
+        return pageInfo;
+    }
+    /**
+     * Used by function wrappers.
+     * @since MMBase-1.8
+     */
+    private static String getCommand(String functionName, Parameters arguments) {
+        StringBuffer buf = new StringBuffer(functionName);
+        Iterator i = arguments.iterator();
+        while (i.hasNext()) {
+            Object argument = i.next();
+            if (argument instanceof String) {
+                buf.append('-').append(argument);
+            }
+        }
+        return buf.toString();
+    }
+    /**
      * Function implementation around {@link #getNodeList(Object, String, Map)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
      */
@@ -45,22 +74,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
             super(name, params, ReturnType.NODELIST);
         }
         public Object getFunctionValue(Parameters arguments) {
-            PageInfo pageInfo = null;
-            if (arguments.indexOfParameter(Parameter.REQUEST)> -1) {
-                HttpServletRequest req  = (HttpServletRequest) arguments.get(Parameter.REQUEST);
-                HttpServletResponse res = (HttpServletResponse) arguments.get(Parameter.RESPONSE);
-                Cloud cloud = (Cloud) arguments.get(Parameter.CLOUD);
-                pageInfo = new PageInfo(req, res, cloud);
-            }
-            StringBuffer buf = new StringBuffer(getName());
-            Iterator i = arguments.iterator();
-            while (i.hasNext()) {
-                Object argument = i.next();
-                if (argument instanceof String) {
-                    buf.append('-').append(argument);
-                }
-            }
-            return getNodeList(pageInfo, buf.toString(), arguments.toMap());
+            return getNodeList(getPageInfo(arguments), getCommand(getName(), arguments), arguments.toMap());
         }
     }
     /**
@@ -69,25 +83,10 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      */
     protected class ReplaceFunction extends AbstractFunction {
         public ReplaceFunction(String name, Parameter[] params) {
-            super(name, params, ReturnType.NODELIST);
+            super(name, params, ReturnType.STRING);
         }
         public Object getFunctionValue(Parameters arguments) {
-            PageInfo pageInfo = null;
-            if (arguments.indexOfParameter(Parameter.REQUEST)> -1) {
-                HttpServletRequest req  = (HttpServletRequest) arguments.get(Parameter.REQUEST);
-                HttpServletResponse res = (HttpServletResponse) arguments.get(Parameter.RESPONSE);
-                Cloud cloud = (Cloud) arguments.get(Parameter.CLOUD);
-                pageInfo = new PageInfo(req, res, cloud);
-            }
-            StringBuffer buf = new StringBuffer(getName());
-            Iterator i = arguments.iterator();
-            while (i.hasNext()) {
-                Object argument = i.next();
-                if (argument instanceof String) {
-                    buf.append('-').append(argument);
-                }
-            }
-            return replace(pageInfo, buf.toString());
+            return replace(getPageInfo(arguments), getCommand(getName(), arguments));
         }
     }
 
