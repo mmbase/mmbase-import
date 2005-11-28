@@ -1,6 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" 
-%><mm:cloud rank="administrator" jspvar="cloud">
+<mm:cloud rank="administrator">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
@@ -32,13 +31,13 @@
 </tr>
 <mm:nodelistfunction module="mmadmin" name="APPLICATIONS">
 <tr>
-  <td class="data"><mm:field name="item1" /></td>
+  <td class="data"><mm:field id="application" name="item1" /></td>
   <td class="data"><mm:field name="item2" /></td>
   <td class="data"><mm:field name="item3" /></td>
   <td class="data"><mm:field name="item4" /></td>
   <td class="data"><mm:field name="item5" /></td>
   <td class="navigate">
-    <a href="<mm:url page="application/actions.jsp"><mm:param name="application"><mm:field name="item1" /></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
+    <a href="<mm:url referids="application" page="application/actions.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
   </td>
 </tr>
 </mm:nodelistfunction>
