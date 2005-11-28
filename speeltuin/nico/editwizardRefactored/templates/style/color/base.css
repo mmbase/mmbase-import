@@ -1,0 +1,51 @@
+body {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+input,
+textarea,
+select {
+  color: black;
+}
+
+a:link  { 
+  color: #18248C; 
+}
+a:visited { 
+  color: #00046C; 
+}
+a:hover   { 
+  color: #3844AC; 
+}
+a:active  { 
+  color: #3844AC; 
+}
+
+.tooltip {
+  background-color: #FFFF88;
+  border-color: #000000;
+}
+
+table { 
+  background-color: #fff;
+  border-color: #ccc; 
+  color: #000;
+}
+
+table.head {
+  /*	background-color: #CCC; */
+}
+
+tr.headsubtitle  {         
+  background-color: #CCC;
+} 
+
+table.body {
+}
+
+.pagenav,
+.pagenav-disabled,
+.pagenav-current {
+  color: #000000;
+}
