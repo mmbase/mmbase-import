@@ -59,6 +59,31 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+    <attribute>
+      <name>arg0</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg1</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg2</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg3</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg4</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
   </tag>
 
   <tag>
