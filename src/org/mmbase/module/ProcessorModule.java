@@ -37,7 +37,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
 
     /**
-     * Function implmenetation around {@link #getNodeList(Object, String, Map)}. See in MMAdmin for an example on how to use.
+     * Function implementation around {@link #getNodeList(Object, String, Map)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
      */
     protected class GetNodeListFunction extends AbstractFunction {
@@ -52,7 +52,42 @@ public class ProcessorModule extends Module implements ProcessorInterface {
                 Cloud cloud = (Cloud) arguments.get(Parameter.CLOUD);
                 pageInfo = new PageInfo(req, res, cloud);
             }
-            return getNodeList(pageInfo, getName(), arguments.toMap());
+            StringBuffer buf = new StringBuffer(getName());
+            Iterator i = arguments.iterator();
+            while (i.hasNext()) {
+                Object argument = i.next();
+                if (argument instanceof String) {
+                    buf.append('-').append(argument);
+                }
+            }
+            return getNodeList(pageInfo, buf.toString(), arguments.toMap());
+        }
+    }
+    /**
+     * Function implementation around {@link #replace(Object, String)}. See in MMAdmin for an example on how to use.
+     * @since MMBase-1.8
+     */
+    protected class ReplaceFunction extends AbstractFunction {
+        public ReplaceFunction(String name, Parameter[] params) {
+            super(name, params, ReturnType.NODELIST);
+        }
+        public Object getFunctionValue(Parameters arguments) {
+            PageInfo pageInfo = null;
+            if (arguments.indexOfParameter(Parameter.REQUEST)> -1) {
+                HttpServletRequest req  = (HttpServletRequest) arguments.get(Parameter.REQUEST);
+                HttpServletResponse res = (HttpServletResponse) arguments.get(Parameter.RESPONSE);
+                Cloud cloud = (Cloud) arguments.get(Parameter.CLOUD);
+                pageInfo = new PageInfo(req, res, cloud);
+            }
+            StringBuffer buf = new StringBuffer(getName());
+            Iterator i = arguments.iterator();
+            while (i.hasNext()) {
+                Object argument = i.next();
+                if (argument instanceof String) {
+                    buf.append('-').append(argument);
+                }
+            }
+            return replace(pageInfo, buf.toString());
         }
     }
 
