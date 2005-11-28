@@ -38,7 +38,8 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
      * @see org.mmbase.core.event.NodeEventListener#fire(org.mmbase.core.event.NodeEvent)
      */
     public void notify(NodeEvent event) {
-        wrappedListener.notify(event);
+        if(event.getBuilderName().equals(nodeType))
+            wrappedListener.notify(event);
     }
 
     /*
@@ -47,9 +48,7 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
      * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
      */
     public Properties getConstraintsForEvent(Event event) {
-        Properties p = new Properties();
-        p.setProperty(NodeEventBroker.PROPERTY_NODETYPE, nodeType);
-        return p;
+        return null;
     }
 
     public String toString() {
