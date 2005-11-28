@@ -28,6 +28,7 @@ import org.mmbase.security.Rank;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
 import org.xml.sax.InputSource;
@@ -38,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.126 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.127 2005-11-28 20:53:07 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -60,11 +61,11 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private boolean kioskmode = false;
-
-    /**
-     * @javadoc
-     */
-    public MMAdmin() {}
+    
+    {
+        addFunction(new GetNodeListFunction("APPLICATIONS", new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD}));
+    }
+    
 
     /**
      * @javadoc
