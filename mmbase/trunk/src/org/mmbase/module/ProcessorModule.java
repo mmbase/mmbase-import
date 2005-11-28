@@ -10,9 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import java.util.*;
-
+import javax.servlet.http.*;
 import org.mmbase.module.core.*;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -23,7 +26,7 @@ import org.mmbase.util.*;
  * @todo   Should be abstract, deprecated?
  */
 public class ProcessorModule extends Module implements ProcessorInterface {
-
+    private static final Logger log = Logging.getLoggerInstance(ProcessorModule.class);
     /**
      * {@inheritDoc}
      **/
@@ -32,23 +35,46 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * Function implmenetation around {@link #getNodeList(Object, String, Map)}. See in MMAdmin for an example on how to use.
+     * @since MMBase-1.8
+     */
+    protected class GetNodeListFunction extends AbstractFunction {
+        public GetNodeListFunction(String name, Parameter[] params) {
+            super(name, params, ReturnType.NODELIST);
+        }
+        public Object getFunctionValue(Parameters arguments) {
+            PageInfo pageInfo = null;
+            if (arguments.indexOfParameter(Parameter.REQUEST)> -1) {
+                HttpServletRequest req  = (HttpServletRequest) arguments.get(Parameter.REQUEST);
+                HttpServletResponse res = (HttpServletResponse) arguments.get(Parameter.RESPONSE);
+                Cloud cloud = (Cloud) arguments.get(Parameter.CLOUD);
+                pageInfo = new PageInfo(req, res, cloud);
+            }
+            return getNodeList(pageInfo, getName(), arguments.toMap());
+        }
+    }
+
+    /**
+     * This method is a wrapper around {@link Module#getList(PageInfo, StringTagger, String)}
+     * @param context The PageInfo object. It beats me why it is Object and not PageInfo. I think it's silly.
+     * @param command The command to execute
+     * @param params  Parameters, they will be added to the StringTagger.
      **/
-    public Vector getNodeList(Object context, String command, Map params) {
+    public final Vector getNodeList(Object context, String command, Map params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
-            tagger= (StringTagger)params;
+            tagger = (StringTagger)params;
         } else {
-            tagger= new StringTagger("");
-            if (params!=null) {
-                for (Iterator entries=params.entrySet().iterator(); entries.hasNext(); ) {
+            tagger = new StringTagger("");
+            if (params != null) {
+                for (Iterator entries = params.entrySet().iterator(); entries.hasNext(); ) {
                     Map.Entry entry = (Map.Entry) entries.next(); 
                     String key=(String) entry.getKey();
                     Object o = entry.getValue();
                     if (o instanceof Vector) {
-                        tagger.setValues(key,(Vector)o);
+                        tagger.setValues(key, (Vector)o);
                     } else {
-                        tagger.setValue(key,""+o);
+                        tagger.setValue(key, "" + o);
                     }
                 }
             }
@@ -57,12 +83,12 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         if (context instanceof PageInfo) {
             sp = (PageInfo)context;
         }
-        Vector v = getList(sp,tagger,command);
-        int items=1;
+        Vector v = getList(sp, tagger, command);
+        int items = 1;
         try { items = Integer.parseInt(tagger.Value("ITEMS")); } catch (NumberFormatException e) {}
         Vector fieldlist = tagger.Values("FIELDS");
         Vector res = new Vector(v.size() / items);
-        MMObjectBuilder bul = getListBuilder(command,params);
+        MMObjectBuilder bul = getListBuilder(command, params);
         for(int i= 0; i < v.size(); i+=items) {
             VirtualNode node = new VirtualNode(bul);
             for(int j= 0; (j<items) && (j<v.size()); j++) {
@@ -78,7 +104,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * @javadoc
      **/
     public Vector  getList(PageInfo sp,StringTagger params, String command) {
         throw new UnsupportedOperationException("Module " + this.getClass().getName() + " does not implement LIST");
