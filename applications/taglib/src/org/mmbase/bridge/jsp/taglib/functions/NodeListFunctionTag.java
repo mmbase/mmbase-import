@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.11 2005-11-23 10:29:39 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.12 2005-11-28 21:51:07 michiel Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
 
@@ -37,6 +37,7 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     //therefore, all this stuff with helpers.
     private NodeProviderHelper nodeHelper = new NodeProviderHelper(this);
     private NodeListHelper     listHelper = new NodeListHelper(this, nodeHelper);
+
 
     // implementation of NodeProvider
     public Node getNodeVar() throws JspTagException {
@@ -117,6 +118,7 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
                 list.addAll((Collection) value);
             }
         }
+        listHelper.doStartTagHelper();
         return listHelper.setReturnValues(list, true);
     }
 
