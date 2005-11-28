@@ -5,10 +5,19 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 <mm:import externid="question" required="true"/>
-
+<mm:import externid="madetest">-1</mm:import>
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:node number="$question" jspvar="flash">
+   <mm:relatedcontainer path="givenanswers,madetests">
+      <mm:constraint field="madetests.number" value="$madetest"/>
+      <mm:related>
+         <mm:node element="givenanswers">
+            <mm:field name="text" id="answer" write="false"/>
+         </mm:node>
+      </mm:related>
+   </mm:relatedcontainer>
+
     <% 
         int layout = flash.getIntValue("layout");
         int width = 770;
@@ -137,7 +146,7 @@
     
 	<mm:field name="textFirst" escape="none"/> 
 		
-	<input  type="text" size="15"  dtmaxlength="15" name="<mm:write referid="question"/>" /> 
+	<input  type="text" size="15"  dtmaxlength="15" name="<mm:write referid="question"/>" value="<mm:present referid="answer"><mm:write referid="answer" escape="text/plain"/></mm:present>" /> 
 
 	<mm:field name="textSecond" escape="none"/> 
    
