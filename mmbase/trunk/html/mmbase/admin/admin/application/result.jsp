@@ -14,10 +14,10 @@
 </head>
 <body class="basic" >
 <%
-   String cmd=request.getParameter("cmd");
-   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+   String cmd = request.getParameter("cmd");
+   Module mmAdmin = ContextProvider.getDefaultCloudContext().getModule("mmadmin");
    String msg="";
-   if (cmd!=null) {
+   if (cmd != null) {
     try {
         Hashtable params=new Hashtable();
         params.put("APPLICATION",app);

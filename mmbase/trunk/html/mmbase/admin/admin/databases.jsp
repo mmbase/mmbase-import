@@ -1,7 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
-<%@include file="../settings.jsp" %>
-<mm:cloud name="mmbase" method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
+<mm:cloud name="mmbase" rank="administrator">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
@@ -31,27 +29,19 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
   <th class="header">Maintainer</th>
   <th class="navigate">View</th>
 </tr>
-<%
-   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
-   params.put("CLOUD", cloud);
-
-   NodeList databases=mmAdmin.getList("DATABASES",params,request,response);
-   for (int i=0; i<databases.size(); i++) {
-    Node database=databases.getNode(i);
-%>
-<tr>
-  <td class="data"><%=database.getStringValue("item1")%></td>
-  <td class="data"><%=database.getStringValue("item2")%></td>
-  <td class="data"><%=database.getStringValue("item3")%></td>
-  <td class="data"><%=database.getStringValue("item4")%></td>
-  <td class="navigate">    
-    <a href="<mm:url page="<%="database/actions.jsp?database="+database.getStringValue("item1")%>" />">
+<mm:nodelistfunction module="mmadmin" name="DATABASES">
+  <tr>
+    <td class="data"><mm:field id="database" name="item1" /></td>
+    <td class="data"><mm:field name="item2" /></td>
+    <td class="data"><mm:field name="item3" /></td>
+    <td class="data"><mm:field name="item4" /></td>
+    <td class="navigate">    
+      <a href="<mm:url referids="database" page="database/actions.jsp" />">
       <img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="view" />
     </a>
   </td>
 </tr>
-<% } %>
-
+</mm:nodelistfunction>
 <tr><td>&nbsp;</td></tr>
 
 <% } %>
@@ -62,23 +52,16 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
   <th class="header">Connections Created</th>
   <th class="navigate">View</th>
 </tr>
-<%
-   Module jdbc = ContextProvider.getDefaultCloudContext().getModule("jdbc");
-   NodeList pools=jdbc.getList("POOLS",params,request,response);
-   for (int i=0; i< pools.size(); i++) {
-    Node pool=pools.getNode(i);
-%>
-<tr>
-  <td class="data" colspan="2"><%=pool.getStringValue("item1")%></td>
-  <td class="data"><%=pool.getStringValue("item2")%></td>
-  <td class="data"><%=pool.getStringValue("item3")%></td>
-  <td class="navigate">
-    <a href="<mm:url page="database/connections.jsp">
-                 <mm:param name="item1"><%=pool.getStringValue("item1")%></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="next" /></a>
+<mm:nodelistfunction module="jdbc" name="POOLS">
+  <tr>
+    <td class="data" colspan="2"><mm:field name="item1" id="item1" /></td>
+    <td class="data"><mm:field name="item2" /></td>
+    <td class="data"><mm:field name="item2" /></td>
+    <td class="navigate">
+      <a href="<mm:url referids="item1" page="database/connections.jsp" />"><img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="next" /></a>
   </td>
 </tr>
-<% } %>
-
+</mm:nodelistfunction>
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
