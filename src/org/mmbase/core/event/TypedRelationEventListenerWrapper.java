@@ -38,7 +38,8 @@ public class TypedRelationEventListenerWrapper implements RelationEventListener 
      * @see org.mmbase.core.event.RelationEventListener#fire(org.mmbase.core.event.RelationEvent)
      */
     public void notify(RelationEvent event) {
-        wrappedListener.notify(event);
+        if(event.getRelationSourceType().equals(nodeType) || event.getRelationDestinationType().equals(nodeType))
+            wrappedListener.notify(event);
     }
 
     /*
@@ -47,9 +48,7 @@ public class TypedRelationEventListenerWrapper implements RelationEventListener 
      * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
      */
     public Properties getConstraintsForEvent(Event event) {
-        Properties p = new Properties();
-        p.setProperty(RelationEventBroker.PROPERTY_NODETYPE, nodeType);
-        return p;
+        return null;
     }
 
     public String toString() {
