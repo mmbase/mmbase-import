@@ -70,5 +70,10 @@ This is a _whole lot_ easier.
     <exec executable="make" dir="mmbase/kupu/mmbase">
       <arg line="mmbase-kupu-i18n.jar" />
     </exec>
+    <copy todir="${project.build.dir}" preservelastmodified="true" flatten="true">
+      <fileset dir="mmbase/kupu">
+        <include name="**/*.jar" />
+      </fileset>
+    </copy>
   </target>
 </project>
