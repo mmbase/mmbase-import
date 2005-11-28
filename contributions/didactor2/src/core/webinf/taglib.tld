@@ -7,7 +7,7 @@
 
 <taglib>
   <!-- after this the default space is
-	"http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd"
+   "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd"
    -->
 
   <!-- The version number of this tag library -->
@@ -38,7 +38,7 @@
      <rtexprvalue>true</rtexprvalue>
    </attribute>
   </tag>
-  
+
   <tag>
     <name>translate</name>
     <tagclass>nl.didactor.taglib.TranslateTag</tagclass>
@@ -56,6 +56,31 @@
     </attribute>
     <attribute>
       <name>debug</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg0</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg1</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg2</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg3</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>arg4</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
