@@ -34,7 +34,7 @@
 </tr>
 <tr>
  <td class="data" colspan="2">Install <%=app%></td>
- <td class="data" >Version: <%=mmAdmin.getInfo("VERSION-"+app,request,response)%> </td>
+ <td class="data" >Version: <%=mmAdmin.getInfo("VERSION-"+app, request, response)%> </td>
  <td class="linkdata" >
   <form action="<mm:url page="result.jsp" />" method="POST">
    <input type="hidden" name="application" value="<%=app%>" />
