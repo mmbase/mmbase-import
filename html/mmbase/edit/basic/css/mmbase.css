@@ -12,7 +12,7 @@ body.navigationbar {
 }
 
 span {
-  align: right;
+  text-align: right;
 }
 
 span.alt {
@@ -21,12 +21,12 @@ span.alt {
 
 table { 
   width : 100%; 
-  float: center;
+  float: none;
 }
 
 td {
   vertical-align : top;
-  border-width: 1;		
+  border-width: 1px;
 }	
 
 th {
