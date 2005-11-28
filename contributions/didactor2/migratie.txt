@@ -1,6 +1,6 @@
 Migration issues
 
-Important issue for every update (leave this message on top): 
+Important issue for every update (leave this message on top):
 
 When using SCORM, don't forget to save and replace the didactor/scorm dir in the webapp.
 Or create a scorm dir in the ROOT of the webapp when you make a new install.
@@ -8,6 +8,10 @@ Or create a scorm dir in the ROOT of the webapp when you make a new install.
 
 2005-11-23
     ALTER TABLE mmb_madetests ADD testpath BLOB DEFAULT NULL;
+
+
+2005-11-20
+    ALTER TABLE mmb_learnblocks ADD path BLOB DEFAULT NULL;
 
 2005-11-10
     ALTER TABLE mmb_metastandard ADD isused TINYINT(1);
