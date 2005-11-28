@@ -30,25 +30,18 @@
   <th class="header">Auto-Deploy</th>
   <th class="navigate">Manage</th>
 </tr>
-<%
-   Module mmAdmin = ContextProvider.getDefaultCloudContext().getModule("mmadmin");
-   java.util.Map params = new java.util.Hashtable();
-   params.put("CLOUD", cloud);
-   NodeList apps = mmAdmin.getList("APPLICATIONS", params, request, response);
-   for (int i=0; i<apps.size(); i++) {
-    Node app = apps.getNode(i);
-%>
+<mm:nodelistfunction module="mmadmin" name="APPLICATIONS">
 <tr>
-  <td class="data"><%=app.getStringValue("item1")%></td>
-  <td class="data"><%=app.getStringValue("item2")%></td>
-  <td class="data"><%=app.getStringValue("item3")%></td>
-  <td class="data"><%=app.getStringValue("item4")%></td>
-  <td class="data"><%=app.getStringValue("item5")%></td>
+  <td class="data"><mm:field name="item1" /></td>
+  <td class="data"><mm:field name="item2" /></td>
+  <td class="data"><mm:field name="item3" /></td>
+  <td class="data"><mm:field name="item4" /></td>
+  <td class="data"><mm:field name="item5" /></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="application/actions.jsp?application="+app.getStringValue("item1")%>" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
+    <a href="<mm:url page="application/actions.jsp"><mm:param name="application"><mm:field name="item1" /></mm:param></mm:url>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
   </td>
 </tr>
-<% } %>
+</mm:nodelistfunction>
 <tr><td>&nbsp;</td></tr>
 
   <tr class="footer">
