@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.128 2005-11-28 22:02:12 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.129 2005-11-28 22:12:36 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -697,7 +697,7 @@ public class MMAdmin extends ProcessorModule {
                 log.error("Did not find reader for " + builderResource);
                 continue;
             }
-            results.add(builderResource);
+            results.add(builderName);
             results.add("" + reader.getVersion());
             int installedversion = -1;
             if (ver != null) {
