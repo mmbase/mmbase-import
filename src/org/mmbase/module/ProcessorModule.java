@@ -34,6 +34,8 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         return new VirtualBuilder(null);
     }
 
+    protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
+
     /**
      * Function implmenetation around {@link #getNodeList(Object, String, Map)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
