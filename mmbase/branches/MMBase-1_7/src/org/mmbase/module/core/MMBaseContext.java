@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.40 2004-02-24 13:48:41 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.40.2.1 2005-11-28 18:41:40 pierre Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -37,6 +37,7 @@ public class MMBaseContext {
     private static String htmlRootUrlPath ="/";
     private static boolean htmlRootUrlPathInitialized = false;
     private static String outputFile;
+    private static ThreadGroup threadGroup;
 
     /**
      * Initialize MMBase using a <code>ServletContext</code>. This method will
@@ -95,6 +96,25 @@ public class MMBaseContext {
             initLogging();
             initialized = true;
         }
+    }
+
+    /**
+     * Returns the MAMsb ethread group.
+     */
+    public static ThreadGroup getThreadGroup() {
+        return threadGroup;
+    }
+
+    /**
+     * Starts a daemon thread using the MMBase thread group.
+     * @param target the runnable to start as a thread
+     * @param name the thread's name
+     */
+    public static Thread startThread(Runnable target, String name) {
+        Thread kicker = new Thread(getThreadGroup(),target, name);
+        kicker.setDaemon(true);
+        kicker.start();
+        return kicker;
     }
 
     /**
@@ -250,6 +270,7 @@ public class MMBaseContext {
     }
 
     private static void initLogging() {
+        // create the MMBase thread group
         // Starting the logger
         Logging.configure(configPath + File.separator + "log" + File.separator + "log.xml");
         log.info("===========================");
@@ -258,7 +279,9 @@ public class MMBaseContext {
         log.info("user.dir          : " + userDir);
         log.info("mmbase.config     : " + configPath);
         log.info("mmbase.outputfile : " + outputFile);
-        log.info("version           : " + org.mmbase.Version.get());
+        String version = org.mmbase.Version.get();
+        threadGroup = new ThreadGroup(version + ":" + configPath);
+        log.info("version           : " + version);
         Runtime rt = Runtime.getRuntime();
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte");
         rt.gc();

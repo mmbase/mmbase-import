@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author  michiel
  * @author  nico
- * @version $Id: MMServers.java,v 1.27.2.1 2004-10-09 10:51:45 nico Exp $
+ * @version $Id: MMServers.java,v 1.27.2.2 2005-11-28 18:41:40 pierre Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -31,7 +31,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     public static final int ACTIVE = 1;
     public static final int INACTIVE = 2;
     public static final int ERROR = 3;
-    
+
     private boolean checkedSystem = false;
     private String javastr;
     private String osstr;
@@ -57,23 +57,17 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             log.service("ProbeInterval defaults to " + intervalTime / 1000 + " seconds");
         }
 
-	start();
+    start();
         return true;
 
     }
-
-
-
 
     /**
      * Starts the thread for the task scheduler
      */
     protected void start() {
-        Thread kicker = new Thread(this, "MMServers");
-        kicker.setDaemon(true);
-        kicker.start();
+        MMBaseContext.startThread(this,"MMServers");
     }
-
 
     /**
      * @javadoc
@@ -146,7 +140,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      * set the state of the server (used in clusters)
      */
     public void run() {
-        while (true) {
+        while (!mmb.isShutdown()) {
             long thisTime = intervalTime;
             if (mmb != null && mmb.getState()) {
                 doCheckUp();
@@ -154,9 +148,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                 // shorter wait, the server is starting
                 thisTime = 2 * 1000; // wait 2 second
             }
-            
+
             // wait the defined time
-            try { 
+            try {
                 Thread.sleep(thisTime);
             } catch (InterruptedException e) {
                 log.debug(e.toString());
@@ -164,15 +158,15 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             }
         }
     }
-    
+
     /**
      * @javadoc
      */
     private void doCheckUp() {
-	try {
+    try {
             boolean imoke=false;
-  	    String machineName = mmb.getMachineName();
-      	    host = mmb.getHost();
+        String machineName = mmb.getMachineName();
+            host = mmb.getHost();
             log.debug("doCheckUp(): machine="+machineName);
             Enumeration e=search("");
             while (e.hasMoreElements()) {
@@ -187,9 +181,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             if (imoke==false) {
                 createMySelf(machineName);
             }
-	} catch(Exception e) {
+    } catch(Exception e) {
             log.error("Something went wrong in MMServers Checkup Thread" + Logging.stackTrace(e));
-	}
+    }
     }
 
     /**
@@ -335,10 +329,10 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                         try {
                             port=Integer.parseInt(tmp.substring(pos+1));
                         } catch(NumberFormatException nfe) {
-							log.error("Can't parse portnr since value isnt integer but "+tmp.substring(pos+1));
-							log.error(nfe.getMessage());
-							log.error(Logging.stackTrace(nfe));
-						}
+                            log.error("Can't parse portnr since value isnt integer but "+tmp.substring(pos+1));
+                            log.error(nfe.getMessage());
+                            log.error(Logging.stackTrace(nfe));
+                        }
                     }
 
                     try {
@@ -349,9 +343,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                         name2driver.put(name,pd);
                         log.info("Started driver("+pd+")");
                     } catch (Exception f) {
-						log.error("Can't load protocolclass("+protocol+")");
-						log.error(f.getMessage());
-						//log.error(Logging.stackTrace(f));
+                        log.error("Can't load protocolclass("+protocol+")");
+                        log.error(f.getMessage());
+                        //log.error(Logging.stackTrace(f));
                     }
                 }
             }
@@ -375,11 +369,11 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         if (e.hasMoreElements()) {
             return (MMObjectNode)e.nextElement();
         } else {
-			log.info("Can't find any mmserver node with name="+name);
+            log.info("Can't find any mmserver node with name="+name);
             return null;
         }
     }
-    
+
     /**
      * @return Returns the intervalTime.
      */
@@ -392,7 +386,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     public List getActiveServers() {
         List activeServers = new ArrayList();
-        
+
         String machineName = mmb.getMachineName();
         log.debug("getActiveServers(): machine="+machineName);
         Enumeration e=search("");

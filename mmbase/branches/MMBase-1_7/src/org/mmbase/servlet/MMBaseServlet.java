@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.29.2.6 2005-07-20 08:45:42 marcel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.29.2.7 2005-11-28 18:41:40 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -91,7 +91,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     private long start = System.currentTimeMillis();
 
-    /** 
+    /**
      * Boolean indicating whether MMBase has been started. Used by {@link #checkInited}, set to true {@link #by setMMBase}.
      * @since MMBase-1.7.2
      */
@@ -103,7 +103,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * Defaults to 60 seconds, can be configured in web.xml with the 'retry-after' propery on the servlets.
      * @since MMBase-1.7.2
      */
-    protected int retryAfter = 60;    
+    protected int retryAfter = 60;
 
 
     /**
@@ -164,7 +164,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         mmbaseInited = true;
     }
 
-    
+
     /**
      * Used in checkInited.
      */
@@ -177,8 +177,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @since MMBase-1.7
      */
     public void setInitException(ServletException e) {
-        initException = e;        
-    }    
+        initException = e;
+    }
 
 
     /**
@@ -210,7 +210,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         if (initialize) {
             // used to determine the accurate way to access a servlet
             try {
-               
+
                 MMBaseContext.initHtmlRoot();
                 // get config and do stuff.
                 String path = MMBaseContext.getHtmlRoot() + "/WEB-INF/web.xml";
@@ -227,7 +227,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                         if (!(pattern.equals(""))) {
                             List ls = (List) servletMappings.get(name);
                             if (ls == null) {
-                                ls = new ArrayList(); 
+                                ls = new ArrayList();
                                 servletMappings.put(name, ls);
                             }
                             ls.add(pattern);
@@ -348,7 +348,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         if (m != null && (priority.intValue() < m.priority)) return;
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e != null && (priority.intValue() < e.priority)) return;
-        log.service("Associating function '" + function + "' with servlet name " + servletName + 
+        log.service("Associating function '" + function + "' with servlet name " + servletName +
            (e == null ? ""  : " (previous assocation was with " + e.name +")")+
            (m == null ? ""  : " (previous assocation was with " + m.name +")"));
         associatedServlets.put(function, new ServletEntry(servletName, priority));
@@ -403,18 +403,18 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     protected  boolean checkInited(HttpServletResponse res) throws ServletException, IOException  {
         if (initException != null) {
-            throw initException;            
+            throw initException;
         }
-        
+
         if (! mmbaseInited) {
             res.setHeader("Retry-After", "" + retryAfter);
             res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
-        } 
-        return mmbaseInited;        
+        }
+        return mmbaseInited;
     }
-    
 
-        
+
+
 
     /**
      * The service method is extended with calls for the refCount
@@ -424,7 +424,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      */
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
         if (!checkInited(res)) {
-            return;            
+            return;
         }
         incRefCount(req);
         try {
@@ -497,26 +497,26 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             String url = getRequestURL(req) + " " + req.getMethod();
             int curCount;
             synchronized (servletCountLock) {
-                servletCount++; 
-                curCount = servletCount; 
+                servletCount++;
+                curCount = servletCount;
                 printCount++;
                 ReferenceCountServlet s = (ReferenceCountServlet) runningServlets.get(this);
                 if (s==null) {
                     runningServlets.put(this, new ReferenceCountServlet(this, url, 0));
-                } else { 
-                    s.refCount++; 
-                    s.uris.add(url); 
+                } else {
+                    s.refCount++;
+                    s.uris.add(url);
                 }
             }// sync
 
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
                 if (curCount > 0) {
-                    synchronized(servletCountLock) {        
+                    synchronized(servletCountLock) {
                         log.info("Running servlets: " + curCount);
                         for(Iterator e = runningServlets.values().iterator(); e.hasNext();)
                             log.info(e.next());
                     }
-                    
+
                 }// curCount>0
             }
         }
@@ -546,12 +546,17 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 servletMappings.clear();
                 log.info("No MMBase servlets left; modules can be shut down");
                 Module.shutdownModules();
+                ThreadGroup threads = MMBaseContext.getThreadGroup();
+                log.service("Send interrupt to " + threads.activeCount() + " threads in " +
+                        threads + " of " + threads.getParent());
+                threads.interrupt();
+                Thread.yield();
                 Logging.shutdown();
                 mmbase = null;
             }
         }
    }
-    
+
     /**
      * This class maintains current state information for a running servlet.
      * It contains a reference count, as well as a list of URI's being handled by the servlet.
