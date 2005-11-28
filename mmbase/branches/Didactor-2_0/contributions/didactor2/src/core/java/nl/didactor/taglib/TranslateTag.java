@@ -14,7 +14,7 @@ import org.mmbase.util.logging.Logging;
  * abstract locale.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class TranslateTag extends BodyTagSupport { 
+public class TranslateTag extends BodyTagSupport {
     private static Logger log = Logging.getLoggerInstance(TranslateTag.class.getName());
 
     // These parameters are set with the different setXyz() methods
@@ -23,6 +23,13 @@ public class TranslateTag extends BodyTagSupport {
     private String locale;
     private String debug;
     private String key;
+
+
+    private String sArg0;
+    private String sArg1;
+    private String sArg2;
+    private String sArg3;
+    private String sArg4;
 
     public void setKey(String key) {
         log.debug("set key to [" + key + "]");
@@ -37,6 +44,28 @@ public class TranslateTag extends BodyTagSupport {
     public void setDebug(String value) {
         this.debug = value;
     }
+
+
+    public void setArg0(String value) {
+       this.sArg0 = value;
+    }
+
+    public void setArg1(String value) {
+       this.sArg1 = value;
+    }
+
+    public void setArg2(String value) {
+       this.sArg2 = value;
+    }
+
+    public void setArg3(String value) {
+       this.sArg3 = value;
+    }
+
+    public void setArg4(String value) {
+       this.sArg4 = value;
+    }
+
 
     public int doEndTag() throws JspTagException {
         String translateLocale = "";
@@ -67,7 +96,7 @@ public class TranslateTag extends BodyTagSupport {
             pageContext.setAttribute("t_debug", debug);
             translateDebug = debug;
         }
-        
+
         log.debug("Getting translation table for locale '" + translateLocale + "'");
         TranslateTable tt = new TranslateTable(translateLocale);
         String translation = "";
@@ -83,6 +112,23 @@ public class TranslateTag extends BodyTagSupport {
             if ("true".equals(translateDebug)) {
                 translation = "???[" + key + "]???";
             }
+        }
+
+        //Arguments like arg0="John" arg1="eats" arg2="an apple"
+        if(sArg0 != null){
+           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg0);
+        }
+        if(sArg1 != null){
+           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg1);
+        }
+        if(sArg2 != null){
+           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg2);
+        }
+        if(sArg3 != null){
+           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg3);
+        }
+        if(sArg4 != null){
+           translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg4);
         }
 
         try {
