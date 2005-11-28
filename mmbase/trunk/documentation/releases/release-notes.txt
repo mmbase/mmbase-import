@@ -24,7 +24,7 @@ General New Features:
 --------------------
 [1.8.0]
 - Applications:
-  Code in mmbase is mroe clearly separted in 'core' and 'applications'. 
+  Code in mmbase is more clearly separated in 'core' and 'applications'. 
 
   Some code has moved to a separate application:
    - Vwms (virtual web masters) have been removed from the core and placed in a
@@ -34,7 +34,7 @@ General New Features:
 
   New applications:
    - Crontab is a new application that provides scheduling.
-   - Oscache-cache is a new application that implements teh MMAbse cache using oscache
+   - Oscache-cache is a new application that implements the MMBase cache using oscache
    - Packaging is an application that offers an alternative for the sharing and distribution of 
      'packages' of mmbase code and data.
    - Richtext application provides support for kupu-editor, and we basicly have 'rich text' now,
@@ -101,7 +101,12 @@ General New Features:
   classes, improvement of performance, and the simplifixation (or elimination) of JDBC module 
   in favor of a stand-alone datasource implementation.
 
-- maven build. Nico?
+- maven build. This is not an improvement on the MMBase code itself, but an alternative
+  for the current ant build system. The maven build does not yet build everything the current ant
+  build does. The core and frequently-used applications are build by maven. The maven build provides
+  an eady way to use MMBase artifacts in custom projects. The maven mmbase-modules plugin creates
+  mmbase-module artifacts which include jars, config files, templates and examples. The plugin
+  can also add these mmbase-module artifacts into a war artifact (see the example-webapp).
 
 - better blob-caching.
 
