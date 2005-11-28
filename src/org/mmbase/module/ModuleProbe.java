@@ -11,6 +11,7 @@ package org.mmbase.module;
 
 import java.util.*;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: ModuleProbe.java,v 1.8 2003-03-26 10:15:20 kees Exp $
+ * @version $Id: ModuleProbe.java,v 1.8.2.1 2005-11-28 19:45:48 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class ModuleProbe implements Runnable {
@@ -46,9 +47,7 @@ public class ModuleProbe implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             log.service("Starting main thread of ModuleProbe");
-            kicker = new Thread(this,"ModuleProbe");
-            kicker.setDaemon(true);
-            kicker.start();
+            kicker = MMBaseContext.startThread(this,"ModuleProbe");
         }
     }
     

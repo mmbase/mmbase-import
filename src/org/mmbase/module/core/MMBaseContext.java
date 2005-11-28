@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.40.2.1 2005-11-28 18:41:40 pierre Exp $
+ * @version $Id: MMBaseContext.java,v 1.40.2.2 2005-11-28 19:45:48 pierre Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -99,7 +99,7 @@ public class MMBaseContext {
     }
 
     /**
-     * Returns the MAMsb ethread group.
+     * Returns the MMBase thread group.
      */
     public static ThreadGroup getThreadGroup() {
         return threadGroup;
