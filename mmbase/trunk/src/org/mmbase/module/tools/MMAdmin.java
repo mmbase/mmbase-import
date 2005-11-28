@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.127 2005-11-28 20:53:07 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.128 2005-11-28 22:02:12 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -63,7 +63,12 @@ public class MMAdmin extends ProcessorModule {
     private boolean kioskmode = false;
     
     {
-        addFunction(new GetNodeListFunction("APPLICATIONS", new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD}));
+        addFunction(new GetNodeListFunction("APPLICATIONS", PARAMS_PAGEINFO));
+        addFunction(new GetNodeListFunction("BUILDERS", PARAMS_PAGEINFO));
+        addFunction(new GetNodeListFunction("MODULES", PARAMS_PAGEINFO));
+        addFunction(new GetNodeListFunction("DATABASES", PARAMS_PAGEINFO));
+        addFunction(new GetNodeListFunction("MULTILEVELCACHEENTRIES", PARAMS_PAGEINFO));
+        addFunction(new GetNodeListFunction("NODECACHEENTRIES", PARAMS_PAGEINFO));
     }
     
 
@@ -119,7 +124,7 @@ public class MMAdmin extends ProcessorModule {
         StringTokenizer tok = new StringTokenizer(line, "-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd = tok.nextToken();
-            log.info("Cmd '" + cmd + "'");
+            log.debug("Cmd '" + cmd + "'");
             if (!checkUserLoggedOn(sp, cmd, false)) {
                 log.warn("Could not find cloud for " + sp + " returning empty list for " + tagger + "/" + value);
                 return new Vector();
@@ -137,7 +142,6 @@ public class MMAdmin extends ProcessorModule {
                 if ((tok != null) && (tok.hasMoreTokens())) {
                     tok.nextToken();
                 }
-                log.info("Getting bulider list");
                 return getBuildersList();
             }
             if (cmd.equals("FIELDS")) {
@@ -189,7 +193,10 @@ public class MMAdmin extends ProcessorModule {
     private boolean checkUserLoggedOn(PageInfo sp, String cmd, boolean adminonly) {
 
         if (sp.getCloud() != null) {
-            return (!adminonly) || sp.getCloud().getUser().getRank().getInt() >= Rank.ADMIN.getInt();
+            if ((!adminonly) || sp.getCloud().getUser().getRank().getInt() >= Rank.ADMIN.getInt()) {
+                log.debug("Found cloud " + sp.getCloud().getUser());
+                return true;
+            }
         }
         // check if the we are using jsp, and logged on as user with rank is admin, this means that
         // there is some user with rank Administrator in the session...
@@ -223,6 +230,7 @@ public class MMAdmin extends ProcessorModule {
         for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
             cmdline = (String)h.nextElement();
             if (!checkAdmin(sp, cmdline)) {
+                log.warn("Could not find cloud for " + sp + " returning false for process " + cmds + "/" + vars);
                 return false;
             }
             StringTokenizer tok = new StringTokenizer(cmdline, "-\n\r");
@@ -242,8 +250,9 @@ public class MMAdmin extends ProcessorModule {
                 } catch (SearchQueryException e) {
                     log.warn(Logging.stackTrace(e));
                 }
-                if (vars != null)
+                if (vars != null) {                    
                     vars.put("RESULT", lastmsg);
+                }
             } else if (token.equals("SAVE")) {
                 String appname = (String)cmds.get(cmdline);
                 String savepath = (String)vars.get("PATH");
@@ -677,29 +686,26 @@ public class MMAdmin extends ProcessorModule {
      */
     Vector getBuildersList() {
         Versions ver = (Versions)mmb.getMMObject("versions");
-        if (ver == null) {
-            log.warn("Versions builder not installed, Can't get to builders");
-            return null;
-        }
         Vector results = new Vector();
         ResourceLoader builderLoader = mmb.getBuilderLoader();
         Iterator builders = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true).iterator();
         while (builders.hasNext()) {
             String builderResource = (String) builders.next();
             String builderName = ResourceLoader.getName(builderResource);
-            BuilderReader reader = mmb.getBuilderReader(builderResource);
+            BuilderReader reader = mmb.getBuilderReader(builderName);
             if (reader == null) {
-                continue;
-            } else {
                 log.error("Did not find reader for " + builderResource);
+                continue;
             }
             results.add(builderResource);
             results.add("" + reader.getVersion());
             int installedversion = -1;
-            try {
-                installedversion = ver.getInstalledVersion(builderName, "builder");
-            } catch (SearchQueryException e) {
-                log.warn(Logging.stackTrace(e));
+            if (ver != null) {
+                try {
+                    installedversion = ver.getInstalledVersion(builderName, "builder");
+                } catch (SearchQueryException e) {
+                    log.warn(Logging.stackTrace(e));
+                }
             }
             if (installedversion == -1) {
                 results.add("no");

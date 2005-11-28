@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.43 2005-09-21 21:16:11 michiel Exp $
+ * @version $Id: JDBC.java,v 1.44 2005-11-28 22:02:12 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -48,6 +48,11 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private String defaultpassword;
     private long probeTime;
     private long maxLifeTime = 120000;
+
+    {
+        addFunction(new GetNodeListFunction("POOLS", PARAMS_PAGEINFO));
+        addFunction(new GetNodeListFunction("CONNECTIONS", PARAMS_PAGEINFO));
+    }    
 
     public void onload() {
         getProps();

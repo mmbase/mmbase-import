@@ -25,10 +25,16 @@ import org.mmbase.util.xml.ApplicationReader;
 import org.xml.sax.InputSource;
 
 
+/**
+ * Application installations functionalite of MMAdmin.
+ * 
+ * @author Nico Klasens
+ * @since MMBase-1.8
+ * @version $Id: ApplicationInstaller.java,v 1.5 2005-11-28 22:02:12 michiel Exp $
+ */
 public class ApplicationInstaller {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(ApplicationInstaller.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ApplicationInstaller.class);
 
     /**
      * reference to MMBase
