@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Each one contains a Queue of Image request jobs it has to do, which is constantly watched for new jobs.
  *
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.17.2.1 2005-08-23 11:52:18 michiel Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.17.2.2 2005-11-28 18:41:40 pierre Exp $
  * @see ImageRequest
  */
 public class ImageRequestProcessor implements Runnable {
@@ -54,21 +54,21 @@ public class ImageRequestProcessor implements Runnable {
      * Starts the thread for this ImageRequestProcessor.
      */
     protected void start() {
-        Thread kicker = new Thread(this, "ImageConvert[" + processorId +"]");
-        kicker.setDaemon(true);
-        kicker.start();
+        MMBaseContext.startThread(this, "ImageConvert[" + processorId +"]");
     }
-
 
     // javadoc inherited (from Runnable)
     public void run() {
-        while (true) {
+        MMBase mmb = icaches.getMMBase();
+        while (!mmb.isShutdown()) {
             try {
                 log.debug("Waiting for request");
                 ImageRequest req = (ImageRequest) queue.get();
-                log.debug("Starting request");
-                processRequest(req);
-                log.debug("Done with request");
+                if (req != null) {
+                    log.debug("Starting request");
+                    processRequest(req);
+                    log.debug("Done with request");
+                }
             } catch (Exception e) {
                 log.error(Logging.stackTrace(e));
             }

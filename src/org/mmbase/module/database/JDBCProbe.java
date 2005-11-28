@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -17,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * remove bad connections works using a callback into JDBC.
  *
  *
- * @version $Id: JDBCProbe.java,v 1.9 2004-03-15 16:18:48 michiel Exp $
+ * @version $Id: JDBCProbe.java,v 1.9.2.1 2005-11-28 18:41:40 pierre Exp $
  * @author Daniel Ockeloen
 
 */
@@ -35,9 +36,7 @@ public class JDBCProbe implements Runnable {
     public JDBCProbe(JDBC parent, int ct) {
         this.parent = parent;
         checkTime = ct * 1000;
-	Thread t = new Thread(this, "JDBCProbe");
-	t.setDaemon(true);
-	t.start();
+	MMBaseContext.startThread(this, "JDBCProbe");
     }
     
     /**
@@ -50,6 +49,7 @@ public class JDBCProbe implements Runnable {
                 Thread.sleep(checkTime);
             } catch(InterruptedException e) { 
                 log.info("Interrupted " + e.getMessage());
+                return;
             }
 
             try {

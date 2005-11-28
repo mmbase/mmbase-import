@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.16 2004-02-13 13:38:34 pierre Exp $
+ * @version $Id: LinkChecker.java,v 1.16.2.1 2005-11-28 18:41:40 pierre Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -68,9 +68,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 
         mmbase = MMBase.getMMBase();
         log.info("Module LinkChecker started");
-        Thread thread = new Thread(this, "LinkChecker");
-        thread.setDaemon(true);
-        thread.start();
+        MMBaseContext.startThread(this, "LinkChecker");
     }
 
     public String getModuleInfo() {
