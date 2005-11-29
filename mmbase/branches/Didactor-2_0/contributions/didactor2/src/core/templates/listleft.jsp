@@ -88,7 +88,7 @@
                <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$tmpreferids">
                            <mm:param name="education"><%= arrstrEducation[0] %></mm:param>
                            <mm:param name="class"><%= arrstrEducation[2] %></mm:param>
-                        </mm:treefile>" class="users" />
+                        </mm:treefile>" class="users">
                </mm:compare>
 
 
