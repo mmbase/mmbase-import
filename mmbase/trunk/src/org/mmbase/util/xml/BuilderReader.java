@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.52 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.53 2005-11-29 17:19:05 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -621,11 +621,11 @@ public class BuilderReader extends DocumentReader {
         // Backwards compatible 'guitype' support
         if (guiTypeElement != null && collector != null) {
             String guiType = getElementValue(guiTypeElement);
-            // the guitype 'string' is deperecated, and replaced with teh guitype 'line'
-            // This only appleid to values entered for tehd eprecated guitype elmenet, as these were used in old builders
+            // The guitype is deprecated. Normally coincides with datatype's id.
+            // 'string' is an exception, it is surrogated with the datatype 'line'.
             if ("string".equals(guiType)) {
-                guiType="line";
-                log.warn("Replaced deprecated guitype 'string' for field " + builder.getTableName() + "." + fieldName + " with guitype 'line'.");
+                guiType = "line";
+                log.service("Converted deprecated guitype 'string' for field " + builder.getTableName() + "." + fieldName + " with datatype 'line'.");
             }
 
             dataType = collector.getDataTypeInstance(guiType, baseDataType);
