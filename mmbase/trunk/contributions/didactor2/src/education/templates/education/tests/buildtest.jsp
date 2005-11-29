@@ -18,14 +18,15 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
+<%-- find user's copybook --%>
+<mm:node number="$user">
+   <%@include file="find_copybook.jsp"%>
+</mm:node>
+
 <%-- remove old results (or use it) --%>
 <mm:present referid="madetest" inverse="true">
 
-   <%-- find user's copybook --%>
-   <mm:node number="$user">
-      <%@include file="find_copybook.jsp"%>
-   </mm:node>
-
+ <mm:node number="$copybookNo" notfound="skip">
    <mm:node referid="learnobject">
       <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
          <mm:constraint field="copybooks.number" referid="copybookNo"/>
@@ -51,6 +52,7 @@
 
       </mm:relatednodescontainer>
    </mm:node>
+ </mm:node>
 </mm:present>
 
 <html>
@@ -60,6 +62,8 @@
 </head>
 <body>
 <div class="learnenvironment">
+
+<mm:node number="$copybookNo" notfound="skip">
 
 <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 <form name="questionform" action="<mm:treefile page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids">
@@ -247,6 +251,8 @@
 </mm:node>
 </form>
 
+</mm:node>
+</div>
 </body>
 </html>
 </mm:cloud>
