@@ -17,10 +17,10 @@
 
             <%@include file="tree_shift_child.jsp" %>
 
-
+            <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="learnblocks" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.treatlearnobject" /> <mm:nodeinfo type="type" />' target="text">nieuwe leerblok</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -36,10 +36,10 @@
 
             <%@include file="tree_shift_child.jsp" %>
 
-
+            <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="pages" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/pages/pages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.treatlearnobject" /> <mm:nodeinfo type="type" />' target="text">nieuwe pagina</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/pages/pages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -55,10 +55,10 @@
 
             <%@include file="tree_shift_child.jsp" %>
 
-
+            <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="tests" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.treatlearnobject" /> <mm:nodeinfo type="type" />' target="text">nieuwe toets</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -74,10 +74,10 @@
 
             <%@include file="tree_shift_child.jsp" %>
 
-
+            <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="flashpages" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/flashpages/flashpages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.treatlearnobject" /> <mm:nodeinfo type="type" />' target="text">nieuwe flash-pagina</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/flashpages/flashpages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
          </tr>
       </table>
       <table border="0" cellpadding="0" cellspacing="0">
@@ -93,7 +93,7 @@
 
             <%@include file="tree_shift_child.jsp" %>
 
-
+            <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="htmlpages" type="guitype"/></mm:import>
             <mm:compare referid="the_last_element" value="true" inverse="true">
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             </mm:compare>
@@ -101,7 +101,7 @@
                <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
             </mm:compare>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/htmlpages/htmlpages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.treatlearnobject" /> <mm:nodeinfo type="type" />' target="text">nieuwe html-pagina</a></nobr></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/htmlpages/htmlpages-origin&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="education.new" /> <%= dummyName.toLowerCase() %>' target="text"><di:translate key="education.new" /> <%= dummyName.toLowerCase() %></a></nobr></td>
          </tr>
       </table>
    </mm:compare>
