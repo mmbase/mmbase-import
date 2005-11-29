@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.20.2.5 2005-05-20 10:34:52 pierre Exp $
+    @version $Id: prompts.xsl,v 1.20.2.6 2005-11-29 14:15:20 andre Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -15,18 +15,12 @@
   <!-- prompts for starting a editwizard -->
   <xsl:variable name="tooltip_edit_wizard">Change...</xsl:variable>
   <xsl:template name="prompt_edit_wizard">
-    <!--img src="{$mediadir}neworg.gif" class="imgbutton">
-      <xsl:choose>
-        <xsl:when test="prompt">
-          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="alt"><xsl:value-of select="$tooltip_edit_wizard" /></xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
-    </img-->
     <xsl:choose>
-      <xsl:when test="prompt"><xsl:call-template name="prompt"/></xsl:when>
+      <xsl:when test="prompt">
+        <xsl:call-template name="i18n">
+          <xsl:with-param name="nodes" select="prompt"/>
+        </xsl:call-template>
+      </xsl:when>
       <xsl:otherwise><xsl:value-of select="$tooltip_edit_wizard" /></xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -34,12 +28,18 @@
   <xsl:variable name="tooltip_add_wizard">New</xsl:variable>
   <xsl:template name="prompt_add_wizard">
     <xsl:if test="prompt">
-      <xsl:call-template name="prompt"/>
+      <xsl:call-template name="i18n">
+        <xsl:with-param name="nodes" select="prompt"/>
+      </xsl:call-template>
     </xsl:if>
     <img src="{$mediadir}new.gif" class="imgbutton">
       <xsl:choose>
         <xsl:when test="prompt">
-          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
+          <xsl:attribute name="alt">
+            <xsl:call-template name="i18n">
+              <xsl:with-param name="nodes" select="prompt"/>
+            </xsl:call-template>
+          </xsl:attribute>
         </xsl:when>
         <xsl:otherwise>
           <xsl:attribute name="alt"><xsl:value-of select="$tooltip_add_wizard" /></xsl:attribute>
