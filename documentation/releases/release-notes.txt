@@ -115,6 +115,8 @@ General New Features:
 - Core improvements:
    - MMObjectNode can now be serialized
 
+- query-logging: max-life-time setting.
+
 Taglib New Features:
 -------------------
 - Bunch of new tags/attributes (see documentation). E.g. more complete set of has- tags
@@ -193,7 +195,14 @@ Of course we try to mimimize this, but sometimes it happens...
 - Implement 'node' functions on bridge, not core. This ensure awareness, and that functions can be
   called through MMCI. It seems a bit odd to use node interfaces in an otherwise core context, but
   functions are exposed through the bridge, and exposing core object to the outside is even odder.
-  
+
+
+- MMBase.getConnection was dropped. This can be replaced by:
+  import javax.sql.*;
+  import org.mmbase.storage.implementation.database.Attributes;
+  DataSource dataSource = (DataSource) mmbase.getStorageManagerFactory().getAttribute(Attributes.DATA_SOURCE);
+     return dataSource.getConnection();
+ }
 
 
 ========================
