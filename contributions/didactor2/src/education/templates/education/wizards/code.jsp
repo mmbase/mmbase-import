@@ -255,7 +255,7 @@
                      <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                      <mm:import id="template" reset="true"><mm:write referid="listjsp"/>&wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes<mm:write referid="forbidtemplate" escape="text/plain" /></mm:import>
-                     <td><nobr>&nbsp;<a href='<mm:write referid="template" escape="text/plain" />' title='Bewerk <%= arrstrContentMetadataConfig[f][0] %>' target="text"><%= arrstrContentMetadataConfig[f][0] %></a></nobr></td>
+                     <td><nobr>&nbsp;<a href='<mm:write referid="template" escape="text/plain" />' title='<di:translate key="education.edit" /> <%= arrstrContentMetadataConfig[f][0] %>' target="text"><%= arrstrContentMetadataConfig[f][0] %></a></nobr></td>
                   </tr>
                </table>
                <%
@@ -690,7 +690,7 @@
 
 
                         <mm:remove referid="type_of_node"/>
-                        <mm:nodeinfo id="type_of_node" type="type">
+                        <mm:nodeinfo id="type_of_node" type="type" jspvar="dummyName" vartype="String">
 
                             <mm:compare referid="type_of_node" value="mcquestions">
                                <mm:import id="mark_error" reset="true">Een multiple-choice vraag moet minstens 1 goed antwoord hebben</mm:import>
@@ -698,39 +698,39 @@
                                   <mm:import id="mark_error" reset="true"></mm:import>
                                </mm:relatednodes>
 
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/mcquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/mcquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty></a></nobr></td>
                             </mm:compare>
 
                             <mm:compare referid="type_of_node" value="couplingquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/couple/couplingquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/couple/couplingquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
 
                             <mm:compare referid="type_of_node" value="dropquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/dropquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/dropquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
 
                             <mm:compare referid="type_of_node" value="hotspotquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/hotspotquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/hotspotquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
 
                             <mm:compare referid="type_of_node" value="openquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/openquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/openquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
 
                             <mm:compare referid="type_of_node" value="rankingquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/rankingquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/rankingquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
 
                             <mm:compare referid="type_of_node" value="valuequestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/valuequestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/valuequestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
                             
                             <mm:compare referid="type_of_node" value="fillquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/fillquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/fillquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
 
                             <mm:compare referid="type_of_node" value="fillselectquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/fillselectquestions&objectnumber=<mm:field name="number"/>' title='bewerk object' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/fillselectquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
                         </mm:nodeinfo>
                      </tr>
@@ -906,7 +906,8 @@
                                  <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_node_0_0_<%= iLearnblockCounter %>'/></td>
                                  <td>
                                    <nobr>
-                                     <a href="<mm:write referid="wizardjsp"/>&wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />" title="<di:translate key="education.treatlearnobject" /> <mm:nodeinfo type="type" />" target="text"><mm:field name="name" /></a>
+                                     <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo type="guitype"/></mm:import>
+                                     <a href="<mm:write referid="wizardjsp"/>&wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />" title="<di:translate key="education.editexisting" /> <%= dummyName.toLowerCase() %>" target="text"><mm:field name="name" /></a>
                                      <mm:present referid="pdfurl">
                                        <mm:compare referid="this_node_type" value="pages">
                                          <a href="<mm:write referid="pdfurl" />&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></a>

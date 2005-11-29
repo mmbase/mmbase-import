@@ -1,6 +1,6 @@
 <mm:node number="<%= learnobjects2_number %>">
    <%@include file="whichimage.jsp"%>
-   <mm:import id="objecttype" reset="true"><mm:nodeinfo type="type" /></mm:import>
+   <mm:import id="objecttype" reset="true" jspvar="dummyName" vartype="String"><mm:nodeinfo type="type" /></mm:import>
 
    <mm:compare referid="objecttype" valueset="couplingquestions,dropquestions,hotspotquestions,mcquestions,openquestions,rankingquestions,valuequestions,fillquestions,fillselectquestions" inverse="true">
    
@@ -32,7 +32,7 @@
                <td><img src="gfx/edit_learnobject.gif" width="16" border="0" align="middle" /></td>
                <td>&nbsp;
                  <nobr>
-                   <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />' title='bewerk object' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
+                   <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
                    <mm:present referid="pdfurl">
                      <mm:compare referid="objecttype" value="pages">
                        <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></a>
@@ -93,7 +93,7 @@
                </mm:compare>
                <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_<%= learnobjects2_number %>"/></td>
                <td>&nbsp;<nobr>
-                 <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />' title='bewerk object' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
+                 <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
                  <mm:present referid="pdfurl">
                    <mm:compare referid="objecttype" value="pages">
                      <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></a>
