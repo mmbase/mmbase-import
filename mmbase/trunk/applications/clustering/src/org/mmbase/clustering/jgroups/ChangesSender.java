@@ -12,6 +12,7 @@ package org.mmbase.clustering.jgroups;
 import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * ChangesSender is a thread object sending the nodes found in the
  * sending queue over the multicast 'channel'.
- * 
+ *
  * This is the JGroups variant.
  *
  * @see org.mmbase.clustering.jgroups.Multicast
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.3 2005-11-30 15:58:03 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -64,9 +65,7 @@ public class ChangesSender implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this, "MulticastSender");
-            kicker.setDaemon(true);
-            kicker.start();
+            kicker = MMBaseContext.startThread(this, "MulticastSender");
             log.debug("MulticastSender started");
         }
     }
@@ -96,7 +95,7 @@ public class ChangesSender implements Runnable {
      * on the JChannel. send() will throw an exception in the
      * cases that the channel is closed or that no channel
      * has been joined.
-     * 
+     *
      * @todo check what encoding to use for getBytes()
      */
     private void doWork() {
@@ -105,18 +104,23 @@ public class ChangesSender implements Runnable {
         byte[] message = null;
 
         while(kicker != null) {
-            message = (byte[]) nodesToSend.get();
-            msg = new Message(null, null, message);
             try {
-                if (log.isDebugEnabled()) {
-                    log.debug("SEND=>" + message);
+                message = (byte[]) nodesToSend.get();
+                msg = new Message(null, null, message);
+                try {
+                    if (log.isDebugEnabled()) {
+                        log.debug("SEND=>" + message);
+                    }
+                    channel.send(msg);
+                } catch (ChannelException e) {
+                    log.error("Can't send message" + message);
+                    log.error(Logging.stackTrace(e));
                 }
-                channel.send(msg);
-            } catch (ChannelException e) {
-                log.error("Can't send message" + message);
-                log.error(Logging.stackTrace(e));
+                outcount++;
+            } catch (InterruptedException e) {
+                log.debug(Thread.currentThread().getName() +" was interruped.");
+                break;
             }
-            outcount++;
         }
     }
 }

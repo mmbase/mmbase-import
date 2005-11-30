@@ -67,9 +67,7 @@ public class FileCopier implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this,"FileCopier");
-            kicker.setDaemon(true);
-            kicker.start();
+            kicker = MMBaseContext.startThread(this,"FileCopier");
         }
     }
 
@@ -106,13 +104,18 @@ public class FileCopier implements Runnable {
 
         log.debug("Active");
         while (kicker!=null) {
-            afile=(aFile2Copy)files.get();
-            if (afile!=null) {
-                log.info("Copying "+afile.srcpath+"/"+afile.filename);
-                SCPcopy scpcopy=new SCPcopy(afile.sshpath,afile.dstuser,afile.dsthost,afile.dstpath);
-                scpcopy.copy(afile.srcpath,afile.filename);
-            } else {
-                log.error("afile is null ?");
+            try {
+                afile=(aFile2Copy)files.get();
+                if (afile!=null) {
+                    log.info("Copying "+afile.srcpath+"/"+afile.filename);
+                    SCPcopy scpcopy=new SCPcopy(afile.sshpath,afile.dstuser,afile.dsthost,afile.dstpath);
+                    scpcopy.copy(afile.srcpath,afile.filename);
+                } else {
+                    log.error("afile is null ?");
+                }
+            } catch (InterruptedException e) {
+                log.debug(Thread.currentThread().getName() +" was interruped.");
+                break;
             }
         }
     }

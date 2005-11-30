@@ -14,6 +14,8 @@ import java.io.*;
 import javax.servlet.*;
 import java.text.DateFormat;
 
+import org.mmbase.core.util.DaemonTask;
+import org.mmbase.core.util.DaemonThread;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.45 2005-10-04 23:05:49 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.46 2005-11-30 15:58:04 pierre Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -33,11 +35,12 @@ public class MMBaseContext {
     private static boolean htmlRootInitialized = false;
     private static ServletContext sx;
     private static String userDir;
-   
+
     private static String htmlRoot;
     private static String htmlRootUrlPath = "/";
     private static boolean htmlRootUrlPathInitialized = false;
     private static String outputFile;
+    private static ThreadGroup threadGroup;
 
     /**
      * Initialize MMBase using a <code>ServletContext</code>. This method will
@@ -116,16 +119,34 @@ public class MMBaseContext {
      * @throws Exception  if mmbase.config is not set or is not a
      *                    directory or doesn't contain the expected
      *                    config files.
-     *
      */
-
-
-
     public synchronized static void init() throws Exception {
         init(System.getProperty("mmbase.config"), true);
     }
 
+    /**
+     * Returns the MMBase thread group.
+     */
+    public static ThreadGroup getThreadGroup() {
+        return threadGroup;
+    }
 
+    /**
+     * Starts a daemon thread using the MMBase thread group.
+     * @param task the taslk to run as a thread - either a Runnable or a DaemonTask object
+     * @param name the thread's name
+     */
+    public static Thread startThread(Object task, String name) {
+        DaemonThread kicker;
+        if (task instanceof DaemonTask) {
+            kicker = new DaemonThread(name);
+            kicker.setTask((DaemonTask)task);
+        } else {
+            kicker = new DaemonThread((Runnable)task, name);
+        }
+        kicker.start();
+        return kicker;
+    }
 
     private static void initOutputfile(String o) {
         outputFile = o;
@@ -152,10 +173,12 @@ public class MMBaseContext {
         log.info("MMBase logging initialized.");
         log.info("===========================");
         log.info("user.dir          : " + userDir);
-        log.info("configuration     : " + ResourceLoader.getConfigurationRoot());
+        String configPath = ResourceLoader.getConfigurationRoot().toString();
+        log.info("configuration     : " + configPath);
         log.info("webroot           : " + ResourceLoader.getWebRoot());
-
-        log.info("version           : " + org.mmbase.Version.get());
+        String version = org.mmbase.Version.get();
+        threadGroup = new ThreadGroup(version + ":" + configPath);
+        log.info("version           : " + version);
         Runtime rt = Runtime.getRuntime();
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte");
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");

@@ -61,7 +61,7 @@ public abstract class MMBaseTest extends TestCase {
             System.err.println("ERROR: failed to load HSQLDB JDBC driver." + e.getMessage());
             return;
         }
-        while(true) {
+        while(!mmb.isShutDown() {
             try {
                 Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/test", "sa", "");
                 // ok!, elaredy running one.
@@ -100,7 +100,7 @@ public abstract class MMBaseTest extends TestCase {
     public static void main(String[] args) {
         try {
             startMMBase();
-            while(true) {
+            while(!mmb.isShutDown() {
                 
             }
         } catch (Exception e) {

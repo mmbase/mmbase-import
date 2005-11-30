@@ -18,7 +18,7 @@ import java.util.*;
  * In 1.5, this class need to be replaced with the java.util.concurrent.BlockingQueue&lt;E&gt; interface.
  *
  * @author vpro
- * @version $Id: Queue.java,v 1.6 2004-09-30 14:07:11 pierre Exp $
+ * @version $Id: Queue.java,v 1.7 2005-11-30 15:58:04 pierre Exp $
  */
 public class Queue {
 
@@ -183,6 +183,7 @@ public class Queue {
      * call. The method will block if the queue is full, and it won't
      * block otherwise.
      *
+     * @todo rename to put(), similar to java's BlockingQueue
      * @param item The item to be appended to the queue */
     public synchronized void append(Object item) {
         // put a object in the vector and wait on it
@@ -210,17 +211,17 @@ public class Queue {
      * something is found. This method is synchronized so it doesn't
      * interfere with the append call.
      *
+     * @todo rename to take(), similar to java's BlockingQueue
      * @return The bottom object of the queue.
      */
-
-    public synchronized Object get() {
-        try {
+    public synchronized Object get() throws InterruptedException {
+//        try {
             while(head==null) {
                 wait();
             }
-        } catch(InterruptedException e) {
-            return null;
-        }
+//        } catch(InterruptedException e) {
+//            return null;
+//        }
         QueueElement p=head;
         head=head.next;
         if (head==null) {
