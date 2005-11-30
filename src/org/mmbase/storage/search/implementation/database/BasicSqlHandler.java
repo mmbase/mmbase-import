@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.52 2005-10-14 17:20:51 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.53 2005-11-30 17:26:57 ernst Exp $
  * @since MMBase-1.7
  */
 
@@ -32,6 +32,8 @@ public class BasicSqlHandler implements SqlHandler {
 
     private static final SimpleDateFormat dateFormat          = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final FieldPosition dontcareFieldPosition = new FieldPosition(DateFormat.YEAR_FIELD);
+    
+    protected MMBase mmbase = MMBase.getMMBase();
 
     /**
      * Constructor.
@@ -202,9 +204,6 @@ public class BasicSqlHandler implements SqlHandler {
 
     // javadoc is inherited
     public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
-        MMBase mmbase = MMBase.getMMBase();
-
-
 
         // Buffer expressions for included nodes, like
         // "x.number in (...)".
@@ -318,27 +317,7 @@ public class BasicSqlHandler implements SqlHandler {
         Iterator iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
             Step step = (Step) iSteps.next();
-            String tableName = step.getTableName();
-            String tableAlias = step.getAlias();
-
-            // Tablename, prefixed with basename and underscore
-            sb.append(mmbase.getBaseName()).
-            append("_").
-            //Currently no replacement strategy is implemented for
-            //invalid tablenames.
-            //This would be useful, but requires modification to
-            //the insert/update/delete code as well.
-            //append(getAllowedValue(tableName));
-            append(tableName);
-
-            // Table alias (tablename when table alias not set).
-            if (tableAlias != null) {
-                sb.append(" ").
-                append(getAllowedValue(tableAlias));
-            } else {
-                sb.append(" ").
-                append(getAllowedValue(tableName));
-            }
+            appendTableName(sb, step);
 
             if (iSteps.hasNext()) {
                 sb.append(",");
@@ -532,6 +511,34 @@ public class BasicSqlHandler implements SqlHandler {
         appendSortOrders(sb, query);
     }
 
+
+    /**
+     * @param sb
+     * @param step
+     */
+    protected void appendTableName(StringBuffer sb, Step step) {
+        String tableName = step.getTableName();
+        String tableAlias = step.getAlias();
+
+        // Tablename, prefixed with basename and underscore
+        sb.append(mmbase.getBaseName()).
+        append("_").
+        //Currently no replacement strategy is implemented for
+        //invalid tablenames.
+        //This would be useful, but requires modification to
+        //the insert/update/delete code as well.
+        //append(getAllowedValue(tableName));
+        append(tableName);
+
+        // Table alias (tablename when table alias not set).
+        if (tableAlias != null) {
+            sb.append(" ").
+            append(getAllowedValue(tableAlias));
+        } else {
+            sb.append(" ").
+            append(getAllowedValue(tableName));
+        }
+    }
 
     /**
      * @since MMBase-1.8
