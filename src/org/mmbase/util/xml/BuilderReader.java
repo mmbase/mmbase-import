@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.53 2005-11-29 17:19:05 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.54 2005-11-30 13:34:00 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -621,25 +621,27 @@ public class BuilderReader extends DocumentReader {
         // Backwards compatible 'guitype' support
         if (guiTypeElement != null && collector != null) {
             String guiType = getElementValue(guiTypeElement);
-            // The guitype is deprecated. Normally coincides with datatype's id.
-            // 'string' is an exception, it is surrogated with the datatype 'line'.
-            if ("string".equals(guiType)) {
-                guiType = "line";
-                log.service("Converted deprecated guitype 'string' for field " + builder.getTableName() + "." + fieldName + " with datatype 'line'.");
-            }
+            if (!guiType.equals("")) {
+                // The guitype is deprecated. Normally coincides with datatype's id.
+                // 'string' is an exception, it is surrogated with the datatype 'line'.
+                if ("string".equals(guiType)) {
+                    guiType = "line";
+                    log.service("Converted deprecated guitype 'string' for field " + builder.getTableName() + "." + fieldName + " with datatype 'line'.");
+                }
 
-            dataType = collector.getDataTypeInstance(guiType, baseDataType);
-            if (dataType == null) {
-                log.warn("Could not find data type for " + baseDataType + " / " + guiType);
-            } else {
-                if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
-            }
-            if (! baseDataType.getClass().isAssignableFrom(dataType.getClass())) {
-                // the thus configured datatype is not compatible with the database type.
-                // Fix that as good as possible:
-                BasicDataType newDataType = (BasicDataType) baseDataType.clone();
-                newDataType.inherit(dataType);
-                dataType = newDataType;
+                dataType = collector.getDataTypeInstance(guiType, baseDataType);
+                if (dataType == null) {
+                    log.warn("Could not find data type for " + baseDataType + " / " + guiType);
+                } else {
+                    if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
+                }
+                if (! baseDataType.getClass().isAssignableFrom(dataType.getClass())) {
+                    // the thus configured datatype is not compatible with the database type.
+                    // Fix that as good as possible:
+                    BasicDataType newDataType = (BasicDataType) baseDataType.clone();
+                    newDataType.inherit(dataType);
+                    dataType = newDataType;
+                }
             }
         }
 
