@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.29 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.30 2005-11-30 15:58:04 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -117,12 +117,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         setProcessors         = (Processor[]) in.readObject();
     }
 
-
-
-    protected String getBaseTypeIdentifier() {
+    public String getBaseTypeIdentifier() {
         return Fields.getTypeDescription(Fields.classToType(classType)).toLowerCase();
     }
-
 
     /**
      * {@inheritDoc}
@@ -153,7 +150,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             setProcessors = (Processor[])origin.setProcessors.clone();
         }
     }
-   
+
     /**
      * If a datatype is cloned, the restrictions of it (normally implemented as inner classes), but be reinstantiated.
      */
@@ -669,8 +666,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             parent.edit();
             if (fixed) {
                 throw new IllegalStateException("Restriction '" + name + "' is fixed, cannot be changed");
-            }         
-   
+            }
+
             this.value = v;
         }
 
@@ -725,7 +722,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected String valueString(Node node, Field field) {
             return "" + value;
         }
-        
+
 
         /**
          * Whether {@link #validate} must enforce this condition
@@ -759,12 +756,12 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             }
         }
 
-        
+
 
         public final boolean valid(Object v, Node node, Field field) {
             if (absoluteParent != null) {
                 if (! absoluteParent.valid(v, node, field)) return false;
-            }            
+            }
             return simpleValid(parent.castToValidate(v, node, field), node, field);
 
         }
@@ -791,7 +788,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
         public final String toString(Node node, Field field) {
             return name + ": " +
-                (enforceStrength == DataType.ENFORCE_NEVER ? "*" : "") + 
+                (enforceStrength == DataType.ENFORCE_NEVER ? "*" : "") +
                 valueString(node, field) + ( fixed ? "." : "");
         }
 
@@ -905,7 +902,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             Cloud cloud = BasicDataType.this.getCloud(node, field);
             Collection validValues = getEnumeration(null, cloud, node, field);
             if (validValues == null) return true;
-            Object candidate = BasicDataType.this.cast(v, cloud, node, field);            
+            Object candidate = BasicDataType.this.cast(v, cloud, node, field);
             Iterator i = validValues.iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
@@ -920,7 +917,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected String valueString(Node node, Field field) {
             Collection col = getEnumeration(null, null, node, field);
             if(col == null) return "";
-            return col.toString(); 
+            return col.toString();
         }
 
     }
@@ -928,7 +925,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
     /**
      * Iterates over the collection provided by the EnumerationRestriction, but skips the values
-     * which are invalid because of the other restrictions on this DataType. 
+     * which are invalid because of the other restrictions on this DataType.
      */
     //Also, it 'preCasts' the * keys to the right type.
 

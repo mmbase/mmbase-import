@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.mmbase.module.builders.MMServers;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
@@ -27,9 +28,9 @@ import org.mmbase.util.logging.Logging;
 /**
  * ChangesSender is a thread object sending the nodes found in the
  * sending queue over unicast connections
- * 
+ *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.3 2005-11-30 15:58:03 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -44,13 +45,13 @@ public class ChangesSender implements Runnable {
 
     /** Queue with messages to send to other MMBase instances */
     private Queue nodesToSend;
-    
+
     /** Port on which the talking between nodes take place.*/
     private int unicastPort = 4243;
 
     /** Timeout of the connection.*/
     private int unicastTimeout = 10*1000;
-    
+
     /** MMBase instance */
     private MMBase mmbase = null;
 
@@ -60,7 +61,7 @@ public class ChangesSender implements Runnable {
     private long lastServerChecked = -1;
     /** Interval of servers change their state */
     private long serverInterval = -1;
-    
+
     /**
      * Construct UniCast Sender
      * @param unicastPort port of the unicast connections
@@ -82,9 +83,7 @@ public class ChangesSender implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this, "UnicastSender");
-            kicker.setDaemon(true);
-            kicker.start();
+            kicker = MMBaseContext.startThread(this, "UnicastSender");
             log.debug("UnicastSender started");
         }
     }
@@ -111,55 +110,60 @@ public class ChangesSender implements Runnable {
 
     /**
      * Let the thread do his work
-     * 
+     *
      * @todo check what encoding to sue for getBytes()
      */
     private void doWork() {
         while(kicker != null) {
-            String message = (String) nodesToSend.get();
-            
-            List servers = getActiveServers(); 
-            for (int i = 0; i < servers.size(); i++) {
-                MMObjectNode node = (MMObjectNode) servers.get(i);
-                if (node != null) {
-                    String hostname = node.getStringValue("host");
-    
-                    Socket socket = null;
-                    DataOutputStream os = null;            
-                    try {
-                        socket = new Socket();
-                        socket.connect(new InetSocketAddress(hostname, unicastPort), unicastTimeout);
-                        os = new DataOutputStream(socket.getOutputStream());
-                        os.writeBytes(message);
-                        os.flush();
-                        if (log.isDebugEnabled()) {
-                            log.debug("SEND=>" + message);
+            try {
+                String message = (String) nodesToSend.get();
+
+                List servers = getActiveServers();
+                for (int i = 0; i < servers.size(); i++) {
+                    MMObjectNode node = (MMObjectNode) servers.get(i);
+                    if (node != null) {
+                        String hostname = node.getStringValue("host");
+
+                        Socket socket = null;
+                        DataOutputStream os = null;
+                        try {
+                            socket = new Socket();
+                            socket.connect(new InetSocketAddress(hostname, unicastPort), unicastTimeout);
+                            os = new DataOutputStream(socket.getOutputStream());
+                            os.writeBytes(message);
+                            os.flush();
+                            if (log.isDebugEnabled()) {
+                                log.debug("SEND=>" + message);
+                            }
+                        } catch(SocketTimeoutException ste) {
+                            log.warn("Server timeout: " + hostname);
+                            servers.remove(i);
+                        } catch (IOException e) {
+                            log.error("can't send message" + message);
+                            log.error(Logging.stackTrace(e));
                         }
-                    } catch(SocketTimeoutException ste) {
-                        log.warn("Server timeout: " + hostname);
-                        servers.remove(i);
-                    } catch (IOException e) {
-                        log.error("can't send message" + message);
-                        log.error(Logging.stackTrace(e));
+                        finally {
+                            if (os != null) {
+                                try {
+                                    os.close();
+                                }
+                                catch (IOException e1) {
+                                }
+                            }
+                            if (socket != null) {
+                                try {
+                                    socket.close();
+                                }
+                                catch (IOException e1) {
+                                }
+                            }
+                        }
+                        outcount++;
                     }
-                    finally {
-                        if (os != null) {
-                            try {
-                                os.close();
-                            }
-                            catch (IOException e1) {
-                            }
-                        }
-                        if (socket != null) {
-                            try {
-                                socket.close();
-                            }
-                            catch (IOException e1) {
-                            }
-                        }
-                    }
-                    outcount++;
                 }
+            } catch (InterruptedException e) {
+                log.debug(Thread.currentThread().getName() +" was interruped.");
+                break;
             }
         }
     }
@@ -188,9 +192,9 @@ public class ChangesSender implements Runnable {
                 }
             }
         }
-        
+
         return activeServers;
     }
 
-    
+
 }

@@ -12,6 +12,8 @@ package org.mmbase.applications.email;
 
 import java.util.Iterator;
 
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.*;
 
@@ -42,9 +44,7 @@ public class EmailExpireHandler implements Runnable {
         this.parent = parent;
         this.sleeptime = sleeptime;
         this.expiretime = expiretime;
-        Thread kicker = new Thread(this, "emailexpireprobe");
-        kicker.setDaemon(true);
-        kicker.start();
+        Thread kicker = MMBaseContext.startThread(this, "emailexpireprobe");
     }
 
     /**
@@ -52,7 +52,8 @@ public class EmailExpireHandler implements Runnable {
     */
     public void run() {
         try {
-            while (true) {
+            MMBase mmbase = MMBase.getMMBase();
+            while (!mmbase.isShutdown()) {
                 // get the nodes we want to expire
                 for (Iterator i = parent.getDeliveredMailOlderThan(expiretime).iterator(); i.hasNext(); ) {
                     // get next node
@@ -66,7 +67,8 @@ public class EmailExpireHandler implements Runnable {
                 try {
                     Thread.sleep(sleeptime * 1000);
                 } catch (InterruptedException f) {
-                    return;
+                    log.debug(Thread.currentThread().getName() +" was interrupted.");
+                    continue;
                 }
             }
         } catch (Exception e) {

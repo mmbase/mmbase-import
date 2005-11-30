@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.4 2005-10-07 18:41:08 michiel Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.5 2005-11-30 15:58:04 pierre Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -57,21 +57,23 @@ public class ImageConversionRequestProcessor implements Runnable {
      * Starts the thread for this ImageRequestProcessor.
      */
     protected void start() {
-        Thread kicker = new Thread(this, "ImageConvert[" + processorId +"]");
-        kicker.setDaemon(true);
-        kicker.start();
+        MMBaseContext.startThread(this, "ImageConvert[" + processorId +"]");
     }
 
 
     // javadoc inherited (from Runnable)
     public void run() {
-        while (true) {
+        MMBase mmbase = icaches.getMMBase();
+        while (!mmbase.isShutdown()) {
             try {
                 log.debug("Waiting for request");
                 ImageConversionRequest req = (ImageConversionRequest) queue.get();
                 log.debug("Starting request");
                 processRequest(req);
                 log.debug("Done with request");
+            } catch (InterruptedException ie) {
+                log.debug(Thread.currentThread().getName() +" was interrupted.");
+                continue;
             } catch (Exception e) {
                 log.error(Logging.stackTrace(e));
             }
@@ -99,7 +101,7 @@ public class ImageConversionRequestProcessor implements Runnable {
                 if (log.isDebugEnabled()) log.debug("processRequest : input is empty : " + node);
                 // no node gets created, so node remains 'null'.
             } else {
-                if (log.isDebugEnabled()) {                    
+                if (log.isDebugEnabled()) {
                     log.debug("processRequest : Converting : " + node );
                 }
 

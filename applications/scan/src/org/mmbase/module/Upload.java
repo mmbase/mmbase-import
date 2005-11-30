@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 
 package org.mmbase.module;
@@ -24,25 +24,25 @@ import org.mmbase.util.logging.*;
  * nog wat uitleg over hoe je de .shtml maakt
  */
 public class Upload extends ProcessorModule {
-    
+
     private static Logger log = Logging.getLoggerInstance(Upload.class.getName());
     private Hashtable FilesInMemory = new Hashtable();
     private String fileUploadDirectory = null;
-    
+
     public void init() {
         fileUploadDirectory=getInitParameter("fileUploadDirectory");
         log.debug("Upload module, fileUploadDirectory = "+fileUploadDirectory);
     }
-    
+
     /**
      * handle the uploaded bytestream.
      */
     public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
-        
+
         // Get the place where to store the file
         // Currently implemented places are: mem:// and file://
         String filename = (String)cmds.get("file");
-        
+
         // Get the posted bytearray
         byte[] bytes = null;
         try {
@@ -51,16 +51,16 @@ public class Upload extends ProcessorModule {
             log.error("Upload module postValue to large");
             return false;
         }
-        
+
         if (sp.poster.getPostParameter("file_name") == null) {
             log.error("no filename ");
             return false;
         }
-        
+
         log.debug("Upload module is storing "+filename);
         // Store in memory
         if(filename.indexOf("mem://")!=-1) {
-            
+
             // Create file object in memory
             FileInfo fi = new FileInfo();
             fi.bytes= bytes;
@@ -89,7 +89,7 @@ public class Upload extends ProcessorModule {
         }
         return false;
     }
-    
+
     /**
      * deletes an uploaded file.
      * @param filename the name of the file, e.g. mem://filename
@@ -102,7 +102,7 @@ public class Upload extends ProcessorModule {
             }
         }
     }
-    
+
     /**
      * gets the bytearray of an uploaded file.
      * @param filename the name of the file, e.g. mem://filename
@@ -121,9 +121,9 @@ public class Upload extends ProcessorModule {
         }
         return null;
     }
-    
-    
-    
+
+
+
     /**
      * save bytearray to filesystem
      * @param filename name of the file
@@ -142,15 +142,15 @@ public class Upload extends ProcessorModule {
         }
         return(true);
     }
-    
-    
+
+
     /**
      * this method gets the requested http page
      */
     private byte[] getHttp(String page) {
         URL pageToGrab=null;
         DataInputStream dis=null;
-        
+
         try {
             pageToGrab = new URL(page);
             dis = new DataInputStream(pageToGrab.openStream());
@@ -171,8 +171,8 @@ public class Upload extends ProcessorModule {
         }
         return tekst.toString().getBytes();
     }
-    
-    
+
+
         /*
          * a class to store an uploaded file into memory
          */
@@ -181,7 +181,7 @@ public class Upload extends ProcessorModule {
         String name = null;
         String type = null;
         String size = null;
-        
+
         public String toString() {
             return "name="+name+" type="+type+" size="+size;
         }
