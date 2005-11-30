@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.14 2005-10-01 20:11:03 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.15 2005-11-30 17:26:57 ernst Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -185,5 +185,17 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             log.debug("generated SQL: " + strSQL);
         }
         return strSQL;
+    }
+    
+    
+    /* (non-Javadoc)
+     * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuffer, org.mmbase.storage.search.Step)
+     */
+    protected void appendTableName(StringBuffer sb, Step step) {
+        if(step instanceof RelationStep){
+            log.debug("Adding ONLY keyword to tablename " + step.getTableName());
+            sb.append(" ONLY ");
+        }
+        super.appendTableName(sb, step);
     }
 }
