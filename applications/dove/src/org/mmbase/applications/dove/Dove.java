@@ -14,7 +14,9 @@ import java.util.*;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.RelationStep;
+import org.mmbase.util.Casting;
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.*;
 
@@ -49,7 +51,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.69 2005-11-16 15:45:25 pierre Exp $
+ * @version $Id: Dove.java,v 1.70 2005-11-30 13:33:31 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -143,17 +145,18 @@ public class Dove extends AbstractDove {
                 String fname = f.getName();
                 if (isDataField(nm,f)) {
                     Element fel;
-                    int type = f.getType();
-                    if (type == Field.TYPE_BINARY) {
+                    DataType dataType = f.getDataType();
+                    if (dataType instanceof BinaryDataType) {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-                    } else if (f.getDataType() instanceof org.mmbase.datatypes.DateTimeDataType) {
-                        fel = addContentElement(FIELD, "" + node.getDateValue(fname).getTime() / 1000, out);
+                    } else if (dataType instanceof DateTimeDataType) {
+                        // have to convert ourselves because bridge will use user-defined formatting
+                        fel = addContentElement(FIELD, Casting.toString(node.getDateValue(fname)), out);
                     } else {
                         fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
                     }
-                    fel.setAttribute(ELM_TYPE, getTypeDescription(type));
+                    fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
                     fel.setAttribute(ELM_NAME, fname);
                 }
             }
@@ -165,17 +168,19 @@ public class Dove extends AbstractDove {
                     err.setAttribute(ELM_TYPE, IS_PARSER);
                 } else if (isDataField(nm,fname)) {
                     Element fel;
-                    int type = nm.getField(fname).getType();
-                    if (type == Field.TYPE_BINARY) {
+                    Field f = nm.getField(fname);
+                    DataType dataType = f.getDataType();
+                    if (dataType instanceof BinaryDataType) {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-                    } else if (type == Field.TYPE_DATETIME) {
-                        fel = addContentElement(FIELD, "" + node.getDateValue(fname).getTime() / 1000, out);
+                    } else if (f.getDataType() instanceof DateTimeDataType) {
+                        // have to convert ourselves because bridge will use user-defined formatting
+                        fel = addContentElement(FIELD, Casting.toString(node.getDateValue(fname)), out);
                     } else {
                         fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
-                    fel.setAttribute(ELM_TYPE, getTypeDescription(type));
+                    fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
                     fel.setAttribute(ELM_NAME, fname);
                 } else {
                     Element err = addContentElement(ERROR, "field with name " + fname + " does not exist", out);
@@ -606,54 +611,29 @@ public class Dove extends AbstractDove {
                         elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale),field);
                         if (lang != null) elm.setAttribute(ELM_LANG, lang);
                         // guitype
-                        String guiType = fielddef.getGUIType();
-                        if (guiType.indexOf("/")==-1) {
-                            if (guiType.equals("field")) {
-                                guiType = "string/text";
-                            } else if (guiType.equals("string")) {
-                                guiType = "string/line";
-                            } else if (guiType.equals("eventtime")) {
-                                guiType = "datetime/datetime";
-                            } else if (guiType.equals("newimage")) {
-                                guiType = "binary/image";
-                            } else if (guiType.equals("newfile")) {
-                                guiType = "binary/file";
-                            } else {
-                                String dttype;
-                                int itype = fielddef.getType();
-                                switch(itype) {
-                                case Field.TYPE_INTEGER:
-                                case Field.TYPE_NODE:
-                                    dttype = "int";
-                                    break;
-                                case Field.TYPE_LONG:
-                                    dttype="long";
-                                    break;
-                                case Field.TYPE_FLOAT:
-                                    dttype="float";
-                                    break;
-                                case Field.TYPE_DOUBLE:
-                                    dttype="double";
-                                    break;
-                                case Field.TYPE_BINARY:
-                                    dttype="binary";
-                                    break;
-                                case Field.TYPE_DATETIME:
-                                    dttype = "datetime";
-                                    break;
-                                case Field.TYPE_BOOLEAN:
-                                    dttype = "boolean";
-                                    break;
-                                default:
-                                    dttype = "string";
-                                }
-                                if (guiType.equals("")) {
-                                    guiType = dttype + "/" + dttype;
-                                } else {
-                                    guiType = dttype + "/" + guiType;
-                                }
+                        DataType dataType = fielddef.getDataType();
+                        String baseType = dataType.getBaseTypeIdentifier();
+                        String specialization = dataType.getName();
+                        // exceptions, for backward comp. with old guitypes
+                        if (specialization.equals("field")) {
+                            specialization = "text";
+                        } else if (specialization.equals("eventtime")) {
+                            baseType = "datetime";
+                            specialization = "datetime";
+                        } else if (specialization.equals("newimage")) {
+                            specialization = "image";
+                        } else if (specialization.equals("newfile")) {
+                            specialization = "file";
+                        } else {
+                            // backward compatibility: NODE and XML are passed as int and string
+                            // TODO: should change ?
+                            if (dataType instanceof NodeDataType) {
+                                baseType = "int";
+                            } else if (dataType instanceof XmlDataType) {
+                                baseType = "string";
                             }
                         }
+                        String guiType = baseType + "/" + specialization;
                         addContentElement(GUITYPE, guiType, field);
                         int maxLength = fielddef.getMaxLength();
                         if (maxLength>0) {
@@ -978,8 +958,9 @@ public class Dove extends AbstractDove {
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
                     String originalValue = (String) originalValues.get(key);
                     String  mmbaseValue;
-                    if (node.getNodeManager().getField(key).getType() ==  Field.TYPE_DATETIME) {
-                        mmbaseValue = "" + node.getDateValue(key).getTime() / 1000;
+                    if (node.getNodeManager().getField(key).getDataType() instanceof DateTimeDataType) {
+                        // have to convert ourselves because bridge will use user-defined formatting
+                        mmbaseValue = Casting.toString(node.getDateValue(key));
                     } else {
                         mmbaseValue = node.isNull(key) ? null : node.getStringValue(key);
                     }
@@ -1005,7 +986,7 @@ public class Dove extends AbstractDove {
                 if (value instanceof byte[]) {
                     node.setValue(key, value);
                 } else {
-                    node.setStringValue(key, value != null ? org.mmbase.util.Casting.toString(value) : null);
+                    node.setStringValue(key, value != null ? Casting.toString(value) : null);
                 }
                 Element fieldElement = doc.createElement(FIELD);
                 fieldElement.setAttribute(ELM_NAME, key);
