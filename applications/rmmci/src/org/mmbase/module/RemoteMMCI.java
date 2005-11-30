@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.10 2005-10-13 12:04:57 michiel Exp $
+ * @version $Id: RemoteMMCI.java,v 1.11 2005-11-30 11:02:26 nklasens Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -115,22 +115,47 @@ public class RemoteMMCI extends ProcessorModule {
         try {
 
             try {
-                //Note that a getRegistry call does not actually make a connection to the remote host.
-                //It simply creates a local reference to the remote registry and will succeed even if
-                //no registry is running on the remote host. Therefore, a subsequent method invocation
-                //to a remote registry returned as a result of this method may fail.
-                reg = java.rmi.registry.LocateRegistry.getRegistry(host, registryPort);
+                /* Note that a getRegistry call does not actually make a connection to the remote host.
+                 * It simply creates a local reference to the remote registry and will succeed even if
+                 * no registry is running on the remote host. Therefore, a subsequent method invocation
+                 * to a remote registry returned as a result of this method may fail.
+                 */
+                 reg = java.rmi.registry.LocateRegistry.getRegistry(host, registryPort);
                 //try if the registry is running
                 reg.list();
                 //if no RemoteException is thrown we are probabely ok
                 log.debug("using an existing RMI registry");
             } catch (RemoteException rex) {
-                reg = java.rmi.registry.LocateRegistry.createRegistry(registryPort);
+                /* 
+                 * Binding a stub to a local registry should be enough to keep it
+                 * from being cleaned up by DGC (Distributed Garbage Collection)
+                 * One case in which it currently isn't is when the registry
+                 * invocation is made on a registry remote object directly
+                 * instead of a stub for a registry (i.e. what's returned from
+                 * LocateRegistry.createRegistry instead of LocateRegsitry.getRegistry)
+                 * and the remote object's stub passed to the registry was returned from
+                 * RemoteObject.toStub or UnicastRemoteObject.exportObject; in this
+                 * situation, the following old bug thwarts reachability:
+                 * 
+                 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4114579
+                 * 
+                 * But invoking a registry stub (like LocateRegistry.getRegistry returns)
+                 * should avoid that problem, because the remote object's stub will get
+                 * marshalled and unmarshalled and thus properly registered with DGC.
+                 */
+                Registry newreg = java.rmi.registry.LocateRegistry.createRegistry(registryPort);
                 log.debug("creating a new RMI registry");
+                if (newreg != null) {
+                   reg = java.rmi.registry.LocateRegistry.getRegistry(host, registryPort);
+                }
+                else {
+                   log.fatal("RMI Registry not created.");
+                   return reg;
+                }
             }
 
             // Create the Database object
-            //interface RemoteCloudContext ... implemented by RemoteCloudContext_Rmi .. using LocalContext
+            // interface RemoteCloudContext ... implemented by RemoteCloudContext_Rmi .. using LocalContext
             RemoteCloudContext remoteCloudContext = new RemoteCloudContext_Rmi(LocalContext.getCloudContext());
 
             log.info("bind RemoteCloudContext in the registry using (tcp port, name)=(" + registryPort + ", " + bindName + ")");
