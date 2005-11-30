@@ -80,7 +80,7 @@
                 </relation>
             </action>
 
-            <command name="search" nodepath="couplinganswers" fields="text" age="-1" orderby="number" directions="down">
+            <command name="search" nodepath="couplinganswers" fields="text1,text2" age="-1" orderby="number" directions="down">
                 <prompt xml:lang="nl">Zoeken naar Antwoorden</prompt>
                 <prompt xml:lang="en">Search answers</prompt>
                 <search-filter>
