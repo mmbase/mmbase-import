@@ -12,8 +12,8 @@ package org.mmbase.clustering.multicast;
 import java.net.*;
 import java.io.*;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.4 2005-10-06 17:37:51 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.5 2005-11-30 15:58:03 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -83,9 +83,7 @@ public class ChangesSender implements Runnable {
                 log.error(Logging.stackTrace(e));
             }
 
-            kicker = new Thread(this, "MulticastSender");
-            kicker.setDaemon(true);
-            kicker.start();
+            kicker = MMBaseContext.startThread(this, "MulticastSender");
             log.debug("MulticastSender started");
         }
     }
@@ -120,18 +118,23 @@ public class ChangesSender implements Runnable {
      */
     private void doWork() {
         while(kicker != null) {
-            byte[] data = (byte[]) nodesToSend.get();
-            DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
             try {
-                if (log.isDebugEnabled()) {
-                    log.debug("SEND=> " + dp.getLength() + " bytes to " + dp.getAddress());
+                byte[] data = (byte[]) nodesToSend.get();
+                DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
+                try {
+                    if (log.isDebugEnabled()) {
+                        log.debug("SEND=> " + dp.getLength() + " bytes to " + dp.getAddress());
+                    }
+                    ms.send(dp);
+                } catch (IOException e) {
+                    log.error("can't send message" + dp);
+                    log.error(Logging.stackTrace(e));
                 }
-                ms.send(dp);
-            } catch (IOException e) {
-                log.error("can't send message" + dp);
-                log.error(Logging.stackTrace(e));
+                outcount++;
+            } catch (InterruptedException e) {
+                log.debug(Thread.currentThread().getName() +" was interruped.");
+                break;
             }
-            outcount++;
         }
     }
 }

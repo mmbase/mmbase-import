@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.19 2005-10-06 17:46:39 michiel Exp $
+ * @version $Id: LinkChecker.java,v 1.20 2005-11-30 15:58:04 pierre Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -69,9 +69,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 
         mmbase = MMBase.getMMBase();
         log.info("Module LinkChecker started");
-        Thread thread = new Thread(this, "LinkChecker");
-        thread.setDaemon(true);
-        thread.start();
+        MMBaseContext.startThread(this, "LinkChecker");
     }
 
     public String getModuleInfo() {
@@ -80,7 +78,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 
     public void run() {
         long waitTime = INITIAL_WAIT_TIME;  // wait a certain time after startup (default 5 minutes)
-        while (true) {
+        while (!mmbase.isShutdown()) {
             try {
                 Thread.sleep(waitTime);
             } catch (InterruptedException ie) {

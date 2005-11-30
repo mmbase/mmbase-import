@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * this basic type of the value, it also defines restrictions on the values, a default value,
  * Processors, and perhaps other properties (e.g. properties which describe indications for edit
  * tool implementations).
- * 
+ *
  * There are several extensions of DataType which normally add other kinds of restrictions which are
  * specific for certain classes of values. All implementations of DataType extend from {@link
  * BasicDataType}, but they can sometimes implement different extensions of DataType at the same time
@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.44 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: DataType.java,v 1.45 2005-11-30 15:58:04 pierre Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -92,6 +92,12 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * Return the DataType from which this one inherited, or <code>null</code>
      */
     public DataType getOrigin();
+
+    /**
+     * Return an identifier for the basic type (i.e., 'string', 'int', 'datetime') supported by this datatype.
+     */
+    public String getBaseTypeIdentifier();
+
     /**
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
@@ -130,7 +136,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      *
      * This does not garantuee that the value has the 'proper' type, but only that it now can be
      * casted to the right type without further problems. (Casting.toType should do).
-     * 
+     *
      * preCast should not change the actual type of value. It is e.g. used in the
      * Node#setStringValue, and the processor may expect a String there.
      */
@@ -253,7 +259,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
     public LocalizedEntryListFactory getEnumerationFactory();
 
     /**
-     * The enumeration for this datatype as a {@link Restriction}. 
+     * The enumeration for this datatype as a {@link Restriction}.
      */
     public DataType.Restriction getEnumerationRestriction();
 
@@ -311,7 +317,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
     public interface Restriction extends Serializable {
 
         public String getName();
-        /** 
+        /**
          * A Value describing the restriction, so depending on the semantics of this restriction, it
          * can have virtually every type (as long as it is Serializable)
          */
@@ -338,7 +344,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
          * If a restriction is 'fixed', the value and error-description cannot be changed any more.
          */
         public void setFixed(boolean fixed);
-        
+
         /**
          * See {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
          */

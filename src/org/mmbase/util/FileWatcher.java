@@ -12,6 +12,8 @@ package org.mmbase.util;
 
 import java.io.File;
 import java.util.*;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.*;
 
 /**
@@ -61,7 +63,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.30 2005-10-05 10:02:55 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.31 2005-11-30 15:58:04 pierre Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -307,8 +309,8 @@ public abstract class FileWatcher {
     }
 
     /**
-     * The one thread to handle all FileWatchers. In earlier impelmentation every FileWatcher had
-     * it's own thread, but that is avoied by this now.
+     * The one thread to handle all FileWatchers. In earlier implementation every FileWatcher had
+     * it's own thread, but that is avoided now.
      */
     private static class FileWatcherRunner extends Thread {
 
@@ -320,12 +322,12 @@ public abstract class FileWatcher {
         /**
          * Set of watchers to be added. This set is used because
          * in the run method of the this thread the filewachter implementation might decide to
-         * add a new fileWachter (for example in in the onChange method)
+         * add a new fileWatcher (for example in in the onChange method)
          */
         private Set watchersToAdd = new HashSet();
 
         FileWatcherRunner() {
-            super("MMBase FileWatcher thread");
+            super(MMBaseContext.getThreadGroup(),"MMBase FileWatcher thread");
             log.service("Starting the file-watcher thread");
             setPriority(MIN_PRIORITY);
             setDaemon(true);
@@ -342,7 +344,8 @@ public abstract class FileWatcher {
          *  It will never stop, this thread is a daemon.
          */
         public void run() {
-            do {
+            // todo: how to stop this thread except through interrupting it?
+            while (true) {
                 try {
                     long now = System.currentTimeMillis();
                     synchronized (watchers) {
@@ -377,15 +380,14 @@ public abstract class FileWatcher {
                     }
                     Thread.sleep(THREAD_DELAY);
                 } catch (InterruptedException e) {
-                    log.error("Interrupted" + Logging.stackTrace(e));
-                    // no interruption expected
+                    log.debug(Thread.currentThread().getName() +" was interrupted.");
+                    break; // likely interrupted due to MMBase going down - break out of loop
                 } catch (Throwable ex) {
                     // unexpected exception?? This run method should never interrupt, so we catch everything.
                     log.error("Exception: " + ex.getClass().getName() + ": " + ex.getMessage() + Logging.stackTrace(ex));
                 }
                 // when we found a change, we exit..
             }
-            while (true);
         }
     }
 

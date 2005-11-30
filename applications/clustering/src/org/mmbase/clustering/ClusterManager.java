@@ -24,13 +24,13 @@ import org.mmbase.util.logging.Logging;
 /**
  * ClusterManager is a thread object that reads the receive queue
  * and calls the objects (listeners) who need to know.
- * The ClusterManager starts communication threads to handle the sending 
+ * The ClusterManager starts communication threads to handle the sending
  * and receiving of messages.
- *  
+ *
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.14 2005-11-03 10:31:48 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.15 2005-11-30 15:58:03 pierre Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable{
 
@@ -41,10 +41,10 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
     /** Number of processed messages */
     protected int spawncount = 0;
 
-    /** Collections of nodes a thread is waiting on for change 
+    /** Collections of nodes a thread is waiting on for change
      * @todo should be Set.
      */
-    protected Vector waitingNodes = new Vector(); 
+    protected Vector waitingNodes = new Vector();
     /** Queue with messages to send to other MMBase instances */
     protected Queue nodesToSend = new Queue(64);
     /** Queue with received messages from other MMBase instances */
@@ -56,9 +56,9 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
     /** MMBase instance */
     protected MMBase mmbase = null;
 
-    protected boolean spawnThreads = true; 
-    
-    
+    protected boolean spawnThreads = true;
+
+
     public void shutdown(){
         stopCommunicationThreads();
         kicker.setPriority(Thread.MIN_PRIORITY);
@@ -74,7 +74,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
      */
     protected abstract void stopCommunicationThreads();
 
-    
+
     public void notify(Event event){
         //we only want to propagate the local events into the cluster
         if(event.getMachine().equals(MMBase.getMMBase().getMachineName())){
@@ -82,9 +82,9 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
             nodesToSend.append(message);
         }
     }
-    
-    
-    
+
+
+
     /* (non-Javadoc)
      * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
      */
@@ -98,9 +98,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
     protected void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this, "ClusterManager");
-            kicker.setDaemon(true);
-            kicker.start();
+            kicker = MMBaseContext.startThread(this, "ClusterManager");
             startCommunicationThreads();
         }
     }
@@ -117,7 +115,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
             log.error(ioe.getMessage(), ioe);
             return null;
         }
-        
+
     }
     protected Event parseMessage(byte[] message) {
         try {
@@ -172,11 +170,11 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
                     } else log.error(message + ": 'tb' could not be extracted from this string!");
                 } else log.error(message + ": 'id' could not be extracted from this string!");
             } else log.error(message + ": 'vnr' could not be extracted from this string!");
-        } else log.error(message + ": 'machine' could not be extracted from this string!");        
+        } else log.error(message + ": 'machine' could not be extracted from this string!");
         return null;
     }
 
-    
+
     /**
      * @see java.lang.Runnable#run()
      */
@@ -184,7 +182,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
         kicker.setPriority(Thread.NORM_PRIORITY+1);
         doWork();
     }
-    
+
     /**
      * Let the thread do his work
      */
@@ -202,6 +200,9 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
                 } else {
                     log.warn("Could not handle message, it is null");
                 }
+            } catch (InterruptedException e) {
+                log.debug(Thread.currentThread().getName() +" was interruped.");
+                break;
             } catch(Throwable t) {
                 log.error(t.getMessage(), t);
             }
@@ -211,7 +212,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
 
     /**
      * Handle message
-     * 
+     *
      * @param event NodeEvent
      */
     protected void handleEvent(Event event) {
@@ -228,5 +229,5 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
             org.mmbase.util.ThreadPools.jobsExecutor.execute(probe);
         }
     }
-    
+
 }
