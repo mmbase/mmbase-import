@@ -8,20 +8,22 @@
 
 <%@include file="getids.jsp" %>
 
-<%@include file="/education/wizards/roles_defs.jsp" %>
-<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
-<%@include file="/education/wizards/roles_chk.jsp" %>
-
 <div class="folders">
   <div class="folderHeader">
   </div>
   <div class="folderBody">
 
-<mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+  <mm:import externid="t_rights"/>
+
+  <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$referids">
+             <mm:param name="t_mode">false</mm:param>
+           </mm:treefile>"><u>to private mode</u>
+  </a><br/><br/>
+
+
   <mm:import externid="wgroup"/>
   <mm:compare referid="wgroup" value=""><mm:import id="wgroup" reset="true">0</mm:import></mm:compare>
-  <form name="teacherform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
-        referids="$popreferids">
+  <form name="teacherform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids">
       </mm:treefile>" method="post">
     <input type="hidden" name="whatselected" value="0">
 
@@ -230,73 +232,6 @@
 </a><br />
 </mm:compare>
 </mm:compare>
-
-</mm:islessthan>
-
-
-<mm:islessthan referid="rights" referid2="RIGHTS_RW">
-<%-- folder is open --%>
-<mm:compare referid="currentfolder" value="-1">
-  <img src="<mm:treefile page="/pop/gfx/mapopen.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderopened" />" />
-</mm:compare>
-<%-- folder is closed --%>
-<mm:compare referid="currentfolder" value="-1" inverse="true">
-  <img src="<mm:treefile page="/pop/gfx/mapdicht.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderclosed" />" />
-</mm:compare>
-<a href="index.jsp"><di:translate key="pop.competencies" /></a><br/>
-
-     <mm:node number="$student">
-     	<mm:relatedcontainer path="pop,profiles">
-     	  <mm:related>
-
-            <mm:import id="currentnumber"><mm:field name="profiles.number"/></mm:import>
-
-            <%-- folder is open --%>
-            <mm:compare referid="currentprofile" referid2="currentnumber">
-               &nbsp;<img src="<mm:treefile page="/pop/gfx/mapopen.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderopened" />" />
-            </mm:compare>
-
-            <%-- folder is closed --%>
-            <mm:compare referid="currentprofile" referid2="currentnumber" inverse="true">
-              &nbsp;<img src="<mm:treefile page="/pop/gfx/mapdicht.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderclosed" />" />
-            </mm:compare>
-
-            <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids">
-                <mm:param name="currentprofile"><mm:field name="profiles.number" /></mm:param>
-		        </mm:treefile>">
-			  <mm:field name="profiles.name" />
-            </a><br />
-
-          </mm:related>
-     	</mm:relatedcontainer>
-     </mm:node>
-
-<%-- folder is open --%>
-<mm:compare referid="currentfolder" value="1">
-  <img src="<mm:treefile page="/pop/gfx/mapopen.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderopened" />" />
-</mm:compare>
-<%-- folder is closed --%>
-<mm:compare referid="currentfolder" value="1" inverse="true">
-  <img src="<mm:treefile page="/pop/gfx/mapdicht.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderclosed" />" />
-</mm:compare>
-<a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids">
-    <mm:param name="currentfolder">1</mm:param>
-  </mm:treefile>"><di:translate key="pop.progressmonitor" />
-</a><br />
-
-<%-- folder is open --%>
-<mm:compare referid="currentfolder" value="2">
-  <img src="<mm:treefile page="/pop/gfx/mapopen.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderopened" />" />
-</mm:compare>
-<%-- folder is closed --%>
-<mm:compare referid="currentfolder" value="2" inverse="true">
-  <img src="<mm:treefile page="/pop/gfx/mapdicht.gif" objectlist="$includePath" referids="$popreferids"/>" alt="<di:translate key="pop.folderclosed" />" />
-</mm:compare>
-<a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids">
-    <mm:param name="currentfolder">2</mm:param>
-  </mm:treefile>"><di:translate key="pop.todoitems" />
-</a><br />
-</mm:islessthan>
 
   </div>
 </div>

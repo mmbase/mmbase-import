@@ -13,11 +13,6 @@
      String msgString = "";
   %>
 
-<%@include file="/education/wizards/roles_defs.jsp" %>
-<mm:import id="editcontextname" reset="true">docent schermen</mm:import>
-<%@include file="/education/wizards/roles_chk.jsp" %>
-
-    <mm:compare referid="whatselected" value="0" inverse="true">
       <div class="mainContent">
         <mm:compare referid="command" value="getinvite">
           <mm:import id="currentpop" reset="true">0</mm:import>
@@ -80,15 +75,6 @@
             </mm:compare>
           </mm:compare>
           <mm:compare referid="currentfolder" value="1">
-            <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-              <mm:compare referid="whatselected" value="class">
-                <jsp:include page="coachpredetail.jsp"/>
-              </mm:compare>
-              <mm:compare referid="whatselected" value="wgroup">
-                <jsp:include page="coachpredetail.jsp"/>
-              </mm:compare>
-            </mm:islessthan>
-            <mm:compare referid="whatselected" value="student">
               <div class="contentHeader"><di:translate key="pop.progressmonitor" />
                 <%@include file="nameintitle.jsp" %>
               </div>
@@ -110,7 +96,6 @@
                   <jsp:param name="msg" value="<%= msgString %>"/>
                 </jsp:include>
               </mm:compare>
-            </mm:compare>
           </mm:compare>
           <mm:compare referid="currentfolder" value="2">
             <div class="contentHeader"><di:translate key="pop.todoitems" />
@@ -125,7 +110,6 @@
           </mm:compare>
         </mm:compare>
       </div>
-    </mm:compare>
 
 
 </mm:cloud>
