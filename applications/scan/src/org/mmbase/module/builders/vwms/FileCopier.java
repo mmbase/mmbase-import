@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
