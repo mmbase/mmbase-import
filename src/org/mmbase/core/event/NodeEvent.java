@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.17 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: NodeEvent.java,v 1.18 2005-12-01 17:13:18 ernst Exp $
  */
 public class NodeEvent extends Event implements Serializable, Cloneable {
 
@@ -267,5 +267,13 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         System.out.println("clone: " + event2.toString());
         System.out.println("event 1: " + event.toString());
         
+    }
+    
+    public Map getOldValues(){
+        return Collections.unmodifiableMap(oldValues);
+    }
+    
+    public Map getNewValues(){
+        return Collections.unmodifiableMap(newValues);
     }
 }
