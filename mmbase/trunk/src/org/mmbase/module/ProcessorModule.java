@@ -96,7 +96,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * @param command The command to execute
      * @param params  Parameters, they will be added to the StringTagger.
      **/
-    public final Vector getNodeList(Object context, String command, Map params) {
+    public Vector getNodeList(Object context, String command, Map params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
             tagger = (StringTagger)params;
