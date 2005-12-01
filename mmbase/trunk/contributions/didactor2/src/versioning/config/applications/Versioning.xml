@@ -10,9 +10,15 @@
         <builder maintainer="didactor.nl" version="1">archives</builder>
     </neededbuilderlist>
 
+    <neededreldeflist />
+    <allowedrelationlist />
+
     <datasourcelist>
         <datasource builder="components" path="Versioning/components.xml" />
     </datasourcelist>
+
+    <relationsourcelist />
+    <contextsourcelist />
 
     <description></description>
 
