@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.136 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.137 2005-12-01 18:41:50 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -463,7 +463,19 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected java.util.Date getDateTimeValue(ResultSet result, int index, CoreField field) throws StorageException, SQLException {
-        Timestamp ts = result.getTimestamp(index);
+        Timestamp ts = null;
+        try {
+            ts = result.getTimestamp(index);
+        }
+        catch (SQLException sqle) {
+            // deal with all-zero datetimes when reading them
+            if ("S1009".equals(sqle.getSQLState())) {
+                return null;
+            }
+            else {
+                throw sqle;
+            }
+        }
         if (ts == null) {
             return null;
         } else {
