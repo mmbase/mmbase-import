@@ -4,7 +4,7 @@
 
   One of the advantages is that you can use EL.
 
-  $Id: web-2.4.xml,v 1.6 2005-10-17 09:49:41 michiel Exp $
+  $Id: web-2.4.xml,v 1.7 2005-12-01 19:14:04 keesj Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -88,8 +88,6 @@
   <!--
   <filter>
     <filter-name>Jumpers Filter</filter-name>
-    <display-name>Jumpers Filter</display-name>
-    <description>Filter used for jumpers</description>
     <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
   </filter>
 
