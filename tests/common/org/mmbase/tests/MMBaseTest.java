@@ -26,6 +26,8 @@ import org.mmbase.module.tools.MMAdmin;
  */
 public abstract class MMBaseTest extends TestCase {
 
+    static MMBase mmb;
+    
     public MMBaseTest() {
         super();
     }
@@ -44,7 +46,7 @@ public abstract class MMBaseTest extends TestCase {
     static public void startMMBase(boolean startDatabase) throws Exception {
         if (startDatabase) startDatabase();
         MMBaseContext.init();
-        MMBase.getMMBase();
+        mmb = MMBase.getMMBase();
         
         MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
         while (! mmadmin.getState()) {
@@ -61,7 +63,7 @@ public abstract class MMBaseTest extends TestCase {
             System.err.println("ERROR: failed to load HSQLDB JDBC driver." + e.getMessage());
             return;
         }
-        while(!mmb.isShutDown() {
+        while(!mmb.isShutdown()) {
             try {
                 Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/test", "sa", "");
                 // ok!, elaredy running one.
@@ -100,7 +102,7 @@ public abstract class MMBaseTest extends TestCase {
     public static void main(String[] args) {
         try {
             startMMBase();
-            while(!mmb.isShutDown() {
+            while(!mmb.isShutdown()) {
                 
             }
         } catch (Exception e) {

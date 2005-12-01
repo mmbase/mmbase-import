@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.tests;
-import java.util.*;
 import org.mmbase.bridge.*;
 
 /**
@@ -30,7 +29,7 @@ public abstract class BridgeTest extends MMBaseTest {
 
     protected Cloud getCloud() {
         Cloud c = null;
-        while(!mmb.isShutDown() {
+        while(!mmb.isShutdown()) {
             CloudContext cc = null;
             try {
                 cc = ContextProvider.getDefaultCloudContext();        
@@ -57,7 +56,7 @@ public abstract class BridgeTest extends MMBaseTest {
 
     protected Cloud getRemoteCloud(String uri) {
         Cloud c = null;
-        while(!mmb.isShutDown() {
+        while(!mmb.isShutdown()) {
             try {
                 c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", null);
                 break;
