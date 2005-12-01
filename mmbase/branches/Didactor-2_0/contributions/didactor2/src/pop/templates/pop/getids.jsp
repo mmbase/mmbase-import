@@ -3,7 +3,8 @@
 <mm:import externid="command">no</mm:import>
 <mm:import externid="returnto">-1</mm:import>
 <mm:import externid="currentfolder">-1</mm:import>
-<mm:import id="popreferids"><mm:write referid="referids"/>,student,whatselected</mm:import>
+<mm:import externid="t_mode">-1</mm:import>
+<mm:import id="popreferids"><mm:write referid="referids"/>,student,whatselected,t_mode?</mm:import>
 <mm:import externid="student"><mm:write referid="user"/></mm:import>
 <mm:node number="$student" notfound="skip">
 <mm:compare referid="currentfolder" value="-1">
