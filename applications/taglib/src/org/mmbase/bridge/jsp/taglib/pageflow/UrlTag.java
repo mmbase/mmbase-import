@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.util.*;
 import java.io.*;
+import java.net.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
@@ -33,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.73 2005-09-26 11:48:13 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.74 2005-12-01 12:51:00 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -179,12 +180,19 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                     throw new JspTagException("Unknown value for 'absolute' attribute '" + abs + "' (must be either 'true', 'false' or 'server')");
                 }
                 show.append(req.getContextPath());
-                if (page.charAt(0) != '/') {
-                    String thisDir = new java.io.File(req.getServletPath()).getParent();
-                        show.append(thisDir);
-                        show.append('/');
+                char firstChar = page.charAt(0);
+                try {
+                    URI uri;
+                    if (firstChar != '/') {
+                        uri = new URI("servlet", req.getServletPath() + "/../" + page, null);
+                    } else {
+                        uri = new URI("servlet", page, null);
+                    }                    
+                    uri = uri.normalize(); // resolves .. and so one
+                    show.append(uri.getSchemeSpecificPart());
+                } catch (URISyntaxException  use) {
+                    throw new TaglibException(use.getMessage(), use);
                 }
-                if (page.equals(".")) page = "";
             } else {
                 if (doMakeRelative()) { 
                     show.append(page);
@@ -195,9 +203,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                         show.append(req.getContextPath());
                     }
                 }
+                show.append(page);
             }
             
-            show.append(page);
         }
             
 
