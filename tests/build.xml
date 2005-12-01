@@ -304,7 +304,7 @@ Build-compiler: ${build.compiler}
       fork="true"
       classpathref="run.classpath"
       >
-      <arg value="org.mmbase.cache.ReleaseStrategyTest" />
+      <arg value="org.mmbase.cache.ConstraintMatcherTest" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
     </java>
