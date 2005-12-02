@@ -48,8 +48,8 @@
     <!-- the following one provides a user->group*->context->object structure -->
     <!--<authorization class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml" />-->
 
-	<!-- the following one provides no node-authorization at all -->
-	<authorization  class="org.mmbase.security.NoAuthorization" url="../accounts.properties" />
+    <!-- the following one provides no node-authorization at all -->
+    <authorization  class="nl.didactor.security.Authorization" url="" />
 
     <!-- the following one provides the checking, which means that a username from accounts.properties
     is used inside the owner field
