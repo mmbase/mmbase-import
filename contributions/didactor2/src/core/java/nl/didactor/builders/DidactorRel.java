@@ -23,6 +23,8 @@ public class DidactorRel extends InsRel {
     private SortedSet preCommitComponents = new TreeSet();
     private SortedSet postCommitComponents = new TreeSet();
 
+    private SortedSet preDeleteComponents = new TreeSet();
+
     public boolean init() {
         return super.init();
     }
@@ -59,6 +61,12 @@ public class DidactorRel extends InsRel {
         EventInstance event = new EventInstance(c, priority);
         postCommitComponents.add(event);
         log.info("Added listener on " + getTableName() + ".postCommit(): '" + c.getName() + "' with priority " + priority);
+    }
+
+    public void registerPreDeleteComponent(Component c, int priority) {
+        EventInstance event = new EventInstance(c, priority);
+        preDeleteComponents.add(event);
+        log.info("Added listener on " + getTableName() + ".preDelete(): '" + c.getName() + "' with priority " + priority);
     }
 
     /**
@@ -112,6 +120,22 @@ public class DidactorRel extends InsRel {
             c.postCommit(node);
         }
         return bSuperCommit;
+    }
+
+    /**
+     * This method does NOT override any methods from MMObjectBuilder, but is triggered
+     * by the authorization class. This is a rather ugly hack, which might not be supported
+     * in upcoming MMBase releases, but at the moment it is the only place to handle
+     * delete events on nodes before the bridge complains.
+     */
+    public boolean preDelete(MMObjectNode node) {
+        Iterator i = preDeleteComponents.iterator();
+        while (i.hasNext()) {
+            Component c = ((EventInstance)i.next()).component;
+            log.info("Firing " + c.getName() + ".preDelete() on object of type '" + node.getBuilder().getTableName() + "'");
+            c.preDelete(node);
+        }
+        return true;
     }
 
     /**
