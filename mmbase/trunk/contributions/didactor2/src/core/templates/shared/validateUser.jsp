@@ -3,7 +3,7 @@
 
   - if the user has a 'systemadministrator', 'teacher' or 'contenteditor' role, he is always allowed to log in
   - if the user is a student, the following check is done:
-    - if he is not related to a class, access is denied
+    - if he is not related to a class and not to an education, access is denied
     - if he is related to a class, the runtime of the class is checked. If the course
       has ended, or not started yet, access is denied
 
@@ -20,7 +20,6 @@
 <mm:import externid="class" />
 <mm:import externid="user" />
 <%@ include file="globalLang.jsp" %>
-
 <mm:isgreaterthan referid="user" value="0">
 <di:hasrole referid="user" role="student">
 <di:hasrole referid="user" role="systemadministrator" inverse="true">
@@ -28,26 +27,37 @@
 <di:hasrole referid="user" role="contenteditor" inverse="true">
 <mm:isnotempty referid="provider">
   <mm:isnotempty referid="education">
+    <mm:compare referid="class" value="null">
+      <mm:import id="class" reset="true" />
+    </mm:compare>
     <mm:isempty referid="class">
-      <di:translate key="core.validatelogin_noclass" />
+      <mm:node number="$user">
+        <mm:relatednodescontainer type="educations" role="classrel">
+          <mm:size>
+            <mm:compare value="0">
+              <di:translate key="core.validatelogin_noclass" />
+            </mm:compare>
+          </mm:size>
+        </mm:relatednodescontainer>
+      </mm:node>
     </mm:isempty>
     <mm:isnotempty referid="class">
-    <mm:node number="$class">
-      <mm:relatedcontainer path="mmevents">
-        <mm:size write="false">
-          <mm:isgreaterthan value="0">
-            <% String now = "" + (System.currentTimeMillis() / 1000); %>
-            <mm:constraint field="mmevents.start" operator="LESS" value="<%=now%>" />
-            <mm:constraint field="mmevents.stop" operator="GREATER" value="<%=now%>" />
-            <mm:size write="false">
-              <mm:compare value="0">
-                <di:translate key="core.validatelogin_invalid" />
-              </mm:compare>
-            </mm:size>
-          </mm:isgreaterthan>
-        </mm:size>
-      </mm:relatedcontainer>
-    </mm:node>
+      <mm:node number="$class">
+        <mm:relatedcontainer path="mmevents">
+          <mm:size write="false">
+            <mm:isgreaterthan value="0">
+              <% String now = "" + (System.currentTimeMillis() / 1000); %>
+              <mm:constraint field="mmevents.start" operator="LESS" value="<%=now%>" />
+              <mm:constraint field="mmevents.stop" operator="GREATER" value="<%=now%>" />
+              <mm:size write="false">
+                <mm:compare value="0">
+                  <di:translate key="core.validatelogin_invalid" />
+                </mm:compare>
+              </mm:size>
+            </mm:isgreaterthan>
+          </mm:size>
+        </mm:relatedcontainer>
+      </mm:node>
     </mm:isnotempty>
   </mm:isnotempty>
 </mm:isnotempty>
