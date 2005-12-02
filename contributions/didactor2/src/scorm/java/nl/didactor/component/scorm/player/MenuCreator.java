@@ -14,6 +14,9 @@ import uk.ac.reload.moonunit.contentpackaging.SCORM12_Core;
 
 import uk.ac.reload.jdom.XMLDocument;
 
+import uk.ac.reload.scormplayer.client.generic.contentpackaging.SCORM12_DocumentHandler;
+
+import nl.didactor.utils.debug.LogController;
 
 
 
@@ -37,6 +40,11 @@ public class MenuCreator extends XMLDocument
    private String sWebAppsPath;
    private String sPackageHref;
 
+   private boolean bDebugMode = LogController.showLogs("az");
+   private String  sDebugIndo = "Scorm menu creater: ";
+
+
+   private String sSubManifest = "";
 
    public MenuCreator(File fileManifest, String sWebAppsPath, String sPackageHref) throws Exception
    {
@@ -48,10 +56,12 @@ public class MenuCreator extends XMLDocument
 
 
 
-   public String[] parse(boolean useRelativePaths, String sPackageName)
+
+
+   public String[] parse(boolean useRelativePaths, String sPackageName, String sSubPath)
    {
       // New Vector
-      System.out.println("Start of JS Parser");
+      if(bDebugMode) System.out.println(sDebugIndo + "--------------------- Start of JS Parser ---------------------");
 
       Vector v = new Vector();
       writePackageSettings(v, "packageName", 0);
@@ -62,16 +72,37 @@ public class MenuCreator extends XMLDocument
       // get the identifier for the default organization
       _defaultorg = scormCore. getDefaultOrganization(orgs);
 
+      //Selecting the submanifest element
+      if(bDebugMode) System.out.println(sDebugIndo + "Selecting the submanifest element");
+      try
+      {
+         Element elemCurrent = _defaultorg;
+         String[] arrstrOffsets = sSubPath.split(",");
+         for(int f = 0; f < arrstrOffsets.length; f++)
+         {
+            int iOffsetAtThisLevel = (new Integer(arrstrOffsets[f])).intValue();
+            elemCurrent = (Element) elemCurrent.getChildren("item", null).get(iOffsetAtThisLevel);
+         }
+
+         createNavLinks(v, elemCurrent, "menu", useRelativePaths);
+      }
+      catch(Exception e)
+      {//Let's start from the root then
+         createNavLinks(v, _defaultorg, "menu", useRelativePaths);
+      }
+
 
       // now call createNavLinks() which should interrogate the org/item structure
-      System.out.println("Create Links");
-      createNavLinks(v, _defaultorg, "menu", useRelativePaths);
+      if(bDebugMode) System.out.println(sDebugIndo + "Creating Links");
+
+//      createNavLinks(v, ((Element)((Element) _defaultorg.getChildren().get(1)).getChildren().get(1)), "menu", useRelativePaths);
+//      createNavLinks(v, _defaultorg, "menu", useRelativePaths);
 
 
       // Convert Vector to String array
       String[] javascriptStrings = new String[v.size()];
 
-      System.out.println("Something strange");
+      if(bDebugMode) System.out.println(sDebugIndo + "--------------------- End of JS Parser ---------------------");
       v.copyInto(javascriptStrings);
       return javascriptStrings;
   }
@@ -88,15 +119,15 @@ public class MenuCreator extends XMLDocument
   protected void createNavLinks(Vector javascriptStrings, Element element, String menuParent, boolean useRelativePaths)
   {
     String name = element.getName();
-    System.out.println("*** name:" + name);
-    System.out.println("*** menu:" + menuParent);
-    System.out.println("*** value:" + element.getText());
+    if(bDebugMode) System.out.println(sDebugIndo + "*** name:" + name);
+    if(bDebugMode) System.out.println(sDebugIndo + "*** menu:" + menuParent);
+    if(bDebugMode) System.out.println(sDebugIndo + "*** value:" + element.getText());
 
     // ORGANIZATION
     if(name.equals(CP_Core.ORGANIZATION) && this.isDocumentNamespace(element))
     {
-       _itemCount = -1;
        ++_orgCount;
+       _itemCount = -1;
        String orgId = element.getAttributeValue(CP_Core.IDENTIFIER);
        menuParent = "menu";
        String title = "Organization";
@@ -213,8 +244,15 @@ Unknown
        {
            hyperLink = "javascript:void(0)";
        }
-       System.out.println("adding to sequencer:"+ itemId + " " + hyperLink+ " " + _itemCount+ " " + scoType+ " " +title+ " " + prerequisites);
+       if(bDebugMode) System.out.println(sDebugIndo + "adding to sequencer:"+ itemId + " " + hyperLink+ " " + _itemCount+ " " + scoType+ " " +title+ " " + prerequisites);
 //        _sequence.addNewItem(itemId, hyperLink, _itemCount, scoType, title, prerequisites);
+
+
+       if(_orgCount == -1)
+       {// It is "SubManifestMode"
+          _orgCount++;
+          writeOrganization(javascriptStrings, title, "");
+       }
        writeItem(javascriptStrings, title, hyperLink, itemId, menuParent);
        menuParent = itemId;
     }
