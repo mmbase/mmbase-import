@@ -3,7 +3,8 @@
     xmlns="http://www.mmbase.org/xmlns/datatypes"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
-
+  
+  <!-- @version $Id: datatypes.xml,v 1.28 2005-12-02 14:42:53 andre Exp $ -->
 
   <datatype id="xml">
     <class name="org.mmbase.datatypes.XmlDataType" />
@@ -82,6 +83,13 @@
       </setprocessor>
     </specialization>
 
+    <specialization id="emailaddress">
+      <pattern value="(?i)\A[A-Z0-9_\-\+\&amp;\*\#]+([\.-]?[A-Z0-9_\-\+\&amp;\*\#])*@([A-Z0-9_-]{2,}[\.]{1})+([A-Z]{2,})\z" />
+      <!-- arbitrary check for a valid e-mail address
+        below the String equivalent for testing purposes
+        "(?i)\\A[A-Z0-9_\\-\\+\\&\\*\\#]+([\\.-]?[A-Z0-9_\\-\\+\\&\\*\\#])*@([A-Z0-9_-]{2,}[\\.]{1})+([A-Z]{2,})\\z" -->
+    </specialization>
+
     <specialization id="field">
       <pattern value="(?s)\A.*\z" />
     </specialization>
@@ -94,7 +102,6 @@
     <specialization id="owner">
       <class name="org.mmbase.datatypes.SecurityContextDataType" />
     </specialization>
-
 
     <specialization id="whitespacereplacer">
       <setprocessor type="string">
@@ -195,9 +202,6 @@
       </specialization>
 
     </specialization>
-
-
-
   </datatype>
 
   <datatype id="long">
