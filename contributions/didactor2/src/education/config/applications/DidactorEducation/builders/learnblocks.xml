@@ -135,5 +135,41 @@
       </db>
     </field>
 
+
+
+    <field>
+       <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="nl">
+          </description>
+          <description xml:lang="en">
+          </description>
+       </descriptions>
+       <!-- gui related -->
+       <gui>
+          <guiname xml:lang="nl">Path</guiname>
+          <guiname xml:lang="en">Path</guiname>
+          <guitype>integer</guitype>
+       </gui>
+       <!-- editor related  -->
+       <editor>
+          <positions>
+             <!-- position in the input area of the editor -->
+             <input>3</input>
+             <!-- position in list area of the editor -->
+             <list>3</list>
+             <!-- position in search area of the editor -->
+             <search>3</search>
+          </positions>
+       </editor>
+       <!-- database related  -->
+       <db>
+          <!-- name of the field in the database -->
+          <name>path</name>
+          <!-- MMBase datatype and demands on it -->
+          <type state="persistent" size="102400" key="false" notnull="true">STRING</type>
+       </db>
+    </field>
+
   </fieldlist>
 </builder>
