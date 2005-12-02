@@ -40,14 +40,15 @@
  *  Web:      http://www.reload.ac.uk
  *
  *  @author Paul Sharples
- *  @version $Id: CPFrame.jsp,v 1.1 2005-09-28 12:45:49 jverelst Exp $
+ *  @version $Id: CPFrame.jsp,v 1.2 2005-12-02 11:27:01 azemskov Exp $
  */
 // -->
 <html>
 <head>
 <meta http-equiv="Pragma" content="no-cache">
 <script language="javascript" src="CPModel.js"></script>
-<script language="javascript" src="CPOrgs.js"></script>
+<script language="javascript" src="CPOrgs<%= request.getParameter("path") %>.js"></script>
+
 <script>
 <!--
 // Some vars I need to set up...
@@ -61,7 +62,7 @@ nextLinkDisabled = 'menu-images/next_disabled.gif';
 showImage = 'menu-images/hide.gif';
 hideImage = 'menu-images/show.gif';
 
-var isNavVisisble = "true";
+var isNavVisisble = "false";
 
 /*
 * Dreamweaver functions

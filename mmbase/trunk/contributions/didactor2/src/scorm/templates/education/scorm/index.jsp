@@ -211,7 +211,7 @@
                   try
                   {
                      MenuCreator menuCreator = new MenuCreator(new File(directory + File.separator + nodePackage.getNumber() + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", baseUrl + "/scorm/" + nodePackage.getNumber() + "_" + "/");
-                     String[] arrstrJSMenu = menuCreator.parse(true, "" + nodePackage.getNumber());
+                     String[] arrstrJSMenu = menuCreator.parse(true, "" + nodePackage.getNumber(), "");
 /*
                      DidactorSettings didactorSetings = new DidactorSettings();
                      didactorSetings.setPackageName("" + nodePackage.getNumber());
