@@ -60,9 +60,19 @@ public abstract class Component {
 
     /**
      * Initializes the component. This is called during startup 
-     * of Didactor.
+     * of Didactor. This method will be called every time your Didastor
+     * installation is restarted.
      */
     public void init() {
+
+    }
+
+    /**
+     * Installs the component. This method will only be called once, 
+     * during the first initial installation of the component. The component
+     * can update objectstructures if it needs to.
+     */
+    public void install() {
 
     }
 
@@ -99,6 +109,13 @@ public abstract class Component {
      * This method is called right after an object is being committed.
      */
     public boolean postCommit(MMObjectNode node) {
+        return true;
+    }
+
+    /**
+     * This method is called just before an object is being deleted.
+     */
+    public boolean preDelete(MMObjectNode node) {
         return true;
     }
 
