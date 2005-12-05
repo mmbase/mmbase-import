@@ -24,18 +24,17 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.3 2005-11-23 13:07:53 andre Exp $
+ * @version $Id: Editor.java,v 1.4 2005-12-05 23:36:18 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  */
-public class Editor {
+abstract public class Editor {
     
     private static final Logger log = Logging.getLoggerInstance(Editor.class);
     
-    private List queryList = new ArrayList();       // query List
-    private List nodenrList = new ArrayList();      // nodenr List
-    private List fieldList = new ArrayList();       // fieldname List
-
+    protected List queryList = new ArrayList();       // query List
+    protected List nodenrList = new ArrayList();      // nodenr List
+    protected List fieldList = new ArrayList();       // fieldname List
     protected List parameters;
         
     /**
@@ -75,10 +74,7 @@ public class Editor {
      *
      * @return A String with the generated results of the EditTag implementation
      */ 
-    public String getEditorHTML() {
-        String html = "Sorry. You should see an icon to click on here.";
-        log.debug("returning: " + html);
-        return html;
-    }
+    public abstract String getEditorHTML();
+
     
 }
