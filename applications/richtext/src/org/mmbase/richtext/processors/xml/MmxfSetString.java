@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.3 2005-10-25 22:29:17 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.4 2005-12-05 20:07:01 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -154,7 +154,8 @@ public class MmxfSetString implements  Processor {
     }
 
     /**
-     * Parses kupu-output
+     * First stage of parsing kupu-output. Does nothing with relations, only cleans up to 'mmxf' XML.
+     *
      * @param source       XML as received from kupu
      * @param destination  pseudo MMXF which is going to receive it.
      * @param links        This list collects elements representing some kind of link (cross-links, images, attachments, urls). Afterwards these can be compared with actual MMBase objects.
@@ -854,6 +855,7 @@ public class MmxfSetString implements  Processor {
 
     // javadoc inherited
     public Object process(Node node, Field field, Object value) {
+        log.debug("Found for setstring " + value.getClass() + " " + toString(value));
         try {
             switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
             case Modes.KUPU: {
