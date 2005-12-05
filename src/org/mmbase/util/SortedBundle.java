@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.12 2005-11-17 18:12:25 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.13 2005-12-05 13:25:21 andre Exp $
  */
 public class SortedBundle {
 
@@ -149,7 +149,8 @@ public class SortedBundle {
 
 
     /**
-     * Casts a key of the bundle the the specified key-type. This type is defined by the combination of the arguments. See {@link #getResource}.
+     * Casts a key of the bundle to the specified key-type. This type is defined by 
+     * the combination of the arguments. See {@link #getResource}.
      */
     public static Object castKey(final String bundleKey, final Object value, final Class constantsProvider, final Class wrapper) {
         if (bundleKey == null) return null;
