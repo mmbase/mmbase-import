@@ -37,13 +37,37 @@ import org.mmbase.util.XMLBasicReader;
  * to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.3 2005-11-23 13:07:53 andre Exp $
+ * @version $Id: EditTag.java,v 1.4 2005-12-05 23:53:15 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
+ * @since MMBase-1.8
  */
 public class EditTag extends ContextReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
+
+    private static final Map edittagTypes = new HashMap();  // edittagtype -> class
+    static {
+
+        // TODO: add DTD
+        // TODO: add 'merging' (so you can have more of these XML),
+        // TODO: add ResourceWatcher.
+        InputSource ettypes = new InputSource(EditTag.class.getResourceAsStream("edittagtypes.xml"));
+        XMLBasicReader reader  = new XMLBasicReader(ettypes, EditTag.class);
+        
+        Element edittypesElement = reader.getElementByPath("edittagtypes");
+        Iterator i = reader.getChildElements(edittypesElement, "editor");
+        while (i.hasNext()) {
+            Element element = (Element) i.next();
+            String type = element.getAttribute("type");
+            String claz = reader.getElementValue(reader.getElementByPath(element, "editor.class"));
+            if (!claz.equals("")) {
+                edittagTypes.put(type, claz);
+                log.debug("Found editor type: '" + type + "' with class: '" + claz + "'");
+            } 
+        }
+    }
+
     private Attribute type = Attribute.NULL;
     
     private Query query;
@@ -54,8 +78,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
     private List nodenrList = new ArrayList();      // nodenr List
     private List fieldList = new ArrayList();       // fieldname List
 
-    private static final Map edittagTypes = new HashMap();  // edittagtype -> class
-    protected List parameters;
+    protected List parameters = new ArrayList();
     
     private Editor yaeditor = null;     // should do all the work
     
@@ -96,53 +119,39 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         parameters.add(new Entry(key, value));
     }
     
-    /*
+    /**
      * Start the EditTag, put the implementations found in its resources in a Map, 
      * consult the attribute type which implementation to use and instantiate it.
      *
      *
-    */    
+     */    
     public int doStartTag() throws JspTagException {
         log.debug("doStartTag of EditTag");
-        parameters = new ArrayList();
-        
-        InputSource ettypes = new InputSource(EditTag.class.getResourceAsStream("edittagtypes.xml"));
-        XMLBasicReader reader  = new XMLBasicReader(ettypes, EditTag.class);
-        
-        Element edittypesElement = reader.getElementByPath("edittagtypes");
-        Iterator i = reader.getChildElements(edittypesElement, "editor");
-        while (i.hasNext()) {
-            Element element = (Element) i.next();
-            String type = element.getAttribute("type");
-            String claz = reader.getElementValue(reader.getElementByPath(element, "editor.class"));
-            if (!claz.equals("")) {
-                edittagTypes.put(type, claz);
-                log.debug("Found editor type: '" + type + "' with class: '" + claz + "'");
-            } 
-        }
-        
-        String classname = (String) edittagTypes.get(getType());
-        log.debug("Using editor: " + classname);
+        // clear lists (in case of tag caching, the previous values may be present.)
+        queryList.clear();
+        parameters.clear();
+        nodenrList.clear();
+        fieldList.clear();                
+        String className = (String) edittagTypes.get(getType());
+        log.debug("Using editor: " + className);
         Class c = null;
         try {
-            c = Class.forName(classname);
+            c = Class.forName(className);
             yaeditor = (Editor) c.newInstance();
         } catch (ClassNotFoundException cnfe) {
-            log.error("Class '" + classname + "' not found: " + cnfe);
+            log.error("Class '" + className + "' not found: " + cnfe);
         } catch (InstantiationException ie) {
-            log.error("Unable to instantiate class '" + classname + "': " + ie);
+            log.error("Unable to instantiate class '" + className + "': " + ie);
         } catch (IllegalAccessException iae) {
-            log.error("IllegalAccessException instantiating class " + classname + "': " + iae); 
+            log.error("IllegalAccessException instantiating class " + className + "': " + iae); 
         }
-                
-        return EVAL_BODY_INCLUDE;
+        return EVAL_BODY;
     }
     
-    /*
+    /**
      * Pass all gathered information to the implementing editor, get the
      * the result back and write it to the page.
-     *
-    */
+     */
     public int doEndTag() throws JspTagException {
         String editorstr = "";
         
@@ -159,12 +168,6 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         
         helper.setValue(editorstr);
         helper.useEscaper(false);
-        
-        // make all lists null
-        parameters = null;
-        queryList = null;
-        nodenrList = null;
-        fieldList = null;
         log.debug("end of doEndTag of EditTag");
         helper.doEndTag();
         return super.doEndTag();
@@ -179,9 +182,11 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      * @param fieldName String with the fieldname
      */ 
     public void registerField(Query query, int nodenr, String fieldName) {
-        log.debug("query: " + query);
-        log.debug("nodenr: " + nodenr);
-        log.debug("fieldName: " + fieldName);
+        if (log.isDebugEnabled()) {
+            log.debug("query: " + query);
+            log.debug("nodenr: " + nodenr);
+            log.debug("fieldName: " + fieldName);
+        }
         queryList.add(query);
         nodenrList.add(String.valueOf(nodenr));
         fieldList.add(fieldName);

@@ -28,9 +28,10 @@ import org.mmbase.util.Entry;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.4 2005-12-05 23:37:02 michiel Exp $
+ * @version $Id: YAMMEditor.java,v 1.5 2005-12-05 23:53:15 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
+ * @since MMBase-1.8
  */
 
 public class YAMMEditor extends Editor {
