@@ -24,9 +24,10 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.4 2005-12-05 23:36:18 michiel Exp $
+ * @version $Id: Editor.java,v 1.5 2005-12-05 23:53:15 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
- * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
+ * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEdit
+ * @since MMBase-1.8
  */
 abstract public class Editor {
     
