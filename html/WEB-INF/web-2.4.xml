@@ -4,17 +4,17 @@
 
   One of the advantages is that you can use EL.
 
-  $Id: web-2.4.xml,v 1.7 2005-12-01 19:14:04 keesj Exp $
+  $Id: web-2.4.xml,v 1.8 2005-12-05 13:02:46 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
-  
-  <display-name>MMBase distro</display-name>
   <description>
     MMBase is an open-source content managment system. See http://www.mmbase.org/
   </description>
+  
+  <display-name>MMBase distro</display-name>
 
   
   <!-- uncomment this and fill in the right value if you want to relocate your config directory
@@ -95,7 +95,7 @@
     <filter-name>Jumpers Filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
--->
+  -->
 
   <!-- The base MMBase servlet informs about the current MMBase version -->
   <servlet>
@@ -176,7 +176,6 @@
     <location>/mmbase/errorpages/404.jsp</location>
   </error-page>
   <error-page>
-    <error-code>500</error-code>
     <exception-type>java.lang.Exception</exception-type>
     <location>/mmbase/errorpages/500.jsp</location>
   </error-page>
