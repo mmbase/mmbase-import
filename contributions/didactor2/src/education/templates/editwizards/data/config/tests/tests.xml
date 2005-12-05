@@ -170,7 +170,7 @@
         <prompt xml:lang="en">New Value question</prompt>
       </command>
 
-      <command name="startwizard" inline="true" wizardname="config/couple/couplingquestions" objectnumber="new">
+      <command name="startwizard" inline="true" wizardname="config/question/couplingquestions" objectnumber="new">
         <prompt xml:lang="nl">Nieuwe Koppel vraag</prompt>
         <prompt xml:lang="en">New Coupling question</prompt>
       </command>

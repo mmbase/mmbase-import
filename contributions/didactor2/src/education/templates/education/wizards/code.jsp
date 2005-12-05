@@ -700,37 +700,8 @@
 
                                <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/mcquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty></a></nobr></td>
                             </mm:compare>
-
-                            <mm:compare referid="type_of_node" value="couplingquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/couple/couplingquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
-                            </mm:compare>
-
-                            <mm:compare referid="type_of_node" value="dropquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/dropquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
-                            </mm:compare>
-
-                            <mm:compare referid="type_of_node" value="hotspotquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/hotspotquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
-                            </mm:compare>
-
-                            <mm:compare referid="type_of_node" value="openquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/openquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
-                            </mm:compare>
-
-                            <mm:compare referid="type_of_node" value="rankingquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/rankingquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
-                            </mm:compare>
-
-                            <mm:compare referid="type_of_node" value="valuequestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/valuequestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
-                            </mm:compare>
-                            
-                            <mm:compare referid="type_of_node" value="fillquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/fillquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
-                            </mm:compare>
-
-                            <mm:compare referid="type_of_node" value="fillselectquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/fillselectquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
+                            <mm:compare referid="type_of_node" valueset="couplingquestions,dropquestions,hotspotquestions,openquestions,rankingquestions,valuequestions,fillquestions,fillselectquestions">
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/<mm:write referid="type_of_node"/>&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
                         </mm:nodeinfo>
                      </tr>
