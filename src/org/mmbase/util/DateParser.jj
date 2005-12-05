@@ -59,6 +59,7 @@ public class DateParser {
         date.set(Calendar.HOUR_OF_DAY, 0);
         beginOfHour();
     }
+
     protected void beginOfMonth() {
         date.set(Calendar.DAY_OF_MONTH, 1);
         beginOfDay();
@@ -211,17 +212,17 @@ void day_of_week() : {}
 void month_of_year() : {}
 {
   "january" { date.set(Calendar.MONTH, Calendar.JANUARY); }
-| "february" { date.set(Calendar.DAY_OF_WEEK, Calendar.FEBRUARY); }
-| "march" { date.set(Calendar.DAY_OF_WEEK, Calendar.MARCH); }
-| "april" { date.set(Calendar.DAY_OF_WEEK, Calendar.APRIL); }
-| "may" { date.set(Calendar.DAY_OF_WEEK, Calendar.MAY); }
-| "june" { date.set(Calendar.DAY_OF_WEEK, Calendar.JUNE); }
-| "july" { date.set(Calendar.DAY_OF_WEEK, Calendar.JULY); }
-| "august" { date.set(Calendar.DAY_OF_WEEK, Calendar.AUGUST); }
-| "september" { date.set(Calendar.DAY_OF_WEEK, Calendar.SEPTEMBER); }
-| "october" { date.set(Calendar.DAY_OF_WEEK, Calendar.OCTOBER); }
-| "november" { date.set(Calendar.DAY_OF_WEEK, Calendar.NOVEMBER); }
-| "december" { date.set(Calendar.DAY_OF_WEEK, Calendar.DECEMBER); }
+| "february" { date.set(Calendar.MONTH, Calendar.FEBRUARY); }
+| "march" { date.set(Calendar.MONTH, Calendar.MARCH); }
+| "april" { date.set(Calendar.MONTH, Calendar.APRIL); }
+| "may" { date.set(Calendar.MONTH, Calendar.MAY); }
+| "june" { date.set(Calendar.MONTH, Calendar.JUNE); }
+| "july" { date.set(Calendar.MONTH, Calendar.JULY); }
+| "august" { date.set(Calendar.MONTH, Calendar.AUGUST); }
+| "september" { date.set(Calendar.MONTH, Calendar.SEPTEMBER); }
+| "october" { date.set(Calendar.MONTH, Calendar.OCTOBER); }
+| "november" { date.set(Calendar.MONTH, Calendar.NOVEMBER); }
+| "december" { date.set(Calendar.MONTH, Calendar.DECEMBER); }
 }
 
 void next() : {}
