@@ -29,7 +29,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.42 2005-12-01 18:40:35 nklasens Exp $
+ * @version $Id: CompareTag.java,v 1.43 2005-12-05 14:19:25 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -103,10 +103,12 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             compare1 = Casting.toString(compare1);
         } else if (compare1 instanceof byte[]) {
             compare1 = Casting.toString(compare1);
+        } else if (compare1 instanceof org.apache.commons.fileupload.FileItem) {
+            compare1 = Casting.toString(compare1);
         }
 
         if (! (compare1 instanceof Comparable)) {
-            throw new JspTagException("Cannot compare variable of type " + compare1.getClass().getName());
+            throw new JspTagException("Cannot compare variable '" + getReferid() + "' of type " + compare1.getClass().getName());
         }
 
         boolean result = false;
