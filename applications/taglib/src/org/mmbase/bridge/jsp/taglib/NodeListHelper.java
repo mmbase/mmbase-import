@@ -14,6 +14,7 @@ import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
+import javax.servlet.jsp.jstl.core.*;
 
 import org.mmbase.bridge.*;
 import java.io.IOException;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.17 2005-10-19 18:36:53 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.18 2005-12-05 17:21:17 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -307,7 +308,7 @@ public class NodeListHelper implements ListProvider {
         }
     }
 
-    public void doEndTag() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
@@ -325,6 +326,7 @@ public class NodeListHelper implements ListProvider {
         nodeIterator = null;
         returnList = null;
         previousValue = null;
+        return EVAL_PAGE;
     }
 
     public void setNext() throws JspTagException {
@@ -375,4 +377,30 @@ public class NodeListHelper implements ListProvider {
     public Object getCurrent() {
         return nodeHelper.getNodeVar();
     }
+
+    public LoopTagStatus getLoopStatus() {
+        return new ListProviderLoopTagStatus(this);
+    }
+
+    // unused
+    public void release() {
+    }
+    // unused
+    public int doStartTag() throws JspTagException {
+        return -1;
+    }
+    // unused
+    public Tag getParent() {
+        return null;
+    }
+    // unused
+    public void setParent(Tag tag) {
+
+    }
+    // unused
+    public void setPageContext(PageContext pc) {
+    }
+    
+
+
 }

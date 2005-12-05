@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.8 2005-05-04 11:03:12 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.9 2005-12-05 17:21:17 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -137,7 +137,8 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         }
     }
 
-
-
+    public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
+        return new ListProviderLoopTagStatus(this);
+    }
 
 }

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.12 2005-11-28 21:51:07 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.13 2005-12-05 17:21:17 michiel Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
 
@@ -133,4 +133,9 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
         listHelper.doEndTag();
         return nodeHelper.doEndTag();
     }
+
+    public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
+        return new ListProviderLoopTagStatus(this);
+    }
 }
+

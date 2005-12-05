@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib.containers;
+import javax.servlet.jsp.jstl.core.*;
 
 
 /**
@@ -15,9 +16,9 @@ package org.mmbase.bridge.jsp.taglib.containers;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainerOrListProvider.java,v 1.1 2003-12-18 09:05:46 michiel Exp $
+ * @version $Id: QueryContainerOrListProvider.java,v 1.2 2005-12-05 17:21:17 michiel Exp $
  */
-public interface QueryContainerOrListProvider {
+public interface QueryContainerOrListProvider extends LoopTag {
 
  
 }

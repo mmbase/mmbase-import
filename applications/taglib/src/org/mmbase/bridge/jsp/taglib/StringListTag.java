@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 import javax.servlet.jsp.*;
+import javax.servlet.jsp.jstl.core.*;
 
 import org.mmbase.util.Casting;
 import org.mmbase.bridge.jsp.taglib.util.*;
@@ -21,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.23 2005-06-22 19:24:40 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.24 2005-12-05 17:21:17 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -233,5 +234,10 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
     }
+
+    public LoopTagStatus getLoopStatus() {
+        return new ListProviderLoopTagStatus(this);
+    }
+
 }
 
