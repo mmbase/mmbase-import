@@ -6,7 +6,7 @@
  <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<%@ include file="menu.jsp"%>
+  <%@ include file="menu.jsp"%>
 <mm:import externid="processupload">false</mm:import>
 <mm:import externid="processupload_alternative">false</mm:import>
 <mm:cloud method="http">
