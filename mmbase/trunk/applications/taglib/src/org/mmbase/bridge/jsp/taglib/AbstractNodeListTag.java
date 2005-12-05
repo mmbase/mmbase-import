@@ -15,6 +15,7 @@ import org.mmbase.util.Casting;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.*;
+import javax.servlet.jsp.jstl.core.*;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.67 2005-05-12 17:42:54 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.68 2005-12-05 17:21:17 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -299,6 +300,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     public int size() {
         return listHelper.size();
+    }
+
+    public LoopTagStatus getLoopStatus() {
+        return listHelper.getLoopStatus();        
     }
 
 }

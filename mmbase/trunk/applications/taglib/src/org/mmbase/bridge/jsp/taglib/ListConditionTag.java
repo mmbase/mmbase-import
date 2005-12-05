@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import javax.servlet.jsp.jstl.core.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListConditionTag.java,v 1.19 2004-03-23 21:44:43 michiel Exp $ 
+ * @version $Id: ListConditionTag.java,v 1.20 2005-12-05 17:21:17 michiel Exp $ 
  */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
@@ -72,28 +73,27 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
 
     public int doStartTag() throws JspTagException{
         // find the parent list:
-        ListProvider list = getList();
+        LoopTagStatus list = getLoopTag().getLoopStatus();
 
         boolean i = getInverse();
         boolean result = false;
-        int j = getValue();
-
-        
-
+        int j = getValue();        
         //
         // One would expect a switch, but for some odd reason, that does not work in my resin 3.0.6
         //
-        if (j == CONDITION_LAST) {
-            result = (list.getIndex() == list.size() - 1 )  != i;
-        } else if (j == CONDITION_FIRST) {
-            result = (list.getIndex() == 0 ) != i;
-        } else if (j == CONDITION_EVEN) {
-            result = ((list.getIndex() + 1) % 2 == 0) != i;
-        } else if (j == CONDITION_ODD) {
-            result = ((list.getIndex() + 1) % 2 != 0) != i;
-        } else if (j == CONDITION_CHANGED) {
-            result = list.isChanged() != i; 
-        } else {            
+        switch(j) {
+        case CONDITION_LAST:   result = list.isLast() != i; break;
+        case CONDITION_FIRST:  result = list.isFirst() != i; break;
+        case CONDITION_EVEN:   result = ((list.getIndex() + 1) % 2 == 0) != i; break;
+        case CONDITION_ODD:    result = ((list.getIndex() + 1) % 2 != 0) != i; break;
+        case CONDITION_CHANGED: 
+            if (list instanceof ListProvider) {
+                result = ((ListProvider) list).isChanged() != i; 
+            } else {
+                result = ! i;
+            }
+            break;
+        default:
             throw new JspTagException("Don't know what to do (" + getValue() + ")");
         }
         if (log.isDebugEnabled()) {

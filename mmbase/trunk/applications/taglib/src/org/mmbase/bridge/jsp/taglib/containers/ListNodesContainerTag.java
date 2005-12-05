@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.18 2005-11-23 10:27:15 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.19 2005-12-05 17:21:17 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -141,6 +141,13 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     public int doEndTag() throws JspTagException {
         query = null;
         return super.doEndTag();
+    }
+
+    public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
+        return new QueryContainerLoopTagStatus(this);
+    }
+    public Object getCurrent() {
+        return null;
     }
 
 }
