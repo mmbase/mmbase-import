@@ -29,6 +29,7 @@ Create a build.xml with a DOCTYPE like this:
   <property file="${source.dir}/build.properties" />
   <property file="${source.dir}/build.properties.version" />
 
+
   <property name="build.compiler" value="modern" />
   <property name="build.documentation" value="false" />
   <property name="optimize"       value="on" />
@@ -115,6 +116,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.jar.dir" value="${project.build.dir}" />
   <property name="project.zip.dir" value="${project.build.dir}" />
   <property name="project.jar" value="${project.jar.dir}/${project.jar.name}.jar"/>
+
+  <property file="${source.dir}/build.properties.default" />
   <!-- see below -->
   <!--<property name="project.zip" value="${project.zip.dir}/${project.jar.name}.zip"/>-->
 
@@ -316,7 +319,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
 
     <echo message="compiling" />
-    <echo message="${project.jars.dir}${project.jars.includes}" />
+    <echo message="${project.jars.dir}${project.jars.includes} ${servlet.jar}" />
     <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
@@ -336,6 +339,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${concurrent.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
+        <pathelement path="${taglibs-standard-jstl.jar}" />
         <pathelement path="${project.build.dir}/classes" />
         <pathelement path="${project.extra.path}" />
         <pathelement path="${project.extra.path2}" />
