@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.44 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: MMBaseServlet.java,v 1.45 2005-12-05 17:36:01 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -420,6 +420,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                      (minutes > 0 || hours > 0 ? " " + (minutes == 1 ? "1 minute" : "" + minutes + " minutes") : "") +
                      (seconds > 0 || minutes > 0 ? " " + (seconds == 1 ? "1 second" : "" + seconds + " seconds") : ""));
 
+        } else if ("server".equals(q)) {
+            pw.print("\n" + getServletContext().getServerInfo());
         }
         pw.close();
     }
