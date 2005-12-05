@@ -83,11 +83,11 @@ public class PeopleBuilder extends DidactorBuilder {
         if (fieldname.equals("username")) {
             Object newValue = node.values.get(fieldname);
 
-            // forbid changing a username after it's been set
+            /* forbid changing a username after it's been set
             if (originalValue != null && ! originalValue.equals("") && !originalValue.equals(newValue)) {
                 node.values.put(fieldname, originalValue);
                 return false;
-            }
+            }*/
 
             // forbid setting a username to an existing one
             if (originalValue != null && originalValue.equals("") && !newValue.equals("")) {
