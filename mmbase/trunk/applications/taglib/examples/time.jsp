@@ -82,11 +82,11 @@ A more generic demonstration of the 'Writer' and 'WriterReferrer' properties of 
   <td width="50%"><%@include file="codesamples/timewriter.jsp" %></td>
 </tr>
 <tr><th colspan="2"> 
-examples of more fuzzy time notations
+examples of more elaborate time notations
 </th></tr>
 <tr valign="top">
-  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/fuzzytime.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><pre><%@include file="codesamples/fuzzytime.jsp" %></pre></td>
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/time.parser.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><pre><%@include file="codesamples/time.parser.jsp" %></pre></td>
 </tr>
 </table>
 </mm:cloud>
