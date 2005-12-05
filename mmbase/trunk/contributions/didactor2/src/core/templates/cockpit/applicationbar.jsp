@@ -15,11 +15,11 @@
       </mm:node>
     </div>
      
-    <div class="menuSeperatorApplicationMenubar"></div>
+   <!--  <div class="menuSeperatorApplicationMenubar"></div>
                 
     <div class="menuItemApplicationMenubar">
       <a title="<di:translate key="core.help" />" href="<mm:treefile page="/help/index.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.help" /></a>
-    </div>
+    </div>-->
     
     <div class="menuSeperatorApplicationMenubar"></div>
     
@@ -39,7 +39,15 @@
     <div class="menuItemApplicationMenubar">
       <a title="<di:translate key="core.print" />" href="javascript:printThis();"  class="menubar"><di:translate key="core.print" /></a>
     </div>
-                
+    
+	  <mm:node number="component.cmshelp" notfound="skipbody">
+        <mm:treeinclude page="/cmshelp/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" />
+	  </mm:node> 	   
+	  
+	  <mm:node number="component.faq" notfound="skipbody">
+        <mm:treeinclude page="/faq/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" />
+	  </mm:node> 	   
+                                
   </mm:isgreaterthan>
 </div>
 
