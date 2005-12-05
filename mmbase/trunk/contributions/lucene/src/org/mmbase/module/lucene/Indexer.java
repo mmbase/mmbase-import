@@ -21,6 +21,7 @@ import org.apache.lucene.index.*;
 import org.pdfbox.encryption.DocumentEncryption;
 import org.pdfbox.exceptions.CryptographyException;
 import org.pdfbox.exceptions.InvalidPasswordException;
+
 import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.util.PDFTextStripper;
@@ -45,7 +46,7 @@ import org.mmbase.util.logging.*;
  * which are eventually returned by the Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.9 2005-11-09 13:44:19 pierre Exp $
+ * @version $Id: Indexer.java,v 1.10 2005-12-05 20:54:47 michiel Exp $
  **/
 public class Indexer {
 
@@ -113,6 +114,9 @@ public class Indexer {
         IndexWriter writer = null;
         try {
             writer = new IndexWriter(index, new StandardAnalyzer(), false);
+            // for XML fields, try to 'unXMLize' before indexing.
+            // That should go about like this (works for 'mmxf' fields at least)
+            cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
             Node node = cloud.getNode(number);
             if (node != null) {
                 // process all queries
