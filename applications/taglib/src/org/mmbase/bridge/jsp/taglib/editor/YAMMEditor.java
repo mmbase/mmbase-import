@@ -28,7 +28,7 @@ import org.mmbase.util.Entry;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.3 2005-11-23 13:07:53 andre Exp $
+ * @version $Id: YAMMEditor.java,v 1.4 2005-12-05 23:37:02 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  */
@@ -41,38 +41,16 @@ public class YAMMEditor extends Editor {
     private int nodenr;
     private String fieldName;
     
-    private ArrayList queryList = new ArrayList();
-    private ArrayList nodenrList = new ArrayList();
-    private ArrayList fldList = new ArrayList();
-    
-    protected List parameters;
     private String editor;
     private String icon;
     
-    private ArrayList startList = new ArrayList();       // startnodes: 346
-    private ArrayList pathList  = new ArrayList();       // paths: 346_news,posrel,urls
-    private ArrayList nodeList  = new ArrayList();       // nodes: 602 (should be 346.602)
-    private ArrayList fieldList = new ArrayList();       // fields: 602_news.title    
+    private List startList = new ArrayList();       // startnodes: 346
+    private List pathList  = new ArrayList();       // paths: 346_news,posrel,urls
+    private List nodeList  = new ArrayList();       // nodes: 602 (should be 346.602)
+    private List fieldList = new ArrayList();       // fields: 602_news.title    
     // Map to accommadate the fields and their startnodes
-    Map fld2snMap = new HashMap();
+    private Map fld2snMap = new HashMap();
     
-    /**
-     * @param params	List with the parameters of the edittag.
-     */
-    public void setParameters(List params) {
-       this.parameters = params;
-       log.debug("parameters: " + parameters);
-    }
-    
-    public void setQueryList(ArrayList qlist) {
-        this.queryList = qlist;
-    }
-    public void setNodenrList(ArrayList nrlist) {
-        this.nodenrList = nrlist;
-    }
-    public void setFieldList(ArrayList flist) {
-        this.fldList = flist;
-    }
 
     /**
      * Create a string containing all the needed html to find the editor. Or rather
@@ -134,7 +112,7 @@ public class YAMMEditor extends Editor {
      * @param nodenr    Nodenumber of the node the field belongs to
      * @param field     Name of the field
      */ 
-    public void processField(Query query, int nodenr, String field) {
+    protected void processField(Query query, int nodenr, String field) {
         this.query = query;
         this.nodenr = nodenr;
         this.fieldName = field;     // field
@@ -147,7 +125,7 @@ public class YAMMEditor extends Editor {
             log.debug("Added path : " + path);
         }
         
-        ArrayList nl = getNodesFromQuery(query, nodenr);
+        List nl = getNodesFromQuery(query, nodenr);
         Iterator e = nl.iterator();         // iterate over the startnodes
         while (e.hasNext()) {
             String nr = (String)e.next();
@@ -193,9 +171,9 @@ public class YAMMEditor extends Editor {
 
     }
         
-    public ArrayList getNodesFromQuery(Query query, int nr) {
-        ArrayList nl = new ArrayList();
-        java.util.List steps = query.getSteps();
+    protected List getNodesFromQuery(Query query, int nr) {
+        List nl = new ArrayList();
+        List steps = query.getSteps();
         String number = String.valueOf(nr);
         
         if (steps.size() == 1) {    // why ?
@@ -231,7 +209,7 @@ public class YAMMEditor extends Editor {
     * @return       A path like 345_news,posrel,urls which is the nodenumber of
     *               the node this field belongs to and the path that leads to it.
     */  
-    public String getPathFromQuery(Query query) {
+    protected String getPathFromQuery(Query query) {
         String path = null;     
         
         java.util.List steps = query.getSteps();
@@ -273,7 +251,7 @@ public class YAMMEditor extends Editor {
     * @return   A ; seperated string with the elements from the ArrayList
     *
     */
-    public String makeList4Url(ArrayList al) {
+    protected String makeList4Url(List al) {
         String str = "";
         if (al.size() > 0) {
             Iterator e = al.iterator();
@@ -297,6 +275,9 @@ public class YAMMEditor extends Editor {
     * 
     */
     public String makeHTML(String editor, String icon) {
+
+        // TODO, Doesn't work in context. Perhaps some functionality of mm:url must be made accessible in static methods.
+
         String url = editor + "?nrs=" + makeList4Url(startList) + 
             "&amp;fields=" + makeList4Url(fieldList) +
             "&amp;paths=" + makeList4Url(pathList) +
