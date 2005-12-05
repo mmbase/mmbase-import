@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.46 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: MMBaseContext.java,v 1.47 2005-12-05 18:05:41 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -302,32 +302,6 @@ public class MMBaseContext {
         return outputFile;
     }
 
-
-    /**
-     * converts a url with a given context, to the resource url.
-     * @param servletContext
-     * @param url A url to the resource, which must exist
-     * @return null on failure, otherwise a resource url.
-     */
-    private static String convertResourceUrl(ServletContext servletContext, String url) {
-        // return null on failure
-        if(servletContext == null) return null;
-
-        try {
-            java.net.URL transformed = servletContext.getResource(url);
-            if(transformed == null){
-                log.error("no resource is mapped to the pathname: '"+url+"'");
-                return null;
-            }
-            return transformed.toString();
-        } catch (java.net.MalformedURLException e) {
-            log.error("could not convert the url: '" + e + "'(error converting)");
-        }
-        return null;
-    }
-
-    private static String CONTEXT_URL_IDENTIFIER = "jndi:/";
-
     /**
      * Returns a string representing the HtmlRootUrlPath, this is the path under
      * the webserver, what is the root for this instance.
@@ -343,7 +317,7 @@ public class MMBaseContext {
                 log.error(message);
                 throw new RuntimeException(message);
             }
-            if (sx == null) { // no serlvetContext -> not htmlRootUrlPath
+            if (sx == null) { // no serlvetContext -> no htmlRootUrlPath
                 htmlRootUrlPathInitialized = true;
                 return htmlRootUrlPath;
             }
@@ -354,40 +328,26 @@ public class MMBaseContext {
             } else {
                 // init the htmlRootUrlPath
                 log.debug("Autodetecting htmlrooturlpath ");
-
                 // fetch resource path for the root servletcontext root...
-                ServletContext rootContext = null;
-                String rootContextUrl = null;
-                String contextUrl = null;
-
-                try {
-                    contextUrl = convertResourceUrl(sx, "/");
-                    rootContext = sx.getContext("/"); // Orion fails here?
-                    rootContextUrl = convertResourceUrl(rootContext, "/");
-                } catch (Exception e) {
-                }
-
-                if(contextUrl != null && rootContextUrl != null) {
-                    // the beginning of contextUrl is the same as the string rootContextUrl,
-                    // the left part is the current urlPath on the server...
-                    if(contextUrl.startsWith(rootContextUrl)) {
-                        htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
-                    } else {
-                        log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
-                    }
-                } else if (rootContextUrl == null && contextUrl != null && contextUrl.startsWith(CONTEXT_URL_IDENTIFIER)) {
-                    // This works on my tomcat (4.03),.. this is supposed to be the reference implementation?
-                    // so what should be the code?
-                    // the String will be typically something like "jndi:/hostname/contextname/", so we are looking for the first '/' after the hostname..
-                    int contextStart = contextUrl.substring(CONTEXT_URL_IDENTIFIER.length()).indexOf('/');
-                    if(contextStart != -1) {
-                        htmlRootUrlPath = contextUrl.substring(CONTEXT_URL_IDENTIFIER.length() + contextStart);
-                    } else {
-                        log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath
-                                 + "\nbut  contextUrl     : '" + contextUrl + "' did start with: '"+CONTEXT_URL_IDENTIFIER + "'");
-                    }
+                // check wether this is root
+                if (sx.equals(sx.getContext("/"))) {
+                    htmlRootUrlPath = "/";
                 } else {
-                    log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath + "(contextUrl     :" + contextUrl + "  rootContextUrl :" + rootContextUrl + ")");
+                    try {
+                        String url = sx.getResource("/").toString();
+                        // MM: simply hope that it is the last part of that URL.
+                        // I do not think it is garantueed. Used mmbase.htmlrooturlpath in web.xml if it doesn't work.
+                        int length = url.length();
+                        int lastSlash = url.substring(0, length - 1).lastIndexOf('/');
+                        if (lastSlash > 0) {
+                            htmlRootUrlPath = url.substring(lastSlash);
+                        } else {
+                            log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath + "(contextUrl     :" + url + ")");
+                        }
+                    } catch (java.net.MalformedURLException mfue) {
+                        // could not happen.
+                        log.error(mfue);
+                    }
                 }
             }
             htmlRootUrlPathInitialized = true;
