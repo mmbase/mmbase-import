@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.7 2005-10-24 13:59:02 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.8 2005-12-05 12:18:37 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -281,7 +281,7 @@ public class ASelectAuthentication extends Authentication {
                     }
 
                 } else {
-                    log.warn("Resource not found");
+                    log.warn("Resource '" + configResource + "' not found");
                 }
             } else { 
                 // old style agent configuration (with a property file) (in previous version of this class, there was no config.xml).
@@ -400,7 +400,11 @@ public class ASelectAuthentication extends Authentication {
                 String app = (String) loginInfo.get("authenticate");
                 if (app == null) {
                     //try default..
+                    if (applications.size() < 1) {
+                        throw new RuntimeException ("No 'authenticate' given and no default defined. Don't know how to log in. (Perhaps the A-Select configuration file was not found?)");
+                    }
                     app = (String) applications.get(0);                    
+                    
                     // throw new RuntimeException("No authenticate given");
                 }
                 if (request != null && response != null) {
