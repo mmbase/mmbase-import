@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.82 2005-06-22 19:24:40 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.83 2005-12-05 17:21:17 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -129,8 +129,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         searchedParent = false;
 
         int s = getScope();
-        if (referid != Attribute.NULL || 
-            (s != PageContext.PAGE_SCOPE && getId() != null)) {
+        if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
             Object o;
             if (s == PageContext.PAGE_SCOPE) {
                 o = getObject(referid.getString(this));

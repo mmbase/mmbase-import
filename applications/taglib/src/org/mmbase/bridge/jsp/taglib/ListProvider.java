@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.jstl.core.*;
 import org.mmbase.bridge.jsp.taglib.containers.QueryContainerOrListProvider;
 
 /**
@@ -16,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.containers.QueryContainerOrListProvider;
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: ListProvider.java,v 1.10 2005-06-20 16:03:38 michiel Exp $ 
+ * @version $Id: ListProvider.java,v 1.11 2005-12-05 17:21:17 michiel Exp $ 
  */
 public interface ListProvider extends ContextProvider, QueryContainerOrListProvider {
 
@@ -57,6 +58,44 @@ public interface ListProvider extends ContextProvider, QueryContainerOrListProvi
      * @since MMBase-1.7
      */
     public void remove();
+
+
+    /**
+     * @since MMBase-1.8
+     */ 
+    public class ListProviderLoopTagStatus implements LoopTagStatus {
+
+        private final ListProvider prov;
+        public ListProviderLoopTagStatus(ListProvider l) {
+            prov = l;
+        }
+        public Object getCurrent() {
+            return prov.getCurrent();
+        }
+        public int getIndex() {
+            return prov.getIndex();// - prov.getIndexOffset();
+        }
+        
+        public int getCount() {
+            return prov.size();
+        }
+
+        public boolean isFirst() {
+            return getIndex() == 0;
+        }
+        public boolean isLast() {
+            return getCount() == getIndex() + 1;
+        }
+        public Integer getBegin() {
+            return null;
+        }
+        public Integer getEnd() {
+            return null;
+        }
+        public Integer getStep() {
+            return null;
+        }
+    }
 
 
 }
