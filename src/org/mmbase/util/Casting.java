@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.75 2005-11-18 14:06:19 pierre Exp $
+ * @version $Id: Casting.java,v 1.76 2005-12-05 14:18:39 michiel Exp $
  */
 
 import java.util.*;
@@ -292,7 +292,7 @@ public class Casting {
                 };
         } else if (o instanceof Date) {
             return new java.util.Date(((Date)o).getTime()) {
-                    private static final int serialVersionUID = 1; // increase this if object chages.
+                    private static final long serialVersionUID = 1L; // increase this if object chages.
                     public String toString() {
                         String r = ISO_8601_UTC.format((Date)o);
                         return escape(escaper, r);
@@ -305,6 +305,8 @@ public class Casting {
             return new ListWrapper((List) o, escaper);
         } else if (o instanceof byte[]) {
             return escape(escaper, new String((byte[])o));
+        } else if (o instanceof org.apache.commons.fileupload.FileItem) {
+            return escape(escaper, ((org.apache.commons.fileupload.FileItem)o).getString());
         } else if (o instanceof String) {
             return escape(escaper, (String) o);
         } else if (o instanceof CharSequence) {
