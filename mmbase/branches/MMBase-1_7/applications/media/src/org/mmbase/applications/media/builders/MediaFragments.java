@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.31.2.2 2004-11-09 10:57:04 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.31.2.3 2005-12-05 18:43:39 johannes Exp $
  * @since MMBase-1.7
  */
 
@@ -57,7 +57,7 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_DURATION    = "duration";
 
     // parameter definitions (making use of reflection utitility for functions)
-    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class), new Parameter("bitrate", Integer.class), Parameter.REQUEST };
+    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class), new Parameter("bitrate", String.class), Parameter.REQUEST };
     public final static Parameter[] FILTEREDURLS_PARAMETERS  = URLS_PARAMETERS;
     public final static Parameter[] URL_PARAMETERS           = URLS_PARAMETERS;
     public final static Parameter[] NUDEURL_PARAMETERS       = URLS_PARAMETERS;
