@@ -53,3 +53,13 @@ change the offset with a year <mm:import id="offsetmonth"><%=  (int) (60 * 60 * 
 <mm:stringlist referid="months">
 test4 <mm:index/> <mm:time time="$_" offset="$offsetmonth" format=":FULL.FULL" />
 </mm:stringlist>
+
+
+More advanced date parsing:
+
+<mm:time time="today + 5 day" format=":FULL.FULL" />
+<mm:time time="tomonth" format=":FULL.FULL" />
+<mm:time time="now - 3 minute" format=":FULL.FULL" />
+<mm:time time="todayish" format=":FULL.FULL" />
+<mm:time time="next tuesday" format=":FULL.FULL" />
+<mm:time time="yesterday previous tuesday" format=":FULL.FULL" />
