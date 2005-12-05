@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.15 2005-11-09 13:44:19 pierre Exp $
+ * @version $Id: Lucene.java,v 1.16 2005-12-05 10:05:15 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -211,9 +211,19 @@ public class Lucene extends Module implements MMBaseObserver {
                 log.warn("Invalid value '"+time+"' for property 'initialwaittime'");
             }
         }
+        while(! mmbase.getState()) {
+            try {
+                log.service("MMBase not yet up, waiting..");
+                Thread.sleep(10000);
+            } catch (InterruptedException ie) {
+                log.info(ie);
+                return;
+            }
+        }
 
         // Obtain a cloud to use for indexing
-        // XXX: should solve possible security issues (when not all objects can be read by anonymous)
+        // XXX: should solve possible security issues (when not all objects can be read by anonymous.
+        // --> Can use class-security for that!
         // For now, use an anonymous cloud
         cloud = LocalContext.getCloudContext().getCloud("mmbase");
 
@@ -405,8 +415,8 @@ public class Lucene extends Module implements MMBaseObserver {
             }
             while (true) {
                 log.debug("Obtain Assignment");
-                Assignment assignment = (Assignment)indexAssignments.get();
                 try {
+                    Assignment assignment = (Assignment)indexAssignments.get();
                     // do operation...
                     if (assignment.operation == Assignment.FULL_INDEX) {
                         log.debug("start full index");
@@ -434,6 +444,9 @@ public class Lucene extends Module implements MMBaseObserver {
                 } catch (RuntimeException rte) {
                     log.error(rte.getMessage());
                     status = IDLE_AFTER_ERROR;
+                } catch (InterruptedException ie) {
+                    log.error(ie.getMessage());
+                    return;
                 }
             }
         }
