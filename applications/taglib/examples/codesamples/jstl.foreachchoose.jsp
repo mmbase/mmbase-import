@@ -1,6 +1,6 @@
 <p>
   <c:forEach var="index" begin="0" end="4">
-    <mm:write value="$index" />
+    <mm:write value="$index" /> <mm:last inverse="true">, </mm:last>
   </c:forEach>
 </p>
 
