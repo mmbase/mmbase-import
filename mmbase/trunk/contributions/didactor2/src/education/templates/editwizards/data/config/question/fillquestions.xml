@@ -35,9 +35,18 @@
         <optionlist include="config/option_list/boolean.xml" />
         <optionlist include="config/option_list/flashOrText.xml" />
          <optionlist name="imagepos">
-            <option id="0">Above</option>
-            <option id="1">Under</option>
-            <option id="2">Next</option>
+            <option id="0">
+            	<prompt xml:lang="nl">Boven</prompt>
+            	<prompt xml:lang="en">Above</prompt>
+            </option>
+            <option id="1">
+            	<prompt xml:lang="nl">Onder</prompt>
+            	<prompt xml:lang="en">Under</prompt>
+            </option>
+            <option id="2">
+            	<prompt xml:lang="nl">Naast</prompt>
+            	<prompt xml:lang="en">Next to</prompt>
+            </option>
         </optionlist>    
     </lists>
 
@@ -47,9 +56,10 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Fill in the gaps invoeren</title>
+        <title>Vul de hiaten in invoeren</title>
         <field name="title" >
-            <prompt>Titel</prompt>
+            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
         </field>
         
        
@@ -63,7 +73,7 @@
    
     <!--  INSERT FLASH/TEXT -->  
         <field name="flashOrText" ftype="enum">
-           <prompt xml:lang="nl">Choose flash or text</prompt>
+           <prompt xml:lang="nl">Kies flash of tekst</prompt>
            <prompt xml:lang="en">Choose flash or text</prompt>
            <optionlist select="flashOrText" />
         </field>
@@ -71,7 +81,8 @@
         
     <!--  INSERT TEXT -->  
         <field name="text" ftype="html" dtminlength="0">
-            <prompt>Tekst</prompt>
+            <prompt xml:lang="nl">Tekst</prompt>
+            <prompt xml:lang="en">Text</prompt>
         </field>       
     <!-- END INSERT TEXT --> 
 
@@ -86,11 +97,13 @@
     <!--  INSERT IMAGE -->     
        
    <list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
-             <title>Bijbehorende Afbeeldingen</title>
+             <title xml:lang="nl">Bijbehorende Afbeeldingen</title>
+             <title xml:lang="en">Associated images</title>
              <!-- Show the 'item' in a list (the object) -->
              <item>
                      <field name="title">
-                             <prompt>Afbeeldingen Titel</prompt>
+                             <prompt xml:lang="nl">Afbeeldingen Titel</prompt>
+                             <prompt xml:lang="en">Title of the image</prompt>
                              <description></description>
                      </field>
                      <field wizardname="config/image/image" ftype="startwizard" />
@@ -111,7 +124,8 @@
  	  <!--  INSERT IMAGE POSITION--> 
  	 
  	 <field name="impos" ftype="enum">
-            <prompt>Image position</prompt>
+            <prompt xml:lang="en">Image position</prompt>
+            <prompt xml:lang="nl">Afbeeldingen positie</prompt>
             <optionlist select="imagepos" />
      </field>
      
@@ -119,16 +133,19 @@
  	 
        
         <field name="textFirst" ftype="line" dtminlength="0">
-            <prompt>The first part of the sentence </prompt>
+	        <prompt xml:lang="nl">Het eerste deel van de zin </prompt>
+            <prompt xml:lang="en">The first part of the sentence </prompt>
         </field>
  
  <!--  INSERT ANSWER -->  
       
          <list destination="openanswers" role="related" ordertype="number" orderby="number" >
-            <title>Bijbehorende antwoorden (niet verplicht)</title>
+            <title xml:lang="nl">Bijbehorende antwoorden (niet verplicht)</title>
+            <title xml:lang="en">Associated answer (not obligatory)</title>
             <item>
                 <field name="text" ftype="line" dtmaxlength="15">
-                    <prompt>Tekst</prompt>
+                    <prompt xml:lang="nl">Tekst</prompt>
+                    <prompt xml:lang="en">Text</prompt>
                     <description>De antwoord tekst</description>
                 </field>
             </item>
@@ -146,9 +163,11 @@
             </action>
 
             <command name="search" nodepath="openanswers" fields="text" age="-1" orderby="number" directions="down">
-                <prompt>Zoeken naar Antwoorden</prompt>
+                <prompt xml:lang="nl">Zoeken naar Antwoorden</prompt>
+                <prompt xml:lang="en">Look for an answer</prompt>
                 <search-filter>
-                    <name>Tekst bevat</name>
+                    <name xml:lang="nl">Tekst bevat</name>
+                    <name xml:lang="en">Text contains</name>
                     <search-fields>text</search-fields>
                 </search-filter>
             </command>
@@ -163,7 +182,8 @@
  
  
         <field name="textSecond" ftype="line" dtminlength="0">
-            <prompt>The second part of the sentence </prompt>
+        	<prompt xml:lang="nl">Het tweede deel van de zin</prompt>
+            <prompt xml:lang="en">The second part of the sentence </prompt>
         </field>
         
   
