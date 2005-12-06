@@ -39,7 +39,8 @@
       </descriptions>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Text</guiname>
+        <guiname xml:lang="nl">Tekst</guiname>
+        <guiname xml:lang="en">Text</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -70,7 +71,8 @@
       </descriptions>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Text</guiname>
+        <guiname xml:lang="nl">Tekst</guiname>
+        <guiname xml:lang="en">Text</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -95,12 +97,13 @@
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">Image position</description>
+        <description xml:lang="nl">Positie afbeelding</description>
         <description xml:lang="en">Image position</description>
       </descriptions>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Image position</guiname>
+        <guiname xml:lang="nl">Positie afbeelding</guiname>
+        <guiname xml:lang="en">Image position</guiname>
         <guitype>integer</guitype>
       </gui>
       <!-- editor related  -->
@@ -125,7 +128,7 @@
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">Choose flash file or text</description>
+        <description xml:lang="nl">Kies flash of tekst</description>
         <description xml:lang="en">Choose flash file or text</description>
       </descriptions>
       <!-- gui related -->
