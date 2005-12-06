@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.45 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.46 2005-12-06 22:28:14 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -319,7 +319,7 @@ public class DataTypeDefinition {
         LocalizedString descriptions = restriction.getErrorDescription();
         restriction.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions, null));
     }
-
+    
     /**
      * Used the enumeration element.
      */
@@ -342,7 +342,7 @@ public class DataTypeDefinition {
                 if (display.equals("")) display = value;
                 Object key = Casting.toType(dataType.getTypeAsClass(), null, value);
                 if (key instanceof java.io.Serializable) {
-                    log.info("Adding " + key + "/" + display + " for " + locale);
+                    log.debug("Added " + key + "/" + display + " for " + locale);
                     fact.add(locale, (java.io.Serializable) key, display);
                 } else {
                     log.error("key " + key + " for " + dataType + " is not serializable, cannot be added to entrylist factory.");
@@ -392,9 +392,10 @@ public class DataTypeDefinition {
                     throw new IllegalArgumentException("no 'value' or 'basename' attribute on enumeration entry element");
                 }
             }
-            log.info("Found enumeration values now " + fact);
+            if (log.isDebugEnabled()) {
+                log.debug("Found enumeration values now " + fact);
+            }
         }
-        log.info("--" );
     }
 
     protected boolean setProperty(Element element) {
