@@ -28,7 +28,7 @@
         <guiname xml:lang="en">First Name</guiname>
         <guiname xml:lang="fr">Nom</guiname>
         <guiname xml:lang="nl">Voornaam</guiname>
-        <guitype>string</guitype>
+        <guitype>line</guitype>
       </gui>
       <editor>
         <positions>
@@ -52,7 +52,7 @@
         <guiname xml:lang="en">Last Name</guiname>
         <guiname xml:lang="fr">Nom De Famille</guiname>
         <guiname xml:lang="nl">Achternaam</guiname>
-        <guitype>string</guitype>
+        <guitype>line</guitype>
       </gui>
       <editor>
         <positions>
@@ -76,7 +76,7 @@
         <guiname xml:lang="en">Email Address</guiname>
         <guiname xml:lang="fr">Email</guiname>
         <guiname xml:lang="nl">Email Adres</guiname>
-        <guitype>string</guitype>
+        <guitype>emailaddress</guitype>
       </gui>
       <editor>
         <positions>
@@ -100,7 +100,7 @@
         <guiname xml:lang="en">Account</guiname>
         <guiname xml:lang="fr">Compte</guiname>
         <guiname xml:lang="nl">Account</guiname>
-        <guitype>string</guitype>
+        <guitype>line</guitype>
       </gui>
       <editor>
         <positions>
