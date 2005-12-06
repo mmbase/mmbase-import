@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.76 2005-12-05 14:18:39 michiel Exp $
+ * @version $Id: Casting.java,v 1.77 2005-12-06 21:18:22 michiel Exp $
  */
 
 import java.util.*;
@@ -294,8 +294,7 @@ public class Casting {
             return new java.util.Date(((Date)o).getTime()) {
                     private static final long serialVersionUID = 1L; // increase this if object chages.
                     public String toString() {
-                        String r = ISO_8601_UTC.format((Date)o);
-                        return escape(escaper, r);
+                        return "" + getTime() / 1000;
                     }
                 };
         } else if (o instanceof org.w3c.dom.Node) {
