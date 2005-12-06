@@ -41,17 +41,18 @@ the week after next week number <mm:time referid="the_week_after" format="w"/>
   Testing months
 -->
 
-<mm:import id="months" vartype="list">january,february,march,april,may,june,july,august,september,october,november,december</mm:import>
+<mm:import id="months" vartype="list">january,february,march,april,
+           may,june,july,august,september,october,november,december</mm:import>
 
 <mm:stringlist referid="months">
-test3 <mm:index/> <mm:time time="$_" format=":FULL.FULL" />
+test3 <mm:index/> <mm:write />:  <mm:time time="$_" format=":FULL.FULL" />
 </mm:stringlist>
 
 
 change the offset with a year <mm:import id="offsetmonth"><%=  (int) (60 * 60 * 24 * 365.25) %></mm:import>
 
 <mm:stringlist referid="months">
-test4 <mm:index/> <mm:time time="$_" offset="$offsetmonth" format=":FULL.FULL" />
+test4 <mm:index/> <mm:write />:  <mm:time time="$_" offset="$offsetmonth" format=":FULL.FULL" />
 </mm:stringlist>
 
 
