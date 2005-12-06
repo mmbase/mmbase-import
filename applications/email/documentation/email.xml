@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2003-07-02</date>
-    <edition>$Id: email.xml,v 1.5 2004-04-14 21:14:28 michiel Exp $</edition>
+    <edition>$Id: email.xml,v 1.6 2005-12-06 20:02:27 andre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -17,7 +17,7 @@
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
       </para>
     </legalnotice>
-    <releaseinfo>MMBase 1.7 will include the Email application, a download of the application will be available for 1.6.x, differences between the two will be made clear in this manual</releaseinfo>
+    <releaseinfo>A download of this application is available for MMBase versions since 1.6.x.</releaseinfo>
   </articleinfo>
   <section>
     <title>Introduction</title>
@@ -113,6 +113,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
     <section><title>Sending mail to users and groups</title>
     <para>
       The above examples are clear but not  very dynamic, it just mails one person that we know the email address of usefull for sending account messages or greetingcards but within a modern website you also want to mail groups of users like in a mailing list or all the people that are part of a community topic. The mmbase email object will automaticly check any related users or groups of users and allow you to mail them just as easy as mailing just one of them. The following example mails a whole group with users, so in mmbase terms its users->groups->email. Once we give the mail command it will find check if there are related groups and if these groups have related users. If so it creates a list of all the found users and mails them.
+      The application sends the mail to a specific address, so it is needed you provide the 'to' field like info@mmbase.org in this example.
 </para>
 			<programlisting format="linespecific">
 			<![CDATA[
@@ -120,6 +121,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 
   <!--  create the email node -->
   <mm:createnode id="mail1" type="email">
+           <mm:setfield name="to">info@mmbase.org</mm:setfield>
            <mm:setfield name="from">daniel@mmbase.org</mm:setfield>
            <mm:setfield name="subject">MMBase group mail</mm:setfield>
            <mm:setfield name="body">Hi to all our group members !</mm:setfield>
@@ -133,7 +135,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 
   <!-- start the mailer and wait for it to finish -->
   <mm:node referid="mail1">
-    <mm:function name="name" />
+    <mm:function name="mail" />
   </mm:node>
 
 
@@ -144,21 +146,31 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 </para>
 	</section>
 		       <section><title>OneShotKeep and startmail</title>
-    <para>In the above examples we controlled the email process by using mail(oneshot), the mail command tells mmbase to mail and wait until its done. This works fine for 1 of 2 mails and should be used in these cases (the good thing is that you can check what happened in the rest of the page as in example2.jsp) but this becomes a problem if you are mailing a larg(er) group mailing that can take several seconds to even minutes depending on the speed of your mailhost. Since such a page would most likely be called from a browser it means that the user gets a "getting page" for several seconds/minutes and will probably hit stop at one point leaving the email in an unsure state. To solve this you can also start mailing in the background, the command will return right away and you can use the method shown in example2 to check if its done.
+    <para>In the above examples we controlled the email process by using &lt;mm:function name="mail" /&gt;, the mail command tells mmbase to mail and wait until its done. This works fine for 1 of 2 mails and should be used in these cases (the good thing is that you can check what happened in the rest of the page as in example2.jsp) but this becomes a problem if you are mailing a larg(er) group mailing that can take several seconds to even minutes depending on the speed of your mailhost. Since such a page would most likely be called from a browser it means that the user gets a "getting page" for several seconds/minutes and will probably hit stop at one point leaving the email in an unsure state. To solve this you can also start mailing in the background, the command will return right away and you can use the method shown in example2 to check if its done.
 </para>
 <programlisting format="linespecific">
-<![CDATA[Todo this use  :
-
-<mm:field name="startmail(oneshot) " />]]>
+<![CDATA[
+<mm:node referid="mail1">
+  <mm:functioncontainer>
+	<mm:param name="type" value="oneshot" />
+	<mm:function name="startmail" />
+  </mm:functioncontainer>
+</mm:node>
+]]>
 			</programlisting>
 <para>This will start the mailing process in the background and your page will return right away so users can not stop it. There can be several mail action going on at the same time without a problem. 
 
 Now the oneshot will mail and tag itself to be deleted by mmbase, but in the above group example this might not be wanted. You might for example want to keep "prove" of when the email was send and if it worked ok for administration use. Or u want to reuse the email object (just update the content in the body for example) and email it again. For this the mailtype oneshotkeep was will not be deleted once it is mailed, cleanup or reuse will be upto you.
 </para>
 <programlisting format="linespecific">
-<![CDATA[Todo this use  :
-
-<mm:function  name="startmail" />]]>
+<![CDATA[
+<mm:node referid="mail1">
+  <mm:functioncontainer>
+	<mm:param name="type" value="oneshotkeep" />
+	<mm:function name="startmail" />
+  </mm:functioncontainer>
+</mm:node>
+]]>
 </programlisting>
 
 </section>
@@ -234,6 +246,17 @@ MMBase Email Team.
 </programlisting>
 <para>Same thing as with the subject a normal taglib page the body page is allowed to do any of the normal things to create the page you want. In this case ive assumed we want to mail people their account info. Now to allow for better control/layout of the email you can use the html &gt;br /> and &gt;p> tabs. If they are used in a body url we will convert them before emailing to single and dubble returns.
 </para>
+<![CDATA[Todo : Tell about multipart mail (example6.jsp),  mailing attachments (example7.jsp)
+
+&lt;mm:setfield name="body"&gt;
+  &lt;multipart id="plaintext" type="text/plain" encoding="UTF-8"&gt;
+  This is plain text !
+  &lt;/multipart&gt;
+  &lt;multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8"&gt;
+  &lt;h1&gt;This is in html !&lt;/h1&gt;
+  &lt;/multipart&gt;
+&lt;/mm:setfield&gt;
+]]>
 
 	</section>
 	</article>
