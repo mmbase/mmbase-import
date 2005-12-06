@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.13 2005-12-05 13:25:21 andre Exp $
+ * @version $Id: SortedBundle.java,v 1.14 2005-12-06 22:26:53 michiel Exp $
  */
 public class SortedBundle {
 
@@ -165,7 +165,9 @@ public class SortedBundle {
             try {
                 providerClass = Class.forName(className);
             } catch (ClassNotFoundException cnfe) {
-                log.warn("No class found with name " + className);
+                if (log.isDebugEnabled()) {
+                    log.debug("No class found with name " + className + " found from " + bundleKey);
+                }
                 providerClass = constantsProvider;
             }
         }
@@ -189,7 +191,7 @@ public class SortedBundle {
         if (wrapper != null && ! wrapper.isAssignableFrom(key.getClass())) {
             try {
                 if (wrapper.isAssignableFrom(ValueWrapper.class)) {
-                    Constructor c = wrapper.getConstructor(new Class[] {String.class, Comparable.class});
+                    Constructor c = wrapper.getConstructor(new Class[] { String.class, Comparable.class });
                     key = c.newInstance(new Object[] { key, (Comparable) value});
                 } else {
                     Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
