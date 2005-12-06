@@ -98,7 +98,7 @@
       select the correct JSP for finding learnobjects. DO NOT CHANGE THIS TITLE!
     -->
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
-          fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' )]" 
+          fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' or object/@type='htmlpages')]"
           searchdir="destination">
       <title>Bijbehorende leerobjecten</title>
       <item>
