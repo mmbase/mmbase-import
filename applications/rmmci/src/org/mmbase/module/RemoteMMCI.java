@@ -12,6 +12,7 @@ package org.mmbase.module;
 import java.rmi.*;
 import java.rmi.registry.Registry;
 
+import org.mmbase.module.core.MMBase
 import org.mmbase.bridge.LocalContext;
 import org.mmbase.bridge.remote.RemoteCloudContext;
 import org.mmbase.bridge.remote.rmi.RemoteCloudContext_Rmi;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.3 2003-07-28 13:38:05 keesj Exp $
+ * @version $Id: RemoteMMCI.java,v 1.3.2.1 2005-12-06 12:01:48 marcel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -74,8 +75,8 @@ public class RemoteMMCI extends ProcessorModule {
         if (host == null || host.equals("")) {
             try {
                 // load MMBase and make sure it is started first
-                ProcessorModule mmbase = (ProcessorModule)getModule("MMBASEROOT", true);
-                host = mmbase.getInitParameter("host");
+                MMBase mmbase  = MMBase.getMMBase();
+                host = mmbase.getHost();
                 log.debug("using host FROM MMBASEROOT " + host);
                 java.net.InetAddress.getByName(host);
                 System.setProperty("java.rmi.server.hostname", host);
