@@ -36,26 +36,33 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.17 2005-11-11 15:28:54 pierre Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.18 2005-12-06 22:25:59 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedEntryListFactory.class);
-    private static final int serialVersionUID = 1; // increase this if object serialization changes (which we shouldn't do!)
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     private int size = 0; // number of explicitely added keys
 
     // we don't use interfaces here, because of Serializability
-    private HashMap localized = new HashMap();   //Locale -> List of Entries, Bundles and DocumentSerializable's
-    private HashMap unusedKeys = new HashMap();  // Locale -> unused Keys;
+    private static class LocalizedEntry implements Serializable, Cloneable {
+        private static final long serialVersionUID = 1L;
+        ArrayList entries    = new ArrayList(); //  List of Entries, Bundles and DocumentSerializable's
+        ArrayList unusedKeys = new ArrayList(); //  List of unused keys;
+        public String toString() {
+            return "" + entries + "uu:" + unusedKeys;
+        }
+    }
+    private HashMap localized  = new HashMap();   //Locale -> LocaledEntry
 
-    private ArrayList bundles = new ArrayList(); // contains all Bundles
-    private ArrayList fallBack = new ArrayList(); // List of known keys, used as fallback, notheing defind for locale
+    private ArrayList bundles  = new ArrayList(); // contains all Bundles
+    private ArrayList fallBack = new ArrayList(); // List of known keys, used as fallback, if nothing defined for a certain locale
 
 
     public LocalizedEntryListFactory() {
-
+        localized.put(LocalizedString.getDefault(), new LocalizedEntry());
     }
 
     /**
@@ -63,18 +70,22 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * @return The created Map.Entry.
      */
     public Map.Entry add(Locale locale, Serializable key, Serializable value) {
-        if (locale == null) locale = LocalizedString.getDefault();
+        if (locale == null) {
+            locale = LocalizedString.getDefault();
+        }
+
         Entry entry = new Entry(key, value);
         List unused = add(locale, entry);
         if (! fallBack.contains(key)) {
+            // this is an as yet unknown key.
             size++;
             fallBack.add(key);
-            Iterator i = unusedKeys.entrySet().iterator();
+            Iterator i = localized.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
-                List uu = (List) e.getValue();
-                if (!e.getKey().equals(locale)) {
-                    uu.add(key);
+                if (! e.getKey().equals(locale)) {
+                    LocalizedEntry loc = (LocalizedEntry) e.getValue();
+                    loc.unusedKeys.add(key);
                 }
             }
         }
@@ -91,18 +102,15 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     protected List add(Locale locale, Object entry) {
         if (locale == null) locale = LocalizedString.getDefault();
-        List localizedList = (List) localized.get(locale);
-        List unused        = (List) unusedKeys.get(locale);
-        if (localizedList == null) {
-            localizedList = new ArrayList();
-            localizedList.addAll(bundles);
-            localized.put(locale, localizedList);
-            unused = new ArrayList();
-            unused.addAll(fallBack);
-            unusedKeys.put(locale, unused);
+        LocalizedEntry local = (LocalizedEntry) localized.get(locale);
+        if (local == null) {
+            local = new LocalizedEntry();
+            local.entries.addAll(bundles);
+            local.unusedKeys.addAll(fallBack);
+            localized.put(locale, local);
         }
-        localizedList.add(entry);
-        return unused;
+        local.entries.add(entry);
+        return local.unusedKeys;
     }
 
     /**
@@ -120,15 +128,12 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         if (!i.hasNext()) {
             // adding very first localizedlist
             Locale locale = LocalizedString.getDefault();
-            List localizedList = new ArrayList();
-            localizedList.add(b);
-            localized.put(locale, localizedList);
-            List unused = new ArrayList();
-            unused.addAll(fallBack);
-            unusedKeys.put(locale, unused);
+            LocalizedEntry local = new LocalizedEntry();
+            local.entries.add(b);
+            local.unusedKeys.addAll(fallBack);
         } else while(i.hasNext()) {
-            List localizedList = (List) i.next();
-            localizedList.add(b);
+            LocalizedEntry local  = (LocalizedEntry) i.next();
+            local.entries.add(b);
         }
     }
 
@@ -184,29 +189,26 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                             private Map.Entry next = null;
 
                             {
-                                List loc = (List) localized.get(useLocale);
-                                List  uu  = (List) unusedKeys.get(useLocale);
+                                LocalizedEntry loc = (LocalizedEntry) localized.get(useLocale);
                                 if (loc == null) {
-                                    loc = (List) localized.get(LocalizedString.getDefault());
-                                    uu  = (List) unusedKeys.get(LocalizedString.getDefault());
+                                    loc = (LocalizedEntry) localized.get(LocalizedString.getDefault());
                                 }
 
                                 if (loc == null) {
-                                    loc = bundles;
-                                    assert(uu == null);
-                                    uu = fallBack;
+                                    iterator.addIterator(bundles.iterator());
+                                    iterator.addIterator(fallBack.iterator());
+                                } else {
+                                    iterator.addIterator(loc.entries.iterator());
+                                    iterator.addIterator(loc.unusedKeys.iterator());
                                 }
-                                iterator.addIterator(loc.iterator());
-                                iterator.addIterator(uu.iterator());
+
                                 findNext();
                             }
                             protected void findNext() {
                                 next = null;
                                 while(next == null && iterator.hasNext()) {
                                     Object candidate = iterator.next();
-                                    if (candidate instanceof String) {
-                                        next = new Entry(candidate, candidate);
-                                    } else if (candidate instanceof Map.Entry) {
+                                    if (candidate instanceof Map.Entry) {
                                         next = (Map.Entry) candidate;
                                     } else if (candidate instanceof Bundle) {
                                         subIterator = ((Bundle) candidate).get(useLocale).iterator();
@@ -250,6 +252,8 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                                         } catch (Exception e) {
                                             log.error(e.getMessage(), e);
                                         }
+                                    } else {
+                                        next = new Entry(candidate, candidate);
                                     }
                                 }
                             }
@@ -285,13 +289,13 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         if (cloud == null) cloud = getCloud(LocalizedString.getDefault());
         int queriesSize = 0;
         Locale locale = cloud == null ? LocalizedString.getDefault() : cloud.getLocale();
-        List localizedList = (List) localized.get(locale);
+        LocalizedEntry localizedList = (LocalizedEntry) localized.get(locale);
         if (localizedList == null) {
             locale = LocalizedString.getDefault();
-            localizedList = (List) localized.get(locale);
+            localizedList = (LocalizedEntry) localized.get(locale);
         }
         if (localizedList != null) {
-            Iterator i = localizedList.iterator();
+            Iterator i = localizedList.entries.iterator();
             while (i.hasNext()) {
                 Object o = i.next();
                 if (o instanceof Bundle) {
@@ -310,8 +314,11 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                     } catch (Exception e) {
                         log.warn(e);
                     }
+                } else {
+                    queriesSize++;
                 }
             }
+            queriesSize += localizedList.unusedKeys.size();
         }
 
         return queriesSize;
@@ -337,8 +344,11 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * casts to the value.
      */
     public Object castKey(final Object key) {
-        String string = Casting.toString(key);
+        String string = null;
         Iterator i = bundles.iterator();
+        if (i.hasNext()) {
+            string = Casting.toString(key);
+        }
         while (i.hasNext()) {
             Bundle b = (Bundle) i.next();
             Object nk = SortedBundle.castKey(string, null, b.constantsProvider, b.wrapper);
@@ -354,7 +364,6 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             clone.bundles   = (ArrayList) bundles.clone();
             clone.localized = (HashMap) localized.clone();
             clone.fallBack  = (ArrayList) fallBack.clone();
-            clone.unusedKeys = (HashMap) unusedKeys.clone();
             return clone;
         } catch (Exception e) {
             log.error(e);
@@ -363,7 +372,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return "" + get(null, null);
+        return "" + localized  + fallBack + "-->" + get(null, null);
     }
 
     private static class Bundle implements Serializable {
@@ -453,12 +462,13 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         Locale dk = new Locale("dk");
         Locale eo = new Locale("eo");
         fact.add(nl, "a", "hallo");
+        System.out.println("nou " + fact);        
         fact.add(new Locale("nl"), "b", "daag");
         fact.add(en, "b", "hello");
         fact.add(en, "a", "good bye");
         fact.addBundle(resource1, null, SortedBundle.NO_CONSTANTSPROVIDER, Boolean.class, SortedBundle.NO_COMPARATOR);
         fact.add(nl, "c", "doegg");
-        fact.add(dk, "d", "dk");
+        fact.add(dk, new Integer(5), "dk");
         fact.add(null, "e", "oi");
         fact.addBundle(resource2, null, SortedBundle.NO_CONSTANTSPROVIDER, String.class, SortedBundle.NO_COMPARATOR);
 
