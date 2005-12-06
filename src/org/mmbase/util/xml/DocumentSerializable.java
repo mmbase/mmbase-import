@@ -25,12 +25,12 @@ import org.mmbase.util.logging.*;
  * DocumentSerializable member in stead, and use {@link #getDocument}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentSerializable.java,v 1.1 2005-11-01 23:38:11 michiel Exp $
+ * @version $Id: DocumentSerializable.java,v 1.2 2005-12-06 22:27:41 michiel Exp $
  * @since MMBase-1.8
  */
 public class DocumentSerializable implements Serializable {
     private static final Logger log = Logging.getLoggerInstance(DocumentSerializable.class);
-    private static final int serialVersionUID = 1; 
+    private static final long serialVersionUID = 1L; 
 
     private Document document;
     // implementation of serializable
