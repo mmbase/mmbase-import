@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.6 2005-10-27 15:43:30 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.7 2005-12-06 22:27:14 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
@@ -51,12 +51,12 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
         return func;
     }
 
-    private static final Pattern fieldsPattern   = Pattern.compile("\\{NODE\\.(.+?)\\}");
-    private static final Pattern requestPattern  = Pattern.compile("\\{REQUEST\\.(.+?)\\}");
-    private static final Pattern requestParamPattern  = Pattern.compile("\\{REQUESTPARAM\\.(.+?)\\}");
+    private static final Pattern fieldsPattern            = Pattern.compile("\\{NODE\\.(.+?)\\}");
+    private static final Pattern requestPattern           = Pattern.compile("\\{REQUEST\\.(.+?)\\}");
+    private static final Pattern requestParamPattern      = Pattern.compile("\\{REQUESTPARAM\\.(.+?)\\}");
     private static final Pattern requestAttributePattern  = Pattern.compile("\\{REQUESTATTRIBUTE\\.(.+?)\\}");
-    private static final Pattern paramPattern    = Pattern.compile("\\{PARAM\\.(.+?)\\}");
-    private static final Pattern initParamPattern    = Pattern.compile("\\{INITPARAM\\.(.+?)\\}");
+    private static final Pattern paramPattern             = Pattern.compile("\\{PARAM\\.(.+?)\\}");
+    private static final Pattern initParamPattern         = Pattern.compile("\\{INITPARAM\\.(.+?)\\}");
 
     private static int counter = 0;
 
@@ -83,12 +83,10 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
         }
         protected static Parameter[] getParameterDef(String template) {
             List params = new ArrayList();
-            log.info(" " + requestPattern + " " + requestParamPattern + " " + requestAttributePattern + " " + template);
             if (requestPattern.matcher(template).find() ||
                 requestParamPattern.matcher(template).find() ||
                 requestAttributePattern.matcher(template).find()
                 ) {
-                log.info("Adding 'REQUEST' parameter");
                 params.add(Parameter.REQUEST);
             }
             Matcher args = paramPattern.matcher(template);
@@ -115,7 +113,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                     sb = new StringBuffer();
                     while(request.find()) {
                         if(request.group(1).equals("getContextPath")) {
-                            String r = org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath();
+                            String r = req == null ? org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() : req.getContextPath() + '/';
                             request.appendReplacement(sb, r.substring(0, r.length() - 1));
                             continue;
                         }
