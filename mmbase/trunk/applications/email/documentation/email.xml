@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2003-07-02</date>
-    <edition>$Id: email.xml,v 1.6 2005-12-06 20:02:27 andre Exp $</edition>
+    <edition>$Id: email.xml,v 1.7 2005-12-06 20:06:51 andre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -248,14 +248,14 @@ MMBase Email Team.
 </para>
 <![CDATA[Todo : Tell about multipart mail (example6.jsp),  mailing attachments (example7.jsp)
 
-&lt;mm:setfield name="body"&gt;
-  &lt;multipart id="plaintext" type="text/plain" encoding="UTF-8"&gt;
+<mm:setfield name="body">
+  <multipart id="plaintext" type="text/plain" encoding="UTF-8">
   This is plain text !
-  &lt;/multipart&gt;
-  &lt;multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8"&gt;
-  &lt;h1&gt;This is in html !&lt;/h1&gt;
-  &lt;/multipart&gt;
-&lt;/mm:setfield&gt;
+  </multipart>
+  <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
+  <h1>This is in html !</h1>
+  </multipart>
+</mm:setfield>
 ]]>
 
 	</section>
