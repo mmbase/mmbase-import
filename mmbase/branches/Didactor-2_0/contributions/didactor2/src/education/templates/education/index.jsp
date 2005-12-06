@@ -328,8 +328,8 @@
          var frameElem = document.getElementById("content");
          iframedoc = window.frames[0].document;
          iframedoc.onupdate = resize;
-         frameHeight = iframedoc.body.scrollHeight + 40px;
-         frameElem.style.height = frameHeight + "px";
+         frameHeight = iframedoc.body.scrollHeight + "40px";
+         frameElem.style.height = frameHeight;
       }
    </script>
 
