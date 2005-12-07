@@ -22,13 +22,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.25 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.26 2005-12-07 12:21:43 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
-    protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile(".*"));
+    protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile("(?s)\\A.*\\z"));
     private boolean isPassword = false;
     protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this/* I hate java, no m.i. */, 0);
     protected AbstractLengthDataType.MaxRestriction maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, Long.MAX_VALUE);
