@@ -166,6 +166,9 @@
    if (currentpos < 0) {
       currentpos = 0;
    }
+   if (currentpos >= listTestPath.size()) {
+      currentpos = listTestPath.size() - iQPerPageAmount;
+   }
 
    i = currentpos;
    flag = 1; // first pass
