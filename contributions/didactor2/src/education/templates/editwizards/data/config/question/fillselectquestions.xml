@@ -32,13 +32,22 @@
     
      
 
-    <lists>
-        <optionlist include="config/option_list/boolean.xml" />
-        <optionlist include="config/option_list/flashOrText.xml" />
-         <optionlist name="imagepos">
-            <option id="0">Above</option>
-            <option id="1">Under</option>
-            <option id="2">Next</option>
+	<lists>
+		<optionlist include="config/option_list/boolean.xml" />
+		<optionlist include="config/option_list/flashOrText.xml" />
+		<optionlist name="imagepos">
+            <option id="0">
+				<prompt xml:lang="nl">Boven</prompt>
+				<prompt xml:lang="en">Above</prompt>
+			</option>
+            <option id="1">
+            	<prompt xml:lang="nl">Onder</prompt>
+            	<prompt xml:lang="en">Under</prompt>
+            </option>
+            <option id="2">
+            	<prompt xml:lang="nl">Naast</prompt>
+            	<prompt xml:lang="en">Next</prompt>
+            </option>
         </optionlist>      
         <optionlist include="config/option_list/boolean_inverse.xml" /> 
         <optionlist name="layout">
@@ -53,7 +62,7 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Fill select invoeren</title>
+        <title>Vul uitgezocht invoeren</title>
         <field name="title" >
             <prompt>Titel</prompt>
         </field>
@@ -69,7 +78,7 @@
    
     <!--  INSERT FLASH/TEXT -->  
         <field name="flashOrText" ftype="enum">
-           <prompt xml:lang="nl">Choose flash or text</prompt>
+           <prompt xml:lang="nl">Kies flash of tekst</prompt>
            <prompt xml:lang="en">Choose flash or text</prompt>
            <optionlist select="flashOrText" />
         </field>
@@ -77,7 +86,8 @@
         
     <!--  INSERT TEXT -->  
         <field name="text" ftype="html" dtminlength="0">
-            <prompt>Tekst</prompt>
+            <prompt xml:lang="nl">Tekst</prompt>
+            <prompt xml:lang="en">Text</prompt>
         </field>       
     <!-- END INSERT TEXT --> 
 
@@ -96,7 +106,8 @@
              <!-- Show the 'item' in a list (the object) -->
              <item>
                      <field name="title">
-                             <prompt>Afbeeldingen Titel</prompt>
+                             <prompt xml:lang="nl">Afbeeldingen Titel</prompt>
+                             <prompt xml:lang="en">Image title</prompt>
                              <description></description>
                      </field>
                      <field wizardname="config/image/image" ftype="startwizard" />
@@ -117,7 +128,8 @@
  	  <!--  INSERT IMAGE POSITION--> 
  	 
  	 <field name="impos" ftype="enum">
-            <prompt>Image position</prompt>
+            <prompt xml:lang="nl">Afbeeldingen positie</prompt>
+            <prompt xml:lang="en">Image position</prompt>
             <optionlist select="imagepos" />
      </field>
      
@@ -125,7 +137,8 @@
  	 
        
         <field name="textFirst" ftype="line" dtminlength="0">
-            <prompt>The first part of the sentence </prompt>
+	        <prompt xml:lang="nl">Het eerste deel van de zin </prompt>
+            <prompt xml:lang="en">The first part of the sentence </prompt>
         </field>
  
   
@@ -134,7 +147,8 @@
  <!--INSERT LAYOUT -->       
         
         <field name="layout" ftype="enum">
-            <prompt>Layout</prompt>
+            <prompt xml:lang="en">Layout</prompt>
+            <prompt xml:lang="nl">Lay-out</prompt>
             <optionlist select="layout" />
         </field>      
         
@@ -147,12 +161,14 @@
             <title>Bijbehorende Multiple-Choice antwoorden</title>
             <item>
                 <field name="text" ftype="line">
-                    <prompt>Tekst</prompt>
+                    <prompt xml:lang="nl">Tekst</prompt>
+                    <prompt xml:lang="en">Text</prompt>
                     <description>De antwoord tekst</description>
                 </field>
                 <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
                 <field name="correct" ftype="enum">
-                    <prompt>Correct</prompt>
+                    <prompt xml:lang="en">Correct</prompt>
+                    <prompt xml:lang="nl">Verbeter</prompt>
                     <optionlist select="boolean_inverse" />
                 </field>
                 <field wizardname="config/answer/mcanswers" ftype="startwizard"/>
@@ -184,7 +200,8 @@
 
 
             <command name="startwizard" inline="true" wizardname="config/answer/mcanswers" objectnumber="new">
-                <prompt>Nieuwe Multiple Choice antwoord</prompt>
+                <prompt xml:lang="nl">Nieuwe Multiple Choice antwoord</prompt>
+                <prompt xml:lang="en">New Multiple Choice answer</prompt>
             </command>
 
         </list>     
@@ -196,7 +213,8 @@
  
  
         <field name="textSecond" ftype="line" dtminlength="0">
-            <prompt>The second part of the sentence </prompt>
+			<prompt xml:lang="nl">Het tweede deel van de zin </prompt>
+            <prompt xml:lang="en">The second part of the sentence </prompt>
         </field>
         
   
