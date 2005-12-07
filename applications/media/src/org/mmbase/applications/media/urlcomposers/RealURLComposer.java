@@ -37,11 +37,11 @@ public class RealURLComposer extends FragmentURLComposer  {
             long start = fragment.getLongValue("start");
             long end   = fragment.getLongValue("stop");
             char sep = '?';
-            if (start > -1) {            
+            if (start > -1 && start != end) {
                 appendTime(start, args.append(sep).append("start="));
                 sep = '&';
             }
-            if (end > -1) {            
+            if (end > -1 && start != end) {
                 appendTime(end, args.append(sep).append("end="));
                 sep = '&';
             }
