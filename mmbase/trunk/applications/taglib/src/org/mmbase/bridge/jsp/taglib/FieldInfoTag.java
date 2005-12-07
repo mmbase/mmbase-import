@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.88 2005-11-23 10:29:39 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.89 2005-12-07 20:30:00 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -234,6 +234,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         Node          node = null;
         FieldProvider fieldProvider = findFieldProvider();
         Field         field = fieldProvider.getFieldVar();
+        String fieldName = field.getName();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
          * EXPERIMENTAL
@@ -293,17 +294,17 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
         switch(infoType) {
         case TYPE_NAME:
-            show = field.getName();
+            show = fieldName;
             break;
         case TYPE_GUINAME:
             show = field.getGUIName(locale);
             break;
         case TYPE_VALUE:
-            show = decode(node.getStringValue(field.getName()), node);
+            show = decode(node.getStringValue(fieldName), node);
             break;
         case TYPE_GUIVALUE: {
             if (log.isDebugEnabled()) {
-                log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
+                log.debug("field " + fieldName + " --> " + node.getStringValue(field.getName()));
             }
             Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    field.getName());
@@ -312,10 +313,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
             args.set("request", pageContext.getRequest());
-            args.set("stringvalue", node.getStringValue(field.getName()));
+            if (node.getSize(fieldName) < 2000) {
+                args.set("stringvalue", node.getStringValue(fieldName));
+            }
             show = decode(node.getFunctionValue("gui", args).toString(), node);
             if (show.trim().equals("")) {
-                show = decode(node.getStringValue(field.getName()), node);
+                show = decode(node.getStringValue(fieldName), node);
             }
             break;
         }
