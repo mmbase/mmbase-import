@@ -163,11 +163,11 @@
          currentpos = listTestPath.indexOf(listQShowed.get(0)) - iQPerPageAmount;
       }
    }
-   if (currentpos < 0) {
-      currentpos = 0;
-   }
    if (currentpos >= listTestPath.size()) {
       currentpos = listTestPath.size() - iQPerPageAmount;
+   }
+   if (currentpos < 0) {
+      currentpos = 0;
    }
 
    i = currentpos;
