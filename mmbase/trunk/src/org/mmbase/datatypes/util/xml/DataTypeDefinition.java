@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.46 2005-12-06 22:28:14 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.47 2005-12-07 10:28:46 pierre Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -175,20 +175,17 @@ public class DataTypeDefinition {
         getImplementation(dataTypeElement, id);
         LocalizedString description = dataType.getLocalizedDescription();
         DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());
-        configureConditions(dataTypeElement);
+        configureConditions(dataTypeElement, id);
 
         return this;
     }
 
-
-
     private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|description");
-
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
      */
-    protected void configureConditions(Element dataTypeElement) {
+    protected void configureConditions(Element dataTypeElement, String id) {
         log.debug("Now going to configure " + dataType);
         // add conditions
         NodeList childNodes = dataTypeElement.getChildNodes();
@@ -203,7 +200,7 @@ public class DataTypeDefinition {
                 }
                 if (dataType == baseDataType) {
                     log.debug("About to add/change conditions, need clone first!");
-                    dataType = (BasicDataType) baseDataType.clone(getId(""));
+                    dataType = (BasicDataType) baseDataType.clone(getId(id));
                 }
                 log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
                 if (!addCondition(childElement)) {
@@ -319,7 +316,7 @@ public class DataTypeDefinition {
         LocalizedString descriptions = restriction.getErrorDescription();
         restriction.setErrorDescription(DataTypeXml.getLocalizedDescription("description", element, descriptions, null));
     }
-    
+
     /**
      * Used the enumeration element.
      */
