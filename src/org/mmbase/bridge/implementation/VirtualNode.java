@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.12 2005-11-24 10:08:06 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.13 2005-12-07 20:27:41 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -188,6 +188,10 @@ public class VirtualNode implements Node {
 
     public boolean isNull(String fieldName) {
         return noderef.isNull(fieldName);
+    }
+
+    public long getSize(String fieldName) {
+        return noderef.getSize(fieldName);
     }
 
     public Object getValue(String fieldName) {
