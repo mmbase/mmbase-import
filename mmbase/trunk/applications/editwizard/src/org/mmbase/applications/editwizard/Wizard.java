@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.140 2005-11-02 10:39:28 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.141 2005-12-07 10:33:08 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -603,8 +603,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     if (result.equals("date")) {
                         result = buildDate(req, name);
                     }
+                    if (result.equals("time")) {
+                        result = buildTime(req, name);
+                    }
                     if (result.equals("datetime")) {
-                        result = buildDatetime(req, name);
+                        result = buildDateTime(req, name);
                     }
                     if (result.equals("duration")) {
                         result = buildDuration(req, name);
@@ -649,7 +652,22 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
 
-    private String buildDatetime(ServletRequest req, String name) {
+    private String buildTime(ServletRequest req, String name) {
+        try {
+            int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
+            int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
+
+            Calendar cal = getCalendar();
+            cal.set(1970, 0, 1, hours, minutes, 0);
+            return "" + cal.getTimeInMillis() / 1000;
+        } catch (RuntimeException e) { //NumberFormat NullPointer
+            log.debug("Failed to parse time for " + name + " "
+                    + e.getMessage());
+            return "";
+        }
+    }
+
+    private String buildDateTime(ServletRequest req, String name) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
             int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
@@ -1424,7 +1442,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // expand attribute 'startnodes' for search command
         Node command = Utils.selectSingleNode(newlist, "command[@name='search']");
 
-        
+
         if (command != null) {
             expandAttribute(command, "startnodes", null);
             // expand constraints attribute on search action
@@ -2586,9 +2604,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // in the old format, ftype was date, while dttype was date,datetime, or time
         // In the new format, this is reversed (dttype contains the base datatype,
         // ftype the format in which to enter it)
+        // since wizards only understand formats 'date', 'time', 'duartion' and 'datetime',
+        // 'ftype' values of new date guitypes (such as new datatypes) need to be converted to
+        // datetime
         if ("date".equals(dttype) || "time".equals(dttype)) {
             ftype = dttype;
             dttype = "datetime";
+        } else if ("datetime".equals(dttype) &&
+                   (!"date".equals(ftype) && !"time".equals(ftype) && !"duration".equals(ftype))) {
+            ftype = "datetime";
         }
 
         // in the old format, 'html' could also be assigned to dttype
