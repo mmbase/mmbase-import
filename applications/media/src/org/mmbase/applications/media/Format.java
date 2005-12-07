@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.16 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id: Format.java,v 1.17 2005-12-07 08:56:32 johannes Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -130,6 +130,9 @@ public final class Format {   // final class!!
 
     public static final Format MID   = new Format(30, "mid");
 
+    public static final Format PODCAST = new Format(50, "podcast");
+    public static final Format VODCAST = new Format(51, "vodcast");
+
     
 
 
@@ -147,7 +150,7 @@ public final class Format {   // final class!!
      * don't know if this is nice
      */
     public static List getMediaFormats() {
-        return Arrays.asList(new Format[] {MP3, RA, RA,WAV, PCM, MP2, RM, VOB, AVI, MPEG, MP4, MPG, ASF, MOV, WMA, OGG, OGM, RAM, WMP, QT, ASX, WAX, WMV, WVX, WM, WMZ, WMD, MID});
+        return Arrays.asList(new Format[] {MP3, RA, RA,WAV, PCM, MP2, RM, VOB, AVI, MPEG, MP4, MPG, ASF, MOV, WMA, OGG, OGM, RAM, WMP, QT, ASX, WAX, WMV, WVX, WM, WMZ, WMD, MID, PODCAST, VODCAST});
     }
     public static Format get(String id) {
         id = id.toLowerCase();
