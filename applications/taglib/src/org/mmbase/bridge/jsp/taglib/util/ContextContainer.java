@@ -15,6 +15,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
 
 import java.util.*;
+import java.lang.reflect.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.47 2005-10-31 07:53:35 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.48 2005-12-07 17:48:03 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -223,12 +224,15 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             if(c == null) {
                 throw new JspTagException("Context '" + contextKey+ "' could not be found.");
             }
-            if (! (c instanceof ContextContainer)) {
-                throw new JspTagException(contextKey + " is not a Context, but a " + c.getClass().getName());
-            }
             String newKey = key.substring(dotPos + 1);
             // and search with that one:
-            return new Pair((ContextContainer)c, newKey, wentDown);
+            if (c instanceof ContextContainer) {
+                return new ContextContainerPair((ContextContainer)c, newKey, wentDown);
+            } else if (c instanceof Map) {
+                return new MapPair((Map)c, newKey, wentDown);
+            } else {
+                return new BeanPair(c, newKey, wentDown);
+            }
         } else {
             return null;
         }
@@ -257,7 +261,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (p == null) {
             return simpleContainsKey(key, checkParent);
         } else {
-            return p.context.containsKey(p.restKey, ! p.wentDown);
+            return p.containsKey(p.restKey, ! p.wentDown);
         }
     }
 
@@ -285,7 +289,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (p == null) {
             return simpleGet(key, checkParent);
         } else {
-            return p.context.get(p.restKey, ! p.wentDown);
+            return p.get(p.restKey, ! p.wentDown);
         }
     }
 
@@ -358,7 +362,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         Pair pair = getPair(newId, checkParent);
 
         if (pair != null) {
-            pair.context.register(pair.restKey, n, check, ! pair.wentDown);
+            pair.register(pair.restKey, n, check, ! pair.wentDown);
 
         } else {
 
@@ -467,7 +471,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
         Pair pair = getPair(key, checkParent);
         if (pair != null) {
-            pair.context.unRegister(pair.restKey, ! pair.wentDown);
+            pair.unRegister(pair.restKey, ! pair.wentDown);
         } else {
             remove(key);
         }
@@ -745,18 +749,123 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             return "context '" + id  + "'" + getBacking().toString();
         }
     }
+}
 
-    /**
-     * Container class, to store results of 'getPair' function.
-     */
+/**
+ * Container class, to store results of 'getPair' function, which is a 'parent' container plus
+ * a key.
+ * 
+ * Since MMBase-1.8 three different implementations are available, to work like EL as much as possible.
+ */
 
-    protected class Pair {
-        ContextContainer context;
-        String           restKey;
-        boolean          wentDown;
-        Pair(ContextContainer c, String k, boolean w) {
-            context = c; restKey = k; wentDown = w;
-        }
+abstract class Pair {
+    public final String           restKey;
+    public final boolean          wentDown;
+    Pair(String k, boolean w) {
+        restKey = k; wentDown = w;
+    }
+    abstract  boolean containsKey(String key, boolean checkParent) throws JspTagException;
+    abstract  Object get(String key, boolean checkParent) throws JspTagException;
+    abstract  void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException;
+    abstract void unRegister(String key, boolean checkParent) throws JspTagException;    
+}
+
+/**
+ * @since MMBase-1.8
+ */
+class ContextContainerPair extends Pair {
+    private ContextContainer context;
+    ContextContainerPair(ContextContainer c, String k, boolean w) {
+        super(k, w);
+        context = c;
+    }
+    final boolean containsKey(String key, boolean checkParent) throws JspTagException {
+        return context.containsKey(key, checkParent);
+    }
+    final Object get(String key, boolean checkParent) throws JspTagException {
+        return context.get(key, checkParent);
+    }
+    final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
+        context.register(newId, n, check, checkParent);
+    }
+    final void unRegister(String key, boolean checkParent) throws JspTagException {
+        context.unRegister(key, checkParent);
     }
 
+
+}
+/**
+ * @since MMBase-1.8
+ */
+class MapPair extends Pair {
+    private Map map;
+    MapPair(Map c, String k, boolean w) {
+        super(k, w);
+        map = c;
+    }
+    final boolean containsKey(String key, boolean checkParent) throws JspTagException {
+        if (checkParent) throw new JspTagException("Cannot check parent of Map");
+        return map.containsKey(key);
+    }
+    final Object get(String key, boolean checkParent) throws JspTagException {
+        if (checkParent) throw new JspTagException("Cannot check parent of Map");
+        return map.get(key);
+    }
+    final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
+        if (checkParent) throw new JspTagException("Cannot check parent of Map");
+        map.put(newId, n);
+    }
+    final void unRegister(String key, boolean checkParent) throws JspTagException {
+        if (checkParent) throw new JspTagException("Cannot check parent of Map");
+        map.remove(key);
+    }
+}
+
+/**
+ * @since MMBase-1.8
+ */
+class BeanPair extends Pair {
+    private Object bean;
+    private Class clazz;
+    BeanPair(Object c, String k, boolean w) {
+        super(k, w);
+        bean = c;
+        clazz = bean.getClass();
+    }
+
+    private Method getMethod(String key) {
+        String methodKey =  Character.toUpperCase(key.charAt(0)) + key.substring(1);
+        Method method;
+        try {
+            method = clazz.getMethod("get" + methodKey, null);
+        } catch (Exception e) {
+            try {
+                method = clazz.getMethod("is" + methodKey, null);
+            } catch (Exception f) {
+                return null;
+            }
+        }
+        return method;
+    }
+    final boolean containsKey(String key, boolean checkParent) throws JspTagException {
+        if (checkParent) throw new JspTagException("Cannot check parent of Bean");
+        return getMethod(key) != null;
+    }
+    final Object get(String key, boolean checkParent) throws JspTagException {
+        if (checkParent) throw new JspTagException("Cannot check parent of Bean");
+        try {
+            Method method = getMethod(key);
+            if (method == null) return null;
+            return method.invoke(bean, null);
+        } catch (Exception iae) {
+            throw new TaglibException(iae.getMessage(), iae);
+        }
+    }
+    final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {
+        throw new UnsupportedOperationException("Cannot register in a bean");
+    }
+    final void unRegister(String key, boolean checkParent) throws JspTagException {
+        throw new UnsupportedOperationException("Cannot unregister in a bean");
+    }
+    
 }
