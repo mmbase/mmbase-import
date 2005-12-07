@@ -41,6 +41,9 @@
       <td width="50%"><%@include file="codesamples/iterate.jsp" %></td>
       </tr>
       </table>
+      <p>
+        See also <a href="jstl.jsp">the section about JSTL</a>.
+      </p>
   </li>
   <li><a name="listempty" /><em>How do I find out if a list is empty?</em>
      <p>
@@ -140,7 +143,8 @@
     another taglib for this, or use JSP. For this the 'jspvar' (and 'vartype') attributes are available.
    </p>
    <p>
-    A lot is possible though using MMBase taglib only. We discourage you to 'flee' to JSP too quickly, as it makes your pages harder to read.
+     A lot is possible though using MMBase taglib only. We discourage you to 'flee' to JSP too quickly, as it makes your pages harder to read.
+     See also <a href="jstl.jsp">the section about JSTL</a>.
    </p>
    </li>
    <li><a name="form" /><em>Can I put the form, and the code to handle the form easily in one JSP page?</em>
