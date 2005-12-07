@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.64 2005-11-23 10:22:41 michiel Exp $
+ * @version $Id: Node.java,v 1.65 2005-12-07 20:27:41 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -241,11 +241,20 @@ public interface Node extends Comparable {
     public void setListValue(String fieldName, List value);
 
     /**
-     * Whether the value fo the speficied field is <code>null</code>. This avoids acquiring the
+     * Whether the value for the speficied field is <code>null</code>. This avoids acquiring the
      * complete value if you only want to check if for emptyness.
      * @since MMBase-1.8
      */
     public boolean isNull(String fieldName);
+
+
+    /**
+     * Returns the 'size' (e.g. the number of bytes of a byte array) for the specified field. This
+     * avoids acquiring the complete value if you only want to check if for emptyness.
+     * @since MMBase-1.8
+     */
+    public long getSize(String fieldName);
+
 
     /**
      * Returns the value of the specified field as an object. For example a
