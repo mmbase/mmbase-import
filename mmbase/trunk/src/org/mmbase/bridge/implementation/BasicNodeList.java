@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.38 2005-10-25 14:21:59 pierre Exp $
+ * @version $Id: BasicNodeList.java,v 1.39 2005-12-07 18:12:06 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -59,7 +59,12 @@ public class BasicNodeList extends BasicList implements NodeList {
             MMObjectNode coreNode = (MMObjectNode) o;
             MMObjectBuilder coreBuilder = coreNode.getBuilder();
             if (coreBuilder instanceof TypeDef) {
-                node = cloud.getNodeManager(coreNode.getStringValue("name"));
+                String builderName = coreNode.getStringValue("name");
+                if (cloud.hasNodeManager(builderName)) {
+                    node = cloud.getNodeManager(builderName);
+                } else {
+                    node = cloud.getNode(coreNode.getNumber());
+                }
             } else if (coreBuilder instanceof RelDef) {
                 node = cloud.getRelationManager(coreNode.getStringValue("sname"));
             } else if (coreBuilder instanceof TypeRel) {
