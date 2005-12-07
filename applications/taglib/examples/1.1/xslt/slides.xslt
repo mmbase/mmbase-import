@@ -4,7 +4,6 @@
   xmlns:mmxf="http://www.mmbase.org/mmxf"
   exclude-result-prefixes="mmxf" 
 >
-  <xsl:import href="mm:xslt/2xhtml.xslt" />  
   <xsl:output method="xml" 
     indent="yes"
     omit-xml-declaration="yes"  /><!-- xhtml is a form of xml -->
