@@ -10,18 +10,13 @@ input {
 } 
 
 
-table {
-  background-color:#cccccc;
-  padding:2px 2px 2px 2px;
-}
-
 th {
  text-align: left;
 }
 
 td{
+  width: 40%;
   background-color:#eeeeee;
-  padding:2px 2px 2px 2px;
   vertical-align: top;
 }
 

@@ -50,5 +50,7 @@
   |
   <a href="<mm:url page="1.1/" />" >what's new</a>
   |
+  <a href="<mm:url page="2.0/" />" >what's newer</a>
+  |
   <a href="<mm:url page="$taglibdoc" />" >Taglib documentation</a>
 </p>

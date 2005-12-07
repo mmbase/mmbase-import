@@ -33,7 +33,7 @@
 <p>
 It was implemented like this:
 </p>
-<pre><mm:formatter format="escapexml"><mm:include page="codesamples/edittag.jsp" /></mm:formatter></pre>
+<pre><mm:include page="codesamples/edittag.jsp" escape="text/xml" /></pre>
 
 </mm:cloud>
 </body>
