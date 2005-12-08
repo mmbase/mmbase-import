@@ -30,7 +30,7 @@
       </db>
     </field>
     <field>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>line</name>
         <type size="255" state="persistent">STRING</type>
