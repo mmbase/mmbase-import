@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.65 2005-12-07 20:27:41 michiel Exp $
+ * @version $Id: Node.java,v 1.66 2005-12-08 12:24:25 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -250,7 +250,7 @@ public interface Node extends Comparable {
 
     /**
      * Returns the 'size' (e.g. the number of bytes of a byte array) for the specified field. This
-     * avoids acquiring the complete value if you only want to check if for emptyness.
+     * avoids acquiring the complete value if you only want to know how big the value of the field is.
      * @since MMBase-1.8
      */
     public long getSize(String fieldName);
