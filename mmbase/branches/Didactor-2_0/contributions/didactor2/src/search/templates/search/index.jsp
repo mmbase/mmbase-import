@@ -12,7 +12,7 @@
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title>Zoeken</title>
+    <title><di:translate key="search.search_caption" /></title>
   </mm:param>
 </mm:treeinclude>
 
