@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.145 2005-11-25 12:39:08 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.146 2005-12-08 12:32:09 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -169,9 +169,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         mmbaseCop = mmb.getMMBaseCop();
 
         if (mmbaseCop == null) {
-            String message = "Couldn't find the MMBaseCop. Perhaps your MMBase did not start up correctly; check application server and mmbase logs ";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Couldn't find the MMBaseCop. Perhaps your MMBase did not start up correctly; check application server and mmbase logs ");
         }
         log.debug("Setting up cloud object");
         locale = new Locale(mmb.getLanguage(), "");
