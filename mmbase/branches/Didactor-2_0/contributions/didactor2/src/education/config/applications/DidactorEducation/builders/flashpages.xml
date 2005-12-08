@@ -9,9 +9,11 @@
     <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Flash Pagina</singular>
     <singular xml:lang="en">Flash Page</singular>
+    <singular xml:lang="fr">Flash Page</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Flash Pagina's</plural>
     <plural xml:lang="en">Flash Pages</plural>
+    <plural xml:lang="fr">Flash Pages</plural>
   </names>
 
   <descriptions>
