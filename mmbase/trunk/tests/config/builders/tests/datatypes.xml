@@ -85,11 +85,11 @@
         <enumeration enforce="onchange">
           <entry value="2" xml:lang="en" display="two" />
           <entry value="2" xml:lang="nl" display="twee" />
+          <entry value="8" xml:lang="nl" display="acht" />
           <entry value="4" />
           <entry value="6" xml:lang="eo" display="ses" />
-          <entry value="8" xml:lang="en" display="eight" />
-          <entry value="8" xml:lang="nl" display="acht" />
           <entry value="8" xml:lang="eo" display="ok" />
+          <entry value="8" xml:lang="en" display="eight" />
         </enumeration>
       </datatype>
       <db>
