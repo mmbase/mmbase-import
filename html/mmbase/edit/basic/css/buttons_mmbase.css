@@ -33,7 +33,7 @@ span.change:before {
 }
 
 span.delete {
-  background:  url((../../../style/images/delete.gif); /* makes it work in IE */
+  background:  url(../../../style/images/delete.gif); /* makes it work in IE */
   width: 21px;
   height: 20px;
 }
