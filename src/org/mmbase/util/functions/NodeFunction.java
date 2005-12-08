@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.16 2005-11-23 12:19:26 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.17 2005-12-08 12:39:56 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -76,13 +76,13 @@ public abstract class NodeFunction extends AbstractFunction {
     protected static Parameter[] getNodeParameterDef(Parameter[] def) {
         List defList = Arrays.asList(def);
         if (defList.contains(Parameter.NODE) && defList.contains(Parameter.CLOUD)) {
-            return def;
+            return new Parameter[] { new Parameter.Wrapper(def), MMObjectNode.PARAMETER};
         } else if (defList.contains(Parameter.NODE)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CLOUD};
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CLOUD, MMObjectNode.PARAMETER};
         } else if (defList.contains(Parameter.CLOUD)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE};
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, MMObjectNode.PARAMETER};
         } else {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CLOUD};
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CLOUD, MMObjectNode.PARAMETER};
         }
     }
 
@@ -124,6 +124,7 @@ public abstract class NodeFunction extends AbstractFunction {
                 node = cloud.getNode(number);
             }
         }
+        parameters.set(Parameter.NODE, node);
         return getFunctionValue(node, parameters);
 
     }
@@ -141,15 +142,18 @@ public abstract class NodeFunction extends AbstractFunction {
     }
 
     /**
-     * This function will never be called, only by the default implemention of {@link
-     * #getFunctionValue(MMObjectNode, Parameters)}. So, you must override either that funciton, or
-     * this one. This will probably not work if you don't call {@link Node#getFunctionValue} (but
-     * something like getStringValue("function(arguments)"), which is deprecated).
-     *
-     * @throws UnssupportedOoperationException
      */
-    protected Object getFunctionValue(Node node, Parameters parameters) {
-        throw new UnsupportedOperationException("Not supported");
+    protected abstract Object getFunctionValue(Node node, Parameters parameters);
+
+    protected Node getNode(Parameters parameters) {
+        if (! parameters.containsParameter(Parameter.NODE)) {
+            throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
+        }
+        Node node = (Node) parameters.get(Parameter.NODE);
+        if (node == null) {
+            throw new IllegalArgumentException("The '" + Parameter.NODE + "' argument of  " + getClass() + " " + toString() + " must not be null ");
+        }
+        return node;
     }
 
     /**
@@ -157,18 +161,7 @@ public abstract class NodeFunction extends AbstractFunction {
      * This one can be overriden if the same function must <em>also</em> be a builder function.
      */
     public Object getFunctionValue(Parameters parameters) {
-        if (! parameters.containsParameter(Parameter.NODE)) {
-            throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
-        }
-        Node node = (Node) parameters.get(Parameter.NODE);
-        if (node == null) {
-            throw new IllegalArgumentException("The node argument of  " + getClass() + " " + toString() + " must not be null ");
-        }
-        Object o = getFunctionValue(node, parameters);
-        if (log.isDebugEnabled()) {
-            log.debug("" + this + " " + parameters + " --> " + o);
-        }
-        return o;
+        return  getFunctionValue(getNode(parameters), parameters);
     }
 
     /**
@@ -185,6 +178,7 @@ public abstract class NodeFunction extends AbstractFunction {
         }
         //javadoc inherited
         public final Object getFunctionValue(Parameters parameters) {
+            parameters.set(MMObjectNode.PARAMETER, node);
             return NodeFunction.this.getFunctionValue(node, parameters);
 
         }
