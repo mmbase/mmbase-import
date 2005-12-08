@@ -108,7 +108,8 @@ General New Features:
   mmbase-module artifacts which include jars, config files, templates and examples. The plugin
   can also add these mmbase-module artifacts into a war artifact (see the example-webapp).
 
-- better blob-caching.
+- Better blob-caching. 
+  - Support for InputStreams.
 
 - cp1252 work arounds. (also in 1.7.x)
 
