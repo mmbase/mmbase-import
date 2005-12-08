@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.18 2005-12-06 22:25:59 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.19 2005-12-08 18:36:03 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -119,7 +119,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * specific locale.
      */
     public void addBundle(String baseName, ClassLoader classLoader, Class constantsProvider, Class wrapper, Comparator comparator) {
-        Bundle b = new Bundle(baseName, classLoader, constantsProvider, wrapper, comparator);
+        Bundle b = new Bundle(baseName, classLoader, SortedBundle.getConstantsProvider(constantsProvider), wrapper, comparator);
         if (bundles.contains(b)) {
             log.info("Adding bundle " + b + " for second time in " + b + ", because " + Logging.stackTrace());
         }
@@ -352,7 +352,10 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         while (i.hasNext()) {
             Bundle b = (Bundle) i.next();
             Object nk = SortedBundle.castKey(string, null, b.constantsProvider, b.wrapper);
-            if (string != nk) return nk;
+            if (string != nk) {
+                log.debug("Casted " + key + " to " + nk);
+                return nk;
+            }
         }
         return key;
 
@@ -380,7 +383,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
         private String      resource;
         private ClassLoader classLoader;
-        private Class       constantsProvider;
+        private HashMap     constantsProvider;
         private Class       wrapper;
         private Comparator  comparator;
 
@@ -399,15 +402,15 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         // implementation of serializable
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
             resource          = in.readUTF();
-            classLoader       = getClass().getClassLoader();
-            constantsProvider = (Class) in.readObject();
+            classLoader       = getClass().getClassLoader();            
+            constantsProvider = (HashMap) in.readObject();
             wrapper           = (Class) in.readObject();
             comparator        = (Comparator) in.readObject();
         }
 
 
 
-        Bundle(String r, ClassLoader cl, Class cp, Class w, Comparator comp) {
+        Bundle(String r, ClassLoader cl, HashMap cp, Class w, Comparator comp) {
             resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
         }
         /**
