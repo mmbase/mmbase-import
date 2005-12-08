@@ -6,12 +6,12 @@
   <mm:node referid="provider">
     <mm:countrelations type="flashpages" write="false">
         <mm:islessthan value="1">
-          <h1><di:translate key="core.welcome" /></h1>
-          <br />
-            <h3>Bij Didactor, de elektronische leeromgeving.</h3>
+          <p>
+            <h1><di:translate key="core.welcome" /></h1>
+          </p>
           <br />
           <p>
-            Didactor versie 2.0 Beta
+            <h3><di:translate key="core.welcomemessage" /></h3>
           </p>
          </mm:islessthan>
     </mm:countrelations>
