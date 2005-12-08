@@ -224,9 +224,9 @@
       </div>
 
       <div class="stepNavigator">
-         <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="vorige" /></a>
-         <a href="javascript:previousContent();" class="path">vorige</a><img src="gfx/spacer.gif" width="15" height="1" alt="" /><a href="javascript:nextContent();" class="path">volgende</a>
-         <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="volgende" /></a>
+         <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="<di:translate key="education.previous" />" /></a>
+         <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a><img src="gfx/spacer.gif" width="15" height="1" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
+         <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="<di:translate key="education.next" />" /></a>
       </div>
    </div>
 
