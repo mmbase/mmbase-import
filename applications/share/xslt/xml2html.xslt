@@ -627,6 +627,9 @@
   <xsl:if test="@mode = 'escapers'">
     <xsl:apply-templates select="document(@file)" mode="escapers"/>
   </xsl:if>
+  <xsl:if test="@mode = 'parameterizedescapers'">
+    <xsl:apply-templates select="document(@file)" mode="parameterizedescapers"/>
+  </xsl:if>
   <xsl:if test="@mode = 'postprocessors'">
     <xsl:apply-templates select="document(@file)"  mode="postprocessors"/>
   </xsl:if>
