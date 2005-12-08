@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.55 2005-12-08 12:47:40 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.56 2005-12-08 18:37:11 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -626,7 +626,7 @@ public class BuilderReader extends DocumentReader {
                 // 'string' is an exception, it is surrogated with the datatype 'line'.
                 if ("string".equals(guiType)) {
                     guiType = "line";
-                    log.service("Converted deprecated guitype 'string' for field " + builder.getTableName() + "." + fieldName + " with datatype 'line'.");
+                    log.debug("Converted deprecated guitype 'string' for field " + builder.getTableName() + "." + fieldName + " with datatype 'line'.");
                 }
 
                 dataType = collector.getDataTypeInstance(guiType, baseDataType);
