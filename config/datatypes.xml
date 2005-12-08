@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.28 2005-12-02 14:42:53 andre Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.29 2005-12-08 12:55:13 michiel Exp $ -->
 
   <datatype id="xml">
     <class name="org.mmbase.datatypes.XmlDataType" />
@@ -99,6 +99,12 @@
       <pattern enforce="never" value="\A[^\n\r]*\z" />
     </specialization>
 
+    <specialization id="eline">
+      <!-- enforced line -->
+      <pattern value="\A[^\n\r]*\z" />
+    </specialization>
+
+
     <specialization id="owner">
       <class name="org.mmbase.datatypes.SecurityContextDataType" />
     </specialization>
@@ -185,6 +191,11 @@
         <maxExclusive value="2000-01-01"  />
       </specialization>
 
+      <specialization id="20th-century-pedantic">
+        <minInclusive value="1901-01-01"  />
+        <maxExclusive value="2001-01-01"  />
+      </specialization>
+
       <specialization id="birthdate">
         <default value="today- 30 year" />
         <maxInclusive value="today" />
@@ -255,6 +266,12 @@
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.ordinals" />
       </enumeration>
+    </specialization>
+
+    <specialization id="filesize">
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatFileSize" />
+      </getprocessor>
     </specialization>
   </datatype>
 
