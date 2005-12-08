@@ -165,7 +165,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/bridge/*"/>                           <!-- of course -->
         <include name="org/mmbase/bridge/util/**"       />              <!-- not essential, but the idea is that you could use those with any bridge, so you should want them -->
         <include name="org/mmbase/storage/search/*"/>                   <!-- those interfaces are  part of bridge -->
-        <include name="org/mmbase/datatypes/*" />                       <!-- datatype classes are bridge -->
+        <include name="org/mmbase/datatypes/**" />                      <!-- datatype classes are bridge -->
         <include name="org/mmbase/security/UserContext.class"/>         <!-- security classes are bridge -->
         <include name="org/mmbase/security/AuthenticationData*.class"/> <!-- security classes are bridge -->
         <include name="org/mmbase/security/Rank.class"/>                <!-- security classes are bridge -->
@@ -184,7 +184,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/EncodingDetectingOutputStreamWriter.class"/> <!-- used by resourceloader -->
         <include name="org/mmbase/util/FileWatcher*.class"/>               <!-- used by resourceloader -->
         <include name="org/mmbase/util/Entry.class"/>                      <!-- used by LocalizedString -->
-        <include name="org/mmbase/util/LocalizedEntryListFactory.class"/>  <!-- returned by DataType -->
+        <include name="org/mmbase/util/LocalizedEntryListFactory*.class"/> <!-- returned by DataType -->
         <include name="org/mmbase/util/SizeMeasurable.class"/>             <!-- implemented by several class -->
         <include name="org/mmbase/util/Casting*.class"/>                   <!-- widely used -->
         <include name="org/mmbase/util/StringBufferWriter.class"/>         <!-- used by Casting -->
@@ -192,7 +192,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/transformers/**.class"/>            <!-- used by Encode -->
         <include name="org/mmbase/util/xml/**"/>
         <include name="org/mmbase/util/XMLEntityResolver*.class"/>          <!-- -->
-        <include name="org/mmbase/util/XMLErrorHandler.class"/>          <!-- -->
+        <include name="org/mmbase/util/XMLErrorHandler.class"/>             <!-- -->
         <include name="org/mmbase/util/DynamicDate.class"/>                <!-- used by Casting -->
         <include name="org/mmbase/util/dateparser/**"/>                    <!-- used by Casting -->
 
