@@ -101,12 +101,9 @@
           </p>
           <br />
           <p>
-            <h3>Bij Didactor, de elektronische leeromgeving.</h3>
+            <h3><di:translate key="core.welcomemessage" /></h3>
           </p>
           <br />
-          <p>
-            Didactor versie 2.0 Beta
-          </p>
           <p>
             <mm:node number="component.portfolio" notfound="skipbody">
               <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><di:translate key="core.listallportfolios" /></a>
