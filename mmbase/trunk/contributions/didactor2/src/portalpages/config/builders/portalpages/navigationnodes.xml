@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="navigationnodes" maintainer="didactor.nl" version="3" extends="object">
+<builder name="navigationnodes" maintainer="didactor.nl" version="4" extends="object">
   <status>active</status>
 
   <classfile>org.mmbase.module.builders.Dummy</classfile>
@@ -150,7 +150,7 @@
         <!-- name of the field in the database -->
         <name>order_number</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent"  notnull="false" size="255" key="false">STRING</type>
+        <type state="persistent"  notnull="false" size="255" key="false">INTEGER</type>
       </db>
     </field>
        

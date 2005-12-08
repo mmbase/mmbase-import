@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="simplecontents" maintainer="didactor.nl" version="3" extends="object">
+<builder name="simplecontents" maintainer="didactor.nl" version="4" extends="object">
   <status>active</status>
 
   <classfile>org.mmbase.module.builders.Dummy</classfile>
@@ -185,7 +185,39 @@
         <!-- MMBase datatype and demands on it -->
         <type state="persistent"  notnull="false" size="55" key="false">LONG</type>
       </db>
-    </field>       
+    </field>   
+    
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Image position</description>
+        <description xml:lang="en">Image position</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Image position</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>9</input>
+          <!-- position in list area of the editor -->
+          <list>9</list>
+          <!-- position in search area of the editor -->
+          <search>9</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>impos</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true" size="10">INTEGER</type>
+      </db>
+    </field>
+       
        
  </fieldlist>
 </builder>
