@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.30 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.31 2005-12-08 15:24:38 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -80,7 +80,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         owner = null;
     }
 
-    private static final int serialVersionUID = 1; // increase this if object serialization changes (which we shouldn't do!)
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     // implementation of serializable
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -247,7 +247,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * Utility to avoid repitive calling of getCloud
      */
     protected final Object cast(Object value, Cloud cloud, Node node, Field field) {
-        return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
+        Object preCast = preCast(value, cloud, node, field);
+        Object cast = Casting.toType(classType, cloud, preCast);
+        return cast;
     }
 
     protected final Cloud getCloud(Node node, Field field) {
@@ -334,7 +336,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * {@inheritDoc}
      */
-    public final Collection /*<LocalizedString> */ validate(Object value, Node node, Field field) {
+    public final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field) {
         Collection errors = VALID;
         errors = typeRestriction.validate(errors, value, node, field);
         if (errors.size() != 0) {
@@ -343,6 +345,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
         Object castedValue = castToValidate(value, node, field);
         errors = requiredRestriction.validate(errors, castedValue, node, field);
+
         if (value == null) return errors; // null is valid, unless required.
         errors = enumerationRestriction.validate(errors, value, node, field);
         errors = uniqueRestriction.validate(errors, castedValue, node, field);
@@ -759,10 +762,15 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
         public final boolean valid(Object v, Node node, Field field) {
-            if (absoluteParent != null) {
-                if (! absoluteParent.valid(v, node, field)) return false;
+            try {
+                if (absoluteParent != null) {
+                    if (! absoluteParent.valid(v, node, field)) return false;
+                }
+                return simpleValid(parent.castToValidate(v, node, field), node, field);
+            } catch (Throwable t) {
+                log.debug("Not valid because cast-to-validate threw exception " + t);
+                return false;
             }
-            return simpleValid(parent.castToValidate(v, node, field), node, field);
 
         }
 
