@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.183 2005-11-25 12:39:08 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.184 2005-12-08 12:42:03 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -56,7 +56,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * Reference to the Cloud.
      */
-    protected BasicCloud cloud;
+    final protected BasicCloud cloud;
 
 
     /**
@@ -505,6 +505,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public boolean isNull(String fieldName) {
         return noderef.isNull(fieldName);
+    }
+
+    public long getSize(String fieldName) {
+        return noderef.getSize(fieldName);
     }
 
     public Object getValue(String fieldName) {
@@ -1373,22 +1377,24 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName());
         }
-        return function;
+        return new WrappedFunction(function) {
+                public final Object getFunctionValue(Parameters params) {
+                    params.set(Parameter.NODE, BasicNode.this);
+                    params.set(Parameter.CLOUD, BasicNode.this.cloud);
+                    return super.getFunctionValue(params);
+                    
+                }
+            };
     }
 
     public Parameters createParameters(String functionName) {
-        Parameters params =  getFunction(functionName).createParameters();
-        params.setIfDefined(Parameter.NODE, this);
-        params.setIfDefined(Parameter.CLOUD, getCloud());
-        return params;
+        return getNode().getFunction(functionName).createParameters();
     }
 
     public FieldValue getFunctionValue(String functionName, List parameters) {
         Function function = getFunction(functionName);
         Parameters params = function.createParameters();
         params.setAll(parameters);
-        params.setIfDefined(Parameter.NODE,  this);
-        params.setIfDefined(Parameter.CLOUD, getCloud());
         return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
     }
 
