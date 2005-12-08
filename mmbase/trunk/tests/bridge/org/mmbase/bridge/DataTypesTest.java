@@ -31,8 +31,8 @@ public class DataTypesTest extends BridgeTest {
             cases = new Object[] {
                 /* {field    {valid values}   {invalid values}} */
                 new Object[] {"string",
-                              new Object[] {"abcdefg"},
-                              new Object[] {"ijklm\nopqrstx"}},
+                              new Object[] {"abcdefg", "ijklm\nopqrstx"},
+                              new Object[] {}},
                 new Object[] {"field",
                               new Object[] {"xyz", "zyz\nkloink"} ,
                               new Object[] {}},
@@ -78,6 +78,7 @@ public class DataTypesTest extends BridgeTest {
         return  nodeManager.createNode();
         
     }
+
 
     public void testCheckValid() {
         Cloud cloud = getCloud();
