@@ -26,13 +26,13 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.25 2005-10-25 21:19:37 michiel Exp $
+ * @version $Id: Parameter.java,v 1.26 2005-12-08 12:47:08 michiel Exp $
  * @see Parameters
  */
 
 public class Parameter extends AbstractDescriptor implements java.io.Serializable {
 
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
     /**
      * Parameter which might be needed in lots of Parameter definitions.
      */
@@ -42,7 +42,11 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
     public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
-    public static final Parameter NODE     = new Parameter("node",     org.mmbase.bridge.Node.class);
+    /**
+     * 'system' parameter set for nodefunctions.
+     */
+    public static final Parameter NODE     = new Parameter("_node",     org.mmbase.bridge.Node.class);
+    public static final Parameter FIELD    = new Parameter("field",    String.class);
 
     /**
      * An empty Parameter array.
