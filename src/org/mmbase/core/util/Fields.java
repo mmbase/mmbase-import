@@ -155,8 +155,7 @@ public class Fields {
             return Field.TYPE_STRING;
         } else if (org.w3c.dom.Node.class.isAssignableFrom(classType)) {
             return Field.TYPE_XML;
-        } else if (Node.class.isAssignableFrom(classType) ||
-                   classType.getName().equals("org.mmbase.module.core.MMObjectNode")) {
+        } else if (Node.class.isAssignableFrom(classType)) {
             return Field.TYPE_NODE;
         } else if (Date.class.isAssignableFrom(classType)) {
             return Field.TYPE_DATETIME;
