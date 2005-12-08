@@ -22,8 +22,10 @@
   <mm:escaper type="regexps">
     <mm:param name="patterns">
       <mm:param name="aaa" value="bbb" />
+      <mm:param name="(.*)aaa(.*)" value="$$1bbb$$2" />
       <mm:param name="ccc" value="ddd" />
     </mm:param>
+    <mm:param name="mode">XMLTEXT</mm:param>
   </mm:escaper>
   <mm:escaper referid="uppercase" />
   <mm:escaper type="substring">
@@ -31,7 +33,7 @@
   </mm:escaper>
 </mm:escaper>
 <p>
-  <mm:write value="aba aaa b ccc " escape="vervang" />
+  <mm:write value="abaaaa b ccc " escape="vervang" />
 </p>
 <p>
   <!-- its also possible to define the parameters directly -->
