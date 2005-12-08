@@ -61,6 +61,7 @@
           <input>2</input><list>3</list><search>2</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>ckey</name>
         <type state="persistent" size="255" notnull="false" key="true">STRING</type>
@@ -132,6 +133,7 @@
           <search>-1</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>itype</name>
         <type state="persistent" size="32" notnull="true" key="false">STRING</type>
@@ -155,6 +157,7 @@
           <input>5</input><list>5</list><search>5</search>
         </positions>
       </editor>
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filesize</name>
         <type state="persistent" notnull="false">INTEGER</type>

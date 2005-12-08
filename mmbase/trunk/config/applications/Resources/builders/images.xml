@@ -84,6 +84,7 @@
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />a
       <db>
         <name>title</name>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
@@ -107,6 +108,7 @@
           <list>3</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />a
       <db>
         <name>description</name>
         <type state="persistent" size="1024" notnull="true" key="false">STRING</type>
@@ -148,7 +150,6 @@
         <guiname xml:lang="eo">Bildotipo</guiname>
         <guiname xml:lang="it">ImmagineTipo</guiname>
       </gui>
-
       <editor>
         <positions>
           <input>-1</input>
@@ -156,6 +157,7 @@
           <search>-1</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />a
       <db>
         <name>itype</name>
         <type state="system" size="32" notnull="true" key="false">STRING</type>
@@ -179,6 +181,7 @@
              <list>5</list>
           </positions>
         </editor>
+        <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />a
         <db>
           <name>filesize</name>
           <type state="system" notnull="false">INTEGER</type>
