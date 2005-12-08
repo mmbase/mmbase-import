@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.14 2005-12-06 22:26:53 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.15 2005-12-08 15:23:50 michiel Exp $
  */
 public class SortedBundle {
 
@@ -190,10 +190,15 @@ public class SortedBundle {
         
         if (wrapper != null && ! wrapper.isAssignableFrom(key.getClass())) {
             try {
-                if (wrapper.isAssignableFrom(ValueWrapper.class)) {
+                if (ValueWrapper.class.isAssignableFrom(wrapper)) {
+                    log.debug("wrapper is a valueWrapper");
                     Constructor c = wrapper.getConstructor(new Class[] { String.class, Comparable.class });
                     key = c.newInstance(new Object[] { key, (Comparable) value});
+                } else if (Number.class.isAssignableFrom(wrapper)) {
+                    key = Casting.toType(wrapper, key);
+                    log.debug("wrapper is a Number, that can simply be casted " + value + " --> " + key + "(" + wrapper + ")");
                 } else {
+                    log.debug("wrapper is unrecognized, suppose constructor " + key.getClass());
                     Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
                     key = c.newInstance(new Object[] { key });
                 }
