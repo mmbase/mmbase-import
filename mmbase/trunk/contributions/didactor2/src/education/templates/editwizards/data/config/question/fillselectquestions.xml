@@ -6,7 +6,8 @@
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
-    <title>Fill select Editor</title>
+    <title xml:lang="en">Fill in the gaps Editor</title>
+    <title xml:lang="nl">Vul selecteer de hiaten in</title>
 
 
     <action type="create">
@@ -62,9 +63,11 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Vul uitgezocht invoeren</title>
+        <title xml:lang="en">Enter fill select in the gaps question</title>
+  		<title xml:lang="nl">Vul de hiaten in invoeren selecteer</title> 
         <field name="title" >
-            <prompt>Titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
+            <prompt xml:lang="nl">Titel</prompt>
         </field>
         
        
@@ -78,8 +81,8 @@
    
     <!--  INSERT FLASH/TEXT -->  
         <field name="flashOrText" ftype="enum">
-           <prompt xml:lang="nl">Kies flash of tekst</prompt>
            <prompt xml:lang="en">Choose flash or text</prompt>
+           <prompt xml:lang="nl">Kies flash of tekst </prompt>
            <optionlist select="flashOrText" />
         </field>
    <!-- END INSERT FLASH/TEXT --> 
@@ -102,7 +105,8 @@
     <!--  INSERT IMAGE -->     
        
    <list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
-             <title>Bijbehorende Afbeeldingen</title>
+             <title xml:lang="nl">Related images</title>
+             <title xml:lang="nl">Bijbehorende afbeeldingen</title>
              <!-- Show the 'item' in a list (the object) -->
              <item>
                      <field name="title">
@@ -158,7 +162,8 @@
  <!--  INSERT SELECT -->  
       
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="mcanswers">
-            <title>Bijbehorende Multiple-Choice antwoorden</title>
+            <title xml:lang="en">Related answers (not mandatory)</title>
+            <title xml:lang="nl">Bijbehorende antwoorden (niet verplicht)</title>
             <item>
                 <field name="text" ftype="line">
                     <prompt xml:lang="nl">Tekst</prompt>
