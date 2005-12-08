@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.15 2005-12-08 15:23:50 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.16 2005-12-08 18:36:03 michiel Exp $
  */
 public class SortedBundle {
 
@@ -105,7 +105,7 @@ public class SortedBundle {
      *
      * @param locale   the locale for which a resource bundle is desired
      * @param loader   the class loader from which to load the resource bundle
-     * @param constantsProvider the class of which the constants must be used to be associated with the elements of this resource.
+     * @param constantsProvider A map representing constants for the value. Can be based on a class using {@link ClassConstantProvider}, then the class's constants ar used to associate with the elements of this resource.
      * @param wrapper           the keys will be wrapped in objects of this type (which must have a
      *                          constructor with the right type (String, or otherwise the type of the variable given by the constantsProvider), and must be Comparable.
      *                          You could specify e.g. Integer.class if the keys of the
@@ -116,8 +116,8 @@ public class SortedBundle {
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
      * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
      */
-    public static SortedMap getResource(final String baseName,  Locale locale, final ClassLoader loader, final Class constantsProvider, final Class wrapper, final Comparator comparator) {
-        String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : constantsProvider.getName()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
+    public static SortedMap getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map constantsProvider, final Class wrapper, final Comparator comparator) {
+        String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
         SortedMap m = (SortedMap) knownResources.get(resourceKey);
         if (locale == null) locale = LocalizedString.getDefault();
 
@@ -152,38 +152,30 @@ public class SortedBundle {
      * Casts a key of the bundle to the specified key-type. This type is defined by 
      * the combination of the arguments. See {@link #getResource}.
      */
-    public static Object castKey(final String bundleKey, final Object value, final Class constantsProvider, final Class wrapper) {
+    public static Object castKey(final String bundleKey, final Object value, final Map constantsProvider, final Class wrapper) {
         if (bundleKey == null) return null;
         Object key;
         // if the key is numeric then it will be sorted by number
         //key Double
         
-        Class providerClass = constantsProvider; // default class (may be null)
+        Map provider = constantsProvider; // default class (may be null)
         int lastDot = bundleKey.lastIndexOf('.');
         if (lastDot > 0) {
+            Class providerClass;
             String className = bundleKey.substring(0, lastDot);
             try {
                 providerClass = Class.forName(className);
+                provider = getConstantsProvider(providerClass);
             } catch (ClassNotFoundException cnfe) {
                 if (log.isDebugEnabled()) {
                     log.debug("No class found with name " + className + " found from " + bundleKey);
                 }
-                providerClass = constantsProvider;
             }
         }
         
-        if (providerClass != null) {
-            try {
-                Field constant = providerClass.getDeclaredField(bundleKey);
-                key = constant.get(null);
-            } catch (NoSuchFieldException nsfe) {
-                log.debug("No java constant with name " + bundleKey);
-                key = bundleKey;
-            } catch (IllegalAccessException ieae) {
-                log.warn("The java constant with name " + bundleKey + " is not accessible");
-                key = bundleKey;
-                
-            }
+        if (provider != null) {
+            key = provider.get(bundleKey);
+            if (key == null) key = bundleKey;
         } else {
             key = bundleKey;
         }
@@ -220,5 +212,26 @@ public class SortedBundle {
             }
         }
         return key;
+    }
+
+    /**
+     * Returns a (serializable) Map representing all accessible static public members of given class (so, all constants).
+     * @since MMBase-1.8
+     */
+    public static HashMap getConstantsProvider(Class clazz) {
+        if (clazz == null) return null;
+        HashMap map  = new HashMap();
+        Field[] fields = clazz.getDeclaredFields();
+        for (int i = 0 ; i < fields.length; i++) {
+            Field constant = fields[i];
+            String key = constant.getName();
+            try {
+                Object value = constant.get(null);
+                map.put(key, value);
+            } catch (IllegalAccessException ieae) {
+                log.debug("The java constant with name " + key + " is not accessible");
+            }                
+        }
+        return map;
     }
 }
