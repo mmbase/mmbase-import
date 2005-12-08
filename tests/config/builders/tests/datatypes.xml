@@ -30,6 +30,13 @@
       </db>
     </field>
     <field>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>line</name>
+        <type size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
       <datatype  base="dutch-zipcode" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="1234 AA" />
       </datatype>
