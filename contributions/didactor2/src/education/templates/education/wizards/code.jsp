@@ -274,7 +274,7 @@
               
             <% // add portalpages %>
             <mm:node number="component.portalpages" notfound="skip">
-              <mm:treeinclude page="/portalpages/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
+              <mm:treeinclude page="/portalpages/backoffice/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
             </mm:node>
 
             <% // add help %>
