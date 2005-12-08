@@ -202,6 +202,7 @@ Build-compiler: ${build.compiler}
 
         <include name="org/mmbase/core/util/Fields.class"/>                <!-- DataTypes uses .. -->
         <include name="org/mmbase/core/*.class"/>                          <!-- DataTypes uses .. -->
+        <include name="org/mmbase/core/event/**"/>                          <!--  -->
 
         <include name="org/mmbase/module/core/MMBaseObserver.class"/>      <!-- resourcewatcher extends -->
         <include name="org/mmbase/module/corebuilders/FieldDefs.class"/>   <!-- DataTypes uses .. -->
