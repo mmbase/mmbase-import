@@ -64,6 +64,14 @@
       </db>
     </field>
 
+    <field>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integer</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+
 
   </fieldlist>
 
