@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.54 2005-11-30 13:34:00 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.55 2005-12-08 12:47:40 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -666,7 +666,7 @@ public class BuilderReader extends DocumentReader {
                         // Fix that as good as possible:
                         BasicDataType newDataType = (BasicDataType) baseDataType.clone();
                         newDataType.inherit(requestedBaseDataType);
-                        log.warn("" + requestedBaseDataType + " is not compatible with " + baseDataType + ". Repared to " + newDataType);
+                        log.warn("" + requestedBaseDataType + " is not compatible with " + baseDataType + ". Repaired to " + newDataType);
                         requestedBaseDataType = newDataType;
                     }
                 }
