@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.13 2005-12-07 20:27:41 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.14 2005-12-08 12:42:03 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -489,24 +489,27 @@ public class VirtualNode implements Node {
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName());
         }
-        return function;
+        return new WrappedFunction(function) {
+                public final Object getFunctionValue(Parameters params) {
+                    params.set(Parameter.NODE, VirtualNode.this);
+                    params.set(Parameter.CLOUD, VirtualNode.this.cloud);
+                    return super.getFunctionValue(params);
+                    
+                }
+            };
     }
 
     public Parameters createParameters(String functionName) {
-        Parameters params =  getFunction(functionName).createParameters();
-        params.setIfDefined(Parameter.NODE, this);
-        params.setIfDefined(Parameter.CLOUD, getCloud());
-        return params;
+        return getNode().getFunction(functionName).createParameters();
     }
 
     public FieldValue getFunctionValue(String functionName, List parameters) {
         Function function = getFunction(functionName);
         Parameters params = function.createParameters();
-        params.setIfDefined(Parameter.NODE,  this);
-        params.setIfDefined(Parameter.CLOUD, getCloud());
         params.setAll(parameters);
         return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
     }
+
     public int compareTo(Object o) {
         return 1;
     }
