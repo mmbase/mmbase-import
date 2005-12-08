@@ -37,7 +37,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
      var newhref = '<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>&year='+year+
           '&month='+month+
           '&day='+day+
-     '&calmonth='+<mm:write referid="calmonth"/>;
+	  '&calmonth='+<mm:write referid="calmonth"/>;
       document.location.href = newhref;
     }
 
@@ -68,62 +68,52 @@ this stylesheet can be overridden in the same manner as other parts of the site.
       </mm:write>
     </mm:write>
 
-<%--    <link rel=StyleSheet href="<mm:treefile page="/agenda/css/calendar.css" objectlist="$includePath" referids="$referids"/>" type="text/css">--%>
     <cal:calendar view="month" language="nl" country="NL" date="<%=format.format(calendar.getTime())%>">
-     <di:usercalwriter />
-
-      <table width="130" class="cal" cellspacing="0">
-        <tr>
-          <td bgcolor="#DDDDDD" align="center" class="calMonth">
+     <di:usercalwriter /> 
+    
+      <table class="cal" cellspacing="0">
+        <caption>
             <a href="javascript:moveMonth(<mm:write referid="calmonth"/>-1)">&lt;&lt;</a>
             <b><di:translate><st:data name="month" /></di:translate>&nbsp;
             <st:data name="month" />&nbsp;
             <st:data name="year"/></b>
             <a href="javascript:moveMonth(<mm:write referid="calmonth"/>+1)">&gt;&gt;</a>
-          </td>
-        </tr>
+        </caption>
         <tr>
-          <td >
-            <table width="100%" cellspacing="0">
-              <tr class="calWeek">
-                <td class="calWeek" align="center">&nbsp;&nbsp;</td>
-                <td class="calWeek" align="center"><di:translate key="agenda.sunday" /></td>
-                <td class="calWeek" align="center"><di:translate key="agenda.monday" /></td>
-                <td class="calWeek" align="center"><di:translate key="agenda.tuesday" /></td>
-                <td class="calWeek" align="center"><di:translate key="agenda.wednesday" /></td>
-                <td class="calWeek" align="center"><di:translate key="agenda.thursday" /></td>
-                <td class="calWeek" align="center"><di:translate key="agenda.friday" /></td>
-                <td class="calWeek" align="center"><di:translate key="agenda.saturday" /></td>
-                <td class="calWeek" align="center">&nbsp;&nbsp;</td>
-              </tr>
-              <st:dataset name="week">
-                <tr class="calDay">
-                  <td class="calDaySpacing" align="center">&nbsp;&nbsp;</td>
-                  <st:dataset name="day">
-                    <mm:remove referid="class"/>
-                    <st:isnotset name="dayinmonth">
-                      <st:isset name="dayitems"><mm:import id="class">calDayNotThisMonthHighlight</mm:import></st:isset>
-                      <st:isnotset name="dayitems"><mm:import id="class">calDayNotThisMonth</mm:import></st:isnotset>
-                    </st:isnotset>
-                    <st:isset name="dayinmonth">
-                      <st:isset name="dayitems"><mm:import id="class">calDayThisMonthHighlight</mm:import></st:isset>
-                      <st:isnotset name="dayitems"><mm:import id="class">calDayThisMonth</mm:import></st:isnotset>
-                    </st:isset>
-                    <st:isset name="currentday">
-                      <mm:import id="class">calToday <mm:write referid="class"/><mm:remove referid="class"/></mm:import>
-                    </st:isset>
-
-                    <td align="center" onclick="selectDate(<st:data name="date"/>)"  class="<mm:write referid="class"/>">
-                      <st:data name="dayofmonth"/>  
-                    </td>
-                  </st:dataset>
-                  <td class="calDaySpacing" align="center">&nbsp;&nbsp;</td>
-                </tr>
-              </st:dataset>
-            </table>
-          </td>
+          <th>&nbsp;&nbsp;</th>
+          <th><di:translate key="agenda.sunday" /></th>
+          <th><di:translate key="agenda.monday" /></th>
+          <th><di:translate key="agenda.tuesday" /></th>
+          <th><di:translate key="agenda.wednesday" /></th>
+          <th><di:translate key="agenda.thursday" /></th>
+          <th><di:translate key="agenda.friday" /></th>
+          <th><di:translate key="agenda.saturday" /></th>
+          <th>&nbsp;&nbsp;</th>
         </tr>
-      </table>
+        <st:dataset name="week">
+        <tr>
+         <td class="calDaySpacing">&nbsp;&nbsp;</td>
+            <st:dataset name="day">
+            <mm:remove referid="class"/>
+            <st:isnotset name="dayinmonth">
+              <st:isset name="dayitems"><mm:import id="class">calDayNotThisMonthHighlight</mm:import></st:isset>
+              <st:isnotset name="dayitems"><mm:import id="class">calDayNotThisMonth</mm:import></st:isnotset>
+            </st:isnotset>
+            <st:isset name="dayinmonth">
+              <st:isset name="dayitems"><mm:import id="class">calDayThisMonthHighlight</mm:import></st:isset>
+              <st:isnotset name="dayitems"><mm:import id="class">calDayThisMonth</mm:import></st:isnotset>
+            </st:isset>
+            <st:isset name="currentday">
+              <mm:import id="class">calToday <mm:write referid="class"/><mm:remove referid="class"/></mm:import>
+            </st:isset>
+              <td onclick="selectDate(<st:data name="date"/>)"  class="<mm:write referid="class"/>">
+                <st:data name="dayofmonth"/>
+              </td>
+            </st:dataset>
+            <td class="calDaySpacing">&nbsp;&nbsp;</td>
+            </tr>
+            </st:dataset>
+        </table>
     </cal:calendar>
   </mm:write>
 </mm:cloud>
