@@ -14,6 +14,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.util.Fields;
+import org.mmbase.util.functions.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -48,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.79 2005-10-12 00:32:25 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.80 2005-12-08 12:39:03 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -195,30 +196,40 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param field the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
-    public String getGUIIndicator(String field, MMObjectNode node) {
+    protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
 
-        if (node == null) throw new RuntimeException("Tried to get GUIIndicator for field " + field + " with NULL node");
+        if (node == null) throw new RuntimeException("Tried to get GUIIndicator for  " + pars + " with NULL node");
             
         ClusterNode clusterNode = (ClusterNode) node;
 
-        int pos = field.indexOf('.');        
-        String bulname= null;
-        if (pos != -1) {
-            bulname = field.substring(0, pos);
-        }
-        MMObjectNode n = clusterNode.getRealNode(bulname);
-        if (n == null) {
-            n = node;
-        }
-        MMObjectBuilder bul= n.getBuilder();
-        if (bul != null) {
-            // what are we trying here?
+        String field = pars.getString("field");
+        if (field == null) {
+            return super.getGUIIndicator(node, pars);
+        } else {
+            int pos = field.indexOf('.');
             if (pos != -1) {
-                String fieldName = field.substring(pos + 1);
-                return bul.getGUIIndicator(fieldName, n);
+                String bulName = getTrueTableName(field.substring(0, pos));
+                MMObjectNode n = clusterNode.getRealNode(bulName);
+                if (n != null) {
+                    MMObjectBuilder bul= n.getBuilder();
+                    if (bul != null) {
+                        // what are we trying here?
+                        String fieldName = field.substring(pos + 1);
+                        Parameters newPars = new Parameters(pars.getDefinition(), pars);
+                        newPars.set(Parameter.FIELD, fieldName);
+                        newPars.set("stringvalue", null);
+                        org.mmbase.bridge.Node bnode = (org.mmbase.bridge.Node) pars.get(Parameter.NODE);
+                        if (bnode != null) {
+                            newPars.set(Parameter.NODE, bnode.getNodeValue(bulName));
+                        }
+                        newPars.set(MMObjectNode.PARAMETER, n);
+                        log.info("Getting GUI for " + bul + " " + n + " with " + newPars + "<-" + pars);
+                        return (String) bul.guiFunction.getFunctionValue(newPars);
+                    }
+                }
             }
+            return super.getGUIIndicator(node, pars);
         }
-        return null;
     }
 
     /**
