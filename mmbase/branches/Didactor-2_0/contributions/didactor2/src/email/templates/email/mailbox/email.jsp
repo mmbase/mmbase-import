@@ -13,66 +13,64 @@
 <%@include file="/shared/setImports.jsp" %>
 
 <mm:node number="$email" notfound="skip">
-      <mm:field name="type" write="false">
-        <mm:compare value="2">
-            <mm:setfield name="type">0</mm:setfield>
-        </mm:compare>
-      </mm:field>
+  <mm:field name="type" write="false">
+    <mm:compare value="2">
+      <mm:setfield name="type">0</mm:setfield>
+    </mm:compare>
+  </mm:field>
 </mm:node> 
-
 
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
-    <title>Webmail</title>
+    <title><di:translate key="email.email" /></title>
   </mm:param>
 </mm:treeinclude>
 
 <div class="rows">
-
-<div class="navigationbar">
-  <div class="titlebar">
-    Webmail
+  <div class="navigationbar">
+    <div class="titlebar">
+      <di:translate key="email.email" /> 
+    </div>
   </div>
-</div>
 
-<div class="folders">
-  <div class="folderHeader">
-    Mailboxes
+  <div class="folders">
+    <div class="folderHeader">
+      <di:translate key="email.mailboxes" />
+    </div>
+    <div class="folderBody">
+      <mm:treeinclude page="/email/mailboxes.jsp" objectlist="$includePath" referids="$referids" />
+    </div>
   </div>
-  <div class="folderBody">
-    <mm:treeinclude page="/email/mailboxes.jsp" objectlist="$includePath" referids="$referids" />
-  </div>
-</div>
 
-<div class="mainContent">
-  <div class="contentHeader">
-    &nbsp;
-  </div>
-  <div class="contentSubHeader">
-	<a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
-	    <mm:param name="reply"><mm:write referid="email"/></mm:param>
-	</mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.reply" />" border="0"></a>
-    &nbsp; &nbsp;&nbsp;	
+  <div class="mainContent">
+    <div class="contentHeader">
+      &nbsp;
+    </div>
+    <div class="contentSubHeader">
+      <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
+                 <mm:param name="reply"><mm:write referid="email"/></mm:param>
+               </mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.reply" />" border="0"></a>
+      &nbsp; &nbsp;&nbsp;        
 
-	<a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
-            <mm:param name="replyAll"><mm:write referid="email"/></mm:param>
-        </mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_all_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.replyall" />" border="0"></a>
-	    &nbsp; &nbsp;&nbsp;	
+      <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
+                 <mm:param name="replyAll"><mm:write referid="email"/></mm:param>
+               </mm:treefile>"><img src="<mm:treefile page="/email/gfx/reply_all_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.replyall" />" border="0"></a>
+      &nbsp; &nbsp;&nbsp;        
 
-	<a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
-	    <mm:param name="forward"><mm:write referid="email"/></mm:param>
-	</mm:treefile>"><img src="<mm:treefile page="/email/gfx/forward_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.forward" />" border="0"></a>
+      <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
+                 <mm:param name="forward"><mm:write referid="email"/></mm:param>
+              </mm:treefile>"><img src="<mm:treefile page="/email/gfx/forward_mail.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.forward" />" border="0"></a>
     
   </div>
   <div class="contentBodywit">
     <br><br><br>
     <mm:node number="$email" notfound="skip">
-      Van: <mm:field name="from" /> <br />
-      Aan: <mm:field name="to" /> <br />
-      Datum: <mm:field name="gui(date)" /> <br />
-      Onderwerp: <mm:field name="subject"/> <br />
+      <di:translate key="email.from" />: <mm:field name="from" /> <br />
+      <di:translate key="email.to_caption" />: <mm:field name="to" /> <br />
+      <di:translate key="email.date" />: <mm:field name="gui(date)" /> <br />
+      <di:translate key="email.subject" />: <mm:field name="subject"/> <br />
       <hr />
-      Tekst:
+      <di:translate key="email.text"/>:
       <br />
       <mm:field name="body" jspvar="dummy" vartype="String" escape="text/plain">
         <%= dummy.replaceAll("\n","<br/>\n") %>
@@ -81,12 +79,11 @@
       <mm:relatednodes type="attachments">
         <mm:first>
           <mm:import id="gfx_attachment"><mm:treefile page="/email/gfx/attachment.gif" objectlist="$includePath" referids="$referids" /></mm:import>
-          Bijlage:
+          <di:translate key="email.attachments" />:
         </mm:first>
         <br />
         <img src="<mm:write referid="gfx_attachment"/>"/> <a href="<mm:attachment/>"><mm:field name="title"/></a>
       </mm:relatednodes>
-
    </mm:node>
   </div>
 </div>
