@@ -12,6 +12,12 @@ E.g.: if "versioning" is absent, delete "Versioning" node from version control t
 and restart Tomcat.
 ----
 
+2005-12-05
+		ALTER TABLE mmb_navigationnodes MODIFY order_number int(11);
+		ALTER TABLE mmb_portalpagesnodes MODIFY order_number int(11);
+		ALTER TABLE mmb_helpnodes MODIFY order_number int(11);
+		ALTER TABLE mmb_faqnodes MODIFY order_number int(11);
+
 2005-11-23
     ALTER TABLE mmb_madetests ADD testpath BLOB DEFAULT NULL;
 
