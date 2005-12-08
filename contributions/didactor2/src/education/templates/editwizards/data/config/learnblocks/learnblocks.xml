@@ -100,7 +100,8 @@
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
           fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' or object/@type='htmlpages')]"
           searchdir="destination">
-      <title>Bijbehorende leerobjecten</title>
+      <title xml:lang="nl">Bijbehorende leerobjecten</title>
+      <title xml:lang="en">Related learnobjects</title>
       <item>
         <field name="name" ftype="data">
           <prompt xml:lang="nl">Naam</prompt>

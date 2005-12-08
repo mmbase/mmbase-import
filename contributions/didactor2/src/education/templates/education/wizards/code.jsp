@@ -213,23 +213,24 @@
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
       <a href='javascript:clickNode("content_metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_content_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='javascript:clickNode("content_metadata_0")' title="<di:translate key="education.educationmenucontentmetadata" />"><di:translate key="education.educationmenucontentmetadata" /></a></nobr>
       <br>
+      <mm:import jspvar="langLocale"><mm:write referid="language" /></mm:import>
       <div id='content_metadata_0' style='display: none'>
          <%
             String[][] arrstrContentMetadataConfig = new String[5][4];
+            java.util.Locale loc = new java.util.Locale(langLocale);
+            int singular = NodeManager.GUI_SINGULAR;
 
-            arrstrContentMetadataConfig[0][0]  = cloud.getNodeManager("images").getGUIName();
-            arrstrContentMetadataConfig[1][0]  = cloud.getNodeManager("attachments").getGUIName();
-            arrstrContentMetadataConfig[2][0]  = cloud.getNodeManager("audiotapes").getGUIName();
-            arrstrContentMetadataConfig[3][0]  = cloud.getNodeManager("videotapes").getGUIName();
-            arrstrContentMetadataConfig[4][0]  = cloud.getNodeManager("urls").getGUIName();
-
+            arrstrContentMetadataConfig[0][0]  = cloud.getNodeManager("images").getGUIName(singular, loc);
+            arrstrContentMetadataConfig[1][0]  = cloud.getNodeManager("attachments").getGUIName(singular, loc);
+            arrstrContentMetadataConfig[2][0]  = cloud.getNodeManager("audiotapes").getGUIName(singular, loc);
+            arrstrContentMetadataConfig[3][0]  = cloud.getNodeManager("videotapes").getGUIName(singular, loc);
+            arrstrContentMetadataConfig[4][0]  = cloud.getNodeManager("urls").getGUIName(singular, loc);
 
             arrstrContentMetadataConfig[0][1] = "config/image/image";
             arrstrContentMetadataConfig[1][1] = "config/attachment/attachment";
             arrstrContentMetadataConfig[2][1] = "config/audiotape/audiotapes";
             arrstrContentMetadataConfig[3][1] = "config/videotape/videotapes";
             arrstrContentMetadataConfig[4][1] = "config/url/urls";
-
 
             arrstrContentMetadataConfig[0][2] = "images";
             arrstrContentMetadataConfig[1][2] = "attachments";
@@ -815,7 +816,7 @@
                         <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
                         <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                         <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                        <td>&nbsp;<nobr><a href="<mm:treefile write="true" page="/register/wizards/register.jsp" referids="$referids" objectlist="$includePath"><mm:param name="educationid"><%=sEducationID%></mm:param></mm:treefile>" title="Aanmeldingen" target="text">Aanmeldingen</a></nobr></td>
+                        <td>&nbsp;<nobr><a href="<mm:treefile write="true" page="/register/wizards/register.jsp" referids="$referids" objectlist="$includePath"><mm:param name="educationid"><%=sEducationID%></mm:param></mm:treefile>" title="<di:translate key="register.registrations" />" target="text"><di:translate key="register.registrations" /></a></nobr></td>
                      </tr>
                   </table>
                   </mm:node>
