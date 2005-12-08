@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.355 2005-11-28 09:32:28 ernst Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.356 2005-12-08 12:37:27 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -110,22 +110,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public final static int EVENT_TYPE_LOCAL = 0;
     public final static int EVENT_TYPE_REMOTE = 1;
 
-    /**
-     * Parameters for the GUI function
-     * @since MMBase-1.7
-     */
-    public final static Parameter[] GUI_PARAMETERS = {
-        new Parameter("field", String.class),
-        Parameter.LANGUAGE,
-        new Parameter("session", String.class),
-        Parameter.RESPONSE,
-        Parameter.REQUEST,
-        Parameter.LOCALE,
-        new Parameter("stringvalue", String.class)
-        //new Parameter("length", Integer.class),
-        //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
-    };
 
     /**
      * Parameters for the age function
@@ -233,12 +218,51 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     String xmlPath = "";
 
+
+    /**
+     * Parameters for the GUI function
+     * @since MMBase-1.7
+     */
+    public final static Parameter[] GUI_PARAMETERS = {
+        Parameter.FIELD,
+        Parameter.LANGUAGE,
+        new Parameter("session", String.class),
+        Parameter.RESPONSE,
+        Parameter.REQUEST,
+        Parameter.LOCALE,
+        new Parameter("stringvalue", String.class)
+        //new Parameter("length", Integer.class),
+        //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
+
+    };
+    /**
+     * The famous GUI function as a function object.
+     * @since MMBase-1.8
+     */
+    protected Function guiFunction = new NodeFunction("gui", GUI_PARAMETERS, ReturnType.STRING) {
+            protected Object getFunctionValue(Node node, Parameters parameters) {
+                if (log.isDebugEnabled()) {
+                    log.debug("GUI of builder with " + parameters);
+                }
+                String fieldName = (String) parameters.get(Parameter.FIELD);
+                if (fieldName != null && (! fieldName.equals("")) && parameters.get("stringvalue") == null) {
+                    if (node.getSize(fieldName) < 2000) {
+                        parameters.set("stringvalue", node.getStringValue(fieldName));
+                    }
+                }
+                MMObjectNode n = (MMObjectNode) parameters.get(MMObjectNode.PARAMETER);
+                return MMObjectBuilder.this.getGUIIndicator(n, parameters);
+            }
+        };
+    {
+        addFunction(guiFunction);
+    }
     /**
      * Parameters constants for the NodeFunction {@link #wrapFunction}.
      * @since MMBase-1.8
      */
     protected final static Parameter[] WRAP_PARAMETERS = {
-        new Parameter("field", String.class, true),
+        new Parameter(Parameter.FIELD, true),
         new Parameter("length", Number.class, new Integer(20))
     };
 
@@ -248,16 +272,19 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This function can be called through the function framework.
      * @since MMBase-1.8
      */
-    protected Function wrapFunction = new NodeFunction("wrap", WRAP_PARAMETERS, ReturnType.INTEGER) {
+    protected Function wrapFunction = new NodeFunction("wrap", WRAP_PARAMETERS, ReturnType.STRING) {
             {
                 setDescription("This function wraps a field, word-by-word. You can use this, e.g. in <pre>-tags. This functionality should be available as an 'escaper', and this version should now be considered an example.");
             }
             public Object getFunctionValue(Node node, Parameters parameters) {
-                String val = node.getStringValue(parameters.getString("field"));
+                String val = node.getStringValue(parameters.getString(Parameter.FIELD));
                 Number wrappos = (Number) parameters.get("length");
                 return wrap(val, wrappos.intValue());
             }
         };
+    {
+        addFunction(wrapFunction);
+    }
 
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
@@ -377,7 +404,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public MMObjectBuilder() {
         storageConnector = new StorageConnector(this);
-        addFunction(wrapFunction);
     }
 
     private void initAncestors() {
@@ -739,7 +765,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node The node to set the defaults of.
      */
     public void setDefaults(MMObjectNode node) {
-        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {            
             CoreField field = (CoreField) i.next();
             if (field.getName().equals(FIELD_NUMBER))      continue;
             if (field.getName().equals(FIELD_OWNER))       continue;
@@ -748,7 +774,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
             Object defaultValue = field.getDataType().getDefaultValue();
             if ((defaultValue == null) && field.isNotNull()) {
-                defaultValue = Casting.toType(Fields.typeToClass(field.getType()), "");
+                defaultValue = Casting.toType(Fields.typeToClass(field.getType()), null, "");
             }
             node.setValue(field.getName(), defaultValue);
         }
@@ -1229,7 +1255,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @todo  Should return CoreField
      */
     public FieldDefs getField(String fieldName) {
-        return (FieldDefs) fields.get(fieldName);
+        return (FieldDefs) fields.get(fieldName.toLowerCase());
     }
 
 
@@ -1237,7 +1263,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     public boolean hasField(String fieldName) {
-        return fields.containsKey(fieldName);
+        return fields.containsKey(fieldName.toLowerCase());
     }
 
     /**
@@ -1254,7 +1280,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param def the field definiton to add
      */
     public void addField(CoreField def) {
-        Object oldField = fields.put(def.getName(), def);
+        Object oldField = fields.put(def.getName().toLowerCase(), def);
         if (oldField != null) {
             log.warn("Replaced " + oldField + " !!");
         }
@@ -1383,11 +1409,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             }
         }
 
-
         if (rtn == null) {
             CoreField fdef = getField(field);
-            if (fdef != null && ("eventtime".equals(fdef.getGUIType()))) { // do something reasonable for this
-
+            if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getType() == Field.TYPE_DATETIME)) { // do something reasonable for this
                 Date date;
                 if (fdef.getType() == Field.TYPE_DATETIME) {
                     date = node.getDateValue(field);
@@ -1447,7 +1471,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public String getGUIIndicator(String fieldName, MMObjectNode node) {
         CoreField field = getField(fieldName);
-        if (field.getType() == Field.TYPE_NODE && ! fieldName.equals(FIELD_NUMBER)) {
+        if (field != null && field.getType() == Field.TYPE_NODE && ! fieldName.equals(FIELD_NUMBER)) {
             try {
                 MMObjectNode otherNode = node.getNodeValue(fieldName);
                 if (otherNode == null) {
@@ -1613,17 +1637,17 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         // Old code
         if (field.indexOf("short_")==0) {
-            String val=node.getStringValue(field.substring(6));
-            val=getShort(val,34);
-            rtn=val;
-        }  else if (field.indexOf("html_")==0) {
-            String val=node.getStringValue(field.substring(5));
-            val=getHTML(val);
-            rtn=val;
-        } else if (field.indexOf("wap_")==0) {
-            String val=node.getStringValue(field.substring(4));
-            val=getWAP(val);
-            rtn=val;
+            String val = node.getStringValue(field.substring(6));
+            val = getShort(val,34);
+            rtn = val;
+        }  else if (field.indexOf("html_") == 0) {
+            String val = node.getStringValue(field.substring(5));
+            val = getHTML(val);
+            rtn = val;
+        } else if (field.indexOf("wap_") == 0) {
+            String val = node.getStringValue(field.substring(4));
+            val = getWAP(val);
+            rtn = val;
         }
         // end old
         return rtn;
@@ -1873,18 +1897,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 return getSmartPath(documentRoot, path, "" + node.getNumber(), version);
             } catch(Exception e) {
                 log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
-            }
-        } else if (function.equals("gui")) {
-            if (log.isDebugEnabled()) {
-                log.debug("GUI of builder with " + arguments);
-            }
-            if (arguments == null || arguments.size() == 0) {
-                return getGUIIndicator(node);
-            } else {
-                if (! (arguments instanceof Parameters)) {
-                    arguments = new Parameters(GUI_PARAMETERS, arguments);
-                }
-                return getGUIIndicator(node, (Parameters)arguments);
             }
         }
 
