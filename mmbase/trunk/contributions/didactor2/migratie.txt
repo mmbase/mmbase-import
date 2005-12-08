@@ -2,8 +2,14 @@ Migration issues
 
 Important issue for every update (leave this message on top):
 
-When using SCORM, don't forget to save and replace the didactor/scorm dir in the webapp.
+1. When using SCORM, don't forget to save and replace the didactor/scorm dir in the webapp.
 Or create a scorm dir in the ROOT of the webapp when you make a new install.
+
+2. If any component disappears or is not present on components page, you can delete the related
+application record from version control table in the mmeditors and restart Tomcat to reinstall 
+the application with component record.
+E.g.: if "versioning" is absent, delete "Versioning" node from version control table in mmeditors 
+and restart Tomcat.
 ----
 
 2005-11-23
