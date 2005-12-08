@@ -9,7 +9,7 @@
   <input type="hidden" name="search_type" value="AND"/>
   <input type="hidden" name="search_component" value=""/>
   </div>
-    zoeken:&nbsp; <input class="search" type="text" name="search_query" />
+    <di:translate key="search.search" />:&nbsp; <input class="search" type="text" name="search_query" />
 	<input type="image" src="<mm:treefile write="true" page="/gfx/icon_search.gif" objectlist="$includePath" />" alt="<di:translate key="search.sendsearchrequest" />" value="<di:translate key="search.sendsearchrequest" />" name="searchbutton" />
   <div style="display:none"></form></div>
 </div>
