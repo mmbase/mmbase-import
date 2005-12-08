@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.*;
@@ -25,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.17 2005-12-08 12:39:56 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.18 2005-12-08 16:59:45 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -103,28 +101,43 @@ public abstract class NodeFunction extends AbstractFunction {
      */
     protected final Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
         if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
-        Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
-        if (cloud == null) {
-            // lets try this
-            cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+        Node node = (Node) parameters.get(Parameter.NODE);
+        if (node == null) {
+            Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
             if (cloud == null) {
-                throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
-            }
-        }         
-        Node node;
-        if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
-            node = new org.mmbase.bridge.implementation.VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud); 
-        } else {
-            int number = coreNode.getNumber();
-            if (number == -1) {
-                // must be in transaction or uncommited node
-                String tmpNumber = coreNode.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER);
-                node = cloud.getNode(tmpNumber);
+                // lets try this
+                cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                if (cloud == null) {
+                    throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
+                }
+            }         
+            if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
+                node = new org.mmbase.bridge.implementation.VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud); 
             } else {
-                node = cloud.getNode(number);
+                int number = coreNode.getNumber();
+                if (number == -1) {
+                    // must be in transaction or uncommited node
+                    String tmpNumber = coreNode.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER);
+                    if (cloud.hasNode(tmpNumber)) {
+                        node = cloud.getNode(tmpNumber);
+                    } else {
+                        // last resort..., we're really desperate now.
+                        // This happens when calling gui() in transaction.
+                        // Perhaps we need something like a public new BasicNode(MMobjectNode, Cloud). Abusing VirtualNode for similar purpose now.
+                        org.mmbase.module.core.VirtualNode virtual = new org.mmbase.module.core.VirtualNode(coreNode.getBuilder());
+                        Iterator i = coreNode.getValues().entrySet().iterator();
+                        while (i.hasNext()) {
+                            Map.Entry entry = (Map.Entry) i.next();
+                            virtual.storeValue((String) entry.getKey(), entry.getValue());
+                        }
+                        node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud); 
+                    }
+                } else {
+                    node = cloud.getNode(number);
+                }
             }
+            parameters.set(Parameter.NODE, node);
         }
-        parameters.set(Parameter.NODE, node);
         return getFunctionValue(node, parameters);
 
     }
