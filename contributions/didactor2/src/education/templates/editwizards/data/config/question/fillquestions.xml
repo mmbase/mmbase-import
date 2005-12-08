@@ -5,8 +5,15 @@
    <!ENTITY extra_steps SYSTEM "extra_steps.xml">
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
+
+
+
+
+
+
 <wizard-schema id="empty">
-    <title>Fill in the gaps Editor</title>
+    <title xml:lang="en">Fill in the gaps Editor</title>
+    <title xml:lang="nl">Vul de hiaten in</title>
 
 
     <action type="create">
@@ -56,7 +63,8 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Vul de hiaten in invoeren</title>
+        <title xml:lang="en">Enter fill in the gaps question</title>
+  		<title xml:lang="nl">Vul de hiaten in invoeren</title>      
         <field name="title" >
             <prompt xml:lang="nl">Titel</prompt>
             <prompt xml:lang="en">Title</prompt>
@@ -73,8 +81,8 @@
    
     <!--  INSERT FLASH/TEXT -->  
         <field name="flashOrText" ftype="enum">
-           <prompt xml:lang="nl">Kies flash of tekst</prompt>
            <prompt xml:lang="en">Choose flash or text</prompt>
+           <prompt xml:lang="nl">Kies flash of tekst </prompt>
            <optionlist select="flashOrText" />
         </field>
    <!-- END INSERT FLASH/TEXT --> 
