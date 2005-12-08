@@ -37,11 +37,18 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.168 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.169 2005-12-08 12:35:36 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
+
+
+    /**
+     * 'system' parameter set for nodefunctions.
+     * @since MMBase-1.8
+     */     
+    public final static Parameter PARAMETER = new Parameter("_corenode", MMObjectNode.class);
 
     /**
      * @deprecated Simply use <code>null</code>
@@ -579,7 +586,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (l != null)  return l.intValue();
         Object value = values.get(fieldName);
         if (value == null) return -1;
-        return Casting.toString(value).getBytes().length;
+        return org.mmbase.util.SizeOf.getByteSize(value);
     }
 
     /**
@@ -1100,7 +1107,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the field's DBState
      */
     public int getDBState(String fieldName) {
-        if (parent!=null)    {
+        if (parent != null)    {
             return parent.getDBState(fieldName);
         } else {
             return Field.STATE_UNKNOWN;
