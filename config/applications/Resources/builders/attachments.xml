@@ -40,6 +40,7 @@
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>title</name>
         <type state="persistent" size="32" notnull="false" key="false">STRING</type>
@@ -83,6 +84,7 @@
           <list>3</list>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>mimetype</name>
         <type state="persistent" size="32" notnull="true" key="false">STRING</type>
@@ -106,6 +108,7 @@
           <search>4</search><!-- I think it absurd that you can search on filename but not otherwise see it -->
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filename</name>
         <type state="persistent" size="128" notnull="true" key="false">STRING</type>
@@ -129,6 +132,7 @@
           <search>-1</search>
         </positions>
       </editor>
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>size</name>
         <type state="persistent" notnull="true" key="false">INTEGER</type>
