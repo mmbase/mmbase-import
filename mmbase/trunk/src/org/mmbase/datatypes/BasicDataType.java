@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.31 2005-12-08 15:24:38 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.32 2005-12-08 18:17:59 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -86,7 +86,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(requiredRestriction);
         out.writeObject(uniqueRestriction);
-        //out.writeObject(enumerationRestriction.value);
+        out.writeObject(enumerationRestriction.getEnumerationFactory());
         if (owner instanceof Serializable) {
             out.writeObject(owner);
         } else {
@@ -107,7 +107,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         requiredRestriction    = (RequiredRestriction) in.readObject();
         uniqueRestriction      = (UniqueRestriction) in.readObject();
-        //enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
+        enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
         typeRestriction        = new TypeRestriction(); // its always the same, so no need actually persisting it.
         owner                 = in.readObject();
         classType             =  (Class) in.readObject();
