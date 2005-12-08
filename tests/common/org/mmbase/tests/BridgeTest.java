@@ -29,7 +29,7 @@ public abstract class BridgeTest extends MMBaseTest {
 
     protected Cloud getCloud() {
         Cloud c = null;
-        while(!mmb.isShutdown()) {
+        while(true) {
             CloudContext cc = null;
             try {
                 cc = ContextProvider.getDefaultCloudContext();        
@@ -56,7 +56,7 @@ public abstract class BridgeTest extends MMBaseTest {
 
     protected Cloud getRemoteCloud(String uri) {
         Cloud c = null;
-        while(!mmb.isShutdown()) {
+        while(true) {
             try {
                 c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", null);
                 break;
