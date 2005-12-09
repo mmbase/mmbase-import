@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.331 2005-12-09 21:40:59 johannes Exp $
 
 -->
 <taglib author="MMBase community">
@@ -254,6 +254,11 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
   tags. In MMBase 1.7 the JSP2 variables did not coincide with MMBase variables. In MMBase 1.8
   they can coincide.
       </p>
+      <p>
+	An example is for instance the use: &lt;mm:listnodes
+	type="$nodetype"&gt;, here the 'nodetype' variable from the
+	context is referred to.
+      </p>
     </info>
     <see tag="context" />
     <attribute>
@@ -271,8 +276,10 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <type>util.context</type>
     <extends>contextreferrer</extends>
     <info>
-      A contextwriter is a contextreferrer, but it can also write itself to the context (using the
-      id attribute).
+      A contextwriter is a contextreferrer, but it can also write
+      itself to the context (using the id attribute). Tags that
+      extend 'contextreader' can then read the information back
+      using the 'referid' attribute.
     </info>
     <see tag="context" />
     <attribute>
@@ -291,8 +298,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <extends>contextwriter</extends>
     <type>mmbase</type>
     <info>
-      A contextreader is a contextwriter, but besides writing itself to the context, it can also
-      read itself back from the context. This makes it possible to reuse (settings of) certain tags.
+      Contextreader tags are tags that can read previous instances from the context using the 'referid' attribute. It also extends from contextwriter, because it can also put information back into the context. This makes it possible to reuse (settings of) certain tags.
     </info>
     <see tag="context" />
     <attribute>
@@ -308,14 +314,14 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <name>listreferrer</name>
     <type>list</type>
     <info>
-      A listreferrer tag has to live in the body of list tags (`list providers').
+      A listreferrer tag has to live in the body of a list tag (`list providers').
     </info>
     <attribute>
       <name>list</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  Which list to use, if the tag is in the body of more than one list, and you don't need the
+  Which list to use, if the tag is in the body of more than one list, and you don't want the
   direct parent.
       </info>
     </attribute>
@@ -324,9 +330,19 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <name>listprovider</name>
     <type>list</type>
     <info>
-      A list provider has a body which is evaluated repeatedly.  If a list is a contextwriter, then
-      in the body of the list the context variable is one item of the list, and after the list, the
-      variable is a `List', which can normally be reused with the 'referid' of some list.
+      <p>
+        A list provider has a body which is evaluated repeatedly, it is mainly just an iterator tag.
+      </p>
+      <p>
+        When the list is acting as a contextwriter (if the 'id' parameter is specified), then the body
+        is still evaluated but within the body of the tag the variable refers to the current element. Then
+        after evaluation of the tag, the entire list of elements is available in the context with the
+        type '<code>java.util.List</code>'.
+      </p>
+      <p>
+        The attributes to tags of this type (comparator, retain, etc.) all have more or less the same
+        behaviour as the methods of the <code>java.util.Collection</code> interface.
+      </p>
     </info>
     <attribute>
       <name>comparator</name>
@@ -417,9 +433,14 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
       <info>
-        Adds to this list all elements represented by the value of this attribute. The value refers
-        to some taglib variable, like the id of another list, or the id of a node (which is only one
-        element then).
+        <p>
+          Adds to this list all elements represented by the value of this attribute. The value refers
+          to some taglib variable, like the id of another list, or the id of a node (which is only one
+          element then).
+        </p>
+        <p>
+          This method is similar to the behavior of the 'add()' and 'addAll()' methods from the <code>java.util.Collection</code> interface.
+        </p>
       </info>      
     </attribute>
     <attribute>
@@ -428,8 +449,13 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8</since>
       <info>
-        Removes al the elements from the list, besides the one which are also present in the
-        object referred by this attribute.
+        <p>
+          Removes al the elements from the list, except the ones that are also present in the
+          list which is specified by this attribute. 
+        </p>
+        <p>
+          This method is similar to the behavior of the 'retainAll()' method from the <code>java.util.Collection</code> interface.
+        </p>
       </info>
     </attribute>
     <attribute>
@@ -450,10 +476,12 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
 <mm:stringlist id="list4" referid="list1" retain="list2" />
 <mm:stringlist id="list5" referid="list1" remove="list2" />
   
-
 <mm:write referid="list3" /> / <mm:write referid="list4" /> / <mm:write referid="list5" />
-
 ]]>
+      </pre>
+      This will print the following: 
+      <pre>
+a,b,c,d,e,c,d,e,f / c,d,e / a,b
       </pre>
     </example>
   </taginterface>
@@ -461,16 +489,20 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <name>condition</name>
     <type>util</type>
     <info>
-      Condition tags have a body which is either evaluated or not depending on certain attributes or
-      on the surrounding tags.
+      Condition tags evaluate their body only if a certain condition
+      is met. This condition can be specified sometimes by attributes
+      on the condition tag, or sometimes on the surrounding parent
+      tags.
     </info>
     <attribute>
       <name>inverse</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Turns the condition around, such that precisely the inverse will happen. This attribute is
-        of course false on default. You can set it to true.
+	Inverts the condition: the body of the tag will only be
+	executed if the condition does not evaluate to true. This
+	is an optional attribute with its default value set to
+	'false'.
       </info>
       <possiblevalue>
         <value>true</value>
@@ -499,7 +531,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Whether the node must be committed after the body. The
+        Whether the node must be committed after evaluation of the body. The
         default is true.
       </info>
       <possiblevalue>
@@ -527,7 +559,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <name>fieldreferrer</name>
     <type>mmbase</type>
     <info>
-      A tag that can live in the body of a field provider tag.
+      A tag that can live in the body of a field provider tag, it refers to the parent fieldprovider.
     </info>
     <see tag="fieldprovider" />
     <attribute>
@@ -535,7 +567,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        If the tag is living in more than one field provider, and you don't need the direct parent,
+        If the tag is living in more than one field provider, and you don't want the direct parent,
         then you use this attribute to refer to it.
       </info>
     </attribute>
@@ -544,27 +576,30 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <name>fieldprovider</name>
     <type>mmbase</type>
     <info>
-      Fieldp rovider tags provide a field to their body. The `value' of
-      the field is not necessary filled, but a field provider still has
-      some use then, e.g. to get the `guiname' of a field (which
-      considers language).
+      Field provider tags provide a field to their body. The `value' of
+      the field is not necessary filled, but a field provider can for example
+      be used to get the `guiname' of a field (based on the current locale).
+      The locale for which the gui information is shown, can be set using the 'locale' tag, or
+      it can be set on the 'content' tag.
     </info>
     <see tag="fieldreferrer" />
+    <see tag="locale" />
+    <see tag="content" />
   </taginterface>
   <taginterface>
     <name>cloudprovider</name>
     <type>mmbase.basic</type>
     <info>
       Cloud provider tags provide a cloud to their body. Also a
-      `transaction' is a kind of cloud.
+      `transaction' is a kind of cloud. 
     </info>
     <see tag="cloudreferrer" />
   </taginterface>
   <taginterface>
     <name>nodereferrer</name>
     <info>
-      A node referrer tag is a tag that can (needs to) live in the body of a node
-      provider, and uses the node provided by the node provider tag.
+      A node referrer tag is a tag that lives within the body of a node provider tag, 
+      and uses the node provided by the node provider tag.
     </info>
     <!-- in reality nodereferrer extends cloudreferrer, but only few tags use that -->
     <attribute>
@@ -573,7 +608,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <rtexprvalue>true</rtexprvalue>
       <info>
         Which node to use. You can use this attribute if your Node referrer is living in more than
-        one node provider, and you don't need the direct parent.
+        one node provider, and you don't want the direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -581,8 +616,8 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <name>cloudreferrer</name>
     <type>mmbase</type>
     <info>
-      A cloud referrer tag is a tag that needs to live in the body of a cloud tag. This means that
-      it can use MMBase data.
+      A cloud referrer tag is a tag that needs to live in the body of a cloud or transaction tag. This means that
+      it can use MMBase data. 
     </info>
     <see tag="cloud" />
     <see tag="cloudprovider" />
@@ -591,8 +626,11 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  Which cloud to use. If the tag is living in more than one cloud tag, and you want to refer
-  to another then the direct parent.
+	Which cloud to use. This is an optional argument, and if
+	it is omitted then the tag will refer to the direct parent.
+	Only if there is more than one cloud (for instance within
+	a nested transaction tag) you might want to use this attribute
+	to refer to the main cloud.
       </info>
     </attribute>
   </taginterface>
@@ -618,8 +656,8 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <type>util</type>
     <info>
       A writer is a tag that can produce output. Normally the default will be to
-      write to the page, unless the tag has a body. All tag which
-      produce output themselves are `writers'. This is contradiction to tags which don't produce
+      write to the page, unless the tag has a body. All tags which
+      produce output themselves are `writers'. This is contrary to tags which don't produce
       output, but only produce contextual information (e.g. mm:cloud, mm:node), or programmatic
       tools (e.g. mm:present, mm:import, mm:list)
     </info>
@@ -647,7 +685,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
         </p>
         <p>
           The value of this is used for the `jspvar' if you create it,
-          but it is also used for the zcontext' variables. It is less
+          but it is also used for the 'context' variables. It is less
           often essential then, but it is essential to set it right
           e.g. when you want to use the `isgreaterthan' tag, because
           strings compare differently than numbers.
@@ -755,7 +793,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
   <taginterface>
     <name>container</name>
     <info>
-       Container tags can be referrenced by container-referrers.
+       Container tags can be referred to by container-referrers.
     </info>
     <since>MMBase-1.7</since>
   </taginterface>
@@ -780,9 +818,16 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <name>querycontainer</name>
     <extends>container</extends>
     <info>
-      A `Query' container is a container for one of the `node list' tags (list providers that are
-      node providers too). A query container is actually a wrapper for a `Query' on the database. If
-      a node list tag' is inside a corresponding `nodelist container', it will use the query.
+      <p>
+        A `Query' container is a container for one of the `node list' tags (list providers that are
+        node providers too). A query container is actually a wrapper for a `Query' on the database, 
+        to which constraints can be added using the &lt;mm:constraint&gt; tag, sortorder can be specified,
+        etc. If a 'node list tag' is inside a corresponding `nodelist container', it will use the query
+        specified by the container.
+      </p>
+      <p>
+        For examples, have a look at one of the tags of this type.
+      </p>
     </info>
     <see tag="listprovider" />
     <see tag="nodeprovider" />
@@ -802,7 +847,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       </possiblevalue>
       <possiblevalue>
         <value>always</value>
-        <info>Always cache the result</info>
+        <info>Always cache the result (default)</info>
       </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
@@ -822,20 +867,29 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
     <extends>nodereferrer</extends>
     <info>
       <p>
-        Evaluates `function' on e.g. a node or something else. It is determined from which the
-        function must be taken by the `nodemanager', `set' and `module' attributes, of which precisely one
-        or none must be present. If none of those is present, the function is supposed to be a
-        `node' function and the tag works as a `node referrer'. Otherwise it works as a function
-        from a `nodemanager' `set' or `module' respectively.
+        A function tag (of which there are many different types) evaluate a function. Functions can
+        be defined in three locations:
+        <ul>
+          <li>The nodemanager (for functions located in builder code)</li>
+          <li>A functionset</li>
+          <li>A specific classname</li>
+        </ul>
+        Using the 'nodemanager', 'set', and 'module' attributes, you can specify from which location
+        the function should be retrieved. If none of these are given, the function will be
+        a 'node' function and the tag will act as a 'node referrer'. 
       </p>
       <p>
-        Parameters of the function are supplied with the `referids' attribute, or by a surrounding
-        `function container' tag with param sub-tags.
+        Parameters to the function can be specified in two ways:
+        <ul>
+          <li>By using the 'referids' attribute: these are named variables which are passed on to the function</li>
+          <li>By putting the function call in a 'function container', and by using &lt;mm:param&gt; tags within the function container</li>
+        </ul>
       </p>
       <p>
         The several tags of this type differ only in the way they deal with the function
-        value. E.g. a `boolean' function works as a `condition' tag (evaluating the body if the function
-        value is `true' and not evaluating the body if it is false).
+        value. E.g. a 'booleanfunction' works as a `condition' tag (evaluating the body if the function
+        value is `true' and not evaluating the body if it is false). A 'nodelistfunction' tag will execute
+        the function and then iterate the body of the tag for all the nodes in the nodelist.
       </p>
     </info>
     <see tag="functioncontainer" />
@@ -864,7 +918,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The `set' from which the function must be taken. These are a kind of static functions (no
+        The `functionset' from which the function must be taken. These are a kind of static functions (no
         object is associated with them). These `sets' of functions are a bit like namespaces.
       </info>
     </attribute>
@@ -879,10 +933,18 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
           and get function values with any function with no further arguments.
         </p>
         <p>
-          The two exception is if the value of this attribute is `THISPAGE' or starts with
-          `THISPAGE.'. In the first case a method of the current JSP will be called (a `method
-          function') and in the second case a inner class of the current JSP will be used as a bean
-          (the name of the inner class follows the period).
+          There are two exceptions to this:
+          <ul>
+            <li>
+              If the value of the attribute is 'THISPAGE', a method of the current JSP will be
+              called (a 'method function').
+            </li>
+            <li>
+              If the value of the attribute starts with 'THISPAGE.', an inner class of the
+              current JSP will be used as a bean (the name of the inner class is that what follows
+              the dot).
+            </li>
+          </ul>
         </p>
       </info>
       <example>
@@ -1625,7 +1687,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
         </p>
         <p>
           It can also be used in combination with the `password' attribute, in which case
-          authentication will happen by that.
+          authentication will happen automatically with the specified credentials.
         </p>
       </info>
       </attribute>
@@ -1680,21 +1742,20 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
           If the page was called with the `command' parameter set to `login', the tag assumes a request is being made to log on using the parameters passed.
           The actual names of the parameter passed differs by security method chosen, which is defined by the `authenticate' attribute.
           For instance, with authenticate method `username/password', the following additional parameters are recognized:
-
-
-          cloud: similar to the cloudtag's `name' attribute
-          username: similar to the  cloudtag's `username' attribute
-          password: similar to the  cloudtag's `password' attribute
-
+          <ul>
+            <li>cloud: similar to the cloudtag's `name' attribute</li>
+            <li>username: similar to the  cloudtag's `username' attribute</li>
+            <li>password: similar to the  cloudtag's `password' attribute</li>
+          </ul>
           If login succeeds, the page continues and displays normally. If the login fails, or if no `command=login' attribute was specified, the request is redirected to the page specified in the attribute.
-          This `login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
+          This `login page' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
           The page may also implement its own method of authentication.
 
           The `command=login' parameter has no effect when the loginpage attribute was not specified.
         </p>
         <p>
           The page should link page to the page which is supplied in the reference parameter.
-          The login page itselve should have a parameter `command' with value `login', `authenticate' with the authentication method which is wanted.
+          The login page itself should have a parameter `command' with value `login', `authenticate' with the authentication method which is wanted.
           Additional parameters will be passed to the underlying security implementation.
 
           A simple login page could contain the following jsp-code:
@@ -1772,7 +1833,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        The password to use to logon to the cloud. Always consider using method="pagelogon" whey you
+        The password to use to logon to the cloud. Always consider using method="pagelogon" when you
         use this attribute, because the default method will otherwise be "sessionlogon". Then, the
         resulting cloud-object is written to the session, and the visitor of your page can abuse
         this to gain authorisation also on other pages.
@@ -1972,7 +2033,7 @@ version: $Id: mmbase-taglib.xml,v 1.330 2005-12-05 17:21:17 michiel Exp $
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-  The name of the JSP variable to export by cloud.
+  The name of The JSP variable to create that contains a reference to the cloud.
       </info>
     </attribute>
     <example>
@@ -2276,7 +2337,7 @@ access the value of title:
     </info>
     <since>MMBase-1.8</since>
     <example>
-&lt;mm:hasfunction name="index"&gt;&lt;mm:function name="index" /&gt;&lt;/hasfunction&gt;;
+&lt;mm:hasfunction name="index"&gt;&lt;mm:function name="index" /&gt;&lt;/hasfunction&gt;
     </example>
   </tag>
   <tag>
@@ -2300,6 +2361,12 @@ access the value of title:
       </info>
     </attribute>
     <since>MMBase-1.8</since>
+    <example><![CDATA[<mm:hasnodemanager name="people">
+  <mm:listnodes type="people">
+    <mm:field name="firstname" />
+  </mm:listnodes>
+</mm:hasnodemanager>]]></example>
+
   </tag>
   <tag>
     <name>hasrelationmanager</name>
@@ -2350,7 +2417,7 @@ access the value of title:
     <tagclass>org.mmbase.bridge.jsp.taglib.HasNodeTag</tagclass>
     <info>
       <p>
-        Checks only whether certain node is available. To make it possible to make more generic code.
+        Checks only whether certain node is available. To make it possible to make more generic code. It has the same working as &lt;mm:node number="abc" notfound="skipbody" /&gt;
       </p>
     </info>
     <attribute>
@@ -2362,6 +2429,11 @@ access the value of title:
       </info>
     </attribute>
     <since>MMBase-1.8</since>
+    <example><![CDATA[<mm:hasnode number="some-alias">
+  <mm:node number="some-alias">
+    Hello world
+  </mm:node>
+</mm:hasnode>]]></example>
   </tag>
   <tag>
     <name>hasfield</name>
@@ -2384,6 +2456,11 @@ access the value of title:
       </info>
     </attribute>
     <since>MMBase-1.8</since>
+    <example><![CDATA[<mm:listnodes type="object">
+  <mm:hasfield name="title">
+    Title of node <mm:field name="number" /> (<mm:nodeinfo type="type" />): <mm:field name="title" />
+  </mm:hasfield>
+</mm:listnodes>]]></example>
   </tag>
   <tag>
     <name>voidfunction</name>
@@ -2416,7 +2493,7 @@ access the value of title:
     <info>
       <p>
   Gets the function value of function `name'.  The function value
-  is supposed to be Boolean, and this tags acts as a `condition' tag.
+  is supposed to be Boolean, and this tag acts as a `condition' tag.
       </p>
       <p>
   For more information about how function tags work generally see the the `functiontag' entry
@@ -3054,7 +3131,7 @@ transaction was commited, following should result anything:
     <info>
       A list of fields. A fieldlist can be inside a NodeProvider in
       which case the NodeManager is found by means of the parent
-      node. It can also be stand alone, then you have to supply the type
+      node. It can also be standalone, then you have to supply the type
       of the node (the name of the `node manager').
     </info>
     <see tag="fieldinfo" />
@@ -4082,6 +4159,10 @@ like the parameter list or the session (where ever it is available) --&gt;
         attachment servlet works.
       </p>
     </info>
+    <example><![CDATA[ <mm:listnodes type="attachments">
+  <a href="<mm:attachment />">Download</a>
+</mm:listnodes>]]>
+    </example>
   </tag>
   <tag>
     <name>include</name>
@@ -4183,8 +4264,30 @@ like the parameter list or the session (where ever it is available) --&gt;
       <see tag="write" attribute="attribute" />
       <since>MMBase-1.7.4</since>
     </attribute>
+    <attribute>
+      <name>notfound</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        Specify the behaviour when the file cannot be found. Default is 'skip', but you can change
+        this to give an exception for non-existing files that are included.
+      </info>
+      <possiblevalue>
+        <value>skip</value>
+        <info>Do not generate any error if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>exception</value>
+        <info>Raise an exception if the file cannot be found</info>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
+    </attribute>
     <see tag="param" />
     <see tag="url" />
+    <see tag="haspage" />
+    <see tag="treeinclude" />
+    <see tag="leafinclude" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
     </example>
   </tag>
@@ -4196,7 +4299,6 @@ like the parameter list or the session (where ever it is available) --&gt;
       <p>
         Checks for the availability of a certain JSP on this server.
       </p>
-      <since>MMBase-1.8</since>
     </info>
     <attribute>
       <name>page</name>
@@ -4208,7 +4310,11 @@ like the parameter list or the session (where ever it is available) --&gt;
         current JSP, or relative to context root (if it starts with '/').
       </info>
     </attribute>
-    <see tag="cinlude" />
+    <since>MMBase-1.8</since>
+    <see tag="include" />
+    <example><![CDATA[<mm:haspage page="extra.jsp">
+  <mm:include page="extra.jsp" />
+</mm:haspage>]]></example>
   </tag>
   <tag>
     <name>compare</name>
@@ -4256,7 +4362,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <name>referid2</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <requirednote>Either `value', `valueset' or `referid2' must be present.</requirednote>
+      <requirednote>Either `value', `valueset', `referid2' or 'regexp' must be present.</requirednote>
       <see tag="writer" attribute="vartype" />
       <info>
         The value can also be another context variable, which is not
@@ -4608,7 +4714,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       Whether this nodes has relations. It also returns true if there are relations which you may
       not see. (in contradiction to `countrelations')
     </info>
-    <see>MMBase-1.7</see>
+    <since>MMBase-1.7</since>
   </tag>
   <tag>
     <name>listrelations</name>
@@ -4856,8 +4962,27 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-                 The list of objects
-        </info>
+        The list of objects
+      </info>
+    </attribute>
+    <attribute>
+      <name>notfound</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        Specify the behaviour when the file cannot be found. Default is 'exception', but you can change
+        this to silently fail if the file does not exist.
+      </info>
+      <possiblevalue>
+        <value>skip</value>
+        <info>Do not generate any error if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>exception</value>
+        <info>Raise an exception if the file cannot be found</info>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
     </attribute>
     <see tag="param" />
     <see tag="url" />
@@ -4882,8 +5007,27 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-                 The list of objects
-        </info>
+        The list of objects
+      </info>
+    </attribute>
+    <attribute>
+      <name>notfound</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        Specify the behaviour when the file cannot be found. Default is 'exception', but you can change
+        this to silently fail if the file does not exist.
+      </info>
+      <possiblevalue>
+        <value>skip</value>
+        <info>Do not generate any error if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>exception</value>
+        <info>Raise an exception if the file cannot be found</info>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
     </attribute>
     <see tag="param" />
     <see tag="url" />
@@ -4925,7 +5069,7 @@ like the parameter list or the session (where ever it is available) --&gt;
         comes alphabetically first will be chosen.
         This behavior is specified in the `getSmartPath()' method in
         MMObjectBuilder.
-          </p>
+      </p>
       <p>
         The naming schema mentioned above (number postfixed with a random
         string) can be overridden by a builder. For instance, if object
@@ -4946,9 +5090,30 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-                 The list of objects
-        </info>
+        The list of objects
+      </info>
     </attribute>
+    <!--
+    <attribute>
+      <name>notfound</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        Specify the behaviour when the file cannot be found. Default is 'exception', but you can change
+        this to silently fail if the file does not exist.
+      </info>
+      <possiblevalue>
+        <value>skip</value>
+        <info>Do not generate any error if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>exception</value>
+        <info>Raise an exception if the file cannot be found</info>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
+    </attribute>
+    -->
     <see tag="include" />
     <see tag="treefile" />
     <see tag="leafinclude" />
@@ -4973,9 +5138,30 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-                 The list of objects
-        </info>
+        The list of objects
+      </info>
     </attribute>
+    <!--
+    <attribute>
+      <name>notfound</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        Specify the behaviour when the file cannot be found. Default is 'exception', but you can change
+        this to silently fail if the file does not exist.
+      </info>
+      <possiblevalue>
+        <value>skip</value>
+        <info>Do not generate any error if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>exception</value>
+        <info>Raise an exception if the file cannot be found</info>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
+    </attribute>
+    -->
     <see tag="include" />
     <see tag="leaffile" />
     <see tag="param" />
@@ -5623,7 +5809,7 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <info>
         <p>
-          When this page expires (in seconds after now). If you set this, this has influence on some
+          Defines when this page expires (in seconds after now). If you set this, this has influence on some
           http header being set ('Cache-Control' and `Expires'). This default to one minute
           public-caching if there is no session used on the page, and to no caching otherwise.
         </p>
@@ -6179,6 +6365,16 @@ The 0 is just counter, which starts at 0 on every page.
         <info>Tests wether the value of the field is NULL (or NOT NULL if inverse="true"). The `value' attributes are ignored.</info>
       </possiblevalue>
     </attribute>
+    <example><![CDATA[<mm:listnodescontainer type="people">
+  <mm:composite operator="OR">
+    <mm:constraint field="username" value="admin" operator="LIKE" />
+    <mm:constraint field="username" value="test" operator="LIKE" />
+  </mm:composite>
+  <mm:listnodes>
+    <mm:field name="username" /> <br />
+  </mm:listnodes>
+</mm:listnodescontainer>]]>
+    </example>
   </tag>
 
   <tag>
@@ -6209,7 +6405,9 @@ The 0 is just counter, which starts at 0 on every page.
         <value>AND</value>
       </possiblevalue>
     </attribute>
-        <example><![CDATA[<mm:listnodescontainer type="people">
+        <example>The following code lists all users with username 'admin' or 'test'.
+
+<![CDATA[<mm:listnodescontainer type="people">
   <mm:composite operator="OR">
     <mm:constraint field="username" value="admin" operator="LIKE" />
     <mm:constraint field="username" value="test" operator="LIKE" />
@@ -6232,7 +6430,7 @@ The 0 is just counter, which starts at 0 on every page.
       <p>
 	In MMBase, objects on default do not have a `creation time' field. But the `number' field can
 	be used to estimate the age (in days), because for every day a `day mark' is remembered. This
-	tags give easy access to this functionality.
+	tag gives easy access to this functionality.
       </p>
       <p>
 	Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
@@ -6248,7 +6446,7 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <info>
         If the surrounding nodelist container is a list container then the constraint can be on the
-        several elements from the path. With this attribute you must indicate to wich. This is not
+        several elements from the path. With this attribute you must indicate to which. This is not
         needed for listnodes and relatednodes containers.
       </info>
       <since>MMBase-1.8</since>
@@ -6261,7 +6459,7 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <info>
         If the surrounding nodelist container is a list container then the constraint can be on the
-        several elements from the path. With this attribute you must indicate to wich. This is not
+        several elements from the path. With this attribute you must indicate to which. This is not
         needed for listnodes and relatednodes containers (and probably would be a `number' field otherwise).
 	This attribute is deprecated in favour of 'element'.
       </info>
@@ -6294,6 +6492,13 @@ The 0 is just counter, which starts at 0 on every page.
         Inverses the constraint. So adds a NOT.
       </info>
     </attribute>
+    <example><![CDATA[<mm:listnodescontainer type="typedef">
+  <mm:ageconstraint maxage="100" />
+  <mm:listnodes>
+    <mm:field name="name" />
+  </mm:listnodes>
+</mm:listnodescontainer>]]>
+    </example>
   </tag>
 
   <tag>
@@ -6332,6 +6537,13 @@ The 0 is just counter, which starts at 0 on every page.
         Inverses the constraint. So adds a NOT.
       </info>
     </attribute>
+    <example><![CDATA[<%-- list all portals except the two portals with alias 'portalhome' and 'portalkids' --%>
+<mm:listnodescontainer type="portals">
+  <mm:aliasconstraint name="portalhome,portalkids" inverse="true" />
+  <mm:listnodes>
+    <mm:field name="title" />
+  </mm:listnodes>
+</mm:listnodescontainer>]]></example>
   </tag>
   <tag>
     <name>typeconstraint</name>
@@ -6378,6 +6590,12 @@ The 0 is just counter, which starts at 0 on every page.
         Inverses the constraint. So adds a NOT.
       </info>
     </attribute>
+    <example><![CDATA[<mm:listnodescontainer type="object">
+  <mm:typeconstraint name="images,attachments"/>
+  <mm:listnodes>
+    <mm:function name="gui" />
+  </mm:listnodes>
+</mm:listnodescontainer>]]></example>
   </tag>
 
   <tag>
@@ -6463,6 +6681,17 @@ The 0 is just counter, which starts at 0 on every page.
         <value>vale</value>
       </possiblevalue>
     </attribute>
+    <example><![CDATA[<mm:listcontainer path="mags,news,people" fields="mags.title,people.firstname">
+  <!-- This will return 5 identical rows -->
+  <mm:list>
+    <mm:field name="mags.title" /> - <mm:field name="people.firstname" />
+  </mm:list>
+  <mm:distinct />
+  <!-- This returns one row -->
+  <mm:list>
+    <mm:field name="mags.title" /> - <mm:field name="people.firstname" />
+  </mm:list>
+</mm:listcontainer>]]></example>
   </tag>
 
   <tag>
