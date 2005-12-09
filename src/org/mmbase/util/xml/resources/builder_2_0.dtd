@@ -54,6 +54,7 @@
 <!ATTLIST type notnull (true|false) #IMPLIED>
 <!ATTLIST type unique  (true|false) #IMPLIED>
 <!ATTLIST type required (true|false) #IMPLIED>
+<!ATTLIST type readonly (true|false) #IMPLIED>
 <!ATTLIST type doctype CDATA #IMPLIED>
 <!ATTLIST type key (true|false) #IMPLIED>
 
