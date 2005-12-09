@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.9 2004-01-22 13:22:52 michiel Exp $
+   @version $Id: log4j.xml,v 1.10 2005-12-09 14:27:34 nklasens Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -107,7 +107,7 @@
 
   <!-- SQL logging -->
   <!--
-  <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
+  <logger name="org.mmbase.storage.implementation.database.DatabaseStorageManager" additivity="false">
     <level class="&mmlevel;" value ="debug" />   
     <appender-ref ref="sqllog" />
   </logger>

@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.137 2005-12-01 18:41:50 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.138 2005-12-09 14:25:32 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -122,10 +122,15 @@ public class DatabaseStorageManager implements StorageManager {
      */
     public DatabaseStorageManager() {}
 
+    protected long getLogStartTime() {
+        return System.currentTimeMillis();
+    }
+    
     // for debug purposes
-    protected final void logQuery(String msg) {
+    protected final void logQuery(String msg, long startTime) {
         if (log.isDebugEnabled()) {
-            log.debug("Query :" + msg);
+            long now = System.currentTimeMillis();
+            log.debug("Time:" + (now - startTime) + " Query :" + msg);
             log.trace(Logging.stackTrace());
         }
     }
@@ -297,17 +302,19 @@ public class DatabaseStorageManager implements StorageManager {
                 Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
                 if (scheme != null) {
                     query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
-                    logQuery(query);
+                    long startTime = getLogStartTime();
                     s = activeConnection.createStatement();
                     s.executeUpdate(query);
                     s.close();
+                    logQuery(query, startTime);
                 }
                 scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
                 query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
-                logQuery(query);
                 s = activeConnection.createStatement();
                 try {
+                    long startTime = getLogStartTime();
                     ResultSet result = s.executeQuery(query);
+                    logQuery(query, startTime);
                     try {
                         if (result.next()) {
                             int keynr = result.getInt(1);
@@ -951,9 +958,10 @@ public class DatabaseStorageManager implements StorageManager {
             CoreField field = (CoreField) fields.get(fieldNumber);
             setValue(ps, fieldNumber + 1, node, field);
         }
-        logQuery(query);
+        long startTime = getLogStartTime();
         ps.executeUpdate();
         ps.close();
+        logQuery(query, startTime);
 
     }
 
@@ -1453,9 +1461,10 @@ public class DatabaseStorageManager implements StorageManager {
             String query = scheme.format(new Object[] { this, tablename, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
-            logQuery(query);
+            long startTime = getLogStartTime();
             s.executeUpdate(query);
             s.close();
+            logQuery(query, startTime);
             // delete blob files too
             for (Iterator f = blobFileField.iterator(); f.hasNext();) {
                 CoreField field = (CoreField)f.next();
@@ -1827,9 +1836,10 @@ public class DatabaseStorageManager implements StorageManager {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
                 Statement s = activeConnection.createStatement();
-                logQuery(query);
+                long startTime = getLogStartTime();
                 s.executeUpdate(query);
                 s.close();
+                logQuery(query, startTime);
             }
             // create the table
             query = tableScheme.format(new Object[] { this, tableName, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createConstraints.toString(), parentBuilder, factory.getDatabaseName() });
@@ -1840,9 +1850,10 @@ public class DatabaseStorageManager implements StorageManager {
             }
 
             Statement s = activeConnection.createStatement();
-            logQuery(query);
+            long startTime = getLogStartTime();
             s.executeUpdate(query);
             s.close();
+            logQuery(query, startTime);
 
             tableNameCache.add(tableName.toUpperCase());
 
@@ -1948,16 +1959,18 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
             String query = scheme.format(new Object[] { this, builder });
             Statement s = activeConnection.createStatement();
-            logQuery(query);
+            long startTime = getLogStartTime();
             s.executeUpdate(query);
             s.close();
+            logQuery(query, startTime);
             scheme = factory.getScheme(Schemes.DROP_ROW_TYPE);
             if (scheme != null) {
                 query = scheme.format(new Object[] { this, builder });
                 s = activeConnection.createStatement();
-                logQuery(query);
+                long startTime2 = getLogStartTime();
                 s.executeUpdate(query);
                 s.close();
+                logQuery(query, startTime2);
 
                 String tableName = factory.getStorageIdentifier(builder).toString().toUpperCase();
                 if(tableNameCache.contains(tableName)) {
@@ -2004,18 +2017,20 @@ public class DatabaseStorageManager implements StorageManager {
                 Scheme scheme = factory.getScheme(Schemes.CREATE_SEQUENCE, Schemes.CREATE_SEQUENCE_DEFAULT);
                 if (scheme != null) {
                     query = scheme.format(new Object[] { this, fieldDef, factory.getDatabaseName()});
-                    logQuery(query);
+                    long startTime = getLogStartTime();
                     s = activeConnection.createStatement();
                     s.executeUpdate(query);
                     s.close();
+                    logQuery(query, startTime);
                 }
                 scheme = factory.getScheme(Schemes.INIT_SEQUENCE, Schemes.INIT_SEQUENCE_DEFAULT);
                 if (scheme != null) {
                     query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1), bufferSize });
-                    logQuery(query);
+                    long startTime = getLogStartTime();
                     s = activeConnection.createStatement();
                     s.executeUpdate(query);
                     s.close();
+                    logQuery(query, startTime);
                 }
             } catch (SQLException se) {
                 throw new StorageException(se);
@@ -2399,12 +2414,13 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 Statement s = activeConnection.createStatement();
                 query = deleteIndexScheme.format(new Object[] { this, index.getParent(), index });
-                logQuery(query);
+                long startTime = getLogStartTime();
                 try {
                     s.executeUpdate(query);
                 } finally {
                     s.close();
                 }
+                logQuery(query, startTime);
             } catch (SQLException se) {
                 throw new StorageException(se.getMessage() + " in query:" + query, se);
             }
@@ -2481,12 +2497,13 @@ public class DatabaseStorageManager implements StorageManager {
                 try {
                     Statement s = activeConnection.createStatement();
                     query = createIndexScheme.format(new Object[] { this, tablename, fieldlist, index });
-                    logQuery(query);
+                    long startTime = getLogStartTime();
                     try {
                         s.executeUpdate(query);
                     } finally {
                         s.close();
                     }
+                    logQuery(query, startTime);
                 } catch (SQLException se) {
                     throw new StorageException(se.getMessage() + " in query:" + query, se);
                 }
@@ -2513,9 +2530,10 @@ public class DatabaseStorageManager implements StorageManager {
                     String fieldDef = getFieldDefinition(field);
                     String query = scheme.format(new Object[] { this, field.getParent(), fieldDef });
                     Statement s = activeConnection.createStatement();
-                    logQuery(query);
+                    long startTime = getLogStartTime();
                     s.executeUpdate(query);
                     s.close();
+                    logQuery(query, startTime);
                     // add constraints
                     String constraintDef = getConstraintDefinition(field);
                     if (constraintDef != null) {
@@ -2523,9 +2541,9 @@ public class DatabaseStorageManager implements StorageManager {
                         if (scheme != null) {
                             query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
                             s = activeConnection.createStatement();
-                            logQuery(query);
                             s.executeUpdate(query);
                             s.close();
+                            logQuery(query, startTime);
                         }
                     }
                     deleteIndices(field);
@@ -2558,9 +2576,10 @@ public class DatabaseStorageManager implements StorageManager {
                     String fieldDef = getFieldDefinition(field);
                     String query = scheme.format(new Object[] { this, field.getParent(), fieldDef });
                     Statement s = activeConnection.createStatement();
-                    logQuery(query);
+                    long startTime = getLogStartTime();
                     s.executeUpdate(query);
                     s.close();
+                    logQuery(query, startTime);
                     // add constraints
                     String constraintDef = getConstraintDefinition(field);
                     if (constraintDef != null) {
@@ -2568,9 +2587,10 @@ public class DatabaseStorageManager implements StorageManager {
                         if (scheme != null) {
                             query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
                             s = activeConnection.createStatement();
-                            logQuery(query);
+                            long startTime2 = getLogStartTime();
                             s.executeUpdate(query);
                             s.close();
+                            logQuery(query, startTime2);
                         }
                     }
                     createIndices(field);
@@ -2601,9 +2621,10 @@ public class DatabaseStorageManager implements StorageManager {
                     deleteIndices(field);
                     String query = scheme.format(new Object[] { this, field.getParent(), field });
                     Statement s = activeConnection.createStatement();
-                    logQuery(query);
+                    long startTime = getLogStartTime();
                     s.executeUpdate(query);
                     s.close();
+                    logQuery(query, startTime);
                     createIndices(field);
                 } catch (SQLException se) {
                     throw new StorageException(se);
