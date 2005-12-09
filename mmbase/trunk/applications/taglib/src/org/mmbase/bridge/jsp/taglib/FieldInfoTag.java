@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.89 2005-12-07 20:30:00 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.90 2005-12-09 09:53:34 pierre Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -171,7 +171,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if(dataType == null) break;
             handler = (Class) handlers.get(dataType.getName());
         }
-        
+
         if (handler == null) {
             log.warn("Could not find typehandler for type " + field.getDataType() + " using default for type.");
             handler = (Class) handlers.get(Fields.getTypeDescription(field.getType()));
@@ -202,7 +202,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         InputSource fieldtypes = new InputSource(thisClass.getResourceAsStream("resources/fieldtypes.xml"));
         DocumentReader reader  = new DocumentReader(fieldtypes, thisClass);
         Element fieldtypesElement = reader.getElementByPath("fieldtypes");
-        
+
         for (Iterator iter = reader.getChildElements(fieldtypesElement, "fieldtype"); iter.hasNext();) {
             Element element = (Element) iter.next();
             String type = element.getAttribute("id");
@@ -259,9 +259,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (node == null) { // try to find nodeProvider
                 node = fieldProvider.getNodeVar();
             } // node can stay null.
-            if (field.isSystem()) { 
-                // This means it is 'read-only'
-                // in that case simply show gui
+            if (field.isReadOnly()) {
+                // show gui
                 if (node != null) {
                     infoType = TYPE_GUIVALUE;
                 } else {
@@ -272,14 +271,13 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             // these types do really need a NodeProvider somewhere:
             // so 'node' may not stay null.
         case TYPE_USEINPUT:
-            if (field.isSystem()) { 
-                // This means 'read-only'
-                // in that case simply ignore useinput
+            if (field.isReadOnly()) {
+                // ignore useinput
                 infoType = TYPE_UNSET;
                 break;
             }
         case TYPE_VALUE:
-        case TYPE_GUIVALUE:            
+        case TYPE_GUIVALUE:
             if (node == null) {
                 node = fieldProvider.getNodeVar();
             }
@@ -369,7 +367,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             log.debug("Unknown info type " + infoType);
             break;
         }
-            
+
 
         helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         helper.setValue(show);

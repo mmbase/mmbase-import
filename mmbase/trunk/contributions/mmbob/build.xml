@@ -1,13 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE project 
- [ <!ENTITY base SYSTEM "../../mmbase/applications/buildbase.xml" > ]
+ [ <!ENTITY base SYSTEM "../../applications/buildbase.xml" > ]
 >
 
 <project name="MMBob" default="jar" basedir=".">
   <property name="project.name"   value="mmbob" />
   <property name="project.package"   value="org/mmbase/applications/mmbob" />
   <property name="project.target.templates.dir" value="mmbob" />
-  <property name="source.dir" value="../../mmbase" />
   <property name="project.extra.path" location="../thememanager/build/mmbase-thememanager.jar" />
   <property name="project.extra.path2" location="../../mmbase/applications/email/build/mmbase-email.jar"/>
 

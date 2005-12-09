@@ -149,7 +149,7 @@
       <datatype base="owner" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>owner</name>
-        <type state="system" size="12" notnull="true" required="true">STRING</type>
+        <type state="system" readonly="false" size="12" notnull="true" required="true">STRING</type>
       </db>
     </field>
 

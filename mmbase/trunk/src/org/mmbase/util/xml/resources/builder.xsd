@@ -3,13 +3,13 @@
      builder version 2.0
 
 -->
-<xsd:schema 
+<xsd:schema
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:dt="http://www.mmbase.org/xmlns/datatypes"
     targetNamespace="http://www.mmbase.org/xmlns/builder"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified"
-    attributeFormDefault="unqualified"  
+    attributeFormDefault="unqualified"
     version="1.0"
     >
 
@@ -207,6 +207,14 @@
             </xsd:simpleType>
           </xsd:attribute>
           <xsd:attribute name="required">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="true" />
+                <xsd:enumeration value="false" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="readonly">
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
                 <xsd:enumeration value="true" />

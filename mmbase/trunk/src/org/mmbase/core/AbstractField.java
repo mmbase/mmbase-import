@@ -20,17 +20,18 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.6 2005-11-01 22:13:51 nklasens Exp $
+ * @version $Id: AbstractField.java,v 1.7 2005-12-09 09:53:34 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
-    
+
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
     protected DataType dataType = null;
     protected int type = TYPE_UNKNOWN;
     protected int state = STATE_UNKNOWN;
     protected int listItemType = TYPE_UNKNOWN;
+    protected boolean readOnly = true;
 
     /**
      * Create a field object based on another field.
@@ -53,7 +54,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     protected AbstractField(String name, Field field, boolean copyDataTypeForRewrite) {
         super(name, (Descriptor)field);
         type = field.getType();
-        state = field.getState();
+        setState(field.getState());
+        readOnly = field.isReadOnly();
         listItemType = field.getListItemType();
         if (copyDataTypeForRewrite) {
             dataType = (DataType)field.getDataType().clone();
@@ -71,7 +73,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
         super(name);
         this.type = type;
         this.listItemType = listItemType;
-        this.state = state;
+        setState(state);
         this.dataType = dataType;
     }
 
@@ -108,6 +110,14 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     public int getState() {
         return state;
     }
+
+    protected void setState(int state) {
+        if (this.state == STATE_UNKNOWN) {
+          readOnly = state == STATE_SYSTEM || state == STATE_SYSTEM_VIRTUAL;
+        }
+        this.state = state;
+    }
+
 
     public int getType() {
         return type;
@@ -154,31 +164,16 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
      * @see org.mmbase.bridge.Field#isVirtual()
      */
     public boolean isVirtual() {
-       return getState() == STATE_VIRTUAL; 
+       return getState() == STATE_VIRTUAL || getState() == STATE_SYSTEM_VIRTUAL;
     }
 
     /**
-     * @see org.mmbase.bridge.Field#isPersistent()
+     * @see org.mmbase.bridge.Field#isVirtual()
      */
-    public boolean isPersistent() {
-        return getState() == STATE_PERSISTENT; 
+    public boolean isReadOnly() {
+       return readOnly;
     }
 
-    /**
-     * @see org.mmbase.bridge.Field#isSystem()
-     */
-    public boolean isSystem() {
-        return getState() == STATE_SYSTEM;
-    }
-
-    /**
-     * @see org.mmbase.bridge.Field#inStorage() 
-     * @since MMBase 1.7
-     */
-    public boolean inStorage() {
-        return (state == STATE_PERSISTENT || state == STATE_SYSTEM);
-    }
-    
     abstract public String getGUIType();
 
     /**
@@ -186,8 +181,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
      */
     public String toString() {
         return getName() + ":" +
-            org.mmbase.core.util.Fields.getTypeDescription(type) + " / " +
-            org.mmbase.core.util.Fields.getStateDescription(state)+ "/" +
+            org.mmbase.core.util.Fields.getTypeDescription(getType()) + " / " +
+            org.mmbase.core.util.Fields.getStateDescription(getState())+ "/" +
             getDataType();
     }
 

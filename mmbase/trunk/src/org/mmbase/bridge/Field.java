@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.33 2005-11-01 22:13:51 nklasens Exp $
+ * @version $Id: Field.java,v 1.34 2005-12-09 09:53:34 pierre Exp $
  */
 public interface Field extends Descriptor {
 
@@ -73,8 +73,8 @@ public interface Field extends Descriptor {
     public final static int STATE_SYSTEM_VIRTUAL = 4;
     /** The field's state when it is not (yet) known. */
     public final static int STATE_UNKNOWN    = -1;
-    
-    
+
+
     /**
      * Returns the node manager this field belongs to.
      *
@@ -200,29 +200,18 @@ public interface Field extends Descriptor {
 
     /**
      * A field's state is 'virtual' if it is not persistent in storage.
-     * @return <code>true</code> when a virtual field 
+     * @return <code>true</code> when a field is virtual
      * @since MMBase-1.8
      */
     public boolean isVirtual();
 
     /**
-     * A field's state is 'persistent' if it is persistent in storage, and editable.
-     * @return <code>true</code> when a persistent field 
+     * Returns whbether  afield si 'read ionly' - that is,  a use rcannot edit it.
+     * In general, fields with state SYSTEM or SYSTEM_VIRTUAL are defined as read only, while others are not.
+     * It is posisble to override this behaviour per field.
+     * @return <code>true</code> when a field is read only
      * @since MMBase-1.8
      */
-    public boolean isPersistent();
+    public boolean isReadOnly();
 
-    /**
-     * A field's state is 'system' if it is persistent in storage, but not editable by users.
-     * @return <code>true</code> when a system field 
-     * @since MMBase-1.8
-     */
-    public boolean isSystem();
-    
-    /**
-     * A field with state 'system' or 'persistent' is in storage.
-     * @return <code>true</code> when a field is in storage
-     * @since MMBase-1.8
-     */
-    public boolean inStorage();
 }
