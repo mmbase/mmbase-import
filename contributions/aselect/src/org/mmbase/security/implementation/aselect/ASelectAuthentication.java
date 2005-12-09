@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.8 2005-12-05 12:18:37 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.9 2005-12-09 16:14:00 pierre Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -249,7 +249,7 @@ public class ASelectAuthentication extends Authentication {
                             NodeList apps = nl0.item(0).getChildNodes();
                             for (int i = 0 ; i < apps.getLength() ; i++) {
                                 Node app = apps.item(i);
-                                
+
                                 if (app.getNodeName().equals("application")) {
                                     String a = getNodeTextValue(app);
                                     if (! applications.contains(a)) {
@@ -283,7 +283,7 @@ public class ASelectAuthentication extends Authentication {
                 } else {
                     log.warn("Resource '" + configResource + "' not found");
                 }
-            } else { 
+            } else {
                 // old style agent configuration (with a property file) (in previous version of this class, there was no config.xml).
                 configureByProperties(configResource);
             }
@@ -306,7 +306,7 @@ public class ASelectAuthentication extends Authentication {
                 knownUsers.load(accounts);
             }
             log.service("Found " + knownUsers.size() + " known accounts (unknown accounts will be considered 'basic user')");
-            
+
             if (useCloudContext) {
                 log.info("Detected cloud context authorization, will supply compatible User objects (associated with 'mmbaseusers' MMBase object).");
             } else {
@@ -403,8 +403,8 @@ public class ASelectAuthentication extends Authentication {
                     if (applications.size() < 1) {
                         throw new RuntimeException ("No 'authenticate' given and no default defined. Don't know how to log in. (Perhaps the A-Select configuration file was not found?)");
                     }
-                    app = (String) applications.get(0);                    
-                    
+                    app = (String) applications.get(0);
+
                     // throw new RuntimeException("No authenticate given");
                 }
                 if (request != null && response != null) {
@@ -425,7 +425,10 @@ public class ASelectAuthentication extends Authentication {
             }
             String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
             if (useCloudContext) {
-                String r = knownUsers.getProperty(userName);
+                String r = (String) li.getMap().get(PARAMETER_RANK.getName());
+                if (r == null) {
+                    r = knownUsers.getProperty(userName);
+                }
                 return new ASelectCloudContextUser(userName, uniqueNumber, "class", r);
             } else {
                 return new ASelectUser(userName, getRank(userName), uniqueNumber, "class");
@@ -454,7 +457,7 @@ public class ASelectAuthentication extends Authentication {
         } else {
             requestedUser = null;
         }
-        
+
         if (useAgent) {
             if (authentication(request, response, application, requestedUser)) {
                 String userName = getASelectUserId(request);
@@ -558,7 +561,7 @@ public class ASelectAuthentication extends Authentication {
             for (int j = 0; j < values.length; j++) {
                 url.append(sep).append(key).append('=').append(paramEscaper.transform(values[j]));
                 sep = '&';
-            }            
+            }
         }
 
         return response.encodeURL(url.toString());
@@ -762,7 +765,7 @@ public class ASelectAuthentication extends Authentication {
             }
             if (ticket != null) {
                 transferRequest("request=kill_ticket&ticket=" + ticket + "&app_id=" + application + "&uid="  + uid);
-           } else {               
+           } else {
                log.debug("No ticket found, cannot log out");
             }
             Cookie ticketCookie = new Cookie("aselectticket", "");
@@ -1135,9 +1138,9 @@ public class ASelectAuthentication extends Authentication {
         if (method == AuthenticationData.METHOD_ASIS) {
             result[0] = "anonymous";
             result[1] = "class";
-            System.arraycopy(applications.toArray(result), 0, result, 2, applications.size()); 
+            System.arraycopy(applications.toArray(result), 0, result, 2, applications.size());
         } else {
-            System.arraycopy(applications.toArray(result), 0, result, 0, applications.size()); 
+            System.arraycopy(applications.toArray(result), 0, result, 0, applications.size());
             result[size - 2] = "anonymous";
             result[size - 1] = "class";
         }
@@ -1145,10 +1148,10 @@ public class ASelectAuthentication extends Authentication {
     }
 
     protected final Parameter[] CREDENTIALS = new Parameter[] { new Parameter(Parameter.REQUEST,  true),
-                                                                new Parameter(Parameter.RESPONSE, true), 
+                                                                new Parameter(Parameter.RESPONSE, true),
                                                                 new Parameter.Wrapper(PARAMETERS_USERS) };
     protected final Parameter[] LOGOUT      = new Parameter[] { new Parameter(Parameter.REQUEST, true),
-                                                                new Parameter(Parameter.RESPONSE, true), 
+                                                                new Parameter(Parameter.RESPONSE, true),
                                                                 new Parameter.Wrapper(PARAMETERS_ANONYMOUS) };
     public Parameters createParameters(String application) {
         if (application.equals("class")) {
@@ -1158,7 +1161,7 @@ public class ASelectAuthentication extends Authentication {
         } else {
             return new Parameters(CREDENTIALS);
         }
-        
+
     }
 
     public static void main(String[] args) {

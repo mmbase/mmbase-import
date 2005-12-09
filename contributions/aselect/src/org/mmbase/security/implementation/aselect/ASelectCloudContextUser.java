@@ -26,7 +26,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
- * @version $Id: ASelectCloudContextUser.java,v 1.3 2005-10-24 13:01:29 michiel Exp $
+ * @version $Id: ASelectCloudContextUser.java,v 1.4 2005-12-09 16:14:00 pierre Exp $
  * @since  MMBase-1.8
  * @see ASelectAuthentication
  */
@@ -40,9 +40,10 @@ public class ASelectCloudContextUser extends org.mmbase.security.implementation.
     }
 
     private String rank = null;
+
     // constructor, perhaps needs more argumetns
     protected ASelectCloudContextUser(String userName, long number, String app, String rank) {
-        super(getUser(userName), number, app);
+        super(getUser(userName, rank), number, app);
         if (! "".equals(rank)) {
             this.rank = rank;
         }
@@ -62,10 +63,18 @@ public class ASelectCloudContextUser extends org.mmbase.security.implementation.
         return super.getRank();
     }
 
-    protected static MMObjectNode getUser(String userName) {
-        if (userName == null) return null;
+    protected static MMObjectNode getUser(String userName, String rank) {
         Users users = Users.getBuilder();
-        MMObjectNode node = users.getUser(userName);
+        MMObjectNode node;
+        if (userName == null) {
+            node = users.getUserByRank(rank, userName);
+            if (node == null ) {
+                return null;
+            }
+            log.debug("Class authentication to rank " + rank + " found node " + node);
+        } else {
+            node = users.getUser(userName);
+        }
         if (node == null) {
             // Since the user is authenticated by A-Select, the mmbase-users object should exist.
             // So if not, create it, this is the first time this user logs in.
@@ -106,10 +115,10 @@ public class ASelectCloudContextUser extends org.mmbase.security.implementation.
 
                 if (relationNode.insert(userName) ==  -1) {
                     throw new RuntimeException("Could not relate group-node to user-node");
-                }   
-                log.service("Grouping user " + node.getNumber() + " with group node " + defaultGroup.getNumber() + " " + relationNode);                            
+                }
+                log.service("Grouping user " + node.getNumber() + " with group node " + defaultGroup.getNumber() + " " + relationNode);
             }
-            
+
         }
         return node;
     }
