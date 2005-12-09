@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.16 2005-12-08 18:36:03 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.17 2005-12-09 09:52:10 pierre Exp $
  */
 public class SortedBundle {
 
@@ -37,7 +37,7 @@ public class SortedBundle {
     /**
      * Constant which can be used as an argument for {@link #getResource}
      */
-    public static final Class      NO_WRAPPER    = null;
+    public static final Class NO_WRAPPER    = null;
     /**
      * Constant which can be used as an argument for {@link #getResource}
      */
@@ -45,7 +45,7 @@ public class SortedBundle {
     /**
      * Constant which can be used as an argument for {@link #getResource}
      */
-    public static final Class      NO_CONSTANTSPROVIDER = null;
+    public static final Map NO_CONSTANTSPROVIDER = null;
 
     // cache of maps.
     private static Cache knownResources = new Cache(100) {
