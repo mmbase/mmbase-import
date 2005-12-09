@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.61 2005-10-18 22:02:11 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.62 2005-12-09 21:39:21 johannes Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -55,8 +55,9 @@ public class IncludeTag extends UrlTag {
 
     private Attribute encodingAttribute = Attribute.NULL;
 
-    private   Attribute  attributes       = Attribute.NULL;
+    private Attribute attributes        = Attribute.NULL;
 
+    protected Attribute notFound        = Attribute.NULL;
 
     /**
      * Test whether or not the 'cite' parameter is set
@@ -67,6 +68,10 @@ public class IncludeTag extends UrlTag {
 
     public void setEncoding(String e) throws JspTagException {
         encodingAttribute = getAttribute(e);
+    }
+
+    public void setNotfound(String n) throws JspTagException {
+        notFound = getAttribute(n);
     }
 
     protected boolean getCite() throws JspTagException {
@@ -320,9 +325,11 @@ public class IncludeTag extends UrlTag {
      */
     protected void includePage() throws JspTagException {
         try {
-
-
             String gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
+
+            if (gotUrl == null || "".equals(gotUrl)) {
+                return; //if there is no url, we cannot include
+            }
 
             if (pageLog.isServiceEnabled()) {
                 pageLog.service("Parsing mm:include JSP page: " + gotUrl);
@@ -367,7 +374,7 @@ public class IncludeTag extends UrlTag {
                 }
 
                 String includedServlet;
-                if (nudeUrl.charAt(0) == '/') {
+                if (nudeUrl.startsWith("/")) {
                     log.debug("URL was absolute on servletcontext");
                     includedServlet = gotUrl;
                 } else {
@@ -379,6 +386,12 @@ public class IncludeTag extends UrlTag {
                     File currentDir = new File(includingServlet + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)                    
                     nudeUrl = new URL(dir, nudeUrl).getFile();
                     includedServlet = nudeUrl + params;
+                }
+
+                if (notFound.getString(this).equals("exception")) {
+                    if (ResourceLoader.getWebRoot().getResource(nudeUrl).openConnection().getDoInput() == false) {
+                        throw new JspTagException("File '" + nudeUrl + "' does not exist");
+                    }
                 }
 
                 // Increase level and put it together with the new URI in the Attributes of the request
