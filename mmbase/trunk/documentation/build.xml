@@ -31,6 +31,7 @@
   <property name="release.lib.dir"      value="${web.dir}/lib"/>
   <property name="compile.lib.dir"      value="${build.dir}/lib"/>
   <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
+  <property name="applications.dir"     value="${source.dir}/applications" />
   <property name="mmbase.jar"           value="${build.dir}/mmbase.jar"/>
 
 
@@ -115,7 +116,16 @@
       <fileset dir="${mmbase.html.documentation.dir}" />
     </copy>
   </target>
-
+  
+  <target name="applications.documentation.copy" 
+    description="Copies documentation from the applications to ">
+    <copy todir="${documentation.src.dir}/applications">
+	  <mapper type="regexp" from="(.*)/documentation(.*)" to="\1\2" />
+      <fileset dir="${applications.dir}/">
+        <include name="**"/>
+      </fileset>
+    </copy>
+  </target>
 
   <target name="lib.compile">
     <ant inheritAll="false" dir="${source.dir}" target="lib.compile">
@@ -158,7 +168,7 @@
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.resources,xsltransformer,download"
+          depends="documentation.resources,applications.documentation.copy,xsltransformer,download"
           description="Create HTML documentation from the DocBook sources">
 
     <echo message="${documentation.dest.dir}" />
