@@ -1,0 +1,25 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list minoccurs="0" maxoccurs="1" role="related">
+    <title xml:lang="nl">Welkom pagina</title>
+    <title xml:lang="en">Welcomepage</title>
+    <item>
+        <field name="name" ftype="data">
+            <prompt xml:lang="nl">Naam</prompt>
+            <prompt xml:lang="en">Name</prompt>
+            <description xml:lang="nl">Naam van de welkompagina</description>
+            <description xml:lang="en">Name of the welcomepage</description>
+        </field>
+        <field ftype="startwizard" wizardname="config/welcompage/welcomepages" inline="true"/>
+   </item>
+
+    <action type="create">
+        <relation destinationtype="flashpages" role="related">
+        </relation>
+    </action>
+
+    <command name="startwizard" inline="true" wizardname="config/welcompage/welcomepages" objectnumber="new">
+      <prompt xml:lang="nl">Nieuwe welkompagina: </prompt>
+      <prompt xml:lang="nl">New welcompage: </prompt>
+    </command>
+
+</list>
