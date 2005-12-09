@@ -10,11 +10,16 @@ application record from version control table in the mmeditors and restart Tomca
 the application with component record.
 E.g.: if "versioning" is absent, delete "Versioning" node from version control table in mmeditors 
 and restart Tomcat.
-----
 
-2005-11-20
-    ALTER TABLE mmb_learnblocks ADD path BLOB DEFAULT NULL;
-
+------------------------------------------------------------------------------------
+Perform the following updates to upgrade Didactor 2.0 to Didactor 2.0.1
+------------------------------------------------------------------------------------
+2005-12-02
+     ALTER TABLE mmb_learnblocks ADD path BLOB DEFAULT NULL;
+      
+------------------------------------------------------------------------------------
+Perform the following updates to upgrade a pre-Didactor-2.0 to Didactor 2.0
+------------------------------------------------------------------------------------
 2005-11-10
     ALTER TABLE mmb_metastandard ADD isused TINYINT(1);
 
