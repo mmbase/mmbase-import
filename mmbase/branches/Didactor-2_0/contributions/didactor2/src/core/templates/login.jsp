@@ -66,6 +66,12 @@
             <mm:isnotempty referid="message">
               <br />Error: <mm:write referid="message" />
             </mm:isnotempty>
+            <mm:import externid="reason" />
+            <mm:isnotempty referid="reason">
+              <mm:compare referid="reason" value="failed">
+                <br />Error: <di:translate key="core.passwordincorrect" />
+              </mm:compare>
+            </mm:isnotempty>
           </div>
           <div class="ListLeft">
             <br />
