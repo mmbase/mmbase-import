@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
  * Creates the index page for the documentation.
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: DocumentationIndex.java,v 1.6 2005-10-05 10:02:55 michiel Exp $
+ * @version $Id: DocumentationIndex.java,v 1.6.2.1 2005-12-09 20:48:50 andre Exp $
  */
 public class DocumentationIndex {
 
@@ -308,7 +308,7 @@ public class DocumentationIndex {
     /**
      * Adds a link to an alternate resource for a givenhtml file (i.e. a pdf or jsp version)
      * if such a file exists.
-     * @param resource the orufuinbal resource
+     * @param resource the original resource
      * @param parentPath the path to use as a parent path when generating documentation links
      * @param fullPath the full path to the original resource
      * @param extension the alternate extension of the resource
