@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="specification">
+  <articleinfo>
+    <title>The Richtext Functional Reference</title>
+
+    <date>2005-12-09</date>
+
+    <edition>$Id: richtext.xml,v 1.1 2005-12-09 22:15:41 henk Exp $</edition>
+
+    <authorgroup>
+      <!---->
+
+      <author>
+        <firstname>Henk</firstname>
+
+        <surname>Hangyi</surname>
+      </author>
+    </authorgroup>
+
+    <revhistory>
+      <revision>
+        <revnumber>[0.1]</revnumber>
+
+        <date>[2005-12-09 ]</date>
+
+        <authorinitials>[HH]</authorinitials>
+
+        <revremark>[Created]</revremark>
+      </revision>
+    </revhistory>
+
+    <abstract>
+      <para>This functional reference contains a description of the richtext
+      xml format, the richtext editor based on kupu and the use of richtext in
+      your (xslt) templates.</para>
+    </abstract>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink
+      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+
+    <productnumber>Richtext XML field from MMBase 1.7 Editor and example
+    web-application from MMBase version 1.8.</productnumber>
+  </articleinfo>
+
+  <section id="introduction">
+    <title>Introduction</title>
+
+    <para>Richtext is text which contains (links to) other objects. For
+    instance a text that contains images, links to pages in the same web
+    application, or links to external web pages. This text is saved in MMBase
+    as XML. The nice thing about saving text as XML is that all references to
+    other objects are real MMBase relations. So when the referred object is
+    deleted, the link in the richtext is also automatically removed. Another
+    advantage is that with XSLT (xml-style sheets) the conversion to HTML is
+    straightforward (and some say easier than JSP).</para>
+
+    <para>Richtext should not be confused with the html-area, used in the
+    editwizard. The text of html-area in the editwizard is saved in MMBase as
+    HTML. Links in the HTML are urls. This means that when the referred object
+    is deleted, the link will not automatically be removed. Another
+    disadvantage is that the HTML can contain undesirable code, like Microsoft
+    Word styles that are copied into the html-area.</para>
+
+    <note>
+      <para>Richtext depends on the latest XML parsers. So please read the
+      XERCES.README.txt, which is in the root of your MMBase distribution and
+      in the folder documentation\releases in CVS. Anyway, if you use Tomcat
+      5.5 in combination JDK 1.5 the richtext will work. </para>
+    </note>
+  </section>
+
+  <section id="architecture">
+    <title>Architecture</title>
+
+    <para>The starting point of richtext is the richtext editor which is based
+    on <ulink url="http://kupu.oscom.org">kupu</ulink>. Kupu generates HTML.
+    This HTML is translated to XML by MMBase.</para>
+
+    <screenshot>
+      <screeninfo>The richtext editor</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="media/richtext_edit.gif" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>The text in the richtext editor above is saved as the following
+    XML.</para>
+
+    <programlisting>&lt;mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1"&gt;
+&lt;p&gt;
+   &lt;a id="_1134140609"/&gt;
+   Richtext is text which contains (links to) other objects.
+&lt;/p&gt;
+&lt;p&gt;
+   Richtext should not be confused with the html-area, used in the editwizard.
+&lt;/p&gt;
+&lt;p&gt;
+   &lt;table class="plain"&gt;
+      &lt;tr&gt;
+         &lt;td&gt; &lt;/td&gt;
+         &lt;td&gt;TEXT&lt;/td&gt;
+         &lt;td&gt;HTML&lt;/td&gt;
+         &lt;td&gt;XML &lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+         &lt;td&gt;Link to another object&lt;/td&gt;
+         &lt;td&gt;tags &lt;/td&gt;
+         &lt;td&gt;hyperlink &lt;/td&gt;
+         &lt;td&gt;real relation &lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+         &lt;td&gt;Templating&lt;/td&gt;
+         &lt;td&gt;JSP &lt;/td&gt;
+         &lt;td&gt;JSP&lt;/td&gt;
+         &lt;td&gt;XSLT &lt;/td&gt;
+      &lt;/tr&gt;
+   &lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;a id="_1134140611"/&gt;&lt;/p&gt;
+&lt;/mmxf&gt;</programlisting>
+
+    <para>When you look in one of the default MMBase you will see that the
+    objects, linked in the text, are related to the object containing the text
+    field.</para>
+
+    <screenshot>
+      <screeninfo>Objects linked in the text are related to the object
+      containing the text field.</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="media/related_objects.gif" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>This XML can parsed by an XML style sheet (XSLT) to generate an HTML
+    page.<screenshot>
+        <screeninfo>The HTML generated from the XML.</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="media/richtext_html.gif" />
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+  </section>
+
+  <section id="basicconcepts">
+    <title>The richtext editor</title>
+
+    <para>You can use the list.jsp which is also used by the editwizards to
+    open the richtext editor. The request parameters that are new as compared
+    to the use of list.jsp for the editwizards are: wizardjsp, kupu_back,
+    tools and link_nodetypes. The entire url is explained in the following
+    table. Please have a look at the editwizard documentation to learn more
+    about the request parameters of list.jsp.</para>
+
+    <table>
+      <title>Example of request parameters in the link to list.jsp</title>
+
+      <tgroup cols="2">
+        <tbody>
+          <row>
+            <entry>&lt;a
+            href="/richtext/mmbase/edit/wizard/jsp/list.jsp?</entry>
+
+            <entry>the list.jsp from the edit/wizard application is
+            used</entry>
+          </row>
+
+          <row>
+            <entry>&amp;wizardjsp=/richtext/mmbase/kupu/mmbase/</entry>
+
+            <entry>the editor that is opened by the list.jsp (of course for
+            using the richtext editor this should be
+            mmbase/kupu/mmbase)</entry>
+          </row>
+
+          <row>
+            <entry>&amp;kupu_back=/richtext/edit/</entry>
+
+            <entry>used for the backbutton in the richtext editor. This could
+            as well be /richtext/edit/index.jsp</entry>
+          </row>
+
+          <row>
+            <entry>&amp;tools=related</entry>
+
+            <entry>tools can be used to dynamically include extra
+            functionality in the richtext editor. When you want to add more
+            tools you can add them in a comma seperated list. In this example
+            the tool is: /mmbase/kupu/mmbase/tools/related.jspx. The tools are
+            shown in the leftpanel of the richtext editor.</entry>
+          </row>
+
+          <row>
+            <entry>&amp;link_nodetypes=urls,attachments,products,news</entry>
+
+            <entry>in the link_nodetypes you can specify the type of objects
+            that can be linked to in the richtext</entry>
+          </row>
+
+          <row>
+            <entry>&amp;wizard=kupu,news (note the , is part of the filename;
+            this will be change in the final release because it is too
+            confusing)</entry>
+
+            <entry>this is the editwizard definition used by list.jsp. The
+            only actions in the kupu,news.xml that are relevant when using the
+            richtext editor are the create and delete action.</entry>
+          </row>
+
+          <row>
+            <entry>&amp;nodepath=categories,related,news</entry>
+
+            <entry>the path that should be followed from the startnode</entry>
+          </row>
+
+          <row>
+            <entry>&amp;searchdir=destination</entry>
+
+            <entry>the direction in which the nodepath should be used</entry>
+          </row>
+
+          <row>
+            <entry>&amp;startnodes=347</entry>
+
+            <entry>the node for which the related objects have to be
+            shown</entry>
+          </row>
+
+          <row>
+            <entry>&amp;origin=347</entry>
+
+            <entry>the node number that can be used in the create statement of
+            the editwizard</entry>
+          </row>
+
+          <row>
+            <entry>&amp;orderby=news.number</entry>
+
+            <entry>the field on which the list is ordered</entry>
+          </row>
+
+          <row>
+            <entry>&amp;directions=down</entry>
+
+            <entry>the direction in which to sort the list, up or down</entry>
+          </row>
+
+          <row>
+            <entry>&amp;search=yes</entry>
+
+            <entry>whether or not a search box should be displayed on top of
+            the list</entry>
+          </row>
+
+          <row>
+            <entry>&amp;title=Home</entry>
+
+            <entry>title of the list</entry>
+          </row>
+
+          <row>
+            <entry>referrer=/edit/index.jspx</entry>
+
+            <entry>not in use for the richtext editor</entry>
+          </row>
+
+          <row>
+            <entry>&amp;language=en</entry>
+
+            <entry>the language to be used in list.jsp and the richtext
+            editor</entry>
+          </row>
+
+          <row>
+            <entry>"&gt;NewsItems&lt;/a&gt;</entry>
+
+            <entry>the word to click on (but if you didn't know this you
+            probably need some other documentation before continuing this
+            one)</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>In the example application the link to list.jsp is generated by
+    ROOT\edit\cat.template.as.jspx. The entire include path from the
+    index.jspx is: index.jspx -&gt; content.div.jspx -&gt; cat.li.jspx -&gt;
+    cat.template.as.jspx.</para>
+
+    <para>The richtext editor contains a three panels:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>the left panel: with the tool list controlled by the "tools="
+        parameter and the none richtext fields of the object</para>
+      </listitem>
+
+      <listitem>
+        <para>the middle panel: with the richtext field of the object. The
+        link icon in the header of this panel uses the object types from
+        link_nodetypes. The present implementation assumes that there are
+        images and blocks are related to the richtext object via idrel.</para>
+      </listitem>
+
+      <listitem>
+        <para>the right panel: with the rich text functionalities like
+        link-editting, images, tables and blocks.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="objects">
+    <title>Some notes on the conversion from HTML to XML</title>
+
+    <para>[....]</para>
+  </section>
+
+  <section id="pages">
+    <title>Using XSLT to generate HTML</title>
+
+    <para>[....]</para>
+  </section>
+
+  <!---->
+
+  <section id="references">
+    <title>References</title>
+
+    <para>The following documents can be used for further reading.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink url="[refernce link]">[Reference name]</ulink></para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</article>
