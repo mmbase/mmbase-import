@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.17 2005-11-19 18:08:38 ernst Exp $
+  @version $Id: caches.xml,v 1.18 2005-12-09 10:03:14 johannes Exp $
   @author  Michiel Meeuwissen
   @author  Ernst Bunders
 
@@ -39,6 +39,16 @@
   <cache name="NodeListCache">
     <status>active</status>
     <size>300</size>
+    <!--
+      If you want to use the OSCache implementation to overflow on disk, you can uncomment
+      this code
+    <implementation>
+      <class>org.mmbase.cache.oscache.OSCacheImplementation</class>
+      <param name="usememory">true</param>
+      <param name="path">/tmp</param>
+      <param name="overflowdisk">true</param>
+    </implementation>
+    -->
   </cache>
 
   <!-- cluster nodes -->
