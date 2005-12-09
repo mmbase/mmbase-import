@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.19 2005-12-08 18:36:03 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.20 2005-12-09 09:52:10 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -469,11 +469,11 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         fact.add(new Locale("nl"), "b", "daag");
         fact.add(en, "b", "hello");
         fact.add(en, "a", "good bye");
-        fact.addBundle(resource1, null, SortedBundle.NO_CONSTANTSPROVIDER, Boolean.class, SortedBundle.NO_COMPARATOR);
+        fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
         fact.add(nl, "c", "doegg");
         fact.add(dk, new Integer(5), "dk");
         fact.add(null, "e", "oi");
-        fact.addBundle(resource2, null, SortedBundle.NO_CONSTANTSPROVIDER, String.class, SortedBundle.NO_COMPARATOR);
+        fact.addBundle(resource2, null, null, String.class, SortedBundle.NO_COMPARATOR);
 
         System.out.println("size: " + fact.size() + " " + fact);
         System.out.println("en" + fact.get(en));
