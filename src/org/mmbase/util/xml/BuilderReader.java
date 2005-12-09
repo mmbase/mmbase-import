@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.56 2005-12-08 18:37:11 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.57 2005-12-09 09:53:34 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -576,9 +576,8 @@ public class BuilderReader extends DocumentReader {
             def.setSearchPosition(searchPos);
         } else {
             // if not specified, use lowest 'free' position, unless, db-type is BYTE (non-sensical searching on that)
-            if (def.getType() != Field.TYPE_BINARY
-                && def.isPersistent()  // also if the field is not persistent at all, searching is not trivial (cannot be performed by database)
-                ) {
+            // or the field is not in storage at all (search cannot be performed by database)
+            if (def.getType() != Field.TYPE_BINARY && !def.isVirtual()) {
                 int i = 1;
                 while (searchPositions.contains(new Integer(i))) {
                     ++i;
@@ -715,6 +714,12 @@ public class BuilderReader extends DocumentReader {
             } catch (NumberFormatException e) {
                 log.warn("invalid value for size : " + size);
             }
+        }
+
+        // set readonly property, but only if given
+        String readonly = getElementAttributeValue(dbtype, "readonly");
+        if (readonly != null && !"".equals(readonly)) {
+            def.setReadOnly("true".equalsIgnoreCase(readonly));
         }
 
         // set required property, but only if given

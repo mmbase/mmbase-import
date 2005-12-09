@@ -81,10 +81,14 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         return super.clone(name, true);
     }
 
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
 
     public void setNotNull(boolean nl) {
         notNull = nl;
     }
+
     public boolean isNotNull() {
         return notNull;
     }
@@ -167,7 +171,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     }
 
     public void setState(int state) {
-        this.state = state;
+        super.setState(state);
     }
 
     public void setType(int type) {
@@ -183,7 +187,6 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         return LocalizedString.toStrings(errors, parent.getMMBase().getLocale());
     }
 
-
     /**
      * Whether this CoreField is equal to another for storage purposes (so, ignoring gui and documentation fields)
      * @since MMBase-1.7
@@ -191,6 +194,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     public boolean storageEquals(CoreField f) {
         return
             getName().equals(f.getName())
+            && readOnly == f.isReadOnly()
             && state == f.getState()
             && getDataType().isRequired() == f.getDataType().isRequired()
             && getDataType().isUnique()  == f.getDataType().isUnique()
@@ -228,7 +232,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         int result = 0;
         result = HashCodeUtil.hashCode(result, getName());
         result = HashCodeUtil.hashCode(result, getType());
-        result = HashCodeUtil.hashCode(result, state);
+        result = HashCodeUtil.hashCode(result, getState());
         result = HashCodeUtil.hashCode(result, getDataType().isRequired());
         result = HashCodeUtil.hashCode(result, getDataType().isUnique());
         result = HashCodeUtil.hashCode(result, parent);
@@ -252,27 +256,6 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         } else {
             return 0;
         }
-    }
-
-    // Storable interfaces
-    /**
-     * {@inheritDoc}
-     * @since MMBase 1.7
-     */
-    public Object getStorageIdentifier() throws StorageException {
-        // determine the storage identifier from the name
-        if (storageIdentifier == null) {
-            storageIdentifier = parent.getMMBase().getStorageManagerFactory().getStorageIdentifier(this);
-        }
-        return storageIdentifier;
-    }
-
-    public int getStorageType() {
-        return storageType;
-    }
-
-    public void setStorageType(int type) {
-        storageType = type;
     }
 
     public void finish() {
@@ -319,6 +302,30 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
         dataType.setUnique(unique);
     }
 
+    // Storable interface
+    /**
+     * {@inheritDoc}
+     * @since MMBase 1.7
+     */
+    public Object getStorageIdentifier() throws StorageException {
+        // determine the storage identifier from the name
+        if (storageIdentifier == null) {
+            storageIdentifier = parent.getMMBase().getStorageManagerFactory().getStorageIdentifier(this);
+        }
+        return storageIdentifier;
+    }
+
+    public int getStorageType() {
+        return storageType;
+    }
+
+    public void setStorageType(int type) {
+        storageType = type;
+    }
+
+    public boolean inStorage() {
+        return !isVirtual();
+    }
 
     // deprecated methods
     /**
@@ -331,6 +338,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     public String toString() {
         return super.toString() + " of " + parent.getTableName();
     }
+
 
 
 }

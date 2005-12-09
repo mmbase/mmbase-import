@@ -51,7 +51,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.70 2005-11-30 13:33:31 pierre Exp $
+ * @version $Id: Dove.java,v 1.71 2005-12-09 09:53:34 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -89,10 +89,6 @@ public class Dove extends AbstractDove {
                (!"dir".equals(fname));
     }
 
-    private boolean isEditableField(NodeManager nodeManager, Field f) {
-        return isDataField(nodeManager, f) && f.isPersistent();
-    }
-
     /**
      * Utility function, determines whether a field is a data field.
      * Data fields are fields mentioned explicitly in the builder configuration file.
@@ -107,7 +103,7 @@ public class Dove extends AbstractDove {
     }
 
     private boolean isEditableField(NodeManager nodeManager, String fname) {
-        return isDataField(nodeManager, fname) && nodeManager.getField(fname).isPersistent();
+        return isDataField(nodeManager, fname) && nodeManager.getField(fname).getState() == Field.STATE_PERSISTENT;
     }
 
     /**

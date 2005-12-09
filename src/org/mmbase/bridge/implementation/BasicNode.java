@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.184 2005-12-08 12:42:03 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.185 2005-12-09 09:53:34 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -185,7 +185,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * If the underlying node was deleted, this returns a virtual node with
      * no info except the (original) node number.
      * @return the underlying MMObjectNode
-     * @throws NotFoundException if no node was specified. This generally means the
+     * @throws NotFoundException if no node was specified.
      */
     protected final MMObjectNode getNode() {
         return noderef;
@@ -200,6 +200,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         org.mmbase.module.core.VirtualNode n = new org.mmbase.module.core.VirtualNode(noderef.getBuilder());
         n.setValue("number", noderef.getNumber());
         n.clearChanged();
+        changed = false;
         noderef = n;
     }
 
@@ -245,10 +246,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public boolean isChanged(String fieldName) {
         return getNode().getChanged().contains(fieldName);
     }
+
     public boolean isChanged() {
         return getNode().isChanged();
     }
-    
+
 
     /**
      * Edit this node.
@@ -491,7 +493,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setStringValue(final String fieldName, final String value) {
-        Field field = nodeManager.getField(fieldName);        
+        Field field = nodeManager.getField(fieldName);
         Object setValue = field.getDataType().preCast(value, this, field);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_STRING).process(this, field, setValue);
         setValueWithoutProcess(fieldName, v);
@@ -618,7 +620,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             Field field = nodeManager.getField(fieldName);
             result = (Node) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(this, field, result);
         }
-        
+
         return result;
     }
 
@@ -716,7 +718,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         FieldIterator fi = nodeManager.getFields().fieldIterator();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            field.getDataType().getCommitProcessor().commit(this, field); 
+            field.getDataType().getCommitProcessor().commit(this, field);
         }
     }
 
@@ -858,7 +860,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      *
      * @param type  the type of relation (-1 = don't care)
      */
-    private void deleteRelations(int type) {        
+    private void deleteRelations(int type) {
         List relations = null;
         try {
             if (type == -1) {
@@ -1141,7 +1143,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // call list: note: role can be null
         // XXX. Should perhaps not depend on core's getRelatedNodes becasue then the query remains unknown
 
-        List mmnodes = isNew() 
+        List mmnodes = isNew()
             ? new Vector()  // new nodes have no relations
             : getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
 
@@ -1263,6 +1265,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public void setContext(String context) {
         // set the context on the node (run after insert).
         getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
+        changed = true;
     }
 
     // javadoc inherited (from Node)
