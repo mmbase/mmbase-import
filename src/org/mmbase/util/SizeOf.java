@@ -66,7 +66,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.13 2005-10-05 10:02:55 michiel Exp $
+ * @version $Id: SizeOf.java,v 1.14 2005-12-09 10:02:48 johannes Exp $
  * @todo   We need to know how well this actually works...
  */
 public class SizeOf {
@@ -215,6 +215,7 @@ public class SizeOf {
             }
             sz += size_prim(f.getType());
             try {
+                f.setAccessible(true);
                 sz += sizeof(f.get(obj)); // recursion
                 if (log.isDebugEnabled()) log.debug("found an (accessible) field " + f);
             } catch (java.lang.IllegalAccessException e) {
