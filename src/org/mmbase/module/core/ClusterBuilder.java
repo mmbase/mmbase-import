@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.80 2005-12-08 12:39:03 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.81 2005-12-09 11:57:41 pierre Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -223,7 +223,6 @@ public class ClusterBuilder extends VirtualBuilder {
                             newPars.set(Parameter.NODE, bnode.getNodeValue(bulName));
                         }
                         newPars.set(MMObjectNode.PARAMETER, n);
-                        log.info("Getting GUI for " + bul + " " + n + " with " + newPars + "<-" + pars);
                         return (String) bul.guiFunction.getFunctionValue(newPars);
                     }
                 }
