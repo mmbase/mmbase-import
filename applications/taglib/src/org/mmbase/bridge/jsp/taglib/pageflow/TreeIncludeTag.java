@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.12 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.13 2005-12-09 21:39:21 johannes Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
@@ -46,7 +46,11 @@ public class TreeIncludeTag extends IncludeTag {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving page '" + treePage + "'");
         }
-        if (treePage == null) throw new JspTagException("Could not find page " + orgPage);
+
+        if (treePage == null || "".equals(treePage)) {
+            throw new JspTagException("Could not find page " + orgPage);
+        }
+
         return treePage;
     }
 
@@ -60,6 +64,18 @@ public class TreeIncludeTag extends IncludeTag {
     
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
+    }
+
+    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
+        String url = "";
+        try {
+            url = super.getUrl(writeamp, encode);
+        } catch (JspTagException e) {
+            if (!notFound.getString(this).equals("skip")) {
+                throw(e);
+            }
+        }
+        return url;
     }
 
     // override to cancel 

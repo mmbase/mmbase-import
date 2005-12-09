@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.12 2004-07-26 20:17:59 nico Exp $
+ * @version $Id: LeafFileTag.java,v 1.13 2005-12-09 21:39:21 johannes Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -33,6 +33,11 @@ public class LeafFileTag extends UrlTag {
     protected Attribute  objectList = Attribute.NULL;
     protected TreeHelper th = new TreeHelper();
 
+    protected Attribute notFound        = Attribute.NULL;
+
+    public void setNotfound(String n) throws JspTagException {
+        notFound = getAttribute(n);
+    }
 
     public int doStartTag() throws JspTagException {
         if (page == Attribute.NULL) {
@@ -49,7 +54,11 @@ public class LeafFileTag extends UrlTag {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving page '" + leafPage + "'");
         }
-        if (leafPage == null) throw new JspTagException("Could not find page " + orgPage);
+
+        if (leafPage == null || "".equals(leafPage)) {
+            throw new JspTagException("Could not find page " + orgPage);
+        }
+
         return leafPage;
     }
 
@@ -60,6 +69,18 @@ public class LeafFileTag extends UrlTag {
     
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
+    }
+
+    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
+        String url = "";
+        try {
+            url = super.getUrl(writeamp, encode);
+        } catch (JspTagException e) {
+            if (!notFound.getString(this).equals("skip")) {
+                throw(e);
+            }
+        }
+        return url;
     }
     
     // override to cancel 
