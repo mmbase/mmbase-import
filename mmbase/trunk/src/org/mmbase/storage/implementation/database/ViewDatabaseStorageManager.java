@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.6 2005-10-05 14:02:30 johannes Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.7 2005-12-09 14:25:32 nklasens Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -395,9 +395,10 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             }
    
             Statement s = activeConnection.createStatement();
-            logQuery(query);
+            long startTime = getLogStartTime();
             s.executeUpdate(query);
             s.close();
+            logQuery(query, startTime);
 
             if (createInsertTriggerScheme != null) {
                 //insert into mm_typedef_t (m_number, otype, owner) values (:NEW.m_number, :NEW.otype, :NEW.owner);
@@ -430,10 +431,10 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 }
    
                 s = activeConnection.createStatement();
-                logQuery(query);
+                long startTime2 = getLogStartTime();
                 s.executeUpdate(query);
                 s.close();
-
+                logQuery(query, startTime2);
             }
 
             if (createDeleteTriggerScheme != null) {
@@ -444,9 +445,10 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 }
    
                 s = activeConnection.createStatement();
-                logQuery(query);
+                long startTime2 = getLogStartTime();
                 s.executeUpdate(query);
                 s.close();
+                logQuery(query, startTime2);
             }
 
             if (createUpdateTriggerScheme != null) {
@@ -476,9 +478,10 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 }
    
                 s = activeConnection.createStatement();
-                logQuery(query);
+                long startTime2 = getLogStartTime();
                 s.executeUpdate(query);
                 s.close();
+                logQuery(query, startTime2);
             }
    
             tableNameCache.add(viewname.toUpperCase());
