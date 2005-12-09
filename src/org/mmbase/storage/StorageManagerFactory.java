@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.22 2005-10-09 14:55:03 ernst Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.23 2005-12-09 16:14:50 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -66,7 +66,7 @@ public abstract class StorageManagerFactory {
      * The ChangeManager object, used to register/broadcast changes to a node or set of nodes.
      */
     protected ChangeManager changeManager;
-    
+
 
     /**
      * The map with disallowed fieldnames and (if given) alternates
@@ -286,19 +286,15 @@ public abstract class StorageManagerFactory {
         // initialize query handler.
         queryHandler = instantiateQueryHandler(handler);
 
-
-        {
-            String surr = (String) getAttribute(Attributes.SET_SURROGATOR);
-            if (surr != null && ! surr.equals("")) {
-                setSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
-            }
-
-            surr = (String) getAttribute(Attributes.GET_SURROGATOR);
-            if (surr != null && ! surr.equals("")) {
-                getSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
-            }
+        String surr = (String) getAttribute(Attributes.SET_SURROGATOR);
+        if (surr != null && ! surr.equals("")) {
+            setSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
         }
 
+        surr = (String) getAttribute(Attributes.GET_SURROGATOR);
+        if (surr != null && ! surr.equals("")) {
+            getSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
+        }
     }
 
     /**
@@ -562,7 +558,7 @@ public abstract class StorageManagerFactory {
         } else {
             throw new StorageException("Cannot obtain identifier for param of type '"+mmobject.getClass().getName()+".");
         }
-        
+
         String maxIdentifierLength = (String)getAttribute(Attributes.MAX_IDENTIFIER_LENGTH);
         if (maxIdentifierLength != null && !"".equals(maxIdentifierLength)) {
           try {
