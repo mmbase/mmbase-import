@@ -16,13 +16,13 @@ import java.util.*;
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedCommitProcessor.java,v 1.1 2005-11-04 23:11:52 michiel Exp $
+ * @version $Id: ChainedCommitProcessor.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class ChainedCommitProcessor implements  CommitProcessor {
 
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     private List processors = new ArrayList();
 

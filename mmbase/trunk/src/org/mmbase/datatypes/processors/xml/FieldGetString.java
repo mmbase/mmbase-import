@@ -20,16 +20,16 @@ import org.mmbase.util.logging.*;
 /**
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.2 2005-11-17 18:10:21 michiel Exp $
+ * @version $Id: FieldGetString.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class FieldGetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(FieldGetString.class);
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     public Object process(Node node, Field field, Object value) {
-        
+
         Object realValue =  node.getObjectValue(field.getName());
         if (realValue == null || value == null) return "";
 
@@ -39,7 +39,7 @@ public class FieldGetString implements  Processor {
         }
         Document document = (Document) realValue;
 
-        
+
         if (value instanceof Document) {
             // requested XML, give it!
             return document;
@@ -54,7 +54,7 @@ public class FieldGetString implements  Processor {
                     String string;
                     try {
                         java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/text.xslt");
-                        java.io.StringWriter res = new java.io.StringWriter();            
+                        java.io.StringWriter res = new java.io.StringWriter();
                         XSLTransformer.transform(new DOMSource((Document) realValue), u, new StreamResult(res), null);
                         string = res.toString();
                     } catch (Exception e) {
@@ -62,12 +62,11 @@ public class FieldGetString implements  Processor {
                         string = e.getMessage();
                     }
                     return Casting.toType(value.getClass(), node.getCloud(), string);
-                    
-                }                    
+                }
                 default: {
                     return value;
-                } 
-                    
+                }
+
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

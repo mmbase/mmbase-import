@@ -10,17 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
+
 /**
  * The CommitProcessor that does nothing.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmptyCommitProcessor.java,v 1.1 2005-11-04 23:11:52 michiel Exp $
+ * @version $Id: EmptyCommitProcessor.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  */
 
-public class EmptyCommitProcessor  implements CommitProcessor {
+public final class EmptyCommitProcessor  implements CommitProcessor {
 
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     private static EmptyCommitProcessor instance = new EmptyCommitProcessor();
 

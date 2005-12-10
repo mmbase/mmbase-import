@@ -17,13 +17,13 @@ import org.mmbase.util.transformers.CharTransformer;
  * string transformations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharTransformerProcessor.java,v 1.1 2005-10-25 12:30:26 michiel Exp $
+ * @version $Id: CharTransformerProcessor.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.util.transformers.CharTransformer
  */
 
 public class CharTransformerProcessor implements Processor {
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     private CharTransformer charTransformer;
 
