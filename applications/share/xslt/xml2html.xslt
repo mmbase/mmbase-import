@@ -4,6 +4,7 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xalan="org.apache.xalan.xslt.extensions.Redirect"
   xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:rf="org.mmbase.bridge.jsp.taglib.util.ReadFile"
   extension-element-prefixes="xalan"
   xmlns:mm="mmbase-taglib"
   >
@@ -26,6 +27,7 @@
     />
 
 <xsl:param name="basedir"></xsl:param>
+<xsl:param name="exampledir"></xsl:param>
 <xsl:param name="files">reference</xsl:param>
 <xsl:variable name="basedirfiles"><xsl:value-of select="$basedir" />/<xsl:value-of select="$files" /></xsl:variable><!-- make sure this directory exists! -->
 
@@ -445,16 +447,20 @@
       </xsl:for-each>
         </xsl:if>
         <xsl:if test="not($linkexamples)">
-          The following examples can be found in the 'examples' subdirectory:
-          <ul>
           <xsl:for-each select="example/include">
-            <li><xsl:value-of select="@href" /></li>
+            <!-- The following will only work with xalan! -->
+            <xsl:apply-templates select="rf:readExample(concat($exampledir, @href))" />
+
             <!--
               The following will work in XSLT 2.0, but not yet :(
               <xsl:value-of select="unparsed-text(@href)" />
+             
+              When using 'xsltproc' to generate the documentation, you can use the
+              following, but you have to create a bunch of .xml files from the
+              codesamples:
+              <xsl:apply-templates select="document(concat(@href, '.xml'), example)" />
             -->
           </xsl:for-each>
-          </ul>
         </xsl:if>
     </td>
     </tr>
