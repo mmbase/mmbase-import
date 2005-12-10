@@ -26,7 +26,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 /**
  * Maintains jumpers for redirecting urls. The data stored in this builder is
  * used to redirect urls based ons a specific key. The jumpers builder is called
- * from the {@link org.mmbase.servlet.servjumpers}servlet. <br />
+ * from the {@link org.mmbase.servlet.JumpersFilter}. <br />
  * The jumpers builder can be configured using two properties: <br />
  * <ul>
  * <li><code>JumperCacheSize</code> determines the size of the jumper cache
@@ -43,7 +43,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.34 2005-11-08 10:50:11 marcel Exp $
+ * @version $Id: Jumpers.java,v 1.35 2005-12-10 12:58:51 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
