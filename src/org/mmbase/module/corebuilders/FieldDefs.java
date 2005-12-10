@@ -25,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.55 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.56 2005-12-10 13:10:08 michiel Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -227,7 +227,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * Set the description of the field for a specified langauge.
      * @param lang the language to set the description for
      * @param value the value to set
-     * @deprecated use {@link #setDescription(Locale, value)}
+     * @deprecated use {@link #getLocalizedDescription}
      */
     public void setDescription(String lang, String value) {
         setDescription(value, new Locale(lang, ""));
@@ -236,7 +236,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     /**
      * Set size of the field.
      * @param value the value to set
-     * @deprecated use {@link CoreField#setSize}
+     * @deprecated use {@link CoreField#setMaxLength}
      */
     public void setDBSize(int value) {
         setMaxLength(value);
@@ -328,9 +328,9 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     /**
      * Set whether the field is a key and thus needs to be 'unique'.
      * @param value the value to set
-     * @deprecated use {@link CoreField#setUnique} to make a field unique, use
-     *             {@link org.mmbase.module.core.MMTable#addToIndex} to make the field part of an index
+     * @deprecated use {@link CoreField#setUnique} to make a field unique.
      */
+    //use {@link org.mmbase.module.core.MMTable#addToIndex} to make the field part of an index
     public void setDBKey(boolean value) {
         if (getParent() != null) {
             getParent().getStorageConnector().addToIndex(Index.MAIN, this);
