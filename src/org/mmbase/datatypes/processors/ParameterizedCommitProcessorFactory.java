@@ -12,6 +12,7 @@ package org.mmbase.datatypes.processors;
 import org.mmbase.util.functions.Parameters;
 
 /**
+ * A parameterized commitprocessor factory creates {@link CommitProcessor}s, using {@link Parameters}.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8

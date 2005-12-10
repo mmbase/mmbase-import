@@ -14,9 +14,12 @@ import org.mmbase.util.functions.*;
 import java.io.StringWriter;
 
 /**
+ * See {@link org.mmbase.util.transformers.ChecksumFactory}. This produces CommitProcessors meant
+ * for fields that are a checksum of another field. Parameters for that are the parameters of the
+ * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.2 2005-11-04 23:11:52 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -36,6 +39,7 @@ public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFac
         final ByteToCharTransformer transformer = (ByteToCharTransformer) factory.createTransformer(parameters);
         final String  sourceField = (String) parameters.get("field");
         return new CommitProcessor() {
+                private static final long serialVersionUID = 1L;
 
                 public void commit(Node node, Field field) {
                     if (node.isNull(sourceField)) return; // leave checksum null too.

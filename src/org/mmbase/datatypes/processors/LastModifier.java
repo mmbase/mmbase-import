@@ -13,11 +13,10 @@ import org.mmbase.bridge.*;
 
 /**
  * This processor can be used as a 'set' processor on a (datetime) field. The field will then be set
- * to the current user id when the node is committed. If the field is set in another way, an exception is
- * thrown (in other words, the field is read only).
+ * to the current user id when the node is committed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifier.java,v 1.2 2005-11-04 23:11:52 michiel Exp $
+ * @version $Id: LastModifier.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
@@ -25,7 +24,7 @@ import org.mmbase.bridge.*;
 
 public class LastModifier implements CommitProcessor {
 
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     public void commit(Node node, Field field) {
         node.setValueWithoutProcess(field.getName(),node.getCloud().getUser().getIdentifier());
