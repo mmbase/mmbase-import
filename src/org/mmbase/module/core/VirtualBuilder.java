@@ -22,7 +22,7 @@ import org.mmbase.core.util.Fields;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.19 2005-10-12 00:33:19 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.20 2005-12-10 12:11:53 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -103,7 +103,7 @@ public class VirtualBuilder extends MMObjectBuilder {
     }
 
    /**
-     * What should a GUI display for this node.
+     * {@inheritDoc}
      * The default behavior of a virtual node is to display the content of
      * the 'name' field (if present).
      * XXX: should be changed to something better
@@ -130,7 +130,7 @@ public class VirtualBuilder extends MMObjectBuilder {
     }
 
     /**
-     * Get text from a blob field from a database.
+     * {@inheritDoc}
      * Since virtual builders are generally not associated with a database,
      * this method returns null.
      * @param fieldName name of the field
@@ -143,7 +143,7 @@ public class VirtualBuilder extends MMObjectBuilder {
 
 
     /**
-     * Get binary data of a blob field from a database.
+     * {@inheritDoc}
      * Since virtual builders are generally not associated with a database,
      * this method returns null.
      * @param fieldName name of the field
@@ -154,22 +154,9 @@ public class VirtualBuilder extends MMObjectBuilder {
         return null;
     }
 
-    /**
-     * Performs some necessary postprocessing on nodes retrieved from a
-     * search query.
-     * Since virtual nodes are not real nodes, this method is empty,
-     * overriding the behaviour defined in
-     * {@link org.mmbase.module.core.MMObjectBuilder#processSearchResults(List)}
-     * MMObjectBuilder}.
-     *
-     * @param results The (virtual) nodes.
-     * @since MMBase-1.7
-     */
-    public void processSearchResults(List results) {
-        // empty!
-    }
 
     /**
+     * Get text from a blob field from a database.
      * @since MMBase-1.8
      */
     public Map getFields(MMObjectNode node) {
