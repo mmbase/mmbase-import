@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.81 2005-12-09 11:57:41 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.82 2005-12-10 14:24:01 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -193,7 +193,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * that builder.
      *
      * @param node The node to display
-     * @param field the name field of the field to display
+     * @param pars Parameters, see {@link MMObjectBuilder#GUI_PARAMETERS}
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
     protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
@@ -309,14 +309,13 @@ public class ClusterBuilder extends VirtualBuilder {
         }
         return ret;
     }
-                          
 
     /**
-     * Same as {@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
+     * Same as {@link #searchMultiLevelVector(List,List,String,List,String,List,List,int)
      * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER)},
      * where <code>snodes</code> contains just the number specified by <code>snode</code>.
      *
-     * @see #searchMultiLevelVector(List,List,String,List,String,List,List,int)
+     * @see #searchMultiLevelVector(List, List, String, List, String, List, List, List)
      */
    public Vector searchMultiLevelVector(
         int snode,

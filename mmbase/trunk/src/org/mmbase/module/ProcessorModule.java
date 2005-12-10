@@ -78,7 +78,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         }
     }
     /**
-     * Function implementation around {@link #replace(Object, String)}. See in MMAdmin for an example on how to use.
+     * Function implementation around {@link #replace(PageInfo, String)}. See in MMAdmin for an example on how to use.
      * @since MMBase-1.8
      */
     protected class ReplaceFunction extends AbstractFunction {
@@ -91,7 +91,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     }
 
     /**
-     * This method is a wrapper around {@link Module#getList(PageInfo, StringTagger, String)}
+     * This method is a wrapper around {@link #getList(PageInfo, StringTagger, String)}
      * @param context The PageInfo object. It beats me why it is Object and not PageInfo. I think it's silly.
      * @param command The command to execute
      * @param params  Parameters, they will be added to the StringTagger.
