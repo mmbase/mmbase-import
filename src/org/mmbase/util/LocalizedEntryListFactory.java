@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.20 2005-12-09 09:52:10 pierre Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.21 2005-12-10 12:26:24 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -95,7 +95,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     /**
      * Add entry to 'localized'
-     * @param object the object, which has not Locale support of itself (Entry, DocumentSerializable)
+     * @param entry the object, which has not Locale support of itself (Entry, DocumentSerializable)
      * @param locale Can be <code>null</code> too, in which case the default locale is used
      * @return List of currently unused keys for this locale.
      */
@@ -402,7 +402,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         // implementation of serializable
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
             resource          = in.readUTF();
-            classLoader       = getClass().getClassLoader();            
+            classLoader       = getClass().getClassLoader();
             constantsProvider = (HashMap) in.readObject();
             wrapper           = (Class) in.readObject();
             comparator        = (Comparator) in.readObject();
@@ -465,7 +465,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         Locale dk = new Locale("dk");
         Locale eo = new Locale("eo");
         fact.add(nl, "a", "hallo");
-        System.out.println("nou " + fact);        
+        System.out.println("nou " + fact);
         fact.add(new Locale("nl"), "b", "daag");
         fact.add(en, "b", "hello");
         fact.add(en, "a", "good bye");
