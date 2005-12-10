@@ -91,6 +91,7 @@ several MMBase-checkouts.
 
   <!-- applications related setting -->
   <property name="applications.home"  value="${source.dir}/applications" />
+  <property name="contributions.home"  value="${source.dir}/contributions" />
 
   <!-- tests related setting -->
   <property name="tests.home"  value="${source.dir}/tests" />
@@ -482,6 +483,7 @@ builddate=${builddate}
         <include name="xslt/**/*.xslt"/>
         <include name="dtd/**"/>
         <include name="xmlns/**"/>
+        <include name="security/classauthentication.xml"/>
       </fileset>
     </copy>
     <echo file="${build.dir}/classes/org/mmbase/config/applications/INDEX">
@@ -749,7 +751,8 @@ Build-compiler: ${build.compiler}
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
       <fileset dir="${source.dir}" defaultexcludes="yes">
         <include name="src/**/*.java" />
-        <include name="applications/*/src/**/*.java" />
+        <include name="${applications.home}/*/src/**/*.java" />
+        <include name="${contributions.home}/*/src/**/*.java" />
       </fileset>
       <fileset dir="${generated-source-src.dir}" defaultexcludes="yes">
         <include name="**/*.java" />
@@ -758,6 +761,9 @@ Build-compiler: ${build.compiler}
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
           <include name="*.zip"/>
+          <include name="${applications.home}/**.jar"/>
+          <include name="${contributions.home}/**.jar"/>
+          <include name="${taglibs-standard-jstl.jar}" />
         </fileset>
       </classpath>
       <!-- mmbase custom tags -->
