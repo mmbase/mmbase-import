@@ -17,11 +17,11 @@ import org.mmbase.bridge.*;
  * on commit of the Node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CommitProcessor.java,v 1.3 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: CommitProcessor.java,v 1.4 2005-12-10 14:32:53 michiel Exp $
  * @since MMBase-1.8
  */
 
-public interface CommitProcessor {
+public interface CommitProcessor extends java.io.Serializable {
 
     /**
      * Will be called on commit of the node.
