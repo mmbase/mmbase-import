@@ -133,7 +133,6 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
      * UnsupportedConstraintMatcher if non is found
      * 
      * @param constraint
-     * @return
      * @throws ConstraintMatcherCreationException
      *             when instantiation went wrong
      */
@@ -153,14 +152,14 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         Constructor c = null;
         try {
             c = matcherClass.getConstructor(new Class[] { Constraint.class });
-            if(c == null)log.debug("** help! constructor is null");
+            if(c == null) log.debug("** help! constructor is null");
             return (AbstractConstraintMatcher) c.newInstance(new Object[] { constraint });
         }catch(InvocationTargetException e){
             throw new ConstraintMatcherCreationException("During instantiation the constructor of matcher " + matcherClass.toString() + " threw the following exception: " +
-                    e.getTargetException().toString());
+                                                         e.getTargetException().toString(), e);
         }catch(Exception e){
             throw new ConstraintMatcherCreationException("Could not create instance of class " + matcherClass.toString() +
-                    ". main reason: " + e.toString());
+                                                         ". main reason: " + e.toString(), e);
         }
     }
 
@@ -459,6 +458,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     private static class ConstraintMatcherCreationException extends Exception {
         public ConstraintMatcherCreationException(String string) {
             super(string);
+        }
+        public ConstraintMatcherCreationException(String string, Throwable t) {
+            super(string, t);
         }
     }
 
