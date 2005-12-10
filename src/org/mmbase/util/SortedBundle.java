@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.17 2005-12-09 09:52:10 pierre Exp $
+ * @version $Id: SortedBundle.java,v 1.18 2005-12-10 14:28:20 michiel Exp $
  */
 public class SortedBundle {
 
@@ -105,7 +105,7 @@ public class SortedBundle {
      *
      * @param locale   the locale for which a resource bundle is desired
      * @param loader   the class loader from which to load the resource bundle
-     * @param constantsProvider A map representing constants for the value. Can be based on a class using {@link ClassConstantProvider}, then the class's constants ar used to associate with the elements of this resource.
+     * @param constantsProvider A map representing constants for the value. Can be based on a class using {@link #getConstantsProvider(Class)}, then the class's constants ar used to associate with the elements of this resource.
      * @param wrapper           the keys will be wrapped in objects of this type (which must have a
      *                          constructor with the right type (String, or otherwise the type of the variable given by the constantsProvider), and must be Comparable.
      *                          You could specify e.g. Integer.class if the keys of the

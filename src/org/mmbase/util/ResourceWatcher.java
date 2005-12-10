@@ -26,7 +26,7 @@ import org.mmbase.bridge.Node;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.7 2005-11-02 19:15:40 ernst Exp $
+ * @version $Id: ResourceWatcher.java,v 1.8 2005-12-10 14:28:38 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -78,7 +78,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * When a resource is loaded from a Node, we must know which Nodes correspond to which
      * resource. You could ask the node itself, but if the node happens to be deleted, then you
-     * can't know that any more. Used in {@link #nodeChanged}
+     * can't know that any more. Used in {@link #notify(NodeEvent)}
      */
     protected Map       nodeNumberToResourceName = new HashMap();
 
@@ -178,7 +178,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     /**
      * When a resource is added to this ResourceWatcher, this method is called to check wether a
      * ResourceBuilder node is associated with this resource. If so, this methods maps the number of
-     * the node to the resource name. This is needed in {@link #nodeChanged} in case of a
+     * the node to the resource name. This is needed in {@link #notify(NodeEvent)} in case of a
      * node-deletion.
      * @return Whether a Node as found to map.
      */

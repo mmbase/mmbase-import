@@ -16,14 +16,13 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 
 /**
- * {@inheritDoc}
  *
- * This version is automaticly growing with the same 'branch' every when that is possible. For that
+ * This version of {@link TreeList} is automaticly growing with the same 'branch' every when that is possible. For that
  * it needs a kind of template query for every branch, which is defined by the constructor.
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.12 2005-10-31 13:04:20 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.13 2005-12-10 14:30:09 michiel Exp $
  * @since   MMBase-1.7
  */
 
