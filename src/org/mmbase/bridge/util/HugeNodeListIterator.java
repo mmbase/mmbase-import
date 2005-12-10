@@ -21,10 +21,10 @@ import java.util.*;
  * Iterates the big result of a query. It avoids using a lot of memory (which you would need if you
  * get the complete NodeList first), and pollution of the (node) cache. In this current
  * implementation the Query is 'batched' to avoid reading in all nodes in memory, and the queries
- * are marked with {@link CachePolicy.NEVER}.
+ * are marked with {@link CachePolicy#NEVER}.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.4 2005-10-30 23:50:30 michiel Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.5 2005-12-10 14:30:09 michiel Exp $
  * @since   MMBase-1.8
  */
 

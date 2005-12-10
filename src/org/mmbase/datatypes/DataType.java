@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.45 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: DataType.java,v 1.46 2005-12-10 14:34:17 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -244,7 +244,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      *
      * This Iterator skips all entries which are impossible because of other restrictions on this datatype.
      *
-     * @param locale for which locale to produce
+     * @param locale for which to produce
      * @param cloud  Possibly the possible values depend on a cloud (security)
      * @param node   Possibly the possible values depend on an actual node (this may be, and in the default implementation is, ignored)
      * @param field   Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)

@@ -19,7 +19,7 @@ import java.util.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.11 2005-11-28 22:01:13 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.12 2005-12-10 14:23:07 michiel Exp $
  */
 public class VirtualNode extends MMObjectNode {
 
@@ -63,7 +63,7 @@ public class VirtualNode extends MMObjectNode {
     }
 
     /**
-     * Returns whether this node has relations.
+     * {@inheritDoc}
      * A virtual node never has relations.
      * @return <code>false</code>
      */
@@ -72,7 +72,7 @@ public class VirtualNode extends MMObjectNode {
     }
 
     /**
-     * Return the relations of this node.
+     * {@inheritDoc}
      * A virtual node never has relations.
      * @return empty <code>Enumeration</code>
      */
@@ -81,19 +81,19 @@ public class VirtualNode extends MMObjectNode {
     }
 
     /**
-     * Returns the number of relations of this node.
+     * {@inheritDoc}
      * A virtual node never has relations.
-     * @return 0
+     * @return 0, because Virtual nodes have no relations.
      */
     public int getRelationCount() {
         return 0;
     }
 
     /**
-     * Return the number of relations of this node, filtered on a specified type.
+     * {@inheritDoc}
      * A virtual node never has relations.
      * @param wantedtype the 'type' of related nodes (NOT the relations!).
-     * @return An <code>int</code> indicating the number of nodes found
+     * @return 0, because Virtual nodes have no relations.
      */
     public int getRelationCount(String wantedtype) {
         return 0;
