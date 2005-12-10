@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.169 2005-12-08 12:35:36 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.170 2005-12-10 15:06:47 johannes Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -424,6 +424,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (fieldName.startsWith("_")) {
             // don't complain then, a lot of hackery (apps1 import/export) is based on this.
             // This is just a hack to make app1 import/export working, withough exposing the values map.
+            return true;
+        }
+        if (fieldName.indexOf('(') > 0) {
             return true;
         }
         if (! getBuilder().hasField(fieldName)) {
