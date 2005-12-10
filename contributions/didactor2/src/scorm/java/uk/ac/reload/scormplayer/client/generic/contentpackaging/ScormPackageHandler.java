@@ -71,6 +71,7 @@ import nl.didactor.utils.zip.Unpack;
 import nl.didactor.utils.files.CommonUtils;
 import nl.didactor.utils.http.FileDownloader;
 import nl.didactor.utils.http.exceptions.*;
+import nl.didactor.utils.debug.LogController;
 import nl.didactor.component.scorm.exceptions.*;
 import nl.didactor.component.scorm.metastandart.schema.Importer;
 import nl.didactor.component.scorm.metastandart.schema.Filter;
@@ -84,7 +85,7 @@ import nl.didactor.component.scorm.metastandart.MetaDataImporter;
  * a sco cmi data model.
  *
  * @author Paul Sharples
- * @version $Id: ScormPackageHandler.java,v 1.4 2005-09-01 17:35:53 azemskov Exp $
+ * @version $Id: ScormPackageHandler.java,v 1.5 2005-12-10 13:40:12 azemskov Exp $
  */
 public class ScormPackageHandler extends XMLDocument {
 
@@ -125,6 +126,10 @@ public class ScormPackageHandler extends XMLDocument {
    private int iCounter = 0;
 
    private Filter filter;
+
+
+   private boolean bDebugMode = LogController.showLogs("az");
+   private String  sDebugIndo = "Scorm Package Handler: ";
 
 
    public ScormPackageHandler(File manifest, String sNodePackageID) throws JDOMException, IOException
@@ -255,7 +260,7 @@ public class ScormPackageHandler extends XMLDocument {
                     tempHref = tempHref.replaceAll("%20", " ");
 
 
-                    System.out.println("ScormPackageHandler: resource href=" + tempHref);
+                    if(bDebugMode) System.out.println(sDebugIndo + "resource href=" + tempHref);
 
 
                     //New htmlpage node
@@ -273,7 +278,11 @@ public class ScormPackageHandler extends XMLDocument {
                        elemMetadataLocation = elemMetadata.getChild("location", SCORM12_DocumentHandler.ADLCP_NAMESPACE_12);
                     }
 
-                    System.out.println("ScormPackageHandler: metadatalocation = " + elemMetadataLocation);
+
+
+                    if(bDebugMode) System.out.println(sDebugIndo +  "metadatalocation = " + elemMetadataLocation);
+
+
 
                     if(elemMetadataLocation != null)
                     {
@@ -449,6 +458,7 @@ public class ScormPackageHandler extends XMLDocument {
                //New learnblock node
                Node nodeLearnblock = cloud.getNodeManager("learnblocks").createNode();
                nodeLearnblock.setValue("name", "" + child.getChild("title", SCORM12_DocumentHandler.IMSCP_NAMESPACE_112).getText());
+               nodeLearnblock.setValue("path", "" + nodePackage.getNumber() + "-" + iPosrelCounter);
 //Deep level
 //               nodeLearnblock.setValue("intro", "deep level=" + iCurrentLevel);
                nodeLearnblock.commit();

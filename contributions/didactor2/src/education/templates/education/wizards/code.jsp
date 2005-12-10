@@ -188,7 +188,7 @@
                </table>
             </di:hasrole>
          </mm:node>
-         
+
          <mm:node number="component.isbo" notfound="skip">
             <di:hasrole role="systemadministrator">
                <table border="0" cellpadding="0" cellspacing="0">
@@ -271,10 +271,10 @@
                   </tr>
                </table>
                 <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
-              
+
             <% // add portalpages %>
             <mm:node number="component.portalpages" notfound="skip">
-              <mm:treeinclude page="/portalpages/backoffice/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
+              <mm:treeinclude page="/portalpages/backoffice/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" />
             </mm:node>
 
             <% // add help %>
@@ -284,12 +284,12 @@
 
             <% // add faq %>
             <mm:node number="component.faq" notfound="skip">
-              <mm:treeinclude page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />   
+              <mm:treeinclude page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />
             </mm:node>
 
-            <% // add news %>                          
+            <% // add news %>
             <mm:node number="component.news" notfound="skip">
-              <mm:treeinclude page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />  
+              <mm:treeinclude page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />
             </mm:node>
          <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
       </div>
@@ -303,24 +303,43 @@
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
       <a href='javascript:clickNode("filemanagement_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_filemanagement_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>&nbsp;<nobr><a href='javascript:clickNode("filemanagement_0")'><di:translate key="education.filemanagement" /></a></nobr>
       <br>
+      <%
+         int iComponentsAvailable = 0;
+      %>
+
+      <mm:node number="component.scorm" notfound="skip">
+         <%
+            iComponentsAvailable++;
+         %>
+      </mm:node>
+
+      <mm:import id="components_available" reset="true"><%= iComponentsAvailable %></mm:import>
       <div id='filemanagement_0' style='display: none'>
          <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-               <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+               <mm:isgreaterthan  referid="components_available" value="0">
+                  <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
+               </mm:isgreaterthan>
+               <mm:isgreaterthan  referid="components_available" value="0" inverse="true">
+                  <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
+               </mm:isgreaterthan>
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />' title="<di:translate key="education.ftpupload" />" target="text"><di:translate key="education.ftpupload" /></a></nobr></td>
             </tr>
          </table>
 
-         <table border="0" cellpadding="0" cellspacing="0">
-            <tr>
-               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-               <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
-               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/scorm/index.jsp" objectlist="$includePath" />' title="<di:translate key="education.ftpupload" />" target="text"><di:translate key="education.scormimport" /></a></nobr></td>
-            </tr>
-         </table>
+
+         <mm:node number="component.scorm" notfound="skip">
+            <table border="0" cellpadding="0" cellspacing="0">
+               <tr>
+                  <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                  <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
+                  <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+                  <td><nobr>&nbsp;<a href='<mm:treefile write="true" page="/education/scorm/index.jsp" objectlist="$includePath" />' title="<di:translate key="education.ftpupload" />" target="text"><di:translate key="education.scormimport" /></a></nobr></td>
+               </tr>
+            </table>
+         </mm:node>
       </div>
    </mm:islessthan>
 </mm:compare>

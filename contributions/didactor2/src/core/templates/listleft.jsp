@@ -78,50 +78,33 @@
                </mm:node>
 
 
-               <nobr>
-               <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" alt="" />
-
-
-
                <% //USUAL EDUCATION %>
                <mm:compare referid="education_type" value="">
-               <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$tmpreferids">
-                           <mm:param name="education"><%= arrstrEducation[0] %></mm:param>
-                           <mm:param name="class"><%= arrstrEducation[2] %></mm:param>
-                        </mm:treefile>" class="users">
+                  <nobr>
+                     <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" alt="" />
+                     <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$tmpreferids">
+                                 <mm:param name="education"><%= arrstrEducation[0] %></mm:param>
+                                 <mm:param name="class"><%= arrstrEducation[2] %></mm:param>
+                              </mm:treefile>" class="users">
+                        <%@include file="show_education_name.jsp"%>
+                     </a>
+                  </nobr>
+                  <br />
                </mm:compare>
 
 
                <% //SCORM PACKAGE %>
-               <mm:compare referid="education_type" value="SCORM">
-               <a href="<%= sUserSettings_BaseURL %>/scorm/<mm:write referid="package_id"/>_player/index.jsp" class="users">
-               </mm:compare>
-
-                  <%= arrstrEducation[1] %>
-                  <%
-                     if(arrstrEducation[2] != null)
-                     {
-                        %>
-                           <mm:node number="<%= arrstrEducation[2] %>" jspvar="nodeClass">
-                              (<%
-                                 String sClassName = (String) nodeClass.getValue("name");
-                                 if(sClassName.length() > 7)
-                                 {
-                                    out.print(sClassName.substring(0, 7));
-                                    %>...<%
-                                 }
-                                 else
-                                 {
-                                    out.print(sClassName);
-                                 }
-                              %>)
-                           </mm:node>
-                        <%
-                     }
-                  %>
-               </a>
-               </nobr>
-               <br />
+               <mm:node number="component.scorm" notfound="skip">
+                  <mm:compare referid="education_type" value="SCORM">
+                     <nobr>
+                        <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" alt="" />
+                        <a href="<%= sUserSettings_BaseURL %>/scorm/<mm:write referid="package_id"/>_player/index.jsp" class="users">
+                           <%@include file="show_education_name.jsp"%>
+                        </a>
+                     </nobr>
+                     <br />
+                  </mm:compare>
+               </mm:node>
             <%
          }
       %>
