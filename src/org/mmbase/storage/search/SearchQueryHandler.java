@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * Defines methods for an object that handles search query requests.
  *
  * @author Rob van Maris
- * @version $Id: SearchQueryHandler.java,v 1.3 2003-03-10 11:50:51 pierre Exp $
+ * @version $Id: SearchQueryHandler.java,v 1.4 2005-12-10 14:21:57 michiel Exp $
  * @since MMBase-1.7
  */
 public interface SearchQueryHandler {
@@ -51,6 +51,13 @@ public interface SearchQueryHandler {
      * @see SearchQuery#getOffset
      */
     public final static int FEATURE_OFFSET = 2;
+
+
+    /**
+     * Feature that allows to search on string by a regular expression.
+     * @see SearchQuery#getOffset
+     */
+    public final static int FEATURE_REGEXP = 3;
 
     /**
      * Gets the level at which a feature is supported for a query
