@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.14 2005-12-08 12:42:03 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.15 2005-12-10 14:31:29 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -126,7 +126,6 @@ public class VirtualNode implements Node {
         return false;
     }
 
-
     public void setValue(String fieldName, Object value) {
         throw new UnsupportedOperationException("Cannot edit virtual node");
     }
@@ -201,7 +200,7 @@ public class VirtualNode implements Node {
             int type = noderef.getBuilder().getField(fieldName).getType();
             switch(type) {
                 case Field.TYPE_STRING:  return getStringValue(fieldName);
-                case Field.TYPE_BINARY:    return getByteValue(fieldName);
+                case Field.TYPE_BINARY:   return getByteValue(fieldName);
                 case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
                 case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
                 case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
@@ -367,31 +366,29 @@ public class VirtualNode implements Node {
     }
 
     public void deleteRelations() {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
     }
 
     public void deleteRelations(String type) throws NotFoundException {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
     }
 
     public RelationList getRelations() {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicRelationList.EMPTY;
     }
 
     public RelationList getRelations(String role) {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicRelationList.EMPTY;
     }
 
     public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicRelationList.EMPTY;
     }
 
     public RelationList getRelations(String role, NodeManager nodeManager) {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicRelationList.EMPTY;
     }
 
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicRelationList.EMPTY;
     }
 
     public boolean hasRelations() {
@@ -414,22 +411,22 @@ public class VirtualNode implements Node {
 
 
     public NodeList getRelatedNodes() {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicNodeList.EMPTY;
     }
 
     public NodeList getRelatedNodes(String type) {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicNodeList.EMPTY;
     }
 
     public NodeList getRelatedNodes(NodeManager nodeManager) {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicNodeList.EMPTY;
     }
 
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicNodeList.EMPTY;
     }
     public NodeList getRelatedNodes(String type, String role, String searchDir) {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
+        return BasicNodeList.EMPTY;
     }
 
     public int countRelatedNodes(String type) {
@@ -437,7 +434,7 @@ public class VirtualNode implements Node {
     }
 
     public StringList getAliases() {
-        throw new UnsupportedOperationException("Virtual nodes have no aliases");
+        return BasicStringList.EMPTY;
     }
 
     public void createAlias(String aliasName) {
@@ -465,7 +462,7 @@ public class VirtualNode implements Node {
 
     // javadoc inherited (from Node)
     public StringList getPossibleContexts() {
-        throw new UnsupportedOperationException("Virtual nodes have no security context");
+        return BasicStringList.EMPTY;
     }
 
     public boolean mayWrite() {
@@ -494,7 +491,6 @@ public class VirtualNode implements Node {
                     params.set(Parameter.NODE, VirtualNode.this);
                     params.set(Parameter.CLOUD, VirtualNode.this.cloud);
                     return super.getFunctionValue(params);
-                    
                 }
             };
     }
@@ -509,8 +505,39 @@ public class VirtualNode implements Node {
         params.setAll(parameters);
         return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
     }
-
+    /**
+     * @param o Object to compare to.
+     */
     public int compareTo(Object o) {
+        Node n = (Node)o;
+        String s1 = "";
+        if (this instanceof NodeManager) {
+            s1 = ((NodeManager)this).getGUIName();
+        } else {
+            s1 = getFunctionValue("gui", null).toString();
+        }
+        String s2 = "";
+        if (n instanceof NodeManager) {
+            s2 = ((NodeManager)n).getGUIName();
+        } else {
+            s2 = n.getFunctionValue("gui", null).toString();
+        }
+        int res = s1.compareTo(s2);
+        if (res != 0) {
+            return res;
+        } else {
+            int n1 = getNumber();
+            int n2 = n.getNumber();
+            if (n2 > n1) {
+                return -1;
+            } else if (n2 < n1) {
+                return -1;
+            } else {
+                if (cloud instanceof Comparable) {
+                    return ((Comparable)cloud).compareTo(n.getCloud());
+                }
+            }
+        }
         return 1;
     }
 }
