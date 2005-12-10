@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.41 2005-10-07 18:28:25 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.42 2005-12-10 14:24:34 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -52,7 +52,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         MMObjectBuilder builder = mmbase.getMMObject(type);
         MMObjectNode node;
         if (builder != null) {
-            node = builder.getNewTmpNode(owner,getTmpKey(owner,key));
+            node = builder.getNewTmpNode(owner, getTmpKey(owner, key));
             if (log.isDebugEnabled()) {
                 log.debug("New tmpnode " + node);
             }
@@ -113,10 +113,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
     /**
      * @javadoc
      */
-    public MMObjectNode getNode(String owner,String key) {
-        MMObjectBuilder bul=mmbase.getMMObject("typedef");
+    public MMObjectNode getNode(String owner, String key) {
+        MMObjectBuilder bul = mmbase.getMMObject("typedef");
         MMObjectNode node;
-        node=bul.getTmpNode(getTmpKey(owner,key));
+        node = bul.getTmpNode(getTmpKey(owner,key));
         // fallback to normal nodes
         if (node == null) {
             log.debug("getNode tmp not node found " + key);
@@ -129,10 +129,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
     /**
      * @javadoc
      */
-    public String getObject(String owner,String key,String dbkey) {
-        MMObjectBuilder bul=mmbase.getMMObject("typedef");
+    public String getObject(String owner, String key, String dbkey) {
+        MMObjectBuilder bul = mmbase.getMMObject("typedef");
         MMObjectNode node;
-        node=bul.getTmpNode(getTmpKey(owner,key));
+        node = bul.getTmpNode(getTmpKey(owner,key));
         if (node==null) {
             log.debug("getObject not tmp node found " + key);
             node=bul.getHardNode(dbkey);
