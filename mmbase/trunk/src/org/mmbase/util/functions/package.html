@@ -27,70 +27,29 @@
       /mmexamples/taglib/functions.jsp of the distro.
     </p>
     <p>
-      A Java programmer needs to know several things.
+      A programmer needs to know several things.
       <ul>
         <li>
-          Currently the only way to acquire a Function object is to call one of the getFunction
-          methods on {@link org.mmbase.util.functions.FunctionFactory}.  You may need such an object e.g. to get an empty
-          {@link org.mmbase.util.functions.Parameters} object, which in turn, you need to feed to the getFunctionValue method
-          of the Function object.
+          Functions are basicly bridge things. So nodes are bridge Nodes.
         </li>
         <li>
-          <p>
-            If a function has no parameters, or you have the defining {@link
-            org.mmbase.util.functions.Parameter} array of a function, then you can instanciate and
-            fill a {@link org.mmbase.util.functions.Parameters} object yourself and feed it to the
-            several getFunctionValue methods: {@link org.mmbase.bridge.Node#getFunctionValue(String,
-            java.util.List)}, {@link org.mmbase.module.core.MMObjectNode#getFunctionValue(String,
-            java.util.List)}. In this way you don't need the Function object itself.
-          </p>
-          <p>
-            As you see, those functions accept a List, rather then a Parameters object. That does
-            not matter, because Parameters implements List. If you want to supply another List
-            object, then you have to know which parameters must be on which position. A Parameters
-            object can be filled by parameter name, and checks for correctness before calling the
-            function, so likely it is more conventient.
-          </p>
+          FunctionProviders have {@link org.mmbase.util.functions.FunctionProvider#addFunction(Function)}
+        </li>
+        <li>
+          {@link org.mmbase.util.functions.AbstractFunction} is available to quickly define a function. 
+        </li>
+        <li>
+          {@link org.mmbase.util.functions.NodeFunction} is available to quickly define a function on a Node.
+        </li>
+        <li>
+          An example of a node and builder function implementation can be found in {@link org.mmbase.util.functions.ExampleBuilder}.
+        </li>
+        <li>
+          You can also add functions to a builder in the builder XML. E.g. based on a method in another class, or other FunctionProvider.
         </li>
       </ul>
     </p>
-    <h2>How to implement functions</h2>
-    <p>
-      Firstly, you need to decide what kind of function your function must be, and make sure that
-      one of the different getFunction methods of the {@link
-      org.mmbase.util.functions.FunctionFactory} class returns a Function object which represents
-      your functionality.
-    </p>
-    <p>
-      You can e.g. implement the functionality in any static method in any class, and then specificy
-      it in the XML's of {@link org.mmbase.util.functions.FunctionSets}. Then it will be wrapped in
-      a {@link org.mmbase.util.functions.SetFunction} object, which will be returned by {@link
-      org.mmbase.util.functions.FunctionFactory#getFunction(String, String)}. You can also implement
-      a class with setter methods and use {@link
-      org.mmbase.util.functions.FunctionFactory#getFunction(Class, String)}
-    </p>
-    <p>
-      Another example are functions on 'Node' objects. Currently, to add one you must do this:
-      <ul>
-        <li>
-          Implement the function inside {@link org.mmbase.module.core.MMObjectBuilder#executeFunction(org.mmbase.module.core.MMObjectNode, String, java.util.List)}
-          of the builder of the node.
-        </li>
-        <li>
-          To make the parameter definition array accessible, implement it in
-          {@link org.mmbase.module.core.MMObjectBuilder#getParameterDefinition(String)}. A utility method to implement this last method by use of reflection and class constants, is staticly available  as {@link org.mmbase.util.functions.NodeFunction#getParametersByReflection(Class, String)}.
-        </li>
-      </ul>
-    </p>
-    <p>
-      An example of this way of working is {@link org.mmbase.util.functions.ExampleBuilder}.
-    </p>
-    <p>
-      This way of implemention functions on Nodes has been used on several occasions. It is
-      compatible with 'executeFunction' which was traditionally used. We may add a simpler way in
-      MMBase-1.8 (e.g. by allowing you to create a Function object yourself).
-    </p>
-    <!-- version of package description $Id: package.html,v 1.3 2004-12-06 15:25:19 pierre Exp $ -->
+    <!-- version of package description $Id: package.html,v 1.4 2005-12-10 12:57:50 michiel Exp $ -->
     @since MMBase-1.7
   </body>
 </html>
