@@ -120,49 +120,59 @@
 
 
    <mm:present referid="it_is_a_package">
-      <%
-         String sPath = "";
-         for(ListIterator it = arliPath.listIterator(arliPath.size()); it.hasPrevious();)
-         {
-            if(it.previousIndex() < arliPath.size() - 1)
+      <mm:remove referid="loaded"/>
+      
+      <mm:node number="component.scorm" notfound="skip">
+         <%
+            String sPath = "";
+            for(ListIterator it = arliPath.listIterator(arliPath.size()); it.hasPrevious();)
             {
-               sPath += ",";
+               if(it.previousIndex() < arliPath.size() - 1)
+               {
+                  sPath += ",";
+               }
+               sPath += (String) it.previous();
             }
-            sPath += (String) it.previous();
-         }
-         System.out.println("path=" + sPath);
-      %>
+            System.out.println("path=" + sPath);
+         %>
 
 
-      <%
-         String sScormDir = sUserSettings_PathBaseDirectory + File.separator + "scorm";
-         String sNodePlayer = sScormDir + File.separator + sPackageNode + "_player";
+         <%
+            String sScormDir = sUserSettings_PathBaseDirectory + File.separator + "scorm";
+            String sNodePlayer = sScormDir + File.separator + sPackageNode + "_player";
 
-         File fileCustomMenu = new File(sNodePlayer + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs" + nodeLearnObject.getNumber() +  ".js");
-         if(!fileCustomMenu.exists())
-         {
-            MenuCreator menuCreator = new MenuCreator(new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/");
-            String[] arrstrJSMenu = menuCreator.parse(true, "" + sPackageNode, sPath);
-
-            RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileCustomMenu, "rw");
-            for(int f = 0; f < arrstrJSMenu.length; f++)
+            File fileCustomMenu = new File(sNodePlayer + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs" + nodeLearnObject.getNumber() +  ".js");
+            if(!fileCustomMenu.exists())
             {
-               rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
-               rafileMenuConfig.writeByte(13);
-               rafileMenuConfig.writeByte(10);
+               MenuCreator menuCreator = new MenuCreator(new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/");
+               String[] arrstrJSMenu = menuCreator.parse(true, "" + sPackageNode, sPath);
+
+               RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileCustomMenu, "rw");
+               for(int f = 0; f < arrstrJSMenu.length; f++)
+               {
+                  rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
+                  rafileMenuConfig.writeByte(13);
+                  rafileMenuConfig.writeByte(10);
+               }
+               rafileMenuConfig.close();
             }
-            rafileMenuConfig.close();
-         }
-      %>
+         %>
 
-      <script>
-         parent.frames['content'].location.href='<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>&rnd=<%= (new Date()).getTime() %>';
-      </script>
+         <script>
+            parent.frames['content'].location.href='<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>&rnd=<%= (new Date()).getTime() %>';
+         </script>
 
-<%--
-      <iframe src="<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>" width="100%" height="100%"></iframe>
---%>
+         <%--
+         <iframe src="<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>" width="100%" height="100%"></iframe>
+         --%>
 
+         <mm:import id="loaded">true</mm:import>
+      </mm:node>
+
+      <mm:notpresent referid="loaded">
+         You have to install SCORM component to see the content of this page.
+      </mm:notpresent>
+      
    </mm:present>
 
 </mm:node>
