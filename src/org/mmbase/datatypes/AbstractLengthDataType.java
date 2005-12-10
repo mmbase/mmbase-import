@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.8 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.9 2005-12-10 11:47:14 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -106,7 +106,6 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
      * Sets the maximum length of binary values for this datatype.
      * @param value the maximum length as an <code>int</code>, or -1 if there is no maximum length.
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this datatype is finished
-     * @return the datatype restriction that was just set
      */
     public void setMaxLength(long value) {
         getMaxLengthRestriction().setValue(new Long(value));

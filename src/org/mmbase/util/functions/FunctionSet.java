@@ -14,10 +14,10 @@ import java.util.*;
 /**
  * The implementation of one set ('namespace') of functions. This is actually just a named FunctionProvider.
  *
- * @javadoc
+ * @see    FunctionSets
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: FunctionSet.java,v 1.7 2005-07-28 16:56:58 michiel Exp $
+ * @version $Id: FunctionSet.java,v 1.8 2005-12-10 11:47:41 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionSet extends FunctionProvider {
