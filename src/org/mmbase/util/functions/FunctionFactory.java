@@ -16,25 +16,15 @@ import org.mmbase.bridge.*;
 
 /**
  * The FunctionFactory instanciates {@link Function} objects. There are 6 static getFunctions
- * objects in this class, which correspond to 6 static getFunction methods in the following 6
- * classes:
- <ol>
-   <li>{@link org.mmbase.util.functions.SetFunction}</li>
-   <li>{@link org.mmbase.util.functions.NodeFunction}</li>
-   <li>{@link org.mmbase.util.functions.NodeManagerFunction}</li>
-   <li>{@link org.mmbase.util.functions.ModuleFunction}</li>
-   <li>{@link org.mmbase.util.functions.MethodFunction}</li>
-   <li>{@link org.mmbase.util.functions.BeanFunction}</li>
- </ol>
-
- <p>
-   Those static function thus further factor the Function objects. Possibly, but nut necessarily,
-   those static methods make instances of their own class. That was the original idea - hence the
-   name - but of course it is no absolute rule
- </p>
+ * objects in this class, which correspond to 6 different kind of Function objects.
+ *
+ * The function factory was more important in the 1.7 version of MMBase. Since MMBase 1.8 there are
+ * {@link FunctionProvider}s, so often, it is just as easy and straight forward to simply call the
+ * getFunction method on the relevant FunctionProvider (like {@link FunctionSet}, {@link Cloud},
+ * {@link Module}, or {@link Node}) or to simply instantiate the Function object (e.g. {@link BeanFunction})
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.7 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: FunctionFactory.java,v 1.8 2005-12-10 11:47:41 michiel Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {

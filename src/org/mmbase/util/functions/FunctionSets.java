@@ -31,13 +31,13 @@ import java.net.*;
  * Function sets can be defined in the functions/functionsets.xml configuration file.
  * <br />
  * This class implements a number of static methods for maintaining {@link FunctionSet} objects,
- * and filling these with {@link SetFunction} objects that match the namespace.
+ * and filling these with {@link FunctionSet} objects that match the namespace.
  * It also implements a {@link #getFunction} method for obtaining a function from such a set.
  *
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.20 2005-10-31 12:45:53 simon Exp $ 
+ * @version $Id: FunctionSets.java,v 1.21 2005-12-10 11:47:42 michiel Exp $ 
  */
 public class FunctionSets {
 

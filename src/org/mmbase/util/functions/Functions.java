@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.10 2005-10-25 12:12:29 pierre Exp $
+ * @version $Id: Functions.java,v 1.11 2005-12-10 11:47:42 michiel Exp $
  */
 public class Functions {
 
@@ -113,7 +113,7 @@ public class Functions {
      * name was given in the call. If the function cannot be derived through
      * reflection, the method returns <code>null</code>.<br />
      * Note that, since this way of determining functions cannot determine
-     * return value types, it is advised to use {@link FunctionProvider.addFunction}
+     * return value types, it is advised to use {@link FunctionProvider#addFunction}
      * instead.
      *
      * @see Parameter
