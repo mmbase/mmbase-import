@@ -22,7 +22,7 @@ import org.mmbase.core.util.Fields;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.20 2005-12-10 12:11:53 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.21 2005-12-10 14:23:33 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -110,7 +110,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @param node The node to display
      * @return either the name field of the node or "no info"
      */
-     public String getGUIInicator(MMObjectNode node) {
+     public String getGUIIndicator(MMObjectNode node) {
         String s= node.getStringValue("name");
         if (s != null) {
             return s;
