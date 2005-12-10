@@ -5,7 +5,6 @@
 <%@ page import = "java.util.ArrayList" %>
 <%@ page import = "java.util.Date" %>
 <%@ page import = "java.util.ListIterator" %>
-<%@ page import = "uk.ac.reload.moonunit.contentpackaging.CP_Core"%>
 
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
@@ -150,7 +149,7 @@
                try
                {
                   classMenuCreater = Class.forName("nl.didactor.component.scorm.player.MenuCreator");
-                  menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/"});
+                  menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + "manifest.xml"), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/"});
 
                }
                catch (Exception e)
