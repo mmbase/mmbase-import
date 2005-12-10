@@ -42,23 +42,26 @@
         {
            top.location.href = document.location.href;
         }
+     }
+     catch(e){
+     }
    </script>
    <div class="content">
    <div class="applicationMenubarCockpit" style="white-space: nowrap">
      <img src="<mm:treefile write="true" page="/gfx/spacer.gif" objectlist="$includePath" />" width="1" height="15" border="0" alt="" />
    </div>
    <div class="providerMenubar" style="white-space: nowrap">
-   </div>        
+   </div>
    <div class="educationMenubarCockpit" style="white-space: nowrap">
      <table class="pixellijn" border="0" cellspacing="0" cellpadding="0">
        <tr>
-         <td nowrap>&nbsp; 
- 	       <mm:node number="component.faq" notfound="skipbody">
+         <td nowrap>&nbsp;
+          <mm:node number="component.faq" notfound="skipbody">
              <mm:treeinclude page="/faq/cockpit/general.jsp" objectlist="$includePath" referids="$referids" />
-	       </mm:node>   
+          </mm:node>
            <mm:node number="component.cmshelp" notfound="skipbody">
              <mm:treeinclude page="/cmshelp/cockpit/general.jsp" objectlist="$includePath" referids="$referids" />
-           </mm:node> 					
+           </mm:node>
          </td>
        </tr>
      </table>
@@ -69,19 +72,19 @@
         <mm:node number="component.portalpages" notfound="skipbody">
           <mm:treeinclude page="/portalpages/frontoffice/index.jsp" objectlist="$includePath" referids="$referids" />
           <mm:import id="hasPortalPages">true</mm:import>
-        </mm:node> 
+        </mm:node>
  <%-- povezivanje komponente sa provajderom --%>
 <%-- <mm:node number="component.portalpages" >
  <mm:relatednodecontainer type="provider" role="insrel">
  <mm:size>
- 
+
   <mm:compare value="0">
        <mm:import id="hasPortalPages" >false</mm:import>
-      <!-- Has portal pages --> 
- 	</mm:compare>
- 	</mm:size>
- 	</mm:relatednodecontainer>
- 	</mm:node>    --%>        
+      <!-- Has portal pages -->
+   </mm:compare>
+   </mm:size>
+   </mm:relatednodecontainer>
+   </mm:node>    --%>
         <mm:present referid="hasPortalPages" inverse="true">
           <!--  show login box on the left -->
           <div class="ListLeft">
@@ -91,7 +94,7 @@
      </div>
      <div class="columnMiddle">
        <iframe width="100%" height="100%" src="<mm:treefile page="firstcontent.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>" name="content" frameborder="0">
-       </iframe>   
+       </iframe>
      </div>
      <div class="columnRight">
         <div class="titlefield2">
@@ -111,12 +114,12 @@
             <mm:node number="component.news" notfound="skipbody">
                <mm:treeinclude page="/news/frontoffice/index.jsp" objectlist="$includePath" referids="$referids" />
             </mm:node>
- 		  </div>
- 		  <div class="ListRight">
- 		    <mm:include page="loginbox.jsp"/>		
- 		  </div>
-        </mm:present> 
-      </div>  
+        </div>
+        <div class="ListRight">
+          <mm:include page="loginbox.jsp"/>
+        </div>
+        </mm:present>
+      </div>
     </div>
   </div>
 </body>

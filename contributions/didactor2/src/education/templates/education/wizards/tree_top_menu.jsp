@@ -69,13 +69,11 @@
      <a <mm:compare referid="mode" value="content_metadata">class="education_top_menu_selected"</mm:compare> href="?mode=content_metadata" style="font-weight:bold;"><di:translate key="education.educationmenucontentmetadata" /></a>
    </mm:islessthan>
 
-   <mm:node number="component.scorm" notfound="skipbody">
-     <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
-     <%@include file="/education/wizards/roles_chk.jsp" %>
-     <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-       <a <mm:compare referid="mode" value="filemanagement">class="education_top_menu_selected"</mm:compare> href="?mode=filemanagement" style="font-weight:bold;"><di:translate key="education.educationmenufilemanagement" /></a>
-     </mm:islessthan>
-   </mm:node>
+   <mm:import id="editcontextname" reset="true">filemanagement</mm:import>
+   <%@include file="/education/wizards/roles_chk.jsp" %>
+   <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+     <a <mm:compare referid="mode" value="filemanagement">class="education_top_menu_selected"</mm:compare> href="?mode=filemanagement" style="font-weight:bold;"><di:translate key="education.educationmenufilemanagement" /></a>
+   </mm:islessthan>
 
    <mm:import id="editcontextname" reset="true">toetsen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
