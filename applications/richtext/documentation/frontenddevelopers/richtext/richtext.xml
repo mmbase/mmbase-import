@@ -7,7 +7,7 @@
 
     <date>2005-12-09</date>
 
-    <edition>$Id: richtext.xml,v 1.1 2005-12-09 22:15:41 henk Exp $</edition>
+    <edition>$Id: richtext.xml,v 1.2 2005-12-10 16:38:03 henk Exp $</edition>
 
     <authorgroup>
       <!---->
@@ -62,28 +62,6 @@
     advantage is that with XSLT (xml-style sheets) the conversion to HTML is
     straightforward (and some say easier than JSP).</para>
 
-    <para>Richtext should not be confused with the html-area, used in the
-    editwizard. The text of html-area in the editwizard is saved in MMBase as
-    HTML. Links in the HTML are urls. This means that when the referred object
-    is deleted, the link will not automatically be removed. Another
-    disadvantage is that the HTML can contain undesirable code, like Microsoft
-    Word styles that are copied into the html-area.</para>
-
-    <note>
-      <para>Richtext depends on the latest XML parsers. So please read the
-      XERCES.README.txt, which is in the root of your MMBase distribution and
-      in the folder documentation\releases in CVS. Anyway, if you use Tomcat
-      5.5 in combination JDK 1.5 the richtext will work. </para>
-    </note>
-  </section>
-
-  <section id="architecture">
-    <title>Architecture</title>
-
-    <para>The starting point of richtext is the richtext editor which is based
-    on <ulink url="http://kupu.oscom.org">kupu</ulink>. Kupu generates HTML.
-    This HTML is translated to XML by MMBase.</para>
-
     <screenshot>
       <screeninfo>The richtext editor</screeninfo>
 
@@ -94,8 +72,92 @@
       </mediaobject>
     </screenshot>
 
-    <para>The text in the richtext editor above is saved as the following
-    XML.</para>
+    <para>Richtext should not be confused with the html-area, used in the
+    editwizard. The text of html-area in the editwizard is saved in MMBase as
+    HTML. Links in the HTML are urls. This means that when the referred object
+    is deleted, the link will not automatically be removed. Another
+    disadvantage is that the HTML can contain undesirable code, like Microsoft
+    Word styles that are copied into the html-area.</para>
+
+    <para>Throughout this document the MyRichText application is used as the
+    example application for the richtext editor. So to experiment with the
+    examples in this document both the richtext editor has to be installed in
+    your webapp and the MyRichText application has to be deployed. All the
+    path in this document assume that the webapp which you are using has the
+    name richtext.</para>
+
+    <note>
+      <para>Richtext depends on the latest XML parsers. So please read the
+      XERCES.README.txt, which is in the root of your MMBase distribution and
+      in the folder documentation\releases in CVS. Anyway, if you use Tomcat
+      5.5 in combination JDK 1.5 the richtext will work.</para>
+    </note>
+
+    <note>
+      <para>The richtext editor is new in MMBase 1.8. It might be necessary to
+      change some of its features, because people who will use the editor ask
+      for other or extended functionality. Issues in the present version of
+      the richtext editor which are know to be a candidate for improvement
+      are:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>the layout of the richtext editor (a real designer will have
+          to have a look at the richtext editor to increase its
+          usability)</para>
+        </listitem>
+
+        <listitem>
+          <para>the richtext editor assumes that there is at most one richtext
+          field in an object</para>
+        </listitem>
+
+        <listitem>
+          <para>the wizard names in the present implementation in the
+          directory /richtext/edit are quite confusing because they contain a
+          comma ",". An example is /richtext/edit/kupu,news.xml</para>
+        </listitem>
+
+        <listitem>
+          <para>saving an reference to an image is not picked up correctly in
+          Internet Explorer. Sometimes .&lt;img
+          src="/richtext/mmbase/images/1183" alt="MMBeest" class="image-right"
+          id="_1134140612" height="100" width="54"/&gt; is saved in the XML.
+          Sometimes &lt;a id="_1134140609" url="/richtext/mmbase/images/1183"
+          /&gt; is saved. It should always be &lt;a
+          id="_1134140609"/&gt;.</para>
+        </listitem>
+
+        <listitem>
+          <para>the {INITPARAM.npbsales.home} from the example was not used in
+          the urls when the parameter was in inserted in the web.xml.</para>
+        </listitem>
+      </orderedlist>
+    </note>
+  </section>
+
+  <section id="architecture">
+    <title>First encounter with the richtext editor</title>
+
+    <para>The database definition of the richtext field with the name body in
+    the texts.xml builder looks like:</para>
+
+    <programlisting>&lt;datatype base="mmxf" xmlns="http://www.mmbase.org/xmlns/datatypes" /&gt;
+&lt;db&gt;
+   &lt;name&gt;body&lt;/name&gt;
+   &lt;type key="false" notnull="false" size="64000" state="persistent"&gt;XML&lt;/type&gt;
+&lt;/db&gt;</programlisting>
+
+    <para>The richtext editor is based on <ulink
+    url="http://kupu.oscom.org">kupu</ulink>. MMBase use kupu to show the
+    richtext field in your builder, with all the richtext functionality. The
+    present implementation of the richtext editor assumes that there is at
+    most one richtext field in an MMBase node. After saving the object in the
+    richtext editor, the HTML produced by kupu is translated into XML by
+    MMBase.</para>
+
+    <para>The text in the richtext editor shown in the previous section is
+    saved as the following XML.</para>
 
     <programlisting>&lt;mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1"&gt;
 &lt;p&gt;
@@ -155,6 +217,25 @@
           </imageobject>
         </mediaobject>
       </screenshot></para>
+
+    <para>One of the basic things that have to be done when creating HTML from
+    XML to create hyperlinks from the idrels in the XML. To make this possible
+    we have to tell MMBase how a link to a related object looks like. The
+    mapping from idrels to hyperlinks is done in the</para>
+
+    <programlisting>&lt;functionlist&gt;
+  &lt;function 
+    name="url"
+    key="{REQUEST.getContextPath}/{INITPARAM.npbsales.home}?article={NODE.number}&amp;amp;template=article"
+    &gt;
+    &lt;class&gt;org.mmbase.util.functions.PatternNodeFunctionProvider&lt;/class&gt;
+  &lt;/function&gt;
+&lt;/functionlist&gt;</programlisting>
+
+    <para>Most of the parameters used in the function definition are generated
+    automatically, the INITPARAM.xyz are specified in the
+    /richtext/WEB-INF/web.xml. The parameters are handled by the
+    org.mmbase.util.functions.PatternNodeFunctionProvider.java.</para>
   </section>
 
   <section id="basicconcepts">
@@ -184,8 +265,8 @@
             <entry>&amp;wizardjsp=/richtext/mmbase/kupu/mmbase/</entry>
 
             <entry>the editor that is opened by the list.jsp (of course for
-            using the richtext editor this should be
-            mmbase/kupu/mmbase)</entry>
+            using the richtext editor this should be mmbase/kupu/mmbase). This
+            could as well be /richtext/mmbase/kupu/mmbase/index.jsp</entry>
           </row>
 
           <row>
@@ -217,9 +298,11 @@
             this will be change in the final release because it is too
             confusing)</entry>
 
-            <entry>this is the editwizard definition used by list.jsp. The
-            only actions in the kupu,news.xml that are relevant when using the
-            richtext editor are the create and delete action.</entry>
+            <entry>this is the editwizard definition used by list.jsp. This
+            editwizard are located in the directory of the calling page,
+            /richtext/edit. The only actions in the kupu,news.xml that are
+            relevant when using the richtext editor are the create and delete
+            action.</entry>
           </row>
 
           <row>
@@ -274,7 +357,7 @@
           </row>
 
           <row>
-            <entry>referrer=/edit/index.jspx</entry>
+            <entry>&amp;referrer=/edit/index.jspx</entry>
 
             <entry>not in use for the richtext editor</entry>
           </row>
@@ -314,26 +397,154 @@
         <para>the middle panel: with the richtext field of the object. The
         link icon in the header of this panel uses the object types from
         link_nodetypes. The present implementation assumes that there are
-        images and blocks are related to the richtext object via idrel.</para>
+        images and blocks related to the richtext object via idrel.</para>
       </listitem>
 
       <listitem>
         <para>the right panel: with the rich text functionalities like
-        link-editting, images, tables and blocks.</para>
+        link-editting, images, tables and blocks</para>
       </listitem>
     </itemizedlist>
   </section>
 
-  <section id="objects">
-    <title>Some notes on the conversion from HTML to XML</title>
+  <section>
+    <title>Kupu and non-kupu functionality in the richtext editor</title>
 
-    <para>[....]</para>
+    <para>The kupu functionality can be found in the middle and the right
+    panel of the richtext editor. In the richtext editor a selection has been
+    made from all the possibilities kupu offers and some extra functionality
+    has been added. This section gives an overview of the functionality from
+    kupu that has beenintegrated in the richtext editor and the extra
+    functionality added.</para>
+
+    <para>TODO</para>
+  </section>
+
+  <section>
+    <title>Tools in the richtext editor</title>
+
+    <para>TODO</para>
+  </section>
+
+  <section id="objects">
+    <title>Some notes on the conversion from HTML produced by KUPU to
+    XML</title>
+
+    <para>TODO</para>
   </section>
 
   <section id="pages">
     <title>Using XSLT to generate HTML</title>
 
-    <para>[....]</para>
+    <para>The chapter first shows how the MyRichNews generates HTML from the
+    XML stored in the richtext field. Then an example shows how to reuse parts
+    of the example to build your own HTML pages.</para>
+
+    <section id="xslt_to_html_intro">
+      <title>HTML from XML in MyRichNews</title>
+
+      <para>Although it has nothing to do with richtext, this section starts
+      with an overview of the templating mechanism used in MyRichNews. This is
+      introduction is only there to show you where to find the files which are
+      actually showing the richtext fields. The HTML is generated by
+      richtext/index.jspx, which includes the file specified by the url field
+      from the template object related to the selected category. It passes the
+      subcat@cat and class id to this include as request parameters. The file
+      included for the Home category is texts.div.jspx.</para>
+
+      <programlisting>&lt;mm:include referids="subcat@cat,class" page="${_node.url}" escape="none" debug="html" /&gt;</programlisting>
+
+      <para>The include texts.div.jspx generates a list of links for the texts
+      related to the category. The template parameter in these links is set to
+      "article". Bij clicking on these links the following piece of code in
+      index.jspx is used to show the include article.div.jspx.</para>
+
+      <programlisting>&lt;mm:present referid="template"&gt;
+  &lt;mm:include  page="search.div.jspx"&gt;&lt;mm:param name="class" value="left" /&gt;&lt;/mm:include&gt;
+  &lt;mm:include  referids="subcat@cat" page="${template}.div.jspx" escape="none" debug="html" /&gt;
+&lt;/mm:present&gt;</programlisting>
+
+      <para>The include article.div.jspx uses /util/body.jspx to show the
+      richtext field.The body.jspx looks like:</para>
+
+      <programlisting>&lt;mm:formatter 
+  xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+  xslt="xslt/2xhtml.xslt" escape="none"&gt;
+   &lt;mm:listrelationscontainer role="idrel" searchdir="destination"&gt;
+     &lt;mm:listrelations&gt;
+       &lt;mm:relatednode&gt;
+         &lt;mm:listrelations role="idrel" searchdir="destination"&gt;
+           &lt;mm:relatednode /&gt;
+         &lt;/mm:listrelations&gt;
+       &lt;/mm:relatednode&gt;
+     &lt;/mm:listrelations&gt;
+   &lt;/mm:listrelationscontainer&gt;
+   &lt;mm:field name="body" /&gt;
+&lt;/mm:formatter&gt;</programlisting>
+
+      <para>The formatter tag is used to add layout to the objects listed
+      inside the formatter tag. The xslt used is xslt/2xhtml.xslt. This file
+      can be found in the /richtext/xslt directory. The file
+      /richtext/xslt/2xhtml.xslt extends the file mm:xslt/2xhtml.xslt by using
+      the &lt;xsl:import /&gt; tag. The file mm:xslt/2xhtml.xslt is part of
+      the mmbase-richtext.jar in your distribution. If you have a archiving
+      tool which can uncompress jar-files you will find the file in the
+      /config/xslt directory of this jar. In the MMBase CVS the file is
+      located in applications\richtext\config\xslt.</para>
+
+      <para>The mm:xslt/2xhtml.xslt contains extends from mmxf2xhtml.xslt. In
+      the mm:xslt/2xhtml.xslt the link to objects related to the richtext
+      object is generated by using the node function with the name 'url':
+      node:function($cloud, string(@id ), 'url', $request).</para>
+
+      <para>The HTML generated from the XML in section 2 is:</para>
+
+      <programlisting>&lt;div class="block article"&gt;
+   &lt;h1&gt;Richtext !!!&lt;/h1&gt;
+   &lt;div class="intro"&gt;
+      &lt;p&gt;&lt;/p&gt;
+   &lt;/div&gt;
+   &lt;div class="objects"&gt;
+      &lt;div class="mmxf"&gt;
+         &lt;p&gt;
+            &lt;a onclick="window.open('/richtext/mmbase/images/1193', 'MMBeest', 'width=404,height=720');"
+               href="javascript: void(0);"
+               title="MMBeest"
+               id="_1134211110"&gt;
+               &lt;img src="/richtext/mmbase/images/1183"
+                    alt="MMBeest"
+                    class="image-right"
+                    height="100" width="54"/&gt;
+            &lt;/a&gt;
+            Richtext is text which contains (links to) other objects.
+         &lt;/p&gt;
+         &lt;p&gt;Richtext should not be confused with the html-area, used in the editwizard.&lt;/p&gt;
+         &lt;table class="plain"&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;td&gt;HTML&lt;/td&gt;&lt;td&gt;XML&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Link to another object&lt;/td&gt;&lt;td&gt;tags&lt;/td&gt;&lt;td&gt;hyperlink&lt;/td&gt;&lt;td&gt;real relation&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Templating&lt;/td&gt;&lt;td&gt;JSP&lt;/td&gt;&lt;td&gt;JSP&lt;/td&gt;&lt;td&gt;XSLT&lt;/td&gt;&lt;/tr&gt;
+         &lt;/table&gt;
+         &lt;p&gt;
+            &lt;div id="" class="float note left"&gt;
+               &lt;div class="mmxf"&gt;&lt;p&gt;You should use Tomcat 5.5 and JDK 1.5&lt;/p&gt;&lt;/div&gt;
+            &lt;/div&gt;
+         &lt;/p&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;
+   &lt;div class="outtro"&gt;
+      &lt;p&gt;&lt;a href=".?cat=347" class="navigate"&gt;&amp;lt; back&lt;/a&gt;&lt;/p&gt;
+   &lt;/div&gt;
+&lt;/div&gt;</programlisting>
+    </section>
+
+    <section>
+      <title>Creating your own HTML from richtext fields</title>
+
+      <para>This section shows how you can generate your own HTML pages from
+      richtext fields.</para>
+
+      <para>TODO</para>
+    </section>
   </section>
 
   <!---->
