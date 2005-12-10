@@ -20,7 +20,7 @@ import nl.didactor.utils.debug.LogController;
 
 
 
-public class MenuCreator extends XMLDocument
+public class MenuCreator extends XMLDocument implements nl.didactor.component.scorm.player.InterfaceMenuCreator
 {
 
    /**
