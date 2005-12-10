@@ -152,6 +152,9 @@
       <arg value="-PARAM"/>
       <arg value="files"/>
       <arg value="reference" />
+      <arg value="-PARAM"/>
+      <arg value="exampledir"/>
+      <arg value="${project.examples.dir}/" />
       <arg value="-OUT"/>
       <arg value="${project.build.dir}/documentation/frontenddevelopers/taglib/reference.html" />
       <arg value="-XSL"/>
