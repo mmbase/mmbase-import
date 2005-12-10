@@ -149,7 +149,7 @@
                try
                {
                   classMenuCreater = Class.forName("nl.didactor.component.scorm.player.MenuCreator");
-                  menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + "manifest.xml"), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/"});
+                  menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + "imsmanifest.xml"), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/"});
 
                }
                catch (Exception e)
