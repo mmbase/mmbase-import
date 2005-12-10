@@ -5,8 +5,6 @@
 <%@ page import = "java.util.ArrayList" %>
 <%@ page import = "java.util.Date" %>
 <%@ page import = "java.util.ListIterator" %>
-<%@page import="nl.didactor.component.scorm.player.MenuCreator"%>
-<%@page import="uk.ac.reload.moonunit.contentpackaging.CP_Core"%>
 
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
@@ -121,7 +119,7 @@
 
    <mm:present referid="it_is_a_package">
       <mm:remove referid="loaded"/>
-      
+
       <mm:node number="component.scorm" notfound="skip">
          <%
             String sPath = "";
@@ -144,7 +142,21 @@
             File fileCustomMenu = new File(sNodePlayer + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs" + nodeLearnObject.getNumber() +  ".js");
             if(!fileCustomMenu.exists())
             {
-               MenuCreator menuCreator = new MenuCreator(new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + CP_Core.MANIFEST_NAME), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/");
+
+               Class classMenuCreater = null;
+               nl.didactor.component.scorm.player.InterfaceMenuCreator menuCreator = null;
+
+               try
+               {
+                  classMenuCreater = Class.forName("nl.didactor.component.scorm.player.MenuCreator");
+                  menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + "manifest.xml"), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/"});
+
+               }
+               catch (Exception e)
+               {
+                  throw new ServletException ("Can't load SCORM player class! Nested exception is:" + e.toString());
+               }
+
                String[] arrstrJSMenu = menuCreator.parse(true, "" + sPackageNode, sPath);
 
                RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileCustomMenu, "rw");
@@ -172,7 +184,7 @@
       <mm:notpresent referid="loaded">
          You have to install SCORM component to see the content of this page.
       </mm:notpresent>
-      
+
    </mm:present>
 
 </mm:node>
