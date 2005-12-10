@@ -16,13 +16,13 @@ import org.mmbase.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HtmlSetString.java,v 1.1 2005-10-25 12:30:26 michiel Exp $
+ * @version $Id: HtmlSetString.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class HtmlSetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(HtmlSetString.class);
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
     protected static final String PREF = "<p><![CDATA[";
     protected static final String POST = "]]></p>";
     public Object process(Node node, Field field, Object value) {
@@ -34,5 +34,4 @@ public class HtmlSetString implements  Processor {
     public String toString() {
         return "set_MMXF";
     }
-  
 }

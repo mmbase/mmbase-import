@@ -19,14 +19,14 @@ import org.mmbase.util.logging.*;
  * use a localized String as customized in datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatDateTime.java,v 1.2 2005-10-31 14:12:10 michiel Exp $
+ * @version $Id: FormatDateTime.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class FormatDateTime implements Processor {
     private static final Logger log = Logging.getLoggerInstance(FormatDateTime.class);
 
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     public Object process(Node node, Field field, Object value) {
         Locale locale = node.getCloud().getLocale();

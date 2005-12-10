@@ -15,15 +15,15 @@ import org.mmbase.util.logging.*;
  * and {@link org.mmbase.bridge.Cloud#PROP_XMLMODE}) and influence how an XML field must behave
  * itself. XML is all about flexibility of presentation, and this mode regulates that.
  *
- * It boils down to the fact that 'value intercepters' can be plugged on XML fields which can use
+ * It boils down to the fact that 'processors' can be plugged on XML fields which can use
  * this 'mode' to behave differently.
  *
  * Most modes will influence especially {@link org.mmbase.bridge.Node#setStringValue(String,
- String)} and {@link org.mmbase.bridge.Node#getStringValue(String)}.  `* (depending on the
- fieldtypedefinitions.xml), but some modes could also set/get XMLValue.
+ * String)} and {@link org.mmbase.bridge.Node#getStringValue(String)}. (depending on the
+ * datatypes.xml), but some modes could also set/get XMLValue.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Modes.java,v 1.1 2005-10-25 12:30:26 michiel Exp $
+ * @version $Id: Modes.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
  * @since MMBase-1.8
  */
 
