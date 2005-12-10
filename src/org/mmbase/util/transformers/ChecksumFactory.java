@@ -16,10 +16,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Creates ByteToCharTransformers
+ * Creates ByteToCharTransformers, creating a 'checksum' string of a byte-arrays. Parameterized by
+ * the checksum implementation (defaults to java.util.zip.Adler32).
+ *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ChecksumFactory.java,v 1.6 2005-10-18 21:52:09 michiel Exp $
+ * @version $Id: ChecksumFactory.java,v 1.7 2005-12-10 12:59:50 michiel Exp $
  */
 
 public class ChecksumFactory implements ParameterizedTransformerFactory  {
