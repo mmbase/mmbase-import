@@ -3,6 +3,7 @@
   version="1.1"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xalan="org.apache.xalan.xslt.extensions.Redirect"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
   extension-element-prefixes="xalan"
   xmlns:mm="mmbase-taglib"
   >
@@ -253,14 +254,8 @@
    <xsl:if test="name()='taginterface'"><font color="{$extendscolor}"><xsl:value-of select="name" /></font></xsl:if>
    <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
   </a>
-   <xsl:if test="since='MMBase-1.7'">
-     (new)
-   </xsl:if>
-   <xsl:if test="since='MMBase-1.7.1'">
-     (newer!)
-   </xsl:if>
    <xsl:if test="since='MMBase-1.8'">
-     (newest!!)
+     (new)
    </xsl:if>
   <xsl:if test="position() != last()"> | </xsl:if>
 </xsl:template>
@@ -450,7 +445,16 @@
       </xsl:for-each>
         </xsl:if>
         <xsl:if test="not($linkexamples)">
-          There are more examples, but not in this document.<!-- cannot determin the URL in a robust way -->
+          The following examples can be found in the 'examples' subdirectory:
+          <ul>
+          <xsl:for-each select="example/include">
+            <li><xsl:value-of select="@href" /></li>
+            <!--
+              The following will work in XSLT 2.0, but not yet :(
+              <xsl:value-of select="unparsed-text(@href)" />
+            -->
+          </xsl:for-each>
+          </ul>
         </xsl:if>
     </td>
     </tr>
@@ -658,9 +662,30 @@
   </tr>
 </xsl:template>
 
+<xsl:template match="parameterizedescaper">
+  <tr>
+    <td valign="top"><xsl:value-of select="@id" /></td>
+    <td valign="top"><xsl:apply-templates select="info"/></td>
+    <td valign="top">
+      <table>
+        <tr>
+          <th valign="top">Parameter name</th> 
+          <th valign="top">Description</th> 
+        </tr>
+        <xsl:for-each select="param">
+          <tr>
+            <td valign="top"><xsl:value-of select="@name" /></td>
+            <td valign="top"><xsl:apply-templates select="info" /></td>
+          </tr>
+        </xsl:for-each>
+      </table>
+    </td>
+  </tr>
+</xsl:template>
+
 <xsl:template match="taglibcontent" mode="escapers">
   <table bgcolor="#99ccff" width="100%">
-    <tr><th valign="top"><a name="escapers "/>Escaper</th><th></th></tr>
+    <tr><th valign="top"><a name="escapers"/>Escaper</th><th></th></tr>
     <xsl:apply-templates select="escaper|postprocessor"/>
   </table>
 </xsl:template>
@@ -668,6 +693,15 @@
   <table bgcolor="#99ccff" width="100%">
     <tr><th valign="top"><a name="postprocessors" />Postprocessor</th><th></th></tr>
     <xsl:apply-templates select="postprocessor"/>
+  </table>
+</xsl:template>
+<xsl:template match="taglibcontent" mode="parameterizedescapers">
+  <table bgcolor="#99ccff" width="100%">
+    <tr>
+      <th valign="top" colspan="2"><a name="parameterizedescapers" />Parameterized Escaper</th>
+      <th valign="top" colspan="2">Parameters</th>
+    </tr>
+    <xsl:apply-templates select="parameterizedescaper"/>
   </table>
 </xsl:template>
 <xsl:template match="taglibcontent" mode="content">
