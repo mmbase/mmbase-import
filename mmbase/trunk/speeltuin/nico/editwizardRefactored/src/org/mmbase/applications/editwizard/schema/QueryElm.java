@@ -15,12 +15,12 @@ package org.mmbase.applications.editwizard.schema;
  * 
  * @author caicai
  * @created Jul 18, 2005
- * @version $Id: QueryElm.java,v 1.1 2005-11-28 10:09:29 nklasens Exp $
+ * @version $Id: QueryElm.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  */
 public class QueryElm extends SchemaElement{
 
     // Seconds. TODO: should be added into system propreties
-    public static long DEFAULT_TIMEOUT = 60 * 60;
+    public static final long DEFAULT_TIMEOUT = 60 * 60;
     
     public ObjectElm object = null;
 

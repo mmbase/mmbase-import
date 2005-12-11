@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard.schema;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * this class is act as a POJO base object to present elements in <wizard-schema> xml files. 
@@ -17,7 +18,7 @@ import java.util.*;
  * 
  * @author caicai
  * @created Jul 18, 2005
- * @version $Id: SchemaElement.java,v 1.1 2005-11-28 10:09:29 nklasens Exp $
+ * @version $Id: SchemaElement.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  */
 public abstract class SchemaElement {
     

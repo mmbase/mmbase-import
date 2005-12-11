@@ -1,5 +1,6 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" errorPage="error.jsp"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@page import="org.mmbase.applications.editwizard.Controller"
 %><%@page import="org.mmbase.applications.editwizard.action.*"
 %><mm:import externid="loginsessionname" from="parameters" ></mm:import><%
 %><mm:import externid="loginmethod" from="parameters">loginpage</mm:import><%
@@ -7,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.1 2005-11-28 10:09:28 nklasens Exp $
+ * @version  $Id: settings.jsp,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen

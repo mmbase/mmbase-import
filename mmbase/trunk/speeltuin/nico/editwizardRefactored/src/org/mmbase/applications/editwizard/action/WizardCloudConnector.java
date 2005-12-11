@@ -7,20 +7,14 @@
  See http://www.MMBase.org/license
 
  */
-package org.mmbase.applications.editwizard.data;
+package org.mmbase.applications.editwizard.action;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.mmbase.applications.editwizard.WizardException;
-import org.mmbase.applications.editwizard.schema.FieldElm;
-import org.mmbase.applications.editwizard.schema.ObjectElm;
-import org.mmbase.applications.editwizard.schema.RelationElm;
-import org.mmbase.applications.editwizard.schema.SchemaKeys;
+import org.mmbase.applications.editwizard.data.*;
+import org.mmbase.applications.editwizard.schema.*;
 import org.mmbase.applications.editwizard.util.XmlUtil;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -102,7 +96,7 @@ public class WizardCloudConnector {
      * @return
      * @exception
      */
-    private ObjectData loadNode(ObjectElm objectElm, String objectNumber) {
+    public ObjectData loadNode(ObjectElm objectElm, String objectNumber) {
         //get node by object number
         Node node = cloud.getNode(objectNumber);
         if (node==null) {
@@ -376,7 +370,7 @@ public class WizardCloudConnector {
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
-    private ObjectData loadNew(ObjectElm objectElm, Map params) throws WizardException {
+    public ObjectData loadNew(ObjectElm objectElm, Map params) throws WizardException {
 
         // node name
         String objectType = objectElm.getType();
@@ -405,36 +399,6 @@ public class WizardCloudConnector {
         }
     }
     
-    /**
-     * create relations by specify destination numbers.
-     * @param source
-     * @param relationElm
-     * @param numberList
-     * @return
-     * @throws WizardException
-     */
-    public List createRelations(ObjectData source, RelationElm relationElm, List numberList, Map params)
-            throws WizardException {
-        List relationList = new ArrayList();
-        for (int i=0;i<numberList.size();i++) {
-            String number = (String)numberList.get(i);
-            ObjectData relatedObject = null;
-            if ("new".equals(number)){
-                if (relationElm.object!=null) {
-                    relatedObject = loadNew(relationElm.object,params);
-                } else {
-                    relatedObject = loadNew(relationElm.getDestination());
-                }
-            } else {
-                relatedObject = loadNode(relationElm.object,number);
-            }
-            RelationData relationData = loadNewRelation(source, relatedObject, relationElm.getRole(),
-                    relationElm.getCreateDir());
-            relationList.add(relationData);
-        }
-        return relationList;
-    }
-
     /**
      * create new related object and new relation
      * @param sourceObject
@@ -489,7 +453,7 @@ public class WizardCloudConnector {
      * @return The resulting object node.
      * @throws WizardException if the node could not be created
      */
-    private ObjectData loadNew(String objectType) {
+    public ObjectData loadNew(String objectType) {
         NodeManager nodeManager = cloud.getNodeManager(objectType);
         Node node = nodeManager.createNode();
         ObjectData objectData = null;
@@ -514,7 +478,7 @@ public class WizardCloudConnector {
      * @return The resulting relation node.
      * @throws WizardException if the relation could not be created
      */
-    private RelationData loadNewRelation(ObjectData source, ObjectData destination, 
+    public RelationData loadNewRelation(ObjectData source, ObjectData destination, 
             String roleName, String createDir) throws WizardException {
         // if both types are given, use these as a constraint for the Relationmanager
         if (roleName==null || "".equals(roleName)) {
@@ -975,7 +939,7 @@ public class WizardCloudConnector {
             
             if (newData.getStatus() == BaseData.STATUS_NEW) {
                 //TODO: if status is new 
-            } else if (fieldData.isChanged()==false) {
+            } else if (!fieldData.isChanged()) {
                 //TODO: if the value is not changed
                 // we can determined whether binary field be changed by binaryversion 
                 continue;

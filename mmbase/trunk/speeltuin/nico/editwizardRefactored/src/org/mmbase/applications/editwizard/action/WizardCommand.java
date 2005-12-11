@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.editwizard.action;
 
 import java.util.*;
-import org.mmbase.util.logging.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The wizardcommands are used to store information received from the clients about commands.
@@ -20,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.1 2005-11-28 10:09:27 nklasens Exp $
+ * @version $Id: WizardCommand.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  */
 public class WizardCommand {
 

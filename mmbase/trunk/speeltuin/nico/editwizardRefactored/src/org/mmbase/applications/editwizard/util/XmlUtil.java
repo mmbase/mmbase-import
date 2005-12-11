@@ -9,28 +9,29 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard.util;
 
-import org.w3c.dom.*;
 import java.io.*;
-import java.net.*;
+import java.net.URL;
 import java.util.*;
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
-import javax.xml.transform.dom.*;
+
 import javax.xml.parsers.DocumentBuilder;
-import org.xml.sax.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
-
 import org.mmbase.applications.editwizard.WizardException;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.ResourceLoader;
-
-import org.mmbase.cache.xslt.*;
+import org.mmbase.cache.xslt.FactoryCache;
+import org.mmbase.cache.xslt.TemplateCache;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.xml.URIResolver;
-import org.mmbase.util.XMLErrorHandler;
-import org.mmbase.util.XMLEntityResolver;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 /**
  * This class contains static utility methods used by the editwizard.
@@ -42,7 +43,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: XmlUtil.java,v 1.1 2005-11-28 10:09:29 nklasens Exp $
+ * @version $Id: XmlUtil.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  */
 
 public class XmlUtil {
@@ -278,49 +279,21 @@ public class XmlUtil {
     }
 
     /**
-     * Selects a single node using the given xpath and uses the given node a a starting context and returns the textnode found. If no text is found, the default value is given.
-     *
-     * @param       node  the contextnode to start the xpath from.
-     * @param       xpath   the xpath which should be fired.
-     * @param       defaultvalue    this value will be returned when no node is found using the xpath.
-     * @return     The text string.
-     */
-    public static String selectSingleNodeText(Node node, String xpath, String defaultvalue) {
-        return selectSingleNodeText(node, xpath, defaultvalue, null);
-    }
-
-    /**
      * Selects a single node using the given xpath and uses the given node a a starting context and returns the textnode found.
      * If no text is found, the default value is given.
-     * If a cloud argument is passed, it is used to select the most approprite text (using xml:lang attributes) depending on
-     * the cloud's properties.
-     *
      * @param  node  the contextnode to start the xpath from.
      * @param  xpath the xpath which should be fired.
      * @param  defaultvalue  this value will be returned when no node is found using the xpath.
-     * @param  cloud the cloud whose locale is to be used for selecting language-specific texts
      * @return The text string.
      */
-    public static String selectSingleNodeText(Node node, String xpath, String defaultvalue, Cloud cloud) {
+    public static String selectSingleNodeText(Node node, String xpath, String defaultvalue) {
         try {
-            XObject x = null;
-            // select based on cloud locale setting
-            if (cloud != null) {
-                x = XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");
-            }
+            XObject x = XPathAPI.eval(node, xpath);
             String xs = (x == null ? "" : x.str());
-            // mm: according to javadoc of xalan 2.5.2,  x cannot be null, so I don't know if it was possible in older xalans, so just to be on the safe side
-
-            // if not found or n.a., just grab the first you can find
-            if (xs.equals("")) {
-                x = XPathAPI.eval(node, xpath);
-            }
-            xs = (x == null ? "" : x.str());
             if (xs.equals("")) {
                 xs =  defaultvalue;
             }
             return xs;
-
         } catch (Exception e) {
             log.error(Logging.stackTrace(e) + ", evaluating xpath:" + xpath);
         }

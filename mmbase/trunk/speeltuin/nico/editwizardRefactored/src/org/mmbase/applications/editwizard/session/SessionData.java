@@ -13,10 +13,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import org.mmbase.applications.editwizard.WizardException;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.URIResolver;
-
-
-import org.mmbase.util.logging.*;
 
 /**
  * This struct contains configuration information for the jsps. This
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: SessionData.java,v 1.1 2005-11-28 10:09:30 nklasens Exp $
+ * @version $Id: SessionData.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  */
 
 public class SessionData {

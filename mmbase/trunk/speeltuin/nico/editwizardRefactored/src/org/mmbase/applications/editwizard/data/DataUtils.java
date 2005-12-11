@@ -32,11 +32,11 @@ public class DataUtils {
     private static Pattern XPATH_PATTERN_FDATAPATH = Pattern.compile(
         "((object)/)?field\\[@name=['\"](\\w+)['\"]\\]");
 
-    private static final Logger log = Logging.getLoggerInstance(WizardCloudConnector.class);
+    private static final Logger log = Logging.getLoggerInstance(DataUtils.class);
 
     private static long dataObjectSerialNo = 0l;
 
-    protected final static String[] TYPE_DESCRIPTIONS = {
+    final static String[] TYPE_DESCRIPTIONS = {
         "unknown", "string", "integer", "unknown", "byte", "float", "double", "long", "xml", "node", "datetime", "boolean", "list"
     };
     

@@ -1,4 +1,5 @@
 <%@ page isErrorPage="true" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@ page import="org.mmbase.applications.editwizard.Controller"
 %><%@ page import="org.mmbase.applications.editwizard.action.*"
 %><%
 if (exception==null) {

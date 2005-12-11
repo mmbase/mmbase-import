@@ -28,7 +28,7 @@ public class UploadUtil {
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(UploadUtil.class.getName());
     
-    public static String uploadFiles(HttpServletRequest request, WizardConfig wizardConfig, String returnMessage, int maxsize) throws WizardException {
+    public static String uploadFiles(HttpServletRequest request, WizardConfig wizardConfig, int maxsize) throws WizardException {
         // Initialization
         DiskFileUpload fu = new DiskFileUpload();
         // maximum size before a FileUploadException will be thrown
@@ -66,7 +66,7 @@ public class UploadUtil {
                     } 
                 }
             }
-            returnMessage = "Uploaded files:" + fileCount;
+            return "Uploaded files:" + fileCount;
         } catch (FileUploadBase.SizeLimitExceededException e) {
             String errorMessage = "Uploaded file exceeds maximum file size of "+maxsize+" bytes.";
             log.warn(errorMessage,e);
@@ -76,7 +76,6 @@ public class UploadUtil {
             log.warn(errorMessage,e);
             throw new WizardException(errorMessage, e);
         }
-        return returnMessage;
     }
     
 }
