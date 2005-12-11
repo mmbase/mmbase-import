@@ -7,20 +7,17 @@
  * http://www.MMBase.org/license
  * 
  */
-package org.mmbase.applications.editwizard.action;
+package org.mmbase.applications.editwizard;
 
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import org.mmbase.applications.editwizard.WizardException;
+import org.mmbase.applications.editwizard.action.*;
 import org.mmbase.applications.editwizard.data.BaseData;
 import org.mmbase.applications.editwizard.schema.ActionElm;
 import org.mmbase.applications.editwizard.schema.WizardSchema;
@@ -80,9 +77,6 @@ public class Controller {
     
     /**
      * init controller's parameter
-     * @return
-     * @throws WizardException
-     * @throws IOException
      */
     public boolean init() throws WizardException, IOException {
         // default means: 'this is not a popup'
@@ -94,9 +88,6 @@ public class Controller {
         return false;
     }
 
-    /**
-     * @return
-     */
     private boolean isPopup() {
         return !"".equals(popupId);
     }
@@ -175,7 +166,6 @@ public class Controller {
         String did = request.getParameter("did");
         
         String errorMessage = null;
-        String returnMessage= null;
         WizardConfig wizardConfig = SessionDataManager.findWizardConfig(sessionData, popupId);
         if (wizardConfig==null) {
             // TODO: handle exception
@@ -195,8 +185,9 @@ public class Controller {
         } catch (NumberFormatException e) {
             log.debug("Maxsize reqiest parameter " + e.getMessage());
         }
+        String returnMessage = null;
         try {
-            returnMessage = UploadUtil.uploadFiles(request, wizardConfig, returnMessage, maxsize);
+            returnMessage = UploadUtil.uploadFiles(request, wizardConfig, maxsize);
         }catch (WizardException we) {
             errorMessage = we.getMessage();
         }
@@ -208,13 +199,8 @@ public class Controller {
     }
 
     private String processException(Exception exception){
-//        try{
-            request.setAttribute(ATTRKEY_EXCEPTION,exception);
-            return "error.jsp";
-//        } catch (Exception e) {
-//            log.debug("The following error occurred: " + exception + org.mmbase.util.logging.Logging.stackTrace(exception));
-//            return "error.jsp";
-//        }
+        request.setAttribute(ATTRKEY_EXCEPTION,exception);
+        return "error.jsp";
     }
     
     /**
@@ -319,19 +305,14 @@ public class Controller {
             listConfig = config;
             
         }
-        //TODO: here should consider the case for search list 
-        // configure the thing, that means, look at the parameters.
         listConfig.configure(request, cloud, sessionData.getUriResolver());
 
-        ListWorkspace workspace = ListWorkspace.getInstance(listConfig, cloud);
+        ListWorkspace workspace = new ListWorkspace(listConfig);
         
-        if (workspace.doSearch()) {
-            Document listDoc = workspace.getDocument();
-            Map params = workspace.getParams();
-            fillAttributes(params);
-            return doXslt(listDoc, params,listConfig.getTemplate());
-        }
-        return "error.jsp";
+        Document listDoc = workspace.getDocument(cloud);
+        Map params = workspace.getParams();
+        fillAttributes(params, cloud);
+        return doXslt(listDoc, params,listConfig.getTemplate());
     }
     
     private String doDeleteNode(Cloud cloud) throws WizardException {
@@ -378,25 +359,25 @@ public class Controller {
             // 2) in another case : when upload dialog close to refresh the opener
             //    we also need to save current data.\
             // 3) if cancel, do not need to save
-            WizardWorkspace workspace = WizardWorkspace.getInstance(sessionData,wizardConfig, cloud);
-            workspace.saveWizardData(request);
+            WizardWorkspace workspace = new WizardWorkspace();
+            workspace.saveWizardData(request, wizardConfig, sessionData.getTimezone());
         }
         if (command == null) {
             // check whether we need create new wizard config
             // in two case we need to create new config:
             // 1) specified object number is new
             // 2) specified object number is differ with current object number
-            WizardConfig config = this.checkWizardConfig(wizardConfig, cloud);
-            WizardWorkspace workspace = null;
+            WizardConfig config = this.checkWizardConfig(wizardConfig);
             wizardConfig = config;
-            workspace = WizardWorkspace.getInstance(sessionData,wizardConfig, cloud);
+            WizardWorkspace workspace = new WizardWorkspace();
             //start new wizard
             if (wizardConfig.wizardData==null) {
-                workspace.doLoad();
+                workspace.doLoad(wizardConfig, cloud);
             }
-            Document doc = workspace.getDocument();
-            Map params =  workspace.getParams();
-            fillAttributes(params);
+            Document doc = workspace.getDocument(wizardConfig, cloud);
+            Map params = new HashMap();
+            params.putAll(wizardConfig.getAttributes());
+            fillAttributes(params, cloud);
             return doXslt(doc, params,"xsl/wizard.xsl");
         } else {
             if (wizardConfig==null) {
@@ -404,7 +385,7 @@ public class Controller {
                 throw new WizardException("this scenario is not defined in editwizard");
             }
             // doing command in current wizard config
-            WizardWorkspace workspace = WizardWorkspace.getInstance(sessionData,wizardConfig, cloud);
+            WizardWorkspace workspace = new WizardWorkspace();
             AbstractConfig returnConfig = wizardConfig;
             // here we need this status to judge what to do next
             // 1, continue another command/save, for example:
@@ -432,21 +413,21 @@ public class Controller {
                             list.add(number);
                         }
                     }
-                    workspace.doAddItem(command.getFid(),command.getDid(), list);
+                    workspace.doAddItem(wizardConfig, cloud, command.getFid(),command.getDid(), list);
                     break;
                 }
                 case WizardCommand.DELETE_ITEM: {
                     // delete item! sample: cmd/delete-item/f_8/d_7//=
                     // The command parameters is the did of the node to delete.
                     // note that a fid parameter is expected in the command syntax but ignored
-                    workspace.doDeleteItem(command.getFid(),command .getDid());
+                    workspace.doDeleteItem(wizardConfig, command.getFid(),command .getDid());
                     break;
                 }
                 case WizardCommand.UPDATE_ITEM: {
                     // update an item - replaces all fields of the item with updated values
                     // retrieved from MMbase
                     // The command parameters is a value indicating the number of the node(s) to update.
-                    workspace.doUpdateItem(command.getFid(),command.getDid(),command.getParameter(2), command.getParameter(3), command.getValue());
+                    workspace.doUpdateItem(wizardConfig, cloud, command.getFid(),command.getDid(),command.getParameter(2), command.getParameter(3), command.getValue());
                     break;
                 }
                 case WizardCommand.MOVE_UP:
@@ -454,7 +435,7 @@ public class Controller {
                     // This is in fact a SWAP action (swapping the order-by fieldname), not really move up or down.
                     // The command parameters are the fid of the list in which the item falls (determines order),
                     // and the did's of the nodes that are to be swapped.
-                    workspace.doMoveItem(command.getFid(),command.getDid(),command.getParameter(2));
+                    workspace.doMoveItem(wizardConfig, command.getFid(),command.getDid(),command.getParameter(2));
                     break;
                 }
                 case WizardCommand.START_WIZARD: {
@@ -482,7 +463,7 @@ public class Controller {
                 case WizardCommand.GOTO_FORM: {
                     // The command parameters is the did of the form to jump to.
                     // note that a fid parameter is expected in the command syntax but ignored
-                    workspace.doGotoForm(command.getDid());
+                    wizardConfig.doGotoForm(command.getDid());
                     break;
                 }
                 case WizardCommand.CANCEL: {
@@ -502,14 +483,14 @@ public class Controller {
                 }
                 case WizardCommand.SAVE: {
                     log.debug("Wizard " + wizardConfig.objectNumber + " will be saved (but not closed)");
-                    workspace.doSave();
-                    workspace.doLoad();
+                    workspace.doSave(wizardConfig, cloud);
+                    workspace.doLoad(wizardConfig, cloud);
                     break;
                 }
                 case WizardCommand.COMMIT: {
                     log.debug("Committing wizard " + wizardConfig.objectNumber);
                     boolean isNew = wizardConfig.wizardData.getStatus()==BaseData.STATUS_NEW;
-                    workspace.doSave();
+                    workspace.doSave(wizardConfig, cloud);
                     returnConfig = SessionDataManager.removeCurrentConfig(sessionData, popupId);
                     if (wizardConfig.getPopupId()!=null && "".equals(wizardConfig.getPopupId())==false) {
                         if (returnConfig instanceof WizardConfig) {
@@ -532,14 +513,13 @@ public class Controller {
                         }
                     }
                     if (wizardConfig.parentDid!=null && "".equals(wizardConfig.parentDid)==false) {
-                        WizardConfig prevWizardCfg = (WizardConfig)returnConfig;
-                        workspace.init(sessionData,prevWizardCfg,cloud);
+                        workspace = new WizardWorkspace();
                         if (isNew) {
                             List numberList = new ArrayList();
                             numberList.add(wizardConfig.wizardData.getNumber());
-                            workspace.doAddItem(wizardConfig.parentFid,wizardConfig.parentDid,numberList);
+                            workspace.doAddItem(wizardConfig, cloud, wizardConfig.parentFid,wizardConfig.parentDid,numberList);
                         } else {
-                            workspace.doUpdateItem(wizardConfig.parentFid,
+                            workspace.doUpdateItem(wizardConfig, cloud, wizardConfig.parentFid,
                                     wizardConfig.parentDid,
                                     wizardConfig.objectNumber,
                                     wizardConfig.origin,
@@ -557,8 +537,6 @@ public class Controller {
                 // use current config
                 String refer = sessionData.getBackPage();
                 return this.redirectTo(refer);
-//                return this.redirectTo("wizard.jsp?proceed=true&sessionkey="+sessionKey+
-//                        "&objectnumber="+wizardConfig.objectNumber);
             } else {
                 return redirectTo(returnConfig.getPage());
             }
@@ -582,15 +560,8 @@ public class Controller {
     
     /**
      * jumped to xslt.jsp to transform the dom object to html page
-     * 
-     * @param node
-     * @param params
-     * @param xslFilePath
-     * @return
-     * @throws WizardException
      */
     private String doXslt(Node node, Map params, String xslFilePath) throws WizardException{
-        
         URIResolver uriResolver = sessionData.getUriResolver();
         URL stylesheetFile = null;     
         try {
@@ -610,28 +581,15 @@ public class Controller {
     
     /**
      * jumped to xslt.jsp to transform the dom object to html page
-     * 
-     * @param node
-     * @param params
-     * @param xslFile
-     * @return
-     * @throws WizardException
      */
     private String doXslt(Node node, Map params, URL xslFile) {
-        
         request.setAttribute(ATTRKEY_XSLT_DOCUMENT,node);
         request.setAttribute(ATTRKEY_XSLT_PARAMS,params);
         request.setAttribute(ATTRKEY_XSLT_FILEPATH,xslFile);
         request.setAttribute(ATTRKEY_XSLT_URIRESOLVER,sessionData.getUriResolver());
-        
         return "xslt.jsp";
     }
     
-    /**
-     * 
-     * @param commited
-     * @return
-     */
     private String closePopup(String sendCmd, String objNumbers, boolean isCommited) {
         request.setAttribute("committed",""+isCommited);
         if (isCommited==true) {
@@ -646,10 +604,14 @@ public class Controller {
      * first call are added.  No arrays supported, only single values.
      * @since MMBase-1.7
      */
-    protected void fillAttributes(Map map) {
+    protected void fillAttributes(Map map, Cloud cloud) {
         if (sessionData!=null && sessionData.getAttributes()!=map) {
             map.putAll(sessionData.getAttributes());  // start with setting in global config
         }
+        
+        map.put("cloud", cloud);
+        map.put("language", cloud.getLocale().getLanguage());
+        map.put("username", cloud.getUser().getIdentifier());
         
         Enumeration enumeration = request.getParameterNames();
         while (enumeration.hasMoreElements()) {
@@ -667,17 +629,6 @@ public class Controller {
         map.put("sessionkey", sessionkey);
     }
     
-    /**
-     * @return Returns the sessionData.
-     */
-    protected SessionData getSessionData() {
-        return sessionData;
-    }
-    
-    /**
-     * 
-     * @return
-     */
     private WizardCommand getRequestCommand(){
         Enumeration enu = request.getParameterNames();
         while(enu.hasMoreElements()) {
@@ -697,7 +648,7 @@ public class Controller {
      * @return
      * @throws WizardException
      */
-    WizardConfig checkWizardConfig(WizardConfig wizardConfig, Cloud cloud) throws WizardException{
+    WizardConfig checkWizardConfig(WizardConfig wizardConfig) throws WizardException{
         String objectNumber = HttpUtil.getParam(request, "objectnumber");
         if (wizardConfig!=null) {
             if (objectNumber != null && (objectNumber.equals("new") ||
@@ -716,7 +667,7 @@ public class Controller {
             }
             wizardConfig.setPage(page);
             //determine the objectnumber and assign the wizard name.
-            wizardConfig.configure(request, cloud, sessionData.getUriResolver());
+            wizardConfig.configure(request, sessionData.getUriResolver());
             // wizard should now have a name!
             if (wizardConfig.getWizardName() == null) {
                 throw new WizardException("Wizardname may not be null, configurated by class with name: " + this.getClass().getName());

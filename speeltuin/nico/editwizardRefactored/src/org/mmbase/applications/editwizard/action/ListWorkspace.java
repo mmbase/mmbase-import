@@ -13,16 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.mmbase.applications.editwizard.WizardException;
-import org.mmbase.applications.editwizard.schema.*;
+import org.mmbase.applications.editwizard.schema.ActionElm;
+import org.mmbase.applications.editwizard.schema.WizardSchema;
 import org.mmbase.applications.editwizard.session.ListConfig;
 import org.mmbase.applications.editwizard.util.XmlUtil;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.Query;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -34,18 +29,33 @@ import org.w3c.dom.Document;
  * 
  * @author caicai
  * @created 2005-8-11
- * @version $Id: ListWorkspace.java,v 1.1 2005-11-28 10:09:27 nklasens Exp $
+ * @version $Id: ListWorkspace.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  */
 public class ListWorkspace{
+    
+    public static final String ELEM_OBJECT = "object";
+    public static final String ATTR_TYPE = "type";
+    public static final String ATTR_INDEX = "index";
+    public static final String ATTR_GUITYPE = "guitype";
+    public static final String ATTR_FIELDNAME = "fieldname";
+    public static final String ATTR_NAME = "name";
+    public static final String ELEM_FIELD = "field";
+    public static final String ELEM_PAGES = "pages";
+    public static final String ATTR_COUNT = "count";
+    public static final String ATTR_CURRENTPAGE = "currentpage";
+    public static final String ATTR_SHOWING = "showing";
+    public static final String ATTR_NEXT = "next";
+    public static final String ATTR_PREVIOUS = "previous";
+    public static final String ATTR_CURRENT = "current";
+    public static final String ATTR_START = "start";
+    public static final String ATTR_NUMBER = "number";
+    public static final String ELEM_TITLE = "title";
     
     private static final Logger log = Logging.getLoggerInstance(ListWorkspace.class);
     
     private ListConfig listConfig = null;
-    
+
     private SearchData listData = null;
-    
-    private Cloud cloud = null;
-    
     private boolean deletable = false;
     private boolean creatable = false;
     private String deletedescription = null;
@@ -56,59 +66,17 @@ public class ListWorkspace{
     /**
      * hidden construction method
      */
-    private ListWorkspace() {
-        // hidden construction method
+    public ListWorkspace(ListConfig config) {
+        listConfig = config;
     }
     
-    public static ListWorkspace getInstance(ListConfig config, Cloud cloud) {
-        ListWorkspace workspace = new ListWorkspace();
-        workspace.listConfig = config;
-        workspace.cloud = cloud;
-        workspace.init();
-        return workspace;
-    }
-    
-    private void init() {
-        
-        if (listConfig.getAge() > -1) {
-            // maxlistConfig.getAge() is set. pre-query to find objectnumber
-            long daymarker = (new java.util.Date().getTime() / (60*60*24*1000)) - listConfig.getAge();
-
-            NodeManager mgr = cloud.getNodeManager("daymarks");
-
-            NodeList tmplist = mgr.getList("daycount>="+daymarker, null,null);
-            String ageconstraint = "";
-            if (tmplist.size()<1) {
-                // not found. No objects can be found.
-                ageconstraint = "number>99999";
-            } else {
-                Node n = tmplist.getNode(0);
-                ageconstraint = "number>"+n.getStringValue("mark");
-            }
-
-            if (listConfig.isMultilevel())
-                ageconstraint=listConfig.getMainObjectName()+"."+ageconstraint;
-
-            if (listConfig.getConstraints() == null || listConfig.getConstraints().equals("")) {
-                listConfig.setConstraints(ageconstraint);
-            } else {
-                listConfig.setConstraints("(" + listConfig.getConstraints()+") AND " + ageconstraint);
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @throws WizardException
-     */
-    public boolean doSearch() {
-        
+    public void doSearch(Cloud cloud) {
         if (listConfig.getAge() > -1) {
             // maxlistConfig.getAge() is set. pre-query to find objectnumber
             long daymarker = (new java.util.Date().getTime() / (60 * 60 * 24 * 1000))
                     - listConfig.getAge();
 
-            NodeManager mgr = this.cloud.getNodeManager("daymarks");
+            NodeManager mgr = cloud.getNodeManager("daymarks");
 
             NodeList tmplist = mgr.getList("daycount>=" + daymarker, null, null);
             String ageconstraint = "";
@@ -155,11 +123,11 @@ public class ListWorkspace{
             title = manager.getGUIName(2);
         }
         
-        listData = search(listConfig);
-        return true;
+        listData = search(listConfig, cloud);
     }
     
-    public Document getDocument() throws WizardException {
+    public Document getDocument(Cloud cloud) throws WizardException {
+        doSearch(cloud);
 
         WizardSchema schema = listConfig.getWizardSchema();
         int start = listData.getStart();
@@ -174,7 +142,7 @@ public class ListWorkspace{
         org.w3c.dom.Node rootElement = listDoc.getDocumentElement();
 
         if (schema!=null) {
-            SchemaUtils.copyToNode(rootElement,schema.titles,XmlKeys.ELEM_TITLE);
+            DOMUtils.copyToNode(rootElement,schema.titles,ELEM_TITLE);
         }
         
         String mainManager = listConfig.getMainObjectName();
@@ -235,22 +203,22 @@ public class ListWorkspace{
 
         int maxpagessize = listConfig.getMaxpagecount();
 
-        org.w3c.dom.Node pages = listDoc.createElement("pages");
-        XmlUtil.setAttribute(pages, "count", pagecount + "");
-        XmlUtil.setAttribute(pages, "currentpage", (currentpage + 1) + "");
+        org.w3c.dom.Node pages = listDoc.createElement(ELEM_PAGES);
+        XmlUtil.setAttribute(pages, ATTR_COUNT, pagecount + "");
+        XmlUtil.setAttribute(pages, ATTR_CURRENTPAGE, (currentpage + 1) + "");
         rootElement.appendChild(pages);
 
         if (pagecount > maxpagessize) {
-            XmlUtil.setAttribute(pages, "showing", maxpagessize + "");
+            XmlUtil.setAttribute(pages, ATTR_SHOWING, maxpagessize + "");
         }
 
         for (int i = pageOffset; i < pagecount && i - pageOffset < maxpagessize; i++) {
             org.w3c.dom.Node pagenode = listDoc.createElement("page");
-            XmlUtil.setAttribute(pagenode, "number", (i + 1) + "");
-            XmlUtil.setAttribute(pagenode, "start", (i * maxpagessize) + "");
-            XmlUtil.setAttribute(pagenode, "current", (i == currentpage) + "");
-            XmlUtil.setAttribute(pagenode, "previous", (i == currentpage - 1) + "");
-            XmlUtil.setAttribute(pagenode, "next", (i == currentpage + 1) + "");
+            XmlUtil.setAttribute(pagenode, ATTR_NUMBER, (i + 1) + "");
+            XmlUtil.setAttribute(pagenode, ATTR_START, (i * maxpagessize) + "");
+            XmlUtil.setAttribute(pagenode, ATTR_CURRENT, (i == currentpage) + "");
+            XmlUtil.setAttribute(pagenode, ATTR_PREVIOUS, (i == currentpage - 1) + "");
+            XmlUtil.setAttribute(pagenode, ATTR_NEXT, (i == currentpage + 1) + "");
             pages.appendChild(pagenode);
         }
         
@@ -260,21 +228,21 @@ public class ListWorkspace{
     
     private static org.w3c.dom.Node addField(org.w3c.dom.Node objNode, String name, String fieldName, String value,
             String guitype) {
-        org.w3c.dom.Node fieldNode = objNode.getOwnerDocument().createElement("field");
-        XmlUtil.setAttribute(fieldNode, "name", name);
-        XmlUtil.setAttribute(fieldNode, "fieldname", fieldName);
-        XmlUtil.setAttribute(fieldNode, "guitype", guitype);
+        org.w3c.dom.Node fieldNode = objNode.getOwnerDocument().createElement(ELEM_FIELD);
+        XmlUtil.setAttribute(fieldNode, ATTR_NAME, name);
+        XmlUtil.setAttribute(fieldNode, ATTR_FIELDNAME, fieldName);
+        XmlUtil.setAttribute(fieldNode, ATTR_GUITYPE, guitype);
         XmlUtil.storeText(fieldNode, value);
         objNode.appendChild(fieldNode);
         return fieldNode;
     }
 
     private static org.w3c.dom.Node addObject(org.w3c.dom.Node listNode, int number, int index, String type, String guitype) {
-        org.w3c.dom.Node objNode = listNode.getOwnerDocument().createElement("object");
-        XmlUtil.setAttribute(objNode, "number", "" + number);
-        XmlUtil.setAttribute(objNode, "index", "" + index);
-        XmlUtil.setAttribute(objNode, "type", type);
-        XmlUtil.setAttribute(objNode, "guitype", guitype);
+        org.w3c.dom.Node objNode = listNode.getOwnerDocument().createElement(ELEM_OBJECT);
+        XmlUtil.setAttribute(objNode, ATTR_NUMBER, "" + number);
+        XmlUtil.setAttribute(objNode, ATTR_INDEX, "" + index);
+        XmlUtil.setAttribute(objNode, ATTR_TYPE, type);
+        XmlUtil.setAttribute(objNode, ATTR_GUITYPE, guitype);
         listNode.appendChild(objNode);
         return objNode;
 
@@ -287,8 +255,6 @@ public class ListWorkspace{
         params.put("start",      listData.getStart()+"");
         params.put("deletable",  deletable+"");
         params.put("creatable",  creatable+"");
-        params.put("cloud",  cloud);
-//        params.put("popupid",  popupId);
         params.put("len", listConfig.getMaxpagecount()+"");
         params.put("deletable", deletable+"");
         params.put("creatable",  creatable+"");
@@ -310,7 +276,7 @@ public class ListWorkspace{
      * @param listConfig
      * @return
      */
-    public SearchData search(ListConfig listConfig) {
+    public SearchData search(ListConfig listConfig, Cloud cloud) {
         
         SearchData listData = new SearchData();
         
@@ -319,7 +285,6 @@ public class ListWorkspace{
 
         int start = listConfig.getStart();
         int len = listConfig.getPagelength();
-        int maxpages = listConfig.getMaxpagecount();
         int totalResultsSize;
         
         // // do not list anything if search is forced and no searchvalue given
@@ -372,7 +337,6 @@ public class ListWorkspace{
         
         listData.initStart = listConfig.getStart();
         listData.totalResultsSize = totalResultsSize;
-        listData.maxPageCount = maxpages;
         listData.pageMaxSize = len;
         listData.listResults = results;
         

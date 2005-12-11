@@ -26,7 +26,6 @@ public class SearchData {
     int initStart = 0;
     int pageMaxSize = 0;
     int totalResultsSize = 0;
-    int maxPageCount = 0;
     
     public int getResultSize() {
         if (listResults==null) {

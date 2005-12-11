@@ -1,20 +1,15 @@
 /*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
-*/
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the
+ * Open Source Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See
+ * http://www.MMBase.org/license
+ * 
+ */
 package org.mmbase.applications.editwizard.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,12 +18,10 @@ import org.mmbase.applications.editwizard.data.*;
 import org.mmbase.applications.editwizard.schema.*;
 import org.mmbase.applications.editwizard.session.WizardConfig;
 import org.mmbase.applications.editwizard.util.XmlUtil;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -37,20 +30,19 @@ public class WizardDOM {
     
     static final Logger log = Logging.getLoggerInstance(WizardDOM.class);
     
-    private WizardConfig config = null;
+    private Cloud cloud = null;
     
     private String wizardName = null;
-    
+    private String currentFormId = null;
     private WizardSchema schema = null;
-    
     private ObjectData wizardData = null;
-    
     private Map attributes = null;
     
-    public static WizardDOM getInstance(WizardConfig wizardConfig) {
+    public static WizardDOM getInstance(WizardConfig wizardConfig, Cloud cloud) {
         WizardDOM wizarddom = new WizardDOM();
-        wizarddom.config = wizardConfig;
+        wizarddom.cloud = cloud;
         wizarddom.wizardName = wizardConfig.getWizardName();
+        wizarddom.currentFormId = wizardConfig.getCurrentFormId();
         wizarddom.wizardData = wizardConfig.wizardData;
         wizarddom.attributes = wizardConfig.getAttributes();
         wizarddom.schema = wizardConfig.getWizardSchema();
@@ -63,8 +55,8 @@ public class WizardDOM {
         Node wizardNode = wizardDoc.getDocumentElement();
         
         // copy all global wizard nodes.
-        SchemaUtils.copyToNode(wizardNode,schema.titles,SchemaKeys.ELEM_TITLE);
-        SchemaUtils.copyToNode(wizardNode,schema.descriptions,SchemaKeys.ELEM_DESCRIPTION);
+        DOMUtils.copyToNode(wizardNode,schema.titles,SchemaKeys.ELEM_TITLE);
+        DOMUtils.copyToNode(wizardNode,schema.descriptions,SchemaKeys.ELEM_DESCRIPTION);
         //TODO: remove subtitle support here because it only allowed under form-schema according to dtd
         
         //add <curform/><prevform/><nextform/> tags
@@ -81,7 +73,7 @@ public class WizardDOM {
         for (int i=0;i<steplist.size();i++) {
             String formid = (String)steplist.get(i);
             FormSchemaElm formSchemaElm = schema.getFormSchema(formid);
-            if (formid.equals(config.getCurrentFormId())==true) {
+            if (formid.equals(currentFormId)==true) {
                 // create current form
                 createForm(wizardNode, formSchemaElm, wizardData);
             } else {
@@ -128,8 +120,8 @@ public class WizardDOM {
         // Add the title, description.
         //TODO: original version handle "title|subtitle|description" 
         //      but actually description is not allowed under form-schema according to schema dtd
-        SchemaUtils.copyToNode(formNode,formSchemaElm.title,SchemaKeys.ELEM_TITLE);
-        SchemaUtils.copyToNode(formNode,formSchemaElm.subTitle,SchemaKeys.ELEM_SUBTITLE);
+        DOMUtils.copyToNode(formNode,formSchemaElm.title,SchemaKeys.ELEM_TITLE);
+        DOMUtils.copyToNode(formNode,formSchemaElm.subTitle,SchemaKeys.ELEM_SUBTITLE);
 
     }
 
@@ -139,14 +131,14 @@ public class WizardDOM {
      * @throws WizardException
      */
     private void createCurform(Node node) throws WizardException {
-        List stepList = config.getWizardSchema().getSteps();
-        int index= stepList.indexOf(config.getCurrentFormId());
+        List stepList = schema.getSteps();
+        int index= stepList.indexOf(currentFormId);
         if (index<0) {
-            throw new WizardException("No form-schema marked as "+config.getCurrentFormId()
+            throw new WizardException("No form-schema marked as "+currentFormId
                     +" was defined in wizard schema file.");
         } 
         //<curform>
-        XmlUtil.createAndAppendNode(node,SchemaKeys.ELEM_CURFORM,config.getCurrentFormId());
+        XmlUtil.createAndAppendNode(node,SchemaKeys.ELEM_CURFORM,currentFormId);
         String prevFormId = index>0? (String)stepList.get(index-1):"";
         String nextFormId = index+1<stepList.size()? (String)stepList.get(index+1):"";
         //<prevform>
@@ -172,8 +164,8 @@ public class WizardDOM {
         // Add the title, description.
         //TODO: "title|subtitle|description" be handled in original version
         //       but actually description is not allowed under form-schema according to schema dtd
-        SchemaUtils.copyToNode(formNode,formSchemaElm.title,SchemaKeys.ELEM_TITLE);
-        SchemaUtils.copyToNode(formNode,formSchemaElm.subTitle,SchemaKeys.ELEM_SUBTITLE);
+        DOMUtils.copyToNode(formNode,formSchemaElm.title,SchemaKeys.ELEM_TITLE);
+        DOMUtils.copyToNode(formNode,formSchemaElm.subTitle,SchemaKeys.ELEM_SUBTITLE);
 
         List nodeList = new ArrayList();
         nodeList.addAll(formSchemaElm.fields);
@@ -190,7 +182,6 @@ public class WizardDOM {
     
     /**
      * create option list in wizard document
-     * @param optionListNode node to be operated in &lt;wiard&gt; DOM.
      * @param optionListElm schema element for &lt;optionlist&gt; in &lt;wizard-schema&gt; xml file.
      * @param selectedValue value selected by the field
      * @throws WizardException 
@@ -302,18 +293,19 @@ public class WizardDOM {
                 // get a list of all the fields (as subnodes) to query.
                 String fields = "";
                 if (objectElm!=null) {
+                    StringBuffer fieldsBuffer = new StringBuffer();
                     for (int i=0;i<objectElm.fields.size();i++) {
                         FieldElm fieldElm = (FieldElm)objectElm.fields.get(i);
-                        if (fields.length()>0){
-                            fields += ",";
+                        if (fieldsBuffer.length()>0){
+                            fieldsBuffer.append(",");
                         }
-                        fields += fieldElm.getName();
+                        fieldsBuffer.append(fieldElm.getName());
                     }
+                    fields = fieldsBuffer.toString();
                 }
     
                 String nodepath = xpath.substring(3);
                 try {
-                    Cloud cloud = this.config.getCloud();
                     NodeIterator nodeIterator = null;
     
                     if (nodepath.indexOf("/") == -1) {
@@ -377,7 +369,7 @@ public class WizardDOM {
                         && "startwizard".equals(element.getFtype())==false 
                         && "wizard".equals(element.getFtype())==false
                         && "function".equals(element.getFtype())==false) {
-                    SchemaUtils.mergeConstraints(element,data.getType(),config.getCloud());
+                    mergeConstraints(element,data.getType(), cloud);
                 }
                 createField(parentNode,element,data);
                 
@@ -385,7 +377,7 @@ public class WizardDOM {
                 FieldSetElm element = (FieldSetElm) obj;
                 // place newfieldset in pre-html form
                 Node fieldSetNode = XmlUtil.createAndAppendNode(parentNode, SchemaKeys.ELEM_FIELDSET,null);
-                SchemaUtils.copyToNode(fieldSetNode,element.prompt,SchemaKeys.ELEM_PROMPT);
+                DOMUtils.copyToNode(fieldSetNode,element.prompt,SchemaKeys.ELEM_PROMPT);
                 
                 // recursive into <fieldset>
                 createFields(fieldSetNode,element.fields,data);
@@ -398,7 +390,7 @@ public class WizardDOM {
      * create &lt;field&gt; node in &lt;wizard&gt; dom.
      * @param parentNode the node where the field element be added to.
      * @param fieldElm the field schema element defined by <wizard-schema> xml file.
-     * @param dataContext mmbase cloud data presented as Node.
+     * @param data mmbase cloud data presented as Node.
      * @throws WizardException
      */
     private void createField(Node parentNode, FieldElm fieldElm, BaseData data) throws WizardException {
@@ -434,10 +426,10 @@ public class WizardDOM {
         //create new field node
         Node fieldNode = XmlUtil.createAndAppendNode(parentNode, SchemaKeys.ELEM_FIELD,null);
         //copy all attributes from field element to field node
-        SchemaUtils.copyAttributesToNode(fieldNode,fieldElm.getAttributes());
+        DOMUtils.copyAttributesToNode(fieldNode,fieldElm.getAttributes());
         //copy prompt and description into field node
-        SchemaUtils.copyToNode(fieldNode,fieldElm.prompt,SchemaKeys.ELEM_PROMPT);
-        SchemaUtils.copyToNode(fieldNode,fieldElm.description,SchemaKeys.ELEM_DESCRIPTION);
+        DOMUtils.copyToNode(fieldNode,fieldElm.prompt,SchemaKeys.ELEM_PROMPT);
+        DOMUtils.copyToNode(fieldNode,fieldElm.description,SchemaKeys.ELEM_DESCRIPTION);
 
         // add prefix and postfix
         String prefix = fieldElm.getPrefix();
@@ -470,7 +462,6 @@ public class WizardDOM {
                 createBinaryData(fieldNode,fieldData);
             }
 
-            // 
             XmlUtil.createAndAppendNode(fieldNode, SchemaKeys.ELEM_VALUE,fieldData.getStringValue());
             
             if (fieldData.getMainObject().isMayWrite() && 
@@ -505,8 +496,8 @@ public class WizardDOM {
                 SchemaElement parentElm = fieldElm.getParent();
                 if (parentElm instanceof ItemElm) {
                     ItemElm itemElm = (ItemElm)parentElm;
-                    SchemaUtils.copyAttributesToNode(fieldNode,itemElm.getAttributes());
-                    SchemaUtils.copyAttributesToNode(fieldNode,fieldElm.getAttributes());
+                    DOMUtils.copyAttributesToNode(fieldNode,itemElm.getAttributes());
+                    DOMUtils.copyAttributesToNode(fieldNode,fieldElm.getAttributes());
                 }
                 XmlUtil.setAttribute(fieldNode,SchemaKeys.ATTR_OBJECTNUMBER,objectData.getNumber());
                 if (relationData!=null) {
@@ -620,12 +611,12 @@ public class WizardDOM {
         XmlUtil.setAttribute(listNode,SchemaKeys.ATTR_FID,listElm.getFid());
         
         // Add the title, description.  "title|description"
-        SchemaUtils.copyToNode(listNode,listElm.title,SchemaKeys.ELEM_TITLE);
-        SchemaUtils.copyToNode(listNode,listElm.description,SchemaKeys.ELEM_DESCRIPTION);
+        DOMUtils.copyToNode(listNode,listElm.title,SchemaKeys.ELEM_TITLE);
+        DOMUtils.copyToNode(listNode,listElm.description,SchemaKeys.ELEM_DESCRIPTION);
 
         // add other childNode  "|action|command" 
-        SchemaUtils.copyToNode(listNode,listElm.actions,true);
-        SchemaUtils.copyToNode(listNode,listElm.commands,true);
+        DOMUtils.copyToNode(listNode,listElm.actions,true);
+        DOMUtils.copyToNode(listNode,listElm.commands,true);
         
         // expand attribute 'startnodes' for search command
         Node command = XmlUtil.selectSingleNode(listNode, "command[@name='search']");
@@ -818,15 +809,12 @@ public class WizardDOM {
             }
             Node cmdNode = addSingleCommand(listNode, "add-item", did, otherid);
             if (addActionElm != null && addActionElm.prompt.hasValues()) {
-                SchemaUtils.copyToNode(cmdNode,addActionElm.prompt,SchemaKeys.ELEM_PROMPT);
+                DOMUtils.copyToNode(cmdNode,addActionElm.prompt,SchemaKeys.ELEM_PROMPT);
             } else if (createActionElm!=null && createActionElm.prompt.hasValues()) {
-                SchemaUtils.copyToNode(cmdNode,createActionElm.prompt,SchemaKeys.ELEM_PROMPT);
+                DOMUtils.copyToNode(cmdNode,createActionElm.prompt,SchemaKeys.ELEM_PROMPT);
             } 
             
         }
-
-        log.debug("end");
-        
     }
     
     /**
@@ -843,7 +831,7 @@ public class WizardDOM {
         //TODO: only one <item> allowed in <list>  
         ItemElm itemElm = listElm.item;
         
-        Node itemNode = SchemaUtils.copyElementToNode(parentNode,itemElm,false);
+        Node itemNode = DOMUtils.copyElementToNode(parentNode,itemElm,false);
         XmlUtil.setAttribute(itemNode,SchemaKeys.ATTR_FID,itemElm.getFid());
         
         String title = itemElm.title.getTextValue(); 
@@ -858,11 +846,11 @@ public class WizardDOM {
             XmlUtil.setAttribute(itemNode,SchemaKeys.ATTR_ITEMDESCRIPTION,description);
         }
         // Add the title, description as child elements.
-        //SchemaUtils.copyToNode(itemNode,itemElm.title,SchemaKeys.ELEM_TITLE);
-        //SchemaUtils.copyToNode(itemNode,itemElm.description,SchemaKeys.ELEM_DESCRIPTION);
+        //GeneratorUtils.copyToNode(itemNode,itemElm.title,SchemaKeys.ELEM_TITLE);
+        //GeneratorUtils.copyToNode(itemNode,itemElm.description,SchemaKeys.ELEM_DESCRIPTION);
 
         //add attributes from schema
-        SchemaUtils.copyAttributesToNode(itemNode,itemElm.getAttributes());
+        DOMUtils.copyAttributesToNode(itemNode,itemElm.getAttributes());
 
         // Copy all attributes from data to new pre-html field def (mainly
         // needed for the did).
@@ -904,11 +892,6 @@ public class WizardDOM {
         if (template!=null) {
             value = XmlUtil.fillInParams(template, attributes);
         }
-        //TODO: no data document available so could not doing this, is this useful?
-//        String value = Utils.transformAttribute(
-//                this.wizardData.getDocumentElement()
-//                ,template, false, attributes);
-
         if (value == null) {
             value = defaultvalue;
         }
@@ -975,7 +958,7 @@ public class WizardDOM {
      * 
      * @author caicai
      * @created 2005-9-30
-     * @version $Id: WizardDOM.java,v 1.1 2005-11-28 10:09:27 nklasens Exp $
+     * @version $Id: WizardDOM.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
      */
     static class OrderByComparator implements Comparator {
         
@@ -1071,6 +1054,258 @@ public class WizardDOM {
             }
             return field;
         }
+    }
+
+    public static String getDataTypeName(Field field) {
+        return getDataTypeName(field.getType());
+    }
+    
+    public static String getDataTypeName(int type) {
+        String typeName = null;
+        switch (type) {
+            case Field.TYPE_INTEGER:
+            case Field.TYPE_NODE:
+                typeName = "int";
+                break;
+            case Field.TYPE_LONG:
+                typeName="long";
+                break;
+            case Field.TYPE_FLOAT:
+                typeName="float";
+                break;
+            case Field.TYPE_DOUBLE:
+                typeName="double";
+                break;
+            case Field.TYPE_BINARY:
+                typeName="binary";
+                break;
+            case Field.TYPE_DATETIME:
+                typeName = "datetime";
+                break;
+            case Field.TYPE_BOOLEAN:
+                typeName = "boolean";
+                break;
+            default:
+                typeName = "string";
+        }
+        return typeName;
+    }
+    
+    /**
+     * merge constraints of the field into schema element
+     * @param fieldElm
+     * @param objectType
+     */
+    public static void mergeConstraints(FieldElm fieldElm, String objectType, Cloud cloud) {
+        // the object type could not be retrieve by schema. so it must be provided
+        // by method caller. in most case, it is get by object number or specified 
+        // by schema element "action[@type='create']/object@type
+        // SchemaElement parentElm = fieldElm.getParent().getAttribute("type");
+        NodeManager nm = cloud.getNodeManager(objectType);
+        String fieldName = fieldElm.getName();
+        if (fieldName==null) {
+            if (log.isDebugEnabled()) {
+                log.warn("the name of field in object[@type="+objectType+"] is missing, could not retrieve the constraints. ignore this field!");
+            }
+            return;
+        }
+        Field field = nm.getField(fieldName);
+        mergeConstraints(fieldElm,field);
+    }
+
+    /**
+     * merge the constraints defined by builder and wizard-schema
+     * @param fieldElm field constraints defined in wizard-schema
+     * @param field field constraints defined in object builder
+     */
+    public static void mergeConstraints(FieldElm fieldElm, Field field){
+        if (field==null) {
+            //no constraints found. so forget it.
+            if (log.isDebugEnabled()) {
+                log.debug("WizardSchema.mergeConstraints:  field with name " + fieldElm.getName() +
+                        "could not be retrieved from the object.");
+            }
+            return;
+        }
+        // load all constraints + merge them with the settings in the schema definition
+        String objectType = field.getNodeManager().getName();
+        String fieldName = field.getName();
+
+        if ((objectType == null) || (fieldName == null)) {
+            if (log.isDebugEnabled()) {
+                log.debug("wizard.mergeConstraints: objecttype or fieldname " +
+                        "could not be retrieved for this field. Field:");
+            }
+
+            return;
+        }
+
+        mergeFieldAttributes(fieldElm,field);
+    }
+    
+    private static void mergeFieldAttributes(FieldElm fieldElm, Field field)
+    {
+        String xmlSchemaType = null;
+        String guiType = getGUITypeName(field);
+        int pos = guiType.indexOf("/");
+
+        if (pos != -1) {
+            xmlSchemaType = guiType.substring(0, pos);
+            guiType = guiType.substring(pos + 1);
+        }
+
+        // dttype?
+        String ftype = fieldElm.getFtype();
+        String dttype = fieldElm.getDttype();
+
+        if (dttype == null) {
+            dttype = xmlSchemaType;
+        }
+
+        if (ftype == null) {
+            // import guitype or ftype
+            // this is a qualifier, not a real type
+            ftype = guiType;
+        }
+
+        // backward compatibility.
+        // switch old 'upload' to 'binary'
+        // The old format used the following convention:
+        // ftype="upload" + dttype="image" -> upload an image
+        // ftype="upload" + dttype="upload" -> upload a file
+        // ftype="image" -> display an image
+        // The new format usesd 'binary' a s a dftytype,a nd 'image' or 'file'
+        // as a ftype,
+        // as follows:
+        // ftype="image" + dttype="binary" -> upload an image
+        // ftype="file" + dttype="binary" -> upload a file
+        // ftype="image" + dttype="data" -> display an image
+        // ftype="file" + dttype="data" -> display a link to a file
+        // code below changes old format wizards to the new format.
+        if ("upload".equals(ftype)) {
+            if ("image".equals(dttype)) {
+                ftype = "image";
+                dttype = "binary";
+            }
+            else {
+                ftype = "file";
+                dttype = "binary";
+            }
+        }
+        else
+            if ("image".equals(ftype)) {
+                // check if dttype is binary, else set to data
+                if (!"binary".equals(dttype)) {
+                    dttype = "data";
+                }
+            }
+
+        // in the old format, ftype was date, while dttype was date,datetime, or
+        // time
+        // In the new format, this is reversed (dttype contains the base
+        // datatype,
+        // ftype the format in which to enter it)
+        if ("date".equals(dttype) || "time".equals(dttype)) {
+            ftype = dttype;
+            dttype = "datetime";
+        }
+
+        // in the old format, 'html' could also be assigned to dttype
+        // in the new format this is an ftype (the dttype is string)
+        if ("html".equals(dttype)) {
+            ftype = "html";
+            dttype = "string";
+        }
+
+        // fix for old format type 'wizard'
+        if ("wizard".equals(ftype)) {
+            ftype = "startwizard";
+        }
+        
+        fieldElm.setAttribute(SchemaKeys.ATTR_DTTYPE,dttype);
+        fieldElm.setAttribute(SchemaKeys.ATTR_FTYPE, ftype);
+        
+        // add guiname as prompt
+        String guiName = getValue(field.getGUIName(),"");
+        if (hasValue(fieldElm.prompt.getTextValue())==false) {
+            fieldElm.prompt.setTextValue(guiName);
+        }
+
+        // add description as helptext
+        String description = getValue(field.getDescription(), "");
+        if (hasValue(fieldElm.description.getTextValue())==false) {
+            fieldElm.description.setTextValue(description);
+        }
+
+        // process requiredness
+        String required = field.isRequired() ? "true" : "false";
+        if (fieldElm.getDtrequired()==null) {
+            // if unknown, determine requiredness according to MMBase
+            fieldElm.setAttribute(SchemaKeys.ATTR_DTREQUIRED,required);
+        }
+
+        // process min/maxlength for strings
+        if ("string".equals(dttype) || "html".equals(dttype)) {
+            if (hasValue(fieldElm.getDtminlength()) == false) {
+                // manually set minlength if required is true
+                if ("true".equals(fieldElm.getDtrequired())) {
+                    fieldElm.setAttribute(SchemaKeys.ATTR_DTMINLENGTH,"1");
+                }
+            }
+
+            if (hasValue(fieldElm.getDtmaxlength()) == false) {
+                int maxlen = field.getMaxLength();
+
+                // manually set maxlength if given
+                // ignore sizes smaller than 1 and larger than 255
+                if ((maxlen > 0) && (maxlen < 256)) {
+                    fieldElm.setAttribute(SchemaKeys.ATTR_DTMAXLENGTH,""+maxlen);
+                }
+            }
+        }
+    }
+
+    /**
+     * retrieve gui name of the field
+     * @param field the field definetion
+     * @return
+     */
+    public static String getGUITypeName(Field field) {
+        // guitype
+        String guiType = field.getDataType().getName();
+        if (guiType.indexOf("/")==-1) {
+            if (guiType.equals("field")) {
+                guiType = "string/text";
+            } else if (guiType.equals("string")) {
+                guiType = "string/line";
+            } else if (guiType.equals("eventtime")) {
+                guiType = "datetime/datetime";
+            } else if (guiType.equals("newimage")) {
+                guiType = "binary/image";
+            } else if (guiType.equals("newfile")) {
+                guiType = "binary/file";
+            } else {
+                String dttype = getDataTypeName(field);
+                if (guiType.equals("")) {
+                    //TODO: dttype+"/"+dtype is not useful
+                    guiType = dttype + "/" +dttype;
+                } else {
+                    guiType = dttype + "/" + guiType;
+                }
+            }
+        }
+        return guiType;
+    }
+    
+    public static boolean hasValue(String value) {
+        return value!=null && !"".equals(value);
+    }
+
+    public static String getValue(String value, String defaultValue){
+        if (hasValue(value)==false) {
+            return defaultValue;
+        }
+        return value;
     }
 
 }

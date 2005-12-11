@@ -16,7 +16,6 @@ import javax.servlet.ServletRequest;
 import org.mmbase.applications.editwizard.WizardException;
 import org.mmbase.applications.editwizard.data.*;
 import org.mmbase.applications.editwizard.schema.*;
-import org.mmbase.applications.editwizard.session.SessionData;
 import org.mmbase.applications.editwizard.session.WizardConfig;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.Logger;
@@ -28,40 +27,15 @@ public class WizardWorkspace {
 
     private static final Logger log = Logging.getLoggerInstance(WizardWorkspace.class);
     
-    private SessionData sessionData = null;
-
-    private WizardConfig wizardConfig = null;
-    
-    private Cloud cloud = null;
-    
-    private WizardWorkspace() {
-        // use getInstance
-    }
-    
-    /**
-     * get the wizard workspace's instance
-     */
-    public static WizardWorkspace getInstance(SessionData sessionData, WizardConfig wizardConfig, Cloud cloud) {
-        WizardWorkspace workspace = new WizardWorkspace();
-        workspace.init(sessionData,wizardConfig,cloud);
-        return workspace;
-    }
-    
-    public void init(SessionData sessionData, WizardConfig wizardConfig, Cloud cloud) {
-        this.wizardConfig = wizardConfig;
-        this.sessionData = sessionData;
-        this.cloud = cloud;
-    }
-    
     /**
      * load the wizard data
      * @return
      * @throws WizardException
      */
-    public boolean doLoad() throws WizardException {
+    public boolean doLoad(WizardConfig wizardConfig, Cloud cloud) throws WizardException {
         WizardSchema wizardSchema = wizardConfig.getWizardSchema();
         
-        WizardCloudConnector connector = WizardCloudConnector.getInstance(this.cloud);
+        WizardCloudConnector connector = WizardCloudConnector.getInstance(cloud);
         if ("new".equals(wizardConfig.objectNumber)==false) {
             ActionElm actionElm = wizardSchema.getActionByType("load");
             //int objectNumber = Integer.parseInt(wizardConfig.objectNumber);
@@ -88,22 +62,11 @@ public class WizardWorkspace {
      * @return
      * @throws WizardException
      */
-    public Document getDocument() throws WizardException {
-        WizardDOM wizarddom = WizardDOM.getInstance(wizardConfig);
+    public Document getDocument(WizardConfig wizardConfig, Cloud cloud) throws WizardException {
+        WizardDOM wizarddom = WizardDOM.getInstance(wizardConfig, cloud);
         Document doc = wizarddom.getDocument();
         Validator.validate(doc,wizardConfig.getWizardSchema());
         return doc;
-    }
-    
-    /**
-     * get params
-     * @return
-     */
-    public Map getParams() {
-        Map params = new HashMap();
-        params.putAll(wizardConfig.getAttributes());
-        
-        return params;
     }
     
     /**
@@ -112,7 +75,7 @@ public class WizardWorkspace {
      * @return
      * @throws WizardException
      */
-    public boolean saveWizardData(ServletRequest request) throws WizardException {
+    public boolean saveWizardData(ServletRequest request, WizardConfig wizardConfig, String timezone) throws WizardException {
         
         String formEncoding = request.getCharacterEncoding();
         boolean hasEncoding = formEncoding != null;
@@ -154,16 +117,16 @@ public class WizardWorkspace {
                     }
 
                     if ("date".equals(result)) {
-                        result = buildDate(request, name);
+                        result = buildDate(request, name, timezone);
                     }
                     if ("datetime".equals(result)) {
-                        result = buildDatetime(request, name);
+                        result = buildDatetime(request, name, timezone);
                     }
                     if ("duration".equals(result)) {
-                        result = buildDuration(request, name);
+                        result = buildDuration(request, name, timezone);
                     }
 
-                    storeValue(ids[0], ids[1], result);
+                    storeValue(wizardConfig, ids[0], ids[1], result);
                 }
             }
         }
@@ -203,13 +166,13 @@ public class WizardWorkspace {
      * @param name
      * @return
      */
-    private String buildDate(ServletRequest req, String name) {
+    private String buildDate(ServletRequest req, String name, String timezone) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
             int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
             int year = Integer.parseInt(req.getParameter("internal_" + name + "_year"));
 
-            Calendar cal = getCalendar();
+            Calendar cal = getCalendar(timezone);
             cal.set(year, month - 1, day, 0, 0, 0);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
@@ -224,7 +187,7 @@ public class WizardWorkspace {
      * @param name
      * @return
      */
-    private String buildDatetime(ServletRequest req, String name) {
+    private String buildDatetime(ServletRequest req, String name, String timezone) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
             int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
@@ -232,7 +195,7 @@ public class WizardWorkspace {
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
 
-            Calendar cal = getCalendar();
+            Calendar cal = getCalendar(timezone);
             cal.set(year, month - 1, day, hours, minutes, 0);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
@@ -248,13 +211,13 @@ public class WizardWorkspace {
      * @param name
      * @return
      */
-    private String buildDuration(ServletRequest req, String name) {
+    private String buildDuration(ServletRequest req, String name, String timezone) {
         try {
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
             int seconds = Integer.parseInt(req.getParameter("internal_" + name + "_seconds"));
 
-            Calendar cal = getCalendar();
+            Calendar cal = getCalendar(timezone);
             cal.set(1970, 0, 1, hours, minutes, seconds);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
@@ -266,10 +229,10 @@ public class WizardWorkspace {
     /**
      * @return Calendar with timezone parameter
      */
-    private Calendar getCalendar() {
-        if (sessionData.getTimezone() != null) {
-            TimeZone tz = TimeZone.getTimeZone(sessionData.getTimezone());
-            if (tz.getID().equals(sessionData.getTimezone())) {
+    private Calendar getCalendar(String timezone) {
+        if (timezone != null) {
+            TimeZone tz = TimeZone.getTimeZone(timezone);
+            if (tz.getID().equals(timezone)) {
                 return Calendar.getInstance(tz);
             }
             else {
@@ -292,7 +255,7 @@ public class WizardWorkspace {
      * @param  fid     The wizarddefinition field id what applies to this data
      * @param  value   The (String) value what should be stored in the data.
      */
-    private void storeValue(String did, String fid, String value) throws WizardException {
+    private void storeValue(WizardConfig wizardConfig, String did, String fid, String value) throws WizardException {
         if (log.isDebugEnabled()) {
             log.debug("String value " + value + " in " + did + " for  field " + fid);
         }
@@ -327,9 +290,9 @@ public class WizardWorkspace {
         }
     }
 
-    public boolean doSave() throws WizardException {
+    public boolean doSave(WizardConfig wizardConfig, Cloud cloud) throws WizardException {
         
-        WizardCloudConnector connector = WizardCloudConnector.getInstance(this.cloud);
+        WizardCloudConnector connector = WizardCloudConnector.getInstance(cloud);
         connector.save(wizardConfig.wizardData);
         
         return true;
@@ -344,7 +307,8 @@ public class WizardWorkspace {
      * @return
      * @throws WizardException
      */
-    public boolean doAddItem(String fid, String did, List numberList) throws WizardException {
+    public boolean doAddItem(WizardConfig wizardConfig, Cloud cloud, String fid, String did, List numberList) throws WizardException {
+        
         WizardSchema schema = wizardConfig.getWizardSchema();
         SchemaElement element = schema.findElementByFid(fid);
         BaseData baseData = DataUtils.findDataById(wizardConfig.wizardData, did);
@@ -388,9 +352,8 @@ public class WizardWorkspace {
                 relationElm.setAttribute(SchemaKeys.ATTR_SEARCHDIR,searchdir);
             }
         }
-        WizardCloudConnector connector = WizardCloudConnector.getInstance(this.cloud);
         // this is the scenario add items by select nodes.
-        List relationList = connector.createRelations(source, relationElm, numberList, wizardConfig.getAttributes());
+        List relationList = createRelations(cloud, source, relationElm, numberList, wizardConfig.getAttributes());
         int maxpos = Integer.MIN_VALUE;
         for (int i=0;i<relationList.size();i++) {
             RelationData relation = (RelationData)relationList.get(i);
@@ -418,6 +381,35 @@ public class WizardWorkspace {
         source.addRelationData(relationList);
         return true;
     }
+
+    /**
+     * create relations by specify destination numbers.
+     */
+    public List createRelations(Cloud cloud, ObjectData source, RelationElm relationElm, List numberList, Map params)
+            throws WizardException {
+        
+        WizardCloudConnector connector = WizardCloudConnector.getInstance(cloud);
+        
+        List relationList = new ArrayList();
+        for (int i=0;i<numberList.size();i++) {
+            String number = (String)numberList.get(i);
+            ObjectData relatedObject = null;
+            if ("new".equals(number)){
+                if (relationElm.object!=null) {
+                    relatedObject = connector.loadNew(relationElm.object,params);
+                } else {
+                    relatedObject = connector.loadNew(relationElm.getDestination());
+                }
+            } else {
+                relatedObject = connector.loadNode(relationElm.object,number);
+            }
+            RelationData relationData = connector.loadNewRelation(source, relatedObject, relationElm.getRole(),
+                    relationElm.getCreateDir());
+            relationList.add(relationData);
+        }
+        return relationList;
+    }
+
     
     /**
      * delete specified item from list in wizard
@@ -426,7 +418,7 @@ public class WizardWorkspace {
      * @return
      * @throws WizardException
      */
-    public boolean doDeleteItem(String fid, String did) throws WizardException{
+    public boolean doDeleteItem(WizardConfig wizardConfig, String fid, String did) throws WizardException{
         WizardSchema schema = wizardConfig.getWizardSchema();
         SchemaElement element = schema.findElementByFid(fid);
         BaseData baseData = DataUtils.findDataById(wizardConfig.wizardData,did);
@@ -470,7 +462,7 @@ public class WizardWorkspace {
      * @return
      * @throws WizardException 
      */
-    public boolean doUpdateItem(String fid, String did, String number, 
+    public boolean doUpdateItem(WizardConfig wizardConfig, Cloud cloud, String fid, String did, String number, 
             String origin, String newNumber) throws WizardException{
         //TODO: the update-item is only defined for the scenario that 
         // update the list in main object's wizard after commit a startwizard for change?
@@ -520,7 +512,7 @@ public class WizardWorkspace {
                 }
             }
         }
-        WizardCloudConnector connector = WizardCloudConnector.getInstance(this.cloud);
+        WizardCloudConnector connector = WizardCloudConnector.getInstance(cloud);
         // reload the object data and add it to relation
         ObjectData objectData = connector.load(objectElm,newNumber);
         relationData.setRelatedObject(objectData);
@@ -548,7 +540,7 @@ public class WizardWorkspace {
      * @return
      * @throws WizardException
      */
-    public boolean doMoveItem(String fid, String did, String otherid) throws WizardException{
+    public boolean doMoveItem(WizardConfig wizardConfig, String fid, String did, String otherid) throws WizardException{
         WizardSchema schema = wizardConfig.getWizardSchema();
         SchemaElement element = schema.findElementByFid(fid);
         BaseData baseData = DataUtils.findDataById(wizardConfig.wizardData,did);
@@ -588,22 +580,13 @@ public class WizardWorkspace {
         if (fromField==null || toField==null) {
             log.warn("cannot find field according to given orderby attribute");
         }
-        String fromValue = fromField.getStringValue();
-        String toValue = toField.getStringValue();
-        fromField.setValue(toValue);
-        toField.setValue(fromValue);
-        return true;
-    }
-    
-    /**
-     * jump to the form
-     * @param formId
-     * @return
-     */
-    public boolean doGotoForm(String formId) {
-        wizardConfig.currentFormId = formId;
+        else {
+            String fromValue = fromField.getStringValue();
+            String toValue = toField.getStringValue();
+            fromField.setValue(toValue);
+            toField.setValue(fromValue);
+        }
         return true;
     }
 
-    
 }

@@ -49,7 +49,7 @@ public class FieldData {
      * after load value, isChange() method will return false;
      * @param value The value to set.
      */
-    protected void loadValue(Object value) {
+    public void loadValue(Object value) {
         if (value==null) {
             this.value = null;
             this.oldValue = this.value;
@@ -177,7 +177,7 @@ public class FieldData {
      * indicate whether the value of the field was changed after load from mmbase
      * @return true, if the value was changed; false, otherwise.
      */
-    boolean isChanged() {
+    public boolean isChanged() {
         switch (this.mainObject.getStatus()) {
             case BaseData.STATUS_NEW :
                 return this.getStringValue()!=null || this.getBinary()!=null;
