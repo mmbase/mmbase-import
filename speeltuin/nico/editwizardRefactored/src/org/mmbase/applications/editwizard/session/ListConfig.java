@@ -1,6 +1,6 @@
 package org.mmbase.applications.editwizard.session;
 
-import java.net.*;
+import java.net.URL;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +92,7 @@ import org.mmbase.util.xml.URIResolver;
          * @param controller the configurator containing request information
          */
         public void configure(HttpServletRequest request, Cloud cloud, URIResolver uriResolver) throws WizardException {
-            super.configure(request, cloud, uriResolver);
+            super.configure(request, uriResolver);
             title        = HttpUtil.getParam(request, "title", title);
             pagelength   = HttpUtil.getParam(request, "pagelength", new Integer(pagelength)).intValue();
             maxpagecount = HttpUtil.getParam(request, "maxpagecount", new Integer(maxpagecount)).intValue();

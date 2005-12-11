@@ -20,9 +20,14 @@ import org.mmbase.applications.editwizard.WizardException;
 import org.mmbase.applications.editwizard.session.SessionData;
 import org.mmbase.applications.editwizard.util.HttpUtil;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.URIResolver;
 
 public class ActionUtils {
+    
+    /** MMbase logging system */
+    private static Logger log = Logging.getLoggerInstance(ActionUtils.class.getName());
     
     /**
      * get stacktrace information of exception
@@ -100,11 +105,11 @@ public class ActionUtils {
         String backpage = org.mmbase.util.Encode.decode("ESCAPE_URL_PARAM", referrer); 
     
         if ("".equals(backpage)) {
-            Controller.log.debug("No backpage getting from header");
+            log.debug("No backpage getting from header");
             backpage = request.getHeader("Referer");
         }
         if (backpage == null) {
-            Controller.log.debug("No backpage, setting to ''");
+            log.debug("No backpage, setting to ''");
             backpage = "";
         }
         return backpage;
@@ -160,7 +165,7 @@ public class ActionUtils {
             }
             extraDirs.add("ref:", ref);
         } else {
-            Controller.log.warn("" + ref + " does not exist");
+            log.warn("" + ref + " does not exist");
         }
 
         String templates = sessionData.getTemplates();
@@ -184,7 +189,7 @@ public class ActionUtils {
             URL i18n = new URL(basedir, "i18n/" + language + "/");
             if (i18n == null) {
                 if (! "en".equals(language)) { // english is default anyway
-                    Controller.log.warn("Tried to internationalize the editwizard for language " + language + " for which support is lacking (" + i18n + " is not an existing directory)");
+                    log.warn("Tried to internationalize the editwizard for language " + language + " for which support is lacking (" + i18n + " is not an existing directory)");
                 }
             } else {
                 extraDirs.add("i18n:", i18n);

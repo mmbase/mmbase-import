@@ -1,6 +1,6 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
 %><%@page import="org.mmbase.applications.editwizard.util.XmlUtil"
-%><%@page import="org.mmbase.applications.editwizard.action.Controller"
+%><%@page import="org.mmbase.applications.editwizard.Controller"
 %><%@page import="org.w3c.dom.Document,java.util.Map,java.net.URL"
 %><%@page import="org.mmbase.util.xml.URIResolver"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"

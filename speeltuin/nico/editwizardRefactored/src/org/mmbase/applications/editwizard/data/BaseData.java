@@ -9,12 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard.data;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * this object is the abstract object for data object
@@ -22,7 +17,7 @@ import java.util.Map;
  * 
  * @author caicai
  * @created 2005-10-11
- * @version $Id: BaseData.java,v 1.1 2005-11-28 10:09:29 nklasens Exp $
+ * @version $Id: BaseData.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  */
 public abstract class BaseData {
 
@@ -118,17 +113,6 @@ public abstract class BaseData {
      */
     public List getFieldDataList() {
         return Collections.unmodifiableList(fieldDataList);
-    }
-    
-    /**
-     * get list of fields' name
-     * @deprecated not used in project
-     * @param name The name to set.
-     */
-    public List getFieldNameList() {
-        List nameList = new ArrayList();
-        nameList.addAll(this.fieldNameIndex.keySet());
-        return Collections.unmodifiableList(nameList);
     }
     
     /**
@@ -275,199 +259,6 @@ public abstract class BaseData {
         return this.parent.getRoot();
     }
 
-    /**
-     * according to xpath, find node under current node.
-     * @param xpath
-     * @param recursive
-     * @return
-     * @throws WizardException 
-     */
-    /*
-    public BaseData findNode(String xpath, boolean recursive) {
-        // this method is used to add xpath support to POJO, the following is some xpath examples 
-        // which should be support by this method. All the samples below come from previous projects
-        // 1) fdatapath=".//object[@type='images']"
-        // 2) fdatapath="object/relation/object[@type='images']"
-        // 3) fdatapath="object/field[@name='start']"
-        // 4) fdatapath="field[@name=&apos;menu_type&apos;]"  notic: &apos;--> '
-        //TODO: I think this method may cause performance issue
-        if (xpath == null) {
-            return null;
-        }
-        BaseData field = null;
-        if (xpath.startsWith("..")) {
-            if (this.parent!=null) {
-                log.error("could not find parent(..) node because the current node has no parent");
-                return null;
-            } else if (xpath.startsWith("..//")) {
-                //find node in all descendants of the parent, recursive into children's children
-                return this.parent.findNode(xpath.substring(4),true);
-            } else if (xpath.startsWith("../")) {
-                //find node in the parent node
-                return this.parent.findNode(xpath.substring(3),false);
-            } else {
-                //find field in the parent node
-                return this.parent.findNode(xpath.substring(2),false);
-            }
-
-        } else if (xpath.startsWith(".")) {
-            if (xpath.startsWith(".//")) {
-                //find node in all descendants of the current node, recursive into children's children
-                return this.findNode(xpath.substring(3),true);
-            } else if (xpath.startsWith("./")) {
-                //find node in all children of the current node
-                return this.findNode(xpath.substring(2),false);
-            } else {
-                //find field in the current node
-                return this.findNode(xpath.substring(1),false);
-            }
-            
-        } else if (xpath.startsWith("//")) {
-            //find node in all descendants of the root, recursive into children's children
-            BaseData root = this.getRoot();
-            return root.findNode(xpath.substring(2),true);
-            
-        } else if (xpath.startsWith("/")) {
-            //find node in all children of the root
-            BaseData root = this.getRoot();
-            return root.findNode(xpath.substring(1),false);
-            
-        } else if (xpath.startsWith("object")) {
-            if (this instanceof ObjectData) {
-                field = null;
-                log.error("it is not allowed that find object under object");
-            } else {
-                RelationData relation = (RelationData)this;
-                ObjectData object = relation.getRelatedObject();
-                if (xpath.startsWith("object//")) {
-                    //find node in all descendants of the current node, recursive into children's children
-                    field = object.findNode(xpath.substring(8),true);
-                } else if (xpath.startsWith("object/")) {
-                    //find field in related object
-                    field = object.findNode(xpath.substring(7),recursive);
-                } else {
-                    //find field in related object
-                    field = object.findNode(xpath.substring(6),recursive);
-                }
-            }
-        } else if (xpath.startsWith("relation")) {
-            if (this instanceof RelationData) {
-                log.error("it is not allowed that find relation under relation");
-                field=null;
-            } else {
-                ObjectData object = (ObjectData)this;
-                if (xpath.startsWith("relation//")) {
-                    //find node in all descendants of the current node, recursive into children's children
-                    field = object.findNode(xpath.substring(10),true);
-                } else if (xpath.startsWith("relation/")) {
-                    //find field in related object
-                    field = object.findNode(xpath.substring(9),recursive);
-                } else {
-                    //find field in related object
-                    field = object.findNode(xpath.substring(8),recursive);
-                }
-            }
-        } else if (xpath.startsWith("[")) {
-            Pattern pattern = Pattern.compile("\\[((object|relation)/)?@(\\w+)=['\"](\\w+)['\"]\\]");
-            Matcher matcher = pattern.matcher(xpath);
-            xpath = xpath.substring(matcher.end());
-            if (matcher.find()) {
-                String node = matcher.group(2);
-                String attrName = matcher.group(3);
-                String attrValue = matcher.group(4);
-                if ("object".equals(node) && this instanceof RelationData) {
-                    RelationData relation = (RelationData)this;
-                    ObjectData object = relation.getRelatedObject();
-                    if (attrValue!=null && attrValue.equals(object.getAttribute(attrName))) {
-                        field = this;
-                    }  
-                } else if ("relation".equals(node) && this instanceof ObjectData) {
-                    ObjectData object = (ObjectData)this;
-                    List relationList = object.getRelationDataList();
-                    for (int i=0;i<relationList.size();i++) {
-                        RelationData relation = (RelationData)relationList.get(i);
-                        if (attrValue!=null && attrValue.equals(relation.getAttribute(attrName))) {
-                            field = this;
-                            break;
-                        }  
-                    }
-                } else {
-                    if (attrValue!=null && attrValue.equals(this.getAttribute(attrName))) {
-                        field = this;
-                    }  
-                }
-            }
-        } else {
-            log.error("the xpath "+xpath+" is not point to a node "+this.getType());
-        }
-        if (field==null && recursive) {
-            if (this instanceof RelationData) {
-                RelationData relation = (RelationData)this;
-                ObjectData object = relation.getRelatedObject();
-                field = object.findNode(xpath,recursive);
-            } else if (this instanceof ObjectData) {
-                ObjectData object = (ObjectData)this;
-                List relationList = object.getRelationDataList();
-                for (int i=0;i<relationList.size();i++) {
-                    RelationData relationData = (RelationData)relationList.get(i);
-                    field = relationData.findNode(xpath,recursive);
-                    if (field!=null) {
-                        break;
-                    }
-                }
-                
-            }
-        }
-        return field;
-    }
-    */
-    /**
-     * find field int this node, according to the specified xpath.
-     * @param xpath
-     * @return
-     */
-    /*
-    public FieldData findField(String xpath) {
-        if (xpath == null) {
-            return null;
-        }
-        if (xpath.startsWith("field")) {
-            Pattern pattern = Pattern.compile("field\\[\\@name=['\"](\\w+)['\"]\\]");
-            Matcher matcher = pattern.matcher(xpath);
-            if (matcher.find()) {
-                String fieldName = matcher.group(1);
-                if ("".equals(fieldName)==false) {
-                    return this.findFieldByName(fieldName);
-                }
-            }
-            return null;
-        }
-        Pattern pattern = Pattern.compile(
-                "[./]*((relation|object)(\\[@(\\w+)=['\"](\\w*)['\"]\\])?/?)*(field\\[@(\\w+)=['\"](\\w*)['\"]\\])?");
-        Matcher matcher = pattern.matcher(xpath);
-        if (matcher.find()) {
-            String fieldXPath = matcher.group(6);
-            String nodeXPath = null;
-            if (matcher.end(1)>0) {
-                nodeXPath = xpath.substring(0,matcher.end(1));
-                BaseData node = this.findNode(nodeXPath,false);
-                if (node!=null) {
-                    if (fieldXPath!=null) {
-                        return node.findField(fieldXPath);
-                    }
-                    if ("images".equals(this.getType()) ) {
-                        //if image object and not specify field's name, it implies "handler" field
-                        return this.findFieldByName("handler");
-                    }
-                    log.error("must specify field's name for object "+this.getType());
-                }
-            }
-        } else {
-            log.error("xpath "+xpath+" is not a valid path");
-        }
-        return null;
-    }
-    */
     /**
      * @return Returns the parent.
      */

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.mmbase.applications.editwizard.WizardException;
 import org.mmbase.applications.editwizard.data.ObjectData;
 import org.mmbase.applications.editwizard.util.HttpUtil;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.util.xml.URIResolver;
 
 public class WizardConfig extends AbstractConfig {
@@ -22,7 +21,7 @@ public class WizardConfig extends AbstractConfig {
     public ObjectData wizardData = null;
     
     // stores the current formid
-    public String currentFormId;
+    private String currentFormId;
 
     // filename of the stylesheet which should be used to make the html form.
     private URL wizardStylesheetFile;
@@ -42,8 +41,8 @@ public class WizardConfig extends AbstractConfig {
      * @param controller the configurator containing request information
      * @throws WizardException if expected parameters were not given
      */
-    public void configure(HttpServletRequest request, Cloud cloud, URIResolver uriResolver) throws WizardException {
-        super.configure(request, cloud, uriResolver);
+    public void configure(HttpServletRequest request, URIResolver uriResolver) throws WizardException {
+        super.configure(request, uriResolver);
 
         parentFid = HttpUtil.getParam(request, "fid","");
         parentDid = HttpUtil.getParam(request, "did","");
@@ -107,6 +106,15 @@ public class WizardConfig extends AbstractConfig {
      */
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    
+    /**
+     * jump to the form
+     */
+    public boolean doGotoForm(String formId) {
+        currentFormId = formId;
+        return true;
     }
 
 }

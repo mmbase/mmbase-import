@@ -18,13 +18,11 @@ package org.mmbase.applications.editwizard.data;
  * 
  * @author caicai
  * @created 2005-9-30
- * @version $Id: BinaryData.java,v 1.1 2005-11-28 10:09:29 nklasens Exp $
+ * @version $Id: BinaryData.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
  */
 public class BinaryData{
     
     private int version = 0;
-    
-    public static boolean cacheInFile = false;
     
     private String originalFilePath = null;
     
@@ -40,14 +38,12 @@ public class BinaryData{
      */
     public void setData(byte[] data) {
         version++;
-        if (cacheInFile==false) {
-            this.data = data;
-            this.length = this.data.length;
-            return;
-        }
         if (data == null) {
             this.length=0;
-            return;
+        }
+        else {
+            this.data = data;
+            this.length = this.data.length;
         }
     }
     
@@ -56,9 +52,6 @@ public class BinaryData{
      * @return
      */
     public byte[] getData() {
-        if (cacheInFile==false) {
-            return this.data;
-        }
         if (this.length==0) {
             return new byte[0];
         }

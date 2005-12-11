@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard.session;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +19,6 @@ import org.mmbase.applications.editwizard.action.ActionUtils;
 import org.mmbase.applications.editwizard.schema.WizardSchema;
 import org.mmbase.applications.editwizard.schema.WizardSchemaLoader;
 import org.mmbase.applications.editwizard.util.HttpUtil;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.util.xml.URIResolver;
 
 public abstract class AbstractConfig {
@@ -26,9 +26,7 @@ public abstract class AbstractConfig {
     private boolean debug = false;
     private String wizardName;
     private String page;
-    private String popupId = ""; // indicate whether current window is poped up.
-    
-    private Cloud cloud = null;
+    private String popupId = ""; // indicate whether current window is popped up.
 
     private final Map popups = new HashMap(); // all popups now in use below this (key -> Config)
 
@@ -51,8 +49,7 @@ public abstract class AbstractConfig {
      * @param configurator the configurator containing request information
      * @throws WizardException if expected parameters were not given or ad bad content
      */
-    public void configure(HttpServletRequest request, Cloud cloud, URIResolver uriResolver) throws WizardException  {
-        this.cloud = cloud;
+    public void configure(HttpServletRequest request, URIResolver uriResolver) throws WizardException  {
         this.popupId = HttpUtil.getParam(request, "popupid",  popupId);
         
         this.wizardName = HttpUtil.getParam(request, "wizard", wizardName);
@@ -63,13 +60,11 @@ public abstract class AbstractConfig {
         if (wizardName != null) {
             attributes.put("wizard",wizardName);
         }
-        attributes.put("cloud", cloud);
-        attributes.put("language", cloud.getLocale().getLanguage());
-        attributes.put("username", cloud.getUser().getIdentifier());
         attributes.put("popupid",popupId);
 
         // debug parameter
         debug = HttpUtil.getParam(request, "debug",  debug);
+        attributes.put("debug", String.valueOf(debug));
         
         if (wizardName != null) {
             // load schema
@@ -94,15 +89,6 @@ public abstract class AbstractConfig {
     public Map getAttributes() {
         return this.attributes;
     }
-
-    
-    /**
-     * @return Returns the cloud.
-     */
-    public Cloud getCloud() {
-        return cloud;
-    }
-
     
     /**
      * @return Returns the popups.
