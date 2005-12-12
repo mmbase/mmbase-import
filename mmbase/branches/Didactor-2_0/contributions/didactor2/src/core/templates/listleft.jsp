@@ -66,45 +66,16 @@
          {
             String[] arrstrEducation = (String[]) it.next();
             %>
-               <% //Default type is empty - usual education %>
-               <mm:import id="education_type" reset="true"></mm:import>
-
-               <% //Check a type of the Education %>
-               <mm:node number="<%= arrstrEducation[0] %>">
-                  <mm:relatednodes type="packages">
-                     <mm:import id="education_type" reset="true"><mm:field name="type"/></mm:import>
-                     <mm:import id="package_id" reset="true"><mm:field name="number"/></mm:import>
-                  </mm:relatednodes>
-               </mm:node>
-
-
-               <% //USUAL EDUCATION %>
-               <mm:compare referid="education_type" value="">
-                  <nobr>
-                     <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" alt="" />
-                     <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$tmpreferids">
-                                 <mm:param name="education"><%= arrstrEducation[0] %></mm:param>
-                                 <mm:param name="class"><%= arrstrEducation[2] %></mm:param>
-                              </mm:treefile>" class="users">
-                        <%@include file="show_education_name.jsp"%>
-                     </a>
-                  </nobr>
-                  <br />
-               </mm:compare>
-
-
-               <% //SCORM PACKAGE %>
-               <mm:node number="component.scorm" notfound="skip">
-                  <mm:compare referid="education_type" value="SCORM">
-                     <nobr>
-                        <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" alt="" />
-                        <a href="<%= sUserSettings_BaseURL %>/scorm/<mm:write referid="package_id"/>_player/index.jsp" class="users">
-                           <%@include file="show_education_name.jsp"%>
-                        </a>
-                     </nobr>
-                     <br />
-                  </mm:compare>
-               </mm:node>
+               <nobr>
+                  <img src="<mm:treefile write="true" page="/gfx/icon_course_notdone.gif" objectlist="$includePath" />" width="13" height="11" border="0" alt="" />
+                  <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$tmpreferids">
+                              <mm:param name="education"><%= arrstrEducation[0] %></mm:param>
+                              <mm:param name="class"><%= arrstrEducation[2] %></mm:param>
+                           </mm:treefile>" class="users">
+                     <%@include file="show_education_name.jsp"%>
+                  </a>
+               </nobr>
+               <br/>
             <%
          }
       %>
