@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.185 2005-12-09 09:53:34 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.186 2005-12-12 10:59:57 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -1378,7 +1378,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public Function getFunction(String functionName) {
         Function function = getNode().getFunction(functionName);
         if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName());
+            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName() + "(known are " + getNode().getBuilder().getFunctions() + ")");
         }
         return new WrappedFunction(function) {
                 public final Object getFunctionValue(Parameters params) {
