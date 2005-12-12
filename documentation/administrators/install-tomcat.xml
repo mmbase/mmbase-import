@@ -5,7 +5,7 @@
 	<articleinfo>
 		<title>MMBase installation on Apache Tomcat</title>
 		<date>2002-12-05</date>
-		<edition>$Id: install-tomcat.xml,v 1.14 2004-11-01 13:05:21 pierre Exp $</edition>
+		<edition>$Id: install-tomcat.xml,v 1.15 2005-12-12 12:16:51 keesj Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -83,7 +83,6 @@
 ]]></programlisting>
 		 <!-- TODO:
 				 reloadable="false" / "true" ?
-				 Add, as an example, the configuration to let symlinks work
 		 -->
 			Be sure to fill in the right docBase, of course.
 		</para>
