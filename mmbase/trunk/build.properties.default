@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.21 2005-11-25 15:23:35 pierre Exp $
+# $Id: build.properties.default,v 1.22 2005-12-12 09:51:10 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -103,7 +103,7 @@ docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
 #log4j.dest=${download.dir}/${log4j.file}
 #log4j.loc=${mmbase.loc}/jakarta-log4j/${log4j.file}
 #log4j.jar=${expand.dir}/${log4j.fullversion}/log4j-${log4j.version}.jar
-log4j.version=1.2.12
+log4j.version=1.2.13
 log4j.fullversion=logging-log4j-${log4j.version}
 log4j.file=${log4j.fullversion}.tar.gz
 log4j.dest=${download.dir}/${log4j.file}
