@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>MMBase Documentation Overview</title>
+
+    <date>2005-12-12</date>
+
+    <edition>$Id: index.xml,v 1.51 2005-12-12 11:32:05 andre Exp $</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>André</firstname>
+
+        <surname>van Toly</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink
+      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+
+    <revhistory>
+      <revision>
+        <revnumber>0.1</revnumber>
+
+        <date>2003-01-30</date>
+
+        <authorinitials>AvT</authorinitials>
+
+        <revremark>Initial version.</revremark>
+      </revision>
+    </revhistory>
+
+    <abstract>
+      <para>This is the main page of the MMBase documentation pages. All
+      documentation should be listed here. The MMBase documentation has
+      several sections targeted at different groups of users or developers.
+      More about the documentation structure can be read in the document About
+      MMBase Documentation ( <ulink url="documentation.html">HTML</ulink>,
+      <ulink url="documentation.html">PDF</ulink> ).</para>
+    </abstract>
+  </articleinfo>
+
+  <section id="introduction">
+    <title>Introduction</title>
+
+    <para></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>About MMBase Documentation ( <ulink
+        url="documentation.html">HTML</ulink>, <ulink
+        url="documentation.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Glossary ( <ulink url="glossary.html">HTML</ulink>,
+        <ulink url="glossary.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Architectural Overview ( <ulink
+        url="general/architecture.html">HTML</ulink>, <ulink
+        url="general/architecture.pdf">PDF</ulink> )</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="general">
+    <title>General</title>
+
+    <para>We welcome everybody who wishes to contribute to MMBase. Guidelines
+    describing how can be found in these documents as wel as some more
+    information about the MMBase developers community.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>How to contribute to the community ( <ulink
+        url="contribute.html">HTML</ulink>, <ulink
+        url="contribute.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>How to share code in the MMBase repository ( <ulink
+        url="3rdparty.html">HTML</ulink>, <ulink
+        url="3rdparty.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>MMC Mission Statement Document ( <ulink
+        url="mmbase.org/mmcmissionstatement.html">HTML</ulink>, <ulink
+        url="mmbase.org/mmcmissionstatement.pdf">PDF</ulink> )</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Documents with a more general scope.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>How To Use XML (<ulink url="xml-how-to.html">HTML</ulink>,
+        <ulink url="xml-how-to.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>Images and Attachments ( <ulink
+        url="general/architecture.html">HTML</ulink>, <ulink
+        url="general/architecture.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Internationalization and Localization ( <ulink
+        url="general/architecture.html">HTML</ulink>, <ulink
+        url="general/architecture.pdf">PDF</ulink> )</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="administrators">
+    <title>Administrators</title>
+
+    <para>The Administrators section contains documents about the installation
+    and configuration of MMBase including two of the security implementations
+    that are availabe.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>MMBase installation on Apache Tomcat ( <ulink
+        url="administrators/install-tomcat.html">HTML</ulink>, <ulink
+        url="administrators/install-tomcat.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase configuration documentation ( <ulink
+        url="administrators/configuration.html">HTML</ulink>, <ulink
+        url="administrators/configuration.pdf">PDF</ulink> )</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The documentation of the cloud context security application can be
+    found in the section Frontend Developers.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>The MMBase security framework ( <ulink
+        url="administrators/security-framework.html">HTML</ulink>, <ulink
+        url="administrators/security-framework.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>Cloud security configuration ( <ulink
+        url="administrators/cloud-security.html">HTML</ulink>, <ulink
+        url="administrators/cloud-security.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>Context security configuration ( <ulink
+        url="administrators/context-security.html">HTML</ulink>, <ulink
+        url="administrators/context-security.pdf">PDF</ulink> )</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="backenddevelopers">
+    <title>Backend Developers</title>
+
+    <para>This section contains documentation for people building additional
+    functionality within or based upon MMBase.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Summary of Coding Standards ( <ulink
+        url="backenddevelopers/codingstandards.html">HTML</ulink>, <ulink
+        url="backenddevelopers/codingstandards.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>HOW TO: Add a custom function to a nodebuilder ( <ulink
+        url="backenddevelopers/custombuilderclass.html">HTML</ulink>, <ulink
+        url="backenddevelopers/custombuilderclass.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>SearchQuery introduction ( <ulink
+        url="backenddevelopers/dbsq.html">HTML</ulink>, <ulink
+        url="backenddevelopers/dbsq.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>The Storage Layer ( <ulink
+        url="backenddevelopers/storage/index.html">HTML</ulink>, <ulink
+        url="backenddevelopers/storage/index.pdf">PDF</ulink> )</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Storage Configuration ( <ulink
+            url="backenddevelopers/storage/configuration.html">HTML</ulink>,
+            <ulink
+            url="backenddevelopers/storage/configuration.pdf">PDF</ulink>
+            )</para>
+          </listitem>
+
+          <listitem>
+            <para>Storage Conversions ( <ulink
+            url="backenddevelopers/storage/conversions.html">HTML</ulink>,
+            <ulink url="backenddevelopers/storage/conversions.pdf">PDF</ulink>
+            )</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>The Event Framework ( <ulink
+        url="backenddevelopers/eventframework.html">HTML</ulink>, <ulink
+        url="backenddevelopers/eventframework.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>The MMBase Resource loader ( <ulink
+        url="backenddevelopers/resourceloader.html">HTML</ulink>, <ulink
+        url="backenddevelopers/resourceloader.pdf">PDF</ulink> )</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="frontenddevelopers">
+    <title>Frontend Developers</title>
+
+    <para>Documentation meant for developers of templates and editors. You
+    will also find documentation about several MMBase Applications in this
+    section.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>SCAN ( <ulink url="applications/SCAN1_0.html">HTML</ulink>
+        )</para>
+      </listitem>
+
+      <listitem>
+        <para>Cloud Context Security ( <ulink
+        url="applications/cloudcontextsecurity.html">HTML</ulink>, <ulink
+        url="applications/cloudcontextsecurity.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Crontab ( <ulink
+        url="applications/crontab.html">HTML</ulink>, <ulink
+        url="applications/crontab.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>Email application ( <ulink
+        url="applications/email.html">HTML</ulink>, <ulink
+        url="applications/email.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>Media project documentation ( <ulink
+        url="media/applications/media/index.html">HTML</ulink>, <ulink
+        url="media/applications/media/index.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>The Richtext Functional Reference ( <ulink
+        url="richtext/frontenddevelopers/richtext/media/index.html">HTML</ulink>,
+        <ulink
+        url="richtext/frontenddevelopers/richtext/media/index.pdf">PDF</ulink>
+        )</para>
+      </listitem>
+
+      <listitem>
+        <para>Remote MMBase Cloud Interface ( <ulink
+        url="rmmci/backenddevelopers/rmmci/index.html">HTML</ulink>, <ulink
+        url="rmmci/backenddevelopers/rmmci/index.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase standard builders (<ulink
+        url="frontenddevelopers/builders/index.html">HTML</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>MMBase taglib</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Taglib Tutorial (<ulink
+        url="frontenddevelopers/taglib/taglib-tutorial.html">HTML</ulink>,
+        <ulink
+        url="frontenddevelopers/taglib/taglib-tutorial.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Include / TreeInclude / LeafInclude (<ulink
+        url="frontenddevelopers/taglib/include.html">HTML</ulink>, <ulink
+        url="frontenddevelopers/taglib/include.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase taglib reference (<ulink
+        url="reference/taglib/toc.html">JSP</ulink>, <ulink
+        url="reference/mmbase-taglib.html">HTML</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>EditWizards</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Editwizards (<ulink
+        url="frontenddevelopers/editwizard/editwizard-doc.html">HTML</ulink>,
+        <ulink
+        url="frontenddevelopers/editwizard/editwizard-doc.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Editwizard Syntax Reference (<ulink
+        url="frontenddevelopers/editwizard/editwizard-reference.html">HTML</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Editwizard Front end (<ulink
+        url="frontenddevelopers/editwizard/editwizard-frontend.html">HTML</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Dove XML API (<ulink
+        url="frontenddevelopers/dovexmlapi.html">HTML</ulink>, <ulink
+        url="frontendevelopers/dovexmlapi.pdf">PDF</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>XML Importer (TCP 2.0)</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Overview (<ulink
+        url="frontenddevelopers/xmlimporter/overview.html">HTML</ulink>,
+        <ulink
+        url="frontenddevelopers/xmlimporter/overview.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Quick start (<ulink
+        url="developers/xmlimporter/quickstart.html">HTML</ulink>, PDF version
+        not available)</para>
+      </listitem>
+
+      <listitem>
+        <para>Cook Book (<ulink
+        url="developers/xmlimporter/cookbook.html">HTML</ulink>, PDF version
+        not available)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="informationanalysts">
+    <title>Information Analysts</title>
+
+    <para>Documentation about structuring information and content in
+    MMBase.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>MMBase Builder Configuration ( <ulink
+        url="informationanalysts/builders.html">HTML</ulink>, <ulink
+        url="informationanalysts/builders.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>Relations in MMBase ( <ulink
+        url="informationanalysts/relations.html">HTML</ulink>, <ulink
+        url="informationanalysts/relations.pdf">PDF</ulink> )</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase Applications ( <ulink
+        url="informationanalysts/applications.html">HTML</ulink>, <ulink
+        url="informationanalysts/applications.pdf">PDF</ulink> )</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="managers">
+    <title>Managers</title>
+
+    <para>General information about MMBase targeted at technical and
+    non-technical people at the management level.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Running MMBase in your organization ( <ulink
+        url="managers/mmbase4managers.html">HTML</ulink>, <ulink
+        url="managers/mmbase4managers.pdf">PDF</ulink> )</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="documentation">
+    <title>Writing documentation</title>
+
+    <para>The documentation is written in Docbook and published as HTML and
+    PDF. We encourage you to use these templates.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>The Project [projectname] Document ( <ulink
+        url="mmbase.org/templates/index.html">HTML</ulink>, <ulink
+        url="mmbase.org/templates/index.pdf">PDF</ulink> )</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>[applicationname] Configuration ( <ulink
+            url="mmbase.org/templates/configuration.html">HTML</ulink>, <ulink
+            url="mmbase.org/templates/configuration.pdf">PDF</ulink> )</para>
+          </listitem>
+
+          <listitem>
+            <para>The [projectname] Functional Reference ( <ulink
+            url="mmbase.org/templates/functional-reference.html">HTML</ulink>,
+            <ulink
+            url="mmbase.org/templates/functional-reference.pdf">PDF</ulink>
+            )</para>
+          </listitem>
+
+          <listitem>
+            <para>[applicationname] Installation ( <ulink
+            url="mmbase.org/templates/installation.html">HTML</ulink>, <ulink
+            url="mmbase.org/templates/installation.pdf">PDF</ulink> )</para>
+          </listitem>
+
+          <listitem>
+            <para>The [projectname] Technical Reference ( <ulink
+            url="mmbase.org/templates/technical-reference.html">HTML</ulink>,
+            <ulink
+            url="mmbase.org/templates/technical-reference.pdf">PDF</ulink>
+            )</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="javadoc">
+    <title>Java documentation</title>
+
+    <para>The MMBase API documentation of several MMBase releases (these are
+    links to mmbase.org, for now).</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.8/overview-summary.html">MMBase
+        ApiDocs 1.8</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.7/overview-summary.html">MMBase
+        ApiDocs 1.7</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.6/overview-summary.html">MMBase
+        ApiDocs 1.6</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.5/overview-summary.html">MMBase
+        ApiDocs 1.5</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://www.mmbase.org/development/api/1.4/overview-summary.html">MMBase
+        ApiDocs 1.4</ulink></para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="release">
+    <title>Release information</title>
+
+    <para>Information about the (upcoming) MMBase 1.8 release.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>XERCES.README.txt (<ulink
+        url="releases/XERCES.README.txt">Text</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase 1.8.0 - Building (<ulink
+        url="releases/building.txt">Text</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase 1.8.0 - Installation (<ulink
+        url="releases/installation.txt">Text</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase 1.8.0 - Readme (<ulink
+        url="releases/readme.txt">Text</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase 1.8.0 - Release Notes (<ulink
+        url="releases/release-notes.txt">Text</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase 1.8.0 - Release Plan (<ulink
+        url="releases/release-plan.txt">Text</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>todo-1.8.0.txt (<ulink
+        url="releases/todo-1.8.0.txt">Text</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>MMBase 1.8.0 - Upgrade Notes (<ulink
+        url="releases/upgrade.txt">Text</ulink>)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</article>
