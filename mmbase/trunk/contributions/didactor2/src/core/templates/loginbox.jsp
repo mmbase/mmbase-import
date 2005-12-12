@@ -8,6 +8,11 @@
 <mm:import externid="newpassword"/>
   <div class="titlefield">
     <di:translate key="core.logindidactor" />
+    <mm:import externid="message"/>
+      <mm:isnotempty referid="message">
+       <br/>
+         Error <mm:write referid="message"/>
+      </mm:isnotempty>
   </div>
   <br />
   <script>
@@ -29,7 +34,7 @@
   <mm:node number="component.register" notfound="skipbody">
     <br />
 	 Nog geen account? <br />
-	 Registreer jezelf <a href="<mm:treefile page="/register/index.jsp" objectlist="$includePath" referids="$referids" />">hier</a>.
+	 Registreer jezelf <a href="<mm:treefile page="/register/index.jsp" objectlist="$includePath" referids="$referids" />">hier</a>
   </mm:node>
 </mm:cloud>
 </mm:content>         
