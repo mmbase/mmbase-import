@@ -17,27 +17,27 @@
   <articleinfo>
     <title>The event framework</title>
 
-    <date>[date, format: 2005-12-09 ]</date>
+    <date>2005-12-09</date>
 
-    <edition>$Id: eventframework.xml,v 1.1 2005-12-09 14:29:56 ernst Exp $</edition>
+    <edition>$Id: eventframework.xml,v 1.2 2005-12-12 21:15:54 andre Exp $</edition>
 
     <authorgroup>
       <!-- one or more authors -->
 
       <author>
-        <firstname>[Ernst]</firstname>
+        <firstname>Ernst</firstname>
 
-        <surname>[Bunders]</surname>
+        <surname>Bunders</surname>
       </author>
     </authorgroup>
 
     <revhistory>
       <revision>
-        <revnumber>[1.0]</revnumber>
+        <revnumber>1.0</revnumber>
 
-        <date>[2005-12-09 ]</date>
+        <date>2005-12-09</date>
 
-        <authorinitials>[EB]</authorinitials>
+        <authorinitials>EB</authorinitials>
 
         <revremark>First version</revremark>
       </revision>
