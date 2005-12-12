@@ -19,9 +19,11 @@ import org.mmbase.module.corebuilders.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.39 2005-12-07 18:12:06 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.40 2005-12-12 11:00:07 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
+
+    static final BasicNodeList EMPTY = new BasicNodeList();
 
     protected Cloud cloud;
     protected NodeManager nodeManager = null;
