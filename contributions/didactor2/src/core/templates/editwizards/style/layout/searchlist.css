@@ -6,9 +6,9 @@
   Search-lists are those things that pop-up if you want to search for a node to make a relation to.
   Here you can customize how they must look like.
 
-  @version  $Id: searchlist.css,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
-  
-*/ 
+  @version  $Id: searchlist.css,v 1.2 2005-12-13 17:35:28 azemskov Exp $
+
+*/
 
 @import url("base.css");
 
@@ -17,19 +17,19 @@ body {
         font-size: 11px;
         font-weight: normal;
         margin: 1px 1px 1px 1px;
-} 
+}
 
 div.searchnavigation  {
         position: absolute;
         bottom: 0px;
         left: 0px;
-        padding: 10px 0px 0px 0px;
+        padding: 15px;
         width: 100%;
         z-index: 10;
-} 
+}
 
  /* contains only the search-result table. Needed to set height and overflow */
-div.searchresult  {         
+div.searchresult  {
         top: 0px;
         left: 0px;
         padding: 0px 0px 0px 0px;
@@ -37,31 +37,31 @@ div.searchresult  {
         overflow: auto;
         text-align: left;
         vertical-align: top;
-} 
+}
 
 table.searchnavigation  {
         font-size: 11px;
         font-weight: normal;
-        padding: 2px 
+        padding: 2px
         text-align: left;
         vertical-align: top;
         width: 100%;
-} 
+}
 
-table.searchresult  {  
+table.searchresult  {
         font-size: 11px;
         font-weight: normal;
-        padding: 2px 
+        padding: 2px
         text-align: left;
         vertical-align: top;
         width: 100%;
-} 
+}
 
-table.searchresult td  {         
+table.searchresult td  {
         padding-left: 3;
-} 
+}
 
-input.button  {         
+input.button  {
         font-weight: bold;
         text-transform: uppercase;
         border-width: 1px;
