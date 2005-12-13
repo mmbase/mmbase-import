@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.2 2005-11-05 08:08:14 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.3 2005-12-13 14:31:02 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -209,8 +209,8 @@
   </xsl:template>
 
 
-  <xsl:template match="o:object[@type != 'images' and @type != 'icaches' and @type != 'attachments' and @type != 'urls' and @type != 'blocks']" mode="url" priority="1">
-    <xsl:value-of select="$formatter_requestcontext"/><xsl:text>/mmbase/</xsl:text><xsl:value-of select="@type" /><xsl:text>/</xsl:text><xsl:value-of select="@id" />
+  <xsl:template match="o:object[@type != 'images' and @type != 'icaches' and @type != 'urls' and @type != 'blocks']" mode="url" priority="1">
+    <xsl:text>mmbase://</xsl:text><xsl:value-of select="@type" /><xsl:text>/</xsl:text><xsl:value-of select="@id" />
   </xsl:template>
 
 </xsl:stylesheet>

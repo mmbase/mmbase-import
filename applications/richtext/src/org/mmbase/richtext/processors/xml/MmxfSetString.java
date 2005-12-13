@@ -34,13 +34,13 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.4 2005-12-05 20:07:01 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.5 2005-12-13 14:31:03 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class MmxfSetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(MmxfSetString.class);
-    private static final int serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     private static XmlField xmlField = new XmlField(XmlField.WIKI);
 
@@ -164,7 +164,9 @@ public class MmxfSetString implements  Processor {
 
     private void parseKupu(Element source, Element destination, List links, ParseState state) {
         org.w3c.dom.NodeList nl = source.getChildNodes();
-        log.debug(state.level() + state.level + " Appending to " + destination.getNodeName() + " at " + state.offset + " of " + nl.getLength());
+        if (log.isDebugEnabled()) {
+            log.trace(state.level() + state.level + " Appending to " + destination.getNodeName() + " at " + state.offset + " of " + nl.getLength());
+        }
         for (; state.offset < nl.getLength(); state.offset++) {
             org.w3c.dom.Node node = nl.item(state.offset);
             if (node == null) break;
@@ -350,11 +352,12 @@ public class MmxfSetString implements  Processor {
     /**
      * Normalizes URL to absolute on server
      */
-    protected String normalizeURL(HttpServletRequest request, String url) {
+    protected String normalizeURL(final HttpServletRequest request, final String url) {
 
         if (url.startsWith("/")) {
             return url;
         }
+        String u = url;
         if (url.startsWith(".")) {
             if (request == null) {
                 log.warn("Did not receive a request, don't know how to normalize '" + url + "'");
@@ -362,13 +365,15 @@ public class MmxfSetString implements  Processor {
             }
             // based on the request as viewed by the client.
             try {
-                url = new URL(new URL(request.getRequestURL().toString()), url).toString();
+                u = new URL(new URL(request.getRequestURL().toString()), url).toString();
             } catch (java.net.MalformedURLException mfe) {
                 log.warn("" + mfe); // should not happen
                 return url;
             }
+        } else {
+            u = url;
         }
-        Matcher matcher = ABSOLUTE_URL.matcher(url);
+        Matcher matcher = ABSOLUTE_URL.matcher(u);
         if (matcher.matches()) {
             if (request == null) {
                 log.warn("Did not receive request, can't check if this URL is local: '" + url + "'");
@@ -377,11 +382,22 @@ public class MmxfSetString implements  Processor {
             try {
                 URL hostPart = new URL(matcher.group(1));
                 String scheme = request.getScheme();
+                if (scheme == null) {
+                    log.warn("Request " + request + " " + request.getRequestURI() + " gave 'null'  scheme" + request.getServerName() + ":" + request.getServerPort() + " " + request.getContextPath());
+                }
                 String host   = request.getServerName();
                 int port      = request.getServerPort();
-                if (scheme != null && hostPart.sameFile(new URL(scheme, host, port, ""))) {
-                    return matcher.group(2);
+                URL foundHost = scheme != null ? new URL(scheme, host, port, "") : null;
+                if (scheme != null && hostPart.sameFile(foundHost)) {
+                    String result = matcher.group(2);
+                    if (log.isDebugEnabled()) {
+                        log.trace("Converted " + url + " -> " + result);
+                    }
+                    return result;
                 } else {
+                    if (log.isDebugEnabled()) {
+                        log.trace("Not converting url, it is on a differnt server " + hostPart + " != " + foundHost);
+                    }
                     return url;
                 }
             } catch (java.net.MalformedURLException mfe) {
@@ -396,6 +412,7 @@ public class MmxfSetString implements  Processor {
     }
 
     final Pattern OK_URL = Pattern.compile("[a-z]+:.*");
+
     /**
      * Adds missing protocol
      */
@@ -445,6 +462,240 @@ public class MmxfSetString implements  Processor {
         return q.getCloud().getList(q);
     }
 
+
+    private String getHref(Element a, Cloud cloud) {
+        String href = a.getAttribute("href");                    
+        if ("".equals(href)) {
+            // must be an image then.
+            // Images are _always_ on the same server.
+            String src = a.getAttribute("src");
+            try {
+                href  = (new java.net.URI(src)).getPath();
+            } catch (java.net.URISyntaxException se) {
+                log.warn(se);
+                href = src;
+            }
+            
+        }
+        String hrefBefore = href;
+        if (! "".equals(href)) {
+            href = normalizeURL((HttpServletRequest) cloud.getProperty("request"), href);
+        }
+           
+        // IE Tends to make URL's absolute (http://localhost:8070/mm18/mmbase/images/1234)
+        // FF Tends to make URL's relative (../../../../mmbase/images/1234)
+        // What we want is absolute on server (/mm18/mmbase/images/1234), because that is how URL was probably given in the first place.
+           
+        String klass = a.getAttribute("class");
+        String id = a.getAttribute("id");
+           
+        if (klass.startsWith("div ") && href.equals("")) {
+            klass = klass.substring(4);
+            Matcher divId = DIV_ID.matcher(id);
+            if (divId.matches()) {
+                href = "BLOCK/" + divId.group(1);
+                if (divId.group(1).equals("createddiv")) {
+                    id = ""; // generate one
+                }  else {
+                    id   = divId.group(2);
+                }
+            } else {
+                // odd
+                href = "BLOCK/createddiv";
+                id   = ""; // generated one
+            }
+            a.setAttribute("id", id);
+               
+        }
+        if (id.equals("")) {
+            id = "_" + indexCounter++;
+            a.setAttribute("id", id);
+        }
+        log.debug("Considering " + href + " (from " + hrefBefore + ")");
+        return href;
+    }
+    
+    
+    private boolean handleImage(String href, Element a, NodeList usedImages, NodeList relatedImages, Node editedNode) {
+        Cloud cloud = editedNode.getCloud();
+        NodeManager images = cloud.getNodeManager("images");
+        String  imageServlet      = images.getFunctionValue("servletpath", null).toString();
+        if (! href.startsWith(imageServlet)) return false;
+        String q = "/images/" + href.substring(imageServlet.length());
+        log.debug(href + ":This is an image!!-> " + q);
+        BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
+        if (qp == null) {
+            log.error("Could not parse " + q + ", ignoring...");
+            return true;
+        }
+        NodeManager icaches     = cloud.getNodeManager("icaches");
+        String nodeNumber = qp.getNodeNumber();
+        Node image = cloud.getNode(nodeNumber);
+        if (image.getNodeManager().equals(icaches)) {
+            image = image.getNodeValue("id");
+            log.debug("This is an icache for " + image.getNumber());
+        }
+        usedImages.add(image);
+        String klass = a.getAttribute("class");
+        String id = a.getAttribute("id");
+        NodeList linkedImage = get(cloud, relatedImages, "idrel.id", a.getAttribute("id"));
+        if (! linkedImage.isEmpty()) {
+            // ok, already related!
+            log.service("" + image + " image already correctly related, nothing needs to be done");
+            Node idrel = linkedImage.getNode(0).getNodeValue("idrel");
+            if (!idrel.getStringValue("class").equals(klass)) {
+                idrel.setStringValue("class", klass);
+                idrel.commit();
+            }
+            
+        } else {
+            log.service(" to" + image + ", creating new relation");
+            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), images, "idrel");
+            Relation newIdRel = rm.createRelation(editedNode, image);
+            newIdRel.setStringValue("id", id);
+            newIdRel.setStringValue("class", klass);
+            newIdRel.commit();
+                        }
+        a.removeAttribute("src");
+        a.removeAttribute("height");
+        a.removeAttribute("width");
+        a.removeAttribute("class");
+        a.removeAttribute("alt");
+        return true;
+    }
+
+    private boolean handleAttachment(Matcher matcher, Element a, NodeList usedAttachments, NodeList relatedAttachments, Node editedNode) {
+        if (! matcher.matches()) return false;
+        if (! matcher.group(1).equals("attachments")) return false;
+        String nodeNumber = matcher.group(2);
+        Cloud cloud = editedNode.getCloud();        
+        if (! cloud.hasNode(nodeNumber)) {
+            log.error("No such node '" + nodeNumber + "' (deduced from " + matcher.group() + ")");
+            return false;
+        }
+        NodeManager attachments = cloud.getNodeManager("attachments");
+        Node attachment = cloud.getNode(nodeNumber);
+        usedAttachments.add(attachment);
+        String klass = a.getAttribute("class");
+        String id = a.getAttribute("id");
+        NodeList linkedAttachment = get(cloud, relatedAttachments, "idrel.id", id);
+        if (! linkedAttachment.isEmpty()) {
+            // ok, already related!
+            log.service("" + attachment + " image already correctly related, nothing needs to be done");
+            Node idrel = linkedAttachment.getNode(0).getNodeValue("idrel");
+            if (!idrel.getStringValue("class").equals(klass)) {
+                idrel.setStringValue("class", klass);
+                idrel.commit();
+            }
+            
+        } else {
+            log.service(" to " + attachment + ", creating new relation");
+            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), attachments, "idrel");
+            Relation newIdRel = rm.createRelation(editedNode, attachment);
+            newIdRel.setStringValue("id", id);
+            newIdRel.setStringValue("class", klass);
+            newIdRel.commit();
+        }
+        a.removeAttribute("href");
+        a.removeAttribute("class");
+        a.removeAttribute("title");
+        a.removeAttribute("target");
+        return true;
+    }
+
+
+    private boolean handleText(Matcher matcher, Element a, NodeList usedTexts, NodeList relatedTexts, Node editedNode) {
+        if (! matcher.matches()) return false;
+        String nodeNumber = matcher.group(2);
+        Cloud cloud = editedNode.getCloud();
+        if (! cloud.hasNode(nodeNumber)) {
+            log.error("No such node '" + nodeNumber + "' (deduced from " + matcher.group() + ")");
+            return false;
+        }
+        Node text = cloud.getNode(nodeNumber);
+        usedTexts.add(text);
+        String klass = a.getAttribute("class");
+        String id = a.getAttribute("id");
+        NodeList linkedText = get(cloud, relatedTexts, "idrel.id", id);
+        if (! linkedText.isEmpty()) {
+            // ok, already related!
+            log.debug("" + text + " text already correctly related, nothing needs to be done");
+            Node idrel = linkedText.getNode(0).getNodeValue("idrel");
+            if (!idrel.getStringValue("class").equals(klass)) {
+                idrel.setStringValue("class", klass);
+                idrel.commit();
+            }
+            
+        } else {
+            log.service("Found new cross link " + text.getNumber() + ", creating new relation now");
+            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), text.getNodeManager(), "idrel");
+            Relation newIdRel = rm.createRelation(editedNode, text);
+            newIdRel.setStringValue("id", id);
+            newIdRel.setStringValue("class", klass);
+            newIdRel.commit();
+        }
+        
+        a.removeAttribute("href");
+        a.removeAttribute("alt");
+        return true;
+    }
+    private boolean handleBlock(String href, Element a, NodeList relatedBlocks, Node editedNode) {
+        if (! href.startsWith("BLOCK/")) return false;
+
+        String nodeNumber = href.substring(6);
+        Cloud cloud = editedNode.getCloud();
+        NodeManager blocks = cloud.getNodeManager("blocks");
+        Node block;
+        if (nodeNumber.equals("createddiv")) {
+            block = blocks.createNode();
+            block.setStringValue("title", "Block created for node " + editedNode.getNumber());
+            block.commit();
+        } else {
+            block = cloud.getNode(nodeNumber);
+        }
+        
+        DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
+        DOMImplementation impl = documentBuilder.getDOMImplementation();
+        Document blockDocument = impl.createDocument("http://www.w3.org/1999/xhtml", "body", null);
+        Element blockBody = blockDocument.getDocumentElement();
+        copyChilds(a, blockBody);
+        
+        
+        org.w3c.dom.Node child = a.getFirstChild();
+        while (child != null) {
+            a.removeChild(child);
+            child = a.getFirstChild();
+        }
+        
+        if (log.isDebugEnabled()) {
+            log.debug("Setting body to " + XMLWriter.write(blockDocument, false));
+        }
+        // fill _its_ body, still in kupu-mode
+        block.setStringValue("body", XMLWriter.write(blockDocument, false));
+        block.commit();
+        String klass = a.getAttribute("class");
+        String id = a.getAttribute("id");
+        NodeList linkedBlock = get(cloud, relatedBlocks, "idrel.id", id);
+        if (! linkedBlock.isEmpty()) {
+            // ok, already related!
+            log.service("" + block + " block already correctly related, nothing needs to be done");
+            Node idrel = linkedBlock.getNode(0).getNodeValue("idrel");
+            if (!idrel.getStringValue("class").equals(klass)) {
+                idrel.setStringValue("class", klass);
+                idrel.commit();
+            }
+            
+        } else {
+            log.service(" to " + block + ", creating new relation");
+            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), blocks, "idrel");
+            Relation newIdRel = rm.createRelation(editedNode, block);
+            newIdRel.setStringValue("id", id);
+            newIdRel.setStringValue("class", klass);
+            newIdRel.commit();
+        }
+        a.removeAttribute("class");
+        return true;
+    }
     /**
      * Parses kupu-output for a certain node. First it will translate the XHTML like kupu-output to
      * something very similar to MMXF, while collecting the 'links'. Then in a second stage these
@@ -464,8 +715,7 @@ public class MmxfSetString implements  Processor {
         org.w3c.dom.NodeList bodies = document.getElementsByTagName("body");
         if (bodies.getLength() > 1) {
             log.warn("Found not one body but " + bodies.getLength());
-        }
-        if (bodies.getLength() == 0) {
+        } else if (bodies.getLength() == 0) {
             log.warn("No body found ");
             return xml;
         }
@@ -484,16 +734,12 @@ public class MmxfSetString implements  Processor {
         } else {
             Cloud cloud = editedNode.getCloud();
             NodeManager images      = cloud.getNodeManager("images");
-            NodeManager icaches     = cloud.getNodeManager("icaches");
             NodeManager attachments = cloud.getNodeManager("attachments");
             NodeManager urls        = cloud.getNodeManager("urls");
             NodeManager blocks      = cloud.getNodeManager("blocks");
 
             NodeManager texts       = cloud.getNodeManager("object");
-
-            String  imageServlet      = images.getFunctionValue("servletpath", null).toString();
-            String  attachmentServlet = attachments.getFunctionValue("servletpath", null).toString();
-            Pattern textsServlet      = Pattern.compile(org.mmbase.module.core.MMBaseContext.getHtmlRootUrlPath() + "mmbase/(.*?)/(\\d+)");
+            Pattern mmbaseUrl         = Pattern.compile("mmbase://(.*?)/(\\d+)");
 
 
             NodeList relatedImages        = getRelatedNodes(editedNode, images);
@@ -534,193 +780,18 @@ public class MmxfSetString implements  Processor {
             while (linkIterator.hasNext()) {
                 try {
                     Element a = (Element) linkIterator.next();
-                    String href = a.getAttribute("href");
-                    if ("".equals(href)) {
-                        href  = a.getAttribute("src");
-                    }
-                    if (! "".equals(href)) {
-                        href = normalizeURL((HttpServletRequest) cloud.getProperty("request"), href);
-                    }
-
-                    // IE Tends to make URL's absolute (http://localhost:8070/mm18/mmbase/images/1234)
-                    // FF Tends to make URL's relative (../../../../mmbase/images/1234)
-                    // What we want is absolute on server (/mm18/mmbase/images/1234), because that is how URL was probably given in the first place.
-
+                    String href = getHref(a, cloud);
                     String klass = a.getAttribute("class");
                     String id = a.getAttribute("id");
-
-                    if (klass.startsWith("div ") && href.equals("")) {
-                        klass = klass.substring(4);
-                        Matcher divId = DIV_ID.matcher(id);
-                        if (divId.matches()) {
-                            href = "BLOCK/" + divId.group(1);
-                            if (divId.group(1).equals("createddiv")) {
-                                id = ""; // generate one
-                            }  else {
-                                id   = divId.group(2);
-                            }
-                        } else {
-                            // odd
-                            href = "BLOCK/createddiv";
-                            id   = ""; // generated one
-                        }
-                        a.setAttribute("id", id);
-
-                    }
-                    if (id.equals("")) {
-                        id = "_" + indexCounter++;
-                        a.setAttribute("id", id);
-                    }
-                    log.debug("Considering " + href);
-                    Matcher textsMatcher =  textsServlet.matcher(href);
-                    if (href.startsWith(imageServlet)) { // found an image!
-                        String q = "/images/" + href.substring(imageServlet.length());
-                        log.debug(href + ":This is an image!!-> " + q);
-                        BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
-                        if (qp == null) {
-                            log.error("Could not parse " + q + ", ignoring...");
-                            continue;
-                        }
-                        String nodeNumber = qp.getNodeNumber();
-                        Node image = cloud.getNode(nodeNumber);
-                        if (image.getNodeManager().equals(icaches)) {
-                            image = image.getNodeValue("id");
-                            log.debug("This is an icache for " + image.getNumber());
-                        }
-                        usedImages.add(image);
-                        NodeList linkedImage = get(cloud, relatedImages, "idrel.id", id);
-                        if (! linkedImage.isEmpty()) {
-                            // ok, already related!
-                            log.service("" + image + " image already correctly related, nothing needs to be done");
-                            Node idrel = linkedImage.getNode(0).getNodeValue("idrel");
-                            if (!idrel.getStringValue("class").equals(klass)) {
-                                idrel.setStringValue("class", klass);
-                                idrel.commit();
-                            }
-
-                        } else {
-                            log.service(" to" + image + ", creating new relation");
-                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), images, "idrel");
-                            Relation newIdRel = rm.createRelation(editedNode, image);
-                            newIdRel.setStringValue("id", id);
-                            newIdRel.setStringValue("class", klass);
-                            newIdRel.commit();
-                        }
-                        a.removeAttribute("src");
-                        a.removeAttribute("height");
-                        a.removeAttribute("width");
-                        a.removeAttribute("class");
-                        a.removeAttribute("alt");
-                    } else if (href.startsWith(attachmentServlet)) { // an attachment
-                        String q = "/attachments/" + href.substring(attachmentServlet.length());
-                        BridgeServlet.QueryParts qp = BridgeServlet.readServletPath(q);
-                        if (qp == null) {
-                            log.error("Could not parse " + q + ", ignoring...");
-                            continue;
-                        }
-                        String nodeNumber = qp.getNodeNumber();
-                        Node attachment = cloud.getNode(nodeNumber);
-                        usedAttachments.add(attachment);
-                        NodeList linkedAttachment = get(cloud, relatedAttachments, "idrel.id", id);
-                        if (! linkedAttachment.isEmpty()) {
-                            // ok, already related!
-                            log.service("" + attachment + " image already correctly related, nothing needs to be done");
-                            Node idrel = linkedAttachment.getNode(0).getNodeValue("idrel");
-                            if (!idrel.getStringValue("class").equals(klass)) {
-                                idrel.setStringValue("class", klass);
-                                idrel.commit();
-                            }
-
-                        } else {
-                            log.service(" to " + attachment + ", creating new relation");
-                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), attachments, "idrel");
-                            Relation newIdRel = rm.createRelation(editedNode, attachment);
-                            newIdRel.setStringValue("id", id);
-                            newIdRel.setStringValue("class", klass);
-                            newIdRel.commit();
-                        }
-                        a.removeAttribute("href");
-                        a.removeAttribute("class");
-                        a.removeAttribute("title");
-                        a.removeAttribute("target");
-                    } else if (textsMatcher.matches()) {
-                        String nodeNumber = textsMatcher.group(2);
-                        if (! cloud.hasNode(nodeNumber)) {
-                            log.error("No such node '" + nodeNumber + "' (deduced from " + href + ")");
-                            continue;
-                        }
-                        Node text = cloud.getNode(nodeNumber);
-                        usedTexts.add(text);
-                        NodeList linkedText = get(cloud, relatedTexts, "idrel.id", id);
-                        if (! linkedText.isEmpty()) {
-                            // ok, already related!
-                            log.debug("" + text + " text already correctly related, nothing needs to be done");
-                            Node idrel = linkedText.getNode(0).getNodeValue("idrel");
-                            if (!idrel.getStringValue("class").equals(klass)) {
-                                idrel.setStringValue("class", klass);
-                                idrel.commit();
-                            }
-
-                        } else {
-                            log.service("Found new cross link " + text.getNumber() + ", creating new relation now");
-                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), text.getNodeManager(), "idrel");
-                            Relation newIdRel = rm.createRelation(editedNode, text);
-                            newIdRel.setStringValue("id", id);
-                            newIdRel.setStringValue("class", klass);
-                            newIdRel.commit();
-                        }
-
-                        a.removeAttribute("href");
-                        a.removeAttribute("alt");
-                    } else if (href.startsWith("BLOCK/")) {
-
-                        String nodeNumber = href.substring(6);
-                        Node block;
-                        if (nodeNumber.equals("createddiv")) {
-                            block = blocks.createNode();
-                            block.setStringValue("title", "Block created for node " + editedNode.getNumber());
-                            block.commit();
-                        } else {
-                            block = cloud.getNode(nodeNumber);
-                        }
-
-                        DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
-                        DOMImplementation impl = documentBuilder.getDOMImplementation();
-                        Document blockDocument = impl.createDocument("http://www.w3.org/1999/xhtml", "body", null);
-                        Element blockBody = blockDocument.getDocumentElement();
-                        copyChilds(a, blockBody);
-
-
-                        org.w3c.dom.Node child = a.getFirstChild();
-                        while (child != null) {
-                            a.removeChild(child);
-                            child = a.getFirstChild();
-                        }
-
-                        log.debug("Setting body to " + XMLWriter.write(blockDocument, false));
-                        // fill _its_ body, still in kupu-mode
-                        block.setStringValue("body", XMLWriter.write(blockDocument, false));
-                        block.commit();
-
-                        NodeList linkedBlock = get(cloud, relatedBlocks, "idrel.id", id);
-                        if (! linkedBlock.isEmpty()) {
-                            // ok, already related!
-                            log.service("" + block + " block already correctly related, nothing needs to be done");
-                            Node idrel = linkedBlock.getNode(0).getNodeValue("idrel");
-                            if (!idrel.getStringValue("class").equals(klass)) {
-                                idrel.setStringValue("class", klass);
-                                idrel.commit();
-                            }
-
-                        } else {
-                            log.service(" to " + block + ", creating new relation");
-                            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), blocks, "idrel");
-                            Relation newIdRel = rm.createRelation(editedNode, block);
-                            newIdRel.setStringValue("id", id);
-                            newIdRel.setStringValue("class", klass);
-                            newIdRel.commit();
-                        }
-                        a.removeAttribute("class");
+                    Matcher mmbaseMatcher =  mmbaseUrl.matcher(href);
+                    if (handleImage(href, a, usedImages, relatedImages, editedNode)) { // found an image!
+                        continue;
+                    } else if (handleAttachment(mmbaseMatcher, a, usedAttachments, relatedAttachments, editedNode)) {
+                        continue;
+                    } else if (handleText(mmbaseMatcher, a, usedTexts, relatedTexts, editedNode)) {
+                        continue;
+                    } else if (handleBlock(href, a, relatedBlocks, editedNode)) {
+                        continue;
                     } else { // must have been really an URL
 
                         NodeList idLinkedUrls = get(cloud, relatedUrls, "idrel.id", id);
