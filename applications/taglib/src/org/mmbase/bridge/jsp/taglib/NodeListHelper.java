@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.18 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.19 2005-12-13 09:56:38 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -358,7 +358,7 @@ public class NodeListHelper implements ListProvider {
             nodeHelper.setNodeVar(next);
             nodeHelper.fillVars();
         } catch (BridgeException be) { // e.g. NodeManager does not exist
-            log.warn(be.getMessage());
+            log.warn(be.getMessage(), be);
         }
     }
 
