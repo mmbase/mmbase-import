@@ -16,9 +16,9 @@ import javax.servlet.jsp.jstl.core.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainerOrListProvider.java,v 1.2 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: QueryContainerOrListProvider.java,v 1.3 2005-12-13 09:49:14 michiel Exp $
  */
-public interface QueryContainerOrListProvider extends LoopTag {
+public interface QueryContainerOrListProvider  {
 
  
 }
