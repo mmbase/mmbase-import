@@ -15,11 +15,12 @@
 	-->
 
   <articleinfo>
-    <title>The event framework</title>
+    <title>The Event Framework Technical Reference</title>
 
     <date>2005-12-09</date>
 
-    <edition>$Id: eventframework.xml,v 1.2 2005-12-12 21:15:54 andre Exp $</edition>
+    <edition>$Id: eventframework.xml,v 1.1 2005/12/09 14:29:56 ernst Exp
+    $</edition>
 
     <authorgroup>
       <!-- one or more authors -->
@@ -119,7 +120,8 @@
       all mmbase nodes in your network (that are configured to receive each
       others multicast messages), so it is more easy to write scalable web
       applications. (See for more information the document about mmbase
-      clustering).</para>
+      clustering). To take advantage of this you have to make shure that the
+      event is serializable though.</para>
     </section>
 
     <section id="create_EventListener">
@@ -152,43 +154,145 @@
   </section>
 
   <section>
-    <title>NodeEvent and RelationEvent: what has changed</title>
+    <title>Node and relation events: what has changed</title>
 
-    <para>This section contains information for people who just want to create
-    listeners for node and relation events. This is usualy done when creating
-    custom builder classes.</para>
+    <para>This section tells you what you need to know about node and relation
+    changes, how to use them, and how they all bounce and bounce inside MMBase
+    these days.</para>
 
-    <para>Some things have changed in respect to the previous
-    org.mmbase.module.core.MMBaseObserver. This interface provided different
-    methods for local and remote node changes. It was felt that this is not
-    very useful; the usual practice seems to be to create one method to handle
-    both types of events. It is still possible to determine if an event was
-    local or remote by comparing the machine name of the event to the local
-    one.</para>
+    <section>
+      <title>Classes and interfaces</title>
 
-    <para>On the other hand is the information provided by the attributes of
-    these methods very poor. This was the main motivation to change the event
-    model.</para>
+      <para>This section tells you what you need to know about node and
+      relation changes, how to use them, and how they all bounce and bounce
+      inside MMBase these days.</para>
 
-    <para>The new org.mmbase.core.event.NodeEventListener and
-    org.mmbase.core.event.RelationEventListener interfaces create a
-    distinction between node and relation events. The classes
-    org.mmbase.core.event.NodeEvent and org.mmbase.core.event.RElationEvent
-    (and through them the events) provide much more information than
-    before.</para>
+      <para>Some things have changed in respect to the previous implementation
+      using the org.mmbase.module.core.MMBaseObserver interface. This
+      interface provided different methods for local and remote node changes.
+      It was felt that this is not very useful; the usual practice seems to be
+      to create one method to handle both types of events. It is still
+      possible to determine if an event was local or remote by comparing the
+      machine name of the event to the local one.</para>
 
-    <para>To make it as easy as it was before to register listeners to node
-    and/or relation events of a specific builder, Some wrapper classes were
-    created for NodeEventListener and RelationEventListener instances, that
-    will filter the events for you (take a look at
-    org.mmbase.core.event.TypedNodeEventListenerWrapper and
-    org.mmbase.core.event.TypedRelationEventListenerWrapper. But you don't
-    even have to use those directly. Both the MMBase and MMObjectBuilder
-    classes have convenience methods to register your listeners. Take a look
-    at Mmbase.addNodeRelatedEventsListener(String builder, Object listener)
-    and MMObjectBuilder.addEventListener(Object listener). The object is your
-    class implementing either NodeEventListener or RelationeventListener or
-    both (discovered through introspection). Wrappers are created accordingly
-    and registered as listeners.</para>
+      <para>On the other hand was the information about the event provided to
+      these methods very poor. This was the main motivation to change the
+      event model.</para>
+
+      <para>The new org.mmbase.core.event.NodeEventListener and
+      org.mmbase.core.event.RelationEventListener interfaces create a
+      distinction between node and relation events. The classes
+      org.mmbase.core.event.NodeEvent and org.mmbase.core.event.RelationEvent
+      (and through them the events) provide much more information than
+      before.</para>
+
+      <para>When you register a NodeEventListener or a RelationEventListener
+      with the EventManager all node or relation events are propagated to it.
+      This is many times what you want. In stead you want to listen to the
+      events for nodes of a specific type. To make it as easy as it was before
+      to register listeners to node and/or relation events of a specific
+      builder, Some wrapper classes were created for NodeEventListener and
+      RelationEventListener instances, that will filter the events for you
+      (take a look at org.mmbase.core.event.TypedNodeEventListenerWrapper and
+      org.mmbase.core.event.TypedRelationEventListenerWrapper. But you don't
+      even have to use those directly. Both the MMBase and MMObjectBuilder
+      classes have convenience methods to register your listeners. Take a look
+      at Mmbase.addNodeRelatedEventsListener(String builder, Object listener)
+      and MMObjectBuilder.addEventListener(Object listener). The object is
+      your class implementing either NodeEventListener or
+      RelationEventListener or both (discovered through introspection).
+      Wrappers are created accordingly and registered as listeners.</para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Node and relation event flow</title>
+
+      <para>This section provides insight into what happens when node and
+      relation events are fired.</para>
+
+      <section>
+        <title>Local node change</title>
+
+        <para>This section describes what happens when a local node or
+        releation changes.</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Nodes are committed to the database by the StorageManager.
+            When this has happened ChangeManager.commit() is called. Just as
+            the StorageManager is there to handle all changes to the database
+            when a node changes, the ChangeManager has this responsibility
+            towards MMBase (i.e. Make sure every 'client' that needs to know
+            about the change does do).</para>
+          </listitem>
+
+          <listitem>
+            <para>The ChangeManager creates a NodeEvent instance and
+            propagates it to the EventManager. If the changed node is a
+            specialization of Insrel, a RelationEvent is subsequently created
+            and propagated to the EventManager
+            (EventManager.propagateEVent(Event)).</para>
+          </listitem>
+
+          <listitem>
+            <para>The EventManager will find the brokers that can handle
+            events of this type, and the event will be propagated to the
+            broker's listeners. In case of a node or relation event, those
+            include the builder matching the type of the event, the Obsterver
+            instance for the event type. Mind you, for a node event the 'type'
+            of the event is the builder of the node, while for a relation
+            event it's type is both the relation source type as the relation
+            destination type. The ClusterManager will receive the event
+            regardless of it's type.</para>
+          </listitem>
+
+          <listitem>
+            <para>The builder (all builders implement the NodeEventListener
+            and the RelationEventListener) receiving the event will update
+            it's node caches.</para>
+
+            <para>The Observer receiving the event will iterate over all
+            queries it holds reference to and evaluate the event against it to
+            discover it the query must be flushed (for more information about
+            QueryCache#Observer see the 'QueryCache Release Strategy'
+            document).</para>
+
+            <para>The ClusterManager implements the AllEventListener, so it
+            will be notified for any and all event types. It will first check
+            if the event is local. If this is so, it will serialize the event,
+            and send it across the network to other nodes in the MMBase
+            cluster.</para>
+          </listitem>
+        </orderedlist>
+
+        <graphic fileref="media/eventflow-send.jpg" />
+      </section>
+
+      <section>
+        <title>Remote node change</title>
+
+        <para>This section describes what happens when a node changes
+        somewhere in the cluster.<orderedlist>
+            <listitem>
+              <para>An event has been fired somewhere in the cluster. It was
+              serialized and send across the network, and has been picked up
+              by the local ClusterManager. The event is desiralized and
+              propagated to the EventManager.</para>
+            </listitem>
+
+            <listitem>
+              <para>The EventManager will handle the event as in 4.2.1, item
+              3. Note that the ClusterManager will receive the event it just
+              propagated to the EventManager again. That is why the
+              ClusterManager checks if events are local before serializing
+              them and sending them into the network.</para>
+            </listitem>
+          </orderedlist></para>
+
+        <graphic fileref="media/eventflow-receive.jpg" />
+      </section>
+    </section>
   </section>
 </article>
