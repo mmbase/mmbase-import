@@ -1,5 +1,6 @@
-﻿<?xml version="1.0"?>
-<xmlnews exportsource="mmbase://localhost/mmbase/richtext" timestamp="20021109011559">
+<?xml version="1.0"?>
+<xmlnews
+    exportsource="mmbase://www.mmbase.org/richtext" timestamp="20050921221010">
   <node number="5673" owner="system" alias="xmltest">
     <body>&lt;mmxf xmlns="http://www.mmbase.org/mmxf"&gt;
 &lt;section&gt;
@@ -32,6 +33,8 @@
 &lt;p&gt;euro: € 2,50 &lt;/p&gt;
 &lt;/mmxf&gt;
 </intro>
+   <begin>2002-12-31T23:00:07Z</begin>
+   <end>2099-12-31T23:00:00Z</end>
   </node>
   
 </xmlnews>

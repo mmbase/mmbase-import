@@ -7,19 +7,58 @@
   </requirements>
 
   <neededbuilderlist>
-    <builder maintainer="mmbase.org" version="1">xmlnews</builder>
-    <builder maintainer="mmbase.org" version="1">images</builder>
-    <builder maintainer="mmbase.org" version="1">urls</builder>
-    <builder maintainer="mmbase.org" version="1">idrel</builder>
+
+    <!-- simple site structure -->
+    <builder maintainer="mmbase.org" version="0">categories</builder>
+    <builder maintainer="mmbase.org" version="0">templates</builder>
+    <builder maintainer="mmbase.org" version="0">typedef</builder>
+    <builder maintainer="mmbase.org" version="0">editorrel</builder>
+
+    <!-- some basic content structure -->
+    <builder maintainer="mmbase.org" version="0">content</builder>
+    <builder maintainer="mmbase.org" version="0">texts</builder>
+    <builder maintainer="mmbase.org" version="0">xmlnews</builder>
+    <builder maintainer="mmbase.org" version="0">people</builder>
+    <builder maintainer="mmbase.org" version="0">urls</builder>
+    <builder maintainer="mmbase.org" version="0">images</builder>
+    <builder maintainer="mmbase.org" version="0">attachments</builder>
+
+    <builder maintainer="mmbase.org" version="0">insrel</builder>
+    <builder maintainer="mmbase.org" version="0">posrel</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
-    <reldef source="idrel" target="idrel" direction="bidirectional" guisourcename="Idrel" guitargetname="Idrel" builder="idrel" />
+    <!-- site structure -->
+    <reldef source="editor"    target="editor"    direction="bidirectional" guisourcename="Editor"    guitargetname="Editor"     builder="editorrel" />
+
+    <reldef source="related"   target="related"   direction="bidirectional" guisourcename="Related"   guitargetname="Related"    builder="insrel" />
+    <reldef source="posrel"    target="posrel"    direction="bidirectional" guisourcename="Posrel"    guitargetname="Posrel"     builder="posrel" />
   </neededreldeflist>
 
   <allowedrelationlist>
-    <relation from="xmlnews"  to="images" type="idrel" />
-    <relation from="xmlnews"  to="urls"   type="idrel" />
+    <relation from="categories" to="content"    type="related" />
+    <relation from="categories" to="content"    type="posrel" />
+
+    <relation from="texts"       to="images"      type="idrel" />
+    <relation from="texts"       to="attachments" type="idrel" />
+    <relation from="texts"       to="texts"       type="idrel" />
+    <relation from="texts"       to="urls"        type="idrel" />
+
+    <relation from="texts"       to="images"       type="posrel" />
+    <relation from="texts"       to="attachments"  type="posrel" />
+    <relation from="texts"       to="urls"         type="posrel" />
+    <relation from="texts"       to="mediasources"   type="posrel" />
+
+
+    <relation from="categories"  to="products"       type="highlight" />
+    <relation from="categories"  to="categories"     type="highlight" />
+    <relation from="people"      to="images"       type="posrel" />
+
+    <!-- site struct -->
+    <relation from="templates"  to="typedef"    type="editor" />
+    <relation from="categories" to="templates"  type="block" />
+
+
   </allowedrelationlist>
 
   <datasourcelist>
@@ -30,14 +69,14 @@
 
   <relationsourcelist>
     <relationsource builder="idrel" path="ExampleData/idrel.xml" />
+    <relationsource builder="editorrel"   path="ExampleData/editorrel.xml" />
   </relationsourcelist>
 
   <contextsourcelist>
     <contextsource path="ExampleData/backup.xml" type="depth" goal="backup"/>
   </contextsourcelist>
 
-  <description><![CDATA[ExampleData test article, with some related nodes.
-Depends on Resources application.
+  <description><![CDATA[ExampleData test article, with some related nodes, simple site structure. Depends on Resources and RichText application.
 	]]></description>
 
   <install-notice><![CDATA[The formatter example of the taglib example will work now and demonstrate how 'XML' fields can be used.

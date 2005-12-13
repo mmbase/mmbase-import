@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="object" maintainer="mmbase.org" name="xmlnews" version="0">
+<builder extends="texts" maintainer="mmbase.org" name="xmlnews" version="0">
   <status>active</status>
   <searchage>14</searchage>
   <names>
@@ -19,102 +19,5 @@
     <description xml:lang="nl">Nieuws item zijn om XML velden te demonstreren</description>
     <description xml:lang="eo">Novaĵoj ekzistas por montro de XML-kampoj</description>
   </descriptions>
-  <fieldlist>
-    <field>
-      <descriptions>
-        <description xml:lang="en">Title of the news item</description>
-        <description xml:lang="nl">Titel (hoofd kop) van het nieuwsitem</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Title</guiname>
-        <guiname xml:lang="fr">Titre</guiname>
-        <guiname xml:lang="nl">Titel</guiname>
-        <guiname xml:lang="eo">Titolo</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <editor>
-        <positions>
-          <input>1</input>
-          <list>1</list>
-          <search>1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>title</name>
-        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
-      </db>
-    </field>
-    <field>
-      <descriptions>
-        <description xml:lang="en">Subtitle of the news item</description>
-        <description xml:lang="nl">Sub hoofd van het nieuwsitem</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">SubTitle</guiname>
-        <guiname xml:lang="fr">Sous-titre</guiname>
-        <guiname xml:lang="nl">SubTitel</guiname>
-        <guiname xml:lang="eo">Subtitolo</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <editor>
-        <positions>
-          <input>2</input>
-          <list>-1</list>
-          <search>2</search>
-        </positions>
-      </editor>
-      <db>
-        <name>subtitle</name>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
-      </db>
-    </field>
-    <field>
-      <descriptions>
-        <description xml:lang="en">Introduction text or teaser, can contain tich text</description>
-        <description xml:lang="nl">Introductietekst of teaser, kan opgemaakte tekst bevatten</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Intro</guiname>
-        <guiname xml:lang="fr">Intro</guiname>
-        <guiname xml:lang="nl">Intro</guiname>
-        <guiname xml:lang="eo">Enkonduko</guiname>
-        <guitype>mmxf</guitype>
-      </gui>
-      <editor>
-        <positions>
-          <input>3</input>
-          <list>-1</list>
-          <search>3</search>
-        </positions>
-      </editor>
-      <db>
-        <name>intro</name>
-        <type key="false" notnull="false" size="2048" state="persistent">XML</type>
-      </db>
-    </field>
-    <field>
-      <descriptions>
-        <description xml:lang="en">Main text of the newsitem, can contain richttext</description>
-        <description xml:lang="nl">Hoofdtekst van het nieuwsitem, kan opgemaakte tekst bevatten</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Text</guiname>
-        <guiname xml:lang="fr">Texte</guiname>
-        <guiname xml:lang="nl">Tekst</guiname>
-        <guiname xml:lang="eo">Teksto</guiname>
-        <guitype>mmxf</guitype>
-      </gui>
-      <editor>
-        <positions>
-          <input>4</input>
-          <list>-1</list>
-          <search>4</search>
-        </positions>
-      </editor>
-      <db>
-        <name>body</name>
-        <type key="false" notnull="false" size="64000" state="persistent">XML</type>
-      </db>
-    </field>
-  </fieldlist>
+  <fieldlist />
 </builder>
