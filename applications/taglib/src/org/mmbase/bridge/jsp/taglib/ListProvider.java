@@ -11,16 +11,16 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.*;
 import org.mmbase.bridge.jsp.taglib.containers.QueryContainerOrListProvider;
+import org.mmbase.util.logging.*;
 
 /**
  * Basic interface that parent should implement if they provide Lists.
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: ListProvider.java,v 1.11 2005-12-05 17:21:17 michiel Exp $ 
+ * @version $Id: ListProvider.java,v 1.12 2005-12-13 09:49:14 michiel Exp $ 
  */
-public interface ListProvider extends ContextProvider, QueryContainerOrListProvider {
-
+public interface ListProvider extends ContextProvider, QueryContainerOrListProvider, LoopTag {
     /**
      * @return the size of the list
      */
@@ -64,6 +64,7 @@ public interface ListProvider extends ContextProvider, QueryContainerOrListProvi
      * @since MMBase-1.8
      */ 
     public class ListProviderLoopTagStatus implements LoopTagStatus {
+        private static final Logger log = Logging.getLoggerInstance(ListProviderLoopTagStatus.class);
 
         private final ListProvider prov;
         public ListProviderLoopTagStatus(ListProvider l) {

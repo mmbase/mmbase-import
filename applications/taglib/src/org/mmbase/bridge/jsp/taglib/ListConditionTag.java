@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListConditionTag.java,v 1.20 2005-12-05 17:21:17 michiel Exp $ 
+ * @version $Id: ListConditionTag.java,v 1.21 2005-12-13 09:49:14 michiel Exp $ 
  */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
@@ -74,6 +74,7 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
     public int doStartTag() throws JspTagException{
         // find the parent list:
         LoopTagStatus list = getLoopTag().getLoopStatus();
+
 
         boolean i = getInverse();
         boolean result = false;
