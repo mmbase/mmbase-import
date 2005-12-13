@@ -194,11 +194,17 @@ public class Processor
                   rlClassRelToDelete.remove(nlClassRel.get(0));
                }
             }
-/*
+
             //profile for the class
-            Node nodeProfileRelation = this.storeProfile(nodePerson, sClassName.substring(1,7));
-            rlProfilesToDelete.remove(nodeProfileRelation);
-            */
+            Node nodeProfileRelation = null;
+            try
+            {
+               nodeProfileRelation = this.storeProfile(nodePerson, sClassName.split("#")[2]);
+               rlProfilesToDelete.remove(nodeProfileRelation);
+            }
+            catch (Exception ex)
+            {
+            }
          }
       }
 
