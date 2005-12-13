@@ -23,7 +23,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.15 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.16 2005-12-13 10:01:00 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -100,9 +100,6 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         return super.doEndTag();
     }
 
-    public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
-        return new QueryContainerLoopTagStatus(this);
-    }
     public Object getCurrent() {
         return null;
     }
