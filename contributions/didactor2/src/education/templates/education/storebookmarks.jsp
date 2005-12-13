@@ -19,16 +19,15 @@
         if (bookmarks== null) {
             bookmarks = new HashMap();
             session.setAttribute("educationBookmarks",bookmarks);
-            System.err.println("made new bookmarks object");
+            //System.err.println("made new bookmarks object");
         }
         if (learnObject != null && learnObject.length() != 0) {
             bookmarks.put(educationNumber+",learnobject",learnObject);
-            System.err.println("stored "+educationNumber+",learnobject ="+learnObject);
+            //System.err.println("stored "+educationNumber+",learnobject ="+learnObject);
         }
         if (learnObjectType != null && learnObject.length() != 0) {
             bookmarks.put(educationNumber+",learnobjecttype",learnObjectType);
-            System.err.println("stored learnobjecttype ="+learnObjectType);
-
+            //System.err.println("stored learnobjecttype ="+learnObjectType);
         }
     }
 %>
