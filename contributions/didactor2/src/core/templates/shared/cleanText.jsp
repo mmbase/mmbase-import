@@ -1,5 +1,5 @@
 <%
-    System.err.println("Cleaning up '"+text+"'");
+    //System.err.println("Cleaning up '"+text+"'");
         //
         // remove some of the annoying html that messes up the PDFs
         // 
@@ -16,5 +16,5 @@
         if (!text.endsWith("</p>")) {
             text = text+"</p>";
         }
-    System.err.println("Result: '"+text+"'");
+    //System.err.println("Result: '"+text+"'");
 %><%= text %>
