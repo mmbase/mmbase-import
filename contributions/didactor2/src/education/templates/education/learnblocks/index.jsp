@@ -131,58 +131,77 @@
                }
                sPath += (String) it.previous();
             }
-            System.out.println("path=" + sPath);
-         %>
+
+            //System.out.println("path=" + sPath);
 
 
-         <%
             String sScormDir = sUserSettings_PathBaseDirectory + File.separator + "scorm";
             String sNodePlayer = sScormDir + File.separator + sPackageNode + "_player";
 
-            File fileCustomMenu = new File(sNodePlayer + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs" + nodeLearnObject.getNumber() +  ".js");
-            if(!fileCustomMenu.exists())
-            {
-
-               Class classMenuCreater = null;
-               nl.didactor.component.scorm.player.InterfaceMenuCreator menuCreator = null;
-
-               try
+            //package checking
+            File filePackageDir = new File(sScormDir + File.separator + sPackageNode);
+            File filePackageUnzippedDir = new File(sScormDir + File.separator + sPackageNode + "_");
+            File filePackagePlayerDir = new File(sNodePlayer);
+            if(filePackageDir.exists() && filePackageUnzippedDir.exists() && filePackagePlayerDir.exists())
+            {//The package exists
+               File fileCustomMenu = new File(sNodePlayer + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs" + nodeLearnObject.getNumber() +  ".js");
+               if(!fileCustomMenu.exists())
                {
-                  classMenuCreater = Class.forName("nl.didactor.component.scorm.player.MenuCreator");
-                  menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + "imsmanifest.xml"), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/"});
 
-               }
-               catch (Exception e)
-               {
-                  throw new ServletException ("Can't load SCORM player class! Nested exception is:" + e.toString());
-               }
+                  Class classMenuCreater = null;
+                  nl.didactor.component.scorm.player.InterfaceMenuCreator menuCreator = null;
 
-               String[] arrstrJSMenu = menuCreator.parse(true, "" + sPackageNode, sPath);
+                  try
+                  {
+                     classMenuCreater = Class.forName("nl.didactor.component.scorm.player.MenuCreator");
+                     menuCreator = (nl.didactor.component.scorm.player.InterfaceMenuCreator) classMenuCreater.getConstructors()[0].newInstance(new Object[]{new File(sScormDir + File.separator + sPackageNode + "_" + File.separator + "imsmanifest.xml"), "http://", sUserSettings_BaseURL + "/scorm/" + sPackageNode + "_" + "/"});
 
-               RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileCustomMenu, "rw");
-               for(int f = 0; f < arrstrJSMenu.length; f++)
-               {
-                  rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
-                  rafileMenuConfig.writeByte(13);
-                  rafileMenuConfig.writeByte(10);
+                  }
+                  catch (Exception e)
+                  {
+                     throw new ServletException ("Can't load SCORM player class! Nested exception is:" + e.toString());
+                  }
+
+                  String[] arrstrJSMenu = menuCreator.parse(true, "" + sPackageNode, sPath);
+
+                  RandomAccessFile rafileMenuConfig = new RandomAccessFile(fileCustomMenu, "rw");
+                  for(int f = 0; f < arrstrJSMenu.length; f++)
+                  {
+                     rafileMenuConfig.writeBytes(arrstrJSMenu[f]);
+                     rafileMenuConfig.writeByte(13);
+                     rafileMenuConfig.writeByte(10);
+                  }
+                  rafileMenuConfig.close();
                }
-               rafileMenuConfig.close();
+               %>
+                  <script>
+                     parent.frames['content'].location.href='<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>&rnd=<%= (new Date()).getTime() %>';
+                  </script>
+
+                  <%--
+                  <iframe src="<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>" width="100%" height="100%"></iframe>
+                  --%>
+               <%
             }
+            else
+            {//The package isn't exist
+               %>
+                  <di:translate key="scorm.package_dir_is_missing" arg0="<%= sPackageNode %>"/>
+                  <br/><br/>
+                  <%= filePackageDir.getAbsolutePath() %><br />
+                  <%= filePackageUnzippedDir.getAbsolutePath() %><br/>
+                  <%= filePackagePlayerDir.getAbsolutePath() %><br />
+               <%
+            }
+
+
          %>
-
-         <script>
-            parent.frames['content'].location.href='<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>&rnd=<%= (new Date()).getTime() %>';
-         </script>
-
-         <%--
-         <iframe src="<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>" width="100%" height="100%"></iframe>
-         --%>
 
          <mm:import id="loaded">true</mm:import>
       </mm:node>
 
       <mm:notpresent referid="loaded">
-         You have to install SCORM component to see the content of this page.
+         <di:translate key="scorm.you_have_to_turn_on_the_scorm_module" />
       </mm:notpresent>
 
    </mm:present>
