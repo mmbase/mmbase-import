@@ -4,8 +4,8 @@
   <xs:element name="mmxf">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-	<xs:element ref="p" />
-	<xs:element ref="table)* sectio" />
+        <xs:element ref="p" />
+        <xs:element ref="table)* section" />
       </xs:choice>
       <xs:attribute name="version" type="xs:NMTOKEN" />
     </xs:complexType>
@@ -13,7 +13,7 @@
   <xs:element name="section">
     <xs:complexType>
       <xs:sequence minOccurs="0" maxOccurs="unbounded">
-	<xs:element ref="h (p / table)** section" />
+        <xs:element ref="h (p / table)** section" />
       </xs:sequence>
       <xs:attribute name="id" type="xs:NMTOKEN" />
     </xs:complexType>
