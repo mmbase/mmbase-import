@@ -8,6 +8,7 @@
   <datatype id="xml">
 
     <specialization id="mmxf">
+      <default value="&lt;p/&gt;" />
       <setprocessor type="string">
         <class name="org.mmbase.richtext.processors.xml.MmxfSetString" />
       </setprocessor>
@@ -21,6 +22,7 @@
         'mmxfunp' fields can be used just like 'mmxf' fields, but it anticipates that the field
         previously was a simple String field (and on the front-end escape='p' was used).
       </description>
+      <default value="&lt;p/&gt;" />
       <setprocessor type="string">
         <class name="org.mmbase.richtext.processors.xml.MmxfSetString" />
       </setprocessor>
