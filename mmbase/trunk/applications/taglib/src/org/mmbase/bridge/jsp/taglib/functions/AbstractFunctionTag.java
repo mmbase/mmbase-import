@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.23 2005-08-18 16:55:27 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.24 2005-12-13 09:48:07 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -165,7 +165,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             } else {
                 functionOrNode = (FunctionContainerOrNodeProvider) findParentTag(FunctionContainerOrNodeProvider.class, null, false);
             }
-            log.debug("Found functionOrNode " + functionOrNode);
+            if (log.isDebugEnabled()) {
+                log.debug("Found functionOrNode " + functionOrNode);
+            }
             if (functionOrNode != null) {
                 if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use                    
                     log.debug("using node-function!");
@@ -220,8 +222,10 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             value = getObject(getReferid());
         } else {
             Function function = getFunction();
-
-            log.debug("Function to use " + function);
+            
+            if (log.isDebugEnabled()) {
+                log.debug("Function to use " + function);
+            }
             Parameters params;
             try {
                 params = function.createParameters();
@@ -250,11 +254,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
 
             params.checkRequiredParameters();
-
+            
             value =  function.getFunctionValue(params);
-            if (value instanceof FieldValue) {
-                value = ((FieldValue) value).get();
-            }
+
         }
         if (register && getId() != null) {
             getContextProvider().getContextContainer().register(getId(), value);
