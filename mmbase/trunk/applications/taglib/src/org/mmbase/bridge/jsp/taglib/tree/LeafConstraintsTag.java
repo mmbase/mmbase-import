@@ -25,7 +25,7 @@ import org.mmbase.bridge.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: LeafConstraintsTag.java,v 1.4 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: LeafConstraintsTag.java,v 1.5 2005-12-13 10:01:05 michiel Exp $
  */
 public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryContainer, QueryContainerReferrer { 
 
@@ -66,9 +66,6 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
         return SKIP_BODY;        
     }
 
-    public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
-        return new QueryContainerLoopTagStatus(this);
-    }
     public Object getCurrent() {
         return null;
     }
