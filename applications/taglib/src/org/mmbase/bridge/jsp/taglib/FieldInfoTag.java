@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.90 2005-12-09 09:53:34 pierre Exp $
+ * @version $Id: FieldInfoTag.java,v 1.91 2005-12-13 09:46:21 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -305,15 +305,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 log.debug("field " + fieldName + " --> " + node.getStringValue(field.getName()));
             }
             Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
-            args.set("field",    field.getName());
-            args.set("language",   locale.getLanguage());
-            args.set("locale",   locale);
+            args.set(Parameter.FIELD,    field.getName());
             args.set("session",  sessionName);
-            args.set("response", pageContext.getResponse());
-            args.set("request", pageContext.getRequest());
-            if (node.getSize(fieldName) < 2000) {
-                args.set("stringvalue", node.getStringValue(fieldName));
-            }
+            fillStandardParameters(args);
+
             show = decode(node.getFunctionValue("gui", args).toString(), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(fieldName), node);
