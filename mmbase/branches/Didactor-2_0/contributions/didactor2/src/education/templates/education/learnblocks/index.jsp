@@ -186,7 +186,7 @@
             else
             {//The package isn't exist
                %>
-                  Package with ID=<%= sPackageNode %> has got problems. Please check these paths are available:
+                  <di:translate key="scorm.package_dir_is_missing" arg0="<%= sPackageNode %>"/>
                   <br/><br/>
                   <%= filePackageDir.getAbsolutePath() %><br />
                   <%= filePackageUnzippedDir.getAbsolutePath() %><br/>
@@ -201,7 +201,7 @@
       </mm:node>
 
       <mm:notpresent referid="loaded">
-         You have to install SCORM component to see the content of this page.
+         <di:translate key="scorm.you_have_to_turn_on_the_scorm_module" />
       </mm:notpresent>
 
    </mm:present>
