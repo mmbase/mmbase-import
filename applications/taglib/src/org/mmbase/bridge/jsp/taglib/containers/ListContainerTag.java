@@ -22,7 +22,7 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.15 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.16 2005-12-13 10:01:00 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
@@ -106,9 +106,6 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
         return super.doEndTag();
     }
 
-    public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
-        return new QueryContainerLoopTagStatus(this);
-    }
     public Object getCurrent() {
         return null;
     }

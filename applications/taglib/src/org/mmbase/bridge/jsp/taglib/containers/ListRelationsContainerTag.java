@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.11 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.12 2005-12-13 10:01:00 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -120,9 +120,6 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
         return super.doEndTag();
     }
 
-    public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
-        return new QueryContainerLoopTagStatus(this);
-    }
     public Object getCurrent() {
         return null;
     }
