@@ -28,7 +28,7 @@ import org.mmbase.storage.StorageInaccessibleException;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.5 2005-09-21 21:20:23 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.6 2005-12-14 10:52:12 ernst Exp $
  */
 public final class GenericDataSource implements DataSource {
 
@@ -51,6 +51,10 @@ public final class GenericDataSource implements DataSource {
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
+        this.dataDir = dataDir;
+    }
+    
+    public void setDataDir(String path){
         this.dataDir = dataDir;
     }
 
