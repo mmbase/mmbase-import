@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.26 2005-09-22 20:36:46 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.27 2005-12-14 10:52:12 ernst Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -149,6 +149,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         // default searchquery handler class
         queryHandlerClasses.add(DEFAULT_QUERY_HANDLER_CLASS);
 
+
+        
         // get the Datasource for the database to use
         // the datasource uri (i.e. 'jdbc/xa/MMBase' )
         // is stored in the mmbaseroot module configuration file
@@ -171,10 +173,24 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             log.service("No data-source configured, using Generic data source");
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
             // This datasource should only be needed in cases were MMBase runs without application server.
-            dataSource = new GenericDataSource(mmbase, getBinaryFileBasePath());
+            dataSource = new GenericDataSource(mmbase, null);
         }
+
+        
         // store the datasource as an attribute
         setAttribute(Attributes.DATA_SOURCE, dataSource);
+        
+//      load configuration data. 
+        super.load();
+        
+        //now we can set the data dir for blobs if we have a generic data source
+        getBinaryFileBasePath();
+        if(dataSource instanceof GenericDataSource){
+            ((GenericDataSource)dataSource).setDataDir(basePath);
+            log.service("Set Generic datasource blob-path to: " + basePath);
+        }else{
+            log.service("Data source is not GenericDataSource. datapath: " + basePath);
+        }
 
         // test the datasource and retrieves options,
         // which are stored as options in the factory's attribute
@@ -241,7 +257,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         }
 
         // load configuration data.
-        super.load();
+        //super.load();
 
         // determine transaction support again (may be manually switched off)
         supportsTransactions = hasOption(Attributes.SUPPORTS_TRANSACTIONS);
