@@ -18,7 +18,7 @@
   </mm:treeinclude>
 </mm:cloud>
 
-<mm:cloud jspvar="cloud" username="admin" password="admin2k">
+<mm:cloud jspvar="cloud" username="admin" password="${cloudprovider.adminpassword}">
   <mm:import externid="firstname" jspvar="firstname" />
   <mm:import externid="lastname" jspvar="lastname" />
   <mm:import externid="address" />
@@ -132,7 +132,7 @@
       </mm:present>
 
       <mm:remove referid="person" />
-      
+
 
       <mm:treeinclude page="/register/register_done.jsp" objectlist="$includePath" referids="$referids">
         <mm:param name="uname"><%=constraint%></mm:param>
