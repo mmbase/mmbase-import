@@ -355,7 +355,7 @@
         text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
         text = text.replaceAll("<br>","<br/>");
         text = text.replaceAll("(<br\\s*/>\\s*)+(((</b>|</em>|</u>|</strong>|</i>)\\s*)+)","$2$1");
-        text = text.replaceAll("<u\\s*>","<span style=\"color: #808080\">");
+//        text = text.replaceAll("<u\\s*>","<span style=\"color: #808080\">");
         text = text.replaceAll("<\\/\\s*u\\s*>","</span>");
         
         text = text.replaceAll("<br\\*s/>\\s*(<br\\s*/>\\s*)*","<p>$1");
