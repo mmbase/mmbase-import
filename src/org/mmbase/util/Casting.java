@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.77 2005-12-06 21:18:22 michiel Exp $
+ * @version $Id: Casting.java,v 1.78 2005-12-14 10:47:02 michiel Exp $
  */
 
 import java.util.*;
@@ -304,8 +304,6 @@ public class Casting {
             return new ListWrapper((List) o, escaper);
         } else if (o instanceof byte[]) {
             return escape(escaper, new String((byte[])o));
-        } else if (o instanceof org.apache.commons.fileupload.FileItem) {
-            return escape(escaper, ((org.apache.commons.fileupload.FileItem)o).getString());
         } else if (o instanceof String) {
             return escape(escaper, (String) o);
         } else if (o instanceof CharSequence) {
