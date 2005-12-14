@@ -22,6 +22,10 @@ emailsenderdomain=waaromjezus.nl
 mmbase.logdir=/Users/jverelst/cvs/tomcat/logs
 chat.server.logfile=/Users/jverelst/cvs/tomcat/logs/ircserver.log
 chat.engine.logfile=/Users/jverelst/cvs/tomcat/logs/ircengine.log
+chat.internal.port=5557
+chat.external.flashport=5557
+chat.external.ircport=6667
+
 
 # Database settings
 jdbc.password=didactor2

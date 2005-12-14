@@ -40,7 +40,7 @@
   <!-- hierin wordt de werkelijke chat-sessie opgezet -->
   <div class="contentBodywit">
       <mm:remove referid="chaturl"/>
-      <mm:import id="chaturl">flashchat.swf?port=5557&host=<%= request.getServerName() %>&user=<mm:write referid="username"/>&enterchannel=<mm:write referid="class"/>&sessionkey=123&class=<mm:write referid="class"/>&provider=<mm:write referid="provider"/>&education=<mm:write referid="education"/></mm:import>
+      <mm:import id="chaturl">flashchat.swf?port=${chat.internal.port}&host=<%= request.getServerName() %>&user=<mm:write referid="username"/>&enterchannel=<mm:write referid="class"/>&sessionkey=123&class=<mm:write referid="class"/>&provider=<mm:write referid="provider"/>&education=<mm:write referid="education"/></mm:import>
 
       <map name="chat">
       </map>
