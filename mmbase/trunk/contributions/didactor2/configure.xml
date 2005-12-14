@@ -156,5 +156,28 @@
     </if>
 
 
+    <if>
+      <available file="${build.dir}/webapp/chat/chat.jsp" />
+      <then>
+        <replace file="${build.dir}/webapp/chat/chat.jsp"
+                 token="$${chat.internal.port}"
+                 value="${chat.internal.port}"/>
+      </then>
+    </if>
+
+    <if>
+      <available file="${build.dir}/webapp/WEB-INF/config/chat/chat.properties" />
+      <then>
+        <replace file="${build.dir}/webapp/WEB-INF/config/chat/chat.properties"
+                 token="$${chat.external.flashport}"
+                 value="${chat.external.flashport}"/>
+        <replace file="${build.dir}/webapp/WEB-INF/config/chat/chat.properties"
+                 token="$${chat.external.ircport}"
+                 value="${chat.external.ircport}"/>
+      </then>
+    </if>
+
+
+
   </target>
 </project>
