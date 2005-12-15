@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.356 2005-12-08 12:37:27 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.357 2005-12-15 12:34:06 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -514,6 +514,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This is the same value as the value of the 'otype' field of objects created by this builder
      * (rather than created by its descendants).
      * @return the builder number
+     * @since MMBase-1.8
      */
     public int getNumber() {
         return oType;
@@ -521,7 +522,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * Returns the objecttype (otype).
-     * By preference, use getNumber() for future compatibility with the bridge NodeManager methods.
+     * By preference, use {@link #getNumber()} for future compatibility with the bridge NodeManager methods.
      * @return the objecttype
      */
     public int getObjectType() {
