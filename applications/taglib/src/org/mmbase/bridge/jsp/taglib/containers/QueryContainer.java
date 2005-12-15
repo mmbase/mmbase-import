@@ -20,9 +20,9 @@ import org.mmbase.bridge.jsp.taglib.CloudProvider;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainer.java,v 1.6 2005-12-13 09:49:14 michiel Exp $
+ * @version $Id: QueryContainer.java,v 1.7 2005-12-15 21:47:27 michiel Exp $
  */
-public interface QueryContainer extends  QueryContainerOrListProvider, CloudProvider {
+public interface QueryContainer extends  CloudProvider {
 
     /**
      * Returns the currently by the container defined query object. Subtags can use this query
