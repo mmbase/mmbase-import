@@ -21,20 +21,21 @@
   <property file="my.properties"/>
   <property file="build.properties"/>
   <property file="configure.properties"/>
-  <property name="build.config.dir" value="${build.dir}/webapp/WEB-INF/config" />
-  <property name="build.wizards.dir" value="${build.dir}/webapp/editwizards" />
+  <property name="build.webapp.dir" value="${build.dir}/webapp" />
+  <property name="build.config.dir" value="${build.webapp.dir}/WEB-INF/config" />
+  <property name="build.wizards.dir" value="${build.webapp.dir}/editwizards" />
 
   <target name="config" description="Configure the didactor instance with the values from the properties file">
     <tstamp>
         <format property="war.time" pattern="hh:mm aa, dd MMMM yyyy" locale="en"/>
     </tstamp>
-    <replace file="${build.dir}/webapp/version.jsp"
+    <replace file="${build.webapp.dir}/version.jsp"
              token="$${war.name}"
              value="${war.name}"/>
-    <replace file="${build.dir}/webapp/version.jsp"
+    <replace file="${build.webapp.dir}/version.jsp"
              token="$${components}"
              value="${components}"/>
-    <replace file="${build.dir}/webapp/version.jsp"
+    <replace file="${build.webapp.dir}/version.jsp"
              token="$${war.time}"
              value="${war.time}"/>
 
@@ -99,7 +100,7 @@
              token="$${imageconvert.convertercommand}"
              value="${imageconvert.convertercommand}"/>
 
-    <replace file="${build.dir}/webapp/WEB-INF/classes/cloudprovider.properties"
+    <replace file="${build.webapp.dir}/WEB-INF/classes/cloudprovider.properties"
              token="$${cloudprovider.adminpassword}"
              value="${cloudprovider.adminpassword}"/>
 
@@ -145,16 +146,32 @@
              includes="**/*.xml"
     />
 
-
+  	<echo>Hardcoding Admin's password into the application</echo>
+  	
     <if>
-      <available file="${build.dir}/webapp/register/index.jsp" />
+      <available file="${build.webapp.dir}/register/index.jsp" />
       <then>
-        <replace file="${build.dir}/webapp/register/index.jsp"
+        <replace file="${build.webapp.dir}/register/index.jsp"
                  token="$${cloudprovider.adminpassword}"
                  value="${cloudprovider.adminpassword}"/>
       </then>
     </if>
 
+  	<replace file="${build.webapp.dir}/install.jsp"
+  	         token="$${cloudprovider.adminpassword}"
+  	         value="${cloudprovider.adminpassword}"/>
+  	<if>
+  	  <available file="${build.webapp.dir}/mmbob/check.jsp" />
+  	    <then>
+  	      <replace file="${build.webapp.dir}/mmbob/check.jsp"
+  			       token="$${cloudprovider.adminpassword}"
+  			       value="${cloudprovider.adminpassword}" />
+  	      <replace file="${build.webapp.dir}/mmbob/index.jsp"
+  			       token="$${cloudprovider.adminpassword}"
+  			       value="${cloudprovider.adminpassword}" />
+      </then>
+  	</if>
+  	
 
     <if>
       <available file="${build.dir}/webapp/chat/chat.jsp" />
