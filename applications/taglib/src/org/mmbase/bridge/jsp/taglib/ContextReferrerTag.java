@@ -12,10 +12,12 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
+import javax.servlet.jsp.jstl.core.*;
 
 import java.io.*;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.containers.QueryContainer;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.Parameter;
@@ -30,7 +32,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.76 2005-10-19 18:38:42 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.77 2005-12-15 21:47:27 michiel Exp $
  * @see ContextTag
  */
 
@@ -392,6 +394,22 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         }
         return cTag;
 
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public Tag findLoopOrQuery(String tagId, boolean exception) throws JspTagException {
+        Tag tag = getParent();
+        while (tag != null) {
+            if (tag instanceof LoopTag) {
+                if (tagId == null) return tag;
+            } else if (tag instanceof QueryContainer) {
+                if (tagId == null || ((QueryContainer) tag).getId().equals(tagId)) return tag;
+            }
+            tag = tag.getParent();
+        }
+        throw new JspTagException("Cloud not find parent Tag of LoopTag or QueryContainer type");
     }
     /**
      * @deprecated

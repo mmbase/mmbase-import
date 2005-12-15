@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+import javax.servlet.jsp.jstl.core.*;
 
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.containers.*;
@@ -21,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.23 2005-03-14 19:02:35 michiel Exp $ 
+ * @version $Id: SizeTag.java,v 1.24 2005-12-15 21:47:27 michiel Exp $ 
  */
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
 
@@ -47,11 +49,11 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
     }
 
     /**
-     * When in a list-provider, the size can simply be asked from the List
+     * When in a looptag, the size can simply be asked from the List
      * @since MMBase-1.7
      */
-    protected void listProviderSize(ListProvider list) throws JspTagException {
-        helper.setValue(new Integer(list.size()));
+    protected void listProviderSize(LoopTag list) throws JspTagException {
+        helper.setValue(new Integer(list.getLoopStatus().getCount()));
     }
 
 
@@ -70,15 +72,15 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
                 nodeListContainerSize(c);
             }
         } else if (parentListId != Attribute.NULL) {
-            listProviderSize(getList());            
+            listProviderSize(getList());
         } else {
-            QueryContainerOrListProvider tag = (QueryContainerOrListProvider) findParentTag(QueryContainerOrListProvider.class, null);
+            Tag tag = findLoopOrQuery(null, true);
             if (tag instanceof TreeContainerTag) {
                 helper.setValue(new Integer(((TreeContainerTag)tag).getTree().size()));
             } else if (tag instanceof QueryContainer) {
                 nodeListContainerSize((QueryContainer) tag);
             } else {
-                listProviderSize((ListProvider) tag);
+                listProviderSize((LoopTag) tag);
             }
         }
 
