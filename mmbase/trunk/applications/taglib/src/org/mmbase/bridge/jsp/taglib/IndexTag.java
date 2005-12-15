@@ -14,6 +14,7 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.Query;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.*;
 
@@ -21,7 +22,7 @@ import javax.servlet.jsp.jstl.core.*;
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.20 2005-12-05 17:21:17 michiel Exp $ 
+ * @version $Id: IndexTag.java,v 1.21 2005-12-15 21:47:27 michiel Exp $ 
  */
 
 public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
@@ -58,12 +59,12 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
         } else if (parentListId != Attribute.NULL) {
             index = getList().getIndex()  + getOffset();;
         } else {
-            LoopTag tag = (LoopTag) findParentTag(LoopTag.class, null);
+            Tag tag = findLoopOrQuery(null, true);
             if (tag instanceof QueryContainer) {
                 Query query = ((QueryContainer) tag).getQuery();
                 index = query.getOffset() / query.getMaxNumber() + offset.getInt(this, 0);
             } else {
-                LoopTagStatus status = tag.getLoopStatus();
+                LoopTagStatus status = ((LoopTag) tag).getLoopStatus();
                 if (status == null) throw new TaglibException("The tag " + tag + " return loop status 'null'");
                 index = status.getIndex();
                 if (tag instanceof ListProvider) {
@@ -74,7 +75,6 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
             }
         }
 
-        
         helper.setValue(new Integer(index));
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());

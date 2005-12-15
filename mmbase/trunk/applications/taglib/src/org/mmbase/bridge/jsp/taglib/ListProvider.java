@@ -10,22 +10,21 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.*;
-import org.mmbase.bridge.jsp.taglib.containers.QueryContainerOrListProvider;
 import org.mmbase.util.logging.*;
 
 /**
  * Basic interface that parent should implement if they provide Lists.
  * For example the several NodeListTag's  provide a List.
  *
- * @author Michiel Meeuwissen 
- * @version $Id: ListProvider.java,v 1.12 2005-12-13 09:49:14 michiel Exp $ 
+ * @author Michiel Meeuwissen
+ * @version $Id: ListProvider.java,v 1.13 2005-12-15 21:47:27 michiel Exp $
  */
-public interface ListProvider extends ContextProvider, QueryContainerOrListProvider, LoopTag {
+public interface ListProvider extends ContextProvider, LoopTag {
     /**
      * @return the size of the list
      */
     public int size();
-    
+
     /**
      * @return the index of the current item in a list
      *
@@ -42,10 +41,10 @@ public interface ListProvider extends ContextProvider, QueryContainerOrListProvi
     /**
      * @return the current item in a list
      */
-    
+
     public Object getCurrent();
 
-    
+
     /**
      * @return a boolean indicating wether the field on which was
      * sorted is changed.
@@ -62,7 +61,7 @@ public interface ListProvider extends ContextProvider, QueryContainerOrListProvi
 
     /**
      * @since MMBase-1.8
-     */ 
+     */
     public class ListProviderLoopTagStatus implements LoopTagStatus {
         private static final Logger log = Logging.getLoggerInstance(ListProviderLoopTagStatus.class);
 
@@ -76,7 +75,7 @@ public interface ListProvider extends ContextProvider, QueryContainerOrListProvi
         public int getIndex() {
             return prov.getIndex();// - prov.getIndexOffset();
         }
-        
+
         public int getCount() {
             return prov.size();
         }
