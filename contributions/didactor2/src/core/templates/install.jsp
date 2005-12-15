@@ -32,7 +32,7 @@
 
   <mm:createnode type="people">
     <mm:setfield name="username">admin</mm:setfield>
-    <mm:setfield name="password">admin2k</mm:setfield>
+    <mm:setfield name="password">${cloudprovider.adminpassword}</mm:setfield>
   </mm:createnode>
   <mm:createnode type="providers" id="provider">
     <mm:setfield name="name">provider</mm:setfield>

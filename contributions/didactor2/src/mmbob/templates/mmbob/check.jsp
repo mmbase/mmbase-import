@@ -23,7 +23,7 @@
                 <mm:import id="description" reset="true"><di:translate key="mmbob.forumforclass" /> '<mm:field name="name"/>'</mm:import>
     	        <mm:import id="language" reset="true"><mm:write referid="lang_code"/></mm:import>
                 <mm:import id="account" reset="true">admin</mm:import>
-                <mm:import id="password" reset="true">admin2k</mm:import>
+                <mm:import id="password" reset="true">${cloudprovider.adminpassword}</mm:import>
             	<mm:nodefunction set="mmbob" name="newForum" referids="name,language,description,account,password">
 	            </mm:nodefunction>
                 <mm:listnodes type="forums" constraints="name='$class'">
