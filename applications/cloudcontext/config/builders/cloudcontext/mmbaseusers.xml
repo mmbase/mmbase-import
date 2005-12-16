@@ -57,7 +57,7 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>username</name>
         <type key="true" notnull="true" size="32" state="persistent">STRING</type>
@@ -96,14 +96,14 @@
       <datatype base="confirmpassword" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>confirmpassword</name>
-        <type notnull="true" size="32" state="virtual">STRING</type>
+        <type notnull="false" size="32" state="virtual">STRING</type>
       </db>
     </field>
     <field>
       <gui>
         <guiname xml:lang="nl">Default Context</guiname>
         <guiname xml:lang="en">Default Context</guiname>
-        <guiname xml:lang="eo">Defaŭlta kontekto</guiname>
+        <guiname xml:lang="eo">Defaŭlta konteksto</guiname>
       </gui>
       <editor>
         <positions>
@@ -132,13 +132,14 @@
         </positions>
       </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
         <enumeration>
           <entry basename="org.mmbase.security.status" />
         </enumeration>
       </datatype>
       <db>
         <name>status</name>
-        <type notnull="true" state="persistent">INTEGER</type>
+        <type notnull="true" required="true" state="persistent">INTEGER</type>
       </db>
     </field>
 
@@ -194,6 +195,7 @@
       </gui>
       <editor>
         <positions>
+          <search>6</search>
           <list>6</list>
         </positions>
       </editor>
