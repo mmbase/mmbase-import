@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.27 2005-12-14 10:52:12 ernst Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.28 2005-12-16 19:07:22 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -62,12 +62,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
       "write,year,zone";
 
     // Default query handler class.
-    private final static Class DEFAULT_QUERY_HANDLER_CLASS =
-        org.mmbase.storage.search.implementation.database.BasicSqlHandler.class;
+    private final static Class DEFAULT_QUERY_HANDLER_CLASS = org.mmbase.storage.search.implementation.database.BasicSqlHandler.class;
 
     // Default storage manager class
-    private final static Class DEFAULT_STORAGE_MANAGER_CLASS =
-        org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager.class;
+    private final static Class DEFAULT_STORAGE_MANAGER_CLASS = org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager.class;
 
     /**
      * The catalog used by this storage.
@@ -137,20 +135,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         return databaseName;
     }
 
+
     /**
-     * Opens and reads the storage configuration document.
-     * Obtain a datasource to the storage, and load configuration attributes.
-     * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
+     * @since MMBase-1.8
      */
-    protected void load() throws StorageException {
-        // default storagemanager class
-        storageManagerClass = DEFAULT_STORAGE_MANAGER_CLASS;
-
-        // default searchquery handler class
-        queryHandlerClasses.add(DEFAULT_QUERY_HANDLER_CLASS);
-
-
-        
+    protected DataSource createDataSource(String binaryFileBasePath) {
+        DataSource ds = null;
         // get the Datasource for the database to use
         // the datasource uri (i.e. 'jdbc/xa/MMBase' )
         // is stored in the mmbaseroot module configuration file
@@ -164,33 +154,36 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 log.service("Using configured datasource " + dataSourceURI);
                 Context initialContext = new InitialContext();
                 Context environmentContext = (Context) initialContext.lookup(contextName);
-                dataSource = (DataSource)environmentContext.lookup(dataSourceURI);
+                ds = (DataSource)environmentContext.lookup(dataSourceURI);
             } catch(NamingException ne) {
                 log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Attempt to use JDBC Module to access database.");
             }
         }
-        if (dataSource == null) {
+        if (ds == null) {
             log.service("No data-source configured, using Generic data source");
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
             // This datasource should only be needed in cases were MMBase runs without application server.
-            dataSource = new GenericDataSource(mmbase, null);
+            ds = new GenericDataSource(mmbase, binaryFileBasePath);
         }
+        return ds;
 
+    }
+
+    /**
+     * Opens and reads the storage configuration document.
+     * Obtain a datasource to the storage, and load configuration attributes.
+     * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
+     */
+    protected void load() throws StorageException {
+        // default storagemanager class
+        storageManagerClass = DEFAULT_STORAGE_MANAGER_CLASS;
+
+        // default searchquery handler class
+        queryHandlerClasses.add(DEFAULT_QUERY_HANDLER_CLASS);     
         
-        // store the datasource as an attribute
-        setAttribute(Attributes.DATA_SOURCE, dataSource);
-        
-//      load configuration data. 
-        super.load();
-        
-        //now we can set the data dir for blobs if we have a generic data source
-        getBinaryFileBasePath();
-        if(dataSource instanceof GenericDataSource){
-            ((GenericDataSource)dataSource).setDataDir(basePath);
-            log.service("Set Generic datasource blob-path to: " + basePath);
-        }else{
-            log.service("Data source is not GenericDataSource. datapath: " + basePath);
-        }
+
+        dataSource = createDataSource(null); 
+        // temorary source only used once, for the meta data.
 
         // test the datasource and retrieves options,
         // which are stored as options in the factory's attribute
@@ -238,16 +231,16 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             StringTokenizer tokens = new StringTokenizer(STANDARD_SQL_KEYWORDS,", ");
             while (tokens.hasMoreTokens()) {
                 String tok = tokens.nextToken();
-                disallowedFields.put(tok,null);
+                disallowedFields.put(tok, null);
             }
 
             // get the extra reserved sql keywords (according to the JDBC driver)
             // not sure what case these are in ???
-            String sqlKeywords = (""+metaData.getSQLKeywords()).toLowerCase();
+            String sqlKeywords = ("" + metaData.getSQLKeywords()).toLowerCase();
             tokens = new StringTokenizer(sqlKeywords,", ");
             while (tokens.hasMoreTokens()) {
                 String tok = tokens.nextToken();
-                disallowedFields.put(tok,null);
+                disallowedFields.put(tok, null);
             }
 
             con.close();
@@ -256,21 +249,23 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             throw new StorageInaccessibleException(se);
         }
 
-        // load configuration data.
-        //super.load();
+        // load configuration data (is also needing the temprary datasource in getDocumentReader..)
+        super.load();
+
+        dataSource = createDataSource(getBinaryFileBasePath());
+
+        // store the datasource as an attribute
+        // mm: WTF. This seems to be a rather essential property, so why it is not wrapped by a normal, comprehensible getDataSource method or so.
+        setAttribute(Attributes.DATA_SOURCE, dataSource);
 
         // determine transaction support again (may be manually switched off)
         supportsTransactions = hasOption(Attributes.SUPPORTS_TRANSACTIONS);
     }
 
     /**
-     * Locates and opens the storage configuration document.
-     * The configuration document to open is dependent on the storage type and version.
-     * You can explicitly set this type in mmbaseroot (using the storage property), or let
+     * {@inheritDoc}
      * MMBase determine it using information gained from the datasource, and the lookup.xml file
      * in the database configuration directory
-     * @todo configuration path should be retrieved from the MMBase instance, rather than directly from the (static)
-     * MMBaseContext class.
      * Storage configuration files should become resource files, and configurable using a storageresource property.
      * The type of reader to return should be a StorageReader.
      * @throws StorageException if the storage could not be accessed while determining the database type
@@ -291,6 +286,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                     databaseResourcePath = "storage/databases/" + databaseName + ".xml";
                 }
             } else {
+                // WTF to configure storage, we need a connection already?!
+
                 // otherwise, search for supported drivers using the lookup xml
                 DatabaseStorageLookup lookup = new DatabaseStorageLookup();
                 Connection con = null;
