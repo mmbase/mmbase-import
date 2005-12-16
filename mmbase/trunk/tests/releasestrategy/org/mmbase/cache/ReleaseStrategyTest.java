@@ -84,13 +84,9 @@ public class ReleaseStrategyTest extends BridgeTest {
      * @see junit.framework.TestCase#setUp()
      */
     public void setUp() throws Exception {
-        log.debug("method: setup()");
         if (cloud == null) {   
-            log.debug("still there 1");
             startMMBase();
-            log.debug("still there 2");
             cloud = getCloud();
-            log.debug("still there 3");
             
             try{
                 newsManager = cloud.getNodeManager("news");
@@ -369,13 +365,13 @@ public class ReleaseStrategyTest extends BridgeTest {
         Query q4 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.number", null, null, null, null, false);
         
         assertTrue("title field of news builder is in constraints", 
-                strategy.getConstraintsForField("title", "news", null, q1).size() == 1);
+                ReleaseStrategy.getConstraintsForField("title", "news", null, q1).size() == 1);
         assertTrue("title field of news builder is not in constraints", 
-                strategy.getConstraintsForField("title", "news", null, q2).size() == 0);
+                ReleaseStrategy.getConstraintsForField("title", "news", null, q2).size() == 0);
         assertTrue("title field of news builder is one of the constraints.", 
-                strategy.getConstraintsForField("title", "news", null, q3).size() == 1);
+                ReleaseStrategy.getConstraintsForField("title", "news", null, q3).size() == 1);
         assertTrue("there are no constraints.", 
-                strategy.getConstraintsForField("title", "news", null, q4).size() == 0);
+                ReleaseStrategy.getConstraintsForField("title", "news", null, q4).size() == 0);
     }
     
     
