@@ -100,7 +100,7 @@
 					</mm:relatednodes>
 				</mm:node></div>
 
-			</div>
+			
 
 			<form
 				action="<mm:treefile objectlist="$includePath"  referids="$referids" page="/projectgroup/removecontact.jsp"/>"
@@ -108,7 +108,7 @@
 
 			<div class="mainContent">
 
-			<div class="contentHeader">  &nbsp;</div>
+			<div class="contentHeader">  &nbsp;</div>  
 
 			<mm:node referid="workgroup" notfound="skip">
 
@@ -126,7 +126,7 @@
 					name="action_delete" value="delete"
 					src="<mm:treefile page="/gfx/icon_deletecontact.gif" objectlist="$includePath" referids="$referids"/>"
 					width="50" height="28" border="0"
-					alt="<di:translate key="address.deletecontact" />" /></a>
+					alt="<di:translate key="address.deletecontact" />" />
 					 
 					<a href="<mm:treefile page="/workspace/index.jsp" objectlist="$includePath" referids="$referids,workgroup"><mm:param name="typeof">4</mm:param></mm:treefile>">
 					<img src="<mm:treefile page="/workspace/gfx/document plaatsen.gif" objectlist="$includePath" referids="$referids"/>"
@@ -277,7 +277,7 @@
 				</mm:relatednodescontainer>
 			</mm:node></div>
 			</form>
-			</div>
+			
 			<!--comment-->
 
 		<script>
@@ -294,7 +294,7 @@
 	  }
       }
 
-</script>
+</script></div>
 
 		<mm:treeinclude page="/cockpit/cockpit_footer.jsp"
 			objectlist="$includePath" referids="$referids" />
