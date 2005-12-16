@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.62 2005-12-09 21:39:21 johannes Exp $
+ * @version $Id: IncludeTag.java,v 1.63 2005-12-16 13:50:07 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -44,6 +44,7 @@ public class IncludeTag extends UrlTag {
     private static final int DEBUG_NONE = 0;
     private static final int DEBUG_HTML = 1;
     private static final int DEBUG_CSS  = 2;
+    private static final int DEBUG_XML  = 3;
 
     public static final String INCLUDE_PATH_KEY   = "javax.servlet.include.servlet_path";
     public static final String INCLUDE_LEVEL_KEY = "org.mmbase.taglib.includeLevel";
@@ -450,6 +451,8 @@ public class IncludeTag extends UrlTag {
                                // to select this property in their jsp pages.
         } else if (dtype.equals("html")) {
             return DEBUG_HTML;
+        } else if (dtype.equals("xml")) {
+            return DEBUG_XML;
         } else if (dtype.equals("css")) {
             return DEBUG_CSS;
         } else {
@@ -471,7 +474,10 @@ public class IncludeTag extends UrlTag {
     private String debugStart(String url) throws JspTagException {
         switch(getDebug()) {
         case DEBUG_NONE: return "";
-        case DEBUG_HTML: return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
+        case DEBUG_HTML: 
+            return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
+        case DEBUG_XML:
+            return "<!-- " + getThisName() + " page = '" + url + "' -->";
         case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
         default: return "";
         }
@@ -483,7 +489,10 @@ public class IncludeTag extends UrlTag {
     private String debugEnd(String url) throws JspTagException {
         switch(getDebug()) {
         case DEBUG_NONE: return "";
-        case DEBUG_HTML: return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
+        case DEBUG_HTML: 
+            return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
+        case DEBUG_XML:
+            return "<!-- END " + getThisName() + " page = '" + url + "' -->";
         case DEBUG_CSS:  return "\n/* END " + getThisName() + " page = '" + url + "' */\n";
         default: return "";
         }
