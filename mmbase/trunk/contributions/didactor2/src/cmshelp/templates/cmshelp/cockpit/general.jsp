@@ -3,8 +3,6 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
-  <div class="menuSeparator"> | </div>
-  <div class="menuItem">
   <script type="text/javascript">
 	  function openHelpContent( number ) {
 	    if ( number > 0 ) {
@@ -27,11 +25,13 @@
 	    <mm:import id="notgeneral" reset="true">true</mm:import>
 	  </mm:relatednodes>    
 	  <mm:notpresent referid="notgeneral">
-	    <a class="menubar" href="javascript:openHelpContent('<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+	    <div class="menuSeparator"> | </div>
+        <div class="menuItem">
+	      <a class="menubar" href="javascript:openHelpContent('<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+	    </div>  
 	  </mm:notpresent>
 	</mm:relatednodes> 
   </mm:node>
-  </div> 
 </mm:cloud>
 </mm:content>
 
