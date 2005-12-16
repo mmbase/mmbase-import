@@ -1,4 +1,4 @@
-@import url(../../style/mmbase.css)
+@import url(../../style/css/mmbase.css);
 
 body { 
   background: white;
@@ -81,6 +81,7 @@ p.current {
 }
 
 table {
+  margin-left: 0px;
   width: 100%;
   background-color: #ccc;
 } 
