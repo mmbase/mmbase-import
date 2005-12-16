@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.29 2005-12-08 12:55:13 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.30 2005-12-16 10:05:02 michiel Exp $ -->
 
   <datatype id="xml">
     <class name="org.mmbase.datatypes.XmlDataType" />
@@ -36,6 +36,7 @@
 
     <specialization id="lastmodifier">
       <unique value="false" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.Readonly" />
       </setprocessor>
@@ -45,6 +46,7 @@
     </specialization>
 
     <specialization id="md5password">
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
       <password value="true" />
       <setprocessor>
         <class name="org.mmbase.util.transformers.MD5" />
@@ -57,6 +59,7 @@
     <specialization id="confirmpassword">
       <class name="org.mmbase.datatypes.ConfirmPasswordDataType" />
       <property name="field" value="password" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
       <password value="true" />
       <getprocessor type="string">
         <class name="org.mmbase.util.transformers.Swallower" /> <!-- No need to show md5 -->
