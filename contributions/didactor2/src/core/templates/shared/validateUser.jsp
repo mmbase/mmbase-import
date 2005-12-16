@@ -38,10 +38,16 @@
                 </mm:compare>
                 <mm:isempty referid="class">
                   <mm:node number="$user">
-                    <mm:relatednodescontainer type="educations" role="classrel">
+                    <mm:relatednodescontainer type="educations" role="classrel" >
                       <mm:size>
                         <mm:compare value="0">
-                          <di:translate key="core.validatelogin_noclass" />
+                          <mm:relatednodescontainer type="classes" >
+                            <mm:size>
+                              <mm:compare value="0">
+                                <di:translate key="core.validatelogin_noclass" />
+                              </mm:compare>
+                            </mm:size>
+                          </mm:relatednodescontainer>
                         </mm:compare>
                       </mm:size>
                     </mm:relatednodescontainer>
