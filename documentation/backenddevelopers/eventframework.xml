@@ -202,8 +202,6 @@
       your class implementing either NodeEventListener or
       RelationEventListener or both (discovered through introspection).
       Wrappers are created accordingly and registered as listeners.</para>
-
-      <para></para>
     </section>
 
     <section>
