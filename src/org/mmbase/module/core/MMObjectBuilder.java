@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.357 2005-12-15 12:34:06 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.358 2005-12-17 20:55:38 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -250,7 +250,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                         parameters.set("stringvalue", node.getStringValue(fieldName));
                     }
                 }
-                MMObjectNode n = (MMObjectNode) parameters.get(MMObjectNode.PARAMETER);
+                MMObjectNode n = (MMObjectNode) parameters.get(Parameter.CORENODE);
                 return MMObjectBuilder.this.getGUIIndicator(n, parameters);
             }
         };
