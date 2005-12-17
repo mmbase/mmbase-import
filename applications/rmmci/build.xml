@@ -173,7 +173,8 @@ Build-compiler: ${build.compiler}
 
         <include name="org/mmbase/util/functions/**" />                 <!-- functions are bridge -->
 
-        <include name="org/mmbase/cache/CachePolicy*" />
+        <include name="org/mmbase/cache/CachePolicy*" />                <!-- used in bridge -->
+        <include name="org/mmbase/cache/Cache*" />                      <!-- used by SortedBundle, but any how it is utility -->
 
         <!-- perhaps we need _all_ of util ? -->
         <include name="org/mmbase/util/logging/**"/>                    <!-- every class use, and it's no real burden to have it -->
@@ -185,6 +186,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/FileWatcher*.class"/>               <!-- used by resourceloader -->
         <include name="org/mmbase/util/Entry.class"/>                      <!-- used by LocalizedString -->
         <include name="org/mmbase/util/LocalizedEntryListFactory*.class"/> <!-- returned by DataType -->
+        <include name="org/mmbase/util/SortedBundle*.class"/>              <!-- Used by LocalizedEntryListFactory -->
         <include name="org/mmbase/util/SizeMeasurable.class"/>             <!-- implemented by several class -->
         <include name="org/mmbase/util/Casting*.class"/>                   <!-- widely used -->
         <include name="org/mmbase/util/StringBufferWriter.class"/>         <!-- used by Casting -->
@@ -206,6 +208,10 @@ Build-compiler: ${build.compiler}
 
         <include name="org/mmbase/module/core/MMBaseObserver.class"/>      <!-- resourcewatcher extends -->
         <include name="org/mmbase/module/corebuilders/FieldDefs.class"/>   <!-- DataTypes uses .. -->
+
+        <include name="org/mmbase/util/RandomPool*"/>                      <!-- Used in test cases .. -->
+        <include name="org/mmbase/util/PasswordGenerator*"/>               <!-- Used in test cases .. -->
+        <include name="org/mmbase/config/functions/**"/>                   <!-- Used in test cases .. -->
 
 
         <!-- external interfaces used by bridge, but not always present client side, so provide them. -->
