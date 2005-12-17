@@ -37,18 +37,11 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.170 2005-12-10 15:06:47 johannes Exp $
+ * @version $Id: MMObjectNode.java,v 1.171 2005-12-17 20:55:38 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
-
-
-    /**
-     * 'system' parameter set for nodefunctions.
-     * @since MMBase-1.8
-     */     
-    public final static Parameter PARAMETER = new Parameter("_corenode", MMObjectNode.class);
 
     /**
      * @deprecated Simply use <code>null</code>

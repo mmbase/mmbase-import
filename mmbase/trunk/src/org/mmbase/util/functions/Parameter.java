@@ -26,7 +26,7 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.26 2005-12-08 12:47:08 michiel Exp $
+ * @version $Id: Parameter.java,v 1.27 2005-12-17 20:55:57 michiel Exp $
  * @see Parameters
  */
 
@@ -42,10 +42,16 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
     public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
+
     /**
      * 'system' parameter set for nodefunctions.
-     */
+     * @since MMBaes-1.8
+     */    
     public static final Parameter NODE     = new Parameter("_node",     org.mmbase.bridge.Node.class);
+    public final static Parameter CORENODE = new Parameter("_corenode", Object.class); // object because otherwise problems with RMMCI which doesn't have MMObjectNode.
+
+
+
     public static final Parameter FIELD    = new Parameter("field",    String.class);
 
     /**
