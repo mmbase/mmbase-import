@@ -11,7 +11,6 @@ package org.mmbase.cache;
 
 import java.util.*;
 
-import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,7 +20,7 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.32 2005-11-18 22:43:59 nklasens Exp $
+ * @version $Id: Cache.java,v 1.33 2005-12-17 19:59:13 michiel Exp $
  */
 abstract public class Cache implements SizeMeasurable, Map {
 
@@ -357,7 +356,8 @@ abstract public class Cache implements SizeMeasurable, Map {
     
 
     /**
-     * Puts this cache in the caches repository.
+     * Puts this cache in the caches repository. 
+     * @see CacheManager#putCache(Cache)
      */
 
     public Cache putCache() {
@@ -365,36 +365,29 @@ abstract public class Cache implements SizeMeasurable, Map {
     }
 
     /**
-     * Puts a cache in the caches repository. This function will be
-     * called in the static of childs, therefore it is protected.
-     *
-     * @param cache A cache.
-     * @return The previous cache of the same type (stored under the same name)
+     * @see CacheManager#getCache(String)
      */
     protected static Cache putCache(Cache cache) {
         return CacheManager.putCache(cache);
     }
     
     /**
-     * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
-     * need a certain cache, you can just as well call the non-static 'getCache' which is normally
-     * in cache singletons.
-     *
-     * @see #getCaches
+     * @see CacheManager#getCache(String)
      */
     public static Cache getCache(String name) {
         return CacheManager.getCache(name);
     }
 
     /**
-     * Returns the names of all caches.
-     *
-     * @return A Set containing the names of all caches.
+     * @see CacheManager#getCaches
      */
     public static Set getCaches() {
         return CacheManager.getCaches();
     }
 
+    /**
+     * @see CacheManager#getTotalByteSize
+     */
     public static int getTotalByteSize() {
         return CacheManager.getTotalByteSize();
     }
@@ -405,22 +398,22 @@ abstract public class Cache implements SizeMeasurable, Map {
                 public String getName()        { return "test cache"; }
                 public String getDescription() { return ""; }
             };
-        /*
-          System.out.println("putting some strings in cache");
-          mycache.put("aaa", "AAA"); // 6 bytes
-          mycache.put("bbb", "BBB"); // 6 bytes
+        
+        System.out.println("putting some strings in cache");
+        mycache.put("aaa", "AAA"); // 6 bytes
+        mycache.put("bbb", "BBB"); // 6 bytes
+        
+        System.out.println("putting an hashmap in cache");
+        Map m = new HashMap();
+        m.put("ccc", "CCCCCC");
+        m.put("ddd", "DDD");
+        m.put("abc", "EEE");
+        mycache.put("eee", m);
+        
 
-          System.out.println("putting an hashmap in cache");
-          Map m = new HashMap();
-          m.put("ccc", "CCCCCC");
-          m.put("ddd", "DDD");
-          m.put("abc", "EEE");
-          mycache.put("eee", m);
-        */
-
-        MMObjectNode node = new MMObjectNode(new MMObjectBuilder(), false);
-        node.setValue("hoi", "hoi");
-        mycache.put("node", node);
+        
+        //node.setValue("hoi", "hoi");
+        //mycache.put("node", node);
 
         System.out.println("size of cache: " + mycache.getByteSize());
 
