@@ -1,7 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="icaches" maintainer="mmbase.org" version="0" extends="object">
-  <classfile>ImageCaches</classfile>
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="icaches" maintainer="www.mmbase.org" version="0" extends="object">
+
+  <class>org.mmbase.module.builders.ImageCaches</class>
   <searchage>14</searchage>
 
   <names>
@@ -50,13 +55,13 @@
         <guiname xml:lang="fr">Ckey</guiname>
         <guiname xml:lang="eo">Ckey</guiname>
         <guiname xml:lang="it">Ckey</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <input>2</input><list>3</list><search>2</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>ckey</name>
         <type state="persistent" size="255" notnull="false" key="true">STRING</type>
@@ -74,7 +79,6 @@
         <guiname xml:lang="fr">ID</guiname>
         <guiname xml:lang="eo">ID</guiname>
         <guiname xml:lang="it">ID</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -98,7 +102,6 @@
         <guiname xml:lang="fr">Image</guiname>
         <guiname xml:lang="eo">Bildo</guiname>
         <guiname xml:lang="it">Immagine</guiname>
-        <guitype>newimage</guitype>
       </gui>
       <editor>
         <positions>
@@ -121,7 +124,6 @@
         <guiname xml:lang="nl">PlaatjesType</guiname>
         <guiname xml:lang="eo">Bildotipo</guiname>
         <guiname xml:lang="it">ImmagineTipo</guiname>
-        <guitype>string</guitype>
       </gui>
 
       <editor>
@@ -131,6 +133,7 @@
           <search>-1</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>itype</name>
         <type state="persistent" size="32" notnull="true" key="false">STRING</type>
@@ -148,13 +151,13 @@
         <guiname xml:lang="fr">Taille</guiname>
         <guiname xml:lang="eo">Grando</guiname>
         <guiname xml:lang="it">Dimensione</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
           <input>5</input><list>5</list><search>5</search>
         </positions>
       </editor>
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filesize</name>
         <type state="persistent" notnull="false">INTEGER</type>
@@ -168,7 +171,6 @@
       <gui>
         <guiname xml:lang="en">Width</guiname>
         <guiname xml:lang="nl">Breedte</guiname>
-        <guitype>string</guitype>
       </gui>
 
       <editor>
@@ -187,7 +189,6 @@
       <gui>
         <guiname xml:lang="en">Height</guiname>
         <guiname xml:lang="nl">Hoogte</guiname>
-        <guitype>string</guitype>
       </gui>
 
       <editor>
