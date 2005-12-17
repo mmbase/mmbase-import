@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.27 2005-11-23 12:51:32 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.28 2005-12-17 17:52:10 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -120,8 +120,12 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
         while(iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
-            buffer.append("<option value=\"");
             Object key = entry.getKey();
+            if (key == null) {
+                log.warn("Found null as enumeration key for " + field.getDataType());
+                continue;
+            }
+            buffer.append("<option value=\"");
             buffer.append(Casting.toString(key));
             buffer.append("\"");
             if (key.equals(value)) {
