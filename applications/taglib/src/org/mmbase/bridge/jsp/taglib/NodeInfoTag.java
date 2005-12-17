@@ -10,20 +10,20 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.util.functions.*;
-import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.util.Casting;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
-import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.*;
 
 /**
  * Lives under a nodeprovider. Can give information about the node,
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.36 2005-10-18 22:01:07 michiel Exp $
+ * @version $Id: NodeInfoTag.java,v 1.37 2005-12-17 17:51:47 michiel Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -118,13 +118,12 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }
-            Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
-            args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
-            args.set("locale",   getLocale());
+            Node node = getNode();
+            Function guiFunction = node.getFunction("gui");
+            Parameters args = guiFunction.createParameters();
+            args.set(Parameter.FIELD, ""); // lot of function implementations would not stand 'null' as field name value
             args.set("session",  sessionName);
-            args.set("response", pageContext.getResponse());
-            args.set("request",  pageContext.getRequest());
-            show = getNode().getFunctionValue("gui", args).toString();
+            show = Casting.toString(guiFunction.getFunctionValue(args));
             break;
         }
         case TYPE_QUERY:

@@ -18,12 +18,12 @@ import javax.servlet.jsp.JspException;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
+import org.mmbase.util.Casting;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.functions.*;
-import org.mmbase.module.core.MMObjectBuilder;
 
 import org.mmbase.core.util.Fields;
 
@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.91 2005-12-13 09:46:21 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.92 2005-12-17 17:51:47 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -304,12 +304,13 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (log.isDebugEnabled()) {
                 log.debug("field " + fieldName + " --> " + node.getStringValue(field.getName()));
             }
-            Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
+            Function guiFunction = node.getFunction("gui");
+            Parameters args = guiFunction.createParameters();
             args.set(Parameter.FIELD,    field.getName());
             args.set("session",  sessionName);
             fillStandardParameters(args);
 
-            show = decode(node.getFunctionValue("gui", args).toString(), node);
+            show = decode(Casting.toString(guiFunction.getFunctionValue(args)), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(fieldName), node);
             }
