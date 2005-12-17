@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.82 2005-12-10 14:24:01 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.83 2005-12-17 20:55:38 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -202,7 +202,7 @@ public class ClusterBuilder extends VirtualBuilder {
             
         ClusterNode clusterNode = (ClusterNode) node;
 
-        String field = pars.getString("field");
+        String field = pars.getString(Parameter.FIELD);
         if (field == null) {
             return super.getGUIIndicator(node, pars);
         } else {
@@ -222,7 +222,7 @@ public class ClusterBuilder extends VirtualBuilder {
                         if (bnode != null) {
                             newPars.set(Parameter.NODE, bnode.getNodeValue(bulName));
                         }
-                        newPars.set(MMObjectNode.PARAMETER, n);
+                        newPars.set(Parameter.CORENODE, n);
                         return (String) bul.guiFunction.getFunctionValue(newPars);
                     }
                 }
