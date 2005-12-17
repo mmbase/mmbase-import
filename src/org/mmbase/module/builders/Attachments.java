@@ -26,7 +26,7 @@ import org.mmbase.util.magicfile.MagicFile;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.39 2005-10-25 12:12:27 pierre Exp $
+ * @version $Id: Attachments.java,v 1.40 2005-12-17 16:16:09 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -85,9 +85,6 @@ public class Attachments extends AbstractServletBuilder {
                 }
                 return "<a href=\"" + url + "\" target=\"extern\">" + title + "</a>";
             }
-        } else if (field.equals(FIELD_SIZE)) {
-            return getFileSizeGUI(node.getIntValue(FIELD_SIZE));
-            
         }
         return super.getSuperGUIIndicator(field, node);
     }
