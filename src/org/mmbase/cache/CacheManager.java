@@ -20,6 +20,13 @@ import org.w3c.dom.Element;
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
 
+
+/**
+ * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
+ *
+ * @since MMBase-1.8
+ * @version $Id: CacheManager.java,v 1.3 2005-12-17 19:59:13 michiel Exp $
+ */
 public class CacheManager {
 
     private static final Logger log = Logging.getLoggerInstance(CacheManager.class);
