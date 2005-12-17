@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.61 2005-10-18 21:59:16 michiel Exp $
+     * @version  $Id: list.jsp,v 1.62 2005-12-17 18:38:32 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -222,13 +222,12 @@ for (int i=0; i < results.size(); i++) {
            }
         } else {    
             Locale locale = new Locale(ewconfig.language);
-            Parameters args = new Parameters(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
+            Parameters args = item.createParameters("gui");
             args.set("field",    fieldName);
             args.set("language", locale.getLanguage());
             args.set("locale",   locale);
             args.set("response", pageContext.getResponse());
             args.set("request",  pageContext.getRequest());
-            args.set("stringvalue", item.getStringValue(fieldName));
             value = item.getFunctionValue("gui", args).toString();
             //value = item.getStringValue("gui(" + fieldName + ")");
         }
