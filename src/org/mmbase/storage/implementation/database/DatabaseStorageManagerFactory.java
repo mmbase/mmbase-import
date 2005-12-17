@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.30 2005-12-17 22:44:41 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.31 2005-12-17 23:31:16 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -375,6 +375,9 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 }
             } catch (IOException ioe) {
                 log.error(ioe);
+            }
+            if (! basePath.endsWith(File.separator)) {
+                basePath += File.separator;
             }
         }
         return basePath;
