@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.6 2004-12-03 14:57:55 pierre Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.7 2005-12-17 15:47:49 michiel Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {
 
@@ -73,7 +73,7 @@ public class DatabaseStorageLookup extends DocumentReader {
     /**
      * Constructor, accesses the storage lookup xml resource
      */
-    protected DatabaseStorageLookup() {
+    DatabaseStorageLookup() {
         super(getInputSource(), DocumentReader.validate(), DatabaseStorageLookup.class);
     }
 
@@ -82,7 +82,7 @@ public class DatabaseStorageLookup extends DocumentReader {
      * @param dmd the database meta data
      * @return The database configuration resource, or <code>null</code> if it cannot be determined
      */
-    protected String getResourcePath(DatabaseMetaData dmd) throws SQLException, StorageConfigurationException {
+    String getResourcePath(DatabaseMetaData dmd) throws SQLException, StorageConfigurationException {
         Element root = document.getDocumentElement();
         NodeList filterList = root.getElementsByTagName("filter");
         for (int i = 0; i < filterList.getLength(); i++) {
@@ -91,6 +91,26 @@ public class DatabaseStorageLookup extends DocumentReader {
             if (match(filter, dmd)) {
                 log.service("Auto detection selected '" + resourcePath + "' for the current database.");
                 return resourcePath;
+            }
+        }
+        // not found, return null
+        return null;
+    }
+
+    /**
+     * Returns an given connection URL for a given Driver CLass. Or <code>null</code> if no such
+     * thing was defined in lookup.xml. In that case the configured URL in MMBase can be used.
+     * 
+     * @since MMBase-1.8
+     */
+    String getMetaURL(Class clazz) {
+        Element root = document.getDocumentElement();
+        NodeList urlList = root.getElementsByTagName("url");
+        for (int i = 0; i < urlList.getLength(); i++) {
+            Element url = (Element) urlList.item(i);
+            String driverClass = url.getAttribute("driver-class");
+            if (clazz.getName().startsWith(driverClass)) {
+                return getNodeTextValue(url);
             }
         }
         // not found, return null
