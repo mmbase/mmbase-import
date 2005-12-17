@@ -12,8 +12,6 @@ package org.mmbase.util;
 
 import java.io.File;
 import java.util.*;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.*;
 
 /**
@@ -63,7 +61,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.31 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: FileWatcher.java,v 1.32 2005-12-17 19:56:35 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -82,7 +80,16 @@ public abstract class FileWatcher {
     /**
      * The one thread doing al the work also needs a delay.
      */
-    static final public long THREAD_DELAY = 1000;
+    static final public long THREAD_DELAY = 10000;
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static void shutdown() {        
+        fileWatchers.run = false;
+        fileWatchers.interrupt();
+        log.service("Shut down file watcher thread");
+    }
 
     /**
      * The delay to observe between every check. By default set {@link
@@ -120,6 +127,9 @@ public abstract class FileWatcher {
      */
     public void setDelay(long delay) {
         this.delay = delay;
+        if (delay < THREAD_DELAY) {
+            log.service("Delay of " + this + "  (" + delay + " ms) is smaller than the delay of the watching thread. Will not watch more often then once per " + THREAD_DELAY + " ms.");
+        }
     }
 
     /**
@@ -314,6 +324,8 @@ public abstract class FileWatcher {
      */
     private static class FileWatcherRunner extends Thread {
 
+
+        boolean run = true;
         /**
          * Set of file-watchers, which are currently active.
          */
@@ -327,7 +339,7 @@ public abstract class FileWatcher {
         private Set watchersToAdd = new HashSet();
 
         FileWatcherRunner() {
-            super(MMBaseContext.getThreadGroup(),"MMBase FileWatcher thread");
+            super("MMBase FileWatcher thread");
             log.service("Starting the file-watcher thread");
             setPriority(MIN_PRIORITY);
             setDaemon(true);
@@ -345,7 +357,7 @@ public abstract class FileWatcher {
          */
         public void run() {
             // todo: how to stop this thread except through interrupting it?
-            while (true) {
+            while (run) {
                 try {
                     long now = System.currentTimeMillis();
                     synchronized (watchers) {
