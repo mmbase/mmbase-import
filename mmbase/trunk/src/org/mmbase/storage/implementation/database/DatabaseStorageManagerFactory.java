@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.29 2005-12-17 15:47:49 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.30 2005-12-17 22:44:41 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -272,7 +272,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         // load configuration data (is also needing the temprary datasource in getDocumentReader..)
         super.load();
         log.service("Now creating the real data source");
-        dataSource = createDataSource(getBinaryFileBasePath() + File.separator);
+        dataSource = createDataSource(getBinaryFileBasePath());
 
         // store the datasource as an attribute
         // mm: WTF. This seems to be a rather essential property, so why it is not wrapped by a normal, comprehensible getDataSource method or so.
