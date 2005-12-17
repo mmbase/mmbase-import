@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.8 2005-12-17 15:47:49 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.9 2005-12-17 16:27:20 michiel Exp $
  */
 final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -74,7 +74,13 @@ final class GenericDataSource implements DataSource {
         String url = makeUrl();
         log.debug("Getting " + (meta ? "META " : "") + "connection for " + url);
         if (meta) {
-            return DriverManager.getConnection(url);
+            String name     = jdbc.getInitParameter("user");
+            String password = jdbc.getInitParameter("password");
+            if (name.equals("url") && password.equals("url")) {
+                return DriverManager.getConnection(url);
+            } else {
+                return DriverManager.getConnection(url, name, password);
+            }
         } else {
             return jdbc.getConnection(url);
         }
