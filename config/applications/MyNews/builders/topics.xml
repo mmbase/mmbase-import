@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="topics" maintainer="mmbase.org" version="0" extends="object">
-  <status>active</status>  
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="topics" maintainer="mmbase.org" version="0" extends="object">
   <searchage>1000</searchage>
   <names>
 		<singular xml:lang="en">Topic</singular>
@@ -23,7 +26,6 @@
       <gui>
         <guiname xml:lang="en">Title</guiname>
         <guiname xml:lang="nl">Titel</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -32,6 +34,7 @@
           <search>1</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>title</name>
         <type state="persistent" size="255" notnull="true">STRING</type>
@@ -45,7 +48,6 @@
       <gui>
         <guiname xml:lang="en">Text</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
-        <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
@@ -54,6 +56,7 @@
           <search>2</search>
         </positions>
       </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 				<db>
           <name>body</name>
           <type state="persistent" size="64000" notnull="false">STRING</type>

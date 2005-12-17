@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 2.0//EN" "http://www.mmbase.org/dtd/builder_2_0.dtd">
-<builder name="news" maintainer="mmbase.org" version="0" extends="object">
-  <status>active</status>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="news" maintainer="mmbase.org" version="0" extends="object">
   <class>org.mmbase.util.functions.ExampleBuilder</class>
   <searchage>14</searchage>
   <names>
@@ -31,13 +34,13 @@
         <guiname xml:lang="fr">Titre</guiname>
         <guiname xml:lang="nl">Titel</guiname>
         <guiname xml:lang="eo">Titolo</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <input>1</input><list>1</list><search>1</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>title</name>
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
@@ -53,7 +56,6 @@
         <guiname xml:lang="fr">Sous-titre</guiname>
         <guiname xml:lang="nl">SubTitel</guiname>
         <guiname xml:lang="eo">Subtitolo</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -62,6 +64,7 @@
           <search>2</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>subtitle</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -77,7 +80,7 @@
         <guiname xml:lang="fr">Intro</guiname>
         <guiname xml:lang="nl">Intro</guiname>
         <guiname xml:lang="eo">Enkonduko</guiname>
-        <guitype>field</guitype>
+ 
       </gui>
       <editor>
         <positions>
@@ -86,6 +89,7 @@
           <search>3</search>
         </positions>
       </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>intro</name>
         <type state="persistent" size="2048" notnull="false" key="false">STRING</type>
@@ -101,7 +105,6 @@
         <guiname xml:lang="fr">Texte</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="eo">Teksto</guiname>
-        <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
@@ -110,6 +113,7 @@
           <search>4</search>
         </positions>
       </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>body</name>
         <type state="persistent" size="64000" notnull="false" key="false">STRING</type>
@@ -118,9 +122,9 @@
   </fieldlist>
   <functionlist>
     <!--
-	As an example, we add some functions to this builder 
-	All based on ExampleBean.
-	But you can also add functions by FunctionProvider or Function implementations.
+        As an example, we add some functions to this builder 
+        All based on ExampleBean.
+        But you can also add functions by FunctionProvider or Function implementations.
     -->
     <function key="integerFunction" name="aaa">
       <class>org.mmbase.util.functions.ExampleBean</class>
