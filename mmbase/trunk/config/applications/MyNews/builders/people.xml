@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="people" maintainer="mmbase.org" version="0" extends="object">
-  <status>active</status>
-  
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="people" maintainer="mmbase.org" version="0" extends="object">
   <searchage>1000</searchage>
   <names>
     <singular xml:lang="en">Person</singular>
@@ -28,7 +30,6 @@
         <guiname xml:lang="en">First Name</guiname>
         <guiname xml:lang="fr">Nom</guiname>
         <guiname xml:lang="nl">Voornaam</guiname>
-        <guitype>line</guitype>
       </gui>
       <editor>
         <positions>
@@ -37,6 +38,7 @@
           <search>1</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>firstname</name>
         <type state="persistent" size="32" notnull="false" key="false">STRING</type>
@@ -52,7 +54,6 @@
         <guiname xml:lang="en">Last Name</guiname>
         <guiname xml:lang="fr">Nom De Famille</guiname>
         <guiname xml:lang="nl">Achternaam</guiname>
-        <guitype>line</guitype>
       </gui>
       <editor>
         <positions>
@@ -61,6 +62,7 @@
           <search>2</search>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>lastname</name>
         <type state="persistent" size="32" notnull="false" key="false">STRING</type>
@@ -76,7 +78,6 @@
         <guiname xml:lang="en">Email Address</guiname>
         <guiname xml:lang="fr">Email</guiname>
         <guiname xml:lang="nl">Email Adres</guiname>
-        <guitype>emailaddress</guitype>
       </gui>
       <editor>
         <positions>
@@ -85,6 +86,7 @@
           <search>3</search>
         </positions>
       </editor>
+      <datatype base="emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>email</name>
         <type state="persistent" size="32" notnull="false" key="false">STRING</type>
@@ -94,13 +96,12 @@
     <field>
       <descriptions>
         <description xml:lang="en">Internal account name, for association with security data (i.e. a user login name)</description>
-        <description xml:lang="nl">Intern account, voor de koppeling met ene authorisatiesysteem (bijv. een login naam)</description>
+        <description xml:lang="nl">Intern account, voor de koppeling met een authorisatiesysteem (bijv. een login naam)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Account</guiname>
         <guiname xml:lang="fr">Compte</guiname>
         <guiname xml:lang="nl">Account</guiname>
-        <guitype>line</guitype>
       </gui>
       <editor>
         <positions>
@@ -109,6 +110,7 @@
           <search>4</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>account</name>
         <type state="persistent" size="12" notnull="false" key="false">STRING</type>
