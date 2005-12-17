@@ -6,7 +6,7 @@ import org.mmbase.bridge.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.9 2005-10-19 15:58:57 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.10 2005-12-17 23:12:40 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -53,6 +53,9 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
     protected Node createRelDefNode(String role, int dir) {
         // create a new relation-definition
         Node reldef = relDefManager.createNode();
+        assertTrue(relDefManager.getName().equals("reldef"));
+        assertTrue("Manager of reldefnode is not 'reldef' but " + reldef.getNodeManager().getName(), reldef.getNodeManager().getName().equals("reldef"));
+        assertTrue(reldef.getNodeManager().hasField("sname"));
         reldef.setValue("sname", role);
         reldef.setValue("dname", "d" + role );
         reldef.setValue("sguiname", role);
