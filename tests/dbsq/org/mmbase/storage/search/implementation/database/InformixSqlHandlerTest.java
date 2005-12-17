@@ -11,7 +11,7 @@ import org.mmbase.storage.search.implementation.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class InformixSqlHandlerTest extends TestCase {
 
@@ -66,24 +66,18 @@ public class InformixSqlHandlerTest extends TestCase {
     /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.InformixSqlHandler. */
     public void testGetSupportLevel() throws Exception {
         // Support max number.
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(100);
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(-1);
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
 
         // Support offset only when set to default (= 0).
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(100);
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_NONE);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_NONE);
         query.setOffset(0);
-        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
 
     /** Test of getSupportLevel(Constraint,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.InformixSqlHandler. */
@@ -104,28 +98,20 @@ public class InformixSqlHandlerTest extends TestCase {
     public void testToSql() throws Exception {
         // Test use of "FIRST" construct.
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix + "images IMAGES WHERE m_number IS NULL"));
+        instance.toSql(query, instance).equalsIgnoreCase("SELECT number FROM " + prefix + "images IMAGES WHERE number IS NULL"));
 
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT FIRST 100 m_number FROM "
-        + prefix + "images IMAGES WHERE m_number IS NULL"));
+        instance.toSql(query, instance).equalsIgnoreCase("SELECT FIRST 100 number FROM " + prefix + "images IMAGES WHERE number IS NULL"));
 
         // Distinct keyword avoided in aggregating query.
         query = new BasicSearchQuery(true);
         BasicStep step1 = query.addStep(images).setAlias(null);
         FieldDefs imagesTitle = images.getField("title");
-        query.addAggregatedField(
-                step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
-                    .setAlias(null);
+        query.addAggregatedField(step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT).setAlias(null);
         query.setDistinct(true);
         String strSql = instance.toSql(query, instance);
-        assertTrue(strSql, strSql.equalsIgnoreCase(
-        "SELECT COUNT(TITLE) "
-        + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase("SELECT COUNT(TITLE) FROM " + prefix + "images IMAGES"));
     }
 
     public static Test suite() {

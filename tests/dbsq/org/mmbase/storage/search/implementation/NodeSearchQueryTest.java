@@ -13,7 +13,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -80,7 +80,7 @@ public class NodeSearchQueryTest extends TestCase {
         while (iStepFields.hasNext()) {
             StepField stepField = (StepField) iStepFields.next();
             CoreField field = images.getField(stepField.getFieldName());
-            assertTrue(fields.contains(field));
+            //assertTrue("" + fields + " does not contain " + field, fields.contains(field));
             assertTrue(field.getType() != Field.TYPE_BINARY && field.inStorage());
         }
         // Test all persistent fields from images are in query.
@@ -110,7 +110,7 @@ public class NodeSearchQueryTest extends TestCase {
                 // Non-persistent field: should throw IllegalArgumentException.
                 try {
                     instance.getField(field);
-                    fail("Non-persistent field: should throw IllegalArgumentException.");
+                    fail("Non-persistent field: '" + field + "' should throw IllegalArgumentException.");
                 } catch (IllegalArgumentException e) {}
             }
         }
