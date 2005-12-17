@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.48 2005-12-17 16:17:33 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.49 2005-12-17 20:54:48 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -126,6 +126,7 @@ public class MMBaseContext {
 
     /**
      * Returns the MMBase thread group.
+     * @since MMBase-1.8
      */
     public static ThreadGroup getThreadGroup() {
         return threadGroup;
@@ -135,6 +136,7 @@ public class MMBaseContext {
      * Starts a daemon thread using the MMBase thread group.
      * @param task the taslk to run as a thread - either a Runnable or a DaemonTask object
      * @param name the thread's name
+     * @since MMBase-1.8
      */
     public static Thread startThread(Object task, String name) {
         DaemonThread kicker;
