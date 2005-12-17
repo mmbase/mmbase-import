@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
-import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -35,18 +34,13 @@ import org.mmbase.util.logging.Logging;
  * @license uses the GNU license, should be moved external
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGenerator.java,v 1.9 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: PasswordGenerator.java,v 1.10 2005-12-17 20:23:31 michiel Exp $
  */
 
-public class PasswordGenerator extends Module implements PasswordGeneratorInterface {
+public class PasswordGenerator implements PasswordGeneratorInterface {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(PasswordGenerator.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(PasswordGenerator.class);
 
-    /**
-     * For testing.
-     */
-    private static PasswordGenerator PG;
 
     /**
      * List of consonants that can be used in a password.
@@ -71,55 +65,13 @@ public class PasswordGenerator extends Module implements PasswordGeneratorInterf
     /**
      * Default template to use when generating passwords.
      */
-    String defaulttemplate=new String("SSSSSS");
+    String defaulttemplate = "SSSSSS";
 
     /**
      * Creates the generator
      */
     public PasswordGenerator() {
-        ranPool=new RandomPool();
-    }
-
-    /**
-     * Called when the module is loaded.
-     * Not used.
-     */
-    public void onload() {
-    }
-
-    /**
-     * Called when the module is reloaded.
-     * Tries to retrieve a default template for a password from the
-     * template property from the module configuration file.
-     * Not used.
-     */
-    public void reload() {
-        defaulttemplate=getInitParameter("template");
-        if (defaulttemplate==null) defaulttemplate=new String("SSSSSS");
-    }
-
-    /**
-     * Initializes the module.
-     * Tries to retrieve a default template for a password from the
-     * template property from the module configuration file.
-     */
-    public void init() {
-        defaulttemplate=getInitParameter("template");
-        if (defaulttemplate==null) defaulttemplate=new String("SSSSSS");
-    }
-
-    /**
-     * Called when the module is unloaded.
-     * Not used.
-     */
-    public void unload() {
-    }
-
-    /**
-     * Called when the module is shut down (removed).
-     * Not used.
-     */
-    public void shutdown() {
+        ranPool = new RandomPool();
     }
 
     /**
@@ -127,7 +79,7 @@ public class PasswordGenerator extends Module implements PasswordGeneratorInterf
      * Used for testing.
      */
     public static void main(String args[]) {
-        PG=new PasswordGenerator();
+        PasswordGenerator PG = new PasswordGenerator();
         log.info("Password "+PG.getPassword());
         log.info("Password "+PG.getPassword("SSS 9 SSS"));
         log.info("Password "+PG.getPassword("SSSS"));
@@ -167,8 +119,8 @@ public class PasswordGenerator extends Module implements PasswordGeneratorInterf
      */
     public String getPassword(String template) {
         int len;
-        boolean next=true;
-        StringBuffer pwd=new StringBuffer();
+        boolean next = true;
+        StringBuffer pwd = new StringBuffer();
 
         len=template.length();
         for (int i=0;i<len;i++) {
