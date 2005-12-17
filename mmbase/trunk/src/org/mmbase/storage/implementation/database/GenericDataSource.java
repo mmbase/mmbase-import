@@ -15,8 +15,9 @@ import javax.sql.DataSource;
 
 import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.module.database.JDBCInterface;
+import org.mmbase.module.database.JDBC;
 import org.mmbase.storage.StorageInaccessibleException;
+import org.mmbase.util.logging.*;
 
 /**
  * This class functions as a Datasource wrapper around the JDBC Module.
@@ -27,109 +28,129 @@ import org.mmbase.storage.StorageInaccessibleException;
  * with code and supporting classes to be moved to this class instead.
  *
  * @author Pierre van Rooden
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.7 2005-12-16 19:07:22 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.8 2005-12-17 15:47:49 michiel Exp $
  */
-public final class GenericDataSource implements DataSource {
+final class GenericDataSource implements DataSource {
+    private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
 
     // Reference to the JDBC Module
-    final private JDBCInterface jdbc;
-    // Datasource specific log writer, default disabled
+    final private JDBC jdbc;
+
     private java.io.PrintWriter printWriter = null;
-    // Datasource login timeout, initially zero
-    private int loginTimeout = 0;
+
     final private String dataDir;
+    final private boolean meta;
 
     /**
      * Constructs a datasource for accessing the database belonging to the given MMBase module.
      * The MMBase parameter is not currently used, but is included for future expansion
      * @param mmbase the MMBase instance
+     * @param A Datadir (as a string ending in a /) which may be used in some URL's (most noticably those of HSQLDB).
      * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
      */
-    public GenericDataSource(MMBase mmbase, String dataDir) throws StorageInaccessibleException {
-        jdbc = (JDBCInterface)Module.getModule("JDBC", true);
+    GenericDataSource(MMBase mmbase, String dataDir) throws StorageInaccessibleException {
+        jdbc = (JDBC) Module.getModule("JDBC", true);
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
         this.dataDir = dataDir == null ? "" : dataDir;
+        meta = false;
     }
-    
     /**
-     * Attempt to establish a database connection.
-     * @return a Connection to the database
-     * @throws java.sql.SQLException - if a database-access error occurs.
      */
+    GenericDataSource(MMBase mmbase) throws StorageInaccessibleException {
+        jdbc = (JDBC) Module.getModule("JDBC", false);
+        if (jdbc == null) {
+            throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
+        }
+        dataDir = "";
+        meta = true;
+    }
+
+    // see javax.sql.DataSource
     public Connection getConnection() throws SQLException {
-        String url = jdbc.makeUrl();                
-        url = url.replaceAll("\\$DATADIR", dataDir);
-        return jdbc.getConnection(url);
+        String url = makeUrl();
+        log.debug("Getting " + (meta ? "META " : "") + "connection for " + url);
+        if (meta) {
+            return DriverManager.getConnection(url);
+        } else {
+            return jdbc.getConnection(url);
+        }
     }
 
-    /**
-     * Attempt to establish a database connection.
-     * @param userName - the database user on whose behalf the Connection is being made
-     * @param password - the user's password
-     * @return a Connection to the database
-     * @throws java.sql.SQLException - if a database-access error occurs.
-     */
+    // see javax.sql.DataSource
     public Connection getConnection(String userName, String password) throws SQLException {
-        return jdbc.getConnection(jdbc.makeUrl(), userName, password);
+        String url = makeUrl();
+        if (log.isDebugEnabled()) {
+            log.trace("Getting " + (meta ? "META " : "") + "connection for " + url);
+        }
+        if (meta) {
+            return DriverManager.getConnection(url, userName, password);
+        } else {
+            return jdbc.getConnection(url, userName, password);
+        }
     }
 
-    /**
-     * Gets the maximum time in seconds that this data source will wait while attempting to connect to a
-     * database. A value of zero specifies that the timeout is the default system timeout if there is one;
-     * otherwise it specifies that there is no timeout. When a DataSource object is created the login
-     * timeout is initially zero.<br />
-     * Note: the default system timeout is 30 seconds (unless otherwise specified in the JDBC configuration file)
-     * @return the data source login time limit
-     * @throws java.sql.SQLException - if a database-access error occurs.
-     */
+    // see javax.sql.DataSource
     public int getLoginTimeout() {
-        return loginTimeout;
+        return 0;
     }
 
-    /**
-     * Get the log writer for this data source.
-     * The log writer is a character output stream to which all logging and tracing messages for this
-     * data source object instance will be printed. This includes messages printed by the methods of
-     * this object, messages printed by methods of other objects manufactured by this object, and so on.
-     * Messages printed to a data source specific log writer are not printed to the log writer associated
-     * with the java.sql.DriverManager class. When a DataSource object is created the log writer is
-     * initially null, in other words, logging is disabled.
-     * @return the log writer for this data source, null if disabled
-     * @throws java.sql.SQLException - if a database-access error occurs.
-     */
+    // see javax.sql.DataSource
     public java.io.PrintWriter getLogWriter() {
         return printWriter;
     }
 
     /**
-     * Sets the maximum time in seconds that this data source will wait while attempting to connect to a
-     * database. A value of zero specifies that the timeout is the default system timeout if there is one;
-     * otherwise it specifies that there is no timeout. When a DataSource object is created the login
-     * timeout is initially zero. <br />
-     * Note: currently this code does not actually change the timeout.
-     * @param seconds - the data source login time limit
-     * @throws java.sql.SQLException - if a database-access error occurs.
+     * {@inheritDoc}
+     * Note: currently this code does not actually change the timeout. Login timeout is not implemented by JDBC module
      */
     public void setLoginTimeout(int seconds) {
         // loginTimeout = seconds;
     }
 
-    /**
-     * Set the log writer for this data source.
-     * The log writer is a character output stream to which all logging and tracing messages for this
-     * data source object instance will be printed. This includes messages printed by the methods of this
-     * object, messages printed by methods of other objects manufactured by this object, and so on.
-     * Messages printed to a data source specific log writer are not printed to the log writer associated
-     * with the java.sql.Drivermanager class. When a DataSource object is created the log writer is
-     * initially null, in other words, logging is disabled.
-     * @param out - the new log writer; to disable, set to null
-     * @throws java.sql.SQLException - if a database-access error occurs.
-     */
+
+    // see javax.sql.DataSource
     public void setLogWriter(java.io.PrintWriter out) {
         printWriter = out;
     }
+
+    /**
+     * Makes URL which can be used to produce a Conncetion. If this is a 'meta' datasource, then
+     * 'lookup.xml' will be tried, for a 'meta url'.
+     * @since MMBase-1.8
+     */
+    protected String makeUrl() {
+        if (meta) {
+            DatabaseStorageLookup lookup = new DatabaseStorageLookup();
+            try {
+                String metaUrl = lookup.getMetaURL(Class.forName(jdbc.getInitParameter("driver")));
+                if (metaUrl != null) {
+                    String database = jdbc.getInitParameter("database");
+                    if (database != null) {
+                        metaUrl = metaUrl.replaceAll("\\$DBM", database);
+                    }
+                    String host = jdbc.getInitParameter("host");
+                    if (host != null) {
+                        metaUrl = metaUrl.replaceAll("\\$HOST", host);
+                    }
+                    String port = jdbc.getInitParameter("port");
+                    if (port != null) {
+                        metaUrl = metaUrl.replaceAll("\\$PORT", port);
+                    }
+                    return metaUrl;
+                }
+            } catch (ClassNotFoundException cnfe) {
+                log.error(cnfe);
+            }
+        }
+        String url = jdbc.makeUrl();
+        url = url.replaceAll("\\$DATADIR", dataDir);
+        return url;
+    }
+
+
 
 }
