@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.139 2005-12-17 15:47:49 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.140 2005-12-17 22:44:41 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -667,7 +667,7 @@ public class DatabaseStorageManager implements StorageManager {
             pathBuffer.insert(0, File.separator);
             number /= 100;
         }
-        pathBuffer.insert(0, basePath + File.separator + factory.getDatabaseName() + File.separator + node.getBuilder().getFullTableName());
+        pathBuffer.insert(0, basePath + factory.getDatabaseName() + File.separator + node.getBuilder().getFullTableName());
         return new File(pathBuffer.toString(), "" + node.getNumber() + '.' + fieldName);
     }
 
