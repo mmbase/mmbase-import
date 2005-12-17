@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.138 2005-12-09 14:25:32 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.139 2005-12-17 15:47:49 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -956,7 +956,13 @@ public class DatabaseStorageManager implements StorageManager {
         PreparedStatement ps = activeConnection.prepareStatement(query);
         for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
             CoreField field = (CoreField) fields.get(fieldNumber);
-            setValue(ps, fieldNumber + 1, node, field);
+            try {
+                setValue(ps, fieldNumber + 1, node, field);
+            } catch (Exception e) {
+                SQLException sqle = new SQLException(node.toString() + "/" + field + " " + e.getMessage());
+                sqle.initCause(e);
+                throw sqle;
+            }
         }
         long startTime = getLogStartTime();
         ps.executeUpdate();
@@ -2135,6 +2141,11 @@ public class DatabaseStorageManager implements StorageManager {
         case Types.INTEGER :
         case Types.SMALLINT :
         case Types.TINYINT :
+            if (mmbaseType == Field.TYPE_INTEGER || mmbaseType == Field.TYPE_NODE) {
+                return mmbaseType;
+            } else {
+                return Field.TYPE_INTEGER;
+            }
         case Types.BIGINT :
             if (mmbaseType == Field.TYPE_INTEGER || mmbaseType == Field.TYPE_LONG || mmbaseType == Field.TYPE_NODE) {
                 return mmbaseType;
@@ -2143,6 +2154,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         case Types.FLOAT :
         case Types.REAL :
+            return Field.TYPE_FLOAT;
         case Types.DOUBLE :
         case Types.NUMERIC :
         case Types.DECIMAL :
@@ -2282,7 +2294,7 @@ public class DatabaseStorageManager implements StorageManager {
                                       + ", but in storage " + Fields.getTypeDescription(type)
                                       + " (" + colInfo.get("TYPE_NAME") + "). Storage type will be used.");
                             DataType originalDataType = field.getDataType();
-                            DataType newDataType      = (DataType)DataTypes.getDataType(type).clone(originalDataType.getName());
+                            DataType newDataType      = (DataType) DataTypes.getDataType(type).clone(originalDataType.getName());
                             field.setType(Fields.classToType(newDataType.getTypeAsClass()));
                             if (originalDataType instanceof BasicDataType) {
                                 newDataType.inherit((BasicDataType) originalDataType); // takes as much possible...
@@ -2297,7 +2309,7 @@ public class DatabaseStorageManager implements StorageManager {
                         boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
                         if (nullable == field.isNotNull()) {
                             // only correct if storage is more restrictive
-                            if (!nullable) {
+                            if (! nullable) {
                                 field.setNotNull(!nullable);
                                 log.warn("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : notnull in storage is " + !nullable + " (value corrected for this session)");
                             } else {

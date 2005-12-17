@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
 
 import javax.naming.*;
 import javax.sql.DataSource;
-import java.io.File;
+import java.io.*;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.storage.*;
@@ -38,28 +38,29 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.28 2005-12-16 19:07:22 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.29 2005-12-17 15:47:49 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
     // standard sql reserved words
-    private final static String STANDARD_SQL_KEYWORDS =
-      "absolute,action,add,all,allocate,alter,and,any,are,as,asc,assertion,at,authorization,avg,begin,between,bit,bit_length,"+
-      "both,by,cascade,cascaded,case,cast,catalog,char,character,char_length,character_length,check,close,coalesce,collate,collation,"+
-      "column,commit,connect,connection,constraint,constraints,continue,convert,corresponding,count,create,cross,current,current_date,"+
-      "current_time,current_timestamp,current_user,cursor,date,day,deallocate,dec,decimal,declare,default,deferrable,deferred,delete,"+
-      "desc,describe,descriptor,diagnostics,disconnect,distinct,domain,double,drop,else,end,end-exec,escape,except,exception,exec,"+
-      "execute,exists,external,extract,false,fetch,first,float,for,foreign,found,from,full,get,global,go,goto,grant,group,having,hour,"+
-      "identity,immediate,in,indicator,initially,inner,input,insensitive,insert,int,integer,intersect,interval,into,is,isolation,join,"+
-      "key,language,last,leading,left,level,like,local,lower,match,max,min,minute,module,month,names,national,natural,nchar,next,no,"+
-      "not,null,nullif,numeric,octet_length,of,on,only,open,option,or,order,outer,output,overlaps,pad,partial,position,precision,"+
-      "prepare,preserve,primary,prior,privileges,procedure,public,read,real,references,relative,restrict,revoke,right,rollback,rows,"+
-      "schema,scroll,second,section,select,session,session_user,set,size,smallint,some,space,sql,sqlcode,sqlerror,sqlstate,substring,"+
-      "sum,system_user,table,temporary,then,time,timestamp,timezone_hour,timezone_minute,to,trailing,transaction,translate,translation,"+
-      "trim,true,union,unique,unknown,update,upper,usage,user,using,value,values,varchar,varying,view,when,whenever,where,with,work,"+
-      "write,year,zone";
+    private final static String[] STANDARD_SQL_KEYWORDS =
+    {"absolute","action","add","all","allocate","alter","and","any","are","as","asc","assertion","at","authorization","avg","begin","between","bit","bit_length",
+     "both","by","cascade","cascaded","case","cast","catalog","char","character","char_length","character_length","check","close","coalesce","collate","collation",
+     "column","commit","connect","connection","constraint","constraints","continue","convert","corresponding","count","create","cross","current","current_date",
+     "current_time","current_timestamp","current_user","cursor","date","day","deallocate","dec","decimal","declare","default","deferrable","deferred","delete",
+     "desc","describe","descriptor","diagnostics","disconnect","distinct","domain","double","drop","else","end","end-exec","escape","except","exception","exec",
+     "execute","exists","external","extract","false","fetch","first","float","for","foreign","found","from","full","get","global","go","goto","grant","group","having","hour",
+     "identity","immediate","in","indicator","initially","inner","input","insensitive","insert","int","integer","intersect","interval","into","is","isolation","join",
+     "key","language","last","leading","left","level","like","local","lower","match","max","min","minute","module","month","names","national","natural","nchar","next","no",
+     "not","null","nullif","numeric","octet_length","of","on","only","open","option","or","order","outer","output","overlaps","pad","partial","position","precision",
+     "prepare","preserve","primary","prior","privileges","procedure","public","read","real","references","relative","restrict","revoke","right","rollback","rows",
+     "schema","scroll","second","section","select","session","session_user","set","size","smallint","some","space","sql","sqlcode","sqlerror","sqlstate","substring",
+     "sum","system_user","table","temporary","then","time","timestamp","timezone_hour","timezone_minute","to","trailing","transaction","translate","translation",
+     "trim","true","union","unique","unknown","update","upper","usage","user","using","value","values","varchar","varying","view","when","whenever","where","with","work",
+     "write","year","zone"};
+    
 
     // Default query handler class.
     private final static Class DEFAULT_QUERY_HANDLER_CLASS = org.mmbase.storage.search.implementation.database.BasicSqlHandler.class;
@@ -163,8 +164,13 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             log.service("No data-source configured, using Generic data source");
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
             // This datasource should only be needed in cases were MMBase runs without application server.
-            ds = new GenericDataSource(mmbase, binaryFileBasePath);
+            if (binaryFileBasePath == null) {
+                ds = new GenericDataSource(mmbase);
+            } else {
+                ds = new GenericDataSource(mmbase, binaryFileBasePath);
+            }
         }
+        //ds.setLogWriter(new LoggerPrintWriter(Logging.getInstance("datasource"));
         return ds;
 
     }
@@ -174,7 +180,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
      * Obtain a datasource to the storage, and load configuration attributes.
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
-    protected void load() throws StorageException {
+    protected synchronized void load() throws StorageException {
         // default storagemanager class
         storageManagerClass = DEFAULT_STORAGE_MANAGER_CLASS;
 
@@ -185,74 +191,88 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         dataSource = createDataSource(null); 
         // temorary source only used once, for the meta data.
 
+        String sqlKeywords;
+
         // test the datasource and retrieves options,
         // which are stored as options in the factory's attribute
         // this allows for easy retrieval of database options
-        try {
-            Connection con = dataSource.getConnection();
-            if (con == null) throw new StorageException("Did get 'null' connection from data source " + dataSource);
-            catalog = con.getCatalog();
-            log.service("Connecting to catalog with name " + catalog);
-
-            DatabaseMetaData metaData = con.getMetaData();
-            String url = metaData.getURL();
-            String db = getDatabaseName(url);
-            if (db != null) {
-                databaseName = db;
-            } else {
-                log.service("No db found in database connection meta data URL '" + url + "'");
-                databaseName = catalog;
+        {
+            Connection con = null;
+            try {
+                con = dataSource.getConnection();
+                if (con == null) throw new StorageException("Did get 'null' connection from data source " + dataSource);
+                catalog = con.getCatalog();
+                log.service("Connecting to catalog with name " + catalog);
+                
+                DatabaseMetaData metaData = con.getMetaData();
+                String url = metaData.getURL();
+                String db = getDatabaseName(url);
+                if (db != null) {
+                    databaseName = db;
+                } else {
+                    log.service("No db found in database connection meta data URL '" + url + "'");
+                    databaseName = catalog;
+                }
+                log.service("Connecting to database with name " + getDatabaseName());
+                
+                // set transaction options
+                supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
+                
+                // determine transactionlevels
+                if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
+                    transactionIsolation = Connection.TRANSACTION_SERIALIZABLE;
+                } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_REPEATABLE_READ)) {
+                    transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ;
+                } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED)) {
+                    transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
+                } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_UNCOMMITTED)) {
+                    transactionIsolation = Connection.TRANSACTION_READ_UNCOMMITTED;
+                } else {
+                    supportsTransactions = false;
+                }
+                sqlKeywords = ("" + metaData.getSQLKeywords()).toLowerCase();
+                
+            } catch (SQLException se) {
+                // log.fatal(se.getMessage() + Logging.stackTrace(se)); will be logged in StorageManagerFactory already
+                throw new StorageInaccessibleException(se);
+            } finally {
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (SQLException se) {
+                        log.error(se);
+                    }
+                }
             }
-            log.service("Connecting to database with name " + getDatabaseName());
-
-            // set transaction options
-            supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
-
-            // determine transactionlevels
-            if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
-                transactionIsolation = Connection.TRANSACTION_SERIALIZABLE;
-            } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_REPEATABLE_READ)) {
-                transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ;
-            } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED)) {
-                transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
-            } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_UNCOMMITTED)) {
-                transactionIsolation = Connection.TRANSACTION_READ_UNCOMMITTED;
-            } else {
-              supportsTransactions = false;
-            }
-
-            setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
-            setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
-            setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
-            setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
-
-            // create a default disallowedfields list:
-            // get the standard sql keywords
-            StringTokenizer tokens = new StringTokenizer(STANDARD_SQL_KEYWORDS,", ");
-            while (tokens.hasMoreTokens()) {
-                String tok = tokens.nextToken();
-                disallowedFields.put(tok, null);
-            }
-
-            // get the extra reserved sql keywords (according to the JDBC driver)
-            // not sure what case these are in ???
-            String sqlKeywords = ("" + metaData.getSQLKeywords()).toLowerCase();
-            tokens = new StringTokenizer(sqlKeywords,", ");
-            while (tokens.hasMoreTokens()) {
-                String tok = tokens.nextToken();
-                disallowedFields.put(tok, null);
-            }
-
-            con.close();
-        } catch (SQLException se) {
-            // log.fatal(se.getMessage() + Logging.stackTrace(se)); will be logged in StorageManagerFactory already
-            throw new StorageInaccessibleException(se);
         }
+
+        
+        // why is this not stored in real properties?
+
+        setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
+        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
+        setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
+        setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
+        
+        // create a default disallowedfields list:
+        // get the standard sql keywords
+        for (int i = 0; i < STANDARD_SQL_KEYWORDS.length; i++) {
+            disallowedFields.put(STANDARD_SQL_KEYWORDS[i], null); // during super.load, the null values will be replaced by actual replace-values.
+        }
+        
+        // get the extra reserved sql keywords (according to the JDBC driver)
+        // not sure what case these are in ???
+        StringTokenizer tokens = new StringTokenizer(sqlKeywords,", ");
+        while (tokens.hasMoreTokens()) {
+            String tok = tokens.nextToken();
+            disallowedFields.put(tok, null);
+        }
+
 
         // load configuration data (is also needing the temprary datasource in getDocumentReader..)
         super.load();
-
-        dataSource = createDataSource(getBinaryFileBasePath());
+        log.service("Now creating the real data source");
+        dataSource = createDataSource(getBinaryFileBasePath() + File.separator);
 
         // store the datasource as an attribute
         // mm: WTF. This seems to be a rather essential property, so why it is not wrapped by a normal, comprehensible getDataSource method or so.
@@ -343,6 +363,18 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                         basePath = System.getProperty("user.dir") + File.separator + basePath;
                     }
                 }
+            }
+            File baseDir = new File(basePath);
+            try {
+                basePath = baseDir.getCanonicalPath();
+                if (! baseDir.mkdirs() && ! baseDir.exists()) {
+                    log.error("Cannot create the binary file path " + basePath);
+                }
+                if (! baseDir.canWrite()) {
+                    log.error("Cannot write in the binary file path " + basePath);
+                }
+            } catch (IOException ioe) {
+                log.error(ioe);
             }
         }
         return basePath;

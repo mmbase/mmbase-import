@@ -1,4 +1,4 @@
-<!ELEMENT database-filters ( filter* ) >
+<!ELEMENT database-filters ( filter*, url*) >
 <!ATTLIST filter resource CDATA #REQUIRED >
 
 <!ELEMENT filter ( driver-class?, driver-name?, driver-version?, driver-major-version?, driver-minor-version?, database-product-name?, database-product-version? )* >
@@ -18,3 +18,6 @@
 <!ELEMENT database-product-name ( #PCDATA ) >
 
 <!ELEMENT database-product-version ( #PCDATA ) >
+
+<!ELEMENT url ( #PCDATA ) >
+<!ATTLIST url driver-class CDATA #REQUIRED >
