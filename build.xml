@@ -498,7 +498,7 @@ mmadmin.xml
   <target name="compile" description="Compile the source directory"  depends="init.compile,javacc">
 
     <echo message="java version: ${ant.java.version}" />
-    <echo message="compiling with debug=${debug}, optimize=${optimize}, nowarn=${nowarn}, deprication=${deprecation}"/>
+    <echo message="compiling with debug=${debug}, optimize=${optimize}, nowarn=${nowarn}, deprecation=${deprecation}"/>
 
     <javac 
            destdir="${build.dir}/classes"
