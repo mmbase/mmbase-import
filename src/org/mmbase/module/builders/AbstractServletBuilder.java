@@ -29,7 +29,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.33 2005-10-25 12:12:27 pierre Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.34 2005-12-17 16:15:55 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -284,19 +284,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return result;
     }
 
-
-
-    protected String getFileSizeGUI(int size) {
-        if (size < 1000) {
-            return "" + size + " byte";
-        } else if (size < 1000000) {
-            return "" + size / 1000 + " kbyte";
-        } else if (size < 10000000) {
-            return "" + size / 1000000 + " Mbyte";
-        } else {
-            return "" + size / 1000000 + " Mbyte";
-        }
-    }
 
     /**
      * 'Servlet' builders need a way to transform security to the servlet, in the gui functions, so
