@@ -38,12 +38,18 @@
   
   <!-- M$ SQL Server -->
   <filter resource="storage/databases/mssql.xml">
-	<driver-class>com.microsoft.jdbc.sqlserver</driver-class>
+    <driver-class>com.microsoft.jdbc.sqlserver</driver-class>
   </filter>
 
   <!-- Oracle -->
   <filter resource="storage/databases/oracle.xml">
-	<driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
+    <driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
   </filter>
+
+  <!-- 
+       During boottrap a connection is gotten. If for some reason this must be done with a different URL, 
+       then this can be configured, based on the driver-class.
+  -->
+  <url driver-class="org.hsqldb.">jdbc:hsqldb:mem:$DBM;shutdown=true</url>
 
 </database-filters>
