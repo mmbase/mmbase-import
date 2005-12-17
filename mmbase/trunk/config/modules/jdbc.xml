@@ -96,11 +96,16 @@
     -->
     <!--
         HSQL with files under WEB-INF/data
-        <property name="url">jdbc:hsqldb:file:$DATADIR/$DBM;shutdown=true</property>
+        <property name="url">jdbc:hsqldb:file:$DATADIR$DBM;shutdown=true</property>
+
+        HSQL with files in directory of startup
+        <property name="url">jdbc:hsqldb:file:$DBM;shutdown=true</property>
+
+       HSQL can also work with tab-seperated files, see config/storage/databases/hsql.xml for that.
     -->
 
-    <!-- Default hsqldb driver -->
-    <property name="url">jdbc:hsqldb:$DBM;shutdown=true</property>
+    <!-- Default hsqldb driver, memory only -->
+    <property name="url">jdbc:hsqldb:mem:$DBM;shutdown=true</property>
 
     <!--
     name="user", what is the user we will use to login to the database
