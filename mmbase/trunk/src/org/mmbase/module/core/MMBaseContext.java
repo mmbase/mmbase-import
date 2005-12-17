@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.47 2005-12-05 18:05:41 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.48 2005-12-17 16:17:33 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -327,13 +327,13 @@ public class MMBaseContext {
                 htmlRootUrlPath = initPath;
             } else {
                 // init the htmlRootUrlPath
-                log.debug("Autodetecting htmlrooturlpath ");
-                // fetch resource path for the root servletcontext root...
-                // check wether this is root
-                if (sx.equals(sx.getContext("/"))) {
-                    htmlRootUrlPath = "/";
-                } else {
-                    try {
+                try {
+                    log.debug("Autodetecting htmlrooturlpath ");
+                    // fetch resource path for the root servletcontext root...
+                    // check wether this is root
+                    if (sx.equals(sx.getContext("/"))) {
+                        htmlRootUrlPath = "/";
+                    } else {
                         String url = sx.getResource("/").toString();
                         // MM: simply hope that it is the last part of that URL.
                         // I do not think it is garantueed. Used mmbase.htmlrooturlpath in web.xml if it doesn't work.
@@ -344,10 +344,16 @@ public class MMBaseContext {
                         } else {
                             log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath + "(contextUrl     :" + url + ")");
                         }
-                    } catch (java.net.MalformedURLException mfue) {
-                        // could not happen.
-                        log.error(mfue);
                     }
+                } catch (Exception e) {
+                    log.error(e);
+                }
+                try {
+                    if (!sx.equals(sx.getContext(htmlRootUrlPath))) {
+                        log.warn("Probably did not succeed in determining htmlRootUrlPath ('" + htmlRootUrlPath + "'). Consider using the mmbase.htmlrooturlpath  context-param in web.xml");
+                    }
+                } catch (Exception e2) {
+                    log.error(e2);
                 }
             }
             htmlRootUrlPathInitialized = true;
