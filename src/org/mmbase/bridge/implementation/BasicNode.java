@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.186 2005-12-12 10:59:57 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.187 2005-12-17 23:34:23 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -84,6 +84,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     private boolean isNew = false;
 
+
+    BasicNode(BasicCloud cloud) {
+        this.cloud = cloud;
+    }
     /**
      * Instantiates a node, linking it to a specified node manager.
      * Use this constructor if the node you create uses a NodeManager that is not readily available
@@ -132,7 +136,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * @since MMBase-1.8
      */
-    protected void setNodeManager(MMObjectNode node) {
+    protected void setNodeManager(MMObjectNode node) {        
         nodeManager = cloud.getBasicNodeManager(node.getBuilder());
         assert(nodeManager != null);
     }
