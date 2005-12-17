@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.115 2005-11-25 12:39:08 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.116 2005-12-17 23:32:07 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -94,9 +94,16 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
-        super(getNodeForBuilder(builder), cloud);
+        super(cloud);
+        noderef = getNodeForBuilder(builder);
         this.builder = builder;
-        initManager();
+        TypeDef typeDef =  BasicCloudContext.mmb.getTypeDef();
+        if (builder == typeDef) {
+            nodeManager = this;
+        } else {
+            nodeManager = cloud.getBasicNodeManager(typeDef);
+        }
+        sync();
     }
 
     /**
@@ -117,9 +124,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     protected void setNodeManager(MMObjectNode node) {
         int nodeNumber = node.getNumber();
-        if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().getNumber()) { // this is the typedef itself
+        if (nodeNumber >= 0 && nodeNumber == node.getBuilder().getNumber()) { // this is the typedef itself
             nodeManager = this;
         } else {
+            log.debug("Setting node manager for nodeManager, but no typedef " + node);
             super.setNodeManager(node);
         }
     }
@@ -233,9 +241,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      */
     protected BasicNode createBasicNode() {
         NodeAndId n = createMMObjectNode();
-        if (getMMObjectBuilder() instanceof TypeDef) {
+        MMObjectBuilder bul = getMMObjectBuilder();
+        if (bul instanceof TypeDef) {
             // I wonder if this is necessary.
             return new BasicNodeManager(n.node, cloud, n.id);
+        } else if (bul instanceof TypeRel) {
+            return new BasicRelationManager(n.node, cloud, n.id);
         } else {
             return new BasicNode(n.node, cloud, n.id);
         }
