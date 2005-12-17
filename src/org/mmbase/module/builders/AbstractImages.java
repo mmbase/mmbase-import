@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.39 2005-11-04 23:32:00 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.40 2005-12-17 16:15:30 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -142,8 +142,6 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         String field = a.getString("field");
         if (field.equals(Imaging.FIELD_HANDLE) || field.equals("")) {
             return getSGUIIndicatorForNode(node, a);
-        } else if (field.equals(FIELD_FILESIZE)) {
-            return getFileSizeGUI(node.getIntValue(FIELD_FILESIZE));  
         }
         // other fields can be handled by the orignal gui function...
         return getSuperGUIIndicator(field, node);
@@ -161,8 +159,14 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      */
     public String getMimeType(MMObjectNode node) {
         String ext = getImageFormat(node);
-        log.debug("Getting mimetype for node " + node.getNumber() + " " + ext);
-        if (ext.equals("")) ext = getDefaultImageType();
+        if (log.isDebugEnabled()) {
+            log.debug("Getting mimetype for node " + node.getNumber() + " " + ext);
+        }
+        if (ext.equals("")) {
+            ext = getDefaultImageType();
+        } else if (ext.startsWith("x-")) {
+            ext = ext.substring(2);
+        }
         return Imaging.getMimeTypeByExtension(ext);
     }
 
