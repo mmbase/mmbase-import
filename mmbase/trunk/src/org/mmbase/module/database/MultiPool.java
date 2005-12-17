@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.56 2005-06-28 11:00:01 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.57 2005-12-17 16:18:58 michiel Exp $
  */
 public class MultiPool {
 
@@ -61,7 +61,7 @@ public class MultiPool {
         this.maxQueries      = maxQueries;
         if (this.maxQueries <= 0) doReconnect = false;
         this.databaseSupport = databaseSupport;
-        log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, " + (doReconnect ? "which will be refreshed after " + this.maxQueries + " queries"  : "which will not be refreshed"));
+        log.service("Creating a multipool for database " + name + "(" + url + ") containing : " + conMax + " connections, " + (doReconnect ? "which will be refreshed after " + this.maxQueries + " queries"  : "which will not be refreshed"));
         createPool();
     }
 
