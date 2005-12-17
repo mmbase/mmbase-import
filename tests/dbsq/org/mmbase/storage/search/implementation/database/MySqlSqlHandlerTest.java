@@ -12,7 +12,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class MySqlSqlHandlerTest extends TestCase {
 
@@ -105,28 +105,19 @@ public class MySqlSqlHandlerTest extends TestCase {
     public void testToSql() throws Exception {
         // Test use of "LIMIT" construct.
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix + "images IMAGES WHERE m_number IS NULL"));
+        instance.toSql(query, instance).equalsIgnoreCase("SELECT number FROM " + prefix + "images IMAGES WHERE number IS NULL"));
 
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix + "images IMAGES WHERE m_number IS NULL LIMIT 100"));
+        instance.toSql(query, instance).equalsIgnoreCase("SELECT number FROM " + prefix + "images IMAGES WHERE number IS NULL LIMIT 100"));
 
         query.setOffset(50);
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix + "images IMAGES WHERE m_number IS NULL LIMIT 50,100"));
+        instance.toSql(query, instance).equalsIgnoreCase("SELECT number FROM " + prefix + "images IMAGES WHERE number IS NULL LIMIT 50,100"));
 
         query.setMaxNumber(-1);
         assertTrue(instance.toSql(query, instance),
-        instance.toSql(query, instance).equalsIgnoreCase(
-        "SELECT m_number FROM "
-        + prefix + "images IMAGES WHERE m_number IS NULL LIMIT 50,"
-        + Integer.MAX_VALUE));
+        instance.toSql(query, instance).equalsIgnoreCase("SELECT number FROM " + prefix + "images IMAGES WHERE number IS NULL LIMIT 50," + Integer.MAX_VALUE));
     }
 
     public static Test suite() {
