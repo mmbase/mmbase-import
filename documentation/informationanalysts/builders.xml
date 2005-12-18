@@ -4,7 +4,7 @@
   <articleinfo>
     <title>MMBase Builder Configuration</title>
     <date>2005-12-18</date>
-    <edition>$Id: builders.xml,v 1.13 2005-12-18 09:57:32 michiel Exp $</edition>
+    <edition>$Id: builders.xml,v 1.14 2005-12-18 10:18:25 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -14,7 +14,7 @@
         </affiliation>
       </author>
       <author>
-        <firstname>Michiel Meeuwissen</firstname>
+        <firstname>Michiel</firstname>
         <surname>Meeuwissen</surname>
         <affiliation>
           <orgname>Publieke Omroep</orgname>
@@ -140,8 +140,8 @@
         </example>
       </section>
       <section>
-        <title>&lt;classfile&gt;</title>
-        <anchor id="classfile" />
+        <title>&lt;class&gt;</title>
+        <anchor id="class" />
         <para>The java class used by this builder to administrate nodes of that builder type.</para>
         <para>Specify this tag if you have custom behavior defined for an object type.</para>
         <para>The default value for a builder that extends the core builder <emphasis>object</emphasis> is <classname>org.mmbase.module.builders.Dummy</classname>.</para>
