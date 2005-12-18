@@ -3,7 +3,7 @@
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
-<project name="taglib" default="dependent.jar" basedir=".">
+<project name="taglib" default="jar2" basedir=".">
   <property name="project.name"      value="taglib" />
   <property name="project.package"   value="org/mmbase/bridge/jsp/taglib" />
   <property name="project.comment"   value="The MMBase Taglib implementation" />
@@ -16,17 +16,17 @@
   <target name="dependent.jar"           depends="jar1,jar2" />
   <target name="dependent.package"       depends="dependent.jar,taglib.doc,package" />
   <target name="dependent.install"       depends="dependent.jar,dependent.install.documentation,install.taglib2.tld">
-    <!--
-        <copy file="${taglib2.jar}"          todir="${release.lib.dir}" />
-    -->
+    <copy file="${taglib2.jar}"          todir="${release.lib.dir}" />
+    <!-- web-app 2.3 compatibility
     <copy file="${project.jar}"          todir="${release.lib.dir}" />
+    -->
   </target>
   <target name="dependent.documentation" depends="taglib.doc,documentation" />
   <target name="dependent.install.documentation" depends="dependent.documentation,install.documentation" />
 
 
 
-  <target name="jar1" description="Create mmbase-taglib.jar" 
+  <target name="jar1" description="Create mmbase-taglib.jar"
           depends="taglib.tld,jar.check,project.manifest,jar.config"
           >
 
@@ -35,7 +35,7 @@
     <mkdir dir="${project.metainf.dir}" /><!-- make sure it exists -->
 
     <mkdir dir="${project.build.dir}/classes/org/mmbase/taglib" /><!-- hate ant -->
-    <echo message="creating jar" />    
+    <echo message="creating jar" />
     <jar jarfile="${project.jar}"
          manifest="${project.build.dir}/manifest.mf" >
       <metainf dir="${project.metainf.dir}">
@@ -50,7 +50,7 @@
 
   </target>
 
-  
+
   <target name="install.taglib2.tld" depends="taglib.tld">
     <copy todir="${web.dir}/classes/META-INF">
       <fileset dir="${project.metainf.dir}">
@@ -60,8 +60,8 @@
   </target>
 
   <!-- currently unused -->
-  <target name="jar2" description="Create mmbase-taglib-2.jar" 
-          depends="taglib.tld,jar.check,project.manifest,jar.config" 
+  <target name="jar2" description="Create mmbase-taglib-2.jar"
+          depends="taglib.tld,jar.check,project.manifest,jar.config"
           >
 
     <antcall target="compile" />
@@ -69,14 +69,14 @@
     <mkdir dir="${project.metainf.dir}" /><!-- make sure his exists -->
 
     <mkdir dir="${project.build.dir}/classes/org/mmbase/taglib" /><!-- hate ant -->
-    <echo message="creating jar" />    
+    <echo message="creating jar" />
 
-    <echo message="creating taglib-2 jar" />    
+    <echo message="creating taglib-2 jar" />
     <jar jarfile="${taglib2.jar}"
          manifest="${project.build.dir}/manifest.mf" >
       <metainf dir="${project.metainf.dir}">
         <include name="**" />
-      </metainf>    
+      </metainf>
       <fileset     dir="${project.build.dir}/classes" includes="**" />
       <fileset     dir="${project.classes.dir}" includes="${project.classes.includes}" />
     </jar>
