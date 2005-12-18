@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.47 2005-12-07 10:28:46 pierre Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.48 2005-12-18 09:37:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -104,7 +104,7 @@ public class DataTypeDefinition {
                     } else {
                         try {
                             Class claz = Class.forName(className);
-                            log.info("Instantiating " + claz + " for " + dataType);
+                            log.debug("Instantiating " + claz + " for " + dataType);
                             java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
                             dt = (BasicDataType) constructor.newInstance(new Object[] { getId(id) });
                             if (baseDataType != null) {
@@ -161,7 +161,7 @@ public class DataTypeDefinition {
             BasicDataType definedBaseDataType = collector.getDataType(base, true);
             if (requestBaseDataType != null) {
                 if (requestBaseDataType != definedBaseDataType) {
-                    log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + baseDataType + "'");
+                    log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + definedBaseDataType + "' in " + XMLWriter.write(dataTypeElement, true, true));
                 }
             }
             if (definedBaseDataType == null) {
@@ -262,7 +262,7 @@ public class DataTypeDefinition {
     private void addProcessor(int action, int processingType, Processor newProcessor) {
         Processor oldProcessor = dataType.getProcessor(action, processingType);
         newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
-        log.info(dataType + " Found processor " + oldProcessor + "--> " + newProcessor);
+        log.debug(dataType + " Found processor " + oldProcessor + "--> " + newProcessor);
         dataType.setProcessor(action, newProcessor, processingType);
     }
 
