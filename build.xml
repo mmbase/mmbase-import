@@ -105,7 +105,7 @@ several MMBase-checkouts.
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="source-html.dir"            value="${source.dir}/html"/>
 
-  <property name="web.xml"                    value="web.xml"/> <!-- set it to web-2.4.xml (in build.properties) if you want a web-app 2.4 web.xml -->
+  <property name="web.xml"                    value="web.xml"/> <!-- set it to web-2.3.xml (in build.properties) if you want a web-app 2.3 web.xml -->
   <property name="web.xml.path"               value="${source-html.dir}/WEB-INF/${web.xml}"/>
 
 
@@ -304,7 +304,7 @@ builddate=${builddate}
     <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
     -->
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
-   
+
     <copy file="${taglibs-standard-jstl.jar}"     todir="${release.lib.dir}" />
     <copy file="${taglibs-standard-standard.jar}" todir="${release.lib.dir}" />
 
@@ -329,7 +329,7 @@ builddate=${builddate}
     <!-- including xerces/xml-apis makes a huge difference in compile time for rmmci -->
     <copy file="${xerces.jar}"   todir="${compile.lib.dir}" />
     <copy file="${xml-apis.jar}"   todir="${compile.lib.dir}" />
-    
+
     <!-- org.apache.xpath.XPathAPI is used here and there. This dependency can be dropped in 1.5 (which includes xpath api itself) -->
     <copy file="${xalan.jar}"          todir="${compile.lib.dir}" />
     <copy file="${serializer.jar}"          todir="${compile.lib.dir}" /> <!-- used when making tld's in taglib -->
@@ -500,7 +500,7 @@ mmadmin.xml
     <echo message="java version: ${ant.java.version}" />
     <echo message="compiling with debug=${debug}, optimize=${optimize}, nowarn=${nowarn}, deprecation=${deprecation}"/>
 
-    <javac 
+    <javac
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
            debug="${debug}"
@@ -597,51 +597,6 @@ mmadmin.xml
   </target>
 
 
-  <property name="minconfig.build.dir" value="${build.dir}/min/config"/>
-
-
-    <!-- =================================================================== -->
-    <!-- Create the MMBase config build dir                                  -->
-    <!-- =================================================================== -->
-  <target name="minimalistic.war.config" depends="init.compile">
-        <!-- copy the jsp editors to a reasonable place -->
-        <copy todir="${minconfig.build.dir}" preservelastmodified="true">
-            <fileset dir="${source-config.dir}"  defaultexcludes="true">
-                <!-- the dirs/files we definitly need -->
-                <include name="databases/**"/>
-                <include name="xslt/**"/>
-                <include name="log/log.xml"/>
-                <include name="log/log4j.xml"/>
-                <include name="security/security.xml"/>
-                <include name="caches.xml"/>
-                <include name="magic.xml" /><!-- used if you switch on 'attachments' -->
-
-                <!-- the applications we definitly need -->
-                <include name="applications/CloudSecurity.xml"/>
-                <include name="applications/CloudSecurity/**"/>
-
-                <!-- the modules we definitly need -->
-                <include name="modules/mmbaseroot.xml"/><!-- tells things about mmbase instantion -->
-                <include name="modules/jdbc.xml"/><!-- tells things about jdbc connecion -->
-                <include name="modules/mmadmin.xml"/><!-- to load applications, mmadmin isnt uses further in war -->
-
-
-                <!-- the builders we definitly need -->
-                <include name="builders/core/**"/>
-            </fileset>
-        </copy>
-    </target>
-
-  <target name="war.config" depends="init.compile">
-    <copy todir="${config.build.dir}">
-      <fileset dir="${source-config.dir}"  defaultexcludes="true">
-        <include name="**"/>
-        <exclude name="dtd/**" />
-      </fileset>
-    </copy>
-  </target>
-
-
     <!-- =================================================================== -->
     <!-- Create a mmbase-dtds.jar                                            -->
     <!-- =================================================================== -->
@@ -681,8 +636,6 @@ Build-compiler: ${build.compiler}
 
   <target name="clean.war">
     <delete dir="${webroot.build.dir}" />
-    <delete dir="${config.build.dir}" />
-    <delete dir="${minconfig.build.dir}" />
     <delete file="${build.dir}/mmbase.war" />
     <delete file="${build.dir}/minimalistic-mmbase.war" />
   </target>
@@ -695,7 +648,6 @@ Build-compiler: ${build.compiler}
   />
 
   <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,applications">
-
     <war warfile="${build.dir}/mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
       <lib dir="${release.lib.dir}" />
       <!-- our file's on the server -->
@@ -706,14 +658,39 @@ Build-compiler: ${build.compiler}
     </war>
   </target>
 
-  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file"
-          depends="lib.release,jar,minimalistic.war.config">
-    <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${web.xml.path}">
-      <lib dir="${release.lib.dir}" />
-      <!-- here our config has to be.. -->
-      <webinf dir="${build.dir}/min">
-        <include name="config/**"/>
-      </webinf>
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file">
+
+    <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
+      <lib dir="${release.lib.dir}">
+        <or>
+          <selector>
+            <or>
+              <filename name="mmbase.jar" />
+              <filename name="mmbase-taglib-2.jar" />
+            </or>
+          </selector>
+          <selector>
+            <and>
+              <filename name="**.jar" />
+              <not>
+                <selector>
+                  <filename name="mmbase**.jar" />
+                </selector>
+              </not>
+            </and>
+          </selector>
+        </or>
+      </lib>
+      <fileset dir="${build.dir}/mmbase/mmbase-webapp">
+        <include name="WEB-INF/config/log/log.xml" />
+        <include name="WEB-INF/config/log/log4j.xml" />
+        <include name="WEB-INF/config/caches.xml" />
+        <include name="WEB-INF/config/modules/jdbc.xml" />
+        <include name="WEB-INF/config/security/security.xml" />
+        <include name="WEB-INF/config/security/config/**" />
+        <include name="mmbase/**" />
+        <include name="index.jsp" />
+      </fileset>
     </war>
   </target>
 
@@ -724,7 +701,7 @@ Build-compiler: ${build.compiler}
           description="Create the API documentation"
           depends="init,lib.compile,javacc"
           unless="did.javadocs"
-    >    
+    >
     <mkdir dir="${download.dir}/j2se"/>
     <mkdir dir="${download.dir}/j2ee"/>
     <antcall target="download">
@@ -831,8 +808,7 @@ Build-compiler: ${build.compiler}
   <!-- html directory of the web-server. A web server specific tag can copy-->
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
-  <target name="web" description="Make the things which must appear in the web-servers html directory"
-         depends="init.compile">
+  <target name="web" description="Make the things which must appear in the web-servers html directory" depends="init.compile">
 
     <antcall target="web.documentation" />
 
@@ -842,9 +818,72 @@ Build-compiler: ${build.compiler}
     <!-- copy the config -->
     <mkdir dir="${web.dir}/config"/>
     <copy todir="${web.dir}/config">
-      <fileset dir="${source-config.dir}"
-               defaultexcludes="yes"/>
+      <fileset dir="${source-config.dir}" defaultexcludes="yes">
+        <exclude name="**/INDEX" /> <!-- only needed in jars -->
+
+        <!-- just fine in mmbase.jar: -->
+        <exclude name="builders/core/**" />
+        <exclude name="dtd/**" />
+        <exclude name="xmlns/**" />
+        <exclude name="datatypes.xml" />
+        <exclude name="eventmanager.xml" />
+        <exclude name="functions/**" />
+        <exclude name="magic.xml" />
+        <exclude name="storage/**/*.xml" />
+        <exclude name="xsl/**/*.xsl" />
+        <exclude name="xsl/**/*.xslt" />
+        <exclude name="xsl/common/*" />
+        <exclude name="security/classauthentication.xml" />
+
+        <!-- unused -->
+        <exclude name="accounts.properties" />
+      </fileset>
     </copy>
+
+    <echo file="${web.dir}/config/datatypes.xml"><![CDATA[<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes
+    http://www.mmbase.org/xmlns/datatypes.xsd">
+    <!--
+    This is a template datatypes.xml
+    You can add your own datatypes here.
+    The default data types can be found in jar:file:mmbase.jar!/org/mmbase/config/datatypes.xml, and
+    can be used as an example.
+    Every jar can contains its own data types in the same fashion.
+  -->
+</datatypes>
+]]></echo>
+
+    <mkdir dir="${web.dir}/config/functions" />
+    <echo file="${web.dir}/config/functions/functionsets.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionsets PUBLIC "-//MMBase//DTD functionsets config 1.0//EN" "http://www.mmbase.org/dtd/functionsets_1_0.dtd">
+<functionsets>
+    <!--
+    This is a template functionsets.xml
+    You can add your own function sets here.
+    The default function sets can be found in jar:file:mmbase.jar!/org/mmbase/config/functions/functionsets.xml, and
+    can be used as an example.
+    Every jar can contains its own sets in the same fashion.
+  -->
+</functionsets>
+ ]]></echo>
+
+    <echo file="${web.dir}/config/security/classauthentication.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE security PUBLIC "-//MMBase//DTD classsecurity config 1.0//EN" "http://www.mmbase.org/dtd/classsecurity_1_0.dtd">
+<security>
+  <!--
+    You can connect classes to security authentication here.
+    Some mmbase classes are authorized on default.
+    See jar:file:mmbase.jar!/org/mmbase/config/security/classauthentication.xml
+    Every jar can contains a classauthentication.xml of its own in the same fashion.
+  -->
+
+  -->
+</security>
+ ]]></echo>
+
 
     <!-- copy the html -->
     <copy todir="${webapp.dir}">
