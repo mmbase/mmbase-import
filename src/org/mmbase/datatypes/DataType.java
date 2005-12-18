@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.46 2005-12-10 14:34:17 michiel Exp $
+ * @version $Id: DataType.java,v 1.47 2005-12-18 09:37:57 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -92,7 +92,6 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * Return the DataType from which this one inherited, or <code>null</code>
      */
     public DataType getOrigin();
-
     /**
      * Return an identifier for the basic type (i.e., 'string', 'int', 'datetime') supported by this datatype.
      */
@@ -131,11 +130,11 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
 
     /**
      * Before actually 'cast' an object to the right type, it may undergo some conversion by the
-     * datatype, e.g. enumerations may get resolved (enumeration have the feature that they can
+     * datatype, e.g. enumerations may get resolved (enumerations have the feature that they can
      * e.g. resolve java-constants to their values).
      *
      * This does not garantuee that the value has the 'proper' type, but only that it now can be
-     * casted to the right type without further problems. (Casting.toType should do).
+     * casted to the right type without further problems. ({@link org.mmbase.util.Casting#toType} should do).
      *
      * preCast should not change the actual type of value. It is e.g. used in the
      * Node#setStringValue, and the processor may expect a String there.
@@ -172,10 +171,9 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
 
 
     /**
-     * Checks if the passed object is of the correct type (compatible with the type of this data type),
-     * and obeys the restrictions defined for this type.
-     * @return An error message if the value is not compatible. An empty collection if valid.
-     * @param value the value to validate
+     * @see #validate(Object, Node, Field)
+     * @return The error message(s) if the value is not compatible. An empty collection if valid.
+     * @param value the value to be validated
      */
     public Collection /*<LocalizedString>*/ validate(Object value);
 
@@ -189,6 +187,7 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * @return The error message(s) if the value is not compatible. An empty collection if the value is valid.
      */
     public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field);
+
     /**
      * Returns whether this field is required (should have content).
      * Note that the MMBase core does not generally enforce required fields to be filled -
@@ -332,7 +331,9 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
         public void setErrorDescription(LocalizedString errorDescription);
 
         /**
-         * This function should contain the actual logic of the restriction. This does not consider the 'enforceStrength'.
+         * This function should contain the actual logic of the restriction. This does not consider
+         * the 'enforceStrength' (that is only used in the containing DataType implementation).
+         *
          * @param value The value to check the restriction for
          * @param node  Some constrainst may need the Node.
          * @param field Some constrainst may need the Field.
