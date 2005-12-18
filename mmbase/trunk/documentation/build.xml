@@ -192,6 +192,7 @@
       <arg value="${documentation.dest.dir}" />
       <arg value="exclude=build.xml" />
       <arg value="exclude=build" />
+      <arg value="exclude=templates" />
     </java>
   </target>
 
@@ -241,6 +242,7 @@
       <arg value="extension=fo" />
       <arg value="exclude=build" />
       <arg value="exclude=build.xml" />
+      <arg value="exclude=templates" />
       <arg value="paper.type=A4" />
     </java>
 
