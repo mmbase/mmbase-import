@@ -57,7 +57,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.36 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: Logging.java,v 1.37 2005-12-18 10:05:00 michiel Exp $
  */
 
 
@@ -135,8 +135,8 @@ public class Logging {
             return;
         }
 
-        String classToUse    = "org.mmbase.util.logging.SimpleImpl"; // default
-        String configuration = "stderr,service";                     // default
+        String classToUse    = SimpleImpl.class.getName(); // default
+        String configuration = "stderr,info";              // default
         try { // to read the XML configuration file            
            String claz = reader.getElementValue("logging.class");
             if (claz != null) {
