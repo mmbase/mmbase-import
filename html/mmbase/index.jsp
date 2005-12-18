@@ -11,12 +11,30 @@
 
   </head>
 <body  class="basic">
-<h1><%=org.mmbase.Version.get() %></h1>
-<ul>
-  <li><a href="edit">Generic editors</a></li>
-  <li><a href="admin">Admin pages</a></li>
-  <!-- li><a href="security">Security administration</a></li-->
-</ul>
+  <mm:cloud rank="basic user">
+    <h1><mm:cloudinfo type="mmbaseversion" /></h1>
+    <ul>
+      <mm:haspage page="edit">
+        <li>
+          <a href="edit">Generic editors</a>
+          <mm:haspage page="edit/my_editors">
+            (<a href="edit/my_editors">my editors</a>)
+          </mm:haspage>
+        </li>
+      </mm:haspage>
+      <mm:haspage page="admin">
+        <li><a href="admin">Admin pages</a></li>
+      </mm:haspage>
+      <mm:haspage page="security">
+        <li><a href="security">Security administration</a></li>
+      </mm:haspage>
+      <mm:haspage page="mpl-1.0.jsp">
+        <li><a href="mpl-1.0.jsp">License</a></li>
+      </mm:haspage>
+    </ul>
+    <hr />
+    Logged in as <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
+  </mm:cloud>
 </body>
 </html>
 </mm:content>
