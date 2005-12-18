@@ -53,49 +53,47 @@
     <th>Section</th>
     <th colspan="2">Description</th>
   </tr>  
-  
-    <% if (pageContext.getServletContext().getResource("/mmexamples") != null) { %>  
-  <tr>
-    <td>MMBase Demos</td>
-    <td>
-      <p>
-        Examples of MMBase functionality. Includes among other things a news application, an alternate editor,
-        and the MMBase editwizards.
-      </p>
-    </td>
-    <td class="link" >
-      <a href="<mm:url page="mmexamples/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
-    </td>
-  </tr>
-  <% } %>
 
-    <% if (pageContext.getServletContext().getResource("/mmbase/admin") != null) { %>  
-  <tr>
-    <td>Manage your MMBase installation</td>
-    <td>
-      <p>
-        Your MMBase installation comes with a configuration panel that allows you to perform certain
-        administrative tasks, and has links to several editors that allow you to edit information stored
-        in your MMBase instance.
-      </p>
-    </td>
-    <td class="link">
-      <a href="<mm:url page="mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
-    </td>
-  </tr>  
-    <% } %>
-    <% if (pageContext.getServletContext().getResource("/mmdocs") != null) { %>  
-  <tr>
-    <td>MMBase Documentation</td>
-    <td>
-      An overview of available MMBase documentation, listed by target group.<br />
-    </td>
-    <td class="link" >
-      <a href="<mm:url page="mmdocs/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
-    </td>
-  </tr>
-   <% } %>
-  
+  <mm:haspage page="/mmexamples">
+    <tr>
+      <td>MMBase Demos</td>
+      <td>
+        <p>
+          Examples of MMBase functionality. Includes among other things a news application, an alternate editor,
+          and the MMBase editwizards.
+        </p>
+      </td>
+      <td class="link" >
+        <a href="<mm:url page="mmexamples/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
+      </td>
+    </tr>
+  </mm:haspage>
+  <mm:haspage page="/mmbase/admin">
+    <tr>
+      <td>Manage your MMBase installation</td>
+      <td>
+        <p>
+          Your MMBase installation comes with a configuration panel that allows you to perform certain
+          administrative tasks, and has links to several editors that allow you to edit information stored
+          in your MMBase instance.
+        </p>
+      </td>
+      <td class="link">
+        <a href="<mm:url page="/mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
+      </td>
+    </tr>
+  </mm:haspage>
+  <mm:haspage page="/mmdocs">
+    <tr>
+      <td>MMBase Documentation</td>
+      <td>
+        An overview of available MMBase documentation, listed by target group.<br />
+      </td>
+      <td class="link" >
+        <a href="<mm:url page="mmdocs/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
+      </td>
+    </tr>
+  </mm:haspage>
   <tr>
     <td>www.mmbase.org</td>
     <td>
