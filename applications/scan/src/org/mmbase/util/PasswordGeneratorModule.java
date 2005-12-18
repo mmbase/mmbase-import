@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
 /**
 
  */
-public class PasswordGeneratorModule extends Module {
+public class PasswordGeneratorModule extends Module implements PasswordGeneratorInterface {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(PasswordGeneratorModule.class);
@@ -69,5 +69,12 @@ public class PasswordGeneratorModule extends Module {
     public void shutdown() {
     }
 
+
+    public String getPassword() {
+        return pw.getPassword();
+    }
+    public String getPassword(String t) {
+        return pw.getPassword(t);
+    }
 
 }
