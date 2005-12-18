@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.26 2005-12-18 09:21:15 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.27 2005-12-18 09:55:38 michiel Exp $
    @since    MMBase-1.6
 
 -->
@@ -139,7 +139,7 @@ nightly-build.xml                           Used to generate all this with ant. 
 
   <target name="build.distro">
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="bindist" />
-    <ant antfile="${buildscript}" dir="${buildscript.dir}" target="minimalistic-war" />
+    <ant antfile="${buildscript}" dir="${buildscript.dir}" target="minimalistic.war" />
   </target>
 
   <target name="javadocs" depends="cvs">
