@@ -3,12 +3,19 @@
 <article>
   <articleinfo>
     <title>MMBase Builder Configuration</title>
-    <date>2002-12-05</date>
-    <edition>$Id: builders.xml,v 1.12 2004-02-17 13:58:30 gerard Exp $</edition>
+    <date>2005-12-18</date>
+    <edition>$Id: builders.xml,v 1.13 2005-12-18 09:57:32 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
         <surname>van Rooden</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>Michiel Meeuwissen</firstname>
+        <surname>Meeuwissen</surname>
         <affiliation>
           <orgname>Publieke Omroep</orgname>
         </affiliation>
@@ -33,10 +40,14 @@
     </para>
     <programlisting format="linespecific"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="..." maintainer="..." version="..." extends="...">
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="..." maintainer="..." version="..." extends="...">
   <status>...</status>
-  <classfile>...</classfile>
+  <class>...</class>
   <searchage>...</searchage>
   <names>
     <singular xml:lang="...">...</singular>
@@ -61,7 +72,6 @@
       <gui>
         <guiname xml:lang="...">...</guiname>
         ...
-        <guitype>...</guitype>
       </gui>
       <editor>
         <positions>
@@ -70,11 +80,15 @@
           <search>...</search>
         </positions>
       </editor>
+      <datatype base="..." xmlns="http://www.mmbase.org/xmlns/datatypes">
+         ... (like in datatypes.xml)...
+      </datatype>
       <db>
         <name>...</name>
         <type state="..." notnull="..." key="...">...</type>
       </db>
     </field>
+    ... 
   </fieldlist>
 </builder>
     ]]></programlisting>
@@ -305,44 +319,27 @@
               </variablelist>
             </section>
             <section>
-              <title>&lt;guitype&gt;</title>
-              <anchor id="field_guitype" />
-              <para>An identifier used to determine how a field should be rendered or edited. There are a number of predefined values. You can also add your own values, but you will have to add your own code to handle these new types.</para>
-              <para>Possible values for this field are:</para>
-              <variablelist>
-                <varlistentry>
-                  <term>string</term>
-                  <listitem><simpara>A simple, one-line string of limited length, such as a title.</simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                  <term>field</term>
-                  <listitem><simpara>A text box, not generally limited in the amount of text that can be edited.</simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                  <term>integer</term>
-                  <listitem><simpara>A numeric, integer value.</simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                  <term>eventtime</term>
-                  <listitem><simpara>A date or time value. This value is represented internally by an integer number, representing the number of seconds since 1 January 1970.</simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                  <term>newimage</term>
-                  <listitem><simpara>A binary object representing an image.</simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                  <term>newfile</term>
-                  <listitem><simpara>A binary object, generally obtained from a file (i.e.e a Word document or PDF).</simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                  <term>[buildername]</term>
-                  <listitem><simpara>Specify this value if the field is a NODE field (see the <emphasis>db/type</emphasis> tag). If given, the system may use this data to create a browseable list of the objects in that builder whenever you edit this field</simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                  <term>mmxf or [doctype]</term>
-                  <listitem><simpara>Specify this value if the field is a XML field (see the <emphasis>db/type</emphasis> tag). If given, the system may use this data to determine the XML document type. The value mmxf can be used a macro and specifies a default 'richttext' xml doctype.</simpara></listitem>
-                </varlistentry>
-              </variablelist>
+              <title>&lt;datatype&gt;</title>
+              <anchor id="field_datatype" />
+              <para>
+                The data type used to determine how a field should be rendered or edited. There
+                are a number of predefined values for the base attribute (defined in
+                config/datatypes.xml).
+              </para>
+              <example>
+                <title>Example DataType Tag</title>
+                <programlisting ><![CDATA[
+ <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
+     <default value="today + 100 year" />
+     <minInclusive enforce="never" value="yesterday" />
+     <maxInclusive enforce="always" value="today + 100 year" />
+ </datatype>
+ <db>
+    <name>end</name>
+    <type key="false" notnull="false" state="persistent">DATETIME</type>
+ </db>
+                ]]></programlisting>
+              </example>
             </section>
             <section>
               <title>&lt;guitype&gt;</title>
@@ -352,7 +349,6 @@
 <gui>
   <guiname xml:lang="en">First name</guiname>
   <guiname xml:lang="nl">Voornaam</guiname>
-  <guitype>string</guitype>
 </gui>
                 ]]></programlisting>
               </example>
@@ -456,12 +452,20 @@
                   <listitem><simpara>A reference to another object, internally represented as that object's number.</simpara></listitem>
                 </varlistentry>
                 <varlistentry>
-                  <term>BYTE</term>
+                  <term>BINARY</term>
                   <listitem><simpara>A binary field such as an image.</simpara></listitem>
                 </varlistentry>
                 <varlistentry>
                   <term>XML</term>
                   <listitem><simpara>A field containing an xml document.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>BOOLEAN</term>
+                  <listitem><simpara>True or false, yes or no etc.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>DATETIME</term>
+                  <listitem><simpara>A definite date/time.</simpara></listitem>
                 </varlistentry>
               </variablelist>
             </section>
@@ -493,7 +497,6 @@
     <gui>
       <guiname xml:lang="en">First name</guiname>
       <guiname xml:lang="nl">Voornaam</guiname>
-      <guitype>string</guitype>
     </gui>
     <editor>
       <positions>
@@ -502,6 +505,7 @@
         <search>4</search>
       </positions>
     </editor>
+    <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /><!-- no newlines in names -->
     <db>
       <name>firstname</name>
       <type state="persistent" size="255" key="false" notnull="false">STRING</type>
