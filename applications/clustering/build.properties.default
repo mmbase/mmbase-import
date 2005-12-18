@@ -1,7 +1,7 @@
 # ----- JGroups and Commons-Logging ---------
 jgroups.version=JGroups-2.2.7
 jgroups.file=${jgroups.version}.bin.zip
-jgroups.dest=${project.download.dir}/${jgroups.file}
+jgroups.dest=${download.dir}/${jgroups.file}
 jgroups.loc=http://ovh.dl.sourceforge.net/sourceforge/javagroups/${jgroups.file}
-jgroups.jar=${project.expand.dir}/${jgroups.version}/jgroups.jar
+jgroups.jar=${expand.dir}/${jgroups.version}.bin/jgroups-all.jar
 # commons-logging.jar=${build.dir}/lib/commons-logging.jar
