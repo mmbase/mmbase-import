@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.18 2005-12-08 16:59:45 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.19 2005-12-18 00:16:15 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -74,13 +74,13 @@ public abstract class NodeFunction extends AbstractFunction {
     protected static Parameter[] getNodeParameterDef(Parameter[] def) {
         List defList = Arrays.asList(def);
         if (defList.contains(Parameter.NODE) && defList.contains(Parameter.CLOUD)) {
-            return new Parameter[] { new Parameter.Wrapper(def), MMObjectNode.PARAMETER};
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CORENODE};
         } else if (defList.contains(Parameter.NODE)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CLOUD, MMObjectNode.PARAMETER};
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CLOUD, Parameter.CORENODE};
         } else if (defList.contains(Parameter.CLOUD)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, MMObjectNode.PARAMETER};
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CORENODE};
         } else {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CLOUD, MMObjectNode.PARAMETER};
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CLOUD, Parameter.CORENODE};
         }
     }
 
@@ -133,7 +133,12 @@ public abstract class NodeFunction extends AbstractFunction {
                         node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud); 
                     }
                 } else {
-                    node = cloud.getNode(number);
+                    if (cloud.mayRead(number)) {
+                        node = cloud.getNode(number);
+                    } else {
+                        log.warn("Could not produce Bridge Node for '" + number + "', cannot execute node function.");
+                        return null;
+                    }
                 }
             }
             parameters.set(Parameter.NODE, node);
@@ -191,7 +196,7 @@ public abstract class NodeFunction extends AbstractFunction {
         }
         //javadoc inherited
         public final Object getFunctionValue(Parameters parameters) {
-            parameters.set(MMObjectNode.PARAMETER, node);
+            parameters.set(Parameter.CORENODE, node);
             return NodeFunction.this.getFunctionValue(node, parameters);
 
         }
