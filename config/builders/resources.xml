@@ -2,13 +2,13 @@
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder extends="object" maintainer="mmbase.org" name="resources" version="0">
 
-  <!-- The `resources' builder.  
+  <!-- The `resources' builder.
        Most MMBase configuration can also be stored in nodes of this type, if at least you make
        this builder active.
        There is a specialized 'resource editor' available in /mmbase/admin.
 
        @since MMBase-1.8
-       @version $Id: resources.xml,v 1.1 2005-06-02 21:36:16 michiel Exp $
+       @version $Id: resources.xml,v 1.2 2005-12-18 09:08:39 michiel Exp $
     -->
   <status>inactive</status>
 
@@ -29,7 +29,7 @@
   </descriptions>
 
 
-  
+
   <properties />
 
   <fieldlist>
