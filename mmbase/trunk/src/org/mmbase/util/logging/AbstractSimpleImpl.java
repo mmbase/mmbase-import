@@ -13,7 +13,6 @@ package org.mmbase.util.logging;
  * Base class for simple Logger implementations (no patterns and so
  * on).
  *
- *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
  */
@@ -23,7 +22,7 @@ abstract public class AbstractSimpleImpl  implements Logger {
     /**
      * @since MMBase-1.8
      */
-    protected int level = Level.SERVICE_INT;
+    protected int level = Level.INFO_INT;
 
     public void setLevel(Level p) {
         level = p.toInt();
