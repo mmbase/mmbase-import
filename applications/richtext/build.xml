@@ -1,11 +1,7 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
- [ <!ENTITY base     SYSTEM "../../applications/buildbase.xml" > ]
->
-
 <project name="MMBase Richtext" default="jar" basedir=".">
   <property name="project.name"   value="richtext" />
-  &base;
+  <import file="../buildbase-include.xml" />
   <property name="svnant"         location="svnant.jar" />
   <property name="svnjavahl"      location="svnjavahl.jar" />
   <property name="svnclient"      location="svnClientAdapter.jar" />
@@ -28,9 +24,8 @@
       <property name="sourcefile" value="http://www.mmbase.org/download/jars/svnClientAdapter.jar" />
       <property name="destfile"   value="${svnclient}" />
     </ant>
-    
-    <taskdef name="svn"
-            classname="org.tigris.subversion.svnant.SvnTask">
+
+    <taskdef name="svn" classname="org.tigris.subversion.svnant.SvnTask">
       <classpath>
         <pathelement location="${svnant}"/>
         <pathelement location="${svnjavahl}"/>
@@ -41,17 +36,41 @@
 
   </target>
 
+  <target name="template.include">
+    <zipfileset dir="${project.source.dir}" prefix="${zip.name}/web-app">
+      <patternset id="web-app.package.files" >
+        <include name="mmbase/style/**" />
+        <include name="mmbase/kupu/mmbase/**/*.jspx" />
+        <include name="mmbase/kupu/mmbase/**/*.css" />
+        <include name="mmbase/kupu/mmbase/**/*.js" />
+        <include name="mmbase/kupu/mmbase/icons/**" />
+        <include name="mmbase/kupu/common/**" />
+        <include name="templates/**" />
+      </patternset>
+    </zipfileset>
+  </target>
 
-  <target name="kupu"> 
+  <target name="install.config" depends="init" if="config.available">
+    <copy todir="${mmbase.config}" preservelastmodified="true">
+      <fileset dir="${project.config.dir}" >
+        <include name="applications/**" />
+        <exclude name="**/INDEX" />
+      </fileset>
+    </copy>
+  </target>
+
+
+
+  <target name="kupu">
     <!--
     <svn javahl="false">
       <checkout url="http://codespeak.net/svn/kupu/trunk/kupu/" />
-    </svn> 
+    </svn>
 
 result:kupu:
       [svn] Using javasvn
 Svn : Checking out a working copy from a repository :
-checkout -r HEAD http://codespeak.net/svn/kupu/trunk/kupu/ 
+checkout -r HEAD http://codespeak.net/svn/kupu/trunk/kupu/
 HTTP 301 MOVED PERMANENTLY: http://codespeak.net/svn/kupu/trunk/kupu
 
 Beats me: it's impossible.
