@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE project 
- [ <!ENTITY base SYSTEM "../../mmbase/applications/buildbase.xml" > ]
+ [ <!ENTITY base SYSTEM "../../applications/buildbase.xml" > ]
 >
 
 <project name="mmbar" default="jar" basedir=".">
