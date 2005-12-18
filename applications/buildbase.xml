@@ -218,7 +218,7 @@ Create a build.xml with a DOCTYPE like this:
 
     <mkdir dir="${project.metainf.dir}" /><!-- make sure his exists -->
 
-    <echo message="creating jar" />    
+    <echo message="creating jar" />
     <jar jarfile="${project.jar}"
          manifest="${project.build.dir}/manifest.mf" >
       <metainf dir="${project.metainf.dir}" includes="**" />
@@ -281,7 +281,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="${zip.name}/web-app/WEB-INF/lib" />
     <zipfileset dir="${project.source.dir}" includes="config/**" prefix="${zip.name}/web-app/WEB-INF" />
     <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="${zip.name}/documentation" />
-    <zipfileset dir="${project.build.dir}"  includes="documentation/**" prefix="${zip.name}/documentation" />
+    <zipfileset dir="${project.build.dir}"  includes="documentation/**" prefix="${zip.name}" />
     <zipfileset dir="${project.source.dir}" prefix="${zip.name}/src">
       <include name="documentation/**"/>
       <exclude name="documentation/**.html" />
