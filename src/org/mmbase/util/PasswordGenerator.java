@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @license uses the GNU license, should be moved external
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGenerator.java,v 1.10 2005-12-17 20:23:31 michiel Exp $
+ * @version $Id: PasswordGenerator.java,v 1.11 2005-12-18 00:19:21 michiel Exp $
  */
 
 public class PasswordGenerator implements PasswordGeneratorInterface {
@@ -109,7 +109,7 @@ public class PasswordGenerator implements PasswordGeneratorInterface {
      * @return the generated password.
      */
     public String getPassword() {
-        return(getPassword(defaulttemplate));
+        return getPassword(defaulttemplate);
     }
 
     /**
