@@ -31,7 +31,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.109 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: Images.java,v 1.110 2005-12-18 23:13:33 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -170,7 +170,7 @@ public class Images extends AbstractImages {
         if (icacheNode != null) {
             return imageCaches.getDimension(icacheNode);
         } else {
-            // no icache available? Only return prediction. 
+            // no icache available? Only return prediction.
             return  Imaging.predictDimension(getDimension(node), Imaging.parseTemplate(template));
         }
     }
@@ -196,7 +196,7 @@ public class Images extends AbstractImages {
             icacheNode.setValue(ImageCaches.FIELD_ID, node.getNumber());
             if (imageCaches.storesDimension() || imageCaches.storesFileSize()) {
                 Dimension dimension          = getDimension(node);
-                Dimension predictedDimension = Imaging.predictDimension(dimension, Imaging.parseTemplate(template)); 
+                Dimension predictedDimension = Imaging.predictDimension(dimension, Imaging.parseTemplate(template));
                 log.debug("" + dimension + " " + template + " --> " + predictedDimension);
                 if (imageCaches.storesDimension()) {
                     icacheNode.setValue(FIELD_HEIGHT, predictedDimension.getHeight());
@@ -283,7 +283,7 @@ public class Images extends AbstractImages {
         String field = (String) args.get("field");
         if (field == null || field.equals("")) {
             // gui for the node itself.
-            title = ""; 
+            title = "";
         } else {
             if (storesDimension()) {
                 title = " title=\"" + getMimeType(node) + " " + getDimension(node) + "\"";
@@ -294,8 +294,10 @@ public class Images extends AbstractImages {
 
         return
             "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" " +
-            heightAndWidth + 
-            "border=\"0\" alt=\"" + alt + "\"" + title + " /></a>";
+            heightAndWidth +
+            "border=\"0\" alt=\"" + 
+            org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"') + 
+            "\"" + title + " /></a>";
     }
 
     // javadoc inherited
@@ -339,7 +341,7 @@ public class Images extends AbstractImages {
     }
 
 
-    
+
     /* (non-Javadoc)
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */

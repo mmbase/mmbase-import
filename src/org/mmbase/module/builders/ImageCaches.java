@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.48 2005-10-18 21:55:50 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.49 2005-12-18 23:13:33 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -109,7 +109,9 @@ public class ImageCaches extends AbstractImages {
 
         String image      = servlet.toString() + node.getNumber();
         if (res != null) image = res.encodeURL(image);
-        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" " + heightAndWidth + "alt=\"" + alt + "\"" + title + " /></a>";
+        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" " + heightAndWidth + "alt=\"" +
+            org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"') +
+            "\"" + title + " /></a>";
     }
 
     // javadoc inherited
