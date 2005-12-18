@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.27 2005-12-18 09:55:38 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.28 2005-12-18 10:24:17 michiel Exp $
    @since    MMBase-1.6
 
 -->
@@ -182,9 +182,9 @@ nightly-build.xml                           Used to generate all this with ant. 
   <target name="storedistros" depends="build.distro,build.srcdistro">
     <!-- the war... -->
     <!--
-    <copy file="${build.dir}/mmbase/mmbase.war"              tofile="${warpackage.file}"/>
+    <copy file="${build.dir}/mmbase.war"              tofile="${warpackage.file}"/>
     -->
-    <copy file="${build.dir}/mmbase/minimalistic-mmbase.war" tofile="${minwarpackage.file}"/>
+    <copy file="${build.dir}/minimalistic-mmbase.war" tofile="${minwarpackage.file}"/>
     <copy todir="${destination.dir}">
     	<fileset dir="${build.dir}">
         <include name="**/*.zip"/>
