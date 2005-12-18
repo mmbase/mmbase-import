@@ -225,8 +225,11 @@ builddate=${builddate}
 
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-src-${distro.version}.${builddate}.zip">
-     <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${builddate}"
-       includes="**" />
+      <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${builddate}" includes="**">
+        <!-- too much bloat -->
+        <exclude name="**/*.pdf" />
+        <exlcude name="**/javadoc/**" />
+      </zipfileset>
     </zip>
   </target>
 
@@ -258,8 +261,11 @@ builddate=${builddate}
 
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${distro.version}.${builddate}.zip">
-     <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${builddate}"
-       includes="**" />
+      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${builddate}" includes="**">
+        <!-- these are bloating the zip-size too much...-->
+        <exclude name="**/*.pdf" />
+        <exclude name="**/javadoc/**" />
+      </zipfileset>
     </zip>
 
   </target>
