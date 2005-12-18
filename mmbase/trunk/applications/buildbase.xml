@@ -242,7 +242,20 @@ Create a build.xml with a DOCTYPE like this:
     <antcall target="documentation" />
   </target>
 
-  <target name="package" depends="package.check,package.documentation" unless="package.uptodate">
+  <target name="template.include">
+    <zipfileset dir="${project.source.dir}" prefix="${zip.name}/web-app">
+      <patternset id="web-app.package.files" >
+        <exclude name="*.xml" />
+        <exclude name="config/**" />
+        <exclude name="documentation/**" />
+        <exclude name="src/**" />
+        <exclude name="build*/**" />
+        <exclude name="README*" />
+      </patternset>
+    </zipfileset>
+  </target>
+
+  <target name="package" depends="package.check,package.documentation,template.include" unless="package.uptodate">
     <antcall target="jar" />
 
     <echo file="${project.build.dir}/README-PACKAGE.txt">
@@ -268,8 +281,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="${zip.name}/web-app/WEB-INF/lib" />
     <zipfileset dir="${project.source.dir}" includes="config/**" prefix="${zip.name}/web-app/WEB-INF" />
     <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="${zip.name}/documentation" />
-    <zipfileset dir="${project.build.dir}"
-    includes="documentation/**" prefix="${zip.name}/documentation" />
+    <zipfileset dir="${project.build.dir}"  includes="documentation/**" prefix="${zip.name}/documentation" />
     <zipfileset dir="${project.source.dir}" prefix="${zip.name}/src">
       <include name="documentation/**"/>
       <exclude name="documentation/**.html" />
@@ -288,15 +300,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </zipfileset>
     <!-- the rest are templates -->
     <zipfileset dir="${project.source.dir}" prefix="${zip.name}/web-app">
-      <patternset id="web-app.package.files" >
-        <include name="**"/>
-        <exclude name="*.xml" />
-        <exclude name="config/**" />
-        <exclude name="documentation/**" />
-        <exclude name="src/**" />
-        <exclude name="build*/**" />
-        <exclude name="README*" />
-      </patternset>
+      <patternset refid="web-app.package.files" />
     </zipfileset>
   </zip>
   </target>
@@ -455,7 +459,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
       <fileset dir="${project.config.dir}"
                includes="${project.config.dir.includes}"
                >
-	<exclude name="functions/**" /> <!-- should be in the jar -->
+        <exclude name="functions/**" /> <!-- should be in the jar -->
       </fileset>
     </copy>
   </target>
