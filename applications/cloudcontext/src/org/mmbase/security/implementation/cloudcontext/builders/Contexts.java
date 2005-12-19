@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.45 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: Contexts.java,v 1.46 2005-12-19 09:39:30 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -324,7 +324,10 @@ public class Contexts extends MMObjectBuilder {
 
 
         MMObjectNode contextNode = getContextNode(node); // the mmbasecontext node associated with this node
-
+        if (contextNode == null) {
+            log.warn("Did not find context node for " + node);
+            return false;
+        }
         return mayDo(user, contextNode, operation);
     }
 
@@ -342,7 +345,6 @@ public class Contexts extends MMObjectBuilder {
      */
 
     protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
-
         return mayDo(user.getNode(), contextNode, operation, true);
     }
 
