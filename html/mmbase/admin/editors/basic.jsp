@@ -28,7 +28,7 @@
 <tr><th class="header" colspan="2">URLs</th></tr>
 <mm:haspage page="/mmbase/edit">
   <tr>
-    <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/basic/" />">The MMBase Editors ('basic') : <mm:url page="/mmbase/edit/basic/" absolute="true" />/a></td>
+    <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/basic/" />">The MMBase Editors ('basic') : <mm:url page="/mmbase/edit/basic/" absolute="true" /></a></td>
   </tr>
 </mm:haspage>
 <mm:haspage page="/mmbase/edit/my_editors">
