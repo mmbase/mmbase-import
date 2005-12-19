@@ -95,11 +95,21 @@
     <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top" >
     <span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
     &nbsp;&nbsp;
-    <a href="<mm:url page="/mmbase/packagemanager/index.jsp" />" target="_top" >
-    <span class="<%=("packagemanager".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEMANAGER</span></a>
+    <mm:haspage page="/mmbase/packagemanager/index.jsp">
+      <a href="<mm:url page="/mmbase/packagemanager/index.jsp" />" target="_top" >
+    </mm:haspage>    
+      <span class="<%=("packagemanager".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEMANAGER</span>
+     <mm:haspage page="/mmbase/packagemanager/index.jsp">
+        </a>
+    </mm:haspage>    
     &nbsp;&nbsp;
-    <a href="<mm:url page="/mmbase/packagebuilder/index.jsp" />" target="_top" >
-    <span class="<%=("packagebuilder".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEBUILDER</span></a>
+    <mm:haspage page="/mmbase/packagebuilder/index.jsp">
+      <a href="<mm:url page="/mmbase/packagebuilder/index.jsp" />" target="_top" >
+    </mm:haspage>
+    <span class="<%=("packagebuilder".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEBUILDER</span>
+    <mm:haspage page="/mmbase/packagebuilder/index.jsp">
+      </a>
+    </mm:haspage>
         <% } %>
 </td>
 </tr>
