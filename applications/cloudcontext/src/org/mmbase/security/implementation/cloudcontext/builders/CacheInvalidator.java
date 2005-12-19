@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @todo undoubtly, this is too crude.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheInvalidator.java,v 1.5 2005-10-06 14:00:42 michiel Exp $
+ * @version $Id: CacheInvalidator.java,v 1.6 2005-12-19 09:38:47 michiel Exp $
  * @since MMBase-1.7
  */
 class CacheInvalidator implements MMBaseObserver {
@@ -63,7 +63,7 @@ class CacheInvalidator implements MMBaseObserver {
      * What happens if something changes: clear the caches
      */
     synchronized protected boolean nodeChanged(String machine, String number, String builder, String ctype) {
-        log.info("A security object has changed, invalidating all security caches");
+        log.service("A security object " + number + " (" + builder + ") has changed, invalidating all security caches");
         Iterator i = securityCaches.iterator();
         while (i.hasNext()) {
             Map c = (Map) i.next();
