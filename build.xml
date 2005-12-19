@@ -309,7 +309,9 @@ builddate=${builddate}
     <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
     <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
     -->
+    <!--
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
+    -->
 
     <copy file="${taglibs-standard-jstl.jar}"     todir="${release.lib.dir}" />
     <copy file="${taglibs-standard-standard.jar}" todir="${release.lib.dir}" />
@@ -664,38 +666,40 @@ Build-compiler: ${build.compiler}
     </war>
   </target>
 
-  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file">
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,applications">
 
     <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
       <lib dir="${release.lib.dir}">
-        <or>
-          <selector>
-            <or>
-              <filename name="mmbase.jar" />
-              <filename name="mmbase-taglib-2.jar" />
-            </or>
-          </selector>
-          <selector>
-            <and>
-              <filename name="**.jar" />
-              <not>
-                <selector>
-                  <filename name="mmbase**.jar" />
-                </selector>
-              </not>
-            </and>
-          </selector>
-        </or>
+        <selector>
+          <or>
+            <filename name="mmbase.jar" />
+            <filename name="mmbase-taglib-2.jar" />
+            <filename name="backport-util*.jar" />
+            <filename name="hsqldb*.jar" />
+            <filename name="jstl*.jar" />
+            <filename name="standard*.jar" />
+            <filename name="log4j*.jar" />
+          </or>
+        </selector>
       </lib>
       <fileset dir="${build.dir}/mmbase/mmbase-webapp">
-        <include name="WEB-INF/config/log/log.xml" />
-        <include name="WEB-INF/config/log/log4j.xml" />
-        <include name="WEB-INF/config/caches.xml" />
-        <include name="WEB-INF/config/modules/jdbc.xml" />
-        <include name="WEB-INF/config/security/security.xml" />
-        <include name="WEB-INF/config/security/config/**" />
-        <include name="mmbase/**" />
-        <include name="index.jsp" />
+        <selector>
+          <and>
+            <or>
+              <filename name="WEB-INF/config/log/log.xml" />
+              <filename name="WEB-INF/config/log/log4j.xml" />
+              <filename name="WEB-INF/config/caches.xml" />
+              <filename name="WEB-INF/config/modules/jdbc.xml" />
+              <filename name="WEB-INF/config/security/security.xml" />
+              <filename name="WEB-INF/config/security/config/**" />
+              <filename name="mmbase/edit/basic/**" />
+              <filename name="mmbase/admin/**" />
+              <filename name="mmbase/style/**" />
+              <filename name="mmbase/errorpages/**" />
+              <filename name="index.jsp" />
+            </or>
+          </and>
+        </selector>
       </fileset>
     </war>
   </target>
