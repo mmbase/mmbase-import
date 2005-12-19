@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorEducation" maintainer="didactor.nl" version="19" auto-deploy="true">
+<application name="DidactorEducation" maintainer="didactor.nl" version="20" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -28,6 +28,7 @@
         <!-- Different questions&answers -->
         <builder maintainer="didactor.nl" version="2">openquestions</builder>
         <builder maintainer="didactor.nl" version="2">openanswers</builder>
+        <builder maintainer="didactor.nl" version="2">essayquestions</builder>
 
         <builder maintainer="didactor.nl" version="2">mcquestions</builder>
         <builder maintainer="didactor.nl" version="2">mcanswers</builder>
@@ -112,6 +113,11 @@
         <relation from="pages" to="urls" type="posrel" />
         <relation from="pages" to="attachments" type="posrel" />
         <relation from="flashpages" to="attachments" type="related" />
+        <relation from="flashpages" to="images" type="related" />
+        <relation from="flashpages" to="audiotapes" type="posrel" />
+        <relation from="flashpages" to="videotapes" type="posrel" />
+        <relation from="flashpages" to="urls" type="posrel" />
+        <relation from="flashpages" to="flashpages" type="descriptionrel" />
 
         <!-- tests -->
         <relation from="tests" to="questions" type="posrel" />
@@ -159,6 +165,8 @@
         <relation from="fillselectquestions" to="attachments" type="related" />
         <relation from="fillselectquestions" to="mcanswers" type="posrel" />
 
+        <!-- Essay questions -->
+        <relation from="essayquestions" to="openanswers" type="related" />
 
         <relation from="givenanswers" to="mcanswers" type="related" />
         <relation from="givenanswers" to="rankinganswers" type="posrel" />
@@ -166,6 +174,7 @@
         <relation from="givenanswers" to="valueanswers" type="related" />
         <relation from="givenanswers" to="couplinganswers" type="leftanswer" />
         <relation from="givenanswers" to="couplinganswers" type="rightanswer" />
+        <relation from="givenanswers" to="attachments" type="related" />
 
         <!-- Online / Offline -->
         <relation from="learnblocks" to="mmevents" type="related" />
