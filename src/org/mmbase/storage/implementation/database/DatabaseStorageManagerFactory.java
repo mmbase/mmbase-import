@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 
 import javax.naming.*;
 import javax.sql.DataSource;
+import javax.servlet.ServletContext;
 import java.io.*;
 
 import org.mmbase.module.core.MMBaseContext;
@@ -38,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.31 2005-12-17 23:31:16 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.32 2005-12-19 13:17:16 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -92,10 +93,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     protected boolean supportsTransactions = false;
 
 
+    private static final String BASE_PATH_UNSET = "UNSET";
     /**
      * Used by #getBinaryFileBasePath
      */
-    private String basePath = null;
+    private String basePath = BASE_PATH_UNSET;
 
     public double getVersion() {
         return 0.1;
@@ -346,23 +348,27 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
      * Returns the base path for 'binary file'
      */
     protected String getBinaryFileBasePath() {
-        if (basePath == null) {
+        if (basePath == BASE_PATH_UNSET) {
             basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
             if (basePath == null || basePath.equals("")) {
-                if (MMBaseContext.getServletContext() != null) {
-                    basePath = MMBaseContext.getServletContext().getRealPath("/WEB-INF/data");
-                } else {
+                ServletContext sc = MMBaseContext.getServletContext();
+                basePath = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
+                if (basePath == null) {
                     basePath = System.getProperty("user.dir") + File.separator + "data";
                 }
+
             } else {
                 java.io.File baseFile = new java.io.File(basePath);
                 if (! baseFile.isAbsolute()) {
-                    if (MMBaseContext.getServletContext() != null) {
-                        basePath = MMBaseContext.getServletContext().getRealPath("/") + File.separator + basePath;
-                    } else {
-                        basePath = System.getProperty("user.dir") + File.separator + basePath;
-                    }
+                    ServletContext sc = MMBaseContext.getServletContext();
+                    String absolute = sc != null ? sc.getRealPath("/") + File.separator : null;
+                    if (absolute == null) absolute = System.getProperty("user.dir") + File.separator;
+                    basePath = absolute + basePath;
                 }
+            }
+            if (basePath == null) {
+                log.warn("Cannot determin a a Binary File Base Path");
+                return null;
             }
             File baseDir = new File(basePath);
             try {
