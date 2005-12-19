@@ -40,6 +40,7 @@
             }
         }
         %>
+         <mm:relatednodes type="flashpages">
        <mm:relatednodes type="attachments">
     <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,47,0"  id="flashpage">
                   <param name="movie" value="<mm:attachment/>">
@@ -48,6 +49,7 @@
                   </embed> 			  
               </object>
       </mm:relatednodes>
+       </mm:relatednodes>
         <%
             if (layout >= 2) {
                 if (layout == 2) {
@@ -62,7 +64,117 @@
                 %><mm:field name="text" escape="none"/><%
             }
         %>
+	<mm:relatednodes type="attachments" role="related">
+		<h3><mm:field name="title"/></h3>
+
+     	<p>
+
+      	<i><mm:field name="description" escape="inline"/></i><br>
+
+      	<a href="<mm:attachment/>"><img src="<mm:treefile page="/education/gfx/attachment.gif" objectlist="$includePath" />" border="0" alt="Download <mm:field name="title"/>"></a>
+
+    	</p>
     </mm:relatednodes>
+  	<div class="audiotapes">
+
+    <mm:relatednodes type="audiotapes" role="posrel" orderby="posrel.pos">
+
+        <h3><mm:field name="title"/></h3>
+
+      	<p>
+
+        <i><mm:field name="subtitle"/></i>
+
+      	</p>
+
+   		<i><mm:field name="intro" escape="p"/></i>
+
+      	<p>
+
+      	<mm:field name="body" escape="inline"/><br>
+
+      	<a href="<mm:field name="url" />"><img src="<mm:treefile page="/education/gfx/audio.gif" objectlist="$includePath" />" border="0" alt="Beluister <mm:field name="title" />"></a></b>
+
+      	</p>
+
+ 	</mm:relatednodes>
+
+  	</div>
+  
+  
+   <div class="videotapes">
+
+    <mm:relatednodes type="videotapes" role="posrel" orderby="posrel.pos">
+
+      <p>
+
+        <h3><mm:field name="title"/></h3>
+
+        <i><mm:field name="subtitle"/></i>
+
+      </p>
+
+      <i><mm:field name="intro" escape="p"/></i>
+
+      <p>
+
+      <mm:field name="body" escape="inline"/><br>
+
+     <a href="<mm:field name="url" />"><img src="<mm:treefile page="/education/gfx/video.gif" objectlist="$includePath" />" border="0" alt="Bekijk <mm:field name="title" />"></a>
+
+      </p>
+
+    </mm:relatednodes>
+   
+   </div>
+   
+   
+   
+    <div class="urls">
+    
+    <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
+
+      <mm:field name="showtitle">
+        <mm:compare value="1">
+          <h3><mm:field name="name"/></h3>
+        </mm:compare>
+      </mm:field>
+
+      <p>
+
+      <i><mm:field name="description" escape="inline"/></i><br/>
+
+      <a href="<mm:field name="url"/>" target="_blank"><mm:field name="url"/></a>
+
+      </p>
+
+    </mm:relatednodes>
+
+  </div>
+  
+  
+  <div class="images">
+
+            <mm:relatednodes type="images">
+              <mm:field name="showtitle">
+                <mm:compare value="1">
+                  <h3><mm:field name="title"/></h3>
+                </mm:compare>
+              </mm:field>
+
+              <img src="<mm:image />" width="200" border="0" /><br/>
+
+              <mm:field name="description" escape="none"/> 
+            </mm:relatednodes>
+
+  </div>
+  
+    
+        
+        
+    </mm:relatednodes>
+  
+  
   </mm:node>
 </mm:cloud>
 </mm:content>
