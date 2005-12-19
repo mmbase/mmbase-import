@@ -1,7 +1,5 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
-<mm:cloud>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:cloud><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>MMBase Basic Editors</title>
@@ -28,22 +26,27 @@
   </p>
 </tr>
 <tr><th class="header" colspan="2">URLs</th></tr>
-<% String thisServer = request.getScheme() + "://" + request.getServerName() + (request.getServerPort() != 80 ? ":" + request.getServerPort() : "")+ request.getContextPath(); %>
-<tr>
-  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/" />">The MMBase Editors ('basic') : <%=thisServer%>/mmbase/edit/</a></td>
-</tr>
-<tr>
-  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/my_editors/" />">Alternate generic Editors ('my editors') : <%=thisServer %>/mmbase/edit/my_editors/</a></td>
-</tr>
-<tr>
-  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/mmeditors/" />">Classic style generic editors ('mmeditors') : <%=thisServer %>/mmbase/edit/mmeditors/</a></td>
-</tr>
-<% if (pageContext.getServletContext().getResource("/mmbase/security") != null) { %>
-<tr><th class="header" colspan="2">Security editors</th></tr>
-<tr>
-  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/security/" />">Security editors (of cloud context security) : <%=thisServer %>/mmbase/security/</a></td>
-</tr>
-<% } %>
+<mm:haspage page="/mmbase/edit">
+  <tr>
+    <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/basic/" />">The MMBase Editors ('basic') : <mm:url page="/mmbase/edit/basic/" absolute="true" />/a></td>
+  </tr>
+</mm:haspage>
+<mm:haspage page="/mmbase/edit/my_editors">
+  <tr>
+    <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/my_editors/" />">Alternate generic Editors ('my editors') : <mm:url page="/mmbase/edit/my_editors/" absolute="true" /></a></td>
+  </tr>
+</mm:haspage>
+<mm:haspage page="/mmbase/edit/mmeditors">
+  <tr>
+    <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/edit/mmeditors/" />">Classic style generic editors ('mmeditors') : <mm:url page="/mmbase/edit/mmeditors/" absolute="true" /></a></td>
+  </tr>
+</mm:haspage>
+<mm:haspage page="/mmbase/security">
+  <tr><th class="header" colspan="2">Security editors</th></tr>
+  <tr>
+    <td class="linkdata" colspan="2"><a href="<mm:url page="/mmbase/security/" />">Security editors (of cloud context security) : <mm:url page="/mmbase/security/" absolute="true" /></a></td>
+  </tr>
+</mm:haspage>
 
 <tr class="footer">
   <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" /></td>
