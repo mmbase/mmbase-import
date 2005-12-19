@@ -40,6 +40,9 @@
 	      {
 	         top.location.href = document.location.href;
 	      }
+	   }
+	   catch(e){
+	   }
 	</script>
 	<div class="content">
 	 <div class="applicationMenubarCockpit" style="white-space: nowrap">
