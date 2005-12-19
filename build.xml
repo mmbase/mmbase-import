@@ -228,7 +228,7 @@ builddate=${builddate}
       <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${builddate}" includes="**">
         <!-- too much bloat -->
         <exclude name="**/*.pdf" />
-        <exlcude name="**/javadoc/**" />
+        <exclude name="**/javadoc/**" />
       </zipfileset>
     </zip>
   </target>
