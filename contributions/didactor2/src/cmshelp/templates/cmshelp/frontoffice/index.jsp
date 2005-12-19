@@ -4,6 +4,7 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
+  <mm:import externid="simplecontents"/>
   <mm:import externid="node"/>
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids"/>
   <div class="rows">
@@ -14,10 +15,13 @@
     <div class="contentHeader"/>
     <div class="contentBodywit">
 	  <mm:treeinclude page="/cmshelp/frontoffice/show_help.jsp" objectlist="$includePath" referids="$referids">
-	    <mm:param name="node"><mm:write referid="node"/></mm:param>
+	    <mm:param name="node2"><mm:write referid="simplecontents"/></mm:param>
+      <mm:param name="node"><mm:write referid="node"/></mm:param>
 	  </mm:treeinclude> 
     </div>
   </div>
+  
+  
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids"/>
 </mm:cloud>
 </mm:content>
