@@ -679,6 +679,13 @@ Build-compiler: ${build.compiler}
             <filename name="jstl*.jar" />
             <filename name="standard*.jar" />
             <filename name="log4j*.jar" />
+            <filename name="commons-fileupload*.jar" />
+            <!-- Xalan is used only by context security 
+                 Would be nice to drop that dependency.
+                 In real life always editwizard depend too
+                 -->
+            <filename name="xalan.jar" />
+            <filename name="serializer.jar" />
           </or>
         </selector>
       </lib>
@@ -691,7 +698,7 @@ Build-compiler: ${build.compiler}
               <filename name="WEB-INF/config/caches.xml" />
               <filename name="WEB-INF/config/modules/jdbc.xml" />
               <filename name="WEB-INF/config/security/security.xml" />
-              <filename name="WEB-INF/config/security/config/**" />
+              <filename name="WEB-INF/config/security/context/**" />
               <filename name="mmbase/edit/basic/**" />
               <filename name="mmbase/admin/**" />
               <filename name="mmbase/style/**" />
