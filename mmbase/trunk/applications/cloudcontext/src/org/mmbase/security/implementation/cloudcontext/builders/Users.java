@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.42 2005-11-22 14:40:23 michiel Exp $
+ * @version $Id: Users.java,v 1.43 2005-12-19 09:39:30 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -199,7 +199,6 @@ public class Users extends MMObjectBuilder {
 
     public MMObjectNode getUser(String userName, String password, boolean encode) {
 
-
         if (log.isDebugEnabled()) {
             log.debug("username: '" + userName + "' password: '" + password + "'");
         }
@@ -247,7 +246,7 @@ public class Users extends MMObjectBuilder {
                 }
             }
             if (getField(FIELD_LAST_LOGON) != null) {
-                user.setValue(FIELD_LAST_LOGON,System.currentTimeMillis() / 1000);
+                user.setValue(FIELD_LAST_LOGON, System.currentTimeMillis() / 1000);
                 user.commit();
             }
             return user;
@@ -370,7 +369,9 @@ public class Users extends MMObjectBuilder {
      * @see org.mmbase.security.implementation.cloudcontext.User#getOwnerField
      */
     public String getDefaultContext(MMObjectNode node)  {
-        return node.getNodeValue(FIELD_DEFAULTCONTEXT).getStringValue("name");
+        if (node == null) return "system";
+        MMObjectNode contextNode = node.getNodeValue(FIELD_DEFAULTCONTEXT);
+        return contextNode == null ? null : contextNode.getStringValue("name");
     }
 
     /**
