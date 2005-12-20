@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.92 2005-12-17 17:51:47 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.93 2005-12-20 23:00:47 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -72,10 +72,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
     // input and useinput produces pieces of HTML
     // very handy if you're creating an editor, but well yes, not very elegant.
-    protected static final int TYPE_INPUT    = 10;
-    protected static final int TYPE_USEINPUT = 11;
-    protected static final int TYPE_SEARCHINPUT = 12;
-    protected static final int TYPE_USESEARCHINPUT = 13;
+    protected static final int TYPE_INPUT            = 10;
+    protected static final int TYPE_CHECK            = 15;
+    protected static final int TYPE_ERRORS           = 16;
+    protected static final int TYPE_USEINPUT         = 11;
+    protected static final int TYPE_SEARCHINPUT      = 12;
+    protected static final int TYPE_USESEARCHINPUT   = 13;
     protected static final int TYPE_REUSESEARCHINPUT = 14;
 
 
@@ -118,6 +120,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             return TYPE_DESCRIPTION;
         } else if ("input".equals(t)) {
             return TYPE_INPUT;
+        } else if ("check".equals(t)) {
+            return TYPE_CHECK;
+        } else if ("errors".equals(t)) {
+            return TYPE_ERRORS;
         } else if ("useinput".equals(t)) {
             return TYPE_USEINPUT;
         } else if ("searchinput".equals(t)) {
@@ -255,6 +261,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
         // set node if necessary:
         switch(infoType) {
+        case TYPE_CHECK:
+        case TYPE_ERRORS:
+            if (node == null) { // try to find nodeProvider
+                node = fieldProvider.getNodeVar();
+            } // node can stay null.
+            break;
         case TYPE_INPUT:
             if (node == null) { // try to find nodeProvider
                 node = fieldProvider.getNodeVar();
@@ -316,6 +328,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
             break;
         }
+        case TYPE_CHECK:
+            checkHtmlInput(node, field, false);
+            break;
+        case TYPE_ERRORS:
+            show = checkHtmlInput(node, field, true);
+            break;
         case TYPE_INPUT:
             show = htmlInput(node, field, false);
             break;
@@ -403,6 +421,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
     private boolean useHtmlInput(Node node, Field field) throws JspTagException {
         return getTypeHandler(field).useHtmlInput(node, field);
+    }
+
+
+
+    private String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
+        return getTypeHandler(field).checkHtmlInput(node, field, errors);
     }
 
 

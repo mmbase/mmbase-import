@@ -17,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.datatypes.StringDataType;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.Encode;
+import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.transformers.Sql;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.47 2005-11-11 10:46:19 pierre Exp $
+ * @version $Id: StringHandler.java,v 1.48 2005-12-20 23:00:47 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -47,7 +47,7 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
-        EnumHandler eh = getEnumHandler(node, field);
+        eh = getEnumHandler(node, field);
         if (eh != null) {
             return eh.htmlInput(node, field, search);
         }
@@ -55,13 +55,9 @@ public class StringHandler extends AbstractTypeHandler {
         if(! search) {
             StringBuffer buffer = new StringBuffer();
             try {
-                StringDataType dataType = (StringDataType) field.getDataType();
-                String value = "";
-                if (node != null) {
-                    value = node.getStringValue(field.getName());
-                } else {
-                    value = org.mmbase.util.Casting.toString(dataType.getDefaultValue());
-                }
+                Object v = getFieldValue(node, field);
+                String value = org.mmbase.util.Casting.toString(v);
+                log.info("Found " + value);
                 if (value.equals("")) {
                     String opt = tag.getOptions();
                     if (opt != null && opt.indexOf("noempty") > -1) {
@@ -69,6 +65,8 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                 }
                 value = tag.decode(value, node);
+                StringDataType dataType = (StringDataType) field.getDataType();
+
                 if (dataType.getPattern().matcher("\n").matches()) {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
@@ -80,7 +78,7 @@ public class StringHandler extends AbstractTypeHandler {
                     buffer.append(" name=\"");
                     buffer.append(prefix(field.getName()));
                     buffer.append("\">");
-                    buffer.append(Encode.encode("ESCAPE_XML", value));
+                    Xml.XMLEscape(value, buffer);
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
                     buffer.append("<input type =\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
@@ -93,7 +91,7 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     addExtraAttributes(buffer);
                     buffer.append(" value=\"");
-                    buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", value));
+                    Xml.XMLEscape(value, buffer);
                     buffer.append("\" />");
                 }
             } catch (ClassCastException cce) {
