@@ -21,6 +21,16 @@
 <mm:import externid="user" />
 <%@ include file="globalLang.jsp" %>
 <mm:isgreaterthan referid="user" value="0">
+<mm:remove referid="userdisabled"/>
+<mm:node number="$user">
+  <mm:field name="person_status">
+    <mm:compare value="0">
+      <mm:import id="userdisabled">true</mm:import>
+      <di:translate key="core.accountdisabled" />
+    </mm:compare>
+  </mm:field>
+</mm:node>
+<mm:notpresent referid="userdisabled">
 <di:hasrole referid="user" role="student">
 <di:hasrole referid="user" role="systemadministrator" inverse="true">
 <di:hasrole referid="user" role="teacher" inverse="true">
@@ -65,6 +75,7 @@
 </di:hasrole>
 </di:hasrole>
 </di:hasrole>
+</mm:notpresent>
 </mm:isgreaterthan>
 </mm:cloud>
 </mm:content>
