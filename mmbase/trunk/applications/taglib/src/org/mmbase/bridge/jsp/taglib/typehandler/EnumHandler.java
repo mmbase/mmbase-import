@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.29 2005-12-20 19:07:13 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.30 2005-12-20 23:00:47 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -113,20 +113,22 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         return available;
     }
 
+    protected Object cast(Object value, Node node, Field field) {
+        if ("".equals(value)) return null;
+        return field.getDataType().cast(value, node, field);
+    }
+
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuffer buffer = new StringBuffer();
         buffer.append("<select name=\"");
-        buffer.append(prefix(field.getName()));
+        String fieldName = field.getName();
+        buffer.append(prefix(fieldName));
         buffer.append("\" ");
         addExtraAttributes(buffer);
         buffer.append(">");
-        Object value = null;
-        if (node != null) {
-            value = node.getValue(field.getName());
-        } else {
-            value = field.getDataType().getDefaultValue();
-        }
+        Object value  = getFieldValue(node, field);
+        log.info("Found '" + (value == null ? "NULL" : value) + "'");
         if (! field.getDataType().isRequired()) {
             buffer.append("<option value=\"\" ");
             if (value == null) buffer.append("select=\"selected\" ");

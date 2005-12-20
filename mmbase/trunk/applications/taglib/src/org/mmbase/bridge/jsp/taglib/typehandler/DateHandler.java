@@ -18,8 +18,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import org.mmbase.bridge.jsp.taglib.ParamHandler;
+import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.Casting;
@@ -31,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.31 2005-11-23 16:49:57 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.32 2005-12-20 23:00:47 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -111,26 +110,9 @@ public class DateHandler extends AbstractTypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         StringBuffer buffer = new StringBuffer();
-
-        Calendar cal = Calendar.getInstance();
         boolean required = field.getDataType().isRequired();
-        if (node != null) {
-            Object value = node.getValue(field.getName());
-            if (value != null) {
-                cal.setTime(node.getDateValue(field.getName()));
-            } else {
-                cal = null;
-            }
-        } else {
-            Object def = field.getDataType().getDefaultValue();
-            if (def != null) {
-                cal.setTime(Casting.toDate(def));
-            } else {
-                if (! required) {
-                    cal = null;
-                }
-            }
-        }
+
+        Calendar cal = getCalendarValue(node, field);
         buffer.append("<span class=\"mm_datetime\">");
         buffer.append("<input type=\"hidden\" name=\"");
         buffer.append(prefix(field.getName()));
@@ -284,7 +266,8 @@ public class DateHandler extends AbstractTypeHandler {
             cal.setTimeInMillis(0);
         }
 
-        Date newValue = getSpecifiedValue(field, cal);
+        Calendar newCal = getSpecifiedValue(field, cal);
+        Date newValue = newCal == null ? null : newCal.getTime();
         if (oldValue == null) {
             if (newValue != null) {
                 node.setDateValue(fieldName, newValue);
@@ -298,7 +281,8 @@ public class DateHandler extends AbstractTypeHandler {
         return false;
     }
 
-    protected Date getSpecifiedValue(Field field, Calendar cal) throws JspTagException {
+
+    protected Calendar getSpecifiedValue(Field field, Calendar cal) throws JspTagException {
         String fieldName = field.getName();
         DataType dt = field.getDataType();
         if (log.isDebugEnabled()) {
@@ -328,7 +312,7 @@ public class DateHandler extends AbstractTypeHandler {
             }
             try {
                 String string =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_" + element.getName()));
-                if ("".equals(string)) {
+                if (string == null || "".equals(string)) {
                     cal = null;
                 } else {
                     int value = Integer.parseInt(string);
@@ -341,11 +325,43 @@ public class DateHandler extends AbstractTypeHandler {
                     }    
                 }            
             } catch (java.lang.NumberFormatException e) {
-                throw new JspTagException("Not a valid number (" + e.toString() + ") in field " + fieldName);
+                throw new TaglibException("Not a valid number (" + e.toString() + ") in field " + fieldName, e);
             }
         }
 
-        return  cal == null ? null : cal.getTime();
+        return  cal;
+    }
+    protected Object getFieldValue(Node node, Field field) throws JspTagException {
+        Calendar cal =  getCalendarValue(node, field);
+        return cal == null ? null : cal.getTime();
+    }
+    protected Calendar getCalendarValue(Node node, Field field) throws JspTagException {
+        Calendar cal = getSpecifiedValue(field, Calendar.getInstance());        
+        if (cal == null) {
+            if (node != null) {
+                Object value = node.getValue(field.getName());
+                if (value != null) {
+                    cal = Calendar.getInstance();
+                    cal.setTime(node.getDateValue(field.getName()));
+                } else {
+                    cal = null;
+                }
+            } else {
+                Object def = field.getDataType().getDefaultValue();
+                if (def != null) {
+                    Date defaultDate = (Date) field.getDataType().getDefaultValue();
+                    cal = Calendar.getInstance();
+                    cal.setTime(Casting.toDate(def));
+                } else {
+                    if (! field.getDataType().isRequired()) {
+                        cal = null;
+                    }  else {
+                        cal = Calendar.getInstance();
+                    }
+                }
+            }
+        }
+        return cal;
     }
 
     /**
@@ -358,7 +374,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Date timeValue = getSpecifiedValue(field, Calendar.getInstance());
+        Date timeValue = getSpecifiedValue(field, Calendar.getInstance()).getTime();
         if (timeValue == NODATE) return null;
 
         String time;

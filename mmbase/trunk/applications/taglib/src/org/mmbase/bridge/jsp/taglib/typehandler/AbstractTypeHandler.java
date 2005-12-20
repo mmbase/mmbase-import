@@ -10,9 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-
 import java.util.*;
+
+import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 import org.mmbase.util.Entry;
+import org.mmbase.util.LocalizedString;
+import org.mmbase.util.transformers.Xml;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.*;
@@ -27,13 +30,15 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.34 2005-12-20 19:07:13 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.35 2005-12-20 23:00:47 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
     private static final Logger log = Logging.getLoggerInstance(AbstractTypeHandler.class);
 
     protected FieldInfoTag tag;
+    protected EnumHandler eh;
+    protected boolean gotEnumHandler = false;
 
     /**
      * Constructor for AbstractTypeHandler.
@@ -43,9 +48,15 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         this.tag = tag;
         
     }
+    public void init() {
+        eh = null;
+        gotEnumHandler = false;
+    }
 
 
     protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
+        if (gotEnumHandler) return eh;
+        gotEnumHandler = true;
         DataType dt = field.getDataType();
 
         if (dt.getEnumerationValues(tag.getLocale(), tag.getCloudVar(), node, field) != null) {
@@ -102,7 +113,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     };
             }
         }
-
+        
         return null;
     }
 
@@ -121,7 +132,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        EnumHandler eh = getEnumHandler(node, field);
+        eh = getEnumHandler(node, field);
         if (eh != null) {
             return eh.htmlInput(node, field, search);
         }
@@ -131,12 +142,67 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         show.append("name=\"").append(prefix(field.getName())).append("\" ").append("value=\"");
         if (node != null) {
             show.append(node.getStringValue(field.getName()));
-        } else if (search) {
-            String searchParam = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
+        } else {
+            Object searchParam = getFieldValue(node, field);
             show.append((searchParam == null ? "" : searchParam));
         }
         show.append("\" />");
         return show.toString();
+    }
+
+    protected Object getFieldValue(String fieldName) throws JspTagException {
+        return  tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+    }
+    protected Object cast(Object value, Node node, Field field) {
+        return field.getDataType().cast(value, node, field);
+    }
+    protected Object getFieldValue(Node node, Field field) throws JspTagException {
+        String fieldName = field.getName();
+        Object value = getFieldValue(fieldName);
+        if (value == null) {            
+            if (node != null) {
+                value = node.getValue(fieldName);
+            } else {
+                value = field.getDataType().getDefaultValue();
+            }
+        } else {
+            value = cast(value, node, field);
+        }
+        return value;
+    }
+
+    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException { 
+        eh = getEnumHandler(node, field);
+        if (eh != null) {
+            return eh.checkHtmlInput(node, field, errors);
+        }
+        String fieldName = field.getName();
+        Object fieldValue = getFieldValue(node, field);
+        DataType dt = field.getDataType();
+        Collection col = dt.validate(fieldValue, node, field);
+        if (col.size() == 0) {
+            return "";
+        } else {
+            FormTag form =  (FormTag) tag.findParentTag(FormTag.class, null, false);
+            if (form != null) {
+                form.setValid(false);
+            }
+            if (errors) {
+                StringBuffer show = new StringBuffer("<div class=\"check-error\">");
+                Locale locale =  tag.getLocale();
+                Iterator i = col.iterator();
+                while (i.hasNext()) {
+                    LocalizedString error = (LocalizedString) i.next();
+                    show.append("<span>");
+                    Xml.XMLEscape(error.get(locale), show);
+                    show.append("</span>");
+                }
+                show.append("</div>");
+                return show.toString();
+            } else {
+                return "";
+            }
+        }
     }
 
     /**
@@ -144,11 +210,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
-        String fieldValue = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+        Object fieldValue = getFieldValue(node, field);
         if (fieldValue == null) {
 
         } else {
-            if (! fieldValue.equals(node.getStringValue(fieldName))) {
+            if (! fieldValue.equals(node.getValue(fieldName))) {
                 //log.info("Field " + field + " " + node.getValue(fieldName) + " --> " + fieldValue);
                 node.setValue(fieldName,  fieldValue);
                 return true;
@@ -163,7 +229,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
+        eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field);
         }
@@ -211,7 +277,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
 
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
+        eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field, query);
         }

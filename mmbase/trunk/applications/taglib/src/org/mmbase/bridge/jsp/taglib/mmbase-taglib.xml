@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.333 2005-12-17 17:52:29 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.334 2005-12-20 23:00:47 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3316,7 +3316,7 @@ transaction was commited, following should result anything:
       <possiblevalue>
         <value>reusesearchinput</value>
         <info>
-    Adds the search query to the surrounding param-handler, like an mm:url.
+          Adds the search query to the surrounding param-handler, like an mm:url.
         </info>
       </possiblevalue>
       <possiblevalue>
@@ -3353,6 +3353,22 @@ transaction was commited, following should result anything:
           The combination of type/guitype is used by e.g. the `input' version of this tag, to create
           feasible HTML input entries.
         </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>check</value>
+        <info>
+          Only checks whether the field's value is valid. If not, that is reported to a parent form tag.
+        </info>
+        <since>MMBase-1.8</since>
+        <see tag="form" />
+      </possiblevalue>
+      <possiblevalue>
+        <value>errors</value>
+        <info>
+          Like 'check', but displays the error messages if not valid.
+        </info>
+        <since>MMBase-1.8</since>
+        <see tag="form" />
       </possiblevalue>
     </attribute>
     <attribute>
@@ -7302,6 +7318,38 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <info>
         A maximal value for the rank. If it is `administrator' then this is no limitiation, because admistrator is the highest possible rank. It can also be specified as an integer.
+      </info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>form</name>
+    <extends>url</extends>
+    <extends>contextreferrer</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.FormTag</tagclass>
+    <info>
+      A form tag collects validation from mm:fieldinto type="check" and mm:fieldinfo
+      type="errors". The mm:valid can be used to report the cumulative error state.
+    </info>
+    <see tag="fieldinfo" />
+    <see tag="valid" />
+    <since>MMBase-1.8</since>
+  </tag>
+  <tag>
+    <name>valid</name>
+    <extends>contextreferrer</extends>
+    <extends>condition</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.ValidTag</tagclass>
+    <info>
+      The body evaluates if the current validation status of a surround form tag is valid.
+    </info>
+    <see tag="fieldinfo" />
+    <see tag="form" />
+    <since>MMBase-1.8</since>
+    <attribute>
+      <name>form</name>
+      <required>false</required>
+      <info>
+        If another form that the first form parent must be used, this attribute can be used.
       </info>
     </attribute>
   </tag>
