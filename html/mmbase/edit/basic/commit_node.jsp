@@ -1,24 +1,59 @@
-<%@ include file="page_base.jsp" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+%><%@include file="page_base_functionality.jsp" 
 %><mm:cloud loginpage="login.jsp"  sessionname="$config.session" jspvar="cloud" rank="$rank">
 <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
-<title><%=m.getString("commit_node.commit")%></title>
 
 <mm:log>Saving with XML-mode <%=cloud.getProperty("org.mmbase.xml-mode")%></mm:log>
 <mm:context id="commit_node">
 <mm:import externid="node_type" required="true" />
 <mm:import externid="page">0</mm:import>
 
+<mm:import externid="node_number" />
 
+<!-- first, check validity -->
+<mm:form>  
+  <mm:present referid="node_number">    
+    <mm:node referid="node_number">
+      <mm:context>
+        <mm:fieldlist id="my_form" type="edit">
+          <mm:fieldinfo type="check" />
+        </mm:fieldlist>
+      </mm:context>
+    </mm:node>
+  </mm:present>
+  <mm:notpresent referid="node_number">
+    <mm:context>
+      <mm:fieldlist nodetype="$node_type" id="my_form" type="edit">
+        <mm:fieldinfo type="check" />
+      </mm:fieldlist>
+    </mm:context>
+  </mm:notpresent>
+  <mm:valid inverse="true">
+    <mm:import id="invalid" />
+    <mm:include  page="change_node.jsp" />
+  </mm:valid>
+</mm:form>
+
+<mm:notpresent referid="invalid">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <mm:import id="style">
+      <link rel="StyleSheet" type="text/css" href="css/<mm:write referid="config.style_sheet" />"/>
+    </mm:import>
+<title><%=m.getString("commit_node.commit")%></title>
 <mm:import externid="cancel" />
 <mm:import externid="new" />
 <mm:import externid="delete" />
 <mm:import externid="deleterelations" />
 <mm:import externid="ok" />
-<mm:import externid="node_number" />
 <mm:import externid="save" />
-<mm:present referid="save"><mm:import id="ok" reset="true" /></mm:present>
-
+<mm:present referid="save"><mm:notpresent referid="invalid"><mm:import id="ok" reset="true" /></mm:notpresent></mm:present>
 <mm:url id="redirectTo" write="false"  page="<%=peek(urlStack)%>"><% if (urlStack.size() > 1) { %><mm:param name="nopush" value="url" /><% } %></mm:url>
+
 
 <mm:present referid="cancel">
     <!-- do nothing,... will be redirected -->
@@ -86,16 +121,16 @@
       </mm:maywrite>       
       <mm:remove referid="redirectTo" />
       <mm:present referid="save">
-	<mm:url id="redirectTo" write="false" page="change_node.jsp" >
-	  <mm:param name="node_number"><mm:field name="number" /></mm:param>
-	  <mm:param name="push"><mm:field name="number" /></mm:param>
-	</mm:url>
+        <mm:url id="redirectTo" write="false" page="change_node.jsp" >
+          <mm:param name="node_number"><mm:field name="number" /></mm:param>
+          <mm:param name="push"><mm:field name="number" /></mm:param>
+        </mm:url>
       </mm:present>
       <mm:notpresent referid="save">
-	<mm:url id="redirectTo" write="false" page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url>
+        <mm:url id="redirectTo" write="false" page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url>
       </mm:notpresent>
     </mm:node>
-
+    
 </mm:present>
 </mm:notpresent>
 
@@ -110,7 +145,8 @@
 
 
 <mm:redirect referid="redirectTo" />
-
-</mm:context>
 <%@ include file="foot.jsp"  %>
+
+</mm:notpresent>
+</mm:context>
 </mm:cloud>
