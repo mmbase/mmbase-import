@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.16 2005-12-05 10:05:15 michiel Exp $
+ * @version $Id: Lucene.java,v 1.17 2005-12-20 13:28:06 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -54,6 +54,16 @@ public class Lucene extends Module implements MMBaseObserver {
     // and inconsistencies with how namespaces are treated and assigned in DOM
     // (particularly regarding unqualified attributes) and with non-validating documents
     public static final String XMLNS = "*";
+
+    /**
+     * Parameter constants for Lucene functions.
+     */
+    protected final static Parameter VALUE = new Parameter("value",String.class);
+    protected final static Parameter INDEX = new Parameter("index",String.class);
+    protected final static Parameter SORTFIELDS = new Parameter("sortfields",String.class);
+    protected final static Parameter OFFSET = new Parameter("offset",Integer.class);
+    protected final static Parameter MAX = new Parameter("max",Integer.class);
+    protected final static Parameter EXTRACONSTRAINTS = new Parameter("extraconstraints",String.class);
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE_2_0, DTD_LUCENE_2_0, Lucene.class);
@@ -135,30 +145,24 @@ public class Lucene extends Module implements MMBaseObserver {
      * This function starts a search for a given string.
      * This function can be called through the function framework.
      */
-     protected Function searchFunction = new AbstractFunction("search",
-                              new Parameter[] { new Parameter("value",String.class),
-                                                new Parameter("index",String.class),
-                                                new Parameter("sortfields",String.class),
-                                                new Parameter("offset",Integer.class),
-                                                new Parameter("max",Integer.class),
-                                                new Parameter("extraconstraints",String.class),
-                                                Parameter.CLOUD },
+    protected Function searchFunction = new AbstractFunction("search",
+                              new Parameter[] { VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD },
                               ReturnType.LIST) {
         public Object getFunctionValue(Parameters arguments) {
-            String value = arguments.getString("value");
-            String index = arguments.getString("index");
-            List sortFieldList = Casting.toList(arguments.getString("sortfields"));
+            String value = arguments.getString(VALUE);
+            String index = arguments.getString(INDEX);
+            List sortFieldList = Casting.toList(arguments.getString(SORTFIELDS));
             // offset
             int offset = 0;
-            Integer offsetParameter = (Integer)arguments.get("offset");
+            Integer offsetParameter = (Integer)arguments.get(OFFSET);
             if (offsetParameter != null) offset = offsetParameter.intValue();
             if (offset < 0) offset = 0;
             // max
             int max = -1;
-            Integer maxParameter = (Integer)arguments.get("max");
+            Integer maxParameter = (Integer)arguments.get(MAX);
             if (maxParameter != null) max = maxParameter.intValue();
-            String extraConstraints = arguments.getString("extraconstraints");
-            Cloud cloud = (Cloud)arguments.get("cloud");
+            String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
+            Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
             return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
         }
     };
@@ -168,16 +172,13 @@ public class Lucene extends Module implements MMBaseObserver {
      * This function can be called through the function framework.
      */
      protected Function searchSizeFunction = new AbstractFunction("searchsize",
-                              new Parameter[] { new Parameter("value",String.class),
-                                                new Parameter("index",String.class),
-                                                new Parameter("extraconstraints",String.class),
-                                                Parameter.CLOUD },
+                              new Parameter[] { VALUE, INDEX, EXTRACONSTRAINTS, Parameter.CLOUD },
                               ReturnType.INTEGER) {
         public Object getFunctionValue(Parameters arguments) {
-            String value = arguments.getString("value");
-            String index = arguments.getString("index");
-            String extraConstraints = arguments.getString("extraconstraints");
-            Cloud cloud = (Cloud)arguments.get("cloud");
+            String value = arguments.getString(VALUE);
+            String index = arguments.getString(INDEX);
+            String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
+            Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
             return new Integer(searchSize(cloud, value, index, extraConstraints));
         }
     };
@@ -230,6 +231,7 @@ public class Lucene extends Module implements MMBaseObserver {
         readConfiguration();
         addFunction(searchFunction);
         addFunction(searchSizeFunction);
+        addFunction(statusFunction);
         if (!readOnly) {
             addFunction(fullIndexFunction);
             scheduler = new Scheduler();
@@ -413,7 +415,7 @@ public class Lucene extends Module implements MMBaseObserver {
             } catch (InterruptedException ie) {
                 return;
             }
-            while (true) {
+            while (!mmbase.isShutdown()) {
                 log.debug("Obtain Assignment");
                 try {
                     Assignment assignment = (Assignment)indexAssignments.get();
@@ -440,13 +442,14 @@ public class Lucene extends Module implements MMBaseObserver {
                             indexer.deleteIndex(assignment.number);
                         }
                     }
+                    log.debug("end action");
                     status = IDLE;
+                } catch (InterruptedException e) {
+                    log.debug(Thread.currentThread().getName() +" was interruped.");
+                    break;
                 } catch (RuntimeException rte) {
                     log.error(rte.getMessage());
                     status = IDLE_AFTER_ERROR;
-                } catch (InterruptedException ie) {
-                    log.error(ie.getMessage());
-                    return;
                 }
             }
         }

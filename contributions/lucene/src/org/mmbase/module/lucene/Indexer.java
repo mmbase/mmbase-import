@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  * which are eventually returned by the Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Indexer.java,v 1.10 2005-12-05 20:54:47 michiel Exp $
+ * @version $Id: Indexer.java,v 1.11 2005-12-20 13:28:06 pierre Exp $
  **/
 public class Indexer {
 
@@ -374,10 +374,9 @@ public class Indexer {
                             if (log.isDebugEnabled()) {
                                 log.trace("index " + alias + " as pdf document");
                             }
-                            byte[] rawPdf = node.getByteValue(fieldName);
+                            InputStream input = node.getInputStreamValue(fieldName);
                             PDDocument pdfDocument = null;
                             try {
-                                ByteArrayInputStream input = new ByteArrayInputStream(rawPdf);
                                 PDFParser parser = new PDFParser(input);
                                 parser.parse();
                                 pdfDocument = parser.getPDDocument();
@@ -410,8 +409,7 @@ public class Indexer {
                             if (log.isDebugEnabled()) {
                                 log.trace("index " + alias + " as Word document");
                             }
-                            byte[] rawDoc = node.getByteValue(fieldName);
-                            ByteArrayInputStream input = new ByteArrayInputStream(rawDoc);
+                            InputStream input = node.getInputStreamValue(fieldName);
                             try {
                                 WordExtractor extractor = new WordExtractor();
                                 documentText = extractor.extractText(input);
