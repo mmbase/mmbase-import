@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.31 2005-11-23 10:29:39 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.32 2005-12-20 19:07:13 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -167,6 +167,8 @@ public class IntegerHandler extends AbstractTypeHandler {
                 return e.htmlInput(node, field, search);
             }
         }
+
+        
 
         return super.htmlInput(node, field, search);
     }
