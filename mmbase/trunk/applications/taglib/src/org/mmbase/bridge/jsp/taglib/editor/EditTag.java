@@ -11,7 +11,11 @@ package org.mmbase.bridge.jsp.taglib.editor;
 
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 import org.mmbase.bridge.*;
@@ -19,10 +23,14 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.util.Entry;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.xml.DocumentReader;
+
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.bridge.jsp.taglib.ParamHandler;
-import org.mmbase.util.Entry;
 
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -37,7 +45,7 @@ import org.mmbase.util.XMLBasicReader;
  * to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.4 2005-12-05 23:53:15 michiel Exp $
+ * @version $Id: EditTag.java,v 1.5 2005-12-20 09:39:49 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  * @since MMBase-1.8
@@ -45,29 +53,74 @@ import org.mmbase.util.XMLBasicReader;
 public class EditTag extends ContextReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
-
-    private static final Map edittagTypes = new HashMap();  // edittagtype -> class
+    private static final Map edittagTypes = new HashMap();		// edittagtype -> class
+    
     static {
-
-        // TODO: add DTD
-        // TODO: add 'merging' (so you can have more of these XML),
-        // TODO: add ResourceWatcher.
-        InputSource ettypes = new InputSource(EditTag.class.getResourceAsStream("edittagtypes.xml"));
-        XMLBasicReader reader  = new XMLBasicReader(ettypes, EditTag.class);
-        
-        Element edittypesElement = reader.getElementByPath("edittagtypes");
-        Iterator i = reader.getChildElements(edittypesElement, "editor");
-        while (i.hasNext()) {
-            Element element = (Element) i.next();
-            String type = element.getAttribute("type");
-            String claz = reader.getElementValue(reader.getElementByPath(element, "editor.class"));
-            if (!claz.equals("")) {
-                edittagTypes.put(type, claz);
-                log.debug("Found editor type: '" + type + "' with class: '" + claz + "'");
-            } 
-        }
+    	try {
+			org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD edittagtypes 1.0//EN", "edittagtypes_1_0.dtd", EditTag.class);
+            ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
+				public void onChange(String resource) {
+					edittagTypes.clear();
+					
+					// default: reading from taglib jar in case no other resources exist
+					InputStream stream = EditTag.class.getResourceAsStream("resources/edittagtypes.xml");
+					if (stream != null) {	// fallback in case config/taglib may not exist
+						log.info("Reading default edittag resource: " + EditTag.class.getName() + "/resources/edittag.xml");
+						
+						InputSource ettypes = new InputSource(stream);
+						readXML(ettypes);
+					}
+					
+					ResourceLoader taglibLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib");
+					List resources = taglibLoader.getResourceList(resource);
+					log.info("Found edittag resources: " + resources);
+					
+					ListIterator i = resources.listIterator();
+					while (i.hasNext()) {
+						try {
+							URL u = (URL) i.next();
+							log.info("Reading edittag resource: " + u);
+							URLConnection con = u.openConnection();
+							if (con.getDoInput()) {
+								InputSource source = new InputSource(con.getInputStream());
+								readXML(source);
+							}
+						} catch (Exception e) {
+							log.error("Error connecting or resource not found: " + e);
+						}
+					}
+				}
+			};
+            watcher.add("edittag.xml");
+            watcher.start();
+            watcher.onChange("edittag.xml");
+			
+		} catch (Exception e){
+			log.error(e.toString());
+		}
     }
-
+    
+    /**
+     * 'reads' a resource XML and puts its values in a Map with types of edittags
+     *
+     */
+    protected static void readXML(InputSource edittagSource) {    
+        DocumentReader reader  = new DocumentReader(edittagSource, EditTag.class);
+        Element root = reader.getElementByPath("edittagtypes");
+        
+		Iterator i = reader.getChildElements(root, "editor");
+		while (i.hasNext()) {
+			Element element = (Element) i.next();
+			String type = element.getAttribute("type");
+			String claz = reader.getElementValue(reader.getElementByPath(element, "editor.class"));
+    	    log.debug("type: " + type + " and class: " + claz);
+			if (!claz.equals("") && !edittagTypes.containsKey(type) ) {
+				edittagTypes.put(type, claz);
+				log.info("Found and added editor type: '" + type + "' with class: '" + claz + "'");
+			} 
+		}
+    }
+    
     private Attribute type = Attribute.NULL;
     
     private Query query;
@@ -123,7 +176,6 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      * Start the EditTag, put the implementations found in its resources in a Map, 
      * consult the attribute type which implementation to use and instantiate it.
      *
-     *
      */    
     public int doStartTag() throws JspTagException {
         log.debug("doStartTag of EditTag");
@@ -151,6 +203,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
     /**
      * Pass all gathered information to the implementing editor, get the
      * the result back and write it to the page.
+     *
      */
     public int doEndTag() throws JspTagException {
         String editorstr = "";
