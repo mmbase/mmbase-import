@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.21 2005-12-10 12:26:24 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.22 2005-12-20 18:26:59 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -47,16 +47,30 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     private int size = 0; // number of explicitely added keys
 
     // we don't use interfaces here, because of Serializability
-    private static class LocalizedEntry implements Serializable, Cloneable {
+    private static class LocalizedEntry implements Serializable, PublicCloneable {
         private static final long serialVersionUID = 1L;
-        ArrayList entries    = new ArrayList(); //  List of Entries, Bundles and DocumentSerializable's
+        ArrayList entries    = new ArrayList(); //  List of Map.Entries, Bundles and DocumentSerializable's
         ArrayList unusedKeys = new ArrayList(); //  List of unused keys;
+        public Object clone() {
+            try {
+                LocalizedEntry clone = (LocalizedEntry) super.clone();
+                Iterator i = clone.entries.iterator();
+                clone.entries = new ArrayList();
+                while(i.hasNext()) {
+                    clone.entries.add(((PublicCloneable)i.next()).clone());
+                }
+                clone.unusedKeys = (ArrayList) unusedKeys.clone();
+                return clone;
+            } catch (CloneNotSupportedException cnse) {
+                log.error(cnse);
+                return new LocalizedEntry();
+            }
+        }
         public String toString() {
             return "" + entries + "uu:" + unusedKeys;
         }
     }
     private HashMap localized  = new HashMap();   //Locale -> LocaledEntry
-
     private ArrayList bundles  = new ArrayList(); // contains all Bundles
     private ArrayList fallBack = new ArrayList(); // List of known keys, used as fallback, if nothing defined for a certain locale
 
@@ -287,7 +301,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      */
     public int size(Cloud cloud) {
         if (cloud == null) cloud = getCloud(LocalizedString.getDefault());
-        int queriesSize = 0;
+        int queriesSize = size();
         Locale locale = cloud == null ? LocalizedString.getDefault() : cloud.getLocale();
         LocalizedEntry localizedList = (LocalizedEntry) localized.get(locale);
         if (localizedList == null) {
@@ -299,7 +313,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             while (i.hasNext()) {
                 Object o = i.next();
                 if (o instanceof Bundle) {
-                    queriesSize += ((Bundle) o).get(locale).size();
+                    // already in size();
                 } else if (o instanceof DocumentSerializable) {
                     if (cloud == null) {
                         cloud = getCloud(null);
@@ -318,7 +332,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                     queriesSize++;
                 }
             }
-            queriesSize += localizedList.unusedKeys.size();
+            //queriesSize += localizedList.unusedKeys.size();
         }
 
         return queriesSize;
@@ -351,7 +365,10 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         }
         while (i.hasNext()) {
             Bundle b = (Bundle) i.next();
-            Object nk = SortedBundle.castKey(string, null, b.constantsProvider, b.wrapper);
+            Class wrapper = b.wrapper;
+            HashMap constants = b.constantsProvider;
+            log.info(" " + wrapper + " " + constants);
+            Object nk = SortedBundle.castKey(string, null, constants, wrapper);
             if (string != nk) {
                 log.debug("Casted " + key + " to " + nk);
                 return nk;
@@ -364,21 +381,39 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     public Object clone() {
         try {
             LocalizedEntryListFactory clone = (LocalizedEntryListFactory) super.clone();
-            clone.bundles   = (ArrayList) bundles.clone();
-            clone.localized = (HashMap) localized.clone();
+            Iterator j = clone.bundles.iterator();
+            clone.bundles   = new ArrayList();            
+            while(j.hasNext()) {
+                clone.bundles.add(((PublicCloneable) j.next()).clone());
+            }
+            Iterator i = clone.localized.entrySet().iterator();
+            clone.localized = new HashMap();
+            while(i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                clone.localized.put(entry.getValue(), ((PublicCloneable) entry.getValue()).clone());
+            }
             clone.fallBack  = (ArrayList) fallBack.clone();
             return clone;
         } catch (Exception e) {
-            log.error(e);
-            return this;
+            log.error(e.getMessage(), e);
+            return new LocalizedEntryListFactory();
         }
     }
 
-    public String toString() {
-        return "" + localized  + fallBack + "-->" + get(null, null);
+    /**
+     * Clears all added keys, bundles and queries.
+     */
+    public void clear() {
+        localized.clear();        
+        bundles.clear();
+        fallBack.clear();
     }
 
-    private static class Bundle implements Serializable {
+    public String toString() {
+        return "" + localized  + bundles + fallBack + "-->" + get(null, null);
+    }
+
+    private static class Bundle implements Serializable, PublicCloneable {
         private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
         private String      resource;
@@ -451,6 +486,19 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             result = HashCodeUtil.hashCode(result, comparator);
             return result;
         }
+
+        public Object clone() {
+            log.debug("Cloning bundle " + this);
+            try {
+                Bundle clone = (Bundle) super.clone();
+                clone.constantsProvider = constantsProvider != null ? (HashMap) constantsProvider.clone() : null;
+                return clone;
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                return this;
+            }
+        }
+
     }
 
     /**

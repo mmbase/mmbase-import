@@ -25,10 +25,10 @@ import org.mmbase.util.logging.*;
  * DocumentSerializable member in stead, and use {@link #getDocument}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentSerializable.java,v 1.2 2005-12-06 22:27:41 michiel Exp $
+ * @version $Id: DocumentSerializable.java,v 1.3 2005-12-20 18:26:59 michiel Exp $
  * @since MMBase-1.8
  */
-public class DocumentSerializable implements Serializable {
+public class DocumentSerializable implements Serializable, org.mmbase.util.PublicCloneable {
     private static final Logger log = Logging.getLoggerInstance(DocumentSerializable.class);
     private static final long serialVersionUID = 1L; 
 
@@ -69,6 +69,13 @@ public class DocumentSerializable implements Serializable {
 
     public String toString() {
         return XMLWriter.write(document, false);
+    }
+
+    public Object clone() {
+        Document newDocument = DocumentReader.getDocumentBuilder(false, null, null).newDocument();        
+        Node root = newDocument.importNode(document.getDocumentElement(), true);
+        newDocument.appendChild(root);
+        return new DocumentSerializable(newDocument);
     }
 
 }
