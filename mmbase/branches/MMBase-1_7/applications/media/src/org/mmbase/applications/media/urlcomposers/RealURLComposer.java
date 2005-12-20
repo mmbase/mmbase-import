@@ -48,8 +48,9 @@ public class RealURLComposer extends FragmentURLComposer  {
             }
             
             // real...
-            String title = fragment.getStringValue("title");
-            args.append(sep).append("title=").append(title);
+            String title = fragment.getStringValue("title").replaceAll(",","");
+            args.append(sep).append("title=").append(makeRealCompatible(title));
+
         } 
         return args;
     }

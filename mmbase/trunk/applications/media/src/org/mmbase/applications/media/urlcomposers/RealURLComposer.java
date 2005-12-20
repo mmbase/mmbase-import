@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.applications.media.urlcomposers;
+import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.applications.media.Format;
 import org.mmbase.module.core.MMObjectNode;
 import java.util.*;
@@ -47,8 +48,9 @@ public class RealURLComposer extends FragmentURLComposer  {
             }
             
             // real...
-            String title = fragment.getStringValue("title");
+            String title = fragment.getStringValue("title").replaceAll(",","");
             args.append(sep).append("title=").append(makeRealCompatible(title));
+
         } 
         return args;
     }
