@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.29 2005-10-17 17:32:18 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.30 2005-12-20 10:12:06 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -649,8 +649,14 @@ public class ResourceLoader extends ClassLoader {
      * @return The InputSource if succesfull, <code>null</code> otherwise.
      */
     public InputSource getInputSource(final String name)  throws IOException {
+        return getInputSource(findResource(name));
+    }
+
+    /**
+     * Static version of {@link #getInputSource(String)}, can e.g. be used in combination with {@link #getResourceList(String)}
+     */
+    public static InputSource getInputSource(final URL url) throws IOException {
         try {
-            URL url = findResource(name);
             InputStream stream = url.openStream();
             if (stream == null) return null;
             InputSource is = new InputSource(stream);
@@ -662,7 +668,6 @@ public class ResourceLoader extends ClassLoader {
             return null;
         }
     }
-
 
     /**
      * Returns the givens resource as a Document (parsed XML). This can come in handly, because most
@@ -689,17 +694,25 @@ public class ResourceLoader extends ClassLoader {
      * @throws IOException
      */
     public Document getDocument(String name, boolean validation, Class baseClass) throws org.xml.sax.SAXException, IOException  {
+        return getDocument(getResource(name), validation, baseClass);
+    }
+
+
+    /**
+     * Static version of {@link #getDocument(String, boolean, Class)}, can e.g. be used in combination with {@link #getResourceList(String)}
+     */
+    public static Document getDocument(URL url, boolean validation, Class baseClass) throws org.xml.sax.SAXException, IOException {
         boolean xsd = validation;
         if (validation) {
             // determin whether this XML perhaps must be validated by DTD (specified 'DOCTYPE')
-            Reader r = getReader(name);
+            Reader r = new InputStreamReader(url.openStream());
             if (r == null) return null;
             BufferedReader reader = new BufferedReader(r);
             String line = reader.readLine();
             int lineNumber = 0;
             while (lineNumber < 2 && line != null) {
                 if (line.startsWith("<!DOCTYPE")) {
-                    log.debug("Using DTD to validate '" + name + "'");
+                    log.debug("Using DTD to validate '" + url + "'");
                     xsd = false;
                 }
                 line = reader.readLine();
@@ -708,7 +721,7 @@ public class ResourceLoader extends ClassLoader {
             reader.close();
         }
 
-        InputSource source = getInputSource(name);
+        InputSource source = getInputSource(url);
         if (source == null) return null;
         XMLEntityResolver resolver = new XMLEntityResolver(validation, baseClass);
         DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd,
@@ -722,13 +735,13 @@ public class ResourceLoader extends ClassLoader {
             if (validation) {
                 log.error(ioe);
                 // try without validating too.
-                return getDocument(name, false, baseClass);
+                return getDocument(url, false, baseClass);
             } else {
                 throw ioe;
             }
         }
+        
     }
-
 
     /**
      * Creates a resource with given name for given Source.
@@ -897,6 +910,7 @@ public class ResourceLoader extends ClassLoader {
                 long lm = con.getLastModified();
                 if (lm  > 0 && usedUrl != null  && lastModified > 0 && lm > lastModified) {
                     log.warn("File " + con.getURL() + " is newer (" + new Date(lm) + ") then " + usedUrl + "(" + new Date(lastModified) + ") but shadowed by it");
+                    log.debug("Checked because " + Logging.stackTrace(15));
                 }
                 if (usedUrl == null && lm > 0) {
                     usedUrl = con.getURL();
