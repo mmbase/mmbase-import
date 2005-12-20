@@ -9,10 +9,16 @@
   <div class="titlefield">
     <di:translate key="core.logindidactor" />
     <mm:import externid="message"/>
-      <mm:isnotempty referid="message">
-       <br/>
-         Error <mm:write referid="message"/>
-      </mm:isnotempty>
+    <mm:isnotempty referid="message">
+      <br/>
+      Error <mm:write referid="message"/>
+    </mm:isnotempty>
+    <mm:import externid="reason" />
+    <mm:isnotempty referid="reason">
+      <mm:compare referid="reason" value="failed">
+        <br />Error: <di:translate key="core.passwordincorrect" />
+      </mm:compare>
+    </mm:isnotempty>
   </div>
   <br />
   <script>
