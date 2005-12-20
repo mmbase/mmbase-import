@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.20 2005-10-18 22:01:45 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.21 2005-12-20 23:00:47 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -57,6 +57,11 @@ public class ByteHandler extends AbstractTypeHandler {
                  "<input type=\"" + (search ? "text" : "file") + "\" name=\"" + prefix(field.getName()) + "\" />";
     }
 
+    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException { 
+        // XXXX TODO
+        return "";
+    }
+
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
@@ -71,7 +76,7 @@ public class ByteHandler extends AbstractTypeHandler {
         }
         if (bytes.getSize() > 0) {
             String fileName = bytes.getName();            
-            { // some browers provide directoy information. Take that away.
+            { // some browers provide directory information. Take that away.
                 int pos = fileName.lastIndexOf("\\");
                 if (pos > 0) {
                     fileName = fileName.substring(pos + 1);
