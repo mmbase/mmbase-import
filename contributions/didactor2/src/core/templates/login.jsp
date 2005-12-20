@@ -73,7 +73,7 @@
 	      </mm:present>
 	    </div>
 	    <div class="columnMiddle">
-	      <iframe width="100%" height="100%" src="<mm:treefile page="firstcontent.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>" name="content" frameborder="0">
+	      <iframe width="100%" height="100%" src="<mm:treefile page="/firstcontent.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>" name="content" frameborder="0">
 	      </iframe>   
 	    </div>
 	    <div class="columnRight">
