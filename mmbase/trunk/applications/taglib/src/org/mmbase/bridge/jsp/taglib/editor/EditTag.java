@@ -41,11 +41,11 @@ import org.mmbase.util.XMLBasicReader;
  * FieldTags register these with the EditTag. You can pass these values to an 
  * editor by creating an url for example like YAMMEditor does which gives access to
  * the editor yammeditor.jsp.<br />
- * Extend Editor to create your own and edit the edittagtypes.xml resources file
+ * Extend Editor to create your own and edit the edittag.xml resources file
  * to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.5 2005-12-20 09:39:49 andre Exp $
+ * @version $Id: EditTag.java,v 1.6 2005-12-20 09:54:45 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  * @since MMBase-1.8
@@ -63,7 +63,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
 					edittagTypes.clear();
 					
 					// default: reading from taglib jar in case no other resources exist
-					InputStream stream = EditTag.class.getResourceAsStream("resources/edittagtypes.xml");
+					InputStream stream = EditTag.class.getResourceAsStream("resources/edittag.xml");
 					if (stream != null) {	// fallback in case config/taglib may not exist
 						log.info("Reading default edittag resource: " + EditTag.class.getName() + "/resources/edittag.xml");
 						
@@ -136,7 +136,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
     private Editor yaeditor = null;     // should do all the work
     
     /**
-     * The type of editor, see resources/edittagtypes.xml for different types or
+     * The type of editor, see resources/edittag.xml for different types or
      * add your own editor.
      *
      * @param t     String with editor type.
@@ -146,7 +146,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
     }
 
     /**
-     * The type of editor, see resources/edittagtypes.xml for different types or
+     * The type of editor, see resources/edittag.xml for different types or
      * add your own editor.
      *
      * @return String stating the type of editor the tag refers to.
