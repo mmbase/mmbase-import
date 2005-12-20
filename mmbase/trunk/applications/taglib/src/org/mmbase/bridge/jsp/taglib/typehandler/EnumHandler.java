@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.28 2005-12-17 17:52:10 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.29 2005-12-20 19:07:13 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -36,15 +36,30 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     private static final Logger log = Logging.getLoggerInstance(EnumHandler.class);
     private Iterator iterator;
     private boolean available;
+
+    /**
+     * @since MMBase-1.8
+     */
+    public EnumHandler(FieldInfoTag tag) throws JspTagException {
+        super(tag);
+        available = true;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected Iterator getIterator(Node node, Field field) throws JspTagException  {
+        DataType dataType = field.getDataType();
+        Locale locale = tag.getLocale();
+        return dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
+    }
     /**
      * @param tag
      * @since MMBase-1.8
      */
     public EnumHandler(FieldInfoTag tag, Node node,  Field field) throws JspTagException {
         super(tag);
-        DataType dataType = field.getDataType();
-        Locale locale = tag.getLocale();
-        iterator = dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
+        iterator = getIterator(node, field);
         if (iterator == null) {
             // backwards compatibility mode
             String enumType = field.getGUIType();
@@ -117,8 +132,11 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             if (value == null) buffer.append("select=\"selected\" ");
             buffer.append(">--</option>");
         }
+        if (iterator == null) {
+            iterator = getIterator(node, field);
+        }
 
-        while(iterator.hasNext()) {
+        while(iterator != null && iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
             if (key == null) {
