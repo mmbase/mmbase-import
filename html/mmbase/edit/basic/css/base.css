@@ -36,6 +36,10 @@ textarea.big {
 input {
 }
 
+.check-error { 
+  background-color: yellow;
+}
+
 /* footers */
 
 p.foot {

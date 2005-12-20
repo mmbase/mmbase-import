@@ -41,18 +41,6 @@
    <form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="this_node@node_number" page="commit_node.jsp?pop=1" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
-    <mm:fieldlist type="edit">
-      <mm:fieldinfo type="type">
-	<mm:compare value="8">
-	  <mm:import id="hasxml" reset="true" />
-	  <mm:fieldinfo type="guitype">
-	    <mm:compare value="mmxf">
-	      <mm:import id="hasmmxf" reset="true" />
-	    </mm:compare>
-	  </mm:fieldinfo>
-	</mm:compare>
-      </mm:fieldinfo>
-    </mm:fieldlist>
 
     <div style="width: 30em; overflow: hidden;"><mm:nodeinfo type="gui" /></div>:
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
@@ -66,30 +54,36 @@
      </a>
      <mm:present referid="hasmmxf">
        <mm:write cookie="mmjspeditors_xmlmode"       referid="config.xmlmode"      />
-       <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu</mm:import>
+       <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu,docbook</mm:import>
        <mm:stringlist referid="xmlmodes">
-	 <mm:compare referid2="config.xmlmode" inverse="true">
-	   <a href="<mm:url referids="this_node@node_number">
-	     <mm:param name="mmjspeditors_xmlmode"><mm:write /></mm:param>
-	     </mm:url>"><mm:write /></a>
-	 </mm:compare>
-	 <mm:compare referid2="config.xmlmode">
-	   <mm:write />
-	 </mm:compare>
-	 <mm:last inverse="true"> | </mm:last>
-       </mm:stringlist>
-       | <a target="_new" href="<mm:url referids="node_number" page="mmxf_preview.jsp" />">preview</a>
-     </mm:present>
-   </td>
+         <mm:compare referid2="config.xmlmode" inverse="true">
+           <a href="<mm:url referids="this_node@node_number">
+             <mm:param name="mmjspeditors_xmlmode"><mm:write /></mm:param>
+             </mm:url>"><mm:write /></a>
+           </mm:compare>
+           <mm:compare referid2="config.xmlmode">
+             <mm:write />
+           </mm:compare>
+           <mm:last inverse="true"> | </mm:last>
+         </mm:stringlist>
+         | <a target="_new" href="<mm:url referids="node_number" page="mmxf_preview.jsp" />">preview</a>
+       </mm:present>
+     </td>
    </th></tr>
    <mm:fieldlist id="my_form" type="edit" fields="owner">
-      <tr>
-        <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
-        <td class="listdata" colspan="2"><mm:fieldinfo type="$showtype" />&nbsp;</td>
-      </tr>
-    </mm:fieldlist>
+     <tr>
+       <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
+       <td class="listdata" colspan="2">
+         <mm:fieldinfo type="$showtype" />
+         <mm:fieldinfo type="errors">
+           <mm:isnotempty>***</mm:isnotempty><mm:write escape="none" />
+         </mm:fieldinfo>
+       </td>
+     </tr>
+   </mm:fieldlist>
 <tr>
 <td colspan="3" class="buttons">
+<p>
 <input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
 <input class="submit"   type ="submit" name="save" value="save" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
@@ -97,11 +91,13 @@
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->
    <input onclick="return confirm('Are you sure? This wil delete 1 node and <mm:countrelations /> relations!');" class="submit"   type ="submit" name="deleterelations"   value="<%=m.getString("change_node.deletewith")%>" />
 </mm:maydelete>
+</p>
 </td>
 </tr>
 <tr><td colspan="3" class="search"><hr /></td></tr>
 <tr>
   <th><%=m.getString("change_node.aliases")%></th>
+
   <td class="data" width="90%"><mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td>
   <td class="navigate" width="0%">
  <mm:maywrite>
