@@ -11,10 +11,13 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
 
+import java.util.*;
+import org.mmbase.util.Entry;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.datatypes.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.33 2005-09-16 12:32:14 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.34 2005-12-20 19:07:13 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -43,11 +46,64 @@ public abstract class AbstractTypeHandler implements TypeHandler {
 
 
     protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
-        if (field.getDataType().getEnumerationValues(tag.getLocale(), tag.getCloudVar(), node, field) != null) {
+        DataType dt = field.getDataType();
+
+        if (dt.getEnumerationValues(tag.getLocale(), tag.getCloudVar(), node, field) != null) {
             return new EnumHandler(tag, node, field);
-        } else {
-            return null;
         }
+
+        // XXX: todo the following stuff may peraps be somehow wrapped to IntegerDataType itself;
+        // but what to do with 200L??
+        if (dt instanceof IntegerDataType) {
+            IntegerDataType idt = (IntegerDataType) dt;
+            final int min = idt.getMin() + (idt.isMinInclusive() ? 0 : 1);
+            final int max = idt.getMax() - (idt.isMaxInclusive() ? 0 : 1);
+            if ((long) max - min < 200L) {
+                return new EnumHandler(tag, node, field) {
+                        int i = min;
+                        protected Iterator getIterator(Node node, Field field) {
+                            return new Iterator() {
+                                    public boolean hasNext() {
+                                        return i <= max;
+                                    }
+                                    public Object next() {
+                                        Integer value = new Integer(i++);
+                                        return new Entry(value, value);
+                                    }
+                                    public void remove() {
+                                        throw new UnsupportedOperationException();
+                                    }
+                                };
+                        }
+                    };
+            }
+        }
+        if (dt instanceof LongDataType) {
+            LongDataType ldt = (LongDataType) dt;
+            final long min = ldt.getMin() + (ldt.isMinInclusive() ? 0 : 1);
+            final long max = ldt.getMax() - (ldt.isMaxInclusive() ? 0 : 1);
+            if ((double) max - min < 200.0) {
+                return new EnumHandler(tag, node, field) {
+                        long i = min;
+                        protected Iterator getIterator(Node node, Field field) {
+                            return new Iterator() {
+                                    public boolean hasNext() {
+                                        return i <= max;
+                                    }
+                                    public Object next() {
+                                        Long value = new Long(i++);
+                                        return new Entry(value, value);
+                                    }
+                                    public void remove() {
+                                        throw new UnsupportedOperationException();
+                                    }
+                                };
+                        }
+                    };
+            }
+        }
+
+        return null;
     }
 
     protected StringBuffer addExtraAttributes(StringBuffer buf) throws JspTagException {
