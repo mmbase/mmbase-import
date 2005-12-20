@@ -24,19 +24,19 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.5 2005-12-05 23:53:15 michiel Exp $
- * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
- * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEdit
+ * @version $Id: Editor.java,v 1.6 2005-12-20 22:54:03 michiel Exp $
+ * @see EditTag
+ * @see YAMMEditor
  * @since MMBase-1.8
  */
 abstract public class Editor {
     
     private static final Logger log = Logging.getLoggerInstance(Editor.class);
     
-    protected List queryList = new ArrayList();       // query List
+    protected List queryList  = new ArrayList();       // query List
     protected List nodenrList = new ArrayList();      // nodenr List
     protected List fieldList = new ArrayList();       // fieldname List
-    protected List parameters;
+    protected List parameters = new ArrayList();
         
     /**
      * @params A List with the parameters of the EditTag.
