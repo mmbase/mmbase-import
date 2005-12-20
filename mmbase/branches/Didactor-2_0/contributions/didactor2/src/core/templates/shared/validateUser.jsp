@@ -76,6 +76,7 @@
 </di:hasrole>
 </di:hasrole>
 </mm:notpresent>
+<mm:remove referid="userdisabled"/>
 </mm:isgreaterthan>
 </mm:cloud>
 </mm:content>
