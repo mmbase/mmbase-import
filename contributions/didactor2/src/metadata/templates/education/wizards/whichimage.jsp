@@ -4,12 +4,12 @@
    if((new MetaDataHelper()).hasValidMetadata(cloud,sCurrentNode)) {
    
       imageName = "gfx/metavalid.gif";
-      sAltText = "Metadata is correct, bewerk metadata voor dit object";
+      sAltText = "metadata_correct";
    
    } else {
    
       imageName = "gfx/metaerror.gif";
-      sAltText = "Metadata is niet correct, bewerk metadata voor dit object";
+      sAltText = "metadata_incorrect";
    }
 
 %>
