@@ -47,8 +47,6 @@ public class Authentication extends org.mmbase.security.Authentication {
         MMObjectNode user = users.getUser(username, password);
         if (user == null)
             return null;
-        if (user.getIntValue("person_status")==0)
-            return null;
 
         return (org.mmbase.security.UserContext)(new UserContext(user));
     } 

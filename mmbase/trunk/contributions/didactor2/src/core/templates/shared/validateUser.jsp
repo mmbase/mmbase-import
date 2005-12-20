@@ -22,41 +22,51 @@
   <mm:import externid="user" />
   <%@ include file="globalLang.jsp" %>
   <mm:isgreaterthan referid="user" value="0">
-    <di:hasrole referid="user" role="student">
-      <di:hasrole referid="user" role="systemadministrator" inverse="true">
-        <di:hasrole referid="user" role="teacher" inverse="true">
-          <di:hasrole referid="user" role="contenteditor" inverse="true">
-            <mm:isnotempty referid="provider">
-              <mm:isempty referid="education">
-                <mm:isempty referid="class">
-                  <di:translate key="core.validatelogin_noclass" />
+    <mm:remove referid="userdisabled"/>
+    <mm:node number="$user">
+      <mm:field name="person_status">
+        <mm:compare value="0">
+          <mm:import id="userdisabled">true</mm:import>
+          <di:translate key="core.accountdisabled" />
+        </mm:compare>
+      </mm:field>
+    </mm:node>
+    <mm:notpresent referid="userdisabled">
+      <di:hasrole referid="user" role="student">
+        <di:hasrole referid="user" role="systemadministrator" inverse="true">
+          <di:hasrole referid="user" role="teacher" inverse="true">
+            <di:hasrole referid="user" role="contenteditor" inverse="true">
+              <mm:isnotempty referid="provider">
+                <mm:isempty referid="education">
+                  <mm:isempty referid="class">
+                    <di:translate key="core.validatelogin_noclass" />
+                  </mm:isempty>
                 </mm:isempty>
-              </mm:isempty>
-              <mm:isnotempty referid="education">
-                <mm:compare referid="class" value="null">
-                  <mm:import id="class" reset="true" />
-                </mm:compare>
-                <mm:isempty referid="class">
-                  <mm:node number="$user">
-                    <mm:relatednodescontainer type="educations" role="classrel" >
-                      <mm:size>
-                        <mm:compare value="0">
-                          <mm:relatednodescontainer type="classes" >
-                            <mm:size>
-                              <mm:compare value="0">
-                                <di:translate key="core.validatelogin_noclass" />
-                              </mm:compare>
-                            </mm:size>
-                          </mm:relatednodescontainer>
-                        </mm:compare>
-                      </mm:size>
-                    </mm:relatednodescontainer>
-                  </mm:node>
-                </mm:isempty>
-                <mm:isnotempty referid="class">
-                  <mm:node number="$class">
-                    <mm:relatedcontainer path="mmevents">
-                       <mm:size write="false">
+                <mm:isnotempty referid="education">
+                  <mm:compare referid="class" value="null">
+                    <mm:import id="class" reset="true" />
+                  </mm:compare>
+                  <mm:isempty referid="class">
+                    <mm:node number="$user">
+                      <mm:relatednodescontainer type="educations" role="classrel" >
+                        <mm:size>
+                          <mm:compare value="0">
+                            <mm:relatednodescontainer type="classes" >
+                              <mm:size>
+                                <mm:compare value="0">
+                                  <di:translate key="core.validatelogin_noclass" />
+                                </mm:compare>
+                              </mm:size>
+                            </mm:relatednodescontainer>
+                          </mm:compare>
+                        </mm:size>
+                      </mm:relatednodescontainer>
+                    </mm:node>
+                  </mm:isempty>
+                  <mm:isnotempty referid="class">
+                    <mm:node number="$class">
+                      <mm:relatedcontainer path="mmevents">
+                        <mm:size write="false">
                           <mm:isgreaterthan value="0">
                             <% String now = "" + (System.currentTimeMillis() / 1000); %>
                             <mm:constraint field="mmevents.start" operator="LESS" value="<%=now%>" />
@@ -77,15 +87,17 @@
           </di:hasrole>
         </di:hasrole>
       </di:hasrole>
-    <mm:node number="$user">
-      <mm:relatednodescontainer type="roles">
-        <mm:size>
-          <mm:compare value="0">
-            <di:translate key="core.validatelogin_norole" />
-          </mm:compare>
-        </mm:size>
-      </mm:relatednodescontainer>
-    </mm:node>
+      <mm:node number="$user">
+        <mm:relatednodescontainer type="roles">
+          <mm:size>
+            <mm:compare value="0">
+              <di:translate key="core.validatelogin_norole" />
+            </mm:compare>
+          </mm:size>
+        </mm:relatednodescontainer>
+      </mm:node>
+    </mm:notpresent>
+    <mm:remove referid="userdisabled"/>
   </mm:isgreaterthan>
 </mm:cloud>
 </mm:content>
