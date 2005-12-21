@@ -306,7 +306,7 @@
 
 <div class="mainContent">
   <div class="contentHeader">
-
+    <mm:import externid="mailboxname" from="parameters"/><mm:write referid="mailboxname" />
   </div>
   <div class="contentBodywit">
 <br><br><br>
@@ -367,7 +367,7 @@
 	      </mm:node>
 	      </mm:present>
               <tr><td colspan="2">
-                    <input type="file" class="formInput" name="att_handle" class="formbutton">
+                    <input type="file" class="formInput" name="att_handle" size="41" class="formbutton">
                 </td><td>
 		    <input type="submit" name="att_attachment_action" value="<di:translate key="email.updateattachments" />" class="formbutton">
             </td></tr>
