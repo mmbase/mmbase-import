@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.37 2005-12-17 17:51:47 michiel Exp $
+ * @version $Id: NodeInfoTag.java,v 1.38 2005-12-21 14:15:28 pierre Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -77,27 +77,29 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     public int doStartTag() throws JspTagException{
 
         NodeManager nodeManager = null;
-        int t = getType();
-        switch(t) {
-        case TYPE_NODEMANAGER:
-        case TYPE_DESCRIPTION:
-        case TYPE_GUINODEMANAGER:
-        case TYPE_GUINODEMANAGER_PLURAL:
-            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
-                nodeManager = getNode().getNodeManager();
-            } else {
-                nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
-            }
+        if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
+            nodeManager = getNode().getNodeManager();
+        } else {
+            nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
         }
         Object show = "";
 
         // set node if necessary:
+        int t = getType();
         switch(t) {
         case TYPE_NODENUMBER:
-            show = ""+getNode().getNumber();
+            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
+                show = new Integer(getNode().getNumber());
+            } else {
+                show = new Integer(nodeManager.getNumber());
+            }
             break;
         case TYPE_CONTEXT:
-            show = getNode().getContext();
+            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
+                show = getNode().getContext();
+            } else {
+                show = nodeManager.getContext();
+            }
             break;
         case TYPE_NODEMANAGER:
             show = nodeManager.getName();
@@ -112,18 +114,22 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             show = nodeManager.getGUIName(10);
             break;
         case TYPE_GUI: {
-            helper.useEscaper(false); // gui produces html
-            String sessionName = "";
-            CloudTag ct = (CloudTag) findParentTag(CloudTag.class, null, false);
-            if (ct != null) {
-                sessionName = ct.getSessionName();
+            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
+                helper.useEscaper(false); // gui produces html
+                String sessionName = "";
+                CloudTag ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+                if (ct != null) {
+                    sessionName = ct.getSessionName();
+                }
+                Node node = getNode();
+                Function guiFunction = node.getFunction("gui");
+                Parameters args = guiFunction.createParameters();
+                args.set(Parameter.FIELD, ""); // lot of function implementations would not stand 'null' as field name value
+                args.set("session",  sessionName);
+                show = Casting.toString(guiFunction.getFunctionValue(args));
+            } else {
+                show = nodeManager.getGUIName();
             }
-            Node node = getNode();
-            Function guiFunction = node.getFunction("gui");
-            Parameters args = guiFunction.createParameters();
-            args.set(Parameter.FIELD, ""); // lot of function implementations would not stand 'null' as field name value
-            args.set("session",  sessionName);
-            show = Casting.toString(guiFunction.getFunctionValue(args));
             break;
         }
         case TYPE_QUERY:
