@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.16 2005-09-23 09:18:51 michiel Exp $
+ * @version $Id: Xml.java,v 1.17 2005-12-21 08:05:01 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -122,6 +122,14 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     public static String XMLEscape(String xml){
         if (xml == null) return "";
         StringBuffer sb = new StringBuffer();
+        XMLEscape(xml, sb);
+        return sb.toString();
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static void XMLEscape(String xml, StringBuffer sb) {
         char[] data = xml.toCharArray();
         char c;
         for (int i =0 ; i < data.length; i++){
@@ -142,7 +150,6 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
                 sb.append(c);
             }
         }
-        return sb.toString();
     }
 
     private static String removeNewlines(String incoming) {
