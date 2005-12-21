@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+
 <wizard-schema id="empty">
     <title xml:lang="nl">Welkom Pagina Editor</title>
-    <title xml:lang="en">Welcomepage Editor</title>
+    <title xml:lang="en">Welcome page Editor </title>
 
     <action type="create">
        <object type="flashpages">
@@ -11,8 +12,18 @@
     </action>
 
 
-    <action type="load">
+    <action type="load">        
         <relation destination="attachments" role="related" />
+        <relation destination="images" role="related" />
+        <relation destination="urls" role="posrel" />
+        <relation destination="audiotapes" role="posrel" />
+        <relation destination="videotapes" role="posrel" />   
+        <relation destination="flashpages" role="descriptionrel" />
+         <object>
+         	<relation destination="attachments" role="related" />
+         	<relation destination="images" role="related" />
+         	<relation destination="urls" role="posrel" />	
+         </object>
     </action>
 
     <action type="delete" />
@@ -52,5 +63,11 @@
         </field>
 
         <list minoccurs="0" maxoccurs="1" role="related" extends="config/attachment/attachments.xml" />
+        <list minoccurs="0" maxoccurs="1" role="related" extends="config/image/images.xml" />
+        <list role="posrel" extends="config/audiotape/audiotapes-posrel.xml" />
+    	<list role="posrel" extends="config/videotape/videotapes-posrel.xml" />
+    	<list destination="urls" role="posrel" extends="config/url/urls-posrel.xml" />
+    	<list destination="flashpages" role="descriptionrel" extends="config/flashpages/flashpages-described.xml" />
+    
     </form-schema>
 </wizard-schema>
