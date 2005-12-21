@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.9 2005-12-09 16:14:00 pierre Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.10 2005-12-21 17:43:47 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -385,6 +385,41 @@ public class ASelectAuthentication extends Authentication {
             log.debug("app: '" + application + "' loginInfo: " + loginInfo);
         }
 
+        if ("class".equals(application)) {
+            org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
+            if (li == null) {
+                throw new SecurityException("Class authentication failed  '" + application + "' (class not authorized)");
+            }
+            String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
+            String rank     = (String) li.getMap().get(PARAMETER_RANK.getName());
+            if (useCloudContext) {
+                
+                Rank r;
+                if (rank != null) {
+                    r = Rank.getRank(rank);
+                    if (userName == null) userName = r.toString();
+                } else {
+                    rank = knownUsers != null && userName != null ? knownUsers.getProperty(userName) : null;
+                    r = rank != null ? Rank.BASICUSER : Rank.getRank(rank);
+                }
+                if (userName == null) throw new SecurityException("Should specify at least a username or a rank for class authenication (given " + li + ":" + li.getMap() + ")");
+                return new ASelectCloudContextUser(userName, uniqueNumber, "class", r.toString());
+            } else {
+                if (userName == null) {
+                    if (rank != null) {
+                        userName = rank;
+                    }
+                }
+                Rank r = null;
+                if (rank == null) {
+                    r = getRank(userName);
+                } else {
+                    r = Rank.getRank(rank);
+                }
+                return new ASelectUser(userName, r, uniqueNumber, "class");
+            }
+        }
+
         if (loginInfo == null) {
             return getAnonymousUser();
         }
@@ -416,23 +451,6 @@ public class ASelectAuthentication extends Authentication {
                 //return null;
             }
             return getAnonymousUser();
-        }
-
-        if ("class".equals(application)) {
-            org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
-            if (li == null) {
-                throw new SecurityException("Class authentication failed  '" + application + "' (class not authorized)");
-            }
-            String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
-            if (useCloudContext) {
-                String r = (String) li.getMap().get(PARAMETER_RANK.getName());
-                if (r == null) {
-                    r = knownUsers.getProperty(userName);
-                }
-                return new ASelectCloudContextUser(userName, uniqueNumber, "class", r);
-            } else {
-                return new ASelectUser(userName, getRank(userName), uniqueNumber, "class");
-            }
         }
         List userNames     = (List)loginInfo.get(PARAMETER_USERNAMES.getName());
 
