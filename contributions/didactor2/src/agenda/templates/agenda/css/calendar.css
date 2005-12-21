@@ -102,3 +102,10 @@
 calToday:hover {
  font-weight: bold; color: #d2691e cursor: pointer; border-bottom: #d2691e 1px solid;
 }
+
+/*
+* For table header alignement
+*/
+table.font tr th {
+  text-align: left;
+}
