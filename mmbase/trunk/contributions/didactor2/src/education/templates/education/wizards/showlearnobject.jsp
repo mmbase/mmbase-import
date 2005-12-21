@@ -2,7 +2,7 @@
    <%@include file="whichimage.jsp"%>
    <mm:import id="objecttype" reset="true" jspvar="dummyName" vartype="String"><mm:nodeinfo type="type" /></mm:import>
 
-   <mm:compare referid="objecttype" valueset="couplingquestions,dropquestions,hotspotquestions,mcquestions,openquestions,rankingquestions,valuequestions,fillquestions,fillselectquestions" inverse="true">
+   <mm:compare referid="objecttype" valueset="couplingquestions,dropquestions,hotspotquestions,mcquestions,openquestions,rankingquestions,valuequestions,fillquestions,fillselectquestions,opennumeralquestions,essayquestions,openvaluequestions" inverse="true">
    
 
       <mm:compare referid="objecttype" valueset="learnblocks" inverse="true">
