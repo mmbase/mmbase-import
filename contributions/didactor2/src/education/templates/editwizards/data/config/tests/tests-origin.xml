@@ -193,12 +193,13 @@
       <command name="startwizard" inline="true" wizardname="config/question/fillselectquestions" objectnumber="new">
          <prompt>Fill select questions</prompt>
        </command>
-            <command name="startwizard" inline="true" wizardname="config/question/opennumeralquestions" objectnumber="new">
-                <prompt>Open numeral question</prompt>
-            </command>
-            <command name="startwizard" inline="true" wizardname="config/question/essayquestions" objectnumber="new">
-                <prompt>Essay question</prompt>
-            </command>
+       <command name="startwizard" inline="true" wizardname="config/question/opennumeralquestions" objectnumber="new">
+          <prompt>Open numeral question</prompt>
+          <prompt xml:lang="nl">Niuewe open cijfer vraag</prompt>
+        </command>  
+        <command name="startwizard" inline="true" wizardname="config/question/essayquestions" objectnumber="new">
+          <prompt>Essay question</prompt>
+        </command>
 
     </list>
     &extra_lists;
