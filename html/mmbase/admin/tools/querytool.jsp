@@ -1,5 +1,5 @@
 <%@page session="false" import="java.sql.*, javax.sql.*, org.mmbase.module.core.MMBase, org.mmbase.storage.implementation.database.Attributes"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><mm:content type="text/html" postprocessor="reducespace" expires="0">
 <mm:cloud rank="administrator">
 <html>
@@ -11,7 +11,6 @@
   </head>
   <body>
     <%
-    // if (true) {
     if (false) {
     %>
     <mm:import externid="submit" />
@@ -33,7 +32,7 @@
         %>
         <tr>
           <%
-          for (int i = 1; i < rs.getMetaData().getColumnCount(); i++)  {
+          for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++)  {
           %>
           <th>
             <%= rs.getMetaData().getColumnName(i) %>
@@ -41,18 +40,18 @@
           <%} %>
         </tr>
         <%
-        while(rs.next()) {        
+        while(rs.next()) {
         %>
         <tr>
           <%
-          for (int i = 1; i < rs.getMetaData().getColumnCount(); i++) {
+          for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
           %>
           <td>
             <%= rs.getString(i) %>
           </td>
           <%} %>
         </tr>
-        <%} 
+        <%}
         } catch (Exception e) {
         out.println(e.getMessage());
         } finally {
@@ -65,11 +64,11 @@
         if (con != null) {
         con.close();
         }
-        } catch (Exception g) {} 
+        } catch (Exception g) {}
         }
-        %>        
+        %>
       </table>
-    </mm:present>    
+    </mm:present>
     <%} else {%>
     <h1>Disabled, change JSP to switch this feature on</h1>
     <% } %>
