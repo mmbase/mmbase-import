@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorEducation" maintainer="didactor.nl" version="20" auto-deploy="true">
+<application name="DidactorEducation" maintainer="didactor.nl" version="22" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -28,6 +28,7 @@
         <!-- Different questions&answers -->
         <builder maintainer="didactor.nl" version="2">openquestions</builder>
         <builder maintainer="didactor.nl" version="2">openanswers</builder>
+        <builder maintainer="didactor.nl" version="2">opennumeralquestions</builder>
         <builder maintainer="didactor.nl" version="2">essayquestions</builder>
 
         <builder maintainer="didactor.nl" version="2">mcquestions</builder>
@@ -133,6 +134,9 @@
 
         <!-- Open questions -->
         <relation from="openquestions" to="openanswers" type="related" />
+        <!-- Open numeral questions -->
+        <relation from="opennumeralquestions" to="openanswers" type="related" />
+        <relation from="opennumeralquestions" to="variables" type="related" />
 
         <!-- Value questions -->
         <relation from="valuequestions" to="valueanswers" type="posrel" />
