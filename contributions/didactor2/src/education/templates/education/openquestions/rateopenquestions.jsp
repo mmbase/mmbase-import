@@ -14,11 +14,48 @@
   <%-- Which answer has been given on the question --%>
   <mm:import externid="$question" id="givenanswer" />
 
-  <%-- Save the answer --%>
-  <mm:createnode type="givenanswers" id="my_givenanswers">
-    <mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
-    <mm:setfield name="score"><mm:write referid="TESTSCORE_TBS"/></mm:setfield>
-  </mm:createnode>
+
+	<mm:field name="type_of_score" id="type">
+	
+		<mm:compare value="0">	
+  			<%-- Save the answer if type_of_score=0 --%>
+  			<mm:createnode type="givenanswers" id="my_givenanswers">
+    			<mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
+    			<mm:setfield name="score"><mm:write referid="TESTSCORE_TBS"/></mm:setfield>
+  			</mm:createnode>
+		</mm:compare> 
+		
+		<mm:compare value="2">
+		<%-- Save the answer if type_of_score=2 --%>
+  			<mm:createnode type="givenanswers" id="my_givenanswers">
+    			<mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
+    			<mm:setfield name="score"><mm:write referid="TESTSCORE_COR"/></mm:setfield>
+  			</mm:createnode>
+		</mm:compare> 
+<		
+		<mm:compare value="1">
+		 <%-- Save the answer if type_of_score=1 --%> 
+			<mm:relatednodes type="openanswers" id="openanswers">
+				<mm:field name="text" id="text">
+					<mm:compare referid="givenanswer" referid2="openanswers">
+						<mm:createnode type="givenanswers" id="my_givenanswers">
+    						<mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
+    						<mm:setfield name="score"><mm:write referid="TESTSCORE_COR"/></mm:setfield>
+  						</mm:createnode>
+					</mm:compare>
+					<mm:compare referid="givenanswer" referid2="openanswers" inverse="true">
+					<mm:createnode type="givenanswers" id="my_givenanswers">
+    						<mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
+    						<mm:setfield name="score"><mm:write referid="TESTSCORE_WR"/></mm:setfield>
+  						</mm:createnode>
+					</mm:compare>
+				</mm:field>
+			</mm:relatednodes>
+			
+		</mm:compare>
+		 
+  	</mm:field>
+  	
   <mm:createrelation role="related" source="madetest" destination="my_givenanswers"/>
   <mm:createrelation role="related" source="question" destination="my_givenanswers"/>
           
