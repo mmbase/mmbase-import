@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.5 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.6 2005-12-21 11:39:25 michiel Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -67,7 +67,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
             if (newConstraint == null) {
                 newConstraint = constraint;
             } else {
-                newConstraint = query.createConstraint(constraint, op, newConstraint);
+                newConstraint = query.createConstraint(newConstraint, op, constraint);
             }
         }
         if (newConstraint != null) {
