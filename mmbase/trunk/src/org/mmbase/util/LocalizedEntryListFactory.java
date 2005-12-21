@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.22 2005-12-20 18:26:59 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.23 2005-12-21 14:16:57 pierre Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -367,7 +367,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             Bundle b = (Bundle) i.next();
             Class wrapper = b.wrapper;
             HashMap constants = b.constantsProvider;
-            log.info(" " + wrapper + " " + constants);
+            // log.info(" " + wrapper + " " + constants);
             Object nk = SortedBundle.castKey(string, null, constants, wrapper);
             if (string != nk) {
                 log.debug("Casted " + key + " to " + nk);
@@ -382,7 +382,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         try {
             LocalizedEntryListFactory clone = (LocalizedEntryListFactory) super.clone();
             Iterator j = clone.bundles.iterator();
-            clone.bundles   = new ArrayList();            
+            clone.bundles   = new ArrayList();
             while(j.hasNext()) {
                 clone.bundles.add(((PublicCloneable) j.next()).clone());
             }
@@ -404,7 +404,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * Clears all added keys, bundles and queries.
      */
     public void clear() {
-        localized.clear();        
+        localized.clear();
         bundles.clear();
         fallBack.clear();
     }
