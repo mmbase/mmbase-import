@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="attachments" maintainer="www.mmbase.org" version="0" extends="object">
-  <status>active</status>  
+  <status>active</status>
   <class>org.mmbase.module.builders.Attachments</class>
 
   <searchage>31</searchage>
@@ -23,7 +23,7 @@
         <description xml:lang="en">Attachment, such as a PDF file</description>
         <description xml:lang="nl">Bijlage, zoals een PDF bestand</description>
   </descriptions>
-  
+
   <fieldlist>
     <field>
       <descriptions>
@@ -68,7 +68,7 @@
         <type state="persistent" size="64000" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    
+
     <field>
       <descriptions>
         <description xml:lang="en">Mimetype of the attachment, default: application/octet-stream</description>
@@ -108,7 +108,7 @@
           <search>4</search><!-- I think it absurd that you can search on filename but not otherwise see it -->
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filename</name>
         <type state="persistent" size="128" notnull="true" key="false">STRING</type>
@@ -138,7 +138,7 @@
         <type state="persistent" notnull="true" key="false">INTEGER</type>
       </db>
     </field>
-    
+
     <field>
       <descriptions>
         <description xml:lang="en">The attachment (which you can upload as a file)</description>
@@ -148,12 +148,12 @@
         <guiname xml:lang="en">File</guiname>
         <guiname xml:lang="nl">Bestand</guiname>
         <guiname xml:lang="eo">Dosiero</guiname>
-      </gui> 
+      </gui>
       <db>
         <name>handle</name>
         <type state="persistent" size="16777215" notnull="true" key="false">BYTE</type>
       </db>
-    </field>    
+    </field>
   </fieldlist>
 
 </builder>

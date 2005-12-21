@@ -225,6 +225,7 @@
         <guiname xml:lang="nl">Bestandsnaam</guiname>
         <guiname xml:lang="eo">Dosiernomo</guiname>
       </gui>
+      <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filename</name>
         <type state="system" size="128" notnull="true" key="false">STRING</type>
