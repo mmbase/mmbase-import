@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.21 2005-12-20 23:00:47 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.22 2005-12-21 08:25:00 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -57,7 +57,7 @@ public class ByteHandler extends AbstractTypeHandler {
                  "<input type=\"" + (search ? "text" : "file") + "\" name=\"" + prefix(field.getName()) + "\" />";
     }
 
-    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException { 
+    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         // XXXX TODO
         return "";
     }
@@ -75,18 +75,7 @@ public class ByteHandler extends AbstractTypeHandler {
             throw new BridgeException("getBytes(" + prefix(fieldName) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
         if (bytes.getSize() > 0) {
-            String fileName = bytes.getName();            
-            { // some browers provide directory information. Take that away.
-                int pos = fileName.lastIndexOf("\\");
-                if (pos > 0) {
-                    fileName = fileName.substring(pos + 1);
-                }
-                pos = fileName.lastIndexOf("/");
-                if (pos > 0) {
-                    fileName = fileName.substring(pos + 1);
-                }
-            }
-
+            String fileName = bytes.getName();
             String fileType = bytes.getContentType();
 
             try {
@@ -106,12 +95,12 @@ public class ByteHandler extends AbstractTypeHandler {
                 ) {
                 node.setStringValue("filename", fileName);
             }
-            if (nm.hasField("size") && 
+            if (nm.hasField("size") &&
                 cc.find(tag.getPageContext(), prefix("size")) == null
                 ) {
                 node.setLongValue("size", bytes.getSize());
             }
-            if (nm.hasField("filesize") && 
+            if (nm.hasField("filesize") &&
                 cc.find(tag.getPageContext(), prefix("filesize")) == null
                 ) {
                 node.setLongValue("filesize", bytes.getSize());
