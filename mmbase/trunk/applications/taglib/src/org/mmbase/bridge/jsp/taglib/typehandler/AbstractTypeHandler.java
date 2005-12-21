@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.35 2005-12-20 23:00:47 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.36 2005-12-21 18:10:41 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -143,7 +143,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (node != null) {
             show.append(node.getStringValue(field.getName()));
         } else {
-            Object searchParam = getFieldValue(node, field);
+            Object searchParam = getFieldValue(node, field, ! search);
             show.append((searchParam == null ? "" : searchParam));
         }
         show.append("\" />");
@@ -156,13 +156,13 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     protected Object cast(Object value, Node node, Field field) {
         return field.getDataType().cast(value, node, field);
     }
-    protected Object getFieldValue(Node node, Field field) throws JspTagException {
+    protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         String fieldName = field.getName();
         Object value = getFieldValue(fieldName);
         if (value == null) {            
             if (node != null) {
                 value = node.getValue(fieldName);
-            } else {
+            } else if (useDefault) {
                 value = field.getDataType().getDefaultValue();
             }
         } else {
@@ -177,7 +177,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.checkHtmlInput(node, field, errors);
         }
         String fieldName = field.getName();
-        Object fieldValue = getFieldValue(node, field);
+        Object fieldValue = getFieldValue(node, field, false);
         DataType dt = field.getDataType();
         Collection col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
@@ -210,7 +210,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
-        Object fieldValue = getFieldValue(node, field);
+        Object fieldValue = getFieldValue(node, field, false);
         if (fieldValue == null) {
 
         } else {
