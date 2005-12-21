@@ -1,3 +1,6 @@
+<!--
+  $Id: build.xml,v 1.25 2005-12-21 19:50:01 michiel Exp $
+-->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
   <!-- ===================== Initialize Property Values =================== -->
@@ -286,7 +289,7 @@
   <!-- ================================================================================ -->
   <!-- Main documentation Target                                                        -->
   <!-- ================================================================================ -->
-  <target name="documentation" depends="documentation.html,documentation.static.copy,documentation.pdf">
+  <target name="documentation" depends="documentation.html,documentation.static.copy">
     <!-- delete dir="${documentation.temp.dir}"/ -->
   </target>
  
