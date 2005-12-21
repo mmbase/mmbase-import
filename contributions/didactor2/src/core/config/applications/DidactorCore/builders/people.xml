@@ -170,6 +170,7 @@
       <gui>
         <guiname xml:lang="nl">Adres</guiname>
         <guiname xml:lang="en">Address</guiname>
+        <guiname xml:lang="fr">Adresse</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -203,6 +204,7 @@
       <gui>
         <guiname xml:lang="nl">Postcode</guiname>
         <guiname xml:lang="en">Zipcode</guiname>
+        <guiname xml:lang="fr">Zipcode</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -236,6 +238,7 @@
       <gui>
         <guiname xml:lang="nl">Plaats</guiname>
         <guiname xml:lang="en">City</guiname>
+        <guiname xml:lang="fr">Ville</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -303,6 +306,7 @@
       <gui>
         <guiname xml:lang="nl">Telefoonnummer</guiname>
         <guiname xml:lang="en">Telephone number</guiname>
+        <guiname xml:lang="fr">Le numéro de téléphone</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -571,6 +575,7 @@
       <gui>
         <guiname xml:lang="en">Remarks</guiname>
         <guiname xml:lang="nl">Opmerkingen</guiname>
+        <guiname xml:lang="fr">Remarques</guiname>
         <guitype>field</guitype>
       </gui>
       <!-- editor related  -->
