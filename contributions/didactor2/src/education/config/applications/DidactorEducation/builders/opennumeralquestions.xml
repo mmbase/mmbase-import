@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="openquestions" maintainer="didactor.nl" version="2" extends="questions">
+<builder name="opennumeralquestions" maintainer="didactor.nl" version="2" extends="questions">
   <status>active</status>
   <classfile>nl.didactor.education.builders.OpenQuestionBuilder</classfile>
   <searchage>31</searchage>
@@ -8,10 +8,10 @@
   <names>
     <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Open Vraag</singular>
-    <singular xml:lang="en">Open Question</singular>
+    <singular xml:lang="en">Open Numeral Question</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Open Vragen</plural>
-    <plural xml:lang="en">Open Questions</plural>
+    <plural xml:lang="en">Open Numeral Questions</plural>
   </names>
 
   <descriptions>
@@ -27,22 +27,20 @@
      0 = Large field
      1 = Small field
   -->
-  <fieldlist >
-   <field>
+   <fieldlist>
+    
+    
+    <!-- POS 4 : <field> 'text'  -->
+    <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">
-          Layout van de vraag. Zie TO voor mogelijke waarden.
-        </description>
-        <description xml:lang="en">
-          Layout of the question in the template. See TO for possible values.
-        </description>
+        <description xml:lang="nl">Description van de vraag</description>
+        <description xml:lang="en">Description</description>
       </descriptions>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Score</guiname>
-        <guiname xml:lang="en">Score</guiname>
-        <guitype>integer</guitype>
+        <guiname xml:lang="nl">Description</guiname>
+        <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
       <editor>
@@ -58,12 +56,11 @@
       <!-- database related  -->
       <db>
         <!-- name of the field in the database -->
-        <name>type_of_score</name>
+        <name>description</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true">INTEGER</type>
+        <type state="persistent" size="65535" notnull="true" key="false">STRING</type>
       </db>
     </field>
- 
-    </fieldlist>
-    
+   
+  </fieldlist>
 </builder>
