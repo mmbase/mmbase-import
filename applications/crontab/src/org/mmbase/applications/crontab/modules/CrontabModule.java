@@ -8,7 +8,8 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.crontab.modules;
 
 import java.util.*;
-
+import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.ResourceWatcher;
 import org.mmbase.applications.crontab.*;
 import org.mmbase.module.WatchedReloadableModule;
 import org.mmbase.util.logging.*;
@@ -17,6 +18,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: CrontabModule.java,v 1.2 2005-12-22 18:15:18 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 	
@@ -48,48 +50,56 @@ public class CrontabModule extends WatchedReloadableModule {
         Iterator i = getInitParameters().entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry)i.next();
-            String value = (String)entry.getValue();
-            String[] tokens = value.trim().split("[\n|]");
-            String times;
-            if (tokens.length > 0) {
-                times = tokens[0].trim();
-            } else {
-                log.error("No times in " + value);
-                continue;
-            }
-            String className;
-            if (tokens.length > 1) {
-                className = tokens[1].trim();
-            } else {
-                log.error("No className  " + value);
-                continue;
-            }
-            String description = null;
-            String configString = null;
-            String type = null;
-            if (tokens.length > 2) {
-                description = tokens[2].trim();
-            }
-            if (description == null || description.length() == 0) {
-                description = (String)entry.getKey();
-            }
+            addJob(entry);
+        }
+        readMoreJobs();
+    }
 
-            if (tokens.length > 3) {
-                configString = tokens[3].trim();
-            }
-            if (tokens.length > 4) {
-                type = tokens[4].trim();
-            }
-
-            try {
-                CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type);
-                myEntries.add(job);
-                cronDaemon.add(job);
-            } catch (Exception e) {
-                log.error("Could not add to CronDaemon " + entry.getKey() + "|" + times + "|" + description + "|" + className + " " + e.getClass().getName() + ": " + e.getMessage());
-            }
+    protected void addJob(Map.Entry entry) {
+        String value = (String)entry.getValue();
+        String[] tokens = value.trim().split("[\n|]");
+        String times;
+        if (tokens.length > 0) {
+            times = tokens[0].trim();
+        } else {
+            log.error("No times in " + value);
+            return;
+        }
+        String className;
+        if (tokens.length > 1) {
+            className = tokens[1].trim();
+        } else {
+            log.error("No className  " + value);
+            return;
+        }
+        String description = null;
+        String configString = null;
+        String type = null;
+        if (tokens.length > 2) {
+            description = tokens[2].trim();
+        }
+        if (description == null || description.length() == 0) {
+            description = (String)entry.getKey();
+        }
+        
+        if (tokens.length > 3) {
+            configString = tokens[3].trim();
+        }
+        if (tokens.length > 4) {
+            type = tokens[4].trim();
+        }
+        
+        try {
+            CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type);
+            log.service("Found job: " + job);
+            myEntries.add(job);
+            cronDaemon.add(job);
+        } catch (Exception e) {
+            log.error("Could not add to CronDaemon " + entry.getKey() + "|" + times + "|" + description + "|" + className + " " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
+
+    
 
     /**
      * All previously added entries are removed from the cron-daemon and the currently configured
@@ -103,6 +113,21 @@ public class CrontabModule extends WatchedReloadableModule {
         }
         myEntries.clear();
         init();
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+
+    private Map utilProperties = new UtilReader("crontab.xml", new ResourceWatcher() { public void onChange(String n) { init();}}).getProperties();
+
+    public void readMoreJobs() {
+        Iterator i = utilProperties.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            addJob(entry);
+        }
+        
     }
 
 }
