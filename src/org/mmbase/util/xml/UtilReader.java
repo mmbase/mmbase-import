@@ -10,17 +10,30 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
-
+import java.net.URL;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.Element;
 /**
  * This class reads configuration files for utilities, that are
  * placed in /config/utils/.
+ *
+ * A typical way to use it may be like so:
+ <pre>
+    private UtilReader.PropertiesMap utilProperties = new UtilReader("myutil.xml", new ResourceWatcher() { public void onChange(String n) { init();}}).getProperties();
+    private void init() {
+      // use utilProperties
+    }
+    {
+      init();
+    }
+ </pre>
+This produces a 'watched map' utilProperties. Everytime the underlying config file(s) are changed 'init' is called. Init is called on instantation of the surrounding class too.
+ *
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.17 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: UtilReader.java,v 1.18 2005-12-22 18:13:58 michiel Exp $
  */
 public class UtilReader {
 
@@ -124,59 +137,76 @@ public class UtilReader {
         } else {
             properties.clear();
         }
-        org.xml.sax.InputSource is;
-        try {
-            is = ResourceLoader.getConfigurationRoot().getInputSource(s);
-        } catch (java.io.IOException ioe) {
-            // input source does not exist
-            log.debug(ioe);
-            return;
-        }
-        if (is != null) {
-            DocumentReader reader = new DocumentReader(is, UtilReader.class);
-            Element e = reader.getElementByPath("util.properties");
-            if (e != null) {
-                for (Iterator iter = reader.getChildElements(e, "property"); iter.hasNext();) {
-                    Element p = (Element) iter.next();
-                    String name = reader.getElementAttributeValue(p, "name");
-                    String type = reader.getElementAttributeValue(p, "type");
-                    if (type.equals("map")) {
-                        Collection entryList = new ArrayList();
 
-                        for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
-                            Element entry = (Element) entriesIter.next();
-                            String key = null;
-                            String value = null;
-
-                            for (Iterator en = reader.getChildElements(entry, "*"); en.hasNext();) {
-                                Element keyorvalue = (Element) en.next();
-                                if (keyorvalue.getTagName().equals("key")) {
-                                    key = reader.getElementValue(keyorvalue);
-                                } else {
-                                    value = reader.getElementValue(keyorvalue);
+        ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
+        List configList = configLoader.getResourceList(s);
+        log.service("Reading " + configList);
+        Iterator configs = configList.iterator();
+        while (configs.hasNext()) {
+            URL url = (URL) configs.next();
+            org.xml.sax.InputSource is;
+            try {
+                is = ResourceLoader.getInputSource(url);
+            } catch (java.io.IOException ioe) {
+                // input source does not exist
+                log.debug(ioe.getMessage() + " for " + url);
+                continue;
+            }
+            if (is != null) {
+                log.debug("Reading " + url);
+                DocumentReader reader = new DocumentReader(is, UtilReader.class);
+                Element e = reader.getElementByPath("util.properties");
+                if (e != null) {
+                    for (Iterator iter = reader.getChildElements(e, "property"); iter.hasNext();) {
+                        Element p = (Element) iter.next();
+                        String name = reader.getElementAttributeValue(p, "name");
+                        String type = reader.getElementAttributeValue(p, "type");
+                        if (type.equals("map")) {
+                            Collection entryList = new ArrayList();
+                            
+                            for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
+                                Element entry = (Element) entriesIter.next();
+                                String key = null;
+                                String value = null;
+                                
+                                for (Iterator en = reader.getChildElements(entry, "*"); en.hasNext();) {
+                                    Element keyorvalue = (Element) en.next();
+                                    if (keyorvalue.getTagName().equals("key")) {
+                                        key = reader.getElementValue(keyorvalue);
+                                    } else {
+                                        value = reader.getElementValue(keyorvalue);
+                                    }
+                                }
+                                if (key != null && value != null) {
+                                    entryList.add(new Entry(key, value));
                                 }
                             }
-                            if (key != null && value != null) {
-                                entryList.add(new Entry(key, value));
+                            if (properties.containsKey(name)) {
+                                log.service("Property '" + name + "'(" + entryList + "') of " + url + " is shadowed");
+                            } else {
+                                properties.put(name, entryList);
                             }
-                        }
-                        properties.put(name, entryList);
-                    } else {
-                        String value = reader.getElementValue(p);
-                        properties.put(name, value);
+                        } else {
+                            String value = reader.getElementValue(p);
+                            if (properties.containsKey(name)) {
+                                log.service("Property '" + name + "'(" + value + "') of " + url + " is shadowed");
+                            } else {
+                                properties.put(name, value);
+                            }
+                        }                        
                     }
                 }
+            } else {
+                log.debug("Resource " + s + " does not exist");
             }
-        } else {
-            log.debug("Resource " + s + " does not exist");
         }
     }
-
+            
     /**
      * A unmodifiable Map, with extra 'Properties'-like methods.
      * @since MMBase-1.8
      */
-
+    
     public static class PropertiesMap extends AbstractMap {
 
         private Map wrappedMap;
