@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.57 2004-09-14 17:59:38 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.58 2005-12-22 13:41:04 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -186,7 +186,9 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                     nodeHelper.setGeneratingQuery(nodeProvider.getGeneratingQuery());
                 } else {
                     node = nodeProvider.getNodeVar();
-                    nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
+                    if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
+                        nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
+                    }
                 }
 
             }
