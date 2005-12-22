@@ -13,6 +13,7 @@ package org.mmbase.util;
 import java.io.File;
 import java.util.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.UtilReader;
 
 /**
  * Original javadoc.
@@ -61,7 +62,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.32 2005-12-17 19:56:35 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.33 2005-12-22 18:34:17 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -80,7 +81,35 @@ public abstract class FileWatcher {
     /**
      * The one thread doing al the work also needs a delay.
      */
-    static final public long THREAD_DELAY = 10000;
+    static public long THREAD_DELAY = 10000;
+
+
+
+    private static Map props;
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    static private ResourceWatcher watcher = new ResourceWatcher() {
+            public void onChange(String n) {
+                try {
+                    String delay =  (String) props.get("delay");
+                    if (delay != null) {
+                        THREAD_DELAY = Integer.parseInt(delay);
+                        log.service("Set thread delay time to " + THREAD_DELAY);
+                    }
+                } catch (Exception e) {
+                    log.error(e);
+                }
+            }
+        };
+
+
+    static {
+        props = new UtilReader("resourcewatcher.xml", watcher).getProperties();
+        watcher.onChange("");
+    }
 
     /**
      * @since MMBase-1.8
@@ -390,6 +419,7 @@ public abstract class FileWatcher {
                             }
                         }
                     }
+                    log.debug("Sleeping " + THREAD_DELAY + " ms");
                     Thread.sleep(THREAD_DELAY);
                 } catch (InterruptedException e) {
                     log.debug(Thread.currentThread().getName() +" was interrupted.");
