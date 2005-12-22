@@ -6,7 +6,7 @@
 
     <date>2004-09-23</date>
 
-    <edition>$Id: crontab.xml,v 1.2 2005-12-10 14:54:41 johannes Exp $</edition>
+    <edition>$Id: crontab.xml,v 1.3 2005-12-22 18:26:19 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -37,9 +37,11 @@
   <section id="installation">
     <title>Installation</title>
     <para>
-      To install the MMBase crondaemon, you have to place mmbase-crontab.jar and either install the
-      crontab module (crontab.xml) or deploy the MMBaseCronTab application (with the cronjobs builder). 
-      Both can be used a the same time.
+      To install the MMBase crondaemon, you have to place mmbase-crontab.jar, which will activate
+      the crontab module (crontab.xml). You can then optionally also deploy the MMBaseCronTab
+      application (with the cronjobs builder).  If you want to only use the builder and not the
+      module, you can place a crontab.xml in config/modules containing
+      &lt;status&gt;inactive&lt;/status&gt;. You can also simply not use the module, because it doesn't harm.
     </para>
   </section>
 
@@ -57,19 +59,21 @@
     </para>
     <para>
       You can schedule it in two ways now. Make either a cronjobs object or edit
-      &lt;mmbase-config&gt;modules/crontab.xml. The format is as follows:
+      &lt;mmbase-config&gt;modules/crontab.xml, or &lt;mmbase-config&gt;utils/crontab.xml.
+      For the module the format is as follows:
       <programlisting><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module maintainer="mmbase.org" version="0">
   <status>active</status>
-  <classfile>org.mmbase.applications.crontab.modules.CrontabModule</classfile>
+  <class>org.mmbase.applications.crontab.modules.CrontabModule</class>
   <properties>
     <property name="memorystats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||Memory|short</property>
   </properties>
 </module>
 ]]></programlisting>
-      Every property in this file consists of 5 fields, seperated by the pipe (|) symbol. They have the following use:
+      The format for 'crontab.xml' in the utils directory is very similar (find the example).
+      Every property in these files consists of 5 fields, seperated by the pipe (|) symbol. They have the following use:
       <itemizedlist>
         <listitem>
           <para>Timeformat. This is the standard 'crontab' format used in unix, so therefore we refer to the <ulink url="http://www.rt.com/man/crontab.5.html">UNIX crontab manual page</ulink> for more information.</para>
