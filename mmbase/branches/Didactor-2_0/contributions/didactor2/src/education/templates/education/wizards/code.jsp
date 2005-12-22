@@ -188,7 +188,7 @@
                </table>
             </di:hasrole>
          </mm:node>
-         
+
          <mm:node number="component.isbo" notfound="skip">
             <di:hasrole role="systemadministrator">
                <table border="0" cellpadding="0" cellspacing="0">
@@ -226,13 +226,11 @@
             arrstrContentMetadataConfig[3][0]  = cloud.getNodeManager("videotapes").getGUIName(singular, loc);
             arrstrContentMetadataConfig[4][0]  = cloud.getNodeManager("urls").getGUIName(singular, loc);
 
-
             arrstrContentMetadataConfig[0][1] = "config/image/image";
             arrstrContentMetadataConfig[1][1] = "config/attachment/attachment";
             arrstrContentMetadataConfig[2][1] = "config/audiotape/audiotapes";
             arrstrContentMetadataConfig[3][1] = "config/videotape/videotapes";
             arrstrContentMetadataConfig[4][1] = "config/url/urls";
-
 
             arrstrContentMetadataConfig[0][2] = "images";
             arrstrContentMetadataConfig[1][2] = "attachments";
@@ -273,10 +271,10 @@
                   </tr>
                </table>
                 <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
-              
+
             <% // add portalpages %>
             <mm:node number="component.portalpages" notfound="skip">
-              <mm:treeinclude page="/portalpages/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" /> 
+              <mm:treeinclude page="/portalpages/backoffice/add_portalpages.jsp" objectlist="" referids="listjsp,wizardjsp" />
             </mm:node>
 
             <% // add help %>
@@ -286,12 +284,12 @@
 
             <% // add faq %>
             <mm:node number="component.faq" notfound="skip">
-              <mm:treeinclude page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />   
+              <mm:treeinclude page="/faq/backoffice/add_faq.jsp" objectlist="" referids="listjsp,wizardjsp" />
             </mm:node>
 
-            <% // add news %>                          
+            <% // add news %>
             <mm:node number="component.news" notfound="skip">
-              <mm:treeinclude page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />  
+              <mm:treeinclude page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />
             </mm:node>
          <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
       </div>
@@ -722,7 +720,7 @@
 
                                <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/mcquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty></a></nobr></td>
                             </mm:compare>
-                            <mm:compare referid="type_of_node" valueset="couplingquestions,dropquestions,hotspotquestions,openquestions,rankingquestions,valuequestions,fillquestions,fillselectquestions">
+                            <mm:compare referid="type_of_node" valueset="couplingquestions,dropquestions,hotspotquestions,openquestions,rankingquestions,valuequestions,fillquestions,fillselectquestions,essayquestions">
                                <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/<mm:write referid="type_of_node"/>&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
                         </mm:nodeinfo>

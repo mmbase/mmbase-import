@@ -18,33 +18,40 @@
       String[] arrstrBuilders = {"config/question/mcquestions-origin",
                                 "config/question/openquestions-origin",
                                 "config/question/rankingquestions-origin",
-                                "config/question/couplingquestions-origin",
+                                "config/couple/couplingquestions-origin",
                                 "config/question/hotspotquestions-origin",
                                 "config/question/valuequestions-origin",
                                 "config/question/dropquestions-origin",
-   								"config/question/fillquestions-origin",
-   								"config/question/fillselectquestions-origin"};
+                                "config/question/fillquestions-origin",
+                                "config/question/fillselectquestions-origin",
+                                "config/question/opennumeralquestions-origin",
+                                "config/question/essayquestions-origin",
+                                "config/question/openvaluequestions-origin"};
 
-
-      String[] arrstrNames = {"education.createnewmcquestions",
-                              "education.createnewopenquestions",
-                              "education.createnewrankingquestions",
-                              "education.createnewcouplingquestions",
-                              "education.createnewhotspotquestions",
-                              "education.createnewvaluequestions",
-                              "education.createnewdropquestions",
-                              "education.createNewFillquestions",
-                              "education.createNewFillselectquestions"};
-      
-      String[] arrstrDescriptionsIDs = {"education.createnewmcquestionsdescription",
-                                        "education.createnewopenquestionsdescription",
-                                        "education.createnewrankingquestionsdescription",
-                                        "education.createnewcouplingquestionsdescription",
-                                        "education.createnewhotspotquestionsdescription",
-                                        "education.createnewvaluequestionsdescription",
-                                        "education.createnewdropquestionsdescription",
-                                        "education.createNewFillquestionsDescription",
-                                        "education.createNewFillselectquestionsDescription"};
+      String[] arrstrNames = {"createNewMcquestions",
+                              "createNewOpenquestions",
+                              "createNewRankingquestions",
+                              "createNewCouplingquestions",
+                              "createNewHotspotquestions",
+                              "createNewValuequestions",
+                              "createNewDropquestions",
+                              "createNewFillquestions",
+                              "createNewFillselectquestions",
+                              "createNewOpennumeralquestions",
+                              "createNewEssayquestions",
+                              "createNewOpenValuequestions"};
+      String[] arrstrDescriptionsIDs = {"createNewMcquestionsDescription",
+                                        "createNewOpenquestionsDescription",
+                                        "createNewRankingquestionsDescription",
+                                        "createNewCouplingquestionsDescription",
+                                        "createNewHotspotquestionsDescription",
+                                        "createNewValuequestionsDescription",
+                                        "createNewDropquestionsDescription",
+                                        "createNewFillquestionsDescription",
+                                        "createNewFillselectquestionsDescription",
+                                        "createNewOpennumeralquestionsDescription",
+                                        "createNewEssayquestionsDescription",
+                                        "createNewOpenValuequestionsDescription"};
 
       for(int f = 0; f < arrstrBuilders.length; f++)
       {

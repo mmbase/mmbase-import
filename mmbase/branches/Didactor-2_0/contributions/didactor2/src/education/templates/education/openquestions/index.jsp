@@ -38,6 +38,8 @@
     <input type="text" size="100" name="<mm:write referid="question"/>" value="<mm:present referid="answer"><mm:write referid="answer" escape="text/plain"/></mm:present>"/>
     <br/>
   </mm:compare>
+  
+  
 </mm:node>
 </mm:cloud>
 </mm:content>

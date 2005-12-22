@@ -1,5 +1,7 @@
 <%--
+
   This template shows the personal workspace (in dutch: persoonlijke werkruimte).
+
 --%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
@@ -55,7 +57,9 @@
 
 				<a
 					href="<mm:treefile page="/projectgroup/create.jsp" objectlist="$includePath" referids="$referids">
+
            <mm:param name="callerpage">/projectgroup/index.jsp</mm:param>
+
 	 </mm:treefile>">
 				<img
 					src="<mm:treefile page="/workspace/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>"
@@ -64,7 +68,9 @@
 				<mm:isgreaterthan referid="workgroup" value="0">
 					<a
 						href="<mm:treefile page="/projectgroup/rename.jsp" objectlist="$includePath" referids="$referids">
+
 		 <mm:param name="callerpage">/projectgroup/index.jsp</mm:param>
+
 	       </mm:treefile>">
 
 					<img
@@ -73,7 +79,9 @@
 
 					<a
 						href="<mm:treefile page="/projectgroup/delete.jsp" objectlist="$includePath" referids="$referids">
+
 	     <mm:param name="callerpage">/projectgroup/index.jsp</mm:param>
+
 	   </mm:treefile>">
 					<img
 						src="<mm:treefile page="/workspace/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>"
@@ -86,7 +94,9 @@
 						constraints="protected=0">
 						<a
 							href="<mm:treefile page="/projectgroup/index.jsp" referids="provider?,education?,class?" objectlist="$includePath">
+
     <mm:param name="workgroup"><mm:field name="number"/></mm:param>
+
     </mm:treefile>">
 						<mm:field name="number">
 							<mm:compare value="$workgroup">
@@ -100,7 +110,7 @@
 					</mm:relatednodes>
 				</mm:node></div>
 
-			</div>
+			
 
 			<form
 				action="<mm:treefile objectlist="$includePath"  referids="$referids" page="/projectgroup/removecontact.jsp"/>"
@@ -108,7 +118,7 @@
 
 			<div class="mainContent">
 
-			<div class="contentHeader">  &nbsp;</div>
+			<div class="contentHeader">  &nbsp;</div>  
 
 			<mm:node referid="workgroup" notfound="skip">
 
@@ -117,7 +127,9 @@
 					value="/projectgroup/index.jsp">
 				<div class="contentSubHeader"><a
 					href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids">
+
                 <mm:param name="addtoworkgroup">1</mm:param>
+
 	             </mm:treefile>">
 				<img
 					src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>"
@@ -126,7 +138,7 @@
 					name="action_delete" value="delete"
 					src="<mm:treefile page="/gfx/icon_deletecontact.gif" objectlist="$includePath" referids="$referids"/>"
 					width="50" height="28" border="0"
-					alt="<di:translate key="address.deletecontact" />" /></a>
+					alt="<di:translate key="address.deletecontact" />" />
 					 
 					<a href="<mm:treefile page="/workspace/index.jsp" objectlist="$includePath" referids="$referids,workgroup"><mm:param name="typeof">4</mm:param></mm:treefile>">
 					<img src="<mm:treefile page="/workspace/gfx/document plaatsen.gif" objectlist="$includePath" referids="$referids"/>"
@@ -157,7 +169,9 @@
 
 							<mm:import id="link"><a
 									href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids">
+
                          <mm:param name="contact"><mm:field name="number"/></mm:param>
+
                        </mm:treefile>"></mm:import>
 
 							<di:row>
@@ -277,24 +291,36 @@
 				</mm:relatednodescontainer>
 			</mm:node></div>
 			</form>
-			</div>
+			
 			<!--comment-->
 
 		<script>
 
+
       function selectAllClicked(frm, newState) {
+
 	  if (frm.elements['ids'].length) {
+
 	    for(var count =0; count < frm.elements['ids'].length; count++ ) {
+
 		var box = frm.elements['ids'][count];
+
 		box.checked=newState;
+
 	    }
+
 	  }
+
 	  else {
+
 	      frm.elements['ids'].checked=newState;
+
 	  }
+
       }
 
-</script>
+
+</script></div>
 
 		<mm:treeinclude page="/cockpit/cockpit_footer.jsp"
 			objectlist="$includePath" referids="$referids" />
