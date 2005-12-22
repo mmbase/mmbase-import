@@ -15,7 +15,11 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.VirtualBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.core.util.Fields;
+import org.mmbase.core.CoreField;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +32,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.15 2005-12-10 14:31:29 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.16 2005-12-22 15:03:52 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -56,6 +60,29 @@ public class VirtualNode implements Node {
 
     public VirtualNode(org.mmbase.module.core.VirtualNode node, Cloud cloud) {
         this(cloud, node, new VirtualNodeManager(node, cloud));
+    }
+
+
+    /**
+     * Makes a Node from a map of values. Sadly, this uses a local MMBase, so you can't use this with
+     * e.g. RMMCI, but I didn't feel like reimplementating Node completely..
+     */
+    public VirtualNode(Map values, Cloud cloud) {
+        this(getVirtualNode(values), cloud);
+
+    }
+
+    protected static org.mmbase.module.core.VirtualNode getVirtualNode(Map values) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        org.mmbase.module.core.VirtualNode node = new  org.mmbase.module.core.VirtualNode(builder);
+        Iterator i = values.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String name = entry.getKey().toString();
+            Object value = entry.getValue();
+            node.storeValue(name, value);
+        }
+        return node;
     }
 
     /**
