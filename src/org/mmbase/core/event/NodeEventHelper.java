@@ -9,8 +9,9 @@
  */
 package org.mmbase.core.event;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Relation;
+import java.util.*;
+
+import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 
@@ -37,7 +38,22 @@ public class NodeEventHelper {
      */
     public static NodeEvent createNodeEventInstance(MMObjectNode node, int eventType, String machineName){
         if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
-        return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), node.getOldValues(), node.getValues(), eventType);
+        Map oldEventValues = new HashMap(), newEventValues = new HashMap();
+        
+        //fill the old and new values maps for the event
+        if(eventType == NodeEvent.EVENT_TYPE_NEW){
+            newEventValues.putAll(node.getValues());
+        }else if(eventType == NodeEvent.EVENT_TYPE_CHANGED){
+            oldEventValues.putAll(node.getOldValues());
+            for(Iterator i = node.getOldValues().keySet().iterator(); i.hasNext(); ){
+                Object key = i.next();
+                newEventValues.put(key, node.getValues().get(key));
+            }
+        }else if(eventType == NodeEvent.EVENT_TYPE_DELETE){
+            oldEventValues.putAll(node.getValues());
+        }
+        
+        return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
     }
     
     public static RelationEvent createRelationEventInstance(Relation node, int eventType, String machineName){
@@ -58,7 +74,6 @@ public class NodeEventHelper {
             throw new IllegalArgumentException( "you can not create a relation changed event with this node");
         }
         if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
-        String builderName = node.getBuilder().getTableName();
         MMObjectNode reldef = node.getNodeValue("rnumber");
         MMObjectBuilder relationSourceBuilder = node.getNodeValue("snumber").getBuilder();
         MMObjectBuilder relationDestinationBuilder = node.getNodeValue("dnumber").getBuilder();
@@ -67,8 +82,8 @@ public class NodeEventHelper {
         int relationDestinationNumber = node.getIntValue("dnumber");
         String relationSourceType = relationSourceBuilder.getTableName();
         String relationDestinationType = relationDestinationBuilder.getTableName();
-
+        NodeEvent nodeEvent = createNodeEventInstance(node, eventType, machineName);
         int role = reldef.getNumber();
-        return new RelationEvent(machineName, builderName, node.getNumber(), node.getOldValues(), node.getValues(), eventType, relationSourceNumber, relationDestinationNumber, relationSourceType, relationDestinationType, role);
+        return new RelationEvent(nodeEvent, relationSourceNumber, relationDestinationNumber, relationSourceType, relationDestinationType, role);
     }
 }

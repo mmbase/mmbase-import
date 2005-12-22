@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.19 2005-12-20 12:10:40 ernst Exp $
+ * @version $Id: NodeEvent.java,v 1.20 2005-12-22 10:13:22 ernst Exp $
  */
 public class NodeEvent extends Event implements Serializable, Cloneable {
 
@@ -178,7 +178,7 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         for (Iterator i = getChangedFields().iterator(); i.hasNext();) {
             changedFields = changedFields + (String) i.next() + ",";
         }
-        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", changedfields: [" + changedFields + "]";
+        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues;
     }
 
     protected static String getEventTypeGuiName(int eventType) {
@@ -239,7 +239,7 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
      * @return true if the field of given name is among the changed fields 
      */
     public boolean hasChanged(String fieldName){
-        if(oldValues.keySet().contains(fieldName))return true;
+        if(oldValues.keySet().contains(fieldName) || newValues.keySet().contains(fieldName))return true;
         return false;
     }
     
@@ -267,10 +267,28 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         
     }
     
+    /**
+     * old values can be different things.
+     * <ul>
+     * <li>if the event type is 'new' this collection is empty.
+     * <li>if the event type is 'changed' this collection contains the old values of the changed fields.
+     * <li>if the event type is 'delete' this collection contains all the values of the node to be deleted.
+     * </ul>
+     * @return a map where the key is a fieldname and the value the field's value
+     */
     public Map getOldValues(){
         return Collections.unmodifiableMap(oldValues);
     }
     
+    /**
+     * new values can be different things.
+     * <ul>
+     * <li>if the event type is 'new' this collection contains all the fields of the node.
+     * <li>if the event type is 'changed' this collection contains the new values of the changed fields.
+     * <li>if the event type is 'delete' this collection is empty.
+     * </ul>
+     * @return a map where the key is a fieldname and the value the field's value
+     */
     public Map getNewValues(){
         return Collections.unmodifiableMap(newValues);
     }
