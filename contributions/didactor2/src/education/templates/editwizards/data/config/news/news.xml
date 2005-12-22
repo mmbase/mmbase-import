@@ -21,9 +21,17 @@
     <form-schema id="step1">
         <title xml:lang="nl">Nieuwsbericht invoeren</title>
         <title xml:lang="en">Enter newsitem</title>
-        <field name="title" >
+        <field name="title">
             <prompt xml:lang="nl">Titel</prompt>
             <prompt xml:lang="en">Title</prompt>
+        </field>
+        <field name="subtitle">
+            <prompt xml:lang="nl">SubTitel</prompt>
+            <prompt xml:lang="en">Subtitle</prompt>
+        </field>
+        <field name="intro">
+            <prompt xml:lang="nl">Intro</prompt>
+            <prompt xml:lang="en">Intro</prompt>
         </field>
         <field name="body">
             <prompt xml:lang="nl">Tekst</prompt>
