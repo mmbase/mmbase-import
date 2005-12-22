@@ -8,6 +8,10 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.NodeEventHelper;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.tests.BridgeTest;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -162,7 +166,30 @@ public class ConstraintMatcherTest extends BridgeTest {
         // !=
         assertTrue("(!=) New node falls within constraint: flush", matchingStrategy.evaluate(event2e, query6, null).shouldRelease());
         assertFalse("(!=) New node falls outside constraint: don't flush", matchingStrategy.evaluate(event2f, query6, null).shouldRelease());
-
+    }
+    
+    public void testCompositeMatcherAndString(){
+    	MMBase mmbase = MMBase.getMMBase();
+    	MMObjectBuilder newsBuilder = mmbase.getBuilder("news");
+    	MMObjectNode node = newsBuilder.getNewNode("system");
+    	node.setValue("title", "test");
+    	node.setValue("subtitle", "testsub");
+    	node.commit();
+    	
+    	node.setValue("title", "newtTitle");
+    	NodeEvent event = NodeEventHelper.createNodeEventInstance(node, NodeEvent.EVENT_TYPE_CHANGED, null);
+    	
+    	Query query1 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.number = 10 AND mags.title='test'", null, null, null, false);
+    	
+    	NodeEvent event1 = new NodeEvent(null, "mags", 10, null, createMap(new Object[][] { { new String("title"), "test" } }), NodeEvent.EVENT_TYPE_NEW);
+    	NodeEvent event2 = new NodeEvent(null, "mags", 11, null, createMap(new Object[][] { { new String("title"), "test" } }), NodeEvent.EVENT_TYPE_NEW);
+    	NodeEvent event3 = new NodeEvent(null, "mags", 10, null, createMap(new Object[][] { { new String("title"), "testhalo" } }), NodeEvent.EVENT_TYPE_NEW);
+    	NodeEvent event4 = new NodeEvent(null, "mags", 10, null, createMap(new Object[][] { { new String("subtitle"), "test" } }), NodeEvent.EVENT_TYPE_NEW);
+    	
+    	assertTrue("both constraints match: flush", matchingStrategy.evaluate(event1, query1, null).shouldRelease());
+    	assertFalse("node number dous not match: don't flush", matchingStrategy.evaluate(event2, query1, null).shouldRelease());
+    	assertFalse("magazine title dous not match: don't flush", matchingStrategy.evaluate(event3, query1, null).shouldRelease());
+    	assertFalse("fields constraints are on don't match: don't flush", matchingStrategy.evaluate(event2, query1, null).shouldRelease());
     }
 
 }
