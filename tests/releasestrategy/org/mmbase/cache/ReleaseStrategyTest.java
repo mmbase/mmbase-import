@@ -154,7 +154,7 @@ public class ReleaseStrategyTest extends BridgeTest {
     public void testRelaionEvent(){
         
         //type: posrel, sourceType: news, destinationType: urls
-        RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, RelationEvent.EVENT_TYPE_NEW, null);
+        RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, NodeEvent.EVENT_TYPE_NEW, null);
         
         //if the query has one step, a relaion event should not flush the query
         Query q1 = Queries.createQuery(cloud, null, "urls", "urls.name", null, null, null, null, false);
@@ -228,7 +228,7 @@ public class ReleaseStrategyTest extends BridgeTest {
             strategy.evaluate(event, q1, null).shouldRelease());
         
         //but the subsequent relation event should
-        RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, RelationEvent.EVENT_TYPE_NEW, null);
+        RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, NodeEvent.EVENT_TYPE_NEW, null);
         assertTrue("relation event of new relation between nodes in multi step query should flush the cache",
             strategy.evaluate(relEvent, q1, null).shouldRelease());
      
