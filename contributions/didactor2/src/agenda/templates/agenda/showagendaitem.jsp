@@ -13,6 +13,7 @@
 <%@include file="/shared/setImports.jsp" %>
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
+  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/agenda/css/calendar.css" objectlist="$includePath" referids="$referids"/>" />
     <title><di:translate key="agenda.appointment" /></title>
   </mm:param>
 </mm:treeinclude>
