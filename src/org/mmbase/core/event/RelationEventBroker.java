@@ -59,7 +59,7 @@ public class RelationEventBroker extends AbstractEventBroker {
         RelationEventListener rel = (RelationEventListener) listener;
         Properties p = rel.getConstraintsForEvent(re);
 
-        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(re.getBuilderName());
+        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(re.getNodeEvent().getBuilderName());
         if (builder.broadcastChanges()) {
             if (p != null) {
                 String nodeType = p.getProperty(PROPERTY_NODETYPE);

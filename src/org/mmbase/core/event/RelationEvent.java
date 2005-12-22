@@ -12,57 +12,63 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class reflects a change relation event. it contains information about
- * the kind of event (new, delete, change), and it contains a reference to the
- * appropriate typerel node, which allows you to find out on which relation from
- * which builder to which builder, the event occered. This is usefull for
- * caching optimization.<br/> A relation changed event is called the twoo nodes
- * that the relation links (or used to).
+ * This class reflects a change relation event. it contains information about the kind of event (new, delete, change),
+ * and it contains a reference to the appropriate typerel node, which allows you to find out on which relation from
+ * which builder to which builder, the event occered. This is usefull for caching optimization.<br/> A relation changed
+ * event is called the twoo nodes that the relation links (or used to).
  * 
- * @author  Ernst Bunders
- * @since   MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.10 2005-11-19 15:21:46 ernst Exp $
+ * @author Ernst Bunders
+ * @since MMBase-1.8
+ * @version $Id: RelationEvent.java,v 1.11 2005-12-22 10:13:22 ernst Exp $
  */
-public class RelationEvent extends NodeEvent implements Serializable, Cloneable {
+public class RelationEvent extends Event implements Serializable, Cloneable {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-	private int relationSourceNumber, relationDestinationNumber;
+    private final int relationSourceNumber, relationDestinationNumber;
 
+    // these are not final becouse they can be reset by MMObjectBuilder.notify()
     private String relationSourceType, relationDestinationType;
 
-    private int relationEventType;
+    private final int role; // the reldef node number
 
-    private int role; //the reldef node number
-  
-    
+    private NodeEvent nodeEvent;
+
+    private final int eventType;
+
     /**
-     * Constructor for relation event 
+     * Constructor for relation event
+     * 
      * @param machineName
      * @param builderName
      * @param nodeNumber
      * @param oldValues
      * @param newValues
      * @param relationEventType
-     * @param relationSourceNumber the nodenumber of the 'soucre' node
-     * @param relationDestinationNumber the nodenumber of the 'destination' node
-     * @param relationSourceType the builder name of the 'source' node
-     * @param relationDestinationType the builder name of the 'destination' node
-     * @param role the nodenumber of the reldef node
+     * @param relationSourceNumber
+     *            the nodenumber of the 'soucre' node
+     * @param relationDestinationNumber
+     *            the nodenumber of the 'destination' node
+     * @param relationSourceType
+     *            the builder name of the 'source' node
+     * @param relationDestinationType
+     *            the builder name of the 'destination' node
+     * @param role
+     *            the nodenumber of the reldef node
      */
-    public RelationEvent(String machineName, String builderName, int nodeNumber, Map oldValues, Map newValues, int relationEventType,
-        int relationSourceNumber, int relationDestinationNumber, String relationSourceType, String relationDestinationType, int role) {
-        super(machineName, builderName, nodeNumber, oldValues, newValues, NodeEvent.EVENT_TYPE_RELATION_CHANGED);
-        
+    public RelationEvent(NodeEvent nodeEvent, int relationSourceNumber, int relationDestinationNumber,
+            String relationSourceType, String relationDestinationType, int role) {
+        super(nodeEvent.getMachine());
+        this.nodeEvent = nodeEvent;
         this.relationSourceNumber = relationSourceNumber;
         this.relationDestinationNumber = relationDestinationNumber;
         this.relationSourceType = relationSourceType;
         this.relationDestinationType = relationDestinationType;
         this.role = role;
-        this.relationEventType = relationEventType;
+        this.eventType = nodeEvent.getType();
     }
 
     public String getName() {
@@ -75,8 +81,8 @@ public class RelationEvent extends NodeEvent implements Serializable, Cloneable 
     public String getRelationSourceType() {
         return relationSourceType;
     }
-    
-    public void setRelationSourceType(String type){
+
+    public void setRelationSourceType(String type) {
         relationSourceType = type;
     }
 
@@ -86,8 +92,8 @@ public class RelationEvent extends NodeEvent implements Serializable, Cloneable 
     public String getRelationDestinationType() {
         return relationDestinationType;
     }
-    
-    public void setRelationDestinationType(String type){
+
+    public void setRelationDestinationType(String type) {
         relationDestinationType = type;
     }
 
@@ -105,10 +111,9 @@ public class RelationEvent extends NodeEvent implements Serializable, Cloneable 
         return relationDestinationNumber;
     }
 
-    public int getRelationEventType() {
-        return relationEventType;
+    public int getType() {
+        return eventType;
     }
-
 
     /**
      * @return the role number
@@ -117,39 +122,25 @@ public class RelationEvent extends NodeEvent implements Serializable, Cloneable 
         return role;
     }
 
-  
-
-   
+    public NodeEvent getNodeEvent() {
+        return nodeEvent;
+    }
 
     public String toString() {
-        return super.toString() + ", relation eventtype: "
-            + getEventTypeGuiName(relationEventType) + ", sourcetype: "
-            + relationSourceType + ", destinationtype: "
-            + relationDestinationType + ", source-node number: "
-            + relationSourceNumber + ", destination-node number: "
-            + relationDestinationNumber+", role: "+role;
+        return super.toString() + ", relation eventtype: " + NodeEvent.getEventTypeGuiName(getType())
+                + ", sourcetype: " + relationSourceType + ", destinationtype: " + relationDestinationType
+                + ", source-node number: " + relationSourceNumber + ", destination-node number: "
+                + relationDestinationNumber + ", role: " + role;
     }
-    
-    public Object clone(){
+
+    public Object clone() {
         Object clone = null;
         clone = super.clone();
-        //deep clone the fields that can change
+        // deep clone the fields that can change
         relationSourceType = new String(relationSourceType);
         relationDestinationType = new String(relationDestinationType);
+        nodeEvent = (NodeEvent) nodeEvent.clone();
         return clone;
-    }
-    
-    public static void main(String[] args) {
-        Map  oldv = new HashMap(), newv = new HashMap();
-        oldv.put("een","veen");
-        oldv.put("twee","vtwee");
-        newv.putAll(oldv);
-        
-        RelationEvent event1 = new RelationEvent("local", "builder", 0, oldv, newv, NodeEvent.EVENT_TYPE_CHANGED, 10, 11, "stype", "dtype", 40);
-        RelationEvent event2 = (RelationEvent)event1.clone();
-        event2.setBuilderName("anoterbuilder");
-        System.out.println(" event 1: " + event1);
-        System.out.println(" event 2: " + event2);
     }
 
 }

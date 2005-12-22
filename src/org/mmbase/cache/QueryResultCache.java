@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.22 2005-11-19 15:19:54 ernst Exp $
+ * @version $Id: QueryResultCache.java,v 1.23 2005-12-22 10:13:22 ernst Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -115,7 +115,16 @@ abstract public class QueryResultCache extends Cache {
         return releaseStrategy;
     }
     
-    
+    /**
+     * @return an iterator of all observer instances
+     */
+    public Iterator observerIterator(){
+        List observerList = new ArrayList();
+        synchronized(this){
+            observerList.addAll(observers.values());
+        }
+        return observerList.iterator();
+    }
 
     /**
      * @throws ClassCastException if key not a SearchQuery or value not a List.
@@ -159,21 +168,24 @@ abstract public class QueryResultCache extends Cache {
     /**
      * Adds observers on the entry
      */
-    private synchronized void addObservers(SearchQuery query) {
+    private void addObservers(SearchQuery query) {
         MMBase.getMMBase();
 
         Iterator i = query.getSteps().iterator();
         while (i.hasNext()) {
             Step step = (Step) i.next();
-            if (step instanceof RelationStep) {
-                continue;
-            }
+            //if we want to test constraints on relaion steps we have to have observers for them
+//            if (step instanceof RelationStep) {
+//                continue;
+//            }
             String type = step.getTableName();
 
             Observer o = (Observer) observers.get(type);
             if (o == null) {
                 o = new Observer(type);
-                observers.put(type, o);
+                synchronized(this){
+                    observers.put(type, o);
+                }
             }
             o.observe(query);
         }
@@ -265,7 +277,7 @@ abstract public class QueryResultCache extends Cache {
                 nodeChanged(event);
          }
 
-        protected int nodeChanged(NodeEvent event) {
+        protected int nodeChanged(Event event) throws IllegalArgumentException{
             log.debug("Considering " + event);
             int evaluatedResults = cacheKeys.size();
             Set removeKeys = new HashSet();
@@ -273,7 +285,14 @@ abstract public class QueryResultCache extends Cache {
             synchronized (QueryResultCache.this) {
                 for (Iterator i = cacheKeys.iterator(); i.hasNext();) {
                     SearchQuery key = (SearchQuery) i.next();
-                    ReleaseStrategy.StrategyResult result = releaseStrategy.evaluate(event, key, (List) get(key));
+                    ReleaseStrategy.StrategyResult result = null;
+                    if(event instanceof NodeEvent){
+                        result = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key));
+                    }else if (event instanceof RelationEvent){
+                        result = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key));
+                    }else{
+                        throw new IllegalArgumentException("event " + event + " is of unsupported type");
+                    }
                     if (result.shouldRelease()) {
                         removeKeys.add(key);
                         i.remove();

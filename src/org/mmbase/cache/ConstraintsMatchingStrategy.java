@@ -107,11 +107,25 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
          if(matcher != null){
             try {
+            	//becouse composite constraints can allso cover fields that are not in the changed field list of the node
+            	//let's find the node and get all the values.
+            	MMObjectNode node = MMBase.getMMBase().getBuilder(event.getBuilderName()).getNode(event.getNodeNumber());
+            	Map oldValues = new HashMap(),newValues = new HashMap(); 
+            	if(node != null){
+            		//put all the (new) values in the value maps 
+            		oldValues.putAll(node.getValues());
+            		newValues.putAll(node.getValues());
+            		log.debug("** node found, add values: " + node.getValues());
+            	}
+            	//now add the values from the event
+            	oldValues.putAll(event.getOldValues());
+            	newValues.putAll(event.getNewValues());
+            	
                 if (event.getType() == NodeEvent.EVENT_TYPE_NEW) {
                     // we have to compare the constraint value with the new value of the changed field to see if the new
                     // node falls within the constraint. it it dous: flush
-                    if(matcher.eventApplies(event.getNewValues(), event)){
-                        boolean eventMatches =  matcher.nodeMatchesConstraint(event.getNewValues(), event);
+                    if(matcher.eventApplies(newValues, event)){
+                        boolean eventMatches =  matcher.nodeMatchesConstraint(newValues, event);
                         logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event);
                         return eventMatches;
                     }else{
@@ -123,8 +137,11 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 } else if (event.getType() == NodeEvent.EVENT_TYPE_CHANGED) {
                     // we have to compare the old value and then the new value of the changed field to see if the status
                     // has changed. if the node used to match the constraint but now dousn't or the reverse of this, flush.
-                    if(matcher.eventApplies(event.getNewValues(), event)){
-                        boolean eventMatches = ( matcher.nodeMatchesConstraint(event.getOldValues(), event) != matcher.nodeMatchesConstraint(event.getNewValues(), event) );
+                    if(matcher.eventApplies(newValues, event)){
+                    	boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
+                    	boolean stillMatches = matcher.nodeMatchesConstraint(newValues, event);
+                    	
+                        boolean eventMatches = usedToMatch != stillMatches;
                         logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event);
                         return eventMatches;
                     }else{
@@ -137,7 +154,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     // we have to compare the old value of the field to see if the node used to fall within the
                     // constriant. If it did: flush
                     if(matcher.eventApplies(event.getOldValues(), event)){
-                        boolean eventMatches = matcher.nodeMatchesConstraint(event.getOldValues(), event);
+                        boolean eventMatches = matcher.nodeMatchesConstraint(oldValues, event);
                         logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event);
                         return eventMatches;
                     }else{
@@ -153,6 +170,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         return true; //safe: should release
     }
 
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+        // TODO I don't think this strategy should handle these events
+        //becouse the node event that preceeds the relation event takes care of it.
+        return false;
+    }
+
     /**
      * this method will find a constraint matcher that supports the given constraint, and will return the
      * UnsupportedConstraintMatcher if non is found
@@ -166,18 +189,18 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         String constraintClassName = constraint.getClass().getName();
         constraintClassName = constraintClassName.substring(constraintClassName.lastIndexOf(".") + 1);
         
-        log.debug("** finding matcher for constraint class name: " + constraintClassName + "Matcher");
+        log.debug("finding matcher for constraint class name: " + constraintClassName + "Matcher");
         
         Class matcherClass = (Class) constraintMatcherClasses.get(constraintClassName + "Matcher");
         if (matcherClass == null) {
             matcherClass = UnsupportedConstraintMatcher.class;
         }
-        log.debug("** matcher class found: " + matcherClass.getName());
+        log.debug("matcher class found: " + matcherClass.getName());
         
         Constructor c = null;
         try {
             c = matcherClass.getConstructor(new Class[] { Constraint.class });
-            if(c == null) log.debug("** help! constructor is null");
+            if(c == null) log.debug("help! constructor is null");
             return (AbstractConstraintMatcher) c.newInstance(new Object[] { constraint });
         }catch(InvocationTargetException e){
             throw new ConstraintMatcherCreationException("During instantiation the constructor of matcher " + matcherClass.toString() + " threw the following exception: " +
@@ -251,8 +274,10 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             int matches = 0;
             for (Iterator i = findRelevantConstraints(valuesToMatch, event).iterator(); i.hasNext();) {
                 AbstractConstraintMatcher acm = (AbstractConstraintMatcher) i.next();
+                log.debug("relevant constraint found: " + acm);
                 try {
                     if (acm.nodeMatchesConstraint(valuesToMatch, event)) matches ++;
+                    log.debug(acm + " created a match on " + valuesToMatch);
                 } catch (FieldComparisonException e) {
                     //if this happens, we count it as a match, which will couse a fluse (safe)
                     matches ++;
@@ -270,8 +295,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             sb.append(wrappedCompositeConstraint.getLogicalOperator() == BasicCompositeConstraint.LOGICAL_AND ? "AND" : "OR");
             sb.append(" [");
             for (Iterator i = wrappedConstraints.iterator(); i.hasNext();) {
+            	sb.append("{");
                 sb.append(((AbstractConstraintMatcher)i.next()).toString());
-                if(i.hasNext()) sb.append(":");
+                if(i.hasNext()) sb.append("} {");
             }
             sb.append("]");
             return sb.toString();
@@ -284,21 +310,34 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
          */
         public boolean eventApplies(Map valuesToMatch, NodeEvent event) {
             List relevantConstraints =  findRelevantConstraints(valuesToMatch, event);
+            log.debug("** relevant constraints:  " + relevantConstraints);
             if(wrappedCompositeConstraint.getLogicalOperator() == BasicCompositeConstraint.LOGICAL_AND){
-                if(wrappedConstraints.size() == relevantConstraints.size()) return true;
+                if(wrappedConstraints.size() == relevantConstraints.size()){
+                	log.debug("** composite AND: all constraints match");
+                	return true;
+                }else{
+                	log.debug("** composite AND: not all constraints match");
+                }
             }else{
-                if(relevantConstraints.size() > 0)return true;
+                if(relevantConstraints.size() > 0){
+                	log.debug("** composite OR: more than zero constraints match");
+                	return true;
+                }else{
+                	log.debug("** composite OR: zero constraints match");
+                }
+                	
             }
             return false;
         }
         
+        
         private List findRelevantConstraints(Map valuesToMatch, NodeEvent event){
-            List relevantValues = new ArrayList();
+            List relevantConstraints = new ArrayList();
             for (Iterator i = wrappedConstraints.iterator(); i.hasNext();) {
                 AbstractConstraintMatcher  matcher = (AbstractConstraintMatcher ) i.next();
-                if(matcher.eventApplies(valuesToMatch, event))relevantValues.add(matcher);
+                if(matcher.eventApplies(valuesToMatch, event))relevantConstraints.add(matcher);
             }
-            return relevantValues;
+            return relevantConstraints;
         }
 
     }
@@ -408,31 +447,31 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 String stringToCompare = valueToCompare.toString();
                 if(operator == FieldCompareConstraint.EQUAL){
                     boolean result =  stringToCompare.equals(constraintString);
-                    log.debug("** value " + stringToCompare + " equals " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug(" value " + stringToCompare + " equals " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.GREATER){
                     boolean result = (stringToCompare.compareTo(constraintString) > 0);
-                    log.debug("** value " + stringToCompare + " is greater than " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("value " + stringToCompare + " is greater than " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.LESS){
                     boolean result = (stringToCompare.compareTo(constraintString) < 0);
-                    log.debug("** value " + stringToCompare + " is less then " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("value " + stringToCompare + " is less then " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.LIKE){
                     //TODO: dit is te simple: wildcards?
                     boolean result = (stringToCompare.toLowerCase().indexOf(constraintString.toLowerCase()) > -1 );
-                    log.debug("** value " + stringToCompare + " LIKE " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("value " + stringToCompare + " LIKE " + constraintString + ": " + new Boolean(result).toString());
                 }else if(operator == FieldCompareConstraint.LESS_EQUAL){
                     boolean result = (stringToCompare.compareTo(constraintString) < 0) || stringToCompare.equals(constraintString);
-                    log.debug("** value " + stringToCompare + " is less then or equeals" + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("value " + stringToCompare + " is less then or equeals" + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.GREATER_EQUAL){
                     boolean result = (stringToCompare.compareTo(constraintString) > 0 || stringToCompare.equals(constraintString));
-                    log.debug("** value " + stringToCompare + " is greater than or equals" + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("value " + stringToCompare + " is greater than or equals" + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.NOT_EQUAL){
                     boolean result =  ! stringToCompare.equals(constraintString);
-                    log.debug("** value " + stringToCompare + " dous not equal " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("value " + stringToCompare + " dous not equal " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else{
                     throw new FieldComparisonException("operator "
@@ -519,6 +558,10 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
 
 
+        /**
+         * an event applies to a field value constraint wrapper if the wrapper is of the same type as the event, and the field 
+         * that is being checked is in the 'changed' fields map (valuesToMatch)
+         */
         public boolean eventApplies(Map valuesToMatch, NodeEvent event) {
             if(wrappedFieldCompareConstraint.getField().getStep().getTableName().equals(event.getBuilderName())){
                 if(valuesToMatch.get(wrappedFieldCompareConstraint.getField().getFieldName()) != null){
@@ -551,7 +594,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
     }
     
-    private void logResult(String comment, SearchQuery query, NodeEvent event){
+    private void logResult(String comment, SearchQuery query, Event event){
         if(log.isDebugEnabled()){
             String role="";
             // a small hack to limit the output

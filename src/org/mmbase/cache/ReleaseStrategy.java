@@ -11,7 +11,7 @@ package org.mmbase.cache;
 
 import java.util.*;
 
-import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.10 2005-11-23 11:58:02 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.11 2005-12-22 10:13:22 ernst Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -81,6 +81,20 @@ public abstract class ReleaseStrategy {
             return new StrategyResult(true, timer);
         }
     }
+    
+    public final StrategyResult evaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+        Timer timer = new Timer();
+        if (isActive) {
+            boolean shouldRelease = doEvaluate(event, query, cachedResult);
+            totalEvaluated++;
+            if (!shouldRelease) totalPreserved++;
+            totalEvaluationTimeInMillis += timer.getTimeMillis();
+            return new StrategyResult(shouldRelease, timer);
+        } else {
+            // if the cache is inactive it can not prevent the flush
+            return new StrategyResult(true, timer);
+        }
+    }
 
     /*
      * (non-Javadoc)
@@ -103,12 +117,22 @@ public abstract class ReleaseStrategy {
     /**
      * implement this method to create your own strategy.
      *
-     * @param event (could be a RelationEvent)
+     * @param event a node event
      * @param query
      * @param cachedResult
      * @return true if the cache entry should be released
      */
     protected abstract boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult);
+    
+    /**
+     * implement this method to create your own strategy.
+     *
+     * @param event a relation event
+     * @param query
+     * @param cachedResult
+     * @return true if the cache entry should be released
+     */
+    protected abstract boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult);
 
     /*
      * (non-Javadoc)
