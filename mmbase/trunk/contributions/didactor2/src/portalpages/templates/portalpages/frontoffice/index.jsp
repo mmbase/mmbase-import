@@ -177,9 +177,7 @@
 		      addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
 		  //-->
 		  </script>
-		  <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" alt="" />
-		  <a href="javascript:openContent( '<mm:nodeinfo type="type"/>','<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');">Portal Pagina's</a> 
-		  <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
+		 <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
 		  <mm:import id="presenttime"><mm:time time="now"/></mm:import>
 		  <mm:relatednodescontainer type="portalpagesnodes" role="related">
 		    <mm:constraint field="active" value="0"/>
