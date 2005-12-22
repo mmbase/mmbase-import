@@ -335,7 +335,7 @@
                 <di:cell><img src="<mm:write referid="gfx_attachment"/>" alt="<di:translate key="workspace.folderitemtypedocument" />" /></di:cell>
                 <di:cell><mm:write referid="link" escape="none"/><mm:field name="title" /></a></di:cell>
                 <di:cell><mm:field name="description" /></di:cell>
-                <di:cell><mm:field name="filename" /></di:cell>
+                <di:cell><a href="<mm:attachment/>"><mm:field name="filename"/></a></di:cell>
                 <di:cell><mm:field name="date"><mm:time format="d/M/yyyy"/></mm:field></di:cell>
               </mm:compare>
               <mm:compare referid="objecttype" value="urls">
