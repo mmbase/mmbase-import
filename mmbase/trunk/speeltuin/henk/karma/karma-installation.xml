@@ -7,7 +7,7 @@
 
     <date>2005-12-20</date>
 
-    <edition>$Id: karma-installation.xml,v 1.1 2005-12-21 09:30:20 henk Exp $</edition>
+    <edition>$Id: karma-installation.xml,v 1.2 2005-12-22 10:43:10 henk Exp $</edition>
 
     <authorgroup>
       <author>
@@ -63,8 +63,28 @@
   <section id="architecture">
     <title>Software</title>
 
-    <para>Java 1.5 (of 1.4) Maven 1.0.2 Tomcat 5.5 Mysql 4 MMbase HEAD Pluto
-    1.0.1-rc4</para>
+    <para>Karma is tested on the following configuration.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Java 1.5 (of 1.4)</para>
+      </listitem>
+      <listitem>
+        <para>Maven 1.0.2</para>
+      </listitem>
+      <listitem>
+        <para>Tomcat 5.5</para>
+      </listitem>
+      <listitem>
+        <para>Mysql 4</para>
+      </listitem>
+      <listitem>
+        <para>MMbase HEAD</para>
+      </listitem>
+      <listitem>
+        <para>Pluto 1.0.1-rc4</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="interfaces">
