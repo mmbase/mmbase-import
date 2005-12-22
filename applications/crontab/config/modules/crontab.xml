@@ -3,7 +3,7 @@
 <module maintainer="mmbase.org" version="0">
   <status>active</status>
 
-  <classfile>org.mmbase.applications.crontab.modules.CrontabModule</classfile>
+  <class>org.mmbase.applications.crontab.modules.CrontabModule</class>
   <properties>  
     <!-- 
     Properties of cronjobs.
@@ -16,17 +16,9 @@
     fifth field: (optional) the type of the job. 'mustbeone' (defaul) 'short' or 'canbemore'.
     -->
     <!--
-	Just a test-cron job. This one uses class-security, so that might give errors if you don't have that (e.g. in 1.7)
+    Just a test-cron job. This one uses class-security, so that might give errors if you don't have that (e.g. in 1.7)
     <property name="testjob">*/1 5-23 * * *|org.mmbase.applications.crontab.TestCronJob||</property>
     -->
-
-    <!-- 
-      Another example: mmbase statistics.
-    -->  
-    <property name="memorystats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||Memory|short</property>
-    <property name="nodesstats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||cache.Nodes|short</property>
-    <property name="tagstats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||cache.TagAttributeCache|short</property>
-    <property name="multilevelstats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||cache.MultilevelCache|short</property>
 
   </properties>
  
