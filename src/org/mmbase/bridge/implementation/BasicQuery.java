@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.54 2005-11-04 23:21:13 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.55 2005-12-22 13:35:18 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -263,8 +263,9 @@ public class BasicQuery implements Query  {
         if (used) throw new BridgeException("Query was used already");
 
         removeSecurityConstraint(); // if present
-
-        BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
+        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(nm.getName());
+        if (builder == null) throw new BridgeException("No builder with name " + nm.getName() + " (perhaps " + nm + " is virtual?)");
+        BasicStep step = query.addStep(builder);
         setAlias(step, ""); // "": generate alias
         if (! aggregating) {
             addFieldImplicit(step, nm.getField("number"));
@@ -548,7 +549,7 @@ public class BasicQuery implements Query  {
 
     }
     public CompositeConstraint createConstraint(Constraint c1, int operator, Constraint c2) {
-        if ((!used) && c1 instanceof CompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
+        if ((!used) && c1 instanceof BasicCompositeConstraint && ((CompositeConstraint) c1).getLogicalOperator() == operator) {
             if (c2 != null) ((BasicCompositeConstraint) c1).addChild(c2);
             return (CompositeConstraint) c1;
         } else {
