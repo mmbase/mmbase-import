@@ -11,10 +11,12 @@ package org.mmbase.cache;
 
 import java.util.*;
 
-import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.SearchQuery;
 import org.mmbase.storage.search.Step;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 /**
@@ -27,11 +29,12 @@ import org.mmbase.storage.search.Step;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.9 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.10 2005-12-22 10:13:22 ernst Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
-
+	private static Logger log = Logging.getLoggerInstance(BasicReleaseStrategy.class);
+	
     public BasicReleaseStrategy(){
     }
 
@@ -69,6 +72,12 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
             //if not all steps of this type had nodes that did not include this one, flush
             return shouldKeep != steps.size(); //shouldrelease 
         }
+        return true;
+    }
+
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+        // no strategy for relation events
+    	log.debug("** basic strategy: flush: relation event");
         return true;
     }
 

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.*;
 import org.mmbase.storage.search.SearchQuery;
 
 /**
@@ -24,7 +24,7 @@ import org.mmbase.storage.search.SearchQuery;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.8 2005-11-19 15:19:54 ernst Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.9 2005-12-22 10:13:22 ernst Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
 
@@ -33,7 +33,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
     private String basicStrategyName;
 
     public ChainedReleaseStrategy() {
-        BasicReleaseStrategy st = new BasicReleaseStrategy();
+        BetterStrategy st = new BetterStrategy();
         basicStrategyName = st.getName();
         addReleaseStrategy(st);
     }
@@ -101,7 +101,19 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    public boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+    protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+        // first do the 'basic' strategy that is allways there. (see constructor)
+        Iterator i = cacheReleaseStrategies.iterator();
+        StrategyResult result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
+
+        // while the outcome of getResult is true (the cache should be fluhed), we have to keep trying.
+        while (i.hasNext() && result.shouldRelease() == true) {
+            result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
+        }
+        return result.shouldRelease();
+    }
+
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
         Iterator i = cacheReleaseStrategies.iterator();
         StrategyResult result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);

@@ -13,8 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.core.event.RelationEvent;
+import org.mmbase.core.event.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.*;
@@ -22,11 +21,12 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+
 /**
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.11 2005-11-19 14:45:10 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.12 2005-12-22 10:13:22 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -51,6 +51,10 @@ public class BetterStrategy extends ReleaseStrategy {
             + "if a relation event concerns a role that is not part of this query, the event can be ignored.";
     }
 
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+        return shouldRelease((RelationEvent) event, query);
+    }
+
     /**
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.core.event.NodeEvent,
      * org.mmbase.storage.search.SearchQuery, java.util.List)
@@ -59,11 +63,7 @@ public class BetterStrategy extends ReleaseStrategy {
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         log.debug(event.toString());
-        if (event instanceof RelationEvent) {
-            return shouldRelease((RelationEvent) event, query);
-        } else {
-            return shouldRelease(event, query);
-        }
+        return shouldRelease(event, query);
     }
 
     /**
@@ -168,7 +168,7 @@ public class BetterStrategy extends ReleaseStrategy {
          }
 
              
-         switch (event.getRelationEventType()) {
+         switch (event.getType()) {
             case NodeEvent.EVENT_TYPE_NEW:
                 log.debug(">> relation event type new");
                 /*
@@ -193,7 +193,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 
                 //if the changed field(s) do not occur in the fields or constraint section
                 //of the query, it dous not have to be flushed
-                if(! checkChangedFieldsMatch(event, query)) {
+                if(! checkChangedFieldsMatch(event.getNodeEvent(), query)) {
                     logResult("the changed (relation) fields do not match the fields or constraints of the query", query, event);
                     return false;
                 }
@@ -342,7 +342,7 @@ public class BetterStrategy extends ReleaseStrategy {
         return true; 
     }
     
-    private void logResult(String comment, SearchQuery query, NodeEvent event){
+    private void logResult(String comment, SearchQuery query, Event event){
         if(log.isDebugEnabled()){
             String role="";
             // a small hack to limit the output
