@@ -140,7 +140,7 @@
    <tr><td colspan="6">
    <table border="0" >
    <%
-      ChainedReleaseStrategy base = (ChainedReleaseStrategy)cache.getReleaseStrategy();
+      ChainedReleaseStrategy base = cache.getReleaseStrategy();
       for(Iterator ii = base.iterator(); ii.hasNext(); ){
          ReleaseStrategy strategy = (ReleaseStrategy) ii.next(); 
    %>
