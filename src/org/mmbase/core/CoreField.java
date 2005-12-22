@@ -336,7 +336,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     }
 
     public String toString() {
-        return super.toString() + " of " + parent.getTableName();
+        return super.toString() + (parent != null ? " of " + parent.getTableName() : " without parent");
     }
 
 
