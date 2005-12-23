@@ -19,7 +19,7 @@ import java.util.Map;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.12 2005-12-23 10:20:17 ernst Exp $
+ * @version $Id: RelationEvent.java,v 1.13 2005-12-23 13:12:00 ernst Exp $
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 
@@ -42,22 +42,12 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
     /**
      * Constructor for relation event
      * 
-     * @param machineName
-     * @param builderName
-     * @param nodeNumber
-     * @param oldValues
-     * @param newValues
      * @param relationEventType
-     * @param relationSourceNumber
-     *            the nodenumber of the 'soucre' node
-     * @param relationDestinationNumber
-     *            the nodenumber of the 'destination' node
-     * @param relationSourceType
-     *            the builder name of the 'source' node
-     * @param relationDestinationType
-     *            the builder name of the 'destination' node
-     * @param role
-     *            the nodenumber of the reldef node
+     * @param relationSourceNumber the nodenumber of the 'soucre' node
+     * @param relationDestinationNumber the nodenumber of the 'destination' node
+     * @param relationSourceType the builder name of the 'source' node
+     * @param relationDestinationType the builder name of the 'destination' node
+     * @param role the nodenumber of the reldef node
      */
     public RelationEvent(NodeEvent nodeEvent, int relationSourceNumber, int relationDestinationNumber,
             String relationSourceType, String relationDestinationType, int role) {
