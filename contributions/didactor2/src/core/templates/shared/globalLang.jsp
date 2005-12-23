@@ -12,7 +12,7 @@
           <mm:isempty>
             <mm:import jspvar="locale"><mm:field name="locale" /></mm:import>
             <mm:import id="language" reset="true"><mm:field name="locale" /></mm:import>
-            <%--<di:translate locale="<%=locale%>" debug="true" />--%>
+            <di:translate locale="<%=locale%>" debug="true" />
           </mm:isempty>
         </mm:field>
       </mm:isnotempty>
@@ -27,5 +27,5 @@
 <%-- fall back to the default: english (no locale specified) --%>
 <mm:notpresent referid="provider">
   <mm:import id="language" reset="true">en</mm:import>
-  <%--<di:translate locale="" debug="true" />--%>
+  <di:translate locale="" debug="true" />
 </mm:notpresent>
