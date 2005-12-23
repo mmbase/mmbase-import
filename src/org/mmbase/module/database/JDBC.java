@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.44 2005-11-28 22:02:12 michiel Exp $
+ * @version $Id: JDBC.java,v 1.45 2005-12-23 14:56:39 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -297,7 +297,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     public Connection getDirectConnection(String url,String name,String password) throws SQLException {
 
-        return DriverManager.getConnection(url,name,password);
+        return DriverManager.getConnection(url, name, password);
     }
 
     /**
