@@ -31,10 +31,10 @@ public class DataTypesTest extends BridgeTest {
             cases = new Object[] {
                 /* {field    {valid values}   {invalid values}} */
                 new Object[] {"string",
-                              new Object[] {"abcdefg", "ijklm\nopqrstx"},
+                              new Object[] {"abcdefg", "ijklm\nopqrstx", null},
                               new Object[] {}},
                 new Object[] {"line",
-                              new Object[] {"abcdefg"},
+                              new Object[] {"abcdefg", null},
                               new Object[] {"ijklm\nopqrstx"}},
                 new Object[] {"field",
                               new Object[] {"xyz", "zyz\nkloink"} ,
@@ -46,10 +46,10 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"ababa", "aBB", null},
                               new Object[] {"c", "ababab", ""}},
                 new Object[] {"integer",
-                              new Object[] {new Integer(-100)},
+                              new Object[] {new Integer(-100), null},
                               new Object[] {new Long(Long.MAX_VALUE)}},
                 new Object[] {"range",
-                              new Object[] {new Integer(5)},
+                              new Object[] {new Integer(5), null},
                               new Object[] {new Integer(0), new Integer(10)}},
                 new Object[] {"datetime",
                               new Object[] {new Date(), "2005-01-01", DynamicDate.getInstance("now - 5 year")},
@@ -68,7 +68,23 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"-1", "xxx"}},
                 new Object[] {"restricted_ordinals",
                               new Object[] {"2", "4", new Integer(6), null},
-                              new Object[] {"1", "21", new Integer(10)}}
+                              new Object[] {"1", "21", new Integer(10)}},
+                new Object[] {"boolean",
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {"asjdlkf", "21", "yes", new Integer(10)}},
+                new Object[] {"yesno",
+                              new Object[] {Boolean.TRUE, Boolean.FALSE,"true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {"asjdlkf", "21", new Integer(10)}},
+                new Object[] {"integer_boolean",
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {"asjdlkf", "21", new Integer(10)}},
+                new Object[] {"string_boolean", /* string db, boolean datatype */
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {"asjdlkf", "21", new Integer(10)}},
+                new Object[] {"boolean_string",/* boolean db, string datatype */
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {"asjdlkf", "21", new Integer(10)}}
+
             };
         } catch (Exception e) {
             System.err.println(e.getMessage());
