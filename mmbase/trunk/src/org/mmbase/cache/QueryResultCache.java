@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.23 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: QueryResultCache.java,v 1.24 2005-12-23 10:20:17 ernst Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -326,6 +326,11 @@ abstract public class QueryResultCache extends Cache {
         public String toString() {
             return "QueryResultCacheObserver for " + type + " watching " + cacheKeys.size() + " queries";
         }
+    }
+    
+    public void clear(){
+        super.clear();
+        releaseStrategy.clear();
     }
 
 }

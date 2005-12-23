@@ -24,7 +24,7 @@ import org.mmbase.storage.search.SearchQuery;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.9 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.10 2005-12-23 10:20:17 ernst Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
 
@@ -33,7 +33,8 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
     private String basicStrategyName;
 
     public ChainedReleaseStrategy() {
-        BetterStrategy st = new BetterStrategy();
+        //BetterStrategy st = new BetterStrategy();
+        BasicReleaseStrategy st = new BasicReleaseStrategy();
         basicStrategyName = st.getName();
         addReleaseStrategy(st);
     }
@@ -48,7 +49,6 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
         if (! cacheReleaseStrategies.contains(strategy)){
         	cacheReleaseStrategies.add(strategy);
         }
-        	
     }
 
     public void removeStrategy(ReleaseStrategy strategy) {
@@ -123,6 +123,14 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
             result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
         }
         return result.shouldRelease();
+    }
+    
+    public void clear(){
+        super.clear();
+        for(Iterator i = iterator(); i.hasNext();){
+            ReleaseStrategy rs = (ReleaseStrategy) i.next();
+            rs.clear();
+        }
     }
 
 }

@@ -49,16 +49,16 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ConstraintsMatchingStrategy.class);
     BasicSqlHandler sqlHandler = new BasicSqlHandler();
     
-    private static Cache constraintWrapperCache = new Cache(1000){
-        public String getName(){return "Constraint Matcher Cache";}
-        public String getDescription(){return "Caches wrapped constraints used for matching them to changed node values";}
-    };
+    private static Cache constraintWrapperCache = Cache.getCache("Constraint Matcher Cache");
+   
     
-    /*
     static{
+        if (constraintWrapperCache == null) constraintWrapperCache =  new Cache(1000){
+            public String getName(){return "Constraint Matcher Cache";}
+            public String getDescription(){return "Caches query constraint wrappers used by ConstraintsMatchingStrategy";}
+        };
         Cache.putCache(constraintWrapperCache);
     }
-    */
 
     private static HashMap constraintMatcherClasses;
     static {
@@ -91,8 +91,13 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     }
 
     protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+        //no constraint, we release any way
         if(query.getConstraint() == null) return true; //should release
+        
+        //try to get a wrapper from the cache
         AbstractConstraintMatcher matcher = (AbstractConstraintMatcher) constraintWrapperCache.get(query);
+        
+        //if not found, try to create one
         if(matcher == null){
             try {
                 matcher = findMatcherForConstraint(query.getConstraint());
@@ -100,53 +105,62 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 constraintWrapperCache.put(query, matcher);
                 //if anything goes wrong constraintMatches is true, which means the query should be flushed
             } catch (ConstraintMatcherCreationException e) {
-            log.error("Could not create constraint matcher for constraint: " + query.getConstraint().toString() + "main reason: " + e.toString() , e);
+                log.error("Could not create constraint matcher for constraint: " + query.getConstraint().toString() + "main reason: " + e.toString() , e);
             }
         }else{
             if(log.isDebugEnabled())log.debug("found matcher for query in cache. query: " + query.toString());
         }
-         if(matcher != null){
+        
+        //we should have a matcher now
+        if(matcher != null){
             try {
+                
             	//becouse composite constraints can allso cover fields that are not in the changed field list of the node
             	//let's find the node and get all the values.
             	MMObjectNode node = MMBase.getMMBase().getBuilder(event.getBuilderName()).getNode(event.getNodeNumber());
-            	Map oldValues = new HashMap(),newValues = new HashMap(); 
+            	Map oldValues = new HashMap(),newValues = new HashMap(), nodeValues = new HashMap(); 
             	if(node != null){
-            		//put all the (new) values in the value maps 
-            		oldValues.putAll(node.getValues());
-            		newValues.putAll(node.getValues());
-            		log.debug("** node found, add values: " + node.getValues());
+                    //put all the (new) values in the value maps 
+                    nodeValues.putAll(node.getValues());
+                    oldValues.putAll(nodeValues);
+                    newValues.putAll(nodeValues);
             	}
+                
             	//now add the values from the event
             	oldValues.putAll(event.getOldValues());
             	newValues.putAll(event.getNewValues());
             	
                 if (event.getType() == NodeEvent.EVENT_TYPE_NEW) {
+                    
                     // we have to compare the constraint value with the new value of the changed field to see if the new
                     // node falls within the constraint. it it dous: flush
                     if(matcher.eventApplies(newValues, event)){
                         boolean eventMatches =  matcher.nodeMatchesConstraint(newValues, event);
-                        logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event);
+                        logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, nodeValues);
                         return eventMatches;
                     }else{
-                        //log.debug("** event {"+event+"} dous not apply to wrapper {"+matcher+"}: flush");
-                        logResult("flush: event dous not apply to wrapper {"+matcher+"}:", query, event);
+                        logResult("flush: event dous not apply to wrapper {"+matcher+"}:", query, event, nodeValues);
                         return true;
                     }
 
                 } else if (event.getType() == NodeEvent.EVENT_TYPE_CHANGED) {
+                    
                     // we have to compare the old value and then the new value of the changed field to see if the status
                     // has changed. if the node used to match the constraint but now dousn't or the reverse of this, flush.
                     if(matcher.eventApplies(newValues, event)){
-                    	boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
-                    	boolean stillMatches = matcher.nodeMatchesConstraint(newValues, event);
+                        boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
+                        boolean stillMatches = matcher.nodeMatchesConstraint(newValues, event);
+                        log.debug("** match with old values : " + (usedToMatch ? "match" : "no match"));
+                        log.debug("** match with new values : " + (stillMatches ? "match" : "no match"));
+                        
+                        log.debug("**old values: " + oldValues);
+                        log.debug("**new values: " + newValues);
                     	
                         boolean eventMatches = usedToMatch != stillMatches;
-                        logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event);
+                        logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, nodeValues);
                         return eventMatches;
                     }else{
-                        //log.debug("** event {"+event+"} dous not apply to wrapper {"+matcher+"}: flush");
-                        logResult("flush: event dous not apply to wrapper {"+matcher+"}:", query, event);
+                        logResult("flush: event dous not apply to wrapper {"+matcher+"}:", query, event, nodeValues);
                         return true;
                     }
 
@@ -155,11 +169,10 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     // constriant. If it did: flush
                     if(matcher.eventApplies(event.getOldValues(), event)){
                         boolean eventMatches = matcher.nodeMatchesConstraint(oldValues, event);
-                        logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event);
+                        logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, nodeValues);
                         return eventMatches;
                     }else{
-                        //log.debug("** event {"+event+"}dous not apply to wrapper {"+matcher+"}: flush");
-                        logResult("flush: event dous not apply to wrapper {"+matcher+"}:", query, event);
+                        logResult("flush: event dous not apply to wrapper {"+matcher+"}:", query, event, nodeValues);
                         return true;
                     }
                 }
@@ -173,7 +186,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         // TODO I don't think this strategy should handle these events
         //becouse the node event that preceeds the relation event takes care of it.
-        return false;
+        return doEvaluate(event.getNodeEvent(), query, cachedResult);
     }
 
     /**
@@ -274,13 +287,16 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             int matches = 0;
             for (Iterator i = findRelevantConstraints(valuesToMatch, event).iterator(); i.hasNext();) {
                 AbstractConstraintMatcher acm = (AbstractConstraintMatcher) i.next();
-                log.debug("relevant constraint found: " + acm);
+                log.debug("** relevant constraint found: " + acm);
                 try {
-                    if (acm.nodeMatchesConstraint(valuesToMatch, event)) matches ++;
-                    log.debug(acm + " created a match on " + valuesToMatch);
+                    if (acm.nodeMatchesConstraint(valuesToMatch, event)){
+                        matches ++;
+                        log.debug("** constraint created a match on " + valuesToMatch);
+                    }else{
+                        log.debug("** constraint created _NO_ match on " + valuesToMatch);
+                    }
                 } catch (FieldComparisonException e) {
-                    //if this happens, we count it as a match, which will couse a fluse (safe)
-                    matches ++;
+                    log.debug("** field compare exception: " + e.toString());
                 }
             }
             if (wrappedCompositeConstraint.getLogicalOperator() == BasicCompositeConstraint.LOGICAL_AND) {
@@ -299,7 +315,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 sb.append(((AbstractConstraintMatcher)i.next()).toString());
                 if(i.hasNext()) sb.append("} {");
             }
-            sb.append("]");
+            sb.append("}]");
             return sb.toString();
         }
 
@@ -313,17 +329,17 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             log.debug("** relevant constraints:  " + relevantConstraints);
             if(wrappedCompositeConstraint.getLogicalOperator() == BasicCompositeConstraint.LOGICAL_AND){
                 if(wrappedConstraints.size() == relevantConstraints.size()){
-                	log.debug("** composite AND: all constraints match");
+                	log.debug("** composite AND: all constraints match, event applies to query");
                 	return true;
                 }else{
-                	log.debug("** composite AND: not all constraints match");
+                	log.debug("** composite AND: not all constraints match, so the event dous not apply to this constraint");
                 }
             }else{
                 if(relevantConstraints.size() > 0){
-                	log.debug("** composite OR: more than zero constraints match");
+                	log.debug("** composite OR: more than zero constraints match, so event applies to query");
                 	return true;
                 }else{
-                	log.debug("** composite OR: zero constraints match");
+                	log.debug("** composite OR: zero constraints match, so event dous not apply to query.");
                 }
                 	
             }
@@ -391,14 +407,17 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         protected boolean valueMatches(Class fieldType, Object constraintValue, Object valueToCompare)
                 throws FieldComparisonException {
+            log.debug("**method: valueMatches() fieldtype: " + fieldType);
             if(constraintValue == null) throw new FieldComparisonException("Constraint value is null");
             if(valueToCompare == null) throw new FieldComparisonException("Value from event to compare constraint value with is null");
             
             
             int operator = wrappedFieldCompareConstraint.getOperator();
+            log.debug("** strill there 1");
 
             // handle boolean type
             if (fieldType.equals(Boolean.class)) {
+                log.debug("**> type: boolean"); 
                 boolean constraintBoolean = Casting.toBoolean(constraintValue);
                 boolean booleanToCompare = Casting.toBoolean(valueToCompare);
                 if (operator == FieldCompareConstraint.EQUAL) {
@@ -410,10 +429,37 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                             + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type Boolean");
                 }
             }
+            
+            // handle float type
+            if (fieldType.equals(Float.class)) {
+                log.debug("**> type: Float"); 
+                float constraintFloat = Casting.toFloat(constraintValue, Float.MAX_VALUE);
+                float floatToCompare = Casting.toFloat(valueToCompare, Float.MAX_VALUE);
+                
+                //if either value could not be cast to an int, return true, which is safe
+                if(constraintFloat == Float.MAX_VALUE || floatToCompare == Float.MAX_VALUE) 
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type float (while that is supposed to be their type");
+                return numberMatches(constraintFloat, floatToCompare, operator);
+            }
+            
+            // handle  Date type
+            if (fieldType.equals(Date.class)) {
+                log.debug("**> type: Date"); 
+                long constraintLong = Casting.toLong(constraintValue, Long.MAX_VALUE);
+                long longToCompare = Casting.toLong(valueToCompare, Long.MAX_VALUE);
+                
+                //if either value could not be cast to an int, return true, which is safe
+                if(constraintLong == Long.MAX_VALUE || longToCompare == Long.MAX_VALUE) 
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type long (while they are supposed to be of type Date supposed to be their type");
+                return numberMatches(constraintLong, longToCompare, operator);
+            }
+            
             // handle integer type
             if (fieldType.equals(Integer.class)) {
+                log.debug("**> type: Integer"); 
                 int constraintInt = Casting.toInt(constraintValue, Integer.MAX_VALUE);
                 int intToCompare = Casting.toInt(valueToCompare, Integer.MAX_VALUE);
+                
                 //if either value could not be cast to an int, return true, which is safe
                 if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE) 
                     throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type int (while that is supposed to be their type");
@@ -422,6 +468,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
             // handle long type
             if (fieldType.equals(Long.class)) {
+                log.debug("**> type: Long"); 
                 long constraintLong = Casting.toLong(constraintValue, Long.MAX_VALUE);
                 long longToCompare = Casting.toLong(valueToCompare, Long.MAX_VALUE);
 //              if either value could not be cast to a long, return true, which is safe
@@ -431,47 +478,49 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 return numberMatches(constraintLong, longToCompare, operator);
             }
             
-//          handle float type
-            if (fieldType.equals(Float.class)) {
-                float constraintFloat = Casting.toFloat(constraintValue, Float.MAX_VALUE);
-                float floatToCompare = Casting.toFloat(valueToCompare, Float.MAX_VALUE);
-//              if either value could not be cast to a float, return true, which is safe
-                if(constraintFloat == Float.MAX_VALUE || floatToCompare == Float.MAX_VALUE)
-                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type float (while that is supposed to be their type");
-                return numberMatches(constraintFloat, floatToCompare, operator);
+//          handle type Node
+            if (fieldType.equals(Node.class)) {
+                log.debug("**> type: Node"); 
+                int constraintInt = Casting.toInt(constraintValue, Integer.MAX_VALUE);
+                int intToCompare = Casting.toInt(valueToCompare, Integer.MAX_VALUE);
+//              if either value could not be cast to a Node, return true, which is safe
+                if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE)
+                    throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type Node (while that is supposed to be their type");
+                return numberMatches(constraintInt, intToCompare, operator);
             }
             
-            //handle string type
+            //handle String type
             if (fieldType.equals(String.class)) {
+                log.debug("**> type: String"); 
                 String constraintString = constraintValue.toString();
                 String stringToCompare = valueToCompare.toString();
                 if(operator == FieldCompareConstraint.EQUAL){
                     boolean result =  stringToCompare.equals(constraintString);
-                    log.debug(" value " + stringToCompare + " equals " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("**value " + stringToCompare + " equals " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.GREATER){
                     boolean result = (stringToCompare.compareTo(constraintString) > 0);
-                    log.debug("value " + stringToCompare + " is greater than " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("**value " + stringToCompare + " is greater than " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.LESS){
                     boolean result = (stringToCompare.compareTo(constraintString) < 0);
-                    log.debug("value " + stringToCompare + " is less then " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("**value " + stringToCompare + " is less then " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.LIKE){
                     //TODO: dit is te simple: wildcards?
                     boolean result = (stringToCompare.toLowerCase().indexOf(constraintString.toLowerCase()) > -1 );
-                    log.debug("value " + stringToCompare + " LIKE " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("**value " + stringToCompare + " LIKE " + constraintString + ": " + new Boolean(result).toString());
                 }else if(operator == FieldCompareConstraint.LESS_EQUAL){
                     boolean result = (stringToCompare.compareTo(constraintString) < 0) || stringToCompare.equals(constraintString);
-                    log.debug("value " + stringToCompare + " is less then or equeals" + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("**value " + stringToCompare + " is less then or equeals" + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.GREATER_EQUAL){
                     boolean result = (stringToCompare.compareTo(constraintString) > 0 || stringToCompare.equals(constraintString));
-                    log.debug("value " + stringToCompare + " is greater than or equals" + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("**value " + stringToCompare + " is greater than or equals" + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.NOT_EQUAL){
                     boolean result =  ! stringToCompare.equals(constraintString);
-                    log.debug("value " + stringToCompare + " dous not equal " + constraintString + ": " + new Boolean(result).toString());
+                    log.debug("**value " + stringToCompare + " dous not equal " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else{
                     throw new FieldComparisonException("operator "
@@ -484,18 +533,31 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         private boolean numberMatches(double constraintDouble, double doubleTocompare, int operator)
                 throws FieldComparisonException {
+                    log.debug("** method: numberMatches()"); 
             if (operator == FieldCompareConstraint.EQUAL) {
-                return (doubleTocompare == constraintDouble);
+                boolean result = (doubleTocompare == constraintDouble);
+                log.debug("**value " + doubleTocompare + " equals " + constraintDouble + ": " + new Boolean(result).toString());
+                return result;
             } else if (operator == FieldCompareConstraint.GREATER) {
-                return (doubleTocompare > constraintDouble);
+                boolean result =  (doubleTocompare > constraintDouble);
+                log.debug("**value " + doubleTocompare + " is greater than " + constraintDouble + ": " + new Boolean(result).toString());
+                return result;
             } else if (operator == FieldCompareConstraint.GREATER_EQUAL) {
-                return (doubleTocompare >= constraintDouble);
+                boolean result =  (doubleTocompare >= constraintDouble);
+                log.debug("**value " + doubleTocompare + " is greater than or equal to " + constraintDouble + ": " + new Boolean(result).toString());
+                return result;
             } else if (operator == FieldCompareConstraint.LESS) {
-                return (doubleTocompare < constraintDouble);
+                boolean result = (doubleTocompare < constraintDouble);
+                log.debug("**value " + doubleTocompare + " is less than " + constraintDouble + ": " + new Boolean(result).toString());
+                return result;
             } else if (operator == FieldCompareConstraint.LESS_EQUAL) {
-                return (doubleTocompare <= constraintDouble);
+                boolean result = (doubleTocompare <= constraintDouble);
+                log.debug("**value " + doubleTocompare + " is greater than or equal to" + constraintDouble + ": " + new Boolean(result).toString());
+                return result;
             } else if (operator == FieldCompareConstraint.NOT_EQUAL) {
-                return (doubleTocompare != constraintDouble);
+                boolean result =  (doubleTocompare != constraintDouble);
+                log.debug("**value " + doubleTocompare + " is not equal to " + constraintDouble + ": " + new Boolean(result).toString());
+                return result;
             } else {
                 throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator]
                         + "for any numeric type");
@@ -544,6 +606,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
          * if the constraint dous not apply, the query should be released    
          */
         public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
+            log.debug("**method: nodeMatchesConstraint");
             if(! wrappedFieldCompareConstraint.getField().getStep().getTableName().equals(event.getBuilderName()))
                 throw new FieldComparisonException("constraint " + wrappedFieldCompareConstraint.toString() + 
                         "dous not match event of type " +event.getBuilderName());
@@ -594,7 +657,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
     }
     
-    private void logResult(String comment, SearchQuery query, Event event){
+    private void logResult(String comment, SearchQuery query, Event event, Map values){
         if(log.isDebugEnabled()){
             String role="";
             // a small hack to limit the output
@@ -609,7 +672,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     return;
             }
             try {
-                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**"
+                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**nodevalues: " + values + "\n**" 
                         + sqlHandler.toSql(query, sqlHandler) + "\n******");
             } catch (SearchQueryException e) {
                 e.printStackTrace();
