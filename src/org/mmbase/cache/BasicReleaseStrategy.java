@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.10 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.11 2005-12-23 10:20:17 ernst Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -60,14 +60,15 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
         //this simple optimization only works for nodeEvents
         
         int shouldKeep = 0;
-        if(event.getType() != NodeEvent.EVENT_TYPE_RELATION_CHANGED){
-            List steps = getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()));
-            for (Iterator i = steps.iterator(); i.hasNext();) {
-                Step step = (Step) i.next();
-                Set nodes = step.getNodes();
-                if(nodes != null && nodes.size() > 0 && ! nodes.contains(new Integer(event.getNodeNumber()))) {
-                    shouldKeep ++; 
-                }
+        List steps = getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()));
+        for (Iterator i = steps.iterator(); i.hasNext();) {
+            Step step = (Step) i.next();
+            Set nodes = step.getNodes();
+            //if one of the steps for this node event has no nodes set: flush
+            if(nodes == null)return true;
+            //if all steps for this node event have nodes set, and the nodes collections exclude the event node: keep
+            if(nodes.size() > 0 && ! nodes.contains(new Integer(event.getNodeNumber()))) {
+                shouldKeep ++; 
             }
             //if not all steps of this type had nodes that did not include this one, flush
             return shouldKeep != steps.size(); //shouldrelease 
@@ -77,7 +78,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
 
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         // no strategy for relation events
-    	log.debug("** basic strategy: flush: relation event");
+    	log.debug("basic strategy: flush: relation event");
         return true;
     }
 
