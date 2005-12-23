@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.32 2005-12-08 18:17:59 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.33 2005-12-23 12:31:05 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -109,8 +109,13 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         uniqueRestriction      = (UniqueRestriction) in.readObject();
         enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
         typeRestriction        = new TypeRestriction(); // its always the same, so no need actually persisting it.
-        owner                 = in.readObject();
-        classType             =  (Class) in.readObject();
+        owner                  = in.readObject();
+        try {            
+            classType          =  (Class) in.readObject();
+        } catch (Throwable t) {
+            // if some unknown class, simply fall back
+            classType         = Object.class;
+        }
         defaultValue          = in.readObject();
         commitProcessor       = (CommitProcessor) in.readObject();
         getProcessors         = (Processor[]) in.readObject();
@@ -157,7 +162,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     protected void cloneRestrictions(BasicDataType origin) {
         enumerationRestriction = new EnumerationRestriction(origin.enumerationRestriction);
         requiredRestriction    = new RequiredRestriction(origin.requiredRestriction);
-        uniqueRestriction      = new UniqueRestriction(origin.uniqueRestriction);
+        uniqueRestriction      = new UniqueRestriction(origin.uniqueRestriction);        
     }
 
     /**
@@ -246,8 +251,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     /**
      * Utility to avoid repitive calling of getCloud
      */
-    protected final Object cast(Object value, Cloud cloud, Node node, Field field) {
+    protected Object cast(Object value, Cloud cloud, Node node, Field field) {
         Object preCast = preCast(value, cloud, node, field);
+        if (preCast == null) return null;
         Object cast = Casting.toType(classType, cloud, preCast);
         return cast;
     }
@@ -398,7 +404,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * This method is final, override {@link #clone(String)} in stead.
      */
     public final Object clone() {
-//        return clone(getName() + "_clone");
+        // return clone(getName() + "_clone");
         return clone(getName());
     }
 
@@ -872,6 +878,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     protected class EnumerationRestriction extends AbstractRestriction {
         EnumerationRestriction(EnumerationRestriction source) {
             super(source);
+            value = value != null ? (Serializable) ((LocalizedEntryListFactory) value).clone() : null;
         }
         EnumerationRestriction(LocalizedEntryListFactory entries) {
             super("enumeration", entries);
@@ -945,6 +952,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
         RestrictedEnumerationIterator(Locale locale, Cloud cloud, Node node, Field field) {
             Collection col = enumerationRestriction.getEnumeration(locale, cloud, node, field);
+            if (log.isDebugEnabled()) {
+                log.debug("Restricted iterator on " + col);
+            }
             baseIterator =  col != null ? col.iterator() : Collections.EMPTY_LIST.iterator();
             this.node = node;
             this.field = field;
