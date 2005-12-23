@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.12 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.13 2005-12-23 10:20:17 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -45,10 +45,11 @@ public class BetterStrategy extends ReleaseStrategy {
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getDescription()
      */
     public String getDescription() {
-        return "This is work in progress. It does some basic checking. If a query has "
-            + "more than one step, all 'new' events can be ignored, becouse a new node has no relations yet. "
-            + "If a query has one step, all relation changed events can be ignored. "
-            + "if a relation event concerns a role that is not part of this query, the event can be ignored.";
+        return "This strategy performs all kinds of checks to test if the node or relation event actually matches the query. " +
+            "For node events the type is checked, as well as some other things. For relation events the type is checked as well as " +
+            "the source and destination. Then there are some other things like: 'new node events should not flush queries with " +
+            "more than one step, becouse they have no relation yet'. It allso checks if a certain change in a node actually can affect the " +
+            "outcome of a query.";
     }
 
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
@@ -194,7 +195,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 //if the changed field(s) do not occur in the fields or constraint section
                 //of the query, it dous not have to be flushed
                 if(! checkChangedFieldsMatch(event.getNodeEvent(), query)) {
-                    logResult("the changed (relation) fields do not match the fields or constraints of the query", query, event);
+                    logResult("no flush: the changed relation fields do not match the fields or constraints of the query", query, event);
                     return false;
                 }
 

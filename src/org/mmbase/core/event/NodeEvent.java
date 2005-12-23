@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.20 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: NodeEvent.java,v 1.21 2005-12-23 10:20:17 ernst Exp $
  */
 public class NodeEvent extends Event implements Serializable, Cloneable {
 
@@ -127,7 +127,16 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
      * @return a set containing the names of the fields that have changed
      */
     public Set getChangedFields(){
-        return Collections.unmodifiableSet(oldValues.keySet());
+        if(getType() ==  EVENT_TYPE_NEW){
+            return Collections.unmodifiableSet(newValues.keySet());
+        }else if(getType() == EVENT_TYPE_CHANGED){
+            //for changed both old and new values are good (similar keys)
+            return Collections.unmodifiableSet(newValues.keySet());
+        }else if(getType() == EVENT_TYPE_DELETE){
+            return Collections.unmodifiableSet(oldValues.keySet());
+        }else{
+            return new HashSet();
+        }
     }
 
     /**
@@ -178,7 +187,7 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         for (Iterator i = getChangedFields().iterator(); i.hasNext();) {
             changedFields = changedFields + (String) i.next() + ",";
         }
-        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues;
+        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues + "changedFields: " + getChangedFields();
     }
 
     protected static String getEventTypeGuiName(int eventType) {

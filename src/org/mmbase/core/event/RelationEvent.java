@@ -12,14 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class reflects a change relation event. it contains information about the kind of event (new, delete, change),
+ * This class reflects a ,,change relation event. it contains information about the kind of event (new, delete, change),
  * and it contains a reference to the appropriate typerel node, which allows you to find out on which relation from
  * which builder to which builder, the event occered. This is usefull for caching optimization.<br/> A relation changed
  * event is called the twoo nodes that the relation links (or used to).
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.11 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: RelationEvent.java,v 1.12 2005-12-23 10:20:17 ernst Exp $
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 
@@ -127,10 +127,10 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return super.toString() + ", relation eventtype: " + NodeEvent.getEventTypeGuiName(getType())
+        return "relation event. type: " + NodeEvent.getEventTypeGuiName(getType())
                 + ", sourcetype: " + relationSourceType + ", destinationtype: " + relationDestinationType
                 + ", source-node number: " + relationSourceNumber + ", destination-node number: "
-                + relationDestinationNumber + ", role: " + role;
+                + relationDestinationNumber + ", role: " + role + " node event: " + nodeEvent;
     }
 
     public Object clone() {

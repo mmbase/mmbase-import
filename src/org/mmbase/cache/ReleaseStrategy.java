@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.11 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.12 2005-12-23 10:20:17 ernst Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -139,12 +139,10 @@ public abstract class ReleaseStrategy {
      *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#setEnabled(boolean)
      */
-    public void setEnabled(boolean enabled) {
-        if (isActive != enabled) {
-            totalEvaluated = 0;
-            totalPreserved = 0;
-            totalEvaluationTimeInMillis = 0;
-            isActive = enabled;
+    public void setEnabled(boolean newStatus) {
+        if (isActive != newStatus) {
+            clear();
+            isActive = newStatus;
         }
     }
     
@@ -152,10 +150,19 @@ public abstract class ReleaseStrategy {
        return isActive;
     }
     
-    public boolean equals(ReleaseStrategy rs){
-        return (getName().equals(rs.getName()));
+    public void clear(){
+        totalEvaluated = 0;
+        totalPreserved = 0;
+        totalEvaluationTimeInMillis = 0;
     }
     
+    public boolean equals(Object ob){
+        return ob instanceof ReleaseStrategy && this.getName().equals(((ReleaseStrategy)ob).getName());
+    }
+
+    public int hashCode(){
+        return getName().hashCode();
+    }
 
     /**
      * utility for specializations: get all the constraints in the query that apply to 
@@ -226,7 +233,7 @@ public abstract class ReleaseStrategy {
      */
     protected static List getStepsForType(SearchQuery query, MMObjectBuilder type){
         List result = new ArrayList(10);
-        for (Iterator i = getFieldSteps(query).iterator(); i.hasNext();) {
+        for (Iterator i = query.getSteps().iterator(); i.hasNext();) {
             Step step = (Step) i.next();
             if( step.getTableName().equals(type.getTableName()))
                 result.add(step);
