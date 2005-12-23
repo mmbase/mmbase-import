@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.21 2005-12-23 10:20:17 ernst Exp $
+ * @version $Id: NodeEvent.java,v 1.22 2005-12-23 16:13:49 ernst Exp $
  */
 public class NodeEvent extends Event implements Serializable, Cloneable {
 
@@ -98,6 +98,13 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
     }
     */
     
+    /**
+    *@param machineName (MMBase) name of the server
+    *@param builderName name of builder of node event is about
+    *@param oldValues map with fields and their values that have been changed by the event
+    *@param newValues map with new values of changed fields
+    *@param eventType the type of event
+    **/
     public NodeEvent(String machineName, String builderName, int nodeNumber, Map oldValues, Map newValues, int eventType ){
         super(machineName);
         this.builderName = builderName;
