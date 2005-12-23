@@ -29,7 +29,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.34 2005-12-17 16:15:55 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.35 2005-12-23 13:16:04 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -449,7 +449,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         addFunction(new NodeFunction("iconurl",
                                      new Parameter[] {
                                          Parameter.REQUEST,
-                                         new Parameter("iconroot", String.class, "/mmbase/style/icons/")
+                                         new Parameter("iconroot", String.class, "/mmbase/style/icons/"),
+                                         new Parameter("absolute", String.class, "false")
                                      },
                                      ReturnType.STRING) {
                 {
@@ -459,13 +460,18 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     String mimeType = AbstractServletBuilder.this.getMimeType(getCoreNode(AbstractServletBuilder.this, n));
                     ResourceLoader webRoot = ResourceLoader.getWebRoot();
                     HttpServletRequest request = (HttpServletRequest) parameters.get(Parameter.REQUEST);
+                    String absolute = parameters.getString("absolute");
                     String root;
                     if (request != null) {
                         root = request.getContextPath();
                     } else {
                         root = MMBaseContext.getHtmlRootUrlPath();
                     }
-
+                    
+                    if ("true".equals(absolute) && request != null) {
+                        int port = request.getServerPort();
+                        root = request.getScheme() + "://" + request.getServerName() + (port == 80 ? "" : ":" + port) + root;
+                    }
                     String iconRoot = (String) parameters.get("iconroot");
                     if (root.endsWith("/") && iconRoot.startsWith("/")) iconRoot = iconRoot.substring(1);
 
