@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.48 2005-12-18 09:37:22 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.49 2005-12-23 12:28:28 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -321,6 +321,7 @@ public class DataTypeDefinition {
      * Used the enumeration element.
      */
     protected void addEnumeration(Element enumerationElement) {
+        dataType.getEnumerationFactory().clear();
         setRestrictionData(dataType.getEnumerationRestriction(), enumerationElement);
         LocalizedEntryListFactory fact = dataType.getEnumerationFactory();
         NodeList childNodes = enumerationElement.getElementsByTagName("query");
