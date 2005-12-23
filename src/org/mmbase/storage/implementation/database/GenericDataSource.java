@@ -30,9 +30,9 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.9 2005-12-17 16:27:20 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.10 2005-12-23 14:57:32 michiel Exp $
  */
-final class GenericDataSource implements DataSource {
+public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
 
     // Reference to the JDBC Module
@@ -84,6 +84,13 @@ final class GenericDataSource implements DataSource {
         } else {
             return jdbc.getConnection(url);
         }
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public Connection getDirectConnection() throws SQLException {
+        String url = makeUrl();
+        return jdbc.getDirectConnection(url);
     }
 
     // see javax.sql.DataSource
