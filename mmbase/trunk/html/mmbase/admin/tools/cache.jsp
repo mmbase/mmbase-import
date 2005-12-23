@@ -114,6 +114,16 @@
    <tr><td colspan="2">  <a name="<mm:write referid="cacheName"/>"></td></tr>
    <%@include file="cache/cache_detail.jsp"%>
    
+   <%-- Now the strategy performance overview line--%>
+   <tr>
+      <td class="data">Events Analyzed</td>
+      <td class="data"><%= cache.getReleaseStrategy().getTotalEvaluated()%></td>
+      <td class="data">Queries preserved</td>
+      <td class="data"><%= cache.getReleaseStrategy().getTotalPreserved() %></td>
+      <td class="data">Queries flushed</td>
+      <td class="data"><%= cache.getReleaseStrategy().getTotalEvaluated() - cache.getReleaseStrategy().getTotalPreserved()%></td>
+    </tr>
+
    <%-- create the toggle link for showing / hiding strategy details --%>
    <mm:import reset="true" id="url">
       <mm:url>
@@ -171,9 +181,11 @@
       <mm:import id="strategyEnabled" reset="true"><%= strategy.isEnabled() ? "enabled" : "disabled" %></mm:import>
       <mm:compare referid="strategyEnabled" value="enabled">
          <mm:import id="textStyle" reset="true">color: black;</mm:import>
+         <mm:import id="linkStyle" reset="true">color: green;</mm:import>
       </mm:compare>
       <mm:compare referid="strategyEnabled" value="enabled" inverse="true">
          <mm:import id="textStyle" reset="true">color: #666666;</mm:import>
+         <mm:import id="linkStyle" reset="true">color: red;</mm:import>
       </mm:compare>
       
       <%-- show the values --%>
@@ -185,7 +197,9 @@
                <td style="padding: 0px;">
                      <div class="row">
                         <div class="label" style="<mm:write referid="textStyle"/>">enabled:</div>
-                        <div class="data" style="<mm:write referid="textStyle"/>"><a href="<mm:write escape="none" referid="toggleActiveUrl"/>"> <%= strategy.isEnabled() ? "enabled" : "disabled"%></a> (press to toggle)</div>
+                        <div class="data" ><a href="<mm:write escape="none" referid="toggleActiveUrl"/>">
+                            <span style="<mm:write referid="linkStyle"/>"><%= strategy.isEnabled() ? "enabled" : "disabled"%>(press to toggle)</a> </span>
+                        </div>
                      </div>               
                      <div class="row">
                         <div class="label" style="<mm:write referid="textStyle"/>">total queries evaluated:</div>
