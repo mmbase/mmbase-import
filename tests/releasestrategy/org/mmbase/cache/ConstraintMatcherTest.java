@@ -1,17 +1,18 @@
 package org.mmbase.cache;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Query;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.core.CoreField;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.NodeEventHelper;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.tests.BridgeTest;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -43,9 +44,7 @@ public class ConstraintMatcherTest extends BridgeTest {
         return map;
     }
 
-    public void testBasicCompositeConstraintMatcher() {
-
-    }
+   
 
     public void testBasicFieldValueConstraintMatcherString() {
 
@@ -107,9 +106,104 @@ public class ConstraintMatcherTest extends BridgeTest {
         assertFalse("(<=) New node falls outside constraint: don't flush", matchingStrategy.evaluate(event2b, q6, null).shouldRelease());
     }
     
+ 
     
-    
+    public void testBasicFieldValueConstraintMatcherBoolean(){
+       
+        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder builder = mmbase.getBuilder("datatypes");
+        MMObjectNode node = builder.getNewNode("system");
+        node.setValue("boolean", new Boolean(true));
+        node.setValue("checksum", "jewjkekwekk");
+        builder.insert("system", node);
+        
+        NodeEvent event1 = NodeEventHelper.createNodeEventInstance(node, NodeEvent.EVENT_TYPE_NEW, null);
 
+        
+        BasicSearchQuery query3 = new BasicSearchQuery(false);
+        BasicStep s1 = query3.addStep(builder);
+        CoreField bField = builder.getField("boolean");
+        BasicStepField sf1 = query3.addField(s1, bField);
+        BasicFieldValueConstraint  c1 = new BasicFieldValueConstraint(sf1, new Boolean(true));
+        c1.setOperator(FieldCompareConstraint.EQUAL);
+        query3.setConstraint(c1);
+        
+        BasicSearchQuery query4 = (BasicSearchQuery) query3.clone();
+        BasicFieldValueConstraint c2 = (BasicFieldValueConstraint) query4.getConstraint();
+        c2.setValue(new Boolean(false));
+        
+        
+        assertTrue("boolean value dous match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
+        assertFalse("boolean value dus not match: don't flush",     matchingStrategy.evaluate(event1, query4, null).shouldRelease());
+    }
+    
+    
+    
+    public void testBasicFieldValueConstraintMatcherNode(){
+        
+        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder builder = mmbase.getBuilder("datatypes");
+        
+        MMObjectNode node = builder.getNewNode("system");
+        builder.insert("system", node);
+        
+       
+        MMObjectNode othernode = builder.getNewNode("system");
+        builder.insert("system", othernode);
+         
+        MMObjectNode node1 = builder.getNewNode("system");
+        node1.setValue("node",node);
+        builder.insert("system", node1);
+        
+        NodeEvent event1 = NodeEventHelper.createNodeEventInstance(node1, NodeEvent.EVENT_TYPE_NEW, null);
+
+        
+        BasicSearchQuery query3 = new BasicSearchQuery(false);
+        BasicStep s1 = query3.addStep(builder);
+        CoreField bField = builder.getField("node");
+        BasicStepField sf1 = query3.addField(s1, bField);
+        BasicFieldValueConstraint  c1 = new BasicFieldValueConstraint(sf1, new Integer(node.getNumber()));
+        c1.setOperator(FieldCompareConstraint.EQUAL);
+        query3.setConstraint(c1);
+        
+        BasicSearchQuery query4 = (BasicSearchQuery) query3.clone();
+        BasicFieldValueConstraint c2 = (BasicFieldValueConstraint) query4.getConstraint();
+        c2.setValue(new Integer(othernode.getNumber()));
+        
+        assertTrue("node value dous match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
+        assertFalse("node value dus not match: don't flush",     matchingStrategy.evaluate(event1, query4, null).shouldRelease());
+    }
+
+    
+    public void testBasicFieldValueConstraintMatcherDate(){
+        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder builder = mmbase.getBuilder("datatypes");
+        MMObjectNode node = builder.getNewNode("system");
+        Date date = new Date();
+        node.setValue("datetime", date);
+        builder.insert("system", node);
+        
+        NodeEvent event1 = NodeEventHelper.createNodeEventInstance(node, NodeEvent.EVENT_TYPE_NEW, null);
+
+        
+        BasicSearchQuery query3 = new BasicSearchQuery(false);
+        BasicStep s1 = query3.addStep(builder);
+        CoreField bField = builder.getField("datetime");
+        BasicStepField sf1 = query3.addField(s1, bField);
+        BasicFieldValueConstraint  c1 = new BasicFieldValueConstraint(sf1, date);
+        c1.setOperator(FieldCompareConstraint.EQUAL);
+        query3.setConstraint(c1);
+        
+        BasicSearchQuery query4 = (BasicSearchQuery) query3.clone();
+        BasicFieldValueConstraint c2 = (BasicFieldValueConstraint) query4.getConstraint();
+        Calendar cal =Calendar.getInstance();
+        cal.set(Calendar.YEAR, -1);
+        c2.setValue(cal.getTime());
+        
+        
+        assertTrue("date value dous match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
+        assertFalse("date value dus not match: don't flush",     matchingStrategy.evaluate(event1, query4, null).shouldRelease());
+    }
     public void testBasicFieldValueConstraintMatcherInt() {
         // type integer. allso tests event types delete and new
         Query query1 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "datatypes.integer < 3", null, null, null, false);
@@ -168,28 +262,75 @@ public class ConstraintMatcherTest extends BridgeTest {
         assertFalse("(!=) New node falls outside constraint: don't flush", matchingStrategy.evaluate(event2f, query6, null).shouldRelease());
     }
     
-    public void testCompositeMatcherAndString(){
-    	MMBase mmbase = MMBase.getMMBase();
-    	MMObjectBuilder newsBuilder = mmbase.getBuilder("news");
-    	MMObjectNode node = newsBuilder.getNewNode("system");
-    	node.setValue("title", "test");
-    	node.setValue("subtitle", "testsub");
-    	node.commit();
-    	
-    	node.setValue("title", "newtTitle");
-    	NodeEvent event = NodeEventHelper.createNodeEventInstance(node, NodeEvent.EVENT_TYPE_CHANGED, null);
-    	
-    	Query query1 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.number = 10 AND mags.title='test'", null, null, null, false);
-    	
-    	NodeEvent event1 = new NodeEvent(null, "mags", 10, null, createMap(new Object[][] { { new String("title"), "test" } }), NodeEvent.EVENT_TYPE_NEW);
-    	NodeEvent event2 = new NodeEvent(null, "mags", 11, null, createMap(new Object[][] { { new String("title"), "test" } }), NodeEvent.EVENT_TYPE_NEW);
-    	NodeEvent event3 = new NodeEvent(null, "mags", 10, null, createMap(new Object[][] { { new String("title"), "testhalo" } }), NodeEvent.EVENT_TYPE_NEW);
-    	NodeEvent event4 = new NodeEvent(null, "mags", 10, null, createMap(new Object[][] { { new String("subtitle"), "test" } }), NodeEvent.EVENT_TYPE_NEW);
-    	
-    	assertTrue("both constraints match: flush", matchingStrategy.evaluate(event1, query1, null).shouldRelease());
-    	assertFalse("node number dous not match: don't flush", matchingStrategy.evaluate(event2, query1, null).shouldRelease());
-    	assertFalse("magazine title dous not match: don't flush", matchingStrategy.evaluate(event3, query1, null).shouldRelease());
-    	assertFalse("fields constraints are on don't match: don't flush", matchingStrategy.evaluate(event2, query1, null).shouldRelease());
+    public void testCompositeMatcherAnd(){
+        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder magsBuilder = mmbase.getBuilder("mags");
+        MMObjectNode node = magsBuilder.getNewNode("system");
+        node.setValue("title", "test");
+        node.setValue("subtitle", "testsub");
+        node.setValue("intro", "intro");
+        magsBuilder.insert("system", node);
+	
+        	//test the new node
+        NodeEvent event = NodeEventHelper.createNodeEventInstance(node, NodeEvent.EVENT_TYPE_NEW, null);
+        Query query1 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.number = "+node.getNumber()+" AND mags.title='test'", null, null, null, false);
+        Query query2 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.number = 11 AND mags.title='test'", null, null, null, false);
+        Query query3 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.number = "+node.getNumber()+" AND mags.title='hallo'", null, null, null, false);
+        Query query4 = Queries.createQuery(cloud, null, "mags,news", "mags.number", "mags.number = 11 AND news.title='test'", null, null, null, false);
+        
+        assertTrue("both constraints match: flush", matchingStrategy.evaluate(event, query1, null).shouldRelease());
+        assertFalse("node number dous not match: don't flush", matchingStrategy.evaluate(event, query2, null).shouldRelease());
+        assertFalse("magazine title dous not match: don't flush", matchingStrategy.evaluate(event, query3, null).shouldRelease());
+        assertTrue("event dous not (fully) match query: flush", matchingStrategy.evaluate(event, query4, null).shouldRelease());
+        
+        //test the changed node
+        node.setValue("subtitle", "newTitle");
+        NodeEvent event1 = NodeEventHelper.createNodeEventInstance(node, NodeEvent.EVENT_TYPE_CHANGED, null);
+        
+        Query query5 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.title = 'test' AND mags.subtitle='testsub'", null, null, null, false);
+        Query query6 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.title = 'test' AND mags.subtitle='newTitle'", null, null, null, false);
+        Query query7 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.title = 'test' AND mags.intro='intro'", null, null, null, false);
+    
+        assertTrue("changed node: value used to match, but no more: flush", matchingStrategy.evaluate(event1, query5, null).shouldRelease());
+        assertTrue("changed node: value matches now, but did not before: flush", matchingStrategy.evaluate(event1, query6, null).shouldRelease());
+        assertFalse("changed node: value matched before and matches now: don't flush", matchingStrategy.evaluate(event1, query7, null).shouldRelease());
+        
+        node.commit();
+        
+        //test deleted nodes
+        NodeEvent event2 = NodeEventHelper.createNodeEventInstance(node, NodeEvent.EVENT_TYPE_DELETE, null);
+        Query query8 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.title = 'hallo' AND mags.intro='intro'", null, null, null, false);
+        Query query9 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.title = 'test' AND mags.intro='intro'", null, null, null, false);
+        Query query10 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.title = 'test' AND mags.intro='something'", null, null, null, false);
+        Query query11 = Queries.createQuery(cloud, null, "mags,news", "mags.number", "news.title = 'test' AND mags.intro='something'", null, null, null, false);
+        
+        assertFalse("deleted node: one value matches: don't flush", matchingStrategy.evaluate(event2, query8, null).shouldRelease());
+        assertTrue("deleted node: both  values matches: flush", matchingStrategy.evaluate(event2, query9, null).shouldRelease());
+        assertFalse("deleted node: both  values don't match: don't flush", matchingStrategy.evaluate(event2, query10, null).shouldRelease());
+        assertTrue("deleted node: event dous not (fully) match query: flush", matchingStrategy.evaluate(event2, query11, null).shouldRelease());
     }
 
+    public void testCompositeMatcherOr(){
+        
+        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder magsBuilder = mmbase.getBuilder("mags");
+        MMObjectNode node = magsBuilder.getNewNode("system");
+        node.setValue("title", "test");
+        node.setValue("subtitle", "testsub");
+        node.setValue("intro", "intro");
+        magsBuilder.insert("system", node);
+	
+        NodeEvent event1 = NodeEventHelper.createNodeEventInstance(node, NodeEvent.EVENT_TYPE_NEW, null);
+        Query query1 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.subtitle='notso' OR mags.title='test'", null, null, null, false);
+        Query query2 = Queries.createQuery(cloud, null, "mags, news", "mags.number", "news.title='notso'  OR mags.title='test'", null, null, null, false);
+        Query query3 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.subtitle='testsub'  OR mags.title='test'", null, null, null, false);
+        Query query4 = Queries.createQuery(cloud, null, "mags", "mags.number", "mags.subtitle='notso'  OR mags.title='notso'", null, null, null, false);
+        Query query5 = Queries.createQuery(cloud, null, "mags,news", "mags.number", "news.subtitle='notso'  OR news.title='test'", null, null, null, false);
+       
+        assertTrue("new node: one value matches,  and both can be cheked: flush", matchingStrategy.evaluate(event1, query1, null).shouldRelease());
+        assertTrue("new node: one value matches,  and the other can not be cheked: flush", matchingStrategy.evaluate(event1, query2, null).shouldRelease());
+        assertTrue("new node: both  values matches: flush", matchingStrategy.evaluate(event1, query3, null).shouldRelease());
+        assertFalse("new node: no values matches: don't flush", matchingStrategy.evaluate(event1, query4, null).shouldRelease());
+        assertTrue("new node: no values can be checked: flush", matchingStrategy.evaluate(event1, query5, null).shouldRelease());
+    }
 }

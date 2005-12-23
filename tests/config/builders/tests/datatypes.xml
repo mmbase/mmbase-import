@@ -154,6 +154,7 @@
         <type  state="persistent">DATETIME</type>
       </db>
     </field>
+    
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="2005-10-05" />
@@ -165,6 +166,7 @@
         <type  state="persistent">DATETIME</type>
       </db>
     </field>
+    
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="now" />
@@ -176,6 +178,7 @@
         <type  state="persistent">DATETIME</type>
       </db>
     </field>
+    
     <field>
       <datatype base="weeknumbers" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="now" />
@@ -187,6 +190,7 @@
         <type  state="persistent">DATETIME</type>
       </db>
     </field>
+    
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <minLength value="3" />
@@ -197,6 +201,7 @@
         <type  size="100000"   state="persistent">BINARY</type>
       </db>
     </field>
+    
     <field>
       <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -204,12 +209,21 @@
         <type state="system" size="255" unique="true">STRING</type>
       </db>
     </field>
+    
     <field>
       <db>
         <name>boolean</name>
         <type state="persistent">BOOLEAN</type>
       </db>
     </field>
+    
+     <field>
+      <db>
+        <name>node</name>
+        <type state="persistent">NODE</type>
+      </db>
+    </field>
+    
     <field>
       <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="true" />
@@ -219,25 +233,26 @@
         <type state="persistent" >BOOLEAN</type>
       </db>
     </field>
+    
     <field>
       <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>integer_boolean</name>
-        <type state="persistent"  unique="true">INTEGER</type>
+        <type state="persistent"  >INTEGER</type>
       </db>
     </field>
     <field>
       <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>string_boolean</name>
-        <type state="persistent" size="255" unique="true">STRING</type>
+        <type state="persistent" size="255" >STRING</type>
       </db>
     </field>
     <field>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>boolean_string</name>
-        <type state="persistent"  unique="true">BOOLEAN</type>
+        <type state="persistent"  >BOOLEAN</type>
       </db>
     </field>
   </fieldlist>
