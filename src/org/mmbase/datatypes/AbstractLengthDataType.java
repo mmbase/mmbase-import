@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.9 2005-12-10 11:47:14 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.10 2005-12-23 12:32:26 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -138,6 +138,7 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
             super(dt, "minLength", new Long(min));
         }
         protected boolean simpleValid(Object v, Node node, Field field) {
+            if (v == null) return true; // depends on 'required'
             long min = Casting.toLong(getValue());
             return ((LengthDataType) parent).getLength(v) >= min;
         }
@@ -150,6 +151,7 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
             super(dt, "maxLength", new Long(max));
         }
         protected boolean simpleValid(Object v, Node node, Field field) {
+            if (v == null) return true; // depends on 'required'
             long max = Casting.toLong(getValue());
             long length = ((LengthDataType) parent).getLength(v);
             return length <= max;
