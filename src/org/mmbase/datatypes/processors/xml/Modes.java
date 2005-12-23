@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * datatypes.xml), but some modes could also set/get XMLValue.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Modes.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id: Modes.java,v 1.3 2005-12-23 12:28:04 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -90,7 +90,7 @@ public abstract class Modes {
         } else if ("docbook".equals(mode)) {
             return DOCBOOK;
         } else {
-            log.warn("Unknown mode " + mode);
+            log.warn("Unknown mode " + mode, new Exception());
             return XML;
         }
     }
