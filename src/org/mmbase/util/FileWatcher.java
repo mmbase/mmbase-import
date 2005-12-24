@@ -62,7 +62,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.33 2005-12-22 18:34:17 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.34 2005-12-24 11:19:49 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -91,8 +91,8 @@ public abstract class FileWatcher {
     /**
      * @since MMBase-1.8
      */
-    static private ResourceWatcher watcher = new ResourceWatcher() {
-            public void onChange(String n) {
+    static private Runnable watcher = new Runnable() {
+            public void run() {
                 try {
                     String delay =  (String) props.get("delay");
                     if (delay != null) {
@@ -108,7 +108,7 @@ public abstract class FileWatcher {
 
     static {
         props = new UtilReader("resourcewatcher.xml", watcher).getProperties();
-        watcher.onChange("");
+        watcher.run();
     }
 
     /**
