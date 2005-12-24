@@ -42,10 +42,10 @@ import org.mmbase.util.XMLBasicReader;
  * editor by creating an url for example like YAMMEditor does which gives access to
  * the editor yammeditor.jsp.<br />
  * Extend Editor to create your own and edit the edittag.xml resources file
- * to let the EditTag know about it.
+ * in the MMBase config/taglib directory to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.6 2005-12-20 09:54:45 andre Exp $
+ * @version $Id: EditTag.java,v 1.7 2005-12-24 13:18:47 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  * @since MMBase-1.8
@@ -136,8 +136,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
     private Editor yaeditor = null;     // should do all the work
     
     /**
-     * The type of editor, see resources/edittag.xml for different types or
-     * add your own editor.
+     * The type of editor, add your own editor in config/taglib/edittag.xml.
      *
      * @param t     String with editor type.
      */ 
@@ -146,7 +145,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
     }
 
     /**
-     * The type of editor, see resources/edittag.xml for different types or
+     * The type of editor, see config/taglib/edittag.xml for different types or
      * add your own editor.
      *
      * @return String stating the type of editor the tag refers to.
@@ -218,6 +217,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         
         // resulting String
         editorstr = yaeditor.getEditorHTML();
+        //yaeditor.getEditorHTML(getPageContext());
         
         helper.setValue(editorstr);
         helper.useEscaper(false);
