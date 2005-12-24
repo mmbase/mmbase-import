@@ -26,8 +26,8 @@ import org.mmbase.util.logging.*;
  * inside the application server and let the application server do the pooling. Since
  * this is a J2EE concept, this class provides support for usage of this.
  *
- * @author Eduard
- * @version $Id: Naming.java,v 1.3 2002-10-09 14:07:12 michiel Exp $
+ * @author Eduard Witteveen
+ * @version $Id: Naming.java,v 1.4 2005-12-24 11:35:45 michiel Exp $
  */
 public class Naming extends ProcessorModule implements JDBCInterface {
     private static Logger log = Logging.getLoggerInstance(Naming.class.getName());
@@ -39,39 +39,14 @@ public class Naming extends ProcessorModule implements JDBCInterface {
     private class NamingMultiConnection extends MultiConnection {
 	/** constructor to set the connection which has to be retrieved */
 	NamingMultiConnection(Connection con) {
-	    super();
+	    super(null, con);
 	    // this should take care of everything (we hope)
-	    this.con = con;
 	    state = CON_BUSY;
-	    this.parent = null;
 	}
-	//public String getStateString()
-	//public void setLastSQL(String sql)
-	//public String getLastSQL()
-	//public Statement createStatement() throws SQLException 
-	//public PreparedStatement prepareStatement(String sql) throws SQLException 
-	//public CallableStatement prepareCall(String sql) throws SQLException 
-	//public String nativeSQL(String query) throws SQLException
-	//public void setAutoCommit(boolean enableAutoCommit) throws SQLException 
-	//public boolean getAutoCommit() throws SQLException
-	//public void commit() throws SQLException 
-	//public void rollback() throws SQLException 
 	/** override the close, since the MultiConnection want to tell the pool that it is closed */
 	public void close() throws SQLException {
 	    con.close();
 	}
-	//public void realclose() throws SQLException
-	//public boolean isClosed() throws SQLException
-	//public DatabaseMetaData getMetaData() throws SQLException
-	//public void setReadOnly(boolean readOnly) throws SQLException
-	//public boolean isReadOnly() throws SQLException
-	//public void setCatalog(String catalog) throws SQLException
-	//public String getCatalog() throws SQLException
-	//public void setTransactionIsolation(int level) throws SQLException 
-	//public int getTransactionIsolation() throws SQLException
-	//public SQLWarning getWarnings() throws SQLException
-	//public void clearWarnings() throws SQLException
-	//public boolean checkSQLError(Exception e)
 	/** claim what? */
 	public void claim() {
 	}
@@ -90,25 +65,18 @@ public class Naming extends ProcessorModule implements JDBCInterface {
 	public long getStartTimeMillis() {
 	    return 0;
 	}
-	//public String toString()
-	//public CallableStatement prepareCall(String sql, int i, int y) throws SQLException
-	//public void setTypeMap(Map mp) throws SQLException
-	//public Map getTypeMap() throws SQLException
-	//public Statement createStatement(int i,int y) throws SQLException
-	//public PreparedStatement prepareStatement(String sql,int i, int y) throws SQLException
-	// The 1.4 methods are also skipped..
     }
 
     /**
-     * Init this module. Will check if properties are available and try to get a datasource, to 
+     * Init this module. Will check if properties are available and try to get a datasource, to
      * test if we can use it.
      */
     public void init() {
 	String context = getInitParameter(PROPERTY_CONTEXT_NAME);
-	if(context == null) throw new RuntimeException("the property '"+PROPERTY_CONTEXT_NAME+"' was not set");
+	if(context == null) throw new RuntimeException("the property '" + PROPERTY_CONTEXT_NAME + "' was not set");
 	String source = getInitParameter(PROPERTY_DATASOURCE_NAME);
-	if(source == null) throw new RuntimeException("the property '"+PROPERTY_CONTEXT_NAME+"' was not set");
-	
+	if(source == null) throw new RuntimeException("the property '" + PROPERTY_CONTEXT_NAME + "' was not set");
+
 	// do the naming stuff..
 	try {
 	    Context initCtx = new InitialContext();
@@ -120,7 +88,7 @@ public class Naming extends ProcessorModule implements JDBCInterface {
 		throw new RuntimeException(msg);
 	    }
 	    if(datasource instanceof ConnectionPoolDataSource) {
-		ConnectionPoolDataSource ds = (ConnectionPoolDataSource)datasource;	       
+		ConnectionPoolDataSource ds = (ConnectionPoolDataSource)datasource;
 		log.info("Using the interface:" + ConnectionPoolDataSource.class.getName() + "(implemented by:" + ds.getClass().getName() + " to get new database connections(time out: " + ds.getLoginTimeout()  + " seconds).");
 	    }
 	    else if(datasource instanceof DataSource) {
@@ -165,10 +133,10 @@ public class Naming extends ProcessorModule implements JDBCInterface {
      * retrieves an connection to the database, depending on the class which is used as datasource
      * @return Connection A connection to the database
      */
-    private Connection getConnection() throws java.sql.SQLException {     
+    private Connection getConnection() throws java.sql.SQLException {
         if (datasource == null) {
             log.error("Getting connection before init of jdbc module. Trying to reinitalize the database layer.");
-            init();            
+            init();
         }
 
 	if(datasource instanceof ConnectionPoolDataSource) {
@@ -192,7 +160,7 @@ public class Naming extends ProcessorModule implements JDBCInterface {
     public MultiConnection getConnection(String url) throws SQLException {
 	return new NamingMultiConnection(getConnection());
     }
-    
+
     public Connection getDirectConnection(String url) throws SQLException {
 	return getConnection();
     }

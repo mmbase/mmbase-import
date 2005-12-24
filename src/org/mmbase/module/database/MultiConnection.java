@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.41 2005-12-23 14:56:39 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.42 2005-12-24 11:35:45 michiel Exp $
  */
 public class MultiConnection extends ConnectionWrapper {
     // states
@@ -53,7 +53,6 @@ public class MultiConnection extends ConnectionWrapper {
     private long startTimeMillis = 0;
     private int usage = 0;
     public int state = 0;
-
 
     /**
      * @javadoc
