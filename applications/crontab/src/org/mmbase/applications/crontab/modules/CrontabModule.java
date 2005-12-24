@@ -9,7 +9,6 @@ package org.mmbase.applications.crontab.modules;
 
 import java.util.*;
 import org.mmbase.util.xml.UtilReader;
-import org.mmbase.util.ResourceWatcher;
 import org.mmbase.applications.crontab.*;
 import org.mmbase.module.WatchedReloadableModule;
 import org.mmbase.util.logging.*;
@@ -18,7 +17,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.2 2005-12-22 18:15:18 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.3 2005-12-24 11:21:29 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 	
@@ -119,7 +118,7 @@ public class CrontabModule extends WatchedReloadableModule {
      * @since MMBase-1.8
      */
 
-    private Map utilProperties = new UtilReader("crontab.xml", new ResourceWatcher() { public void onChange(String n) { init();}}).getProperties();
+    private Map utilProperties = new UtilReader("crontab.xml", new Runnable() { public void run() { init();}}).getProperties();
 
     public void readMoreJobs() {
         Iterator i = utilProperties.entrySet().iterator();
