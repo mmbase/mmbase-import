@@ -26,7 +26,7 @@ import org.mmbase.bridge.Node;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.8 2005-12-10 14:28:38 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.9 2005-12-24 11:18:42 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -252,6 +252,16 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * @param resourceName The resource that was changed.
      */
     abstract public void onChange(String resourceName);
+
+    /**
+     * Calls {@link #onChange(String)} for every added resource.
+     */
+    public final void onChange() {
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            onChange((String) i.next());
+        }
+    }
 
 
     /**
