@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  *
  * A typical way to use it may be like so:
  <pre>
-    private UtilReader.PropertiesMap utilProperties = new UtilReader("myutil.xml", new ResourceWatcher() { public void onChange(String n) { init();}}).getProperties();
+    private UtilReader.PropertiesMap utilProperties = new UtilReader("myutil.xml", new Runnable() { public void run() { init();}}).getProperties();
     private void init() {
       // use utilProperties
     }
@@ -28,12 +28,12 @@ import org.w3c.dom.Element;
       init();
     }
  </pre>
-This produces a 'watched map' utilProperties. Everytime the underlying config file(s) are changed 'init' is called. Init is called on instantation of the surrounding class too.
+ * This produces a 'watched map' utilProperties. Every time the underlying config file(s) are changed 'init' is called. Init is called on instantation of the surrounding class too.
  *
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.18 2005-12-22 18:13:58 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.19 2005-12-24 11:20:43 michiel Exp $
  */
 public class UtilReader {
 
@@ -111,8 +111,13 @@ public class UtilReader {
         watcher.start();
     }
     /**
+     * Produces a UtilReader for the given resource name.
+     * @param fileName a Resource name relative to config/utils
+     * @param w A unstarted ResourceWatcher without files. (It will be only be called from the
+     *          filewatcher in this reader). It defines what must happen if something changes in the util's
+     *          configuration. Since you probably don't need the resource name for that any more, you
+     *          can also simply use {@link #UtilReader(String, Runnable)}
      * @since MMBase-1.8
-     * @param w A unstarted ResourceWatcher without files. (It will be only be called from the filewatcher in this reader).
      */
     public UtilReader(String fileName, ResourceWatcher w) {
         String file =  CONFIG_UTILS + "/" + fileName;
@@ -121,6 +126,22 @@ public class UtilReader {
         watcher.add(file);
         watcher.start();
 
+    }
+
+
+    /**
+     * Produces a UtilReader for the given resource name.
+     * @param resourceName a Resource name relative to config/utils
+     * @param onChange     A Runnable defining what must happen if something changes.
+     * @since MMBase-1.8
+     */
+    public UtilReader(String resourceName, final Runnable onChange) {
+        this(resourceName, new ResourceWatcher() {
+                public void onChange(String name) {
+                    onChange.run();
+                }
+            }
+             );
     }
 
 
@@ -203,7 +224,9 @@ public class UtilReader {
     }
             
     /**
-     * A unmodifiable Map, with extra 'Properties'-like methods.
+     * A unmodifiable Map, with extra 'Properties'-like methods. The entries of this Map are
+     * typically backed by the resources of an UtilReader (and the Map dynamically changes if the
+     * resources change).
      * @since MMBase-1.8
      */
     
