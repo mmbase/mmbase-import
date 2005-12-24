@@ -16,17 +16,17 @@ import java.util.Map;
  * Wraps  a java.sql.Connection object. Extendsing this makes it possible to intercept calls.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionWrapper.java,v 1.1 2005-12-23 14:56:39 michiel Exp $
+ * @version $Id: ConnectionWrapper.java,v 1.2 2005-12-24 11:35:45 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ConnectionWrapper implements Connection {
     /**
      * The wrapped connection
      */
-    protected final Connection con;
+    protected Connection con;
 
     public  ConnectionWrapper(Connection c) {
-        con = c;    
+        con = c;
     }
 
     /**
@@ -37,8 +37,8 @@ public abstract class ConnectionWrapper implements Connection {
     /**
      * {@inheritDoc}
      */
-    public Statement createStatement() throws SQLException { 
-        return con.createStatement(); 
+    public Statement createStatement() throws SQLException {
+        return con.createStatement();
     }
     /**
      * {@inheritDoc}
