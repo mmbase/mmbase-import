@@ -195,8 +195,8 @@
       </gui>
       <editor>
         <positions>
-          <search>6</search>
           <list>6</list>
+          <search>6</search>
         </positions>
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
