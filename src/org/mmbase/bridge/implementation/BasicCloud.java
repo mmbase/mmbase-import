@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.146 2005-12-08 12:32:09 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.147 2005-12-27 22:35:24 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -245,7 +245,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     public boolean hasNode(String nodeNumber) {
-        return hasNode(nodeNumber, false);
+        return nodeNumber != null && hasNode(nodeNumber, false);
     }
 
     // check if anode exists.
@@ -1015,5 +1015,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      */
     void add(String currentObjectContext) {
     }
+
+    /**
+     * Ignored by basic cloud. See {@link BasicTransaction#remove(String)}.
+     */
+    void remove(String currentObjectContext) {
+
+    }
+
 
 }
