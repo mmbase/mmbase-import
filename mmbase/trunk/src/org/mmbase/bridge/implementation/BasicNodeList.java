@@ -19,11 +19,9 @@ import org.mmbase.module.corebuilders.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.40 2005-12-12 11:00:07 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.41 2005-12-27 21:53:20 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
-
-    static final BasicNodeList EMPTY = new BasicNodeList();
 
     protected Cloud cloud;
     protected NodeManager nodeManager = null;
@@ -46,7 +44,6 @@ public class BasicNodeList extends BasicList implements NodeList {
 
 
     /**
-     * @todo This code should probably use Casting.toNode() instead
      */
     protected Object convert(Object o, int index) {
         if (o instanceof Node || o == null) {
