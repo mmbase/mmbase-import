@@ -373,10 +373,10 @@
          </fileset> 
          <fileset dir="${tomcat.home}/common/lib"> 
            <include name="*.jar"/> 
-         </fileset> 
-         <fileset dir="${build.dir}/webapp/WEB-INF/lib"> 
-           <include name="*.jar"/> 
-         </fileset> 
+         </fileset>
+       	 <fileset dir="src/core/lib">
+       	 	<include name="*.jar" />
+       	 </fileset>
        </classpath> 
      </taskdef> 
 
