@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryDefinition.java,v 1.5 2005-11-04 23:33:20 michiel Exp $
+ * @version $Id: QueryDefinition.java,v 1.6 2005-12-27 15:48:21 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryDefinition {
@@ -34,13 +34,7 @@ public class QueryDefinition {
      * XXX: how is this different from query instanceof NodeQuery
      */
     public boolean isMultiLevel = false;
-
-    /**
-     * A collection of FieldDefinition objects, containing properties for the fields to index.
-     * XXX: Is 'index' not specific for Lucene?
-     */
-    public Collection fields = null;
-
+    
     /**
      * The NodeManager of the 'main' nodetype in this query (if appropriate).
      * XXX: How is this different from NodeQuery#getNodeManager() ?
@@ -53,29 +47,24 @@ public class QueryDefinition {
      */
     public Step elementStep = null;
 
-    /**
-     * The Query configurer that instantiated this definition
-     * XXX: unused (logically, because it is instantatiated by it)
-     */
-    protected QueryConfigurer configurer = null;
-    
-    /**
-     * Constructor.
-     */
-    public QueryDefinition(QueryConfigurer configurer) {
-        this.configurer = configurer;
-    }
 
+    /**
+     * A collection of FieldDefinition objects..
+     */
+    public Collection fields = null;
+
+
+    public QueryDefinition() {
+    }
     /**
      * Constructor, copies all data from the specified QueryDefinition object.
      */
     public QueryDefinition(QueryDefinition queryDefinition) {
-        this.configurer = queryDefinition.configurer;
         this.query = queryDefinition.query;
-        this.fields = queryDefinition.fields;
         this.isMultiLevel = queryDefinition.isMultiLevel;
         this.elementManager = queryDefinition.elementManager;
-        this. elementStep = queryDefinition.elementStep;
+        this.elementStep = queryDefinition.elementStep;
+        this.fields = queryDefinition.fields;
     }
 
     /**
@@ -88,8 +77,7 @@ public class QueryDefinition {
     public String toString() {
         return 
             (query == null ? "NULL" : (query.getClass().getName() + " " + query)) + 
-            " " + (isMultiLevel ? "(MULTILEVEL)" : "") + 
-            fields + 
+            " " + (isMultiLevel ? "(MULTILEVEL)" : "") +
             elementStep;
     }
 }

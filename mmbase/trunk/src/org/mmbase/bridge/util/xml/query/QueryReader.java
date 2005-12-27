@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.6 2005-11-18 22:45:18 nklasens Exp $
+ * @version $Id: QueryReader.java,v 1.7 2005-12-27 15:48:21 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryReader {
@@ -64,7 +64,7 @@ public class QueryReader {
 
     protected static void addField(Element fieldElement, QueryDefinition queryDefinition, QueryConfigurer configurer) {
         if (hasAttribute(fieldElement,"name")) {
-            FieldDefinition fieldDefinition = configurer.getFieldDefinition(queryDefinition);
+            FieldDefinition fieldDefinition = configurer.getFieldDefinition();
             fieldDefinition.fieldName = fieldElement.getAttribute("name");
             try {
                 fieldDefinition.stepField = queryDefinition.query.createStepField(fieldDefinition.fieldName);
