@@ -3,32 +3,5 @@
  xmlns="http://www.mmbase.org/xmlns/luceneindex"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.mmbase.org/xmlns/luceneindex http://www.mmbase.org/xmlns/luceneindex.xsd">
-  <index>
-    <list type="documents">
-      <constraint field="visible" value="1" />
-      <field name="title" />
-      <field name="subtitle" />
-      <field name="intro" />
-      <field name="body" />
-      <field name="begin" />
-      <field name="end" />
-      <field name="visible" />
-      <field name="handle" />
-      <field name="documentnummer" />
-    </list>
-    <list path="cases,documents" element="cases">
-      <constraint field="cases.visible" value="1" />
-      <field name="cases.title" />
-      <field name="cases.subtitle" />
-      <field name="cases.intro" />
-      <field name="cases.body" />
-      <field name="documents.title" />
-      <field name="documents.subtitle" />
-      <field name="documents.documentnummer" />
-      <field name="cases.begin" alias="begin" />
-      <field name="cases.end" alias="end" />
-      <field name="cases.visible" alias="visible" />
-      <field name="cases.casusnummer" />
-    </list>
-  </index>
+  <!-- no default indices -->
 </luceneindex>

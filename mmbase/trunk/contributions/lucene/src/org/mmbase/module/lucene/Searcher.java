@@ -28,16 +28,17 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.8 2005-11-09 13:44:19 pierre Exp $
+ * @version $Id: Searcher.java,v 1.9 2005-12-27 15:45:06 michiel Exp $
  **/
 public class Searcher {
 
     private static final Logger log = Logging.getLoggerInstance(Searcher.class);
+    private static final Logger searchLog = Logging.getLoggerInstance("org.mmbase.lucene.SEARCH");
 
-    private String index;
+    private Indexer index;
     private String[] allIndexedFields;
 
-    Searcher(String index, String[] allIndexedFields) {
+    Searcher(Indexer index, String[] allIndexedFields) {
         this.index = index;
         this.allIndexedFields = allIndexedFields;
     }
@@ -70,27 +71,25 @@ public class Searcher {
 
     public List search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
         // log the value searched
-        SearchLog.log(value);
-        List list = new LinkedList();
-        if (value!=null && !value.equals("")) {
+        searchLog.service(value);
+        List list = new LinkedList(); 
+        log.trace("Searching '" + value + "' in index " + index + " for " + sort + " " + analyzer + " " + extraQuery + " " + fields + " " + offset + " " + max);
+        if (value != null && !value.equals("")) {
             IndexSearcher searcher = null;
             try {
-                searcher = new IndexSearcher(index);
+                searcher = new IndexSearcher(index.getName());
                 Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
+                log.trace("hits " + hits);
                 if (hits != null) {
-                    for (int i = offset; (i < offset+max || max < 0) && i < hits.length(); i++) {
+                    log.trace("Found " + hits.length() + " results");
+                    for (int i = offset; (i < offset + max || max < 0) && i < hits.length(); i++) {
                         String hit = hits.doc(i).get("number");
-                        // If you may not read a node, it is not returned.
-                        if (cloud.mayRead(hit)) {
-                            Node node = cloud.getNode(hit);
-                            list.add(node);
-                        } else {
-                            // what to do if you may not read a node?
-                        }
+                        log.trace("Found " + hit);
+                        list.add(index.getNode(cloud, hit));
                     }
                 }
             } catch (Exception e) {
-                log.error("Cannot run search :"+e.getMessage());
+                log.error("Cannot run search: " + e.getMessage(), e);
             } finally {
                 if (searcher != null) {
                     try {
@@ -113,35 +112,45 @@ public class Searcher {
     }
 
     public int searchSize(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) {
-        if (value!=null && !value.equals("")) {
-            IndexSearcher searcher = null;
-            try {
-                searcher = new IndexSearcher(index);
-                Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
-                return hits.length();
-            } catch (Exception e) {
-                log.error("Cannot run searchSize :"+e.getMessage());
-            } finally {
-                if (searcher != null) {
-                    try {
-                        searcher.close();
-                    } catch (IOException ioe) {
-                        log.error("Can't close index searcher: " + ioe.getMessage());
-                    }
+        IndexReader reader = null;
+        IndexSearcher searcher = null;
+        try {
+            if (value == null || "".equals(value)) {
+                reader = IndexReader.open(index.getName());
+                return reader.numDocs();
+            }
+            searcher = new IndexSearcher(index.getName());
+            Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
+            return hits.length();
+        } catch (Exception e) {
+            log.error("Cannot run searchSize :" + e.getMessage());
+        } finally {
+            if (searcher != null) {
+                try {
+                    searcher.close();
+                } catch (IOException ioe) {
+                    log.error("Can't close index searcher: " + ioe.getMessage());
+                }
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ioe) {
+                    log.error("Can't close index reader: " + ioe.getMessage());
                 }
             }
         }
-        return 0;
+        return -1;
     }
 
     protected Hits getHits(IndexSearcher searcher, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
         Query query;
         if (fields == null || fields.length == 0) {
-            query = QueryParser.parse(value,"fulltext",analyzer);
+            query = QueryParser.parse(value, "fulltext", analyzer);
         } else if (fields.length == 0) {
-            query = QueryParser.parse(value,fields[0],analyzer);
+            query = QueryParser.parse(value, fields[0], analyzer);
         } else {
-            query = MultiFieldQueryParser.parse(value,fields,analyzer);
+            query = MultiFieldQueryParser.parse(value, fields, analyzer);
         }
         if (extraQuery != null) {
             BooleanQuery booleanQuery = new BooleanQuery();
@@ -149,7 +158,7 @@ public class Searcher {
             booleanQuery.add(extraQuery, true, false);
             query = booleanQuery;
         }
-        return searcher.search(query,filter,sort);
+        return searcher.search(query, filter, sort);
     }
 
     /**

@@ -16,9 +16,11 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.xml.query.*;
 
 /**
- *
+ * IndexConfigurer is a specialized QueryConfigurer, which has several extra options. Most
+ * noticeably, it produces fields with a few new attributes.
+ * 
  * @author Pierre van Rooden
- * @version $Id: IndexConfigurer.java,v 1.2 2005-07-27 13:59:58 pierre Exp $
+ * @version $Id: IndexConfigurer.java,v 1.3 2005-12-27 15:45:06 michiel Exp $
  **/
 public class IndexConfigurer extends QueryConfigurer {
 
@@ -33,11 +35,11 @@ public class IndexConfigurer extends QueryConfigurer {
     }
 
     public QueryDefinition getQueryDefinition() {
-        return new IndexDefinition(this);
+        return new MMBaseIndexDefinition(null);
     }
 
-    public FieldDefinition getFieldDefinition(QueryDefinition queryDefinition) {
-        return new IndexFieldDefinition(this, queryDefinition, storeText, mergeText);
+    public FieldDefinition getFieldDefinition() {
+        return new IndexFieldDefinition(storeText, mergeText, allIndexedFieldsSet);
     }
 
 }

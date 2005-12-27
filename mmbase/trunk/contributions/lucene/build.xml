@@ -7,7 +7,7 @@
   <property name="project.name"    value="lucene" />
   <property name="project.package" value="org/mmbase/applications/lucene" />
   <property name="project.jars.dir" location="extrajars" />
-  <property name="project.jars.includes" value="PDFBox-0.7.1.jar,tm-extractors-0.4.jar,lucene-1.4.3.jar" />
+  <property name="project.jars.includes" value="*.jar" />
 
   &base;
 

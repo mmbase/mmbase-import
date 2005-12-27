@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.mmbase.org/xmlns/luceneindex"
-    xmlns:mmlc="http://www.mmbase.org/xmlns/luceneindex"
-    xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
-    version="1.0">
-    <xsd:annotation>
-        <xsd:documentation>Lucene schema</xsd:documentation>
-    </xsd:annotation>
-
+            targetNamespace="http://www.mmbase.org/xmlns/luceneindex"
+            xmlns:mmlc="http://www.mmbase.org/xmlns/luceneindex"
+            xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
+            version="1.0">
+  <xsd:annotation>
+    <xsd:documentation>Lucene schema</xsd:documentation>
+  </xsd:annotation>
+  
   <xsd:import namespace="http://www.mmbase.org/xmlns/searchquery"
-  schemaLocation="http://www.mmbase.org/xsd/lucenequery.xsd"></xsd:import>
-
+              schemaLocation="http://www.mmbase.org/xmlns/lucenequery.xsd" />
+  
   <xsd:element name="index">
-      <xsd:complexType>
-          <xsd:sequence>
-              <xsd:element ref="mmlc:list" maxOccurs="unbounded"
-            minOccurs="0"></xsd:element>
-          </xsd:sequence>
-          <xsd:attribute name="name" type="xsd:string"></xsd:attribute>
-          <xsd:attribute name="optimize" type="xsd:string"></xsd:attribute>
-      </xsd:complexType>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="mmlc:list" maxOccurs="unbounded" minOccurs="0" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="optimize" type="xsd:string" />
+    </xsd:complexType>
   </xsd:element>
-
+  
   <xsd:element name="luceneindex">
-      <xsd:complexType>
-          <xsd:sequence>
-              <xsd:element ref="mmlc:index" maxOccurs="unbounded"
-            minOccurs="0"></xsd:element>
-          </xsd:sequence>
-      </xsd:complexType>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="mmlc:index" maxOccurs="unbounded"
+                     minOccurs="0" />
+      </xsd:sequence>
+    </xsd:complexType>
   </xsd:element>
-
+  
   <xsd:element name="list" type="mmsq:SearchQuery"></xsd:element>
-
+  
 </xsd:schema>

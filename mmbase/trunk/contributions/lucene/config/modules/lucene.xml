@@ -1,13 +1,25 @@
 <?xml version="1.0"?>
-<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module>
-
   <status>active</status>
-
-  <classfile>org.mmbase.module.lucene.Lucene</classfile>
-
+  <class>org.mmbase.module.lucene.Lucene</class>
   <properties>
-    <property name="fullindexatstartup">true</property>
+    <!--
+      Whether to schedule a full index directory at startup of MMBase
+      -->
+    <property name="fullindexatstartup">false</property>
+    <!--
+        The 'Scheduler' is started only after this many of ms.
+    -->
+    <property name="initialwaittime">0</property>
+    <!--
+        The 'Scheduler' waits between checks (a bit like a private crontab). This many milliseconds.
+    -->
+    <property name="waittime">5000</property>
+    <!--
+        If true, no index updates can be done, only existing indices can be used.
+    -->
+    <property name="readonly">false</property>
   </properties>
 
 </module>
