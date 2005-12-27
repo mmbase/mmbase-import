@@ -30,7 +30,7 @@
                   <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
                </mm:compare>
                <td><img src="gfx/edit_learnobject.gif" width="16" border="0" align="middle" /></td>
-               <td>&nbsp;
+               <td>
                  <nobr>
                    <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
                    <mm:present referid="pdfurl">
