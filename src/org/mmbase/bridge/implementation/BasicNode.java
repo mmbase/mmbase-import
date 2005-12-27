@@ -33,16 +33,12 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.187 2005-12-17 23:34:23 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.188 2005-12-27 22:15:37 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
-public class BasicNode implements Node, Comparable, SizeMeasurable {
+public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements Node, Comparable, SizeMeasurable {
 
-    protected static final int ACTION_CREATE = 1; // create a node
-    protected static final int ACTION_EDIT   = 2; // edit node, or change aliasses
-    protected static final int ACTION_DELETE = 3; // delete node
-    protected static final int ACTION_COMMIT = 10; // commit a node after changes
 
     private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
 
@@ -136,7 +132,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * @since MMBase-1.8
      */
-    protected void setNodeManager(MMObjectNode node) {        
+    protected void setNodeManager(MMObjectNode node) {
         nodeManager = cloud.getBasicNodeManager(node.getBuilder());
         assert(nodeManager != null);
     }
@@ -152,29 +148,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
     }
 
-    public boolean isRelation() {
-        return false;
-    }
-
-    public Relation toRelation() {
-        throw new ClassCastException("The node " + this + " is not a relation, (but a " + getClass() + ")");
-    }
-
-    public boolean isNodeManager() {
-        return false;
-    }
-
-    public NodeManager toNodeManager() {
-        throw new ClassCastException("The node " + this + " is not a node manager , (but a " + getClass() + ")");
-    }
-
-    public boolean isRelationManager() {
-        return false;
-    }
-
-    public RelationManager toRelationManager() {
-        throw new ClassCastException("The node " + this + " is not a relation manager , (but a " + getClass() + ")");
-    }
 
     public int getByteSize() {
         return getByteSize(new SizeOf());
@@ -255,7 +228,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return getNode().isChanged();
     }
 
-
     /**
      * Edit this node.
      * Check whether edits are allowed and prepare a node for edits if needed.
@@ -278,8 +250,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (realnumber != -1) {
             if (action == ACTION_DELETE) {
                 cloud.verify(Operation.DELETE, realnumber);
-            }
-            if ((action == ACTION_EDIT) && (temporaryNodeId == -1)) {
+            } else if ((action == ACTION_EDIT) && (temporaryNodeId == -1)) {
                 cloud.verify(Operation.WRITE, realnumber);
             }
         }
@@ -307,67 +278,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             if ((action == ACTION_EDIT) || ((action == ACTION_DELETE) && (getCloud() instanceof BasicTransaction))) {
                 int id = getNumber();
                 String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + id, "" + id);
-                if (cloud instanceof BasicTransaction) {
-                    // store new temporary node in transaction
-                     ((BasicTransaction)cloud).add(currentObjectContext);
-                }
+                // store new temporary node in transaction
+                cloud.add(currentObjectContext);
                 setNode(BasicCloudContext.tmpObjectManager.getNode(account, "" + id));
                 //  check nodetype afterwards?
                 temporaryNodeId = id;
             }
         }
-    }
-
-
-    /**
-     * Setting value with default method (depending on field's type)
-     * @param fieldName name of the field
-     * @param value set value
-     */
-    public void setValue(String fieldName, Object value) {
-        Field field = nodeManager.getField(fieldName);
-        if (value == null) {
-            setValueWithoutProcess(fieldName, value);
-        } else {
-            value = field.getDataType().cast(value, this, field);
-            switch(field.getType()) {
-            case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
-            case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
-            case Field.TYPE_BINARY:    {
-                long length = getNode().getSize(fieldName);
-                setInputStreamValue(fieldName, Casting.toInputStream(value), length); break;
-            }
-            case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
-            case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
-            case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
-            case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
-            case Field.TYPE_NODE:    setNodeValue(fieldName, (Node) value); break;
-            case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
-            case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
-            case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
-            default:                 setObjectValue(fieldName, value);
-            }
-        }
-    }
-
-    /**
-     * Like setObjectValue, but without processing, this is called by the other set-values.
-     * @param fieldName name of field
-     * @param value new value of the field
-     * @todo setting certain specific fields (i.e. snumber) should be directed to a dedicated
-     *       method such as setSource(), where applicable.
-     * @since MMBase-1.7
-     */
-    public void setValueWithoutProcess(String fieldName, Object value) {
-        edit(ACTION_EDIT);
-        if (MMObjectBuilder.FIELD_OWNER.equals(fieldName)) {
-            setContext(Casting.toString(value));
-            return;
-        }
-        if ("number".equals(fieldName) || "otype".equals(fieldName)) {
-            throw new BridgeException("Not allowed to change field '" + fieldName + "'.");
-        }
-        setValueWithoutChecks(fieldName, value);
     }
 
     /**
@@ -383,130 +300,21 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         changed = true;
     }
-
-    public void setObjectValue(String fieldName, Object value) {
-        Field field = nodeManager.getField(fieldName);
-        value = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_UNKNOWN).process(this, field, value);
-        setValueWithoutProcess(fieldName, value);
-    }
-
-    public void setBooleanValue(String fieldName,final  boolean value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BOOLEAN).process(this, field, Boolean.valueOf(value));
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    public void setDateValue(String fieldName, final Date value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DATETIME).process(this, field, value);
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    public void setListValue(String fieldName, final List value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LIST).process(this, field, value);
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    public void setNodeValue(String fieldName, final Node value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_NODE).process(this, field, value);
+    protected Integer toNodeNumber(Object v) {
         if (v == null) {
-            setValueWithoutProcess(fieldName, null);
+            return null;
         } else if (v instanceof Node) {
-            setValueWithoutProcess(fieldName, new Integer(((Node)v).getNumber()));
+            return new Integer(((Node)v).getNumber());
         } else if (v instanceof MMObjectNode) {
-            setValueWithoutProcess(fieldName, new Integer(((MMObjectNode)v).getNumber()));
+            return new Integer(((MMObjectNode)v).getNumber());
         } else {
-            setValueWithoutProcess(fieldName, v);
+            // giving up
+            return new Integer(cloud.getNode(v.toString()).getNumber());
         }
     }
 
-    public void setIntValue(String fieldName, final int value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_INTEGER).process(this, field, new Integer(value));
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    public void setLongValue(String fieldName, final long value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_LONG).process(this, field, new Long(value));
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    public void setFloatValue(String fieldName, final float value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_FLOAT).process(this, field, new Float(value));
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    public void setDoubleValue(String fieldName, final double value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_DOUBLE).process(this, field, new Double(value));
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    public void setByteValue(String fieldName, final byte[] value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, value);
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    private static final int readLimit = 10 * 1024 * 1024;
-    public void setInputStreamValue(String fieldName, final InputStream value, long size) {
+    protected void setSize(String fieldName, long size) {
         getNode().setSize(fieldName, size);
-        Field field = nodeManager.getField(fieldName);
-
-        if (log.isDebugEnabled()) {
-            log.debug("Setting binary value for " + field);
-        }
-        Object v = value;
-        try {
-            if (value.markSupported() && size < readLimit) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Mark supported and using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
-                }
-                value.mark(readLimit);
-                v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, value);
-                value.reset();
-            } else {
-                if (field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY) != null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Mark not supported but using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
-                    }
-                    // well, we must read it to byte-array then, first.
-                    ByteArrayOutputStream b = new ByteArrayOutputStream((int) size);
-                    int c;
-                    while((c = value.read()) > -1) {
-                        b.write(c);
-                    }
-                    byte[] byteArray = b.toByteArray();
-                    v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, byteArray);
-                } else {
-                    log.debug("Mark not support but no need for processing");
-                    v = value;
-                }
-            }
-        } catch (IOException ioe) {
-            log.error(ioe);
-        }
-
-        setValueWithoutProcess(fieldName, v);
-
-
-    }
-
-    public void setStringValue(final String fieldName, final String value) {
-        Field field = nodeManager.getField(fieldName);
-        Object setValue = field.getDataType().preCast(value, this, field);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_STRING).process(this, field, setValue);
-        setValueWithoutProcess(fieldName, v);
-    }
-
-    public void setXMLValue(String fieldName, final Document value) {
-        Field field = nodeManager.getField(fieldName);
-        Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_XML).process(this, field, value);
-        setValueWithoutProcess(fieldName, v);
     }
 
     public boolean isNull(String fieldName) {
@@ -515,34 +323,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public long getSize(String fieldName) {
         return noderef.getSize(fieldName);
-    }
-
-    public Object getValue(String fieldName) {
-        Object value = noderef.getValue(fieldName);
-        if (value == null) return null;
-        if (nodeManager.hasField(fieldName)) {
-            int type = nodeManager.getField(fieldName).getType();
-            switch(type) {
-                case Field.TYPE_STRING:  return getStringValue(fieldName);
-                case Field.TYPE_BINARY:    return getByteValue(fieldName);
-                case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
-                case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
-                case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
-                case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
-                case Field.TYPE_XML:     return getXMLValue(fieldName);
-                case Field.TYPE_NODE:    return getNodeValue(fieldName);
-                case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
-                case Field.TYPE_DATETIME:return getDateValue(fieldName);
-                case Field.TYPE_LIST:    return getListValue(fieldName);
-                default:
-                    log.error("Unknown fieldtype '" + type + "'");
-                    return value;
-            }
-        } else {
-            //log.warn("Requesting value of unknown field '" + fieldName + "')");
-            return value;
-        }
-
     }
 
     /**
@@ -559,19 +339,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         return result;
     }
-
-    public Object getObjectValue(String fieldName) {
-        Object result = getValueWithoutProcess(fieldName);
-        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
-            Field field = nodeManager.getField(fieldName);
-            Object r = field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_UNKNOWN).process(this, field, result);
-            if ((result != null && (! result.equals(r)))) {
-                log.info("getObjectvalue was processed! " + result + " != " + r);
-                result = r;
-            }
-        }
-        return result;
-    }
+    //TODO, silly get-methods could be moved to AbstractNode, (calling getValueWithoutProcess) but they depend on noderef now, so I
+    //don't dare do that right ahead.
 
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
@@ -700,49 +469,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return result;
     }
 
-    public FieldValue getFieldValue(String fieldName) throws NotFoundException {
-        return new BasicFieldValue(this, getNodeManager().getField(fieldName));
-    }
-
-    public FieldValue getFieldValue(Field field) {
-        return new BasicFieldValue(this, field);
-    }
-
-
-
-    public Element getXMLValue(String fieldName, Document tree) {
-        Document doc = getXMLValue(fieldName);
-        if (doc == null) {
-            return null;
-        }
-        return (Element)tree.importNode(doc.getDocumentElement(), true);
-    }
-
-    protected void processCommit() {
-        FieldIterator fi = nodeManager.getFields().fieldIterator();
-        while (fi.hasNext()) {
-            Field field = fi.nextField();
-            field.getDataType().getCommitProcessor().commit(this, field);
-        }
-    }
-
-    public Collection validate() {
-        List errors = new ArrayList();
-        FieldIterator fi = nodeManager.getFields().fieldIterator();
-        Locale locale = getCloud().getLocale();
-        while (fi.hasNext()) {
-            Field field = fi.nextField();
-            Object value = getValueWithoutProcess(field.getName());
-            Collection fieldErrors = field.getDataType().validate(value, this, field);
-            Iterator i = fieldErrors.iterator();
-            while(i.hasNext()) {
-                LocalizedString error = (LocalizedString) i.next();
-                errors.add("field '" + field.getName() + "' with value '" + value + "': " + // TODO need to i18n this intro too
-                           error.get(locale));
-            }
-        }
-        return errors;
-    }
 
 
     public void commit() {
@@ -801,9 +527,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         changed = false;
     }
 
-    public void delete() {
-        delete(false);
-    }
 
     public void delete(boolean deleteRelations) {
         edit(ACTION_DELETE);
@@ -811,9 +534,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             // remove from the Transaction
             // note that the node is immediately destroyed !
             // possibly older edits will fail if they refernce this node
-            if (cloud instanceof Transaction) {
-                ((BasicTransaction)cloud).remove("" + temporaryNodeId);
-            }
+            cloud.remove("" + temporaryNodeId);
+
             // remove a temporary node (no true instantion yet, no relations)
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
         } else {
@@ -830,23 +552,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
             // remove aliases
             deleteAliases(null);
-            // in transaction:
-            if (cloud instanceof BasicTransaction) {
-                // let the transaction remove the node (as well as its temporary counterpart).
-                // note that the node still exists until the transaction completes
-                // a getNode() will still retrieve the node and make edits possible
-                // possibly 'older' edits will fail if they reference this node
-                 ((BasicTransaction)cloud).delete("" + temporaryNodeId);
-            } else {
-                // remove the node
-                if (temporaryNodeId != -1) {
-                    BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
-                }
-                MMObjectNode node = getNode();
-                //node.getBuilder().removeNode(node);
-                node.remove(cloud.getUser());
-                //cloud.removeSecurityInfo(number);
-            }
+            cloud.delete(temporaryNodeId, getNode());
         }
         // the node does not exist anymore, so invalidate all references.
         temporaryNodeId = -1;
@@ -888,18 +594,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                     if (cloud instanceof Transaction) {
                         String oMmbaseId = "" + node.getValue("number");
                         String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
-                        ((BasicTransaction)cloud).add(currentObjectContext);
-                        ((BasicTransaction)cloud).delete(currentObjectContext);
+                        cloud.add(currentObjectContext);
+                        cloud.delete(currentObjectContext);
                     } else {
                         node.remove(cloud.getUser());
                     }
                 }
             }
         }
-    }
-
-    public void deleteRelations() {
-        deleteRelations(-1);
     }
 
     public void deleteRelations(String type) throws NotFoundException {
@@ -955,14 +657,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return new BasicRelationList(relvector, cloud);
     }
 
-    public RelationList getRelations() {
-        return getRelations(null, (String) null);
-    }
-
-    public RelationList getRelations(String role) {
-        return getRelations(role, (String) null);
-    }
-
     public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
         int otype = -1;
         if (nodeManager != null) {
@@ -980,15 +674,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
         return getRelations(rolenr, otype);
     }
-
-    public RelationList getRelations(String role, NodeManager nodeManager) {
-        if (nodeManager == null) {
-            return getRelations(role);
-        } else {
-            return getRelations(role, nodeManager.getName());
-        }
-    }
-
 
     /**
      * Returns a list of relations of the given node.
@@ -1013,7 +698,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
         RelationIterator it = relations.relationIterator();
 
-        RelationList result = new BasicRelationList();
+        RelationList result = cloud.createRelationList();
 
         while (it.hasNext()) {
             Relation relation = it.nextRelation();
@@ -1037,15 +722,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public boolean hasRelations() {
         return getNode().hasRelations();
-    }
-
-    public int countRelations() {
-        return countRelatedNodes(cloud.getNodeManager("object"), null, "BOTH");
-    }
-
-    public int countRelations(String type) {
-        //err
-        return countRelatedNodes(cloud.getNodeManager("object"), type, "BOTH");
     }
 
 
@@ -1111,18 +787,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
 
-    public NodeList getRelatedNodes() {
-        return getRelatedNodes("object", null, null);
-    }
-
-    public NodeList getRelatedNodes(String type) {
-        return getRelatedNodes(type, null, null);
-    }
-
-    public NodeList getRelatedNodes(NodeManager nodeManager) {
-        return getRelatedNodes(nodeManager, null, null);
-    }
-
     /**
      * @param nodeManager node manager on the other side of the relation
      * @param role role of the relation
@@ -1164,9 +828,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         } else {
             return new BasicNodeList(mmnodes, cloud);
         }
-    }
-    public NodeList getRelatedNodes(String type, String role, String searchDir) {
-        return getRelatedNodes(cloud.getNodeManager(type), role, searchDir);
     }
 
     public int countRelatedNodes(String type) {
@@ -1211,7 +872,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         edit(ACTION_EDIT);
         if (cloud instanceof Transaction) {
             String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + temporaryNodeId, "" + temporaryNodeId);
-            ((BasicTransaction)cloud).add(aliasContext);
+            ((BasicTransaction)cloud).add(aliasContext); // sigh
         } else if (isNew) {
             throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
@@ -1257,11 +918,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public void deleteAlias(String aliasName) {
         edit(ACTION_EDIT);
         deleteAliases(aliasName);
-    }
-
-    public Relation createRelation(Node destinationNode, RelationManager relationManager) {
-        Relation relation = relationManager.createRelation(this, destinationNode);
-        return relation;
     }
 
 
@@ -1312,48 +968,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
     }
 
-    /**
-     * Compares this node to the passed object.
-     * Returns 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
-     * and +1 if the object passed is a NodeManager and smaller than this manager.
-     * This is used to sort Nodes.
-     * A node is 'larger' than another node if its GUI() result is larger (alphabetically, case sensitive)
-     * than that of the other node. If the GUI() results are the same, the nodes are compared on number,
-     * and (if needed) on their owning clouds.
-     *
-     * @param o the object to compare it with
-     * @return 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
-     * and +1 if the object passed is a NodeManager and smaller than this manager.
-     */
-    public int compareTo(Object o) {
-        Node n = (Node)o;
-        String s1 = "";
-        if (this instanceof NodeManager) {
-            s1 = ((NodeManager)this).getGUIName();
-        } else {
-            s1 = getFunctionValue("gui", null).toString();
-        }
-        String s2 = "";
-        if (n instanceof NodeManager) {
-            s2 = ((NodeManager)n).getGUIName();
-        } else {
-            s2 = n.getFunctionValue("gui", null).toString();
-        }
-        int res = s1.compareTo(s2);
-        if (res != 0) {
-            return res;
-        } else {
-            int n1 = getNumber();
-            int n2 = n.getNumber();
-            if (n2 > n1) {
-                return -1;
-            } else if (n2 < n1) {
-                return -1;
-            } else {
-                return ((Comparable)cloud).compareTo(n.getCloud());
-            }
-        }
-    }
 
     /**
      * @see java.lang.Object#hashCode()
@@ -1362,17 +976,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     public int hashCode() {
         return getNode().hashCode();
-    }
-
-    /**
-     * Compares two nodes, and returns true if they are equal.
-     * This effectively means that both objects are nodes, and they both have the same number and cloud
-     * @param o the object to compare it with
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object o) {
-        return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && cloud.equals(((Node)o).getCloud());
     }
 
     public Collection  getFunctions() {
@@ -1389,20 +992,20 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                     params.set(Parameter.NODE, BasicNode.this);
                     params.set(Parameter.CLOUD, BasicNode.this.cloud);
                     return super.getFunctionValue(params);
-                    
+
                 }
             };
     }
 
-    public Parameters createParameters(String functionName) {
-        return getNode().getFunction(functionName).createParameters();
+    public FieldValue getFunctionValue(String functionName, List parameters) {
+         Function function = getFunction(functionName);
+         Parameters params = function.createParameters();
+         params.setAll(parameters);
+         return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
     }
 
-    public FieldValue getFunctionValue(String functionName, List parameters) {
-        Function function = getFunction(functionName);
-        Parameters params = function.createParameters();
-        params.setAll(parameters);
-        return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
+    public Parameters createParameters(String functionName) {
+        return getNode().getFunction(functionName).createParameters();
     }
 
 }
