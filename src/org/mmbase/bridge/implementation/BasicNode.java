@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.188 2005-12-27 22:15:37 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.189 2005-12-27 22:35:24 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -552,7 +552,23 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             }
             // remove aliases
             deleteAliases(null);
-            cloud.delete(temporaryNodeId, getNode());
+            // in transaction:
+            if (cloud instanceof BasicTransaction) {
+                // let the transaction remove the node (as well as its temporary counterpart).
+                // note that the node still exists until the transaction completes
+                // a getNode() will still retrieve the node and make edits possible
+                // possibly 'older' edits will fail if they reference this node
+                ((BasicTransaction)cloud).delete("" + temporaryNodeId);
+            } else {
+                // remove the node
+                if (temporaryNodeId != -1) {
+                    BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+                }
+                MMObjectNode node = getNode();
+                //node.getBuilder().removeNode(node);
+                node.remove(cloud.getUser());
+                //cloud.removeSecurityInfo(number);
+            }
         }
         // the node does not exist anymore, so invalidate all references.
         temporaryNodeId = -1;
@@ -594,8 +610,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                     if (cloud instanceof Transaction) {
                         String oMmbaseId = "" + node.getValue("number");
                         String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
-                        cloud.add(currentObjectContext);
-                        cloud.delete(currentObjectContext);
+                        ((BasicTransaction)cloud).add(currentObjectContext);
+                        ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
                         node.remove(cloud.getUser());
                     }
