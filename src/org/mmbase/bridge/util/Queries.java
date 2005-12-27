@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.66 2005-11-04 23:32:59 michiel Exp $
+ * @version $Id: Queries.java,v 1.67 2005-12-27 14:05:49 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -306,7 +306,7 @@ abstract public class Queries {
      *
      * @param query query to add constraint to
      * @param constraints string representation of constraints
-     * @return the new constraint, or null if nothing changed added.
+     * @return The new constraint, or null if nothing changed added.
      */
     public static Constraint addConstraints(Query query, String constraints) {
         if (constraints == null || constraints.equals("")) {
@@ -571,7 +571,8 @@ abstract public class Queries {
         } else if (operator == OPERATOR_NULL || value == null) {
             newConstraint = query.createConstraint(stepField);
         } else {
-            int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
+            Field field = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName());
+            int fieldType = field.getType();
 
             if (fieldName.equals("number") || fieldType == Field.TYPE_NODE) {
                 if (value instanceof String) { // it might be an alias!
@@ -603,6 +604,7 @@ abstract public class Queries {
 
                 }
             }
+            value = field.getDataType().cast(value, null, field);
 
             Object compareValue = getCompareValue(fieldType, operator, value, datePart);
 
@@ -1105,6 +1107,10 @@ abstract public class Queries {
      * Returns the NodeQuery returning the given Node. This query itself is not very useful, because
      * you already have its result (the node), but it is convenient as a base query for many other
      * goals.
+     * 
+     * If the node is uncommited, it cannot be queried, and the node query returning all nodes from
+     * the currect type will be returned.
+     *
      * @param node Node to create the query from
      * @return A new NodeQuery object
      */
@@ -1113,7 +1119,9 @@ abstract public class Queries {
         NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can acept more steops
         Step step       = query.addStep(nm);
         query.setNodeStep(step);
-        query.addNode(step, node);
+        if (! node.isNew()) {
+            query.addNode(step, node);
+        }
         return query;
     }
 
