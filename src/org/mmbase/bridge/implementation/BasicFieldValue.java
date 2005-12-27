@@ -15,15 +15,15 @@ import org.mmbase.bridge.*;
  * This is the basic implementation of the Field Value interface.
  *
  * @author   Pierre van Rooden
- * @version $Id: BasicFieldValue.java,v 1.8 2005-05-02 17:19:56 michiel Exp $
+ * @version $Id: BasicFieldValue.java,v 1.9 2005-12-27 22:21:36 michiel Exp $
  * @since    MMBase-1.6
  */
 public class BasicFieldValue implements FieldValue {
 
-    Node node = null;
-    Field field = null;
+    private Node node = null;
+    private Field field = null;
 
-    BasicFieldValue (Node node, Field field) {
+    public BasicFieldValue (Node node, Field field) {
         this.node=node;
         this.field=field;
     }
