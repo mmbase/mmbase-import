@@ -10,9 +10,11 @@
     <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Leerblok</singular>
     <singular xml:lang="en">Learnblock</singular>
+    <singular xml:lang="fr">Bloc d'etude</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Leerblokken</plural>
     <plural xml:lang="en">Learnblocks</plural>
+    <plural xml:lang="fr">Blocs d'etude</plural>
   </names>
 
   <!-- <descriptions>

@@ -9,9 +9,11 @@
     <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Toets</singular>
     <singular xml:lang="en">Test</singular>
+    <singular xml:lang="fr">Interrogation</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Toetsen</plural>
     <plural xml:lang="en">Tests</plural>
+    <plural xml:lang="fr">Interrogations</plural>
   </names>
 
   <!-- <descriptions>
