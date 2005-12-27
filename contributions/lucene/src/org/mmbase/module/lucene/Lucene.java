@@ -12,6 +12,8 @@ package org.mmbase.module.lucene;
 import java.util.*;
 import org.w3c.dom.*;
 import org.w3c.dom.NodeList;
+import java.net.URL;
+import javax.sql.DataSource;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -25,72 +27,74 @@ import org.mmbase.util.Queue;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
+import org.apache.lucene.analysis.Analyzer;
+
+import org.mmbase.module.lucene.extraction.*;
+
 /**
+ * This is the implementation of a 'Lucene' module. It's main job is to bootstrap mmbase lucene
+ * indexing, and provide some functions to give access to lucene functionality in an MMBase way.
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.17 2005-12-20 13:28:06 pierre Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: Lucene.java,v 1.18 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: Lucene.java,v 1.18 2005-12-27 15:45:06 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
-    /** Public ID of the Lucene config DTD version 2.0 */
     public static final String PUBLIC_ID_LUCENE_2_0 = "-//MMBase//DTD luceneindex config 2.0//EN";
-    /** DTD resource filename of the Lucene config DTD version 2.0 */
     public static final String DTD_LUCENE_2_0 = "luceneindex_2_0.dtd";
 
-    /** Public ID of the most recent Lucene config DTD */
+    /** Most recent Lucene config DTD */
     public static final String PUBLIC_ID_LUCENE = PUBLIC_ID_LUCENE_2_0;
-    /** DTD repource filename of the most recent Lucene config DTD */
     public static final String DTD_LUCENE = DTD_LUCENE_2_0;
 
-    /** XSD resource filename of the Lucene config XSD version 1.0 */
+    /**
+     * But we use XSD now!
+     */
     public static final String XSD_LUCENE_1_0 = "luceneindex.xsd";
-    /** XSD namespace of the Lucene config XSD version 1.0 */
     public static final String NAMESPACE_LUCENE_1_0 = "http://www.mmbase.org/xmlns/luceneindex";
 
-    /** XSD namespace of the Lucene config XSD most recent version version */
+    /**
+     * Most recend namespace
+     */
     public static final String NAMESPACE_LUCENE = NAMESPACE_LUCENE_1_0;
 
-    // Default namespace to use when parsing the DOM. This circumvents oddities
-    // and inconsistencies with how namespaces are treated and assigned in DOM
-    // (particularly regarding unqualified attributes) and with non-validating documents
-    public static final String XMLNS = "*";
 
     /**
      * Parameter constants for Lucene functions.
      */
-    protected final static Parameter VALUE = new Parameter("value",String.class);
-    protected final static Parameter INDEX = new Parameter("index",String.class);
-    protected final static Parameter SORTFIELDS = new Parameter("sortfields",String.class);
-    protected final static Parameter OFFSET = new Parameter("offset",Integer.class);
-    protected final static Parameter MAX = new Parameter("max",Integer.class);
-    protected final static Parameter EXTRACONSTRAINTS = new Parameter("extraconstraints",String.class);
+    protected final static Parameter VALUE = new Parameter("value", String.class);
+    protected final static Parameter INDEX = new Parameter("index", String.class);
+    protected final static Parameter SORTFIELDS = new Parameter("sortfields", String.class);
+    protected final static Parameter OFFSET = new Parameter("offset", Integer.class);
+    protected final static Parameter MAX = new Parameter("max", Integer.class);
+    protected final static Parameter EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE_2_0, DTD_LUCENE_2_0, Lucene.class);
         XMLEntityResolver.registerPublicID(NAMESPACE_LUCENE_1_0, XSD_LUCENE_1_0, Lucene.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE, DTD_LUCENE, Lucene.class);
     }
 
-    // initial wait time after startup, default 5 minutes
-    private static final long INITIAL_WAIT_TIME = 5 * 60 * 1000;
+    // initial wait time after startup, default 2 minutes
+    private static final long INITIAL_WAIT_TIME = 2 * 60 * 1000;
     // wait time bewteen individual checks, default 5 seconds
     private static final long WAIT_TIME = 5 * 1000;
     // default path to the lucene data
     private static final String INDEX_PATH = "WEB-INF/data/lucene";
     // default path to the lucene data
     private static final String INDEX_CONFIG_FILE = "utils/luceneindex.xml";
-    // Log
+
     private static final Logger log = Logging.getLoggerInstance(Lucene.class);
 
     /**
      * The MMBase instance, used for low-level access
      */
     protected MMBase mmbase = null;
-    /**
-     * The cloud for the instance, used for bridge-level access
-     */
-    protected Cloud cloud = null;
 
     private long initialWaitTime = INITIAL_WAIT_TIME;
+    private long waitTime = WAIT_TIME;
     private String indexPath = null;
     private Scheduler scheduler;
     private String defaultIndex = null;
@@ -99,13 +103,14 @@ public class Lucene extends Module implements MMBaseObserver {
     private boolean readOnly = false;
 
 
+    protected Cloud cloud;
 
     /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
      * lucene namespace
      */
     static public boolean hasAttribute(Element element, String localName) {
-        return element.hasAttributeNS(NAMESPACE_LUCENE,localName) || element.hasAttribute(localName);
+        return element.hasAttributeNS(NAMESPACE_LUCENE, localName) || element.hasAttribute(localName);
     }
 
     /**
@@ -113,8 +118,8 @@ public class Lucene extends Module implements MMBaseObserver {
      * lucene namespace
      */
     static public String getAttribute(Element element, String localName) {
-        if (element.hasAttributeNS(NAMESPACE_LUCENE,localName)) {
-            return element.getAttributeNS(NAMESPACE_LUCENE,localName);
+        if (element.hasAttributeNS(NAMESPACE_LUCENE, localName)) {
+            return element.getAttributeNS(NAMESPACE_LUCENE, localName);
         } else {
             return element.getAttribute(localName);
         }
@@ -125,12 +130,37 @@ public class Lucene extends Module implements MMBaseObserver {
      * This may take a while.
      * This function can be called through the function framework.
      */
-    protected Function fullIndexFunction = new AbstractFunction("fullIndex", Parameter.EMPTY, ReturnType.VOID) {
+    protected Function fullIndexFunction = new AbstractFunction("fullIndex",
+                                                                new Parameter[] {new Parameter("index", String.class)},
+                                                                ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
-            scheduler.fullIndex();
+            String index = (String) arguments.get("index");
+            if (index == null) {
+                scheduler.fullIndex();
+            } else {
+                scheduler.fullIndex(index);
+            }
             return null;
         }
     };
+    {
+        addFunction(fullIndexFunction);
+    }
+    /**
+     * This function can be called through the function framework.
+     */
+    protected Function updateIndexFunction = new AbstractFunction("updateIndex",
+                                                                  new Parameter[] {new Parameter("identifier", String.class, true)},
+                                                                  ReturnType.VOID) {
+        public Object getFunctionValue(Parameters arguments) {
+            scheduler.updateIndex(arguments.getString("identifier"));
+            return null;
+        }
+    };
+    {
+        addFunction(updateIndexFunction);
+    }
+
 
     /**
      * This function returns the status of the scheduler.
@@ -140,38 +170,50 @@ public class Lucene extends Module implements MMBaseObserver {
             return new Integer(scheduler.getStatus());
         }
     };
+    {
+        addFunction(statusFunction);
+    }
 
-    /**
-     * This function starts a search for a given string.
-     * This function can be called through the function framework.
-     */
-    protected Function searchFunction = new AbstractFunction("search",
-                              new Parameter[] { VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD },
-                              ReturnType.LIST) {
-        public Object getFunctionValue(Parameters arguments) {
-            String value = arguments.getString(VALUE);
-            String index = arguments.getString(INDEX);
-            List sortFieldList = Casting.toList(arguments.getString(SORTFIELDS));
-            // offset
-            int offset = 0;
-            Integer offsetParameter = (Integer)arguments.get(OFFSET);
-            if (offsetParameter != null) offset = offsetParameter.intValue();
-            if (offset < 0) offset = 0;
-            // max
-            int max = -1;
-            Integer maxParameter = (Integer)arguments.get(MAX);
-            if (maxParameter != null) max = maxParameter.intValue();
-            String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
-            Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
-            return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
-        }
-    };
+    protected Function listFunction = new AbstractFunction("list", Parameter.EMPTY, ReturnType.SET) {
+            public Object getFunctionValue(Parameters arguments) {
+                return indexerMap.keySet();
+            }
+            
+        };
+    {
+        addFunction(listFunction);
+    }
 
     /**
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
      */
-     protected Function searchSizeFunction = new AbstractFunction("searchsize",
+    protected Function searchFunction = new AbstractFunction("search",
+                                                             new Parameter[] { VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD },
+                                                             ReturnType.LIST) {
+            public Object getFunctionValue(Parameters arguments) {
+                String value = arguments.getString(VALUE);
+                String index = arguments.getString(INDEX);
+                List sortFieldList = Casting.toList(arguments.getString(SORTFIELDS));
+                // offset
+                int offset = 0;
+                Integer offsetParameter = (Integer)arguments.get(OFFSET);
+                if (offsetParameter != null) offset = offsetParameter.intValue();
+                if (offset < 0) offset = 0;
+                // max
+                int max = -1;
+                Integer maxParameter = (Integer)arguments.get(MAX);
+                if (maxParameter != null) max = maxParameter.intValue();
+                String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
+                Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
+                return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
+            }
+        };
+    {
+        addFunction(searchFunction);
+    }
+
+    protected Function searchSizeFunction = new AbstractFunction("searchsize",
                               new Parameter[] { VALUE, INDEX, EXTRACONSTRAINTS, Parameter.CLOUD },
                               ReturnType.INTEGER) {
         public Object getFunctionValue(Parameters arguments) {
@@ -182,13 +224,29 @@ public class Lucene extends Module implements MMBaseObserver {
             return new Integer(searchSize(cloud, value, index, extraConstraints));
         }
     };
+    {
+        addFunction(searchSizeFunction);
+    }
+
+    private ContentExtractor factory;
 
     public void init() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE, DTD_LUCENE, Lucene.class);
         super.init();
+
         // Force init of MMBase
         mmbase = MMBase.getMMBase();
 
+        log.info("Adding extractors");
+
+        factory = ContentExtractor.getInstance();
+
+        // traditional Lucenemodule extractors
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor");
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.SwingRtfExtractor");
+        //factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIWordExtractor");
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIExcelExtractor");
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
+        
         // path to the lucene index (a directory on disk writeable to the web-application)
         // this path should be a direct path
         String path = getInitParameter("indexpath");
@@ -207,48 +265,67 @@ public class Lucene extends Module implements MMBaseObserver {
         if (time != null) {
             try {
                 initialWaitTime = Long.parseLong(time);
-                log.debug("Set initial wait time to "+time+" milliseconds");
+                log.debug("Set initial wait time to " + time + " milliseconds");
             } catch (NumberFormatException nfe) {
-                log.warn("Invalid value '"+time+"' for property 'initialwaittime'");
+                log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
+            }
+        }
+        time = getInitParameter("waittime");
+        if (time != null) {
+            try {
+                waitTime = Long.parseLong(time);
+                log.debug("Set initial wait time to " + time + " milliseconds");
+            } catch (NumberFormatException nfe) {
+                log.warn("Invalid value '" + time +" ' for property 'initialwaittime'");
             }
         }
         while(! mmbase.getState()) {
+            if (mmbase.isShutdown()) break;
             try {
-                log.service("MMBase not yet up, waiting..");
+                log.service("MMBase not yet up, waiting for 10 seconds.");
                 Thread.sleep(10000);
             } catch (InterruptedException ie) {
                 log.info(ie);
                 return;
             }
         }
+        cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
+        cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
+        log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
+        ResourceWatcher watcher = new ResourceWatcher() {
+                public void onChange(String resource) {
+                    readConfiguration(resource);
+                }
+            };
+        watcher.add(INDEX_CONFIG_FILE);
+        watcher.onChange();
+        watcher.start();
 
-        // Obtain a cloud to use for indexing
-        // XXX: should solve possible security issues (when not all objects can be read by anonymous.
-        // --> Can use class-security for that!
-        // For now, use an anonymous cloud
-        cloud = LocalContext.getCloudContext().getCloud("mmbase");
-
-        readConfiguration();
-        addFunction(searchFunction);
-        addFunction(searchSizeFunction);
-        addFunction(statusFunction);
         if (!readOnly) {
-            addFunction(fullIndexFunction);
             scheduler = new Scheduler();
             log.info("Module Lucene started");
             // full index ?
             String fias = getInitParameter("fullindexatstartup");
-            if (initialWaitTime <= 0 || "true".equals(fias)) {
+            if (initialWaitTime < 0 || "true".equals(fias)) {
                 scheduler.fullIndex();
             }
         }
     }
+    public void shutdown() {
+        if (scheduler != null) {
+            log.service("Stopping Lucene Scheduler");
+            scheduler.interrupt();
+        }
+}
 
     public String getModuleInfo() {
         return "This module performs lucene searches and maintains indices";
     }
 
-    protected void addToIndex (Element queryElement, Collection queries, Set allIndexedFieldsSet, boolean storeText, boolean mergeText, String relateFrom) {
+    /**
+     * MMBase Queries and sub-queries
+     */
+    protected MMBaseIndexDefinition createIndexDefinition (Element queryElement, Set allIndexedFieldsSet, boolean storeText, boolean mergeText, String relateFrom, Analyzer analyzer) {
         try {
             if (Lucene.hasAttribute(queryElement,"optimize")) {
                 String optimize = Lucene.getAttribute(queryElement,"optimize");
@@ -258,17 +335,16 @@ public class Lucene extends Module implements MMBaseObserver {
 
             QueryConfigurer configurer = new IndexConfigurer(allIndexedFieldsSet, storeText, mergeText);
 
-            IndexDefinition queryDefinition = (IndexDefinition) QueryReader.parseQuery(queryElement, configurer, cloud, relateFrom);
-
+            MMBaseIndexDefinition queryDefinition = (MMBaseIndexDefinition) QueryReader.parseQuery(queryElement, configurer, cloud, relateFrom);
+            queryDefinition.setAnalyzer(analyzer);
             // do not cache these queries
             queryDefinition.query.setCachePolicy(CachePolicy.NEVER);
-
-            queries.add(queryDefinition);
 
             String elementName = queryDefinition.elementManager.getName();
             if (!readOnly) {
                 // register. Unfortunately this can currently only be done through the core
                 MMObjectBuilder builder = mmbase.getBuilder(elementName);
+                log.service("Observering for " + builder);
                 builder.addLocalObserver(this);
                 builder.addRemoteObserver(this);
             }
@@ -278,7 +354,7 @@ public class Lucene extends Module implements MMBaseObserver {
                 if (childNodes.item(k) instanceof Element) {
                     Element childElement = (Element) childNodes.item(k);
                     if ("related".equals(childElement.getLocalName())) {
-                        addToIndex(childElement, queryDefinition.subQueries, allIndexedFieldsSet, storeText, mergeText, elementName);
+                        queryDefinition.subQueries.add(createIndexDefinition(childElement, allIndexedFieldsSet, storeText, mergeText, elementName, analyzer));
                     }
                 }
             }
@@ -286,61 +362,94 @@ public class Lucene extends Module implements MMBaseObserver {
             if (log.isDebugEnabled()) {
                  log.debug("Configured builder " + elementName + " with query:" + queryDefinition.query);
             }
+            return queryDefinition;
         } catch (Exception e) {
-            log.warn("Invalid query for index");
-            log.error(Logging.stackTrace(e));
+            log.warn("Invalid query for index " + XMLWriter.write(queryElement, true, true), e);
+            return null;
         }
     }
 
-    protected void readConfiguration() {
-        try {
-            Document config = ResourceLoader.getConfigurationRoot().getDocument(INDEX_CONFIG_FILE, true, Lucene.class);
-            log.service("Reading lucene search configuration from " + INDEX_CONFIG_FILE);
-            Element root = config.getDocumentElement();
-            NodeList indexElements = root.getElementsByTagNameNS("*","index");
-            for (int i = 0; i < indexElements.getLength(); i++) {
-                Element indexElement = (Element) indexElements.item(i);
-                String indexName = "default";
-                if (Lucene.hasAttribute(indexElement,"name")) {
-                    indexName = Lucene.getAttribute(indexElement,"name");
-                }
-                if (indexerMap.containsKey(indexName)) {
-                    log.warn("Index with name " + indexName + " already exists");
-                } else {
-                    boolean storeText = false; // default: no text fields are stored in the index unless noted otherwise
-                    boolean mergeText = true; // default: all text fields have the "fulltext" alias unless noted otherwise
-                    if (Lucene.hasAttribute(indexElement,"optimize")) {
-                        String optimize = Lucene.getAttribute(indexElement,"optimize");
-                        storeText = optimize.equals("none");
-                        mergeText = optimize.equals("full");
+    protected void readConfiguration(String resource) {
+        indexerMap = new HashMap();
+        searcherMap = new HashMap();
+        List configList = ResourceLoader.getConfigurationRoot().getResourceList(resource);
+        log.service("Reading " + configList);
+        Iterator configs = configList.iterator();
+        while (configs.hasNext()) {
+            URL url = (URL) configs.next();
+            try {
+                if (! url.openConnection().getDoInput()) continue;
+                Document config = ResourceLoader.getDocument(url, true, Lucene.class);
+                log.service("Reading lucene search configuration from " + url);
+                Element root = config.getDocumentElement();
+                NodeList indexElements = root.getElementsByTagName("index");
+                for (int i = 0; i < indexElements.getLength(); i++) {
+                    Element indexElement = (Element) indexElements.item(i);
+                    String indexName = "default";
+                    if (Lucene.hasAttribute(indexElement, "name")) {
+                        indexName = Lucene.getAttribute(indexElement, "name");
                     }
-                    if (defaultIndex==null) defaultIndex = indexName;
-                    Set allIndexedFieldsSet = new HashSet();
-                    Collection queries = new ArrayList();
-                    // lists
-                    NodeList childNodes = indexElement.getChildNodes();
-                    for (int k = 0; k < childNodes.getLength(); k++) {
-                        if (childNodes.item(k) instanceof Element) {
-                            Element childElement = (Element) childNodes.item(k);
-                            if ("list".equals(childElement.getLocalName())||
-                                "builder".equals(childElement.getLocalName()) || // backward comp. old finalist lucene
-                                "table".equals(childElement.getLocalName())) { // backward comp. finalist lucene
-                               addToIndex(childElement, queries, allIndexedFieldsSet, storeText, mergeText, null);
+                    if (indexerMap.containsKey(indexName)) {
+                        log.warn("Index with name " + indexName + " already exists");
+                    } else {
+                        boolean storeText = false; // default: no text fields are stored in the index unless noted otherwise
+                        boolean mergeText = true; // default: all text fields have the "fulltext" alias unless noted otherwise
+                        if (Lucene.hasAttribute(indexElement, "optimize")) {
+                            String optimize = Lucene.getAttribute(indexElement, "optimize");
+                            storeText = optimize.equals("none");
+                            mergeText = optimize.equals("full");
+                        }
+                        if (defaultIndex == null) {
+                            defaultIndex = indexName;
+                            log.info("Default index: " + defaultIndex);
+                        }
+                        Set allIndexedFieldsSet = new HashSet();
+                        Collection queries = new ArrayList();
+                        // lists
+                        NodeList childNodes = indexElement.getChildNodes();
+                        Analyzer analyzer = null;
+                        for (int k = 0; k < childNodes.getLength(); k++) {
+                            if (childNodes.item(k) instanceof Element) {
+                                Element childElement = (Element) childNodes.item(k);
+                                String name = childElement.getLocalName();
+                                if ("list".equals(name)||
+                                    "builder".equals(name) || // backward comp. old finalist lucene
+                                    "table".equals(name)) { // comp. finalist lucene
+                                    IndexDefinition id = createIndexDefinition(childElement, allIndexedFieldsSet, storeText, mergeText, null, analyzer);
+                                    queries.add(id);
+                                    log.info("Added mmbase index definition " + id);
+                                } else if ("jdbc".equals(name)) {
+                                    String sql = childElement.getAttribute("sql");
+                                    String key = childElement.getAttribute("key");
+                                    String find = childElement.getAttribute("find");
+                                    DataSource ds =  (DataSource) mmbase.getStorageManagerFactory().getAttribute(org.mmbase.storage.implementation.database.Attributes.DATA_SOURCE);
+                                    IndexDefinition id = new JdbcIndexDefinition(ds, sql, key, find, allIndexedFieldsSet, storeText, mergeText, analyzer);
+                                    queries.add(id);
+                                    log.info("Added mmbase jdbc definition " + id);
+                                } else if ("analyzer".equals(name)) {
+                                    String className = childElement.getAttribute("class");
+                                    try {
+                                        Class clazz = Class.forName(className);
+                                        analyzer = (Analyzer) clazz.newInstance();
+                                    } catch (Exception e) {
+                                        log.error("Could not instantiate analyzer " + className + " for index '" + indexName + "', falling back to default. " + e);
+                                    }
+                                }
                             }
                         }
-                    }
 
-                    String thisIndex = indexPath + java.io.File.separator + indexName;
-                    Indexer indexer = new Indexer(thisIndex,queries,cloud);
-                    log.service("Add lucene index with name " + indexName);
-                    indexerMap.put(indexName,indexer);
-                    String[]  allIndexedFields = (String[])allIndexedFieldsSet.toArray(new String[0]);
-                    Searcher searcher = new Searcher(thisIndex,allIndexedFields);
-                    searcherMap.put(indexName,searcher);
+                        String thisIndex = indexPath + java.io.File.separator + indexName;
+                        Indexer indexer = new Indexer(thisIndex, queries, cloud, analyzer);
+                        log.service("Add lucene index with name " + indexName);
+                        indexerMap.put(indexName,indexer);
+                        String[]  allIndexedFields = (String[]) allIndexedFieldsSet.toArray(new String[0]);
+                        Searcher searcher = new Searcher(indexer, allIndexedFields);
+                        searcherMap.put(indexName, searcher);
+                    }
                 }
+            } catch (Exception e) {
+                log.warn("Can't read Lucene configuration: "+ e.getMessage());
             }
-        } catch (Exception e) {
-            log.warn("Can't read Lucene configuration: "+ e.getMessage());
         }
     }
 
@@ -374,6 +483,7 @@ public class Lucene extends Module implements MMBaseObserver {
     }
 
     public boolean nodeChanged(String machine, String number, String builder, String ctype) {
+        log.info("Received " + number);
         if (!readOnly) {
             // if this concerns a change or new node, update the index with that node
             if (ctype.equals("c") || ctype.equals("n")) {
@@ -386,6 +496,9 @@ public class Lucene extends Module implements MMBaseObserver {
         return true;
     }
 
+    /**
+     * Queue for index operations.
+     */
     class Scheduler extends Thread {
 
         static final int IDLE = 0;
@@ -409,84 +522,108 @@ public class Lucene extends Module implements MMBaseObserver {
         }
 
         public void run() {
-            log.debug("Start Lucene Scheduler");
+            log.service("Start Lucene Scheduler");
             try {
-                Thread.sleep(initialWaitTime);
+                if (initialWaitTime > 0) {
+                    log.info("Sleeping for initialisation");
+                    Thread.sleep(initialWaitTime);
+                }
             } catch (InterruptedException ie) {
                 return;
             }
             while (!mmbase.isShutdown()) {
                 log.debug("Obtain Assignment");
                 try {
-                    Assignment assignment = (Assignment)indexAssignments.get();
+                    Runnable assignment = (Runnable) indexAssignments.get();
                     // do operation...
-                    if (assignment.operation == Assignment.FULL_INDEX) {
-                        log.debug("start full index");
-                        status = BUSY_FULL_INDEX;
-                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                            Indexer indexer = (Indexer) i.next();
-                            indexer.fullIndex();
-                        }
-                    } else if (assignment.operation == Assignment.UPDATE_INDEX) {
-                        log.debug("update index");
-                        status = BUSY_INDEX;
-                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                            Indexer indexer = (Indexer) i.next();
-                            indexer.updateIndex(assignment.number);
-                        }
-                    } else if (assignment.operation == Assignment.DELETE_INDEX) {
-                        log.debug("delete index");
-                        status = BUSY_INDEX;
-                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                            Indexer indexer = (Indexer) i.next();
-                            indexer.deleteIndex(assignment.number);
-                        }
-                    }
-                    log.debug("end action");
+                    assignment.run();
                     status = IDLE;
+                    Thread.sleep(waitTime);
                 } catch (InterruptedException e) {
                     log.debug(Thread.currentThread().getName() +" was interruped.");
                     break;
                 } catch (RuntimeException rte) {
-                    log.error(rte.getMessage());
+                    log.error(rte.getMessage(), rte);
                     status = IDLE_AFTER_ERROR;
                 }
             }
         }
 
-        public void updateIndex(String number) {
-            Assignment assignment = new Assignment();
-            assignment.operation = Assignment.UPDATE_INDEX;
-            assignment.number = number;
+        public void updateIndex(final String number) {
+            Runnable assignment = new Runnable() {
+                    public void run() {
+                        log.service("update index");
+                        status = BUSY_INDEX;
+                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                            Indexer indexer = (Indexer) i.next();
+                            indexer.updateIndex(number);
+                        }
+                    }
+
+                };
             indexAssignments.append(assignment);
+
         }
 
-        public void deleteIndex(String number) {
-            Assignment assignment = new Assignment();
-            assignment.operation = Assignment.DELETE_INDEX;
-            assignment.number = number;
+        public void deleteIndex(final String number) {
+            Runnable assignment = new Runnable() {
+                    public void run() {
+                        log.service("delete index");
+                        status = BUSY_INDEX;
+                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                            Indexer indexer = (Indexer) i.next();
+                            indexer.deleteIndex(number);
+                        }
+                    }
+                };
             indexAssignments.append(assignment);
         }
 
         public void fullIndex() {
-            log.debug("schedule full index");
-            // only schedule a full index if none is currently busy.
             if (status != BUSY_FULL_INDEX) {
-                Assignment assignment = new Assignment();
-                assignment.operation = Assignment.FULL_INDEX;
+                Runnable assignment = new Runnable() {
+                        public void run() {
+                            status = BUSY_FULL_INDEX;
+                            log.service("start full index");
+                            for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                                Indexer indexer = (Indexer) i.next();
+                                indexer.fullIndex();
+                            }
+                        }
+                    };
                 indexAssignments.append(assignment);
+                log.service("Scheduled full index");
+                // only schedule a full index if none is currently busy.
+            } else {
+                log.service("Cannot schedule full index because it is busy");
+            }
+        }
+        public void fullIndex(final String index) {
+            if (status != BUSY_FULL_INDEX) {
+                Runnable assignment = new Runnable() {
+                        public void run() {
+                            status = BUSY_FULL_INDEX;
+                            log.service("start full index for index '" + index + "'");
+                            Indexer indexer = (Indexer) indexerMap.get(index);
+                            indexer.fullIndex();
+                        }
+                    };
+                indexAssignments.append(assignment);
+                log.service("Scheduled full index for '" + index + "'");
+                // only schedule a full index if none is currently busy.
+            } else {
+                log.service("Cannot schedule full index because it is busy");
             }
         }
 
-        class Assignment {
-            static final int UPDATE_INDEX = 0;
-            static final int DELETE_INDEX = 1;
-            static final int FULL_INDEX   = 2;
-
-            int operation;
-            String number;
-        }
-
     }
+
+    /**
+     * Main for testing 
+     */
+    public static void main(String[] args) {
+        String configFile = args[0];
+    }
+
 
 }

@@ -4,31 +4,31 @@
     targetNamespace="http://www.mmbase.org/xmlns/searchquery"
     xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
     version="1.0">
-    <xsd:annotation>
-        <xsd:documentation>Lucene search query redefinition</xsd:documentation>
-    </xsd:annotation>
-
-  <xsd:redefine schemaLocation="http://www.mmbase.org/xsd/searchquery.xsd">
-
+  <xsd:annotation>
+    <xsd:documentation>Lucene search query redefinition</xsd:documentation>
+  </xsd:annotation>
+  
+  <xsd:redefine schemaLocation="http://www.mmbase.org/xmlns/searchquery.xsd">
+    
     <xsd:complexType name="SearchQuery">
-        <xsd:complexContent>
-            <xsd:extension base="mmsq:SearchQuery">
-              <xsd:attribute name="optimize" type="xsd:string"></xsd:attribute>
-            </xsd:extension>
-        </xsd:complexContent>
+      <xsd:complexContent>
+        <xsd:extension base="mmsq:SearchQuery">
+          <xsd:attribute name="optimize" type="xsd:string"></xsd:attribute>
+        </xsd:extension>
+      </xsd:complexContent>
     </xsd:complexType>
-
+    
     <xsd:complexType name="Field">
-        <xsd:complexContent>
-            <xsd:extension base="mmsq:Field">
-              <xsd:attribute name="alias" type="xsd:string"></xsd:attribute>
-              <xsd:attribute name="keyword" type="xsd:string"></xsd:attribute>
-              <xsd:attribute name="store" type="xsd:string"></xsd:attribute>
-              <xsd:attribute name="password" type="xsd:string"></xsd:attribute>
-            </xsd:extension>
-        </xsd:complexContent>
+      <xsd:complexContent>
+        <xsd:extension base="mmsq:Field">
+          <xsd:attribute name="alias" type="xsd:string"></xsd:attribute>
+          <xsd:attribute name="keyword" type="xsd:string"></xsd:attribute>
+          <xsd:attribute name="store" type="xsd:string"></xsd:attribute>
+          <xsd:attribute name="password" type="xsd:string"></xsd:attribute>
+        </xsd:extension>
+      </xsd:complexContent>
     </xsd:complexType>
-
+    
   </xsd:redefine>
 
 </xsd:schema>
