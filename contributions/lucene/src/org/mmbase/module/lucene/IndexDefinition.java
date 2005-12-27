@@ -9,48 +9,44 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.lucene;
 
-import java.util.List;
-import java.util.ArrayList;
-import org.w3c.dom.*;
-
-import org.mmbase.bridge.util.xml.query.*;
+import java.util.*;
+import org.mmbase.util.CloseableIterator;
+import org.mmbase.bridge.util.xml.query.QueryDefinition;
+import org.mmbase.bridge.*;
+import org.apache.lucene.analysis.Analyzer;
 
 /**
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexDefinition.java,v 1.4 2005-07-27 13:59:58 pierre Exp $
+ * @version $Id: IndexDefinition.java,v 1.5 2005-12-27 15:45:06 michiel Exp $
  **/
-class IndexDefinition extends QueryDefinition {
+interface IndexDefinition {
 
     /**
-     * The default maximum number of nodes that are returned by a call to the searchqueryhandler.
+     * Returns an Iterator over all {@link IndexEntry}'s defined by this index.
      */
-    public static final int MAX_NODES_IN_QUERY = 200;
+    CloseableIterator getCursor();
+    /**
+     * Returns an Iterator over all {@link IndexEntry}'s defined by this index, restricted by a certain identifier.
+     */
+    CloseableIterator getSubCursor(String identifier);
 
     /**
-     * The maximum number of nodes that are returned by a call to the searchqueryhandler.
+     * If this indexdefinition is a 'sub definition' then, a parent IndexEntry can be available...
      */
-    int maxNodesInQuery = MAX_NODES_IN_QUERY;
+    IndexEntry getParent();
+
 
     /**
-     * Subqueries for this index. The subqueries are lists whose starting element is the element node from the
-     * current index result.
+     * Per index a an Analyzer can be defined.
      */
-    List subQueries = new ArrayList();
-
-    IndexDefinition(QueryConfigurer configurer) {
-        super(configurer);
-    }
+    Analyzer getAnalyzer();
 
     /**
-     * Constructor, copies all data from the specified QueryDefinition object.
+     * Defines how.
      */
-    IndexDefinition(IndexDefinition queryDefinition) {
-        super(queryDefinition);
-        this.maxNodesInQuery = queryDefinition.maxNodesInQuery;
-        this.subQueries = queryDefinition.subQueries;
-    }
+    Node getNode(Cloud cloud, String identifier);
 
 }
 

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.include file="head.jspx" />
+  <body>
+    <h1>Lucene admin page</h1>
+    <mm:cloud rank="administrator">
+      <p>
+        The following indices are currently defined.
+      </p>
+      <table>
+        <tr><th>name</th><th>search</th><th>full index</th><th># of entries in index</th></tr>
+        <mm:listfunction id="index" module="lucene" name="list">
+          <tr>
+            <td>
+              <mm:write writer="index" />
+            </td>
+            <td>
+              <mm:link referids="index" page="search.jspx">
+                <a href="${_}">
+                  search
+                </a>
+              </mm:link>
+            </td>
+            <td>
+              <mm:link>
+                <mm:param name="fullindex" value="$index" />
+                <a href="${_}">
+                  full index
+                </a>
+              </mm:link>
+            </td>
+            <td>
+              <mm:function module="lucene" referids="index" name="searchsize" />
+            </td>
+          </tr>
+        </mm:listfunction>
+      </table>
+      <hr />
+      <mm:import externid="fullindex" />
+      <mm:present referid="fullindex">
+        Triggering full index for ${fullindex}.        
+        <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index" />
+      </mm:present>
+      <p>
+        Status: <mm:function module="lucene" name="status" />
+      </p>
+      <p>
+        <mm:link><a href="${_}">Reload</a></mm:link>
+      </p>
+    </mm:cloud>
+  </body>
+</html>

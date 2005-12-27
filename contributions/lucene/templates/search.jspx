@@ -1,0 +1,82 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.include file="head.jspx" />
+  <body>
+    <mm:content type="text/html">
+      <mm:cloud>
+        <mm:import externid="value"/>
+        <mm:import externid="index"/>
+        <mm:import externid="reindex"/>
+
+        <h1>Searching ${index}</h1>
+        <p><mm:link page="."><a href="${_}">back</a></mm:link></p>
+        
+        <form action="search.jspx" method="post">
+          <mm:write referid="value" escape="text/html/attribute">
+            <input name="value" value="${_}" />
+          </mm:write>
+          <mm:write referid="index" escape="text/html/attribute">
+            <input type="hidden" name="index" value="${_}" />
+          </mm:write>
+          <input type="submit" />
+        </form>
+        
+        <mm:present referid="value" >
+          <mm:import id="max">100</mm:import>
+          <mm:import id="offset">0</mm:import>
+          <p>
+            search: <mm:write referid="value" />
+          </p>
+          <table>
+            <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset">
+              <mm:first>
+                <tr>
+                  <mm:fieldlist type="list">
+                    <th><mm:fieldinfo type="name" /></th>
+                  </mm:fieldlist>
+                  <th>hits: <mm:size /></th>
+                </tr>
+              </mm:first>
+              <tr>
+                <td>
+                  <mm:nodeinfo type="guinodemanager" />
+                </td>
+                <mm:fieldlist type="list">
+                  <td>
+                    <mm:fieldinfo type="guivalue" />
+                  </td>
+                </mm:fieldlist>
+                <td>
+                  <mm:hasfunction name="url">
+                    <mm:function name="url" escape="text/html/attribute">                    
+                      link:
+                      <a href="${_}">
+                        <mm:hasfunction name="gui">
+                          <mm:function name="gui">
+                            <mm:isempty>
+                              here
+                            </mm:isempty>
+                            <mm:write escape="none" />
+                          </mm:function>
+                        </mm:hasfunction>
+                        <mm:hasfunction name="gui" inverse="true">
+                          ${_}
+                        </mm:hasfunction>
+                      </a>
+                    </mm:function>
+                  </mm:hasfunction>
+                  <mm:hasfunction name="url" inverse="true">
+                    <mm:hasfunction name="gui">
+                      <mm:function name="gui" escape="none" />
+                    </mm:hasfunction>
+                  </mm:hasfunction>
+                </td>
+              </tr>
+            </mm:nodelistfunction>
+          </table>
+        </mm:present>
+        
+      </mm:cloud>
+    </mm:content>
+  </body>
+</html>

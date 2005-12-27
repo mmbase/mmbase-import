@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.lucene;
 
-import java.util.Collection;
+import java.util.*;
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.*;
@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.2 2005-07-27 13:59:58 pierre Exp $
+ * @version $Id: IndexFieldDefinition.java,v 1.3 2005-12-27 15:45:06 michiel Exp $
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -52,10 +52,14 @@ public class IndexFieldDefinition extends FieldDefinition {
     //d efault for merging text
     private boolean mergeTextDefault = false;
 
-    public IndexFieldDefinition(QueryConfigurer configurer, QueryDefinition queryDefinition, boolean storeTextDefault, boolean mergeTextDefault) {
-        super(configurer, queryDefinition);
+    private Set allIndexedFieldsSet = null;
+
+    public IndexFieldDefinition(boolean storeTextDefault, boolean mergeTextDefault, Set allIndexedFieldsSet) {
+        super();
         this.storeTextDefault = storeTextDefault;
         this.mergeTextDefault = mergeTextDefault;
+        this.allIndexedFieldsSet = allIndexedFieldsSet;
+        
     }
 
     public void configure(Element fieldElement) {
@@ -84,9 +88,9 @@ public class IndexFieldDefinition extends FieldDefinition {
         }
         if (!keyWord) {
             if (alias != null) {
-                ((IndexConfigurer)configurer).allIndexedFieldsSet.add(alias);
+                allIndexedFieldsSet.add(alias);
             } else {
-                ((IndexConfigurer)configurer).allIndexedFieldsSet.add(fieldName);
+                allIndexedFieldsSet.add(fieldName);
             }
         }
     }
