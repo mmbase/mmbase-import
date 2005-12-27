@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.33 2005-12-23 12:31:05 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.34 2005-12-27 14:03:41 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -244,7 +244,12 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      *
      * Override {@link #preCast(Object, Cloud, Node, Field)}
      */
-    public final Object cast(Object value, Node node, Field field) {
+    public final Object cast(Object value, final Node node, final Field field) {
+        if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) { 
+            // if inherited from incompatible type, then first try to cast in the way of origin.
+            // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
+            value = origin.cast(value, node, field);
+        }
         return cast(value, getCloud(node, field), node, field);
     }
 
