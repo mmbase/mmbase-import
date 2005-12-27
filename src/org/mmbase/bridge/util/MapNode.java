@@ -11,177 +11,247 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import java.util.*;
+import java.io.InputStream;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.implementation.BasicFunctionValue;
+import org.mmbase.util.Casting;
+import org.mmbase.util.SizeOf;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
- * A Map representing a Node. This class can be used if you need a bridge Node object to look like a
- * Map (where the keys are the fields).
- *
- * This object is also still a Node object.
- *
+ * A Node based on a Map.
+
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.2 2005-07-29 14:52:37 pierre Exp $
+ * @version $Id: MapNode.java,v 1.3 2005-12-27 21:50:50 michiel Exp $
  * @since   MMBase-1.8
  */
 
-public class MapNode extends NodeWrapper implements Map {
+public class MapNode extends AbstractNode implements Node {
+
+    private static final Logger log = Logging.getLoggerInstance(MapNode.class);
 
     /**
-     * @param node The Node which is wrapped, and is presented as a Map.
+     * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
+     * besides real nodes also virtual nodes, like typedef (cluster nodes) and typerel (allowed relations because of inheritance).
      */
-    public MapNode(Node node) {
-        super(node);
+    final protected NodeManager nodeManager;
+    final protected Map values;
+    final protected Map sizes = new HashMap();
+    final protected Map originalValues = new HashMap();
+
+    public MapNode(Map v, NodeManager nm) {
+        values = v;
+        originalValues.putAll(values);
+        nodeManager = nm;
     }
 
-    // javadoc inherited
-    public void clear() {
-        // the fields of a node are fixed by it's nodemanager.
-        throw new UnsupportedOperationException("You cannot remove fields from a Node.");
+    public boolean isRelation() {
+        return false;
     }
 
-    // javadoc inherited
-    public boolean containsKey(Object key) {
-        return getNodeManager().hasField((String) key);
+    public Relation toRelation() {
+        return (Relation) this;
     }
 
-    // javadoc inherited
-    // code copied from AbstractMap
-    public boolean containsValue(Object value) {
-        Iterator  i = entrySet().iterator();
-        if (value==null) {
-            while (i.hasNext()) {
-                Entry e = (Entry) i.next();
-                if (e.getValue()==null) {
-                    return true;
-                }
-            }
+    public boolean isNodeManager() {
+        return false;
+    }
+
+    public NodeManager toNodeManager() {
+        return (NodeManager)this;
+    }
+
+    public boolean isRelationManager() {
+        return false;
+    }
+
+    public RelationManager toRelationManager() {
+        return (RelationManager)this;
+    }
+
+
+
+    public Cloud getCloud() {
+        return nodeManager.getCloud();
+    }
+
+    public NodeManager getNodeManager() {
+        return nodeManager;
+    }
+
+    public int getNumber() {
+        return Casting.toInt(values.get("number"));
+    }
+
+    public boolean isNew() {
+        return false;
+    }
+
+    public boolean isChanged(String fieldName) {
+        Object originalValue = originalValues.get(fieldName);
+        Object value            = values.get(fieldName);
+        return originalValue == null ? value == null : originalValue.equals(value);
+    }
+    public boolean isChanged() {
+        return ! values.equals(originalValues);
+    }
+
+
+    protected void edit(int i) {
+        // always ok.
+    }
+    public Object getValueWithoutProcess(String fieldName) {
+        return values.get(fieldName);
+    }
+    public void setValueWithoutProcess(String fieldName, Object value) {
+        values.put(fieldName, value);
+    }
+    public void setValueWithoutChecks(String fieldName, Object value) {
+        values.put(fieldName, value);
+    }
+
+    public boolean isNull(String fieldName) {
+        return values.get(fieldName) == null;
+    }
+    protected void setSize(String fieldName, long size) {
+        sizes.put(fieldName, new Long(size));
+    }
+
+    public long getSize(String fieldName) {
+        Long size = (Long) sizes.get(fieldName);
+        if (size != null) {
+            return size.longValue();
         } else {
-            while (i.hasNext()) {
-                Entry  e = (Entry) i.next();
-                if (value.equals(e.getValue())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    // javadoc inherited
-    public Object remove(Object key) {
-        throw new UnsupportedOperationException("You cannot remove fields from a Node.");
-    }
-
-    // javadoc inherited
-    public Set entrySet() {
-        return new AbstractSet() {
-                FieldList fields = getNodeManager().getFields();
-                public Iterator iterator() {
-                    return new Iterator() {
-                            FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}
-                            public Object  next() {
-                                return new Map.Entry() {
-                                        Field field = i.nextField();
-                                        public Object getKey() {
-                                            return field.getName();
-                                        }
-                                        public Object getValue() {
-                                            return MapNode.this.getValue(field.getName());
-                                        }
-                                        public Object setValue(Object value) {
-                                            Object r = getValue();
-                                            MapNode.this.setValue(field.getName(), value);
-                                            return r;
-                                        }
-                                    };
-                            }
-                            public void remove() {
-                                throw new UnsupportedOperationException("You cannot remove fields from a Node.");
-                            }
-                        };
-                }
-                public int size() {
-                    return fields.size();
-                }
-            };
-    }
-
-    // javadoc inherited
-    // todo: could be modifiable?
-    public Collection values() {
-        return new AbstractCollection() {
-                FieldList fields = getNodeManager().getFields();
-                public Iterator iterator() {
-                    return new Iterator() {
-                            FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}
-                            public Object  next() {
-                                Field field = i.nextField();
-                                return MapNode.this.getValue(field.getName());
-                            }
-                            public void remove() {
-                                throw new UnsupportedOperationException("You cannot remove fields from a Node.");
-                            }
-                        };
-                }
-                public int size() {
-                    return fields.size();
-                }
-            };
-    }
-
-    // javadoc inherited
-    public Set keySet() {
-        return new AbstractSet() {
-                FieldList fields = getNodeManager().getFields();
-                public Iterator iterator() {
-                    return new Iterator() {
-                            FieldIterator i = fields.fieldIterator();
-                            public boolean hasNext() { return i.hasNext();}
-                            public Object  next() {
-                                Field field = i.nextField();
-                                return field.getName();
-                            }
-                            public void remove() {
-                                throw new UnsupportedOperationException("You cannot remove fields from a Node.");
-                            }
-                        };
-                }
-                public int size() {
-                    return fields.size();
-                }
-            };
-    }
-
-    // javadoc inherited
-    public void putAll(Map map) {
-        Iterator i = map.entrySet().iterator();
-        while (i.hasNext()) {
-            Entry e = (Entry) i.next();
-            setValue((String) e.getKey(), e.getValue());
+            int s =  SizeOf.getByteSize(values.get(fieldName));
+            sizes.put(fieldName, new Long(s));
+            return s;
         }
     }
 
-    // javadoc inherited
-    public Object put(Object key, Object value) {
-        Object r = getValue((String) key);
-        setValue((String) key, value);
-        return r;
+    public void commit() {
+        throw new UnsupportedOperationException("Cannot commit map node");
     }
 
-    // javadoc inherited
-    public Object get(Object key) {
-        return getValue((String) key);
+    public void cancel() {
     }
 
-    // javadoc inherited
-    public boolean isEmpty() {
+
+    public void delete(boolean deleteRelations) {
+        throw new UnsupportedOperationException("Cannot delete map node");
+    }
+
+    public String toString() {
+        return "Map Node" + values;
+    }
+
+    public void deleteRelations(String type) throws NotFoundException {
+    }
+
+    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
+        return BridgeCollections.EMPTY_RELATIONLIST;
+    }
+    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
+        return BridgeCollections.EMPTY_RELATIONLIST;
+    }
+
+
+    public boolean hasRelations() {
         return false;
     }
 
-    // javadoc inherited
-    public int size() {
-        return getNodeManager().getFields().size();
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
+        return 0;
+
     }
+
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
+        return BridgeCollections.EMPTY_NODELIST;
+    }
+
+    public int countRelatedNodes(String type) {
+        return 0;
+    }
+
+    public StringList getAliases() {
+        return BridgeCollections.EMPTY_STRINGLIST;
+    }
+
+    public void createAlias(String aliasName) {
+        throw new UnsupportedOperationException("Map nodes have no aliases");
+    }
+
+    public void deleteAlias(String aliasName) {
+        throw new UnsupportedOperationException("Map nodes have no aliases");
+    }
+
+    public Relation createRelation(Node destinationNode, RelationManager relationManager) {
+        throw new UnsupportedOperationException("Map nodes have no relations");
+    }
+
+
+    public void setContext(String context) {
+        throw new UnsupportedOperationException("Map nodes have no security context");
+    }
+
+    // javadoc inherited (from Node)
+    public String getContext() {
+        throw new UnsupportedOperationException("Virtual nodes have no security context");
+    }
+
+
+    // javadoc inherited (from Node)
+    public StringList getPossibleContexts() {
+        return BridgeCollections.EMPTY_STRINGLIST;
+    }
+
+    public boolean mayWrite() {
+        return true;
+    }
+
+    public boolean mayDelete() {
+        return false;
+    }
+
+    public boolean mayChangeContext() {
+        return false;
+    }
+
+    public Collection  getFunctions() {
+        return  nodeManager.getFunctions();
+    }
+
+    public Function getFunction(String functionName) {
+        Function function = nodeManager.getFunction(functionName);
+        if (function == null) {
+            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName());
+        }
+        return new WrappedFunction(function) {
+                public final Object getFunctionValue(Parameters params) {
+                    params.set(Parameter.NODE, MapNode.this);
+                    params.set(Parameter.CLOUD, MapNode.this.getCloud());
+                    return super.getFunctionValue(params);
+                }
+            };
+    }
+
+    public Parameters createParameters(String functionName) {
+        return nodeManager.getFunction(functionName).createParameters();
+    }
+
+    public FieldValue getFunctionValue(String functionName, List parameters) {
+        final Function function = getFunction(functionName);
+        final Parameters params = function.createParameters();
+        params.setAll(parameters);
+        return new AbstractFieldValue(this, getCloud()) {
+                public Object get() {
+                    return function.getFunctionValue(params);
+                }
+            };
+    }
+
+
 }
 
