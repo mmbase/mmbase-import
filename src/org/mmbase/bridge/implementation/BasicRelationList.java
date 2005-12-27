@@ -18,11 +18,9 @@ import org.mmbase.module.core.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.18 2005-12-12 11:00:07 michiel Exp $
+ * @version $Id: BasicRelationList.java,v 1.19 2005-12-27 21:53:20 michiel Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
-
-    static final BasicRelationList EMPTY = new BasicRelationList();
 
     BasicRelationList() {
         super();
