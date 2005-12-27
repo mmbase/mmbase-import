@@ -15,23 +15,23 @@ package org.mmbase.bridge.util.xml.query;
  * and {@link FieldDefinition}s (wrappers around StepFields).
  *
  * @author Pierre van Rooden
- * @version $Id: QueryConfigurer.java,v 1.5 2005-11-18 22:45:18 nklasens Exp $
+ * @version $Id: QueryConfigurer.java,v 1.6 2005-12-27 15:48:21 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryConfigurer {
 
-    public static QueryConfigurer defaultConfigurer = new QueryConfigurer();
+    private static final QueryConfigurer DEFAULT_CONFIGURER = new QueryConfigurer();
 
     public QueryDefinition getQueryDefinition() {
-        return new QueryDefinition(this); // using 'this' is ugly.
+        return new QueryDefinition();
     }
 
-    public FieldDefinition getFieldDefinition(QueryDefinition queryDefinition) {
-        return new FieldDefinition(this, queryDefinition);
+    public FieldDefinition getFieldDefinition() {
+        return new FieldDefinition();
     }
 
     public static QueryConfigurer getDefaultConfigurer() {
-        return defaultConfigurer;
+        return DEFAULT_CONFIGURER;
     }
 
 }
