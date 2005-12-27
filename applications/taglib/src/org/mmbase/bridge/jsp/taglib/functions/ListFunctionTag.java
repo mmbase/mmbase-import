@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.9 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.10 2005-12-27 12:34:02 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -69,7 +69,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
     }
 
     public int doStartTag() throws JspTagException {
-        Object value = getFunctionValue();
+        Object value = getFunctionValue(false); // registration is done in doInitBody
         if (value instanceof Collection && comparator.equals(Attribute.NULL)) {
             returnCollection = (Collection) value;
         } else {
@@ -81,7 +81,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
 
         collector = new ContextCollector(getContextProvider());
         helper.overrideWrite(false); // default behavior is not to write to page
-        currentItemIndex= -1;  // reset index
+        currentItemIndex = -1;  // reset index
         if (!comparator.equals(Attribute.NULL)) {
             ListSorter.sort((List)returnCollection, (String) comparator.getValue(this), pageContext);
         }
