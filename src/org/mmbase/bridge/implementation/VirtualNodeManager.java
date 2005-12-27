@@ -13,6 +13,7 @@ package org.mmbase.bridge.implementation;
 import javax.servlet.*;
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.35 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.36 2005-12-27 22:12:33 michiel Exp $
  */
 public class VirtualNodeManager extends VirtualNode implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -47,7 +48,7 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
         // determine fields and field types
         if (node.getBuilder() instanceof VirtualBuilder) {
             VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();;
-            
+
             Map fields = virtualBuilder.getFields(node);
             Iterator i = fields.entrySet().iterator();
             while (i.hasNext()) {
@@ -75,7 +76,7 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
             // code to solve the fields.
             Iterator steps = query.getSteps().iterator();
             while (steps.hasNext()) {
-                Step step = (Step) steps.next();            
+                Step step = (Step) steps.next();
                 DataType nodeType  = DataTypes.getDataType("node");
                 String name = step.getAlias();
                 if (name == null) name = step.getTableName();
@@ -93,15 +94,15 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
                 if (name == null) {
                     name = step.getAlias();
                     if (name == null) name = step.getTableName();
-                    name += "." + field.getFieldName();            
+                    name += "." + field.getFieldName();
                 }
                 final String fieldName = name;
                 fieldTypes.put(name, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
                         public String getName() {
                             return fieldName;
                         }
-                    }); 
-                
+                    });
+
             }
         }
     }
@@ -168,15 +169,14 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
     }
 
     public RelationManagerList getAllowedRelations() {
-        return new BasicRelationManagerList(Collections.EMPTY_LIST, getCloud());
+        return BridgeCollections.EMPTY_RELATIONMANAGERLIST;
     }
-
     public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction) {
-        return new BasicRelationManagerList(Collections.EMPTY_LIST, getCloud());
+        return BridgeCollections.EMPTY_RELATIONMANAGERLIST;
     }
 
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) {
-        return new BasicRelationManagerList(Collections.EMPTY_LIST, getCloud());
+        return BridgeCollections.EMPTY_RELATIONMANAGERLIST;
     }
 
     public String getInfo(String command) {
@@ -255,6 +255,10 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
         }
     }
 
+    public NodeManager getParent() {
+         return null;
+    }
+
 
     public String getProperty(String name) {
         return null;
@@ -265,10 +269,6 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
     }
 
     public NodeManagerList getDescendants() {
-        return new BasicNodeManagerList(Collections.EMPTY_LIST, getCloud());
+        return BridgeCollections.EMPTY_NODEMANAGERLIST;
     }
-    public NodeManager getParent() {
-        return null;
-    }
-    
 }
