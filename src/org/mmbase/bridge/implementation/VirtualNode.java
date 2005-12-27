@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.VirtualBuilder;
 import org.mmbase.module.core.MMObjectNode;
@@ -32,12 +33,12 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.16 2005-12-22 15:03:52 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.17 2005-12-27 22:12:03 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
  */
-public class VirtualNode implements Node {
+public class VirtualNode extends AbstractNode implements Node {
 
     private static final Logger log = Logging.getLoggerInstance(VirtualNode.class);
 
@@ -61,7 +62,6 @@ public class VirtualNode implements Node {
     public VirtualNode(org.mmbase.module.core.VirtualNode node, Cloud cloud) {
         this(cloud, node, new VirtualNodeManager(node, cloud));
     }
-
 
     /**
      * Makes a Node from a map of values. Sadly, this uses a local MMBase, so you can't use this with
@@ -117,7 +117,6 @@ public class VirtualNode implements Node {
         return (RelationManager)this;
     }
 
-
     /**
      * Obtains a reference to the underlying MMObjectNode.
      * If the underlying node was deleted, this returns a virtual node with
@@ -152,63 +151,7 @@ public class VirtualNode implements Node {
     public boolean isChanged() {
         return false;
     }
-
-    public void setValue(String fieldName, Object value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-    public void setValueWithoutProcess(String fieldName, Object value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setObjectValue(String fieldName, Object value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setBooleanValue(String fieldName,final  boolean value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setDateValue(String fieldName, final Date value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setListValue(String fieldName, final List value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setNodeValue(String fieldName, final Node value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setIntValue(String fieldName, final int value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setLongValue(String fieldName, final long value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setFloatValue(String fieldName, final float value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setDoubleValue(String fieldName, final double value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setByteValue(String fieldName, final byte[] value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setInputStreamValue(String fieldName, final InputStream value, long size) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setStringValue(String fieldName, final String value) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void setXMLValue(String fieldName, final Document value) {
+    protected void edit(int action) {
         throw new UnsupportedOperationException("Cannot edit virtual node");
     }
 
@@ -216,45 +159,21 @@ public class VirtualNode implements Node {
         return noderef.isNull(fieldName);
     }
 
+    public void setSize(String fieldName, long size) {
+        noderef.setSize(fieldName, size);
+    }
     public long getSize(String fieldName) {
         return noderef.getSize(fieldName);
     }
 
-    public Object getValue(String fieldName) {
-        Object value = noderef.getValue(fieldName);
-        if (value == null) return null;
-        if (noderef.getBuilder().hasField(fieldName)) {
-            int type = noderef.getBuilder().getField(fieldName).getType();
-            switch(type) {
-                case Field.TYPE_STRING:  return getStringValue(fieldName);
-                case Field.TYPE_BINARY:   return getByteValue(fieldName);
-                case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
-                case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
-                case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
-                case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
-                case Field.TYPE_XML:     return getXMLValue(fieldName);
-                case Field.TYPE_NODE:    return getNodeValue(fieldName);
-                case Field.TYPE_BOOLEAN: return Boolean.valueOf(getBooleanValue(fieldName));
-                case Field.TYPE_DATETIME:return getDateValue(fieldName);
-                case Field.TYPE_LIST:    return getListValue(fieldName);
-                default:
-                    log.error("Unknown fieldtype '" + type + "'");
-                    return value;
-            }
-        } else {
-            //log.warn("Requesting value of unknown field '" + fieldName + "')");
-            return value;
-        }
-
+    protected  void setValueWithoutChecks(String fieldName, Object value) {
+        // cannot edit virtual node.
+        // should not come here..
+        getNode().setValue(fieldName, value);
     }
 
     public Object getValueWithoutProcess(String fieldName) {
         Object result = getNode().getValue(fieldName);
-        return result;
-    }
-
-    public Object getObjectValue(String fieldName) {
-        Object result = getValueWithoutProcess(fieldName);
         return result;
     }
 
@@ -337,24 +256,6 @@ public class VirtualNode implements Node {
         return result;
     }
 
-    public FieldValue getFieldValue(String fieldName) throws NotFoundException {
-        return new BasicFieldValue(this, getNodeManager().getField(fieldName));
-    }
-
-    public FieldValue getFieldValue(Field field) {
-        return new BasicFieldValue(this, field);
-    }
-
-
-
-    public Element getXMLValue(String fieldName, Document tree) {
-        Document doc = getXMLValue(fieldName);
-        if (doc == null) {
-            return null;
-        }
-        return (Element)tree.importNode(doc.getDocumentElement(), true);
-    }
-
     public Collection validate() {
         // I have no idea..
         return Collections.EMPTY_SET;
@@ -365,10 +266,6 @@ public class VirtualNode implements Node {
     }
 
     public void cancel() {
-    }
-
-    public void delete() {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
     }
 
     public void delete(boolean deleteRelations) {
@@ -392,76 +289,37 @@ public class VirtualNode implements Node {
         return "VIRTUAL" + getNode();
     }
 
-    public void deleteRelations() {
-    }
-
     public void deleteRelations(String type) throws NotFoundException {
     }
 
-    public RelationList getRelations() {
-        return BasicRelationList.EMPTY;
-    }
-
-    public RelationList getRelations(String role) {
-        return BasicRelationList.EMPTY;
-    }
-
-    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
-        return BasicRelationList.EMPTY;
-    }
-
-    public RelationList getRelations(String role, NodeManager nodeManager) {
-        return BasicRelationList.EMPTY;
-    }
-
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
-        return BasicRelationList.EMPTY;
+        return BridgeCollections.EMPTY_RELATIONLIST;
+    }
+    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
+        return BridgeCollections.EMPTY_RELATIONLIST;
     }
 
     public boolean hasRelations() {
         return false;
     }
 
-    public int countRelations() {
-        return 0;
-    }
-
-    public int countRelations(String type) {
-        return 0;
-
-    }
 
 
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
         return 0;
     }
 
-
-    public NodeList getRelatedNodes() {
-        return BasicNodeList.EMPTY;
-    }
-
-    public NodeList getRelatedNodes(String type) {
-        return BasicNodeList.EMPTY;
-    }
-
-    public NodeList getRelatedNodes(NodeManager nodeManager) {
-        return BasicNodeList.EMPTY;
-    }
-
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
-        return BasicNodeList.EMPTY;
-    }
-    public NodeList getRelatedNodes(String type, String role, String searchDir) {
-        return BasicNodeList.EMPTY;
-    }
-
     public int countRelatedNodes(String type) {
         return 0;
     }
 
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
+        return BridgeCollections.EMPTY_NODELIST;
+    }
+
+
     public StringList getAliases() {
-        return BasicStringList.EMPTY;
+        return BridgeCollections.EMPTY_STRINGLIST;
     }
 
     public void createAlias(String aliasName) {
@@ -489,7 +347,7 @@ public class VirtualNode implements Node {
 
     // javadoc inherited (from Node)
     public StringList getPossibleContexts() {
-        return BasicStringList.EMPTY;
+        return BridgeCollections.EMPTY_STRINGLIST;
     }
 
     public boolean mayWrite() {
@@ -531,40 +389,5 @@ public class VirtualNode implements Node {
         Parameters params = function.createParameters();
         params.setAll(parameters);
         return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
-    }
-    /**
-     * @param o Object to compare to.
-     */
-    public int compareTo(Object o) {
-        Node n = (Node)o;
-        String s1 = "";
-        if (this instanceof NodeManager) {
-            s1 = ((NodeManager)this).getGUIName();
-        } else {
-            s1 = getFunctionValue("gui", null).toString();
-        }
-        String s2 = "";
-        if (n instanceof NodeManager) {
-            s2 = ((NodeManager)n).getGUIName();
-        } else {
-            s2 = n.getFunctionValue("gui", null).toString();
-        }
-        int res = s1.compareTo(s2);
-        if (res != 0) {
-            return res;
-        } else {
-            int n1 = getNumber();
-            int n2 = n.getNumber();
-            if (n2 > n1) {
-                return -1;
-            } else if (n2 < n1) {
-                return -1;
-            } else {
-                if (cloud instanceof Comparable) {
-                    return ((Comparable)cloud).compareTo(n.getCloud());
-                }
-            }
-        }
-        return 1;
     }
 }
