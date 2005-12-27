@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.33 2005-11-25 12:39:08 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.34 2005-12-27 22:14:14 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -152,14 +152,11 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * @since MMBase-1.8
      */
     protected BasicRelation createBasicRelation() {
-        NodeAndId n = createMMObjectNode();
-        BasicRelation relation =  new BasicRelation(n.node, cloud, n.id);
-        if(relation == null) {
-            throw new RuntimeException("relation node is null");
-        }
         if(relDefNode == null) {
             throw new RuntimeException("reldef node is null");
         }
+        NodeAndId n = createMMObjectNode();
+        BasicRelation relation =  new BasicRelation(n.node, cloud, n.id);
         relation.setValueWithoutChecks("rnumber", new Integer(relDefNode.getNumber()));
         return relation;
     }
@@ -189,13 +186,8 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public RelationList getRelations(Node node) {
         // XXX: no caching is done here?
-        List result = new ArrayList();
-        try {
-            InsRel insRel = (InsRel) builder;
-            result.addAll(insRel.getRelationNodes(node.getNumber()));
-        } catch (SearchQueryException  sqe) {
-            log.error(sqe.getMessage()); // should not happen
-        }
+        InsRel insRel = (InsRel) builder;
+        List result = insRel.getRelationsVector(node.getNumber());
         return new BasicRelationList(result, this);
     }
 
