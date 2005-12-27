@@ -21,16 +21,12 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.16 2005-10-12 09:28:26 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.17 2005-12-27 22:14:46 michiel Exp $
  * @since   MMBase-1.6
  */
-public class BasicFunctionValue implements FieldValue {
+public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValue {
 
-    static private BridgeException CANNOTCHANGE =  new BridgeException("Cannot change function value");
-
-    private Node node = null;
-    private Object value = null;
-    private Cloud cloud = null;
+    private final Object value;
 
     /**
      * Constructor for a function value returned by a Node.
@@ -39,8 +35,8 @@ public class BasicFunctionValue implements FieldValue {
      * @param value the function value
      */
     BasicFunctionValue(Node node, Object value) {
-        this(node.getCloud(), value);
-        this.node  = node;
+        super(node, null);
+        this.value  = value;
     }
 
     /**
@@ -50,205 +46,28 @@ public class BasicFunctionValue implements FieldValue {
      * @param value the function value
      */
     BasicFunctionValue(Cloud cloud, Object value) {
-        this.value = value;
-        this.cloud = cloud;
-        if (this.value instanceof List) { // might be a collection of MMObjectNodes
-            List list  = (List) this.value;
+        super(null, cloud);
+        Object v = value;
+        if (v instanceof List) { // might be a collection of MMObjectNodes
+            List list  = (List) v;
             if (list.size() > 0) {
                 if (list.get(0) instanceof MMObjectNode) { // if List of MMObjectNodes, make NodeList
                     if (cloud == null) {
                         throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
                     }
                     NodeList l = cloud.createNodeList();
-                    this.value = l;
+                    v = l;
                     l.addAll(list);
                 }
             }
         }
+        this.value = v;
     }
 
-    /**
-     * Function values cannot be changed
-     * @return false
-     */
-    public boolean canModify() {
-        return false;
-    }
-
-    public boolean isNull() {
-        return value == null;
-    }
 
     public Object get() {
         return value;
     }
 
-    public Object getField() {
-        return null;
-    }
-
-    public Node getNode() {
-        return node;
-    }
-
-    public boolean toBoolean() {
-        return Casting.toBoolean(value);
-    }
-
-    public byte[] toByte() {
-        return Casting.toByte(value);
-    }
-
-    public float toFloat() {
-        return Casting.toFloat(value);
-    }
-
-    public double toDouble() {
-        return Casting.toDouble(value);
-    }
-
-    public long toLong() {
-        return Casting.toLong(value);
-    }
-
-    public int toInt() {
-        return Casting.toInt(value);
-    }
-
-    public Node toNode() {
-        if (cloud == null) {
-            throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
-        }
-        if (value instanceof MMObjectNode) {
-            return cloud.getNode(((MMObjectNode) value).getNumber());
-        }
-        return Casting.toNode(value, cloud);
-    }
-
-    public String toString() {
-        return Casting.toString(value);
-    }
-
-    public Document toXML() throws IllegalArgumentException {
-        return Casting.toXML(value);
-    }
-
-    public Element toXML(Document tree) throws IllegalArgumentException {
-        Document doc = toXML();
-        if(doc == null) return  null;
-        return (Element) tree.importNode(doc.getDocumentElement(), true);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public Date toDate() {
-        return Casting.toDate(value);
-    }
-
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void set(Object value) {
-        throw CANNOTCHANGE;
-    }
-
-
-    public void setObject(Object value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setBoolean(boolean value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setFLoat(float value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setDouble(double value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setLong(long value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setInt(int value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setByte(byte[] value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setString(String value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setNode(Node value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @param value set value
-     * @throws BridgeException
-     */
-    public void setXML(Document value) {
-        throw CANNOTCHANGE;
-    }
-
-    /**
-     * Function values cannot be changed, and all set-functions throw an exception.
-     * @throws BridgeException
-     * @since MMBase-1.8
-     */
-    public void setDate(Date value) {
-        throw CANNOTCHANGE;
-    }
 
 }
