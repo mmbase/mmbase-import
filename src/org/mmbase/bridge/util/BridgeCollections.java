@@ -16,11 +16,9 @@ import org.mmbase.bridge.*;
 /**
  * Analogon of {@link java.util.Collections}. Methods speak for themselves.
  *
- * @TODO not all variants of bridgelist have their counterpart here yet (but the ones used as return
- * values in bridge implementations have..)
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BridgeCollections.java,v 1.1 2005-12-27 21:48:28 michiel Exp $
+ * @version $Id: BridgeCollections.java,v 1.2 2005-12-27 22:11:31 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -37,6 +35,21 @@ public abstract class BridgeCollections {
     public static final NodeList unmodifiableNodeList(NodeList nodeList) {
         return new UnmodifiableNodeList(nodeList);
     }
+
+    /**
+     * Makes a NodeManagerList unmodifiable.
+     */
+    public static final NodeManagerList unmodifiableNodeManagerList(NodeManagerList nodeList) {
+        return new UnmodifiableNodeManagerList(nodeList);
+    }
+
+
+    /**
+     * Makes a RelationManagerList unmodifiable.
+     */
+    public static final RelationManagerList unmodifiableRelationManagerList(RelationManagerList nodeList) {
+        return new UnmodifiableRelationManagerList(nodeList);
+    }
     /**
      * Makes a RelationList unmodifiable.
      */
@@ -50,10 +63,12 @@ public abstract class BridgeCollections {
         return new UnmodifiableStringList(stringList);
     }
 
-    public static final BridgeList   EMPTY_BRIDGELIST     = new EmptyBridgeList();
-    public static final NodeList     EMPTY_NODELIST       = new EmptyNodeList();
-    public static final RelationList EMPTY_RELATIONLIST   = new EmptyRelationList();
-    public static final StringList   EMPTY_STRINGLIST     = new EmptyStringList();
+    public static final BridgeList          EMPTY_BRIDGELIST          = new EmptyBridgeList();
+    public static final NodeList            EMPTY_NODELIST            = new EmptyNodeList();
+    public static final NodeManagerList     EMPTY_NODEMANAGERLIST     = new EmptyNodeManagerList();
+    public static final RelationManagerList EMPTY_RELATIONMANAGERLIST = new EmptyRelationManagerList();
+    public static final RelationList        EMPTY_RELATIONLIST        = new EmptyRelationList();
+    public static final StringList          EMPTY_STRINGLIST          = new EmptyStringList();
 
 
 
@@ -86,6 +101,21 @@ public abstract class BridgeCollections {
         }
         public Node nextNode() {return ((NodeIterator) i).nextNode();}
         public Node previousNode() {return ((NodeIterator) i).previousNode();}
+    }
+
+    static class UnmodifiableNodeManagerIterator extends UnmodifiableNodeIterator implements NodeManagerIterator {
+        UnmodifiableNodeManagerIterator(NodeManagerIterator i) {
+            super(i);
+        }
+        public NodeManager nextNodeManager() {return ((NodeManagerIterator) i).nextNodeManager();}
+        public NodeManager previousNodeManager() {return ((NodeManagerIterator) i).previousNodeManager();}
+    }
+    static class UnmodifiableRelationManagerIterator extends UnmodifiableNodeManagerIterator implements RelationManagerIterator {
+        UnmodifiableRelationManagerIterator(RelationManagerIterator i) {
+            super(i);
+        }
+        public RelationManager nextRelationManager() {return ((RelationManagerIterator) i).nextRelationManager();}
+        public RelationManager previousRelationManager() {return ((RelationManagerIterator) i).previousRelationManager();}
     }
     static class UnmodifiableRelationIterator extends UnmodifiableNodeIterator implements RelationIterator {
         UnmodifiableRelationIterator(RelationIterator i) {
@@ -178,6 +208,30 @@ public abstract class BridgeCollections {
             return new UnmodifiableNodeList(((NodeList) c).subNodeList(fromIndex, toIndex));
         }
     }
+    static class UnmodifiableNodeManagerList extends UnmodifiableNodeList implements NodeManagerList {
+        UnmodifiableNodeManagerList(NodeManagerList nodeManagerList) {
+            super(nodeManagerList);
+        }
+        public NodeManager getNodeManager(int index) {
+            return ((NodeManagerList) c).getNodeManager(index);
+        }
+        public NodeManagerIterator nodeManagerIterator() {
+	    return new UnmodifiableNodeManagerIterator(((NodeManagerList)c).nodeManagerIterator());
+        }
+    }
+
+    static class UnmodifiableRelationManagerList extends UnmodifiableNodeManagerList implements RelationManagerList {
+        UnmodifiableRelationManagerList(RelationManagerList relationManagerList) {
+            super(relationManagerList);
+        }
+        public RelationManager getRelationManager(int index) {
+            return ((RelationManagerList) c).getRelationManager(index);
+        }
+        public RelationManagerIterator relationManagerIterator() {
+	    return new UnmodifiableRelationManagerIterator(((RelationManagerList)c).relationManagerIterator());
+        }
+    }
+
     static class UnmodifiableRelationList extends UnmodifiableNodeList implements RelationList {
         UnmodifiableRelationList(RelationList relationList) {
             super(relationList);
@@ -259,6 +313,42 @@ public abstract class BridgeCollections {
         public RelationList subRelationList(int fromIndex, int toIndex) {
             if (fromIndex == 0 && toIndex == 0) return this;
             throw new IndexOutOfBoundsException();
+        }
+    }
+    static class EmptyNodeManagerList extends EmptyNodeList implements NodeManagerList {
+        public NodeManager getNodeManager(int index) {
+	    throw new IndexOutOfBoundsException("Index: "+index);
+        }
+        public NodeManagerIterator nodeManagerIterator() {
+	    return new UnmodifiableNodeManagerIterator(null) {
+                    public boolean hasNext() { return false;}
+                    public boolean hasPrevious() { return false;}
+                    public NodeManager nextNodeManager() {throw new NoSuchElementException();}
+                    public NodeManager previousNodeManager() {throw new NoSuchElementException();}
+                    public Node nextNode() {throw new NoSuchElementException();}
+                    public Node previousNode() {throw new NoSuchElementException();}
+                    public Object next() {throw new NoSuchElementException();}
+                    public Object previous() {throw new NoSuchElementException();}
+                };
+        }
+    }
+    static class EmptyRelationManagerList extends EmptyNodeManagerList implements RelationManagerList {
+        public RelationManager getRelationManager(int index) {
+	    throw new IndexOutOfBoundsException("Index: "+index);
+        }
+        public RelationManagerIterator relationManagerIterator() {
+	    return new UnmodifiableRelationManagerIterator(null) {
+                    public boolean hasNext() { return false;}
+                    public boolean hasPrevious() { return false;}
+                    public RelationManager nextRelationManager() {throw new NoSuchElementException();}
+                    public RelationManager previousRelationManager() {throw new NoSuchElementException();}
+                    public NodeManager nextNodeManager() {throw new NoSuchElementException();}
+                    public NodeManager previousNodeManager() {throw new NoSuchElementException();}
+                    public Node nextNode() {throw new NoSuchElementException();}
+                    public Node previousNode() {throw new NoSuchElementException();}
+                    public Object next() {throw new NoSuchElementException();}
+                    public Object previous() {throw new NoSuchElementException();}
+                };
         }
     }
     static class EmptyStringList extends EmptyBridgeList implements StringList {
