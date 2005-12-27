@@ -9,9 +9,11 @@
     <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Pagina</singular>
     <singular xml:lang="en">Page</singular>
+    <singular xml:lang="fr">Page</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Pagina's</plural>
     <plural xml:lang="en">Pages</plural>
+    <plural xml:lang="fr">Pages</plural>
   </names>
 
   <descriptions>
