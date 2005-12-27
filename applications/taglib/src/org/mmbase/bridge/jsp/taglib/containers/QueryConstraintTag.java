@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.5 2005-04-25 13:34:36 pierre Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.6 2005-12-27 22:17:14 michiel Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -164,6 +164,8 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         if (inverse.getBoolean(this, false)) {
             query.setInverse(cons, true);
         }
+        findWriter(false); // just to call haveBody.., because constraint is not officially a
+                           // writerreferer (but e.g. _ can be used in attributes)
         return SKIP_BODY;
     }
 
