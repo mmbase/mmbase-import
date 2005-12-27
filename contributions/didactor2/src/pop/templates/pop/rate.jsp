@@ -294,7 +294,7 @@
        <input type="button" class="formbutton" value="<di:translate key="pop.laterbutton" />" 
 	     onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
              <mm:param name="command">intake</mm:param>
-           </mm:treeinclude>'"> 
+           </mm:treefile>'"> 
 
    <%
 
