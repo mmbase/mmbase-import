@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: FieldDefinition.java,v 1.5 2005-11-18 22:45:18 nklasens Exp $
+ * @version $Id: FieldDefinition.java,v 1.6 2005-12-27 15:48:21 michiel Exp $
  * @since MMBase-1.8
  **/
 public class FieldDefinition {
@@ -32,23 +32,11 @@ public class FieldDefinition {
      */
     public StepField stepField = null;
 
-    /**
-     * The query definition belonging to this field
-     */
-    protected QueryDefinition queryDefinition = null;
-
-    /**
-     * The Query configurer that instantiated this definition
-     * XXX: unused (logically, because it is instantiated by it)
-     */
-    protected QueryConfigurer configurer = null;
 
     /**
      * Constructor
      */
-    public FieldDefinition(QueryConfigurer configurer, QueryDefinition queryDefinition) {
-        this.configurer = configurer;
-        this.queryDefinition = queryDefinition;
+    public FieldDefinition() {
     }
 
     /**
