@@ -3,7 +3,9 @@
  [ <!ENTITY base     SYSTEM "buildbase.xml" > ]
 >
 
-<project name="buildbase">
+<project name="buildbase" basedir=".">
+  <dirname property="buildbase.dir" file="${ant.file.buildbase}"/>
+  <property name="applications.dir"   location="${buildbase.dir}" />
   &base;
 
 </project>
