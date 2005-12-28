@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.1 2004-11-01 12:52:42 jdiepenmaat Exp $
+    @version $Id: list.xsl,v 1.2 2005-12-28 15:56:40 nbukharev Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -106,17 +106,6 @@
             </a>
           </div>
         </xsl:if>
-      </td>
-    </tr>
-    <tr class="linkcanvas">
-      <td>
-        <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}">
-          <xsl:call-template name="prompt_index" />
-        </a>
-        <xsl:text> - </xsl:text>
-        <a href="{$listpage}&amp;logout=true&amp;remove=true" title="{$tooltip_logout}">
-          <xsl:call-template name="prompt_logout" />
-        </a>
       </td>
     </tr>
   </xsl:template>
