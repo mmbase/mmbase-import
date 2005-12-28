@@ -41,7 +41,6 @@ public class FunctionsTest extends BridgeTest {
         NodeManager nm = cloud.getNodeManager("datatypes");
         Function function = nm.getFunction("aaa");
         Parameters params = function.createParameters();
-        System.out.println("Found " + params);
         params.set("parameter2", new Integer(5));
         Object result = function.getFunctionValue(params);
         assertTrue("No instance of Integer but " + result.getClass(), result instanceof Integer);
