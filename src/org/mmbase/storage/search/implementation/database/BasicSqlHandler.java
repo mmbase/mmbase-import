@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.53 2005-11-30 17:26:57 ernst Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.54 2005-12-28 16:07:13 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -540,47 +540,58 @@ public class BasicSqlHandler implements SqlHandler {
         }
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected StringBuffer appendSortOrderDirection(StringBuffer sb, SortOrder sortOrder) throws IllegalStateException {
+        // Sort direction.
+        switch (sortOrder.getDirection()) {
+        case SortOrder.ORDER_ASCENDING:
+            sb.append(" ASC");
+            break;            
+        case SortOrder.ORDER_DESCENDING:
+            sb.append(" DESC");
+            break;            
+        default: // Invalid direction value.
+            throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
+        }
+        return sb;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
+         boolean uppered = false;
+         if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
+             sb.append("UPPER(");
+             uppered = true;
+         }
+         // Fieldname.
+         Step step = sortOrder.getField().getStep();
+         appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+         if (uppered) {
+             sb.append("),");
+             // also order by field itself, so ensure uniqueness.
+             appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+         }
+         return sb;
+    }
+
     /**
      * @since MMBase-1.8
      */
     protected StringBuffer appendSortOrders(StringBuffer sb, SearchQuery query) {
         boolean multipleSteps = query.getSteps().size() > 1;
-        // ORDER BY
         List sortOrders = query.getSortOrders();
         if (sortOrders.size() > 0) {
             sb.append(" ORDER BY ");
             Iterator iSortOrders = sortOrders.iterator();
             while (iSortOrders.hasNext()) {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
-
-                boolean uppered = false;
-                if (! sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
-                    sb.append("UPPER(");
-                    uppered = true;
-                }
-                // Fieldname.
-                Step step = sortOrder.getField().getStep();
-                appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
-                if (uppered) {
-                    sb.append("),");
-                    // also order by field itself, so ensure uniqueness.
-                    appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
-                }
-
-                // Sort direction.
-                switch (sortOrder.getDirection()) {
-                case SortOrder.ORDER_ASCENDING:
-                    sb.append(" ASC");
-                    break;
-
-                case SortOrder.ORDER_DESCENDING:
-                    sb.append(" DESC");
-                    break;
-
-                default: // Invalid direction value.
-                    throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
-                }
-
+                appendSortOrderField(sb, sortOrder, multipleSteps);
+                appendSortOrderDirection(sb, sortOrder);
                 if (iSortOrders.hasNext()) {
                     sb.append(",");
                 }
@@ -669,6 +680,9 @@ public class BasicSqlHandler implements SqlHandler {
             String fieldName = field.getFieldName();
             Step step = field.getStep();
 
+
+            // hardly nice and OO, the following code.
+            //
             if (fieldConstraint instanceof FieldValueInConstraint) {
 
                 // Field value-in constraint
@@ -795,8 +809,7 @@ public class BasicSqlHandler implements SqlHandler {
                     break;
                     */
                 default:
-                    throw new IllegalStateException("Unknown operator value in constraint: "
-                                                    + fieldCompareConstraint.getOperator());
+                    throw new IllegalStateException("Unknown operator value in constraint: " + fieldCompareConstraint.getOperator());
                 }
                 if (fieldCompareConstraint instanceof FieldValueConstraint) {
                     // FieldValueConstraint.
@@ -819,9 +832,7 @@ public class BasicSqlHandler implements SqlHandler {
                         appendField(sb, step2, fieldName2, multipleSteps);
                     }
                 } else {
-                    throw new UnsupportedOperationException(
-                    "Unknown constraint type: "
-                    + constraint.getClass().getName());
+                    throw new UnsupportedOperationException("Unknown constraint type: " + constraint.getClass().getName());
                 }
                 // Negate by leading NOT, unless it's a LIKE constraint,
                 // in which case NOT LIKE is used.
@@ -829,15 +840,11 @@ public class BasicSqlHandler implements SqlHandler {
                     sb.append(overallInverse? ")": "");
                 }
             } else {
-                throw new UnsupportedOperationException(
-                "Unknown constraint type: "
-                + constraint.getClass().getName());
+                throw new UnsupportedOperationException("Unknown constraint type: " + constraint.getClass().getName());
             }
 
         } else if (constraint instanceof CompositeConstraint) {
-            throw new IllegalArgumentException(
-            "Illegal constraint type for this method: "
-            + constraint.getClass().getName());
+            throw new IllegalArgumentException("Illegal constraint type for this method: " + constraint.getClass().getName());
         } else if (constraint instanceof LegacyConstraint) {
             LegacyConstraint legacyConstraint = (LegacyConstraint) constraint;
             if (legacyConstraint.getConstraint().trim().length() != 0) {
