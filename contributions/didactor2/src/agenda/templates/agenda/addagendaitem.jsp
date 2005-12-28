@@ -306,7 +306,7 @@
 	<td><di:translate key="agenda.recipient" /></td>
 	<td>
 	<select name="recipient">
-	<mm:list nodes="$user" path="people1,classes,people2" constraints="people2.number != people1.number" fields="people2.number" distinct="true" orderby="people2.lastname, people2.firstname">
+	<mm:list nodes="$user" path="people1,classes,people2" constraints="people2.number != people1.number" fields="people2.number" distinct="true" orderby="people2.lastname,people2.firstname">
 	    <option value="<mm:field name="people2.number"/>"><mm:field name="people2.firstname"/> <mm:field name="people2.lastname"/></option>
 	</mm:list>
 	</select>
