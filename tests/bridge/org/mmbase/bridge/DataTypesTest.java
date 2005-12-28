@@ -47,7 +47,7 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"c", "ababab", ""}},
                 new Object[] {"integer",
                               new Object[] {new Integer(-100), null},
-                              new Object[] {new Long(Long.MAX_VALUE)}},
+                              new Object[] {new Long(Long.MAX_VALUE)}, "asdfe"},
                 new Object[] {"range",
                               new Object[] {new Integer(5), null},
                               new Object[] {new Integer(0), new Integer(10)}},
