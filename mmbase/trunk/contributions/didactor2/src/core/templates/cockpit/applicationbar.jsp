@@ -4,7 +4,7 @@
 <%@include file="/shared/setImports.jsp" %>
 <div class="applicationMenubar" style="white-space: nowrap">
   <div class="menuItemApplicationMenubar">
-    <a title="<di:translate key="core.home" />" href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.home" /></a>
+    <a title="<di:translate key="core.home" />" href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="provider?"/>" class="menubar"><di:translate key="core.home" /></a>
   </div>
       
   <mm:isgreaterthan referid="user" value="0">
