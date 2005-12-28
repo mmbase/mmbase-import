@@ -321,7 +321,7 @@ public abstract class NodeTest extends BridgeTest {
             node.getStringValue("gui()");
             node.getValue("gui()");
         } catch (Throwable  e) {
-            fail("Should not raise exception but gave: " + e.getMessage());
+            fail("Should not raise exception but gave: " + e.getMessage() + org.mmbase.util.logging.Logging.stackTrace(e, 20));
         }
     }
 
