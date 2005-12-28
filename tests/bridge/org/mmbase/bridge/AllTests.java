@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import org.mmbase.tests.MMBaseTest;
-
+import org.mmbase.bridge.util.*;
 import junit.framework.*;
 
 /**
@@ -45,8 +45,9 @@ public class AllTests {
         suite.addTestSuite(NodeManagerTest.class);
         suite.addTestSuite(CloudTest.class);
         suite.addTestSuite(RelationTest.class);
-        suite.addTestSuite(DataTypesTest.class);
+        suite.addTestSuite(DataTypesTest.class);     
         suite.addTestSuite(FunctionsTest.class);
+        suite.addTestSuite(QueriesTest.class);
         return suite;
     }
 	
