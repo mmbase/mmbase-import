@@ -1,0 +1,97 @@
+@import url("../../css/base.css");
+
+.mainContent {
+	top: 0em;
+	}
+	
+	    /** for table   **/ 
+	
+.topRow {
+	height: 50%; 
+	width: 100%;
+	top: 0.1em;
+	left: 0.1em;
+}
+
+.bottomRow {
+	height: 30%;
+	width: 100%;
+	top: 70%;
+	left: 0%;
+}
+
+.leftHalfRow {
+	margin-left:1.8em;
+	margin-top:0.9em;
+	font-weight: normal;
+	color: #000000;
+	height: 49%;
+	width: 39%;
+	top: 0%;
+	left: 0%;
+	position: absolute;
+	z-order: 2;
+	 }
+	
+.rightHalfRow {
+	text-align: right;
+	height: 49%;
+	width: 60%;
+	top: 0%;
+	left: 40%;
+	position: absolute;
+	z-order: 1;
+	 }
+	 
+    /** for size of content of part where documents are listed  **/ 
+
+.filesContentBody {
+   font-weight: normal;
+   color: #000000;
+   overflow: visible;
+   top: 5.2em;
+   left: 0em;
+   right: 1.5em;
+   position: absolute;
+   z-index: 4;
+   padding: 1em 1em 1em 1.5em;
+   background-color: #ffffff;
+   height: 50%;
+    }
+   
+    /** for folders height **/  
+   
+.folders {
+	top: 0em;
+	height: 80%;
+
+	 }
+    /** for height in workspace component  **/ 
+	 
+.rowsinfolder{
+   height: 100%;
+	top: 0.1em;
+	left: 0.1em;
+	position: relative;
+	 }
+	 
+	/** for link bar in workspace  **/
+	 
+.linkbar{
+	font-weight: bold;
+	color: #000000;
+	height: 2.0em;
+	right: 0em;
+	left: 0em;
+	padding: 0.3em 0em 0em 0.4em;
+	background-color: #FF801A;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
+	border-bottom: 1px solid #888888 }
+	
+/** for content height in workspace when creating new folder **/
+
+.contentBodywit {
+   height: 10em;
+}
