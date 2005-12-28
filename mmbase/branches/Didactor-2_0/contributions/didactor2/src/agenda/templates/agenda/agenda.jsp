@@ -66,14 +66,16 @@
 
   <di:table maxitems="10">
 
-    <di:row>      <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked);" /></di:headercell>
+    <di:row>
+
+      <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked);" /></di:headercell>
       <di:headercell><di:translate key="agenda.calendar" /></di:headercell>
       <di:headercell sortfield="title" default="true"><di:translate key="agenda.appointment" /></di:headercell>
       <di:headercell><di:translate key="agenda.starttime" /></di:headercell>
       <di:headercell><di:translate key="agenda.endtime" /></di:headercell>
     </di:row>
 
-    <mm:listnodes orderby="title">
+    <mm:listnodes>
       <di:row>
         <mm:remove referid="link"/>
         <mm:import id="link">
