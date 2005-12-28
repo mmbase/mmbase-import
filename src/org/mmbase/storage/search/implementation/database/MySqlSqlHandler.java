@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.14 2005-10-01 20:11:03 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.15 2005-12-28 16:07:49 michiel Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -129,43 +129,13 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
             super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
         }
     }
-    protected StringBuffer appendSortOrders(StringBuffer sb, SearchQuery query) {
-        // ORDER BY
-        boolean multipleSteps = query.getSteps().size() > 1;
-        List sortOrders = query.getSortOrders();
-        if (sortOrders.size() > 0) {
-            sb.append(" ORDER BY ");
-            Iterator iSortOrders = sortOrders.iterator();
-            while (iSortOrders.hasNext()) {
-                SortOrder sortOrder = (SortOrder) iSortOrders.next();
-
-                boolean uppered = false;
-                if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
-                    sb.append("BINARY ");
-                }
-                // Fieldname.
-                Step step = sortOrder.getField().getStep();
-                appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
-
-                // Sort direction.
-                switch (sortOrder.getDirection()) {
-                case SortOrder.ORDER_ASCENDING:
-                    sb.append(" ASC");
-                    break;
-
-                case SortOrder.ORDER_DESCENDING:
-                    sb.append(" DESC");
-                    break;
-
-                default: // Invalid direction value.
-                    throw new IllegalStateException("Invalid direction value: " + sortOrder.getDirection());
-                }
-
-                if (iSortOrders.hasNext()) {
-                    sb.append(",");
-                }
-            }
+    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
+        if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
+            sb.append("BINARY ");
         }
+        // Fieldname.
+        Step step = sortOrder.getField().getStep();
+        appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
         return sb;
     }
 
