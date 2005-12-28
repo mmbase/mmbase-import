@@ -35,32 +35,35 @@
    <%@include file="getselecteditems.jsp"%>
   </mm:relatednodes>
 
-  <%-- Get the workgroups agendas of the user--%>
+<%-- Get the workgroups agendas of the user--%>
   <mm:relatednodes type="workgroups">
     <mm:relatednodes type="agendas" id="agenda">
      <%@include file="getselecteditems.jsp"%>
     </mm:relatednodes>
   </mm:relatednodes>
 
-  <%-- Get the classes agendas of the user--%>
+<%-- Get the classes agendas of the user--%>
   <mm:relatednodes type="classes">
     <mm:relatednodes type="agendas" id="agenda">
      <%@include file="getselecteditems.jsp"%>
     </mm:relatednodes>
   </mm:relatednodes>
 
-   <%-- get invitations --%>
-   <mm:related path="invitationrel,items,eventrel,agendas" constraints="eventrel.stop > $startseconds AND eventrel.start < $endseconds">
-      <mm:field name="items.number" jspvar="itemNumber" vartype="String" write="false">
-      <%
-         linkedlist.add( itemNumber );
-      %>
-      </mm:field>
-   </mm:related>
- 
-</mm:node>
+<%-- get invitations --%>
 
-<mm:listcontainer path="items,eventrel,agendas">
+  <mm:related path="invitationrel,items,eventrel,agendas" constraints="eventrel.stop > $startseconds AND eventrel.start < $endseconds">
+     <mm:field name="items.number" jspvar="itemNumber" vartype="String" write="false">
+     <%
+      linkedlist.add( itemNumber );
+     %>
+     </mm:field>
+  </mm:related>
+
+</mm:node>
+  
+<mm:listnodescontainer type="items">
+
+ <mm:constraint field="number" referid="linkedlist" operator="IN"/>
 
   <di:table maxitems="10">
 
@@ -68,14 +71,12 @@
 
       <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked);" /></di:headercell>
       <di:headercell><di:translate key="agenda.calendar" /></di:headercell>
-      <di:headercell sortfield="items.title" default="true"><di:translate key="agenda.appointment" /></di:headercell>
+      <di:headercell sortfield="title" default="true"><di:translate key="agenda.appointment" /></di:headercell>
       <di:headercell><di:translate key="agenda.starttime" /></di:headercell>
       <di:headercell><di:translate key="agenda.endtime" /></di:headercell>
     </di:row>
-    
-    <mm:compare referid="linkedlist" value="" inverse="true">
-    <mm:list nodes="$linkedlist" fields="items.number" orderby="eventrel.start">
-      <mm:node element="items">
+
+    <mm:listnodes>
       <di:row>
         <mm:remove referid="link"/>
         <mm:import id="link">
@@ -107,14 +108,14 @@
             </mm:relatednodes>
         </mm:relatednodes>
 
-        <di:cell>
-        <mm:import id="num" reset="true"><mm:field name="number"/></mm:import>
-        <mm:list nodes="$user" path="people,invitationrel,items" constraints="items.number=$num and invitationrel.status=1" max="1">
-            <mm:first>
-            <input type="checkbox" name="ids" value="<mm:write referid="num"/>">
-            </mm:first>
-        </mm:list>
-        </di:cell>
+	<di:cell>
+	<mm:import id="num" reset="true"><mm:field name="number"/></mm:import>
+	<mm:list nodes="$user" path="people,invitationrel,items" constraints="items.number=$num and invitationrel.status=1" max="1">
+	    <mm:first>
+	    <input type="checkbox" name="ids" value="<mm:write referid="num"/>">
+	    </mm:first>
+	</mm:list>
+	</di:cell>
         <di:cell>
           <mm:relatednodes type="agendas" max="1">
             <mm:write escape="none" referid="link"/><mm:write referid="agendaname"/></a>
@@ -126,12 +127,12 @@
           <di:cell><mm:write escape="none" referid="link"/><mm:field name="stop"><mm:time format="HH:mm:ss"/></mm:field></a></di:cell>
         </mm:listrelations>
       </di:row>
-      </mm:node>
-    </mm:list>
-    </mm:compare>
+
+    </mm:listnodes>
+
   </di:table>
 
-</mm:listcontainer>
+</mm:listnodescontainer>
 
 </mm:cloud>
 </mm:content>
