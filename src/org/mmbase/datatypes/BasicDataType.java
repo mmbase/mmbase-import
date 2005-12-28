@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.34 2005-12-27 14:03:41 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.35 2005-12-28 11:18:57 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -913,8 +913,14 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
          */
         protected Object preCast(Object v, Cloud cloud) {
             if (getValue() == null) return v;
-            Object res =  ((LocalizedEntryListFactory) value).castKey(v);
-            return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
+            try {
+                Object res =  ((LocalizedEntryListFactory) value).castKey(v);
+                return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
+            } catch (NoClassDefFoundError ncdfe) {
+                log.error("Could not find class " + ncdfe.getMessage() + " while casting " + v.getClass() + " " + v, ncdfe);
+                return v;
+            }
+                
         }
 
 
