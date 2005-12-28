@@ -163,7 +163,7 @@ Build-compiler: ${build.compiler}
       </fileset>
       <fileset dir="build/rmmcitmp">
         <include name="org/mmbase/bridge/*"/>                           <!-- of course -->
-        <include name="org/mmbase/bridge/util/**"       />              <!-- not essential, but the idea is that you could use those with any bridge, so you should want them -->
+        <include name="org/mmbase/bridge/util/**"       />              <!-- not essential, but the idea is that you could use those with any bridge impl, so you should want them -->
         <include name="org/mmbase/storage/search/*"/>                   <!-- those interfaces are  part of bridge -->
         <include name="org/mmbase/datatypes/**" />                      <!-- datatype classes are bridge -->
         <include name="org/mmbase/security/UserContext.class"/>         <!-- security classes are bridge -->
@@ -175,6 +175,7 @@ Build-compiler: ${build.compiler}
 
         <include name="org/mmbase/cache/CachePolicy*" />                <!-- used in bridge -->
         <include name="org/mmbase/cache/Cache*" />                      <!-- used by SortedBundle, but any how it is utility -->
+        <include name="org/mmbase/util/LRUHashtable*" />                <!-- cache implementation -->
 
         <!-- perhaps we need _all_ of util ? -->
         <include name="org/mmbase/util/logging/**"/>                    <!-- every class use, and it's no real burden to have it -->
@@ -197,6 +198,8 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/XMLErrorHandler.class"/>             <!-- -->
         <include name="org/mmbase/util/DynamicDate.class"/>                <!-- used by Casting -->
         <include name="org/mmbase/util/dateparser/**"/>                    <!-- used by Casting -->
+        <include name="org/mmbase/util/HashCodeUtil*"/>                    <!-- used by SortedBundle, but is generic tool-->
+        <include name="org/mmbase/util/PublicCloneable*"/>                    <!-- used by SortedBundle, but is generic tool-->
 
 
         <include name="org/mmbase/storage/Storable.class"/>                <!-- DataTypes uses .. -->
