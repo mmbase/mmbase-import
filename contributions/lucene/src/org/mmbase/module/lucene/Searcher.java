@@ -26,18 +26,25 @@ import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.*;
 
 /**
+ * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.9 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: Searcher.java,v 1.10 2005-12-28 10:11:38 michiel Exp $
+ * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
-
     private static final Logger log = Logging.getLoggerInstance(Searcher.class);
+
+    // Search actions are logged on org.mmbase.lucene.SEARCH
+    // So by configuring log4j, you can easily track what people are searching for.
     private static final Logger searchLog = Logging.getLoggerInstance("org.mmbase.lucene.SEARCH");
 
-    private Indexer index;
-    private String[] allIndexedFields;
+    private final Indexer index;
+    private final String[] allIndexedFields;
 
+    /**
+     * @param index The index where this Search is for
+     */
     Searcher(Indexer index, String[] allIndexedFields) {
         this.index = index;
         this.allIndexedFields = allIndexedFields;

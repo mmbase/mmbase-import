@@ -10,19 +10,32 @@ See http://www.MMBase.org/license
 package org.mmbase.module.lucene;
 
 import org.mmbase.module.Module;
+import org.mmbase.applications.crontab.*;
+import org.mmbase.util.functions.Parameters;
 
 /**
  * Can be scheduled in MMBase crontab.
 
  * @author Michiel Meeuwissen
- * @version $Id: FullIndex.java,v 1.1 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: FullIndex.java,v 1.2 2005-12-28 10:11:38 michiel Exp $
  **/
-public class FullIndex implements Runnable {
+public class FullIndex implements CronJob {
+
+    private String index;
+    public void init(CronEntry entry) {
+        index = entry.getConfiguration();
+    }
     
     public void run() {
         Lucene lucene = (Lucene) Module.getModule("lucene");
         if (lucene != null) {
-            lucene.fullIndexFunction.getFunctionValue(null);
+            Parameters params = lucene.fullIndexFunction.createParameters();
+            params.set("index", index);
+            lucene.fullIndexFunction.getFunctionValue(params);
+        } else {
+            throw new RuntimeException("Lucene module not found");
         }
+    }
+    public void stop() {
     }
 }

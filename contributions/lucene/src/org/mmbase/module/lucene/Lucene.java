@@ -37,8 +37,8 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.18 2005-12-27 15:45:06 michiel Exp $
- * @version $Id: Lucene.java,v 1.18 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: Lucene.java,v 1.19 2005-12-28 10:11:38 michiel Exp $
+ * @version $Id: Lucene.java,v 1.19 2005-12-28 10:11:38 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -135,7 +135,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                                                 ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
             String index = (String) arguments.get("index");
-            if (index == null) {
+            if (index == null || "".equals(index)) {
                 scheduler.fullIndex();
             } else {
                 scheduler.fullIndex(index);
