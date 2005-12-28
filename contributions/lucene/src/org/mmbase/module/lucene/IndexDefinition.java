@@ -19,7 +19,8 @@ import org.apache.lucene.analysis.Analyzer;
  * Defines a query and possible options for the fields to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexDefinition.java,v 1.5 2005-12-27 15:45:06 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: IndexDefinition.java,v 1.6 2005-12-28 10:11:38 michiel Exp $
  **/
 interface IndexDefinition {
 
@@ -27,6 +28,7 @@ interface IndexDefinition {
      * Returns an Iterator over all {@link IndexEntry}'s defined by this index.
      */
     CloseableIterator getCursor();
+
     /**
      * Returns an Iterator over all {@link IndexEntry}'s defined by this index, restricted by a certain identifier.
      */
@@ -36,15 +38,14 @@ interface IndexDefinition {
      * If this indexdefinition is a 'sub definition' then, a parent IndexEntry can be available...
      */
     IndexEntry getParent();
-
-
     /**
      * Per index a an Analyzer can be defined.
      */
     Analyzer getAnalyzer();
 
     /**
-     * Defines how.
+     * Defines how a Node for this index must be produces. For MMBase indices this is of course
+     * quite straight-forward, but other indices may create virtual nodes here.
      */
     Node getNode(Cloud cloud, String identifier);
 

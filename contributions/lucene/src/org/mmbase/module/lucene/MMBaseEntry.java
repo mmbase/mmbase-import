@@ -27,9 +27,11 @@ import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * This defines how MMBase Nodes are added to Lucene documents. This also takes into account
+ * 'related' nodes, by using the 'sub definitions'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.1 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.2 2005-12-28 10:11:38 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);

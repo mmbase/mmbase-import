@@ -24,6 +24,12 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * An indexer object represents one Index in the MMBase lucene module. It contains the functionality
+ * for creating and updating the indices by talking to the Lucene interfaces.
+ *x
+ * @author Pierre van Rooden
+ * @author Michiel Meeuwissen
+ * @version $Id: Indexer.java,v 1.13 2005-12-28 10:11:38 michiel Exp $
  **/
 public class Indexer {
 
