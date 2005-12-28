@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.36 2005-12-27 22:12:33 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.37 2005-12-28 10:46:13 michiel Exp $
  */
 public class VirtualNodeManager extends VirtualNode implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -48,7 +48,6 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
         // determine fields and field types
         if (node.getBuilder() instanceof VirtualBuilder) {
             VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();;
-
             Map fields = virtualBuilder.getFields(node);
             Iterator i = fields.entrySet().iterator();
             while (i.hasNext()) {
@@ -197,7 +196,7 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
 
 
     public boolean hasField(String fieldName) {
-        return true;
+        return fieldTypes.isEmpty() || fieldTypes.containsKey(fieldName);
     }
 
     public FieldList getFields() {
