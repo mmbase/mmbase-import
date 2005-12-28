@@ -7,7 +7,8 @@
   -->  
   <properties>
     <!--
-    <property name="lucenefullindex">/5 * * * *|org.mmbase.module.lucene.FullIndex|Lucene Full Index||short</property>
+                                     time       imple                              description       config (name of the index, can be empty for all indices)
+    <property name="lucenefullindex">/5 * * * *|org.mmbase.module.lucene.FullIndex|Lucene Full Index|forum</property>
     -->
   </properties>
 </util>
