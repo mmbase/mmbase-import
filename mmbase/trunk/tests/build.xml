@@ -117,6 +117,7 @@
         <pathelement location="${tests.lib}/xml-apis.jar" /> <!-- not needed in java 1.5 -->
         <pathelement location="${mmbasetest.jar}" />
         <pathelement location="${tests.lib}/mmbase-rmmci.jar" />
+        <pathelement location="${tests.lib}/backport-util-concurrent.jar" /> <!-- used by cache manager, which is used by SortedBundle, which is org.mmbase.util. -->
       </classpath>
     </available>
   </target>
