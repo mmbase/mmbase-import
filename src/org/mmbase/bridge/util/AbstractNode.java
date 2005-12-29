@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implemenation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.1 2005-12-27 21:50:50 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.2 2005-12-29 19:08:01 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -66,6 +66,13 @@ public abstract class AbstractNode implements Node {
 
     public RelationManager toRelationManager() {
         throw new ClassCastException("The node " + this + " is not a relation manager , (but a " + getClass() + ")");
+    }
+
+    public boolean isNull(String fieldName) {
+        return getValueWithoutProcess(fieldName) == null;
+    }
+    public int getNumber() {
+        return Casting.toInt(getValueWithoutProcess("number"));
     }
 
     /**
@@ -574,6 +581,99 @@ public abstract class AbstractNode implements Node {
             }
         }
     }
+
+    public boolean isNew() {
+        return false;
+    }
+
+    public boolean isChanged(String fieldName) {
+        return false;
+    }
+    public boolean isChanged() {
+        return false;
+    }
+
+
+    public void commit() {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+    public void cancel() {
+    }
+
+    public void delete(boolean deleteRelations) {
+        throw new UnsupportedOperationException("Cannot edit virtual node");
+    }
+
+
+    public void deleteRelations(String type) throws NotFoundException {
+    }
+
+    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
+        return BridgeCollections.EMPTY_RELATIONLIST;
+    }
+    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
+        return BridgeCollections.EMPTY_RELATIONLIST;
+    }
+
+    public boolean hasRelations() {
+        return false;
+    }
+
+
+
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
+        return 0;
+    }
+
+    public int countRelatedNodes(String type) {
+        return 0;
+    }
+
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
+        return BridgeCollections.EMPTY_NODELIST;
+    }
+
+
+    public StringList getAliases() {
+        return BridgeCollections.EMPTY_STRINGLIST;
+    }
+
+    public void createAlias(String aliasName) {
+        throw new UnsupportedOperationException("Virtual nodes have no aliases");
+    }
+
+    public void deleteAlias(String aliasName) {
+        throw new UnsupportedOperationException("Virtual nodes have no aliases");
+    }
+
+    public void setContext(String context) {
+        throw new UnsupportedOperationException("Virtual nodes have no security context");
+    }
+
+    // javadoc inherited (from Node)
+    public String getContext() {
+        throw new UnsupportedOperationException("Virtual nodes have no security context");
+    }
+
+
+    // javadoc inherited (from Node)
+    public StringList getPossibleContexts() {
+        return BridgeCollections.EMPTY_STRINGLIST;
+    }
+
+    public boolean mayWrite() {
+        return false;
+    }
+
+    public boolean mayDelete() {
+        return false;
+    }
+
+    public boolean mayChangeContext() {
+        return false;
+    }
+
     /**
      * Compares two nodes, and returns true if they are equal.
      * This effectively means that both objects are nodes, and they both have the same number and cloud
@@ -583,6 +683,44 @@ public abstract class AbstractNode implements Node {
      */
     public final boolean equals(Object o) {
         return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && getCloud().equals(((Node)o).getCloud());
+    }
+
+
+    public Parameters createParameters(String functionName) {
+        return getNodeFunction(functionName).createParameters();
+    }
+
+    protected FieldValue createFunctionValue(final Object result) {
+        return new AbstractFieldValue(this, getCloud()) {
+            public Object get() { 
+                return result;
+            }
+        };
+    }
+
+    public FieldValue getFunctionValue(String functionName, List parameters) {
+        Function function = getFunction(functionName);
+        Parameters params = function.createParameters();
+        params.setAll(parameters);
+        return createFunctionValue(function.getFunctionValue(params));
+    }
+    protected Function getNodeFunction(String functionName) {
+        return null;
+    }
+
+    public final Function getFunction(String functionName) {
+        Function function = getNodeFunction(functionName);
+        if (function == null) {
+            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName() + "(known are " + getFunctions() + ")");
+        }
+        return new WrappedFunction(function) {
+                public final Object getFunctionValue(Parameters params) {
+                    params.set(Parameter.NODE, AbstractNode.this);
+                    params.set(Parameter.CLOUD, AbstractNode.this.getCloud());
+                    return super.getFunctionValue(params);
+
+                }
+            };
     }
 
 }
