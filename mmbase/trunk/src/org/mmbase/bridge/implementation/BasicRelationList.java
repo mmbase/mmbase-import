@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.19 2005-12-27 21:53:20 michiel Exp $
+ * @version $Id: BasicRelationList.java,v 1.20 2005-12-29 19:10:49 michiel Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
 
@@ -57,7 +57,11 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
      *
      */
     public RelationList subRelationList(int fromIndex, int toIndex) {
-        return new BasicRelationList(subList(fromIndex, toIndex), nodeManager);
+        if (nodeManager != null) {
+            return new BasicRelationList(subList(fromIndex, toIndex), nodeManager);
+        } else {
+            return new BasicRelationList(subList(fromIndex, toIndex), cloud);
+        }
     }
 
     /**
