@@ -50,8 +50,10 @@
     </field>
 
     <list role="related" extends="config/image/images.xml" />
+       <list role="descriptionrel" extends="config/tips/tips-described.xml" />
     <list role="descriptionrel" extends="config/learnblocks/learnblocks-described.xml" /> 
     <list role="descriptionrel" extends="config/pages/pages-described.xml" /> 
     <list role="descriptionrel" extends="config/flashpages/flashpages-described.xml" /> 
+       <list role="descriptionrel" extends="config/pdf/pdf-described.xml" /> 
   </form-schema>
 </wizard-schema>
