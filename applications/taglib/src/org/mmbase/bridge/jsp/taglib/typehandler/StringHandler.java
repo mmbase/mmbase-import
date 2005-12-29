@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.50 2005-12-21 18:10:41 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.51 2005-12-29 12:32:27 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -57,12 +57,6 @@ public class StringHandler extends AbstractTypeHandler {
             try {
                 Object v = getFieldValue(node, field, true);
                 String value = org.mmbase.util.Casting.toString(v);
-                if (value.equals("")) {
-                    String opt = tag.getOptions();
-                    if (opt != null && opt.indexOf("noempty") > -1) {
-                        value = " ";
-                    }
-                }
                 value = tag.decode(value, node);
                 StringDataType dataType = (StringDataType) field.getDataType();
 
@@ -77,7 +71,28 @@ public class StringHandler extends AbstractTypeHandler {
                     buffer.append(" name=\"");
                     buffer.append(prefix(field.getName()));
                     buffer.append("\">");
-                    Xml.XMLEscape(value, buffer);
+                    if ("".equals(value)) {
+                        String opt = tag.getOptions();
+                        if (opt != null && opt.indexOf("noempty") > -1) {
+                            // This can be needed because:
+                            // If included, e.g. with xmlhttprequest,
+                            // the textarea can collaps: <textarea />
+                            // This does not work in either FF or IE if the contenttype is text/html
+                            // The more logical contenttype application/xml or text/xml would make it behave normally in FF, 
+                            // but that is absolutely not supported by IE. IE sucks. FF too, but less so.
+                            // 
+                            // Any how, in short, sometimes you _must_ output one space here if empty otherwise.
+                            // I _reall_ cannot think of anything more sane then this.
+                            // e.g. <!-- empty --> would simply produce a textarea containing that...
+                            // also <![CDATA[]]> produces a textarea containing that...
+                            //
+                            // HTML is broken.
+                            
+                            buffer.append(" ");
+                        }
+                    } else {
+                        Xml.XMLEscape(value, buffer);
+                    }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
                     buffer.append("<input type =\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
@@ -124,10 +139,16 @@ public class StringHandler extends AbstractTypeHandler {
         }
 
         fieldValue = tag.encode(fieldValue, field);
-        if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
-            if (fieldValue.equals("") && node.getValue(fieldName) == null) return false;
-            node.setStringValue(fieldName,  fieldValue);
-            return true;
+        if (fieldValue != null) {
+            String opt = tag.getOptions();
+            if (opt != null && opt.indexOf("trim") > -1) {
+                fieldValue = fieldValue.trim();
+            }
+            if (! fieldValue.equals(node.getValue(fieldName))) {
+                if (fieldValue.equals("") && node.getValue(fieldName) == null) return false;
+                node.setStringValue(fieldName,  fieldValue);
+                return true;
+            }
         }
 
         return false;

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.334 2005-12-20 23:00:47 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.335 2005-12-29 12:32:27 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3394,6 +3394,16 @@ transaction was commited, following should result anything:
         <value>extra:onchange='doStuff()'</value>
         <info>if the type is `input' then you might want to add javascript on the onchange (or add other attributes, like `style' or so)</info>
         <since>MMBase-1.7</since>
+      </examplevalue>
+      <examplevalue>
+        <value>noempty</value>
+        <info>if the type is `input', then in certain cases (e.g. when using AJAX), you want that never empty textareas are produced </info>
+        <since>MMBase-1.8</since>
+      </examplevalue>
+      <examplevalue>
+        <value>trim</value>
+        <info>if the type is `useinput', then the value is trimmed first. Used in conjuction with the 'noempty' option on the corresponding input field</info>
+        <since>MMBase-1.8</since>
       </examplevalue>
     </attribute>
     <attribute>
