@@ -13,7 +13,8 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicQuery;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.ClusterBuilder;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.67 2005-12-27 14:05:49 michiel Exp $
+ * @version $Id: Queries.java,v 1.68 2005-12-29 19:06:33 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
