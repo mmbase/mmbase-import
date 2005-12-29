@@ -255,6 +255,31 @@
         <type state="persistent"  >BOOLEAN</type>
       </db>
     </field>
+    <field>
+      <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery">
+          </query>
+        </enumeration>
+      </datatype>
+      <db>
+        <name>typedef</name>
+        <type state="persistent"  unique="true">NODE</type>
+      </db>
+    </field>
+    <field>
+      <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <constraint field="number" operator="less"  value="10" />
+          </query>
+        </enumeration>
+      </datatype>
+      <db>
+        <name>small_typedef</name>
+        <type state="persistent"  unique="true">NODE</type>
+      </db>
+    </field>
   </fieldlist>
 
   <functionlist>
@@ -271,6 +296,15 @@
     </function>
     <!-- this one needs a node argument, and therefore is certainly a node-function -->
     <function name="successor"> <!-- no key given, default to name of function -->
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="mapNode">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="nodeFunction1">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="nodeFunction2">
       <class>org.mmbase.util.functions.ExampleBean</class>
     </function>
   </functionlist>
