@@ -104,9 +104,28 @@ public class ConstraintMatcherTest extends BridgeTest {
 //      <=
         assertTrue("(<=) New node falls within constraint: flush", matchingStrategy.evaluate(event2a, q6, null).shouldRelease());
         assertFalse("(<=) New node falls outside constraint: don't flush", matchingStrategy.evaluate(event2b, q6, null).shouldRelease());
+        
+        // test the like comparison
+        NodeEvent event2c = new NodeEvent(null, "datatypes", 10, null, createMap(new String[][] { { "string", "abcd" } }), NodeEvent.EVENT_TYPE_NEW);
+        Query q7 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like 'a' ", null, null, null, false);
+        Query q8 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like 'a?'", null, null, null, false);
+        Query q9 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like 'a%'", null, null, null, false);
+        Query q10= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like'c'", null, null, null, false);
+        Query q11= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like '?c?'", null, null, null, false);
+        Query q12= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like '%c?'", null, null, null, false);
+        Query q13= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like lower('ADBC')", null, null, null, false);
+        Query q14= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string like lower('%C?')", null, null, null, false);
+        
+        assertFalse("(like 1) no match: don't flush",  matchingStrategy.evaluate(event2c, q7, null).shouldRelease());
+        assertFalse("(like 2) no match: don't flush",  matchingStrategy.evaluate(event2c, q8, null).shouldRelease());
+        assertTrue("(like 3) matches: flush",             matchingStrategy.evaluate(event2c, q9, null).shouldRelease());
+        assertFalse("(like 4) no match: don't flush",  matchingStrategy.evaluate(event2c, q10, null).shouldRelease());
+        assertFalse("(like 5) no match: don't flush",  matchingStrategy.evaluate(event2c, q11, null).shouldRelease());
+        assertTrue("(like 6) matches: flush",             matchingStrategy.evaluate(event2c, q12, null).shouldRelease());
+        assertTrue("(like 7) matches: flush",             matchingStrategy.evaluate(event2c, q13, null).shouldRelease());
+        assertTrue("(like 8) matches: flush",             matchingStrategy.evaluate(event2c, q14, null).shouldRelease());
     }
-    
- 
+                
     
     public void testBasicFieldValueConstraintMatcherBoolean(){
        
