@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.32 2005-12-19 13:17:16 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.33 2005-12-29 15:48:17 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -191,7 +191,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         
 
         dataSource = createDataSource(null); 
-        // temorary source only used once, for the meta data.
+        // temporary source only used once, for the meta data.
 
         String sqlKeywords;
 
