@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.190 2005-12-29 19:10:14 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.191 2005-12-29 22:03:53 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -477,7 +477,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         edit(ACTION_COMMIT);
         processCommit();
-        log.info("committing " + noderef.getChanged());
+        if (log.isDebugEnabled()) {
+            log.debug("committing " + noderef.getChanged());
+        }
         Collection errors = validate();
         if (errors.size() > 0) {
             throw new IllegalArgumentException("node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString());
@@ -501,7 +503,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             if (newNode == null) {
                 throw new RuntimeException("Could not find node " + node.getNumber());
             }
-            log.info("Found new node after commit " + newNode);
             setNode(newNode);
         }
         changed = false;
