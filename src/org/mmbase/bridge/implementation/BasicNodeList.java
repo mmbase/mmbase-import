@@ -14,15 +14,17 @@ import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.41 2005-12-27 21:53:20 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.42 2005-12-29 19:11:37 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
+    private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
     protected Cloud cloud;
     protected NodeManager nodeManager = null;
 
@@ -41,6 +43,17 @@ public class BasicNodeList extends BasicList implements NodeList {
         this.cloud = nodeManager.getCloud();
     }
 
+    /**
+     * since MMBase 1.8
+     */
+    protected NodeManager castToNodeManager(Node n) {
+        if (n instanceof NodeManager) {
+            return (NodeManager) n;
+        } else {
+            log.error("Node " + n.getNumber() + " is not a node manager (but a " + n.getNodeManager() + "), taking it Object for now");
+            return cloud.getNodeManager("object");
+        }
+    }
 
 
     /**
@@ -70,8 +83,8 @@ public class BasicNodeList extends BasicList implements NodeList {
                 int snumber = coreNode.getIntValue("snumber");
                 int dnumber = coreNode.getIntValue("dnumber");
                 int rnumber = coreNode.getIntValue("rnumber");
-                NodeManager nm1 = (NodeManager) cloud.getNode(snumber);
-                NodeManager nm2 = (NodeManager) cloud.getNode(dnumber);
+                NodeManager nm1 = castToNodeManager(cloud.getNode(snumber));
+                NodeManager nm2 = castToNodeManager(cloud.getNode(dnumber));
                 Node role = cloud.getNode(rnumber);
                 node = cloud.getRelationManager(nm1.getName(), nm2.getName(), role.getStringValue("sname"));
             } else if(coreBuilder instanceof InsRel) {
@@ -110,7 +123,11 @@ public class BasicNodeList extends BasicList implements NodeList {
      *
      */
     public NodeList subNodeList(int fromIndex, int toIndex) {
-        return new BasicNodeList(subList(fromIndex, toIndex),cloud);
+        if (nodeManager != null) {
+            return new BasicNodeList(subList(fromIndex, toIndex), nodeManager);
+        } else {
+            return new BasicNodeList(subList(fromIndex, toIndex), cloud);
+        }
     }
 
     /**
