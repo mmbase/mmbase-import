@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.189 2005-12-27 22:35:24 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.190 2005-12-29 19:10:14 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -998,30 +998,16 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return  getNode().getFunctions();
     }
 
-    public Function getFunction(String functionName) {
-        Function function = getNode().getFunction(functionName);
-        if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName() + "(known are " + getNode().getBuilder().getFunctions() + ")");
-        }
-        return new WrappedFunction(function) {
-                public final Object getFunctionValue(Parameters params) {
-                    params.set(Parameter.NODE, BasicNode.this);
-                    params.set(Parameter.CLOUD, BasicNode.this.cloud);
-                    return super.getFunctionValue(params);
-
-                }
-            };
+    protected Function getNodeFunction(String functionName) {
+        return getNode().getFunction(functionName);
     }
 
-    public FieldValue getFunctionValue(String functionName, List parameters) {
-         Function function = getFunction(functionName);
-         Parameters params = function.createParameters();
-         params.setAll(parameters);
-         return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
-    }
 
     public Parameters createParameters(String functionName) {
         return getNode().getFunction(functionName).createParameters();
+    }
+    protected FieldValue createFunctionValue(Object result) {
+        return new BasicFunctionValue(getCloud(), result);
     }
 
 }

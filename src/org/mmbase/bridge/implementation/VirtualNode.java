@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.17 2005-12-27 22:12:03 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.18 2005-12-29 19:10:14 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -141,16 +141,7 @@ public class VirtualNode extends AbstractNode implements Node {
         return noderef.getNumber();
     }
 
-    public boolean isNew() {
-        return false;
-    }
 
-    public boolean isChanged(String fieldName) {
-        return false;
-    }
-    public boolean isChanged() {
-        return false;
-    }
     protected void edit(int action) {
         throw new UnsupportedOperationException("Cannot edit virtual node");
     }
@@ -256,138 +247,21 @@ public class VirtualNode extends AbstractNode implements Node {
         return result;
     }
 
-    public Collection validate() {
-        // I have no idea..
-        return Collections.EMPTY_SET;
-    }
-
-    public void commit() {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public void cancel() {
-    }
-
-    public void delete(boolean deleteRelations) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
-    }
-
-    public String toString() {
-        /*
-        Map values = getNode().getValues();
-        List res = new ArrayList();
-        Iterator i = values.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
-            if (((String) entry.getKey()).endsWith("number")) {
-                res.add(entry.getValue());
-            }
-        }
-
-        return "VIRTUAL" + res + values.keySet();
-        */
-        return "VIRTUAL" + getNode();
-    }
-
-    public void deleteRelations(String type) throws NotFoundException {
-    }
-
-    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
-        return BridgeCollections.EMPTY_RELATIONLIST;
-    }
-    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
-        return BridgeCollections.EMPTY_RELATIONLIST;
-    }
-
-    public boolean hasRelations() {
-        return false;
-    }
-
-
-
-    public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
-        return 0;
-    }
-
-    public int countRelatedNodes(String type) {
-        return 0;
-    }
-
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
-        return BridgeCollections.EMPTY_NODELIST;
-    }
-
-
-    public StringList getAliases() {
-        return BridgeCollections.EMPTY_STRINGLIST;
-    }
-
-    public void createAlias(String aliasName) {
-        throw new UnsupportedOperationException("Virtual nodes have no aliases");
-    }
-
-    public void deleteAlias(String aliasName) {
-        throw new UnsupportedOperationException("Virtual nodes have no aliases");
-    }
-
-    public Relation createRelation(Node destinationNode, RelationManager relationManager) {
-        throw new UnsupportedOperationException("Virtual nodes have no relations");
-    }
-
-
-    public void setContext(String context) {
-        throw new UnsupportedOperationException("Virtual nodes have no security context");
-    }
-
-    // javadoc inherited (from Node)
-    public String getContext() {
-        throw new UnsupportedOperationException("Virtual nodes have no security context");
-    }
-
-
-    // javadoc inherited (from Node)
-    public StringList getPossibleContexts() {
-        return BridgeCollections.EMPTY_STRINGLIST;
-    }
-
-    public boolean mayWrite() {
-        return false;
-    }
-
-    public boolean mayDelete() {
-        return false;
-    }
-
-    public boolean mayChangeContext() {
-        return false;
-    }
 
     public Collection  getFunctions() {
         return  getNode().getFunctions();
     }
 
-    public Function getFunction(String functionName) {
-        Function function = getNode().getFunction(functionName);
-        if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNode().getNumber() + " of type " + getNodeManager().getName());
-        }
-        return new WrappedFunction(function) {
-                public final Object getFunctionValue(Parameters params) {
-                    params.set(Parameter.NODE, VirtualNode.this);
-                    params.set(Parameter.CLOUD, VirtualNode.this.cloud);
-                    return super.getFunctionValue(params);
-                }
-            };
+    protected Function getNodeFunction(String functionName) {
+        return getNode().getFunction(functionName);
     }
 
     public Parameters createParameters(String functionName) {
         return getNode().getFunction(functionName).createParameters();
     }
 
-    public FieldValue getFunctionValue(String functionName, List parameters) {
-        Function function = getFunction(functionName);
-        Parameters params = function.createParameters();
-        params.setAll(parameters);
-        return new BasicFunctionValue(getCloud(), function.getFunctionValue(params));
+    protected FieldValue createFunctionValue(Object result) {
+        return new BasicFunctionValue(getCloud(), result);
     }
+
 }
