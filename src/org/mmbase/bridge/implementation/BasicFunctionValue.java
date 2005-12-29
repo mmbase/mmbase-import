@@ -11,6 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
+import org.mmbase.bridge.util.MapNode;
+import org.mmbase.module.core.VirtualNode;
 import org.mmbase.module.core.MMObjectNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,7 +23,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.17 2005-12-27 22:14:46 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.18 2005-12-29 19:29:19 michiel Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValue {
@@ -67,6 +69,18 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
 
     public Object get() {
         return value;
+    }
+
+    public Node toNode() {
+        Object o = get();
+        if (o instanceof VirtualNode) {
+            VirtualNode vn = (VirtualNode) o;
+            return new MapNode(vn.getValues(), cloud);
+        } else if (o instanceof MMObjectNode) {
+            MMObjectNode mn = (MMObjectNode) o;
+            return cloud.getNode(mn.getNumber());
+        }
+        return Casting.toNode(o, cloud);
     }
 
 
