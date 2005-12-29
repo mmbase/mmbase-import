@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.116 2005-12-17 23:32:07 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.117 2005-12-29 19:12:12 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -559,7 +559,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return  builder.getFunctions();
     }
 
-    public Function getFunction(String functionName) {
+    protected Function getNodeFunction(String functionName) {
         if (log.isDebugEnabled()) {
             log.debug("Getting function '" + functionName + "' for " + this);
         }
