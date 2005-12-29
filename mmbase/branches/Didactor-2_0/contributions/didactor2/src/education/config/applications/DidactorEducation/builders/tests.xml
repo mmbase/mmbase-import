@@ -30,7 +30,7 @@
   a key/value system. Its a optional tag.
   -->
   <properties>
-    <property name="max-nodes-from-query">200</property>
+    <property name="max-nodes-from-query">99999</property>
   </properties>
   <fieldlist>
     <field>
