@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import java.util.*;
 import org.mmbase.util.logging.*;
+import org.w3c.dom.*;
 
 /**
  *<p>
@@ -26,10 +27,10 @@ import org.mmbase.util.logging.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.18 2005-11-04 23:29:33 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.19 2005-12-29 23:01:38 michiel Exp $
  * @since MMBase-1.8
  */
-public class LocalizedString  implements java.io.Serializable, Cloneable {
+public class LocalizedString implements java.io.Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedString.class);
 
@@ -87,7 +88,7 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
     }
 
     /**
-     * @param k The key of this String
+     * @param k The key of this String, if k == <code>null</code> then the first set will define it.
      */
     public LocalizedString(String k) {
         key = k;
@@ -165,6 +166,8 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
      * it will also set that (so, it sets also nl when setting nl_BE if nl still is unset).
      */
     public void set(String value, Locale locale) {
+        if (key == null) key = value;
+
         if (values == null) {
             values = new HashMap();
         }
@@ -219,6 +222,46 @@ public class LocalizedString  implements java.io.Serializable, Cloneable {
      */
     public String toString() {
         return get(null);
+    }
+
+
+
+    /**
+     * This utility takes care of reading the xml:lang attribute from an element
+     */
+    public static Locale getLocale(Element element) {
+        Locale loc = null;
+        String xmlLang = element.getAttribute("xml:lang");
+        if (! xmlLang.equals("")) {
+            String[] split = xmlLang.split("-");
+            if (split.length == 1) {
+                loc = new Locale(split[0]);
+            } else if (split.length == 2) {
+                loc = new Locale(split[0], split[1]);
+            } else {
+                loc = new Locale(split[0], split[1], split[2]);
+            }
+        }
+        return loc;
+    }
+
+    /**
+     * Given a certain tagname, and a DOM parent element, it configures this LocalizedString, using
+     * subtags with this tagname with 'xml:lang' attributes.
+     */
+
+    public void fillFromXml(final String tagName, final Element element) {
+        NodeList childNodes = element.getChildNodes();
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            if (childNodes.item(k) instanceof Element) {
+                Element childElement = (Element) childNodes.item(k);
+                if (tagName.equals(childElement.getLocalName())) {
+                    Locale locale = getLocale(childElement);
+                    String description = org.mmbase.util.xml.DocumentReader.getNodeTextValue(childElement);
+                    set(description, locale);
+                }
+            }
+        }
     }
 
     public Object clone() {
