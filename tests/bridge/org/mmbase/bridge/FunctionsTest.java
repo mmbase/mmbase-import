@@ -19,7 +19,7 @@ import org.mmbase.tests.*;
  *
  * @author Simon GroeneWolt
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.5 2005-12-29 16:28:21 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.6 2005-12-29 17:03:32 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -77,6 +77,7 @@ public class FunctionsTest extends BridgeTest {
         Node n = node1.getFunctionValue("nodeFunction1", params).toNode();
         assertTrue(n.getStringValue("bloe").equals("hoi"));
     }
+
     public void testNodeFunctionWithNodeResult2() {
         Cloud cloud = getCloud();
         NodeManager nm = cloud.getNodeManager("datatypes");
@@ -85,7 +86,7 @@ public class FunctionsTest extends BridgeTest {
         Function function = node1.getFunction("nodeFunction2");
         Parameters params = function.createParameters();
         params.set("parameter1", "hoi");        
-        Node n = node1.getFunctionValue("nodeFunction1", params).toNode();
+        Node n = node1.getFunctionValue("nodeFunction2", params).toNode();
         assertTrue(n.getStringValue("bloe").equals("hoi"));
     }
     
