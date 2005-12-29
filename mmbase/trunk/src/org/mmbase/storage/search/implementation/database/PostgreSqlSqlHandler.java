@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.17 2005-12-09 12:14:31 pierre Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.18 2005-12-29 15:17:22 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -194,11 +194,19 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      *
      * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuffer, org.mmbase.storage.search.Step)
      */
-    protected void appendTableName(StringBuffer sb, Step step) {
-        if(step instanceof RelationStep && ((RelationStep)step).getRole() != null) {
-            log.debug("Adding ONLY keyword to tablename " + step.getTableName());
-            sb.append(" ONLY ");
+    protected void appendTableName(StringBuffer sb, Step step, Step previousStep) {
+        if(step instanceof RelationStep) {
+            RelationStep rs = (RelationStep) step;
+            if (rs.getRole() != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Adding ONLY keyword to tablename " + step.getTableName());
+                }
+                sb.append(" ONLY ");
+            } else {
+                // no role specified, check if more then one roles on sub tables are possible...
+                log.debug("Not adding ONLY to table name because role of " + step + " is null");
+            }
         }
-        super.appendTableName(sb, step);
+        super.appendTableName(sb, step, previousStep);
     }
 }
