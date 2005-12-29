@@ -23,7 +23,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.18 2005-12-29 19:29:19 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.19 2005-12-29 22:03:13 michiel Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValue {
@@ -38,7 +38,7 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
      */
     BasicFunctionValue(Node node, Object value) {
         super(node, null);
-        this.value  = value;
+        this.value = convert(value, null);
     }
 
     /**
@@ -53,9 +53,15 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
         if (v instanceof List) { // might be a collection of MMObjectNodes
             List list  = (List) v;
             if (list.size() > 0) {
-                if (list.get(0) instanceof MMObjectNode) { // if List of MMObjectNodes, make NodeList
+                Object first = list.get(0);
+                if (first instanceof MMObjectNode || first instanceof Node) { // if List of MMObjectNodes, make NodeList
                     if (cloud == null) {
-                        throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
+                        if (first instanceof Node) {
+                            cloud = ((Node) first).getCloud();
+                        } else {
+                            cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                        }
+                        // throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
                     }
                     NodeList l = cloud.createNodeList();
                     v = l;
@@ -63,16 +69,10 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
                 }
             }
         }
-        this.value = v;
+        this.value = convert(v, cloud);
     }
 
-
-    public Object get() {
-        return value;
-    }
-
-    public Node toNode() {
-        Object o = get();
+    protected static Object convert(Object o, Cloud cloud) {
         if (o instanceof VirtualNode) {
             VirtualNode vn = (VirtualNode) o;
             return new MapNode(vn.getValues(), cloud);
@@ -80,8 +80,11 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
             MMObjectNode mn = (MMObjectNode) o;
             return cloud.getNode(mn.getNumber());
         }
-        return Casting.toNode(o, cloud);
+        return o;
     }
 
+    public Object get() {
+        return value;
+    }
 
 }
