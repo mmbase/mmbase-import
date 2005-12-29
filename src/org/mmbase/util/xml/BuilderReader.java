@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.57 2005-12-09 09:53:34 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.58 2005-12-29 23:11:55 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -499,20 +499,6 @@ public class BuilderReader extends DocumentReader {
             return -1;
         }
     }
-
-    private Locale getLocale(String lang) {
-        String[] loc = lang.split("_");
-        Locale locale;
-        if (loc.length == 3) {
-            locale = new Locale(loc[0], loc[1], loc[2]);
-        } else if (loc.length == 2) {
-            locale = new Locale(loc[0], loc[1]);
-        } else {
-            locale = new Locale(lang);
-        }
-        return locale;
-    }
-
     /**
      * Alter a specified, named FieldDef object using information obtained from the buidler configuration.
      * Only GUI information is retrieved and stored (name and type of the field sg=hould already be specified).
@@ -524,28 +510,16 @@ public class BuilderReader extends DocumentReader {
         // Gui
         Element descriptions = getElementByPath(field, "field.descriptions");
         if (descriptions != null) {
-            for (Iterator iter = getChildElements(descriptions, "description"); iter.hasNext(); ) {
-                Element tmp = (Element) iter.next();
-                String lang = getElementAttributeValue(tmp, "xml:lang");
-                def.setDescription(getElementValue(tmp), getLocale(lang));
-            }
+            def.getLocalizedDescription().fillFromXml("description", descriptions);
         }
 
 
         // XXX: deprecated tag 'gui'
         Element gui = getElementByPath(field, "field.gui");
         if (gui != null) {
-            for (Iterator iter = getChildElements(gui, "guiname"); iter.hasNext(); ) {
-                Element tmp = (Element) iter.next();
-                String lang = getElementAttributeValue(tmp, "xml:lang");
-                def.setGUIName(getElementValue(tmp), getLocale(lang));
-            }
+            def.getLocalizedGUIName().fillFromXml("guiname", gui);
             // XXX: even more deprecated
-            for(Iterator iter = getChildElements(gui, "name"); iter.hasNext(); ) {
-                Element tmp = (Element) iter.next();
-                String lang = getElementAttributeValue(tmp, "xml:lang");
-                def.setGUIName(getElementValue(tmp), getLocale(lang));
-            }
+            def.getLocalizedGUIName().fillFromXml("name", gui);
         }
 
 
