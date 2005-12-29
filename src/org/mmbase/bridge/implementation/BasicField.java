@@ -20,14 +20,14 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.27 2005-10-26 20:10:57 michiel Exp $
+ * @version $Id: BasicField.java,v 1.28 2005-12-29 19:14:53 michiel Exp $
  */
 public class BasicField extends AbstractField implements Field {
 
     NodeManager nodeManager = null;
     CoreField coreField = null;
 
-    BasicField(CoreField field, NodeManager nodeManager) {
+    public BasicField(CoreField field, NodeManager nodeManager) {
         super(field.getName(), field);
         this.nodeManager = nodeManager;
         this.coreField = field;
