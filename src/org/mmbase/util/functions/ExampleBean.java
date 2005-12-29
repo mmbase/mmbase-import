@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * A bean can be accessed through the function framework. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.6 2005-12-29 16:25:17 michiel Exp $
+ * @version $Id: ExampleBean.java,v 1.7 2005-12-29 19:08:55 michiel Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
@@ -82,7 +82,7 @@ public final class ExampleBean {
     public Node nodeFunction2() {
         Map map = new HashMap();
         map.put("bloe", parameter1);
-        return new org.mmbase.bridge.util.MapNode(map, null);
+        return new org.mmbase.bridge.util.MapNode(map);
     }
 
     /**
