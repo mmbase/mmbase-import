@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.68 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.69 2005-12-29 15:50:13 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -214,7 +214,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
             if (! (o instanceof NodeList)) {
-                throw new JspTagException("Context variable " + getReferid() + " is not a NodeList");
+                throw new JspTagException("Context variable " + getReferid() + " is not a NodeList, but " + (o == null ? "NULL" : "a " + o.getClass()));
             }
             if (orderby != Attribute.NULL) {
                 throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
