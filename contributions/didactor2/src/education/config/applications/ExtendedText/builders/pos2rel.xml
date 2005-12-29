@@ -27,7 +27,7 @@ Descriptions can be provided in various languages. -->
 Properties are entered using name/value pairs.
 The actual properties available differ by class. -->
   <properties>
-    <property name="max-nodes-from-query">1000</property>
+    <property name="max-nodes-from-query">99999</property>
   </properties>
   <!-- defines the different fields in this object
 Depending on the database, the order of the fields may be important.
