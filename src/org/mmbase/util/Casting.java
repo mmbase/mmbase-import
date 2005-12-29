@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.79 2005-12-27 21:51:17 michiel Exp $
+ * @version $Id: Casting.java,v 1.80 2005-12-29 19:34:15 michiel Exp $
  */
 
 import java.util.*;
@@ -29,6 +29,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.ContextProvider;
 import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.NodeMap;
+import org.mmbase.bridge.util.MapNode;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
@@ -504,6 +505,8 @@ public class Casting {
             if (nodenumber != -1) {
                 res = cloud.getNode(nodenumber);
             }
+        } else if (i instanceof Map) {
+            res = new MapNode((Map)i, cloud);
         } else if (i != null && !i.equals("")) {
             res = cloud.getNode(i.toString());
         }
