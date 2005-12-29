@@ -3,7 +3,7 @@
   <property name="project.name"    value="lucene" />
   <property name="project.package" value="org/mmbase/applications/lucene" />
   <property name="project.jars.dir" location="../.." />
-  <property name="project.jars.includes" value="contributions/lucene/extrajars/**,applications/crontab/build/mmbase-crontab.jar" />
+  <property name="project.jars.includes" value="contributions/lucene/extrajars/*.jar,applications/crontab/build/mmbase-crontab.jar" />
 
   <import file="../../applications/buildbase-include.xml" />
 
