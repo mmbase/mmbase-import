@@ -37,8 +37,8 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.19 2005-12-28 10:11:38 michiel Exp $
- * @version $Id: Lucene.java,v 1.19 2005-12-28 10:11:38 michiel Exp $
+ * @version $Id: Lucene.java,v 1.20 2005-12-29 23:13:06 michiel Exp $
+ * @version $Id: Lucene.java,v 1.20 2005-12-29 23:13:06 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -131,7 +131,7 @@ public class Lucene extends Module implements MMBaseObserver {
      * This function can be called through the function framework.
      */
     protected Function fullIndexFunction = new AbstractFunction("fullIndex",
-                                                                new Parameter[] {new Parameter("index", String.class)},
+                                                                new Parameter[] {INDEX},
                                                                 ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
             String index = (String) arguments.get("index");
@@ -182,6 +182,18 @@ public class Lucene extends Module implements MMBaseObserver {
         };
     {
         addFunction(listFunction);
+    }
+    protected Function descriptionFunction = new AbstractFunction("description", new Parameter[] {INDEX, Parameter.LOCALE}, ReturnType.STRING ) {
+            public Object getFunctionValue(Parameters arguments) {
+                String key = arguments.getString(INDEX);
+                Locale locale = (Locale) arguments.get(Parameter.LOCALE);
+                Indexer index = (Indexer) indexerMap.get(key);
+                return index.getDescription().get(locale);
+            }
+            
+        };
+    {
+        addFunction(descriptionFunction);
     }
 
     /**
@@ -437,11 +449,10 @@ public class Lucene extends Module implements MMBaseObserver {
                                 }
                             }
                         }
-
-                        String thisIndex = indexPath + java.io.File.separator + indexName;
-                        Indexer indexer = new Indexer(thisIndex, queries, cloud, analyzer);
+                        Indexer indexer = new Indexer(indexPath, indexName, queries, cloud, analyzer);
+                        indexer.getDescription().fillFromXml("description", indexElement);
                         log.service("Add lucene index with name " + indexName);
-                        indexerMap.put(indexName,indexer);
+                        indexerMap.put(indexName, indexer);
                         String[]  allIndexedFields = (String[]) allIndexedFieldsSet.toArray(new String[0]);
                         Searcher searcher = new Searcher(indexer, allIndexedFields);
                         searcherMap.put(indexName, searcher);
