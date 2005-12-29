@@ -120,6 +120,15 @@
         <relation from="flashpages" to="urls" type="posrel" />
         <relation from="flashpages" to="flashpages" type="descriptionrel" />
 
+        <!-- tips -->
+        <relation from="tips" to="attachments" type="related" />
+        <relation from="tips" to="images" type="related" />
+        
+        <!-- pdf -->
+        <relation from="pdf" to="attachments" type="related" />
+        
+
+
         <!-- tests -->
         <relation from="tests" to="questions" type="posrel" />
         <relation from="tests" to="mmevents" type="related" />
