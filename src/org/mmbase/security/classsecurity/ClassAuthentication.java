@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.10 2005-11-03 14:03:57 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.11 2005-12-29 20:44:08 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -39,12 +39,11 @@ public class ClassAuthentication {
 
     public static final String PUBLIC_ID_CLASSSECURITY_1_0 = "-//MMBase//DTD classsecurity config 1.0//EN";
     public static final String DTD_CLASSSECURITY_1_0       = "classsecurity_1_0.dtd";
-
-
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
     }
     private static List authenticatedClasses = null;
+
 
     static ResourceWatcher watcher = null;
 
@@ -99,11 +98,17 @@ public class ClassAuthentication {
                         }
                         property = property.getNextSibling();
                     }
-                    authenticatedClasses.add(new Login(Pattern.compile(clazz), method, map));
+                    authenticatedClasses.add(new Login(Pattern.compile(clazz), method, Collections.unmodifiableMap(map)));
                 }
             } catch (Exception e) {
                 log.error(e);
             }
+        }
+
+        { // last fall back, everybody may get the 'anonymous' cloud.
+            Map map = new HashMap();
+            map.put("rank", "anonymous");
+            authenticatedClasses.add(new Login(Pattern.compile(".*"), "class", Collections.unmodifiableMap(map)));
         }
 
         log.service("Class authentication: " + authenticatedClasses);
