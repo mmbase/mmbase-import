@@ -11,8 +11,10 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
+import java.util.Map;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.bridge.util.MapNode;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
@@ -20,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.42 2005-12-29 19:11:37 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.43 2005-12-29 19:38:45 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -67,6 +69,12 @@ public class BasicNodeList extends BasicList implements NodeList {
             node = cloud.getNodeManager((String)o);
         } else if (o instanceof MMObjectBuilder) { // a builder
             node = cloud.getNodeManager(((MMObjectBuilder)o).getTableName());
+        } else if (o instanceof Map) {
+            if (nodeManager == null) {
+                node = new MapNode((Map) o, cloud);
+            } else {
+                node = new MapNode((Map) o, nodeManager);
+            }
         } else {
             MMObjectNode coreNode = (MMObjectNode) o;
             MMObjectBuilder coreBuilder = coreNode.getBuilder();
