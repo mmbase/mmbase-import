@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.33 2005-12-29 15:48:17 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.34 2005-12-29 16:06:27 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -137,7 +137,14 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     public String getDatabaseName() {
         return databaseName;
     }
-
+    
+    /**
+     * Returns the DataSource associated with this factory.
+     * @since MMBase-1.8
+     */
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 
     /**
      * @since MMBase-1.8
