@@ -298,13 +298,19 @@
     <function name="successor"> <!-- no key given, default to name of function -->
       <class>org.mmbase.util.functions.ExampleBean</class>
     </function>
-    <function name="mapNode">
+    <function name="mapFunction">
       <class>org.mmbase.util.functions.ExampleBean</class>
     </function>
     <function name="nodeFunction1">
       <class>org.mmbase.util.functions.ExampleBean</class>
     </function>
     <function name="nodeFunction2">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="nodeListFunction">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="nodeListFunction1">
       <class>org.mmbase.util.functions.ExampleBean</class>
     </function>
   </functionlist>

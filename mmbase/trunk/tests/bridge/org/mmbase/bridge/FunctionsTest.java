@@ -14,12 +14,13 @@ import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.tests.*;
+import org.mmbase.bridge.util.CollectionNodeList;
 
 /**
  *
- * @author Simon GroeneWolt
+ * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.6 2005-12-29 17:03:32 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.7 2005-12-29 22:09:45 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -76,6 +77,8 @@ public class FunctionsTest extends BridgeTest {
         params.set("parameter1", "hoi");        
         Node n = node1.getFunctionValue("nodeFunction1", params).toNode();
         assertTrue(n.getStringValue("bloe").equals("hoi"));
+        n = (Node) function.getFunctionValue(params);
+        assertTrue(n.getStringValue("bloe").equals("hoi"));
     }
 
     public void testNodeFunctionWithNodeResult2() {
@@ -88,12 +91,56 @@ public class FunctionsTest extends BridgeTest {
         params.set("parameter1", "hoi");        
         Node n = node1.getFunctionValue("nodeFunction2", params).toNode();
         assertTrue(n.getStringValue("bloe").equals("hoi"));
+        n = (Node) function.getFunctionValue(params);
+        assertTrue(n.getStringValue("bloe").equals("hoi"));
+    }
+
+    public void testNodeFunctionWithNodeListResult() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("datatypes");
+        Node node1 = nm.createNode();
+        node1.commit();
+        Function function = node1.getFunction("nodeListFunction");
+        Parameters params = function.createParameters();
+        params.set("parameter1", "hoi");        
+        NodeList nl = new CollectionNodeList((Collection) node1.getFunctionValue("nodeListFunction", params).get(), cloud);
+        NodeIterator i = nl.nodeIterator();
+        while (i.hasNext()) {
+            Node n =  i.nextNode();
+            assertTrue(n.getStringValue("bloe").equals("hoi"));
+        }
+        nl = new CollectionNodeList((Collection) function.getFunctionValue(params), cloud);
+        i = nl.nodeIterator();
+        while (i.hasNext()) {
+            Node n =  i.nextNode();
+            assertTrue(n.getStringValue("bloe").equals("hoi"));
+        }
+    }
+    public void testNodeFunctionWithNodeListResult1() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("datatypes");
+        Node node1 = nm.createNode();
+        node1.commit();
+        Function function = node1.getFunction("nodeListFunction1");
+        Parameters params = function.createParameters();
+        params.set("parameter1", "hoi");        
+        NodeList nl = (NodeList) node1.getFunctionValue("nodeListFunction1", params).get();
+        NodeIterator i = nl.nodeIterator();
+        while (i.hasNext()) {
+            Node n = i.nextNode();
+            assertTrue(n.getStringValue("bloe").equals("hoi"));
+        }
+        nl = (NodeList) function.getFunctionValue(params);
+        i = nl.nodeIterator();
+        while (i.hasNext()) {
+            Node n = i.nextNode();
+            assertTrue(n.getStringValue("bloe").equals("hoi"));
+        }
     }
     
     /**
      * test a variety of functionset possibilities
      * XXX really not complete yet
-     * @author Simon Groenwolt (simon@submarine.nl)
      */
     public void testFunctionSets() {
 
