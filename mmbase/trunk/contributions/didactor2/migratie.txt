@@ -11,6 +11,12 @@ the application with component record.
 E.g.: if "versioning" is absent, delete "Versioning" node from version control table in mmeditors 
 and restart Tomcat.
 ----
+    
+    
+ 2005-12-22   
+ 
+    ALTER TABLE `mmb_openquestions` ADD `type_of_score` INT NOT Null
+
 
 2005-12-05
 		ALTER TABLE mmb_navigationnodes MODIFY order_number int(11);
