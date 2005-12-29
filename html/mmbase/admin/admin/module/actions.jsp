@@ -57,7 +57,7 @@
   <th class="navigate" >Change</th>
 </tr>
 <tr>
- <td class="data">Classfile</td>
+ <td class="data">Class</td>
  <td class="data" colspan="3"><%=mmAdmin.getInfo("MODULECLASSFILE-"+module,request,response)%></td>
  <td class="linkdata" >
     Not Available
