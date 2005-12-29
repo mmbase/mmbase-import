@@ -4,6 +4,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.*;
+import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -11,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * A bean can be accessed through the function framework. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.5 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: ExampleBean.java,v 1.6 2005-12-29 16:25:17 michiel Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
@@ -64,6 +65,24 @@ public final class ExampleBean {
 
     public Integer integerFunction() {
         return new Integer(parameter2.intValue() * 3);
+    }
+
+    public Map mapFunction() {
+        Map map = new HashMap();
+        map.put("bloe", parameter1);
+        return map;
+    }
+
+    public MMObjectNode nodeFunction1() {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        virtual.storeValue("bloe", parameter1);
+        return virtual;
+    }
+    public Node nodeFunction2() {
+        Map map = new HashMap();
+        map.put("bloe", parameter1);
+        return new org.mmbase.bridge.util.MapNode(map, null);
     }
 
     /**
