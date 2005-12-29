@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.18 2005-11-03 14:04:39 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.19 2005-12-29 20:43:16 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -119,9 +119,8 @@ public abstract class ContextLoginModule {
         if (userName != null) {
             userCons = "[@name='" + userName + "']";
         }
-
         final String xpath;
-        if (identifyType != null || rank != null) {
+        if (identifyType != null || (rank != null && ! "anonymous".equals(rank))) {
             StringBuffer identifyCons = new StringBuffer();
             if (identifyType != null) {
                 identifyCons.append("@type='").append(identifyType).append("'");
