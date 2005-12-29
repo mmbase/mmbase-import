@@ -37,8 +37,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.20 2005-12-29 23:13:06 michiel Exp $
- * @version $Id: Lucene.java,v 1.20 2005-12-29 23:13:06 michiel Exp $
+ * @version $Id: Lucene.java,v 1.21 2005-12-29 23:19:40 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
