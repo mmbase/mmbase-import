@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.83 2005-12-17 20:55:38 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.84 2005-12-29 15:15:13 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -712,41 +712,50 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         }
         while (iTables.hasNext()) {
-            String tableName;
-            InsRel bul;
-            String tableName2= (String)iTables.next();
-            MMObjectBuilder bul2= getBuilder(tableName2, roles);
+            String tableName2 = (String)iTables.next();
+            MMObjectBuilder bul2 = getBuilder(tableName2, roles);
             BasicRelationStep relation;
             BasicStep step2;
+            String tableName;
             if (bul2 instanceof InsRel) {
                 // Explicit relation step.
-                tableName= tableName2;
-                bul= (InsRel)bul2;
-                tableName2= (String)iTables.next();
-                bul2= getBuilder(tableName2, roles);
-                relation= query.addRelationStep(bul, bul2);
-                step2= (BasicStep)relation.getNext();
+                tableName = tableName2;
+                InsRel bul = (InsRel)bul2;
+                tableName2 = (String)iTables.next();
+                bul2 = getBuilder(tableName2, roles);
+                relation = query.addRelationStep(bul, bul2);
+                step2 = (BasicStep)relation.getNext();
+
+                // MM: setting aliases used to be _inside_ the includeAllReference-if. 
+                // but I don't see how that would make sense. Trying a while like this.
+                relation.setAlias(tableName);
+                step2.setAlias(tableName2);
                 if (includeAllReference) {
                     // Add number fields.
-                    relation.setAlias(tableName);
                     addField(query, relation, "number", fieldsByAlias);
-                    step2.setAlias(tableName2);
                     addField(query, step2, "number", fieldsByAlias);
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("Created a relation step " + relation + " (explicit)" +  roles);
                 }
             } else {
                 // Not a relation, relation step is implicit.
-                tableName= "insrel";
-                bul= mmb.getInsRel();
-                relation= query.addRelationStep(bul, bul2);
-                step2= (BasicStep)relation.getNext();
+                tableName =  "insrel";
+                InsRel bul = mmb.getInsRel();
+                relation = query.addRelationStep(bul, bul2);
+                step2 = (BasicStep)relation.getNext();
+                step2.setAlias(tableName2); //see above
                 if (includeAllReference) {
                     // Add number field.
-                    step2.setAlias(tableName2);
                     addField(query, step2, "number", fieldsByAlias);
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("Created a relation step " + relation + " (implicit)");
                 }
             }
             String tableAlias= getUniqueTableAlias(tableName, tableAliases, tables);
             String tableAlias2= getUniqueTableAlias(tableName2, tableAliases, tables);
+            roles.put(tableAlias, roles.get(tableName));
             relation.setAlias(tableAlias);
             step2.setAlias(tableAlias2);
             stepsByAlias.put(tableAlias, relation);
@@ -788,7 +797,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 log.error(msg);
                 throw new IllegalArgumentException(msg);
             } else {
-                bul= mmb.getRelDef().getBuilder(rnumber); // relation builder
+                bul = mmb.getRelDef().getBuilder(rnumber); // relation builder
                 roles.put(tableAlias, new Integer(rnumber));
             }
         } else if (bul instanceof InsRel) {
@@ -830,13 +839,10 @@ public class ClusterBuilder extends VirtualBuilder {
             while (originalAliases.contains(tableAlias) || tableAliases.contains(tableAlias)) {
                 // Can't create more than 11 aliases for same tablename.
                 if (ch > '9') {
-                    throw new IndexOutOfBoundsException(
-                        "Failed to create unique table alias, because there "
-                            + "are already 11 aliases for this tablename: \""
-                            + tableName
-                            + "\"");
+                    throw new IndexOutOfBoundsException("Failed to create unique table alias, because there "
+                                                        + "are already 11 aliases for this tablename: \"" + tableName + "\"");
                 }
-                tableAlias= tableName + ch;
+                tableAlias = tableName + ch;
                 ch++;
             }
         }
