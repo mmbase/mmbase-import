@@ -13,7 +13,7 @@ import java.util.*;
 import javax.sql.DataSource;
 import java.sql.*;
 
-import org.mmbase.util.CloseableIterator;
+import org.mmbase.util.*;
 import org.mmbase.storage.implementation.database.GenericDataSource;
 import org.mmbase.bridge.*;
 import org.mmbase.cache.Cache;
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.1 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.2 2005-12-29 23:13:06 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.11 2005-12-29 15:45:46 michiel Exp $
+ * @version $Id: Searcher.java,v 1.12 2005-12-29 23:13:06 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -84,7 +84,7 @@ public class Searcher {
         if (value != null && !value.equals("")) {
             IndexSearcher searcher = null;
             try {
-                searcher = new IndexSearcher(index.getName());
+                searcher = new IndexSearcher(index.getPath());
                 Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
                 log.trace("hits " + hits);
                 if (hits != null) {
@@ -123,10 +123,10 @@ public class Searcher {
         IndexSearcher searcher = null;
         try {
             if (value == null || "".equals(value)) {
-                reader = IndexReader.open(index.getName());
+                reader = IndexReader.open(index.getPath());
                 return reader.numDocs();
             }
-            searcher = new IndexSearcher(index.getName());
+            searcher = new IndexSearcher(index.getPath());
             Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
             return hits.length();
         } catch (Exception e) {

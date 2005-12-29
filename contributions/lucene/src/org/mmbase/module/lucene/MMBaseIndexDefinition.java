@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.lucene;
 
 import java.util.*;
-import org.mmbase.util.CloseableIterator;
+import org.mmbase.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.util.xml.query.*;
@@ -24,20 +24,13 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.1 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.2 2005-12-29 23:13:06 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
-    /** identifies a standard query */
-    static protected  final int STANDARD_QUERY = 0;
-    /** identifies a limited query */
-    static protected final int LIMITED_QUERY = 1;
-    /** identifies a subquery */
-    static protected final int SUBQUERY = 2;
-
     /**
      * The default maximum number of nodes that are returned by a call to the searchqueryhandler.
-     */
+     */    
     public static final int MAX_NODES_IN_QUERY = 200;
 
     /**
@@ -58,6 +51,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     MMBaseIndexDefinition(IndexEntry parent) {
         this.parent = parent;
     }
+
 
     public void setAnalyzer(Analyzer a) {
         analyzer = a;
