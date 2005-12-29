@@ -17,32 +17,54 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
- * A list of nodes, based on a Collection of Nodes
+ * An (unmodifiable) list of nodes, based on a Collection of Nodes. If the collection is a NodeList it will mirror its' changes. Otherwise, no.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.1 2005-12-29 19:08:01 michiel Exp $
+ * @version $Id: CollectionNodeList.java,v 1.2 2005-12-29 22:08:25 michiel Exp $
  * @since MMBase-1.8
  */
-public class CollectionNodeList extends BasicList implements NodeList {
+public class CollectionNodeList extends AbstractBridgeList implements NodeList {
 
     private static final Logger log = Logging.getLoggerInstance(CollectionNodeList.class);
     protected Cloud cloud;
     protected NodeManager nodeManager = null;
 
+    protected final NodeList wrappedCollection;
+
 
 
     public CollectionNodeList(Collection c, NodeManager nodeManager) {
-        super(c);
         this.nodeManager = nodeManager;
         this.cloud = nodeManager.getCloud();
+        this.wrappedCollection = convertedList(c, cloud);
     }
 
 
     public CollectionNodeList(Collection c, Cloud cloud) {
-        super(c);
         this.cloud = cloud;
+        this.wrappedCollection = convertedList(c, cloud);
+    }
+    public CollectionNodeList(Collection c) {
+        this(c, ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null));
     }
 
+    private static NodeList convertedList(Collection c, Cloud cloud) {
+        if (c instanceof NodeList) {
+            return (NodeList) c;
+        } else {
+            NodeList l = cloud.createNodeList();
+            l.addAll(c);
+            return l;
+        }
+    }
+
+
+    public int size() {
+        return wrappedCollection.size();
+    }
+    public Object get(int index) {
+        return convert(wrappedCollection.get(index), index);
+    }
 
     /**
      */
@@ -65,14 +87,6 @@ public class CollectionNodeList extends BasicList implements NodeList {
         }
         set(index, node);
         return node;
-    }
-
-    protected Object validate(Object o) throws ClassCastException {
-        if (o instanceof String || o instanceof Map || o instanceof Integer) {
-            return o;
-        } else {
-            return (Node)o;
-        }
     }
 
     /**
