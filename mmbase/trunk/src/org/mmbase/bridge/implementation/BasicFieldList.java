@@ -18,7 +18,7 @@ import org.mmbase.core.CoreField;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.16 2005-07-09 11:07:43 nklasens Exp $
+ * @version $Id: BasicFieldList.java,v 1.17 2005-12-29 19:14:05 michiel Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
 
@@ -28,9 +28,9 @@ public class BasicFieldList extends BasicList implements FieldList {
         super();
     }
 
-    BasicFieldList(Collection c, NodeManager nodemanager) {
+    public BasicFieldList(Collection c, NodeManager nodemanager) {
         super(c);
-        this.nodemanager=nodemanager;
+        this.nodemanager = nodemanager;
     }
 
     public Object convert(Object o, int index) {
