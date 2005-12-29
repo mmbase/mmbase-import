@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.54 2005-12-28 16:07:13 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.55 2005-12-29 15:17:22 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -202,6 +202,121 @@ public class BasicSqlHandler implements SqlHandler {
         return strSQL;
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected void appendRelationConstraints(StringBuffer sbRelations, RelationStep relationStep, boolean multipleSteps) {
+        
+        Step previousStep = relationStep.getPrevious();
+        Step nextStep = relationStep.getNext();
+        if (sbRelations.length() > 0) {
+            sbRelations.append(" AND ");
+        }
+        switch (relationStep.getDirectionality()) {
+        case RelationStep.DIRECTIONS_SOURCE:
+            sbRelations.append('(');
+            appendField(sbRelations, previousStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+            sbRelations.append(" AND ");
+            appendField(sbRelations, nextStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "snumber", multipleSteps);
+            if (relationStep.getCheckedDirectionality()) {
+                sbRelations.append(" AND ");
+                appendField(sbRelations, relationStep, "dir", multipleSteps);
+                sbRelations.append("<>1");
+            }
+            break;
+            
+        case RelationStep.DIRECTIONS_DESTINATION:
+            sbRelations.append('(');
+            appendField(sbRelations, previousStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "snumber", multipleSteps);
+            sbRelations.append(" AND ");
+            appendField(sbRelations, nextStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+            break;
+            
+        case RelationStep.DIRECTIONS_BOTH:
+            if (relationStep.getRole() != null) {
+                sbRelations.append("(((");
+            } else {
+                sbRelations.append("((");
+            }
+            appendField(sbRelations, previousStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+            sbRelations.append(" AND ");
+            appendField(sbRelations, nextStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "snumber", multipleSteps);
+            if (relationStep.getCheckedDirectionality()) {
+                sbRelations.append(" AND ");
+                appendField(sbRelations, relationStep, "dir", multipleSteps);
+                sbRelations.append("<>1");
+            }
+            sbRelations.append(") OR (");
+            appendField(sbRelations, previousStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "snumber", multipleSteps);
+            sbRelations.append(" AND ");
+            appendField(sbRelations, nextStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+            if (relationStep.getRole() != null) {
+                sbRelations.append("))");
+            } else {
+                sbRelations.append(')');
+            }
+            break;
+            
+        case RelationStep.DIRECTIONS_ALL:
+            if (relationStep.getRole() != null) {
+                sbRelations.append("(((");
+            } else {
+                sbRelations.append("((");
+            }
+            appendField(sbRelations, previousStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+            sbRelations.append(" AND ");
+            appendField(sbRelations, nextStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "snumber", multipleSteps);
+            sbRelations.append(") OR (");
+            appendField(sbRelations, previousStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "snumber", multipleSteps);
+            sbRelations.append(" AND ");
+            appendField(sbRelations, nextStep, "number", multipleSteps);
+            sbRelations.append('=');
+            appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+            if (relationStep.getRole() != null) {
+                sbRelations.append("))");
+            } else {
+                sbRelations.append(')');
+            }
+            break;
+            
+        case RelationStep.DIRECTIONS_EITHER:
+            throw new UnsupportedOperationException("Directionality 'EITHER' is not (yet) supported");
+            
+        default: // Invalid directionality value.
+            throw new IllegalStateException(
+                                            "Invalid directionality value: " + relationStep.getDirectionality());
+        }
+        if (relationStep.getRole() != null) {
+            sbRelations.append(" AND ");
+            appendField(sbRelations, relationStep, "rnumber", multipleSteps);
+            sbRelations.append('=').append(relationStep.getRole());
+        }
+        sbRelations.append(')');
+    }
+
     // javadoc is inherited
     public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
 
@@ -264,7 +379,7 @@ public class BasicSqlHandler implements SqlHandler {
 
                     // Append to "GROUP BY"-buffer.
                     if (sbGroups.length() > 0) {
-                        sbGroups.append(",");
+                        sbGroups.append(',');
                     }
                     if (fieldAlias != null) {
                         sbGroups.append(getAllowedValue(fieldAlias));
@@ -295,7 +410,7 @@ public class BasicSqlHandler implements SqlHandler {
                         throw new IllegalStateException("Invalid aggregationType value: " + aggregationType);
                     }
                     appendField(sb, step, fieldName, multipleSteps);
-                    sb.append(")");
+                    sb.append(')');
                 }
 
             } else {
@@ -306,8 +421,7 @@ public class BasicSqlHandler implements SqlHandler {
 
             // Field alias.
             if (fieldAlias != null) {
-                sb.append(" AS ")
-                .append(getAllowedValue(fieldAlias));
+                sb.append(" AS ").append(getAllowedValue(fieldAlias));
             }
 
         }
@@ -315,9 +429,10 @@ public class BasicSqlHandler implements SqlHandler {
         // Tables
         sb.append(" FROM ");
         Iterator iSteps = query.getSteps().iterator();
+        Step previousStep = null;
         while (iSteps.hasNext()) {
             Step step = (Step) iSteps.next();
-            appendTableName(sb, step);
+            appendTableName(sb, step, previousStep);
 
             if (iSteps.hasNext()) {
                 sb.append(",");
@@ -338,129 +453,22 @@ public class BasicSqlHandler implements SqlHandler {
                         Integer node = (Integer) iNodes.next();
                         sbNodes.append(node);
                         if (iNodes.hasNext()) {
-                            sbNodes.append(",");
+                            sbNodes.append(',');
                         }
                     }
-                    sbNodes.append(")");
+                    sbNodes.append(')');
                 } else {
                     // otherwise use equals, which is a LOT faster in some cases
-                    sbNodes.append("=");
+                    sbNodes.append('=');
                     sbNodes.append(nodes.first());
                 }
             }
 
             // Relation steps.
-            if (step instanceof RelationStep) {
-                RelationStep relationStep = (RelationStep) step;
-                Step previousStep = relationStep.getPrevious();
-                Step nextStep = relationStep.getNext();
-                if (sbRelations.length() > 0) {
-                    sbRelations.append(" AND ");
-                }
-                switch (relationStep.getDirectionality()) {
-                    case RelationStep.DIRECTIONS_SOURCE:
-                        sbRelations.append("(");
-                        appendField(sbRelations, previousStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
-                        sbRelations.append(" AND ");
-                        appendField(sbRelations, nextStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
-                        if (relationStep.getCheckedDirectionality()) {
-                            sbRelations.append(" AND ");
-                            appendField(sbRelations, relationStep, "dir", multipleSteps);
-                            sbRelations.append("<>1");
-                        }
-                        break;
-
-                    case RelationStep.DIRECTIONS_DESTINATION:
-                        sbRelations.append("(");
-                        appendField(sbRelations, previousStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
-                        sbRelations.append(" AND ");
-                        appendField(sbRelations, nextStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
-                        break;
-
-                    case RelationStep.DIRECTIONS_BOTH:
-                        if (relationStep.getRole() != null) {
-                            sbRelations.append("(((");
-                        } else {
-                            sbRelations.append("((");
-                        }
-                        appendField(sbRelations, previousStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
-                        sbRelations.append(" AND ");
-                        appendField(sbRelations, nextStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
-                        if (relationStep.getCheckedDirectionality()) {
-                            sbRelations.append(" AND ");
-                            appendField(sbRelations, relationStep, "dir", multipleSteps);
-                            sbRelations.append("<>1");
-                        }
-                        sbRelations.append(") OR (");
-                        appendField(sbRelations, previousStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
-                        sbRelations.append(" AND ");
-                        appendField(sbRelations, nextStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
-                        if (relationStep.getRole() != null) {
-                            sbRelations.append("))");
-                        } else {
-                            sbRelations.append(")");
-                        }
-                        break;
-
-                    case RelationStep.DIRECTIONS_ALL:
-                        if (relationStep.getRole() != null) {
-                            sbRelations.append("(((");
-                        } else {
-                            sbRelations.append("((");
-                        }
-                        appendField(sbRelations, previousStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
-                        sbRelations.append(" AND ");
-                        appendField(sbRelations, nextStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
-                        sbRelations.append(") OR (");
-                        appendField(sbRelations, previousStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
-                        sbRelations.append(" AND ");
-                        appendField(sbRelations, nextStep, "number", multipleSteps);
-                        sbRelations.append("=");
-                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
-                        if (relationStep.getRole() != null) {
-                            sbRelations.append("))");
-                        } else {
-                            sbRelations.append(")");
-                        }
-                        break;
-
-                    case RelationStep.DIRECTIONS_EITHER:
-                        throw new UnsupportedOperationException("Directionality 'EITHER' is not (yet) supported");
-
-                    default: // Invalid directionality value.
-                        throw new IllegalStateException(
-                        "Invalid directionality value: " + relationStep.getDirectionality());
-                }
-                if (relationStep.getRole() != null) {
-                    sbRelations.append(" AND ");
-                    appendField(sbRelations, relationStep, "rnumber", multipleSteps);
-                    sbRelations.append("=").
-                    append(relationStep.getRole());
-                }
-                sbRelations.append(")");
+            if (step instanceof RelationStep){
+                appendRelationConstraints(sbRelations, (RelationStep) step, multipleSteps);
             }
+            previousStep = step;
         }
 
         // Constraints
@@ -515,8 +523,9 @@ public class BasicSqlHandler implements SqlHandler {
     /**
      * @param sb
      * @param step
+     * @since MMBase-1.8
      */
-    protected void appendTableName(StringBuffer sb, Step step) {
+    protected void appendTableName(StringBuffer sb, Step step, Step previousStep) {
         String tableName = step.getTableName();
         String tableAlias = step.getAlias();
 
