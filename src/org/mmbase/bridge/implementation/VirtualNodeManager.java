@@ -13,7 +13,7 @@ package org.mmbase.bridge.implementation;
 import javax.servlet.*;
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.BridgeCollections;
+import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
@@ -29,10 +29,10 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.37 2005-12-28 10:46:13 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.38 2005-12-29 22:04:19 michiel Exp $
  */
-public class VirtualNodeManager extends VirtualNode implements NodeManager {
-    private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
+public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
+    private static final  Logger log = Logging.getLoggerInstance(AbstractNodeManager.class);
 
 
     // field types
@@ -44,7 +44,7 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
      * Instantiated a Virtual NodeManager, and tries its best to find reasonable values for the field-types.
      */
     VirtualNodeManager(org.mmbase.module.core.VirtualNode node, Cloud cloud) {
-        super(cloud, getNodeRef("clusterbuilder"), cloud.getNodeManager("typedef"));
+        super(cloud);
         // determine fields and field types
         if (node.getBuilder() instanceof VirtualBuilder) {
             VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();;
@@ -58,6 +58,8 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
                 fieldTypes.put(fieldName, ft);
             }
             builder = null;
+            setStringValue("name", "virtual builder");
+            setStringValue("description", "virtual builder");
         } else {
             builder = node.getBuilder();
         }
@@ -67,7 +69,7 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
      * @since MMBase-1.8
      */
     VirtualNodeManager(Query query, Cloud cloud) {
-        super(cloud, getNodeRef("clusterbuilder.queryresult"), cloud.getNodeManager("typedef"));
+        super(cloud);
         if (query instanceof NodeQuery) {
             builder = BasicCloudContext.mmb.getBuilder(((NodeQuery) query).getNodeManager().getName());
         } else {
@@ -103,89 +105,13 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
                     });
 
             }
+            setStringValue("name", "cluster builder");
+            setStringValue("description", "cluster builder");
         }
     }
 
-
-    /*
-     * Creates a virtual typedef object, which will server as a noderef for the VirtualNode which the VirtualNodeManager is.
-     */
-    protected static org.mmbase.module.core.VirtualNode getNodeRef(String name) {
-        org.mmbase.module.core.VirtualNode noderef = new org.mmbase.module.core.VirtualNode(BasicCloudContext.mmb.getTypeDef());
-        noderef.storeValue("name", name);
-        return noderef;
-    }
-
     /**
-     * Gets a new (initialized) node.
-     * Throws an exception since this type is virtual, and creating nodes is not allowed.
-     */
-    public Node createNode() {
-        throw new UnsupportedOperationException("Cannot create a node from a virtual node type.");
-    }
 
-    /**
-     * Search nodes of this type.
-     * Throws an exception since this type is virtual, and searching is not allowed.
-     */
-    public NodeList getList(String where, String sorted, boolean direction) {
-        throw new UnsupportedOperationException("Cannot perform search on a virtual node type.");
-    }
-    public NodeList getList(String where, String sorted, String direction) {
-        throw new UnsupportedOperationException("Cannot perform search on a virtual node type.");
-    }
-
-
-    public FieldList createFieldList() {
-        return new BasicFieldList(Collections.EMPTY_LIST, this);
-    }
-
-    public NodeList createNodeList() {
-        return new BasicNodeList(Collections.EMPTY_LIST, this);
-    }
-
-    public RelationList createRelationList() {
-        return new BasicRelationList(Collections.EMPTY_LIST, this);
-    }
-
-    public boolean mayCreateNode() {
-        return false;
-    }
-
-    public NodeList getList(NodeQuery query) {
-        throw new UnsupportedOperationException("Cannot perform search on a virtual node type.");
-    }
-
-    public NodeQuery createQuery() {
-        throw new UnsupportedOperationException("Cannot perform search on a virtual node type.");
-    }
-    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
-        throw new UnsupportedOperationException("Cannot perform search on a virtual node type.");
-    }
-
-    public NodeList getList(String command, Map parameters){
-        throw new UnsupportedOperationException("Cannot perform search on a virtual node type.");
-    }
-
-    public RelationManagerList getAllowedRelations() {
-        return BridgeCollections.EMPTY_RELATIONMANAGERLIST;
-    }
-    public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction) {
-        return BridgeCollections.EMPTY_RELATIONMANAGERLIST;
-    }
-
-    public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) {
-        return BridgeCollections.EMPTY_RELATIONMANAGERLIST;
-    }
-
-    public String getInfo(String command) {
-        return getInfo(command, null,null);
-    }
-
-    public String getInfo(String command, ServletRequest req,  ServletResponse resp){
-        throw new UnsupportedOperationException("Cannot perform search on a virtual node type.");
-
-    }
     /**
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
@@ -195,35 +121,6 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
     }
 
 
-    public boolean hasField(String fieldName) {
-        return fieldTypes.isEmpty() || fieldTypes.containsKey(fieldName);
-    }
-
-    public FieldList getFields() {
-        return getFields(NodeManager.ORDER_NONE);
-    }
-
-    public FieldList getFields(int order) {
-        if (builder != null) {
-            return new BasicFieldList(builder.getFields(order), this);
-        } else {
-            return new BasicFieldList(getFieldTypes().values(), this);
-        }
-    }
-
-    public Field getField(String fieldName) throws NotFoundException {
-        Field f = (Field) getFieldTypes().get(fieldName);
-        if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
-        return f;
-    }
-
-    public String getGUIName() {
-        return getGUIName(NodeManager.GUI_SINGULAR);
-    }
-
-    public String getGUIName(int plurality) {
-        return getGUIName(plurality, null);
-    }
 
     public String getGUIName(int plurality, Locale locale) {
         if (locale==null) locale = cloud.getLocale();
@@ -239,35 +136,16 @@ public class VirtualNodeManager extends VirtualNode implements NodeManager {
     }
 
     public String getName() {
-        return noderef.getStringValue("name");
+        return builder == null ? getStringValue("name") : builder.getTableName();
     }
     public String getDescription() {
         return getDescription(null);
     }
 
     public String getDescription(Locale locale) {
-        if (locale==null) locale = cloud.getLocale();
-        if (builder!=null) {
-            return builder.getDescription(locale.getLanguage());
-        } else {
-            return "";
-        }
+        if (builder == null) return getStringValue("description");
+        if (locale == null) locale = cloud.getLocale();
+        return builder.getDescription(locale.getLanguage());
     }
 
-    public NodeManager getParent() {
-         return null;
-    }
-
-
-    public String getProperty(String name) {
-        return null;
-    }
-    public Map getProperties() {
-        return Collections.EMPTY_MAP;
-
-    }
-
-    public NodeManagerList getDescendants() {
-        return BridgeCollections.EMPTY_NODEMANAGERLIST;
-    }
 }
