@@ -20,6 +20,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.LocalizedString;
 
 import org.mmbase.util.logging.*;
 
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  *x
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.13 2005-12-28 10:11:38 michiel Exp $
+ * @version $Id: Indexer.java,v 1.14 2005-12-29 23:13:06 michiel Exp $
  **/
 public class Indexer {
 
@@ -37,14 +38,16 @@ public class Indexer {
 
 
     // reference to the cloud
-    private Cloud cloud;
-    private Analyzer analyzer;
+    private final Cloud cloud;
+    private final Analyzer analyzer;
 
     // Name of the index
-    private String index;
+    private final String path;
+    private final String index;
+    private final LocalizedString description;
 
     // Collection with queries to run
-    private Collection queries;
+    private final Collection queries;
 
 
     /**
@@ -53,8 +56,9 @@ public class Indexer {
      * @param queries a collection of IndexDefinition objects that select the nodes to index, and contain options on the fields to index.
      * @param cloud The Cloud to use for querying
      */
-    Indexer(String index, Collection queries, Cloud cloud, Analyzer analyzer) {
+    Indexer(String path, String index, Collection queries, Cloud cloud, Analyzer analyzer) {
         this.index = index;
+        this.path =  path + java.io.File.separator + index;
         this.queries = queries;
         this.cloud = cloud;
         if (analyzer == null) {
@@ -62,10 +66,17 @@ public class Indexer {
         } else {
             this.analyzer = analyzer;
         }
+        description = new LocalizedString(index);
     }
 
     public String getName() {
         return index;
+    }
+    public String getPath() {
+        return path;
+    }
+    public LocalizedString getDescription() {
+        return description;
     }
 
     public Node getNode(Cloud userCloud, String identifier) {
@@ -86,7 +97,7 @@ public class Indexer {
     public void deleteIndex(String number) {
         IndexReader reader = null;
         try {
-            reader = IndexReader.open(index);
+            reader = IndexReader.open(path);
             Term term = new Term("number", number);
             reader.delete(term);
         } catch (Exception e) {
@@ -111,7 +122,7 @@ public class Indexer {
         deleteIndex(number);
         IndexWriter writer = null;
         try {
-            writer = new IndexWriter(index, analyzer, false);
+            writer = new IndexWriter(path, analyzer, false);
             // process all queries
             for (Iterator i = queries.iterator(); i.hasNext();) {
                 IndexDefinition indexDefinition = (IndexDefinition)i.next();
@@ -139,7 +150,7 @@ public class Indexer {
         log.service("Doing full index for " + toString());
         IndexWriter writer = null;
         try {
-            writer = new IndexWriter(index, analyzer, true);
+            writer = new IndexWriter(path, analyzer, true);
             // process all queries
             for (Iterator i = queries.iterator(); i.hasNext();) {
                 IndexDefinition indexDefinition = (IndexDefinition)i.next();

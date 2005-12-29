@@ -20,10 +20,9 @@ import org.apache.lucene.analysis.Analyzer;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.6 2005-12-28 10:11:38 michiel Exp $
+ * @version $Id: IndexDefinition.java,v 1.7 2005-12-29 23:13:06 michiel Exp $
  **/
 interface IndexDefinition {
-
     /**
      * Returns an Iterator over all {@link IndexEntry}'s defined by this index.
      */
