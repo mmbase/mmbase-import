@@ -48,7 +48,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
     private static final Logger log = Logging.getLoggerInstance(ConstraintsMatchingStrategy.class);
     BasicSqlHandler sqlHandler = new BasicSqlHandler();
+    private final static String escapeChars=".\\?+*$()[]{}^|&";
     
+    /**
+    * This field contains the characters that are being escaped for the 'like' comparison of strings,
+    * where, the string that should match the other is converted to a regexp
+    **/
     private static Cache constraintWrapperCache = Cache.getCache("Constraint Matcher Cache");
    
     
@@ -405,7 +410,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
         
 
-        protected boolean valueMatches(Class fieldType, Object constraintValue, Object valueToCompare)
+        protected boolean valueMatches(Class fieldType, Object constraintValue, Object valueToCompare, boolean isCaseSensitive)
                 throws FieldComparisonException {
             log.debug("**method: valueMatches() fieldtype: " + fieldType);
             if(constraintValue == null) throw new FieldComparisonException("Constraint value is null");
@@ -519,9 +524,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     log.debug("**value " + stringToCompare + " is less then " + constraintString + ": " + new Boolean(result).toString());
                     return result;
                 }else if(operator == FieldCompareConstraint.LIKE){
-                    //TODO: dit is te simple: wildcards?
-                    boolean result = (stringToCompare.toLowerCase().indexOf(constraintString.toLowerCase()) > -1 );
+                    boolean result = likeMatches(constraintString, stringToCompare, isCaseSensitive);
                     log.debug("**value " + stringToCompare + " LIKE " + constraintString + ": " + new Boolean(result).toString());
+                    return result;
                 }else if(operator == FieldCompareConstraint.LESS_EQUAL){
                     boolean result = (stringToCompare.compareTo(constraintString) < 0) || stringToCompare.equals(constraintString);
                     log.debug("**value " + stringToCompare + " is less then or equeals" + constraintString + ": " + new Boolean(result).toString());
@@ -606,9 +611,34 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                         + "for any numeric type");
             }
         }
-
+        
+        private boolean likeMatches(String constraintString, String stringToCompare, boolean isCaseSensitive){    
+            log.debug("** method: likeMatches() stringToCompare: " + stringToCompare + ", constraintString: " + constraintString );
+            if(isCaseSensitive){  
+                constraintString = constraintString.toLowerCase();
+                stringToCompare = stringToCompare.toLowerCase();
+            }                                  
+            char[] chars = constraintString.toCharArray();
+            StringBuffer sb = new StringBuffer();
+            
+            for(int i = 0; i < chars.length; i++){
+                if(chars[i] == '?'){                                                                
+                    sb.append(".");
+                }else if(chars[i] == '%'){
+                    sb.append(".*");
+                }else if(escapeChars.indexOf(chars[i]) > -1){
+                    sb.append("\\");
+                    sb.append(chars[i]);
+                }else{
+                    sb.append(chars[i]);
+                }
+            }
+            log.debug("** new pattern: " + sb.toString());
+            return stringToCompare.matches(sb.toString());
+        }
+        
     }
-
+    
     
     
     
@@ -645,17 +675,16 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
          
 
         /**
-         * An event applies to a constraint if the constraint is a fieldconstraint, and it's step is the same as 
-         * the node type of the event, and the field equals (one of) the changed field(s) of the event.
-         * if the constraint dous not apply, the query should be released    
+         * Check the values to see if the node's value matches the constraint.
          */
         public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
             log.debug("**method: nodeMatchesConstraint");
-            if(! wrappedFieldCompareConstraint.getField().getStep().getTableName().equals(event.getBuilderName()))
+            if(! eventApplies(valuesToMatch, event))
                 throw new FieldComparisonException("constraint " + wrappedFieldCompareConstraint.toString() + 
                         "dous not match event of type " +event.getBuilderName());
             Object constraintValue = ((FieldValueConstraint) wrappedConstraint).getValue();
-            return valueMatches(fieldTypeClass, constraintValue, valuesToMatch.get(stepField.getFieldName())); 
+            boolean isCaseSensitive = ((FieldValueConstraint) wrappedConstraint).isCaseSensitive();
+            return valueMatches(fieldTypeClass, constraintValue, valuesToMatch.get(stepField.getFieldName()), isCaseSensitive); 
         }
         
         public String toString(){
