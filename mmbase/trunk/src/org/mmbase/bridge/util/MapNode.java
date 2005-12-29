@@ -14,6 +14,9 @@ import java.util.*;
 import java.io.InputStream;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicFunctionValue;
+import org.mmbase.bridge.implementation.BasicField;
+import org.mmbase.core.CoreField;
+import org.mmbase.core.util.Fields;
 import org.mmbase.util.Casting;
 import org.mmbase.util.SizeOf;
 import org.mmbase.util.logging.*;
@@ -25,7 +28,7 @@ import org.w3c.dom.Element;
  * A Node based on a Map.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.3 2005-12-27 21:50:50 michiel Exp $
+ * @version $Id: MapNode.java,v 1.4 2005-12-29 19:08:01 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -47,32 +50,34 @@ public class MapNode extends AbstractNode implements Node {
         originalValues.putAll(values);
         nodeManager = nm;
     }
-
-    public boolean isRelation() {
-        return false;
+    public MapNode(Map v, Cloud cloud) {
+        this(v, createVirtualNodeManager(cloud, v));
+    }
+    public MapNode(Map v) {
+        this(v, ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null));
     }
 
-    public Relation toRelation() {
-        return (Relation) this;
+    protected static NodeManager createVirtualNodeManager(Cloud cloud, final Map map) {
+        return new AbstractNodeManager(cloud) {
+            Map fieldTypes = new HashMap();
+            {                
+                Iterator i = map.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry) i.next();
+                    String fieldName = (String) entry.getKey();
+                    Object value = entry.getValue();
+                    CoreField fd = Fields.createField(fieldName, Fields.classToType(value == null ? Object.class : value.getClass()), 
+                                                      Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
+                    Field ft = new BasicField(fd, this);
+                    fieldTypes.put(fieldName, ft);
+                }                
+            }   
+            protected Map getFieldTypes() {
+                return fieldTypes;
+            }
+            
+        };
     }
-
-    public boolean isNodeManager() {
-        return false;
-    }
-
-    public NodeManager toNodeManager() {
-        return (NodeManager)this;
-    }
-
-    public boolean isRelationManager() {
-        return false;
-    }
-
-    public RelationManager toRelationManager() {
-        return (RelationManager)this;
-    }
-
-
 
     public Cloud getCloud() {
         return nodeManager.getCloud();
@@ -223,35 +228,9 @@ public class MapNode extends AbstractNode implements Node {
         return  nodeManager.getFunctions();
     }
 
-    public Function getFunction(String functionName) {
-        Function function = nodeManager.getFunction(functionName);
-        if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName());
-        }
-        return new WrappedFunction(function) {
-                public final Object getFunctionValue(Parameters params) {
-                    params.set(Parameter.NODE, MapNode.this);
-                    params.set(Parameter.CLOUD, MapNode.this.getCloud());
-                    return super.getFunctionValue(params);
-                }
-            };
+
+    protected Function getNodeFunction(String functionName) {
+        return nodeManager.getFunction(functionName);
     }
-
-    public Parameters createParameters(String functionName) {
-        return nodeManager.getFunction(functionName).createParameters();
-    }
-
-    public FieldValue getFunctionValue(String functionName, List parameters) {
-        final Function function = getFunction(functionName);
-        final Parameters params = function.createParameters();
-        params.setAll(parameters);
-        return new AbstractFieldValue(this, getCloud()) {
-                public Object get() {
-                    return function.getFunctionValue(params);
-                }
-            };
-    }
-
-
 }
 
