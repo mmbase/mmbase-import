@@ -12,9 +12,9 @@
   <action type="create">
     <object type="openquestions">
       <relation destination="$origin" role="posrel" createdir="source"/>
-		<field name="showtitle">1</field>
-		<field name="layout">0</field>
-		<field name="type_of_score">0</field> 		   
+		  <field name="showtitle">1</field>
+		  <field name="layout">0</field>
+		  <field name="type_of_score">0</field> 		   
     </object>
   </action>
 
@@ -67,8 +67,8 @@
       <optionlist select="layout" />
     </field>
     <field name="type_of_score" ftype="enum">
-      <prompt xml:lang="nl">How to score</prompt>
-      <prompt xml:lang="en">How to score </prompt>
+      <prompt xml:lang="nl">Score</prompt>
+      <prompt xml:lang="en">Score</prompt>
       <optionlist select="typeOfScore" />
     </field>
    
