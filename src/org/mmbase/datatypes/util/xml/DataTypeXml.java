@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.4 2005-11-04 23:12:51 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.5 2005-12-29 23:02:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -49,22 +49,6 @@ public abstract class DataTypeXml {
         return DocumentReader.getAttribute(element, DataTypeReader.NAMESPACE_DATATYPES, localName);
     }
 
-    /**
-     * This utility takes care of reading the xml:lang attribute from an element
-     */
-    public static Locale getLocale(Element element) {
-        Locale loc = null;
-        String xmlLang = getAttribute(element, "xml:lang");
-        if (! xmlLang.equals("")) {
-            String[] split = xmlLang.split("-");
-            if (split.length == 1) {
-                loc = new Locale(split[0]);
-            } else {
-                loc = new Locale(split[0], split[1]);
-            }
-        }
-        return loc;
-    }
 
     /**
      * Reads a number of tags with 'xml:lang' attributes.
@@ -79,24 +63,10 @@ public abstract class DataTypeXml {
      */
 
     public static LocalizedString getLocalizedDescription(final String tagName, final Element element, LocalizedString descriptions, final String defaultKey) {
-        NodeList childNodes = element.getChildNodes();
-        for (int k = 0; k < childNodes.getLength(); k++) {
-            if (childNodes.item(k) instanceof Element) {
-                Element childElement = (Element) childNodes.item(k);
-                if (tagName.equals(childElement.getLocalName())) {
-                    Locale locale = getLocale(childElement);
-                    String description = DocumentReader.getNodeTextValue(childElement);
-                    if (descriptions ==  null) {
-                        descriptions = new LocalizedString(description);
-                    }
-                    if (defaultKey != null && 
-                        (locale == null || locale.getLanguage().equals(LocalizedString.getDefault().getLanguage())) && 
-                        descriptions.getKey().equals(defaultKey)) {
-                        descriptions.setKey(description);
-                    }
-                    descriptions.set(description, locale);
-                }
-            }
+        if (descriptions == null) descriptions = new LocalizedString(null);
+        descriptions.fillFromXml(tagName, element);
+        if (defaultKey != null &&  descriptions.getKey().equals(defaultKey)) {
+            descriptions.setKey(descriptions.get(LocalizedString.getDefault()));
         }
         return descriptions;
     }

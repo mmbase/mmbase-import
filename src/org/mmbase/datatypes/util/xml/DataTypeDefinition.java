@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.49 2005-12-23 12:28:28 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.50 2005-12-29 23:02:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -327,15 +327,17 @@ public class DataTypeDefinition {
         NodeList childNodes = enumerationElement.getElementsByTagName("query");
         for (int i = 0; i < childNodes.getLength(); i++) {
             Element queryElement = (Element) childNodes.item(i);
-            Locale locale = DataTypeXml.getLocale(queryElement);
+            Locale locale = LocalizedString.getLocale(queryElement);
             fact.addQuery(locale, DocumentReader.toDocument(queryElement));
         }
+
+
         childNodes = enumerationElement.getElementsByTagName("entry");
         for (int i = 0; i < childNodes.getLength(); i++) {
             Element entryElement = (Element) childNodes.item(i);
             String value = entryElement.getAttribute("value");
             if (!value.equals("")) {
-                Locale locale = DataTypeXml.getLocale(entryElement);
+                Locale locale = LocalizedString.getLocale(entryElement);
                 String display = entryElement.getAttribute("display");
                 if (display.equals("")) display = value;
                 Object key = Casting.toType(dataType.getTypeAsClass(), null, value);
@@ -483,7 +485,7 @@ public class DataTypeDefinition {
             DateTimeDataType sDataType = (DateTimeDataType) dataType;
             if ("pattern".equals(localName)) {
                 String value = DataTypeXml.getAttribute(conditionElement, "value");
-                Locale locale = DataTypeXml.getLocale(conditionElement);
+                Locale locale = LocalizedString.getLocale(conditionElement);
                 sDataType.setPattern(value, locale);
                 return true;
             }
