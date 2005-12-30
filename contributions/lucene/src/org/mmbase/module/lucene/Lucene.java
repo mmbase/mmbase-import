@@ -37,7 +37,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.21 2005-12-29 23:19:40 michiel Exp $
+ * @version $Id: Lucene.java,v 1.22 2005-12-30 11:55:24 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -463,7 +463,7 @@ public class Lucene extends Module implements MMBaseObserver {
         }
     }
 
-    protected Searcher getSearcher(String indexName) {
+    public Searcher getSearcher(String indexName) {
         if (indexName == null || indexName.equals("")) indexName = defaultIndex;
         Searcher searcher = (Searcher)searcherMap.get(indexName);
         if (searcher == null) {
@@ -472,7 +472,7 @@ public class Lucene extends Module implements MMBaseObserver {
         return searcher;
     }
 
-    public List search(Cloud cloud, String value, String indexName, String extraConstraints, List sortFieldList, int offset, int max) {
+    public org.mmbase.bridge.NodeList search(Cloud cloud, String value, String indexName, String extraConstraints, List sortFieldList, int offset, int max) {
         String[] sortFields = null;
         if (sortFieldList != null) {
             sortFields = (String[]) sortFieldList.toArray(new String[sortFieldList.size()]);
