@@ -37,7 +37,9 @@
 
     <% Iterator i = params.iterator();
      while(i.hasNext()) {
-     Parameter param = (Parameter)i.next(); %>
+     Parameter param = (Parameter)i.next();
+     if (param.getName().startsWith("_")) continue;
+ %>
 	<tr>
 	  <td />
 	  <td><%=param.getName()%><%=param.isRequired() ? " *" : ""%></td>
