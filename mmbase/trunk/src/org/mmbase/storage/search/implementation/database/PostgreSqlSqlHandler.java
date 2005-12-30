@@ -11,6 +11,9 @@ package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
+import java.util.*;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.core.MMObjectNode;
 
 /**
  * The PostgreSQL query handler, implements {@link
@@ -33,7 +36,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.18 2005-12-29 15:17:22 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.19 2005-12-30 14:24:43 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -134,7 +137,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             sb.append(datePartFunction);
             sb.append(" FROM ");
             appendField(sb, step, fieldName, multipleSteps);
-            sb.append(")");
+            sb.append(')');
         } else {
             // others are supported in super..
             super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
@@ -194,7 +197,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      *
      * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuffer, org.mmbase.storage.search.Step)
      */
-    protected void appendTableName(StringBuffer sb, Step step, Step previousStep) {
+    protected void appendTableName(StringBuffer sb, Step step) {
         if(step instanceof RelationStep) {
             RelationStep rs = (RelationStep) step;
             if (rs.getRole() != null) {
@@ -204,9 +207,34 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 sb.append(" ONLY ");
             } else {
                 // no role specified, check if more then one roles on sub tables are possible...
-                log.debug("Not adding ONLY to table name because role of " + step + " is null");
+                int sourceBuilder = mmbase.getBuilder(rs.getPrevious().getTableName()).getObjectType();
+                int destinationBuilder = mmbase.getBuilder(rs.getNext().getTableName()).getObjectType();
+                int directionality = rs.getDirectionality();
+                RelDef reldef = mmbase.getRelDef();
+                Set tables = new HashSet();
+                Enumeration allowed = mmbase.getTypeRel().getAllowedRelations(sourceBuilder, destinationBuilder);
+                while(allowed.hasMoreElements()) {
+                    MMObjectNode typeRel = (MMObjectNode) allowed.nextElement();
+                    int rnumber = typeRel.getIntValue("rnumber");
+                    tables.add(reldef.getBuilder(rnumber).getTableName());
+                }
+                if (tables.size() == 1) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("No role defined but only one table possible (" + tables + "), adding with ONLY");
+                    }
+                    sb.append(" ONLY ").
+                        append(mmbase.getBaseName()).
+                        append('_').
+                        append((String) tables.iterator().next());
+                    appendTableAlias(sb, step);
+                    return;                        
+                } else {                    
+                    if (log.isDebugEnabled()) {
+                        log.debug("Not adding ONLY to table name because role of " + step + " is null, and the following tables are possible " + tables);
+                    }
+                }
             }
         }
-        super.appendTableName(sb, step, previousStep);
+        super.appendTableName(sb, step);
     }
 }
