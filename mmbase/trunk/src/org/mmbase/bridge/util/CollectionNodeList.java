@@ -17,10 +17,12 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
- * An (unmodifiable) list of nodes, based on a Collection of Nodes. If the collection is a NodeList it will mirror its' changes. Otherwise, no.
+ * A (fixed-size) list of nodes, based on a Collection of Nodes. If the collection is a List it
+ * will mirror its' changes. Otherwise, no, because the complete collection is inserted in its own
+ * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.2 2005-12-29 22:08:25 michiel Exp $
+ * @version $Id: CollectionNodeList.java,v 1.3 2005-12-30 10:38:10 michiel Exp $
  * @since MMBase-1.8
  */
 public class CollectionNodeList extends AbstractBridgeList implements NodeList {
@@ -29,7 +31,7 @@ public class CollectionNodeList extends AbstractBridgeList implements NodeList {
     protected Cloud cloud;
     protected NodeManager nodeManager = null;
 
-    protected final NodeList wrappedCollection;
+    protected final List wrappedCollection;
 
 
 
@@ -48,9 +50,9 @@ public class CollectionNodeList extends AbstractBridgeList implements NodeList {
         this(c, ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null));
     }
 
-    private static NodeList convertedList(Collection c, Cloud cloud) {
-        if (c instanceof NodeList) {
-            return (NodeList) c;
+    private static List convertedList(Collection c, Cloud cloud) {
+        if (c instanceof List) {
+            return (List) c;
         } else {
             NodeList l = cloud.createNodeList();
             l.addAll(c);
@@ -64,6 +66,10 @@ public class CollectionNodeList extends AbstractBridgeList implements NodeList {
     }
     public Object get(int index) {
         return convert(wrappedCollection.get(index), index);
+    }
+
+    public Object set(int index, Object o) {
+        return wrappedCollection.set(index, o);
     }
 
     /**
@@ -82,8 +88,15 @@ public class CollectionNodeList extends AbstractBridgeList implements NodeList {
                 node = new MapNode((Map) o, cloud);
             }
         } else {
-            // last desperate try
-            node = cloud.getNode(Casting.toString(o));
+            if (! (wrappedCollection instanceof NodeList)) {
+                // last desperate try, depend on a nodelist of cloud (that know how to convert core objects..)
+                NodeList nl = cloud.createNodeList(); // hackery
+                nl.add(o);
+                node = nl.getNode(0);
+            } else {
+                // even more desperate!
+                node = cloud.getNode(Casting.toString(o));
+            }
         }
         set(index, node);
         return node;
