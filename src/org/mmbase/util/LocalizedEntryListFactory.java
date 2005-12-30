@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.23 2005-12-21 14:16:57 pierre Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.24 2005-12-30 15:26:04 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -53,7 +53,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         ArrayList unusedKeys = new ArrayList(); //  List of unused keys;
         public Object clone() {
             try {
-                LocalizedEntry clone = (LocalizedEntry) super.clone();
+                LocalizedEntry clone = (LocalizedEntry) super.clone();                
                 Iterator i = clone.entries.iterator();
                 clone.entries = new ArrayList();
                 while(i.hasNext()) {
@@ -67,7 +67,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             }
         }
         public String toString() {
-            return "" + entries + "uu:" + unusedKeys;
+            return "entries:" + entries + "uu:" + unusedKeys;
         }
     }
     private HashMap localized  = new HashMap();   //Locale -> LocaledEntry
@@ -367,10 +367,11 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             Bundle b = (Bundle) i.next();
             Class wrapper = b.wrapper;
             HashMap constants = b.constantsProvider;
-            // log.info(" " + wrapper + " " + constants);
             Object nk = SortedBundle.castKey(string, null, constants, wrapper);
             if (string != nk) {
-                log.debug("Casted " + key + " to " + nk);
+                if (log.isDebugEnabled()) {
+                    log.debug("Casted " + key + " to " + nk);
+                }
                 return nk;
             }
         }
@@ -390,7 +391,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             clone.localized = new HashMap();
             while(i.hasNext()) {
                 Map.Entry entry = (Map.Entry) i.next();
-                clone.localized.put(entry.getValue(), ((PublicCloneable) entry.getValue()).clone());
+                clone.localized.put(entry.getKey(), ((PublicCloneable) entry.getValue()).clone());
             }
             clone.fallBack  = (ArrayList) fallBack.clone();
             return clone;
@@ -410,7 +411,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return "" + localized  + bundles + fallBack + "-->" + get(null, null);
+        return "(localized: " + localized  + "bundles: " + bundles + "fallBack: " + fallBack + ")-->" + get(null, null);
     }
 
     private static class Bundle implements Serializable, PublicCloneable {
