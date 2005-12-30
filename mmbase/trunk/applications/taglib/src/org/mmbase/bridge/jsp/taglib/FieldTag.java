@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.56 2005-12-29 19:49:03 michiel Exp $
+ * @version $Id: FieldTag.java,v 1.57 2005-12-30 22:41:56 andre Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -99,7 +99,8 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 	 * Not only the field and its nodes will be registered but also the query it 
 	 * originated from. It passes these to the method
 	 * EditTag#registerField(Query query, int nodenr, String fieldName).
-	 * 
+	 * @see org.mmbase.bridge.jsp.taglib.editor.EditTag 
+	 *
      * @since MMBase-1.8
 	 * @todo  EXPERIMENTAL
      */
@@ -123,6 +124,19 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 			} catch (JspTagException jte) {
 				if (log.isDebugEnabled()) log.debug("Node not found in getNodeVar() " + jte);
 			}
+			
+			if (fieldName == null) {
+				if (log.isDebugEnabled()) log.debug("fieldName still null. Image tag? URL tag? Attachment?");
+				if (this instanceof ImageTag) {
+					if (log.isDebugEnabled()) log.debug("Image! fieldName = handle");
+					fieldName = "handle";
+				}
+			}
+			if (fieldName.indexOf(".") < 0) {	// No nodemanager? add one
+				fieldName = node.getNodeManager().getName() + "." + fieldName;
+			}
+			
+						
 			int nodenr = node.getIntValue("number");		// nodenr of this field to pass to EditTag
 			if (nodenr < 0) {
 				java.util.List steps = query.getSteps();
@@ -137,24 +151,20 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 					} else {
 						String pref = step.getAlias();
 						if (pref == null) pref = step.getTableName();
-						nodenr = node.getIntValue(pref + ".number");                 
+						
+						// check with correct nodemanager
+						String nm = fieldName.substring(0, fieldName.indexOf("."));
+						if (pref.equals(nm)) {
+						    nodenr = node.getIntValue(pref + ".number");
+						}
+						
+
 					}
 				}
         	}
 			
-			if (fieldName == null) {
-				if (log.isDebugEnabled()) log.debug("fieldName still null. Image tag? URL tag? Attachment?");
-				if (this instanceof ImageTag) {
-					if (log.isDebugEnabled()) log.debug("Image! fieldName = handle");
-					fieldName = "handle";
-				}
-			}
-			if (fieldName.indexOf(".") < 0) {	// No nodemanager
-				fieldName = node.getNodeManager().getName() + "." + fieldName;
-			}
-
-			// Register stuff with EditTag
-			if (log.isDebugEnabled()) log.debug("EditTag register fieldName '" + fieldName + "' with nodenr '" + nodenr + "' and query: " + query);
+			// register stuff with EditTag
+			if (log.isDebugEnabled()) log.debug("Registering fieldName '" + fieldName + "' with nodenr '" + nodenr + "' and query: " + query);
 			et.registerField(query, nodenr, fieldName);
 		}
 	}
@@ -248,7 +258,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             }
         }
         if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
-
 
         handleEditTag();
 
