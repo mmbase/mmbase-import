@@ -38,7 +38,7 @@
 	       <mm:setfield name="url"><mm:write referid="url"/></mm:setfield>
 	    </mm:isnotempty>
 	  </mm:node>
-      <mm:redirect referids="$referids,currentfolder,currentitem,typeof" page="/virtualclassroom/frontoffice/index.jsp"/> 
+      <mm:redirect referids="$referids,currentfolder,currentitem,typeof" page="/virtualclassroom/frontoffice/workspace/workspace.jsp"/> 
     </mm:compare>
   </mm:present>
 
@@ -47,7 +47,7 @@
     <mm:import id="action2text"><di:translate key="workspace.back" /></mm:import>
     <mm:compare referid="action2" referid2="action2text">
       <mm:node number="$currentitem">
-        <mm:redirect referids="$referids,currentfolder,typeof" page="/virtualclassroom/frontoffice/index.jsp"/>
+        <mm:redirect referids="$referids,currentfolder,typeof" page="/virtualclassroom/frontoffice/workspace/workspace.jsp"/>
       </mm:node>
     </mm:compare>
   </mm:present>

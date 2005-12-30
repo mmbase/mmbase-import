@@ -110,10 +110,10 @@
     <mm:import externid="detectclicks" from="parameters"/>
     <mm:import externid="oldclicks" from="session"/>
     <mm:present referid="detectclicks">
-	<mm:compare referid="detectclicks" value="$oldclicks">
+	  <mm:compare referid="detectclicks" value="$oldclicks">
 	    <mm:redirect referids="$referids,currentfolder,typeof" page="$callerpage"/>
-        </mm:compare>
-	<mm:write session="oldclicks" referid="detectclicks"/>
+      </mm:compare>
+	  <mm:write session="oldclicks" referid="detectclicks"/>
     </mm:present>
 
 

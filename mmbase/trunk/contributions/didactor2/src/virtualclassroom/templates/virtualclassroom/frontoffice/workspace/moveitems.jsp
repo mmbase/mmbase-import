@@ -165,7 +165,7 @@
   </div>
   <div class="contentBodywit">
     <%-- Show the form --%>
-    <form name="moveitems" method="post" action="<mm:treefile page="/workspace/moveitems.jsp" objectlist="$includePath" referids="$referids"/>">
+    <form name="moveitems" method="post" action="<mm:treefile page="/virtualclassroom/frontoffice/workspace/moveitems.jsp" objectlist="$includePath" referids="$referids"/>">
       <table class="Font">
 
       <tr>
@@ -200,7 +200,7 @@
              </mm:relatednodes>
         </mm:node>
         <mm:present referid="class">
-          <mm:node number="$class">
+          <mm:node number="$class" notfound="skipbody">
             <mm:field name="name" id="classname">
             
             <mm:relatednodes type="workspaces">
