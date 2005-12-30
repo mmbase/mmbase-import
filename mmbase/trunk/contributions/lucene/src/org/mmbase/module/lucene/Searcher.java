@@ -22,6 +22,7 @@ import org.apache.lucene.queryParser.*;
 
 import org.mmbase.util.*;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.*;
 
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.12 2005-12-29 23:13:06 michiel Exp $
+ * @version $Id: Searcher.java,v 1.13 2005-12-30 11:55:24 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -50,19 +51,19 @@ public class Searcher {
         this.allIndexedFields = allIndexedFields;
     }
 
-    public List search(Cloud cloud, String value) {
+    public NodeList search(Cloud cloud, String value) {
         return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, 0, -1);
     }
 
-    public List search(Cloud cloud, String value, int offset, int max) {
+    public NodeList search(Cloud cloud, String value, int offset, int max) {
         return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, offset, max);
     }
 
-    public List search(Cloud cloud, String value, Query extraQuery, int offset, int max) {
+    public NodeList search(Cloud cloud, String value, Query extraQuery, int offset, int max) {
         return search(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
     }
 
-    public List search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max) {
+    public NodeList search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max) {
         Sort sort = null;
         if (sortFields != null && sortFields.length > 0) {
             if (sortFields.length == 1 && sortFields[0].equals("RELEVANCE")) {
@@ -76,11 +77,14 @@ public class Searcher {
         return search(cloud, value, null, sort, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
     }
 
-    public List search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
+
+    public NodeList search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
         // log the value searched
         searchLog.service(value);
         List list = new LinkedList(); 
-        log.trace("Searching '" + value + "' in index " + index + " for " + sort + " " + analyzer + " " + extraQuery + " " + fields + " " + offset + " " + max);
+        if (log.isDebugEnabled()) {
+            log.trace("Searching '" + value + "' in index " + index + " for " + sort + " " + analyzer + " " + extraQuery + " " + fields + " " + offset + " " + max);
+        }
         if (value != null && !value.equals("")) {
             IndexSearcher searcher = null;
             try {
@@ -107,7 +111,7 @@ public class Searcher {
                 }
             }
         }
-        return list;
+        return new org.mmbase.bridge.util.CollectionNodeList(list, cloud);
     }
 
     public int searchSize(Cloud cloud, String value) {
@@ -151,6 +155,7 @@ public class Searcher {
     }
 
     protected Hits getHits(IndexSearcher searcher, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
+        if (analyzer == null) analyzer = ;
         Query query;
         if (fields == null || fields.length == 0) {
             query = QueryParser.parse(value, "fulltext", analyzer);
@@ -200,7 +205,7 @@ public class Searcher {
             }
             Query subQuery = null;
             if (type.equals("EQ") || type.equals("NE")) {
-                subQuery = new TermQuery(new Term(field,value));
+                subQuery = new TermQuery(new Term(field, value));
             } else if (type.equals("GT")|| type.equals("GTE")) {
                 subQuery = new RangeQuery(new Term(field,value), null, type.equals("GTE"));
             } else if (type.equals("LT") || type.equals("LTE")) {
