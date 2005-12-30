@@ -4,12 +4,12 @@
 
 
   <authenticate class="org\.mmbase\.tests\..*">
-    <property name="username" value="admin" />
+    <property name="rank" value="administrator" />
   </authenticate>
 
   <!-- class-security through rmmci is not working quite nice yet -->
   <authenticate class="org\.mmbase\.bridge\.remote\..*">
-    <property name="username" value="admin" />
+    <property name="rank" value="administrator" />
   </authenticate>
 
 
