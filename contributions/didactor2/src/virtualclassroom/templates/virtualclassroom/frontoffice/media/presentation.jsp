@@ -15,7 +15,7 @@
            <param name="url" value="<mm:field name="url"/>"/>
            <param name="showcontrols" value="true"/>
            <param name="sendplaystatechangeevents" value="true"/>
-           <param name="autostart" value="true"/>
+           <param name="autostart" value="false"/>
            <param name="playcount" value="1"/>
            <param name="showdisplay" value="false"/>
            <param name="showstatusbar" value="false"/>
@@ -27,6 +27,7 @@
                Name=MediaPlayer
                ShowControls=1
                ShowDisplay=0
+               AutoStart=0
                ShowStatusBar=0
                width=450
                height=350/>
@@ -43,7 +44,7 @@
         <object id="shell_object" name="shell.swf" 
           classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" 
           codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab#version=8,0,22,0" 
-          width="400" height="300"> 
+          width="450" height="350"> 
           <param name="movie" value="<mm:attachment/>" /> 
           <param name="quality" value="high" /> 
           <param name="menu" value="0" /> 

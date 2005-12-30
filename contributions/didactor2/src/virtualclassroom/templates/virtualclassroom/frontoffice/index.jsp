@@ -6,9 +6,9 @@
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
       <title><di:translate key="virtualclassroom.virtualclassroom"/></title>
+      <link rel="stylesheet" type="text/css" href="<mm:treefile page="/virtualclassroom/css/base.css" objectlist="$includePath" referids="$referids" />" />      
     </mm:param>
-  </mm:treeinclude>
-  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/virtualclassroom/css/base.css" objectlist="$includePath" referids="$referids" />" />
+  </mm:treeinclude>  
   <div class="rows">
     <div class="navigationbar">
       <div class="titlebar">
@@ -16,38 +16,12 @@
       </div>
     </div>
     <div class="contentBody">
-      <div class="topRow" >
-        <div class="leftHalfRow">
-          <mm:treeinclude page="/virtualclassroom/frontoffice/media/index.jsp" objectlist="$includePath" referids="$referids"/>      
-        </div>
-        <div class="rightHalfRow">
-           <mm:treeinclude page="/virtualclassroom/frontoffice/chat/chat.jsp" objectlist="$includePath" referids="$referids"/>
-        </div>
+      <div class="topRow">
+        <iframe  top="0" class="framemedia" frameborder="0" name="media" src="<mm:treefile page="/virtualclassroom/frontoffice/media/index.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>      
+        <iframe class="framechat" frameborder="0" name="chat" src="<mm:treefile page="/virtualclassroom/frontoffice/chat/chat.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
       </div>
       <div class="bottomRow">
-        <mm:import externid="typeof"/>
-        <mm:present referid="typeof">
-          <mm:import externid="destination" />
-          <mm:notpresent referid="destination">
-            <mm:treeinclude page="/virtualclassroom/frontoffice/workspace/index.jsp" objectlist="$includePath" referids="$referids"/>
-          </mm:notpresent>
-          <mm:present referid="destination">
-            <mm:treeinclude page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids,destination">
-              <mm:param name="destination"><mm:write referid="destination"/></mm:param> 
-            </mm:treeinclude>
-          </mm:present>
-        </mm:present>
-        <mm:notpresent referid="typeof">
-          <mm:import externid="destination" />
-          <mm:notpresent referid="destination">
-            <mm:treeinclude page="/virtualclassroom/frontoffice/workspace/index.jsp?typeof=1" objectlist="$includePath" referids="$referids"/>
-          </mm:notpresent>
-          <mm:present referid="destination">
-            <mm:treeinclude page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids,destination">
-              <mm:param name="destination"><mm:write referid="destination"/></mm:param> 
-            </mm:treeinclude>
-          </mm:present>
-        </mm:notpresent>
+        <iframe class="frameworkspace" frameborder="0" name="workspace" src="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
       </div>
     </div>
   </div>

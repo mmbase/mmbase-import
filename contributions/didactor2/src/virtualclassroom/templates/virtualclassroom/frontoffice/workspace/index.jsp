@@ -9,12 +9,9 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 
-
 <mm:import externid="currentfolder">-1</mm:import>
-
 <%-- Determine if my documents or shared documents is started --%>
 <mm:import externid="typeof"/>
-
 <%-- jsp started as my documents --%>
 <mm:compare referid="typeof" value="1">
   <mm:listnodes type="people" constraints="number=$user" id="myuser" >
@@ -22,17 +19,14 @@
       <mm:relatednodes type="folders" orderby="name" id="myfolders">
         <mm:first>
           <mm:compare referid="currentfolder" value="-1">
-
             <mm:remove referid="currentfolder"/>
             <mm:import id="currentfolder"><mm:field name="number"/></mm:import>
-
           </mm:compare>
         </mm:first>
       </mm:relatednodes>
     </mm:relatednodes>
   </mm:listnodes>
 </mm:compare>
-
 <%-- jsp started as shared documents --%>
 <mm:compare referid="typeof" value="2">
   <mm:listnodes constraints="number=$class" type="classes" id="myuser" >
@@ -40,17 +34,14 @@
       <mm:relatednodes type="folders" orderby="name" id="myfolders">
         <mm:first>
           <mm:compare referid="currentfolder" value="-1">
-
             <mm:remove referid="currentfolder"/>
             <mm:import id="currentfolder"><mm:field name="number"/></mm:import>
-
           </mm:compare>
         </mm:first>
       </mm:relatednodes>
     </mm:relatednodes>
   </mm:listnodes>
 </mm:compare>
-
 <%-- jsp started as workgroup documents --%>
 <mm:compare referid="typeof" value="3">
   <mm:node number="$user" notfound="skip">
@@ -61,10 +52,8 @@
           <mm:relatednodes type="folders" orderby="name" id="myfolders">
             <mm:first>
               <mm:compare referid="currentfolder" value="-1">
-
                 <mm:remove referid="currentfolder"/>
                 <mm:import id="currentfolder"><mm:field name="number"/></mm:import>
-
               </mm:compare>
             </mm:first>
           </mm:relatednodes>
@@ -72,7 +61,6 @@
     </mm:relatednodes>
   </mm:node>
 </mm:compare>
-
 <%-- jsp started as projectgroup documents --%>
 <mm:present referid="workgroup">
 <mm:compare referid="typeof" value="4">
@@ -84,10 +72,8 @@
           <mm:relatednodes type="folders" orderby="name" id="myfolders">
             <mm:first>
               <mm:compare referid="currentfolder" value="-1">
-
                 <mm:remove referid="currentfolder"/>
                 <mm:import id="currentfolder"><mm:field name="number"/></mm:import>
-
               </mm:compare>
             </mm:first>
           </mm:relatednodes>
@@ -96,216 +82,181 @@
   </mm:node>
 </mm:compare>
 </mm:present>
-
-
 <mm:import externid="action_delete.x" id="action_delete" from="parameters"/>
 <mm:import externid="action_move.x" id="action_move" from="parameters"/>
 <mm:import externid="ids" vartype="List"/>
-<%--
 <mm:present referid="action_delete">
-    <mm:redirect page="/workspace/deleteitems.jsp" referids="$referids,currentfolder,ids,typeof">
-	<mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
-    </mm:redirect>
+  <mm:redirect page="/virtualclassroom/frontoffice/workspace/workspace.jsp" referids="$referids,currentfolder,ids,typeof">
+    <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
+    <mm:param name="destination">/virtualclassroom/frontoffice/workspace/deleteitems.jsp</mm:param>
+  </mm:redirect>
 </mm:present>
 <mm:present referid="action_move">
-<mm:import id="currenttime"><%= System.currentTimeMillis() %></mm:import>
-<mm:redirect page="/workspace/moveitems.jsp" referids="$referids,currentfolder,ids,typeof,currenttime">
-    <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
-</mm:redirect>
-</mm:present>--%>
-
-
+  <mm:import id="currenttime"><%= System.currentTimeMillis() %></mm:import>
+  <mm:redirect page="/virtualclassroom//frontoffice/workspace/workspace.jsp" referids="$referids,currentfolder,ids,typeof,currenttime">
+    <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
+    <mm:param name="destination">/virtualclassroom/frontoffice/workspace/moveitems.jsp</mm:param>	
+  </mm:redirect>
+</mm:present>
 <div class="rowsinfolder">
-
 <div class="navigationbar">
-<div class="titlebar">
-<%-- determine if the context is my documents or shared documents --%>
-<mm:compare referid="typeof" value="1">
-  <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.mydocuments" />"/>
+  <div class="titlebar">
+  <%-- determine if the context is my documents or shared documents --%>
+  <mm:compare referid="typeof" value="1">
+    <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.mydocuments" />"/>
       <di:translate key="workspace.mydocuments" />
-</mm:compare>
-<mm:compare referid="typeof" value="2">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.shareddocuments" />"/>
+  </mm:compare>
+  <mm:compare referid="typeof" value="2">
+    <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.shareddocuments" />"/>
       <di:translate key="workspace.shareddocuments" />
-</mm:compare>
-<mm:compare referid="typeof" value="3">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.shareddocuments" />"/>
+  </mm:compare>
+  <mm:compare referid="typeof" value="3">
+    <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.shareddocuments" />"/>
       <di:translate key="workspace.workgroupdocuments" />
-</mm:compare>
-
+  </mm:compare>
+  </div>
 </div>
-</div>
-
 <div class="linkbar">
-   <div class="menuSeperator"> </div>
-    <div class="menuItem" id="menuWorkspace">
-      <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp?typeof=1" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="workspace.mydocumentsmenuitem" /></a>
-    </div>
-    <div class="menuSeperator"> </div>
-    <div class="menuItem" id="menuWorkspace">
-      <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp?typeof=2" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="workspace.shareddocumentsmenuitem" /></a>
-    </div>
+  <div class="menuSeperator"> </div>
+   <div class="menuItem" id="menuWorkspace">
+     <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp?typeof=1" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="workspace.mydocumentsmenuitem" /></a>
+   </div>
+   <div class="menuSeperator"></div>
+   <div class="menuItem" id="menuWorkspace">
+     <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp?typeof=2" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="workspace.shareddocumentsmenuitem" /></a>
+   </div>
    <mm:node number="$user" notfound="skip">
-        <mm:relatednodes type="workgroups" max="1">
-        <div class="menuSeperator"> </div>
-        <div class="menuItem" id="menuWorkspace">
-          <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp?typeof=3" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="workspace.workgroupdocumentsmenuitem" /></a>
-        </div>
-        </mm:relatednodes>
-    </mm:node>
-
+     <mm:relatednodes type="workgroups" max="1">
+       <div class="menuSeperator"></div>
+       <div class="menuItem" id="menuWorkspace">
+         <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp?typeof=3" objectlist="$includePath" referids="$referids" />" class="menubar"><di:translate key="workspace.workgroupdocumentsmenuitem" /></a>
+       </div>
+     </mm:relatednodes>
+   </mm:node>
 </div>
 <div class="folders">
-
 <div class="folderHeader">
-    <di:translate key="workspace.folders" />
+  <di:translate key="workspace.folders" />
 </div>
-
 <div class="folderBody">
-
 <%-- determine the folders in the used context (my documents or shared documents --%>
-
 <mm:present referid="workgroup">
-<mm:compare referid="typeof" value="4">
-  <a href="<mm:treefile page="/projectgroup/index.jsp" objectlist="$includePath" referids="$referids,workgroup"/>">
-<img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.addcontacts" />"/>
-</a>
-</mm:compare>	     
+  <mm:compare referid="typeof" value="4">
+    <a href="<mm:treefile page="/projectgroup/index.jsp" objectlist="$includePath" referids="$referids,workgroup"/>">
+      <img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.addcontacts" />"/>
+    </a>
+  </mm:compare>	     
 </mm:present>
 <br clear="all">
 <mm:listnodes referid="myuser" >
-   <!-- listing workspaces for '<mm:field name="name"/>' -->
-    <b><mm:field name="name"/><mm:field name="firstname"/> <mm:field name="lastname"/></b><br>
-
-
+  <!-- listing workspaces for '<mm:field name="name"/>' -->
+  <b><mm:field name="name"/><mm:field name="firstname"/> <mm:field name="lastname"/></b><br>
   <mm:relatednodes type="workspaces" id="workspace">
-
-<a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-       <mm:param name="destination">/virtualclassroom/frontoffice/workspace/createfolder.jsp</mm:param>	 
-	   <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-	   <mm:param name="workspace"><mm:write referid="workspace"/></mm:param>
-       <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
-	   <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
-	 </mm:treefile>">
-  <img src="<mm:treefile page="/workspace/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.createfolder" />" /></a>
-
-<mm:isgreaterthan referid="currentfolder" value="0">
-  <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-	           <mm:param name="destination">/virtualclassroom/frontoffice/workspace/changefolder.jsp</mm:param>	 
-	     <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-		 <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
-	     <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
-	       </mm:treefile>">
-
-    <img src="<mm:treefile page="/workspace/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.renamefolder" />" /></a>
-
-  <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-	            <mm:param name="destination">/virtualclassroom/frontoffice/workspace/deletefolder.jsp</mm:param>	 
-	     <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-	     <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
-	     <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
-	   </mm:treefile>">
-    <img src="<mm:treefile page="/workspace/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.deletefolder" />" /></a>
-</mm:isgreaterthan>
+    <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids">
+               <mm:param name="destination">/virtualclassroom/frontoffice/workspace/createfolder.jsp</mm:param>	 
+	           <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
+	           <mm:param name="workspace"><mm:write referid="workspace"/></mm:param>
+               <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
+	           <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
+	         </mm:treefile>">
+      <img src="<mm:treefile page="/workspace/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.createfolder" />" />
+    </a>
+    <mm:isgreaterthan referid="currentfolder" value="0">
+      <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids">
+                 <mm:param name="destination">/virtualclassroom/frontoffice/workspace/changefolder.jsp</mm:param>	 
+	             <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
+		         <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
+	             <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
+	           </mm:treefile>">
+        <img src="<mm:treefile page="/workspace/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.renamefolder" />" />
+      </a>
+      <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids">
+                 <mm:param name="destination">/virtualclassroom/frontoffice/workspace/deletefolder.jsp</mm:param>	 
+	             <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
+	             <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
+	             <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
+	           </mm:treefile>">
+        <img src="<mm:treefile page="/workspace/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.deletefolder" />" />
+      </a>
+    </mm:isgreaterthan>
     <br clear="all"/>
-
     <mm:relatednodes type="folders">
-
       <mm:import id="currentnumber"><mm:field name="number"/></mm:import>
-
       <%-- folder is open --%>
       <mm:compare referid="currentfolder" referid2="currentnumber">
-	<img src="<mm:treefile page="/workspace/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="workspace.folderopened" />" />
+        <img src="<mm:treefile page="/workspace/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="workspace.folderopened" />" />
       </mm:compare>
-
       <%-- folder is closed --%>
       <mm:compare referid="currentfolder" referid2="currentnumber" inverse="true">
-	<img src="<mm:treefile page="/workspace/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="workspace.folderclosed" />" />
+        <img src="<mm:treefile page="/workspace/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="workspace.folderclosed" />" />
       </mm:compare>
-
-      <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-			 <mm:param name="currentfolder"><mm:field name="number" /></mm:param>
-		 <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
-		       </mm:treefile>">
-			<mm:field name="name" />
+      <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids">
+          <mm:param name="currentfolder"><mm:field name="number" /></mm:param>
+          <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
+        </mm:treefile>">
+        <mm:field name="name" />
       </a><br />
-
     </mm:relatednodes>
     <br/>
   </mm:relatednodes>
 </mm:listnodes>
-
 </div>
 
-
-
 <div class="mainContent">
-
-
-<form action="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids,typeof"/>" method="POST">
-    <input type="hidden" name="currentfolder" value="<mm:write referid="currentfolder"/>">
-
+<form action="<mm:treefile page="/virtualclassroom/frontoffice/workspace/index.jsp" objectlist="$includePath" referids="$referids,typeof"/>" method="POST">
+  <input type="hidden" name="currentfolder" value="<mm:write referid="currentfolder"/>">
   <div class="contentHeader">
-
     <mm:node number="$currentfolder" notfound="skip">
       <mm:field name="name"/>
     </mm:node>
-
   </div>
-
   <div class="contentSubHeader">
-
     <mm:isgreaterthan referid="currentfolder" value="0">
-      <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-	  	                   <mm:param name="destination">/virtualclassroom/frontoffice/workspace/adddocument.jsp</mm:param>	 
-	  	            <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-		            <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
+      <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids">
+                 <mm:param name="destination">/virtualclassroom/frontoffice/workspace/adddocument.jsp</mm:param>	 
+  	             <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
+                 <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
+                 <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
+               </mm:treefile>">
+        <img src="<mm:treefile page="/workspace/gfx/document plaatsen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.adddocument" />" />
+      </a>
+      <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids">
+                 <mm:param name="destination">/virtualclassroom/frontoffice/workspace/addurl.jsp</mm:param>	 
+                 <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
+                 <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
+                 <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
+               </mm:treefile>">
+        <img src="<mm:treefile page="/workspace/gfx/bron plaatsen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.addsource" />" />
+      </a>
+      <%--
+         <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids,currentfolder,ids,typeof,currenttime">
+                    <mm:param name="destination">/virtualclassroom/frontoffice/workspace/moveitems.jsp</mm:param>	 
+                    <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
+                    <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
                     <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
 		     </mm:treefile>">
-        <img src="<mm:treefile page="/workspace/gfx/document plaatsen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.adddocument" />" /></a>
-
-      <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-		                   <mm:param name="destination">/virtualclassroom/frontoffice/workspace/addurl.jsp</mm:param>	 
-		            <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-		            <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
+           <img src="<mm:treefile page="/workspace/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.moveselected" />" />
+         </a>
+         <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="destination">/virtualclassroom/frontoffice/workspace/deleteitems.jsp</mm:param>	 
+                    <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
+                    <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
                     <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
-		     </mm:treefile>">
-        <img src="<mm:treefile page="/workspace/gfx/bron plaatsen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.addsource" />" /></a>
-
-         <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-		                   <mm:param name="destination">/virtualclassroom/frontoffice/workspace/moveitems.jsp</mm:param>	 
-		            <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-		            <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
-                    <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
-		     </mm:treefile>">
-        <img src="<mm:treefile page="/workspace/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.moveselected" />" /></a>
-	
-	   <a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-		            <mm:param name="destination">/virtualclassroom/frontoffice/workspace/deleteitems.jsp</mm:param>	 
-		            <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-		            <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
-                    <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
-		     </mm:treefile>">
-        <img src="<mm:treefile page="/workspace/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.deleteselected" />"/></a>
-	
-        <%--<input type="image" name="action_move" src="<mm:treefile page="/workspace/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.moveselected" />" />
-
-        <input type="image" name="action_delete" src="<mm:treefile page="/workspace/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.deleteselected" />"/>--%>
+                  </mm:treefile>">
+           <img src="<mm:treefile page="/workspace/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.deleteselected" />"/>
+         </a>
+	  --%>
+      <input type="image" name="action_move" src="<mm:treefile page="/workspace/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.moveselected" />" />
+      <input type="image" name="action_delete" src="<mm:treefile page="/workspace/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="workspace.deleteselected" />"/>
     </mm:isgreaterthan>
-
   </div>
-
   <div class="filesContentBody">
-
     <mm:import id="gfx_attachment"><mm:treefile page="/workspace/gfx/mijn documenten.gif" objectlist="$includePath" referids="$referids" /></mm:import>
     <mm:import id="gfx_url"><mm:treefile page="/workspace/gfx/bronnen.gif" objectlist="$includePath" referids="$referids" /></mm:import>
     <mm:import id="gfx_page"><mm:treefile page="/workspace/gfx/pagina.gif" objectlist="$includePath" referids="$referids" /></mm:import>
     <mm:import id="gfx_chatlog"><mm:treefile page="/workspace/gfx/chatverslag.gif" objectlist="$includePath" referids="$referids" /></mm:import>
-
     <mm:node number="$currentfolder" notfound="skip">
-
       <mm:import id="linkedlist" jspvar="linkedlist" vartype="List"/>
-
       <%-- Show also the nodes below in the table --%>
       <mm:relatednodes type="attachments" id="myattachments">
         <mm:remove referid="objectnumber"/>
@@ -335,13 +286,9 @@
 	      linkedlist.add( objectnumber );
 	    %>
       </mm:relatednodes>
-
-
       <mm:listnodescontainer type="object">
         <mm:constraint field="number" referid="linkedlist" operator="IN"/>
-
         <di:table maxitems="10">
-
           <di:row>
             <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked)"></input></di:headercell>
             <di:headercell><di:translate key="workspace.type" /></di:headercell>
@@ -350,22 +297,19 @@
             <di:headercell><di:translate key="workspace.filename" /></di:headercell>
             <di:headercell><di:translate key="workspace.date" /></di:headercell>
           </di:row>
-
           <mm:listnodes>
-
             <di:row>
               <di:cell><input type="checkbox" name="ids" value="<mm:field name="number"/>"></input></di:cell>
-
               <mm:remove referid="link"/>
-              <mm:import id="link"><a href="<mm:treefile page="/virtualclassroom/frontoffice/index.jsp" objectlist="$includePath" referids="$referids">
-                                         <mm:param name="destination">/virtualclassroom/frontoffice/workspace/showitem.jsp</mm:param>	 
-                                  <mm:param name="currentitem"><mm:field name="number"/></mm:param>
-                                  <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
-		                          <mm:param name="callerpage">/virtualclassroom/frontoffice/index.jsp</mm:param>
-                                  <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
-                                </mm:treefile>">
+              <mm:import id="link">
+                <a href="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids">
+                           <mm:param name="destination">/virtualclassroom/frontoffice/workspace/showitem.jsp</mm:param>	 
+                           <mm:param name="currentitem"><mm:field name="number"/></mm:param>
+                           <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
+                           <mm:param name="callerpage">/virtualclassroom/frontoffice/workspace/workspace.jsp</mm:param>
+                           <mm:param name="typeof"><mm:write referid="typeof"/></mm:param>
+                         </mm:treefile>">
               </mm:import>
-
               <mm:remove referid="objecttype"/>
               <mm:import id="objecttype"><mm:nodeinfo type="type"/></mm:import>
               <mm:compare referid="objecttype" value="attachments">
@@ -405,17 +349,11 @@
                 <di:cell>&nbsp;</di:cell> <!-- TODO still empty -->
                 <di:cell><mm:field name="date"></mm:field></di:cell> <!-- TODO show correct date -->
               </mm:compare>
-
   		    </di:row>
-
   		  </mm:listnodes>
-
         </di:table>
-
       </mm:listnodescontainer>
-
     </mm:node>
-
   </div>
 </div>
 </div>
@@ -435,7 +373,6 @@
       }
 
 </script>
-
 
 </mm:cloud>
 </mm:content>
