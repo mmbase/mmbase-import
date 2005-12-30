@@ -45,7 +45,7 @@ import org.mmbase.util.XMLBasicReader;
  * in the MMBase config/taglib directory to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.7 2005-12-24 13:18:47 andre Exp $
+ * @version $Id: EditTag.java,v 1.8 2005-12-30 13:48:09 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  * @since MMBase-1.8
@@ -246,4 +246,19 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         
         log.debug("register nodenr '" + nodenr + "' and fieldName '" + fieldName + "'");
     }   
+
+    
+    // if EVAL_BODY == EVAL_BODY_BUFFERED
+    public int doAfterBody() throws JspTagException {
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            try {
+                if (bodyContent != null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch (IOException ioe) {
+                throw new TaglibException(ioe);
+            }
+        }
+        return SKIP_BODY;
+    }
 }
