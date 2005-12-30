@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.55 2005-12-29 15:17:22 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.56 2005-12-30 14:24:43 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -429,10 +429,9 @@ public class BasicSqlHandler implements SqlHandler {
         // Tables
         sb.append(" FROM ");
         Iterator iSteps = query.getSteps().iterator();
-        Step previousStep = null;
         while (iSteps.hasNext()) {
             Step step = (Step) iSteps.next();
-            appendTableName(sb, step, previousStep);
+            appendTableName(sb, step);
 
             if (iSteps.hasNext()) {
                 sb.append(",");
@@ -468,7 +467,6 @@ public class BasicSqlHandler implements SqlHandler {
             if (step instanceof RelationStep){
                 appendRelationConstraints(sbRelations, (RelationStep) step, multipleSteps);
             }
-            previousStep = step;
         }
 
         // Constraints
@@ -525,27 +523,32 @@ public class BasicSqlHandler implements SqlHandler {
      * @param step
      * @since MMBase-1.8
      */
-    protected void appendTableName(StringBuffer sb, Step step, Step previousStep) {
-        String tableName = step.getTableName();
-        String tableAlias = step.getAlias();
-
+    protected void appendTableName(StringBuffer sb, Step step) {
         // Tablename, prefixed with basename and underscore
         sb.append(mmbase.getBaseName()).
-        append("_").
+        append('_').
         //Currently no replacement strategy is implemented for
         //invalid tablenames.
         //This would be useful, but requires modification to
         //the insert/update/delete code as well.
         //append(getAllowedValue(tableName));
-        append(tableName);
+        append(step.getTableName());
 
+        appendTableAlias(sb, step);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected void appendTableAlias(StringBuffer sb, Step step) {
+        String tableAlias = step.getAlias();
         // Table alias (tablename when table alias not set).
         if (tableAlias != null) {
             sb.append(" ").
-            append(getAllowedValue(tableAlias));
+                append(getAllowedValue(tableAlias));
         } else {
             sb.append(" ").
-            append(getAllowedValue(tableName));
+                append(getAllowedValue(step.getTableName()));
         }
     }
 
