@@ -2,10 +2,7 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
   <mm:import externid="node" required="true"/>
-   <mm:import externid="node2" required="true"/>
-  
-
-  
+  <mm:import externid="node2"/>
   <%@include file="/shared/setImports.jsp" %>
   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/portalpages/css/base.css" objectlist="$includePath" referids="$referids" />" />
   <mm:import jspvar="helpLink"><%=request.getRequestURL()%>?node=<mm:write referid="node"/></mm:import>
@@ -213,12 +210,6 @@
         </tr>
         </table> 
       </p>  
-  
   </mm:node>
-  
-  
- 
-  
-  
 </mm:cloud>
 </mm:content>
