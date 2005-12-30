@@ -29,7 +29,9 @@ import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.DocumentReader;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -44,7 +46,7 @@ import org.mmbase.util.XMLBasicReader;
  * in the MMBase config/taglib directory to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.9 2005-12-30 17:13:00 michiel Exp $
+ * @version $Id: EditTag.java,v 1.10 2005-12-30 21:26:15 andre Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  * @since MMBase-1.8
@@ -52,51 +54,51 @@ import org.mmbase.util.XMLBasicReader;
 public class EditTag extends ContextReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
-    private static final Map edittagTypes = new HashMap();		// edittagtype -> class
+    private static final Map edittagTypes = new HashMap();      // edittagtype -> class
     
     static {
-    	try {
-			org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD edittagtypes 1.0//EN", "edittagtypes_1_0.dtd", EditTag.class);
+        try {
+            org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD edittagtypes 1.0//EN", "edittagtypes_1_0.dtd", EditTag.class);
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
-				public void onChange(String resource) {
-					edittagTypes.clear();
-					
-					// default: reading from taglib jar in case no other resources exist
-					InputStream stream = EditTag.class.getResourceAsStream("resources/edittag.xml");
-					if (stream != null) {	// fallback in case config/taglib may not exist
-						log.info("Reading default edittag resource: " + EditTag.class.getName() + "/resources/edittag.xml");
-						
-						InputSource ettypes = new InputSource(stream);
-						readXML(ettypes);
-					}
-					
-					ResourceLoader taglibLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib");
-					List resources = taglibLoader.getResourceList(resource);
-					log.info("Found edittag resources: " + resources);
-					
-					ListIterator i = resources.listIterator();
-					while (i.hasNext()) {
-						try {
-							URL u = (URL) i.next();
-							log.info("Reading edittag resource: " + u);
-							URLConnection con = u.openConnection();
-							if (con.getDoInput()) {
-								InputSource source = new InputSource(con.getInputStream());
-								readXML(source);
-							}
-						} catch (Exception e) {
-							log.error("Error connecting or resource not found: " + e);
-						}
-					}
-				}
-			};
+                public void onChange(String resource) {
+                    edittagTypes.clear();
+                    
+                    // default: reading from taglib jar in case no other resources exist
+                    InputStream stream = EditTag.class.getResourceAsStream("resources/edittag.xml");
+                    if (stream != null) {   // fallback in case config/taglib may not exist
+                        log.info("Reading default edittag resource: " + EditTag.class.getName() + "/resources/edittag.xml");
+                        
+                        InputSource ettypes = new InputSource(stream);
+                        readXML(ettypes);
+                    }
+                    
+                    ResourceLoader taglibLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib");
+                    List resources = taglibLoader.getResourceList(resource);
+                    log.info("Found edittag resources: " + resources);
+                    
+                    ListIterator i = resources.listIterator();
+                    while (i.hasNext()) {
+                        try {
+                            URL u = (URL) i.next();
+                            log.info("Reading edittag resource: " + u);
+                            URLConnection con = u.openConnection();
+                            if (con.getDoInput()) {
+                                InputSource source = new InputSource(con.getInputStream());
+                                readXML(source);
+                            }
+                        } catch (Exception e) {
+                            log.error("Error connecting or resource not found: " + e);
+                        }
+                    }
+                }
+            };
             watcher.add("edittag.xml");
             watcher.start();
             watcher.onChange("edittag.xml");
-			
-		} catch (Exception e){
-			log.error(e.toString());
-		}
+            
+        } catch (Exception e){
+            log.error(e.toString());
+        }
     }
     
     /**
@@ -107,17 +109,17 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         DocumentReader reader  = new DocumentReader(edittagSource, EditTag.class);
         Element root = reader.getElementByPath("edittagtypes");
         
-		Iterator i = reader.getChildElements(root, "editor");
-		while (i.hasNext()) {
-			Element element = (Element) i.next();
-			String type = element.getAttribute("type");
-			String claz = reader.getElementValue(reader.getElementByPath(element, "editor.class"));
-    	    log.debug("type: " + type + " and class: " + claz);
-			if (!claz.equals("") && !edittagTypes.containsKey(type) ) {
-				edittagTypes.put(type, claz);
-				log.info("Found and added editor type: '" + type + "' with class: '" + claz + "'");
-			} 
-		}
+        Iterator i = reader.getChildElements(root, "editor");
+        while (i.hasNext()) {
+            Element element = (Element) i.next();
+            String type = element.getAttribute("type");
+            String claz = reader.getElementValue(reader.getElementByPath(element, "editor.class"));
+            log.debug("type: " + type + " and class: " + claz);
+            if (!claz.equals("") && !edittagTypes.containsKey(type) ) {
+                edittagTypes.put(type, claz);
+                log.info("Found and added editor type: '" + type + "' with class: '" + claz + "'");
+            } 
+        }
     }
     
     private Attribute type = Attribute.NULL;
@@ -177,11 +179,13 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      */    
     public int doStartTag() throws JspTagException {
         log.debug("doStartTag of EditTag");
+        
         // clear lists (in case of tag caching, the previous values may be present.)
         queryList.clear();
         parameters.clear();
         nodenrList.clear();
-        fieldList.clear();                
+        fieldList.clear();
+        
         String className = (String) edittagTypes.get(getType());
         log.debug("Using editor: " + className);
         Class c = null;
@@ -212,11 +216,8 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         yaeditor.setNodenrList(nodenrList);
         yaeditor.setFieldList(fieldList);
         
-        yaeditor.registerFields(queryList, nodenrList, fieldList);
-        
-        // resulting String
-        editorstr = yaeditor.getEditorHTML();
-        //yaeditor.getEditorHTML(getPageContext());
+        // yaeditor.registerFields(queryList, nodenrList, fieldList);
+        yaeditor.getEditorHTML(getPageContext());
         
         helper.setValue(editorstr);
         helper.useEscaper(false);
@@ -235,15 +236,13 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      */ 
     public void registerField(Query query, int nodenr, String fieldName) {
         if (log.isDebugEnabled()) {
-            log.debug("query: " + query);
             log.debug("nodenr: " + nodenr);
             log.debug("fieldName: " + fieldName);
+            log.debug("query: " + query);
         }
         queryList.add(query);
         nodenrList.add(String.valueOf(nodenr));
         fieldList.add(fieldName);
-        
-        log.debug("register nodenr '" + nodenr + "' and fieldName '" + fieldName + "'");
     }   
 
     
