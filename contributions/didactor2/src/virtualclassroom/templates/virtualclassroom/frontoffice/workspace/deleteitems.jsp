@@ -100,7 +100,7 @@
   <div class="contentBodywit">
 
     <%-- Show the form --%>
-    <form name="deletefolderitems" method="post" action="<mm:treefile page="/workspace/deleteitems.jsp" objectlist="$includePath" referids="$referids"/>">
+    <form name="deletefolderitems" method="post" action="<mm:treefile page="/virtualclassroom/frontoffice/workspace/deleteitems.jsp" objectlist="$includePath" referids="$referids"/>">
       <di:translate key="workspace.deletefolderitemsyesno" />
       <p/>
 

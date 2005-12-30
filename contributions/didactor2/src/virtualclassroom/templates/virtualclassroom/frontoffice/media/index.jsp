@@ -2,7 +2,8 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
-  <%@include file="/shared/setImports.jsp" %>
+  <%@include file="/shared/setImports.jsp" %>  
+  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/virtualclassroom/css/base.css" objectlist="$includePath" referids="$referids" />" />  
   <mm:node number="$user" notfound="skipbody">
     <!-- b>&nbsp;<di:translate key="virtualclassroom.sessionfiles"/></b><br/><br/-->
     <%//first we try direct relation with education  %>
