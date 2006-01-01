@@ -13,12 +13,9 @@ package org.mmbase.bridge.util;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicFieldValue;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.DataType;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
@@ -31,7 +28,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implemenation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.3 2005-12-29 22:05:15 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.4 2006-01-01 21:45:19 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -492,10 +489,10 @@ public abstract class AbstractNode implements Node {
     }
 
     public final RelationList getRelations(String role, NodeManager nodeManager) {
-        if (getNodeManager() == null) {
+        if (nodeManager == null) {
             return getRelations(role);
         } else {
-            return getRelations(role, getNodeManager().getName());
+            return getRelations(role, nodeManager.getName());
         }
     }
 
