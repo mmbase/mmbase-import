@@ -11,7 +11,7 @@ import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
 
 /**
- * An example cron-job. 
+ * An example cron-job.
  *
  * A Job to log MMBase statistics to a logger. (By means of logj4 you can configure the time stamp and logfile location).
  * The configuration string is one of the following
@@ -23,7 +23,7 @@ In log4j.xml you may add something like this:
 <pre>
   &lt;appender name="stats" class="org.apache.log4j.FileAppender" &gt;
     &lt;param name="File" value="/tmp/mmbase.stats" /&gt;
-    &lt;param name="Encoding"   value="UTF-8" /&gt;    
+    &lt;param name="Encoding"   value="UTF-8" /&gt;
     &lt;layout class="org.apache.log4j.PatternLayout"&gt;
       &lt;param name="ConversionPattern" value="%d{YYYY-MM-dd HH:mm:ss} %c{1} %m%n" /&gt;
     &lt;/layout&gt;
@@ -35,9 +35,9 @@ and:
     &lt;level class="&mmlevel;" value ="service" /&gt;
     &lt;appender-ref ref="stats" /&gt;
   &lt;/logger&gt;
-</pre> 
+</pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.1 2004-10-05 11:32:18 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.2 2006-01-02 22:00:18 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -49,9 +49,9 @@ public class MMBaseStatsJob extends AbstractCronJob  {
     private Cache cache = null; // used if type == CACHE
 
     private Logger statsLogger;
-    
+
     protected void init() {
-        // determin what needs to be done in run().       
+        // determin what needs to be done in run().
         String what = cronEntry.getConfiguration();
         statsLogger = Logging.getLoggerInstance("org.mmbase.STATS." + what);
         String w = what.toUpperCase();
@@ -60,14 +60,14 @@ public class MMBaseStatsJob extends AbstractCronJob  {
         } else if (w.startsWith("CACHE.")) {
             type = CACHE;
             if (! getCache()) {
-                log.warn("No cache with name " + cronEntry.getConfiguration().substring(6)  + " found.");
+                log.info("No cache with name " + cronEntry.getConfiguration().substring(6)  + " found (yet).");
             }
 
         }
 
     }
     /**
-     * Fills the 'cache' member. 
+     * Fills the 'cache' member.
      * @return Whether successful.
      */
     private boolean getCache() {
@@ -91,7 +91,7 @@ public class MMBaseStatsJob extends AbstractCronJob  {
             Runtime runtime = Runtime.getRuntime();
             statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
             break;
-        }            
-        } 
+        }
+        }
     }
 }
