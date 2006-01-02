@@ -14,6 +14,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.core.AbstractDescriptor;
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 import java.util.*;
 import java.io.*;
 
@@ -26,11 +27,12 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.27 2005-12-17 20:55:57 michiel Exp $
+ * @version $Id: Parameter.java,v 1.28 2006-01-02 16:18:08 michiel Exp $
  * @see Parameters
  */
 
 public class Parameter extends AbstractDescriptor implements java.io.Serializable {
+    private static final Logger log = Logging.getLoggerInstance(Parameter.class);
 
     private static final long serialVersionUID = 1L;
     /**
@@ -223,6 +225,10 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      */
     protected Object autoCast(Object value) {
         return dataType.cast(value, null, null);
+    }
+
+    public int hashCode() {
+        return getName().hashCode() + 13 * getDataType().hashCode();
     }
 
     /**
