@@ -13,7 +13,6 @@ import java.util.Map;
 
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.clustering.ClusterManager;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.UtilReader;
@@ -23,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.5 2005-10-09 14:56:17 ernst Exp $
+ * @version $Id: Unicast.java,v 1.6 2006-01-02 14:33:37 nklasens Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -77,7 +76,7 @@ public class Unicast extends ClusterManager {
      * @see org.mmbase.clustering.ClusterManager#startCommunicationThreads()
      */
     protected void startCommunicationThreads() {
-        ucs = new ChangesSender(unicastPort, unicastTimeout, nodesToSend, mmbase);
+        ucs = new ChangesSender(unicastPort, unicastTimeout, nodesToSend);
         ucr = new ChangesReceiver(unicastPort, nodesToSpawn);
     }
 
