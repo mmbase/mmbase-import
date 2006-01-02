@@ -11,8 +11,9 @@ package org.mmbase.core.event;
 
 import java.io.IOException;
 import java.util.*;
+import java.net.URL;
 
-import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
@@ -27,8 +28,8 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * will propagate all events. The class is set up as a singleton, with lazy instantiation. When the
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
- * @since   1.8
- * @version $Id: EventManager.java,v 1.4 2005-10-13 10:51:53 michiel Exp $
+ * @since   MMBase-1.8
+ * @version $Id: EventManager.java,v 1.5 2006-01-02 16:22:36 michiel Exp $
  */
 public class EventManager {
 
@@ -62,41 +63,6 @@ public class EventManager {
         return eventManager;
     }
 
-    public static void configure() {
-        try {
-            Document config = ResourceLoader.getConfigurationRoot().getDocument("eventmanager.xml");
-            if (config == null) {
-                log.fatal("Resource " + ResourceLoader.getConfigurationRoot().getResource("eventmanager.xml") + " could not be found. This means that query-invalidation does not work correctly now. Proceeding anyway.");
-                return;
-            }
-            DocumentReader configReader = new DocumentReader(config);
-
-            log.debug("configuring the event manager");
-            // make sure we have an instance
-            getInstance();
-
-            // find the event brokers
-            Iterator e = configReader.getChildElements("eventmanager.brokers", "broker");
-            while (e.hasNext()) {
-                Element element = (Element) e.next();
-                String className = element.getAttribute("class");
-                AbstractEventBroker broker = (AbstractEventBroker) findInstance(className);
-                if (broker != null) {
-                    log.debug("adding event broker: " + broker);
-                    eventManager.addEventBroker(broker);
-                }
-            }
-        } catch (SAXException e1) {
-            log.error("something went wrong configuring the event system");
-
-            log.error(e1);
-        } catch (IOException e1) {
-            log.error("something went wrong configuring the event system");
-            log.error(e1);
-            e1.printStackTrace();
-        }
-    }
-
     private static Object findInstance(String className) {
         if (className == null || "".equals(className)) return null;
         try {
@@ -116,22 +82,71 @@ public class EventManager {
         return null;
     }
 
-    private EventManager() {}
+    protected ResourceWatcher watcher = new ResourceWatcher() {
+            public void onChange(String w) {
+                configure(w);
+            }
+        };
 
+    private EventManager() {
+        watcher.add("eventmanager.xml");
+        watcher.onChange();
+        watcher.start();
+    }
+
+
+    protected void configure(String resource) {
+        log.service("Configuring the event manager");
+        eventBrokers.clear();
+        Iterator i =  ResourceLoader.getConfigurationRoot().getResourceList(resource).iterator();
+        while (i.hasNext()) {
+            URL url = (URL) i.next();
+            try {
+                if (url.openConnection().getDoInput()) {
+                    
+                    Document config = ResourceLoader.getDocument(url, true, EventManager.class);
+                    DocumentReader configReader = new DocumentReader(config);
+                    
+                    // find the event brokers
+                    Iterator e = configReader.getChildElements("eventmanager.brokers", "broker");
+                    while (e.hasNext()) {
+                        Element element = (Element) e.next();
+                        String className = element.getAttribute("class");
+                        AbstractEventBroker broker = (AbstractEventBroker) findInstance(className);
+                        if (broker != null) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("adding event broker: " + broker);
+                            }
+                            addEventBroker(broker);
+                        }
+                    }
+                }
+            } catch (SAXException e1) {
+                log.error("Something went wrong configuring the event system (" + url + "): " + e1.getMessage(), e1);
+            } catch (IOException e1) {
+                log.error("something went wrong configuring the event system (" + url + "): " + e1.getMessage(), e1);
+                
+            }
+        }
+        if (eventBrokers.size() == 0) {
+            log.fatal("No event brokers could not be found. This means that query-invalidation does not work correctly now. Proceeding anyway.");
+            return;
+        }
+    }
     /**
      * add an event broker for a specific type of event
      * @param broker
-     * @since MMBase-1.8
      */
     public void addEventBroker(AbstractEventBroker broker) {
-        log.service("adding broker" + broker);
+        if (log.isServiceEnabled()) {
+            log.service("adding broker " + broker);
+        }
         eventBrokers.add(broker);
     }
 
     /**
      * remove a broker for a specific type of event
      * @param broker
-     * @since MMBase-1.8
      */
     public void removeEventBroker(AbstractEventBroker broker) {
         eventBrokers.remove(broker);
@@ -139,30 +154,28 @@ public class EventManager {
 
     /**
      * @param listener
-     * @since MMBase-1.8
      */
     public void addEventListener(EventListener listener) {
-        log.debug("adding listener " + listener);
-        AbstractEventBroker[] brokers = findBrokersFor(listener);
-        if (brokers != null) {
-            for (int i = 0; i < brokers.length; i++) {
-                brokers[i].addListener(listener);
-                log.debug("listener added to " + brokers[i]);
-            }
+        if (log.isDebugEnabled()) {
+            log.debug("adding listener " + listener);
+        }
+        BrokerIterator i =  findBrokers(listener);
+        while (i.hasNext()) {            
+            i.nextBroker().addListener(listener);
         }
     }
 
+
     /**
      * @param listener
-     * @since MMBase-1.8
      */
     public void removeEventListener(EventListener listener) {
-        log.debug("removing listener of type : " + listener.getClass().getName());
-        AbstractEventBroker[] brokers = findBrokersFor(listener);
-        if (brokers != null) {
-            for (int i = 0; i < brokers.length; i++) {
-                brokers[i].removeListener(listener);
-            }
+        if (log.isDebugEnabled()) {
+            log.debug("removing listener of type: " + listener.getClass().getName());
+        }
+        BrokerIterator i = findBrokers(listener);
+        while (i.hasNext()) {
+            i.nextBroker().removeListener(listener);
         }
     }
 
@@ -172,36 +185,72 @@ public class EventManager {
      * (if the handling broker supports those
      * @see AbstractEventBroker
      * @param event
-     * @since MMBase-1.8
      */
     public void propagateEvent(Event event) {
         for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
             AbstractEventBroker broker = (AbstractEventBroker) i.next();
             if (broker.canBrokerForEvent(event)) {
                 broker.notifyForEvent(event);
-                log.debug("event: " + event.toString() + " has been accepted by broker " + broker.toString());
+                if (log.isDebugEnabled()) {
+                    log.debug("event: " + event + " has been accepted by broker " + broker);
+                }
             }
         }
     }
+
 
     /**
      * @param listener
-     * @since MMBase-1.8
      */
-    private AbstractEventBroker[] findBrokersFor(EventListener listener) {
-        log.debug("try to find broker for " + listener);
-
-        List result = new ArrayList();
-        for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
-            AbstractEventBroker broker = (AbstractEventBroker) i.next();
-            log.debug("evaluating broker " + broker);
-            if (broker.canBrokerForListener(listener)) {
-                log.debug("broker " + broker + " can broker for eventlistener.");
-                result.add(broker);
-            }
+    private BrokerIterator findBrokers(final EventListener listener) {
+        if (log.isDebugEnabled()) {
+            log.debug("try to find broker for " + listener);
         }
-        if (result.size() > 0) { return (AbstractEventBroker[]) result.toArray(new AbstractEventBroker[result.size()]); }
-        return null;
+        return new BrokerIterator(eventBrokers.iterator(), listener);
     }
+
+    private static class BrokerIterator implements Iterator {
+        AbstractEventBroker next;
+        final Iterator i;
+        final EventListener listener;
+        BrokerIterator(final Iterator i, final EventListener listener) {
+            this.i = i;
+            this.listener = listener;
+            findNext();
+        }
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+        public Object next() {
+            return nextBroker();
+        }
+        public boolean hasNext() {
+            return next != null;
+        }
+        public AbstractEventBroker nextBroker() {
+            if (next == null) throw new NoSuchElementException();
+            AbstractEventBroker n = next;
+            findNext();
+            return n;
+        }
+        protected void findNext() {
+            while(i.hasNext()) {
+                AbstractEventBroker broker = (AbstractEventBroker) i.next();
+                if (broker.canBrokerForListener(listener)) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("broker " + broker + " can broker for eventlistener.");
+                    }
+                    next = broker;
+                    return;
+                } else if (log.isDebugEnabled()) {
+                    log.debug("broker " + broker + " cannot boker for eventlistener.");
+                }
+            }
+            next = null;
+        }
+        
+    }
+
+   
 
 }
