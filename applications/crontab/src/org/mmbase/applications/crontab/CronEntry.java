@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.2 2005-05-24 19:15:49 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.3 2006-01-02 22:01:05 michiel Exp $
  */
 
 public class CronEntry {
@@ -158,7 +158,9 @@ public class CronEntry {
         hour.setTimeVal(st.nextToken());
         dayOfMonth.setTimeVal(st.nextToken());
         month.setTimeVal(st.nextToken());
-        dayOfWeek.setTimeVal(st.nextToken());
+        String dow = st.nextToken();
+
+        dayOfWeek.setTimeVal(dow);
     }
 
     public String getCronTime() {
@@ -231,17 +233,17 @@ public class CronEntry {
 
     /**
      * Convert a jobType int to a jobType String. invalid types are accepted and return DEFAULT_JOB_TYPE_STRING
-     * @param type the job type 
-     * @return The string representation of the job type 
+     * @param type the job type
+     * @return The string representation of the job type
      */
     public static String jobTypeToString(int type) {
         switch (type) {
-            case SHORT_JOB_TYPE :
-                return SHORT_JOB_TYPE_STRING;
-            case MUSTBEONE_JOB_TYPE :
-                return MUSTBEONE_JOB_TYPE_STRING;
-            case CANBEMORE_JOB_TYPE :
-                return CANBEMORE_JOB_TYPE_STRING;
+        case SHORT_JOB_TYPE :
+            return SHORT_JOB_TYPE_STRING;
+        case MUSTBEONE_JOB_TYPE :
+            return MUSTBEONE_JOB_TYPE_STRING;
+        case CANBEMORE_JOB_TYPE :
+            return CANBEMORE_JOB_TYPE_STRING;
         }
         return DEFAULT_JOB_TYPE_STRING;
     }
@@ -250,7 +252,7 @@ public class CronEntry {
      * Convert a jobType String to a jobType int. first the string is lowered cased and trimed.
      * null values and invalid values are accepted and return the DEFAULT_JOB_TYPE
      * @param type the string representation of the job type
-     * @return the int representation of the jobType 
+     * @return the int representation of the jobType
      */
     public static int stringToJobType(String type) {
 
@@ -261,7 +263,6 @@ public class CronEntry {
 
         if (type.equals(SHORT_JOB_TYPE_STRING)) {
             return SHORT_JOB_TYPE;
-
         } else if (type.equals(MUSTBEONE_JOB_TYPE_STRING)) {
             return MUSTBEONE_JOB_TYPE;
         } else if (type.equals(CANBEMORE_JOB_TYPE_STRING)) {
