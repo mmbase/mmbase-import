@@ -12,7 +12,6 @@ package org.mmbase.clustering.multicast;
 import java.util.Map;
 
 import org.mmbase.clustering.ClusterManager;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.UtilReader;
@@ -27,7 +26,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.3 2005-10-09 14:56:17 ernst Exp $
+ * @version $Id: Multicast.java,v 1.4 2006-01-02 14:33:56 nklasens Exp $
  */
 public class Multicast extends ClusterManager {
 

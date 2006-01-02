@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import org.mmbase.clustering.ClusterManager;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.UtilReader;
@@ -39,7 +38,7 @@ import org.jgroups.*;
  * @author Nico Klasens 
  * @author Costyn van Dongen 
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.3 2005-10-09 14:56:17 ernst Exp $
+ * @version $Id: Multicast.java,v 1.4 2006-01-02 14:33:56 nklasens Exp $
  */
 public class Multicast extends ClusterManager {
 
