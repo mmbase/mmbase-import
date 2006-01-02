@@ -58,6 +58,7 @@ public abstract class MMBaseTest extends TestCase {
     static public void startDatabase() {
         // first try if it is running already
         try {
+            Thread.sleep(5000);
             Class.forName("org.hsqldb.jdbcDriver" );
         } catch (Exception e) {
             System.err.println("ERROR: failed to load HSQLDB JDBC driver." + e.getMessage());
