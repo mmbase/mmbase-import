@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.20 2006-01-02 21:39:18 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.21 2006-01-02 22:35:44 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -325,6 +325,13 @@ public class DocumentReader  {
     }
 
     /**
+     * @since MMBase-1.8
+     */
+    public void setSystemId(String url) {
+        systemId = url;
+    }
+
+    /**
      * @param e Element
      * @return Tag name of the element
      */
@@ -348,10 +355,11 @@ public class DocumentReader  {
      * @return Value of attribute
      */
     public String getElementAttributeValue(Element e, String attr) {
-        if (e == null)
+        if (e == null) {
             return "";
-        else
+        } else {
             return e.getAttribute(attr);
+        }
     }
 
     /**
