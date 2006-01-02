@@ -33,13 +33,13 @@ import org.mmbase.util.logging.Logger;
  * XMLBasicReader, which adds path-like methods with which to retrieve elements.
  *
  * This can also be a class for general static dom utilities.
- * 
+ *
  *
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.19 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: DocumentReader.java,v 1.20 2006-01-02 21:39:18 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -171,7 +171,7 @@ public class DocumentReader  {
             dfactory.setValidating(validating);
             if (validating && xsd) {
                 try {
-                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", 
+                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
                                           "http://www.w3.org/2001/XMLSchema");
                 } catch (IllegalArgumentException iae) {
                     if (! warnedJAXP12) {
@@ -213,7 +213,7 @@ public class DocumentReader  {
     public static DocumentBuilder getDocumentBuilder(boolean validating) {
         return DocumentReader.getDocumentBuilder(validating, null, null);
     }
-    
+
     /**
      * See {@link #getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
      */
@@ -303,11 +303,11 @@ public class DocumentReader  {
         for (int i = 0; i < attributes.getLength(); i++) {
             Attr attribute = (Attr) (attributes.item(i).cloneNode(true));
             dest.setAttributeNode(attribute);
-            
+
         }
         NodeList childs = copy.getElementsByTagName("*");
         for (int i = 0; i < childs.getLength() ; i++) {
-            dest.appendChild(childs.item(i));            
+            dest.appendChild(childs.item(i));
         }
         document.normalize();
         return document;
@@ -487,8 +487,11 @@ public class DocumentReader  {
     }
 
     public static void main(String[] argv) throws Exception {
-        DocumentReader doc =  new DocumentReader(new InputSource(new java.io.FileInputStream(argv[0])));
+        Document d = org.mmbase.util.ResourceLoader.getDocument(new java.io.File(argv[0]).toURL(), true, null);
+        /*
+        DocumentReader doc =  new DocumentReader(d);
         System.out.println(XMLWriter.write(toDocument(doc.getRootElement()), true, false));
+        */
     }
 
 }
