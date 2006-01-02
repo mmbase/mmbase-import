@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.24 2005-12-30 15:26:04 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.25 2006-01-02 11:56:50 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -169,7 +169,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     protected Cloud getCloud(Locale locale) {
         CloudContext context = ContextProvider.getDefaultCloudContext();
         if (context.isUp()) {
-            Cloud cloud = context.getCloud("mmbase");
+            Cloud cloud = context.getCloud("mmbase", "class", null);
             if (locale != null) cloud.setLocale(locale);
             return cloud;
         } else {
@@ -318,7 +318,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                     if (cloud == null) {
                         cloud = getCloud(null);
                         if (cloud == null) {
-                            log.warn("Found query but didn't provide cloud, skipping");
+                            log.debug("Found query but didn't provide cloud, skipping");
                             continue;
                         }
                     }
