@@ -37,6 +37,7 @@ public class Clustering extends BridgeTest {
             NodeManager aa1 = cloud1.getNodeManager("aa");
             NodeManager bb2 = cloud2.getNodeManager("bb");
             aa2list = aa2.getList(null, null, null); // cache list result
+            aa1.getList(null, null, null); // cache list result
             nodea1 = aa1.createNode();
             nodea1.commit();
             NodeQuery nq = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, "related", "both");
@@ -50,7 +51,8 @@ public class Clustering extends BridgeTest {
 
 
     /**
-     * It's no hard requirment that changes are visibility immediately on the other side. So, sometime wait a bit, to be on the safe side.
+     * It's no hard requirment that changes are visibility immediately on the other side. So, sometime wait a bit, to be 
+     * on the safe side.
      */
     protected void allowLatency() {
         try {
@@ -75,15 +77,21 @@ public class Clustering extends BridgeTest {
     }
 
     public void testCreateNode() {
+        assertTrue(cloud2.hasNode(nodea1.getNumber()));
         Node nodea2 = cloud2.getNode(nodea1.getNumber());
         fieldEquals(nodea1, nodea2);
     }
 
     public void testList() {
+        NodeList aa2List1 = cloud1.getNodeManager("aa").getList(null, null, null); // a node of type aa was created, so list must now be size 1.
+        assertTrue(aa2List1.size() == 1);
+
         NodeManager aa2 = cloud2.getNodeManager("aa");
-        NodeList aa2list2 = aa2.getList(null, null, null); // should not give error
+        NodeList aa2list2 = aa2.getList(null, null, null); // should not give error, but may be size 0, because still in cache
         allowLatency();
-        aa2list2 = aa2.getList(null, null, null);
+        aa2list2 = aa2.getList(null, null, null); // should also be size 1!
+        assertTrue("List before create was not size 0", aa2list.size() == 0); // was determined before the createNode, should still be 0.
+
         assertTrue("Check wether node-list got invalidated failed " +  aa2list2.size()  + " != " + aa2list.size() + " + 1", aa2list2.size() == aa2list.size() + 1);
     }
 
@@ -157,7 +165,7 @@ public class Clustering extends BridgeTest {
         assertTrue(cloud1.hasNodeManager("zz"));
         assertTrue(zz1 != null);
         if (cloud2.hasNodeManager("zz")) {
-            throw new RuntimeException("Odd, the 'zz' node-manager should only appear in cloud 1 now!, appears in cloud 2 too. Something wrong with test-case, of this issue was solved, and these test-cases need review then.");
+            throw new RuntimeException("Odd, the 'zz' node-manager should only appear in cloud 1 now!, appears in cloud 2 too. Something wrong with test-case, or this issue was solved, and these test-cases need review then.");
         }
 
     }
@@ -167,8 +175,15 @@ public class Clustering extends BridgeTest {
         // this type.
         Node zNode = cloud1.getNodeManager("zz").createNode();
         zNode.commit();
-        Node zNode2 = cloud2.getNode(zNode.getNumber());
-        assertTrue("A node of unknown type falls back to 'object'", zNode2.getNodeManager().getName().equals("object"));
+        // allowLatency(); no need, this is a _new_ node! Must result in database action any way, it should be in database!
+
+
+        if (cloud2.hasNode(zNode.getNumber())) {
+            Node zNode2 = cloud2.getNode(zNode.getNumber());
+            assertTrue("A node of unknown type falls back to 'object'", zNode2.getNodeManager().getName().equals("object"));
+        } else {
+            fail("New node " + zNode + " (of unknown type in cloud 2) is not contained by cloud 2");
+        }
 
     }
 
@@ -183,12 +198,18 @@ public class Clustering extends BridgeTest {
         Relation r1 = nodea1.createRelation(zNode1, rm); r1.commit();
         Relation r2 = nodea1.createRelation(zNode2, rm); r2.commit();
 
-        // now ask the number of related nodes from nodea1;
-        Node nodea2 = cloud2.getNode(nodea1.getNumber());
+        allowLatency();
 
-        List related1 = nodea1.getRelatedNodes();
-        List related2 = nodea2.getRelatedNodes();
-        assertTrue("relatednodes " + related1 + " != " + related2, related1.size() == related2.size());
+        if(cloud2.hasNode(nodea1.getNumber())) {
+            // now ask the number of related nodes from nodea1;
+            Node nodea2 = cloud2.getNode(nodea1.getNumber());
+            
+            List related1 = nodea1.getRelatedNodes();
+            List related2 = nodea2.getRelatedNodes();
+            assertTrue("relatednodes " + related1 + " != " + related2, related1.size() == related2.size());
+        } else {
+            fail("Node " + nodea1 + " is not contained by cloud 2");
+        }
 
     }
 
