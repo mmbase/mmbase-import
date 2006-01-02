@@ -16,6 +16,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import javax.servlet.jsp.PageContext;
 
 import org.mmbase.util.Entry;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.Entry;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.5 2005-12-05 23:53:15 michiel Exp $
+ * @version $Id: YAMMEditor.java,v 1.6 2006-01-02 14:53:49 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.EditTag
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @since MMBase-1.8
@@ -60,7 +61,7 @@ public class YAMMEditor extends Editor {
      *
      * @return  A String with a link and an icon to access yammeditor.jsp
      */
-    public String getEditorHTML() {
+    public void getEditorHTML(PageContext context) throws IOException {
         String html = "Sorry. You should see an icon and a link to yammeditor here.";
         
         // Parameters 
@@ -78,7 +79,7 @@ public class YAMMEditor extends Editor {
         
         html = makeHTML(url, icon);
         // log.debug("returning: " + html);
-        return html;
+        context.getOut().write(html);
     }
     
     /**

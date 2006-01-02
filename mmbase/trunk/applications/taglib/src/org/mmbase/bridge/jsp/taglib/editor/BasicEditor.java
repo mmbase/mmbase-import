@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  * 
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.1 2005-12-30 22:28:38 andre Exp $
+ * @version $Id: BasicEditor.java,v 1.2 2006-01-02 14:53:49 michiel Exp $
  * @see EditTag
  * @see Editor
  * @since MMBase-1.8
@@ -43,7 +43,7 @@ public class BasicEditor extends Editor {
      * 
      * @param   context The PageContext
      */
-    public void getEditorHTML(PageContext context) {
+    public void getEditorHTML(PageContext context) throws IOException {
         
         String nodenr = "";
         if (!nodenrList.isEmpty()) {    // get the first node from this list to edit
@@ -65,11 +65,8 @@ public class BasicEditor extends Editor {
         
         String str = makeHTML(context, url, icon, nodenr);
         log.debug("returning: " + str);
-        try { 
-            context.getOut().write(str);
-        } catch (IOException ioe){
-            log.error("Error writing to PageContext: " + ioe);
-        }
+        context.getOut().write(str);
+
     }
     
     /**
