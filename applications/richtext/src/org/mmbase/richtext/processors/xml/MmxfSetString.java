@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.5 2005-12-13 14:31:03 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.6 2006-01-02 16:57:25 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -581,7 +581,7 @@ public class MmxfSetString implements  Processor {
         NodeList linkedAttachment = get(cloud, relatedAttachments, "idrel.id", id);
         if (! linkedAttachment.isEmpty()) {
             // ok, already related!
-            log.service("" + attachment + " image already correctly related, nothing needs to be done");
+            log.service("" + attachment + " attachment (class='" + klass + "') already correctly related, nothing needs to be done");
             Node idrel = linkedAttachment.getNode(0).getNodeValue("idrel");
             if (!idrel.getStringValue("class").equals(klass)) {
                 idrel.setStringValue("class", klass);
@@ -589,7 +589,7 @@ public class MmxfSetString implements  Processor {
             }
             
         } else {
-            log.service(" to " + attachment + ", creating new relation");
+            log.service(" to " + attachment + "(class='" + klass+ "'), creating new relation");
             RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), attachments, "idrel");
             Relation newIdRel = rm.createRelation(editedNode, attachment);
             newIdRel.setStringValue("id", id);
@@ -781,8 +781,6 @@ public class MmxfSetString implements  Processor {
                 try {
                     Element a = (Element) linkIterator.next();
                     String href = getHref(a, cloud);
-                    String klass = a.getAttribute("class");
-                    String id = a.getAttribute("id");
                     Matcher mmbaseMatcher =  mmbaseUrl.matcher(href);
                     if (handleImage(href, a, usedImages, relatedImages, editedNode)) { // found an image!
                         continue;
@@ -793,7 +791,8 @@ public class MmxfSetString implements  Processor {
                     } else if (handleBlock(href, a, relatedBlocks, editedNode)) {
                         continue;
                     } else { // must have been really an URL
-
+                        String klass = a.getAttribute("class");
+                        String id = a.getAttribute("id");                        
                         NodeList idLinkedUrls = get(cloud, relatedUrls, "idrel.id", id);
                         if (!idLinkedUrls.isEmpty()) {
                             Node url   = idLinkedUrls.getNode(0).getNodeValue("urls");
