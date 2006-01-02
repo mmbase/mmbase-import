@@ -78,12 +78,9 @@
     <field>
 
       <descriptions>
-        <description xml:lang="en">
-          Object's type.
-        </description>
-        <description xml:lang="nl">
-          Objecttype.
-        </description>
+        <description xml:lang="en">Object's type</description>
+        <description xml:lang="nl">Objecttype</description>
+        <description xml:lang="eo">Tipo de tiu ĉi objekto</description>
       </descriptions>
 
       <gui>
