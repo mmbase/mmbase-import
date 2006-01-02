@@ -31,10 +31,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * XMLFields in MMBase. This class can encode such a field to several other formats.
+ * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.1 2005-10-25 22:29:17 michiel Exp $
+ * @version $Id: XmlField.java,v 1.2 2006-01-02 16:57:46 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -67,6 +67,10 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
     private static Pattern wikiP = Pattern.compile("<p>\\[(\\w+)\\]");
     private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
     private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+)\\]");
+
+    static {
+        org.mmbase.util.Encode.register(XmlField.class.getName());
+    }
 
     public static String wikiToXML(String data) {
         Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
