@@ -71,7 +71,7 @@ public abstract class MMBaseTest extends TestCase {
             } catch (SQLException sqe) {
                 Server server = new Server();
                 server.setSilent(true);
-                server.setDatabasePath(0, System.getProperty("user.dir") + File.separator + "database" + File.separator + "test");
+                server.setDatabasePath(0, System.getProperty("user.dir") + File.separator + "data" + File.separator + "test");
                 server.setDatabaseName(0, "test");
                 server.start();
                 try {

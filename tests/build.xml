@@ -23,7 +23,7 @@
   <property name="tests.source.dir"   location="." />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
   <property name="tests.work.dir"    value="${tests.source.dir}/work" />
-  <property name="tests.database.dir"    value="${tests.work.dir}/database" />
+  <property name="tests.database.dir"    value="${tests.work.dir}/data" />
 
   <property name="tests.lib"       value="${tests.build.dir}/lib" />
   <property name="mmbasetest.jar"  value="${tests.lib}/mmbase-test.jar" />
