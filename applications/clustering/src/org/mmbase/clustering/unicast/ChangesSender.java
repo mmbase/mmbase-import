@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.3 2005-11-30 15:58:03 pierre Exp $
+ * @version $Id: ChangesSender.java,v 1.4 2006-01-02 14:33:37 nklasens Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -52,9 +52,6 @@ public class ChangesSender implements Runnable {
     /** Timeout of the connection.*/
     private int unicastTimeout = 10*1000;
 
-    /** MMBase instance */
-    private MMBase mmbase = null;
-
     /** List of active MMBase servers */
     private List activeServers = null;
     /** last time the mmservers table was checked for active servers */
@@ -69,11 +66,10 @@ public class ChangesSender implements Runnable {
      * @param nodesToSend Queue of messages to send
      * @param mmbase MMBase instance
      */
-    public ChangesSender(int unicastPort, int unicastTimeout, Queue nodesToSend, MMBase mmbase) {
+    public ChangesSender(int unicastPort, int unicastTimeout, Queue nodesToSend) {
         this.nodesToSend = nodesToSend;
         this.unicastPort = unicastPort;
         this.unicastTimeout = unicastTimeout;
-        this.mmbase = mmbase;
         this.start();
     }
 
@@ -173,6 +169,7 @@ public class ChangesSender implements Runnable {
      * @return server list
      */
     private List getActiveServers() {
+        MMBase mmbase = MMBase.getMMBase();
         if (serverInterval < 0) {
             MMServers mmservers = (MMServers) mmbase.getMMObject("mmservers");
             serverInterval = mmservers.getIntervalTime();
