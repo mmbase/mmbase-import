@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.42 2005-10-25 22:28:46 michiel Exp $
+ * @version $Id: XmlField.java,v 1.43 2006-01-02 16:56:05 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -736,10 +736,12 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             java.io.InputStream input = new java.io.ByteArrayInputStream(incoming.getBytes(CODING));
             documentBuilder.parse(input);
 
-            if (!resolver.hasDTD())
+            if (!resolver.hasDTD()) {
                 throw new FormatException("no doc-type specified for the xml");
-            if (errorHandler.errorOrWarning)
+            }
+            if (errorHandler.errorOrWarning) {
                 throw new FormatException("error in xml: \n" + errorBuff.toString());
+            }
         } catch (javax.xml.parsers.ParserConfigurationException pce) {
             throw new FormatException("[sax parser] not well formed xml: " + pce.toString());
         } catch (org.xml.sax.SAXException se) {
@@ -818,14 +820,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public Map transformers() {
         Map h = new HashMap();
         h.put("MMXF_ASCII", new Config(XmlField.class, ASCII, "Converts xml to ASCII (cannoted be reversed)"));
-        h.put("MMXF_BODY_RICH", new Config(XmlField.class, RICHBODY, "Like MMXF_RICH, but returns decodes without mmxf tags"));
-        h.put("MMXF_BODY_POOR", new Config(XmlField.class, POORBODY, "Like MMXF_POOR, but returns decoded without mmxf tags"));
+        h.put("MMXF_BODY_RICH", new Config(XmlField.class, RICHBODY, "XHTML 2 compliant XML."));
+        h.put("MMXF_BODY_POOR", new Config(XmlField.class, POORBODY, "XHTML 2 compliant XML, but withough <br/> tags"));
         h.put("MMXF_HTML_INLINE", new Config(XmlField.class, HTML_INLINE, "Decodes only escaping and with <em>"));
         h.put("MMXF_HTML_BLOCK", new Config(XmlField.class,  HTML_BLOCK, "Decodes only escaping and with <em>, <p>, <br /> (only one) and <ul>"));
         h.put("MMXF_HTML_BLOCK_BR", new Config(XmlField.class,  HTML_BLOCK_BR, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>"));
         h.put("MMXF_HTML_BLOCK_NOSURROUNDINGP", new Config(XmlField.class,  HTML_BLOCK_NOSURROUNDINGP, "Decodes only escaping and with <em>, <p>, <br /> (only one) and <ul>"));
         h.put("MMXF_HTML_BLOCK_BR_NOSURROUNDINGP", new Config(XmlField.class,  HTML_BLOCK_BR_NOSURROUNDINGP, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>"));
-
         h.put("MMXF_XHTML", new Config(XmlField.class, XHTML, "Converts to piece of XHTML"));
         return h;
     }
@@ -834,7 +835,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         switch (to) {
         case RICHBODY :
         case POORBODY :
-            return data;
+            throw new UnsupportedOperationException();
             // XXXX
             // needing richtext xslt here.
             //return XSLTransform("mmxf2rich.xslt", XML_TAGSTART + data + XML_TAGEND);
