@@ -22,8 +22,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class NodeEventBroker extends AbstractEventBroker {
 
-    private static Logger log = Logging
-        .getLoggerInstance(NodeEventBroker.class);
+    private static Logger log = Logging.getLoggerInstance(NodeEventBroker.class);
 
     /**
      * use this property to make shure your listener only gets the node events
@@ -59,7 +58,7 @@ public class NodeEventBroker extends AbstractEventBroker {
         NodeEventListener nel = (NodeEventListener) listener;
         Properties p = nel.getConstraintsForEvent(ne);
         MMObjectBuilder builder = MMBase.getMMBase().getBuilder(ne.getBuilderName()) ;
-        if (builder.broadcastChanges()) {
+        if (builder != null && builder.broadcastChanges()) {
             if (p != null) {
                 String nodeType = p.getProperty(PROPERTY_NODETYPE);
                 if (nodeType.equals(builder.getTableName())) {
