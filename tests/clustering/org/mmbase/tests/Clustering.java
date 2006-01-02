@@ -56,7 +56,7 @@ public class Clustering extends BridgeTest {
      */
     protected void allowLatency() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch (InterruptedException ie) {
         }
     }
@@ -108,6 +108,7 @@ public class Clustering extends BridgeTest {
         return roles.getNode(0);
 
     }
+
 
     /**
      * @todo Perhaps these kind of functions would come in handy in a org.mmbase.bridge.util.System
@@ -270,5 +271,6 @@ public class Clustering extends BridgeTest {
             fail(e.getMessage());
         }
     }
+
 }
 
