@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.191 2005-12-29 22:03:53 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.192 2006-01-02 14:15:26 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -578,8 +578,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     public String toString() {
         //return getNode().toString() + "(" + getNode().getClass().getName() + ")";
-        //return getNode().toString();
-        return "" + super.toString() + " " + getNode().getNumber();
+        return getNode().toString();
+        //return "" + super.toString() + " " + getNode().getNumber();
     }
 
     /**
