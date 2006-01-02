@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.20 2005-12-06 20:49:28 michiel Exp $
+ * @version $Id: Parameters.java,v 1.21 2006-01-02 16:17:18 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -42,7 +42,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
     /**
      * The contents of this List are stored in this HashMap.
      */
-    protected Map backing;
+    protected Map backing; /* String -> Value */
 
     /**
      * This array maps integers (position in array) to map keys, making it possible to implement
@@ -261,7 +261,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
     public Parameters set(Parameter parameter, Object value) {
         int index = indexOfParameter(parameter);
         if (index > -1) {
-            set(index,value);
+            set(index, value);
             return this;
         } else {
             throw new IllegalArgumentException("The parameter '" + parameter + "' is not defined (defined are " + toString() + ")");
