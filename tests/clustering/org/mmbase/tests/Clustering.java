@@ -130,8 +130,9 @@ public class Clustering extends BridgeTest {
         RelationManager rm = createTypeRel(cloud1, "posrel", "bb", "aa");
 
         NodeManager bb2 = cloud2.getNodeManager("bb");
-        NodeQuery nq = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, null, "both");
-        NodeList related2 = bb2.getList(nq);
+        NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, null, "both");
+        NodeQuery nq1 = Queries.createRelatedNodesQuery(cloud1.getNode(nodea1.getNumber()), cloud1.getNodeManager("bb"), null, "both");
+        NodeList related2 = bb2.getList(nq2);
         assertTrue("list is null!", related2 != null);
         assertTrue(related2.size() == 0);
         assertTrue(bb2related.size() == 0);
@@ -142,8 +143,11 @@ public class Clustering extends BridgeTest {
         Relation r1 = bb1.createRelation(nodea1, rm);
         r1.commit();
 
-        related2 = bb2.getList(nq);
-        assertTrue("Just created a relation, but related list size is not 1, but " + related2.size(), related2.size() == 1);
+        NodeList related1 = cloud1.getNodeManager("bb").getList(nq1);
+        assertTrue("Just created a relation, but related list size is not 1, but " + related1.size() + " used query " + nq1, related1.size() == 1); // local
+        allowLatency();
+        related2 = bb2.getList(nq2);
+        assertTrue("Just created a relation, but related list size is not 1, but " + related2.size() + " used query " + nq2, related2.size() == 1); // remote
 
 
     }
