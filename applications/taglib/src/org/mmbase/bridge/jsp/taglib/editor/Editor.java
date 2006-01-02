@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.7 2005-12-30 21:26:46 andre Exp $
+ * @version $Id: Editor.java,v 1.8 2006-01-02 14:53:49 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -76,6 +76,6 @@ abstract public class Editor {
      * @return  A String which gives access to the editor
      *
     */
-    public abstract void getEditorHTML(PageContext context);
+    public abstract void getEditorHTML(PageContext context) throws IOException;
     
 }
