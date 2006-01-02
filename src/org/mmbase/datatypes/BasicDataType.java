@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.35 2005-12-28 11:18:57 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.36 2006-01-02 10:20:29 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -84,6 +84,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
     // implementation of serializable
     private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeUTF(key);
+        out.writeObject(description);
+        out.writeObject(guiName);
         out.writeObject(requiredRestriction);
         out.writeObject(uniqueRestriction);
         out.writeObject(enumerationRestriction.getEnumerationFactory());
@@ -105,6 +108,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
     // implementation of serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        key                    = in.readUTF();
+        description            = (LocalizedString) in.readObject();
+        guiName                = (LocalizedString) in.readObject();
         requiredRestriction    = (RequiredRestriction) in.readObject();
         uniqueRestriction      = (UniqueRestriction) in.readObject();
         enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
@@ -157,7 +163,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * If a datatype is cloned, the restrictions of it (normally implemented as inner classes), but be reinstantiated.
+     * If a datatype is cloned, the restrictions of it (normally implemented as inner classes), must be reinstantiated.
      */
     protected void cloneRestrictions(BasicDataType origin) {
         enumerationRestriction = new EnumerationRestriction(origin.enumerationRestriction);
@@ -604,6 +610,12 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
 
+    // ================================================================================
+    // Follow implementations of the basic restrictions.
+
+
+    // ABSTRACT
+
     /**
      * Abstract inner class Restriction. Based on static StaticAbstractRestriction
      */
@@ -813,6 +825,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
     }
 
+
+    // REQUIRED
+
     protected class RequiredRestriction extends AbstractRestriction {
         RequiredRestriction(RequiredRestriction source) {
             super(source);
@@ -829,6 +844,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             return v != null || BasicDataType.this.commitProcessor != null;
         }
     }
+
+
+    // UNIQUE 
 
     protected class UniqueRestriction extends AbstractRestriction {
         UniqueRestriction(UniqueRestriction source) {
@@ -863,6 +881,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
     }
 
+
+    // TYPE
+    
     protected class TypeRestriction extends AbstractRestriction {
         TypeRestriction(TypeRestriction source) {
             super(source);
@@ -879,6 +900,9 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             }
         }
     }
+
+
+    // ENUMERATION
 
     protected class EnumerationRestriction extends AbstractRestriction {
         EnumerationRestriction(EnumerationRestriction source) {
