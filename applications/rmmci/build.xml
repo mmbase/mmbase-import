@@ -188,6 +188,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/Entry.class"/>                      <!-- used by LocalizedString -->
         <include name="org/mmbase/util/LocalizedEntryListFactory*.class"/> <!-- returned by DataType -->
         <include name="org/mmbase/util/SortedBundle*.class"/>              <!-- Used by LocalizedEntryListFactory -->
+        <include name="org/mmbase/util/ChainedIterator*.class"/>              <!-- Used by LocalizedEntryListFactory -->
         <include name="org/mmbase/util/SizeMeasurable.class"/>             <!-- implemented by several class -->
         <include name="org/mmbase/util/Casting*.class"/>                   <!-- widely used -->
         <include name="org/mmbase/util/StringBufferWriter.class"/>         <!-- used by Casting -->
