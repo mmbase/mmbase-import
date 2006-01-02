@@ -241,14 +241,10 @@ Applications build file
     <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-
     <ant dir="clustering"      target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="richtext"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    <ant dir="oscache-cache"      target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
