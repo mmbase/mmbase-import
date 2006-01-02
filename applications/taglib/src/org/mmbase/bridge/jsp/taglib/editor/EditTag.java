@@ -29,9 +29,7 @@ import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.DocumentReader;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
-import org.mmbase.bridge.jsp.taglib.ParamHandler;
-import org.mmbase.bridge.jsp.taglib.TaglibException;
+import org.mmbase.bridge.jsp.taglib.*;
 
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -46,7 +44,7 @@ import org.mmbase.util.XMLBasicReader;
  * in the MMBase config/taglib directory to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.10 2005-12-30 21:26:15 andre Exp $
+ * @version $Id: EditTag.java,v 1.11 2006-01-02 14:53:49 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  * @since MMBase-1.8
@@ -217,7 +215,11 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         yaeditor.setFieldList(fieldList);
         
         // yaeditor.registerFields(queryList, nodenrList, fieldList);
-        yaeditor.getEditorHTML(getPageContext());
+        try {
+            yaeditor.getEditorHTML(getPageContext());
+        } catch (IOException ioe) {
+            log.error("Error writing to PageContext: " + ioe.getMessage(), ioe);
+        }
         
         helper.setValue(editorstr);
         helper.useEscaper(false);
