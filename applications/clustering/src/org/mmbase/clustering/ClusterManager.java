@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.16 2006-01-02 12:41:08 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.17 2006-01-02 12:54:55 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable{
 
@@ -92,6 +92,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
         /* Start up the main thread */
         if (kicker == null) {
             kicker = MMBaseContext.startThread(this, "ClusterManager");
+            kicker.setPriority(Thread.NORM_PRIORITY + 1);
             startCommunicationThreads();
         }
     }
@@ -173,8 +174,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        kicker.setPriority(Thread.NORM_PRIORITY+1);
-        
         while(kicker != null) {
             try {
                 byte[] message = (byte[]) nodesToSpawn.get();
