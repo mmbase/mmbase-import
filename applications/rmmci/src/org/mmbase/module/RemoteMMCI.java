@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.11 2005-11-30 11:02:26 nklasens Exp $
+ * @version $Id: RemoteMMCI.java,v 1.12 2006-01-02 21:04:32 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -64,10 +64,10 @@ public class RemoteMMCI extends ProcessorModule {
             try {
                 registryPort = Integer.parseInt(portString);
             } catch (NumberFormatException nfe) {
-                log.warn("port parameter of rmmci.xml is not ot type int");
+                log.warn("port parameter '" + portString + "' of rmmci.xml is not of type int.");
             };
         } else {
-            log.warn("missing port init param, using (default)=(" + registryPort + ")");
+            log.info("missing port init param, using (default)=(" + registryPort + ")");
         }
 
         //read the rmi server host from the configuration
@@ -126,7 +126,7 @@ public class RemoteMMCI extends ProcessorModule {
                 //if no RemoteException is thrown we are probabely ok
                 log.debug("using an existing RMI registry");
             } catch (RemoteException rex) {
-                /* 
+                /*
                  * Binding a stub to a local registry should be enough to keep it
                  * from being cleaned up by DGC (Distributed Garbage Collection)
                  * One case in which it currently isn't is when the registry
@@ -136,9 +136,9 @@ public class RemoteMMCI extends ProcessorModule {
                  * and the remote object's stub passed to the registry was returned from
                  * RemoteObject.toStub or UnicastRemoteObject.exportObject; in this
                  * situation, the following old bug thwarts reachability:
-                 * 
+                 *
                  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4114579
-                 * 
+                 *
                  * But invoking a registry stub (like LocateRegistry.getRegistry returns)
                  * should avoid that problem, because the remote object's stub will get
                  * marshalled and unmarshalled and thus properly registered with DGC.
@@ -169,7 +169,7 @@ public class RemoteMMCI extends ProcessorModule {
         }
         return reg;
     }
-    
+
     /**
      * unbinds the object bound to the registry in order to try to stop the registry
      * this usualy fails(the regsitry keeps running and prevents the webapp to shutdown)
