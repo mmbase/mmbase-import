@@ -47,6 +47,7 @@ public abstract class BridgeTest extends MMBaseTest {
                 if (tryCount > 25) throw be;
             }
         }
+        ensureDeployed(c, "local cloud");
         return c;
     }
 
@@ -61,7 +62,7 @@ public abstract class BridgeTest extends MMBaseTest {
                 c =   ContextProvider.getCloudContext(uri).getCloud("mmbase", "class", null);
                 break;
             } catch (BridgeException be) {
-                System.out.println(be.getMessage() + ". Perhaps mmbase not yet running, retrying in 5 seconds");
+                System.out.println(be.getMessage() + ". Perhaps mmbase '" + uri + "' not yet running, retrying in 5 seconds (" + tryCount + ")");
                 try {
                     tryCount ++;
                     if (tryCount > 25) throw be;
@@ -69,8 +70,29 @@ public abstract class BridgeTest extends MMBaseTest {
                 } catch (Exception ie) {}
             }
         }
+        ensureDeployed(c, uri);
         return c;
 
     }
 
+    protected void ensureDeployed(Cloud cloud, String uri) {
+        while(true) {
+            // make sure basic app is deployed
+            if (cloud.hasRelationManager("bb", "cc", "posrel")) {
+                return;
+            }
+            System.out.println("No relation bb--(posrel)-->c, in '" + uri + "' perhaps BridgeTest application not yet deployed. Waiting another 5 seconds (" + tryCount + ")");
+            try {
+                tryCount ++;
+                Thread.sleep(5000);                
+                if (tryCount > 25) {
+                    System.err.println("Giving up");
+                    return;
+                };
+            } catch (InterruptedException ie) {
+                return;
+            }
+        }
+    }
+                
 }
