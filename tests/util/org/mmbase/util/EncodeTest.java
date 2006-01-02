@@ -127,7 +127,6 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("ESCAPE_XML_ATTRIBUTE_SINGLE");
         documentedEncodings.add("MD5");
         documentedEncodings.add("MMXF_ASCII");
-        documentedEncodings.add("MMXF_BODY");
         documentedEncodings.add("MMXF_BODY_POOR");
         documentedEncodings.add("MMXF_BODY_RICH");
         documentedEncodings.add("MMXF_HTML_BLOCK");
@@ -135,9 +134,6 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("MMXF_HTML_BLOCK_BR_NOSURROUNDINGP");
         documentedEncodings.add("MMXF_HTML_BLOCK_NOSURROUNDINGP");
         documentedEncodings.add("MMXF_HTML_INLINE");
-        documentedEncodings.add("MMXF_MMXF");
-        documentedEncodings.add("MMXF_POOR");
-        documentedEncodings.add("MMXF_RICH");
         documentedEncodings.add("MMXF_XHTML");
         documentedEncodings.add("REGEXPS_ENTIRE");
         documentedEncodings.add("REGEXPS_LINES");
