@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.172 2006-01-02 13:28:12 michiel Exp $
+ * @version $Id: MMBase.java,v 1.173 2006-01-02 16:23:09 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -337,10 +337,6 @@ public class MMBase extends ProcessorModule {
         log.service("Initializing  storage:");
         initializeStorage();
 
-        //log.service("Initializing clustering:");
-        //initClustering();
-        log.debug("initializing the event system");
-        EventManager.configure();
 
         log.debug("Checking MMBase");
         if (!checkMMBase()) {
