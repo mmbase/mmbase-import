@@ -83,7 +83,8 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
                 new Object[] {"boolean_string",/* boolean db, string datatype */
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
-                              new Object[] {"asjdlkf", "21", new Integer(10)}}
+                              new Object[] {} // "asjdlkf", "21", new Integer(10)}
+                }
 
             };
         } catch (Exception e) {
