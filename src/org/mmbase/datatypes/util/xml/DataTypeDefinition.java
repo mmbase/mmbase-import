@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.50 2005-12-29 23:02:22 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.51 2006-01-02 10:39:00 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -161,7 +161,13 @@ public class DataTypeDefinition {
             BasicDataType definedBaseDataType = collector.getDataType(base, true);
             if (requestBaseDataType != null) {
                 if (requestBaseDataType != definedBaseDataType) {
-                    log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + definedBaseDataType + "' in " + XMLWriter.write(dataTypeElement, true, true));
+                    if ("".equals(id)) {
+                        // in builder you often 'anonymously' override or define datatype.
+                        // don't pollute log with warning if e.g. using datetime datatype on integer. That is supported. Though some features may perish.                        
+                        log.debug("Inheriting a " + definedBaseDataType + " from " + requestBaseDataType + ", functionality may get lost");
+                    } else {
+                        log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + definedBaseDataType + "' in " + XMLWriter.write(dataTypeElement, true, true) + " of " + XMLWriter.write(dataTypeElement.getParentNode(), true, true));
+                    }
                 }
             }
             if (definedBaseDataType == null) {
