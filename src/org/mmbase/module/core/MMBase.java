@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.173 2006-01-02 16:23:09 michiel Exp $
+ * @version $Id: MMBase.java,v 1.174 2006-01-02 22:36:22 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -937,9 +937,12 @@ public class MMBase extends ProcessorModule {
      */
     public BuilderReader getBuilderReader(String builderName) {
         try {
-            org.w3c.dom.Document doc = getBuilderLoader().getDocument(builderName + ".xml", true, BuilderReader.class);
-            if (doc == null) return null;
-            return new BuilderReader(doc, this);
+            java.net.URL url = getBuilderLoader().getResource(builderName + ".xml");
+            if (url == null) return null;
+            org.w3c.dom.Document doc = ResourceLoader.getDocument(url, true, BuilderReader.class);
+            BuilderReader r = new BuilderReader(doc, this);
+            r.setSystemId(url.toString());
+            return r;
         } catch (SAXException se) {
             log.error(se);
             return null;
