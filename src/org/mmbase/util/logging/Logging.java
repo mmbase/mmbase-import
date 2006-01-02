@@ -57,7 +57,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.37 2005-12-18 10:05:00 michiel Exp $
+ * @version $Id: Logging.java,v 1.38 2006-01-02 13:27:52 michiel Exp $
  */
 
 
@@ -80,12 +80,27 @@ public class Logging {
      * @since MMBase-1.8
      */
     private static ResourceWatcher configWatcher;
+
+    private static String machineName = "localhost";
     
 
     private Logging() {
         // this class has no instances.
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static String getMachineName() {
+        return machineName;
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public static void setMachineName(String mn) {
+        machineName = mn;
+    }
 
     /**
      * Configure the logging system.
@@ -345,12 +360,17 @@ public class Logging {
         return buf.toString();
     }
 
-
+    /**
+     * @since MMBase-1.8
+     */
     public static String applicationStacktrace() {
         Exception e = new Exception("logging.showApplicationStacktrace");
         return applicationStacktrace(e);
     }
-        
+       
+    /**
+     * @since MMBase-1.8
+     */ 
     public static String applicationStacktrace(Throwable e) {
         StringBuffer buf = new StringBuffer("Application stacktrace");
         
@@ -361,27 +381,35 @@ public class Logging {
         // Enumerate each stack element.
         
         boolean mmbaseClassesFound = false;
+        int appended = 0;
         for (int i = 0; i < stackTrace.length; i++) {
            String className = stackTrace[i].getClassName();
            
            if (className.indexOf("org.mmbase") > -1) {
                mmbaseClassesFound = true;
                // show mmbase taglib
-               if (className.indexOf("Tag") > -1) {    
+               if (className.indexOf("bridge.jsp.taglib") > -1) {    
                    buf.append("\n        at ").append(stackTrace[i]);
+                   appended++;
                }
-           }
-           else {
+           } else {
                if (mmbaseClassesFound) {
                    // show none mmbase method which invoked an mmbase method.   
                    buf.append("\n        at ").append(stackTrace[i]);
+                   appended++;
                    break;
                }
                // show compiled jsp lines
                if (className.indexOf("_jsp") > -1) {
                    buf.append("\n        at ").append(stackTrace[i]);
+                   appended++;
                }
            }
+        }
+        if (appended == 0) {
+            for (int i = 2; i < stackTrace.length; i++) {
+                buf.append("\n        at ").append(stackTrace[i]);
+            }
         }
         return buf.toString();
     } 

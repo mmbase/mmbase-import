@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.171 2005-12-29 15:56:56 michiel Exp $
+ * @version $Id: MMBase.java,v 1.172 2006-01-02 13:28:12 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -319,6 +319,7 @@ public class MMBase extends ProcessorModule {
             machineName = machineNameParam;
         }
         log.service("MMBase machine name used for clustering:" + machineName);
+        Logging.setMachineName(machineName);
 
 //        log.debug("Starting JDBC module");
 //
