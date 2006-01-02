@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.clustering;
 
 import org.mmbase.core.event.*;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -20,13 +21,12 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MessageProbe.java,v 1.5 2005-10-09 14:56:17 ernst Exp $
+ * @version $Id: MessageProbe.java,v 1.6 2006-01-02 12:41:08 michiel Exp $
  */
 public class MessageProbe implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(MessageProbe.class);
 
-    private ClusterManager parent;
     private Event event;
 
     /**
@@ -48,7 +48,8 @@ public class MessageProbe implements Runnable {
         //the local events are bening send by the ChangeManager, and are
         //no longer handeled by the clustering system.
         try {
-            if(! event.getMachine().equals(parent.mmbase.getMachineName())){
+            MMBase mmbase = MMBase.getMMBase();
+            if(! event.getMachine().equals(mmbase.getMachineName())){
                 EventManager.getInstance().propagateEvent(event);
             }
         } catch(Throwable t) {

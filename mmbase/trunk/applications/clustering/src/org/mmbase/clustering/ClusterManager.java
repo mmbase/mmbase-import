@@ -30,21 +30,17 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.15 2005-11-30 15:58:03 pierre Exp $
+ * @version $Id: ClusterManager.java,v 1.16 2006-01-02 12:41:08 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable{
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
-    /** Followup number of message */
-    protected int follownr = 1;
-    /** Number of processed messages */
+    /** 
+     * Number of processed messages 
+     */
     protected int spawncount = 0;
 
-    /** Collections of nodes a thread is waiting on for change
-     * @todo should be Set.
-     */
-    protected Vector waitingNodes = new Vector();
     /** Queue with messages to send to other MMBase instances */
     protected Queue nodesToSend = new Queue(64);
     /** Queue with received messages from other MMBase instances */
@@ -52,9 +48,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
 
     /** Thread which processes the messages */
     private Thread kicker = null;
-
-    /** MMBase instance */
-    protected MMBase mmbase = null;
 
     protected boolean spawnThreads = true;
 
@@ -159,6 +152,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
                         if (tok.hasMoreTokens()) {
                             String ctype=tok.nextToken();
                             if (!ctype.equals("s")) {
+                                MMBase mmbase = MMBase.getMMBase();
                                 MMObjectBuilder builder = mmbase.getBuilder(tb);
                                 MMObjectNode    node    = builder.getNode(id);
                                 return new NodeEvent(machine, tb, node.getNumber(), node.getOldValues(), node.getValues(), NodeEvent.oldTypeToNewType(ctype));
@@ -180,18 +174,12 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
      */
     public void run() {
         kicker.setPriority(Thread.NORM_PRIORITY+1);
-        doWork();
-    }
-
-    /**
-     * Let the thread do his work
-     */
-    private void doWork() {
+        
         while(kicker != null) {
             try {
                 byte[] message = (byte[]) nodesToSpawn.get();
                 if (log.isDebugEnabled()) {
-                    log.debug("RECEIVED =>" + message.length + " bytes");
+                    log.trace("RECEIVED =>" + message.length + " bytes");
                 }
                 spawncount++;
                 Event event = parseMessage(message);
@@ -217,9 +205,14 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
      */
     protected void handleEvent(Event event) {
         // check if MMBase is 100% up and running, if not eat event
-        if (!mmbase.getState()) return;
+        MMBase mmbase = MMBase.getMMBase();
+        if (mmbase == null || !mmbase.getState()) {
+            log.debug("Ignoring event " + event + ", mmbase is not up " + mmbase);
+            return;
+        }
         if(mmbase.getMachineName().equals(event.getMachine())) {
             // ignore changes of ourselves
+            log.debug("Ignoring event " + event + " it is from this mmbase");
             return;
         }
         MessageProbe probe = new MessageProbe(event);

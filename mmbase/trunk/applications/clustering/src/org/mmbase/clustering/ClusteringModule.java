@@ -14,10 +14,14 @@ import org.mmbase.module.WatchedReloadableModule;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+
+/**
+ * @since MMBase-1.8
+ */
 public class ClusteringModule extends WatchedReloadableModule {
     
     private ClusterManager clusterManager = null;
-    private static  Logger log = Logging.getLoggerInstance(ClusteringModule.class);
+    private static final  Logger log = Logging.getLoggerInstance(ClusteringModule.class);
 
     /* (non-Javadoc)
      * @see org.mmbase.module.Module#init()
@@ -30,7 +34,7 @@ public class ClusteringModule extends WatchedReloadableModule {
                 EventManager.getInstance().addEventListener(clusterManager);
             } catch (ClassCastException e) {
                 log.error("Instance of Class with name " + clusterManagerClassName +
-                    "could not be successfully cast to type ClusterManager.");
+                          "could not be successfully cast to type ClusterManager.");
             }
         }else{
             log.error("Parameter 'ClusterManagerImplementation' is missing from config file. can not load clustering");
