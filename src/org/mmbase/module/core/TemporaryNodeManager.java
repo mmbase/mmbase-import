@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.42 2005-12-10 14:24:34 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.43 2006-01-02 11:47:39 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -104,9 +104,11 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public String deleteTmpNode(String owner,String key) {
-        MMObjectBuilder b = mmbase.getMMObject("typedef");
+        MMObjectBuilder b = mmbase.getBuilder("object");
         b.removeTmpNode(getTmpKey(owner, key));
-        log.debug("delete node " + getTmpKey(owner,key));
+        if (log.isDebugEnabled()) {
+            log.debug("delete node " + getTmpKey(owner, key));
+        }
         return key;
     }
 
@@ -114,7 +116,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public MMObjectNode getNode(String owner, String key) {
-        MMObjectBuilder bul = mmbase.getMMObject("typedef");
+        MMObjectBuilder bul = mmbase.getBuilder("object");
         MMObjectNode node;
         node = bul.getTmpNode(getTmpKey(owner,key));
         // fallback to normal nodes
@@ -130,9 +132,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public String getObject(String owner, String key, String dbkey) {
-        MMObjectBuilder bul = mmbase.getMMObject("typedef");
+        MMObjectBuilder bul = mmbase.getBuilder("object");
         MMObjectNode node;
-        node = bul.getTmpNode(getTmpKey(owner,key));
+        node = bul.getTmpNode(getTmpKey(owner, key));
         if (node==null) {
             log.debug("getObject not tmp node found " + key);
             node=bul.getHardNode(dbkey);
