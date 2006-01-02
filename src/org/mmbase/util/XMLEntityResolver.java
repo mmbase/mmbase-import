@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.57 2005-10-12 19:01:49 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.58 2006-01-02 21:38:29 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -237,7 +237,12 @@ public class XMLEntityResolver implements EntityResolver {
                     if (! validate) {
                         return new InputSource(new StringReader(""));
                     } else {
-                        log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
+                        if (resolveBase != null) {
+                            log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
+                        } else {
+                            log.service("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
+
+                        }
                         // not sure, probably should return 'null' after all, then it will be resolved with internet.
                         // but this can not happen, in fact...
                         //return new InputSource(new StringReader(""));
