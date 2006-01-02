@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden (javadoc)
- * @version $Id: StorageConnector.java,v 1.2 2005-11-26 17:35:05 nklasens Exp $
+ * @version $Id: StorageConnector.java,v 1.3 2006-01-02 11:45:51 michiel Exp $
  */
 public class StorageConnector {
 
@@ -193,7 +193,7 @@ public class StorageConnector {
         if (log.isDebugEnabled()) {
             log.trace("Getting node with number " + number);
         }
-        if (number ==- 1) {
+        if (number == -1) {
             throw new IllegalArgumentException("Try to obtain node from " + builder.getTableName() + " with number = -1");
         }
         MMObjectNode node = null;
@@ -214,12 +214,14 @@ public class StorageConnector {
         MMObjectBuilder nodeBuilder = builder;
         int nodeType = getNodeType(number);
         if (nodeType < 0) {
-            // the node does not exists, which according to javadoc shoulw return null
+            // the node does not exists, which according to javadoc should return null
             throw new StorageNotFoundException("Cannot determine node type of node with number =" + number);
         }
         // if the type is not for the current builder, determine the real builder
         if (nodeType != builder.getNumber()) {
-            log.debug(" " + nodeType + "!=" + builder.getNumber());
+            if (log.isDebugEnabled()) {
+                log.debug(" " + nodeType + "!=" + builder.getNumber());
+            }
             String builderName = mmb.getTypeDef().getValue(nodeType);
             if (builderName == null) {
                 log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking '" + builder.getTableName() + "'");
@@ -236,10 +238,14 @@ public class StorageConnector {
         node = mmb.getStorageManager().getNode(nodeBuilder, number);
         // store in cache if indicated to do so
         if (useCache) {
-            log.debug("Caching node from storage" + node);
+            if (log.isDebugEnabled()) {
+                log.debug("Caching node from storage" + node);
+            }
             node = builder.safeCache(numberValue, node);
         }
-        log.debug("Returning " + node);
+        if (log.isDebugEnabled()) {
+            log.debug("Returning " + node);
+        }
         return node;
     }
 
