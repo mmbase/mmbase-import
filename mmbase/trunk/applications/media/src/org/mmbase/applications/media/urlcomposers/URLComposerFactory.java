@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.applications.media.urlcomposers;
@@ -36,22 +36,22 @@ import java.io.File;
  */
 
 public class URLComposerFactory  {
-    
+
     private static final Logger log = Logging.getLoggerInstance(URLComposerFactory.class);
-    
+
     // XML tags:
     private static final String MAIN_TAG     = "urlcomposers";
     private static final String DEFAULT_TAG  = "default";
     private static final String COMPOSER_TAG = "urlcomposer";
     private static final String FORMAT_ATT   = "format";
     private static final String PROTOCOL_ATT   = "protocol";
-    
-    public static final  String CONFIG_FILE = "media" + File.separator + "urlcomposers.xml";
-    
+
+    public static final  String CONFIG_FILE = "media/urlcomposers.xml";
+
     private static final Class defaultComposerClass = URLComposer.class;
-    
+
     private static URLComposerFactory instance = new URLComposerFactory();
-    
+
     /**
      * Container class te represent one configuration item, which is a
      * format/protocol/URLComposer-class combination. The factory
@@ -65,19 +65,19 @@ public class URLComposerFactory  {
         private Format format;
         private String protocol;
         private Class  klass;
-        
+
         ComposerConfig(Format f, Class k, String p) {
             this.format = f;
             this.klass = k;
             this.protocol = p;
             if (protocol == null) protocol = "";
-            
+
         }
         boolean checkFormat(Format f) {     return format.equals(f); }
         boolean checkProtocol(String p) {   return "".equals(protocol) || protocol.equals(p); }
-        
+
         Class   getComposerClass() { return klass; };
-        
+
         URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, Set cacheExpireObjects) {
             try {
                 log.debug("Instatiating " + klass);
@@ -95,97 +95,101 @@ public class URLComposerFactory  {
     }
     // this is the beforementioned list.
     private List urlComposerClasses = new ArrayList();
-    
+
     private ComposerConfig defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null);
-    
-    private FileWatcher configWatcher = new FileWatcher(true) {
-        public void onChange(File file) {
+
+    private ResourceWatcher configWatcher = new ResourceWatcher() {
+        public void onChange(String file) {
             readConfiguration(file);
         }
     };
-    
-    
+
+
     /**
      * Construct the factory, which is a Singleton.
      */
     private URLComposerFactory() {
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), CONFIG_FILE);
-        if (! configFile.exists()) {
-            log.error("Configuration file for URLComposerFactory " + configFile + " does not exist");
-            return;
-        }
-        readConfiguration(configFile);
-        configWatcher.add(configFile);
-        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        configWatcher.add(CONFIG_FILE);
+        configWatcher.onChange();
         configWatcher.start();
+
     }
-    
-    
-    
+
+
+
     /**
      * read the factory's  configuration, which is the file 'urlcomposers.xml' in config/media/
      */
-    private synchronized void readConfiguration(File configFile) {
+    private synchronized void readConfiguration(String configFile) {
         if (log.isServiceEnabled()) {
             log.service("Reading " + configFile);
         }
         urlComposerClasses.clear();
-        
-        DocumentReader reader = new XMLBasicReader(configFile.toString(), getClass());
+        org.w3c.dom.Document doc;
         try {
-            defaultUrlComposer = new ComposerConfig(null, Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG)), null);
-        } catch (java.lang.ClassNotFoundException e) {
-            defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null);
-            // let it be something in any case
-            log.error(e.toString());
+            doc = ResourceLoader.getConfigurationRoot().getDocument(configFile, true, getClass());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return;
         }
-        
-        for(Iterator e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasNext();) {
-            Element element = (Element)e.next();
-            String  clazz   =  reader.getElementValue(element);
-            String  f = element.getAttribute(FORMAT_ATT);
-            List formats;
-            if ("*".equals(f)) {
-                formats = Format.getMediaFormats();
-            } else {
-                formats = new ArrayList();
-                formats.add(Format.get(f));
+        if (doc == null) {
+            log.error("Configuration file for URLComposerFactory " + configFile + " does not exist");
+        } else {
+            DocumentReader reader = new DocumentReader(doc);
+            try {
+                defaultUrlComposer = new ComposerConfig(null, Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG)), null);
+            } catch (java.lang.ClassNotFoundException e) {
+                defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null);
+                // let it be something in any case
+                log.error(e.toString());
             }
-            String  protocol  =  element.getAttribute(PROTOCOL_ATT);
-            Iterator i = formats.iterator();
-            while(i.hasNext()) {
-                Format format = (Format) i.next();
-                try {
-                    log.debug("Adding for format " + format + " urlcomposer " + clazz);
-                    urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
-                } catch (ClassNotFoundException ex) {
-                    log.error("Cannot load urlcomposer " + clazz + " because " + ex.getMessage());
+
+            for(Iterator e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasNext();) {
+                Element element = (Element)e.next();
+                String  clazz   =  reader.getElementValue(element);
+                String  f = element.getAttribute(FORMAT_ATT);
+                List formats;
+                if ("*".equals(f)) {
+                    formats = Format.getMediaFormats();
+                } else {
+                    formats = new ArrayList();
+                    formats.add(Format.get(f));
+                }
+                String  protocol  =  element.getAttribute(PROTOCOL_ATT);
+                Iterator i = formats.iterator();
+                while(i.hasNext()) {
+                    Format format = (Format) i.next();
+                    try {
+                        log.debug("Adding for format " + format + " urlcomposer " + clazz);
+                        urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
+                    } catch (ClassNotFoundException ex) {
+                        log.error("Cannot load urlcomposer " + clazz + " because " + ex.getMessage());
+                    }
                 }
             }
-            
         }
     }
-    
-    
+
+
     /**
      * Returns the one instance.
      */
-    
+
     public  static URLComposerFactory getInstance() {
         return instance;
     }
-    
-    
+
+
     /**
      * You can relate template objects to media fragments. They can be
      * processed by 'MarkupURLComposers'. For every template a
      * MarkupURLComposers will be created (if, at least,
      * MarkupURLComposers are configured in urlcomposers.xml).
      */
-    
+
     protected List getTemplates(MMObjectNode fragment) {
         List templates = new ArrayList();
-        
+
         if (fragment != null) {
             MediaFragments bul = (MediaFragments) fragment.getBuilder();
             Stack stack = bul.getParentFragments(fragment);
@@ -197,8 +201,8 @@ public class URLComposerFactory  {
         }
         return templates;
     }
-    
-    
+
+
     /**
      * Add urlcomposer to list of urlcomposers if that is possible.
      *
@@ -221,7 +225,7 @@ public class URLComposerFactory  {
         }
         return false;
     }
-    
+
     /**
      * When the provider/source/fragment combo is determined they can
      * be fed into this function of the urlcomposerfactory, which will
@@ -241,7 +245,7 @@ public class URLComposerFactory  {
         Format format   = Format.get(source.getIntValue("format"));
         String protocol = provider.getStringValue("protocol");
         if (log.isDebugEnabled()) log.debug("Creating url-composers for provider " + provider.getNumber() + "(" + format + ")");
-        
+
         Iterator i = urlComposerClasses.iterator();
         boolean found = false;
         while (i.hasNext()) {
@@ -249,7 +253,7 @@ public class URLComposerFactory  {
             if (log.isDebugEnabled()) {
                 log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "'");
             }
-            
+
             if (cc.checkFormat(format) && cc.checkProtocol(protocol)) {
                 if (MarkupURLComposer.class.isAssignableFrom(cc.getComposerClass())) {
                     // markupurlcomposers need a template, and a fragment can have 0-n of those.
@@ -272,7 +276,7 @@ public class URLComposerFactory  {
                 log.debug(cc.checkFormat(format) + "/" + cc.checkProtocol(protocol));
             }
         }
-        
+
         if (! found) { // use default
             URLComposer uc = defaultUrlComposer.getInstance(provider, source, fragment, info, cacheExpireObjects);
             if (uc != null && ! urls.contains(uc)) { // avoid duplicates
