@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="datatypes" maintainer="mmbase.org" version="0" extends="object">
   <names>
     <singular xml:lang="en">datatypes</singular>
@@ -53,6 +53,17 @@
       <db>
         <name>pattern</name>
         <type size="255" notnull="true" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="b" />
+        <minInclusive value="a" />
+        <maxInclusive value="zzzzz" />
+      </datatype>
+      <db>
+        <name>stringrange</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
     <field>
@@ -136,7 +147,7 @@
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="ERROR" />
         <enumeration >
-          <entry basename="org.mmbase.module.builders.resources.states"
+          <entry basename="org.mmbase.datatypes.resources.states"
                  javaconstants="org.mmbase.module.builders.MMServers" 
                  />
         </enumeration>
