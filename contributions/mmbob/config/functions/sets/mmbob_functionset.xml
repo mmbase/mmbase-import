@@ -302,6 +302,18 @@
 	</function>
 
 
+	<function name="getPosterPassword">
+		<description>get password of a poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getPosterPassword</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="account" type="String" description="account" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
 	<function name="setRemoteAddress">
 		<description>get/check login of a user</description>
 		<type>class</type>
@@ -434,6 +446,7 @@
 		<class>org.mmbase.applications.mmbob.gui.Controller</class>
 		<method>changeForumConfig</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="loginsystemtype" type="String" description="New name for this forum" />
 		<param name="loginmodetype" type="String" description="New name for this forum" />
 		<param name="logoutmodetype" type="String" description="New language of this forum" />
 		<param name="guestreadmodetype" type="String" description="New description of this forum" />
@@ -446,6 +459,132 @@
 		<return type="Node"> 
 		</return> 
 	</function>
+
+
+	<function name="changeForumPostingsPerPage">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>changeForumPostingsPerPage</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<param name="postcount" type="int" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+	<function name="changeForumSpeedPostTime">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>changeForumSpeedPostTime</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<param name="delay" type="int" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+	<function name="getForumSpeedPostTime">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getForumSpeedPostTime</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<return type="int"> 
+		</return> 
+	</function>
+
+
+	<function name="getForumPostingsPerPage">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getForumPostingsPerPage</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<return type="int"> 
+		</return> 
+	</function>
+
+
+	<function name="changeForumPostingsOverflowPostArea">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>changeForumPostingsOverflowPostArea</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<param name="count" type="int" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+
+
+	<function name="getForumPostingsOverflowPostArea">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getForumPostingsOverflowPostArea</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<return type="Int"> 
+		</return> 
+	</function>
+
+	<function name="getForumReplyOnEachPage">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getForumReplyOnEachPage</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="getForumPostingsOverflowThreadPage">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getForumPostingsOverflowThreadPage</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<return type="Int"> 
+		</return> 
+	</function>
+
+
+	<function name="changeForumPostingsOverflowThreadPage">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>changeForumPostingsOverflowThreadPage</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<param name="count" type="int" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+	<function name="changeForumReplyOnEachPage">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>changeForumReplyOnEachPage</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="current userid" />
+		<param name="value" type="String" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
 
 
 	<function name="changePostAreaConfig">
@@ -470,6 +609,7 @@
 		<type>class</type>
 		<class>org.mmbase.applications.mmbob.gui.Controller</class>
 		<method>changeForumsConfig</method>
+		<param name="loginsystemtype" type="String" description="New name for this forum" />
 		<param name="loginmodetype" type="String" description="New name for this forum" />
 		<param name="logoutmodetype" type="String" description="New language of this forum" />
 		<param name="guestreadmodetype" type="String" description="New description of this forum" />
@@ -597,6 +737,21 @@
 		<param name="mood" type="String" description="New mood" />
 		<param name="state" type="String" description="New State" />
 		<param name="type" type="String" description="New Type" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="movePostThread">
+		<description>move a allready existing postthread</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>movePostThread</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="postareaid" type="String" description="MMBase node number of the postarea" />
+		<param name="postthreadid" type="String" description="MMBase node number of the postthread" />
+		<param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
+		<param name="newpostareaid" type="String" description="MMBase node number of the postarea" />
 		<return type="Boolean"> 
 		</return> 
 	</function>
@@ -1213,6 +1368,18 @@
 		<method>getFilterWords</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<return type="NodeList"> 
+		</return> 
+	</function>
+
+
+	<function name="getGuiEdit">
+		<description>get the edit value</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getGuiEdit</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="name" type="String" description="name of the option" />
+		<return type="String"> 
 		</return> 
 	</function>
 
