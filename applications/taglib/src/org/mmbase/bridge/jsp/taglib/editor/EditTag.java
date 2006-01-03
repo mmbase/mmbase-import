@@ -44,7 +44,7 @@ import org.mmbase.util.XMLBasicReader;
  * in the MMBase config/taglib directory to let the EditTag know about it.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.11 2006-01-02 14:53:49 michiel Exp $
+ * @version $Id: EditTag.java,v 1.12 2006-01-03 10:46:26 michiel Exp $
  * @see org.mmbase.bridge.jsp.taglib.editor.Editor
  * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
  * @since MMBase-1.8
@@ -64,7 +64,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
                     // default: reading from taglib jar in case no other resources exist
                     InputStream stream = EditTag.class.getResourceAsStream("resources/edittag.xml");
                     if (stream != null) {   // fallback in case config/taglib may not exist
-                        log.info("Reading default edittag resource: " + EditTag.class.getName() + "/resources/edittag.xml");
+                        log.service("Reading default edittag resource: " + EditTag.class.getName() + "/resources/edittag.xml");
                         
                         InputSource ettypes = new InputSource(stream);
                         readXML(ettypes);
@@ -72,17 +72,21 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
                     
                     ResourceLoader taglibLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib");
                     List resources = taglibLoader.getResourceList(resource);
-                    log.info("Found edittag resources: " + resources);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found edittag resources: " + resources);
+                    }
                     
                     ListIterator i = resources.listIterator();
                     while (i.hasNext()) {
                         try {
                             URL u = (URL) i.next();
-                            log.info("Reading edittag resource: " + u);
                             URLConnection con = u.openConnection();
                             if (con.getDoInput()) {
+                                log.service("Reading edittag resource: " + u);
                                 InputSource source = new InputSource(con.getInputStream());
                                 readXML(source);
+                            } else {
+                                log.debug("Unavailable Edittag resource: " + u);
                             }
                         } catch (Exception e) {
                             log.error("Error connecting or resource not found: " + e);
@@ -115,7 +119,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
             log.debug("type: " + type + " and class: " + claz);
             if (!claz.equals("") && !edittagTypes.containsKey(type) ) {
                 edittagTypes.put(type, claz);
-                log.info("Found and added editor type: '" + type + "' with class: '" + claz + "'");
+                log.service("Found and added editor type: '" + type + "' with class: '" + claz + "'");
             } 
         }
     }
