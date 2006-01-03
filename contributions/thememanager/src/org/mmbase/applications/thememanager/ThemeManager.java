@@ -79,8 +79,8 @@ public class ThemeManager {
             	XMLBasicReader reader = new XMLBasicReader(filename,ThemeManager.class);
             	if(reader!=null) {
 			// decode themes
-            		for(Enumeration ns=reader.getChildElements("themes","theme");ns.hasMoreElements(); ) {
-                		Element n=(Element)ns.nextElement();
+            		for(Iterator ns=reader.getChildElements("themes","theme");ns.hasNext(); ) {
+                		Element n=(Element)ns.next();
    		               	NamedNodeMap nm=n.getAttributes();
                     		if (nm!=null) {
 					String id=null;
@@ -117,8 +117,8 @@ public class ThemeManager {
             	XMLBasicReader reader = new XMLBasicReader(filename,ThemeManager.class);
             	if(reader!=null) {
 			// decode assigned 
-            		for (Enumeration ns=reader.getChildElements("assigned","assign");ns.hasMoreElements(); ) {
-                		Element n=(Element)ns.nextElement();
+            		for (Iterator ns=reader.getChildElements("assigned","assign");ns.hasNext(); ) {
+                		Element n=(Element)ns.next();
    		               	NamedNodeMap nm=n.getAttributes();
                     		if (nm!=null) {
 					String id=null;

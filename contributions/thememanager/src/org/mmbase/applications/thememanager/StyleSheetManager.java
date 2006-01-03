@@ -88,6 +88,8 @@ public class StyleSheetManager {
    private void decodeStyleClass(String line,BufferedReader in) {
         String str;
 	line = line.substring(0,line.indexOf("{"));
+	line = Strip.Whitespace(line,Strip.BOTH);
+	log.info("setc="+line+"*");
 	StyleSheetClass sc = new StyleSheetClass(line);
 	stylesheetclasses.put(line,sc);
 	try {
@@ -100,6 +102,7 @@ public class StyleSheetManager {
 				if (end!=-1) {
 					String value = str.substring(pos+1,end);
 					value = Strip.Whitespace(value,Strip.BOTH);
+					log.info("setp="+name+"* *"+value+"*");
 					sc.setProperty(name,value);
 				}
 			}

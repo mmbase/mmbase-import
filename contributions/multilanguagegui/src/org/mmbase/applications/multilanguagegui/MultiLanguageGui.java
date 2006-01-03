@@ -62,8 +62,8 @@ public class MultiLanguageGui {
         if(file.exists()) {
             	XMLBasicReader reader = new XMLBasicReader(filename,MultiLanguageGui.class);
             	if(reader!=null) {
-	          	for(Enumeration ns=reader.getChildElements("languageguisets","languageguiset");ns.hasMoreElements(); ) {
-            			Element n=(Element)ns.nextElement();
+	          	for(Iterator ns=reader.getChildElements("languageguisets","languageguiset");ns.hasNext(); ) {
+            			Element n=(Element)ns.next();
 
    		        	NamedNodeMap nm=n.getAttributes();
                     		if (nm!=null) {
@@ -100,14 +100,14 @@ public class MultiLanguageGui {
             XMLBasicReader reader = new XMLBasicReader(filename,MultiLanguageGui.class);
 
 	    Hashtable languageguiset=new Hashtable();
-	    for (Enumeration n = reader.getChildElements("languageguiset","keyword");n.hasMoreElements();) {
-	            Element element= (Element)n.nextElement();
+	    for (Iterator n = reader.getChildElements("languageguiset","keyword");n.hasNext();) {
+	            Element element= (Element)n.next();
     		    String name=reader.getElementAttributeValue(element,"name");
 		    if (name!=null) {
 			Hashtable keyword=new Hashtable();
 
-	    		for (Enumeration n2 = reader.getChildElements(element,"translation");n2.hasMoreElements();) {
-	            		Element translation_element= (Element)n2.nextElement();
+	    		for (Iterator n2 = reader.getChildElements(element,"translation");n2.hasNext();) {
+	            		Element translation_element= (Element)n2.next();
     		    		String language=reader.getElementAttributeValue(translation_element,"language");
     		    		String value=reader.getElementAttributeValue(translation_element,"value");
 				keyword.put(language,value);
@@ -192,7 +192,7 @@ public class MultiLanguageGui {
     }
 
 
-    public List getKeywords(String setname) {
+    public List getKeywords(String setname,String searchkey,String language) {
        if (languageguisets == null) readSets();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
@@ -206,8 +206,13 @@ public class MultiLanguageGui {
 		while (e.hasMoreElements()) {
 			String s=(String)e.nextElement();
          		MMObjectNode virtual = builder.getNewNode("admin");
-                	virtual.setValue("name",s);
-			list.add(virtual);
+			if (searchkey.equals("*") || s.indexOf(searchkey)!=-1) {
+				Hashtable keywordset=(Hashtable)set.get(s);
+				String v = (String)keywordset.get(language);
+                		virtual.setValue("name",s);
+                		virtual.setValue("value",v);
+				list.add(virtual);
+			}
 		}
 	}
 	return list;
