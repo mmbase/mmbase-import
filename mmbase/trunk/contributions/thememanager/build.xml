@@ -9,7 +9,6 @@
   <property name="project.target.templates.dir" value="." />
   <property name="project.source.dir" location="." />
   <property name="project.templates.dir" value="${project.source.dir}/templates/jsp/" />
-  <property name="source.dir" value="../../mmbase" />
 
   &base;
 
