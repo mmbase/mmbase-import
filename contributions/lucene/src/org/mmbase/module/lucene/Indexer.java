@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *x
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.14 2005-12-29 23:13:06 michiel Exp $
+ * @version $Id: Indexer.java,v 1.15 2006-01-03 13:28:07 michiel Exp $
  **/
 public class Indexer {
 
@@ -77,6 +77,10 @@ public class Indexer {
     }
     public LocalizedString getDescription() {
         return description;
+    }
+
+    public Analyzer getAnalyzer() {
+        return analyzer;
     }
 
     public Node getNode(Cloud userCloud, String identifier) {
