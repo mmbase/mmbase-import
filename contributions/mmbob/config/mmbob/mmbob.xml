@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mmbobconfig PUBLIC "-//MMBase/DTD mmbob config 1.0//EN" "http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd">
 <mmbobconfig>
-  <forums account="admin" password="admin2k" language="en">
-    <generatedata role="body" file="generate/body.txt" tokenizer=",!? " />
-    <generatedata role="smileys" file="generate/smileys.txt" tokenizer=" \n\r" />
-    <generatedata role="firstnames" file="generate/firstnames.txt" tokenizer="," />
-    <generatedata role="surnames" file="generate/surnames.txt" tokenizer="," />
-    <generatedata role="providers" file="generate/providers.txt" tokenizer="," />
-    <generatedata role="places" file="generate/places.txt" tokenizer="," />
-    <generatedata role="areas" file="generate/areas.txt" tokenizer="," />
-    <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" " />
+	<forums account="admin" password="admin2k" language="en">
+		<generatedata role="body" file="generate/body.txt" tokenizer=",!? " />
+		<generatedata role="smileys" file="generate/smileys.txt" tokenizer=" \n\r" />
+		<generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" \n\r" />
 
-    <urls externalroot="http://localhost:9000/mmbob/" root="/mmbob/" />
+		<urls externalroot="http://forum1.acceptatie.kennisnet.nl/mmbob/" root="/mmbob/" />
+		<preloadchangedthreads  minutes="1129600" />
+		<swapoutunusedthreads  minutes="720" />
+		<accountcreation type="open" />
+		<accountremoval type="open" />
 
-    <preloadchangedthreads days="90" />
-    <swapoutunusedthreads hours="12" />
+		<loginsystem type="entree" />
+		<loginmode type="open" />
+		<logoutmode type="open" />
+		<guestreadmode type="open" />
+		<guestwritemode type="open" />
 
-    <accountcreation type="open" />
-    <accountremoval type="open" />
-    <loginmode type="open" />
-    <logoutmode type="open" />
+		<avatars>
+			<upload enable="true"/>
+			<gallery enable="true"/>
+		</avatars>
 
-    <guestreadmode type="open" />
-    <guestwritemode type="open" />
+		<email from="j.knuttel@kennisnet.nl"/>
 
-    <avatars>
-      <upload enable="true"/>
-      <gallery enable="true"/>
-    </avatars>
+		<emailtexts>
+			<emailtext role="updatethreadchange" >$lastposter heeft net een reactie gegeven op een onderwerp : '$lastsubject', waarvan je op de hoogte gehouden wilde worden.
 
-    <email from="daniel@xs4all.nl" />
-    <emailtexts>
-	<emailtext role="updateheader">
-Hai $account ($firstname $lastname),
+Je kan deze hier vinden : $url
 
 </emailtext>
-	<emailtext role="updatedivider">----------------------------------------
+			<emailtext role="updatedivider" >----------------------------------------
 
 </emailtext>
-	<emailtext role="updatethreadchange">$lastposter has just replied a thread your subscribed to : '$lastsubject'
+			<emailtext role="updatefooter" >
 
-You can find the thread here : $url
+De kennisnet forum beheerders
+</emailtext>
+			<emailtext role="updateheader" >
+Hallo, $account ($firstname $lastname),
 
 </emailtext>
-	<emailtext role="updatefooter">
+		</emailtexts>
+		 <layout>
+			<header path="header.jsp"/>
+			<footer path="footer.jsp"/>
+		</layout>
 
-The Forum admins.	
-</emailtext>
-    </emailtexts>
-   
-    <layout>
-      <header path="header.jsp"/>
-      <footer path="footer.jsp"/>
-    </layout>
+		<filters>
+			<filter type="content" replace="mmbase" with="MMBase" />
+			<filter type="content" replace="microsoft" with="micro$oft" />
+			<filter type="content" replace="shit" with="s**t" />
+			<filter type="content" replace="fuck" with="f***" />
+		</filters>
+		<xslts>
+			<postings odd="xslt/posting2xhtmlDark.xslt" even="xslt/posting2xhtmlLight.xslt" />
+		</xslts>
 
-    <filters>
-	<filter type="content" replace="fuck" with="f***" />
-	<filter type="content" replace="shit" with="s**t" />
-	<filter type="content" replace="microsoft" with="micro$oft" />
-	<filter type="content" replace="mmbase" with="MMBase" />
-    </filters>
+		<contactinfo enable="true"/>
+		<smileys enable="true"/>
+		<privatemessages enable="false"/>
+		<postingsperpage value="4"/>
 
-    <xslts>
-      <postings odd="xslt/posting2xhtmlDark.xslt" even="xslt/posting2xhtmlLight.xslt" />
-    </xslts>
+		<postingsoverflowpostarea value="4"/>
 
-    <contactinfo enable="true"/>
-    <smileys enable="true"/>
-    <privatemessages enable="true"/>
-    <postingsperpage value="5"/>
-    <postingsoverflowpostarea value="4"/>
-    <postingsoverflowthreadpage value="10"/>
-    <speedposttime value="10"/>
+		<postingsoverflowthreadpage value="10"/>
 
-  </forums>
+		<speedposttime value="10"/>
+
+		<replyoneachpage value="true"/>
+
+		 <navigation method="list"/>
+
+	</forums>
 </mmbobconfig>
