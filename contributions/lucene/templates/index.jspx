@@ -68,7 +68,15 @@
           </tr>
           <tr>
             <th>Full index on all indices</th>
-            <td><mm:link><mm:param name="fullindex" /><a href="${_}" class="navigate"><img src="${next}" alt="next"  /></a></mm:link></td>
+            <td>
+              <mm:link>
+                <mm:param name="fullindex" />
+                <a href="${_}" onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
+                   class="navigate">
+                  <img src="${next}" alt="next"  />
+                </a>
+              </mm:link>
+            </td>
           </tr>
           <tr>
             <th>Reload</th>
