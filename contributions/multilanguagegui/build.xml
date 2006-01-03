@@ -7,7 +7,6 @@
   <property name="project.name"   value="multilanguagegui" />
   <property name="project.package"   value="org/mmbase/applications" />
   <property name="project.target.templates.dir" value="multilanguagegui" />
-  <property name="source.dir" value="../../mmbase" />
 
   &base;
 
