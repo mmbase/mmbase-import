@@ -118,31 +118,30 @@ public class Controller {
      *
      * @return    The stateInfo value
      */
-    public MMObjectNode getStateInfo() {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getStateInfo() {
+	HashMap map = new HashMap();
         String state = MMBarManager.getState();
-        virtual.setValue("state", state);
+        map.put("state", state);
         if (state.equals("running")) {
-            virtual.setValue("os", MMBarManager.getOS());
-            virtual.setValue("cpu", MMBarManager.getCPU());
-            virtual.setValue("server", MMBarManager.getServer());
-            virtual.setValue("database", MMBarManager.getDatabase());
-            virtual.setValue("driver", MMBarManager.getDriver());
-            virtual.setValue("java", MMBarManager.getJava());
-            virtual.setValue("runningname", MMBarManager.getRunningName());
+            map.put("os", MMBarManager.getOS());
+            map.put("cpu", MMBarManager.getCPU());
+            map.put("server", MMBarManager.getServer());
+            map.put("database", MMBarManager.getDatabase());
+            map.put("driver", MMBarManager.getDriver());
+            map.put("java", MMBarManager.getJava());
+            map.put("runningname", MMBarManager.getRunningName());
             int count = MMBarManager.getRunningCount();
             int pos = MMBarManager.getRunningPos();
-            virtual.setValue("runningpos", pos);
-            virtual.setValue("runningcount", count);
+            map.put("runningpos", new Integer(pos));
+            map.put("runningcount",new Integer(count));
             if (pos == 0) {
-                virtual.setValue("progressbar", "1");
+                map.put("progressbar", "1");
             } else {
                 float bar = (pos / (float) count) * 100;
-                virtual.setValue("progressbar", "" + bar);
+                map.put("progressbar", "" + bar);
             }
         }
-        return virtual;
+        return map;
     }
 
 
@@ -152,26 +151,25 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The writeTest value
      */
-    public MMObjectNode getWriteTest(String name) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getWriteTest(String name) {
+	HashMap map = new HashMap();
         WriteTest wt = MMBarManager.getWriteTest(name);
         if (wt != null) {
-            virtual.setValue("os", MMBarManager.getOS());
-            virtual.setValue("cpu", MMBarManager.getCPU());
-            virtual.setValue("server", MMBarManager.getServer());
-            virtual.setValue("database", MMBarManager.getDatabase());
-            virtual.setValue("driver", MMBarManager.getDriver());
-            virtual.setValue("java", MMBarManager.getJava());
-            virtual.setValue("name", wt.getName());
-            virtual.setValue("description", wt.getDescription());
-            virtual.setValue("state", wt.getState());
-            virtual.setValue("result", getFormattedResult(wt.getResult()));
-            virtual.setValue("resulttype", wt.getResultType());
-            virtual.setValue("count", wt.getCount());
-            virtual.setValue("currentpos", wt.getCurrentPos());
+            map.put("os", MMBarManager.getOS());
+            map.put("cpu", MMBarManager.getCPU());
+            map.put("server", MMBarManager.getServer());
+            map.put("database", MMBarManager.getDatabase());
+            map.put("driver", MMBarManager.getDriver());
+            map.put("java", MMBarManager.getJava());
+            map.put("name", wt.getName());
+            map.put("description", wt.getDescription());
+            map.put("state", wt.getState());
+            map.put("result", getFormattedResult(wt.getResult()));
+            map.put("resulttype", wt.getResultType());
+            map.put("count", new Integer(wt.getCount()));
+            map.put("currentpos", new Integer(wt.getCurrentPos()));
         }
-        return virtual;
+        return map;
     }
 
 
@@ -181,26 +179,25 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The mixedTest value
      */
-    public MMObjectNode getMixedTest(String name) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getMixedTest(String name) {
+	HashMap map = new HashMap();
         MixedTest mt = MMBarManager.getMixedTest(name);
         if (mt != null) {
-            virtual.setValue("os", MMBarManager.getOS());
-            virtual.setValue("cpu", MMBarManager.getCPU());
-            virtual.setValue("server", MMBarManager.getServer());
-            virtual.setValue("database", MMBarManager.getDatabase());
-            virtual.setValue("driver", MMBarManager.getDriver());
-            virtual.setValue("java", MMBarManager.getJava());
-            virtual.setValue("name", mt.getName());
-            virtual.setValue("description", mt.getDescription());
-            virtual.setValue("state", mt.getState());
-            virtual.setValue("result", getFormattedResult(mt.getResult()));
-            virtual.setValue("resulttype", mt.getResultType());
-            virtual.setValue("count", mt.getCount());
-            virtual.setValue("currentpos", mt.getCurrentPos());
+            map.put("os", MMBarManager.getOS());
+            map.put("cpu", MMBarManager.getCPU());
+            map.put("server", MMBarManager.getServer());
+            map.put("database", MMBarManager.getDatabase());
+            map.put("driver", MMBarManager.getDriver());
+            map.put("java", MMBarManager.getJava());
+            map.put("name", mt.getName());
+            map.put("description", mt.getDescription());
+            map.put("state", mt.getState());
+            map.put("result", getFormattedResult(mt.getResult()));
+            map.put("resulttype", mt.getResultType());
+            map.put("count",new Integer(mt.getCount()));
+            map.put("currentpos",new Integer(mt.getCurrentPos()));
         }
-        return virtual;
+        return map;
     }
 
 
@@ -210,26 +207,25 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The enduranceTest value
      */
-    public MMObjectNode getEnduranceTest(String name) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getEnduranceTest(String name) {
+	HashMap map = new HashMap();
         EnduranceTest et = MMBarManager.getEnduranceTest(name);
         if (et != null) {
-            virtual.setValue("os", MMBarManager.getOS());
-            virtual.setValue("cpu", MMBarManager.getCPU());
-            virtual.setValue("server", MMBarManager.getServer());
-            virtual.setValue("database", MMBarManager.getDatabase());
-            virtual.setValue("driver", MMBarManager.getDriver());
-            virtual.setValue("java", MMBarManager.getJava());
-            virtual.setValue("name", et.getName());
-            virtual.setValue("description", et.getDescription());
-            virtual.setValue("state", et.getState());
-            virtual.setValue("result", getFormattedResult(et.getResult()));
-            virtual.setValue("resulttype", et.getResultType());
-            virtual.setValue("count", et.getCount());
-            virtual.setValue("currentpos", et.getCurrentPos());
+            map.put("os", MMBarManager.getOS());
+            map.put("cpu", MMBarManager.getCPU());
+            map.put("server", MMBarManager.getServer());
+            map.put("database", MMBarManager.getDatabase());
+            map.put("driver", MMBarManager.getDriver());
+            map.put("java", MMBarManager.getJava());
+            map.put("name", et.getName());
+            map.put("description", et.getDescription());
+            map.put("state", et.getState());
+            map.put("result", getFormattedResult(et.getResult()));
+            map.put("resulttype", et.getResultType());
+            map.put("count", new Integer(et.getCount()));
+            map.put("currentpos",new Integer(et.getCurrentPos()));
         }
-        return virtual;
+        return map;
     }
 
 
@@ -239,26 +235,25 @@ public class Controller {
      * @param  name  Description of the Parameter
      * @return       The readTest value
      */
-    public MMObjectNode getReadTest(String name) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getReadTest(String name) {
+	HashMap map = new HashMap();
         ReadTest rt = MMBarManager.getReadTest(name);
         if (rt != null) {
-            virtual.setValue("os", MMBarManager.getOS());
-            virtual.setValue("cpu", MMBarManager.getCPU());
-            virtual.setValue("server", MMBarManager.getServer());
-            virtual.setValue("database", MMBarManager.getDatabase());
-            virtual.setValue("driver", MMBarManager.getDriver());
-            virtual.setValue("java", MMBarManager.getJava());
-            virtual.setValue("name", rt.getName());
-            virtual.setValue("description", rt.getDescription());
-            virtual.setValue("state", rt.getState());
-            virtual.setValue("result", getFormattedResult(rt.getResult()));
-            virtual.setValue("resulttype", rt.getResultType());
-            virtual.setValue("count", rt.getCount());
-            virtual.setValue("currentpos", rt.getCurrentPos());
+            map.put("os", MMBarManager.getOS());
+            map.put("cpu", MMBarManager.getCPU());
+            map.put("server", MMBarManager.getServer());
+            map.put("database", MMBarManager.getDatabase());
+            map.put("driver", MMBarManager.getDriver());
+            map.put("java", MMBarManager.getJava());
+            map.put("name", rt.getName());
+            map.put("description", rt.getDescription());
+            map.put("state", rt.getState());
+            map.put("result", getFormattedResult(rt.getResult()));
+            map.put("resulttype", rt.getResultType());
+            map.put("count", new Integer(rt.getCount()));
+            map.put("currentpos", new Integer(rt.getCurrentPos()));
         }
-        return virtual;
+        return map;
     }
 
 
@@ -270,17 +265,15 @@ public class Controller {
     public List getWriteTests() {
         List list = new ArrayList();
         try {
-            VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
             for (Iterator i = MMBarManager.getWriteTests(); i.hasNext(); ) {
-                MMObjectNode virtual = builder.getNewNode("admin");
+		HashMap map = new HashMap();
                 WriteTest wt = (WriteTest) i.next();
-                virtual.setValue("name", wt.getName());
-                virtual.setValue("state", wt.getState());
-                virtual.setValue("action", wt.getAction());
-                virtual.setValue("result", getFormattedResult(wt.getResult()));
-                virtual.setValue("resulttype", wt.getResultType());
-                list.add(virtual);
+                map.put("name", wt.getName());
+                map.put("state", wt.getState());
+                map.put("action", wt.getAction());
+                map.put("result", getFormattedResult(wt.getResult()));
+                map.put("resulttype", wt.getResultType());
+                list.add(map);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -297,17 +290,15 @@ public class Controller {
     public List getMixedTests() {
         List list = new ArrayList();
         try {
-            VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
             for (Iterator i = MMBarManager.getMixedTests(); i.hasNext(); ) {
-                MMObjectNode virtual = builder.getNewNode("admin");
+		HashMap map = new HashMap();
                 MixedTest mt = (MixedTest) i.next();
-                virtual.setValue("name", mt.getName());
-                virtual.setValue("state", mt.getState());
-                virtual.setValue("action", mt.getAction());
-                virtual.setValue("result", getFormattedResult(mt.getResult()));
-                virtual.setValue("resulttype", mt.getResultType());
-                list.add(virtual);
+                map.put("name", mt.getName());
+                map.put("state", mt.getState());
+                map.put("action", mt.getAction());
+                map.put("result", getFormattedResult(mt.getResult()));
+                map.put("resulttype", mt.getResultType());
+                list.add(map);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -324,17 +315,15 @@ public class Controller {
     public List getEnduranceTests() {
         List list = new ArrayList();
         try {
-            VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
             for (Iterator i = MMBarManager.getEnduranceTests(); i.hasNext(); ) {
-                MMObjectNode virtual = builder.getNewNode("admin");
+		HashMap map = new HashMap();
                 EnduranceTest et = (EnduranceTest) i.next();
-                virtual.setValue("name", et.getName());
-                virtual.setValue("state", et.getState());
-                virtual.setValue("action", et.getAction());
-                virtual.setValue("result", getFormattedResult(et.getResult()));
-                virtual.setValue("resulttype", et.getResultType());
-                list.add(virtual);
+                map.put("name", et.getName());
+                map.put("state", et.getState());
+                map.put("action", et.getAction());
+                map.put("result", getFormattedResult(et.getResult()));
+                map.put("resulttype", et.getResultType());
+                list.add(map);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -351,17 +340,15 @@ public class Controller {
     public List getReadTests() {
         List list = new ArrayList();
         try {
-            VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
             for (Iterator i = MMBarManager.getReadTests(); i.hasNext(); ) {
-                MMObjectNode virtual = builder.getNewNode("admin");
+		HashMap map = new HashMap();
                 ReadTest rt = (ReadTest) i.next();
-                virtual.setValue("name", rt.getName());
-                virtual.setValue("state", rt.getState());
-                virtual.setValue("action", rt.getAction());
-                virtual.setValue("result", getFormattedResult(rt.getResult()));
-                virtual.setValue("resulttype", rt.getResultType());
-                list.add(virtual);
+                map.put("name", rt.getName());
+                map.put("state", rt.getState());
+                map.put("action", rt.getAction());
+                map.put("result", getFormattedResult(rt.getResult()));
+                map.put("resulttype", rt.getResultType());
+                list.add(map);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -381,19 +368,17 @@ public class Controller {
         WriteTest wt = MMBarManager.getWriteTest(name);
         if (wt != null) {
             try {
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
                 for (Iterator i = wt.getBenchmarks(); i.hasNext(); ) {
-                    MMObjectNode virtual = builder.getNewNode("admin");
+		    HashMap map = new HashMap();
                     Benchmark bm = (Benchmark) i.next();
-                    virtual.setValue("result", "" + bm.getResult());
-                    virtual.setValue("os", bm.getOS());
-                    virtual.setValue("cpu", bm.getCPU());
-                    virtual.setValue("server", bm.getServer());
-                    virtual.setValue("database", bm.getDatabase());
-                    virtual.setValue("driver", bm.getDriver());
-                    virtual.setValue("java", bm.getJava());
-                    list.add(virtual);
+                    map.put("result", "" + bm.getResult());
+                    map.put("os", bm.getOS());
+                    map.put("cpu", bm.getCPU());
+                    map.put("server", bm.getServer());
+                    map.put("database", bm.getDatabase());
+                    map.put("driver", bm.getDriver());
+                    map.put("java", bm.getJava());
+                    list.add(map);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -414,19 +399,17 @@ public class Controller {
         MixedTest mt = MMBarManager.getMixedTest(name);
         if (mt != null) {
             try {
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
                 for (Iterator i = mt.getBenchmarks(); i.hasNext(); ) {
-                    MMObjectNode virtual = builder.getNewNode("admin");
+		    HashMap map = new HashMap();
                     Benchmark bm = (Benchmark) i.next();
-                    virtual.setValue("result", "" + bm.getResult());
-                    virtual.setValue("os", bm.getOS());
-                    virtual.setValue("cpu", bm.getCPU());
-                    virtual.setValue("server", bm.getServer());
-                    virtual.setValue("database", bm.getDatabase());
-                    virtual.setValue("driver", bm.getDriver());
-                    virtual.setValue("java", bm.getJava());
-                    list.add(virtual);
+                    map.put("result", "" + bm.getResult());
+                    map.put("os", bm.getOS());
+                    map.put("cpu", bm.getCPU());
+                    map.put("server", bm.getServer());
+                    map.put("database", bm.getDatabase());
+                    map.put("driver", bm.getDriver());
+                    map.put("java", bm.getJava());
+                    list.add(map);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -447,19 +430,17 @@ public class Controller {
         EnduranceTest et = MMBarManager.getEnduranceTest(name);
         if (et != null) {
             try {
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
                 for (Iterator i = et.getBenchmarks(); i.hasNext(); ) {
-                    MMObjectNode virtual = builder.getNewNode("admin");
+		    HashMap map = new HashMap();
                     Benchmark bm = (Benchmark) i.next();
-                    virtual.setValue("result", "" + bm.getResult());
-                    virtual.setValue("os", bm.getOS());
-                    virtual.setValue("cpu", bm.getCPU());
-                    virtual.setValue("server", bm.getServer());
-                    virtual.setValue("database", bm.getDatabase());
-                    virtual.setValue("driver", bm.getDriver());
-                    virtual.setValue("java", bm.getJava());
-                    list.add(virtual);
+                    map.put("result", "" + bm.getResult());
+                    map.put("os", bm.getOS());
+                    map.put("cpu", bm.getCPU());
+                    map.put("server", bm.getServer());
+                    map.put("database", bm.getDatabase());
+                    map.put("driver", bm.getDriver());
+                    map.put("java", bm.getJava());
+                    list.add(map);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -480,19 +461,17 @@ public class Controller {
         ReadTest rt = MMBarManager.getReadTest(name);
         if (rt != null) {
             try {
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
                 for (Iterator i = rt.getBenchmarks(); i.hasNext(); ) {
-                    MMObjectNode virtual = builder.getNewNode("admin");
+		    HashMap map = new HashMap();
                     Benchmark bm = (Benchmark) i.next();
-                    virtual.setValue("result", "" + bm.getResult());
-                    virtual.setValue("os", bm.getOS());
-                    virtual.setValue("cpu", bm.getCPU());
-                    virtual.setValue("server", bm.getServer());
-                    virtual.setValue("database", bm.getDatabase());
-                    virtual.setValue("driver", bm.getDriver());
-                    virtual.setValue("java", bm.getJava());
-                    list.add(virtual);
+                    map.put("result", "" + bm.getResult());
+                    map.put("os", bm.getOS());
+                    map.put("cpu", bm.getCPU());
+                    map.put("server", bm.getServer());
+                    map.put("database", bm.getDatabase());
+                    map.put("driver", bm.getDriver());
+                    map.put("java", bm.getJava());
+                    list.add(map);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
