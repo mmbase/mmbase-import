@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base SYSTEM "../../mmbase/applications/buildbase.xml" > ]
+>
+
+<project name="ProfilesConnector" default="jar" basedir=".">
+  <property name="project.name"   value="profilesconnector" />
+  <property name="project.package"   value="org/mmbase/applications/profilesconnector" />
+  <property name="project.target.templates.dir" value="profilesconnector" />
+  <property name="source.dir" value="../../mmbase" />
+  <property name="project.extra.path" location="../mmbob/build/mmbase-mmbob.jar;build/profielenBS-client.jar;build/profielenGS-client.jar" />
+
+  &base;
+
+
+</project>
