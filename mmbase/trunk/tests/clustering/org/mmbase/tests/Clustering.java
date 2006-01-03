@@ -262,8 +262,9 @@ public class Clustering extends BridgeTest {
 
         Relation r = nodea1.createRelation(b1, rm); r.commit();
 
-
         assertTrue(nodea1.getRelatedNodes("bb", "newrole", null).size() == 1);
+
+        allowLatency(); // give the new role some time to cast to other mmbase.
         try {
             assertTrue(cloud2.getNode(nodea1.getNumber()).getRelatedNodes("bb", "newrole", null).size() == 1);
         } catch (Exception e) {
