@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.15 2006-01-03 13:27:46 michiel Exp $
+ * @version $Id: Searcher.java,v 1.16 2006-01-03 15:49:45 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -39,8 +39,7 @@ public class Searcher {
 
     // Search actions are logged on org.mmbase.lucene.SEARCH
     // So by configuring log4j, you can easily track what people are searching for.
-    private static final Logger searchLog = Logging.getLoggerInstance("org.mmbase.lucene.SEARCH");
-
+    private final Logger searchLog;
     private final Indexer index;
     private final String[] allIndexedFields;
 
@@ -49,6 +48,7 @@ public class Searcher {
      */
     Searcher(Indexer index, String[] allIndexedFields) {
         this.index = index;
+        searchLog = Logging.getLoggerInstance("org.mmbase.lucene.SEARCH." + index.getName());
         this.allIndexedFields = allIndexedFields;
     }
 
@@ -81,7 +81,12 @@ public class Searcher {
 
     public NodeList search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
         // log the value searched
-        searchLog.service(value);
+        if (extraQuery != null && ! extraQuery.equals("")) {
+            searchLog.service("(" + extraQuery + ") " + value);
+        } else {
+            searchLog.service(value);
+        }
+
         List list = new LinkedList(); 
         if (log.isDebugEnabled()) {
             log.trace("Searching '" + value + "' in index " + index + " for " + sort + " " + analyzer + " " + extraQuery + " " + fields + " " + offset + " " + max);
@@ -212,16 +217,22 @@ public class Searcher {
             } else if (type.equals("LT") || type.equals("LTE")) {
                 subQuery = new RangeQuery(null, new Term(field,value), type.equals("LTE"));
             } else if (type.equals("IN") || type.equals("INC")) {
-                subQuery = new RangeQuery(new Term(field,value), new Term(field,value2), type.equals("INC"));
+                subQuery = new RangeQuery(new Term(field, value), new Term(field, value2), type.equals("INC"));
+            } else {
+                throw new RuntimeException("Unknown operator '" + type + "'");
             }
             if (subQuery !=null) {
-                boolean required = !type.equals("NE");
                 if (query == null) {
+                    if (type.equals("NE")) {
+                        throw new RuntimeException("The operator NE cannot be used first");
+                    }
                     query = subQuery;
                 } else {
                     BooleanQuery booleanQuery = new BooleanQuery();
                     booleanQuery.add(query, true, false);
-                    booleanQuery.add(subQuery, required, !required);
+                    boolean prohibited = type.equals("NE");
+                    boolean required   = ! prohibited;
+                    booleanQuery.add(subQuery, required, prohibited);
                     query = booleanQuery;
                 }
             }
