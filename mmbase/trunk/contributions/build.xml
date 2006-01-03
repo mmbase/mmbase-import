@@ -29,8 +29,8 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect" />
-  <target name="all.not.compiling" depends="mmbob,multilanguagegui,thememanager,mmbar" />
+  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui" />
+  <target name="all.not.compiling" depends="mmbob,mmbar" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
 
 
@@ -82,7 +82,7 @@ Contributions build file
       <property name="download.dir"        value="${download.dir}" />
     </ant>
   </target>
-x  
+  
   <target name="thememanager" depends="mmbase">
     <ant dir="thememanager"      target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${contributions.build.dir}" />
