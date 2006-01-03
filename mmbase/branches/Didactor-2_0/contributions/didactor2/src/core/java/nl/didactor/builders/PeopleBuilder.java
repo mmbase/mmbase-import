@@ -3,7 +3,9 @@ import nl.didactor.component.Component;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.*;
+import org.mmbase.module.builders.MultiRelations;
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.bridge.*;
@@ -67,8 +69,22 @@ public class PeopleBuilder extends DidactorBuilder {
      * Initialize this builder
      */
     public boolean init() {
+        FieldDefs fd;
         encoder = new org.mmbase.util.Encode("MD5");
-        return super.init();
+        boolean retval = super.init();
+
+        fd = new FieldDefs("classes_html", "string", -1, -1, "classes_html", FieldDefs.TYPE_STRING, -1, FieldDefs.DBSTATE_VIRTUAL);
+        fd.setDBPos(1000);
+        fd.setGUIName("nl", "Klassen");
+        fd.setGUIName("en", "Classes");
+        addField(fd);
+
+        fd = new FieldDefs("roles_html", "string", -1, -1, "roles_html", FieldDefs.TYPE_STRING, -1, FieldDefs.DBSTATE_VIRTUAL);
+        fd.setGUIName("nl", "Rollen");
+        fd.setGUIName("en", "Roles");
+        fd.setDBPos(1000);
+        addField(fd);
+        return retval;
     }
 
     /**
@@ -139,6 +155,33 @@ public class PeopleBuilder extends DidactorBuilder {
                 }
                 return new Integer("1");
             }
+        } else if ("classes_html".equals(field)) {
+            StringBuffer result = new StringBuffer();
+            Vector classes = node.getRelatedNodes("classes", "classrel", MultiRelations.SEARCH_DESTINATION);
+            for (int i=0; i<classes.size(); i++) {
+                MMObjectNode cls = (MMObjectNode)classes.get(i);
+                if (result.length() > 0) {
+                    result.append("\n<br />");
+                }
+                result.append(cls.getValue("name"));
+                Vector educations = cls.getRelatedNodes("educations");
+                if (educations.size() > 0) {
+                    MMObjectNode education = (MMObjectNode)educations.get(0);
+                    result.append(" (").append(education.getValue("name")).append(')');
+                }
+            }
+            return result.toString();
+        } else if ("roles_html".equals(field)) {
+            StringBuffer result = new StringBuffer();
+            Vector roles = node.getRelatedNodes("roles");
+            for (int i=0; i<roles.size(); i++) {
+                MMObjectNode role = (MMObjectNode)roles.get(i);
+                if (result.length() > 0) {
+                    result.append(", ");
+                }
+                result.append(role.getValue("name"));
+            }
+            return result.toString();
         }
 
         if (getField(field) == null) {
