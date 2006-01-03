@@ -118,8 +118,8 @@ public class Theme {
             	XMLBasicReader reader = new XMLBasicReader(filename,Theme.class);
             	if(reader!=null) {
 			// decode stylesheets
-            		for(Enumeration ns=reader.getChildElements("theme","stylesheet");ns.hasMoreElements(); ) {
-                		Element n=(Element)ns.nextElement();
+            		for(Iterator ns=reader.getChildElements("theme","stylesheet");ns.hasNext(); ) {
+                		Element n=(Element)ns.next();
    		               	NamedNodeMap nm=n.getAttributes();
                     		if (nm!=null) {
 					String id="default";
@@ -139,8 +139,8 @@ public class Theme {
 			    	}
 			}
 
-            		for(Enumeration ns=reader.getChildElements("theme","imageset");ns.hasMoreElements(); ) {
-                		Element n=(Element)ns.nextElement();
+            		for(Iterator ns=reader.getChildElements("theme","imageset");ns.hasNext(); ) {
+                		Element n=(Element)ns.next();
    		               	NamedNodeMap nm=n.getAttributes();
                     		if (nm!=null) {
 					String id="default";
@@ -162,9 +162,9 @@ public class Theme {
                     } else {
                         is = new ImageSet(id,role);
                     } 
-            				for(Enumeration ns2=reader.getChildElements(n,"image");ns2.hasMoreElements(); ) {
+            				for(Iterator ns2=reader.getChildElements(n,"image");ns2.hasNext(); ) {
 					
-                			Element n2=(Element)ns2.nextElement();
+                			Element n2=(Element)ns2.next();
    		                	NamedNodeMap nm2=n2.getAttributes();
                     			if (nm2!=null) {
 						String imageid=null;

@@ -30,20 +30,20 @@ import org.mmbase.applications.thememanager.*;
 public class ThemeManagerController extends ThemeManager {
 
 	private static Logger log = Logging.getLoggerInstance(ThemeManagerController.class);
+	private static HashMap types;
 
 	public static List getAssignedList() {
                 List list = new ArrayList();
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 		HashMap m=getAssigned();
 		Iterator keys=m.keySet().iterator();
 		while (keys.hasNext()) {
-                        MMObjectNode virtual = builder.getNewNode("admin");
+			HashMap map = new HashMap();
 			String k=(String)keys.next();
 			String v=(String)m.get(k);
-                        virtual.setValue("id",k);
-                        virtual.setValue("theme",v);
-			list.add(virtual);
+                        map.put("id",k);
+                        map.put("theme",v);
+			list.add(map);
 		}
 		return list;
         }
@@ -51,51 +51,42 @@ public class ThemeManagerController extends ThemeManager {
 
 	public static List getThemesList() {
                 List list = new ArrayList();
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 		HashMap m=getThemes();
 		Iterator keys=m.keySet().iterator();
 		while (keys.hasNext()) {
-                        MMObjectNode virtual = builder.getNewNode("admin");
+			HashMap map = new HashMap();
 			String k=(String)keys.next();
-			//Theme th=(Theme)m.get(k);
-                        virtual.setValue("id",k);
-                        //virtual.setValue("theme",v);
-			list.add(virtual);
+                        map.put("id",k);
+			list.add(map);
 		}
 		return list;
         }
 
 
-	public static MMObjectNode getAssignInfo(String id) {
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-                MMObjectNode virtual = builder.getNewNode("admin");
-
+	public static Map getAssignInfo(String id) {
+		Map map = new HashMap();	
 		String themename=getAssign(id);
 		if (themename!=null) {
-                        virtual.setValue("theme",themename);
+                        map.put("theme",themename);
 		}
-		return virtual;
+		return map;
         }
 
-
-	public static MMObjectNode getThemeInfo(String id) {
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-                MMObjectNode virtual = builder.getNewNode("admin");
-
+	public static Map getThemeInfo(String id) {
+		Map map = new HashMap();	
 		Theme th=getTheme(id);
 		if (th!=null) {
-                        virtual.setValue("id",id);
-                        virtual.setValue("stylesheetscount",th.getStyleSheetsCount());
-                        virtual.setValue("imagesetscount",th.getImageSetsCount());
+                        map.put("id",id);
+                        map.put("stylesheetscount",new Integer(th.getStyleSheetsCount()));
+                        map.put("imagesetscount",new Integer(th.getImageSetsCount()));
 		}
-		return virtual;
+		return map;
         }
 
 
 	public static List getThemeStyleSheetsList(String id) {
                 List list = new ArrayList();
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 		Theme th=getTheme(id);
 		if (th!=null) {
@@ -104,10 +95,10 @@ public class ThemeManagerController extends ThemeManager {
 			while (keys.hasNext()) {
 				String k=(String)keys.next();
 				String v=(String)m.get(k);
-                		MMObjectNode virtual = builder.getNewNode("admin");
-                        	virtual.setValue("id",k);
-                        	virtual.setValue("path",v);
-				list.add(virtual);
+				HashMap map = new HashMap();
+                        	map.put("id",k);
+                        	map.put("path",v);
+				list.add(map);
 			}
 		}
 		return list;
@@ -115,14 +106,13 @@ public class ThemeManagerController extends ThemeManager {
 
 
 	public static List getThemeImageSetsList(String id) {
-        return getThemeImageSetsList(id,"");
-    }
+        	log.debug(" AAAid =" + id);
+        	return getThemeImageSetsList(id,"");
+    	}
 
 
 	public static List getThemeImageSetsList(String id, String role) {
-        log.debug("role=" + role +" and id =" + id);
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         //don't know if this is a nice way of doing this
         String assignedID = getAssign(id);
@@ -145,11 +135,11 @@ public class ThemeManagerController extends ThemeManager {
 			while (keys.hasNext()) {
 				String k=(String)keys.next();
 				ImageSet is=(ImageSet)m.get(k);
-                MMObjectNode virtual = builder.getNewNode("admin");
-                virtual.setValue("id",k);
-                virtual.setValue("role",is.getRole());
-                virtual.setValue("imagecount",is.getCount());
-                list.add(virtual);
+				HashMap map =  new HashMap();
+                		map.put("id",k);
+                		map.put("role",is.getRole());
+                		map.put("imagecount",new Integer(is.getCount()));
+                		list.add(map);
 			}
 		}
 		return list;
@@ -160,7 +150,6 @@ public class ThemeManagerController extends ThemeManager {
 
 	public static List getStyleSheetClasses(String id,String cssid) {
                 List list = new ArrayList();
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 		Theme th=getTheme(id);
 		if (th!=null) {
@@ -168,10 +157,10 @@ public class ThemeManagerController extends ThemeManager {
 			Iterator i=sts.getStyleSheetClasses();
 			while (i.hasNext()) {
 				StyleSheetClass stc=(StyleSheetClass)i.next();
-                		MMObjectNode virtual = builder.getNewNode("admin");
-                        	virtual.setValue("id",stc.getId());
-                        	virtual.setValue("propertycount",stc.getPropertyCount());
-				list.add(virtual);
+				HashMap map =  new HashMap();
+                        	map.put("id",stc.getId());
+                        	map.put("propertycount",new Integer(stc.getPropertyCount()));
+				list.add(map);
 			}
 		}
 		return list;
@@ -196,9 +185,26 @@ public class ThemeManagerController extends ThemeManager {
 		return true;
  	}
 
+
+	public static String getStyleSheetProperty(String themeid,String cssid,String id,String name) { 
+		Theme th=getTheme(themeid);
+		if (th!=null) {
+			StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			if (sts!=null) {
+				StyleSheetClass ssc=sts.getStyleSheetClass(id);
+				if (ssc!=null) {
+					StyleSheetProperty ssp  = ssc.getProperty(name);
+					if (ssp!=null) { 
+						return ssp.getValue();
+					}
+				}
+			}
+		}
+		return ""; 
+ 	}
+
 	public static List getStyleSheetProperties(String themeid,String cssid,String id) {
                 List list = new ArrayList();
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
 		Theme th=getTheme(themeid);
 		if (th!=null) {
@@ -209,10 +215,10 @@ public class ThemeManagerController extends ThemeManager {
 					Iterator i=ssc.getProperties();
 					while (i.hasNext()) {
 						StyleSheetProperty ssp=(StyleSheetProperty)i.next();
-                				MMObjectNode virtual = builder.getNewNode("admin");
-                        			virtual.setValue("name",ssp.getName());
-                        			virtual.setValue("value",ssp.getValue());
-						list.add(virtual);
+						HashMap map = new HashMap();
+                        			map.put("name",ssp.getName());
+                        			map.put("value",ssp.getValue());
+						list.add(map);
 					}
 				}
 			}
@@ -223,8 +229,6 @@ public class ThemeManagerController extends ThemeManager {
 
 	public static List getStyleSheet(String id) {
                 List list = new ArrayList();
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
 		Theme th=getTheme(id);
 		if (th!=null) {
 			HashMap m=th.getStyleSheets();
@@ -232,12 +236,85 @@ public class ThemeManagerController extends ThemeManager {
 			while (keys.hasNext()) {
 				String k=(String)keys.next();
 				String v=(String)m.get(k);
-                		MMObjectNode virtual = builder.getNewNode("admin");
-                        	virtual.setValue("id",k);
-                        	virtual.setValue("path",v);
-				list.add(virtual);
+				HashMap  map = new HashMap();
+                        	map.put("id",k);
+                        	map.put("path",v);
+				list.add(map);
 			}
 		}
 		return list;
+        }
+
+	public boolean setCSSValue(String path,String value) {
+		StringTokenizer tok = new StringTokenizer(path,"/\n\r");
+		if (tok.hasMoreTokens()) {
+			String themename = tok.nextToken();
+			if (tok.hasMoreTokens()) {
+				String stylesheet =  tok.nextToken();
+				if (tok.hasMoreTokens()) {
+					String classname =  tok.nextToken();
+					if (tok.hasMoreTokens()) {
+						String propertyname =  tok.nextToken();
+						/*
+						log.info("themename="+themename);
+						log.info("stylesheet="+stylesheet);
+						log.info("classname="+classname);
+						log.info("propertyname="+propertyname);
+						*/
+						setStyleSheetProperty(themename,stylesheet,classname,propertyname,value);
+					}
+				}
+			}
+		}
+		return true;
+        }
+
+	public String getCSSValue(String path) {
+
+		StringTokenizer tok = new StringTokenizer(path,"/\n\r");
+		if (tok.hasMoreTokens()) {
+			String themename = tok.nextToken();
+			if (tok.hasMoreTokens()) {
+				String stylesheet =  tok.nextToken();
+				if (tok.hasMoreTokens()) {
+					String classname =  tok.nextToken();
+					if (tok.hasMoreTokens()) {
+						String propertyname =  tok.nextToken();
+						return getStyleSheetProperty(themename,stylesheet,classname,propertyname);
+					}
+				}
+			}
+		}
+		return "";
+	}
+
+
+	public String getCSSType(String path) {
+		if (types==null) fillTypes();
+
+		StringTokenizer tok = new StringTokenizer(path,"/\n\r");
+		if (tok.hasMoreTokens()) {
+			String themename = tok.nextToken();
+			if (tok.hasMoreTokens()) {
+				String stylesheet =  tok.nextToken();
+				if (tok.hasMoreTokens()) {
+					String classname =  tok.nextToken();
+					if (tok.hasMoreTokens()) {
+						String propertyname =  tok.nextToken();
+						String type=(String)types.get(propertyname);
+						if (type!=null) return type;
+					}
+				}
+			}
+		}
+		return "default";
+	}
+
+	public void fillTypes() {
+		types =  new HashMap();
+		types.put("color","color");
+		types.put("background","color");
+		types.put("font-family","font");
+		types.put("font-size","fontsize");
         }
 }
