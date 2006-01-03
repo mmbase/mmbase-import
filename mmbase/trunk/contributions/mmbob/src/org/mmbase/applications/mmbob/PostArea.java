@@ -23,6 +23,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.applications.multilanguagegui.*;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -549,7 +550,7 @@ public class PostArea {
                 } else {
                     postthreads.add(postthread);
                 }
-                namecache.put("" + n2.getValue("postthreads.number"), postthread);
+                namecache.put("" + n2.getIntValue("postthreads.number"), postthread);
             }
        	long end = System.currentTimeMillis();
 	//log.info("end reading threads time="+(end-start));
@@ -604,13 +605,17 @@ public class PostArea {
      * @param body body of the new postthread
      * @return MMbase objectnumber of the newly created postthread or -1 if the postthread-nodemanager could not be found
      */
-    public int newPost(String subject, Poster poster, String body,String mood) {
+    public int newPost(String subject, Poster poster, String body,String mood,boolean parsed) {
         if (postthreads == null) readPostThreads();
         NodeManager nm = ForumManager.getCloud().getNodeManager("postthreads");
         if (nm != null) {
             Node ptnode = nm.createNode();
             ptnode.setStringValue("subject", subject);
-            ptnode.setStringValue("creator", poster.getNick());
+	    if (poster!=null) {
+            	ptnode.setStringValue("creator", poster.getNick());
+	    } else {
+            	ptnode.setStringValue("creator", "gast");
+	    }
             ptnode.setStringValue("state", "normal");
             ptnode.setStringValue("mood", mood);
             ptnode.setStringValue("ttype", "post");
@@ -625,7 +630,7 @@ public class PostArea {
 		postthread.setLoaded(true);
 
                 // now add the first 'reply' (wrong name since its not a reply)
-                postthread.postReply(subject, poster, body);
+                postthread.postReply(subject, poster, body,parsed);
                 if (postthread.getState().equals("pinned")) {
                     postthreads.add(0, postthread);
                 } else {
@@ -699,6 +704,61 @@ public class PostArea {
                 postthreads.add(numberofpinned, child);
             }
         }
+    }
+   
+    public boolean movePostThread(String postthreadid,String newpostareaid,Poster poster) {
+	// get the target area
+	PostArea ta = parent.getPostArea(newpostareaid);
+	if (ta!=null) {
+        	PostThread t = getPostThread(postthreadid);
+        	if (t != null) {
+			int pos=0;
+			PostThread npt = null;
+        		Posting p = t.getPostingPos(0);
+			while (p!=null) {
+				if (pos==0) {
+				   String body=p.getDirectBody();
+				   if (body.indexOf("<posting>")==0) {
+				   	body = "<posting> "+MultiLanguageGui.getConversion("mmbob.movedfrom",parent.getLanguage())+" : "+getName()+" "+MultiLanguageGui.getConversion("mmbob.by",parent.getLanguage())+" "+poster.getNick()+"<br />----<br /><br />"+body.substring(9);
+				   }
+				   Poster nposter=parent.getPoster(p.getPoster());
+				   int np=ta.newPost(p.getSubject(),nposter,body,p.getParent().getMood(),true);
+				   nposter.decPostCount(); // compensate counter
+				   npt=ta.getPostThread(""+np);
+				   if (npt!=null) {
+					int nr=npt.getLastPostNumber();
+					if (nr!=-1) {
+						Posting npr=npt.getPosting(nr);
+						npr.setPostTime(p.getPostTime());
+						npr.save();
+						body=MultiLanguageGui.getConversion("mmbob.movedto",parent.getLanguage())+" : "+ta.getName()+" "+MultiLanguageGui.getConversion("mmbob.by",parent.getLanguage())+" "+poster.getNick()+"\n\r\n\r";
+						body+="[url]/mmbob/thread.jsp?forumid="+parent.getId()+"&postareaid="+ta.getId()+"&postthreadid="+npt.getId()+"[/url]";
+						p.setBody(body,"",false);
+						p.save();
+						t.setState("closed");
+						t.save();
+					}
+				   }
+				} else {
+				   String body=p.getDirectBody();
+				   if (npt!=null) { 
+				        Poster nposter=parent.getPoster(p.getPoster());
+					int nr=npt.postReply(p.getSubject(),nposter,body,true);
+				   	nposter.decPostCount(); // compensate counter
+					if (nr!=-1) {
+						Posting npr=npt.getPosting(nr);
+						npr.setPostTime(p.getPostTime());
+						npr.save();
+						p.remove();
+					}
+				   }
+				}
+				pos++;
+        			p = t.getPostingPos(1);
+			}
+		}
+	}
+	return true;
     }
 
     /**
@@ -801,11 +861,13 @@ public class PostArea {
     public boolean removePostThread(String postthreadid) {
         PostThread t = getPostThread(postthreadid);
         if (t != null) {
-            postthreads.remove("" + t.getId());
             if (!t.remove()) {
                 log.error("Can't remove PostThread : " + t.getId());
                 return false;
-            }
+            } else {
+                log.info("removed PostThread : " + t);
+            	postthreads.remove(t);
+	    }
         }
         return true;
     }

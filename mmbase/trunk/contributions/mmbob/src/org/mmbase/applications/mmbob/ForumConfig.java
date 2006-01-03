@@ -27,9 +27,10 @@ public class ForumConfig {
     private static Logger log = Logging.getLoggerInstance(ForumConfig.class);
     private ArrayList fieldaliases=new ArrayList();
     private HashMap subs=new HashMap();
+    private HashMap setguieditvalues=new HashMap();
     private String defaultaccount, defaultpassword,alias;
     private String accountcreationtype,accountremovaltype;
-    private String loginmodetype,logoutmodetype;
+    private String loginsystemtype,loginmodetype,logoutmodetype;
     private String guestreadmodetype,guestwritemodetype,threadstartlevel;
     private String id="unkown";
     private String xsltpostingsodd = "xslt/posting2xhtmlDark.xslt";
@@ -48,6 +49,12 @@ public class ForumConfig {
     private HashMap profiledefs = new HashMap();
     private String navigationmethod = "list";
 
+    private int speedposttime = 10;
+    private int postingsoverflowpostarea = 4;
+    private int postingsoverflowthreadpage = 4;
+    private boolean clonemaster =  false;
+
+    private boolean replyoneachpage = false;
 
     private int quotamax = 100;
     private int quotasoftwarning = 60;
@@ -89,13 +96,25 @@ public class ForumConfig {
                         if (n3 != null) {
                             alias = n3.getNodeValue();
 			}
+                        n3 = nm.getNamedItem("clonemaster");
+                        if (n3 != null) {
+                            if (n3.getNodeValue().equals("true")) {
+				clonemaster = true;
+			    }
+			}
 
                         accountcreationtype = getAttributeValue(reader,n,"accountcreation","type");
                         accountremovaltype = getAttributeValue(reader,n,"accountremoval","type");
+                        loginsystemtype = getAttributeValue(reader,n,"loginsystem","type");
+                        setGuiEdit("loginsystem",getAttributeValue(reader,n,"loginsystem","guiedit"));
                         loginmodetype = getAttributeValue(reader,n,"loginmode","type");
+                        setGuiEdit("loginmode",getAttributeValue(reader,n,"loginmode","guiedit"));
                         logoutmodetype = getAttributeValue(reader,n,"logoutmode","type");
+                        setGuiEdit("logoutmode",getAttributeValue(reader,n,"logoutmode","guiedit"));
                         guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
+                        setGuiEdit("guestreadmode",getAttributeValue(reader,n,"guestreadmode","guiedit"));
                         guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
+                        setGuiEdit("guestwritemode",getAttributeValue(reader,n,"guestwritemode","guiedit"));
                         threadstartlevel = getAttributeValue(reader,n,"threadstart","level");
 
 
@@ -107,13 +126,38 @@ public class ForumConfig {
                             postingsPerPage = (Integer.valueOf(inttemp)).intValue();
                         }
 
+                        inttemp = getAttributeValue(reader,n,"postingsoverflowpostarea","value");
+                        if (inttemp != null) {
+                            postingsoverflowpostarea = (Integer.valueOf(inttemp)).intValue();
+                        }
+
+                        inttemp = getAttributeValue(reader,n,"postingsoverflowthreadpage","value");
+                        if (inttemp != null) {
+                            postingsoverflowthreadpage = (Integer.valueOf(inttemp)).intValue();
+                        }
+
+                        inttemp = getAttributeValue(reader,n,"speedposttime","value");
+                        if (inttemp != null) {
+                            speedposttime = (Integer.valueOf(inttemp)).intValue();
+                        }
+
+                        String stmp = getAttributeValue(reader,n,"replyoneachpage","value");
+			if (stmp!=null) {
+				if (stmp.equals("true")) {
+					replyoneachpage = true;
+				} else {
+					replyoneachpage = false;
+				}
+			}
+
                         fromEmailAddress = getAttributeValue(reader,n,"email","from");
 
                         String tmp = getAttributeValue(reader,n,"navigation","method");
 			if (tmp!=null) navigationmethod = tmp;
+                        setGuiEdit("navigationmethod",tmp);
 
-                        for(Enumeration ns2=reader.getChildElements(n,"layout");ns2.hasMoreElements(); ) {
-                            Element n2=(Element)ns2.nextElement();
+                        for(Iterator ns2=reader.getChildElements(n,"layout");ns2.hasNext(); ) {
+                            Element n2=(Element)ns2.next();
                             org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                             if (layoutList.getLength() > 0) {
                                 Element footerNode = (Element)layoutList.item(0);
@@ -127,24 +171,26 @@ public class ForumConfig {
                         }
 
 
-                        for(Enumeration ns2=reader.getChildElements(n,"avatars");ns2.hasMoreElements(); ) {
-                            Element n2=(Element)ns2.nextElement();
+                        for(Iterator ns2=reader.getChildElements(n,"avatars");ns2.hasNext(); ) {
+                            Element n2=(Element)ns2.next();
                             org.w3c.dom.NodeList avatarsList = n2.getElementsByTagName("upload");
                             if (avatarsList.getLength() > 0) {
                                 Element uploadNode = (Element)avatarsList.item(0);
                                 avatarsUploadEnabled = uploadNode.getAttribute("enable");
+                        	setGuiEdit("avatarsupload",uploadNode.getAttribute("guiedit"));
                             }
                             avatarsList = n2.getElementsByTagName("gallery");
                             if (avatarsList.getLength() > 0) {
                                 Element galleryNode = (Element)avatarsList.item(0);
                                 avatarsGalleryEnabled =galleryNode.getAttribute("enable");
+                        	setGuiEdit("avatarsgallery",galleryNode.getAttribute("guiedit"));
                             }
                             
                         }
 
 
-                        for(Enumeration ns2=reader.getChildElements(n,"profileentry");ns2.hasMoreElements(); ) {
-                            Element n2=(Element)ns2.nextElement();
+                        for(Iterator ns2=reader.getChildElements(n,"profileentry");ns2.hasNext(); ) {
+                            Element n2=(Element)ns2.next();
                             
                             	nm = n2.getAttributes();
                             	if (nm != null) {
@@ -225,8 +271,8 @@ public class ForumConfig {
 				}
                         }
 
-                        for (Enumeration ns2 = reader.getChildElements(n, "generatedata"); ns2.hasMoreElements();) {
-                            Element n2 = (Element) ns2.nextElement();
+                        for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
+                            Element n2 = (Element) ns2.next();
                             nm = n2.getAttributes();
                             if (nm != null) {
                                 String role = null;
@@ -248,8 +294,8 @@ public class ForumConfig {
                             }
                         }
 
-                        for (Enumeration ns2 = reader.getChildElements(n, "quota"); ns2.hasMoreElements();) {
-                            Element n2 = (Element) ns2.nextElement();
+                        for (Iterator ns2 = reader.getChildElements(n, "quota"); ns2.hasNext();) {
+                            Element n2 = (Element) ns2.next();
                             nm = n2.getAttributes();
                             if (nm != null) {
                                 n3 = nm.getNamedItem("max");
@@ -267,8 +313,8 @@ public class ForumConfig {
                             }
                         }
 
-                        for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
-                                   	Element n2=(Element)ns2.nextElement();
+                        for(Iterator ns2=reader.getChildElements(n,"alias");ns2.hasNext(); ) {
+                                   	Element n2=(Element)ns2.next();
                                         	nm=n2.getAttributes();
                                 		if (nm!=null) {
 							String object=null;
@@ -312,8 +358,8 @@ public class ForumConfig {
 							fieldaliases.add(fa);
 						}
 					}
-                                        for(Enumeration ns2=reader.getChildElements(n,"postarea");ns2.hasMoreElements(); ) {
-                                                Element n2=(Element)ns2.nextElement();
+                                        for(Iterator ns2=reader.getChildElements(n,"postarea");ns2.hasNext(); ) {
+                                                Element n2=(Element)ns2.next();
                                                 PostAreaConfig config = new PostAreaConfig(reader,n2);
                                                 subs.put(config.getId(),config);
                                         }
@@ -406,8 +452,8 @@ public class ForumConfig {
 
 
    private String getAttributeValue(XMLBasicReader reader,Element n,String itemname,String attribute) {
-       for (Enumeration ns2 = reader.getChildElements(n, itemname); ns2.hasMoreElements();) {
-           Element n2 = (Element) ns2.nextElement();
+       for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
+           Element n2 = (Element) ns2.next();
            NamedNodeMap nm = n2.getAttributes();
            if (nm != null) {
                   org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
@@ -431,6 +477,10 @@ public class ForumConfig {
         return loginmodetype;
    }
 
+   public String getLoginSystemType() {
+        return loginsystemtype;
+   }
+
    public String getAlias() {
         return alias;
    }
@@ -441,6 +491,10 @@ public class ForumConfig {
 
    public void setLoginModeType(String type) {
         loginmodetype = type;
+   }
+
+   public void setLoginSystemType(String system) {
+        loginsystemtype = system;
    }
 
    public String getLogoutModeType() {
@@ -458,6 +512,45 @@ public class ForumConfig {
    public String getThreadStartLevel() {
         return threadstartlevel;
    }
+
+   public void setPostingsPerPage(int count) {
+        postingsPerPage =  count;
+   }
+
+
+   public void setPostingsOverflowPostArea(int count) {
+        postingsoverflowpostarea =  count;
+   }
+
+   public void setPostingsOverflowThreadPage(int count) {
+        postingsoverflowthreadpage =  count;
+   }
+
+   public int getPostingsOverflowThreadPage() {
+        return postingsoverflowthreadpage;
+   }
+
+   public int getPostingsOverflowPostArea() {
+        return postingsoverflowpostarea;
+   }
+
+   public void setReplyOnEachPage(boolean value) {
+        replyoneachpage =  value;
+   }
+
+   public boolean getReplyOnEachPage() {
+        return replyoneachpage;
+   }
+
+
+   public void setSpeedPostTime(int delay) {
+        speedposttime =  delay;
+   }
+
+   public int getSpeedPostTime() {
+        return speedposttime;
+   }
+
 
    public void setGuestReadModeType(String type) {
         guestreadmodetype = type;
@@ -550,5 +643,21 @@ public class ForumConfig {
 	Object o = profiledefs.get(name);
 	if (o != null) return (ProfileEntryDef)o;
 	return null;
+    }
+
+    public boolean getCloneMaster() {
+	return clonemaster;
+    }
+
+    private void setGuiEdit(String key,String value) {
+	if (value==null || value.equals("")) {
+		setguieditvalues.put(key,"true");
+	} else {
+		setguieditvalues.put(key,value);
+	}
+    }
+	
+    public String getGuiEdit(String key) {
+	return (String)setguieditvalues.get(key);
     }
 }

@@ -23,6 +23,8 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.applications.email.*;
+import org.mmbase.applications.thememanager.*;
+import org.mmbase.applications.multilanguagegui.*;
 
 /**
  * @author Daniel Ockeloen
@@ -97,6 +99,15 @@ public class Poster {
      */
     public void addPostCount() {
         postcount++;
+        syncNode(ForumManager.FASTSYNC);
+    }
+
+
+    /**
+     * decreases postcount for this poster
+     */
+    public void decPostCount() {
+        postcount--;
         syncNode(ForumManager.FASTSYNC);
     }
 
@@ -285,7 +296,50 @@ public class Poster {
      * @return level
      */
     public String getLevel() {
+	// is there a forced level ?
+	if (level.equals("")) {
+		if (postcount<6) {
+			return "levelnew";
+		} else if (postcount<50) {
+			return "levelnormal";
+		} else if (postcount<100) {
+			return "levelregular";
+		} else if (postcount<500) {
+			return "levelexpert";
+		} else {
+			return "levelmaster";
+		}
+	}
         return level;
+    }
+
+    public String getLevelGui() {
+ 	String result=MultiLanguageGui.getConversion("mmbob."+getLevel(),parent.getLanguage());
+	return result;
+    }
+
+    public String getLevelImage() {
+	// temp for testing
+        String themeid = ThemeManager.getAssign("MMBob."+parent.getId());
+        if (themeid==null) ThemeManager.getAssign("MMBob");
+	Theme th=ThemeManager.getTheme(themeid);
+	String result="";
+	if (th!=null) {
+		ImageSet is = th.getImageSet("default");
+		String level=getLevel();
+		if (level.equals("levelnew")) {
+			result = "/mmbase/thememanager/images/"+themeid+"/default/"+is.getImage("level_new");
+		} else if (level.equals("levelnormal")) {
+			result = "/mmbase/thememanager/images/"+themeid+"/default/"+is.getImage("level_normal");
+		} else if (level.equals("levelregular")) {
+			result = "/mmbase/thememanager/images/"+themeid+"/default/"+is.getImage("level_regular");
+		} else if (level.equals("levelexpert")) {
+			result = "/mmbase/thememanager/images/"+themeid+"/default/"+is.getImage("level_expert");
+		} else {
+			result = "/mmbase/thememanager/images/"+themeid+"/default/"+is.getImage("level_master");
+		}
+	}
+	return result;
     }
 
     /**
