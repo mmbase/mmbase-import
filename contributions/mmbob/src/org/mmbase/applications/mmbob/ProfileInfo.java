@@ -103,8 +103,8 @@ public class ProfileInfo {
 	 if (xml!=null && !xml.equals("")) {
          XMLBasicReader reader = new XMLBasicReader(new InputSource(new StringReader(xml)),ProfileInfo.class);
          if(reader != null) {
-                for(Enumeration ns = reader.getChildElements("profileinfo","entry");ns.hasMoreElements(); ) {
-                    Element n = (Element)ns.nextElement();
+                for(Iterator ns = reader.getChildElements("profileinfo","entry");ns.hasNext(); ) {
+                    Element n = (Element)ns.next();
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String name = null;

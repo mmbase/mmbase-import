@@ -95,12 +95,12 @@ public class Forum {
 
         // read postareas
         preCachePosters();
-        readAreas();
-	if (getNavigationMethod().equals("tree")) syncTreeAreas();
         readSignatures();
         readProfiles();
-        readThreadObservers();
         readRoles();
+        readAreas();
+	if (getNavigationMethod().equals("tree")) syncTreeAreas();
+        readThreadObservers();
         readFieldaliases();
     }
 
@@ -1249,6 +1249,17 @@ public class Forum {
    }
 
 
+   public String getLoginSystemType() {
+	if (config != null) {
+		String tmp = config.getLoginSystemType();
+        	if (tmp != null) {
+               	 	return tmp;
+        	}
+	}
+        return ForumManager.getLoginSystemType();
+   }
+
+
    public String getLogoutModeType() {
 	if (config != null) {
 		String tmp = config.getLogoutModeType();
@@ -1262,6 +1273,13 @@ public class Forum {
    public void setLogoutModeType(String type) {
 	if (checkConfig()) {
 		config.setLogoutModeType(type);
+	}
+   }
+
+
+   public void setLoginSystemType(String system) {
+	if (checkConfig()) {
+		config.setLoginSystemType(system);
 	}
    }
 
@@ -1492,6 +1510,43 @@ public class Forum {
         return ForumManager.getPostingsPerPage();
     }
 
+
+    public void setPostingsPerPage(int maxcount) {
+	if (checkConfig()) {
+            config.setPostingsPerPage(maxcount);
+        }
+    }
+
+
+    public void setPostingsOverflowPostArea(int maxcount) {
+	if (checkConfig()) {
+            config.setPostingsOverflowPostArea(maxcount);
+        }
+    }
+
+
+    public void setPostingsOverflowThreadPage(int maxcount) {
+	if (checkConfig()) {
+            config.setPostingsOverflowThreadPage(maxcount);
+        }
+    }
+
+
+    public void setReplyOnEachPage(boolean value) {
+	if (checkConfig()) {
+            config.setReplyOnEachPage(value);
+        }
+    }
+
+
+    public void setSpeedPostTime(int delay) {
+	if (checkConfig()) {
+            config.setSpeedPostTime(delay);
+        }
+    }
+
+
+
    private boolean checkConfig() { 
 	if (config==null) {
 		config =  new ForumConfig(getName());
@@ -1597,8 +1652,49 @@ public class Forum {
        return ForumManager.filterContent(filterwords,body);
    }
 
+   public boolean getCloneMaster() {
+	if (config != null) {
+		return config.getCloneMaster();
+	}
+	return false;
+   }
+
+
+   public String getGuiEdit(String key) {
+	if (config != null) {
+		return config.getGuiEdit(key);
+	}
+	return "true";
+   }
+
    public int getSpeedPostTime() {
+	if (config != null) {
+		int tmp = config.getSpeedPostTime();
+        	if (tmp != -1) {
+               	 	return tmp;
+        	}
+	}
 	return ForumManager.getSpeedPostTime();
+   }
+
+   public int getPostingsOverflowPostArea() {
+	if (config != null) {
+		int tmp = config.getPostingsOverflowPostArea();
+        	if (tmp != -1) {
+               	 	return tmp;
+        	}
+	}
+	return ForumManager.getPostingsOverflowPostArea();
+   }
+
+   public int getPostingsOverflowThreadPage() {
+	if (config != null) {
+		int tmp = config.getPostingsOverflowThreadPage();
+        	if (tmp != -1) {
+               	 	return tmp;
+        	}
+	}
+	return ForumManager.getPostingsOverflowThreadPage();
    }
 
    public ThreadObserver getThreadObserver(int id) {
@@ -1653,6 +1749,9 @@ public class Forum {
    }
 
    public boolean getReplyOnEachPage() {
+	if (config != null) {
+		return config.getReplyOnEachPage();
+	}
         return ForumManager.getReplyOnEachPage();
    }
 
@@ -1669,4 +1768,6 @@ public class Forum {
     public ForumConfig getConfig() {
 	return config;
     }
+
+    
 }

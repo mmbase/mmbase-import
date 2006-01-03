@@ -34,6 +34,7 @@ public class BBCode {
 	if (body.indexOf("[size=")!=-1) body = decodeSize(body);
 	if (body.indexOf("[email]")!=-1) body = decodeEmail(body);
 	if (body.indexOf("[img]")!=-1) body = decodeImage(body);
+	if (body.indexOf("[url]")!=-1) body = decodeUrl(body);
 	return body;
     }
 
@@ -140,6 +141,28 @@ public class BBCode {
 		body = newbody;
 		pos = body.indexOf("[img]");
 		endpos = body.indexOf("[/img]");
+	}	
+	return body;
+    }
+
+
+    private static String decodeUrl(String body) {
+	int pos = body.indexOf("[url]");
+	int endpos = body.indexOf("[/url]");
+	while (pos!=-1 && endpos!=-1) {
+		String newbody = body.substring(0,pos);
+		if (pos!=-1) {
+			String tmp = body.substring(pos+5,endpos);
+			if (tmp.indexOf("thread.jsp")==-1) {
+				newbody+="<a href=\""+tmp+"\" target=\""+tmp+"\">"+tmp+"</a>";
+			} else {
+				newbody+="<a href=\""+tmp+"\">"+tmp+"</a>";
+			}
+			newbody+=body.substring(endpos+6);
+		}
+		body = newbody;
+		pos = body.indexOf("[url]");
+		endpos = body.indexOf("[/url]");
 	}	
 	return body;
     }

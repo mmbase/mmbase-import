@@ -62,45 +62,44 @@ public class Controller {
         List list = new ArrayList();
         try {
             int activeid = Integer.parseInt(sactiveid);
-            VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
             Forum f = ForumManager.getForum(id);
             if (f != null) {
                 Enumeration e = f.getPostAreas();
                 while (e.hasMoreElements()) {
                     PostArea area = (PostArea) e.nextElement();
-                    MMObjectNode virtual = builder.getNewNode("admin");
-                    virtual.setValue("name", area.getName());
-                    virtual.setValue("description", area.getDescription());
-                    virtual.setValue("id", area.getId());
-                    virtual.setValue("postthreadcount", area.getPostThreadCount());
-                    virtual.setValue("postcount", area.getPostCount());
-                    virtual.setValue("viewcount", area.getViewCount());
-                    virtual.setValue("lastposter", area.getLastPoster());
-                    virtual.setValue("lastposttime", area.getLastPostTime());
-                    virtual.setValue("lastsubject", area.getLastSubject());
-                    virtual.setValue("moderators", area.getModeratorsLine("profile.jsp"));
-                    virtual.setValue("lastposternumber",area.getLastPosterNumber());
-                    virtual.setValue("lastpostnumber",area.getLastPostNumber());
-                    virtual.setValue("lastpostthreadnumber",area.getLastPostThreadNumber());
-	            virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
-       	     	    virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
-            	    virtual.setValue("threadstartlevel", area.getThreadStartLevel());
+		    HashMap map = new HashMap();
+                    map.put("name", area.getName());
+                    map.put("description", area.getDescription());
+                    map.put("id", new Integer(area.getId()));
+                    map.put("postthreadcount",new Integer(area.getPostThreadCount()));
+                    map.put("postcount",new Integer(area.getPostCount()));
+                    map.put("viewcount",new Integer(area.getViewCount()));
+                    map.put("lastposter", area.getLastPoster());
+                    map.put("lastposttime",new Integer(area.getLastPostTime()));
+                    map.put("lastsubject", area.getLastSubject());
+                    map.put("moderators", area.getModeratorsLine("profile.jsp"));
+                    map.put("lastposternumber",new Integer(area.getLastPosterNumber()));
+                    map.put("lastpostnumber",new Integer(area.getLastPostNumber()));
+                    map.put("lastpostthreadnumber",new Integer(area.getLastPostThreadNumber()));
+	            map.put("guestreadmodetype", area.getGuestReadModeType());
+       	     	    map.put("guestwritemodetype", area.getGuestWriteModeType());
+            	    map.put("threadstartlevel", area.getThreadStartLevel());
 		   if (mode.equals("stats")) {
-            	   	 virtual.setValue("postthreadloadedcount", area.getPostThreadLoadedCount());
-            	   	 virtual.setValue("postingsloadedcount", area.getPostingsLoadedCount());
-                   	 virtual.setValue("memorysize", ((float)area.getMemorySize())/(1024*1024)+"MB");
+            	   	 map.put("postthreadloadedcount",new Integer(area.getPostThreadLoadedCount()));
+            	   	 map.put("postingsloadedcount",new Integer(area.getPostingsLoadedCount()));
+                   	 map.put("memorysize", ((float)area.getMemorySize())/(1024*1024)+"MB");
 		   }
-                    list.add(virtual);
+                    list.add(map);
 
                     if (activeid != -1) {
                         Poster ap = f.getPoster(activeid);
                         ap.signalSeen();
-                        addActiveInfo(virtual, ap);
+                        addActiveInfo(map, ap);
                         if (ap != null && f.isAdministrator(ap.getNick())) {
-                            virtual.setValue("isadministrator", "true");
+                            map.put("isadministrator", "true");
                         } else {
-                            virtual.setValue("isadministrator", "false");
+                            map.put("isadministrator", "false");
                         }
                     }
                 }
@@ -123,7 +122,6 @@ public class Controller {
         List list = new ArrayList();
         try {
             int activeid = Integer.parseInt(sactiveid);
-            VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
             Forum f = ForumManager.getForum(id);
             if (f != null) {
@@ -131,81 +129,81 @@ public class Controller {
                 Iterator i = sa.getAreas();
                 while (i.hasNext()) {
                     PostArea area = (PostArea) i.next();
-                    MMObjectNode virtual = builder.getNewNode("admin");
-                    virtual.setValue("nodetype","area");
-                    virtual.setValue("name", area.getName());
-                    virtual.setValue("shortname", area.getShortName());
-                    virtual.setValue("description", area.getDescription());
-                    virtual.setValue("id", area.getId());
-                    virtual.setValue("postthreadcount", area.getPostThreadCount());
-                    virtual.setValue("postcount", area.getPostCount());
-                    virtual.setValue("viewcount", area.getViewCount());
-                    virtual.setValue("lastposter", area.getLastPoster());
-                    virtual.setValue("lastposttime", area.getLastPostTime());
-                    virtual.setValue("lastsubject", area.getLastSubject());
-                    virtual.setValue("moderators", area.getModeratorsLine("profile.jsp"));
-                    virtual.setValue("lastposternumber",area.getLastPosterNumber());
-                    virtual.setValue("lastpostnumber",area.getLastPostNumber());
-                    virtual.setValue("lastpostthreadnumber",area.getLastPostThreadNumber());
-	            virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
-       	     	    virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
-            	    virtual.setValue("threadstartlevel", area.getThreadStartLevel());
-                    list.add(virtual);
+		    HashMap  map =  new HashMap();
+                    map.put("nodetype","area");
+                    map.put("name", area.getName());
+                    map.put("shortname", area.getShortName());
+                    map.put("description", area.getDescription());
+                    map.put("id", new Integer(area.getId()));
+                    map.put("postthreadcount", new Integer(area.getPostThreadCount()));
+                    map.put("postcount", new Integer(area.getPostCount()));
+                    map.put("viewcount", new Integer(area.getViewCount()));
+                    map.put("lastposter", area.getLastPoster());
+                    map.put("lastposttime", new Integer(area.getLastPostTime()));
+                    map.put("lastsubject", area.getLastSubject());
+                    map.put("moderators", area.getModeratorsLine("profile.jsp"));
+                    map.put("lastposternumber",new Integer(area.getLastPosterNumber()));
+                    map.put("lastpostnumber",new Integer(area.getLastPostNumber()));
+                    map.put("lastpostthreadnumber",new Integer(area.getLastPostThreadNumber()));
+	            map.put("guestreadmodetype", area.getGuestReadModeType());
+       	     	    map.put("guestwritemodetype", area.getGuestWriteModeType());
+            	    map.put("threadstartlevel", area.getThreadStartLevel());
+                    list.add(map);
 
                     if (activeid != -1) {
                         Poster ap = f.getPoster(activeid);
                         ap.signalSeen();
-                        addActiveInfo(virtual, ap);
+                        addActiveInfo(map, ap);
                         if (ap != null && f.isAdministrator(ap.getNick())) {
-                            virtual.setValue("isadministrator", "true");
+                            map.put("isadministrator", "true");
                         } else {
-                            virtual.setValue("isadministrator", "false");
+                            map.put("isadministrator", "false");
                         }
                     }
                 }
                 i = sa.getSubAreas();
                 while (i.hasNext()) {
                    sa = (SubArea) i.next();
-                   MMObjectNode virtual = builder.getNewNode("admin");
-                   virtual.setValue("nodetype","subarea");
-                   virtual.setValue("name", sa.getName());
-                   virtual.setValue("areacount", sa.getAreaCount());
-                   virtual.setValue("postthreadcount", sa.getPostThreadCount());
-                   virtual.setValue("postcount", sa.getPostCount());
-                   virtual.setValue("viewcount", sa.getViewCount());
-                   list.add(virtual);
+		   HashMap map =  new HashMap();
+                   map.put("nodetype","subarea");
+                   map.put("name", sa.getName());
+                   map.put("areacount", new Integer(sa.getAreaCount()));
+                   map.put("postthreadcount", new Integer(sa.getPostThreadCount()));
+                   map.put("postcount", new Integer(sa.getPostCount()));
+                   map.put("viewcount", new Integer(sa.getViewCount()));
+                   list.add(map);
                	   Iterator i2 = sa.getAreas();
                	   while (i2.hasNext()) {
                     	PostArea area = (PostArea) i2.next();
-                    	virtual = builder.getNewNode("admin");
-                    	virtual.setValue("nodetype","area");
-                        virtual.setValue("shortname", area.getShortName());
-                   	virtual.setValue("name", area.getName());
-                    	virtual.setValue("description", area.getDescription());
-                    	virtual.setValue("id", area.getId());
-                    	virtual.setValue("postthreadcount", area.getPostThreadCount());
-                    	virtual.setValue("postcount", area.getPostCount());
-                    	virtual.setValue("viewcount", area.getViewCount());
-                    	virtual.setValue("lastposter", area.getLastPoster());
-                    	virtual.setValue("lastposttime", area.getLastPostTime());
-                    	virtual.setValue("lastsubject", area.getLastSubject());
-                    	virtual.setValue("moderators", area.getModeratorsLine("profile.jsp"));
-                    	virtual.setValue("lastposternumber",area.getLastPosterNumber());
-                    	virtual.setValue("lastpostnumber",area.getLastPostNumber());
-                    	virtual.setValue("lastpostthreadnumber",area.getLastPostThreadNumber());
-	            	virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
-       	     	    	virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
-            	    	virtual.setValue("threadstartlevel", area.getThreadStartLevel());
-                    	list.add(virtual);
+			map =  new HashMap();
+                    	map.put("nodetype","area");
+                        map.put("shortname", area.getShortName());
+                   	map.put("name", area.getName());
+                    	map.put("description", area.getDescription());
+                    	map.put("id",new Integer(area.getId()));
+                    	map.put("postthreadcount",new Integer(area.getPostThreadCount()));
+                    	map.put("postcount",new Integer(area.getPostCount()));
+                    	map.put("viewcount",new Integer(area.getViewCount()));
+                    	map.put("lastposter",area.getLastPoster());
+                    	map.put("lastposttime",new Integer(area.getLastPostTime()));
+                    	map.put("lastsubject", area.getLastSubject());
+                        map.put("moderators", area.getModeratorsLine("profile.jsp"));
+                    	map.put("lastposternumber",new Integer(area.getLastPosterNumber()));
+                    	map.put("lastpostnumber",new Integer(area.getLastPostNumber()));
+                    	map.put("lastpostthreadnumber",new Integer(area.getLastPostThreadNumber()));
+	            	map.put("guestreadmodetype", area.getGuestReadModeType());
+       	     	    	map.put("guestwritemodetype", area.getGuestWriteModeType());
+            	    	map.put("threadstartlevel", area.getThreadStartLevel());
+                    	list.add(map);
 
                     	if (activeid != -1) {
                         	Poster ap = f.getPoster(activeid);
                         	ap.signalSeen();
-                        	addActiveInfo(virtual, ap);
+                        	addActiveInfo(map, ap);
                         	if (ap != null && f.isAdministrator(ap.getNick())) {
-                            		virtual.setValue("isadministrator", "true");
+                            		map.put("isadministrator", "true");
                         	} else {
-                            		virtual.setValue("isadministrator", "false");
+                            		map.put("isadministrator", "false");
                         	}
                     	}
 		   }
@@ -220,38 +218,37 @@ public class Controller {
     /**
      * Get list of all forums
      *
-     * @return List of (virtual) MMObjectNode-objects representing the available forums
+     * @return List of (mapl) objects representing the available forums
      *
      */
     public static List getForums(String mode) {
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Enumeration e = ForumManager.getForums();
         while (e.hasMoreElements()) {
             Forum f = (Forum) e.nextElement();
-            MMObjectNode virtual = builder.getNewNode("admin");
-            virtual.setValue("name", f.getName());
-            virtual.setValue("id", f.getId());
-            virtual.setValue("description", f.getDescription());
-            virtual.setValue("postareacount", f.getPostAreaCount());
-            virtual.setValue("postthreadcount", f.getPostThreadCount());
-            virtual.setValue("postcount", f.getPostCount());
-            virtual.setValue("postersonline", f.getPostersOnlineCount());
-            virtual.setValue("posterstotal", f.getPostersTotalCount());
-            virtual.setValue("postersnew", f.getPostersNewCount());
-            virtual.setValue("viewcount", f.getViewCount());
-            virtual.setValue("lastposter", f.getLastPoster());
-            virtual.setValue("lastposttime", f.getLastPostTime());
-            virtual.setValue("lastsubject", f.getLastSubject());
-            virtual.setValue("lastposternumber",f.getLastPosterNumber());
-            virtual.setValue("lastposrnumber",f.getLastPostNumber());
+	    HashMap map = new HashMap();
+            map.put("name", f.getName());
+            map.put("id", new Integer(f.getId()));
+            map.put("description", f.getDescription());
+            map.put("postareacount", new Integer(f.getPostAreaCount()));
+            map.put("postthreadcount", new Integer(f.getPostThreadCount()));
+            map.put("postcount", new Integer(f.getPostCount()));
+            map.put("postersonline", new Integer(f.getPostersOnlineCount()));
+            map.put("posterstotal", new Integer(f.getPostersTotalCount()));
+            map.put("postersnew", new Integer(f.getPostersNewCount()));
+            map.put("viewcount", new Integer(f.getViewCount()));
+            map.put("lastposter", f.getLastPoster());
+            map.put("lastposttime", new Integer(f.getLastPostTime()));
+            map.put("lastsubject", f.getLastSubject());
+            map.put("lastposternumber",new Integer(f.getLastPosterNumber()));
+            map.put("lastposrnumber",new Integer(f.getLastPostNumber()));
             if (mode.equals("stats")) {
-            	virtual.setValue("postthreadloadedcount", f.getPostThreadLoadedCount());
-            	virtual.setValue("postingsloadedcount", f.getPostingsLoadedCount());
-            	virtual.setValue("memorysize", ((float)f.getMemorySize())/(1024*1024)+"MB");
+            	map.put("postthreadloadedcount", new Integer(f.getPostThreadLoadedCount()));
+            	map.put("postingsloadedcount", new Integer(f.getPostingsLoadedCount()));
+            	map.put("memorysize",""+((float)f.getMemorySize())/(1024*1024)+"MB");
             }
-            list.add(virtual);
+            list.add(map);
         }
         return list;
     }
@@ -267,12 +264,11 @@ public class Controller {
      * @param overviewpagesize The number of threads per page
      * @param baseurl Base url for links in the navigation html
      * @param cssclass Stylesheet name for the url links
-     * @return List of (virtual) MMObjectNodes representing the postthreads within the postarea
+     * @return List of (map) representing the postthreads within the postarea
      */
     public List getPostThreads(String forumid, String postareaid, int activeid, int pagesize, int page, int overviewpagesize, String baseurl, String cssclass) {
         List list = new ArrayList();
 
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         if (cssclass == null) cssclass = "";
         // create a result list
@@ -283,50 +279,50 @@ public class Controller {
             Iterator e = a.getPostThreads(page, overviewpagesize);
             while (e.hasNext()) {
                 PostThread thread = (PostThread) e.next();
-                MMObjectNode virtual = builder.getNewNode("admin");
+		HashMap map =  new HashMap();
                 String subject = thread.getSubject();
-                virtual.setValue("name", subject);
+                map.put("name", subject);
                 if (subject.length()>60) subject = subject.substring(0,57)+"...";
-                virtual.setValue("shortname", subject);
-                virtual.setValue("id", thread.getId());
-                virtual.setValue("mood", thread.getMood());
+                map.put("shortname", subject);
+                map.put("id",new Integer(thread.getId()));
+                map.put("mood", thread.getMood());
 
                 Poster ap = f.getPoster(activeid);
                 if (ap != null) {
-                    virtual.setValue("state", thread.getState(ap));
+                    map.put("state", thread.getState(ap));
 		    ThreadObserver to = f.getThreadObserver(thread.getId());
 		    if (to!=null && to.wantsEmailOnChange(ap)) {
-			virtual.setValue("emailonchange","true");  
+			map.put("emailonchange","true");  
 		    } else {
-			virtual.setValue("emailonchange","false");  
+			map.put("emailonchange","false");  
 		    }
 		    if (to!=null && to.isBookmarked(ap)) {
-			virtual.setValue("bookmarked","true");  
+			map.put("bookmarked","true");  
 		    } else {
-			virtual.setValue("bookmarked","false");  
+			map.put("bookmarked","false");  
 		    }
                 } else {
-                    virtual.setValue("state", thread.getState());
-		    virtual.setValue("emailonchange","false");  
-		    virtual.setValue("bookmarked","false");  
+                    map.put("state", thread.getState());
+		    map.put("emailonchange","false");  
+		    map.put("bookmarked","false");  
                 }
-                virtual.setValue("type", thread.getType());
-                virtual.setValue("creator", thread.getCreator());
-                virtual.setValue("postcount", thread.getPostCount());
-                virtual.setValue("pagecount", thread.getPageCount(pagesize));
-                virtual.setValue("replycount", thread.getPostCount() - 1);
-                virtual.setValue("viewcount", thread.getViewCount());
-                virtual.setValue("lastposter", thread.getLastPoster());
-                virtual.setValue("lastposttime", thread.getLastPostTime());
-                virtual.setValue("lastsubject", thread.getLastSubject());
+                map.put("type", thread.getType());
+                map.put("creator", thread.getCreator());
+                map.put("postcount", new Integer(thread.getPostCount()));
+                map.put("pagecount", new Integer(thread.getPageCount(pagesize)));
+                map.put("replycount", new Integer(thread.getPostCount() - 1));
+                map.put("viewcount", new Integer(thread.getViewCount()));
+                map.put("lastposter", thread.getLastPoster());
+                map.put("lastposttime",new Integer(thread.getLastPostTime()));
+                map.put("lastsubject", thread.getLastSubject());
                 //newnode.setStringValue("threadnav",thread.getLastSubject());
 
 		// temp until sure if we also want to be able to set this from html
-		int overflowpage = ForumManager.getPostingsOverflowPostarea();
-                virtual.setValue("navline", thread.getNavigationLine(baseurl, pagesize,overflowpage, cssclass));
-                virtual.setValue("lastposternumber",thread.getLastPosterNumber());
-                virtual.setValue("lastpostnumber",thread.getLastPostNumber());
-                list.add(virtual);
+		int overflowpage = f.getPostingsOverflowPostArea();
+                map.put("navline", thread.getNavigationLine(baseurl, pagesize,overflowpage, cssclass));
+                map.put("lastposternumber",new Integer(thread.getLastPosterNumber()));
+                map.put("lastpostnumber",new Integer(thread.getLastPostNumber()));
+                list.add(map);
             }
         }
 
@@ -337,7 +333,6 @@ public class Controller {
     public List getBookmarkedThreads(String forumid, String postareaid, int activeid, int pagesize, int page, int overviewpagesize, String baseurl, String cssclass) {
         List list = new ArrayList();
 
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -348,27 +343,27 @@ public class Controller {
             	while (e.hasNext()) {
                 	Integer tid = (Integer) e.next();
                 	PostThread thread = f.getPostThread(""+tid);
-                	MMObjectNode virtual = builder.getNewNode("admin");
-                	virtual.setValue("mood", thread.getMood());
-                        virtual.setValue("state", thread.getState());
-                	virtual.setValue("postthreadid", thread.getId());
-                	virtual.setValue("postareaname", thread.getParent().getName());
-                	virtual.setValue("postareaid", thread.getParent().getId());
-                	virtual.setValue("forumid", thread.getParent().getParent().getId());
-                	virtual.setValue("type", thread.getType());
-                	virtual.setValue("creator", thread.getCreator());
-              	  	virtual.setValue("postcount", thread.getPostCount());
-                	virtual.setValue("pagecount", thread.getPageCount(pagesize));
-                	virtual.setValue("replycount", thread.getPostCount() - 1);
-                	virtual.setValue("viewcount", thread.getViewCount());
-                	virtual.setValue("lastposter", thread.getLastPoster());
-                	virtual.setValue("lastposttime", thread.getLastPostTime());
-                	virtual.setValue("lastsubject", thread.getLastSubject());
-                    	virtual.setValue("lastposternumber",thread.getLastPosterNumber());
-                    	virtual.setValue("lastpostnumber",thread.getLastPostNumber());
-			int overflowpage = ForumManager.getPostingsOverflowPostarea();
-                        virtual.setValue("navline", thread.getNavigationLine(baseurl,  pagesize,overflowpage, cssclass));
-                	list.add(virtual);
+			HashMap map =  new HashMap();
+                	map.put("mood", thread.getMood());
+                        map.put("state", thread.getState());
+                	map.put("postthreadid",new Integer(thread.getId()));
+                	map.put("postareaname", thread.getParent().getName());
+                	map.put("postareaid",new Integer(thread.getParent().getId()));
+                	map.put("forumid", new Integer(thread.getParent().getParent().getId()));
+                	map.put("type", thread.getType());
+                	map.put("creator", thread.getCreator());
+              	  	map.put("postcount", new Integer(thread.getPostCount()));
+                	map.put("pagecount", new Integer(thread.getPageCount(pagesize)));
+                	map.put("replycount", new Integer(thread.getPostCount() - 1));
+                	map.put("viewcount", new Integer(thread.getViewCount()));
+                	map.put("lastposter", thread.getLastPoster());
+                	map.put("lastposttime", new Integer(thread.getLastPostTime()));
+                	map.put("lastsubject", thread.getLastSubject());
+                    	map.put("lastposternumber",new Integer(thread.getLastPosterNumber()));
+                    	map.put("lastpostnumber",new Integer(thread.getLastPostNumber()));
+			int overflowpage = f.getPostingsOverflowPostArea();
+                        map.put("navline", thread.getNavigationLine(baseurl,  pagesize,overflowpage, cssclass));
+                	list.add(map);
 		}
 	    }
         }
@@ -386,13 +381,11 @@ public class Controller {
      * @param page Page number of the threads we want
      * @param pagesize The number of postings per page
      * @param imagecontext The context where to find the images (eg smilies)
-     * @return List of (virtual) MMObjectNodes representing the postings within the given postthread
+     * @return List of (mp) representing the postings within the given postthread
      */
     public List getPostings(String forumid, String postareaid, String postthreadid, int activeid, int page, int pagesize, String imagecontext) {
         List list = new ArrayList();
        //long start = System.currentTimeMillis();
-
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -406,49 +399,49 @@ public class Controller {
 
                     while (e.hasNext()) {
                         Posting p = (Posting) e.next();
-                        MMObjectNode virtual = builder.getNewNode("admin");
-                        virtual.setValue("pos", pos++);
+			HashMap map =  new HashMap();
+                        map.put("pos", new Integer(pos++));
                         String subject = p.getSubject();
-                        virtual.setValue("subject", subject);
+                        map.put("subject", subject);
                         if (subject.length()>60) subject = subject.substring(0,57)+"...";
-                        virtual.setValue("shortsubject", subject);
-                        virtual.setValue("body", p.getBodyHtml(imagecontext));
-                        virtual.setValue("edittime", p.getEditTime());
+                        map.put("shortsubject", subject);
+                        map.put("body", p.getBodyHtml(imagecontext));
+                        map.put("edittime", new Integer(p.getEditTime()));
                         Poster po = f.getPosterNick(p.getPoster());
                         if (po != null) {
-                            virtual.setValue("poster", p.getPoster());
-                            addPosterInfo(virtual, po);
+                            map.put("poster", p.getPoster());
+                            addPosterInfo(map, po);
                         } else {
-                            virtual.setValue("poster", p.getPoster());
-                            virtual.setValue("guest", "true");
+                            map.put("poster", p.getPoster());
+                            map.put("guest", "true");
                         }
-                        virtual.setValue("posttime", p.getPostTime());
-                        virtual.setValue("id", p.getId());
-                        virtual.setValue("threadpos", p.getThreadPos());
+                        map.put("posttime",new Integer(p.getPostTime()));
+                        map.put("id",new Integer(p.getId()));
+                        map.put("threadpos",new Integer(p.getThreadPos()));
 			// very weird way need to figure this out
 			if (p.getThreadPos()%2==0) {
-                        	virtual.setValue("tdvar", "threadpagelisteven");
+                        	map.put("tdvar", "threadpagelisteven");
 			} else {
-                        	virtual.setValue("tdvar", "threadpagelistodd");
+                        	map.put("tdvar", "threadpagelistodd");
 			}
                         // should be moved out of the loop
                         if (activeid != -1) {
                             Poster ap = f.getPoster(activeid);
                             ap.signalSeen();
                             ap.seenThread(t);
-                            addActiveInfo(virtual, ap);
+                            addActiveInfo(map, ap);
                             if (po != null && po.getNick().equals(ap.getNick())) {
-                                virtual.setValue("isowner", "true");
+                                map.put("isowner", "true");
                             } else {
-                                virtual.setValue("isowner", "false");
+                                map.put("isowner", "false");
                             }
                             if (ap != null && a.isModerator(ap.getNick())) {
-                                virtual.setValue("ismoderator", "true");
+                                map.put("ismoderator", "true");
                             } else {
-                                virtual.setValue("ismoderator", "false");
+                                map.put("ismoderator", "false");
                             }
                         }
-                        list.add(virtual);
+                        list.add(map);
                     }
                 }
             }
@@ -469,14 +462,13 @@ public class Controller {
      * @param postingid MMBase node number of the posting
      * @param activeid MMBase node number of current Poster (on the page)
      * @param imagecontext The context where to find the images (eg smilies)
-     * @return List of (virtual) MMObjectNodes representing the postings within the given postthread
+     * @return List of (map) representing the postings within the given postthread
      */
-    public MMObjectNode getPosting(String forumid, String postareaid, String postthreadid, String postingid, int activeid, String imagecontext) {
+    public HashMap getPosting(String forumid, String postareaid, String postthreadid, String postingid, int activeid, String imagecontext) {
         List list = new ArrayList();
         long start = System.currentTimeMillis();
 
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+	HashMap map = new HashMap();
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
@@ -485,50 +477,49 @@ public class Controller {
                 if (t != null) {
                     Posting p = t.getPosting(Integer.parseInt(postingid));
                     String subject = p.getSubject();
-                    virtual.setValue("subject", subject);
+                    map.put("subject", subject);
                     if (subject.length()>60) subject = subject.substring(0,57)+"...";
-                    virtual.setValue("shortsubject", subject);
-                    virtual.setValue("body", p.getBodyHtml(imagecontext));
-                    virtual.setValue("edittime", p.getEditTime());
+                    map.put("shortsubject", subject);
+                    map.put("body", p.getBodyHtml(imagecontext));
+                    map.put("edittime", new Integer(p.getEditTime()));
                     Poster po = f.getPosterNick(p.getPoster());
                     if (po != null) {
-                        virtual.setValue("poster", p.getPoster());
-                        addPosterInfo(virtual, po);
+                        map.put("poster", p.getPoster());
+                        addPosterInfo(map, po);
                     } else {
-                        virtual.setValue("poster", p.getPoster());
-                        virtual.setValue("guest", "true");
+                        map.put("poster", p.getPoster());
+                        map.put("guest", "true");
                     }
-                    virtual.setValue("posttime", p.getPostTime());
-                    virtual.setValue("postcount", t.getPostCount());
-                    virtual.setValue("id", p.getId());
-                    virtual.setValue("threadpos", p.getThreadPos());
+                    map.put("posttime",new Integer(p.getPostTime()));
+                    map.put("postcount", new Integer(t.getPostCount()));
+                    map.put("id", new Integer(p.getId()));
+                    map.put("threadpos",new Integer(p.getThreadPos()));
 		    //very weird way need to figure this out
                     if (p.getThreadPos()%2==0) {
-                        virtual.setValue("tdvar", "threadpagelisteven");
+                        map.put("tdvar", "threadpagelisteven");
                     } else {
-                        virtual.setValue("tdvar", "threadpagelistodd");
+                        map.put("tdvar", "threadpagelistodd");
                     }
                     // should be moved out of the loop
                     if (activeid != -1) {
                         Poster ap = f.getPoster(activeid);
                         ap.signalSeen();
                         ap.seenThread(t);
-                        addActiveInfo(virtual, ap);
+                        addActiveInfo(map, ap);
                         if (po != null && po.getNick().equals(ap.getNick())) {
-                            virtual.setValue("isowner", "true");
+                            map.put("isowner", "true");
                         } else {
-                            virtual.setValue("isowner", "false");
+                            map.put("isowner", "false");
                         }
                         if (ap != null && a.isModerator(ap.getNick())) {
-                            virtual.setValue("ismoderator", "true");
+                            map.put("ismoderator", "true");
                         } else {
-                            virtual.setValue("ismoderator", "false");
+                            map.put("ismoderator", "false");
                         }
-			log.info("PO="+po+" ap="+ap);
                         if (po != null && po.getNick().equals(ap.getNick()) || ap != null && a.isModerator(ap.getNick())) {
-                            virtual.setValue("maychange", "true");
+                            map.put("maychange", "true");
 			} else {
-                            virtual.setValue("maychange", "false");
+                            map.put("maychange", "false");
 			}
                     }
                 }
@@ -537,7 +528,7 @@ public class Controller {
         long end = System.currentTimeMillis();
         //log.info("getPosting "+(end-start)+"ms");
 
-        return virtual;
+        return map;
     }
 
 
@@ -572,12 +563,11 @@ public class Controller {
      *
      * @param forumid MMBase node number of the forum
      * @param postareaid MMBase node number of the postarea
-     * @return List of (virtual) MMObjectNodes representing the moderators of this forum / postarea.
+     * @return List of (map) representing the moderators of this forum / postarea.
      *         contains id, account, firstname, lastname of the moderator
      */
     public List getModerators(String forumid, String postareaid) {
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -586,13 +576,13 @@ public class Controller {
                 Enumeration e = a.getModerators();
                 while (e.hasMoreElements()) {
                     Poster p = (Poster) e.nextElement();
-                    MMObjectNode virtual = builder.getNewNode("admin");
-                    virtual.setValue("id", p.getId());
-                    virtual.setValue("account", p.getAccount());
-                    virtual.setValue("nick", p.getNick());
-                    virtual.setValue("firstname", p.getFirstName());
-                    virtual.setValue("lastname", p.getLastName());
-                    list.add(virtual);
+		    HashMap map =  new HashMap();
+                    map.put("id",new Integer(p.getId()));
+                    map.put("account", p.getAccount());
+                    map.put("nick", p.getNick());
+                    map.put("firstname", p.getFirstName());
+                    map.put("lastname", p.getLastName());
+                    list.add(map);
                 }
             }
         }
@@ -604,25 +594,24 @@ public class Controller {
      * Get the administrators of this forum
      *
      * @param forumid MMBase node number of the forum
-     * @return List of (virtual) MMObjectNodes representing the administrators of this forum 
+     * @return List of (map) representing the administrators of this forum 
      *         contains id, account, firstname, lastname of the administrator
      */
     public List getAdministrators(String forumid) {
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Enumeration e = f.getAdministrators();
             while (e.hasMoreElements()) {
                Poster p = (Poster) e.nextElement();
-               MMObjectNode virtual = builder.getNewNode("admin");
-               virtual.setValue("id", p.getId());
-               virtual.setValue("account", p.getAccount());
-               virtual.setValue("nick", p.getNick());
-               virtual.setValue("firstname", p.getFirstName());
-               virtual.setValue("lastname", p.getLastName());
-               list.add(virtual);
+	       HashMap map =  new HashMap();
+               map.put("id",new Integer(p.getId()));
+               map.put("account", p.getAccount());
+               map.put("nick", p.getNick());
+               map.put("firstname", p.getFirstName());
+               map.put("lastname", p.getLastName());
+               list.add(map);
             }
         }
         return list;
@@ -632,26 +621,28 @@ public class Controller {
     /**
      * Get the posters that are now online in this forum
      * @param forumid MMBase node number of the forum
-     * @return  List of (virtual) MMObjectNodes representing the online posters for the given forum
+     * @return  List of (map) representing the online posters for the given forum
      */
     public List getPostersOnline(String forumid) {
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             Enumeration e = f.getPostersOnline();
             while (e.hasMoreElements()) {
                 Poster p = (Poster) e.nextElement();
-                MMObjectNode virtual = builder.getNewNode("admin");
-                virtual.setValue("id", p.getId());
-                virtual.setValue("account", p.getAccount());
-                virtual.setValue("nick", p.getNick());
-                virtual.setValue("firstname", p.getFirstName());
-                virtual.setValue("lastname", p.getLastName());
-                virtual.setValue("location", p.getLocation());
-                virtual.setValue("lastseen", p.getLastSeen());
-                list.add(virtual);
+		HashMap map =  new HashMap();
+                map.put("id", new Integer(p.getId()));
+                map.put("account", p.getAccount());
+                map.put("nick", p.getNick());
+                map.put("firstname", p.getFirstName());
+                map.put("lastname", p.getLastName());
+                map.put("location", p.getLocation());
+                map.put("level", p.getLevel());
+                map.put("levelgui", p.getLevelGui());
+                map.put("levelimage", p.getLevelImage());
+                map.put("lastseen", new Integer(p.getLastSeen()));
+                list.add(map);
             }
         }
         return list;
@@ -661,7 +652,6 @@ public class Controller {
     public List getPosters(String forumid,String searchkey,int page,int pagesize) {
 	searchkey=searchkey.toLowerCase();
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -677,24 +667,27 @@ public class Controller {
                		String location = p.getLocation().toLowerCase();
 			if (searchkey.equals("*") || nick.indexOf(searchkey)!=-1 || firstname.indexOf(searchkey)!=-1 || lastname.indexOf(searchkey)!=-1 || location.indexOf(searchkey)!=-1) {
 				if (i>startpos) {
-                			MMObjectNode virtual = builder.getNewNode("admin");
-               	 			virtual.setValue("number", p.getId());
-                			virtual.setValue("account", p.getAccount());
-                        		virtual.setValue("nick", p.getNick());
-                			virtual.setValue("firstname",p.getFirstName());
-                			virtual.setValue("lastname", p.getLastName());
-                			virtual.setValue("location", p.getLocation());
-                			virtual.setValue("lastseen", p.getLastSeen());
+					HashMap map = new HashMap();
+               	 			map.put("number", new Integer(p.getId()));
+                			map.put("account", p.getAccount());
+                        		map.put("nick", p.getNick());
+                			map.put("firstname",p.getFirstName());
+                			map.put("lastname", p.getLastName());
+                			map.put("location", p.getLocation());
+                			map.put("level", p.getLevel());
+                			map.put("levelgui", p.getLevelGui());
+                			map.put("levelimage", p.getLevelImage());
+                			map.put("lastseen", new Integer(p.getLastSeen()));
 					if (page!=0) {
-						virtual.setValue("prevpage",page-1);
+						map.put("prevpage",new Integer(page-1));
 					} else {
-						virtual.setValue("prevpage",-1);
+						map.put("prevpage",new Integer(-1));
 					}
-					virtual.setValue("nextpage",-1);
-					list.add(virtual);
+					map.put("nextpage",new Integer(-1));
+					list.add(map);
 					j++;	
 					if (j>pagesize) {
-						virtual.setValue("nextpage",page+1);
+						map.put("nextpage",new Integer(page+1));
 						break;
 					}
 				}
@@ -710,7 +703,6 @@ public class Controller {
         long start = System.currentTimeMillis();
 	searchkey = searchkey.toLowerCase();
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -735,20 +727,20 @@ public class Controller {
 		if (e!=null) {
             	while (e.hasMoreElements() && j<25) {
                 	Posting p = (Posting) e.nextElement();
-                	MMObjectNode virtual = builder.getNewNode("admin");
-               	 	virtual.setValue("postingid", p.getId());
+			HashMap map =  new HashMap();
+               	 	map.put("postingid", new Integer(p.getId()));
 			PostThread pt = p.getParent();
 			PostArea pa = pt.getParent();
-               	 	virtual.setValue("postareaid", pa.getId());
-               	 	virtual.setValue("postareaname", pa.getName());
-               	 	virtual.setValue("postthreadid", pt.getId());
+               	 	map.put("postareaid",new Integer(pa.getId()));
+               	 	map.put("postareaname", pa.getName());
+               	 	map.put("postthreadid",new Integer(pt.getId()));
                         String subject = p.getSubject();
-                        virtual.setValue("subject", subject);
+                        map.put("subject", subject);
                         if (subject.length()>60) subject = subject.substring(0,57)+"...";
-                        virtual.setValue("shortsubject", subject);
-                	virtual.setValue("poster", p.getPoster());
-                	virtual.setValue("posterid", f.getPoster(p.getPoster()));
-			list.add(virtual);
+                        map.put("shortsubject", subject);
+                	map.put("poster", p.getPoster());
+                	map.put("posterid", f.getPoster(p.getPoster()));
+			list.add(map);
 			j++;
 		}
 		}
@@ -764,11 +756,10 @@ public class Controller {
      *
      * @param forumid MMBase node number of the forum
      * @param postareaid MMBase node number of the new postarea
-     * @return List of (virtual) MMObjectNodes representing all posters of the given postarea which are no moderators
+     * @return List of (map) representing all posters of the given postarea which are no moderators
      */
     public List getNonModerators(String forumid, String postareaid,String searchkey) {
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -777,13 +768,13 @@ public class Controller {
                 Enumeration e = a.getNonModerators(searchkey);
                 while (e.hasMoreElements()) {
                     Poster p = (Poster) e.nextElement();
-                    MMObjectNode virtual = builder.getNewNode("admin");
-                    virtual.setValue("id", p.getId());
-                    virtual.setValue("account", p.getAccount());
-                    virtual.setValue("nick", p.getNick());
-                    virtual.setValue("firstname", p.getFirstName());
-                    virtual.setValue("lastname", p.getLastName());
-                    list.add(virtual);
+		    HashMap map =  new HashMap();
+                    map.put("id", new Integer(p.getId()));
+                    map.put("account", p.getAccount());
+                    map.put("nick", p.getNick());
+                    map.put("firstname", p.getFirstName());
+                    map.put("lastname", p.getLastName());
+                    list.add(map);
                 }
             }
         }
@@ -796,24 +787,23 @@ public class Controller {
      *
      * @param forumid MMBase node number of the forum
      * @param postareaid MMBase node number of the new postarea
-     * @return List of (virtual) MMObjectNodes representing all posters of the given postarea which are no moderators
+     * @return List of (map) representing all posters of the given postarea which are no moderators
      */
     public List getNonAdministrators(String forumid,String searchkey) {
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
            Enumeration e = f.getNonAdministrators(searchkey);
            while (e.hasMoreElements()) {
                Poster p = (Poster) e.nextElement();
-               MMObjectNode virtual = builder.getNewNode("admin");
-               virtual.setValue("id", p.getId());
-               virtual.setValue("account", p.getAccount());
-               virtual.setValue("nick", p.getNick());
-               virtual.setValue("firstname", p.getFirstName());
-               virtual.setValue("lastname", p.getLastName());
-               list.add(virtual);
+	       HashMap map = new HashMap();
+               map.put("id",new Integer(p.getId()));
+               map.put("account", p.getAccount());
+               map.put("nick", p.getNick());
+               map.put("firstname", p.getFirstName());
+               map.put("lastname", p.getLastName());
+               list.add(map);
             }
         }
         return list;
@@ -827,45 +817,45 @@ public class Controller {
      *
      * @param id MMBase node number of the forum
      * @param sactiveid Id for the current (on the page) poster for admin/onwership checks
-     * @return (virtual) MMObjectNode representing info for the given forum
+     * @return (map) representing info for the given forum
      *
      */
-    public MMObjectNode getForumInfo(String id, String sactiveid) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getForumInfo(String id, String sactiveid) {
+	HashMap map =  new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
             Forum f = ForumManager.getForum(id);
             if (f != null) {
-                virtual.setValue("name", f.getName());
-                virtual.setValue("language", f.getLanguage());
-                virtual.setValue("accountcreationtype", f.getAccountCreationType());
-                virtual.setValue("accountremovaltype", f.getAccountRemovalType());
-                virtual.setValue("loginmodetype", f.getLoginModeType());
-                virtual.setValue("logoutmodetype", f.getLogoutModeType());
-                virtual.setValue("navigationmethod", f.getNavigationMethod());
-                virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
-                virtual.setValue("description", f.getDescription());
-                virtual.setValue("postareacount", f.getPostAreaCount());
-                virtual.setValue("postthreadcount", f.getPostThreadCount());
-                virtual.setValue("postcount", f.getPostCount());
-                virtual.setValue("postersonline", f.getPostersOnlineCount());
-                virtual.setValue("posterstotal", f.getPostersTotalCount());
-                virtual.setValue("postersnew", f.getPostersNewCount());
-                virtual.setValue("viewcount", f.getViewCount());
-                virtual.setValue("lastposter", f.getLastPoster());
-                virtual.setValue("lastposttime", f.getLastPostTime());
-                virtual.setValue("lastsubject", f.getLastSubject());
-                virtual.setValue("hasnick", f.hasNick());
+                map.put("name", f.getName());
+                map.put("language", f.getLanguage());
+                map.put("accountcreationtype", f.getAccountCreationType());
+                map.put("accountremovaltype", f.getAccountRemovalType());
+                map.put("loginsystemtype", f.getLoginSystemType());
+                map.put("loginmodetype", f.getLoginModeType());
+                map.put("logoutmodetype", f.getLogoutModeType());
+                map.put("navigationmethod", f.getNavigationMethod());
+                map.put("privatemessagesenabled", f.getPrivateMessagesEnabled());
+                map.put("description", f.getDescription());
+                map.put("postareacount", new Integer(f.getPostAreaCount()));
+                map.put("postthreadcount",new Integer(f.getPostThreadCount()));
+                map.put("postcount",new Integer(f.getPostCount()));
+                map.put("postersonline",new Integer(f.getPostersOnlineCount()));
+                map.put("posterstotal",new Integer(f.getPostersTotalCount()));
+                map.put("postersnew",new Integer(f.getPostersNewCount()));
+                map.put("viewcount",new Integer(f.getViewCount()));
+                map.put("lastposter", f.getLastPoster());
+                map.put("lastposttime", new Integer(f.getLastPostTime()));
+                map.put("lastsubject", f.getLastSubject());
+                map.put("hasnick", new Boolean(f.hasNick()));
                 if (activeid != -1) {
                     Poster ap = f.getPoster(activeid);
                     ap.signalSeen();
-                    addActiveInfo(virtual, ap);
+                    addActiveInfo(map, ap);
                     if (ap != null && f.isAdministrator(ap.getNick())) {
-                        virtual.setValue("isadministrator", "true");
+                        map.put("isadministrator", "true");
                     } else {
-                        virtual.setValue("isadministrator", "false");
+                        map.put("isadministrator", "false");
                     }
                 }
             }
@@ -873,7 +863,7 @@ public class Controller {
 		e.printStackTrace();
         }
 
-        return virtual;
+        return map;
     }
 
     public String getForumAlias(String key) {
@@ -947,54 +937,53 @@ public class Controller {
      *
      * @param id MMBase node number of the forum
      * @param sactiveid Id for the current (on the page) poster for admin/onwership checks
-     * @return (virtual) MMObjectNode representing the configuration of the given forum
+     * @return (map) representing the configuration of the given forum
      *
      */
-    public MMObjectNode getForumConfig(String id, String sactiveid) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getForumConfig(String id, String sactiveid) {
+	HashMap map =  new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
             Forum f = ForumManager.getForum(id);
             if (f != null) {
-                virtual.setValue("language", f.getLanguage());
-                virtual.setValue("accountcreationtype", f.getAccountCreationType());
-                virtual.setValue("accountremovaltype", f.getAccountRemovalType());
-                virtual.setValue("loginmodetype", f.getLoginModeType());
-                virtual.setValue("logoutmodetype", f.getLogoutModeType());
-                virtual.setValue("guestreadmodetype", f.getGuestReadModeType());
-                virtual.setValue("guestwritemodetype", f.getGuestWriteModeType());
-                virtual.setValue("avatarsdisabled", f.getAvatarsDisabled());
-                virtual.setValue("avatarsuploadenabled", f.getAvatarsUploadEnabled());
-                virtual.setValue("avatarsgalleryenabled", f.getAvatarsGalleryEnabled());
-                virtual.setValue("contactinfoenabled", f.getContactInfoEnabled());
-                virtual.setValue("smileysenabled", f.getSmileysEnabled());
-                virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
-                virtual.setValue("postingsperpage", f.getPostingsPerPage());
-                virtual.setValue("fromaddress",f.getFromEmailAddress());
-                virtual.setValue("headerpath",f.getHeaderPath());
-                virtual.setValue("footerpath",f.getFooterPath());
-        	virtual.setValue("replyoneachpage",f.getReplyOnEachPage());
-        	virtual.setValue("navigationmethod",f.getNavigationMethod());
-        	virtual.setValue("alias",f.getAlias());
+                map.put("language", f.getLanguage());
+                map.put("accountcreationtype", f.getAccountCreationType());
+                map.put("accountremovaltype", f.getAccountRemovalType());
+                map.put("loginsystemtype", f.getLoginSystemType());
+                map.put("loginmodetype", f.getLoginModeType());
+                map.put("logoutmodetype", f.getLogoutModeType());
+                map.put("guestreadmodetype", f.getGuestReadModeType());
+                map.put("guestwritemodetype", f.getGuestWriteModeType());
+                map.put("avatarsdisabled", f.getAvatarsDisabled());
+                map.put("avatarsuploadenabled", f.getAvatarsUploadEnabled());
+                map.put("avatarsgalleryenabled", f.getAvatarsGalleryEnabled());
+                map.put("contactinfoenabled", f.getContactInfoEnabled());
+                map.put("smileysenabled", f.getSmileysEnabled());
+                map.put("privatemessagesenabled", f.getPrivateMessagesEnabled());
+                map.put("postingsperpage", new Integer(f.getPostingsPerPage()));
+                map.put("fromaddress",f.getFromEmailAddress());
+                map.put("headerpath",f.getHeaderPath());
+                map.put("footerpath",f.getFooterPath());
+        	map.put("replyoneachpage",new Boolean(f.getReplyOnEachPage()));
+        	map.put("navigationmethod",f.getNavigationMethod());
+        	map.put("alias",f.getAlias());
 
                 if (activeid != -1) {
                     Poster ap = f.getPoster(activeid);
                     ap.signalSeen();
-                    addActiveInfo(virtual, ap);
+                    addActiveInfo(map, ap);
                     if (ap != null && f.isAdministrator(ap.getNick())) {
-                        virtual.setValue("isadministrator", "true");
+                        map.put("isadministrator", "true");
                     } else {
-                        virtual.setValue("isadministrator", "false");
+                        map.put("isadministrator", "false");
                     }
                 }
             }
         } catch (Exception e) {
 		e.printStackTrace();
         }
-
-        return virtual;
+        return map;
     }
 
 
@@ -1003,12 +992,11 @@ public class Controller {
      *
      * @param id MMBase node number of the forum
      * @param sactiveid Id for the current (on the page) poster for admin/onwership checks
-     * @return (virtual) MMObjectNode representing the configuration of the given forum
+     * @return (map) representing the configuration of the given forum
      *
      */
-    public MMObjectNode getPostAreaConfig(String id, String sactiveid,String postareaid) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getPostAreaConfig(String id, String sactiveid,String postareaid) {
+	HashMap map = new HashMap();
         try {
             int activeid = Integer.parseInt(sactiveid);
 
@@ -1016,39 +1004,39 @@ public class Controller {
             if (f != null) {
 	            PostArea a = f.getPostArea(postareaid);
 		    if (a!=null) {
-                	virtual.setValue("guestreadmodetype", a.getGuestReadModeType());
-                	virtual.setValue("guestwritemodetype", a.getGuestWriteModeType());
-                	virtual.setValue("position", a.getPos());
-                	virtual.setValue("threadstartlevel", a.getThreadStartLevel());
+                	map.put("guestreadmodetype", a.getGuestReadModeType());
+                	map.put("guestwritemodetype", a.getGuestWriteModeType());
+                	map.put("position",new Integer(a.getPos()));
+                	map.put("threadstartlevel", a.getThreadStartLevel());
 		   }
             }
         } catch (Exception e) {
 		e.printStackTrace();
         }
 
-        return virtual;
+        return map;
     }
 
-    public MMObjectNode getForumsConfig() {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
-        virtual.setValue("language", ForumManager.getLanguage());
-        virtual.setValue("accountcreationtype", ForumManager.getAccountCreationType());
-        virtual.setValue("accountremovaltype", ForumManager.getAccountRemovalType());
-        virtual.setValue("loginmodetype", ForumManager.getLoginModeType());
-        virtual.setValue("logoutmodetype", ForumManager.getLogoutModeType());
-        virtual.setValue("guestreadmodetype", ForumManager.getGuestReadModeType());
-        virtual.setValue("guestwritemodetype", ForumManager.getGuestWriteModeType());
-        virtual.setValue("avatarsuploadenabled", ForumManager.getAvatarsUploadEnabled());
-        virtual.setValue("avatarsgalleryenabled", ForumManager.getAvatarsGalleryEnabled());
-        virtual.setValue("contactinfoenabled", ForumManager.getContactInfoEnabled());
-        virtual.setValue("smileysenabled", ForumManager.getSmileysEnabled());
-        virtual.setValue("privatemessagesenabled", ForumManager.getPrivateMessagesEnabled());
-        virtual.setValue("postingsperpage", ForumManager.getPostingsPerPage());
-        virtual.setValue("fromaddress",ForumManager.getFromEmailAddress());
-        virtual.setValue("headerpath",ForumManager.getHeaderPath());
-        virtual.setValue("footerpath",ForumManager.getFooterPath());
-        return virtual;
+    public HashMap getForumsConfig() {
+	HashMap map = new HashMap();
+        map.put("language", ForumManager.getLanguage());
+        map.put("accountcreationtype", ForumManager.getAccountCreationType());
+        map.put("accountremovaltype", ForumManager.getAccountRemovalType());
+        map.put("loginmodetype", ForumManager.getLoginModeType());
+        map.put("loginsystemtype", ForumManager.getLoginSystemType());
+        map.put("logoutmodetype", ForumManager.getLogoutModeType());
+        map.put("guestreadmodetype", ForumManager.getGuestReadModeType());
+        map.put("guestwritemodetype", ForumManager.getGuestWriteModeType());
+        map.put("avatarsuploadenabled", ForumManager.getAvatarsUploadEnabled());
+        map.put("avatarsgalleryenabled", ForumManager.getAvatarsGalleryEnabled());
+        map.put("contactinfoenabled", ForumManager.getContactInfoEnabled());
+        map.put("smileysenabled", ForumManager.getSmileysEnabled());
+        map.put("privatemessagesenabled", ForumManager.getPrivateMessagesEnabled());
+        map.put("postingsperpage",new Integer(ForumManager.getPostingsPerPage()));
+        map.put("fromaddress",ForumManager.getFromEmailAddress());
+        map.put("headerpath",ForumManager.getHeaderPath());
+        map.put("footerpath",ForumManager.getFooterPath());
+        return map;
     }
 
 
@@ -1060,19 +1048,18 @@ public class Controller {
      *
      * @param id MMBase node number of the forum
      * @param posterid Id for poster we want (string/account field)
-     * @return (virtual) MMObjectNode representing info for the given poster
+     * @return (map) representing info for the given poster
      */
-    public MMObjectNode getPosterInfo(String id, String posterid) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getPosterInfo(String id, String posterid) {
+	HashMap map =  new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != null) {
                 Poster po = f.getPoster(posterid);
-                addPosterInfo(virtual, po);
+                addPosterInfo(map, po);
             }
         }
-        return virtual;
+        return map;
     }
 
 
@@ -1081,16 +1068,15 @@ public class Controller {
      *
      * @param id MMBase node number of the forum
      * @param posterid Id for poster we want (string/account field)
-     * @return (virtual) MMObjectNode representing posters quota info
+     * @return (map) representing posters quota info
      */
-    public MMObjectNode getQuotaInfo(String id, int posterid,int barsize) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getQuotaInfo(String id, int posterid,int barsize) {
+	HashMap map = new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != -1) {
                 Poster po = f.getPoster(posterid);
-		virtual.setValue("quotareached",po.isQuotaReached());
+		map.put("quotareached",new Boolean(po.isQuotaReached()));
 		int t=po.getQuotaNumber();
 		int u=po.getQuotaUsedNumber();
 		float d=100/(float)t;
@@ -1100,25 +1086,25 @@ public class Controller {
 
 		// log.info("u="+u+" d="+d+" up="+up+" b="+b+" ub="+ub);
 
-		virtual.setValue("quotausedpercentage",up);
-		virtual.setValue("quotaunusedpercentage",100-up);
-		virtual.setValue("quotanumber",t);
-		virtual.setValue("quotausednumber",u);
-		virtual.setValue("quotaunusednumber",t-u);
-		virtual.setValue("quotausedbar",ub);
+		map.put("quotausedpercentage",new Integer(up));
+		map.put("quotaunusedpercentage",new Integer(100-up));
+		map.put("quotanumber",new Integer(t));
+		map.put("quotausednumber",new Integer(u));
+		map.put("quotaunusednumber",new Integer(t-u));
+		map.put("quotausedbar",new Integer(ub));
 
 		if (u>ForumManager.getQuotaSoftWarning()) {
 			if (u>ForumManager.getQuotaWarning()) {
-				virtual.setValue("quotawarning","red");
+				map.put("quotawarning","red");
 			} else {
-				virtual.setValue("quotawarning","orange");
+				map.put("quotawarning","orange");
 			}
 		} else {
-			virtual.setValue("quotawarning","green");
+			map.put("quotawarning","green");
 		}
             }
         }
-        return virtual;
+        return map;
     }
 
 
@@ -1128,11 +1114,10 @@ public class Controller {
      * @param id MMBase node number of the forum
      * @param posterid Id for poster we want (string/account field)
      * @param mailboxid Id for mailbox we want
-     * @return (virtual) MMObjectNode representing info for the given poster
+     * @return (map) representing info for the given poster
      */
-    public MMObjectNode getMailboxInfo(String id, int posterid,String mailboxid) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getMailboxInfo(String id, int posterid,String mailboxid) {
+	HashMap map = new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != -1) {
@@ -1140,14 +1125,14 @@ public class Controller {
 		if (po != null ) {
 			Mailbox mb=po.getMailbox(mailboxid);
 			if (mb != null) {
-				virtual.setValue("messagecount",mb.getMessageCount());
-				virtual.setValue("messageunreadcount",mb.getMessageUnreadCount());
-				virtual.setValue("messagenewcount",mb.getMessageNewCount());
+				map.put("messagecount",new Integer(mb.getMessageCount()));
+				map.put("messageunreadcount",new Integer(mb.getMessageUnreadCount()));
+				map.put("messagenewcount",new Integer(mb.getMessageNewCount()));
 			}
 		}
             }
         }
-        return virtual;
+        return map;
     }
 
 
@@ -1160,8 +1145,7 @@ public class Controller {
      * @return signal given 
      */
     public boolean signalMailboxChange(String id, int posterid,String mailboxid) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+	HashMap map  = new HashMap();
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != -1) {
@@ -1287,7 +1271,12 @@ public class Controller {
                 Poster p = f.getPoster(account);
                 Poster n = f.getPosterNick(nick);
                 if (p == null) {
-		    if (n!=null) return "nickinuse";
+		    // weird hack since entree demands the use of a nick
+		    if (f.getLoginSystemType().equals("entree")) {
+		    	if (n!=null || nick.equals("")) return "nickinuse";
+		    } else {
+		    	if (n!=null && !nick.equals("")) return "nickinuse";
+		    }
 		    if (firstname.equals("") || firstname.length()<2) return "firstnameerror";
 		    if (lastname.equals("") || lastname.length()<1) return "lastnameerror";
 		    if (email.equals("") || email.indexOf("@")==-1 || email.indexOf(".")==-1) return "emailerror";
@@ -1301,7 +1290,7 @@ public class Controller {
                         p.setPassword(password);
                         p.setPostCount(0);
                         p.savePoster();
-    			setProfileValue(forumid, p.getId(),"nick",nick);
+    			if (nick!=null && !nick.equals("")) setProfileValue(forumid, p.getId(),"nick",nick);
                     } else {
                         return "createerror";
                     }
@@ -1367,52 +1356,49 @@ public class Controller {
      * @param pagesize   Number of postings per page
      * @param baseurl Base url for links in the navigation html
      * @param cssclass stylesheet name for the url links
-     * @return (virtual) MMObjectNode representing info for the given postarea
+     * @return (map) representing info for the given postarea
      */
-    public MMObjectNode getPostAreaInfo(String forumid, String postareaid, int activeid, int page, int pagesize, String baseurl, String cssclass) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getPostAreaInfo(String forumid, String postareaid, int activeid, int page, int pagesize, String baseurl, String cssclass) {
+	HashMap map = new HashMap();
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
-            virtual.setValue("name", a.getName());
-            virtual.setValue("postthreadcount", a.getPostThreadCount());
-            virtual.setValue("postcount", a.getPostCount());
-            virtual.setValue("viewcount", a.getViewCount());
-            virtual.setValue("lastposter", a.getLastPoster());
-            virtual.setValue("lastposttime", a.getLastPostTime());
-            virtual.setValue("lastsubject", a.getLastSubject());
-            virtual.setValue("guestreadmodetype", a.getGuestReadModeType());
-            virtual.setValue("guestwritemodetype", a.getGuestWriteModeType());
-            virtual.setValue("threadstartlevel", a.getThreadStartLevel());
-            virtual.setValue("privatemessagesenabled", f.getPrivateMessagesEnabled());
-            virtual.setValue("smileysenabled", f.getSmileysEnabled());
-            virtual.setValue("navline", a.getNavigationLine(baseurl, page, pagesize, cssclass));
-            virtual.setValue("pagecount", a.getPageCount(pagesize));
+            map.put("name", a.getName());
+            map.put("postthreadcount", new Integer(a.getPostThreadCount()));
+            map.put("postcount", new Integer(a.getPostCount()));
+            map.put("viewcount", new Integer(a.getViewCount()));
+            map.put("lastposter", a.getLastPoster());
+            map.put("lastposttime", new Integer(a.getLastPostTime()));
+            map.put("lastsubject", a.getLastSubject());
+            map.put("guestreadmodetype", a.getGuestReadModeType());
+            map.put("guestwritemodetype", a.getGuestWriteModeType());
+            map.put("threadstartlevel", a.getThreadStartLevel());
+            map.put("privatemessagesenabled", f.getPrivateMessagesEnabled());
+            map.put("smileysenabled", f.getSmileysEnabled());
+            map.put("navline", a.getNavigationLine(baseurl, page, pagesize, cssclass));
+            map.put("pagecount", new Integer(a.getPageCount(pagesize)));
             if (activeid != -1) {
                 Poster ap = f.getPoster(activeid);
                 ap.signalSeen();
-                // addActiveInfo(virtual,ap);
                 if (ap != null && f.isAdministrator(ap.getNick())) {
-                    virtual.setValue("isadministrator", "true");
+                    map.put("isadministrator", "true");
                 } else {
-                    virtual.setValue("isadministrator", "false");
+                    map.put("isadministrator", "false");
                 }
                 if (ap != null && a.isModerator(ap.getNick())) {
-                    virtual.setValue("ismoderator", "true");
+                    map.put("ismoderator", "true");
                 } else {
-                    virtual.setValue("ismoderator", "false");
+                    map.put("ismoderator", "false");
                 }
             }
         }
-        return virtual;
+        return map;
     }
 
 
-    public MMObjectNode getPostThreadInfo(String forumid, String postareaid, String postthreadid,int pagesize) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getPostThreadInfo(String forumid, String postareaid, String postthreadid,int pagesize) {
+	HashMap map = new HashMap();
 
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
@@ -1420,14 +1406,14 @@ public class Controller {
 	    if (a != null) {
            	 PostThread t = a.getPostThread(postthreadid);
                  if (t != null) {
-            		virtual.setValue("threadstate", t.getState());
-            		virtual.setValue("threadmood", t.getState());
-            		virtual.setValue("threadtype", t.getType());
-            		virtual.setValue("pagecount", t.getPageCount(pagesize));
+            		map.put("threadstate", t.getState());
+            		map.put("threadmood", t.getMood());
+            		map.put("threadtype", t.getType());
+            		map.put("pagecount",new Integer(t.getPageCount(pagesize)));
 		 }
 	   }
         }
-        return virtual;
+        return map;
     }
 
     /**
@@ -1494,11 +1480,10 @@ public class Controller {
      * @param pagesize  Number of postings per page
      * @param baseurl Base url for links in the navigation html
      * @param cssclass  stylesheet name for the url links
-     * @return (virtual) MMObjectNode containing navline, lastpage, pagecount
+     * @return (map) containing navline, lastpage, pagecount
      */
-    public MMObjectNode getPostThreadNavigation(String forumid, String postareaid, String postthreadid, int posterid, int page, int pagesize, String baseurl, String cssclass) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap getPostThreadNavigation(String forumid, String postareaid, String postthreadid, int posterid, int page, int pagesize, String baseurl, String cssclass) {
+	HashMap map =  new HashMap();
 
         if (cssclass == null) cssclass = "";
 
@@ -1508,31 +1493,31 @@ public class Controller {
             if (a != null) {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
-		    int overflowpage = ForumManager.getPostingsOverflowThreadpage();
-                    virtual.setValue("navline", t.getNavigationLine(baseurl, page, pagesize,overflowpage, cssclass));
-                    virtual.setValue("lastpage", "" + t.isLastPage(page, pagesize));
-                    virtual.setValue("pagecount", t.getPageCount(pagesize));
+		    int overflowpage = f.getPostingsOverflowThreadPage();
+                    map.put("navline", t.getNavigationLine(baseurl, page, pagesize,overflowpage, cssclass));
+                    map.put("lastpage", "" + t.isLastPage(page, pagesize));
+                    map.put("pagecount",new Integer(t.getPageCount(pagesize)));
                     Poster ap = f.getPoster(posterid);
                	    if (ap != null) {
 		    	ThreadObserver to = f.getThreadObserver(t.getId());
 		    	if (to!=null && to.wantsEmailOnChange(ap)) {
-				virtual.setValue("emailonchange","true");  
+				map.put("emailonchange","true");  
 		    	} else {
-				virtual.setValue("emailonchange","false");  
+				map.put("emailonchange","false");  
 		    	}
 		        if (to!=null && to.isBookmarked(ap)) {
-				virtual.setValue("bookmarked","true");  
+				map.put("bookmarked","true");  
 		        } else {
-				virtual.setValue("bookmarked","false");  
+				map.put("bookmarked","false");  
 		        }
                	    } else {
-		    	virtual.setValue("emailonchange","false");  
-			virtual.setValue("bookmarked","false");  
+		    	map.put("emailonchange","false");  
+			map.put("bookmarked","false");  
                     }
                 }
             }
         }
-        return virtual;
+        return map;
     }
 
     /**
@@ -1546,9 +1531,8 @@ public class Controller {
      * @param body Body of the reply
      * @return  Feedback regarding this post action
      */
-    public MMObjectNode postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
+	HashMap map = new HashMap();
 
         if (subject.length()>60) subject = subject.substring(0,57)+"..."; 
 
@@ -1567,33 +1551,35 @@ public class Controller {
 		    Poster p=f.getPosterNick(poster);
                     if ((!t.getState().equals("closed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
 			if (body.equals("")) {
-                		virtual.setValue("error", "no_body");
-			} else if (p.checkDuplicatePost("",body)) {
-                		virtual.setValue("error", "duplicate_post");
+                		map.put("error", "no_body");
+			} else if (p!=null && p.checkDuplicatePost("",body)) {
+                		map.put("error", "duplicate_post");
 			} else if (checkIllegalHtml(body)) {
-                		virtual.setValue("error", "illegal_html");
-			} else if (checkSpeedPosting(a,p)) {
-                		virtual.setValue("error", "speed_posting");
-                		virtual.setValue("speedposttime", ""+a.getSpeedPostTime());
+                		map.put("error", "illegal_html");
+			} else if (p!=null && checkSpeedPosting(a,p)) {
+                		map.put("error", "speed_posting");
+                		map.put("speedposttime", ""+a.getSpeedPostTime());
 			} else {
 				body = a.filterContent(body);
 				subject = filterHTML(subject);
 				//body = BBCode.decode(body);
 				try {
-                       	        	t.postReply(subject, p, body);
-                			virtual.setValue("error", "none");
-					p.setLastBody(body);
-					p.setLastPostTime((int)(System.currentTimeMillis()/1000));
+                       	        	t.postReply(subject, p, body,false);
+                			map.put("error", "none");
+					if (p!=null) {
+						p.setLastBody(body);
+						p.setLastPostTime((int)(System.currentTimeMillis()/1000));
+					}
 				} catch (Exception e) {
 					log.info("Error while posting a reply");
-                			virtual.setValue("error", "illegal_html");
+                			map.put("error", "illegal_html");
 				}
 			}
                     }
                 }
             }
         }
-        return virtual;
+        return map;
     }
 
     /**
@@ -1604,12 +1590,12 @@ public class Controller {
      * @param subject Subject of the new post
      * @param poster Posterid to be attached to the postthread as its creator
      * @param body Body of the new post
-     * @return  (virtual) MMObjectNode containing the postthreadid of the newly created post
+     * @return  (map) containing the postthreadid of the newly created post
      */
-    public MMObjectNode newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+    public HashMap newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
 
-        MMObjectNode virtual = builder.getNewNode("admin");
+	log.info("WHOOOOO 1");
+	HashMap map = new HashMap();
 
         if (subject.length()>60) subject = subject.substring(0,57)+"...";
 
@@ -1619,31 +1605,33 @@ public class Controller {
 	    Poster p=f.getPoster(poster);
             if (a != null && (p==null || !p.isBlocked())) {
 		if (subject.equals("")) {
-                	virtual.setValue("error", "no_subject");
+                	map.put("error", "no_subject");
 		} else if (body.equals("")) {
-                	virtual.setValue("error", "no_body");
+                	map.put("error", "no_body");
 		} else if (checkIllegalHtml(subject)) {
-                	virtual.setValue("error", "illegal_html");
+                	map.put("error", "illegal_html");
 		} else if (checkIllegalHtml(body)) {
-                	virtual.setValue("error", "illegal_html");
-		} else if (p.checkDuplicatePost(subject,body)) {
-                	virtual.setValue("error", "duplicate_post");
-		} else if (checkSpeedPosting(a,p)) {
-                	virtual.setValue("error", "speed_posting");
-                	virtual.setValue("speedposttime", ""+a.getSpeedPostTime());
+                	map.put("error", "illegal_html");
+		} else if (p!=null && p.checkDuplicatePost(subject,body)) {
+                	map.put("error", "duplicate_post");
+		} else if (p!=null && checkSpeedPosting(a,p)) {
+                	map.put("error", "speed_posting");
+                	map.put("speedposttime", ""+a.getSpeedPostTime());
 		} else {
 			body = a.filterContent(body);
 			subject = filterHTML(subject);
-                	int postthreadid = a.newPost(subject, p, body,mood);
-                	virtual.setValue("postthreadid", postthreadid);
-                	virtual.setValue("error", "none");
-			p.setLastSubject(subject);
-			p.setLastBody(body);
-			p.setLastPostTime((int)(System.currentTimeMillis()/1000));
+                	int postthreadid = a.newPost(subject, p, body,mood,false);
+                	map.put("postthreadid", new Integer(postthreadid));
+                	map.put("error", "none");
+			if (p!=null) {
+				p.setLastSubject(subject);
+				p.setLastBody(body);
+				p.setLastPostTime((int)(System.currentTimeMillis()/1000));
+			}
 		}
             }
         }
-        return virtual;
+        return map;
     }
 
     /**
@@ -1654,17 +1642,16 @@ public class Controller {
      * @param poster Poster who is sending the message
      * @param to Poster to which to send the message
      * @param body Body of the new post
-     * @return (virtual) MMObjectNode containing privatemessageid of the newly created private message
+     * @return (map) containing privatemessageid of the newly created private message
      */
-    public MMObjectNode newPrivateMessage(String forumid, String subject, String poster, String to, String body) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+    public HashMap newPrivateMessage(String forumid, String subject, String poster, String to, String body) {
 
-        MMObjectNode virtual = builder.getNewNode("admin");
+	HashMap map =  new HashMap();
         Forum f = ForumManager.getForum(forumid);
         if (f != null && !f.getPoster(poster).isBlocked()) {
 	    if (to.indexOf(",")==-1) {
             	int privatemessageid = f.newPrivateMessage(poster, to, subject, body);
-            	virtual.setValue("privatemessageid", privatemessageid);
+            	map.put("privatemessageid",new Integer(privatemessageid));
 	    } else {
 		StringTokenizer tok=new StringTokenizer(to,",\n\r");
 		while (tok.hasMoreTokens()) {
@@ -1673,7 +1660,7 @@ public class Controller {
 		}
 	    }
         }
-        return virtual;
+        return map;
     }
 
 
@@ -1684,16 +1671,14 @@ public class Controller {
      * @param newfolder
      * @return
      */
-    public MMObjectNode newFolder(String forumid, int activeid, String newfolder) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public Node newFolder(String forumid, int activeid, String newfolder) {
+	Map map = new HashMap();
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             int folderid = f.newFolder(activeid, newfolder);
-            virtual.setValue("folderid", folderid);
+            map.put("folderid", new Integer(folderid));
         }
-        return virtual;
+        return new org.mmbase.bridge.util.MapNode(map);
     }
 
 
@@ -1787,7 +1772,7 @@ public class Controller {
                 Poster mp = f.getPoster(moderatorid);
                 if (ap != null && f.isAdministrator(ap.getNick())) {
                     a.removeModerator(mp);
-                }
+		}
             }
         }
         return true;
@@ -1841,7 +1826,7 @@ public class Controller {
                     Poster ap = f.getPoster(activeid);
                     if (ap.getNick().equals(p.getPoster()) || a.isModerator(ap.getNick())) {
                         p.setSubject(subject);
-                        p.setBody(body,imagecontext);
+                        p.setBody(body,imagecontext,false);
                         p.setEditTime((int) (System.currentTimeMillis() / 1000));
                         p.save();
                         ap.signalSeen();
@@ -1881,6 +1866,38 @@ public class Controller {
                         t.save();
                     } else {
                         log.info("postthread edit tried but not allowed by poster");
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * move a existing postthread
+     *
+     * @param forumid  MMBase node number of the forum
+     * @param postareaid MMBase node number of the postarea
+     * @param postthreadid MMBase node number of the postthread
+     * @param activeid MMBase node number of current Poster (on the page)
+     * @param newpostareaid  New mood
+     * @return Feedback regarding the success of this action
+     */
+    public boolean movePostThread(String forumid, String postareaid, String postthreadid, int activeid, String newpostareaid) {
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            PostArea a = f.getPostArea(postareaid);
+            if (a != null) {
+                PostThread t = a.getPostThread(postthreadid);
+                if (t != null) {
+                    // am i allowed to move ?
+                    Poster ap = f.getPoster(activeid);
+                    if (a.isModerator(ap.getNick())) {
+			log.info("WANNE MOVE : "+postthreadid+" from "+postareaid+" to "+newpostareaid);
+			a.movePostThread(postthreadid,newpostareaid,ap);
+                    } else {
+                        log.info("postthread move tried but not allowed by poster");
                     }
                 }
             }
@@ -1989,11 +2006,10 @@ public class Controller {
      * @param forumid MMBase node number of the forum
      * @param name Name of the new post area
      * @param description Description of the new post area
-     * @return (virtual) MMObjectNode containing the postareaid of the newly created postarea
+     * @return (map) containing the postareaid of the newly created postarea
      */
-    public MMObjectNode newPostArea(String forumid, String name, String description,int activeid) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap newPostArea(String forumid, String name, String description,int activeid) {
+	HashMap map = new HashMap();
 
 	name = filterHTML(name);
 	description = filterHTML(description);
@@ -2004,15 +2020,15 @@ public class Controller {
 	    	if (f.isAdministrator(ap.getNick())) {
 	   		 if (!name.equals("")) {
             			int postareaid = f.newPostArea(name, description);
-            			virtual.setValue("postareaid", postareaid);
+            			map.put("postareaid", new Integer(postareaid));
             		} else {
-				virtual.setValue("feedback","feedback_emptyname");
+				map.put("feedback","feedback_emptyname");
 	    		}
 		} else {
-				virtual.setValue("feedback","feedback_usernotallowed");
+				map.put("feedback","feedback_usernotallowed");
 		}
         }
-        return virtual;
+        return map;
     }
 
 
@@ -2024,17 +2040,18 @@ public class Controller {
      * @param description  Description of the new forum
      * @param account default/first admin account name for this new forum
      * @param password default/first admin password name for this new forum
-     * @return (virtual) MMObjectNode containing the forumid of the newly created forum
+     * @return (map) containing the forumid of the newly created forum
      */
-    public MMObjectNode newForum(String name, String language, String description, String account, String password,String email) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public Map newForum(String name, String language, String description, String account, String password,String email) {
+        Map map = new HashMap();
 	name = filterHTML(name);
 	description = filterHTML(description);
         int forumid = ForumManager.newForum(name, language, description, account, password,email);
-        virtual.setValue("forumid", forumid);
-        return virtual;
+        map.put("forumid",new Integer(forumid));
+        return map;
     }
+
+
 
 
     /**
@@ -2060,6 +2077,145 @@ public class Controller {
 	    	}
         }
         return true;
+    }
+
+
+    public boolean changeForumPostingsPerPage(String forumid,int activeid,int maxpostcount) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	f.setPostingsPerPage(maxpostcount);
+			f.saveConfig();
+	   	} else {
+			return false;
+	    	}
+        }
+        return true;
+    }
+
+
+    public boolean changeForumReplyOnEachPage(String forumid,int activeid,String value) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+			if (value.equals("true")) {
+	        		f.setReplyOnEachPage(true);
+			} else {
+	        		f.setReplyOnEachPage(false);
+			}
+			f.saveConfig();
+	   	} else {
+			return false;
+	    	}
+        }
+        return true;
+    }
+
+
+    public boolean changeForumSpeedPostTime(String forumid,int activeid,int delay) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	f.setSpeedPostTime(delay);
+			f.saveConfig();
+	   	} else {
+			return false;
+	    	}
+        }
+        return true;
+    }
+
+
+    public int getForumSpeedPostTime(String forumid,int activeid) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	return f.getSpeedPostTime();
+	    	}
+        }
+        return -1;
+    }
+
+
+    public boolean changeForumPostingsOverflowPostArea(String forumid,int activeid,int count) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	f.setPostingsOverflowPostArea(count);
+			f.saveConfig();
+	   	} else {
+			return false;
+	    	}
+        }
+        return true;
+    }
+
+
+    public int getForumPostingsOverflowPostArea(String forumid,int activeid) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	return f.getPostingsOverflowPostArea();
+	    	}
+        }
+        return -1;
+    }
+
+
+    public int getForumPostingsPerPage(String forumid,int activeid) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	return f.getPostingsPerPage();
+	    	}
+        }
+        return -1;
+    }
+
+
+    public boolean changeForumPostingsOverflowThreadPage(String forumid,int activeid,int count) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	f.setPostingsOverflowThreadPage(count);
+                	f.saveConfig();
+	   	} else {
+			return false;
+	    	}
+        }
+        return true;
+    }
+
+
+    public int getForumPostingsOverflowThreadPage(String forumid,int activeid) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	return f.getPostingsOverflowThreadPage();
+	    	}
+        }
+        return -1;
+    }
+
+
+    public boolean getForumReplyOnEachPage(String forumid,int activeid) {
+       	Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+        	Poster ap = f.getPoster(activeid);
+	    	if (f.isAdministrator(ap.getNick())) {
+	        	return f.getReplyOnEachPage();
+	    	}
+        }
+        return false;
     }
 
 
@@ -2093,18 +2249,19 @@ public class Controller {
     }
 
 
-    public boolean changeForumConfig(String forumid, String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled,String navigationmethod,String alias,int activeid) {
+    public boolean changeForumConfig(String forumid,String loginsystemtype,String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled,String navigationmethod,String alias,int activeid) {
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
         	Poster ap = f.getPoster(activeid);
 	    	if (f.isAdministrator(ap.getNick())) {
-			f.setLogoutModeType(logoutmodetype);
-			f.setLoginModeType(loginmodetype);
-			f.setGuestReadModeType(guestreadmodetype);
-			f.setGuestWriteModeType(guestwritemodetype);
-			f.setAvatarsUploadEnabled(avatarsuploadenabled);
-			f.setAvatarsGalleryEnabled(avatarsgalleryenabled);
-			f.setNavigationMethod(navigationmethod);
+			if (!loginsystemtype.equals("fixed")) f.setLoginSystemType(loginsystemtype);
+			if (!logoutmodetype.equals("fixed")) f.setLogoutModeType(logoutmodetype);
+			if (!loginmodetype.equals("fixed")) f.setLoginModeType(loginmodetype);
+			if (!guestreadmodetype.equals("fixed")) f.setGuestReadModeType(guestreadmodetype);
+			if (!guestwritemodetype.equals("fixed")) f.setGuestWriteModeType(guestwritemodetype);
+			if (!avatarsuploadenabled.equals("fixed")) f.setAvatarsUploadEnabled(avatarsuploadenabled);
+			if (!avatarsgalleryenabled.equals("fixed")) f.setAvatarsGalleryEnabled(avatarsgalleryenabled);
+			if (!navigationmethod.equals("fixed")) f.setNavigationMethod(navigationmethod);
 			f.setAlias(alias);
 			f.saveConfig();
 		} else {
@@ -2136,9 +2293,10 @@ public class Controller {
     }
 
 
-    public boolean changeForumsConfig(String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled,String contactinfoenabled,String smileysenabled,String privatemessagesenabled,String postingsperpage) {
+    public boolean changeForumsConfig(String loginsystemtype,String loginmodetype, String logoutmodetype, String guestreadmodetype,String guestwritemodetype,String avatarsuploadenabled,String avatarsgalleryenabled,String contactinfoenabled,String smileysenabled,String privatemessagesenabled,String postingsperpage) {
 	ForumManager.setLogoutModeType(logoutmodetype);
 	ForumManager.setLoginModeType(loginmodetype);
+	ForumManager.setLoginSystemType(loginsystemtype);
 	ForumManager.setGuestReadModeType(guestreadmodetype);
 	ForumManager.setGuestWriteModeType(guestwritemodetype);
 	ForumManager.setAvatarsUploadEnabled(avatarsuploadenabled);
@@ -2199,21 +2357,23 @@ public class Controller {
      * @param node
      * @param p
      */
-    private void addPosterInfo(MMObjectNode node, Poster p) {
-        node.setValue("posterid", p.getId());
-        node.setValue("account", p.getAccount());
-        node.setValue("nick", p.getNick());
-        node.setValue("firstname", p.getFirstName());
-        node.setValue("lastname", p.getLastName());
-        node.setValue("email", p.getEmail());
-        node.setValue("level", p.getLevel());
-        node.setValue("location", p.getLocation());
-        node.setValue("gender", p.getGender());
-        node.setValue("avatar", p.getAvatar());
-        node.setValue("accountpostcount", p.getPostCount());
-        node.setValue("firstlogin", p.getFirstLogin());
-        node.setValue("lastseen", p.getLastSeen());
-        node.setValue("signature", p.getSignature());
+    private void addPosterInfo(HashMap map, Poster p) {
+        map.put("posterid", new Integer(p.getId()));
+        map.put("account", p.getAccount());
+        map.put("nick", p.getNick());
+        map.put("firstname", p.getFirstName());
+        map.put("lastname", p.getLastName());
+        map.put("email", p.getEmail());
+        map.put("level", p.getLevel());
+        map.put("levelgui", p.getLevelGui());
+        map.put("levelimage", p.getLevelImage());
+        map.put("location", p.getLocation());
+        map.put("gender", p.getGender());
+        map.put("avatar", new Integer(p.getAvatar()));
+        map.put("accountpostcount", new Integer(p.getPostCount()));
+        map.put("firstlogin", new Integer(p.getFirstLogin()));
+        map.put("lastseen", new Integer(p.getLastSeen()));
+        map.put("signature", p.getSignature());
     }
 
 
@@ -2222,20 +2382,22 @@ public class Controller {
      * @param node
      * @param p
      */
-    private void addActiveInfo(MMObjectNode node, Poster p) {
-        node.setValue("active_id", p.getId());
-        node.setValue("active_account", p.getAccount());
-        node.setValue("active_nick", p.getNick());
-        node.setValue("active_firstname", p.getFirstName());
-        node.setValue("active_lastname", p.getLastName());
-        node.setValue("active_email", p.getEmail());
-        node.setValue("active_level", p.getLevel());
-        node.setValue("active_location", p.getLocation());
-        node.setValue("active_gender", p.getGender());
-        node.setValue("active_firstlogin", p.getFirstLogin());
-        node.setValue("active_lastseen", p.getLastSeen());
-        node.setValue("active_avatar", p.getAvatar());
-        node.setValue("active_postcount", p.getPostCount());
+    private void addActiveInfo(HashMap map, Poster p) {
+        map.put("active_id", new Integer(p.getId()));
+        map.put("active_account", p.getAccount());
+        map.put("active_nick", p.getNick());
+        map.put("active_firstname", p.getFirstName());
+        map.put("active_lastname", p.getLastName());
+        map.put("active_email", p.getEmail());
+        map.put("active_level", p.getLevel());
+        map.put("active_levelgui", p.getLevelGui());
+        map.put("active_levelimage", p.getLevelGui());
+        map.put("active_location", p.getLocation());
+        map.put("active_gender", p.getGender());
+        map.put("active_firstlogin", new Integer(p.getFirstLogin()));
+        map.put("active_lastseen", new Integer(p.getLastSeen()));
+        map.put("active_avatar", new Integer(p.getAvatar()));
+        map.put("active_postcount", new Integer(p.getPostCount()));
     }
 
     public boolean setRemoteAddress(String forumid,int posterid,String host) {
@@ -2252,10 +2414,9 @@ public class Controller {
     /**
     * get login information for this poster
     */
-    public MMObjectNode forumLogin(String forumid,String account,String password) {
+    public HashMap forumLogin(String forumid,String account,String password) {
         //log.info("going to login with account: " + account + " and password " + password);
-                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-                MMObjectNode virtual = builder.getNewNode("admin");
+		HashMap map = new HashMap();
 		Forum f=ForumManager.getForum(forumid);
 		if (f!=null) {
 			Poster po=f.getPoster(account);
@@ -2263,23 +2424,40 @@ public class Controller {
 				org.mmbase.util.transformers.MD5 md5 = new org.mmbase.util.transformers.MD5();
 				String md5passwd = md5.transform(password);
 				if (!password.equals("blocked") && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd)) && !po.isBlocked()) {
-					virtual.setValue("state","passed");
-					virtual.setValue("posterid",po.getId());
+					map.put("state","passed");
+					map.put("posterid",new Integer(po.getId()));
 				} else {
-					virtual.setValue("state","failed");
+					map.put("state","failed");
                     if (po.isBlocked() && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd))) {
-                        virtual.setValue("reason","account blocked");
+                        map.put("reason","account blocked");
                     } else {
-                        virtual.setValue("reason","password not valid");
+                        map.put("reason","password not valid");
                     }
 
 				}	
 			} else {
-				virtual.setValue("state","failed");
-				virtual.setValue("reason","account not valid");
+				map.put("state","failed");
+				map.put("reason","account not valid");
 			}
 		}
-		return virtual;
+		return map;
+	}
+
+
+    public HashMap getPosterPassword(String forumid,String account) {
+		HashMap map = new HashMap();
+		Forum f=ForumManager.getForum(forumid);
+		if (f!=null) {
+			Poster po=f.getPoster(account);
+			if (po!=null) {
+                        	map.put("password",po.getPassword());
+                        	map.put("failed","false");
+			} else {
+                        	map.put("failed","true");
+                        	map.put("reason","noaccount");
+			}
+		}
+		return map;
 	}
 
 	public String getDefaultPassword() {
@@ -2291,6 +2469,7 @@ public class Controller {
 	}
 
         private boolean checkIllegalHtml(String input) {
+		log.info("P3D");
 		input = input.toLowerCase();
 		if (input.indexOf("<script")!=-1) {
 			return true;
@@ -2303,6 +2482,7 @@ public class Controller {
 	}
 
         private boolean checkSpeedPosting(PostArea a,Poster p) {
+	    	log.info("P3C");
 		if (p.getLastPostTime()!=-1) {
 			if ((System.currentTimeMillis()/1000)-a.getSpeedPostTime()<p.getLastPostTime()) {
 				return true;
@@ -2313,7 +2493,6 @@ public class Controller {
 
         public List getSignatures(String forumid,String sactiveid) {
        		List list = new ArrayList();
-  		VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         	try {
             		int activeid = Integer.parseInt(sactiveid);
 
@@ -2324,12 +2503,12 @@ public class Controller {
 			    if (e!=null)  {
             		    	while (e.hasNext()) {
                            	 	Signature sig = (Signature) e.next();
-                    			MMObjectNode virtual = builder.getNewNode("admin");
-                    			virtual.setValue("id", sig.getId());
-                    			virtual.setValue("body", sig.getBody());
-                    			virtual.setValue("mode", sig.getMode());
-                    			virtual.setValue("encodings", sig.getMode());
-					list.add(virtual);
+					HashMap map = new HashMap();
+                    			map.put("id", new Integer(sig.getId()));
+                    			map.put("body", sig.getBody());
+                    			map.put("mode", sig.getMode());
+                    			map.put("encodings", sig.getMode());
+					list.add(map);
 				    }
 			    }
 			}
@@ -2341,7 +2520,6 @@ public class Controller {
 
         public List getRemoteHosts(String forumid,String sactiveid) {
        		List list = new ArrayList();
-  		VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         	try {
             		int activeid = Integer.parseInt(sactiveid);
 
@@ -2352,12 +2530,12 @@ public class Controller {
 			    if (e!=null)  {
             		    	while (e.hasNext()) {
                            	 	RemoteHost rm = (RemoteHost) e.next();
-                    			MMObjectNode virtual = builder.getNewNode("admin");
-                    			virtual.setValue("id", ""+rm.getId());
-                    			virtual.setValue("host",rm.getHost());
-                    			virtual.setValue("lastupdatetime", ""+rm.getLastUpdateTime());
-                    			virtual.setValue("updatecount", ""+rm.getUpdateCount());
-					list.add(virtual);
+					HashMap map = new HashMap();
+                    			map.put("id", ""+rm.getId());
+                    			map.put("host",rm.getHost());
+                    			map.put("lastupdatetime", ""+rm.getLastUpdateTime());
+                    			map.put("updatecount", ""+rm.getUpdateCount());
+					list.add(map);
 				    }
 			    }
 			}
@@ -2415,9 +2593,8 @@ public class Controller {
 	}
 
 
-        public MMObjectNode getSingleSignature(String forumid,String sactiveid) {
-        	VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-       		MMObjectNode virtual = builder.getNewNode("admin");
+        public HashMap getSingleSignature(String forumid,String sactiveid) {
+		HashMap map = new HashMap();
         	try {
             		int activeid = Integer.parseInt(sactiveid);
 
@@ -2427,15 +2604,15 @@ public class Controller {
 			    if (poster != null) {
 				Signature sig = poster.getSingleSignature();
 				if (sig!=null) {
-					virtual.setValue("body",sig.getBody());
-					virtual.setValue("encoding",sig.getEncoding());
+					map.put("body",sig.getBody());
+					map.put("encoding",sig.getEncoding());
 				}
 			    }
 			}
         	} catch (Exception e) {
 	            	e.printStackTrace();
         	}
-		return virtual;
+		return map;
 	}
 
 
@@ -2498,7 +2675,6 @@ public class Controller {
 
     public List getProfileValues(String forumid, int posterid) {
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Forum f = ForumManager.getForum(forumid);
 	if (f!=null && posterid!=-1) {
                 Poster po = f.getPoster(posterid);
@@ -2506,19 +2682,19 @@ public class Controller {
                 	Iterator i = f.getProfileDefs();
 			if (i!=null) {
                 	   while (i.hasNext()) {
-        			MMObjectNode virtual = builder.getNewNode("admin");
+				HashMap map = new HashMap();
                     		ProfileEntryDef pd = (ProfileEntryDef) i.next();
 				if (pd.getGuiPos()!=-1) {
-					virtual.setValue("name",pd.getName());
-					virtual.setValue("guiname",pd.getGuiName());
-					virtual.setValue("guipos",pd.getGuiPos());
-					virtual.setValue("edit",""+pd.getEdit());
-					virtual.setValue("type",pd.getType());
+					map.put("name",pd.getName());
+					map.put("guiname",pd.getGuiName());
+					map.put("guipos",new Integer(pd.getGuiPos()));
+					map.put("edit",""+pd.getEdit());
+					map.put("type",pd.getType());
 					ProfileEntry pe = po.getProfileValue(pd.getName());
 					if (pe!=null) {
-						virtual.setValue("value",pe.getValue());
+						map.put("value",pe.getValue());
 					}
-					list.add(virtual);
+					list.add(map);
 				}
 			   }
 			}
@@ -2530,7 +2706,6 @@ public class Controller {
 
     public List getFilterWords(String forumid) {
         List list = new ArrayList();
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         Forum f = ForumManager.getForum(forumid);
 	if (f!=null) {
 		HashMap words = f.getFilterWords();
@@ -2538,10 +2713,10 @@ public class Controller {
                 while (i.hasNext()) {
 			String key =  (String)i.next();
 			String value = (String)words.get(key);
-       			MMObjectNode virtual = builder.getNewNode("admin");
-			virtual.setValue("name",key);
-			virtual.setValue("value",value);
-			list.add(virtual);
+			HashMap map = new HashMap();
+			map.put("name",key);
+			map.put("value",value);
+			list.add(map);
 		}
         }
 	return list;
@@ -2549,9 +2724,8 @@ public class Controller {
 
 
 
-    public MMObjectNode setProfileValue(String forumid, int activeid,String name,String value) {
-        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
-        MMObjectNode virtual = builder.getNewNode("admin");
+    public HashMap setProfileValue(String forumid, int activeid,String name,String value) {
+	HashMap map = new HashMap();
 
 	value = filterHTML(value);
 
@@ -2562,7 +2736,7 @@ public class Controller {
 			String feedback = ap.setProfileValue(name,value);
 		}
 	}
-	return virtual;
+	return map;
     }
 
     public String getBirthDateString(String name,String value) {
@@ -2608,5 +2782,15 @@ public class Controller {
 	body+="</select>";
 	return body;
     }
+
+
+    public String getGuiEdit(String id, String key) {
+        Forum f = ForumManager.getForum(id);
+        if (f != null) {
+		return f.getGuiEdit(key);
+        }
+	return "true";
+    }
+
 
 }

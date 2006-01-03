@@ -81,8 +81,8 @@ public class PostAreaConfig {
                             defaultpassword = password;
                         }
 
-                        for (Enumeration ns2 = reader.getChildElements(n, "generatedata"); ns2.hasMoreElements();) {
-                            Element n2 = (Element) ns2.nextElement();
+                        for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
+                            Element n2 = (Element) ns2.next();
                             nm = n2.getAttributes();
                             if (nm != null) {
                                 String role = null;
@@ -118,8 +118,8 @@ public class PostAreaConfig {
 
 
    private String getAttributeValue(XMLBasicReader reader,Element n,String itemname,String attribute) {
-       for (Enumeration ns2 = reader.getChildElements(n, itemname); ns2.hasMoreElements();) {
-           Element n2 = (Element) ns2.nextElement();
+       for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
+           Element n2 = (Element) ns2.next();
            NamedNodeMap nm = n2.getAttributes();
            if (nm != null) {
                   org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
