@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.335 2005-12-29 12:32:27 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.336 2006-01-03 16:12:36 nklasens Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4152,6 +4152,125 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <see tag="node" attribute="element" />
       <since>MMBase-1.7.4</since>
+    </attribute>
+    <attribute>
+      <name>width</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        	This width is used for a resize of the image when no `transformation' template is provided.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>height</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        	This height is used for a resize of the image when no `transformation' template is provided.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>crop</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+			Defines if an image should be cropped when no `transformation' template is provided.
+			The image will be cropped when it does not fit the resize area defined by the
+			height and width attributes.
+        </p>
+      </info>
+      <possiblevalue>
+        <value>begin</value>
+        <info>The resize area wiil be positioned at the left top corner.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>middle</value>
+        <info>The resize area wiil be positioned in the middle.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>end</value>
+        <info>The resize area wiil be positioned at the right bottm corner.</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>styleClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        	Class attribute of html img-tag.
+        	Only applied when mode=img.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>style</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        	Style attribute of html img-tag.
+        	Only applied when mode=img.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>align</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        	Align attribute of html img-tag.
+        	Only applied when mode=img.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>border</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        	Border attribute of html img-tag.
+        	Only applied when mode=img.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>hspace</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        	Hspace attribute of html img-tag.
+        	Only applied when mode=img.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>vspace</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+        	Vspace attribute of html img-tag.
+        	Only applied when mode=img.
+        </p>
+      </info>
     </attribute>
     <example>
     &lt;mm:node number="&lt;%= image_number %&gt;"&gt;
