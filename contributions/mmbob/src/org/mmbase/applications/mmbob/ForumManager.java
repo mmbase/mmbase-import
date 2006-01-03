@@ -149,6 +149,18 @@ public class ForumManager {
        return null;
     }
 
+
+    public static Forum getForumCloneMaster() {
+       Enumeration e = forums.elements();
+       while (e.hasMoreElements()) {
+		Forum f = (Forum)e.nextElement();
+		if (f.getCloneMaster()) {
+			return f;
+		}
+       }
+       return null;
+    }
+
     /**
      * Remove a forum by it's MMBase node number
      *
@@ -241,6 +253,27 @@ public class ForumManager {
 	p.savePoster();
 
         f.addAdministrator(p);
+	
+	// check if we have a clone master
+	Forum cf = getForumCloneMaster();
+	if (cf!=null) {
+		// ok we have a clone master copy the wanted settings
+		log.info("L="+cf.getPostingsPerPage());
+		f.setPostingsPerPage(cf.getPostingsPerPage());
+		f.setPostingsOverflowPostArea(cf.getPostingsOverflowPostArea());
+		f.setPostingsOverflowThreadPage(cf.getPostingsOverflowThreadPage());
+		f.setLanguage(cf.getLanguage());
+		f.setLoginSystemType(cf.getLoginSystemType());
+		f.setLoginModeType(cf.getLoginModeType());
+		f.setLogoutModeType(cf.getLogoutModeType());
+		f.setGuestReadModeType(cf.getGuestReadModeType());
+		f.setGuestWriteModeType(cf.getGuestWriteModeType());
+		f.setNavigationMethod(cf.getNavigationMethod());
+		f.setSpeedPostTime(cf.getSpeedPostTime());
+		f.setReplyOnEachPage(cf.getReplyOnEachPage());
+		f.save(); // some basic settings, weird
+		f.saveConfig();
+	}	
         return node.getNumber();
     }
 
@@ -323,8 +356,8 @@ public class ForumManager {
             XMLBasicReader reader = new XMLBasicReader(new InputSource(new FileInputStream(file)), ForumManager.class);
             if (reader != null) {
 // decode forums
-                for (Enumeration ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasMoreElements();) {
-                    Element n = (Element) ns.nextElement();
+                for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
+                    Element n = (Element) ns.next();
 		    if (n != null) {
 			config =  new ForumsConfig(reader,n);
 		    }
@@ -337,7 +370,7 @@ public class ForumManager {
     }
 
     private static FileWatcher configWatcher = new FileWatcher (true) {
-            protected void onChange(File file) {
+            public void onChange(File file) {
                 try {
                     readConfig(file);
        Enumeration e = forums.elements();
@@ -354,6 +387,7 @@ public class ForumManager {
 
 
     public static void saveConfig() {
+	log.info("SAVE CONFIG !");
         String filename = MMBaseContext.getConfigPath() + File.separator + "mmbob" + File.separator + "mmbob.xml";
  	if (config != null) {
 		config.save(filename);
@@ -421,8 +455,16 @@ public class ForumManager {
        return config.getLoginModeType();
    }
 
+   public static String getLoginSystemType() {
+       return config.getLoginSystemType();
+   }
+
    public static void setLoginModeType(String mode) {
        config.setLoginModeType(mode);
+   }
+
+   public static void setLoginSystemType(String system) {
+       config.setLoginSystemType(system);
    }
 
    public static String getLogoutModeType() {
@@ -623,12 +665,12 @@ public class ForumManager {
 	return config.getSpeedPostTime();
    }
 
-   public static int getPostingsOverflowPostarea() {
-	return config.getPostingsOverflowPostarea();
+   public static int getPostingsOverflowPostArea() {
+	return config.getPostingsOverflowPostArea();
    }
 
-   public static int getPostingsOverflowThreadpage() {
-	return config.getPostingsOverflowThreadpage();
+   public static int getPostingsOverflowThreadPage() {
+	return config.getPostingsOverflowThreadPage();
    }
 
    public static String getEmailtext(String role) {

@@ -35,6 +35,7 @@ public class ForumsConfig {
    private String defaultaccount, defaultpassword;
    private String accountcreationtype="open";
    private String accountremovaltype="open";
+   private String loginsystemtype="http";
    private String loginmodetype="open";
    private String logoutmodetype="open";
    private String guestreadmodetype="open";
@@ -120,8 +121,8 @@ public class ForumsConfig {
                         Element avatarsGalleryElement = reader.getElementByPath(avatarsElement,"avatars.gallery");
                         avatarsGalleryEnabled = avatarsGalleryElement.getAttribute("enable");
 
-                        for (Enumeration ns2 = reader.getChildElements(n, "generatedata"); ns2.hasMoreElements();) {
-                            Element n2 = (Element) ns2.nextElement();
+                        for (Iterator ns2 = reader.getChildElements(n, "generatedata"); ns2.hasNext();) {
+                            Element n2 = (Element) ns2.next();
                             nm = n2.getAttributes();
                             if (nm != null) {
                                 String role = null;
@@ -143,8 +144,8 @@ public class ForumsConfig {
                             }
                         }
 
-                        for (Enumeration ns2 = reader.getChildElements(n, "quota"); ns2.hasMoreElements();) {
-                            Element n2 = (Element) ns2.nextElement();
+                        for (Iterator ns2 = reader.getChildElements(n, "quota"); ns2.hasNext();) {
+                            Element n2 = (Element) ns2.next();
                             nm = n2.getAttributes();
                             if (nm != null) {
                                 n3 = nm.getNamedItem("max");
@@ -195,6 +196,7 @@ public class ForumsConfig {
 			
                         accountcreationtype = getAttributeValue(reader,n,"accountcreation","type");
                         accountremovaltype = getAttributeValue(reader,n,"accountremoval","type");
+                        loginsystemtype = getAttributeValue(reader,n,"loginsystem","type");
                         loginmodetype = getAttributeValue(reader,n,"loginmode","type");
                         logoutmodetype = getAttributeValue(reader,n,"logoutmode","type");
                         guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
@@ -232,8 +234,8 @@ public class ForumsConfig {
 				replyoneachpage = true;
 			}
 
-                        for(Enumeration ns2=reader.getChildElements(n,"layout");ns2.hasMoreElements(); ) {
-                            Element n2=(Element)ns2.nextElement();
+                        for(Iterator ns2=reader.getChildElements(n,"layout");ns2.hasNext(); ) {
+                            Element n2=(Element)ns2.next();
                             org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                             if (layoutList.getLength() > 0) {
                                 Element footerNode = (Element)layoutList.item(0);
@@ -245,8 +247,8 @@ public class ForumsConfig {
                                 htmlHeaderPath = headerNode.getAttribute("path");
                             }
                         }
-                        for (Enumeration ns2=reader.getChildElements(n,"filters");ns2.hasMoreElements(); ) {
-                            Element n2=(Element)ns2.nextElement();
+                        for (Iterator ns2=reader.getChildElements(n,"filters");ns2.hasNext(); ) {
+                            Element n2=(Element)ns2.next();
 			    org.w3c.dom.Node n4 = n2.getFirstChild();
 			    while (n4!=null) {
                             nm=n4.getAttributes();
@@ -274,8 +276,8 @@ public class ForumsConfig {
 			     n4=n4.getNextSibling();				
 			   }
 			}
-                        for (Enumeration ns2=reader.getChildElements(n,"emailtexts");ns2.hasMoreElements(); ) {
-                            Element n2=(Element)ns2.nextElement();
+                        for (Iterator ns2=reader.getChildElements(n,"emailtexts");ns2.hasNext(); ) {
+                            Element n2=(Element)ns2.next();
 			    org.w3c.dom.Node n4 = n2.getFirstChild();
 			    while (n4!=null) {
                             nm=n4.getAttributes();
@@ -292,8 +294,8 @@ public class ForumsConfig {
 			     n4=n4.getNextSibling();				
 			   }
 			}
-                        for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
-                                   	Element n2=(Element)ns2.nextElement();
+                        for(Iterator ns2=reader.getChildElements(n,"alias");ns2.hasNext(); ) {
+                                   	Element n2=(Element)ns2.next();
                                         	nm=n2.getAttributes();
                                 		if (nm!=null) {
 							String object=null;
@@ -337,8 +339,8 @@ public class ForumsConfig {
 						}
 					}
 
-		                        for(Enumeration ns2=reader.getChildElements(n,"forum");ns2.hasMoreElements(); ) {
-                                   		Element n2=(Element)ns2.nextElement();
+		                        for(Iterator ns2=reader.getChildElements(n,"forum");ns2.hasNext(); ) {
+                                   		Element n2=(Element)ns2.next();
 						ForumConfig config = new ForumConfig(reader,n2);
 						subs.put(config.getId(),config);
 					}
@@ -426,8 +428,8 @@ public class ForumsConfig {
    }
 
    private String getAttributeValue(XMLBasicReader reader,Element n,String itemname,String attribute) {
-       for (Enumeration ns2 = reader.getChildElements(n, itemname); ns2.hasMoreElements();) {
-           Element n2 = (Element) ns2.nextElement();
+       for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
+           Element n2 = (Element) ns2.next();
            NamedNodeMap nm = n2.getAttributes();
            if (nm != null) {
                   org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
@@ -447,12 +449,20 @@ public class ForumsConfig {
         return accountremovaltype;
    }
 
+   public String getLoginSystemType() {
+        return loginsystemtype;
+   }
+
    public String getLoginModeType() {
         return loginmodetype;
    }
 
    public void setLoginModeType(String mode) {
 	loginmodetype = mode;
+   }
+
+   public void setLoginSystemType(String system) {
+	loginsystemtype = system;
    }
 
    public String getLogoutModeType() {
@@ -580,6 +590,7 @@ public class ForumsConfig {
 	body += "\t\t<swapoutunusedthreads  minutes=\""+(swapoutunusedthreadstime/60)+"\" />\n";
 	body += "\t\t<accountcreation type=\""+getAccountCreationType()+"\" />\n";
 	body += "\t\t<accountremoval type=\""+getAccountRemovalType()+"\" />\n\n";
+	body += "\t\t<loginsystem type=\""+getLoginSystemType()+"\" />\n";
 	body += "\t\t<loginmode type=\""+getLoginModeType()+"\" />\n";
 	body += "\t\t<logoutmode type=\""+getLogoutModeType()+"\" />\n";
 	body += "\t\t<guestreadmode type=\""+getGuestReadModeType()+"\" />\n";
@@ -619,8 +630,8 @@ public class ForumsConfig {
 	body += "\t\t<smileys enable=\""+getSmileysEnabled()+"\"/>\n";
 	body += "\t\t<privatemessages enable=\""+getPrivateMessagesEnabled()+"\"/>\n";
 	body += "\t\t<postingsperpage value=\""+getPostingsPerPage()+"\"/>\n\n";
-	body += "\t\t<postingsoverflowpostarea value=\""+getPostingsOverflowPostarea()+"\"/>\n\n";
-	body += "\t\t<postingsoverflowthreadpage value=\""+getPostingsOverflowThreadpage()+"\"/>\n\n";
+	body += "\t\t<postingsoverflowpostarea value=\""+getPostingsOverflowPostArea()+"\"/>\n\n";
+	body += "\t\t<postingsoverflowthreadpage value=\""+getPostingsOverflowThreadPage()+"\"/>\n\n";
 	body += "\t\t<speedposttime value=\""+getSpeedPostTime()+"\"/>\n\n";
 	body += "\t\t<replyoneachpage value=\""+getReplyOnEachPage()+"\"/>\n\n";
 	body += "\t\t <navigation method=\""+getNavigationMethod()+"\"/>\n\n";
@@ -629,14 +640,42 @@ public class ForumsConfig {
         for (Enumeration forums = ForumManager.getForums(); forums.hasMoreElements();) {
              Forum forum = (Forum) forums.nextElement();
 	     if (forum.getAlias()!=null) {
-	     	body += "\t\t<forum id=\""+forum.getName()+"\" language=\""+forum.getLanguage()+"\" alias=\""+forum.getAlias()+"\">\n";
+		if (forum.getCloneMaster()) {
+	     		body += "\t\t<forum id=\""+forum.getName()+"\" language=\""+forum.getLanguage()+"\" alias=\""+forum.getAlias()+"\" clonemaster=\"true\" >\n";
+		} else {
+	     		body += "\t\t<forum id=\""+forum.getName()+"\" language=\""+forum.getLanguage()+"\" alias=\""+forum.getAlias()+"\">\n";
+		}
 	     } else {
 	     	body += "\t\t<forum id=\""+forum.getName()+"\" language=\""+forum.getLanguage()+"\">\n";
 	     }
-	     body += "\t\t\t<loginmode type=\""+forum.getLoginModeType()+"\" />\n";
-	     body += "\t\t\t<logoutmode type=\""+forum.getLogoutModeType()+"\" />\n";
-    	     body += "\t\t\t<guestreadmode type=\""+forum.getGuestReadModeType()+"\" />\n";
-	     body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" />\n\n";
+	     if (forum.getGuiEdit("loginsystem")==null || forum.getGuiEdit("loginsystem").equals("true")) {
+	    	 body += "\t\t\t<loginsystem type=\""+forum.getLoginSystemType()+"\" />\n";
+	    } else {
+	    	 body += "\t\t\t<loginsystem type=\""+forum.getLoginSystemType()+"\" guiedit=\""+forum.getGuiEdit("loginsystem")+"\" />\n";
+	    }
+	     if (forum.getGuiEdit("loginmode")==null || forum.getGuiEdit("loginmode").equals("true")) {
+	     	body += "\t\t\t<loginmode type=\""+forum.getLoginModeType()+"\" />\n";
+	     } else {
+	     	body += "\t\t\t<loginmode type=\""+forum.getLoginModeType()+"\" guiedit=\""+forum.getGuiEdit("loginmode")+"\" />\n";
+	     }
+	
+	     if (forum.getGuiEdit("logoutmode")==null || forum.getGuiEdit("logoutmode").equals("true")) {
+	     	body += "\t\t\t<logoutmode type=\""+forum.getLogoutModeType()+"\" />\n";
+	     } else {
+	     	body += "\t\t\t<logoutmode type=\""+forum.getLogoutModeType()+"\" guiedit=\""+forum.getGuiEdit("logoutmode")+"\" />\n";
+	     }
+
+	     if (forum.getGuiEdit("guestreadmode")==null || forum.getGuiEdit("guestreadmode").equals("true")) {
+    	        body += "\t\t\t<guestreadmode type=\""+forum.getGuestReadModeType()+"\" />\n";
+	     } else {
+    	        body += "\t\t\t<guestreadmode type=\""+forum.getGuestReadModeType()+"\" guiedit=\""+forum.getGuiEdit("guestreadmode")+"\" />\n";
+	     }
+
+	     if (forum.getGuiEdit("guestwritemode")==null || forum.getGuiEdit("guestwritemode").equals("true")) {
+	     	body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" />\n\n";
+	     } else {
+	     	body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" guiedit=\""+forum.getGuiEdit("guestwritemode")+"\" />\n"; 
+	     }
 	
 	     Iterator pi=forum.getProfileDefs();
 	     if (pi!=null) {
@@ -646,10 +685,27 @@ public class ForumsConfig {
 	     }
 	     }
 	     body += "\t\t\t<avatars>\n\n";
-	     body += "\t\t\t\t<upload enable=\""+forum.getAvatarsUploadEnabled()+"\"/>\n";
-	     body += "\t\t\t\t<gallery enable=\""+forum.getAvatarsGalleryEnabled()+"\"/>\n";
+	     if (forum.getGuiEdit("avatarsupload")==null || forum.getGuiEdit("avatarsupload").equals("true")) {
+	     	body += "\t\t\t\t<upload enable=\""+forum.getAvatarsUploadEnabled()+"\"/>\n";
+	     } else {
+	     	body += "\t\t\t\t<upload enable=\""+forum.getAvatarsUploadEnabled()+"\" guiedit=\""+forum.getGuiEdit("avatarsupload")+"\" />\n";
+     	     }
+	     if (forum.getGuiEdit("avatarsgallery")==null || forum.getGuiEdit("avatarsgallery").equals("true")) {
+	     	body += "\t\t\t\t<gallery enable=\""+forum.getAvatarsGalleryEnabled()+"\"/>\n";
+	     } else {
+	     	body += "\t\t\t\t<gallery enable=\""+forum.getAvatarsGalleryEnabled()+"\" guiedit=\""+forum.getGuiEdit("avatarsgallery")+"\" />\n";
+	     }
 	     body += "\t\t\t</avatars>\n\n";
-	     body += "\t\t\t <navigation method=\""+forum.getNavigationMethod()+"\"/>\n\n";
+	     body += "\t\t\t<postingsperpage value=\""+forum.getPostingsPerPage()+"\"/>\n\n";
+	     body += "\t\t\t<postingsoverflowpostarea value=\""+forum.getPostingsOverflowPostArea()+"\"/>\n\n";
+	     body += "\t\t\t<postingsoverflowthreadpage value=\""+forum.getPostingsOverflowThreadPage()+"\"/>\n\n";
+	     body += "\t\t\t<speedposttime value=\""+forum.getSpeedPostTime()+"\"/>\n\n";
+	     body += "\t\t\t<replyoneachpage value=\""+forum.getReplyOnEachPage()+"\"/>\n\n";
+	     if (forum.getGuiEdit("navigationmethod")==null || forum.getGuiEdit("navigationmethod").equals("true")) {
+	     	body += "\t\t\t <navigation method=\""+forum.getNavigationMethod()+"\"/>\n\n";
+	     } else {
+	     	body += "\t\t\t <navigation method=\""+forum.getNavigationMethod()+"\" guiedit=\""+forum.getGuiEdit("navigationmethod")+"\" />\n\n"; 
+	     }
              for (Enumeration postareas = forum.getPostAreas(); postareas.hasMoreElements();) {
              	PostArea postarea = (PostArea) postareas.nextElement();
 	        body += "\t\t\t<postarea id=\""+postarea.getName()+"\" language=\"nl\" pos=\""+postarea.getPos()+"\">\n";
@@ -804,7 +860,8 @@ public class ForumsConfig {
                 if (reldef.usesbuilder) {
                     // if builder is unknown (falsely specified), use the InsRel builder
                     if (builder <= 0) {
-                        builder = mmb.getInsRel().getNumber();
+                        builder = mmb.getInsRel().getObjectType();
+//			log.info("UNFIXED 1.8 port problem ");
                     }
                     node.setValue("builder", builder);
                 }
@@ -841,11 +898,11 @@ public class ForumsConfig {
 	return speedposttime;
     }
 
-   public int getPostingsOverflowPostarea() {
+   public int getPostingsOverflowPostArea() {
 	return postingsoverflowpostarea;
    }
 
-   public int getPostingsOverflowThreadpage() {
+   public int getPostingsOverflowThreadPage() {
 	return postingsoverflowthreadpage;
    }
 

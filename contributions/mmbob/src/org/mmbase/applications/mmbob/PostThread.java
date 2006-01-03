@@ -225,6 +225,15 @@ public class PostThread {
 	return result.iterator();
    }
 
+
+   public Posting getPostingPos(int pos) {
+	if (postings==null) readPostings();
+	if (postings.size()>pos) {
+		return (Posting)postings.elementAt(pos);
+	}
+	return null;
+   }
+
    public boolean save() {
         Node node = ForumManager.getCloud().getNode(id);
 	node.setValue("subject",subject);
@@ -237,6 +246,7 @@ public class PostThread {
 	node.setIntValue("lastposternumber",lastposternumber);
 	node.setIntValue("lastpostnumber",lastpostnumber);
 	node.setValue("mood",mood);
+	node.setValue("state",state);
 	node.setValue("ttype",ttype);
         node.commit();
 	parent.resort(this);
@@ -244,7 +254,7 @@ public class PostThread {
    }
 
 
-   public boolean postReply(String nsubject,Poster poster,String nbody) {
+   public int postReply(String nsubject,Poster poster,String nbody,boolean parsed) {
 	if (postings==null) readPostings();
 	
         NodeManager nm=ForumManager.getCloud().getNodeManager("postings");
@@ -255,12 +265,21 @@ public class PostThread {
 		} else {
 			pnode.setStringValue("subject",nsubject);
 		}
-		pnode.setStringValue("c_poster",poster.getNick());
-		pnode.setIntValue("posternumber",poster.getId());
+		if (poster!=null) {
+			pnode.setStringValue("c_poster",poster.getNick());
+			pnode.setIntValue("posternumber",poster.getId());
+		} else {
+			pnode.setStringValue("c_poster","gast");
+			pnode.setIntValue("posternumber",-1);
+		}
 
                 // This must be it, please do not change the line below. If somebody's having problems
                 // with it please contact me <gvenk@xs4all.nl> to discuss the problems!
-                pnode.setStringValue("body","<posting>" + postingBody.transform(nbody) + "</posting>");
+		if (parsed) {
+                	pnode.setStringValue("body",nbody);
+		} else {
+                	pnode.setStringValue("body","<posting>" + postingBody.transform(nbody) + "</posting>");
+		}
 
 	        pnode.setStringValue("c_body",""); 
 		pnode.setIntValue("createtime",(int)(System.currentTimeMillis()/1000));
@@ -276,7 +295,7 @@ public class PostThread {
 		        postings.add(posting);
 
 			// update stats and signal parent of change
-			poster.addPostCount();
+			if (poster!=null) poster.addPostCount();
 			addWriter(posting);
 
 			// update the counters
@@ -294,13 +313,15 @@ public class PostThread {
 			ThreadObserver to = parent.getParent().getThreadObserver(id);
 			if (to!=null) to.signalContentAdded(this);
 
+			return pnode.getNumber();
                 } else {
                         log.error("Forum can't load relation nodemanager postthreads/postings/related");
+			return -1;
                 }
         } else {
                 log.error("Forum can't load postings nodemanager");
+		return -1;
         }
-	return true;
    }
 
     /**
@@ -345,7 +366,7 @@ public class PostThread {
             	query.addField(step2.getNext(), postingsmanager.getField("edittime"));
             	query.setConstraint(query.createConstraint(f1, new Integer(getId())));
                 query.addSortOrder(f3, SortOrder.ORDER_ASCENDING);
-
+		
 	        NodeIterator i = ForumManager.getCloud().getList(query).nodeIterator();
         	long end=System.currentTimeMillis();
 		int newcount = 0;
@@ -356,11 +377,9 @@ public class PostThread {
                         Posting posting=new Posting(node,this,true);
 			newcount++;
         		//end=System.currentTimeMillis();
-        		//log.info("making posting="+(end-start));
 			posting.setThreadPos(threadpos++);
 			addWriter(posting);
                       	postings.add(posting);
-			//log.info("Fake read on node : "+node);
 		}
 
 		// check the count number
@@ -509,7 +528,6 @@ public class PostThread {
         Vector v = (Vector) postings.clone();
         Enumeration e = v.elements();
         
-	log.info("DEL POSTINGS");
 
         // remove the postings
         while (e.hasMoreElements()) {
@@ -519,12 +537,19 @@ public class PostThread {
                 return false;
             }
         }
-	log.info("DEL POSTINGS 2");
-	/* the last remove of a posting should also remove the thread
-        Node node = ForumManager.getCloud().getNode(id);
-	log.info("DEL NODE="+node);
-        ForumManager.nodeDeleted(node);
-	*/
+
+	try {	
+		// this is broken why doesn't ForumManager.nodeDelete, delete the node ??? Daniel.
+		// it should already been deleted by the above loop this is done in case of a 0 postings
+		if (ForumManager.getCloud().hasNode(id)) {
+        	Node node = ForumManager.getCloud().getNode(id);
+        	node.delete(true);
+        	ForumManager.nodeDeleted(node);
+		}
+	} catch(Exception e2) {
+		//e2.printStackTrace();
+		//return false;
+	}
 
         return true;
     }
@@ -560,7 +585,7 @@ public class PostThread {
 
         // if it was the last post that was removed, replace the lastpostsubject
         // with a remove-message.
-        if (lastposttime==p.getPostTime() && lastposter.equals(p.getPoster()) ) {
+        if (postings.size()>0 && lastposttime==p.getPostTime() && lastposter.equals(p.getPoster()) ) {
 	    Posting op=(Posting)postings.lastElement();
 	    if (op!=null) {	
 	    	lastpostsubject  = op.getSubject();

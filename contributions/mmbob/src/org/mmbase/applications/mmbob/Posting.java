@@ -48,7 +48,6 @@ public class Posting {
     private int edittime;
     private int threadpos;
     private PostThread parent;
-    //private Node node;
     private String subject;
     private String c_body; 
     private String body; 
@@ -108,7 +107,6 @@ public class Posting {
      * @param subject
      */
     public void setSubject(String subject) {
-        //node.setValue("subject", subject);
 	this.subject = subject;
     }
 
@@ -118,9 +116,13 @@ public class Posting {
      * @param body
      * @param imagecontext The context where to find the images (eg smilies)
      */
-    public void setBody(String body,String imagecontext) {
+    public void setBody(String body,String imagecontext,boolean parsed) {
 	Node node = ForumManager.getCloud().getNode(id);
-        node.setStringValue("body", "<posting>" + postingBody.transform(body) + "</posting>");
+	if (parsed) {
+        	node.setStringValue("body", body);
+	} else {
+        	node.setStringValue("body", "<posting>" + postingBody.transform(body) + "</posting>");
+	}
         c_body = translateBody(node.getStringValue("body"),imagecontext);
 	body="";
 	node.setValue("c_body",c_body);
@@ -134,7 +136,16 @@ public class Posting {
      */
     public void setEditTime(int time) {
 	edittime =  time;
-        //node.setIntValue("edittime", time);
+    }
+
+
+    /**
+     * set the date/time of the last time this posting was posted
+     *
+     * @param time Date/time (Epoch)
+     */
+    public void setPostTime(int time) {
+	createtime =  time;
     }
 
     /**
@@ -144,7 +155,6 @@ public class Posting {
      */
     public int getEditTime() {
 	return edittime;
-        //return node.getIntValue("edittime");
     }
 
     /**
@@ -175,8 +185,13 @@ public class Posting {
      * @return subject of this posting
      */
     public String getSubject() {
-        //return node.getStringValue("subject");
 	return subject;
+    }
+
+    public String getDirectBody() {
+        // do i really need to get the body again ?
+	Node node = ForumManager.getCloud().getNode(id);
+	return node.getStringValue("body");
     }
 
     /**
@@ -189,13 +204,11 @@ public class Posting {
 	if (c_body.equals("")) {
 	        long start = System.currentTimeMillis();
         	Node node = ForumManager.getCloud().getNode(id);
-		log.info(body);
 		c_body = translateBody(body,imagecontext);
 		body="";
 		node.setValue("c_body",c_body);
 		node.commit();
 	        long end = System.currentTimeMillis();
-       	 	// log.info("translate performed time="+(end-start));
 		return c_body;
 	}
 	return c_body;
@@ -213,18 +226,16 @@ public class Posting {
      * @return body of this posting
      */
     public String getBodyHtml(String imagecontext) {
-	//String body = BBCode.decode(getBody(imagecontext));
 	String body = getBody(imagecontext);
+	body = BBCode.decode(body);
 	return body;
     }
 
     public boolean inBody(String searchkey) {
 	if (c_body.equals("")) {
 		if (body.toLowerCase().indexOf(searchkey)!=-1) return true;
-		//if (body.indexOf(searchkey)!=-1) return true;
 	} else {
 		if (c_body.toLowerCase().indexOf(searchkey)!=-1) return true;
-		//if (c_body.indexOf(searchkey)!=-1) return true;
 	}
 	return false;
     }
@@ -232,7 +243,6 @@ public class Posting {
 
     public boolean inSubject(String searchkey) {
 	if (subject.toLowerCase().indexOf(searchkey)!=-1) return true;
-	//if (subject.indexOf(searchkey)!=-1) return true;
 	return false;
     }
 
@@ -242,7 +252,6 @@ public class Posting {
      * @return accountname/nick of the poster
      */
     public String getPoster() {
-        //return node.getStringValue("c_poster");
 	return c_poster;
     }
 
@@ -252,7 +261,6 @@ public class Posting {
      * @return date/time (epoch)
      */
     public int getPostTime() {
-        //return node.getIntValue("createtime");
 	return createtime;
     }
 
