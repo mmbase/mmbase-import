@@ -336,10 +336,10 @@ public class MMBarManager {
 		}
 
 
-                Enumeration e = reader.getChildElements("performancetestsconfig", "writetests");
-                while (e.hasMoreElements()) {
+                Iterator e = reader.getChildElements("performancetestsconfig", "writetests");
+                while (e.hasNext()) {
                     WriteTest wt = null;
-                    org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.nextElement();
+                    org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
                     org.w3c.dom.Node n3 = n2.getFirstChild();
                     while (n3 != null) {
                         NamedNodeMap nm = n3.getAttributes();
@@ -434,9 +434,9 @@ public class MMBarManager {
                 }
 
                 e = reader.getChildElements("performancetestsconfig", "readtests");
-                while (e.hasMoreElements()) {
+                while (e.hasNext()) {
                     ReadTest rt = null;
-                    org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.nextElement();
+                    org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
                     org.w3c.dom.Node n3 = n2.getFirstChild();
                     while (n3 != null) {
                         NamedNodeMap nm = n3.getAttributes();
@@ -543,9 +543,9 @@ public class MMBarManager {
                 }
 
                 e = reader.getChildElements("performancetestsconfig", "mixedtests");
-                while (e.hasMoreElements()) {
+                while (e.hasNext()) {
                     MixedTest mt = null;
-                    org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.nextElement();
+                    org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
                     org.w3c.dom.Node n3 = n2.getFirstChild();
                     while (n3 != null) {
                         NamedNodeMap nm = n3.getAttributes();
@@ -640,9 +640,9 @@ public class MMBarManager {
                 }
 
                 e = reader.getChildElements("performancetestsconfig", "endurancetests");
-                while (e.hasMoreElements()) {
+                while (e.hasNext()) {
                     EnduranceTest et = null;
-                    org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.nextElement();
+                    org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
                     org.w3c.dom.Node n3 = n2.getFirstChild();
                     while (n3 != null) {
                         NamedNodeMap nm = n3.getAttributes();
