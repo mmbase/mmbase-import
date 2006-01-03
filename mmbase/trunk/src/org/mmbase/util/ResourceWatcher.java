@@ -26,7 +26,7 @@ import org.mmbase.bridge.Node;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.9 2005-12-24 11:18:42 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.10 2006-01-03 10:01:41 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -235,10 +235,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             String resource = (String) i.next();
-            resourceLoader.checkShadowedNewerResources(resource);
+            //resourceLoader.checkShadowedNewerResources(resource);
             mapNodeNumber(resource);
             createFileWatcher(resource);
-
         }
         if (resourceWatchers == null) {
             EventManager.getInstance().addEventListener(this);
