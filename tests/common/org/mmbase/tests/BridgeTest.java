@@ -78,7 +78,10 @@ public abstract class BridgeTest extends MMBaseTest {
     protected void ensureDeployed(Cloud cloud, String uri) {
         while(true) {
             // make sure basic app is deployed
-            if (cloud.hasRelationManager("bb", "cc", "posrel")) {
+            if (cloud.hasRelationManager("bb", "cc", "posrel") &&
+                cloud.hasRelationManager("aa", "bb", "related") &&
+                cloud.hasRelationManager("bb", "aa", "related")
+                ) {
                 return;
             }
             System.out.println("No relation bb--(posrel)-->c, in '" + uri + "' perhaps BridgeTest application not yet deployed. Waiting another 5 seconds (" + tryCount + ")");
