@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.3 2005-12-27 15:45:06 michiel Exp $
+ * @version $Id: IndexFieldDefinition.java,v 1.4 2006-01-03 14:34:52 michiel Exp $
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -63,7 +63,7 @@ public class IndexFieldDefinition extends FieldDefinition {
     }
 
     public void configure(Element fieldElement) {
-        if (QueryReader.hasAttribute(fieldElement,"keyword")) {
+        if (QueryReader.hasAttribute(fieldElement, "keyword")) {
             keyWord = "true".equals(QueryReader.getAttribute(fieldElement,"keyword"));
         } else {
             int type = Field.TYPE_UNKNOWN;
@@ -73,18 +73,18 @@ public class IndexFieldDefinition extends FieldDefinition {
                       (type == Field.TYPE_DOUBLE) || (type == Field.TYPE_FLOAT) ||
                       (type == Field.TYPE_NODE);
         }
-        if (QueryReader.hasAttribute(fieldElement,"alias")) {
-            alias = QueryReader.getAttribute(fieldElement,"alias");
+        if (QueryReader.hasAttribute(fieldElement, "alias")) {
+            alias = QueryReader.getAttribute(fieldElement, "alias");
         } else if (mergeTextDefault && !keyWord) {
             alias = "fulltext";
         }
         if (QueryReader.hasAttribute(fieldElement,"store")) {
-            storeText = "true".equals(QueryReader.getAttribute(fieldElement,"store"));
+            storeText = "true".equals(QueryReader.getAttribute(fieldElement, "store"));
         } else {
             storeText = !keyWord && storeTextDefault;
         }
         if (QueryReader.hasAttribute(fieldElement,"password")) {
-            decryptionPassword = QueryReader.getAttribute(fieldElement,"password");
+            decryptionPassword = QueryReader.getAttribute(fieldElement, "password");
         }
         if (!keyWord) {
             if (alias != null) {

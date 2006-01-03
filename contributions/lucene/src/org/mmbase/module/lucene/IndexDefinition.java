@@ -20,7 +20,7 @@ import org.apache.lucene.analysis.Analyzer;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.7 2005-12-29 23:13:06 michiel Exp $
+ * @version $Id: IndexDefinition.java,v 1.8 2006-01-03 14:34:52 michiel Exp $
  **/
 interface IndexDefinition {
     /**
@@ -48,5 +48,7 @@ interface IndexDefinition {
      */
     Node getNode(Cloud cloud, String identifier);
 
+
+    
 }
 
