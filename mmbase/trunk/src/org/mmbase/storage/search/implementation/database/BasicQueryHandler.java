@@ -17,6 +17,7 @@ import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.implementation.database.Attributes;
 import org.mmbase.storage.implementation.database.DatabaseStorageManager;
+import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.implementation.ModifiableQuery;
@@ -31,7 +32,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.44 2005-11-04 23:35:58 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.45 2006-01-03 10:03:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -89,7 +90,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
             // Execute the SQL... ARGH !!! Has to move!
             // get connection...
-            DataSource dataSource = (DataSource) mmbase.getStorageManagerFactory().getAttribute(Attributes.DATA_SOURCE);
+            DataSource dataSource = ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
             con = dataSource.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlString);
