@@ -3,15 +3,21 @@
  [ <!ENTITY base SYSTEM "../../applications/buildbase.xml" > ]
 >
 
-<project name="mmbar" default="jar" basedir=".">
+<project name="MMBob" default="dependent.jar" basedir=".">
   <property name="project.name"   value="mmbar" />
   <property name="project.package"   value="org/mmbase/applications/mmbar" />
   <property name="project.target.templates.dir" value="mmbar" />
-  <property name="project.source.dir" location="." />
-
-  <property name="source.dir" value="../../mmbase" />
-
+  <property name="project.jars.dir" location="../.." />
+  <property name="project.jars.includes" value="contributions/thememanager/build/mmbase-thememanager.jar" />
   &base;
+
+  <target name="deps">    
+    <ant dir="../thememanager" inheritAll="false" />
+  </target>
+
+  <target name="dependent.jar" depends="deps,jar" />
+
+  <target name="dependent.package" depends="dependent.jar,package" />
 
 
 </project>
