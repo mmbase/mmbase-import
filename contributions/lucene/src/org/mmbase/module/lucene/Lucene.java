@@ -37,7 +37,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.22 2005-12-30 11:55:24 michiel Exp $
+ * @version $Id: Lucene.java,v 1.23 2006-01-03 14:34:52 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -430,11 +430,9 @@ public class Lucene extends Module implements MMBaseObserver {
                                     queries.add(id);
                                     log.info("Added mmbase index definition " + id);
                                 } else if ("jdbc".equals(name)) {
-                                    String sql = childElement.getAttribute("sql");
-                                    String key = childElement.getAttribute("key");
-                                    String find = childElement.getAttribute("find");
                                     DataSource ds =  (DataSource) mmbase.getStorageManagerFactory().getAttribute(org.mmbase.storage.implementation.database.Attributes.DATA_SOURCE);
-                                    IndexDefinition id = new JdbcIndexDefinition(ds, sql, key, find, allIndexedFieldsSet, storeText, mergeText, analyzer);
+                                    IndexDefinition id = new JdbcIndexDefinition(ds, childElement,
+                                                                                 allIndexedFieldsSet, storeText, mergeText, analyzer);
                                     queries.add(id);
                                     log.info("Added mmbase jdbc definition " + id);
                                 } else if ("analyzer".equals(name)) {
