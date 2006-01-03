@@ -232,7 +232,7 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">Checksum</guiname>
-        <guiname xml:lang="nl">Checsum</guiname>
+        <guiname xml:lang="nl">Checksum</guiname>
       </gui>
       <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
