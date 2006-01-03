@@ -24,13 +24,14 @@ import org.mmbase.util.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Node;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
 /**
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.13 2005-12-30 11:55:24 michiel Exp $
+ * @version $Id: Searcher.java,v 1.14 2006-01-03 13:27:19 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -155,7 +156,7 @@ public class Searcher {
     }
 
     protected Hits getHits(IndexSearcher searcher, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
-        if (analyzer == null) analyzer = ;
+        if (analyzer == null) analyzer = index.getAnalyzer();
         Query query;
         if (fields == null || fields.length == 0) {
             query = QueryParser.parse(value, "fulltext", analyzer);
@@ -227,6 +228,10 @@ public class Searcher {
         }
         return query;
     }
+    static public Query parseQuery(String constraints) {
+        
+    }
+
 
     class CombinedFilter extends Filter {
 
