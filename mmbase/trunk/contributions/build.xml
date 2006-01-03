@@ -29,8 +29,8 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui" />
-  <target name="all.not.compiling" depends="mmbob,mmbar" />
+  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar" />
+  <target name="all.not.compiling" depends="" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
 
 
