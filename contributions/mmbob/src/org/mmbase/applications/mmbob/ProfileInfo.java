@@ -168,6 +168,7 @@ public class ProfileInfo {
 			// temp hardcoded
 			String key="org.mmbase.applications.profilesconnector.ProfilesConnectorDummy";
 			if (external.equals(key)) {
+				/* should be dynamic loaded, removed to compile for now
 				ExternalProfileInterface ci = (ExternalProfileInterface)(new org.mmbase.applications.profilesconnector.ProfilesConnectorDummy());	
 				String account = parent.getAccount();
 				if (externalname!=null && !externalname.equals("")) {
@@ -175,6 +176,7 @@ public class ProfileInfo {
 				} else {
 					boolean result = ci.setValue(account,name,value);
 				}
+				*/
 			}
 		}
 	}
@@ -205,6 +207,8 @@ public class ProfileInfo {
 			// temp hardcoded
 			String key="org.mmbase.applications.profilesconnector.ProfilesConnectorDummy";
 			if (external.equals(key)) {
+				// should be dynamic, removed now so we can compile
+				/*
 				ExternalProfileInterface ci = (ExternalProfileInterface)(new org.mmbase.applications.profilesconnector.ProfilesConnectorDummy());	
 				String name = pd.getName();
 				String account = parent.getAccount();
@@ -215,6 +219,7 @@ public class ProfileInfo {
 					String rvalue = ci.getValue(account,name);
 					if (rvalue!=null) setValue(name,rvalue);
 				}
+				*/
 			}
 			key="org.mmbase.applications.profilesconnector.ProfilesConnector";
 			if (external.equals(key)) {
