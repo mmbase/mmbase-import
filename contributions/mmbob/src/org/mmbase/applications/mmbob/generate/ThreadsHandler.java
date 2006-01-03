@@ -95,7 +95,7 @@ public class ThreadsHandler extends Handler {
         if (f!=null) {
                PostArea a=f.getPostArea(inpostarea);
                if (a!=null) {
-                        int postthreadid=a.newPost(subject,poster,body,"normal");
+                        int postthreadid=a.newPost(subject,poster,body,"normal",false);
                }
         }
 	return true;
