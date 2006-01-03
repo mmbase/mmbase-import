@@ -107,7 +107,7 @@ public class ReplysHandler extends Handler {
     public boolean createReply(PostThread postthread,Poster poster,int i) {
 	String subject=generateLine();
 	String body=generateLines();
-        postthread.postReply(subject,poster,body);
+        postthread.postReply(subject,poster,body,false);
 	return true;
     }
 
