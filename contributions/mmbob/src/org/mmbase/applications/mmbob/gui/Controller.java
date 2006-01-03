@@ -1594,7 +1594,6 @@ public class Controller {
      */
     public HashMap newPost(String forumid, String postareaid, String subject, String poster, String body,String mood) {
 
-	log.info("WHOOOOO 1");
 	HashMap map = new HashMap();
 
         if (subject.length()>60) subject = subject.substring(0,57)+"...";
@@ -1894,7 +1893,6 @@ public class Controller {
                     // am i allowed to move ?
                     Poster ap = f.getPoster(activeid);
                     if (a.isModerator(ap.getNick())) {
-			log.info("WANNE MOVE : "+postthreadid+" from "+postareaid+" to "+newpostareaid);
 			a.movePostThread(postthreadid,newpostareaid,ap);
                     } else {
                         log.info("postthread move tried but not allowed by poster");
@@ -2469,7 +2467,6 @@ public class Controller {
 	}
 
         private boolean checkIllegalHtml(String input) {
-		log.info("P3D");
 		input = input.toLowerCase();
 		if (input.indexOf("<script")!=-1) {
 			return true;
@@ -2482,7 +2479,6 @@ public class Controller {
 	}
 
         private boolean checkSpeedPosting(PostArea a,Poster p) {
-	    	log.info("P3C");
 		if (p.getLastPostTime()!=-1) {
 			if ((System.currentTimeMillis()/1000)-a.getSpeedPostTime()<p.getLastPostTime()) {
 				return true;
