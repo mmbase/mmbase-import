@@ -13,9 +13,10 @@ import java.util.*;
 import javax.sql.DataSource;
 import java.sql.*;
 
+import org.w3c.dom.*;
 import org.mmbase.util.*;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.storage.implementation.database.GenericDataSource;
-import org.mmbase.bridge.*;
 import org.mmbase.cache.Cache;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.2 2005-12-29 23:13:06 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.3 2006-01-03 14:34:52 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -55,13 +56,30 @@ public class JdbcIndexDefinition implements IndexDefinition {
     private final String find;
     private final Analyzer analyzer;
 
-    JdbcIndexDefinition(DataSource ds, String sql, String key, String find, Set allIndexedFields, boolean storeText, boolean mergeText, Analyzer a) {
+    private final Set keyWords = new HashSet();
+
+    JdbcIndexDefinition(DataSource ds, Element element, 
+                        Set allIndexedFields, 
+                        boolean storeText, 
+                        boolean mergeText, Analyzer a) {
         this.dataSource = ds;
-        this.sql   = sql;
-        this.key    = key;
-        this.find   = find;
+        sql = element.getAttribute("sql");
+        key = element.getAttribute("key");
+        find = element.getAttribute("find");
+        NodeList childNodes = element.getChildNodes();
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            if (childNodes.item(k) instanceof Element) {
+                Element childElement = (Element) childNodes.item(k);
+                if ("field".equals(childElement.getLocalName())) {
+                    if (childElement.getAttribute("keyword").equals("true")) {
+                        keyWords.add(childElement.getAttribute("name"));
+                    }
+                }
+            }
+        }
         this.analyzer = a;
     }
+
 
     /**
      * Jdbc connection pooling of MMBase would kill the statement if too duratious. This produces a
@@ -139,7 +157,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
     }
 
 
-    public Node getNode(Cloud userCloud, String identifier) {
+    public org.mmbase.bridge.Node getNode(Cloud userCloud, String identifier) {
         Map map = (Map) nodeCache.get(identifier);
         if (map == null) {
             try {
@@ -205,7 +223,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
         public void index(Document document) {
             if (log.isDebugEnabled()) {
-                log.trace("Indexing "+ results);
+                log.trace("Indexing "+ results + " with " + keyWords);
             }
             document.add(Field.Keyword("builder", "VIRTUAL BUILDER"));
             document.add(Field.Keyword("number", getIdentifier()));
@@ -215,8 +233,13 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     if(log.isDebugEnabled()) {
                         log.trace("Indexing " + value + " for " + meta.getColumnName(i) + " on " + getIdentifier());
                     }
-                    document.add(Field.Text(meta.getColumnName(i), value));
-                    document.add(Field.Text("fulltext", value));
+                    String fieldName = meta.getColumnName(i);
+                    if (keyWords.contains(fieldName)) {
+                        document.add(Field.Keyword(fieldName, value));
+                    } else {
+                        document.add(Field.Text(fieldName, value));
+                        document.add(Field.Text("fulltext", value));
+                    }
                 }
             } catch (SQLException sqe) {
                 log.error(sqe);
