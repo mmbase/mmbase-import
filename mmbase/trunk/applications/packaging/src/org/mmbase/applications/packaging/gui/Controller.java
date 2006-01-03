@@ -436,7 +436,7 @@ public class Controller {
         return list;
     }
 
-    public boolean createPackage(String id,String wv,String wp,String newversion) {
+    public boolean createPackage(String id,String wv,String wp) {
         PackageInterface p=null;
         if (wv.equals("best")) {
             p=(PackageInterface)PackageManager.getPackage(id);
