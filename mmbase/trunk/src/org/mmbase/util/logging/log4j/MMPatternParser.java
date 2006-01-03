@@ -16,10 +16,17 @@ import org.apache.log4j.helpers.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
- * Adds the  conversion pattern 'q' which returns a truncated level (from the _end_, not from the beginning as log4j itself would do) . To 3 chars. So it is like 'p'. Also add 'k' which give the currently memory in use (in kb).
+ * Adds several conversion patterns to the ones supported natively by log4j.
+ * See <a href="http://logging.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html">log4j pattern layout</a>
+ <table>
+ <tr><th>Conversion Pattern</th><th>Effect</th></tr>
+ <tr><td>%q</td><td>A truncated level (from the _end_, not from the beginning as log4j's %p itself would do) . To 3 chars.</td></tr> 
+ <tr><td>%k</td><td>Currently memory in use (in kb).</td></tr>
+ <tr><td>%N</td><td>Machine Name of current MMBase (or 'localhost' if not set).</td></tr>
+ </table>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: MMPatternParser.java,v 1.8 2006-01-02 13:27:52 michiel Exp $
+ * @version $Id: MMPatternParser.java,v 1.9 2006-01-03 10:49:35 michiel Exp $
  */
 public class MMPatternParser extends PatternParser {
 
