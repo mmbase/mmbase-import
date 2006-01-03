@@ -19,5 +19,7 @@
 
   <target name="dependent.jar" depends="deps,jar" />
 
+  <target name="dependent.package" depends="dependent.jar,package" />
+
 
 </project>
