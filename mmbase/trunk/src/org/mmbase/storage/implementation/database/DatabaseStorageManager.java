@@ -15,7 +15,6 @@ import java.util.*;
 
 import javax.sql.DataSource;
 
-
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.cache.Cache;
@@ -38,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.140 2005-12-17 22:44:41 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.141 2006-01-03 10:03:09 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -89,11 +88,6 @@ public class DatabaseStorageManager implements StorageManager {
     protected DatabaseStorageManagerFactory factory;
 
     /**
-     * The datasource through which to access the database.
-     */
-    protected DataSource dataSource;
-
-    /**
      * The currently active Connection.
      * This member is set by {!link #getActiveConnection()} and unset by {@link #releaseActiveConnection()}
      */
@@ -125,7 +119,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected long getLogStartTime() {
         return System.currentTimeMillis();
     }
-    
+
     // for debug purposes
     protected final void logQuery(String msg, long startTime) {
         if (log.isDebugEnabled()) {
@@ -143,7 +137,6 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public void init(StorageManagerFactory factory) throws StorageException {
         this.factory = (DatabaseStorageManagerFactory)factory;
-        dataSource = (DataSource)factory.getAttribute(Attributes.DATA_SOURCE);
         if (factory.supportsTransactions()) {
             transactionIsolation = ((Integer)factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL)).intValue();
         }
@@ -180,7 +173,7 @@ public class DatabaseStorageManager implements StorageManager {
                 releaseActiveConnection();
             }
         }
-        activeConnection = dataSource.getConnection();
+        activeConnection = factory.getDataSource().getConnection();
         // set autocommit to true
         activeConnection.setAutoCommit(true);
         return activeConnection;
@@ -1310,9 +1303,9 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setBinaryValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
-        log.warn("Setting inputstream bytes into field " + field);
+        log.debug("Setting inputstream bytes into field " + field);
         if (!setNullValue(statement, index, objectValue, field, java.sql.Types.VARBINARY)) {
-            log.warn("Didn't set null");
+            log.debug("Didn't set null");
             InputStream stream = Casting.toInputStream(objectValue);
             long size = node.getSize(field.getName());
             try {
