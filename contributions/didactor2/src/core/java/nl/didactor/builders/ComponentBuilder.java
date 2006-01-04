@@ -70,10 +70,10 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
 
     public int insert(String owner, MMObjectNode node) {
         int number = super.insert(owner, node);
-        //registerComponent(node);
         Component c = registerComponent(node);
         if (c != null) {
             c.init();
+            c.install();
         }
         return number;
     }
@@ -143,6 +143,11 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
      * are also in the database. If not, the field will be created in the database.
      */
     private void initBuilder(String path, String builderName) {
+        if (!getMMBase().getBuilder(builderName).created()) {
+            // Builder is not yet created in database, so there is no work for us
+            return;
+        }
+
         BuilderReader parser = new BuilderReader(path + builderName + ".xml", getMMBase());
         String status = parser.getStatus();
         if (status.equals("active")) {
