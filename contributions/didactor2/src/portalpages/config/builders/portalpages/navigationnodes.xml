@@ -84,7 +84,7 @@
         <!-- name of the field in the database -->
         <name>active</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="255" notnull="false" key="false">INTEGER</type>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
       </db>
     </field>
 
@@ -132,7 +132,7 @@
       <gui>
         <guiname xml:lang="en">Order Number</guiname>
         <guiname xml:lang="nl">Positie</guiname>
-        <guitype>string</guitype>
+        <guitype>integer</guitype>
       </gui>
       <!-- editor related  -->
       <editor>
@@ -150,7 +150,7 @@
         <!-- name of the field in the database -->
         <name>order_number</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent"  notnull="false" size="255" key="false">INTEGER</type>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
       </db>
     </field>
        
