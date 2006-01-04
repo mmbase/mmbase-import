@@ -22,7 +22,8 @@ public class SMTPModule extends org.mmbase.module.Module {
     private String[] optionalProperties = {
             "mailboxbuilder", "mailboxbuilder.where", "mailboxbuilder.notfound",
             "emailbuilder.tofield", "emailbuilder.fromfield", "emailbuilder.subjectfield",
-            "emailbuilder.headersfield", "emailbuilder.datefield", "emailbuilder.ccfield"
+            "emailbuilder.headersfield", "emailbuilder.datefield", "emailbuilder.ccfield",
+            "emailbuilder.typefield"
     };
     
     public void init() {
