@@ -1,14 +1,17 @@
-/**
- * Component description interface.
- */
 package nl.didactor.component.portfolio;
+
 import nl.didactor.builders.DidactorBuilder;
 import nl.didactor.component.Component;
 import nl.didactor.component.core.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.SearchQueryException;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class DidactorPortfolio extends Component {
     /**
@@ -29,8 +32,27 @@ public class DidactorPortfolio extends Component {
         MMBase mmbase = MMBase.getMMBase();
         DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
         people.registerPostInsertComponent(this, 10);
+        people.registerPreDeleteComponent(this, 10);
         DidactorBuilder classes = (DidactorBuilder)mmbase.getBuilder("classes");
         classes.registerPostInsertComponent(this, 10);
+        classes.registerPreDeleteComponent(this, 10);
+    }
+
+    public void install() {
+        MMBase mmbase = MMBase.getMMBase();
+        DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
+        DidactorBuilder classes = (DidactorBuilder)mmbase.getBuilder("classes");
+        try {
+            List nodes = people.getNodes(new NodeSearchQuery(people));
+            for (int i=0; i<nodes.size(); i++) {
+                postInsert((MMObjectNode)nodes.get(i));
+            }
+            nodes = classes.getNodes(new NodeSearchQuery(classes));
+            for (int i=0; i<nodes.size(); i++) {
+                postInsert((MMObjectNode)nodes.get(i));
+            }
+        } catch (SearchQueryException e) {
+        }
     }
 
     /**
@@ -48,10 +70,22 @@ public class DidactorPortfolio extends Component {
      * needs to insert objects for this object, it can do so. 
      */
     public boolean postInsert(MMObjectNode node) {
-        if (node.getBuilder().getTableName().equals("people"))
+        if (node.getBuilder().getTableName().equals("people")) {
             return createUser(node);
-        if (node.getBuilder().getTableName().equals("classes"))
+        }
+        if (node.getBuilder().getTableName().equals("classes")) {
             return createClass(node);
+        }
+        return true;
+    }
+    
+    public boolean preDelete(MMObjectNode node) {
+        if (node.getBuilder().getTableName().equals("people")) {
+            return deleteUser(node);
+        }
+        if (node.getBuilder().getTableName().equals("classes")) {
+            return deleteClass(node);
+        }
         return true;
     }
 
@@ -132,5 +166,30 @@ public class DidactorPortfolio extends Component {
         insrel.insert(username, relation);
 
         return true;
+    }
+    
+    // TODO: remove objects in portfolio, and related permissions
+    private boolean deleteUser(MMObjectNode user) {
+        Vector portfolios = user.getRelatedNodes("portfolios", "related", RelationStep.DIRECTIONS_DESTINATION);
+
+        // Iterate the addressbooks, to remove them all
+        for (int i=0; i<portfolios.size(); i++) {
+            MMObjectNode portfolio = (MMObjectNode)portfolios.get(i);
+            Vector folders = portfolio.getRelatedNodes("folders", "related", RelationStep.DIRECTIONS_DESTINATION);
+
+            // Iterate the contacts, to remove them all
+            for (int j=0; j<folders.size(); j++) {
+                MMObjectNode folder= (MMObjectNode)folders.get(j);
+                folder.getBuilder().removeRelations(folder);
+                folder.getBuilder().removeNode(folder);
+            }
+
+            portfolio.getBuilder().removeRelations(portfolio);
+            portfolio.getBuilder().removeNode(portfolio);
+        }
+        return true;
+    }
+    private boolean deleteClass(MMObjectNode cls) {
+        return deleteUser(cls);
     }
 }
