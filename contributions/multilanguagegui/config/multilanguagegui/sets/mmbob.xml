@@ -1,29 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE languageguiset PUBLIC "//MMBase - languageguiset //" "http://www.mmbase.org/dtd/languageguiset_1_0.dtd">
 <languageguiset>
-	<keyword name="on">
-		<translation language="nl" value="aan" />
-		<translation language="df" value="on" />
-	</keyword>
-	<keyword name="off">
-		<translation language="nl" value="uit" />
-		<translation language="df" value="off" />
-	</keyword>
-	<keyword name="Profile_settings">
-		<translation language="nl" value="Prive instellingen" />
-		<translation language="df" value="Profile settings" />
-	</keyword>
-	<keyword name="Forum_rules">
-		<translation language="nl" value="Forum regels" />
-		<translation language="df" value="Forum rules" />
-	</keyword>
-	<keyword name="Search">
-		<translation language="nl" value="Zoeken" />
-		<translation language="df" value="Search" />
+	<keyword name="levelnew">
+		<translation language="nl" value="Nieuw Lid" />
+		<translation language="df" value="New Member" />
 	</keyword>
 	<keyword name="Edit_message">
 		<translation language="nl" value="Bericht bewerken" />
 		<translation language="df" value="Edit message" />
+	</keyword>
+	<keyword name="NewConfirmPassword">
+		<translation language="nl" value="nieuw bevestig wachtwoord" />
+		<translation language="df" value="new confirm password" />
 	</keyword>
 	<keyword name="You_are_using">
 		<translation language="nl" value="U gebruikt" />
@@ -37,13 +25,13 @@
 		<translation language="nl" value="uit map" />
 		<translation language="df" value="from folder" />
 	</keyword>
+	<keyword name="ConfirmPassword">
+		<translation language="nl" value="bevestig wachtwoord" />
+		<translation language="df" value="confirm password" />
+	</keyword>
 	<keyword name="message">
 		<translation language="nl" value="bericht" />
 		<translation language="df" value="message" />
-	</keyword>
-	<keyword name="guest">
-		<translation language="nl" value="gast" />
-		<translation language="df" value="guest" />
 	</keyword>
 	<keyword name="Upload">
 		<translation language="nl" value="Upload" />
@@ -65,26 +53,6 @@
 		<translation language="nl" value="** Verkeerde inlognaam of wachtwoord **" />
 		<translation language="df" value="** Wrong accountname or password **" />
 	</keyword>
-	<keyword name="problem_missing_topic">
-		<translation language="nl" value="** probleem leeg onderwerp,aub invullen **" />
-		<translation language="df" value="*** problem missing topic,please enter a topic ***" />
-	</keyword>
-	<keyword name="problem_missing_body">
-		<translation language="nl" value="** probleem geen tekst ,aub invullen **" />
-		<translation language="df" value="*** problem missing text,please enter a text ***" />
-	</keyword>
-	<keyword name="problem_already_posted">
-		<translation language="nl" value="** Dit bericht was al verzonden **" />
-		<translation language="df" value="*** this was already posted to the forum ***" />
-	</keyword>
-	<keyword name="problem_illegal_html">
-		<translation language="nl" value="*** deze bijdrage bevat illegale html codes ***" />
-		<translation language="df" value="*** this posting contains illegal html codes ***" />
-	</keyword>
-	<keyword name="problem_speedposting">
-		<translation language="nl" value="*** Het is niet toegestaan om sneller te posten dan " />
-		<translation language="df" value="*** You are not allowed to post more than 1 every " />
-	</keyword>
 	<keyword name="closed">
 		<translation language="nl" value="gesloten" />
 		<translation language="df" value="closed" />
@@ -100,6 +68,10 @@
 	<keyword name="normal">
 		<translation language="nl" value="normaal" />
 		<translation language="df" value="normal" />
+	</keyword>
+	<keyword name="You_may_edit_your_posts">
+		<translation language="nl" value="U mag uw reacties aanpassen" />
+		<translation language="df" value="You may edit your posts" />
 	</keyword>
 	<keyword name="views">
 		<translation language="nl" value="bekeken" />
@@ -125,13 +97,33 @@
 		<translation language="nl" value="Geblokkeerd" />
 		<translation language="df" value="Disabled" />
 	</keyword>
+	<keyword name="Nick_allready_in_use">
+		<translation language="nl" value="Nick naam is al in gebruik. Kies een andere." />
+		<translation language="df" value="Nick name is allready in use. Please try another one." />
+	</keyword>
+	<keyword name="Test">
+		<translation language="nl" value="Test" />
+		<translation language="df" value="Test" />
+	</keyword>
+	<keyword name="movedto">
+		<translation language="nl" value="Dit onderwerp is verplaatst naar" />
+		<translation language="df" value="This thread has been moved to " />
+	</keyword>
 	<keyword name="moderator">
 		<translation language="nl" value="moderator" />
 		<translation language="df" value="moderator" />
 	</keyword>
+	<keyword name="SignatureSaved">
+		<translation language="nl" value="Onderschift opgeslagen" />
+		<translation language="df" value="Signature saved" />
+	</keyword>
 	<keyword name="Account_allready_in_use">
 		<translation language="nl" value="Loginnaam is al in gebruik. Kies een andere." />
 		<translation language="df" value="Account is allready in use. Please try another one." />
+	</keyword>
+	<keyword name="problem_already_posted">
+		<translation language="nl" value="** Dit bericht was al verzonden **" />
+		<translation language="df" value="*** this was already posted to the forum ***" />
 	</keyword>
 	<keyword name="of_your_quota">
 		<translation language="nl" value="van uw quotum" />
@@ -140,6 +132,10 @@
 	<keyword name="member_since">
 		<translation language="nl" value="Lid geworden op" />
 		<translation language="df" value="Member since" />
+	</keyword>
+	<keyword name="problem_missing_body">
+		<translation language="nl" value="** probleem geen tekst, aub invullen **" />
+		<translation language="df" value="*** problem missing text, please enter a text ***" />
 	</keyword>
 	<keyword name="Disable">
 		<translation language="nl" value="Blokkeren" />
@@ -157,6 +153,14 @@
 		<translation language="nl" value="gebied" />
 		<translation language="df" value="area name" />
 	</keyword>
+	<keyword name="levelexpert">
+		<translation language="nl" value="Expert Lid" />
+		<translation language="df" value="Expert Member" />
+	</keyword>
+	<keyword name="I_REFUSE_THESE_RULES">
+		<translation language="nl" value="IK ACCEPTEER DEZE REGELS NIET" />
+		<translation language="df" value="I REFUSE THESE RULES" />
+	</keyword>
 	<keyword name="personal">
 		<translation language="nl" value="persoonlijk" />
 		<translation language="df" value="personal" />
@@ -169,6 +173,10 @@
 		<translation language="nl" value="Plaats reactie" />
 		<translation language="df" value="Post reply" />
 	</keyword>
+	<keyword name="ProfileUpdated">
+		<translation language="nl" value="profiel gewijzigd" />
+		<translation language="df" value="profile updated" />
+	</keyword>
 	<keyword name="open_topic_popular_unread">
 		<translation language="nl" value="Open populair onderwerp met ongelezen reacties" />
 		<translation language="df" value="Open pupular topic with unread replies" />
@@ -177,9 +185,17 @@
 		<translation language="nl" value="laatste bijdrage" />
 		<translation language="df" value="last posting" />
 	</keyword>
+	<keyword name="guest">
+		<translation language="nl" value="gast" />
+		<translation language="df" value="guest" />
+	</keyword>
 	<keyword name="Possible_moderators">
 		<translation language="nl" value="Mogelijke moderators" />
 		<translation language="df" value="Possible moderators" />
+	</keyword>
+	<keyword name="Possible_administrators">
+		<translation language="nl" value="Mogelijke beheerders" />
+		<translation language="df" value="Possible administrators" />
 	</keyword>
 	<keyword name="The_moderator_team">
 		<translation language="nl" value="Het moderator team" />
@@ -196,6 +212,10 @@
 	<keyword name="happy">
 		<translation language="nl" value="blij" />
 		<translation language="df" value="happy" />
+	</keyword>
+	<keyword name="problem_speedposting">
+		<translation language="nl" value="*** Het is niet toegestaan om sneller te posten dan " />
+		<translation language="df" value="*** You are not allowed to post more than 1 every " />
 	</keyword>
 	<keyword name="move">
 		<translation language="nl" value="verplaatsen" />
@@ -225,6 +245,10 @@
 		<translation language="nl" value="Huidige moderators" />
 		<translation language="df" value="Current moderators" />
 	</keyword>
+	<keyword name="Current_administrators">
+		<translation language="nl" value="Huidige beheerders" />
+		<translation language="df" value="Current administrators" />
+	</keyword>
 	<keyword name="Gender">
 		<translation language="nl" value="Geslacht" />
 		<translation language="df" value="Gender" />
@@ -236,6 +260,10 @@
 	<keyword name="Ok">
 		<translation language="nl" value="Akkoord" />
 		<translation language="df" value="Ok" />
+	</keyword>
+	<keyword name="Password_notequal">
+		<translation language="nl" value="wachtwoord en bevestigwachtwoord zijn niet gelijk" />
+		<translation language="df" value="password and confirumpassword are not equal" />
 	</keyword>
 	<keyword name="send">
 		<translation language="nl" value="verzend" />
@@ -261,8 +289,12 @@
 		<translation language="nl" value="Acties" />
 		<translation language="df" value="Actions" />
 	</keyword>
+	<keyword name="You_may_not_post_new_threads">
+		<translation language="nl" value="U mag geen nieuwe onderwerpen plaatsen" />
+		<translation language="df" value="You may not post new threads" />
+	</keyword>
 	<keyword name="Move">
-		<translation language="nl" value="Verplaats" />
+		<translation language="nl" value="Verplaatsen" />
 		<translation language="df" value="Move" />
 	</keyword>
 	<keyword name="Wrong_password">
@@ -293,6 +325,10 @@
 		<translation language="nl" value="inloggen" />
 		<translation language="df" value="login" />
 	</keyword>
+	<keyword name="ProfileUpdateFailed">
+		<translation language="nl" value="profiel update mislukt" />
+		<translation language="df" value="profile update failed" />
+	</keyword>
 	<keyword name="warning">
 		<translation language="nl" value="waarschuwing" />
 		<translation language="df" value="warning" />
@@ -304,6 +340,10 @@
 	<keyword name="Account">
 		<translation language="nl" value="Account" />
 		<translation language="df" value="Account" />
+	</keyword>
+	<keyword name="problem_missing_topic">
+		<translation language="nl" value="** probleem leeg onderwerp, aub invullen **" />
+		<translation language="df" value="*** problem missing topic, please enter a topic ***" />
 	</keyword>
 	<keyword name="mad">
 		<translation language="nl" value="boos" />
@@ -320,6 +360,14 @@
 	<keyword name="Send">
 		<translation language="nl" value="Verzend" />
 		<translation language="df" value="Send" />
+	</keyword>
+	<keyword name="You_may_delete_your_posts">
+		<translation language="nl" value="U mag uw bijdrage weggooien" />
+		<translation language="df" value="You may delete your posts" />
+	</keyword>
+	<keyword name="levelregular">
+		<translation language="nl" value="Vaste bezoeker" />
+		<translation language="df" value="Regular Member" />
 	</keyword>
 	<keyword name="idea">
 		<translation language="nl" value="idee" />
@@ -369,37 +417,13 @@
 		<translation language="nl" value="wachtwoord" />
 		<translation language="df" value="password" />
 	</keyword>
-	<keyword name="Password_notequal">
-		<translation language="nl" value="wachtwoord en bevestigwachtwoord zijn niet gelijk" />
-		<translation language="df" value="password and confirumpassword are not equal" />
-	</keyword>
-	<keyword name="ConfirmPassword">
-		<translation language="nl" value="bevestig wachtwoord" />
-		<translation language="df" value="confirm password" />
-	</keyword>
-	<keyword name="PasswordChanged">
-		<translation language="nl" value="wachtwoord gewijzigd" />
-		<translation language="df" value="password changed" />
-	</keyword>
-	<keyword name="NewPassword">
-		<translation language="nl" value="nieuw wachtwoord" />
-		<translation language="df" value="new password" />
-	</keyword>
-	<keyword name="NewConfirmPassword">
-		<translation language="nl" value="nieuw bevestig wachtwoord" />
-		<translation language="df" value="new confirm password" />
-	</keyword>
-	<keyword name="ProfileUpdated">
-		<translation language="nl" value="profiel gewijzigd" />
-		<translation language="df" value="profile updated" />
-	</keyword>
-	<keyword name="ProfileUpdateFailed">
-		<translation language="nl" value="profiel update mislukt" />
-		<translation language="df" value="profile update failed" />
-	</keyword>
 	<keyword name="new">
 		<translation language="nl" value="nieuw" />
 		<translation language="df" value="new" />
+	</keyword>
+	<keyword name="I_ACCEPT_THESE_RULES">
+		<translation language="nl" value="IK ACCEPTEER DEZE REGELS" />
+		<translation language="df" value="I ACCEPT THESE RULES" />
 	</keyword>
 	<keyword name="Last_seen">
 		<translation language="nl" value="Laatst gezien" />
@@ -418,7 +442,7 @@
 		<translation language="df" value="avatar" />
 	</keyword>
 	<keyword name="Edit_postthread">
-		<translation language="nl" value="Toegang geweigerd" />
+		<translation language="nl" value="Postthread aanpassen" />
 		<translation language="df" value="Edit postthread" />
 	</keyword>
 	<keyword name="joke">
@@ -433,10 +457,6 @@
 		<translation language="nl" value="Login informatie is verzonden naar " />
 		<translation language="df" value="Login information was sent to" />
 	</keyword>
-        <keyword name="Login_mail_sent">
-                <translation language="nl" value="Login informatie is verzonden naar uw e-mail adres" />
-                <translation language="df" value="Login information was sent to your emailaddress" />
-        </keyword>
 	<keyword name="Change_existing_area">
 		<translation language="nl" value="Bestaand gebied wijzigen" />
 		<translation language="df" value="Change existing area" />
@@ -449,6 +469,10 @@
 		<translation language="nl" value="Pagina's" />
 		<translation language="df" value="Pages" />
 	</keyword>
+	<keyword name="All_Areas">
+		<translation language="nl" value="Alle Gebieden" />
+		<translation language="df" value="All Areas" />
+	</keyword>
 	<keyword name="At_the_moment">
 		<translation language="nl" value="Momenteel" />
 		<translation language="df" value="At the moment" />
@@ -456,6 +480,10 @@
 	<keyword name="Add">
 		<translation language="nl" value="Toevoegen" />
 		<translation language="df" value="Add" />
+	</keyword>
+	<keyword name="Forum_rules">
+		<translation language="nl" value="Forum regels" />
+		<translation language="df" value="Forum rules" />
 	</keyword>
 	<keyword name="Select">
 		<translation language="nl" value="Selecteer" />
@@ -493,6 +521,14 @@
 		<translation language="nl" value="Laatste bijdrage" />
 		<translation language="df" value="Last posting" />
 	</keyword>
+	<keyword name="PasswordChanged">
+		<translation language="nl" value="wachtwoord gewijzigd" />
+		<translation language="df" value="password changed" />
+	</keyword>
+	<keyword name="Search">
+		<translation language="nl" value="Zoeken" />
+		<translation language="df" value="Search" />
+	</keyword>
 	<keyword name="Topic">
 		<translation language="nl" value="Onderwerp" />
 		<translation language="df" value="Topic" />
@@ -508,6 +544,10 @@
 	<keyword name="Remove_moderator_for">
 		<translation language="nl" value="Verwijder moderator voor" />
 		<translation language="df" value="Remove moderator for" />
+	</keyword>
+	<keyword name="Remove_administrator_for">
+		<translation language="nl" value="Verwijder beheerder voor" />
+		<translation language="df" value="Remove administrator for" />
 	</keyword>
 	<keyword name="surprised">
 		<translation language="nl" value="verrast" />
@@ -537,13 +577,13 @@
 		<translation language="nl" value="Huidige avatar" />
 		<translation language="df" value="Current avatar" />
 	</keyword>
-	<keyword name="Account_disabled">
-		<translation language="nl" value="Account geblokkeerd" />
-		<translation language="df" value="Account disabled" />
-	</keyword>
 	<keyword name="not_registered">
 		<translation language="nl" value="niet geregistreerd" />
 		<translation language="df" value="not registered" />
+	</keyword>
+	<keyword name="Account_disabled">
+		<translation language="nl" value="Account geblokkeerd" />
+		<translation language="df" value="Account disabled" />
 	</keyword>
 	<keyword name="Login_name_not_found">
 		<translation language="nl" value="Helaas. Deze login naam is niet gevonden in het systeem" />
@@ -569,13 +609,13 @@
 		<translation language="nl" value="overige avatars" />
 		<translation language="df" value="other avatars" />
 	</keyword>
-	<keyword name="Members_online">
-		<translation language="nl" value="Leden online" />
-		<translation language="df" value="Members online" />
-	</keyword>
 	<keyword name="number_of_messages">
 		<translation language="nl" value="Aantal berichten" />
 		<translation language="df" value="Number of messages" />
+	</keyword>
+	<keyword name="Members_online">
+		<translation language="nl" value="Leden online" />
+		<translation language="df" value="Members online" />
 	</keyword>
 	<keyword name="Fast_reply">
 		<translation language="nl" value="Snelle reactie" />
@@ -601,6 +641,10 @@
 		<translation language="nl" value="Datum" />
 		<translation language="df" value="Date" />
 	</keyword>
+	<keyword name="problem_illegal_html">
+		<translation language="nl" value="*** deze bijdrage bevat illegale html codes ***" />
+		<translation language="df" value="*** this posting contains illegal html codes ***" />
+	</keyword>
 	<keyword name="Account_not_found">
 		<translation language="nl" value="Account niet gevonden" />
 		<translation language="df" value="Account not found" />
@@ -608,6 +652,18 @@
 	<keyword name="remove_moderator">
 		<translation language="nl" value="moderator verwijderen" />
 		<translation language="df" value="remove moderator" />
+	</keyword>
+	<keyword name="on">
+		<translation language="nl" value="aan" />
+		<translation language="df" value="on" />
+	</keyword>
+	<keyword name="NewPassword">
+		<translation language="nl" value="nieuw wachtwoord" />
+		<translation language="df" value="new password" />
+	</keyword>
+	<keyword name="You_may_post_new_threads">
+		<translation language="nl" value="U mag nieuwe onderwerpen plaatsen" />
+		<translation language="df" value="You may post new threads" />
 	</keyword>
 	<keyword name="Are_you_sure">
 		<translation language="nl" value="Weet u het zeker?" />
@@ -625,17 +681,21 @@
 		<translation language="nl" value="Moderator toevoegen voor" />
 		<translation language="df" value="Add moderator for" />
 	</keyword>
+	<keyword name="Add_administrator_for">
+		<translation language="nl" value="Beheerder toevoegen voor" />
+		<translation language="df" value="Add administrator for" />
+	</keyword>
 	<keyword name="Moderators">
 		<translation language="nl" value="Moderators" />
 		<translation language="df" value="Moderators" />
 	</keyword>
-	<keyword name="Delete_message_from">
-		<translation language="nl" value="Verwijder bericht uit" />
-		<translation language="df" value="Delete message from" />
-	</keyword>
 	<keyword name="Message">
 		<translation language="nl" value="Bericht" />
 		<translation language="df" value="Message" />
+	</keyword>
+	<keyword name="Delete_message_from">
+		<translation language="nl" value="Verwijder bericht uit" />
+		<translation language="df" value="Delete message from" />
 	</keyword>
 	<keyword name="Upload_avatar">
 		<translation language="nl" value="Avatar uploaden" />
@@ -653,29 +713,33 @@
 		<translation language="nl" value="Bewaren" />
 		<translation language="df" value="Save" />
 	</keyword>
-	<keyword name="Forward">
-		<translation language="nl" value="Doorsturen" />
-		<translation language="df" value="Forward" />
-	</keyword>
 	<keyword name="posted_by">
 		<translation language="nl" value="aangemaakt door" />
 		<translation language="df" value="created by" />
+	</keyword>
+	<keyword name="Forward">
+		<translation language="nl" value="Doorsturen" />
+		<translation language="df" value="Forward" />
 	</keyword>
 	<keyword name="announcement">
 		<translation language="nl" value="aankondiging" />
 		<translation language="df" value="announcement" />
 	</keyword>
-	<keyword name="New">
-		<translation language="nl" value="Nieuw" />
-		<translation language="df" value="New" />
+	<keyword name="Areas">
+		<translation language="nl" value="Gebieden" />
+		<translation language="df" value="Areas" />
 	</keyword>
 	<keyword name="Your_account_information_for_the_MMBob_forum">
 		<translation language="nl" value="Uw account-informatie voor MMBob" />
 		<translation language="df" value="Your account information for the MMbob forum" />
 	</keyword>
-	<keyword name="Areas">
-		<translation language="nl" value="Gebieden" />
-		<translation language="df" value="Areas" />
+	<keyword name="New">
+		<translation language="nl" value="Nieuw" />
+		<translation language="df" value="New" />
+	</keyword>
+	<keyword name="signature">
+		<translation language="nl" value="onderschift" />
+		<translation language="df" value="signature" />
 	</keyword>
 	<keyword name="Area_name">
 		<translation language="nl" value="Gebied" />
@@ -721,17 +785,29 @@
 		<translation language="nl" value="Status" />
 		<translation language="df" value="Status" />
 	</keyword>
+	<keyword name="levelnormal">
+		<translation language="nl" value="Lid" />
+		<translation language="df" value="Member" />
+	</keyword>
 	<keyword name="member">
 		<translation language="nl" value="lid" />
 		<translation language="df" value="member" />
 	</keyword>
-	<keyword name="Access_denied">
-		<translation language="nl" value="Toegang geweigerd" />
-		<translation language="df" value="Access denied" />
+	<keyword name="levelmaster">
+		<translation language="nl" value="Super Lid" />
+		<translation language="df" value="Master Member" />
+	</keyword>
+	<keyword name="movedfrom">
+		<translation language="nl" value="Verplaatst van" />
+		<translation language="df" value="Moved from" />
 	</keyword>
 	<keyword name="Admin_tasks">
 		<translation language="nl" value="Beheer taken" />
 		<translation language="df" value="Administrator tasks" />
+	</keyword>
+	<keyword name="Access_denied">
+		<translation language="nl" value="Toegang geweigerd" />
+		<translation language="df" value="Access denied" />
 	</keyword>
 	<keyword name="Password">
 		<translation language="nl" value="Wachtwoord" />
@@ -753,29 +829,33 @@
 		<translation language="nl" value="gebied verwijderen" />
 		<translation language="df" value="remove area" />
 	</keyword>
-	<keyword name="Your_account_is_created_you_may">
-		<translation language="nl" value="Uw loginnaam is aangemaakt. U kunt nu" />
-		<translation language="df" value="Your account is creaded. You may now" />
-	</keyword>
 	<keyword name="Subject">
 		<translation language="nl" value="Onderwerp" />
 		<translation language="df" value="Subject" />
+	</keyword>
+	<keyword name="Your_account_is_created_you_may">
+		<translation language="nl" value="Uw loginnaam is aangemaakt. U kunt nu" />
+		<translation language="df" value="Your account is creaded. You may now" />
 	</keyword>
 	<keyword name="To">
 		<translation language="nl" value="Aan" />
 		<translation language="df" value="To" />
 	</keyword>
-	<keyword name="faq">
-		<translation language="nl" value="faq" />
-		<translation language="df" value="faq" />
-	</keyword>
 	<keyword name="Level">
 		<translation language="nl" value="Niveau" />
 		<translation language="df" value="Level" />
 	</keyword>
+	<keyword name="faq">
+		<translation language="nl" value="faq" />
+		<translation language="df" value="faq" />
+	</keyword>
 	<keyword name="Mood">
 		<translation language="nl" value="Gemoedstoestand" />
 		<translation language="df" value="Mood" />
+	</keyword>
+	<keyword name="Login_mail_sent">
+		<translation language="nl" value="Login informatie is verzonden naar uw e-mail adres" />
+		<translation language="df" value="Login information was sent to your emailaddress" />
 	</keyword>
 	<keyword name="Move_message_to_different_folder">
 		<translation language="nl" value="Verplaats dit bericht naar een andere map" />
@@ -789,29 +869,41 @@
 		<translation language="nl" value="Annuleren" />
 		<translation language="df" value="Cancel" />
 	</keyword>
-	<keyword name="language">
-		<translation language="nl" value="taal" />
-		<translation language="df" value="language" />
-	</keyword>
-	<keyword name="Add_forum">
-		<translation language="nl" value="Forum toevoegen" />
-		<translation language="df" value="Add forum" />
+	<keyword name="You_may_post_new_replies">
+		<translation language="nl" value="U mag nieuwe reacties plaatsen" />
+		<translation language="df" value="You may post new replies" />
 	</keyword>
 	<keyword name="Lastname">
 		<translation language="nl" value="Achternaam" />
 		<translation language="df" value="Lastname" />
 	</keyword>
+	<keyword name="Add_forum">
+		<translation language="nl" value="Forum toevoegen" />
+		<translation language="df" value="Add forum" />
+	</keyword>
+	<keyword name="language">
+		<translation language="nl" value="taal" />
+		<translation language="df" value="language" />
+	</keyword>
+	<keyword name="Profile_settings">
+		<translation language="nl" value="Prive instellingen" />
+		<translation language="df" value="Profile settings" />
+	</keyword>
 	<keyword name="ERROR">
 		<translation language="nl" value="FOUT" />
 		<translation language="df" value="ERROR" />
+	</keyword>
+	<keyword name="UNSEEN">
+		<translation language="nl" value="Ongelezen" />
+		<translation language="df" value="Unseen" />
 	</keyword>
 	<keyword name="Administrators">
 		<translation language="nl" value="Beheerders" />
 		<translation language="df" value="Administrators" />
 	</keyword>
-	<keyword name="UNSEEN">
-		<translation language="nl" value="Ongelezen" />
-		<translation language="df" value="Unseen" />
+	<keyword name="off">
+		<translation language="nl" value="uit" />
+		<translation language="df" value="off" />
 	</keyword>
 	<keyword name="Location">
 		<translation language="nl" value="Lokatie" />
@@ -821,20 +913,29 @@
 		<translation language="nl" value="e-mail" />
 		<translation language="df" value="email" />
 	</keyword>
+	<keyword name="Been_posted">
+		<translation language="nl" value="Jouw bericht is gepost" />
+		<translation language="df" value="Your message has been posted to this area" />
+	</keyword>
+	<keyword name="Move_postthread">
+		<translation language="nl" value="Postthread verplaatsen" />
+		<translation language="en" value="Move postthread" />
+		<translation language="df" value="Move postthread" />
+	</keyword>
 	<keyword name="Add_folder">
 		<translation language="nl" value="Map toevoegen" />
 		<translation language="df" value="Add folder" />
 	</keyword>
-	<keyword name="Email">
-		<translation language="nl" value="E-mail" />
-		<translation language="df" value="Email" />
+	<keyword name="folder">
+		<translation language="nl" value="map" />
+		<translation language="df" value="folder" />
 	</keyword>
 	<keyword name="open_topic_unread">
 		<translation language="nl" value="Open onderwerp met ongelezen reacties" />
 		<translation language="df" value="Open topic with unread replies" />
 	</keyword>
-	<keyword name="folder">
-		<translation language="nl" value="map" />
-		<translation language="df" value="folder" />
+	<keyword name="Email">
+		<translation language="nl" value="E-mail" />
+		<translation language="df" value="Email" />
 	</keyword>
 </languageguiset>
