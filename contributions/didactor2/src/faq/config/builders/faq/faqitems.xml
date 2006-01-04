@@ -119,7 +119,7 @@
         <!-- name of the field in the database -->
         <name>active</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="55" notnull="false" key="false">INTEGER</type>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
       </db>
     </field>
  <!-- POS 6 : <field> 'order_number'  -->
