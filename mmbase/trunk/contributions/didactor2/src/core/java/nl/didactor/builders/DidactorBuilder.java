@@ -2,6 +2,7 @@ package nl.didactor.builders;
 import nl.didactor.component.Component;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import java.util.SortedSet;
@@ -26,6 +27,9 @@ public class DidactorBuilder extends MMObjectBuilder {
     private SortedSet preDeleteComponents = new TreeSet();
 
     public boolean init() {
+        FieldDefs fd = new FieldDefs("_justinserted", "string", -1, -1, "_justinserted", FieldDefs.TYPE_STRING, -1, FieldDefs.DBSTATE_VIRTUAL);
+        addField(fd);
+
         return super.init();
     }
 
