@@ -324,9 +324,9 @@ public class SMTPHandler extends Thread {
 
             Node mailbox = (Node)mailboxes.get(i);
             Node email = emailbuilder.createNode();
-       if (properties.containsKey("emailbuilder.typefield")) {
-            email.setIntValue((String)properties.get("emailbuilder.typefield"), 2); // new unread mail
-       }
+            if (properties.containsKey("emailbuilder.typefield")) {
+                email.setIntValue((String)properties.get("emailbuilder.typefield"), 2); // new unread mail
+            }
             if (properties.containsKey("emailbuilder.headersfield")) {
                 email.setStringValue((String)properties.get("emailbuilder.headersfield"), "" + headers);
             }
