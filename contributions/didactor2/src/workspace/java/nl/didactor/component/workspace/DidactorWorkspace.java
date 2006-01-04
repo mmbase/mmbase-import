@@ -5,7 +5,12 @@ import nl.didactor.component.core.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.SearchQueryException;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class DidactorWorkspace extends Component {
     /**
@@ -26,10 +31,37 @@ public class DidactorWorkspace extends Component {
         MMBase mmbase = MMBase.getMMBase();
         DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
         people.registerPostInsertComponent(this, 10);
+        people.registerPreDeleteComponent(this, 10);
+
         DidactorBuilder classes = (DidactorBuilder)mmbase.getBuilder("classes");
         classes.registerPostInsertComponent(this, 10);
+        classes.registerPreDeleteComponent(this, 10);
+
         DidactorBuilder workgroups = (DidactorBuilder)mmbase.getBuilder("workgroups");
         workgroups.registerPostInsertComponent(this, 10);
+        workgroups.registerPreDeleteComponent(this, 10);
+    }
+
+    public void install() {
+        MMBase mmbase = MMBase.getMMBase();
+        DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
+        DidactorBuilder classes = (DidactorBuilder)mmbase.getBuilder("classes");
+        DidactorBuilder workgroups = (DidactorBuilder)mmbase.getBuilder("workgroups");
+        try {
+            List nodes = people.getNodes(new NodeSearchQuery(people));
+            for (int i=0; i<nodes.size(); i++) {
+                postInsert((MMObjectNode)nodes.get(i));
+            }
+            nodes = classes.getNodes(new NodeSearchQuery(classes));
+            for (int i=0; i<nodes.size(); i++) {
+                postInsert((MMObjectNode)nodes.get(i));
+            }
+            nodes = workgroups.getNodes(new NodeSearchQuery(workgroups));
+            for (int i=0; i<nodes.size(); i++) {
+                postInsert((MMObjectNode)nodes.get(i));
+            }
+        } catch (SearchQueryException e) {
+        }
     }
 
     /**
@@ -46,14 +78,36 @@ public class DidactorWorkspace extends Component {
      * needs to insert objects for this object, it can do so. 
      */
     public boolean postInsert(MMObjectNode node) {
-        if (node.getBuilder().getTableName().equals("people"))
+        if (node.getBuilder().getTableName().equals("people")) {
             return createUser(node);
+        }
 
-        if (node.getBuilder().getTableName().equals("classes"))
+        if (node.getBuilder().getTableName().equals("classes")) {
             return createClass(node);
+        }
 
-        if (node.getBuilder().getTableName().equals("workgroups"))
+        if (node.getBuilder().getTableName().equals("workgroups")) {
             return createWorkgroup(node);
+        }
+
+        return true;
+    }
+
+    /**
+     * This method is called when a new object is removed from Didactor.
+     */
+    public boolean preDelete(MMObjectNode node) {
+        if (node.getBuilder().getTableName().equals("people")) {
+            return deleteObject(node);
+        }
+
+        if (node.getBuilder().getTableName().equals("classes")) {
+            return deleteObject(node);
+        }
+
+        if (node.getBuilder().getTableName().equals("workgroups")) {
+            return deleteObject(node);
+        }
 
         return true;
     }
@@ -121,6 +175,42 @@ public class DidactorWorkspace extends Component {
         relation.setValue("rnumber", related);
         insrel.insert(username, relation);
 
+        return true;
+    }
+
+    /**
+     * This method deletes the workspace for the user, class or workgroup
+     */
+    private boolean deleteObject(MMObjectNode object) {
+        Vector workspaces = object.getRelatedNodes("workspaces", "related", RelationStep.DIRECTIONS_DESTINATION);
+
+        // Iterate the workspaces, to remove them all
+        for (int i=0; i<workspaces.size(); i++) {
+            MMObjectNode workspace = (MMObjectNode)workspaces.get(i);
+            Vector folders = workspace.getRelatedNodes("folders", "posrel", RelationStep.DIRECTIONS_DESTINATION);
+
+            for (int j=0; j<folders.size(); j++) {
+                MMObjectNode folder = (MMObjectNode)folders.get(j);
+
+                // WARNING: NEED TO CHECK IF WE MAY DELETE ALL THESE!!
+                String[] otypes = new String[]{"attachments", "chatlogs", "pages", "urls"};
+                for (int k=0; k<otypes.length; k++) {
+                    Vector objs = folder.getRelatedNodes(otypes[k], "related", RelationStep.DIRECTIONS_DESTINATION);
+
+                    // Iterate the attachments etc., to remove them all
+                    for (int l=0; l<objs.size(); l++) {
+                        MMObjectNode obj = (MMObjectNode)objs.get(l);
+                        obj.getBuilder().removeRelations(obj);
+                        obj.getBuilder().removeNode(obj);
+                    }
+                }
+                folder.getBuilder().removeRelations(folder);
+                folder.getBuilder().removeNode(folder);
+            }
+
+            workspace.getBuilder().removeRelations(workspace);
+            workspace.getBuilder().removeNode(workspace);
+        }
         return true;
     }
 }
