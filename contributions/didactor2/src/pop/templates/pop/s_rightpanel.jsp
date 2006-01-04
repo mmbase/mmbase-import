@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.*" %>
 
-<mm:content postprocessor="reducespace">
+<mm:content postprocessor="reducespace"  escaper="none">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp" %>
