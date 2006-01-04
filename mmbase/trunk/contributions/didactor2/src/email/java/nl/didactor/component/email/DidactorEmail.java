@@ -1,14 +1,17 @@
-/**
- * Component description interface.
- */
 package nl.didactor.component.email;
+
 import nl.didactor.builders.DidactorBuilder;
 import nl.didactor.component.Component;
 import nl.didactor.component.core.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.SearchQueryException;
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class DidactorEmail extends Component {
     /**
@@ -22,6 +25,19 @@ public class DidactorEmail extends Component {
         MMBase mmbase = MMBase.getMMBase();
         DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
         people.registerPostInsertComponent(this, 10);
+        people.registerPreDeleteComponent(this, 10);
+    }
+
+    public void install() {
+        MMBase mmbase = MMBase.getMMBase();
+        DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
+        try {
+            List nodes = people.getNodes(new NodeSearchQuery(people));
+            for (int i=0; i<nodes.size(); i++) {
+                postInsert((MMObjectNode)nodes.get(i));
+            }
+        } catch (SearchQueryException e) {
+        }
     }
 
     /**
@@ -75,6 +91,13 @@ public class DidactorEmail extends Component {
         return true;
     }
 
+    public boolean preDelete(MMObjectNode node) {
+        if (node.getBuilder().getTableName().equals("people")) {
+            return deleteUser(node);
+        }
+        return true;
+    }
+
     /**
      * Create all the mailboxes for this user
      */
@@ -125,6 +148,40 @@ public class DidactorEmail extends Component {
         relation.setValue("rnumber", related);
         insrel.insert(username, relation);
 
+        return true;
+    }
+
+    /**
+     * Delete the mailboxes and all emails (with related attachments) of this user.
+     */
+    private boolean deleteUser(MMObjectNode user) {
+        Vector mailboxes = user.getRelatedNodes("mailboxes", "related", RelationStep.DIRECTIONS_DESTINATION);
+
+        // Iterate the mailboxes, to remove them all
+        for (int i=0; i<mailboxes.size(); i++) {
+            MMObjectNode mailbox = (MMObjectNode)mailboxes.get(i);
+            Vector emails = mailbox.getRelatedNodes("emails", "related", RelationStep.DIRECTIONS_DESTINATION);
+
+            // Iterate the contacts, to remove them all
+            for (int j=0; j<emails.size(); j++) {
+                MMObjectNode email = (MMObjectNode)emails.get(j);
+                Vector attachments = email.getRelatedNodes("attachments", "related", RelationStep.DIRECTIONS_DESTINATION);
+
+                // Iterate the attachments, to remove them all
+                for (int k=0; k<attachments.size(); k++) {
+                    MMObjectNode attachment = (MMObjectNode)attachments.get(k);
+                    attachment.getBuilder().removeRelations(attachment);
+                    attachment.getBuilder().removeNode(attachment);
+                }
+                email.getBuilder().removeRelations(email);
+                email.getBuilder().removeNode(email);
+            }
+
+            // Mail-rules are relations from mailbox to mailbox: they are
+            // automatically removed here
+            mailbox.getBuilder().removeRelations(mailbox);
+            mailbox.getBuilder().removeNode(mailbox);
+        }
         return true;
     }
 }
