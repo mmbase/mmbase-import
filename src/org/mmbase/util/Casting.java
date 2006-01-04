@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.80 2005-12-29 19:34:15 michiel Exp $
+ * @version $Id: Casting.java,v 1.81 2006-01-04 09:21:52 ernst Exp $
  */
 
 import java.util.*;
@@ -550,6 +550,7 @@ public class Casting {
                 res = (int) l;
             }
         } else if (i != null) {
+            
             try {
                 res = Integer.parseInt("" + i);
             } catch (NumberFormatException e) {
@@ -557,7 +558,14 @@ public class Casting {
                 try {
                     res = Double.valueOf("" + i).intValue();
                 } catch (NumberFormatException ex) {
-                    // give up, fall back to default.
+                    // try if the value is a string representing a boolean.
+                    if(i instanceof String){
+                        if(((String)i).toLowerCase().equals(("true"))){
+                            res = 1;
+                        }else if(((String)i).toLowerCase().equals(("false"))){
+                            res = 0;
+                        }
+                    }
                 }
             }
         }
@@ -701,7 +709,16 @@ public class Casting {
         } else if (i != null) {
             try {
                 res = Float.parseFloat("" + i);
-            } catch (NumberFormatException e) {}
+            } catch (NumberFormatException e) {
+//              try if the value is a string representing a boolean.
+                if(i instanceof String){
+                    if(((String)i).toLowerCase().equals(("true"))){
+                        res = 1;
+                    }else if(((String)i).toLowerCase().equals(("false"))){
+                        res = 0;
+                    }
+                }    
+            }
         }
         return res;
     }
@@ -741,7 +758,16 @@ public class Casting {
         } else if (i != null) {
             try {
                 res = Double.parseDouble("" + i);
-            } catch (NumberFormatException e) {}
+            } catch (NumberFormatException e) {
+//              try if the value is a string representing a boolean.
+                if(i instanceof String){
+                    if(((String)i).toLowerCase().equals(("true"))){
+                        res = 1;
+                    }else if(((String)i).toLowerCase().equals(("false"))){
+                        res = 0;
+                    }
+                }    
+            }
         }
         return res;
     }
