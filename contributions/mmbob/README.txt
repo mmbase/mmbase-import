@@ -6,15 +6,7 @@ This is a forum system somewhat like phpbb but based on mmbase, it can be integr
 
 - needs MMBase.1.8.0 and the contributions multilanguagegui and thememanager.
 
-- to install mmbob follow the following steps
-
-  1) copy the mmbase-1.8.0.xxxxxxx-mmbob.zip file you downloaded to the ROOT of your
-     webapp (for example tomcat/webapps/ROOT/).
-
-  2) unzip the file in this dir.
-
-  3) ./mmbase-1.8.0.xxxxxxx-mmbob/scripts/install_bin.sh
-
+- to install mmbob follow the steps in README-PACKAGE
 
 - Once installed you can open the mmbob forum system by visiting mmbob/index.jsp, and read the operational help files from there.
 
