@@ -65,6 +65,7 @@ public class DidactorBuilder extends MMObjectBuilder {
      * calls the 'postInsert()' for all registered components after inserting the node.
      */
     public int insert(String owner, MMObjectNode node) {
+        node.setValue("_justinserted", "true");
         Iterator i = preInsertComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
@@ -88,6 +89,14 @@ public class DidactorBuilder extends MMObjectBuilder {
      */
     public MMObjectNode preCommit(MMObjectNode node) {
         Iterator i = preCommitComponents.iterator();
+        if (i.hasNext()) {
+            if (node.getValue("_justinserted") != null) {
+                // the preCommit() is called on the newly inserted node since the new storage layer.
+                // pre-insert behavior should be handled by preinsert handlers, and not by
+                // precommit handlers. So we skip this.
+                return node;
+            }
+        }
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
             log.info("Firing " + c.getName() + ".preCommit() on object of type '" + node.getBuilder().getTableName() + "'");
