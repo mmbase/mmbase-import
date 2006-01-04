@@ -12,7 +12,7 @@
 		<accountcreation type="open" />
 		<accountremoval type="open" />
 
-		<loginsystem type="entree" />
+		<loginsystem type="http" />
 		<loginmode type="open" />
 		<logoutmode type="open" />
 		<guestreadmode type="open" />
