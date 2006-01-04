@@ -178,13 +178,13 @@
       </mm:node>
     </mm:compare>
     <br/>
-    <a href="#1" onclick="if (!window.confirm('<di:translate key="pop.areyousuredeldoc" />'))
-        return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
-      <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
-        border="0" alt="<di:translate key="pop.compeditremoveselecteddoc"/>" /></a>
     <a href="#1" onclick="editcompform.command.value='adddoc';editcompform.submit();return false;">
       <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$popreferids"/>" 
         border="0" alt="<di:translate key="pop.portfolioadddoc"/>" /></a>
+     <a href="#1" onclick="if (!window.confirm('<di:translate key="pop.areyousuredeldoc" />'))
+        return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
+      <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
+        border="0" alt="<di:translate key="pop.compeditremoveselecteddoc"/>" /></a>
   </form>
   </mm:node>
 </div>
