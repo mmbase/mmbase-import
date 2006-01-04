@@ -57,6 +57,7 @@
     <!--
     <property name="database">${mmbaseroot.database}</property>
     -->
+    <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
     <!-- leave to lookup.xml on default -->
 
     <!--
