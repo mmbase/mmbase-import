@@ -58,7 +58,7 @@ public class ProfileInfo {
    public ProfileInfo(Poster parent) {
 	this.parent  = parent;
 	this.forum = parent.getParent();
-	syncExternals();
+	// temp removed daniel, syncExternals();
    }
 
    public ProfileInfo(Poster parent,int id,String xml,String external,int synced) {
@@ -70,7 +70,7 @@ public class ProfileInfo {
 	this.parent=parent;
 	decodeXML();
 	this.forum = parent.getParent();
-	syncExternals();
+	// temp removed daniel, syncExternals();
    }
  
 
