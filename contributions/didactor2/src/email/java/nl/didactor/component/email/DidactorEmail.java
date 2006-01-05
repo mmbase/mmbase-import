@@ -148,6 +148,16 @@ public class DidactorEmail extends Component {
         relation.setValue("rnumber", related);
         insrel.insert(username, relation);
 
+        mailbox = mailboxes.getNewNode(username);
+        mailbox.setValue("type", 11);
+        mailbox.setValue("name", "Drafts");
+        mailboxes.insert(username, mailbox);
+        relation = insrel.getNewNode(username);
+        relation.setValue("snumber", user.getNumber());
+        relation.setValue("dnumber", mailbox.getNumber());
+        relation.setValue("rnumber", related);
+        insrel.insert(username, relation);
+
         return true;
     }
 
