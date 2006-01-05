@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="object" maintainer="mmbase.org" name="signatures" version="0">
+
+<!-- <status>
+		what is the status of this builder options : active or inactive
+-->
+<status>active</status>
+
+<!-- <classfile>
+		This is a optional tag, it names the classfile that allows you to add
+		support routines or changes them on a per builder base. For example
+		images has routines to image support etc etc.
+
+		possible values : Dummy or disabled tag makes mmbase use the default setup
+
+				short name : Urls will start class : org.mmbase.module.builders.Urls.class
+
+				long name : nl.vpro.mmbase.module.builders.Urls will start that class
+-->
+<classfile>Dummy</classfile>
+
+<searchage>14</searchage>
+
+<!-- <names>
+		names defines the different names used in user visible parts, singular for
+		for talking about 1 object (Url,Person) and plurar for talking about multiple
+		<Urls, people).
+>-->
+<names>
+		<!-- singles per language as defined by ISO 639 -->
+		<singular xml:lang="en">Signature</singular>
+		<singular xml:lang="nl">Handtekening</singular>
+		<!-- multiple per language as defined by ISO 639 -->
+		<plural xml:lang="en">Signatures</plural>
+		<plural xml:lang="nl">Handtekeningen</plural>
+</names>
+
+<!-- <descriptions>
+		small description of the builder for human reading
+-->
+<descriptions>
+<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">Signatures</description>
+		<description xml:lang="nl">Handtekeningen</description>
+</descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+</properties>
+
+<!-- <fieldlist>
+		 defines the different fields in this object, be carefull the order is important
+		once defined keep them in the same order.
+		If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+<fieldlist>
+		<!-- POS 3 : <field> 'url'  -->
+		<field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">body</description>
+					<description xml:lang="nl">body</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Text</guiname>
+						<guiname xml:lang="nl">Tekst</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>1</input>
+								<!-- position in list area of the editor -->
+								<list>2</list>
+								<!-- position in search area of the editor -->
+								<search>1</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>body</name>
+						<!-- MMBase datatype and demands on it -->
+						<type key="false" notnull="true" size="2048" state="persistent">STRING</type>
+				</db>
+		</field>
+		<!-- POS 3 : <field> 'mode'  -->
+		<field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">Mode</description>
+					<description xml:lang="nl">Mode</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Mode</guiname>
+						<guiname xml:lang="nl">Mode</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>2</input>
+								<!-- position in list area of the editor -->
+								<list>3</list>
+								<!-- position in search area of the editor -->
+								<search>2</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>mode</name>
+						<!-- MMBase datatype and demands on it -->
+						<type key="false" notnull="true" size="64" state="persistent">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 4 : <field> 'encoding'  -->
+		<field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">Encoding</description>
+					<description xml:lang="nl">Encoding</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Encoding</guiname>
+						<guiname xml:lang="nl">Encoding</guiname>
+						<guitype>field</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>3</input>
+								<!-- position in list area of the editor -->
+								<list>-1</list>
+								<!-- position in search area of the editor -->
+								<search>3</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>encoding</name>
+						<!-- MMBase datatype and demands on it -->
+						<type key="false" notnull="true" size="64" state="persistent">STRING</type>
+				</db>
+		</field>
+
+</fieldlist>
+
+</builder>

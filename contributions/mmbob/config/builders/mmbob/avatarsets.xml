@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="imagesets" maintainer="mmbase.org" name="avatarsets" version="0">
+	<status>active</status>
+	<searchage>1000</searchage>
+	<names>
+		<!-- singles per language as defined by ISO 639 -->
+		<singular xml:lang="nl">Avatarverzameling</singular>
+		<singular xml:lang="en">Avatarset</singular>
+		<!-- singles per language as defined by ISO 639 -->
+		<plural xml:lang="nl">Avatarverzamelingen</plural>
+		<plural xml:lang="en">Avatarsets</plural>
+	</names>
+	<!-- <descriptions> small description of the builder for human reading -->
+	<descriptions>
+		<description xml:lang="nl">Verzameling avatars</description>
+		<description xml:lang="en">Set of avatars</description>
+	</descriptions>
+	<fieldlist>
+	</fieldlist>
+</builder>
