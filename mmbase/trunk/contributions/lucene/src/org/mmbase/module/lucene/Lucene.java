@@ -21,6 +21,7 @@ import org.mmbase.cache.CachePolicy;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.util.xml.query.*;
+import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.Queue;
@@ -28,7 +29,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 import org.apache.lucene.analysis.Analyzer;
-
+import org.apache.lucene.queryParser.ParseException;
 import org.mmbase.module.lucene.extraction.*;
 
 /**
@@ -37,7 +38,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.23 2006-01-03 14:34:52 michiel Exp $
+ * @version $Id: Lucene.java,v 1.24 2006-01-05 13:58:28 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -201,7 +202,7 @@ public class Lucene extends Module implements MMBaseObserver {
      */
     protected Function searchFunction = new AbstractFunction("search",
                                                              new Parameter[] { VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD },
-                                                             ReturnType.LIST) {
+                                                             ReturnType.NODELIST) {
             public Object getFunctionValue(Parameters arguments) {
                 String value = arguments.getString(VALUE);
                 String index = arguments.getString(INDEX);
@@ -217,7 +218,16 @@ public class Lucene extends Module implements MMBaseObserver {
                 if (maxParameter != null) max = maxParameter.intValue();
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
                 Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
-                return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
+                try {
+                    return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
+                } catch (ParseException pe) {
+                    // search function is typically used in a JSP and the 'value' parameter filled by web-site users.
+                    // They may not fill the log with errors!
+                    if (log.isDebugEnabled()) {
+                        log.debug(pe);
+                    }
+                    return BridgeCollections.EMPTY_NODELIST;
+                }
             }
         };
     {
@@ -470,7 +480,7 @@ public class Lucene extends Module implements MMBaseObserver {
         return searcher;
     }
 
-    public org.mmbase.bridge.NodeList search(Cloud cloud, String value, String indexName, String extraConstraints, List sortFieldList, int offset, int max) {
+    public org.mmbase.bridge.NodeList search(Cloud cloud, String value, String indexName, String extraConstraints, List sortFieldList, int offset, int max) throws ParseException {
         String[] sortFields = null;
         if (sortFieldList != null) {
             sortFields = (String[]) sortFieldList.toArray(new String[sortFieldList.size()]);
