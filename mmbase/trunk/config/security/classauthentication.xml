@@ -11,9 +11,9 @@
     <property name="rank" value="administrator" />
   </authenticate>
 
-  <!--
+  <!-- used to check uniqueness -->
   <authenticate class="org\.mmbase\.datatypes\.BasicDataType">
     <property name="rank" value="administrator" />
   </authenticate>
-  -->
+
 </security>
