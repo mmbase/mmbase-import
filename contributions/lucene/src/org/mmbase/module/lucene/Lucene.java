@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.26 2006-01-05 15:07:51 ernst Exp $
+ * @version $Id: Lucene.java,v 1.27 2006-01-05 18:04:33 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -259,11 +259,6 @@ public class Lucene extends Module implements MMBaseObserver {
 
         // Force init of MMBase
         mmbase = MMBase.getMMBase();
-        
-        //let's use the binary file storage location from the storage factory
-        try{
-           i
-        }
 
         log.info("Adding extractors");
 
@@ -294,7 +289,7 @@ public class Lucene extends Module implements MMBaseObserver {
             log.service("found storage configuration for lucine index path : " + indexPath);
         }else{
             // expand the default path (which is relative to the web-application)
-            indexPath = MMBaseContext.getServletContext().getRealPath(INDEX_PATH);
+            indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
             log.service("fall back to default for lucine index path : " + indexPath);
         }
         
