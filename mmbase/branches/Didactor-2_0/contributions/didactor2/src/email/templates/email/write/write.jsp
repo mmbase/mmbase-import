@@ -72,6 +72,14 @@
     <mm:node referid="mailboxNumber" id="mailboxNode"/>
   </mm:list>
 
+  <mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=11">
+    <mm:field name="mailboxes.number" id="draftMailboxNumber" write="false"/>
+    <mm:node referid="draftMailboxNumber" id="draftMailboxNode"/>
+  </mm:list>
+
+  <mm:notpresent referid="draftMailboxNode">
+    <mm:import id="draftMailboxNode"><mm:write referid="mailboxNode"/></mm:import>
+  </mm:notpresent>
  
   <%-- edit existing email (not yet sent) --%>
   <mm:import externid="id"/>
@@ -138,7 +146,7 @@
             <mm:node referid="emailNode">
 	        <mm:import id="id" reset="true"><mm:field name="number"/></mm:import>
             </mm:node>
-	  <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
+	  <mm:createrelation role="related" source="draftMailboxNode" destination="emailNode"/>
         </mm:isnotempty>
     </mm:present>
 
@@ -215,9 +223,16 @@
 	<mm:node referid="emailNode">
 	    <mm:setfield name="type">1</mm:setfield>
 	</mm:node>
+        <mm:list nodes="$emailNode" path="emails,related,mailboxes">
+          <mm:node element="related">
+            <mm:deletenode deleterelations="false"/> 
+          </mm:node>
+	</mm:list>
 	<mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" max="1">
 	    <mm:field id="mailbox" name="mailboxes.number" write="false"/>
 	</mm:list>
+
+        <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/> 
 
 	<mm:treefile jspvar="forward" write="false" page="/email/index.jsp" objectlist="$includePath" referids="$referids">
 	<%--    <mm:param name="page" value="/email/mailboxes.jsp" />--%>

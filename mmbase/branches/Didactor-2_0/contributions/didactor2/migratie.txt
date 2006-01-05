@@ -20,6 +20,12 @@ Perform the following updates to upgrade Didactor 2.0 to Didactor 2.0.1
 ------------------------------------------------------------------------------------
 Perform the following updates to upgrade a pre-Didactor-2.0 to Didactor 2.0
 ------------------------------------------------------------------------------------
+
+2006-01-04
+
+    To add mailbox "drafts" to people, please run /migrate/migrate-2006-01-04.jsp
+
+
 2005-11-23
     ALTER TABLE mmb_madetests ADD testpath BLOB DEFAULT NULL;
 
