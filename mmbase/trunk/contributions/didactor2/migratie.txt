@@ -11,9 +11,13 @@ the application with component record.
 E.g.: if "versioning" is absent, delete "Versioning" node from version control table in mmeditors 
 and restart Tomcat.
 ----
+
+2006-01-04
+
+    To add mailbox "drafts" to people, please run /migrate/migrate-2006-01-04.jsp
+
     
-    
- 2005-12-22   
+2005-12-22   
  
     ALTER TABLE `mmb_openquestions` ADD `type_of_score` INT NOT Null
 
