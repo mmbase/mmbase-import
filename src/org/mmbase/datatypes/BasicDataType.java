@@ -13,6 +13,7 @@ package org.mmbase.datatypes;
 import java.util.*;
 import java.io.*; // because of Serializable
 import org.mmbase.bridge.*;
+import org.mmbase.security.Rank;
 import org.mmbase.datatypes.processors.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.36 2006-01-02 10:20:29 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.37 2006-01-05 18:12:49 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -862,17 +863,32 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (! isUnique()) return true;
             if (node != null && field != null && value != null) {
+
+                if (field.isVirtual()) return true; // e.g. if the field was defined in XML but not present in DB (after upgrade?)
+
+                NodeManager nodeManager = field.getNodeManager();
+                Cloud cloud = nodeManager.getCloud();
+                if (cloud.getUser().getRank().getInt() < Rank.ADMIN_INT) {
+                    // This will test for uniqueness using bridge, so you'll miss objects you can't
+                    // see (and database doesn't know that!)
+                    // So try using an administrator for that! That would probably work ok.
+                    Cloud adminCloud = cloud.getCloudContext().getCloud(cloud.getName(), "class", null);
+                    if (adminCloud.getUser().getRank().getInt() > cloud.getUser().getRank().getInt()) {
+                        cloud = adminCloud;
+                        nodeManager = adminCloud.getNodeManager(nodeManager.getName());
+                    }
+                }
                 // create a query and query for the value
-                // XXX This will test for uniquness using the cloud, so you'll miss objects you can't
-                // see (and database doesn't know that!)
-                NodeQuery query = field.getNodeManager().createQuery();
+                NodeQuery query = nodeManager.createQuery();
                 Constraint constraint = Queries.createConstraint(query, field.getName(), FieldCompareConstraint.EQUAL, v);
                 Queries.addConstraint(query, constraint);
                 if (!node.isNew()) {
                     constraint = Queries.createConstraint(query, "number", FieldCompareConstraint.NOT_EQUAL, new Integer(node.getNumber()));
                     Queries.addConstraint(query, constraint);
                 }
-                log.debug(query);
+                if(log.isDebugEnabled()) {
+                    log.debug(query);
+                }
                 return Queries.count(query) == 0;
             } else {
                 // TODO needs to work without Node too.
