@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.25 2006-01-05 14:30:11 ernst Exp $
+ * @version $Id: Lucene.java,v 1.26 2006-01-05 15:07:51 ernst Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -85,7 +85,7 @@ public class Lucene extends Module implements MMBaseObserver {
     // wait time bewteen individual checks, default 5 seconds
     private static final long WAIT_TIME = 5 * 1000;
     // default path to the lucene data
-    private static final String INDEX_PATH = "WEB-INF/data/lucene";
+    protected  String indexPath = "WEB-INF/data/lucene";
     // default path to the lucene data
     private static final String INDEX_CONFIG_FILE = "utils/luceneindex.xml";
 
@@ -259,6 +259,11 @@ public class Lucene extends Module implements MMBaseObserver {
 
         // Force init of MMBase
         mmbase = MMBase.getMMBase();
+        
+        //let's use the binary file storage location from the storage factory
+        try{
+           i
+        }
 
         log.info("Adding extractors");
 
