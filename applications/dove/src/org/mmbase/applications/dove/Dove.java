@@ -51,7 +51,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.72 2006-01-05 11:01:50 michiel Exp $
+ * @version $Id: Dove.java,v 1.73 2006-01-05 18:28:15 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -146,12 +146,11 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-                    } else if (dataType instanceof DateTimeDataType) {
+                    } else if (dataType instanceof DateTimeDataType ||
+                               dataType instanceof IntegerDataType ||
+                               dataType instanceof LongDataType
+                               ) {
                         // have to convert ourselves because bridge will use user-defined formatting
-                        fel = addContentElement(FIELD, Casting.toString(node.getDateValue(fname)), out);
-                    } else if (dataType instanceof IntegerDataType) {
-                        fel = addContentElement(FIELD, "" + node.getIntValue(fname), out);
-                    } else if (dataType instanceof LongDataType) {
                         fel = addContentElement(FIELD, "" + node.getLongValue(fname), out);
                     } else {
                         fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
@@ -174,9 +173,12 @@ public class Dove extends AbstractDove {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
-                    } else if (f.getDataType() instanceof DateTimeDataType) {
+                    } else if (dataType instanceof DateTimeDataType ||
+                               dataType instanceof IntegerDataType ||
+                               dataType instanceof LongDataType
+                               ) {
                         // have to convert ourselves because bridge will use user-defined formatting
-                        fel = addContentElement(FIELD, Casting.toString(node.getDateValue(fname)), out);
+                        fel = addContentElement(FIELD, "" + node.getLongValue(fname), out);
                     } else {
                         fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
@@ -954,13 +956,16 @@ public class Dove extends AbstractDove {
             String key = (String)me.getKey();
             if (isEditableField(node.getNodeManager(),key)) {
                 Object value = me.getValue();
+                DataType dt = node.getNodeManager().getField(key).getDataType();
                 if ((originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
                     String originalValue = (String) originalValues.get(key);
                     String  mmbaseValue;
-                    if (node.getNodeManager().getField(key).getDataType() instanceof DateTimeDataType) {
+                    if (dt instanceof DateTimeDataType || 
+                        dt instanceof LongDataType || 
+                        dt instanceof IntegerDataType) {
                         // have to convert ourselves because bridge will use user-defined formatting
-                        mmbaseValue = Casting.toString(node.getDateValue(key));
+                        mmbaseValue = "" + node.getLongValue(key);
                     } else {
                         mmbaseValue = node.isNull(key) ? null : node.getStringValue(key);
                     }
