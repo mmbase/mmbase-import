@@ -15,7 +15,7 @@
          </mm:relatednodes>
          <mm:compare referid="havedrafts" value="false">
             <mm:createnode type="mailboxes" id="newdrafts">
-               <mm:setfield name="name">Kladjes</mm:setfield>
+               <mm:setfield name="name">Drafts</mm:setfield>
                <mm:setfield name="type">11</mm:setfield>
             </mm:createnode>
             <mm:createrelation role="related" source="thisperson" destination="newdrafts"/>
