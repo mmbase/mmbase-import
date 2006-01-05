@@ -38,6 +38,8 @@
   </target>
 
   <target name="start.database" depends="init">
+    <sleep seconds="30" />
+    <echo message="done sleeping" />
     <java classname="org.hsqldb.Server" fork="true" >
       <arg value="-database.0" />
       <arg value ="${tests.database.dir}/test" />
