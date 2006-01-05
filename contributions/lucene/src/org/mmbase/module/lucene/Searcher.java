@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.16 2006-01-03 15:49:45 michiel Exp $
+ * @version $Id: Searcher.java,v 1.17 2006-01-05 13:58:29 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -52,19 +52,19 @@ public class Searcher {
         this.allIndexedFields = allIndexedFields;
     }
 
-    public NodeList search(Cloud cloud, String value) {
+    public NodeList search(Cloud cloud, String value) throws ParseException {
         return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, 0, -1);
     }
 
-    public NodeList search(Cloud cloud, String value, int offset, int max) {
+    public NodeList search(Cloud cloud, String value, int offset, int max) throws ParseException {
         return search(cloud, value, null, null, new StopAnalyzer(), null, allIndexedFields, offset, max);
     }
 
-    public NodeList search(Cloud cloud, String value, Query extraQuery, int offset, int max) {
+    public NodeList search(Cloud cloud, String value, Query extraQuery, int offset, int max) throws ParseException {
         return search(cloud, value, null, null, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
     }
 
-    public NodeList search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max) {
+    public NodeList search(Cloud cloud, String value, String[] sortFields, Query extraQuery, int offset, int max) throws ParseException {
         Sort sort = null;
         if (sortFields != null && sortFields.length > 0) {
             if (sortFields.length == 1 && sortFields[0].equals("RELEVANCE")) {
@@ -79,7 +79,7 @@ public class Searcher {
     }
 
 
-    public NodeList search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) {
+    public NodeList search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) throws ParseException  {
         // log the value searched
         if (extraQuery != null && ! extraQuery.equals("")) {
             searchLog.service("(" + extraQuery + ") " + value);
@@ -105,7 +105,7 @@ public class Searcher {
                         list.add(index.getNode(cloud, hit));
                     }
                 }
-            } catch (Exception e) {
+            } catch (java.io.IOException e) {
                 log.error("Cannot run search: " + e.getMessage(), e);
             } finally {
                 if (searcher != null) {
