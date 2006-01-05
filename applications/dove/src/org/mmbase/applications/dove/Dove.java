@@ -51,7 +51,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.71 2005-12-09 09:53:34 pierre Exp $
+ * @version $Id: Dove.java,v 1.72 2006-01-05 11:01:50 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -149,6 +149,10 @@ public class Dove extends AbstractDove {
                     } else if (dataType instanceof DateTimeDataType) {
                         // have to convert ourselves because bridge will use user-defined formatting
                         fel = addContentElement(FIELD, Casting.toString(node.getDateValue(fname)), out);
+                    } else if (dataType instanceof IntegerDataType) {
+                        fel = addContentElement(FIELD, "" + node.getIntValue(fname), out);
+                    } else if (dataType instanceof LongDataType) {
+                        fel = addContentElement(FIELD, "" + node.getLongValue(fname), out);
                     } else {
                         fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
                     }
