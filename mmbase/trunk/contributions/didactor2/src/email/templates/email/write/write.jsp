@@ -12,14 +12,13 @@
     <mm:redirect page="/email/index.jsp"/>
 </mm:present>
 
-
+  <mm:import externid="mailbox"/>
   <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
-  
-   <mm:import id="to"></mm:import>
-   <mm:import id="cc"></mm:import>
-   <mm:import id="subject"></mm:import>
-   <mm:import id="body"></mm:import>
-   <mm:import id="emailok">0</mm:import>
+  <mm:import id="to"></mm:import>
+  <mm:import id="cc"></mm:import>
+  <mm:import id="subject"></mm:import> 
+  <mm:import id="body"></mm:import>
+  <mm:import id="emailok">0</mm:import>
   
   <%-- 
     setup data according to some already existing mail
@@ -213,10 +212,6 @@
 	    </mm:node>
 	</mm:present>
     </mm:present>
-
-
-
-    
   <mm:import externid="send_action"/> <%-- send button pressed --%>
   <mm:present referid="send_action">
     <mm:compare referid="emailok" value="1">
@@ -229,6 +224,7 @@
           </mm:node>
 	</mm:list>
 	<mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" max="1">
+	    <mm:remove referid="mailbox"/>
 	    <mm:field id="mailbox" name="mailboxes.number" write="false"/>
 	</mm:list>
 
@@ -281,11 +277,32 @@
   </div>
 </div>
 
-<div class="folders">
-  <div class="folderHeader">
 
+  <div class="folders">
+	<div class="folderHeader">
+	  <di:translate key="email.mailboxes" />
+	</div>
+	<div class="folderBody">
+	  <a href="<mm:treefile page="/email/createmailbox.jsp" objectlist="$includePath" referids="$referids">
+	    <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
+	    <mm:param name="callerpage">/email/index.jsp</mm:param>
+	  </mm:treefile>">
+	  <img src="<mm:treefile page="/email/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.createfolder" />"/></a>
+	  <a href="<mm:treefile page="/email/changemailbox.jsp" objectlist="$includePath" referids="$referids">
+	    <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
+	    <mm:param name="callerpage">/email/index.jsp</mm:param>
+	  </mm:treefile>">
+	  <img src="<mm:treefile page="/email/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.renamefolder" />"/></a>
+	  <a href="<mm:treefile page="/email/deletemailbox.jsp" objectlist="$includePath" referids="$referids">
+	    <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
+	    <mm:param name="callerpage">/email/index.jsp</mm:param>
+	  </mm:treefile>">
+	  <img src="<mm:treefile page="/email/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.deletefolder" />"/></a>
+	  <br/><br/>
+	  <mm:treeinclude page="/email/mailboxes.jsp" objectlist="$includePath" referids="$referids" />
+	</div>
   </div>
-  <div class="folderBody">
+
 
   
   <script>
@@ -315,9 +332,6 @@
     <mm:param name="icon">write message</mm:param>
     <mm:param name="text"><di:translate key="email.writemessage" /></mm:param>
   </mm:treeinclude>
-
-  </div>
-</div>
 
 <div class="mainContent">
   <div class="contentHeader">
