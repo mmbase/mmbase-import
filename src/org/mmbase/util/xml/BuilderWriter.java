@@ -24,10 +24,13 @@ import org.w3c.dom.*;
  * The document can then be used internally or serialized using a number of
  * utility methods.
  * This writer takes extension of builders (inheritance) into account.
+ * 
+ * XXX This class actually transforms nice builder XML's to stupid automatic XML's in deprecated format, forgetting all comments, alls datatype extensions.
+ * TODO: This is broken!
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.20 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.21 2006-01-06 17:36:03 michiel Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
