@@ -132,9 +132,12 @@
           <list>2</list>
         </positions>
       </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <pattern value="image/.*" />
+      </datatype>
       <db>
         <name>handle</name>
-        <type state="persistent" size="16777215" notnull="true" key="false">BYTE</type>
+        <type state="persistent" size="16777215" notnull="true" key="false">BINARY</type>
       </db>
     </field>
 
