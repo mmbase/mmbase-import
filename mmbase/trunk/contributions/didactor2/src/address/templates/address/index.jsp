@@ -23,7 +23,7 @@
 <div class="rows">
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_addressbook.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="address.addressbook" />"/>
+    <img src="<mm:treefile write="true" page="/gfx/icon_addressbook.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" title="<di:translate key="address.addressbook" />" title="<di:translate key="address.addressbook" />" alt="<di:translate key="address.addressbook" />"/>
     <di:translate key="address.addressbook" />
   </div>
 </div>
@@ -269,8 +269,8 @@
                  <mm:param name="addressbook"><mm:write referid="addressbook"/></mm:param>
                  <mm:param name="callerpage">/address/index.jsp?sf=lastname,firstname&so=up,up</mm:param>
                </mm:treefile>">
-        <img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" alt="<di:translate key="address.addcontact" />"/></a>
-        <input type="image" name="action_delete" value="delete" src="<mm:treefile page="/gfx/icon_deletecontact.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" alt="<di:translate key="address.deletecontact" />"/></a>
+        <img src="<mm:treefile page="/gfx/icon_addcontact.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" title="<di:translate key="address.addcontact" />" alt="<di:translate key="address.addcontact" />"/></a>
+        <input type="image" name="action_delete" value="delete" src="<mm:treefile page="/gfx/icon_deletecontact.gif" objectlist="$includePath" referids="$referids"/>" width="50" height="28" border="0" title="<di:translate key="address.deletecontact" />" alt="<di:translate key="address.deletecontact" />"/></a>
     </mm:isgreaterthan>
       </mm:present>
     </mm:notpresent>
@@ -313,7 +313,7 @@
               <mm:import id="contactno"><mm:field name="number"/></mm:import>
 
               <mm:compare referid="nodetype" value="contacts">
-                <img src="<mm:treefile page="/address/gfx/contact.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="address.contact" />"/>
+                <img src="<mm:treefile page="/address/gfx/contact.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="address.contact" />" alt="<di:translate key="address.contact" />"/>
               </mm:compare>
 
               <mm:node number="$contactno">
@@ -321,46 +321,46 @@
                 <mm:field name="isonline" id="isonline" write="false"/>
                 <di:hasrole referid="contactno" role="contenteditor">
                   <mm:compare referid="isonline" value="0">
-                    <img src="<mm:treefile page="/address/gfx/editor_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.editoroffline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/editor_offline.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.editoroffline" />" alt="<di:translate key="core.editoroffline" />"/>
                   </mm:compare>
                   <mm:compare referid="isonline" value="1">
-                    <img src="<mm:treefile page="/address/gfx/editor_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.editoronline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/editor_online.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.editoronline" />" alt="<di:translate key="core.editoronline" />"/>
                   </mm:compare>
                 </di:hasrole>
 
                 <di:hasrole referid="contactno" role="courseeditor">
                   <mm:compare referid="isonline" value="0">
-                    <img src="<mm:treefile page="/address/gfx/editor_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.editoroffline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/editor_offline.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.editoroffline" />"  alt="<di:translate key="core.editoroffline" />"/>
                   </mm:compare>
                   <mm:compare referid="isonline" value="1">
-                    <img src="<mm:treefile page="/address/gfx/editor_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.editoronline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/editor_online.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.editoronline" />" alt="<di:translate key="core.editoronline" />"/>
                   </mm:compare>
                 </di:hasrole>
 
                 <di:hasrole referid="contactno" role="administrator">
                   <mm:compare referid="isonline" value="0">
-                    <img src="<mm:treefile page="/address/gfx/administrators_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.administratoroffline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/administrators_offline.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.administratoroffline" />" alt="<di:translate key="core.administratoroffline" />"/>
                   </mm:compare>
                   <mm:compare referid="isonline" value="1">
-                    <img src="<mm:treefile page="/address/gfx/administrators_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.administratoronline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/administrators_online.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.administratoronline" />" alt="<di:translate key="core.administratoronline" />"/>
                   </mm:compare>
                 </di:hasrole>
 
                 <di:hasrole referid="contactno" role="teacher">
                   <mm:compare referid="isonline" value="0">
-                    <img src="<mm:treefile page="/address/gfx/teachers_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.teacheroffline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/teachers_offline.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.teacheroffline" />" alt="<di:translate key="core.teacheroffline" />"/>
                   </mm:compare>
                   <mm:compare referid="isonline" value="1">
-                    <img src="<mm:treefile page="/address/gfx/teachers_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.teacheronline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/teachers_online.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.teacheronline" />" alt="<di:translate key="core.teacheronline" />"/>
                   </mm:compare>
                 </di:hasrole>
 
                 <di:hasrole referid="contactno" role="student">
                   <mm:compare referid="isonline" value="0">
-                    <img src="<mm:treefile page="/address/gfx/students_offline.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.studentoffline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/students_offline.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.studentoffline" />" alt="<di:translate key="core.studentoffline" />"/>
                   </mm:compare>
                   <mm:compare referid="isonline" value="1">
-                    <img src="<mm:treefile page="/address/gfx/students_online.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="core.studentonline" />"/>
+                    <img src="<mm:treefile page="/address/gfx/students_online.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="core.studentonline" />" alt="<di:translate key="core.studentonline" />"/>
                   </mm:compare>
                 </di:hasrole>
               </mm:node>
