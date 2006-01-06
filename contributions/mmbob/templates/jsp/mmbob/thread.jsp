@@ -250,7 +250,7 @@
 
 <table cellpadding="0" cellspacing="0" style="margin-top : 2px;" width="95%">
 	<tr><td align="left"><b><mm:write referid="mlg.Pages"/>
-   	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
+   	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
 			<mm:field name="navline" />
 		  </mm:nodefunction>
 	  </b>
