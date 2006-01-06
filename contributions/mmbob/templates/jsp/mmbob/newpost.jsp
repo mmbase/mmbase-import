@@ -56,7 +56,7 @@
 	<tr><th width="100"><mm:write referid="mlg.Name" /></th><td colspan="2" align="left">
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
-		<mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
+		<mm:field name="firstname" /> <mm:field name="lastname" />
 		<input name="poster" type="hidden" value="<mm:field name="account" />" >
 		</mm:node>
 		</mm:compare>
