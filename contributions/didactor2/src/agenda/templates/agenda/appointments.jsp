@@ -14,7 +14,7 @@
 <div class="rows">
   <div class="navigationbar">
     <div class="titlebar">
-      <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="agenda.calendar" />"/>
+      <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="agenda.calendar" />" alt="<di:translate key="agenda.calendar" />"/>
       <di:translate key="agenda.calendar" />
     </div>
   </div>
@@ -55,7 +55,7 @@
         <di:translate key="agenda.appointments" />
       </div>
       <div class="contentSubHeader">    
-        <a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_vandaag.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="agenda.viewcurrentagenda" />" border="0"></a>
+        <a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_vandaag.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="agenda.viewcurrentagenda" />" alt="<di:translate key="agenda.viewcurrentagenda" />" border="0"></a>
         <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>">
       </div>
       <div class="contentBody">

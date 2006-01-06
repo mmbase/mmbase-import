@@ -14,7 +14,7 @@
 <div class="rows">
   <div class="navigationbar">
     <div class="titlebar">
-      <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="agenda.calendar" />"/>
+      <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="agenda.calendar" />" alt="<di:translate key="agenda.calendar" />"/>
       <di:translate key="agenda.calendar" />
     </div>
   </div>
@@ -77,7 +77,7 @@
                     <mm:param name="month"><mm:write referid="month"/></mm:param>
                     <mm:param name="day"><mm:write referid="day"/></mm:param>
                   </mm:treefile>">
-            <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addpersonalagendaitem" />"/></a>
+            <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.addpersonalagendaitem" />" alt="<di:translate key="agenda.addpersonalagendaitem" />"/></a>
         <% }%>
         <%-- workgroup related agenda items --%>
         <mm:node number="$user">
@@ -90,7 +90,7 @@
                        <mm:param name="month"><mm:write referid="month"/></mm:param>
                        <mm:param name="day"><mm:write referid="day"/></mm:param>
                      </mm:treefile>">
-              <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_workgroup.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addworkgroupagendaitem" />"/></a>
+              <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_workgroup.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.addworkgroupagendaitem" />" alt="<di:translate key="agenda.addworkgroupagendaitem" />"/></a>
           </mm:relatednodes>
         </mm:node>
 
@@ -106,7 +106,7 @@
                          <mm:param name="month"><mm:write referid="month"/></mm:param>
                          <mm:param name="day"><mm:write referid="day"/></mm:param>
                        </mm:treefile>">
-                <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_class.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addclassagendaitem" />"/></a>
+                <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_class.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.addclassagendaitem" />" alt="<di:translate key="agenda.addclassagendaitem" />"/></a>
             </mm:relatednodes>
           </mm:node>
         </di:hasrole>
@@ -122,11 +122,11 @@
                        <mm:param name="month"><mm:write referid="month"/></mm:param>
                        <mm:param name="day"><mm:write referid="day"/></mm:param>
                      </mm:treefile>">
-              <img src="<mm:treefile page="/agenda/gfx/icon_agenda_invitation.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.createinvitation" />"/></a>
+              <img src="<mm:treefile page="/agenda/gfx/icon_agenda_invitation.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.createinvitation" />" alt="<di:translate key="agenda.createinvitation" />"/></a>
           </mm:relatednodes>
         </mm:node>
 
-        <a href="<mm:treefile page="/agenda/appointments.jsp"  objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_afspraken.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="agenda.listappointments" />" border="0" /></a>
+        <a href="<mm:treefile page="/agenda/appointments.jsp"  objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_afspraken.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="agenda.listappointments" />" alt="<di:translate key="agenda.listappointments" />" border="0" /></a>
         <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>"/>
       </div>
       <div class="contentBody">

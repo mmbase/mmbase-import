@@ -67,7 +67,7 @@
                <mm:param name="month"><mm:write referid="month"/></mm:param>
                <mm:param name="day"><mm:write referid="day"/></mm:param>
              </mm:treefile>">
-      <img src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.deleteagendaitem" />"/></a>
+      <img src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.deleteagendaitem" />" alt="<di:translate key="agenda.deleteagendaitem" />"/></a>
       </mm:first>
     </mm:list>
   </div>
