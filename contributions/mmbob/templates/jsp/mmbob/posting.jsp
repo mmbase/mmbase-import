@@ -31,7 +31,7 @@
   	<mm:compare value="closed"><mm:import id="noedit">true</mm:import></mm:compare>
   </mm:field>
 </mm:node>
-<mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
+<mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
 <mm:field name="pagecount" id="pagecount" write="false" />
 </mm:nodefunction>
 
