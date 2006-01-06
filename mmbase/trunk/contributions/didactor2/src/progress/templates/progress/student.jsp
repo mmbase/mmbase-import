@@ -95,12 +95,12 @@
                    <mm:param name="contact"><mm:write referid="student"/></mm:param>
                    </mm:treefile>"><img
       src="<mm:treefile page="/progress/gfx/portfolio.gif"  objectlist="$includePath" referids="$referids"/>"
-      alt="Portfolio" border="0" /> </a> <mm:islessthan inverse="true"
+      title="Portfolio" alt="Portfolio" border="0" /> </a> <mm:islessthan inverse="true"
       referid="rights" referid2="RIGHTS_RW">
       <a
         href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>"><img
         src="<mm:treefile page="/progress/gfx/back.gif"  objectlist="$includePath" referids="$referids"/>"
-        alt="<di:translate key="progress.backtooverview" />"
+        title="<di:translate key="progress.backtooverview" />" alt="<di:translate key="progress.backtooverview" />"
         border="0" /></a>
     </mm:islessthan></div>
 

@@ -57,11 +57,11 @@
 <div class="navigationbar">
   <div class="titlebar">
     <mm:compare referid="typeof" value="1">
-      <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.mydocuments" />" />
+      <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" title="<di:translate key="workspace.mydocuments" />" alt="<di:translate key="workspace.mydocuments" />" />
       <di:translate key="workspace.mydocuments" />
     </mm:compare>
     <mm:compare referid="typeof" value="2">
-      <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.shareddocuments" />" />
+      <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" title="<di:translate key="workspace.shareddocuments" />" alt="<di:translate key="workspace.shareddocuments" />" />
       <di:translate key="workspace.shareddocuments" />
     </mm:compare>
   </div>
