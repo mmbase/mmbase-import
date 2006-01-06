@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.84 2005-12-29 15:15:13 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.85 2006-01-06 16:34:16 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -753,9 +753,11 @@ public class ClusterBuilder extends VirtualBuilder {
                     log.debug("Created a relation step " + relation + " (implicit)");
                 }
             }
-            String tableAlias= getUniqueTableAlias(tableName, tableAliases, tables);
-            String tableAlias2= getUniqueTableAlias(tableName2, tableAliases, tables);
-            roles.put(tableAlias, roles.get(tableName));
+            String tableAlias = getUniqueTableAlias(tableName, tableAliases, tables);
+            String tableAlias2 = getUniqueTableAlias(tableName2, tableAliases, tables);
+            if (! tableName.equals(tableAlias)) {
+                roles.put(tableAlias, roles.get(tableName));
+            }
             relation.setAlias(tableAlias);
             step2.setAlias(tableAlias2);
             stepsByAlias.put(tableAlias, relation);
@@ -788,6 +790,7 @@ public class ClusterBuilder extends VirtualBuilder {
         try {
             bul= mmb.getBuilder(tableName);
         } catch (BuilderConfigurationException e) {}
+
         if (bul == null) {
             // check if it is a role name. if so, use the builder of the
             // rolename and store a filter on rnumber.
