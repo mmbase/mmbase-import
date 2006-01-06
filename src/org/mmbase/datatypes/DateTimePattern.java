@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.7 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.8 2006-01-06 22:45:41 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -49,11 +49,11 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     }
 
     /**
-     * Returns a DateFormat object associated with this object. 
+     * Returns a DateFormat object associated with this object.
      */
     public DateFormat getDateFormat(Locale locale) {
         if (locale == null) locale = LocalizedString.getDefault();
-        return new SimpleDateFormat(pattern.get(locale), locale);        
+        return new SimpleDateFormat(pattern.get(locale), locale);
     }
 
 
@@ -178,7 +178,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                 help.set(field, value);
                 return format.format(help.getTime());
             }
-            
+
         };
     private static final Element AM_PM         = new Element("am_pm", Calendar.AM_PM, 0, //AM
                                                              1 //PM
@@ -192,6 +192,17 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         };
     private static final Element MILLISECOND   = new Element("millisecond", Calendar.MILLISECOND, 0, 9999);
 
+
+    /**
+     * Returns an {@link Element} structure assiocated with the characters of the format
+     * pattern. This utility function can be usefull when generating drop-downs based on the result
+     * of {@link #getList}.
+     * @param c The pattern character. 'y', 'M', 'd', 'H', 'K', 'h', 'k', 'm', 's', 'E', 'w', 'D',  'F', 'G', 'a', or 'S'
+     * @param minDate  If for example the parameter is 'y' then the 'getMin' property of the result
+     * Element will be the year of this date.
+     * @param maxDate  If for example the parameter is 'y' then the 'getMax' property of the result
+     * Element will be the year of this date.
+     */
     public static Element getElement(char c, Calendar minDate, Calendar maxDate) {
         switch(c) {
         case 'y': {
@@ -241,8 +252,9 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                 min = 1;
                 max = 31;
             }
-            return new Element("day", Calendar.DAY_OF_MONTH, min, max);            
+            return new Element("day", Calendar.DAY_OF_MONTH, min, max);
         }
+            // ignore minDate, maxDate for these, never mind..
         case 'H': return HOUR_OF_DAY;
         case 'K': return HOUR;
         case 'h': return HOUR_OF_DAY_1;
@@ -256,12 +268,17 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         case 'G': return ERA;
         case 'a': return AM_PM;
         case 'S': return MILLISECOND;
-        default: 
+        default:
             log.warn("Unknown pattern " + c);
             return null;
         }
     }
 
+    /**
+     * A wrapper arround a field in a {@link java.util.Calendar} object. It provides a
+     * minimal and maximal value for the integer value, which can be requested by code which is
+     * producing a user interface to enter dates.
+     */
     public static class Element {
         private final String name;
         final int field;
@@ -278,21 +295,47 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             this.max = max;
             this.offset = offset;
         }
+        /**
+         * The name of the field in a Calendar object. Like e.g. 'day' or 'second'.
+         */
         public final String getName() {
             return name;
         }
+        /**
+         * The associated constant in {@link java.util.Calendar}, e.g. {@link
+         * java.util.Calendar.DAY_OF_MONTH}  or {@link java.util.Calendar#SECOND}
+         */
         public final int getField() {
             return field;
         }
+        /**
+         * The minimal value this field of the Calendar object can take.
+         */
         public final int getMin() {
             return min;
         }
+        /**
+         * The maximal value this field of the Calendar object can take.
+         */
         public final int getMax() {
             return max;
         }
+        /**
+         * An offset to be used for presentation. E.g. months are represented by number from 0 to 11
+         * in Calendar objects but you typically want to present 1 to 12, so the offset is 1 then.
+         */
         public final int getOffset() {
             return offset;
         }
+        /**
+         * Converts a value for the Calendar field associated with this Element to a
+         * String. Typically used when creating optionlists.
+         * @param value the value to convert
+         * @param locale A locale can be used in some instances. E.g. to generate month names.
+         * @param length An indication of verboseness. Typically numeric results if a small number
+         * (perhaps filled to this length) or words if a big number (and it makes sense, e.g. for
+         * months, and weekdays).
+         */
         public String toString(int value, Locale locale, int length) {
             StringBuffer buf = new StringBuffer("" + value);
             while(buf.length() < length) {
@@ -301,13 +344,14 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             return buf.toString();
         }
         /**
-         * The int-value representing <code>null</code>. Some otherwise impossible value for the field.
+         * The int-value representing <code>null</code>. Some otherwise impossible value for the
+         * field. This can be use as a marker value in the option-list to set the calendar value to <code>null</code>.
          */
         public int getNullValue() {
             return -1;
         }
     }
-     
+
 
     public Object clone() {
         try {
