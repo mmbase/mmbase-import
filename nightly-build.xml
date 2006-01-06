@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.28 2005-12-18 10:24:17 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.29 2006-01-06 18:28:00 michiel Exp $
    @since    MMBase-1.6
 
 -->
@@ -40,6 +40,7 @@
 
   <!-- Make build for this time -->
   <property name="date" value="now" />
+  <property name="tag" value="" />
 
 
   <property name="buildscript.dir" value="${nbuild.dir}/cvs/mmbase"/>
@@ -62,14 +63,26 @@
   <property name="cvs.mmbase.module" value="all"/>
 
   <property name="cvsroot" value=":pserver:guest@cvs.mmbase.org:/var/cvs" />
-  <property name="checkoutcommand" value="checkout -D ${date} all" />
-  <property name="updatecommand" value="-q up -d -P  -D ${date} " />
 
   <target name="init.cvs">
     <available property="checkout.available" file="${source.dir}"/>
+    <condition property="do.date">
+      <equals arg1="${tag}" arg2="" />
+    </condition>
   </target>
 
-  <target name="checkout" depends="init.cvs" unless="checkout.available">
+
+  <target name="date.checkout" depends="init.cvs" if="do.date">
+    <property name="checkoutcommand" value="checkout -D ${date} all" />
+    <property name="updatecommand" value="-q up -d -P  -D ${date} " />
+  </target>
+  <target name="tag.checkout" depends="init.cvs" unless="do.date">
+    <property name="checkoutcommand" value="checkout -r ${tag} all" />
+    <property name="updatecommand" value="-q up -d -P -r ${tag} " />
+  </target>
+
+
+  <target name="checkout" depends="date.checkout,tag.checkout" unless="checkout.available">
     <property name="just.checked.out" value="yes"/>
     <echo>Doing an anonymous CVS login</echo>
     <cvspass cvsroot="${cvsroot}" password="guest" />
