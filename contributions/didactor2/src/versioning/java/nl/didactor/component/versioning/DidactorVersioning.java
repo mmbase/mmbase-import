@@ -25,7 +25,7 @@ public class DidactorVersioning extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorVersioning";
+        return "versioning";
     }
 
     /**
@@ -39,6 +39,7 @@ public class DidactorVersioning extends Component {
     }
 
     public void init() {
+        super.init();
         MMBase mmbase = MMBase.getMMBase();
         String[] builders = new String[]{"flashpages","htmlpages","learnblocks","learnobjects","pages","questions","paragraphs","educations"};
         for (int i=0; i<builders.length; i++) {

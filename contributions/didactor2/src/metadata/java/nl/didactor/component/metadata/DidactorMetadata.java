@@ -21,7 +21,7 @@ public class DidactorMetadata extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorMetadata";
+        return "metadata";
     }
 
     /**

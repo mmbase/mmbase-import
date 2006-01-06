@@ -19,7 +19,7 @@ public class DidactorCmsHelp extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorCmsHelp";
+        return "cmshelp";
     }
 
     /**
@@ -63,6 +63,7 @@ public class DidactorCmsHelp extends Component {
         return true;
     }
     public void init() {
+      super.init();
       initRelations();
     }
       

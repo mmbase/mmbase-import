@@ -29,7 +29,7 @@ public class DidactorVirtualClassroom extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorVirtualClassroom";
+        return "virtualclassroom";
     }
 
     /**
@@ -77,6 +77,7 @@ public class DidactorVirtualClassroom extends Component {
      * Initialize component.
      */      
     public void init() {
+        super.init();
         initRelations();
     }
     
