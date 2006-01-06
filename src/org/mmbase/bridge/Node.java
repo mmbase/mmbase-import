@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.66 2005-12-08 12:24:25 michiel Exp $
+ * @version $Id: Node.java,v 1.67 2006-01-06 15:00:30 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -192,7 +192,8 @@ public interface Node extends Comparable {
     public void setByteValue(String fieldName, byte[] value);
 
     /**
-     * Sets the value of the specified field using a <code>java.io.OutputStream</code>.
+     * Sets the value of the specified field using a <code>java.io.InputStream</code>.
+     * @since MMBase-1.8.
      */
     public void setInputStreamValue(String fieldName, InputStream value, long size);
 
@@ -401,6 +402,7 @@ public interface Node extends Comparable {
      * Returns the value of the specified field as a <code>java.io.InputStream</code> This is
      * especially usefull for large byte-array fields. By this you can avoid them to be completely
      * stored in memory.
+     * @since MMBase-1.8
      */
     public InputStream getInputStreamValue(String fieldName);
 
