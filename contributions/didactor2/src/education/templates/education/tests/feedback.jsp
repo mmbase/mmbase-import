@@ -80,7 +80,7 @@
          <mm:relatednodes>
             <h1><mm:field name="name"/></h1>
             <mm:relatednodes type="images">
-               <img src="<mm:image template="s(150x150)"/>" alt="<mm:field name="title"/>">
+               <img src="<mm:image template="s(150x150)"/>" title="<mm:field name="title"/>" alt="<mm:field name="title"/>">
             </mm:relatednodes>
 
             <p><mm:field name="text" escape="none"/></p>

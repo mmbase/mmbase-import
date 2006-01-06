@@ -17,7 +17,7 @@ Parameters:
   <mm:import id="link" externid="link"/>
   <td>
     <a href="<mm:write referid="link"/>" class="didactor">
-      <img src="<mm:treefile write="true" page="/forum/gfx/${icon}.gif" objectlist="$includePath"/>" width="50" height="28" alt="<mm:write referid="text"/>" border="0"></a>
+      <img src="<mm:treefile write="true" page="/forum/gfx/${icon}.gif" objectlist="$includePath"/>" width="50" height="28" title="<mm:write referid="text"/>" alt="<mm:write referid="text"/>" border="0"></a>
   </td>
 
 </mm:cloud>

@@ -109,7 +109,7 @@
 <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
    <tr class="navigationbar">
       <td colspan="2" class="titlebar">
-         <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="education.editwizards" />" />
+         <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="education.editwizards" />" alt="<di:translate key="education.editwizards" />" />
          <span class="menu_font">Editwizards:</span> <mm:treeinclude page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />
       </td>
    </tr>

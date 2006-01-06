@@ -16,7 +16,7 @@
 
 <div class="rows">
   <div class="relativenavigationbar">
-      <img src="<mm:treefile write="true" page="/gfx/icon_forum.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="forum" /> Forum
+      <img src="<mm:treefile write="true" page="/gfx/icon_forum.gif" objectlist="$includePath" />" width="25" height="13" border="0" title="forum" alt="forum" /> Forum
   </div>
   <mm:import externid="forumid" jspvar="forumid">unknown</mm:import>
   <di:hasrole role="teacher">

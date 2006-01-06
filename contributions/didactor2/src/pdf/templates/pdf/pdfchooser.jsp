@@ -65,7 +65,7 @@
 <title>PDF output</title>
 </head>
 <body>
-     <a href="<%= request.getContextPath() %>/pdf.db?number=<mm:write referid="number"/>&provider=<mm:write referid="provider"/>"><img src="printPDF.gif" alt="Bekijk als PDF" border="0"></a> <a href="pdfchooser.jsp?action=mail&number=<mm:write referid="number"/>" target="_top"><img src="mailPDF.gif" alt="Mail als PDF" border="0"/></a>
+     <a href="<%= request.getContextPath() %>/pdf.db?number=<mm:write referid="number"/>&provider=<mm:write referid="provider"/>"><img src="printPDF.gif" title="Bekijk als PDF" alt="Bekijk als PDF" border="0"></a> <a href="pdfchooser.jsp?action=mail&number=<mm:write referid="number"/>" target="_top"><img src="mailPDF.gif" title="Mail als PDF" alt="Mail als PDF" border="0"/></a>
 </body>
 </html>
 

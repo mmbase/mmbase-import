@@ -48,7 +48,7 @@
 
   <div class="columnLeft">
 
-    <img src="<mm:treefile write="true" page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" alt="Didactor logo" />
+    <img src="<mm:treefile write="true" page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" title="Didactor logo" alt="Didactor logo" />
 
     <div class="titlefield">
       <di:hasrole role="teacher">
@@ -92,7 +92,7 @@
          <mm:param name="mode">coaches</mm:param>
       </mm:treeinclude>
 <%--
-       <img src="<mm:treefile write="true" page="/gfx/icon_offline.gif" objectlist="$includePath" />" width="6" height="12" alt="offline" />
+       <img src="<mm:treefile write="true" page="/gfx/icon_offline.gif" objectlist="$includePath" />" width="6" height="12" title="offline" alt="offline" />
       <a href="" class="users">Beheerder (test)</a><br />
 --%>
     </div>
