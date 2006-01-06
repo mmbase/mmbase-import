@@ -21,7 +21,7 @@ public class DidactorSources extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorSources";
+        return "sources";
     }
 
     /**

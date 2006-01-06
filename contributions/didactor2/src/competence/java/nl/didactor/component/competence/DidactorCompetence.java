@@ -15,10 +15,11 @@ public class DidactorCompetence extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorCompetence";
+        return "competence";
     }
 
     public void init() {
+        super.init();
         Component.getComponent("education").registerInterested(this);
     }
 
@@ -34,7 +35,7 @@ public class DidactorCompetence extends Component {
         return new boolean[]{true, true};
     }
 
-    public String getSetting(String setting, Cloud cloud, Map context, String[] arguments) {
+    public String getValue(String setting, Cloud cloud, Map context, String[] arguments) {
         if ("showlo".equals(setting)) {
             return "" + showLo(cloud, context, Integer.parseInt(arguments[0]), Integer.parseInt(arguments[1]));
         }

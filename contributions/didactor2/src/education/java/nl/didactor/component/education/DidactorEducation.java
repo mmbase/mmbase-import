@@ -28,7 +28,7 @@ public class DidactorEducation extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorEducation";
+        return "education";
     }
 
     /**
@@ -123,7 +123,7 @@ public class DidactorEducation extends Component {
     }
 
     // javadoc inherited
-    public String getSetting(String setting, Cloud cloud, Map context, String[] arguments) {
+    public String getValue(String setting, Cloud cloud, Map context, String[] arguments) {
         if ("showlo".equals(setting)) {
             String lo = arguments[0];
             int res = showLo(cloud, context, lo);
@@ -132,7 +132,7 @@ public class DidactorEducation extends Component {
                     Component comp = (Component)interestedComponents.get(i);
                     // delegate the call to the component. We give the current 'max' level as an extra
                     // argument, so that no useless checking needs to be done
-                    String value = comp.getSetting("showlo", cloud, context, new String[]{lo, ""+res});
+                    String value = comp.getValue("showlo", cloud, context, new String[]{lo, ""+res});
                     if (!"".equals(value)) {
                         res = Math.min(Integer.parseInt(value), res);
                     }

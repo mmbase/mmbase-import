@@ -25,7 +25,7 @@ public class DidactorAgenda extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorAgenda";
+        return "agenda";
     }
 
     /**
@@ -38,6 +38,7 @@ public class DidactorAgenda extends Component {
     }
 
     public void init() {
+        super.init();
         MMBase mmbase = MMBase.getMMBase();
         DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
         people.registerPostInsertComponent(this, 10);
