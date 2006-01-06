@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<luceneindex
- xmlns="http://www.mmbase.org/xmlns/luceneindex"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.mmbase.org/xmlns/luceneindex http://www.mmbase.org/xmlns/luceneindex.xsd">
-  <!-- no default indices -->
-</luceneindex>

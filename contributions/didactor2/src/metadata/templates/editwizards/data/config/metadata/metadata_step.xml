@@ -1,6 +1,0 @@
-    <form-schema id="metadata_step">
-        <title>Metadata invoeren</title>
-        <list extends="config/metadata/metadatalangstring.xml"/>
-        <list extends="config/metadata/metadatadate.xml"/>
-        <list extends="config/metadata/metadatavocabulary.xml"/>
-    </form-schema>
