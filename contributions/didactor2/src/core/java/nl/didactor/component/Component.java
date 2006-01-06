@@ -325,8 +325,10 @@ public abstract class Component {
         org.mmbase.bridge.NodeList settingNodes = baseNode.getRelatedNodes("settings");
 
         for (int i=0; i<settingNodes.size(); i++) {
-            if (settingNodes.getNode(i).getStringValue("name").equals(settingname)) {
-                settingNodes.getNode(i).setValue("value", newValue);
+            org.mmbase.bridge.Node settingNode = settingNodes.getNode(i);
+            if (settingNode.getStringValue("name").equals(settingname)) {
+                settingNode.setValue("value", newValue);
+                settingNode.commit();
                 return;
             }
         }
