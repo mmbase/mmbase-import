@@ -22,7 +22,7 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_sources.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<di:translate key="sources.sources" />" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_sources.gif" objectlist="$includePath" />" width="25" height="13" border="0" title="<di:translate key="sources.sources" />" alt="<di:translate key="sources.sources" />" />
     <di:translate key="sources.sources" />
   </div>
 </div>

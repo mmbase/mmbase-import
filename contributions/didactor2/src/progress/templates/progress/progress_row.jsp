@@ -121,17 +121,17 @@
                                     <td class="td_test_tbs" style="border-color:#000000; border-top:0px; border-left:0px"><a href="<mm:treefile page="/education/tests/rateopen.jsp" objectlist="$includePath" referids="$referids">
                                                                         <mm:param name="studentNo"><mm:write referid="student"/></mm:param>
                                                                         <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
-                                                                     </mm:treefile>"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?" border="0"></a>
+                                                                     </mm:treefile>"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" title="?" alt="?" border="0"></a>
                                     </td>
                                  </mm:islessthan>
                                  <mm:islessthan referid="rights" referid2="RIGHTS_RW">
-                                    <td class="td_test_tbs" style="border-color:#000000; border-top:0px; border-left:0px"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" alt="?" border="0"></td>
+                                    <td class="td_test_tbs" style="border-color:#000000; border-top:0px; border-left:0px"><img src="<mm:treefile page="/progress/gfx/question.gif" objectlist="$includePath" referids="$referids"/>" title="?" alt="?" border="0"></td>
                                  </mm:islessthan>
                               </mm:compare>
 
                               <mm:compare referid="teststatus" value="passed">
                                  <td class="td_test_tbs" style="border-color:#000000; border-top:0px; border-left:0px">
-                                    <img src="<mm:treefile page="/progress/gfx/checked.gif" objectlist="$includePath" referids="$referids"/>" alt="Ok" border="0">
+                                    <img src="<mm:treefile page="/progress/gfx/checked.gif" objectlist="$includePath" referids="$referids"/>" title="Ok" alt="Ok" border="0">
                                  </td>
                               </mm:compare>
 
