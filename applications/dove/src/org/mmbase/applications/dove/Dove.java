@@ -11,6 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
+import java.util.*;
+import java.util.regex.Pattern;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -51,7 +53,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.73 2006-01-05 18:28:15 michiel Exp $
+ * @version $Id: Dove.java,v 1.74 2006-01-06 14:22:23 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -633,6 +635,13 @@ public class Dove extends AbstractDove {
                                 baseType = "int";
                             } else if (dataType instanceof XmlDataType) {
                                 baseType = "string";
+                            } else if (dataType instanceof BinaryDataType) {
+                                Pattern p = ((BinaryDataType) dataType).getValidMimeTypes();
+                                if (p.matcher("image/someimageformat").matches()) {
+                                    specialization = "image";
+                                } else {
+                                    specialization = "file";
+                                }
                             }
                         }
                         String guiType = baseType + "/" + specialization;
