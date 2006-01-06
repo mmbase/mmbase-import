@@ -271,15 +271,18 @@ public abstract class Component {
 
     /**
      * Get the setting for an object and a component from MMBase. This object can be a 'people' object,
-     * 'component' object, etc.
+     * 'component' object, etc. If the object is the component, and no value can be found in the database,
+     * the setting's default value will be returned.
      * @param settingname The name of the setting in MMBase.
      * @param objectid The number of the node representing this object to get the component setting value for
      */
-    public String getObjectSetting(String settingname, int id, Cloud cloud) {
+    public String getObjectSetting(String settingName, int id, Cloud cloud) {
         org.mmbase.bridge.NodeList settingNodes = null;
+        String defaultValue = null;
         if (id == node.getNumber()) {
             // direct setting to this component
             settingNodes = cloud.getNode(id).getRelatedNodes("settings");
+            defaultValue = ((Setting)settings.get(settingName)).getDefault();
         } else {
             org.mmbase.bridge.NodeList settingrel = nl.didactor.util.GetRelation.getRelations(id, node.getNumber(), "settingrel", cloud);
 
@@ -294,19 +297,19 @@ public abstract class Component {
         }
 
         if (settingNodes == null) {
-            return null;
+            return defaultValue;
         }
 
         for (int i=0; i<settingNodes.size(); i++) {
-            if (settingNodes.getNode(i).getStringValue("name").equals(settingname)) {
+            if (settingNodes.getNode(i).getStringValue("name").equals(settingName)) {
                 return settingNodes.getNode(i).getStringValue("value");
             }
         }
 
-        return null;
+        return defaultValue;
     }
 
-    public void setObjectSetting(String settingname, int id, Cloud cloud, String newValue) {
+    public void setObjectSetting(String settingName, int id, Cloud cloud, String newValue) {
         org.mmbase.bridge.Node baseNode = null;
         if (id == node.getNumber()) {
             baseNode = cloud.getNode(id);
@@ -314,7 +317,7 @@ public abstract class Component {
             org.mmbase.bridge.NodeList settingrel = nl.didactor.util.GetRelation.getRelations(id, node.getNumber(), "settingrel", cloud);
 
             if (settingrel.size() == 0) {
-                throw new RuntimeException("Cannot set a value for setting '" + settingname + "' if there is no settingrelation between component '" + node.getNumber() + "' and object '" + id + "'");
+                throw new RuntimeException("Cannot set a value for setting '" + settingName + "' if there is no settingrelation between component '" + node.getNumber() + "' and object '" + id + "'");
             }
             if (settingrel.size() > 1) {
                 log.warn("Too many relations from " + id + " to " + node.getNumber() +". Picking first one!");
@@ -326,7 +329,7 @@ public abstract class Component {
 
         for (int i=0; i<settingNodes.size(); i++) {
             org.mmbase.bridge.Node settingNode = settingNodes.getNode(i);
-            if (settingNode.getStringValue("name").equals(settingname)) {
+            if (settingNode.getStringValue("name").equals(settingName)) {
                 settingNode.setValue("value", newValue);
                 settingNode.commit();
                 return;
@@ -335,7 +338,7 @@ public abstract class Component {
         // not found, we need to create a new setting node.
         org.mmbase.bridge.NodeManager nm = cloud.getNodeManager("settings");
         org.mmbase.bridge.Node node = nm.createNode();
-        node.setValue("name", settingname);
+        node.setValue("name", settingName);
         node.setValue("value", newValue);
         node.commit();
         org.mmbase.bridge.RelationManager rm = cloud.getRelationManager("related");
