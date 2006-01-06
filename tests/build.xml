@@ -38,8 +38,6 @@
   </target>
 
   <target name="start.database" depends="init">
-    <sleep seconds="30" />
-    <echo message="done sleeping" />
     <java classname="org.hsqldb.Server" fork="true" >
       <arg value="-database.0" />
       <arg value ="${tests.database.dir}/test" />
@@ -409,6 +407,7 @@ Build-compiler: ${build.compiler}
   <target name="run.clustering" depends="jar,init,mmbase">
     <ant target="install" dir="${mmbase.source.dir}/applications/clustering" />
     <antcall target="clean.database" />
+    <sleep seconds="5" />
     <parallel>
       <echo message="${tests.source.dir}/config" />
       <daemons>
@@ -426,7 +425,7 @@ Build-compiler: ${build.compiler}
         </java>
         <sequential>
           <!-- this should not be necessary, but MMBase's get a bit confused if they both at same time start to make the same tables -->
-          <sleep seconds="10" />
+          <sleep seconds="20" />
           <java
               classname="org.mmbase.tests.MMBaseTest"
               fork="true"
@@ -440,13 +439,15 @@ Build-compiler: ${build.compiler}
           </java>
         </sequential>
       </daemons>
-      
-      <java
-          classname="${ui.class}"
-          fork="true"
-          classpathref="run.rmmci.client">
-        <arg value="org.mmbase.tests.Clustering" />
-      </java>
+      <sequential>
+        <sleep seconds="40" />
+        <java
+            classname="${ui.class}"
+            fork="true"
+            classpathref="run.rmmci.client">
+          <arg value="org.mmbase.tests.Clustering" />
+        </java>
+      </sequential>
     </parallel>
   </target>
 
