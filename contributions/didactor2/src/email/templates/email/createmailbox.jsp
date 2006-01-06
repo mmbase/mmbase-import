@@ -69,7 +69,7 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="email.email" />"/>
+    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0"  title="<di:translate key="email.email"/>" alt="<di:translate key="email.email" />"/>
     <di:translate key="email.email" />
   </div>
 </div>
