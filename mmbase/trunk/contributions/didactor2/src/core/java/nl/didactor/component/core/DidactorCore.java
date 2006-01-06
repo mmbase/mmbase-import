@@ -22,7 +22,7 @@ public class DidactorCore extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorCore";
+        return "core";
     }
 
     /**
@@ -35,6 +35,7 @@ public class DidactorCore extends Component {
 
 
     public void init() {
+        super.init();
         MMBase mmbase = MMBase.getMMBase();
         DidactorRel classrel = (DidactorRel)mmbase.getBuilder("classrel");
         classrel.registerPostInsertComponent(this, 10);
