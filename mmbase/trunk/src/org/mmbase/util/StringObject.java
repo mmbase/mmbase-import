@@ -44,12 +44,16 @@ package org.mmbase.util;
  * the buffer is marked as shared. Any further changes to the buffer will
  * cause a copy to be made. <p>
  *
- * @deprecated use StringBuffer
+ * this is based on StringBuffer code, we have a seperate class since sun doesn't
+ * allow us to extend StringBuffer for some reason and we want methods like replace
+ * over the whole buffer.
+ *
  * @license Sun license
  * @see     String
+ * @author Daniel Ockeloen 
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.9 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: StringObject.java,v 1.10 2006-01-06 19:06:48 daniel Exp $
  */
 
 public final class StringObject {
