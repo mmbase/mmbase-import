@@ -19,7 +19,6 @@ public class GetSettingTag extends CloudReferrerTag {
     private static Logger log = Logging.getLoggerInstance(GetSettingTag.class.getName());
     private String component;
     private String setting;
-    private String[] arguments = new String[0];
 
     /**
      * Set the value for the 'component' argument of the GetSetting tag
@@ -38,20 +37,6 @@ public class GetSettingTag extends CloudReferrerTag {
     }
 
     /**
-     * Set the value for the 'arguments' argument of the GetSetting tag
-     * @param arguments The optional arguments
-     */
-    public void setArguments(String arguments) {
-        StringTokenizer st = new StringTokenizer(arguments, ",");
-        if (st.countTokens() > 0) {
-            this.arguments = new String[st.countTokens()];
-            for (int i=0; i<st.countTokens(); i++) {
-                this.arguments[i] = st.nextToken();
-            }
-        }
-    }
-
-    /**
      * Retrieve the value for the setting based on:
      * <ul>
      *   <li>Given component name (is used to find the correct class to handle the setting)</li>
@@ -66,10 +51,10 @@ public class GetSettingTag extends CloudReferrerTag {
             return SKIP_BODY;
         }
 
-        String value = null;
+        Object value = null;
         
         try {
-            value = comp.getSetting(setting, getCloudVar(), getContextProvider().getContextContainer(), arguments);
+            value = comp.getSetting(setting, getCloudVar(), getContextProvider().getContextContainer());
         } catch (IllegalArgumentException e) {
             throw new JspTagException(e.getMessage());
         }

@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import nl.didactor.component.Component;
+import nl.didactor.component.BasicComponent;
 /**
  * This class provides extra functionality for the People builder. It
  * can encrypt the password of a user, and return a bridge.Node for
@@ -84,27 +85,29 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
         log.info("Registering component " + componentname + " with class '" + classname + "'");
        
         if (classname == null || "".equals(classname)) {
-            return null;
+            return new BasicComponent(componentname);
         }
 
         try {
             Class c = Class.forName(classname);
-            if (c == null)
-                return null;
+            if (c == null) {
+                return new BasicComponent(componentname);
+            }
 
             Component comp = (Component)c.newInstance();
-            if (comp == null)
-                return null;
+            if (comp == null) {
+                return new BasicComponent(componentname);
+            }
             
             comp.setNode(component);
             Component.register(componentname, comp);
             return comp;
         } catch (ClassNotFoundException e) {
             log.error("Class not found: " + classname);
-            return null;
+            return new BasicComponent(componentname);
         } catch (Exception e) {
             log.error("Exception while initializing (" + component + "): " + e);
-            return null;
+            return new BasicComponent(componentname);
         }
     }
 
