@@ -87,8 +87,8 @@
   </tag>
 
   <tag>
-    <name>getsetting</name>
-    <tagclass>nl.didactor.taglib.GetSettingTag</tagclass>
+    <name>getvalue</name>
+    <tagclass>nl.didactor.taglib.GetValueTag</tagclass>
     <!-- bodycontent>JSP</bodycontent -->
     <info>...</info>
     <attribute>
@@ -103,6 +103,48 @@
     </attribute>
     <attribute>
       <name>arguments</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>getsetting</name>
+    <tagclass>nl.didactor.taglib.GetSettingTag</tagclass>
+    <!-- bodycontent>JSP</bodycontent -->
+    <info>...</info>
+    <attribute>
+      <name>component</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>setting</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>ifsetting</name>
+    <tagclass>nl.didactor.taglib.IfSettingTag</tagclass>
+    <!-- bodycontent>JSP</bodycontent -->
+    <info>...</info>
+    <attribute>
+      <name>component</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>setting</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>value</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>inverse</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
