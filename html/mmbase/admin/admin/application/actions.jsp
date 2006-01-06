@@ -50,16 +50,21 @@
 <tr>
 <th class="header">Action</th>
   <th class="header">Path</th>
+  <!--
   <th class="header">Goal</th>
+  -->
   <th class="navigate">Confirm</th>
 </tr>
 <tr>
  <td class="data" >Save <%=app%></td>
  <td class="data" ><input type="text" name="path" value="/tmp" size="80" /></td>
+ <input type="hidden" name="goal" value="backup" />
+<!--
  <td class="data" ><select name="goal">
-        <option selected="selected">backup</option>
-    </select>
+   <option selected="selected">backup</option>
+ </select>
  </td>
+ -->
  <td class="linkdata" >
    <input type="hidden" name="application" value="<%=app%>" />
    <input type="hidden" name="cmd" value="SAVE" />
