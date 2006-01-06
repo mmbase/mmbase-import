@@ -13,7 +13,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -81,7 +81,8 @@ public class NodeSearchQueryTest extends TestCase {
             StepField stepField = (StepField) iStepFields.next();
             CoreField field = images.getField(stepField.getFieldName());
             //assertTrue("" + fields + " does not contain " + field, fields.contains(field));
-            assertTrue(field.getType() != Field.TYPE_BINARY && field.inStorage());
+            //assertTrue(field.getType() != Field.TYPE_BINARY); // NodeSearchQuery is not in 'database', so it should not whine!
+            assertTrue(field.inStorage());
         }
         // Test all persistent fields from images are in query.
         Iterator iFields = fields.iterator();
@@ -99,7 +100,7 @@ public class NodeSearchQueryTest extends TestCase {
         Collection fields = images.getFields();
         for (Iterator iFields = fields.iterator(); iFields.hasNext();) {
             CoreField field = (CoreField) iFields.next();
-            if (field.getType() != Field.TYPE_BINARY && field.inStorage()) {
+            if (field.inStorage()) {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);
                 assertTrue(stepField.getFieldName().equals(field.getName()));
