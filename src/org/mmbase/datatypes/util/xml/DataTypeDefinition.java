@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.51 2006-01-02 10:39:00 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.52 2006-01-06 14:25:49 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -493,6 +493,13 @@ public class DataTypeDefinition {
                 String value = DataTypeXml.getAttribute(conditionElement, "value");
                 Locale locale = LocalizedString.getLocale(conditionElement);
                 sDataType.setPattern(value, locale);
+                return true;
+            }
+        } else if (dataType instanceof BinaryDataType) { // not really a condition yet.
+            BinaryDataType sDataType = (BinaryDataType) dataType;
+            if ("pattern".equals(localName)) {
+                String value = DataTypeXml.getAttribute(conditionElement, "value");
+                sDataType.setValidMimeTypes(java.util.regex.Pattern.compile(value));
                 return true;
             }
        }
