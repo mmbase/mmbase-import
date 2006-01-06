@@ -3,16 +3,14 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-<div class="menuItemSearch">
-  <div style="display: none">
-  <form name="searchform" method="post" action="<mm:treefile page="/search/index.jsp" objectlist="$includePath" referids="$referids" />">
-  <input type="hidden" name="search_type" value="AND"/>
-  <input type="hidden" name="search_component" value=""/>
+  <div class="menuItemSearch">
+    <form name="searchform" method="post" action="<mm:treefile page="/search/index.jsp" objectlist="$includePath" referids="$referids" />">
+      <input type="hidden" name="search_type" value="AND"/>
+      <input type="hidden" name="search_component" value=""/>
+      <di:translate key="search.search" />:&nbsp; <input class="search" type="text" name="search_query" />
+      <input type="image" src="<mm:treefile write="true" page="/gfx/icon_search.gif" objectlist="$includePath" />" title="<di:translate key="search.sendsearchrequest" />" alt="<di:translate key="search.sendsearchrequest" />" value="<di:translate key="search.sendsearchrequest" />" name="searchbutton" />
+    </form>
   </div>
-    <di:translate key="search.search" />:&nbsp; <input class="search" type="text" name="search_query" />
-	<input type="image" src="<mm:treefile write="true" page="/gfx/icon_search.gif" objectlist="$includePath" />" alt="<di:translate key="search.sendsearchrequest" />" value="<di:translate key="search.sendsearchrequest" />" name="searchbutton" />
-  <div style="display:none"></form></div>
-</div>
-<div class="spacer"> </div>
+  <div class="spacer"> </div>
 </mm:cloud>
 </mm:content>
