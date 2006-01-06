@@ -58,7 +58,7 @@
 
 <di:translate key="pop.sendinvitepart7" />
 </multipart>
-<multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
+<multipart id="htmltext" title="plaintext" alt="plaintext" type="text/html" encoding="UTF-8">
 <HTML>
 <di:translate key="pop.sendinvitepart1" /> <mm:write referid="inviteefname"/><br/>
 <br/>

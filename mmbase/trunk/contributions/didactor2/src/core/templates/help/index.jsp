@@ -13,7 +13,7 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_help.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<di:translate key="core.help" />" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_help.gif" objectlist="$includePath" />" width="25" height="13" border="0" title="<di:translate key="core.help" />" alt="<di:translate key="core.help" />" />
     <di:translate key="core.help" />
   </div>
 </div>

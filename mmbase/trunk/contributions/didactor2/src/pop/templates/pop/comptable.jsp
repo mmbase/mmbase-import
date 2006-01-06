@@ -31,7 +31,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/present.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="<di:translate key="pop.comphave"/>" />
+                          title="<di:translate key="pop.comphave"/>"  alt="<di:translate key="pop.comphave"/>" />
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>
@@ -47,7 +47,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/developed.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="<di:translate key="pop.compdeveloped"/>" />
+                          title="<di:translate key="pop.compdeveloped"/>"  alt="<di:translate key="pop.compdeveloped"/>" />
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>
@@ -64,7 +64,7 @@
                   <tr style="vertical-align:top;">
                     <td class="listItem">
                       <img src="<mm:treefile page="/pop/gfx/todevelop.gif" objectlist="$includePath" referids="$popreferids"/>" border="0"
-                          alt="<di:translate key="pop.compneeded"/>" />
+                          title="<di:translate key="pop.compneeded"/>" alt="<di:translate key="pop.compneeded"/>" />
                     </td>
                     <%@ include file="comptablecell.jsp" %>
                   </tr>

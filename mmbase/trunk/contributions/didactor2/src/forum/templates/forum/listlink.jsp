@@ -34,7 +34,7 @@ Parameters:
       <tr>
         <td valign="top">
           <a href="<mm:write referid="link"/>" class="forumlist">
-            <img src="<mm:treefile write="true" page="/forum/gfx/${icon}.gif" objectlist="$includePath"/>" alt="<mm:write referid="alt"/>" width="18" height="17" border="0"></a>
+            <img src="<mm:treefile write="true" page="/forum/gfx/${icon}.gif" objectlist="$includePath"/>" title="<mm:write referid="alt"/>" alt="<mm:write referid="alt"/>" width="18" height="17" border="0"></a>
         </td>
         <td>&nbsp;</td>
         <td valign=center>

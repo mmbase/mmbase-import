@@ -14,11 +14,11 @@
     <div class="contentSubHeader">
       <a href="#1" onclick="todolistform.command.value='addtodo';todolistform.submit();return false;">
         <img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$popreferids"/>"
-            border="0" alt="<di:translate key="pop.compeditmakenewtodo"/>" /></a>
+            border="0" title="<di:translate key="pop.compeditmakenewtodo"/>" alt="<di:translate key="pop.compeditmakenewtodo"/>" /></a>
       <a href="#1" onclick="if (!window.confirm('<di:translate key="pop.areyousuredeltodo" />'))
           return false;todolistform.command.value='deltodo';todolistform.submit();return false;">
         <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
-            border="0" alt="<di:translate key="pop.compeditremoveselectedtodo"/>" /></a>
+            border="0" title="<di:translate key="pop.compeditremoveselectedtodo"/>" alt="<di:translate key="pop.compeditremoveselectedtodo"/>" /></a>
     </div> 
     <div class="contentBody">
       <mm:compare referid="msg" value="-1" inverse="true">

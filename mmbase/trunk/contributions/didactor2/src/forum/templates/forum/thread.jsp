@@ -81,7 +81,7 @@ This message is also create by this page.
 
 <div class="navigationbar">
   <div class="titlebar">
-  <img src="<mm:treefile write="true" page="/gfx/icon_forum.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="forum" /> Forum
+  <img src="<mm:treefile write="true" page="/gfx/icon_forum.gif" objectlist="$includePath" />" width="25" height="13" border="0" title="forum" alt="forum" /> Forum
   </div>
 </div>
 <div class="folders">

@@ -26,7 +26,7 @@
     <div class="navigationbar">
       <div class="titlebar">
         <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" 
-            width="25" height="13" border="0" alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
+            width="25" height="13" border="0" title="<di:translate key="pop.popfull" />" alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
       </div>		
     </div>
 

@@ -46,7 +46,7 @@
 	</script>
 	<div class="content">
 	 <div class="applicationMenubarCockpit" style="white-space: nowrap">
-	   <img src="<mm:treefile write="true" page="/gfx/spacer.gif" objectlist="$includePath" />" width="1" height="15" border="0" alt="" />
+	   <img src="<mm:treefile write="true" page="/gfx/spacer.gif" objectlist="$includePath" />" width="1" height="15" border="0" title="" alt="" />
 	 </div>
 	 <div class="providerMenubar" style="white-space: nowrap">
 	 </div>        
@@ -60,7 +60,7 @@
 	 </div>
 	 <div class="columns">
 	   <div class="columnLeft">
-	      <img src="<mm:treefile page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" alt="Didactor logo" />
+	      <img src="<mm:treefile page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" title="Didactor logo" alt="Didactor logo" />
 	      <mm:node number="component.portalpages" notfound="skipbody">
 	         <mm:treeinclude page="/portalpages/frontoffice/index.jsp" objectlist="$includePath" referids="$referids" />
 	         <mm:import id="hasPortalPages">true</mm:import> 

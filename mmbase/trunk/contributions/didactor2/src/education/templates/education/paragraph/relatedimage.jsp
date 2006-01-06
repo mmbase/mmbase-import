@@ -25,7 +25,7 @@
             {
                // **** large image 100% width ****
                %>
-                  <img src="<%@include file="/education/paragraph/imagessource.jsp" %>" alt="" border="0" width="100%">
+                  <img src="<%@include file="/education/paragraph/imagessource.jsp" %>" title="" alt="" border="0" width="100%">
                <%
             }
             else
@@ -77,7 +77,7 @@
                            %><a href="#" onClick="javascript:launchCenter('../includes/slideshow.jsp?p=$page&i=<mm:field name="images.number" />', 'center', 610, 550);setTimeout('newwin.focus();',250);"><%
                         }
                         %>
-                           <img src="<%@include file="imagessource.jsp" %>" alt="" border="0">
+                           <img src="<%@include file="imagessource.jsp" %>" title="" alt="" border="0">
                         <%
                         if(showPopup.equals("1"))
                         {
