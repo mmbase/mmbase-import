@@ -37,7 +37,7 @@
 
   <div class="columnLeft">
 
-    <img src="<mm:treefile write="true" page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" alt="Didactor logo" />
+    <img src="<mm:treefile write="true" page="/gfx/logo_didactor.gif" objectlist="$includePath" />" width="100%" height="106" border="0" title="Didactor logo " alt="Didactor logo" />
 
     <div class="titlefield">
       <di:translate key="core.followededucation" />

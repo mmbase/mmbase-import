@@ -159,9 +159,9 @@
 	   </div>
 	   <div class="stepNavigator">
 	   <br/><br/>
-	     <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="vorige" /></a>
-	     <a href="javascript:previousContent();" class="path">vorige</a><img src="gfx/spacer.gif" width="15" height="1" alt="" /><a href="javascript:nextContent();" class="path">volgende</a>
-	     <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="volgende" /></a>
+	     <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="vorige" alt="vorige" /></a>
+	     <a href="javascript:previousContent();" class="path">vorige</a><img src="gfx/spacer.gif" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path">volgende</a>
+	     <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="volgende" alt="volgende" /></a>
         </div>
       </div>
     <div class="folders">
@@ -201,7 +201,7 @@
 						      addContent('simplecontents','<mm:field name="simplecontents.number"/>');
 						    //-->
 						  </script>
-						  <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="simplecontents.number"/>" onclick="openClose('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" alt="" /><a href="javascript:openContent('simplecontents', '<mm:field name="simplecontents.number"/>' ); openOnly('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>');" style="padding-left: 0px"><mm:field name="simplecontents.title"/></a>
+						  <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="simplecontents.number"/>" onclick="openClose('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('simplecontents', '<mm:field name="simplecontents.number"/>' ); openOnly('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>');" style="padding-left: 0px"><mm:field name="simplecontents.title"/></a>
 						</div>
 			          </mm:list> 
 			        </mm:listcontainer> 
@@ -216,7 +216,7 @@
 				      addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
 				      //-->
 				   </script>
-				   <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>       
+				   <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>       
 		         </div>
                  <mm:remove referid="haschildnodes"/>
                  <mm:listcontainer path="portalpagesnodes,childppnn,portalpagesnodes1" >
@@ -243,7 +243,7 @@
 							 <!--
 							   addContent('simplecontents','<mm:field name="simplecontents.number"/>');
 							 //-->
-						     </script><img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="simplecontents.number"/>" onclick="openClose('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" alt="" /><a href="javascript:openContent('simplecontents', '<mm:field name="simplecontents.number"/>' ); openOnly('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>');" style="padding-left: 0px"><mm:field name="simplecontents.title"/></a>
+						     </script><img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="simplecontents.number"/>" onclick="openClose('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('simplecontents', '<mm:field name="simplecontents.number"/>' ); openOnly('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>');" style="padding-left: 0px"><mm:field name="simplecontents.title"/></a>
 				         </div>
 				         <mm:last></div></mm:last>
 		               </mm:list>  

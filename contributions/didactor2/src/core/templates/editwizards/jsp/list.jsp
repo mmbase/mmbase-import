@@ -13,7 +13,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.5 2005-08-21 12:41:17 hhangyi Exp $
+     * @version  $Id: list.jsp,v 1.6 2006-01-06 10:01:58 dstanisavljevic Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -277,7 +277,7 @@ for (int i=0; i < results.size(); i++)
          <%@include file="/education/wizards/whichimage.jsp"%>
       </mm:node>
       <%
-       sURL = "<a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' alt='" + sAltText + "'></a>";
+       sURL = "<a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' title='" + sAltText + "' alt='" + sAltText + "'></a>";
        addField(obj, "metadata", sURL, "string");
     }
     if (listConfig.multilevel) {

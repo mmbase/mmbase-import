@@ -172,7 +172,7 @@
                                           {
                                              link = url;
                                              %>
-                                                <td><img src="<%= baseUrl %>/education/gfx/http_url.gif" align="right" alt=""/></td>
+                                                <td><img src="<%= baseUrl %>/education/gfx/http_url.gif" align="right" title="" alt=""/></td>
                                                 <td width="60%">&nbsp;websites:</td>
                                                 <td width="100%"><%= url %></td>
                                              <%
@@ -188,7 +188,7 @@
                                                    %>
                                                    </mm:isnotempty>
                                                 </mm:field>
-                                                <td><img src="<%= baseUrl %>/education/gfx/email_url.gif" align="right" alt=""/></td>
+                                                <td><img src="<%= baseUrl %>/education/gfx/email_url.gif" align="right" title="" alt=""/></td>
                                                 <td width="60%">&nbsp;email:</td>
                                                 <td width="100%"><%= url %></td>
                                              <%
@@ -204,7 +204,7 @@
                            <mm:related path="posrel,attachments" orderby="posrel.pos">
                               <tr>
                                  <td></td>
-                                 <td><img src="<%= baseUrl %>/education/gfx/http_url.gif" align="right" alt=""/></td>
+                                 <td><img src="<%= baseUrl %>/education/gfx/http_url.gif" align="right" title="" alt=""/></td>
                                  <td width="60%">&nbsp;download:</td>
                                  <td width="100%">
                                     <mm:node element="attachments">

@@ -73,7 +73,7 @@
                                                    </mm:treefile>" onClick="return doDelete('<di:translate key="education.areyousuredelrole" />');" 
                                               target="text"><img src="<mm:treefile page="/education/wizards/gfx/minus.gif" 
                                                                           objectlist="$includePath" referids="$referids"/>" border="0"
-                                                                alt="<di:translate key="education.deletethisrole"/>" /></a></td>
+                                                                title="<di:translate key="education.deletethisrole"/>" alt="<di:translate key="education.deletethisrole"/>" /></a></td>
                 </mm:listnodes>
               </mm:islessthan>
               <mm:islessthan referid="rights" referid2="RIGHTS_RWD">
@@ -82,7 +82,7 @@
                 <% } %>
               </mm:islessthan>
               <td class="tightborder"><a href='<mm:write referid="wizardjsp"/>&wizard=config/role/roles&objectnumber=new' target="text"><img src="<mm:treefile page="/education/wizards/gfx/plus.gif" objectlist="$includePath" referids="$referids"/>" border="0"
-                                          alt="<di:translate key="education.createnewrole"/>" /></a></td>
+                                          title="<di:translate key="education.createnewrole"/>" alt="<di:translate key="education.createnewrole"/>" /></a></td>
             </tr>
             <% String sSelectName = ""; %>
             <mm:listnodes type="editcontexts" orderby="number">

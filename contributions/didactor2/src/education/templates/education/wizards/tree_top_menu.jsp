@@ -130,7 +130,7 @@
          }
        %>
        </select>
-       <img src="gfx/ga.gif" alt="Ga" onclick="chooseEducation(document.getElementById('course').value)" />
+       <img src="gfx/ga.gif" title="Ga" alt="Ga" onclick="chooseEducation(document.getElementById('course').value)" />
      <% } %>
      </span>
   </mm:islessthan>

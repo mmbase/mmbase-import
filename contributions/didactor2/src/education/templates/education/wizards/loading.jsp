@@ -20,7 +20,8 @@
       }
    </script>
 
-   <img src="<mm:treefile page="/education/wizards/gfx/loading.gif" objectlist="$includePath" referids="$referids" />" alt="OK">
+   <img src="<mm:treefile page="/education/wizards/gfx/loading.gif" objectlist="$includePath" referids="$referids" />" title="OK" 
+   alt="OK">
 </body>
 </html>
 </mm:cloud>

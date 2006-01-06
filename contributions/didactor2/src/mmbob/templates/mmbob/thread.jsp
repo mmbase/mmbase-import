@@ -105,7 +105,7 @@
             --%>
             <mm:list nodes="$postingid" path="postings,attachments">
                <mm:node element="attachments">
-                  <a href="<mm:attachment/>"><img src="<mm:treefile write="true" page="/mmbob/images/download.gif" objectlist="$includePath" />" alt="<mm:field name="title"/>" border="0"/></a> 
+                  <a href="<mm:attachment/>"><img src="<mm:treefile write="true" page="/mmbob/images/download.gif" objectlist="$includePath" />" title="<mm:field name="title"/>" alt="<mm:field name="title"/>" border="0"/></a> 
                </mm:node>
             </mm:list>
             <mm:field name="ismoderator">
