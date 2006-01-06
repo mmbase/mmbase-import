@@ -25,7 +25,7 @@ import org.mmbase.storage.search.implementation.NodeSearchQuery;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ClusterBuilderTest extends TestCase {
 
@@ -250,9 +250,8 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(instance.getBuilder("news1", nodes).equals(news));
         assertTrue(nodes.size() == 0);
 
-        assertTrue(instance.getBuilder("related", nodes).
-            equals(mmbase.getInsRel()));
-        assertTrue(nodes.size() == 1);
+        assertTrue(instance.getBuilder("related", nodes).equals(mmbase.getInsRel()));
+        assertTrue("Nodes is " + nodes + " should be size 1", nodes.size() == 1);
         assertTrue(nodes.get("related").equals(related));
 
         assertTrue(instance.getBuilder("related0", nodes).
@@ -309,7 +308,7 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(field1.getFieldName().equals("number"));
         assertTrue(fieldsByName.get("news1.number") == field1);
         // Test roles.
-        assertTrue(roles.size() == 0);
+        assertTrue("Roles is " + roles + " not{}", roles.size() == 0);
 
         query = new BasicSearchQuery();
         roles.clear();
@@ -377,17 +376,15 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(field2.getFieldName().equals("number"));
         assertTrue(fieldsByName.get("news1.number") == field2);
         // Test roles.
-        assertTrue(roles.size() == 1);
+        assertTrue("Roles is " + roles + " wich has not size 1", roles.size() == 1);
         Integer number = (Integer) roles.get("related");
-        assertTrue(number.intValue() == related);
+        assertTrue("" + number.intValue() + " != " + related, number.intValue() == related);
 
         query = new BasicSearchQuery();
         roles.clear();
         fieldsByName.clear();
-        tables = Arrays.asList(
-            new Object[] {"news", "related", "news1", "related", "news"});
-        stepsByAlias
-            = instance.addSteps(query, tables, roles, true, fieldsByName);
+        tables = Arrays.asList(new Object[] {"news", "related", "news1", "related", "news"});
+        stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
         // Test steps and returned map.
         assertTrue(stepsByAlias.size() == 5);
         steps = query.getSteps();
@@ -423,7 +420,7 @@ public class ClusterBuilderTest extends TestCase {
             assertTrue(fieldsByName.get(tables.get(i) + ".number") == field);
         }
         // Test roles.
-        assertTrue(roles.size() == 1);
+        assertTrue("Roles is " + roles + " which is not size 2. There are to roles, so related and related0 must be availab.e", roles.size() == 2);
         number = (Integer) roles.get("related");
         assertTrue(number.intValue() == related);
     }
