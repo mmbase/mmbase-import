@@ -20,11 +20,13 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.5 2005-12-10 14:26:01 michiel Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.6 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
     private static final Logger log = Logging.getLoggerInstance(ConfirmPasswordDataType.class);
+
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     protected PasswordRestriction  passwordRestriction =  new PasswordRestriction("password");
 

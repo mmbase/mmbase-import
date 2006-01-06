@@ -18,10 +18,11 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.16 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.17 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType {
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     protected ItemRestriction itemRestriction = new ItemRestriction(Constants.DATATYPE_UNKNOWN);
 
