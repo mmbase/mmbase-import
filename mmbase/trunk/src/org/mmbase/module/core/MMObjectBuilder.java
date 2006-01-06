@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.359 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.360 2006-01-06 12:56:21 daniel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1228,7 +1228,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public void removeTmpNode(String key) {
         MMObjectNode node;
         node=(MMObjectNode) temporaryNodes.remove(key);
-        if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
+        if (node==null) {
+		log.debug("removeTmpNode: node with "+key+" didn't exists");
+	}
     }
 
     /**
