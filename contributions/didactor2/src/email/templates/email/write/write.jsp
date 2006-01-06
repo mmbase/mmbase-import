@@ -273,7 +273,7 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="e-mail" /> E-mail
+    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" title="e-mail" alt="e-mail" /> E-mail
   </div>
 </div>
 
@@ -287,17 +287,17 @@
 	    <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
 	    <mm:param name="callerpage">/email/index.jsp</mm:param>
 	  </mm:treefile>">
-	  <img src="<mm:treefile page="/email/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.createfolder" />"/></a>
+	  <img src="<mm:treefile page="/email/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.createfolder" />" alt="<di:translate key="email.createfolder" />"/></a>
 	  <a href="<mm:treefile page="/email/changemailbox.jsp" objectlist="$includePath" referids="$referids">
 	    <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
 	    <mm:param name="callerpage">/email/index.jsp</mm:param>
 	  </mm:treefile>">
-	  <img src="<mm:treefile page="/email/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.renamefolder" />"/></a>
+	  <img src="<mm:treefile page="/email/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.renamefolder" />" alt="<di:translate key="email.renamefolder" />"/></a>
 	  <a href="<mm:treefile page="/email/deletemailbox.jsp" objectlist="$includePath" referids="$referids">
 	    <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
 	    <mm:param name="callerpage">/email/index.jsp</mm:param>
 	  </mm:treefile>">
-	  <img src="<mm:treefile page="/email/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.deletefolder" />"/></a>
+	  <img src="<mm:treefile page="/email/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.deletefolder" />" alt="<di:translate key="email.deletefolder" />"/></a>
 	  <br/><br/>
 	  <mm:treeinclude page="/email/mailboxes.jsp" objectlist="$includePath" referids="$referids" />
 	</div>
