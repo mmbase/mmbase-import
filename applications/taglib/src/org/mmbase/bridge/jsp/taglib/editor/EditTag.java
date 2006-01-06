@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.editor;
 
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +18,6 @@ import java.net.URLConnection;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -33,20 +31,21 @@ import org.mmbase.bridge.jsp.taglib.*;
 
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
-import org.mmbase.util.XMLBasicReader;
 
 /**
  * The EditTag collects the nodenrs, fields and queries of the FieldTags in its body.
  * FieldTags register these with the EditTag. You can pass these values to an 
  * editor by creating an url for example like YAMMEditor does which gives access to
  * the editor yammeditor.jsp.<br />
- * Extend Editor to create your own and edit the edittag.xml resources file
- * in the MMBase config/taglib directory to let the EditTag know about it.
+ * If you like you can extend Editor to create your own way to edit MMBase content. 
+ * Edit the edittag.xml resources file to add your class in the MMBase config/taglib
+ * directory to let the EditTag know about it. The class BasicEditor gives an example how
+ * to generate an url to the basic jsp editors and my_editors.
+ * 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: EditTag.java,v 1.12 2006-01-03 10:46:26 michiel Exp $
- * @see org.mmbase.bridge.jsp.taglib.editor.Editor
- * @see org.mmbase.bridge.jsp.taglib.editor.YAMMEditor
+ * @version $Id: EditTag.java,v 1.13 2006-01-06 14:45:47 andre Exp $
+ * @see Editor, BasicEditor, YAMMEditor
  * @since MMBase-1.8
  */
 public class EditTag extends ContextReferrerTag implements ParamHandler {
@@ -170,7 +169,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      * @param value   Object with a value
      */ 
     public void addParameter(String key, Object value) throws JspTagException {
-        log.debug("adding parameter " + key + "/" + value);
+        if (log.isDebugEnabled()) log.debug("adding parameter " + key + "/" + value);
         parameters.add(new Entry(key, value));
     }
     
@@ -180,7 +179,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      *
      */    
     public int doStartTag() throws JspTagException {
-        log.debug("doStartTag of EditTag");
+        if (log.isDebugEnabled()) log.debug("doStartTag of EditTag");
         
         // clear lists (in case of tag caching, the previous values may be present.)
         queryList.clear();
@@ -189,7 +188,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         fieldList.clear();
         
         String className = (String) edittagTypes.get(getType());
-        log.debug("Using editor: " + className);
+        if (log.isDebugEnabled()) log.debug("Using editor: " + className);
         Class c = null;
         try {
             c = Class.forName(className);
@@ -218,7 +217,8 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         yaeditor.setNodenrList(nodenrList);
         yaeditor.setFieldList(fieldList);
         
-        // yaeditor.registerFields(queryList, nodenrList, fieldList);
+        yaeditor.registerFields(queryList, nodenrList, fieldList);
+        
         try {
             yaeditor.getEditorHTML(getPageContext());
         } catch (IOException ioe) {
@@ -227,7 +227,7 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
         
         helper.setValue(editorstr);
         helper.useEscaper(false);
-        log.debug("end of doEndTag of EditTag");
+        if (log.isDebugEnabled()) log.debug("end of doEndTag of EditTag");
         helper.doEndTag();
         return super.doEndTag();
     }
