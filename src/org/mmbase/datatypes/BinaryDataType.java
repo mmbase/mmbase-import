@@ -16,20 +16,31 @@ import java.util.regex.Pattern;
  * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.6 2006-01-06 14:21:50 michiel Exp $
+ * @version $Id: BinaryDataType.java,v 1.7 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class BinaryDataType extends AbstractLengthDataType {
 
     private static final Logger log = Logging.getLoggerInstance(BinaryDataType.class);
 
-    Pattern validMimeTypes = Pattern.compile(".*");
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+
+
+    protected Pattern validMimeTypes = Pattern.compile(".*");
     /**
      * Constructor for binary field.
      * @param name the name of the data type
      */
     public BinaryDataType(String name) {
         super(name, byte[].class);
+    }
+
+
+    protected void inheritProperties(BasicDataType origin) {
+        super.inheritProperties(origin);
+        if (origin instanceof BinaryDataType) {
+            validMimeTypes = ((BinaryDataType) origin).validMimeTypes;
+        }
     }
 
 

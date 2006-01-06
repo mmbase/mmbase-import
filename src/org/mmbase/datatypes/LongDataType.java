@@ -14,11 +14,11 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.6 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: LongDataType.java,v 1.7 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {
-
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
     /**
      * @param primitive indicate if a primitive type should be used
      */

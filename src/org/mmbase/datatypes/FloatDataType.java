@@ -13,11 +13,12 @@ package org.mmbase.datatypes;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: FloatDataType.java,v 1.5 2005-10-27 17:12:19 simon Exp $
+ * @version $Id: FloatDataType.java,v 1.6 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class FloatDataType extends NumberDataType {
 
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
     /**
      * @param primitive indicate if a primitive type should be used
      */

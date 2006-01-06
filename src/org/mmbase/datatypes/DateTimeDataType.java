@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.30 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.31 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -34,6 +34,8 @@ public class DateTimeDataType extends ComparableDataType {
     public static final Date MAX_VALUE = new Date(Long.MAX_VALUE);
 
     private static final Logger log = Logging.getLoggerInstance(DateTimeDataType.class);
+
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     // see javadoc of DateTimeFormat
     private boolean weakPattern = true; // means, may not be changed, must be cloned before changing something

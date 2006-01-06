@@ -18,10 +18,12 @@ import org.mmbase.util.logging.*;
  * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SecurityContextDataType.java,v 1.3 2005-10-26 20:07:43 michiel Exp $
+ * @version $Id: SecurityContextDataType.java,v 1.4 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class SecurityContextDataType extends StringDataType {
+
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     /**
      * Constructor for string data type.
