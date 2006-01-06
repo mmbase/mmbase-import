@@ -6,13 +6,20 @@
   <%@include file="/shared/setImports.jsp" %>
   <mm:import externid="simplecontents"/>
   <mm:import externid="node"/>
-  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids"/>
+  <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
+  <mm:param name="extraheader">
+  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/portalpages/css/base.css" objectlist="$includePath" referids="$referids" />" />
+  </mm:param>
+  </mm:treeinclude>
   <div class="rows">
     <div class="navigationbar">
       <div class="titlebar"/>
     </div>
+    </div>
     <div class="folders"/>
+    </div>
     <div class="contentHeader"/>
+    </div>
     <div class="contentBodywit">
 	  <mm:treeinclude page="/cmshelp/frontoffice/show_help.jsp" objectlist="$includePath" referids="$referids">
 	    <mm:param name="node2"><mm:write referid="simplecontents"/></mm:param>
@@ -20,8 +27,6 @@
 	  </mm:treeinclude> 
     </div>
   </div>
-  
-  
   <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids"/>
 </mm:cloud>
 </mm:content>
