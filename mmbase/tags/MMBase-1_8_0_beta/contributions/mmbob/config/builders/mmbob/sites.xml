@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="object" maintainer="mmbase.org" name="sites" version="0">
+
+<!-- <status>
+		what is the status of this builder options : active or inactive
+-->
+<status>active</status>
+
+<searchage>1000</searchage>
+
+<!-- <names>
+		names defines the different names used in user visible parts, singular for
+		for talking about 1 object (Url,Person) and plurar for talking about multiple
+		<Urls, people).
+>-->
+<names>
+		<!-- singles per language  as defined by RFC xxx -->
+		<singular xml:lang="en">Site</singular>
+		<!-- multiple per language  as defined by RFC xxx -->
+		<plural xml:lang="en">Sites</plural>
+</names>
+
+<!-- <descriptions>
+		small description of the builder for human reading
+-->
+<descriptions>
+<!-- descriptions per language  as defined by RFC xxx -->
+		<description xml:lang="en">The topic of a other object, for example the topic of a piece of video</description>
+		<description xml:lang="nl">Onderwerpen van andere objecten, bv onderwerp van een stuk video </description>
+</descriptions>
+
+<!-- <fieldlist>
+		 defines the different fields in this object, be carefull the order is important
+		once defined keep them in the same order.
+		If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+<fieldlist>
+		<!-- POS 3 : <field> 'title'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">Title of the topic</description>
+					<description xml:lang="nl">Titel van het onderwerp</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">Title</guiname>
+						<guiname xml:lang="nl">Titel</guiname>
+						<guitype>string</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>1</input>
+								<!-- position in list area of the editor -->
+								<list>1</list>
+								<!-- position in search area of the editor -->
+								<search>1</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>title</name>
+						<!-- MMBase datatype and demands on it -->
+						<type notnull="true" size="255" state="persistent">STRING</type>
+				</db>
+		</field>
+
+		<!-- POS 4 : <field> 'selectkey'  -->
+				 <field>
+				<descriptions>
+					<!-- descriptions per language as defined by ISO 639  -->
+					<description xml:lang="en">Description of the topic</description>
+				</descriptions>
+				<!-- gui related -->
+				<gui>
+						<guiname xml:lang="en">SelectKey</guiname>
+						<guitype>field</guitype>
+				</gui>
+				<!-- editor related  -->
+				<editor>
+						<positions>
+								<!-- position in the input area of the editor -->
+								<input>2</input>
+								<!-- position in list area of the editor -->
+								<list>-1</list>
+								<!-- position in search area of the editor -->
+								<search>2</search>
+						</positions>
+				</editor>
+				<!-- database related  -->
+				<db>
+						<!-- name of the field in the database -->
+						<name>selectkey</name>
+						<!-- MMBase datatype and demands on it -->
+						<type notnull="false" size="256" state="persistent">STRING</type>
+				</db>
+		</field>
+
+</fieldlist>
+
+</builder>

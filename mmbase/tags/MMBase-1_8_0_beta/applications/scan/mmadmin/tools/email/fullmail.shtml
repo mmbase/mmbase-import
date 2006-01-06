@@ -1,0 +1,150 @@
+<HTML>
+<HEAD>
+   <TITLE>MAIL TEST</TITLE>
+</HEAD>
+<BODY BACKGROUND="../../beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+<BR>
+
+<TABLE width=97% cellspacing=1 cellpadding=1 border=0>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="4">
+	<FONT COLOR="#000000"><B>MMBase Dynamic & Timed email system - queue monitor - v1.0</B></FONT>
+	</TD>
+</TR>
+<TR>
+	<TD>
+	&nbsp;
+	</TD>
+</TR>
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Title</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMBASE-FIELD-$PARAM1-title^</B></FONT>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Subject</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMBASE-FIELD-$PARAM1-subject^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>To</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMBASE-FIELD-$PARAM1-to^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>From</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMBASE-FIELD-$PARAM1-from^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Mail type</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;<PART mailtype.shtml?$MOD-MMBASE-FIELD-$PARAM1-mailtype^></B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Mail time</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;<PART mailtime.shtml?$MOD-MMBASE-FIELD-$PARAM1-mailtime^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>(Last)mailed at</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;<PART mailtime.shtml?$MOD-MMBASE-FIELD-$PARAM1-mailedtime^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Repeat time in seconds</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;<PART repeattime.shtml?$MOD-MMBASE-FIELD-$PARAM1-repeattime^</B></FONT>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD>
+	&nbsp;
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="4">
+	<FONT COLOR="000000">
+	<B>Body</B>
+	</TD>
+</TR>
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="00445B" COLSPAN="4">
+	<IF $MOD-MMBASE-FIELD-$PARAM1-bodyurl^=N>
+	<A HREF="$MOD-MMBASE-FIELD-$PARAM1-bodyurl^"><FONT COLOR="#FFFFFF">$MOD-MMBASE-FIELD-$PARAM1-bodyurl^</FONT></A>
+	<ELSE>
+	<FONT COLOR="#FFFFFF">$MOD-MMBASE-FIELD-$PARAM1-html(body)^</FONT>
+	</IF>
+	</TD>
+</TR>
+<TR>
+	<TD>
+	&nbsp;
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="4">
+	<A HREF="index.shtml"><IMG SRC="../../beeld/pijl2.gif" BORDER="0"></A><B><FONT COLOR="#000000">back to email queue</FONT></B>
+	</TD>
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>
+

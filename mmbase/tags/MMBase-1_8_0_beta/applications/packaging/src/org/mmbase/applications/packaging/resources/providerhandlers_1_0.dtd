@@ -1,0 +1,13 @@
+<!--
+    providerhandlers.dtd
+-->
+
+<!ELEMENT providerhandlers (providerhandler*)>
+
+<!ELEMENT providerhandler (description*)>
+<!ATTLIST providerhandler active CDATA #IMPLIED>
+<!ATTLIST providerhandler method CDATA #IMPLIED>
+<!ATTLIST providerhandler basescore CDATA #IMPLIED>
+<!ATTLIST providerhandler class CDATA #IMPLIED>
+
+<!ELEMENT description (#PCDATA)>

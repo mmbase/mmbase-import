@@ -1,0 +1,316 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+  
+  <!-- @version $Id: datatypes.xml,v 1.31 2005-12-21 08:24:03 michiel Exp $ -->
+
+  <datatype id="xml">
+    <class name="org.mmbase.datatypes.XmlDataType" />
+
+    <specialization id="html">
+      <setprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.xml.HtmlSetString" />
+      </setprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.xml.HtmlGetString" />
+      </getprocessor>
+    </specialization>
+
+    <specialization id="xmlfield">
+      <setprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.xml.FieldSetString" />
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.xml.FieldGetString" />
+      </getprocessor>
+    </specialization>
+
+
+  </datatype>
+
+
+  <datatype id="string">
+    <class name="org.mmbase.datatypes.StringDataType" />
+
+    <specialization id="lastmodifier">
+      <unique value="false" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.LastModifier" />
+      </commitprocessor>
+    </specialization>
+
+    <specialization id="md5password">
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <password value="true" />
+      <setprocessor>
+        <class name="org.mmbase.util.transformers.MD5" />
+      </setprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.util.transformers.Swallower" /> <!-- No need to show md5 -->
+      </getprocessor>
+    </specialization>
+
+    <specialization id="confirmpassword">
+      <class name="org.mmbase.datatypes.ConfirmPasswordDataType" />
+      <property name="field" value="password" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <password value="true" />
+      <getprocessor type="string">
+        <class name="org.mmbase.util.transformers.Swallower" /> <!-- No need to show md5 -->
+      </getprocessor>
+    </specialization>
+
+    <specialization id="lowercaseuppercase">
+      <description>
+        Silly example (also used to test)
+        Strings are stored all lowercase, but showed all uppercase
+      </description>
+      <setprocessor>
+        <class name="org.mmbase.util.transformers.LowerCaser" />
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.util.transformers.UpperCaser" />
+      </getprocessor>
+    </specialization>
+
+    <specialization id="dutch-zipcode">
+      <pattern value="(?i)\A[0-9]{4}\s*[A-Z]{2}\z" />
+      <setprocessor>
+        <class name="org.mmbase.util.transformers.UpperCaser" />
+      </setprocessor>
+    </specialization>
+
+    <specialization id="emailaddress">
+      <pattern value="(?i)\A[A-Z0-9_\-\+\&amp;\*\#]+([\.-]?[A-Z0-9_\-\+\&amp;\*\#])*@([A-Z0-9_-]{2,}[\.]{1})+([A-Z]{2,})\z" />
+      <!-- arbitrary check for a valid e-mail address
+        below the String equivalent for testing purposes
+        "(?i)\\A[A-Z0-9_\\-\\+\\&\\*\\#]+([\\.-]?[A-Z0-9_\\-\\+\\&\\*\\#])*@([A-Z0-9_-]{2,}[\\.]{1})+([A-Z]{2,})\\z" -->
+    </specialization>
+
+    <specialization id="field">
+      <pattern value="(?s)\A.*\z" />
+    </specialization>
+
+    <specialization id="line">
+      <!-- no new lines -->
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+    </specialization>
+
+    <specialization id="eline">
+      <!-- enforced line -->
+      <pattern value="\A[^\n\r]*\z" />
+    </specialization>
+
+
+    <specialization id="owner">
+      <class name="org.mmbase.datatypes.SecurityContextDataType" />
+    </specialization>
+
+    <specialization id="whitespacereplacer">
+      <setprocessor type="string">
+        <class name="org.mmbase.util.transformers.RegexpReplacerFactory">
+          <param name="mode">entire</param>
+          <param name="patterns">
+            <param name="\s+"> </param>
+          </param>
+        </class>
+      </setprocessor>
+    </specialization>
+
+    <specialization id="whitespacecollapser">
+      <setprocessor type="string">
+        <class name="org.mmbase.util.transformers.RegexpReplacerFactory">
+          <param name="mode">entire</param>
+          <param name="patterns">
+            <param name="\s+"></param>
+          </param>
+        </class>
+      </setprocessor>
+    </specialization>
+
+    <specialization id="checksum">
+      <description>
+        The default 'checksum' datatype checksums the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields
+      </description>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.ChecksumProcessorFactory">
+          <param name="field">handle</param>
+        </class>
+      </commitprocessor>
+    </specialization>
+
+    <specialization id="filename">
+      <description>
+        A filename field removes directory information on set.
+      </description>
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.FileNameProcessor" />
+      </setprocessor>
+    </specialization>
+
+  </datatype>
+
+  <datatype id="datetime">
+    <class name="org.mmbase.datatypes.DateTimeDataType" />
+
+    <pattern value="yyyy-MM-dd HH:mm" />
+    <pattern xml:lang="nl-NL" value="dd MMMM yyyy HH:mm" />
+    <pattern xml:lang="eo" value="dd'-a de' MMMM yyyy 'je' HH:mm" />
+
+    <getprocessor type="string">
+      <class name="org.mmbase.datatypes.processors.FormatDateTime" />
+    </getprocessor>
+
+    <specialization id="created">
+      <default value="now" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+    </specialization>
+
+    <specialization id="lastmodified">
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.LastModified" />
+      </commitprocessor>
+    </specialization>
+
+
+    <specialization id="time">
+      <default value="100" />
+      <pattern value="HH:mm:ss" />
+    </specialization>
+
+    <specialization id="date">
+      <default value="today" />
+      <pattern value="yyyy-MM-dd" />
+      <pattern xml:lang="nl-NL" value="dd MMMM yyyy" />
+
+      <specialization id="20th-century">
+        <description>
+          Silly example (also used to test)
+          Allow only dates from the previous century..
+        </description>
+        <minInclusive value="1900-01-01"  />
+        <maxExclusive value="2000-01-01"  />
+      </specialization>
+
+      <specialization id="20th-century-pedantic">
+        <minInclusive value="1901-01-01"  />
+        <maxExclusive value="2001-01-01"  />
+      </specialization>
+
+      <specialization id="birthdate">
+        <default value="today- 30 year" />
+        <maxInclusive value="today" />
+      </specialization>
+
+      <specialization id="living-birthdate">
+        <default value="today - 30 year" />
+        <minInclusive enforce="never" value="today - 140 year" />
+        <maxInclusive value="today"    />
+      </specialization>
+
+      <specialization id="weeknumbers">
+        <pattern value="'dag: 'EEEEE 'week :'ww 'jaar: 'yyyy" xml:lang="nl" />
+        <pattern value="'day: 'EEEEE 'week :'ww 'year: 'yyyy" xml:lang="en" />
+      </specialization>
+
+    </specialization>
+  </datatype>
+
+  <datatype id="long">
+    <class name="org.mmbase.datatypes.LongDataType" />
+    <specialization id="duration">
+      <description>
+        Durations are positive longs.
+      </description>
+      <minInclusive value="0" />
+      <!-- I have no idea how to do this -->
+    </specialization>
+  </datatype>
+
+  <datatype id="boolean">
+    <class name="org.mmbase.datatypes.BooleanDataType" />
+    <enumeration>
+      <entry basename="org.mmbase.datatypes.resources.boolean.truefalse" />
+    </enumeration>
+    <specialization id="yesno">
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.boolean.yesno" />
+      </enumeration>
+    </specialization>
+    <specialization id="onoff">
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.boolean.onoff" />
+      </enumeration>
+    </specialization>
+  </datatype>
+
+  <datatype id="integer">
+    <class name="org.mmbase.datatypes.IntegerDataType" />
+
+    <specialization id="dirs">
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.dirs" />
+      </enumeration>
+    </specialization>
+    <specialization id="spells">
+      <!-- example to test -->
+      <enumeration>
+        <entry value="1" xml:lang="nl" display="hokus pokus" />
+        <entry value="2" xml:lang="nl" display="simsalabim" />
+        <entry value="3" xml:lang="nl" display="pilatus pas" />
+        <entry value="2" xml:lang="en" display="simsalabim" />
+        <entry value="3" xml:lang="en" display="pilatus pas" />
+        <entry value="1" xml:lang="en" display="hocus pocus" />
+      </enumeration>
+    </specialization>
+    <specialization id="ordinals">
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.ordinals" />
+      </enumeration>
+    </specialization>
+
+    <specialization id="filesize">
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatFileSize" />
+      </getprocessor>
+    </specialization>
+  </datatype>
+
+  <datatype id="float">
+    <class name="org.mmbase.datatypes.FloatDataType" />
+  </datatype>
+  <datatype id="double">
+    <class name="org.mmbase.datatypes.DoubleDataType" />
+  </datatype>
+
+  <datatype id="binary">
+    <class name="org.mmbase.datatypes.BinaryDataType" />
+  </datatype>
+
+  <datatype id="node">
+    <class name="org.mmbase.datatypes.NodeDataType" />
+    <specialization id="typedef">
+      <enumeration>
+        <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </enumeration>
+    </specialization>
+    <specialization id="reldef">
+      <enumeration>
+        <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </enumeration>
+    </specialization>
+  </datatype>
+
+</datatypes>

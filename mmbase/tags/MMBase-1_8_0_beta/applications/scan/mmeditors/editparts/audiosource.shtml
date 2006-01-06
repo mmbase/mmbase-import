@@ -1,0 +1,45 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#FF0000" VLINK="#551A8B" ALINK="#FF0000">
+
+<CENTER>
+<SECURE>
+<SCRIPT LANGUAGE = "JavaScript">
+<!--
+function jumpPage(form){
+	i = form.SelectMenu.options[form.SelectMenu.selectedIndex];
+	location.href = "$MOD-INFO-SERVERCONTEXT^/mmeditors/editparts//audiosource.shtml?source+Bron+"+i.value;
+}
+// -->
+</SCRIPT>
+
+
+<FORM>
+<BR>
+Selecteer apparaat:
+<BR>
+
+<SELECT NAME="SelectMenu" onChange="jumpPage(this.form)">
+<IF $PARAM3=N>
+	<OPTION VALUE="$PARAM3"> $PARAM3
+</IF>
+<OPTION VALUE="upload"> upload
+<IF $MOD-MMBASE-FIELD-1165114-state^=Nbusy>
+<OPTION VALUE="jazz"> jazz
+</IF>
+<IF $MOD-MMBASE-FIELD-1970742-state^=Nbusy>
+<OPTION VALUE="jazz2"> jazz2 (remote)
+</IF>
+</SELECT>
+</FORM>
+<HR>
+
+<IF $PARAM3=N> 
+	<INCLUDE /mmeditors/editparts/audiodevice-$PARAM3.shtml>
+<ELSE>
+	<INCLUDE /mmeditors/editparts/audiodevice-upload.shtml>
+</IF>
+
+</BODY>
+</HTML>

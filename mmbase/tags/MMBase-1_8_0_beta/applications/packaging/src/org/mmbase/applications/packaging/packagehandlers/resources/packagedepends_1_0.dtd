@@ -1,0 +1,12 @@
+<!--
+     packagedepends.dtd
+-->
+
+<!ELEMENT packagedepends (package*)>
+
+<!ELEMENT package (#PCDATA)>
+<!ATTLIST package name CDATA #IMPLIED>
+<!ATTLIST package type CDATA #IMPLIED>
+<!ATTLIST package maintainer CDATA #IMPLIED>
+<!ATTLIST package version CDATA #IMPLIED>
+<!ATTLIST package versionmode CDATA #IMPLIED>

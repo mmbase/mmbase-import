@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<PROCESSOR MMBASE>
+<html xmlns="http://www.w3.org/TR/xhtml">
+<head>
+<title>MMBase Forum</title>
+<link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
+</head>
+<body class="basic">
+<table summary="forum threads" width="93%" cellspacing="1" cellpadding="3" border="0">
+<tr align="left">
+  <th class="header" colspan="2">$MOD-MMBASE-FIELD-$PARAM2-html(subject)^</th>
+</tr>
+<tr>
+  <td class="multidata" colspan="2">
+     <p><em>Posted by $MOD-MMBASE-FIELD-$PARAM2-getinfovalue(name)^</em> on
+        $MOD-MMBASE-FIELD-$PARAM2-day(timestampsec)
+        $MOD-MMBASE-FIELD-$PARAM2-month(timestampsec)
+        $MOD-MMBASE-FIELD-$PARAM2-year(timestampsec)
+     </p>
+     
+     <p>$MOD-MMBASE-FIELD-$PARAM2-html(body)^</p>
+     &nbsp;
+</td></tr>
+<IF $MOD-communityprc-CHANNEL-$PARAM1-ISOPEN^=Nreadonly>
+<tr>
+<td class="data">Post reply</td>
+<td class="navigate" align="right"><a href="createmessage.shtml?$PARAM1+$PARAM2" ><img src="../../../share/community/images/next.gif" alt="reply" border="0" align="left" /></a></td>
+</tr>
+</IF>
+<tr>
+<td class="data">ADMIN: Moderate message</td>
+<td class="navigate" align="right"><a href="editmessage.shtml?$PARAM1+$PARAM2" ><img src="../../../share/community/images/change.gif" alt="change" border="0" align="left" /></a></td>
+</tr>
+
+<LIST TREE PROCESSOR="communityprc" MAXCOUNT="50" NODE="$PARAM2" FIELDS="listhead,listtail,number,html(subject),getinfovalue(name),replycount,day(timestampsec),month(timestampsec),year(timestampsec),depth" VERSION="2.0">
+<tr><td>&nbsp;</td></tr>
+<tr align="left">
+  <th class="header" colspan="2">Follow-ups:</th>
+</tr>
+<tr><td class="multidata" colspan="2">
+  <LISTLOOP>
+  $ITEM1
+     <li><a href="message.shtml?$MOD-MMBASE-FIELD-Forum-number^+$ITEM3">$ITEM4</a> ($ITEM6)
+          <em>by $ITEM5 on $ITEM7 $ITEM8 $ITEM9</em></li>
+  $ITEM2
+  </LISTLOOP>
+</td></tr>
+</LIST>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td class="navigate"><a href="forum.shtml?$PARAM1" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
+<td class="data">Return to forum</td>
+</tr>
+
+</table>
+</body></html>

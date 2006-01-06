@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base SYSTEM "../../applications/buildbase.xml" > ]
+>
+
+<project name="MultiLanguageGui" default="jar" basedir=".">
+  <property name="project.name"   value="multilanguagegui" />
+  <property name="project.package"   value="org/mmbase/applications" />
+  <property name="project.target.templates.dir" value="multilanguagegui" />
+
+  &base;
+
+
+</project>

@@ -1,0 +1,940 @@
+<!--
+  This "enhanced" tld file will be converted to a "normal" tld and a html file.
+
+  version: $Id: mmcommunity-taglib.xml,v 1.9 2004-01-08 12:47:01 keesj Exp $
+  see: ../mmbase-taglib.xml
+-->
+<taglib>
+  <tlibversion>1.0</tlibversion>
+  <jspversion>1.1</jspversion>
+  <shortname>mmcommunity</shortname>
+  <uri>http://www.mmbase.org/mmcommunity-taglib-1.0</uri>
+  <info>Tag library for the MMBase Community Module (communityprc), based on MMCI(MMBase Cloud Interface).</info>
+  <tagtypes>
+    <type name="all">
+      <description>all mmbase community tags</description>
+      <info>
+        <p>
+          The Community Taglib provides an interface to the mmbase community nodemanagers.
+        </p>
+        <p>
+          The most useful feature is the 'tree'-tag.
+        </p>
+      </info>
+    </type>
+  </tagtypes>
+  <tag>
+    <name>tree</name>
+    <tagclass>org.mmbase.applications.community.taglib.TreeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>The tree tag provides a syntax to list messages in a channel or a thread, providing means to easily build a tree-like structure.</info>
+    <attribute>
+      <name>thread</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Node number, or node alias. This attribute defines the parent of the message list.</info>
+    </attribute>
+    <attribute>
+      <name>fields</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Comma-separated list of fields that should be made available in the
+        page. The fields are selected from the returned message nodes.
+        In addition to all (real and virtual) fields of the message node, a number
+        of additional fields can be asked. These are listtail, listhead, depth, and replycount.
+        Note that a message node's virtual fields and formatting fucntions need not be given and
+        can be used normally provided the base fields are included.</info>
+      <examplevalue>
+        <value>number,listhead,depth,listtail,subject,timestamp,replycount,info</value>
+        <info>Fields needed for a forum. Default.</info>
+      </examplevalue>
+      <examplevalue>
+        <value>sequence,body,info</value>
+        <info>Fields needed for a chatbox</info>
+      </examplevalue>
+    </attribute>
+    <attribute>
+      <name>orderby</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The fields on which the result set must be sorted.</info>
+    </attribute>
+    <attribute>
+      <name>directions</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The direction of sorting.</info>
+      <possiblevalue>
+        <value>UP</value>
+        <info>Ascending order</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DOWN</value>
+        <info>Descending order</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>maxdepth</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The maximum depth of the tree to return.</info>
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The maximum number of results.</info>
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The start index.</info>
+    </attribute>
+    <attribute>
+      <name>startafternode</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The number of the node after which the lists starts.</info>
+    </attribute>
+    <attribute>
+      <name>startaftersequence</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The sequence number of the node after which the lists starts.</info>
+    </attribute>
+    <attribute>
+      <name>opentag</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The tagname to use for the opening tags when creating the content of listhead and listtail.</info>
+      <examplevalue>
+        <value>ul</value>
+        <info>Replies of a message start a new (nested) unordered list. Default</info>
+      </examplevalue>
+      <examplevalue>
+        <value>blockquote class='indent'</value>
+        <info>Replies of a message are nested in blockquotes, with the 'indent' CSS class</info>
+      </examplevalue>
+    </attribute>
+    <attribute>
+      <name>closetag</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The tagname to use for the ending tags when creating the content of listhead and listtail.</info>
+      <examplevalue>
+        <value>ul</value>
+        <info>Replies of a message start a new (nested) unordered list. Default</info>
+      </examplevalue>
+      <examplevalue>
+        <value>blockquote</value>
+        <info>replies of a message are nested in blockquotes</info>
+      </examplevalue>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>See the 'id' attribute of the Node tag.</info>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        See the 'jspvar' attribute of the Node tag.
+      </info>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The type of object to return</info>
+      <possiblevalue>
+        <value>message</value>
+        <info>Expected object is of (base) type message. Default</info>
+      </possiblevalue>
+    </attribute>
+<example>&lt;mmcommunity:tree thread="123" fields="number,subject" maxdepth="0"&gt;
+  &lt;mm:head&gt;Main threads&lt;/mm:head&gt;
+  &lt;a href="showthread.jsp?thread=&lt;%=number%&gt;"&gt;&lt;%=subject%&gt;&lt;/a&gt;
+&lt;/mmcommunity:tree&gt;</example>
+  </tag>
+
+  <tag>
+    <name>who</name>
+    <tagclass>org.mmbase.applications.community.taglib.WhoTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>The who tag provides a syntax to list users connected to a channel.</info>
+    <attribute>
+      <name>channel</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Node number, or node alias. This attribute defines the parent of the message list.</info>
+    </attribute>
+    <attribute>
+      <name>orderby</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The fields on which the result set must be sorted.</info>
+    </attribute>
+    <attribute>
+      <name>directions</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The direction of sorting.</info>
+      <possiblevalue>
+        <value>UP</value>
+        <info>Ascending order</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DOWN</value>
+        <info>Descen*ding order</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The maximum number of results.</info>
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The start index.</info>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>See the 'id' attribute of the Node tag.</info>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        See the 'jspvar' attribute of the Node tag.
+      </info>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The type of (user) object to return</info>
+      <examplevalue>
+        <value>chatter</value>
+        <info>Community chatter type. Default</info>
+      </examplevalue>
+      <examplevalue>
+        <value>user</value>
+        <info>MMBase user type (used in session maintenance).</info>
+      </examplevalue>
+      <examplevalue>
+        <value>people</value>
+        <info>MMbase people type (used in basic authentication).</info>
+      </examplevalue>
+    </attribute>
+<example>&lt;mmcommunity:who channel="123" type="chatter"&gt;
+  &lt;mm:head&gt;Users&lt;/mm:head&gt;
+  &lt;a href="showchatter?chatter=&lt;mm:field name="number" /&gt;"&gt;&lt;mm:field name="logon" /&gt;&lt;/a&gt;
+&lt;/mmcommunity:who&gt;</example>
+  </tag>
+
+  <tag>
+    <name>getinfo</name>
+    <tagclass>org.mmbase.applications.community.taglib.GetInfoTag</tagclass>
+    <teiclass>org.mmbase.applications.community.taglib.GetInfoTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>The getinfo tag provides a syntax to retrieve data from the multipurpose info field from a message object.</info>
+    <attribute>
+      <name>node</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    <info>The 'id' of the node or list from which this field must be taken.
+          By default this is the node or list which is enclosing this field.</info>
+    </attribute>
+    <attribute>
+      <name>key</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    <info>The key of the attribute to retrieve.</info>
+      <examplevalue>
+        <value>name</value>
+        <info>The name of the author</info>
+      </examplevalue>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    <info>The name of a jsp variable which will contain the reqiested value.
+      If not provided, the value will be printed to the page at the start of the body of the tag.
+      The variable is only available within the tag's body.</info>
+    </attribute>
+    <example>&lt;mm:node number="323"&gt;
+  &lt;mmcommunity:getinfo key="name" jspvar="author"&gt;posted by &lt;%=author%&gt;&lt;/mmcommunity:setinfo&gt;
+&lt;/mm:node&gt;
+    </example>
+  </tag>
+
+  <tag>
+    <name>setinfo</name>
+    <tagclass>org.mmbase.applications.community.taglib.SetInfoTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>The setinfo tag provides a syntax to store data in the multipurpose info field from a message object.
+        The new value is formed by the content of the tag's body.</info>
+    <attribute>
+      <name>node</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    <info>The 'id' of the node or list from which this field must be taken.
+          By default this is the node or list which is enclosing this field.</info>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>See the 'id' attribute of the Node tag.</info>
+    </attribute>
+    <attribute>
+      <name>key</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    <info>The key of the attribute to set.</info>
+      <examplevalue>
+        <value>name</value>
+        <info>The name of the author</info>
+      </examplevalue>
+    </attribute>
+    <example>&lt;mm:node number="323"&gt;
+  &lt;mmcommunity:setinfo key="name"&gt;guest&lt;/mmcommunity:setinfo&gt;
+&lt;/mm:node&gt;
+    </example>
+  </tag>
+
+  <tag>
+    <name>post</name>
+    <tagclass>org.mmbase.applications.community.taglib.PostTag</tagclass>
+    <teiclass>org.mmbase.applications.community.taglib.PostTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>The post tag provides a syntax to post messages.
+        The post attributes are stored in mm:setfield tags in the tag's body.</info>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    <info>The name of a jsp variable which will contain the numbe rof the enwly posted message.
+    The variable is accessible from the endtag of the tag and onward. Only applies to forums.</info>
+    </attribute>
+    <example>&lt;mmcommunity:post&gt;
+  &lt;mm:setfield name="channel"&gt;178&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="subject"&gt;Welcome to this message board&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="user"&gt;15&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="username"&gt;admin&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="body"&gt;Here follow the rules of this board...&lt;/mm:setfield&gt;
+&lt;/mmcommunity:post&gt;
+    </example>
+  </tag>
+
+  <tag>
+    <name>update</name>
+    <tagclass>org.mmbase.applications.community.taglib.UpdateTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>The update tag provides a syntax to change old messages.
+        The post attributes are stored in mm:setfield tags in the tag's body.</info>
+    <attribute>
+      <name>message</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Node number, or node alias. This attribute defines the message to change.</info>
+    </attribute>
+    <example>&lt;mmcommunity:update message="323"&gt;
+  &lt;mm:setfield name="subject"&gt;moderated&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="user"&gt;15&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="username"&gt;admin&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="body"&gt;This message has been moderated.&lt;/mm:setfield&gt;
+&lt;/mmcommunity:update&gt;
+    </example>
+  </tag>
+
+  <tag>
+    <name>delete</name>
+    <tagclass>org.mmbase.applications.community.taglib.DeleteTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      A tag which removes threads.
+      It behaves much like a node tag (for the message), but deletes the message and all its' descendends at the end of the tag.
+    </info>
+    <attribute>
+        <name>message</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the message node in MMBase.
+  </info>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>deleteall</name>
+    <tagclass>org.mmbase.applications.community.taglib.DeleteAllTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      A tag which removes all threads for  a channel.
+      It behaves much like a node tag (for the channel), but deletes all it's threads and all its' descendends at the end of the tag.
+    </info>
+    <attribute>
+        <name>channel</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+  </info>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>channel</name>
+    <tagclass>org.mmbase.applications.community.taglib.ChannelTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      A tag which opens or closes a channel.
+      It behaves much like a node tag (for the channel), but opens closes the channel at the beginning of the tag, depending on action.
+    </info>
+    <attribute>
+        <name>channel</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+    When not supplied, the parent node is used instead.
+  </info>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
+    </attribute>
+    <attribute>
+        <name>referid</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
+    </attribute>
+    <attribute>
+        <name>action</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+          Determines whether a channel should be opened, closed, or opened read-only.
+  </info>
+      <possiblevalue>
+        <value>open</value>
+        <info>Opens the channel. Default</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>close</value>
+        <info>Closes the channel</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>readonly</value>
+        <info>Opens the channel read only</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>community</name>
+    <tagclass>org.mmbase.applications.community.taglib.CommunityTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      A tag which attempts to open or closes all channels of a community.
+      It behaves much like a node tag (for the community), but opens or closes all channels at the start of the tag.
+    </info>
+    <attribute>
+        <name>community</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the community node in MMBase.
+    When not supplied, the parent node is used instead.
+  </info>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
+    </attribute>
+    <attribute>
+        <name>referid</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
+    </attribute>
+    <attribute>
+        <name>action</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+          Determines whether the community's channels should be opened, or closed.
+  </info>
+      <possiblevalue>
+        <value>open</value>
+        <info>Opens the channel. Default</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>close</value>
+        <info>Closes the channel</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>testchannel</name>
+    <tagclass>org.mmbase.applications.community.taglib.TestChannelTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      A tag which tests the status of a channel.
+      It behaves much like a node tag (for the channel), but only evaluates the tag body if the condition evaluates to true.
+    </info>
+    <attribute>
+        <name>channel</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+    When not supplied, the parent node is used instead.
+  </info>
+    </attribute>
+    <attribute>
+        <name>condition</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The condition to test the state of the channel to
+  </info>
+      <possiblevalue>
+        <value>open</value>
+        <info>Channel is open. Default</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>closed</value>
+        <info>Channel is closed</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>readonly</value>
+        <info>Channel is open for reading only</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>reverse</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    <info>If true, the body tag is evaluated if the condition does NOT evaluate to true.</info>
+      <possiblevalue>
+        <value>true</value>
+        <info>Reverse the condition</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>false</value>
+        <info>Do not reverse the condition. Default.</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
+    </attribute>
+    <attribute>
+        <name>referid</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>log</name>
+    <tagclass>org.mmbase.applications.community.taglib.LogTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      A tag which turns on logging of a channel.
+      It behaves much like a node tag (for the channel), but it starts or stops logging at the start of the tag (depending on action).
+    </info>
+    <attribute>
+        <name>channel</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+  </info>
+    </attribute>
+    <attribute>
+        <name>file</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    Filename to log to
+  </info>
+    </attribute>
+    <attribute>
+        <name>action</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+          Determines whether logging should be started or stopped.
+  </info>
+      <possiblevalue>
+        <value>file</value>
+        <info>Start logging to the indicated file. Default</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>stop</value>
+        <info>Stop logging</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
+    </attribute>
+    <attribute>
+        <name>referid</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
+    </attribute>
+  </tag>
+
+	<!--
+  <tag>
+    <name>stoplog</name>
+    <tagclass>org.mmbase.applications.community.taglib.StopLogTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      A tag which turns off logging of a channel.
+      It behaves much like a node tag (for the channel), but it stops logging at the end of the tag.
+    </info>
+    <attribute>
+        <name>channel</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+  </info>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
+    </attribute>
+    <attribute>
+        <name>referid</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
+    </attribute>
+  </tag>
+	-->
+
+  <tag>
+    <name>connection</name>
+    <tagclass>org.mmbase.applications.community.taglib.ConnectionTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      A tag which manages the conenction of a user to a channel.
+      It behaves much like a node tag (for the user), but it connects or disconnects the user at the start of the tag's body,
+      depending on the value of action.
+    </info>
+    <attribute>
+        <name>user</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the user node in MMBase.
+    When not supplied, the parent node is used instead.
+  </info>
+    </attribute>
+    <attribute>
+        <name>channel</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The nodenumber or alias identifying the channel node to connect to.
+  </info>
+    </attribute>
+    <attribute>
+        <name>action</name>
+        <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+  <info>
+    The type of connection to perform.
+  </info>
+      <possiblevalue>
+        <value>stillactive</value>
+        <info>Notify the channel that the user is still active. Default</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>join</value>
+        <info>Join the channel.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>leave</value>
+        <info>Leave the channel.</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
+    </attribute>
+    <attribute>
+        <name>referid</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
+    </attribute>
+  </tag>
+
+</taglib>

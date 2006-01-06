@@ -1,0 +1,110 @@
+<PROCESSOR MMBASE>
+<INCLUDE /data/beeld/popup.txt>
+<BODY BACKGROUND="" TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#FF0000" ALINK="#FF0000"
+VLINK="#FF0000">
+<BR>
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=90%> 
+<TR>
+<TD BGCOLOR="#000000">
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=100%>
+   <TR>
+   <TD BGCOLOR="#C0C0C0" WIDTH="70%">
+   <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">
+     <TD WIDTH="170" BGCOLOR="#FFFFFF"><FONT SIZE="2" FACE="arial,helvetica">Eigen velden van deze AudioOpname</FONT></TD>
+	</TD>
+   </LIST>
+   </TR>
+</TABLE>
+</TABLE>
+<B>Titel:</B> $MOD-MMBASE-FIELD-$PARAM1-title <BR>
+<B>Intro:</B> <BR> $MOD-MMBASE-FIELD-$PARAM1-intro <BR>
+<B>Aantal sec:</B> $MOD-MMBASE-FIELD-$PARAM1-playtime <BR>
+<P> 
+
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=90%> 
+<TR>
+<TD BGCOLOR="#000000">
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=100%>
+   <TR>
+   <TD BGCOLOR="#C0C0C0" WIDTH="70%">
+   <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">
+     <TD WIDTH="170" BGCOLOR="#FFFFFF"><FONT SIZE="2" FACE="arial,helvetica">Relaties met de wav/realaudio files en hun status</FONT></TD>
+	</TD>
+   </LIST>
+   </TR>
+</TABLE>
+</TABLE>
+<LU>
+<LIST OBJECTS TYPE="rawaudios" FIELDS="speed,channels,status,format" WHERE="id=E$PARAM1">
+	<LI>Een $ITEM4, snelheid $ITEM1 in $ITEM2 kanalen, huidige status $ITEM3 <BR>
+
+	<LIF $ITEM3=E3 AND $ITEM4=E2>
+		Gedaan $ITEM1/$ITEM2 <A HREF="http://www.vpro.nl/rastreams.db?$PARAM1+$ITEM1+$ITEM2"><IMG SRC="/stijl/beeld/box-blok-w.gif" BORDER="0"></A><BR>
+	</IF>
+
+	<LIF $ITEM3=E3 AND $ITEM4=E6>
+		Gedaan g2 surestream <A HREF="http://www.vpro.nl/rastreams.db?n($PARAM1)+a(session)"><IMG SRC="/stijl/beeld/box-blok-w.gif" BORDER="0"></A><BR>
+	</IF>
+
+</LIST>
+</LU>
+<P>
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=90%> 
+<TR>
+<TD BGCOLOR="#000000">
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=100%>
+   <TR>
+   <TD BGCOLOR="#C0C0C0" WIDTH="70%">
+   <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">
+     <TD WIDTH="170" BGCOLOR="#FFFFFF"><FONT SIZE="2" FACE="arial,helvetica">Relaties met de volgende afbeeldingen</FONT></TD>
+	</TD>
+   </LIST>
+   </TR>
+</TABLE>
+</TABLE>
+<LIST RELATIONS TYPE="images" NODE="$PARAM1" FIELDS="number,description">
+<A HREF="JavaScript:openWin('$ITEM1');"><FONT COLOR="#FFFFFF"><IMG SRC="/img.db?$ITEM1+s(100x60)" hspace=0 vspace=5 border=1></FONT></A></LIST>
+<P>
+
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=90%> 
+<TR>
+<TD BGCOLOR="#000000">
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=100%>
+   <TR>
+   <TD BGCOLOR="#C0C0C0" WIDTH="70%">
+   <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">
+     <TD WIDTH="170" BGCOLOR="#FFFFFF"><FONT SIZE="2" FACE="arial,helvetica">Relaties met de volgende groepen</FONT></TD>
+	</TD>
+   </LIST>
+   </TR>
+</TABLE>
+</TABLE>
+<LIST RELATIONS TYPE="episodes" NODE="$PARAM1" FIELDS="title,episodenr,intro">
+<B>Naam:</B> $ITEM1<BR>
+<B>Afl. nummer:</B> $ITEM2<BR>
+<B>Omschrijving:</B><BR> $ITEM3</BR>
+</LIST>
+<P>
+
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=90%> 
+<TR>
+<TD BGCOLOR="#000000">
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=100%>
+   <TR>
+   <TD BGCOLOR="#C0C0C0" WIDTH="70%">
+   <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">
+     <TD WIDTH="170" BGCOLOR="#FFFFFF"><FONT SIZE="2" FACE="arial,helvetica">Bestandsinformatie</FONT></TD>
+	</TD>
+   </LIST>
+   </TR>
+</TABLE>
+</TABLE>
+
+Info voor : $PARAM1<BR>
+FIleInfo  : $MOD-MMBASE-FILEINFO-AUDIOPARTS-$PARAM1^<BR>
+
+<P>
+</BODY>
+</HTML>
+
+

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="rolerel" maintainer="mmbase.org" version="1" extends="insrel">
+	<!-- <status>
+	what is the status of this builder options : active or inactive
+-->
+	<status>active</status>
+	<!-- <classfile>
+	This is a optional tag, it names the classfile that allows you to add
+	support routines or changes them on a per builder base. For example
+	images has routines to image support etc etc.
+
+	possible values : Dummy or disabled tag makes mmbase use the default setup
+
+		short name : Urls will start class : org.mmbase.module.builders.Urls.class
+
+		long name : nl.vpro.mmbase.module.builders.Urls will start that class
+-->
+	<classfile>RoleRel</classfile>
+	<searchage>14</searchage>
+	<!-- <names>
+	names defines the different names used in user visible parts, singular for
+	for talking about 1 object (Url,Person) and plurar for talking about multiple
+	(Urls, people).
+-->
+	<names>
+		<!-- singles per language as defined by ISO 639 -->
+		<singular xml:lang="en">Role Relation</singular>
+		<singular xml:lang="nl">Rol Relatie</singular>
+		<!-- multiple per language as defined by ISO 639 -->
+		<plural xml:lang="en">Role Relation</plural>
+		<plural xml:lang="nl">Rol Relaties</plural>
+	</names>
+	<!-- <descriptions>
+	small description of the builder for human reading
+-->
+	<descriptions>
+		<!-- descriptions per language as defined by ISO 639  -->
+		<description xml:lang="en">Role relation, defines, for example, the role of a person in a company</description>
+		<description xml:lang="nl">Rol relatie, definieert de rol van bijv een persoon binnen een bedrijf</description>
+	</descriptions>
+	<!-- <fieldlist>
+	 defines the different fields in this object, be carefull the order is important
+	once defined keep them in the same order.
+	If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+	<fieldlist>
+		<!-- POS 7 : <field> 'role'  -->
+		<field>
+			<!-- gui related -->
+			<descriptions>
+				<!-- descriptions per language as defined by ISO 639  -->
+				<description xml:lang="en">Roledescription of this relation</description>
+				<description xml:lang="nl">Rolbeschrijving van deze relatie</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="en">Role</guiname>
+				<guiname xml:lang="nl">Rol</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<!-- editor related  -->
+			<editor>
+				<positions>
+					<!-- position in the input area of the editor -->
+					<input>1</input>
+					<!-- position in list area of the editor -->
+					<list>4</list>
+					<!-- position in search area of the editor -->
+					<search>4</search>
+				</positions>
+			</editor>
+			<!-- database related  -->
+			<db>
+				<!-- name of the field in the database -->
+				<name>role</name>
+				<!-- MMBase datatype and demands on it -->
+				<type state="persistent" notnull="false" key="false" size="12">STRING</type>
+			</db>
+		</field>
+	</fieldlist>
+</builder>
+

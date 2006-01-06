@@ -1,0 +1,44 @@
+<mm:present referid="nodemanager">
+  <mm:present referid="deletenumber">
+    <mm:deletenode referid="deletenumber"/>
+  </mm:present>
+</mm:present>
+
+<table>
+  <tr>
+    <td valign="top">
+      <mm:listnodes type="typedef">
+       <a href="<mm:url page="listdelete.jsp">
+                   <mm:param name="nodemanager"><mm:field name="name"/></mm:param>
+                </mm:url>"><mm:field name="name"/></a><br />
+      </mm:listnodes>
+    </td>
+    <td valign="top">
+      <mm:present referid="nodemanager">
+        <table>
+            <tr>
+              <mm:fieldlist nodetype="$nodemanager" type="list">
+                <td>
+                  <mm:fieldinfo type="name"/>
+                </td>
+              </mm:fieldlist>
+            </tr>
+          <mm:listnodes type="$nodemanager">
+            <tr>
+              <mm:fieldlist type="list">
+                <td>
+                  <mm:fieldinfo type="value"/>
+                </td>
+              </mm:fieldlist>
+              <td>
+                <a href="<mm:url page="listdelete.jsp" referids="nodemanager">
+							<mm:param name="deletenumber"><mm:field name="number" /></mm:param>
+                         </mm:url>">delete</a>
+              </td>
+            </tr>
+          </mm:listnodes>
+        </table>
+      </mm:present>
+    </td>
+  </tr>
+</table>

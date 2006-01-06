@@ -1,0 +1,18 @@
+<!--
+    theme.dtd
+-->
+
+<!ELEMENT theme (stylesheet*,imageset*)>
+
+<!ELEMENT stylesheet (#PCDATA)>
+<!ATTLIST stylesheet id CDATA #IMPLIED>
+<!ATTLIST stylesheet file CDATA #IMPLIED>
+
+<!ELEMENT imageset (image*)>
+<!ATTLIST imageset id CDATA #IMPLIED>
+<!ATTLIST imageset role CDATA #IMPLIED>
+
+<!ELEMENT image (#PCDATA)>
+<!ATTLIST image id CDATA #IMPLIED>
+<!ATTLIST image size CDATA #IMPLIED>
+<!ATTLIST image file CDATA #IMPLIED>

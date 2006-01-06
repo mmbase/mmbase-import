@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_bundle_basic PUBLIC "-//MMBase/DTD packaging_bundle_basic config 1.0//EN" "http://www.mmbase.org/dtd/packaging_bundle_basic_1_0.dtd">
+<packaging_bundle_basic>
+	<lastversion>10</lastversion>
+	<lastdate>Sun May 02 20:05:05 CEST 2004</lastdate>
+	<name>ThemeManager</name>
+	<maintainer>Submarine</maintainer>
+	<description>The ThemeManager provides a way to styles and imagesets to a webapplication. Its external to the applications and this way can act as a broker between new Themes and the Applications using them. In practice this means you can create a database with styles/imagesets and install them on multiple applications without making changes to the applications themselfs.</description>
+	<license type="MPL" version="1.0" name="Mozzila Public License" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Submarine" />
+	</initiators>
+	<supporters>
+		<supporter company="Submarine" />
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Submarine" />
+		<developer name="Gerard van Enk" company="EO" />
+	</developers>
+	<contacts>
+		<contact name="Daniel Ockeloen" reason="Bugs" mailto="daniel@submarine.nl" />
+		<contact name="Bruno Felix" reason="Sponser/Support questions" mailto="bruno@submarine.nl" />
+	</contacts>
+	<neededpackages>
+		<package name="ThemeManager html" type="display/html" maintainer="Submarine" version="6" included="true" />
+		<package name="ThemeManager functions" type="function/set" maintainer="Submarine" version="5" included="true" />
+		<package name="ThemeManager jars" type="java/jar" maintainer="Submarine" version="5" included="true" />
+	</neededpackages>
+</packaging_bundle_basic>
