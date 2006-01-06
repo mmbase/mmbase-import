@@ -14,8 +14,6 @@ import java.util.*;
 
 import javax.servlet.jsp.PageContext;
 
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.Entry;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  * 
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.2 2006-01-02 14:53:49 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.3 2006-01-06 14:45:47 andre Exp $
  * @see EditTag
  * @see Editor
  * @since MMBase-1.8
@@ -63,7 +61,8 @@ public class BasicEditor extends Editor {
             if (key.equals("icon")) icon = (String) entry.getValue();
         }
         
-        String str = makeHTML(context, url, icon, nodenr);
+        url = makeRelative(url, context);
+        String str = makeHTML(url, icon, nodenr);
         log.debug("returning: " + str);
         context.getOut().write(str);
 
@@ -72,19 +71,16 @@ public class BasicEditor extends Editor {
     /**
      * Values passed by the EditTag from the FieldTags.
      *
-     * @param queryList     ArrayList with SearchQuery objects from fields
-     * @param nodenrList    ArrayList with nodenumbers
-     * @param fieldList     ArrayList with fieldnames 
+     * @param queryList     List with SearchQuery objects from fields
+     * @param nodenrList    List with nodenumbers
+     * @param fieldList     List with fieldnames 
      */ 
-    public void registerFields(ArrayList queryList, ArrayList nodenrList, ArrayList fieldList) {
-        log.debug("processing fields");
+    public void registerFields(List queryList, List nodenrList, List fieldList) {
+        // log.debug("processing fields");
         
         // do something with the lists
         
-        // clear the lists in case of caching or something
-        queryList.clear();
-        nodenrList.clear();
-        fieldList.clear();
+        // and maybe you should clear the lists in case of caching or something
     }
     
     /**
@@ -92,16 +88,15 @@ public class BasicEditor extends Editor {
     *
     * @param url        An url to an editor
     * @param icon       An url to a graphic file
+    * @param nodenr     The nodenumber to edit
     * @return           An HTML string with a link suitable for the editor yammeditor.jsp
     * 
     */
-    protected String makeHTML(PageContext pc, String url, String icon, String nodenr) {
-        // TODO, Doesn't work in context. Perhaps some functionality of mm:url must be made accessible in static methods.
+    protected String makeHTML(String url, String icon, String nodenr) {
         
         StringBuffer html = new StringBuffer();
         
         html.append("<div class=\"et\"><a title=\"click to edit\" href=\"");
-        url = makeRelative(url, pc);
         html.append(url);
         html.append(nodenr);
         html.append("\" onclick=\"window.open(this.href); return false;\"><img src=\"");
@@ -117,10 +112,10 @@ public class BasicEditor extends Editor {
      * If the URL is not used to write to (this) page, then you probably don't want that.
      *
      * The behaviour can be overruled by starting the URL with two '/'s.
-	 *
+     *
      */
     protected String makeRelative(String url, PageContext pageContext) {
-    	StringBuffer show = new StringBuffer(url);
+        StringBuffer show = new StringBuffer(url);
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {

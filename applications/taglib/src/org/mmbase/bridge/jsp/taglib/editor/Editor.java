@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.8 2006-01-02 14:53:49 michiel Exp $
+ * @version $Id: Editor.java,v 1.9 2006-01-06 14:45:47 andre Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -65,9 +65,7 @@ abstract public class Editor {
      * @param nodenrList    List with nodenumbers of the node the field belongs to
      * @param fieldList     List with the fieldnames
      */ 
-    public void registerFields(List queryList, List nodenrList, List fieldList) {
-        // do something usefull with this information
-    }
+    public abstract void registerFields(List queryList, List nodenrList, List fieldList); 
     
     /**
      * Should create a link to an editor or some other way to edit the data displayed.
