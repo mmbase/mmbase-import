@@ -22,7 +22,7 @@
 <mm:import externid="ids"/>
 
 <mm:import id="list" jspvar="list" vartype="List"><mm:write referid="ids"/></mm:import>
-<%System.out.println(list.size()); %>
+
 <mm:import externid="action1"/>
 <mm:import externid="action2"/>
 

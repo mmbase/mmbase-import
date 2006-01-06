@@ -108,7 +108,7 @@
 
       <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
                  <mm:param name="mailboxname"><mm:write referid="mailboxname"/></mm:param>
-                
+                 <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
                </mm:treefile>">
       <img src="<mm:treefile write="true"  page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" referids="$referids"/> "width="50" height="28" border="0" title="<di:translate key="email.deletefolder" />" alt="<di:translate key="email.writenewemail" />"/></a>
 
