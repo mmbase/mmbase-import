@@ -18,14 +18,14 @@ import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.util.logging.*;
 
 /**
- * Wraps an {@link org.w3c.dom.Document} to be certainly serializable. If it is not by itself (IIRC
+ * Wraps an {@link org.w3c.dom.Document} to be certainly serializable (and cloneable). If it is not by itself (IIRC
  * the Xerces implementation is serializable), then this class serializes to a stringification.
  * 
  * This can be used if a Serializable class needs an Document member. Choose for a
  * DocumentSerializable member in stead, and use {@link #getDocument}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentSerializable.java,v 1.3 2005-12-20 18:26:59 michiel Exp $
+ * @version $Id: DocumentSerializable.java,v 1.4 2006-01-06 17:36:43 michiel Exp $
  * @since MMBase-1.8
  */
 public class DocumentSerializable implements Serializable, org.mmbase.util.PublicCloneable {
@@ -68,7 +68,17 @@ public class DocumentSerializable implements Serializable, org.mmbase.util.Publi
     }
 
     public String toString() {
-        return XMLWriter.write(document, false);
+        return XMLWriter.write(document, false, true);
+    }
+
+    public int hashCode() {
+        return document.hashCode();
+    }
+    public boolean equals(Object o) {
+        return 
+            o != null &&
+            o instanceof DocumentSerializable &&
+            document.equals(((DocumentSerializable)o).document);            
     }
 
     public Object clone() {
