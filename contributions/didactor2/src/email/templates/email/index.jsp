@@ -56,7 +56,7 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="<di:translate key="email.email" />" /> <di:translate key="email.email" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_email.gif" objectlist="$includePath" />" width="25" height="13" border="0" title="<di:translate key="email.email" />" alt="<di:translate key="email.email" />" /> <di:translate key="email.email" />
   </div>
 </div>
 
@@ -70,19 +70,19 @@
 	               <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
 	               <mm:param name="callerpage">/email/index.jsp</mm:param>
 	             </mm:treefile>">
-	  <img src="<mm:treefile page="/email/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.createfolder" />"/></a>
+	  <img src="<mm:treefile page="/email/gfx/map maken.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.createfolder" />" alt="<di:translate key="email.createfolder" />"/></a>
 
     <a href="<mm:treefile page="/email/changemailbox.jsp" objectlist="$includePath" referids="$referids">
                  <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
 	             <mm:param name="callerpage">/email/index.jsp</mm:param>
 	           </mm:treefile>">
-      <img src="<mm:treefile page="/email/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.renamefolder" />"/></a>
+      <img src="<mm:treefile page="/email/gfx/map hernoemen.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.renamefolder" />" alt="<di:translate key="email.renamefolder" />"/></a>
 
     <a href="<mm:treefile page="/email/deletemailbox.jsp" objectlist="$includePath" referids="$referids">
                  <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
                  <mm:param name="callerpage">/email/index.jsp</mm:param>
                </mm:treefile>">
-      <img src="<mm:treefile page="/email/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.deletefolder" />"/></a>
+      <img src="<mm:treefile page="/email/gfx/verwijder map.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.deletefolder" />" alt="<di:translate key="email.deletefolder" />"/></a>
 
     <br/><br/>
 
@@ -110,14 +110,14 @@
                  <mm:param name="mailboxname"><mm:write referid="mailboxname"/></mm:param>
                 
                </mm:treefile>">
-      <img src="<mm:treefile write="true"  page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" referids="$referids"/> "width="50" height="28" border="0" alt="<di:translate key="email.writenewemail" />"/></a>
+      <img src="<mm:treefile write="true"  page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" referids="$referids"/> "width="50" height="28" border="0" title="<di:translate key="email.deletefolder" />" alt="<di:translate key="email.writenewemail" />"/></a>
 
 
-       <input type="image" src="<mm:treefile page="/email/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.moveselected" />" name="action_move" value=move"/>
+       <input type="image" src="<mm:treefile page="/email/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.moveselected" />" alt="<di:translate key="email.moveselected" />" name="action_move" value=move"/>
 
-       <input type="image" src="<mm:treefile page="/email/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.deleteselected" />" name="action_delete" value="delete"/>
+       <input type="image" src="<mm:treefile page="/email/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.deleteselected" />" alt="<di:translate key="email.deleteselected" />" name="action_delete" value="delete"/>
 
-       <a href="<mm:treefile page="/email/mailrule.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/email/gfx/mail_rule.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="email.mailrules" />" border="0"></a>
+       <a href="<mm:treefile page="/email/mailrule.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/email/gfx/mail_rule.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="email.mailrules" />" alt="<di:translate key="email.mailrules" />" border="0"></a>
        
   </div>
   <div class="contentBody">

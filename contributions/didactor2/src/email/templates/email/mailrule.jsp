@@ -89,9 +89,9 @@
   </div>
   <div class="contentSubHeader">
     <a href="<mm:treefile page="/email/mailbox/editmailrule.jsp" objectlist="$includePath" referids="$referids"/>">
-      <img src="<mm:treefile write="true" page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" />" width="50" height="28" border="0" alt="<di:translate key="email.writenewrule" />" /></a>
+      <img src="<mm:treefile write="true" page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" />" width="50" height="28" border="0" title="<di:translate key="email.writenewrule" />" alt="<di:translate key="email.writenewrule" />" /></a>
 
-       <input type="image" src="<mm:treefile page="/email/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="email.deleteselected" />" name="action_delete" value="delete"/>
+       <input type="image" src="<mm:treefile page="/email/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.deleteselected" />" alt="<di:translate key="email.deleteselected" />" name="action_delete" value="delete"/>
        
   </div>
   <div class="contentBody">
