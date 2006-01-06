@@ -39,19 +39,21 @@
              value="${emailsenderdomain}"/>
 
      <ant antfile="configure.xml" target="config"/>
-     	<if>
-          <available file="${build.dir}/webapp/WEB-INF/config/applications" type="dir" />
-          <then>
-            <copy todir="${build.dir}/webapp/WEB-INF/config/builders" flatten="yes">
-              <fileset dir="${build.dir}/webapp/WEB-INF/config/applications">
-                <include name="**/builders/*.xml"/>
-              </fileset>
-            </copy>
-          </then>
-        </if>
+     <if>
+       <available file="${build.dir}/webapp/WEB-INF/config/applications" type="dir" />
+       <then>
+         <copy todir="${build.dir}/webapp/WEB-INF/config/builders" flatten="yes">
+           <fileset dir="${build.dir}/webapp/WEB-INF/config/applications">
+             <include name="**/builders/*.xml"/>
+           </fileset>
+         </copy>
+       </then>
+     </if>
+  </target>
 
-
-  
+  <target name="compileonly">
+    <echo message="Only compiling all classes" />
+    <foreach list="${components}" target="compile.component" inheritall="true" param="component" />
   </target>
 
   <target name="clean">
@@ -71,35 +73,35 @@
 
     <!-- copy templates -->
     <if>
-     <available file="src/core/templates/${provider}" type="dir" />
-     <then>
+      <available file="src/core/templates/${provider}" type="dir" />
+      <then>
         <echo message="Copying templates from src/core/templates/${provider}" />
         <echo message="Warning: putting provider templates in /src/core/templates is deprecated, consider using /providers/${provider}/templates instead"/>
         <copy todir="${build.dir}/webapp/${provider}" overwrite="true">
-            <fileset dir="src/core/templates/${provider}">
-             <include name="**"/>
-             <exclude name="**/CVS"/>
-             <exclude name="templates/**"/>
-            </fileset>
+          <fileset dir="src/core/templates/${provider}">
+            <include name="**"/>
+            <exclude name="**/CVS"/>
+            <exclude name="templates/**"/>
+          </fileset>
         </copy>
       </then>
       <else>
         <if>
-             <available file="providers/${provider}/templates" type="dir" />
-             <then>
-             <echo message="Copying templates from providers/${provider}/templates" />
-             <copy todir="${build.dir}/webapp/${provider}" overwrite="true">
-                <fileset dir="providers/${provider}/templates">
-                 <include name="**"/>
-                 <exclude name="**/CVS"/>
-                </fileset>
-             </copy>
-             </then>
-        <else>   
+          <available file="providers/${provider}/templates" type="dir" />
+          <then>
+            <echo message="Copying templates from providers/${provider}/templates" />
+            <copy todir="${build.dir}/webapp/${provider}" overwrite="true">
+              <fileset dir="providers/${provider}/templates">
+                <include name="**"/>
+                <exclude name="**/CVS"/>
+              </fileset>
+            </copy>
+          </then>
+          <else>   
             <echo message="WARNING! provider ${provider} does not have any templates in /src/core/templates/${provider} or /providers/${provider}/templates"/>
-       </else>
-       </if>
-    </else>
+          </else>
+        </if>
+      </else>
     </if>
 
     <!-- copy templates -->
@@ -117,7 +119,65 @@
     </if>
   </target>
 
-  <target name="build.component">
+  <target name="compile.component">
+    <echo message="Compiling component ${component}" />
+    <!-- copy external libs -->
+    <if>
+      <available file="src/${component}/lib" type="dir" />
+      <then>
+        <copy todir="${build.dir}/webapp/WEB-INF/lib">
+          <fileset dir="src/${component}/lib">
+            <include name="**"/>
+            <exclude name="**/CVS"/>
+          </fileset>
+        </copy>
+      </then>
+    </if>
+
+    <!-- build java sources and create a jar file -->
+    <if>
+      <available file="src/${component}/java" type="dir"/>
+      <then>
+        <path id="classpath">
+          <fileset dir="lib/">
+            <include name="*.jar" />
+          </fileset>
+          <fileset dir="${build.dir}/webapp/WEB-INF/lib">
+            <include name="*.jar" />
+          </fileset>
+          <fileset dir="src/${component}/lib">
+            <include name="*.jar" />
+          </fileset>
+        </path>
+        <mkdir dir="${build.dir}/classes/${component}" />
+
+        <copy todir="${build.dir}/classes/${component}">
+          <fileset dir="src/${component}/java">
+           <include name="**/*.properties" />
+            <exclude name="**/*.java"/>
+          </fileset>
+        </copy>
+
+        <javac srcdir="src/${component}/java"
+               destdir="${build.dir}/classes/${component}"
+               deprecation="on"
+               debug="yes"
+               classpathref="classpath" />
+        <jar jarfile="${build.dir}/webapp/WEB-INF/lib//didactor-${component}.jar"
+             includes="**"
+             basedir="${build.dir}/classes/${component}" />
+      </then>
+    </if>
+    <if>
+      <available file="src/${component}/build.xml" type="file" />
+      <then>
+        <echo message="running src/${component}/build.xml"/>
+        <ant antfile="src/${component}/build.xml" target="build"/>
+      </then>
+    </if>
+  </target>
+
+  <target name="build.component" depends="compile.component">
     <echo message="Building component ${component}" />
 
     <!-- copy templates -->
@@ -218,18 +278,6 @@
       </then>
     </if>
 
-    <!-- copy external libs -->
-    <if>
-      <available file="src/${component}/lib" type="dir" />
-      <then>
-        <copy todir="${build.dir}/webapp/WEB-INF/lib">
-          <fileset dir="src/${component}/lib">
-            <include name="**"/>
-            <exclude name="**/CVS"/>
-          </fileset>
-        </copy>
-      </then>
-    </if>
 
     <!-- merge editwizard definitions --> 
     <if>
@@ -245,47 +293,6 @@
       </then>
     </if>
 
-    <!-- build java sources and create a jar file -->
-    <if>
-      <available file="src/${component}/java" type="dir"/>
-      <then>
-        <path id="classpath">
-          <fileset dir="lib/">
-            <include name="*.jar" />
-          </fileset>
-          <fileset dir="${build.dir}/webapp/WEB-INF/lib">
-            <include name="*.jar" />
-          </fileset>
-          <fileset dir="src/${component}/lib">
-            <include name="*.jar" />
-          </fileset>
-        </path>
-        <mkdir dir="${build.dir}/classes/${component}" />
-
-        <copy todir="${build.dir}/classes/${component}">
-          <fileset dir="src/${component}/java">
-           <include name="**/*.properties" />
-            <exclude name="**/*.java"/>
-          </fileset>
-        </copy>
-
-        <javac srcdir="src/${component}/java"
-               destdir="${build.dir}/classes/${component}"
-               deprecation="on"
-               debug="yes"
-               classpathref="classpath" />
-        <jar jarfile="${build.dir}/webapp/WEB-INF/lib//didactor-${component}.jar"
-             includes="**"
-             basedir="${build.dir}/classes/${component}" />
-      </then>
-    </if>
-    <if>
-        <available file="src/${component}/build.xml" type="file" />
-        <then>
-            <echo message="running src/${component}/build.xml"/>
-            <ant antfile="src/${component}/build.xml" target="build"/>
-        </then>
-    </if>
   </target>
 
   <target name="mergewizards">
@@ -373,16 +380,16 @@
          </fileset> 
          <fileset dir="${tomcat.home}/common/lib"> 
            <include name="*.jar"/> 
-         </fileset>
-       	 <fileset dir="src/core/lib">
-       	 	<include name="*.jar" />
-       	 </fileset>
+         </fileset> 
+         <fileset dir="src/core/lib">
+           <include name="*.jar"/> 
+         </fileset> 
        </classpath> 
      </taskdef> 
 
      <jasper2
              validateXml="false" 
-	     addWebXmlMappings="true"
+             addWebXmlMappings="true"
              uriroot="${build.dir}/webapp" 
              webXmlFragment="${build.dir}/webapp/WEB-INF/jsp.xml" 
              outputDir="${build.dir}/jspjava" /> 
@@ -392,7 +399,7 @@
            optimize="off"
            debug="on" failonerror="false"
            srcdir="${build.dir}/jspjava"
-	   fork="true" memoryMaximumSize="512M">
+           fork="true" memoryMaximumSize="512M">
       <classpath>
         <fileset dir="${build.dir}/webapp/WEB-INF/lib">
           <include name="*.jar"/>
