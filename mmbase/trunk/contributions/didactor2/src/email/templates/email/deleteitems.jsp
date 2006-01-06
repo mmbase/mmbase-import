@@ -22,7 +22,7 @@
 <mm:import externid="ids"/>
 
 <mm:import id="list" jspvar="list" vartype="List"><mm:write referid="ids"/></mm:import>
-
+<%System.out.println(list.size()); %>
 <mm:import externid="action1"/>
 <mm:import externid="action2"/>
 
@@ -113,8 +113,17 @@
     <form name="deletemailboxitemform" method="post" action="<mm:treefile page="/email/deleteitems.jsp" objectlist="$includePath" referids="$referids"/>">
 
       <di:translate key="email.deletefolderitemsyesno" />
-      <p/>
+      <p>
 
+      <% for (int i=0;i<list.size();i++) {%>
+      	<mm:import id="broj"><%=list.get(i)%></mm:import>
+      	<mm:node referid="broj">
+      		<mm:field name="subject"/>
+      	</mm:node>
+      	<mm:remove referid="broj"/>
+      	<br/>
+      <%} %> 
+      </p>
       <!-- TODO show data in near future -->
       <table class="Font">
        </table>
