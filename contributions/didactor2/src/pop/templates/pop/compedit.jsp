@@ -63,11 +63,11 @@
           <br/>
           <a href="#1" onclick="editcompform.command.value='addtodo';editcompform.submit();return false;"
             ><img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$popreferids"/>"
-                border="0" alt="<di:translate key="pop.compeditmakenewtodo"/>" /></a>
+                border="0" title="<di:translate key="pop.compeditmakenewtodo"/>" alt="<di:translate key="pop.compeditmakenewtodo"/>" /></a>
           <a href="#1" onclick="if (!window.confirm('<di:translate key="pop.areyousuredeltodo" />'))
                 return false;editcompform.command.value='deltodo';editcompform.submit();return false;">
             <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
-                border="0" alt="<di:translate key="pop.compeditremoveselectedtodo"/>" /></a>
+                border="0" title="<di:translate key="pop.compeditremoveselectedtodo"/>" alt="<di:translate key="pop.compeditremoveselectedtodo"/>" /></a>
 <br/>
 <br/>
     <mm:relatedcontainer path="popfeedback,pop">
@@ -115,7 +115,7 @@
     </mm:relatedcontainer>
         <a href="#1" onclick="editcompform.command.value='invite';editcompform.submit();return false;">
           <img src="<mm:treefile page="/pop/gfx/icon_invitation.gif" objectlist="$includePath" referids="$popreferids"/>"
-            border="0" alt="<di:translate key="pop.compeditinvitecolleague"/>" /></a>
+            border="0" title="<di:translate key="pop.compeditinvitecolleague"/>" alt="<di:translate key="pop.compeditinvitecolleague"/>" /></a>
     <br/><br/><br/>
     <table width="80%" border="0" class="popGreyTableHeader">
       <tr>
