@@ -26,12 +26,12 @@ import org.w3c.dom.*;
  * @rename ContextDepthReader
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
- * @version $Id: XMLContextDepthReader.java,v 1.8 2004-10-01 08:41:10 pierre Exp $
+ * @version $Id: XMLContextDepthReader.java,v 1.9 2006-01-06 17:59:28 michiel Exp $
  */
 public class XMLContextDepthReader {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(XMLContextDepthReader.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(XMLContextDepthReader.class);
 
     Document document;
 
@@ -40,7 +40,7 @@ public class XMLContextDepthReader {
      */
     public XMLContextDepthReader(String filename) {
         try {
-            document = XMLBasicReader.getDocumentBuilder().parse(new File(filename));
+            document = XMLBasicReader.getDocumentBuilder(false, null, null).parse(new File(filename));
         } catch (Exception e) {
             log.error(e.getMessage());
             log.error(Logging.stackTrace(e));
