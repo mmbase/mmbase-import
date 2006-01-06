@@ -233,15 +233,15 @@
 <div class="navigationbar">
   <div class="titlebar">
     <mm:compare referid="typeof" value="1">
-      <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addpersonalagendaitem" />"/>
+      <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_person.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.addpersonalagendaitem" />" alt="<di:translate key="agenda.addpersonalagendaitem" />"/>
       <di:translate key="agenda.addpersonalagendaitem" />
     </mm:compare>
     <mm:compare referid="typeof" value="2">
-      <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_class.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addclassagendaitem" />"/>
+      <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_class.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.addclassagendaitem" />" alt="<di:translate key="agenda.addclassagendaitem" />"/>
       <di:translate key="agenda.addclassagendaitem" />
     </mm:compare>
     <mm:compare referid="typeof" value="3">
-	  <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_workgroup.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="agenda.addworkgroupagendaitem" />"/>
+	  <img src="<mm:treefile page="/agenda/gfx/icon_agenda_item_workgroup.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="agenda.addworkgroupagendaitem" />" alt="<di:translate key="agenda.addworkgroupagendaitem" />"/>
 	  <di:translate key="agenda.addworkgroupagendaitem" />
     </mm:compare>
   </div>
