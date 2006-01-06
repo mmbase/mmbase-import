@@ -25,13 +25,16 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.6 2005-11-01 23:41:02 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.7 2006-01-06 17:19:21 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
     private static final Logger log = Logging.getLoggerInstance(DateTimePattern.class);
 
     public static final DateTimePattern DEFAULT = new DateTimePattern("yyyy-MM-dd HH:mm:ss");
+
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+
     protected  LocalizedString pattern;
 
     public DateTimePattern(String pattern) {

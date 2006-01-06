@@ -22,11 +22,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.26 2005-12-07 12:21:43 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.27 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
+
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile("(?s)\\A.*\\z"));
     private boolean isPassword = false;
@@ -55,6 +57,16 @@ public class StringDataType extends ComparableDataType implements LengthDataType
             patternRestriction.inherit(dataType.patternRestriction);            
             minLengthRestriction.inherit(dataType.minLengthRestriction);
             maxLengthRestriction.inherit(dataType.maxLengthRestriction);
+        } else if (origin instanceof BooleanDataType) {
+            patternRestriction.setValue(Pattern.compile("(1|0|true|false)"));
+        } else if (origin instanceof IntegerDataType) {
+            patternRestriction.setValue(Pattern.compile("-?[0-9]+"));
+        } else if (origin instanceof LongDataType) {
+            patternRestriction.setValue(Pattern.compile("-?[0-9]+"));
+        } else if (origin instanceof FloatDataType) {
+            // TODO..
+        } else if (origin instanceof DoubleDataType) {
+            // TODO..
         }
     }
 

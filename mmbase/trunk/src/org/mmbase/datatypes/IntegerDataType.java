@@ -14,10 +14,11 @@ import org.mmbase.util.Casting;
  * A NumberDataType, but provides getMin and getMax as int.
  *
  * @author Pierre van Rooden
- * @version $Id: IntegerDataType.java,v 1.7 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: IntegerDataType.java,v 1.8 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class IntegerDataType extends NumberDataType {
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     /**
      * @param primitive indicate if a primitive type should be used

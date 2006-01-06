@@ -13,10 +13,13 @@ import org.mmbase.bridge.*;
  * The DataType associated with a boolean values. 
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.6 2005-12-30 10:37:06 ernst Exp $
+ * @version $Id: BooleanDataType.java,v 1.7 2006-01-06 17:19:21 michiel Exp $
  * @since MMBase-1.8
  */
 public class BooleanDataType extends BasicDataType {
+
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+
     /**
      * Constructor for boolean field that takes a class as argument, this
      * should be the 'true' class: either boolean.class or Boolean.class
