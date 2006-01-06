@@ -84,7 +84,13 @@ public abstract class BridgeTest extends MMBaseTest {
                 ) {
                 return;
             }
-            System.out.println("No relation bb--(posrel)-->c, in '" + uri + "' perhaps BridgeTest application not yet deployed. Waiting another 5 seconds (" + tryCount + ")");
+            if (!cloud.hasRelationManager("bb", "cc", "posrel")) {
+                System.out.println("No relation bb--(posrel)-->cc, in '" + uri + "' perhaps BridgeTest application not yet deployed. Waiting another 5 seconds (" + tryCount + ")");
+            } else if (!cloud.hasRelationManager("aa", "bb", "related")) {
+                System.out.println("No relation aa--(related)-->bb, in '" + uri + "' perhaps BridgeTest application not yet deployed. Waiting another 5 seconds (" + tryCount + ")");
+            } else if (!cloud.hasRelationManager("bb", "aa", "related")) {
+                System.out.println("No relation bb--(related)-->aa, in '" + uri + "' perhaps BridgeTest application not yet deployed. Waiting another 5 seconds (" + tryCount + ")");
+            }
             try {
                 tryCount ++;
                 Thread.sleep(5000);                
