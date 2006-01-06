@@ -84,8 +84,6 @@
   </type-mappings>
 
   <!-- HSQLdb disallowed fields are retrieved from the database -->
-  <disallowed-fields>
-    <disallowed-field name="number" replacement="m_number"/>
-  </disallowed-fields>
+  <disallowed-fields />
 
 </storage>
