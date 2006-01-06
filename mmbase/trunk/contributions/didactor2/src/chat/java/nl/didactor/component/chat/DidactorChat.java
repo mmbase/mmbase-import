@@ -20,7 +20,7 @@ public class DidactorChat extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "DidactorChat";
+        return "chat";
     }
 
     /**
@@ -32,6 +32,7 @@ public class DidactorChat extends Component {
     }
 
     public void init() {
+        super.init();
         MMBase mmbase = MMBase.getMMBase();
         DidactorBuilder classes = (DidactorBuilder)mmbase.getBuilder("classes");
         classes.registerPostInsertComponent(this, 10);
