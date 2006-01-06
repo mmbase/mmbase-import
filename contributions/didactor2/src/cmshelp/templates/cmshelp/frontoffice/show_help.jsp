@@ -4,7 +4,7 @@
   <mm:import externid="node" required="true"/>
   <mm:import externid="node2"/>
   <%@include file="/shared/setImports.jsp" %>
-  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/portalpages/css/base.css" objectlist="$includePath" referids="$referids" />" />
+
   <mm:import jspvar="helpLink"><%=request.getRequestURL()%>?node=<mm:write referid="node"/></mm:import>
   <mm:node number="$node" notfound="skipbody">
     <h1><mm:field name="name"/></h1><br/>
