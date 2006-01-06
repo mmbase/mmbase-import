@@ -43,6 +43,7 @@
         <relation from="classes" to="components" type="settingrel" />
         <relation from="people" to="components" type="settingrel" />
         <relation from="settingrel" to="settings" type="related" />
+        <relation from="components" to="settings" type="related" />
 
         <relation from="providers" to="urls" type="related" />
         <relation from="providers" to="educations" type="related" />
