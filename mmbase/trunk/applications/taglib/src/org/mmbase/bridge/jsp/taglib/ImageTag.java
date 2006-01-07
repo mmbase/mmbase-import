@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import java.io.File;
-import java.util.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,20 +30,20 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.63 2006-01-03 16:12:36 nklasens Exp $
+ * @version $Id: ImageTag.java,v 1.64 2006-01-07 15:21:13 nklasens Exp $
  */
 
 public class ImageTag extends FieldTag {
 
     private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
 
-    private static final int MODE_URL = 0;
-    private static final int MODE_HTML_ATTRIBUTES = 1;
-    private static final int MODE_HTML_IMG = 2;
+    public static final int MODE_URL = 0;
+    public static final int MODE_HTML_ATTRIBUTES = 1;
+    public static final int MODE_HTML_IMG = 2;
 
-    private static final String CROP_BEGIN = "begin";
-    private static final String CROP_MIDDLE = "middle";
-    private static final String CROP_END = "end";
+    public static final String CROP_BEGIN = "begin";
+    public static final String CROP_MIDDLE = "middle";
+    public static final String CROP_END = "end";
 
 
     private static Boolean makeRelative = null;
@@ -173,26 +172,46 @@ public class ImageTag extends FieldTag {
             throw new JspTagException("Found parent node '" + node.getNumber() + "' of type " + node.getNodeManager().getName() + " does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
 
-        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
+        helper.useEscaper(false);
+        prevDimension = pageContext.getAttribute("dimension");
 
+        String templateStr = getTemplate(node, template.getString(this), width.getInt(this, 0),
+                height.getInt(this, 0), getCrop());
+        Dimension dim = getDimension(node, templateStr);
+        String servletArgument = getServletArgument(node, templateStr);
+        String servletPath = getServletPath(node, servletArgument);
+        String outputValue = getOutputValue(getMode(), node, servletPath, dim);
+
+        if (outputValue != null) {
+            helper.setValue(outputValue);
+        }
+        pageContext.setAttribute("dimension", dim);
+
+        if (getId() != null) {
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+        }
+
+        return EVAL_BODY_BUFFERED;
+    }
+
+    public int doEndTag() throws JspTagException {
+        if (prevDimension == null) {
+            pageContext.removeAttribute("dimension");
+        } else {
+            pageContext.setAttribute("dimension", prevDimension);
+        }
+        helper.doEndTag();
+        return super.doEndTag();
+    }
+
+    public String getServletArgument(Node node, String t) {
         String servletArgument; // can be the node-number or a template (if that is configured to be allowed).
-
-        String t = template.getString(this);
-        if (t.length() == 0) {
-            t = getTemplateFromAttributes();
-        }
-        if ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.format.asis"))) {
-            if (t.length() > 0) {
-                t = t + "+f(asis)";
-            } else {
-                t = "f(asis)";
-            }
-        }
         if ("".equals(t)) {
             // the node/image itself
             servletArgument = node.getStringValue("number");
         } else {
-            if ("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"))) {
+            boolean urlconvert = "true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"));
+            if (urlconvert) {
                 try {                    
                     servletArgument = "" + node.getNumber() + "+" + java.net.URLEncoder.encode(t, "UTF-8");
                 } catch (java.io.UnsupportedEncodingException uee) {
@@ -204,70 +223,73 @@ public class ImageTag extends FieldTag {
                 servletArgument = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
             }
         }
+        return servletArgument;
+    }
 
+    public String getServletPath(Node node, String servletArgument) throws JspTagException {
+        Function servletPathFunction = getServletFunction(node);        
+        Parameters args = getServletArguments(servletArgument, servletPathFunction);
+        fillStandardParameters(args);
+        return servletPathFunction.getFunctionValue( args).toString();
+    }
+
+    public Function getServletFunction(Node node) {
+        Function servletPathFunction = node.getFunction("servletpath");
+        return servletPathFunction;
+    }
+
+    public Parameters getServletArguments(String servletArgument, Function servletPathFunction) {
         if (makeRelative == null) {            
             String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
 
-
-        String servletPath;
-        Function servletPathFunction = node.getFunction("servletpath");        
+        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
+        
         Parameters args = servletPathFunction.createParameters();
         args.set("context",  makeRelative.booleanValue() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
             .set("argument", servletArgument);
-        fillStandardParameters(args);
-        servletPath = servletPathFunction.getFunctionValue( args).toString();
+        return args;
+    }
 
-        helper.useEscaper(false);
-        prevDimension = pageContext.getAttribute("dimension");
-        switch(getMode()) {
+    public String getOutputValue(int mode, Node node, String servletPath, Dimension dim) throws JspTagException {
+        String outputValue = null;
+        switch(mode) {
         case MODE_URL: 
-            helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
-            pageContext.setAttribute("dimension", new LazyDimension(getNodeVar(), t));
+            outputValue = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
             break;
         case MODE_HTML_ATTRIBUTES: {
-            Dimension dim = getDimension(node, t);
-
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
             if (dim.getHeight() > 0 && dim.getWidth() > 0) {
-                helper.setValue(getBaseAttributes(url, dim));
+                outputValue = getBaseAttributes(url, dim);
             } else {
                 log.warn("Found odd dimension " + dim);
-                helper.setValue(getSrcAttribute(url));
+                outputValue = getSrcAttribute(url);
             }
-            pageContext.setAttribute("dimension", dim);
             break;
         }
         case MODE_HTML_IMG: {
-            Dimension dim = getDimension(node, t);
             String url = ((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath);
             if (dim.getHeight() > 0 && dim.getWidth() > 0) {
-                helper.setValue("<img " + getBaseAttributes(url, dim) + getAltAttribute(node) + getOtherAttributes() + " />");
+                outputValue = "<img " + getBaseAttributes(url, dim) + getAltAttribute(node) + getOtherAttributes() + " />";
             } else {
                 log.warn("Found odd dimension " + dim);
-                helper.setValue("<img " + getSrcAttribute(url) + getAltAttribute(node) + getOtherAttributes() + " />");
+                outputValue = "<img " + getSrcAttribute(url) + getAltAttribute(node) + getOtherAttributes() + " />";
             }
-            pageContext.setAttribute("dimension", dim);
         }
         }
-        
-        if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
-        }
-        
-        return EVAL_BODY_BUFFERED;
+        return outputValue;
     }
-
-    private String getSrcAttribute(String url) {
+    
+    public String getSrcAttribute(String url) throws JspTagException {
         return " src=\"" + url + "\"";
     }
 
-    private String getBaseAttributes(String url, Dimension dim) {
+    public String getBaseAttributes(String url, Dimension dim) throws JspTagException {
         return getSrcAttribute(url) + " height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"";
     }
 
-    private String getAltAttribute(Node node) {
+    public String getAltAttribute(Node node) throws JspTagException {
         String alt = null;
         if (node.getNodeManager().hasField("title")) {
             alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("title"));
@@ -282,7 +304,7 @@ public class ImageTag extends FieldTag {
         return (alt == null ? "" : " alt=\"" + alt + "\" title=\"" + alt + "\"");
     }
 
-    private String getOtherAttributes() throws JspTagException {
+    protected String getOtherAttributes() throws JspTagException {
         StringBuffer attributes = new StringBuffer();
         attributes.append((styleClass != Attribute.NULL) ? (" class=\"" + styleClass.getString(this) + "\"") : "");
         attributes.append((style != Attribute.NULL) ? (" style=\"" + style.getString(this) + "\"") : "");
@@ -293,54 +315,53 @@ public class ImageTag extends FieldTag {
         return attributes.toString();
     }
     
-    public int doEndTag() throws JspTagException {
-        if (prevDimension == null) {
-            pageContext.removeAttribute("dimension");
-        } else {
-            pageContext.setAttribute("dimension", prevDimension);
-        }
-        helper.doEndTag();
-        return super.doEndTag();
-        
+    public Dimension getDimension(Node node, String template) {
+        return new LazyDimension(node, template);
     }
 
-    private Dimension getDimension(Node node, String template) {
-        List a = new ArrayList();
-        if (template != null) {
-            a.add(template);
-        }
-        return (Dimension) node.getFunctionValue("dimension", a).get();
-    }
-    
-    private String getTemplateFromAttributes() throws JspTagException {
-        int widthTemplate = width.getInt(this, 0);
-        int heightTemplate = height.getInt(this, 0);
-        
-        if ((widthTemplate <= 0) && (heightTemplate <= 0)) {
-            return "";
-        }
-        else {
-            String cropTemplate = getCrop();
-            if (cropTemplate != null) {
-               String template = getCropTemplate(widthTemplate, heightTemplate, cropTemplate);
-               return template;
+    /**
+     * Get template to manipulate image
+     * @param node - image node
+     * @param t - custom template string
+     * @param widthTemplate - width of image, which is used when custom is not provided
+     * @param heightTemplate - height of image, which is used when custom is not provided
+     * @param cropTemplate - crop the image. values are 'begin', 'middle' and 'end'.
+     * @return template for image
+     */
+    public String getTemplate(Node node, String t, int widthTemplate, int heightTemplate, String cropTemplate) {
+        if (t == null || t.length() == 0) {
+            if ((widthTemplate <= 0) && (heightTemplate <= 0)) {
+                t = "";
             }
             else {
-               String template = getResizeTemplate(widthTemplate, heightTemplate);
-               return template;
+                if (cropTemplate != null) {
+                    t = getCropTemplate(node, widthTemplate, heightTemplate, cropTemplate);
+                }
+                else {
+                    t = getResizeTemplate(node, widthTemplate, heightTemplate);
+                }
             }
         }
+        boolean asis = "true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.format.asis"));
+        if (asis) {
+            if (t.length() > 0) {
+                t = t + "+f(asis)";
+            } else {
+                t = "f(asis)";
+            }
+        }
+        return t;
     }
 
     /**
      * Returns the crop template string to be used by img servlet
-     *
+     * @param node - get template for this node
      * @param width - template width
      * @param height - template height
-     * @return the template
+     * @return the crop template
      */
-    public String getCropTemplate(int width, int height, String cropTemplate) throws JspTagException {
-        Dimension imageDimension = getDimension(getNode(), null);
+    public String getCropTemplate(Node node, int width, int height, String cropTemplate) {
+        Dimension imageDimension = getDimension(node, null);
         int imageWidth = imageDimension.getWidth();
         int imageHeight = imageDimension.getHeight();
         int newWidth = width > 0 ? width : imageWidth;
@@ -403,13 +424,13 @@ public class ImageTag extends FieldTag {
 
     /**
      * Returns the resize template string to be used by img servlet without cropping
-     *
+     * @param node - get template for this node
      * @param width - template width
      * @param height - template height
-     * @return the template
+     * @return the resize template
      */
-    public String getResizeTemplate(int width, int height) throws JspTagException {
-        Dimension imageDimension = getDimension(getNode(), null);
+    public String getResizeTemplate(Node node, int width, int height) {
+        Dimension imageDimension = getDimension(node, null);
         int imageWidth = imageDimension.getWidth();
         int imageHeight = imageDimension.getHeight();
         int newWidth = width > 0 ? width : imageWidth;
