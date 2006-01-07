@@ -35,7 +35,9 @@ public class LazyDimension extends Dimension {
     private void getDimension() {
         if (loaded) return;
         List args = new ArrayList();
-        args.add(template);
+        if (template != null) {
+            args.add(template);
+        }
         Dimension dim = (Dimension) node.getFunctionValue("dimension", args).get();
         x = dim.getWidth();
         y = dim.getHeight();
