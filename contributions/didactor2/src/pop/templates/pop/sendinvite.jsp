@@ -48,27 +48,25 @@
 
 <%-- some sending email code--%>
 <mm:import id="subject"><di:translate key="pop.sendinvitesubject" /></mm:import>
-<mm:import id="body"><multipart id="plaintext" type="text/plain" encoding="UTF-8">
-<di:translate key="pop.sendinvitepart1" /> <mm:write referid="inviteefname"/>
-
-<b><mm:write referid="userfname"/></b> <di:translate key="pop.sendinvitepart2" /> <b><mm:write referid="compname"/></b> <di:translate key="pop.sendinvitepart3" />
-<%= querytext %>
-
-<di:translate key="pop.sendinvitepart4" /> <a href="<%= linktofeedback %>"><di:translate key="pop.sendinvitepart5" /></a><di:translate key="pop.sendinvitepart6" />
-
-<di:translate key="pop.sendinvitepart7" />
-</multipart>
-<multipart id="htmltext" title="plaintext" alt="plaintext" type="text/html" encoding="UTF-8">
-<HTML>
+<mm:import id="htmlbody"><HTML>
 <di:translate key="pop.sendinvitepart1" /> <mm:write referid="inviteefname"/><br/>
 <br/>
 <b><mm:write referid="userfname"/></b> <di:translate key="pop.sendinvitepart2" /> <b><mm:write referid="compname"/></b> <di:translate key="pop.sendinvitepart3" /><br/>
 <br/>
-<%= querytext.replaceAll("\\n", "<br/>") %><br/>
+<%= querytext.replaceAll("\\n", "<br/>\n") %><br/>
 <br/>
 <di:translate key="pop.sendinvitepart4" /> <a href="<%= linktofeedback %>"><di:translate key="pop.sendinvitepart5" /></a><di:translate key="pop.sendinvitepart6" /><br/>
 <br/>
 <di:translate key="pop.sendinvitepart7" /></HTML>
-</multipart>
+</mm:import>
+<mm:import id="body">
+<di:translate key="pop.sendinvitepart1" /> <mm:write referid="inviteefname"/>
+
+<mm:write referid="userfname"/> <di:translate key="pop.sendinvitepart2" /> <mm:write referid="compname"/> <di:translate key="pop.sendinvitepart3" />
+<%= querytext %>
+
+<di:translate key="pop.sendinvitepart4" /> <%= linktofeedback %> <di:translate key="pop.sendinvitepart5" /><di:translate key="pop.sendinvitepart6" />
+
+<di:translate key="pop.sendinvitepart7" />
 </mm:import>
 <%@include file="sendmail.jsp" %>

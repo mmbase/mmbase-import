@@ -10,7 +10,7 @@
 <div class="contentBody">
   <%@ include file="getmyfeedback.jsp" %>
     <mm:compare referid="msg" value="-1" inverse="true">
-      <mm:write referid="msg"/>
+      <mm:write referid="msg" escape="text/plain"/>
     </mm:compare>
 
   <mm:node number="$currentcomp">
