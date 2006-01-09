@@ -28,6 +28,25 @@
 	</mm:node>
 </mm:compare>
 
+
+<mm:compare value="subindex" referid="type">
+	<mm:node number="$forumid">
+	<a href="<mm:url page="../index.jsp">
+		<mm:param name="forumid" value="$forumid" />
+		</mm:url>">
+	<mm:field name="name" /></a>
+	<mm:import externid="tree" />
+	<mm:present referid="tree">
+	/
+	<a href="<mm:url page="../index.jsp">
+		<mm:param name="forumid" value="$forumid" />
+		<mm:param name="tree" value="$tree" />
+		</mm:url>">
+		<mm:write referid="tree" /></a>
+	</mm:present>
+	</mm:node>
+</mm:compare>
+
 <mm:compare value="postarea" referid="type">
 	<mm:node number="$forumid">
 	<a href="<mm:url page="index.jsp">

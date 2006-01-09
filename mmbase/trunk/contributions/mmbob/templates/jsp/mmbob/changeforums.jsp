@@ -27,6 +27,20 @@
   <tr><th colspan="3">Login instellingen</th></tr>
   <form action="<mm:url page="forums.jsp" />" method="post">
 	<input type="hidden" name="action" value="changeconfigs">
+	<tr><th>Login System</th>
+		<td colspan="2" align="left"><select name="loginsystemtype">
+		<mm:field name="loginsystemtype">
+		<mm:compare value="http">
+		<option>http
+		<option>entree
+		</mm:compare>
+		<mm:compare value="entree">
+		<option>entree
+		<option>http
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
 	<tr><th>Login Mode</th>
 		<td colspan="2" align="left"><select name="loginmodetype">
 		<mm:field name="loginmodetype">

@@ -1,5 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:import id="entree" reset="true"><%= request.getHeader("aad_nummer") %></mm:import>
+<mm:import id="entree" reset="true">null</mm:import>
+
 <mm:import id="host" reset="true"><%= request.getRemoteAddr() %></mm:import>
 <mm:compare referid="entree" value="null">
   <mm:import id="posterid" externid="pid$forumid" from="session">-1</mm:import>

@@ -217,8 +217,7 @@
                         </a>
                         <p />
 
-			<%-- TODO: not yet implemented
-                        <mm:write referid="mlg.Level"/> : <mm:field name="level" /><br />--%>
+			<mm:write referid="mlg.Level"/> : <mm:field name="levelgui" /><br /> <img src="<mm:field name="levelimage" />" /><br />
 			<mm:write referid="mlg.Posts"/> : <mm:field name="accountpostcount" /><br />
 			<mm:write referid="mlg.Gender"/> : <mm:field name="gender" /><br />
 			<mm:write referid="mlg.Location"/> : <mm:field name="location" /><br />

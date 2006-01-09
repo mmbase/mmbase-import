@@ -3,7 +3,7 @@
 <mm:import id="dac"><mm:function set="mmbob" name="getDefaultAccount" /></mm:import>
 <mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
 </mm:cloud>
-<mm:cloud username="$dac" password="$dpw">
+<mm:cloud sessionname="forum" username="$dac" password="$dpw">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="action" />
 <mm:import externid="forumid" />
