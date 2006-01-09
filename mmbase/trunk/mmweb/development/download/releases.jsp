@@ -7,17 +7,18 @@
 <mm:list path="pages2,releases,mmevents"
   fields="releases.number,mmevents.start" 
   orderby="mmevents.start" directions="DOWN">
-  <mm:first><h4>All releases</h4><ul></mm:first>
+  <mm:first>
+  <h4>All releases</h4>
+  <p>All releases and released packages can also be found on 
+  <a href="<mm:url page="/download/releases" />">/download/releases</a>.</p>
+  <ul>
+  </mm:first>
   <mm:import id="releasedate" reset="true"><mm:field name="mmevents.start"/></mm:import>
   <mm:node element="releases">
     <li><strong><a href="#r<mm:field name="number" />"><mm:field name="name" /> <mm:field name="version"/></a></strong><br />
     <mm:locale language="en"><mm:time time="$releasedate" format="MMMM dd, yyyy"/></mm:locale></li>
   </mm:node>
-  <mm:last>
-  </ul>
-  <p>A list with all releases and released packages can also be found on 
-  <a href="<mm:url page="/download/releases" />">/download/releases</a>.</p>
-  </mm:last>
+  <mm:last></ul></mm:last>
 </mm:list>
 </div><!-- /div relatedcontent -->
 <div id="textcontent">
