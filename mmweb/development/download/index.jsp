@@ -7,6 +7,7 @@
 <%@ include file="last_builds.jsp" %>
 <div id="relatedcontent"><!-- <p>Related can be put here..</p> --> </div>
 <div id="textcontent">
+<mm:import externid="page" reset="true">download</mm:import>
 <mm:node number="$page">
   <mm:related path="posrel,articles" orderby="posrel.pos" directions="UP" searchdir="destination">
 	<mm:node element="articles">
