@@ -9,7 +9,7 @@
 <mm:import externid="msg">-1</mm:import>
 <div class="contentBody">
     <mm:compare referid="msg" value="-1" inverse="true">
-      <mm:write referid="msg"/>
+      <mm:write referid="msg" escape="text/plain"/>
     </mm:compare>
     <div><table class="poplistTable">
       <tr style="vertical-align:top;">
