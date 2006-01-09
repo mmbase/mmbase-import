@@ -178,7 +178,7 @@
   	</form>
 	</td>
   <td>
-  	<form action="<mm:url page="forums.jsp" />" method="post">
+  	<form action="<mm:url page="../forums.jsp" />" method="post">
 	<p />
 	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   </form>
