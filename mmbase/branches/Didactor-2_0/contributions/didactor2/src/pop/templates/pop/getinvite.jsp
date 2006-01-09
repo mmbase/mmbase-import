@@ -5,7 +5,7 @@
     <mm:constraint field="popfeedback.number" value="$nfeedback" operator="EQUAL" />
     <mm:constraint field="popfeedback.status" value="0" />
     <mm:list nodes="$user">
-      <form name="givefeedbackform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
+      <form name="givefeedbackform" action="<mm:treefile page="/pop/sendfeedback.jsp" objectlist="$includePath" 
               referids="$referids">
             </mm:treefile>" method="post">
         <input type="hidden" name="command" value="sendfeedback">

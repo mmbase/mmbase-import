@@ -58,11 +58,6 @@
               <mm:remove referid="command"/>
               <mm:import id="command">-1</mm:import>
             </mm:compare>
-            <mm:compare referid="command" value="sendfeedback">
-              <%@ include file="sendfeedback.jsp" %>
-              <mm:remove referid="command"/>
-              <mm:import id="command">no</mm:import>
-            </mm:compare>
             <mm:compare referid="command" value="editcomp">
               <jsp:include page="compedit.jsp">
                 <jsp:param name="msg" value="<%= msgString %>"/>
