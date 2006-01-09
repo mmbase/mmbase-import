@@ -18,9 +18,11 @@ import org.mmbase.security.*;
  * this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: ContextUserContext.java,v 1.6 2005-03-01 14:11:13 michiel Exp $
+ * @version $Id: ContextUserContext.java,v 1.7 2006-01-09 12:18:49 johannes Exp $
  */
-public class ContextUserContext extends BasicUser {
+public class ContextUserContext extends BasicUser implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1;
 
     private String  username;
     private Rank    rank;
@@ -51,5 +53,19 @@ public class ContextUserContext extends BasicUser {
     long getKey() {
         return key;
     }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+        this.username = (String)in.readObject();
+        this.rank = (Rank)in.readObject();
+        this.key = in.readLong();
+        this.manager = org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop();
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        out.writeObject(username);
+        out.writeObject(rank);
+        out.writeLong(key);
+    }
+
 
 }
