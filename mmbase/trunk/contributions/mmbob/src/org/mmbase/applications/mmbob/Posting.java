@@ -313,15 +313,16 @@ public class Posting {
 
     private String translateBody(String body, String imagecontext) {
         log.debug("going to translate the BODY");
-	String xsl = MMBaseContext.getConfigPath() + File.separator + "mmbob" + File.separator;
+	String xsl = "mmbob/";
 	if (threadpos%2 == 0) {
 		xsl += parent.getParent().getParent().getXSLTPostingsEven();
 	} else {
 		xsl += parent.getParent().getParent().getXSLTPostingsOdd();
 	}
  	try {
+		Reader rd = ResourceLoader.getConfigurationRoot().getReader(xsl);
     		TransformerFactory tFactory = TransformerFactory.newInstance();
-    		Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(xsl));
+    		Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(rd));
 		StringWriter result = new StringWriter();
     		transformer.transform(new javax.xml.transform.stream.StreamSource(new StringReader(body)),new javax.xml.transform.stream.StreamResult(result));
 		body = result.toString();
