@@ -29,9 +29,12 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.147 2005-12-27 22:35:24 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.148 2006-01-09 12:18:49 johannes Exp $
  */
-public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
+public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, java.io.Serializable {
+    
+    private static final long serialVersionUID = 1;
+
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
 
     private Map properties = new HashMap();
@@ -1023,5 +1026,23 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     }
 
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+        this.name = (String)in.readObject();
+        this.userContext = (UserContext)in.readObject();
+        this.cloudContext = LocalContext.getCloudContext();
+        this.description = name;
+        init();
+        if (userContext == null) {
+            throw new java.lang.SecurityException("Login invalid: did not supply user object");
+        }
 
+        if (userContext.getAuthenticationType() == null) {
+            log.warn("Security implementation did not set 'authentication type' in the user object.");
+        }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        out.writeObject(name);
+        out.writeObject(userContext);
+    }
 }

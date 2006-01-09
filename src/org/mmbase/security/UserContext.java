@@ -18,10 +18,9 @@ package org.mmbase.security;
  * certain that you will receive the same User object back !
  *
  * @author Eduard Witteveen
- * @version $Id: UserContext.java,v 1.16 2005-10-02 16:33:47 michiel Exp $
+ * @version $Id: UserContext.java,v 1.17 2006-01-09 12:18:49 johannes Exp $
  */
-public interface UserContext {
-
+public interface UserContext extends java.io.Serializable {
     /**
      *  Get the unique identifier for this user. This should be unique
      *  for every different user inside a cloud.
