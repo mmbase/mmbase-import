@@ -48,6 +48,7 @@ public class AllTests {
         suite.addTestSuite(DataTypesTest.class);     
         suite.addTestSuite(FunctionsTest.class);
         suite.addTestSuite(QueriesTest.class);
+        suite.addTestSuite(SerializableTest.class);
         return suite;
     }
 	
