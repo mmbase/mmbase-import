@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
+
 import java.util.*;
 import java.io.InputStream;
 import java.net.URL;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.47 2005-10-26 22:04:42 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.48 2006-01-09 10:30:35 nklasens Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -474,31 +475,12 @@ public class ContentTag extends LocaleTag  {
             }
 
             if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
-                long later = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME * 1000;
-                response.setDateHeader("Expires", later);
-                response.setHeader("Cache-Control", "public");
+                addNoCacheHeaders(response, DEFAULT_EXPIRE_TIME);
             } else {
                 // there is a session, or 'expires' was set explicitely
-                
                 // perhaps default cache behaviour should be no-cache if there is a session?
                 long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
-                if (exp <= 0) { // means : cannot be cached!                    
-                    response.setHeader("Pragma", "no-cache"); // not really defined what should do this on response. Cache-Control should actually do the work.                    
-                    response.setHeader("Cache-Control", "no-store");
-                    // according to rfc2616 sec 14 also 'no-cache' should have worked, but apache 2 seems to ignore it.
-                    
-                    // long now = System.currentTimeMillis();                        
-                    // according to  rfc2616 sec14 'already expires' means that date-header is expires header
-                    // sadly, this does not work:
-                    // perhaps because tomcat overrides the date header later, so a difference of a second can occur
-                    // response.setDateHeader("Date",     now);                         
-                    // response.setDateHeader("Expires",  now); 
-                    
-                } else {
-                    long later = System.currentTimeMillis() + exp * 1000;
-                    response.setDateHeader("Expires", later);
-                    response.setHeader("Cache-Control", "public");
-                }                    
+                addNoCacheHeaders(response, exp);
             }
         }
         if (getPostProcessor() == null) {
@@ -509,6 +491,44 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
+    /**
+     * The code first sets the Expires header to a date in the
+     * past. This indicates to the recipient that the page's content
+     * have already expired, as a hint that it's contents should not be
+     * cached. The no-cache value for the Pragma header is provided by
+     * version 1.0 of the HTTP protocol to further indicate that
+     * browsers and proxy servers should not cache a page. Version 1.1
+     * of HTTP replaces this header with a more specific Cache-Control
+     * header, but recommends including the Pragma header as well for
+     * backward compatibility.
+     * 
+     * @param response - http response
+     * @param expire - seconds before content should expire 
+     */
+    public static void addNoCacheHeaders(HttpServletResponse response, long expire) {
+         if (expire <= 0) {
+             // Add some header to make sure these pages are not cached anywhere.
+             // Set standard HTTP/1.1 no-cache headers.
+             response.setHeader("Cache-Control","no-cache, no-store, must-revalidate, proxy-revalidate");
+             // Set IE extended HTTP/1.1 no-cache headers
+             response.addHeader("Cache-Control", "post-check=0, pre-check=0");
+             // Set standard HTTP/1.0 no-cache header.
+             response.setHeader("Pragma", "no-cache");
+             response.setDateHeader ("Expires", -1);
+             
+             // long now = System.currentTimeMillis();                        
+             // according to  rfc2616 sec14 'already expires' means that date-header is expires header
+             // sadly, this does not work:
+             // perhaps because tomcat overrides the date header later, so a difference of a second can occur
+             // response.setDateHeader("Date",     now);                         
+         }
+         else {
+             // calc the string in GMT not localtime and add the offset
+             response.setDateHeader ("Expires", System.currentTimeMillis() + (expire * 1000));
+             response.setHeader("Cache-Control", "public");
+         }
+    }
+    
     public int doEndTag() throws JspTagException {
         unsetWriteEscaper();
         return super.doEndTag();
