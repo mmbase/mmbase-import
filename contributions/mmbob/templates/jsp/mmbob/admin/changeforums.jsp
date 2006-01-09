@@ -4,11 +4,11 @@
 <mm:cloud name="mmbase" method="http" rank="administrator">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import id="forumid"></mm:import>
-<%@ include file="thememanager/loadvars.jsp" %>
+<%@ include file="../thememanager/loadvars.jsp" %>
 
 <mm:import externid="lang">en</mm:import>
 <mm:locale language="$lang">
-<%@ include file="loadtranslations.jsp" %>
+<%@ include file="../loadtranslations.jsp" %>
 
 <html>
 <head>
