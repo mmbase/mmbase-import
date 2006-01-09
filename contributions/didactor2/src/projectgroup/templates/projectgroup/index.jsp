@@ -53,7 +53,7 @@
 
 			<div class="folderHeader"><di:translate key="workspace.projectgroups" /></div>
 
-
+            <div class="folderBody">
 				<a
 					href="<mm:treefile page="/projectgroup/create.jsp" objectlist="$includePath" referids="$referids">
            <mm:param name="callerpage">/projectgroup/index.jsp</mm:param>
@@ -101,7 +101,7 @@
 					</mm:relatednodes>
 				</mm:node></div>
 
-			
+			</div>
 
 			<form
 				action="<mm:treefile objectlist="$includePath"  referids="$referids" page="/projectgroup/removecontact.jsp"/>"
