@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -72,7 +73,7 @@ public class ForumsConfig {
    private int quotawarning = 80;
    private boolean firstrun = true;
 
-    public ForumsConfig (XMLBasicReader reader,Element n) {
+    public ForumsConfig (DocumentReader reader,Element n) {
         subs = null;
         subs = new HashMap();
         log.debug("subhasmap cleared");
@@ -81,7 +82,7 @@ public class ForumsConfig {
 	decodeConfig(reader,n);
     }
 
-    private boolean decodeConfig(XMLBasicReader reader,Element n) {
+    private boolean decodeConfig(DocumentReader reader,Element n) {
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String id = "default";
@@ -427,7 +428,7 @@ public class ForumsConfig {
 	return null;
    }
 
-   private String getAttributeValue(XMLBasicReader reader,Element n,String itemname,String attribute) {
+   private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
            Element n2 = (Element) ns2.next();
            NamedNodeMap nm = n2.getAttributes();
@@ -577,7 +578,7 @@ public class ForumsConfig {
         return htmlFooterPath;
     }
 
-    public void save(String filename) {
+    public void save() {
 	String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	body += "<!DOCTYPE mmbobconfig PUBLIC \"-//MMBase/DTD mmbob config 1.0//EN\" \"http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd\">\n";
 	body += "<mmbobconfig>\n";
@@ -720,22 +721,16 @@ public class ForumsConfig {
 	}
 	body += "\t</forums>\n";
 	body += "</mmbobconfig>\n";
-	saveFile(filename,body);
+	try {
+		Writer wr = ResourceLoader.getConfigurationRoot().getWriter("mmbob/mmbob.xml");
+		wr.write(body);
+		wr.flush();
+		wr.close();
+	} catch(Exception e) {
+		e.printStackTrace();
+	}
     }
 
-
-    static boolean saveFile(String filename,String value) {
-        File sfile = new File(filename);
-        try {
-            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
-            scan.writeBytes(value);
-            scan.flush();
-            scan.close();
-        } catch(Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
-        return true;
-    }
 
     private void checkCloudModel() {
         checkRelDef("related", "related", 2, "Related", "Relared", "insrel");
