@@ -74,7 +74,7 @@
 	<br />
 	<b><mm:write referid="mlg.Moderators"/></b> :
   		  <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
-			<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+			<mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
 		  </mm:nodelistfunction>
 	</td>
 	</tr>
@@ -135,7 +135,7 @@
     </td>
     <mm:compare referid="ismoderator" value="true">
     <td>
-      <a href="<mm:url page="removepostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">X</a> / <a href="<mm:url page="editpostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">E</a>
+      <a href="<mm:url page="removepostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">X</a> / <a href="<mm:url page="editpostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">E</a> / <a href="<mm:url page="movepostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">M</a>
     </td>
     </mm:compare>
   </tr>
@@ -208,15 +208,15 @@
         <tr><th align="left"><mm:write referid="mlg.Admin_tasks"/></th></tr>
         <td align="left">
         <p />
-  				<a href="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.change_area"/></a><br />
+  				<a href="<mm:url page="admin/changepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.change_area"/></a><br />
 
-  				<a href="<mm:url page="removepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.remove_area"/></a><br />
+  				<a href="<mm:url page="admin/removepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.remove_area"/></a><br />
 
-  				<a href="<mm:url page="newmoderator.jsp">
+  				<a href="<mm:url page="admin/newmoderator.jsp">
 				<mm:param name="forumid" value="$forumid" />
 				<mm:param name="postareaid" value="$postareaid" />
 				</mm:url>"><mm:write referid="mlg.add_moderator"/></a><br />
-  				<a href="<mm:url page="removemoderator.jsp">
+  				<a href="<mm:url page="admin/removemoderator.jsp">
 				<mm:param name="forumid" value="$forumid" />
 				<mm:param name="postareaid" value="$postareaid" />
 				</mm:url>"><mm:write referid="mlg.remove_moderator"/></a><br />

@@ -31,6 +31,7 @@
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
       <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
       <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+      <mm:import id="loginsystemtype"><mm:field name="loginsystemtype" /></mm:import>
       <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
 </mm:nodefunction>
 <head>
@@ -184,7 +185,7 @@
           <span class="label"><mm:write referid="mlg.Account"/></span>
           <span class="formw"><mm:field name="nick" /></span>
         </div>
-        <mm:compare referid="entree" value="null" inverse="false">
+        <mm:compare referid="loginsystemtype" value="http">
         <div class="row">
           <span class="label"><mm:write referid="mlg.Firstname"/></span>
           <span class="formw">
@@ -258,7 +259,7 @@
           </span>
         </div>
 	</mm:compare>
-        <mm:compare referid="entree" value="null" inverse="true">
+        <mm:compare referid="loginsystemtype" value="entree">
 
           <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid">
         <div class="row">

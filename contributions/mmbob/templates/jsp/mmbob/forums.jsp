@@ -12,19 +12,10 @@
 
 <mm:import externid="action" />
 <mm:present referid="action">
-<mm:compare value="newforum" referid="action">
-	<mm:import externid="name" />
-	<mm:import externid="description" />
-	<mm:import externid="language" />
-	<mm:import id="newaccount" externid="account" />
-	<mm:import id="newpassword" externid="password" />
-	<mm:import externid="email" />
-	<mm:nodefunction set="mmbob" name="newForum" referids="name,language,description,newaccount@account,newpassword@password,email">
-	</mm:nodefunction>
-</mm:compare>
 
 
 <mm:compare value="changeconfigs" referid="action">
+	<mm:import externid="loginsystemtype" />
 	<mm:import externid="loginmodetype" />
 	<mm:import externid="logoutmodetype" />
 	<mm:import externid="guestreadmodetype" />
@@ -35,13 +26,7 @@
 	<mm:import externid="smileysenabled" />
 	<mm:import externid="privatemessagesenabled" />
 	<mm:import externid="postingsperpage" />
-	<mm:booleanfunction set="mmbob" name="changeForumsConfig" referids="loginmodetype,logoutmodetype,guestreadmodetype,guestwritemodetype,avatarsuploadenabled,avatarsgalleryenabled,contactinfoenabled,smileysenabled,privatemessagesenabled,postingsperpage" >
-	</mm:booleanfunction>
-</mm:compare>
-
-<mm:compare value="removeforum" referid="action">
-	<mm:import externid="remforum" />
-	<mm:booleanfunction set="mmbob" name="removeForum" referids="remforum">
+	<mm:booleanfunction set="mmbob" name="changeForumsConfig" referids="loginsystemtype,loginmodetype,logoutmodetype,guestreadmodetype,guestwritemodetype,avatarsuploadenabled,avatarsgalleryenabled,contactinfoenabled,smileysenabled,privatemessagesenabled,postingsperpage" >
 	</mm:booleanfunction>
 </mm:compare>
 
@@ -72,11 +57,13 @@
 	<tr><th align="left">Administratie Functies</th></tr>
 	<td align="left">
 	<p />
-	<a href="<mm:url page="newforum.jsp"></mm:url>">Forum toevoegen</a><br />
-	<a href="<mm:url page="removeforum.jsp"></mm:url>">Forum verwijderen</a><br />
-	<a href="<mm:url page="changeforums.jsp"></mm:url>">Forums settings</a><br />
-	<a href="<mm:url page="generate/index.jsp"></mm:url>">Generate tools</a><br />
-	<a href="<mm:url page="stats.jsp"></mm:url>">Forums statistics</a><br />
+	<a href="<mm:url page="admin/newforum.jsp"></mm:url>">Forum toevoegen</a><br />
+	<a href="<mm:url page="admin/removeforum.jsp"></mm:url>">Forum verwijderen</a><br />
+	<a href="<mm:url page="admin/changeforums.jsp"></mm:url>">Forums settings</a><br />
+	<a href="<mm:url page="/mmbase/thememanager/index.jsp"></mm:url>" target="thememanager">Thememanager</a><br />
+	<a href="<mm:url page="/mmbase/mlg/index.jsp"></mm:url>" target="mlg">MultiLanguage</a><br />
+	<a href="<mm:url page="generate/index.jsp"></mm:url>" target="gentools">Generate tools</a><br />
+	<a href="<mm:url page="admin/stats.jsp"></mm:url>">Forums statistics</a><br />
 	<p />
 	</td>
 	</tr>

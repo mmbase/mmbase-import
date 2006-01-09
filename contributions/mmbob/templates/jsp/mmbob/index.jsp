@@ -49,6 +49,7 @@
 <div class="bodypart">
 
   <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+  <mm:import id="loginsystemtype"><mm:field name="loginsystemtype" /></mm:import>
   <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
   <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
   <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
@@ -58,7 +59,7 @@
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
       <tr>
       <mm:compare referid="posterid" value="-1">
-     <mm:compare referid="entree" value="null">
+     <mm:compare referid="loginsystemtype" value="http">
         <th width="100"><mm:field name="accountcreationtype"><mm:compare value="open"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="image_guest"/></a></mm:compare></mm:field></th>
       <td align="left">
         <form action="login.jsp?forumid=<mm:write referid="forumid" />" method="post">
@@ -95,11 +96,11 @@
         </form>
         <p />
       </mm:compare>
-      <mm:compare referid="entree" value="null" inverse="true">
+     <mm:compare referid="loginsystemtype" value="entree">
         <th width="100">
 	</th>
       <td align="left">
-        <form action="newposter.jsp?forumid=<mm:write referid="forumid" />" method="post">
+        <form action="entree.jsp?forumid=<mm:write referid="forumid" />" method="post">
           <mm:present referid="loginfailed">
             <br />
             <center>
@@ -120,10 +121,8 @@
             </mm:present>
 
           <mm:notpresent referid="loginfailed">
-            <h4><mm:write referid="mlg.Welcome" /> <mm:write referid="mlg.on_the" /> <mm:field name="name" /> <mm:write referid="mlg.forum" /> !</h4>
-            <p /><b><mm:write referid="mlg.login" /></b><p />
           </mm:notpresent>
-          <center><input type="submit" value="Word lid van dit forum via entree" /></center>
+          <center><input type="submit" value="Inloggen via Entree" /></center>
         </form>
         <p />
       </mm:compare>
@@ -295,16 +294,16 @@
 	<tr><th align="left"><mm:write referid="mlg.Admin_tasks" /></th></tr>
 	<td align="left">
 	<p />
-	<a href="<mm:url page="changeforum.jsp">
+	<a href="<mm:url page="admin/changeforum.jsp">
                   <mm:param name="forumid" value="$forumid" />
                  </mm:url>"><mm:write referid="mlg.change_forum" /></a><br />
-  		<a href="<mm:url page="newadministrator.jsp">
+  		<a href="<mm:url page="admin/newadministrator.jsp">
 		<mm:param name="forumid" value="$forumid" />
 		</mm:url>">Add administrator</a><br />
-  		<a href="<mm:url page="removeadministrator.jsp">
+  		<a href="<mm:url page="admin/removeadministrator.jsp">
 		<mm:param name="forumid" value="$forumid" />
 		</mm:url>">Remove administrator</a><br />
-	<a href="<mm:url page="newpostarea.jsp">
+	<a href="<mm:url page="admin/newpostarea.jsp">
                   <mm:param name="forumid" value="$forumid" />
                  </mm:url>"><mm:write referid="mlg.add_new_area" /></a>
 	<p />
