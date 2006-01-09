@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * 
  */
-public class FieldAlias implements MMBaseObserver {
+public class FieldAlias {
  
    // logger
    static private Logger log = Logging.getLoggerInstance(FieldAlias.class); 
@@ -96,7 +96,7 @@ public class FieldAlias implements MMBaseObserver {
    public void init(Forum forum) {
 	this.forum = forum;
     	NodeManager nodemanager = ForumManager.getCloud().getNodeManager(extern);
-	MMBase.getMMBase().addLocalObserver(extern, this);
+	// needs to be changed to 1.8 method? MMBase.getMMBase().addLocalObserver(extern, this);
         NodeQuery query = nodemanager.createQuery();
         org.mmbase.bridge.NodeList result = nodemanager.getList(query);
         NodeIterator i = result.nodeIterator();

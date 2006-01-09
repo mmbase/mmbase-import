@@ -37,7 +37,7 @@ public class PostAreaConfig {
    private int pos = 0;
    private String guestreadmodetype,guestwritemodetype,threadstartlevel;
 
-    public PostAreaConfig(XMLBasicReader reader,Element n) {
+    public PostAreaConfig(DocumentReader reader,Element n) {
 	decodeConfig(reader,n);
     }
 
@@ -47,7 +47,7 @@ public class PostAreaConfig {
 	this.id = id;
     }
 
-    private boolean decodeConfig(XMLBasicReader reader,Element n) {
+    private boolean decodeConfig(DocumentReader reader,Element n) {
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String account = "admin";
@@ -117,7 +117,7 @@ public class PostAreaConfig {
    }
 
 
-   private String getAttributeValue(XMLBasicReader reader,Element n,String itemname,String attribute) {
+   private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
            Element n2 = (Element) ns2.next();
            NamedNodeMap nm = n2.getAttributes();
