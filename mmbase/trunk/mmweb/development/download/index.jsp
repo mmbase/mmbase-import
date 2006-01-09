@@ -5,82 +5,98 @@
 %><%@ include file="/includes/alterheader.jsp" %>
 
 <%@ include file="last_builds.jsp" %>
-<div id="relatedcontent">
-<mm:list path="pages2,releases,mmevents"
-  fields="releases.number,mmevents.start" 
-  orderby="mmevents.start" directions="DOWN" max="4">
-  <mm:first><h4>Download MMBase</h4><ul></mm:first>
-  <mm:import id="releasedate" reset="true"><mm:field name="mmevents.start"/></mm:import>
-  <mm:node element="releases">
-    <li><strong><a href="#r<mm:field name="number" />"><mm:field name="name" /> <mm:field name="version"/></a></strong><br />
-    <mm:locale language="en"><mm:time time="$releasedate" format="MMMM dd, yyyy"/></mm:locale></li>
-  </mm:node>
-  <mm:last>
-  <li><strong><a href="#stable">Stable branch</a></strong><br />MMBase 1.7</li>
-  <li><strong><a href="#HEAD">HEAD branch</a></strong><br />To become 1.8</li>
-  </ul></mm:last>
-</mm:list>
-</div><!-- /div relatedcontent -->
+<div id="relatedcontent"><!-- <p>Related can be put here..</p> --> </div>
 <div id="textcontent">
 <mm:node number="$page">
   <mm:related path="posrel,articles" orderby="posrel.pos" directions="UP" searchdir="destination">
-    <mm:node element="articles"><%@include file="/includes/article.jsp"%></mm:node>
+	<mm:node element="articles">
+<!-- article -->
+    <h2><!-- <mm:field name="number" /> --><mm:field name="title"/></h2>
+    <mm:content escaper="links">
+      <mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write /></p></mm:isnotempty></mm:field>
+    </mm:content>
+      <mm:remove referid="news"/><mm:import id="news" /><%@ include file="/includes/urls.jsp" %>
+    <mm:content escaper="links">
+      <mm:field name="body"><mm:isnotempty><div><mm:write /></div></mm:isnotempty></mm:field>
+    </mm:content>
+<!-- /article -->
+	</mm:node>
   </mm:related>
-</mm:node>
-<%-- LATEST RELEASE --%>
-<p>
-  All releases and released packages can be found on <a href="<mm:url page="/download/releases" />">/download/releases</a>.
-</p>
-<mm:list path="pages2,releases,mmevents"
-	 fields="releases.number,mmevents.start" 
-	 orderby="mmevents.start" directions="DOWN" max="4">
+
+<h3>Latest MMBase release</h3>
+<%-- Last official MMBase release --%>
+<mm:list path="pages2,releases,mmevents" searchdir="destination"
+  fields="releases.number,mmevents.start" 
+  orderby="mmevents.start" directions="DOWN" max="1">
   <mm:import id="releasedate" reset="true"><mm:field name="mmevents.start"/></mm:import>
   <mm:node element="releases">
-    <h3><a id="r<mm:field name="number" />"></a><mm:field name="name" /> <mm:field name="version"/></h3>
-    <mm:locale language="en"><p><mm:time time="$releasedate" format="MMMM dd, yyyy"/></p></mm:locale>
-    <mm:field name="intro"><mm:isnotempty><p class="intro"><mm:write/></p></mm:isnotempty></mm:field>
-    <mm:field name="body" escape="p"><mm:isnotempty><p><mm:write /></p></mm:isnotempty></mm:field>
-    <mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="DOWN">
-      <mm:first><ul></mm:first>
-      <li>
-	<mm:node element="urls">
-	  <mm:field name="url"><a href="<mm:url page="$_"/>"><mm:field name="description"/></a></mm:field>
-	</mm:node>
-      </li>
-      <mm:last></ul></mm:last>
-    </mm:related>
+	<p><strong><mm:field name="name" /> <mm:field name="version" /></strong><br />
+	<mm:locale language="en"><mm:time time="$releasedate" format="MMMM dd, yyyy"/></mm:locale>
+	<mm:field name="intro"><mm:isnotempty><mm:write/><br /></mm:isnotempty></mm:field>
+	<mm:related path="posrel,urls" orderby="posrel.pos,urls.description" directions="DOWN">
+	  <mm:first>Download:<ul></mm:first>
+	  <mm:node element="urls">
+	    <li><mm:field name="url"><a href="<mm:url page="$_"/>"><mm:field name="description"/></a></mm:field></li>
+	  </mm:node>
+	  <mm:last></ul></mm:last>
+	</mm:related>
   </mm:node>
 </mm:list>
+<p><a href="<mm:url page="index.jsp" referids="portal">
+  <mm:param name="page" value="page_releases" />
+</mm:url>">Previous releases &raquo;&raquo;</a></p>
 
-<h2><a id="stable"></a>Latest builds from the stable branch (MMBase-1_7)</h2>
-<% Iterator j = getStableBuilds(9).iterator() ;%>
+<h3>Packages and other applications</h3>
+<h5>Packages</h5>
+<p>More about the MMBase package manager (apps2) and the packages you can install 
+and download with it can be found at
+<a href="http://www.mmbase.org/packages">this page</a> and at 
+<a href="http://packages.mmbase.org/mmbase/packagemanager/public/">packages.mmbase.org</a>.
+</p>
+
+<h5>Other applications</h5>
+<mm:list nodes="page_applications"
+  path="pages,posrel,urls"
+  fields="posrel.pos">
+  <mm:first><ul></mm:first>
+    <mm:node element="urls">
+	<li><a href="<mm:field name="url" />"><mm:field name="name" /></a>
+	<mm:field name="description"><mm:isnotempty><br /><mm:write /></mm:isnotempty></mm:field></li>
+	</mm:node>
+  <mm:last></ul></mm:last>
+</mm:list>
+
+<h3>MMBase builds</h3>
+<p>Latest builds from the stable branch (MMBase-1_7)</p>
 <ul>
-<% while (j.hasNext()) { 
+<% 
+Iterator j = getStableBuilds(3).iterator();
+while (j.hasNext()) { 
   BuildInfo info = (BuildInfo) j.next(); %>
- <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
+  <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
 <% } %>
 </ul>
 
-<h2><a id="HEAD"></a>Latest builds from the HEAD branch that is to become the 1.8 release</h2> 
-<% Iterator k = getHeadBuilds(9).iterator() ;%>
+<p>Latest builds from the HEAD branch that is to become the 1.8 release</p>
 <ul>
-<% while (k.hasNext()) {
+<% Iterator k = getHeadBuilds(3).iterator();
+while (k.hasNext()) {
   BuildInfo info = (BuildInfo) k.next(); %>
- <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
+  <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
 <% } %>
 </ul>
+<p><a href="<mm:url page="index.jsp" referids="portal">
+  <mm:param name="page" value="page_builds" />
+</mm:url>">More builds &raquo;&raquo;</a></p>
 
-<%--
-<h2>Latest occasional builds</h2> 
-<% Iterator i = getOccasionalBuilds(5).iterator() ;%>
-<ul>
-<% while (i.hasNext()) {
-BuildInfo info = (BuildInfo) i.next(); %>
-  <li>	<%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a>  </li>
-<% } %>
-</ul>
---%>
-</div><!-- /div textcontent -->
+<h3>Source</h3>
+<p>You can access MMBase's CVS repository anonymously. You must of course have
+cvs installed. More about how to access the repository can be found on 
+<a href="<mm:url page="index.jsp" referids="portal">
+  <mm:param name="page" value="page_cvs" />
+</mm:url>">these pages</a>.
+</p>
+</div><!-- /textcontent -->
+</mm:node>
 <%@ include file="/includes/alterfooter.jsp" %>
-
 </mm:cloud>

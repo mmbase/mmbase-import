@@ -14,7 +14,10 @@
     <mm:locale language="en"><mm:time time="$releasedate" format="MMMM dd, yyyy"/></mm:locale></li>
   </mm:node>
   <mm:last>
-  </ul></mm:last>
+  </ul>
+  <p>A list with all releases and released packages can also be found on 
+  <a href="<mm:url page="/download/releases" />">/download/releases</a>.</p>
+  </mm:last>
 </mm:list>
 </div><!-- /div relatedcontent -->
 <div id="textcontent">
