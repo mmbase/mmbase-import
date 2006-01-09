@@ -101,7 +101,7 @@
                       <mm:field name="ratings.name" id="rating" write="true"/>
                     </mm:related>
                   </td>
-                  <td class="listItem"><mm:field name="text"/></td>
+                  <td class="listItem"><mm:field name="text" escape="p"/></td>
                 <% } else { %>
                   <td class="listItem"><i><di:translate key="pop.notanswered" /></i></td>
                   <td class="listItem">&nbsp;</td>
