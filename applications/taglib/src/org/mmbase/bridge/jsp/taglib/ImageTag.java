@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.64 2006-01-07 15:21:13 nklasens Exp $
+ * @version $Id: ImageTag.java,v 1.65 2006-01-09 10:31:17 nklasens Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -334,7 +334,7 @@ public class ImageTag extends FieldTag {
                 t = "";
             }
             else {
-                if (cropTemplate != null) {
+                if (cropTemplate != null && cropTemplate.length() != 0) {
                     t = getCropTemplate(node, widthTemplate, heightTemplate, cropTemplate);
                 }
                 else {
