@@ -14,6 +14,7 @@ import org.w3c.dom.*;
 import java.util.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
 import org.mmbase.util.logging.*;
 
 
@@ -60,7 +61,7 @@ public class ForumConfig {
     private int quotasoftwarning = 60;
     private int quotawarning = 80;
 
-    public ForumConfig(XMLBasicReader reader,Element n) {
+    public ForumConfig(DocumentReader reader,Element n) {
 	decodeConfig(reader,n);
     }
 
@@ -68,7 +69,7 @@ public class ForumConfig {
 	this.id = id;
     }
 
-    private boolean decodeConfig(XMLBasicReader reader,Element n) {
+    private boolean decodeConfig(DocumentReader reader,Element n) {
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
                         String account = "admin";
@@ -451,7 +452,7 @@ public class ForumConfig {
    }
 
 
-   private String getAttributeValue(XMLBasicReader reader,Element n,String itemname,String attribute) {
+   private String getAttributeValue(DocumentReader reader,Element n,String itemname,String attribute) {
        for (Iterator ns2 = reader.getChildElements(n, itemname); ns2.hasNext();) {
            Element n2 = (Element) ns2.next();
            NamedNodeMap nm = n2.getAttributes();

@@ -83,10 +83,10 @@ public class Handler implements Runnable {
   }
 
   public static void setGenerateFile(String role,String name,String tokens) {
-//	log.info("R="+role+" F="+name+" T="+tokens);
-       String filename = MMBaseContext.getConfigPath()+File.separator+"mmbob"+File.separator+name;
     	try {
-        	BufferedReader in = new BufferedReader(new FileReader(filename));
+       		Reader rd = ResourceLoader.getConfigurationRoot().getReader("mmbob/"+name);
+       //String filename = MMBaseContext.getConfigPath()+File.separator+"mmbob"+File.separator+name;
+        	BufferedReader in = new BufferedReader(rd);
         	String str;
         	while ((str = in.readLine()) != null) {
 			StringTokenizer tok=new StringTokenizer(str,tokens+"\n\r");
@@ -109,7 +109,6 @@ public class Handler implements Runnable {
         	}
         	in.close();
         } catch(IOException e) {
-		log.error("read error on file : "+filename);
 		e.printStackTrace();
 	}
   }

@@ -15,6 +15,7 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -101,7 +102,7 @@ public class ProfileInfo {
 
    private void decodeXML() {
 	 if (xml!=null && !xml.equals("")) {
-         XMLBasicReader reader = new XMLBasicReader(new InputSource(new StringReader(xml)),ProfileInfo.class);
+         DocumentReader reader = new DocumentReader(new InputSource(new StringReader(xml)),ProfileInfo.class);
          if(reader != null) {
                 for(Iterator ns = reader.getChildElements("profileinfo","entry");ns.hasNext(); ) {
                     Element n = (Element)ns.next();

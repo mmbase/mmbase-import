@@ -341,20 +341,10 @@ public class ForumManager {
      * reads configfile
      */
     public static void readConfig() {
-        String filename = MMBaseContext.getConfigPath() + File.separator + "mmbob" + File.separator + "mmbob.xml";
-  
-        File file = new File(filename);
-        try {
-            readConfig(file);
-        } catch (FileNotFoundException ex) {
-        }
-
-    }
-
-    private static void readConfig (File file) throws java.io.FileNotFoundException{
-        if (file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(new InputSource(new FileInputStream(file)), ForumManager.class);
-            if (reader != null) {
+	try {
+		InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("mmbob/mmbob.xml");
+            	DocumentReader reader = new DocumentReader(is, ForumManager.class);
+            	if (reader != null) {
 // decode forums
                 for (Iterator ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasNext();) {
                     Element n = (Element) ns.next();
@@ -363,34 +353,16 @@ public class ForumManager {
 		    }
                 }
             }
-            configWatcher.add(file);
-            configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
-            configWatcher.start();
-        }
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
     }
-
-    private static FileWatcher configWatcher = new FileWatcher (true) {
-            public void onChange(File file) {
-                try {
-                    readConfig(file);
-       Enumeration e = forums.elements();
-        while (e.hasMoreElements()) {
-            // for now all forums main nodes are loaded so
-            // we just call them all for a maintain
-            Forum f = (Forum) e.nextElement();
-            f.resetConfig();
-        }
-                } catch (FileNotFoundException ex) {
-                }
-            }
-        };
 
 
     public static void saveConfig() {
 	log.info("SAVE CONFIG !");
-        String filename = MMBaseContext.getConfigPath() + File.separator + "mmbob" + File.separator + "mmbob.xml";
  	if (config != null) {
-		config.save(filename);
+		config.save();
 	} else {
 		log.info("missing config file, can't save");
 	}	 
