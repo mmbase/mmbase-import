@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.131 2005-12-21 20:00:39 michiel Exp $
+$Id: build.xml,v 1.132 2006-01-10 11:38:13 andre Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -1166,13 +1166,14 @@ Build-compiler: ${build.compiler}
       <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
     </ant>
 
-    <ant target="documentation.index" />
+    <!-- ant target="documentation.index" / -->
 
   </target>
-
+<!--
   <target name="documentation.index" depends="init.compile" description="generates the index.html for the documentation">
+  -->
     <!-- compile class for listing of builders -->
-    <javac srcdir="${source-src.dir}"
+<!--    <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
            debug="${debug}"
@@ -1197,7 +1198,7 @@ Build-compiler: ${build.compiler}
       <arg value="${mmdocs.dir}" />
     </java>
   </target>
-
+-->
 
   <!-- =================================================================== -->
   <!--  Create the Builder documentation                                   -->
