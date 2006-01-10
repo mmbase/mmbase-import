@@ -7,12 +7,59 @@
 
     <date>2005-12-12</date>
 
-    <edition>$Id: index.xml,v 1.52 2005-12-12 21:22:25 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.53 2006-01-10 11:29:53 andre Exp $</edition>
 
     <authorgroup>
       <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
+      <author>
+          <firstname>Pierre</firstname>
+          <surname>van Rooden</surname>
+      </author>
+      <author>
+          <firstname>Daniel</firstname>
+          <surname>Ockeloen</surname>
+      </author>
+      <author>
+        <firstname>Nico</firstname>
+        <surname>Klasens</surname>
+      </author>
+      <author>
+        <firstname>Henk</firstname>
+        <surname>Hangyi</surname>
+      </author>
+      <author>
+        <firstname>Ernst</firstname>
+        <surname>Bunders</surname>
+      </author>
+      <author>
+          <firstname>Johannes</firstname>
+          <surname>Verelst</surname>
+      </author>
+      <author>
+        <firstname>Kees</firstname>
+        <surname>Jongenburger</surname>
+      </author>
+      <author>
+        <firstname>Eduard</firstname>
+        <surname>Witteveen</surname>
+      </author>
+      <author>
+        <firstname>Sjoerd</firstname>
+        <surname>de Heer</surname>
+      </author>
+      <author>
+        <firstname>Rob</firstname>
+        <surname>van Maris</surname>
+      </author>
+      <author>
+        <firstname>Kars</firstname>
+        <surname>Veling</surname>
+      </author>
+      <author>
         <firstname>André</firstname>
-
         <surname>van Toly</surname>
       </author>
     </authorgroup>
@@ -222,9 +269,30 @@
       </listitem>
 
       <listitem>
-        <para>The Event Framework ( <ulink
-        url="backenddevelopers/eventframework.html">HTML</ulink>, <ulink
-        url="backenddevelopers/eventframework.pdf">PDF</ulink> )</para>
+        <para>The Event Framework (query caching)</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The Event Framework Technical Reference ( <ulink
+            url="backenddevelopers/eventframework.html">HTML</ulink>, <ulink
+            url="backenddevelopers/eventframework.pdf">PDF</ulink> )</para>
+          </listitem>
+
+          <listitem>
+            <para>The Query Cache Release Strategy Technical Reference( <ulink
+            url="backenddevelopers/QueryCache_release_strategies.html">HTML</ulink>,
+            <ulink url="backenddevelopers/eventframework.pdf">PDF</ulink>
+            )</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Javadocs of OSCache Cache. An implementation of the MMBase
+        'CacheImplementationInterface' interface, which delegates all calls to
+        an OSCache implementation. ( <ulink
+        url="applications/oscache-cache/build/javadoc/oscache/index.html">HTML</ulink>
+        )</para>
       </listitem>
 
       <listitem>
@@ -272,18 +340,21 @@
       </listitem>
 
       <listitem>
+        <para>Javadocs of Packaging, the package
+        org.mmbase.applications.packaging. ( <ulink
+        url="applications/packaging/build/javadoc/packaging/index.html">HTML</ulink>
+        )</para>
+      </listitem>
+
+      <listitem>
         <para>The Richtext Functional Reference ( <ulink
-        url="applications/richtext/frontenddevelopers/richtext/richtext.html">HTML</ulink>,
-        <ulink
-        url="applications/richtext/frontenddevelopers/richtext/richtext.pdf">PDF</ulink>
+        url="applications/richtext/frontenddevelopers/richtext/richtext.html">HTML</ulink>
         )</para>
       </listitem>
 
       <listitem>
         <para>Remote MMBase Cloud Interface ( <ulink
-        url="applications/rmmci/backenddevelopers/rmmci/index.html">HTML</ulink>,
-        <ulink
-        url="applications/rmmci/backenddevelopers/rmmci/index.pdf">PDF</ulink>
+        url="applications/rmmci/backenddevelopers/rmmci/index.html">HTML</ulink>
         )</para>
       </listitem>
 
@@ -300,20 +371,19 @@
         <para>Taglib Tutorial (<ulink
         url="applications/taglib/frontenddevelopers/taglib/taglib-tutorial.html">HTML</ulink>,
         <ulink
-        url="applications/taglib/frontenddevelopers/taglib/taglib-tutorial.pdf">PDF</ulink>)</para>
+        url="applications/taglib/build/frontenddevelopers/taglib/taglib-tutorial.pdf">PDF</ulink>)</para>
       </listitem>
 
       <listitem>
         <para>MMBase Include / TreeInclude / LeafInclude (<ulink
         url="applications/taglib/frontenddevelopers/taglib/include.html">HTML</ulink>,
         <ulink
-        url="applications/taglib/frontenddevelopers/taglib/include.pdf">PDF</ulink>)</para>
+        url="applications/taglib/build/frontenddevelopers/taglib/include.pdf">PDF</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase taglib reference<!-- (<ulink
-        url="applications/reference/taglib/toc.html">JSP</ulink>, <ulink
-        url="applications/reference/mmbase-taglib.html">HTML</ulink>) --></para>
+        <para>MMBase taglib reference (<ulink
+        url="applications/taglib/build/frontenddevelopers/taglib/reference.html">HTML</ulink>)</para>
       </listitem>
     </itemizedlist>
 
@@ -322,30 +392,36 @@
     <itemizedlist>
       <listitem>
         <para>Editwizards (<ulink
-        url="applications/editwizard/frontenddevelopers/editwizard/index.html">HTML</ulink>,
+        url="applications/editwizard/build/frontenddevelopers/editwizard/index.html">HTML</ulink>,
         <ulink
-        url="applications/editwizard/frontenddevelopers/editwizard/index.pdf">PDF</ulink>)</para>
+        url="applications/editwizard/build/frontenddevelopers/editwizard/index.pdf">PDF</ulink>)</para>
       </listitem>
 
       <listitem>
         <para>Editwizard Syntax Reference (<ulink
-        url="applications/editwizard/frontenddevelopers/editwizard/editwizard-reference.html">HTML</ulink>,
+        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-reference.html">HTML</ulink>,
         <ulink
-        url="applications/editwizard/frontenddevelopers/editwizard/editwizard-reference.pdf">PDF</ulink>)</para>
+        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-reference.pdf">PDF</ulink>)</para>
       </listitem>
 
       <listitem>
         <para>Editwizard Front end (<ulink
-        url="applications/editwizard/frontenddevelopers/editwizard/editwizard-frontend.html">HTML</ulink>,
+        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-frontend.html">HTML</ulink>,
         <ulink
-        url="applications/editwizard/frontenddevelopers/editwizard/editwizard-frontend.pdf">PDF</ulink>)</para>
+        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-frontend.pdf">PDF</ulink>)</para>
       </listitem>
 
       <listitem>
         <para>Dove XML API (<ulink
-        url="applications/dove/frontenddevelopers/dove/index.html">HTML</ulink>,
+        url="applications/dove/build/frontenddevelopers/dove/index.html">HTML</ulink>,
         <ulink
-        url="applications/dove/frontenddevelopers/dove/index.pdf">PDF</ulink>)</para>
+        url="applications/dove/build/frontenddevelopers/dove/index.pdf">PDF</ulink>)</para>
+      </listitem>
+
+      <listitem>
+        <para>Editwizards Javadoc: org.mmbase.applications.editwizard ( <ulink
+        url="applications/editwizard/build/javadoc/editwizard/index.html">HTML</ulink>
+        )</para>
       </listitem>
     </itemizedlist>
 
@@ -363,7 +439,7 @@
         <para>Quick start (<ulink
         url="applications/xmlimporter/frontenddevelopers/xmlimporter/quickstart.html">HTML</ulink>,
         <ulink
-        url="applications/xmlimporter/frontenddevelopers/xmlimporter/quickstart.html">PDF</ulink>
+        url="applications/xmlimporter/frontenddevelopers/xmlimporter/quickstart.pdf">PDF</ulink>
         )</para>
       </listitem>
 
@@ -371,7 +447,7 @@
         <para>Cook Book (<ulink
         url="applications/xmlimporter/frontenddevelopers/xmlimporter/cookbook.html">HTML</ulink>,
         <ulink
-        url="applications/xmlimporter/frontenddevelopers/xmlimporter/cookbook.html">PDF</ulink>
+        url="applications/xmlimporter/frontenddevelopers/xmlimporter/cookbook.pdf">PDF</ulink>
         )</para>
       </listitem>
     </itemizedlist>
