@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.28 2006-01-06 10:15:15 michiel Exp $
+ * @version $Id: Lucene.java,v 1.29 2006-01-10 10:47:59 ernst Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -179,7 +179,7 @@ public class Lucene extends Module implements MMBaseObserver {
             public Object getFunctionValue(Parameters arguments) {
                 return indexerMap.keySet();
             }
-            
+
         };
     {
         addFunction(listFunction);
@@ -191,7 +191,7 @@ public class Lucene extends Module implements MMBaseObserver {
                 Indexer index = (Indexer) indexerMap.get(key);
                 return index.getDescription().get(locale);
             }
-            
+
         };
     {
         addFunction(descriptionFunction);
@@ -268,7 +268,7 @@ public class Lucene extends Module implements MMBaseObserver {
         //factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIWordExtractor");
         factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIExcelExtractor");
         factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
-        
+
         // path to the lucene index (a directory on disk writeable to the web-application)
         // this path should be a direct path
         String path = getInitParameter("indexpath");
@@ -278,11 +278,12 @@ public class Lucene extends Module implements MMBaseObserver {
         }else {
             //try to get the index path from the strorage configuration
             try{
-                indexPath = ((DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory()).getBinaryFileBasePath();
-                if(indexPath != null) indexPath =indexPath + "lucene";
+                DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
+                indexPath = dsmf.getBinaryFileBasePath();
+                if(indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
             }catch(Exception e){}
         }
-        
+
         if(indexPath != null){
             log.service("found storage configuration for lucine index path : " + indexPath);
         }else{
@@ -290,7 +291,7 @@ public class Lucene extends Module implements MMBaseObserver {
             indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
             log.service("fall back to default for lucine index path : " + indexPath);
         }
-        
+
 
         // read only?
         readOnly = "true".equals(getInitParameter("readonly"));
@@ -651,7 +652,7 @@ public class Lucene extends Module implements MMBaseObserver {
     }
 
     /**
-     * Main for testing 
+     * Main for testing
      */
     public static void main(String[] args) {
         String configFile = args[0];
