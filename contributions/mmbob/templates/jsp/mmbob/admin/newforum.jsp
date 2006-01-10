@@ -76,7 +76,7 @@
   	</form>
 	</td>
 	<td align="center">
-  	<form action="<mm:url page="forums.jsp">
+  	<form action="<mm:url page="../forums.jsp">
 	</mm:url>"
  	method="post">
 	<p />
