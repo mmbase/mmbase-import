@@ -27,6 +27,9 @@ public class SerializableTest extends BridgeTest {
     }
 
     public void testSerialize() {
+        if (!cloud.getClass().getName().equals("org.mmbase.bridge.implementation.BasicCloud")){
+            return;
+        }
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(bos);
