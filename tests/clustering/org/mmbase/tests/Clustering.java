@@ -32,7 +32,7 @@ public class Clustering extends BridgeTest {
         if (cloud1 == null) {
             cloud1 =   getRemoteCloud("rmi://127.0.0.1:1221/remotecontext");
             cloud2 =   getRemoteCloud("rmi://127.0.0.1:1222/remotecontext");
-            
+
             NodeManager aa2 = cloud2.getNodeManager("aa");
             NodeManager aa1 = cloud1.getNodeManager("aa");
             NodeManager bb2 = cloud2.getNodeManager("bb");
@@ -42,7 +42,7 @@ public class Clustering extends BridgeTest {
             nodea1.commit();
             NodeQuery nq = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, "related", "both");
             bb2related = bb2.getList(nq);
-            
+
             NodeManager object2 = cloud2.getNodeManager("object");
             NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), object2, null, null);
             object2.getList(nq2); // just to put it in some cache or so..
@@ -51,7 +51,7 @@ public class Clustering extends BridgeTest {
 
 
     /**
-     * It's no hard requirment that changes are visibility immediately on the other side. So, sometime wait a bit, to be 
+     * It's no hard requirement that changes are visibility immediately on the other side. So, sometimes wait a bit, to be
      * on the safe side.
      */
     protected void allowLatency() {
@@ -106,9 +106,7 @@ public class Clustering extends BridgeTest {
             throw new RuntimeException("More roles '" + name + "' not found in " + (cl == cloud2 ? " cloud 2 " : " cloud 1"));
         }
         return roles.getNode(0);
-
     }
-
 
     /**
      * @todo Perhaps these kind of functions would come in handy in a org.mmbase.bridge.util.System
@@ -127,30 +125,50 @@ public class Clustering extends BridgeTest {
 
     public void testCreateTypeRel() {
         // create new typerel, and see if that has influence on cloud 2.
-
         RelationManager rm = createTypeRel(cloud1, "posrel", "bb", "aa");
 
+        // query for local cloud
+        NodeManager bb1 = cloud1.getNodeManager("bb");
+        NodeQuery nq1 = Queries.createRelatedNodesQuery(cloud1.getNode(nodea1.getNumber()), bb1, null, "both");
+        NodeList related1 = bb1.getList(nq1);
+        assertTrue("Locale list is null!", related1 != null);
+        assertTrue("Locale list is not empty.",related1.size() == 0);
+
+        // query for remote cloud
         NodeManager bb2 = cloud2.getNodeManager("bb");
         NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), bb2, null, "both");
-        NodeQuery nq1 = Queries.createRelatedNodesQuery(cloud1.getNode(nodea1.getNumber()), cloud1.getNodeManager("bb"), null, "both");
         NodeList related2 = bb2.getList(nq2);
-        assertTrue("list is null!", related2 != null);
-        assertTrue(related2.size() == 0);
-        assertTrue(bb2related.size() == 0);
+        assertTrue("Remote list is null!", related2 != null);
+        assertTrue("Locale list is not empty.", related2.size() == 0);
 
-        Node bb1 = cloud1.getNodeManager("bb").createNode();
-        bb1.commit();
-
-        Relation r1 = bb1.createRelation(nodea1, rm);
+        // create node and relation
+        Node bbnode1 = bb1.createNode();
+        bbnode1.commit();
+        Relation r1 = bbnode1.createRelation(nodea1, rm);
         r1.commit();
 
-        NodeList related1 = cloud1.getNodeManager("bb").getList(nq1);
-        assertTrue("Just created a relation, but related list size is not 1, but " + related1.size() + " used query " + nq1, related1.size() == 1); // local
+        // re-query local cloud
+        related1 = bb1.getList(nq1);
+        assertTrue("Created a relation, but local related list size is not 1, but " + related1.size() +
+                   ".\nUsed query: " + nq1, related1.size() == 1); // local
+        // re-query remote cloud
         allowLatency();
         related2 = bb2.getList(nq2);
-        assertTrue("Just created a relation, but related list size is not 1, but " + related2.size() + " used query " + nq2, related2.size() == 1); // remote
+        assertTrue("Created a relation, but remote related list size is not 1, but " + related2.size() +
+                   ".\nUsed query: " + nq2, related2.size() == 1); // remote
 
+        // drop the relation again
+        r1.delete();
 
+        // re-query local cloud
+        related1 = bb1.getList(nq1);
+        assertTrue("Deleted a relation, but local related list size is not 0, but " + related1.size() +
+                   ".\nUsed query: " + nq1, related1.size() == 0); // local
+        // re-query remote cloud
+        allowLatency();
+        related2 = bb2.getList(nq2);
+        assertTrue("Deleted a relation, but remote related list size is not 0, but " + related2.size() +
+                   ".\nUsed query: " + nq2, related2.size() == 0); // remote
     }
 
     public void testInstallBuilder() {
@@ -176,12 +194,10 @@ public class Clustering extends BridgeTest {
     }
 
     public void testCreateNodeUnknownType() {
-        // creating a node of this new type, and look what happens in the cloud which does not know
-        // this type.
+        // creating a node of this new type, and look what happens in the cloud which does not know this type.
         Node zNode = cloud1.getNodeManager("zz").createNode();
         zNode.commit();
         // allowLatency(); no need, this is a _new_ node! Must result in database action any way, it should be in database!
-
 
         if (cloud2.hasNode(zNode.getNumber())) {
             Node zNode2 = cloud2.getNode(zNode.getNumber());
@@ -208,7 +224,7 @@ public class Clustering extends BridgeTest {
         if(cloud2.hasNode(nodea1.getNumber())) {
             // now ask the number of related nodes from nodea1;
             Node nodea2 = cloud2.getNode(nodea1.getNumber());
-            
+
             List related1 = nodea1.getRelatedNodes();
             List related2 = nodea2.getRelatedNodes();
             assertTrue("relatednodes " + related1 + " != " + related2, related1.size() == related2.size());
@@ -232,6 +248,7 @@ public class Clustering extends BridgeTest {
         }
 
     }
+
     public void testRelatedUnknownType2() {
 
         NodeManager object1 = cloud1.getNodeManager("object");
@@ -241,8 +258,9 @@ public class Clustering extends BridgeTest {
         NodeQuery nq2 = Queries.createRelatedNodesQuery(cloud2.getNode(nodea1.getNumber()), object2, null, null);
         List related1 = object1.getList(nq1);
         List related2 = object2.getList(nq2);
-        assertTrue("Size: " + related1.size() + " != 3", related1.size() == 3); // 1 to a bb, 2 to zz's.
-        assertTrue("Size: " + related1.size() + " != " + related2.size(), related1.size() == related2.size());
+        // nr of relations reported = 2 (0 x a -> bb, 2 x a -> zz).
+        assertTrue("Nr of local relations reported is not 2 but " + related1.size(), related1.size() == 2);
+        assertTrue("Nr of remote relations reported is not " + related1.size() + " but " + related2.size(), related1.size() == related2.size());
     }
 
     public void testCreateRelDef() {
