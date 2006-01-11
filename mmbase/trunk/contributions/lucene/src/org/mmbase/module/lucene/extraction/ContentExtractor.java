@@ -19,16 +19,16 @@ import org.xml.sax.Attributes;
 import org.mmbase.util.logging.*;
 /**
  * Handles content extraction
- * 
+ *
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ContentExtractor {
 
     private static final Logger log = Logging.getLoggerInstance(ContentExtractor.class);
-    
+
     private static ContentExtractor instance = null;
-    
+
     private Map extractors = new HashMap();
 
     public ContentExtractor() {
@@ -87,8 +87,6 @@ public class ContentExtractor {
         } catch (Throwable e) {
             log.error("Cannot start extractor " + e);
         }
-
-
     }
 
     public Object createObject(Attributes attributes) throws Exception {
