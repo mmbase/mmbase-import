@@ -2,6 +2,7 @@
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
 <%@include file="../../settings.jsp" %>
+<mm:content expires="0">
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <% String builder = request.getParameter("builder");
    String field = request.getParameter("field");
@@ -12,8 +13,6 @@
 <head>
 <title>Administrate Builder <%=builder%>, <%=name%> of Field <%=field%></title>
 <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
-<meta http-equiv="pragma" value="no-cache" />
-<meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
 <% Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
@@ -93,3 +92,4 @@
 </table>
 </body></html>
 </mm:cloud>
+</mm:content>

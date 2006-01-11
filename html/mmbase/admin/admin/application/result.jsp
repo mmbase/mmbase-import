@@ -1,7 +1,8 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
-<%@page import="java.util.*" 
-%><%@include file="../../settings.jsp" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+%><%@page import="org.mmbase.bridge.*" 
+%><%@page import="java.util.*" 
+%><%@include file="../../settings.jsp" 
+%><mm:content expires="0">
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <% String app = request.getParameter("application"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
@@ -9,8 +10,6 @@
 <head>
 <title>Administrate Application <%=app%></title>
 <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
-<meta http-equiv="pragma" value="no-cache" />
-<meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
 <%
@@ -50,3 +49,4 @@
 </table>
 </body></html>
 </mm:cloud>
+</mm:content>
