@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.29 2006-01-10 10:47:59 ernst Exp $
+ * @version $Id: Lucene.java,v 1.30 2006-01-11 15:37:24 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -264,7 +264,7 @@ public class Lucene extends Module implements MMBaseObserver {
 
         // traditional Lucenemodule extractors
         factory.addExtractor("org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor");
-        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.SwingRtfExtractor");
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.SwingRTFExtractor");
         //factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIWordExtractor");
         factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIExcelExtractor");
         factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
@@ -281,7 +281,7 @@ public class Lucene extends Module implements MMBaseObserver {
                 DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
                 indexPath = dsmf.getBinaryFileBasePath();
                 if(indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
-            }catch(Exception e){}
+            } catch(Exception e) {}
         }
 
         if(indexPath != null){
