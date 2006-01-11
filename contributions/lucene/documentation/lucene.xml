@@ -6,8 +6,12 @@
   <articleinfo>
     <title>MMBase Lucene module</title>
     <date>2005-12-24</date>
-    <edition>$Id: lucene.xml,v 1.1 2005-12-27 15:45:06 michiel Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.2 2006-01-11 16:01:20 pierre Exp $</edition>
     <authorgroup>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+      </author>
       <author>
         <firstname>Michiel</firstname>
         <surname>Meeuwissen</surname>
@@ -15,7 +19,7 @@
     </authorgroup>
 
     <abstract>
-      <para>Lucen</para>
+      <para>Lucene</para>
     </abstract>
 
     <legalnotice>
@@ -28,51 +32,36 @@
   <section id="introduction">
     <title>Introduction</title>
     <para>
-      Lucene indexing is about full text search indexing. See <ulink
-      url="http://lucene.apache.org/">the internet site of Lucene</ulink>. Most databases
-      support this natively, but lucene can do it too. Indices can be defined using java code
-      (e.g. by JDBC connections or HTTP connections). MMBase is a database independent product, so
-      database independent indexing like Lucene provides fits well in our scheme, and can easily be
-      implemented using the MMBase bridge interfaces to provide the data to be indexed.
+      Lucene indexing is about full text search indexing. See <ulink url="http://lucene.apache.org/">the internet site of Lucene</ulink>. Most databases support this natively, but Lucene can do it too. Indices can be defined using java code (e.g. by JDBC connections or HTTP connections). MMBase is a database independent product, so database independent indexing like Lucene provides fits well in our scheme, and can easily be implemented using the MMBase bridge interfaces to provide the data to be indexed.
     </para>
     <para>
-      This document is about a lucene implementation as an MMBase 'module'. Basicly this provides a
-      configuration file to configure queries to an MMBase repository, which are
-      then used to produces Lucene indices. Furthermore, of course, it provides an MMBase way to
-      access the search functionality itself (which is based on the MMBase 'function framework').
+      This document is about a Lucene implementation as an MMBase 'module'. Basicly this provides a configuration file to configure queries to an MMBase repository, which are then used to produces Lucene indices. Furthermore, of course, it provides an MMBase way to access the search functionality itself (which is based on the MMBase 'function framework').
     </para>
   </section>
 
   <section id="installation">
     <title>Installation</title>
     <para>
-      Placing mmbase-lucene.jar in WEB-INF/lib suffices to provide the functionality and an
-      activated MMBase module. You may also want to install mmbase-crontab.jar to schedule periodic
-      full indices.
+      Placing mmbase-lucene.jar in WEB-INF/lib suffices to provide the functionality and an activated MMBase module. You may also want to install mmbase-crontab.jar to schedule periodic full indices.
     </para>
     <para>
-      You then also need to define indices, which can be done in a file
-      &lt;config&gt;/utils/luceneindex.xml. For more information about that see the chapter about
-      configuration in the present document.
+      You then also need to define indices, which can be done in a file &lt;config&gt;/utils/luceneindex.xml. For more information about that see the chapter about configuration in the present document.
     </para>
     <para>
-      Some administration pages are provided too. We suggest installing those in /mmbase/lucene.
-      You may want to trigger an initial full index, after defining those.
+      Some administration pages are provided too. We suggest installing those in /mmbase/lucene. You may want to trigger an initial full index, after defining those.
     </para>
     <para>
-      Then of course you need to integrate a lucene search in your site. A generic search tool is
-      provided among the lucene admin pages.
+      Then of course you need to integrate a Lucene search in your site. A generic search tool is provided among the Lucene admin pages.
     </para>
   </section>
 
   <section id="configuration">
     <title>Configuration</title>
     <para>
-      The hardest part of the configuration of the lucene index is of course the definition of the
-      indices itself. The luceneindex.xml configuration file basicly looks like this:
-			<example>
-				<title>lucenindex.xml</title>
-				<programlisting id="lucenindex.xmll"><![CDATA[
+      The hardest part of the configuration of the Lucene index is of course the definition of the indices itself. The luceneindex.xml configuration file basicly looks like this:
+      <example>
+        <title>lucenindex.xml</title>
+        <programlisting id="lucenindex.xmll"><![CDATA[
 <?xml version="1.0"?>
 <luceneindex
  xmlns="http://www.mmbase.org/xmlns/luceneindex"
@@ -93,10 +82,7 @@
 ]]>
         </programlisting>
       </example>
-      So, you can have several indexes, each with its own 'analyzer' (a lucene concept, see <ulink
-      url="http://jakarta.apache.org/lucene/..">API Doc for Analyzers</ulink>). Below each 'index'
-      tag there can be 1 or more XML pieces defining a query to create the index. If more than one,
-      then the definitions will be combined to one bigger index.
+      So, you can have several indexes, each with its own 'analyzer' (a Lucene concept, see <ulink url="http://jakarta.apache.org/lucene/..">API Doc for Analyzers</ulink>). Below each 'index' tag there can be 1 or more XML pieces defining a query to create the index. If more than one, then the definitions will be combined to one bigger index.
     </para>
     <para>
       A 'list' subtag defines an MMBase index, in a more or less MMBase taglib-like fashion.
@@ -105,9 +91,9 @@
       <title>MMBase indices</title>
       <para>
         'list' subtags defined MMBase queries.
-			<example>
-				<title>lucenindex.xml</title>
-				<programlisting id="lucenindex.xmll"><![CDATA[
+      <example>
+        <title>lucenindex.xml</title>
+        <programlisting id="lucenindex.xmll"><![CDATA[
 <?xml version="1.0"?>
 <luceneindex
  xmlns="http://www.mmbase.org/xmlns/luceneindex"
@@ -144,21 +130,15 @@
     <section>
       <title>Other types of indices</title>
       <para>
-        Since Lucene provides a much more generic functionality, the configuration file of this
-        module keeps the option open that you want to do more then just indexing MMBase.
+        Since Lucene provides a much more generic functionality, the configuration file of this module keeps the option open that you want to do more then just indexing MMBase.
       </para>
       <para>
-        Until now one alternative is provided: Direct JDBC access. Others can be imagined like
-        indexing of JSP sources (direct indexing of the resources of the web-app), or using http
-        connection to the MMBase web-app (using HTTP connections), which would provide a google like
-        full-index.
+        Currently one alternative is provided: Direct JDBC access. Others can be imagined, like indexing of JSP sources (direct indexing of the resources of the web-app), or using http connection to the MMBase web-app (using HTTP connections), which would provide a google like full-index.
       </para>
       <section>
         <title>Direct access to JDBC</title>
         <para>
-          Can be defined with the 'jdbc' subtag of 'index'. At the moment the implementation
-          supposes that the jdbc connection should go to the same database as the MMBase
-          instance. More general jdbc connection configuration may easily be added.
+          Can be defined with the 'jdbc' subtag of 'index'. At the moment the implementation supposes that the jdbc connection should go to the same database as the MMBase instance. More general jdbc connection configuration may easily be added.
         </para>
         <para>
         </para>
@@ -168,8 +148,9 @@
   <section id="history">
     <title>History</title>
     <para>
-      There are two lucene modules. Also mmapps.sourceforge.net provides one. This one was developed
-      on the 1.8 version of MMBase.
+      There are currently two publicly available Lucene modules. The site http://mmapps.sourceforge.net provides an alternate version, careted by Finalist, which works on MMBase 1.7.</para>
+    <para>
+      The version you are looking at now was developed on the 1.8 version of MMBase.
     </para>
   </section>
 </article>
