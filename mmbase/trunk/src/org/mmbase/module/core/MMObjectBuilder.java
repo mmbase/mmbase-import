@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.360 2006-01-06 12:56:21 daniel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.361 2006-01-12 13:35:59 ernst Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2968,7 +2968,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
    public void notify(NodeEvent event) {
         log.debug("" + this + " received node event " + event);
-        eventBackwardsCompatibilty(event, event.getType());
+        eventBackwardsCompatibilty(event.getMachine(), event.getNodeNumber(), event.getType());
 
         //update the cache
         boolean localEvent = (event.getMachine().equals(mmb.getMachineName()));
@@ -3002,7 +3002,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
      public void notify(RelationEvent event) {
         log.debug("" + this + " received relation event " + event);
-        eventBackwardsCompatibilty(event.getNodeEvent(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+        
+        //for backwards compatibilty: create relation changed calls
+        if(event.getRelationSourceType().equals(getTableName())){
+            eventBackwardsCompatibilty(event.getMachine(), event.getRelationSourceNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+        }else if(event.getRelationDestinationType().equals(getTableName())){
+            eventBackwardsCompatibilty(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+        }
+        
         
         //update the cache
         Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
@@ -3039,14 +3046,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      * @param event
      */
-    private void eventBackwardsCompatibilty(NodeEvent event, int eventType){
+    private void eventBackwardsCompatibilty(String machineName, int nodeNumber, int eventType){
         String ctype = NodeEvent.newTypeToOldType(eventType);
-        boolean localEvent = mmb.getMachineName().equals(event.getMachine());
+        boolean localEvent = mmb.getMachineName().equals(machineName);
         
         if(localEvent) {
-            nodeLocalChanged(event.getMachine(), "" + event.getNodeNumber(), event.getBuilderName(), ctype);
+            nodeLocalChanged(machineName, "" + nodeNumber, getTableName(), ctype);
         } else {
-            nodeRemoteChanged(event.getMachine(), "" + event.getNodeNumber(), event.getBuilderName(), ctype);
+            nodeRemoteChanged(machineName, "" + nodeNumber, getTableName(), ctype);
         }
     }
 
