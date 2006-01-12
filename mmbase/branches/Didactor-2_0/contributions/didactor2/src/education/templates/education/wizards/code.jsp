@@ -464,7 +464,7 @@
    <mm:import id="editcontextname" reset="true">metadata</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/metastandard/metastandard&nodepath=metastandard&fields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title='' target="text"><di:translate key="education.metadata" /></nobr></a>
+      <a href='javascript:clickNode("metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/metastandard/metastandard&nodepath=metastandard&fields=name&searchfields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title='' target="text"><di:translate key="education.metadata" /></nobr></a>
       <br>
 
       <mm:import id="number_of_metadata" reset="true">0</mm:import>
@@ -599,7 +599,7 @@
    <mm:import id="editcontextname" reset="true">toetsen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("tests_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_tests_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/> <span style='width:100px; white-space: nowrap'><a href='<mm:write referid="listjsp"/>&wizard=config/tests/tests&nodepath=tests&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' target="text"><di:translate key="education.tests" /></a></span>
+      <a href='javascript:clickNode("tests_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_tests_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/> <span style='width:100px; white-space: nowrap'><a href='<mm:write referid="listjsp"/>&wizard=config/tests/tests&nodepath=tests&fields=name&searchfields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' target="text"><di:translate key="education.tests" /></a></span>
       <br>
       <div id='tests_0' style='display: none'>
 
@@ -740,7 +740,7 @@
    <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("node_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_node_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/> <span style='width:100px; white-space: nowrap'><a href="<mm:write referid="listjsp"/>&wizard=config/education/educations&nodepath=educations&fields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />" target="text"><di:translate key="education.educationmenueducations" /></a></span>
+      <a href='javascript:clickNode("node_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_node_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/> <span style='width:100px; white-space: nowrap'><a href="<mm:write referid="listjsp"/>&wizard=config/education/educations&nodepath=educations&searchfields=name&fields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />" target="text"><di:translate key="education.educationmenueducations" /></a></span>
       <br>
       <div id='node_0' style='display: none'>
 
