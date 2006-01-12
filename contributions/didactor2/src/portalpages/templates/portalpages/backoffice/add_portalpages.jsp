@@ -58,7 +58,7 @@
      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
      <td><a href='javascript:clickNode("portal_root")'><img src="gfx/tree_plus.gif" border="0" align="middle" id='img_portal_root'/></a></td>
      <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_portal_root'/></td>			               
-     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/portalpages/rootportalpagesnodes&origin=<mm:write referid="containernode"/>&nodepath=portalpagesnodes&fields=name&metadata=yes' title="portal pagina's" target="text">Portal Pagina's</a></nobr></td> 
+     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/portalpages/rootportalpagesnodes&origin=<mm:write referid="containernode"/>&nodepath=portalpagesnodes&fields=name&searchfields=name&metadata=yes' title="portal pagina's" target="text">Portal Pagina's</a></nobr></td> 
   </tr>
 </table>
 <div id="portal_root" style="display:none"> 

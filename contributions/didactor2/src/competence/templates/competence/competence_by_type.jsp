@@ -14,7 +14,6 @@
 <%@include file="/education/wizards/roles_chk.jsp" %>
 
 <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" /></mm:import>
-<mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" /></mm:import>
 
 <%
    String sSearchValue = request.getParameter("searchvalue");
