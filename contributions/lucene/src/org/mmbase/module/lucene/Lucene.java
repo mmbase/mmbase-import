@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.30 2006-01-11 15:37:24 pierre Exp $
+ * @version $Id: Lucene.java,v 1.31 2006-01-12 14:09:41 ernst Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -519,7 +519,7 @@ public class Lucene extends Module implements MMBaseObserver {
         log.info("Received " + number);
         if (!readOnly) {
             // if this concerns a change or new node, update the index with that node
-            if (ctype.equals("c") || ctype.equals("n")) {
+            if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r") {
                 scheduler.updateIndex(number);
             // if this concerns removing a node, remove the index of that node
             } else if (ctype.equals("d")) {
