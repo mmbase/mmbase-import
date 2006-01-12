@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.81 2006-01-04 09:21:52 ernst Exp $
+ * @version $Id: Casting.java,v 1.82 2006-01-12 13:40:22 ernst Exp $
  */
 
 import java.util.*;
@@ -558,6 +558,7 @@ public class Casting {
                 try {
                     res = Double.valueOf("" + i).intValue();
                 } catch (NumberFormatException ex) {
+
                     // try if the value is a string representing a boolean.
                     if(i instanceof String){
                         if(((String)i).toLowerCase().equals(("true"))){
@@ -659,6 +660,10 @@ public class Casting {
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
         } else if (i != null) {
+            if(i instanceof String){
+                if(((String)i).toLowerCase().equals("true")) return 1;
+                if(((String)i).toLowerCase().equals("false")) return 0;
+            }
             try {
                 res = Long.parseLong("" + i);
             } catch (NumberFormatException e) {
@@ -707,6 +712,12 @@ public class Casting {
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
         } else if (i != null) {
+            if(i instanceof String){
+                if(((String)i).toLowerCase().equals("true")){
+                    res = 1;
+                }else
+                if(((String)i).toLowerCase().equals("false")) res = 0;
+            }
             try {
                 res = Float.parseFloat("" + i);
             } catch (NumberFormatException e) {
