@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BridgeCollections.java,v 1.2 2005-12-27 22:11:31 michiel Exp $
+ * @version $Id: BridgeCollections.java,v 1.3 2006-01-12 10:55:33 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -141,7 +141,7 @@ public abstract class BridgeCollections {
         final BridgeList parent ; // just to expose properties to sublists.
 
         UnmodifiableBridgeList() {
-            c = Collections.EMPTY_LIST;
+            c = EMPTY_BRIDGELIST;
             parent = null;
         }
 	UnmodifiableBridgeList(BridgeList c) {
@@ -265,20 +265,21 @@ public abstract class BridgeCollections {
     static class EmptyBridgeList extends UnmodifiableBridgeList {
         EmptyBridgeList() {
         }
-        public int size() { return 0;}
-        public boolean isEmpty() { return true;}
-        public boolean contains(Object o) {return false;}
-        public boolean containsAll(Collection col) {return col.isEmpty();}
-        public Object[] toArray() { return new Object[] {};}
+        private static final Object[] EMPTY = new Object[] {};
+        public final int size() { return 0;}
+        public final boolean isEmpty() { return true;}
+        public final boolean contains(Object o) {return false;}
+        public final boolean containsAll(Collection col) {return col.isEmpty();}
+        public final Object[] toArray() { return EMPTY;}
         public String toString() {return "[]";}
-        public ListIterator listIterator(int c) { return Collections.EMPTY_LIST.listIterator(c); }
+        public final ListIterator listIterator(int c) { return Collections.EMPTY_LIST.listIterator(c); }
     }
 
     static class EmptyNodeList extends EmptyBridgeList implements NodeList {
-        public Node getNode(int index) {
+        public final Node getNode(int index) {
 	    throw new IndexOutOfBoundsException("Index: "+index);
         }
-        public NodeIterator nodeIterator() {
+        public final NodeIterator nodeIterator() {
 	    return new UnmodifiableNodeIterator(null) {
                     public boolean hasNext() {return false;}
                     public boolean hasPrevious() {return false;}
