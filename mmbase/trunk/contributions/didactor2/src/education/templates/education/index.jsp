@@ -283,7 +283,7 @@
                      <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
 
                      <%-- determine if we may show this learnobject and its children --%>
-                     <mm:import id="mayshow"><di:getsetting component="education" setting="showlo" arguments="$previousnumber" /></mm:import>
+                     <mm:import id="mayshow"><di:getvalue component="education" name="showlo" arguments="$previousnumber" /></mm:import>
 
                      <%-- if 'showlo' is 0, then we may not show the subtree, so we ignore everything with a depth HIGHER than the current depth --%>
                      <mm:compare referid="mayshow" value="0">
