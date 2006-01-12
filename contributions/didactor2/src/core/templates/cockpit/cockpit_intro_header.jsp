@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
     <mm:write referid="extraheader" escape="none" />
   </head>
-  <body <mm:write referid="extrabody" escape="none" />>
+  <body class="componentbody" <mm:write referid="extrabody" escape="none" />>
    <div>
       <mm:treeinclude page="/cockpit/applicationbarcockpit.jsp" objectlist="$includePath" referids="$referids"/>
       <mm:treeinclude page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids" />
