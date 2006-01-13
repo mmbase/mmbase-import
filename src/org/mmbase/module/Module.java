@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.72 2005-11-04 17:18:23 michiel Exp $
+ * @version $Id: Module.java,v 1.73 2006-01-13 15:42:10 pierre Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -338,7 +338,7 @@ public abstract class Module extends FunctionProvider {
      *
      *
      * @param name the name of the module to retrieve
-     * @param startOnLoad whetehr to make sure the module has been started or not.
+     * @param startOnLoad if true, the code makes sure the module has been started
      * @return a reference to a <code>Module</code>, or <code>null</code> if the
      *      module does not exist or is inactive.
      */
