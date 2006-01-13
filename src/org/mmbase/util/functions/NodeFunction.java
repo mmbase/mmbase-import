@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.19 2005-12-18 00:16:15 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.20 2006-01-13 15:37:24 pierre Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -33,7 +33,6 @@ import org.mmbase.util.logging.Logging;
 public abstract class NodeFunction extends AbstractFunction {
 
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
-
 
     /**
      * Utility function, for easy call of function on node by one string.
@@ -66,11 +65,10 @@ public abstract class NodeFunction extends AbstractFunction {
         return functionName;
     }
 
-
-
     public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
         super(name, getNodeParameterDef(def), returnType);
     }
+
     protected static Parameter[] getNodeParameterDef(Parameter[] def) {
         List defList = Arrays.asList(def);
         if (defList.contains(Parameter.NODE) && defList.contains(Parameter.CLOUD)) {
@@ -110,9 +108,9 @@ public abstract class NodeFunction extends AbstractFunction {
                 if (cloud == null) {
                     throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
                 }
-            }         
+            }
             if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
-                node = new org.mmbase.bridge.implementation.VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud); 
+                node = new org.mmbase.bridge.implementation.VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
             } else {
                 int number = coreNode.getNumber();
                 if (number == -1) {
@@ -130,7 +128,7 @@ public abstract class NodeFunction extends AbstractFunction {
                             Map.Entry entry = (Map.Entry) i.next();
                             virtual.storeValue((String) entry.getKey(), entry.getValue());
                         }
-                        node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud); 
+                        node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud);
                     }
                 } else {
                     if (cloud.mayRead(number)) {

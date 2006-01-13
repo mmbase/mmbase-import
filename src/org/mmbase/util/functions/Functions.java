@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.11 2005-12-10 11:47:42 michiel Exp $
+ * @version $Id: Functions.java,v 1.12 2006-01-13 15:37:24 pierre Exp $
  */
 public class Functions {
 
@@ -39,19 +39,11 @@ public class Functions {
         Parameters a;
         if (args instanceof Parameters) {
             a = (Parameters) args;
-            // checking whether two Parameters instances match won't work in some cases
-            /*
-            Parameter[] resolvedDef = (Parameter[]) define(def, new ArrayList()).toArray(new Parameter[0]); // resolve the wrappers
-            if ( ! Arrays.equals(a.definition, resolvedDef))  {
-                throw new IllegalArgumentException("Given parameters '" + args + "' has other definition. ('" + Arrays.asList(a.definition) + "')' incompatible with '" + Arrays.asList(def) + "')");
-            }
-            */
         } else {
             a = new Parameters(def, args);
         }
         return a;
     }
-
 
     /**
      * Adds the definitions to a List. Resolves the {@link Parameter.Wrapper}'s (recursively).
@@ -143,24 +135,6 @@ public class Functions {
                         if (log.isDebugEnabled()) {
                             log.debug("Found a function definition '" + name + "' in " + clazz + " with parameters " + Arrays.asList(params));
                         }
-                        // This is a but ugly, but needed for backward compatibility:
-                        // Add the node parameter if it is not yet exists and the class is an ObjectBuilder.
-                        // This code will be removed in the future
-                        /*
-                        if (MMObjectBuilder.class.isAssignableFrom(clazz)) {
-                            Parameter nodeParameter = new Parameter("node", Object.class);
-                            boolean hasNodeParameter = false;
-                            for (int j = 0; !hasNodeParameter && j<params.length; j++) {
-                                hasNodeParameter = params[j].equals(nodeParameter);
-                            }
-                            if (!hasNodeParameter) {
-                                Parameter[] params2 = new Parameter[params.length + 1];
-                                System.arraycopy(params, 0, params2, 0, params.length);
-                                params2[params.length] = nodeParameter;
-                                params = params2;
-                            }
-                        }
-                        */
                         map.put(name, params);
                     } catch (IllegalAccessException iae) {
                         // should not be thrown!
@@ -173,9 +147,7 @@ public class Functions {
         if (sup != null) {
             getParameterDefinitonsByReflection(sup, map);
         }
-
         return map;
-
     }
 
 }
