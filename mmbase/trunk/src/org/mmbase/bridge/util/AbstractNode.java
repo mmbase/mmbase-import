@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implemenation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.4 2006-01-01 21:45:19 nklasens Exp $
+ * @version $Id: AbstractNode.java,v 1.5 2006-01-13 14:28:11 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -712,7 +712,7 @@ public abstract class AbstractNode implements Node {
         }
         return new WrappedFunction(function) {
                 public final Object getFunctionValue(Parameters params) {
-                    params.set(Parameter.NODE, AbstractNode.this);
+                    params.setIfDefined(Parameter.NODE, AbstractNode.this);
                     params.set(Parameter.CLOUD, AbstractNode.this.getCloud());
                     return AbstractNode.this.createFunctionValue(super.getFunctionValue(params)).get();
 
