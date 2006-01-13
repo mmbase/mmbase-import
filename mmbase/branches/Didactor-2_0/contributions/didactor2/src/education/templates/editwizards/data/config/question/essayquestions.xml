@@ -6,7 +6,8 @@
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
-    <title>Essay question Editor</title>
+    <title xml:lang="en">Essay question Editor</title>
+    <title xml:lang="nl">Poging vrag redacteur </title>
 
 
     <action type="create">
@@ -26,7 +27,6 @@
 
     <action type="delete" />
 
-
     <lists>
         <optionlist include="config/option_list/boolean.xml" />
         <optionlist name="layout">
@@ -41,9 +41,11 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Essay question invoeren</title>
+        <title xml:lang="en">Essay question editor</title>
+        <title xml:lang="nl">Poging vrag  invoeren</title>
         <field name="title" >
-            <prompt>Titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
+            <prompt xml:lang="nl">Titel</prompt>
         </field>
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
@@ -51,18 +53,22 @@
            <optionlist select="boolean" />
         </field> 
         <field name="text" ftype="html" dtminlength="0">
-            <prompt>Tekst</prompt>
+            <prompt xml:lang="en">Text</prompt>
+            <prompt xml:lang="nl">Tekst</prompt>
         </field>
         <field name="layout" ftype="enum">
-            <prompt>Layout</prompt>
+            <prompt xml:lang="en">Layout</prompt>
+            <prompt xml:lang="nl">Lay-out</prompt>
             <optionlist select="layout" />
         </field>
 
         <list destination="openanswers" role="related" ordertype="number" orderby="number">
-            <title>Bijbehorende antwoorden (niet verplicht)</title>
+            <title xml:lang="en">Related answer</title>
+            <title xml:lang="nl">Bijbehorende antwoorden (niet verplicht)</title>
             <item>
                 <field name="text" ftype="line">
-                    <prompt>Tekst</prompt>
+                    <prompt xml:lang="en">Text</prompt>
+                    <prompt xml:lang="nl">Tekst</prompt>
                     <description>De antwoord tekst</description>
                 </field>
             </item>
@@ -93,4 +99,5 @@
     </form-schema>
 
     &extra_schemas;
+
 </wizard-schema>
