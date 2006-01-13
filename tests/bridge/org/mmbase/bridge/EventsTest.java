@@ -35,12 +35,7 @@ public class EventsTest extends BridgeTest {
                 public void notify(Event e) {
                     events.add(e);
                 }
-                public Properties getConstraintsForEvent(Event e) {
-                    return null;
-                }
-
             };
-
 
         Thread thread1 = new Thread() {
                 public void run() {
