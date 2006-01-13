@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.21 2006-01-02 16:17:18 michiel Exp $
+ * @version $Id: Parameters.java,v 1.22 2006-01-13 15:37:24 pierre Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -243,7 +243,6 @@ public class Parameters extends AbstractList implements java.io.Serializable {
         return indexOfParameter(parameter) != -1;
     }
 
-
     /**
      * Checks wether a certain parameter is available, using the parameter name as a qualifier.
      * @param parameterName the name of the parameter
@@ -252,6 +251,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
     public boolean containsParameter(String parameterName) {
         return indexOfParameter(parameterName) != -1;
     }
+
     /**
      * Sets the value of a parameter.
      * @param parameter the Parameter describing the parameter to set
@@ -267,6 +267,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
             throw new IllegalArgumentException("The parameter '" + parameter + "' is not defined (defined are " + toString() + ")");
         }
     }
+
     /**
      * Sets the value of a parameter.
      * @param parameterName the name of the parameter to set
@@ -294,6 +295,7 @@ public class Parameters extends AbstractList implements java.io.Serializable {
         }
         return this;
     }
+
     /**
      * Copies all values of a collection to the corresponding values of this Parameters Object.
      */
