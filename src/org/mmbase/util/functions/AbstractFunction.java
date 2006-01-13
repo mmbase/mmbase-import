@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.9 2005-10-18 21:51:30 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.10 2006-01-13 15:37:24 pierre Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -33,7 +33,6 @@ abstract public class AbstractFunction implements Function, Comparable {
 
     private Parameter[] parameterDefinition;
     private String     description;
-
 
     /**
      * Constructor for Function objects.
