@@ -11,8 +11,8 @@ import java.util.Properties;
 
 /**
  * This class is a wrapper for node event listeners that only want to listen to
- * events from a specific builder.
- * 
+ * events concerning a specific builder.
+ *
  * @author Ernst Bunders
  * @since MMBase-1.8
  */
@@ -29,26 +29,16 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
     public TypedNodeEventListenerWrapper(String nodeType, NodeEventListener listener) {
         this.nodeType = nodeType;
         wrappedListener = listener;
-
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.core.event.NodeEventListener#fire(org.mmbase.core.event.NodeEvent)
      */
     public void notify(NodeEvent event) {
         if(event.getBuilderName().equals(nodeType))
             wrappedListener.notify(event);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
-     */
-    public Properties getConstraintsForEvent(Event event) {
-        return null;
     }
 
     public String toString() {

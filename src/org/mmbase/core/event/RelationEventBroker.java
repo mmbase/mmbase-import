@@ -13,7 +13,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * This class is the event broker implementation for the RelationEvent
- * 
+ *
  * @author Ernst Bunders
  * @since MMBase-1.8
  */
@@ -29,7 +29,7 @@ public class RelationEventBroker extends AbstractEventBroker {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see event.AbstractEventBroker#canBrokerFor(event.EventListener)
      */
     public boolean canBrokerForListener(EventListener listener) {
@@ -41,7 +41,7 @@ public class RelationEventBroker extends AbstractEventBroker {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
     public boolean canBrokerForEvent(Event event) {
@@ -50,31 +50,14 @@ public class RelationEventBroker extends AbstractEventBroker {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see event.AbstractEventBroker#notifyEventListener(event.Event,
      *      event.EventListener)
      */
     protected void notifyEventListener(Event event, EventListener listener) throws ClassCastException {
         RelationEvent re = (RelationEvent) event;
         RelationEventListener rel = (RelationEventListener) listener;
-        Properties p = rel.getConstraintsForEvent(re);
-
-        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(re.getNodeEvent().getBuilderName());
-        if (builder.broadcastChanges()) {
-            if (p != null) {
-                String nodeType = p.getProperty(PROPERTY_NODETYPE);
-                if (nodeType.equals(re.getRelationSourceType())
-                    || nodeType.equals(re.getRelationDestinationType())) {
-                    rel.notify(re);
-                } else {
-                    log.debug("the constraints set by " + rel + " were not met by event " + re);
-                }
-            } else {
-                // no constraints
-                rel.notify(re);
-            }
-        }
-
+        rel.notify(re);
     }
 
 }
