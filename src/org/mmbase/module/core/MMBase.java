@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.174 2006-01-02 22:36:22 michiel Exp $
+ * @version $Id: MMBase.java,v 1.175 2006-01-13 17:37:30 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1040,6 +1040,7 @@ public class MMBase extends ProcessorModule {
             // register the loading of this builder
             loading.add(builderName);
             BuilderReader parser = getBuilderReader(ipath + builderName);
+            if (parser == null) return null;
             String status = parser.getStatus();
             if (status.equals("active")) {
                 log.info("Starting builder: " + builderName);
