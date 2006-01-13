@@ -12,12 +12,12 @@
 
           <%-- folder is open --%>
           <mm:compare referid="currentchatlog" referid2="chatlog">
-            <img src="<mm:treefile page="/chat/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="chat.folderopened" />"/>
+            <img src="<mm:treefile page="/chat/gfx/mapopen.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="chat.folderopened" />" alt="<di:translate key="chat.folderopened" />"/>
           </mm:compare>
 
           <%-- folder is closed --%>
           <mm:compare referid="currentchatlog" referid2="chatlog" inverse="true">
-            <img src="<mm:treefile page="/chat/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate key="chat.folderclosed" />"/>
+            <img src="<mm:treefile page="/chat/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="chat.folderclosed" />" alt="<di:translate key="chat.folderclosed" />"/>
           </mm:compare>
 
           <mm:import id="tempday" jspvar="tempDay" reset="true"><mm:field name="date"/></mm:import>

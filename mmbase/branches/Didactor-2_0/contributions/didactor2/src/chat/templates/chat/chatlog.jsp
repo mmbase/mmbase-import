@@ -30,7 +30,7 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_chatlog.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="chatverslag" /> <di:translate key="chat.chatlogtitle" />
+    <img src="<mm:treefile write="true" page="/gfx/icon_chatlog.gif" objectlist="$includePath" />" width="25" height="13" border="0" title="chatverslag" alt="chatverslag" /> <di:translate key="chat.chatlogtitle" />
   </div>
 </div>
 
@@ -88,13 +88,13 @@
 		            <mm:param name="callerpage">/chat/chatlog.jsp</mm:param>
 		            <mm:param name="typeof">1</mm:param>
 		     </mm:treefile>">
-      <img src="<mm:treefile page="/chat/gfx/mydocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="chat.addchatlogpersonal" />"/></a>
+      <img src="<mm:treefile page="/chat/gfx/mydocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="chat.addchatlogpersonal" />" alt="<di:translate key="chat.addchatlogpersonal" />"/></a>
     <a href="<mm:treefile page="/workspace/addchatlog.jsp" objectlist="$includePath" referids="$referids">
  	  	            <mm:param name="currentchatlog"><mm:write referid="chatlog"/></mm:param>
   		            <mm:param name="callerpage">/chat/chatlog.jsp</mm:param>
   		            <mm:param name="typeof">2</mm:param>
   		     </mm:treefile>">
-      <img src="<mm:treefile page="/chat/gfx/shareddocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<di:translate key="chat.addchatlogpublic" />"/></a>
+      <img src="<mm:treefile page="/chat/gfx/shareddocs.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="chat.addchatlogpublic" />" alt="<di:translate key="chat.addchatlogpublic" />"/></a>
     </mm:node>
   </div>
 
