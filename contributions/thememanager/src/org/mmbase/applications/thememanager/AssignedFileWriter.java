@@ -13,6 +13,8 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -35,8 +37,14 @@ public class AssignedFileWriter  {
 
         body+="</assigned>\n";
 
-        String filename = MMBaseContext.getConfigPath()+File.separator+"thememanager"+File.separator+"assigned.xml";
-        saveFile(filename,body);
+        try {                
+		Writer wr = ResourceLoader.getConfigurationRoot().getWriter("thememanager/assigned.xml");
+                wr.write(body);
+                wr.flush();
+                wr.close();
+        } catch(Exception e) {
+                e.printStackTrace();
+        }
 	return true;
     }
 
@@ -51,19 +59,6 @@ public class AssignedFileWriter  {
 	      result+=" />\n";
 	}
 	return result;
-    }
-
-    static boolean saveFile(String filename,String value) {
-        File sfile = new File(filename);
-        try {
-            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
-            scan.writeBytes(value);
-            scan.flush();
-            scan.close();
-        } catch(Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
-        return true;
     }
 
 }

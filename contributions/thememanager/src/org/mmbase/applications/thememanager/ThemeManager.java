@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.thememanager;
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 import java.io.*;
 import java.util.*;
 import org.mmbase.util.*;
@@ -72,11 +73,9 @@ public class ThemeManager {
 
     public static void readThemes() {
        themes=new HashMap();
-       String filename = MMBaseContext.getConfigPath()+File.separator+"thememanager"+File.separator+"themes.xml";
-
-        File file = new File(filename);
-        if(file.exists()) {
-            	XMLBasicReader reader = new XMLBasicReader(filename,ThemeManager.class);
+		try {
+	        InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("thememanager/themes.xml");
+                DocumentReader reader = new DocumentReader(is,ThemeManager.class);
             	if(reader!=null) {
 			// decode themes
             		for(Iterator ns=reader.getChildElements("themes","theme");ns.hasNext(); ) {
@@ -102,19 +101,17 @@ public class ThemeManager {
 			}
 		}
 
-	} else {
-            log.error("missing themes file : "+filename);
+	} catch (Exception e) {
+            log.error("missing themes file ");
 	}
     }
 
 
     public static void readAssigned() {
-       assigned=new HashMap();
-       String filename = MMBaseContext.getConfigPath()+File.separator+"thememanager"+File.separator+"assigned.xml";
-
-        File file = new File(filename);
-        if(file.exists()) {
-            	XMLBasicReader reader = new XMLBasicReader(filename,ThemeManager.class);
+        assigned=new HashMap();
+        try {
+       		InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("thememanager/assigned.xml");
+                DocumentReader reader = new DocumentReader(is,ThemeManager.class);
             	if(reader!=null) {
 			// decode assigned 
             		for (Iterator ns=reader.getChildElements("assigned","assign");ns.hasNext(); ) {
@@ -139,8 +136,8 @@ public class ThemeManager {
 			}
 		}
 
-	} else {
-            log.error("missing assigned file : "+filename);
+	} catch (Exception e) {
+            log.error("missing assigned file");
 	}
     }
 
