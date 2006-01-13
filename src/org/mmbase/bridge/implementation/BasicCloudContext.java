@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.47 2005-12-08 12:43:35 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.48 2006-01-13 15:44:30 pierre Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -207,7 +207,7 @@ public class BasicCloudContext implements CloudContext {
     }
 
     public boolean isUp() {
-        return mmb != null && mmb.getState() && check();        
+        return mmb != null && mmb.getState() && check();
     }
 
 }

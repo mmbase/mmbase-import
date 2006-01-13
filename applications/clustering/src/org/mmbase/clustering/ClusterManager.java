@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.17 2006-01-02 12:54:55 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.18 2006-01-13 15:44:30 pierre Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable{
 
@@ -62,11 +62,11 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
      * Subclasses should start the communication threads in this method
      */
     protected abstract void startCommunicationThreads();
+
     /**
      * Subclasses should stop the communication threads in this method
      */
     protected abstract void stopCommunicationThreads();
-
 
     public void notify(Event event){
         //we only want to propagate the local events into the cluster
@@ -74,15 +74,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
             byte[] message = createMessage(event);
             nodesToSend.append(message);
         }
-    }
-
-
-
-    /* (non-Javadoc)
-     * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
-     */
-    public Properties getConstraintsForEvent(Event event) {
-        return null;
     }
 
     /**
@@ -96,6 +87,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
             startCommunicationThreads();
         }
     }
+
     protected byte[] createMessage(Event event) {
         if (log.isDebugEnabled()) {
             log.debug("Serializing " + event);
@@ -111,6 +103,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
         }
 
     }
+
     protected Event parseMessage(byte[] message) {
         try {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(message));
@@ -168,7 +161,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
         } else log.error(message + ": 'machine' could not be extracted from this string!");
         return null;
     }
-
 
     /**
      * @see java.lang.Runnable#run()

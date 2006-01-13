@@ -29,15 +29,13 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.148 2006-01-09 12:18:49 johannes Exp $
+ * @version $Id: BasicCloud.java,v 1.149 2006-01-13 15:44:29 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, java.io.Serializable {
-    
+
     private static final long serialVersionUID = 1;
 
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
-
-    private Map properties = new HashMap();
 
     // lastRequestId
     // used to generate a temporary ID number
@@ -67,17 +65,18 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     // node managers cache
     protected Map nodeManagerCache = new HashMap();
 
-
     MMBaseCop mmbaseCop = null;
 
     protected UserContext userContext = null;
 
+    private Map properties = new HashMap();
 
     private Locale locale;
 
     public int getByteSize() {
         return getByteSize(new SizeOf());
     }
+
     public int getByteSize(SizeOf sizeof) {
         return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache);
     }
@@ -308,7 +307,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         }
         return nodeManager;
     }
-    
+
     BasicNodeManager getBasicNodeManager(String nodeManagerName) throws NotFoundException {
         MMObjectBuilder bul = BasicCloudContext.mmb.getMMObject(nodeManagerName);
         // always look if builder exists, since otherwise

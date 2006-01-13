@@ -26,7 +26,7 @@ import org.mmbase.bridge.Node;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.10 2006-01-03 10:01:41 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.11 2006-01-13 15:44:30 pierre Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -203,32 +203,28 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     public void notify(NodeEvent event) {
         String number = "" + event.getNodeNumber();
         switch(event.getType()) {
-        case NodeEvent.EVENT_TYPE_DELETE: {
-            // hard..
-            String name = (String) nodeNumberToResourceName.get(number);
-            if (name != null && resources.contains(name)) {
-                nodeNumberToResourceName.remove(number);
-                log.service("Resource " + name + " changed (node removed)");
-                onChange(name);
+            case NodeEvent.EVENT_TYPE_DELETE: {
+                // hard..
+                String name = (String) nodeNumberToResourceName.get(number);
+                if (name != null && resources.contains(name)) {
+                    nodeNumberToResourceName.remove(number);
+                    log.service("Resource " + name + " changed (node removed)");
+                    onChange(name);
+                }
+                break;
             }
-            break;
-        }
-        default: {            
-            Node node = ResourceLoader.resourceBuilder.getCloud().getNode(number);
-            int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
-            String name = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
-            if (name.length() > contextPrefix && resources.contains(name.substring(contextPrefix))) {
-                log.service("Resource " + name + " changed (node added)");
-                nodeNumberToResourceName.put(number, name);
-                onChange(name);
+            default: {
+                Node node = ResourceLoader.resourceBuilder.getCloud().getNode(number);
+                int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
+                String name = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
+                if (name.length() > contextPrefix && resources.contains(name.substring(contextPrefix))) {
+                    log.service("Resource " + name + " changed (node added)");
+                    nodeNumberToResourceName.put(number, name);
+                    onChange(name);
+                }
             }
-        }
         }
     }
-    public Properties getConstraintsForEvent(Event event) {
-        return null;
-    }
-
 
     public synchronized void start() {
         // create and start all filewatchers.
@@ -244,7 +240,6 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         }
         running = true;
     }
-
 
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
