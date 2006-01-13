@@ -16,10 +16,8 @@
       </div>
     </div>
     <div class="contentBody">
-      <div class="topRow">
-        <iframe  top="0" class="framemedia" frameborder="0" name="media" src="<mm:treefile page="/virtualclassroom/frontoffice/media/index.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>      
-        <iframe class="framechat" frameborder="0" name="chat" src="<mm:treefile page="/virtualclassroom/frontoffice/chat/chat.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
-      </div>
+      <div class="leftHalfRow"><mm:treeinclude page="/virtualclassroom/frontoffice/media/index.jsp" objectlist="$includePath" referids="$referids"/></div>      
+      <div class="rightHalfRow"><mm:treeinclude page="/virtualclassroom/frontoffice/chat/chat.jsp" objectlist="$includePath" referids="$referids"/></div>
       <div class="bottomRow">
         <iframe class="frameworkspace" frameborder="0" name="workspace" src="<mm:treefile page="/virtualclassroom/frontoffice/workspace/workspace.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
       </div>

@@ -9,7 +9,7 @@
                   urlFieldStr.toLowerCase().endsWith(".mpg"))) { 
          doPlay=false;
     %>
-         <object id="video" width="450" height="350" 
+         <object id="video" width="100%" height="100%" 
            classid="clsid:6bf52a52-394a-11d3-b153-00c04f79faa6"
            type="application/x-oleobject">
            <param name="url" value="<mm:field name="url"/>"/>
@@ -19,6 +19,7 @@
            <param name="playcount" value="1"/>
            <param name="showdisplay" value="false"/>
            <param name="showstatusbar" value="false"/>
+           <param name="stretchToFit" value="true"/>
            <param name="autosize" value="true"/>
              <embed type="application/x-mplayer2"
                pluginspage="http://www.microsoft.com/windows/windowsmedia/download/"
@@ -29,8 +30,11 @@
                ShowDisplay=0
                AutoStart=0
                ShowStatusBar=0
-               width=450
-               height=350/>
+               Autosize=1
+               sendplaystatechangeevents=1
+               stretchToFit=1
+               width="100%"
+               height="100%"/>
              </embed>    
          </object>
     <%}%>
@@ -44,11 +48,11 @@
         <object id="shell_object" name="shell.swf" 
           classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" 
           codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab#version=8,0,22,0" 
-          width="450" height="350"> 
+          width="100%" height="100%"> 
           <param name="movie" value="<mm:attachment/>" /> 
           <param name="quality" value="high" /> 
           <param name="menu" value="0" /> 
-          <param name="bgcolor" value="#ffffff" /> 
+          <param name="bgcolor" value="#000000" /> 
           <param name=FlashVars value="loc=en_US" /> 
             <embed id="shell_object" 
               name="shell.swf" 
@@ -56,10 +60,10 @@
               src="<mm:attachment/>" 
               flashvars="loc=en_US" 
               quality="high" 
-              bgcolor="#FFFFFF" 
+              bgcolor="#000000" 
               menu="0" 
-              width="450" 
-              height="350" 
+              width="100%" 
+              height="100% 
               pluginspage="http://www.macromedia.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash&P2_Platform=Win32&P5_Language=English">
             </embed> 
         </object> 
