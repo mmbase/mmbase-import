@@ -8,24 +8,39 @@
   <!-- Set applet parameters -->
   <mm:import id="jabchaturl"><%=request.getContextPath()%>/virtualclassroom/frontoffice/chat/jabApplet.jar</mm:import>
   <mm:import id="jabchatcode">nl.stivoro.jabchat.JabberApplet</mm:import>
-  <mm:import id="jabchatheight">376</mm:import>
-  <mm:import id="jabchatwidth">590</mm:import>
+  <mm:import id="jabchatheight">100%</mm:import>
+  <mm:import id="jabchatwidth">100%</mm:import>
   <mm:import id="jabchatalttext"><di:translate key="virtualclassroom.jabchatalttext"/></mm:import>
   <mm:import id="jabchatroomname"><di:translate key="virtualclassroom.classroom"/></mm:import>
   <mm:import id="jabchatbgdclr">0xFFFFFF</mm:import> 
+  <mm:import id="finaluserlist"><%=userList.trim()%></mm:import> 
+  <mm:import id="finalrolelist"><%=roleList.trim()%></mm:import> 
   <!-- Set applet parameters -->
-  <APPLET
-    CODE="<mm:write referid="jabchatcode" />"
-    CODEBASE="<%=request.getServerName()%>"
-    ARCHIVE="<mm:write referid="jabchaturl" />"
-    WIDTH="<mm:write referid="jabchatwidth" />"
-    HEIGHT="<mm:write referid="jabchatheight" />"
-    ALT="<mm:write referid="jabchatalttext" />">
+  <!--[if !IE]>-->
+  <object classid="java:<mm:write referid="jabchatcode"/>.class" 
+    type="application/x-java-applet"
+    archive="<mm:write referid="jabchaturl"/>" 
+    height="<mm:write referid="jabchatwidth"/>"
+    width="<mm:write referid="jabchatwidth"/>"> 
     <param name=uname value="<mm:write referid="username" />">
     <param name=rooms value="<mm:write referid="jabchatroomname" />">
     <param name=bgdclr value="<mm:write referid="jabchatbgdclr" />">
-    <param name=buddies value="<%=userList.trim()%>">
-    <param name=roles value="<%=roleList.trim()%>">
-  </APPLET>
+    <param name=buddies value="<mm:write referid="finaluserlist" />">
+    <param name=roles value="<mm:write referid="finalrolelist" />">                
+  <!--<![endif]-->
+      <object classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" 
+        height="<mm:write referid="jabchatwidth"/>"
+        width="<mm:write referid="jabchatwidth"/>"> 
+        <param name="code" value="<mm:write referid="jabchatcode"/>"/>
+        <param name="archive" value="<mm:write referid="jabchaturl"/>"/>
+        <param name=uname value="<mm:write referid="username"/>">
+        <param name=rooms value="<mm:write referid="jabchatroomname"/>">
+        <param name=bgdclr value="<mm:write referid="jabchatbgdclr"/>">
+        <param name=buddies value="<mm:write referid="finaluserlist" />">
+        <param name=roles value="<mm:write referid="finalrolelist" />">         
+      </object> 
+  <!--[if !IE]>-->
+  </object>
+  <!--<![endif]-->
 </mm:cloud>
 </mm:content>
