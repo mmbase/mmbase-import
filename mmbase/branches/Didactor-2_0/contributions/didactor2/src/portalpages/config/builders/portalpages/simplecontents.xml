@@ -151,7 +151,7 @@
         <!-- name of the field in the database -->
         <name>online_date</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent"  notnull="false" size="55" key="false">LONG</type>
+        <type state="persistent"  notnull="false" key="false">LONG</type>
       </db>
     </field>    
     <!-- POS 8 : <field> 'offline_date'  -->
@@ -183,7 +183,7 @@
         <!-- name of the field in the database -->
         <name>offline_date</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="persistent"  notnull="false" size="55" key="false">LONG</type>
+        <type state="persistent" notnull="false" key="false">LONG</type>
       </db>
     </field>   
     
