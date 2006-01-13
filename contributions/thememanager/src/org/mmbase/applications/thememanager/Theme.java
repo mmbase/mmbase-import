@@ -14,9 +14,10 @@ import java.lang.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 import org.mmbase.module.core.*;
-
+import org.mmbase.util.xml.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logging;
@@ -111,11 +112,9 @@ public class Theme {
        stylesheets=new HashMap();
        imagesets=new HashMap();
 
-       String filename = MMBaseContext.getConfigPath()+File.separator+"thememanager"+File.separator+themefilename;
-
-        File file = new File(filename);
-        if (file.exists()) {
-            	XMLBasicReader reader = new XMLBasicReader(filename,Theme.class);
+        try {
+                InputSource ris = ResourceLoader.getConfigurationRoot().getInputSource("thememanager/"+themefilename);
+                DocumentReader reader = new DocumentReader(ris,Theme.class);
             	if(reader!=null) {
 			// decode stylesheets
             		for(Iterator ns=reader.getChildElements("theme","stylesheet");ns.hasNext(); ) {
@@ -188,8 +187,8 @@ public class Theme {
 
 		}
 
-	} else {
-            log.error("missing style file : "+filename);
+	} catch(Exception e) {
+            log.error("missing style file : "+themefilename);
 	}
     }
 
