@@ -25,48 +25,48 @@
     <div class="columnLeft">
     </div>
     <div class="columnMiddle">
-      <h2>Registratie</h2>
+      <h2><di:translate key="register.registration" /></h2>
       <ul>
         <mm:write referid="error" escape="none" />
       </ul>
       <table class="registerTable" border="0">
         <form method="post">
           <tr>
-            <td>Voornaam:</td>
+            <td><di:translate key="register.firstname" />:</td>
             <td><input name="firstname" value="<mm:write referid="firstname" />"/></td>
           </tr>
 
           <tr>
-            <td>Achternaam:</td>
+            <td><di:translate key="register.lastname" />:</td>
             <td><input name="lastname" value="<mm:write referid="lastname" />"/></td>
           </tr>
 
           <tr>
-            <td>Adres:</td>
+            <td><di:translate key="register.address" />:</td>
             <td><input name="address" value="<mm:write referid="address" />"/></td>
           </tr>
 
           <tr>
-            <td>Postcode:</td>
+            <td><di:translate key="register.zipcode" />:</td>
             <td><input name="zipcode" value="<mm:write referid="zipcode" />"/></td>
           </tr>
 
           <tr>
-            <td>Plaats:</td>
+            <td><di:translate key="register.city" />:</td>
             <td><input name="city" value="<mm:write referid="city" />"/></td>
           </tr>
 
           <tr>
-            <td>Email adres:</td>
+            <td><di:translate key="register.email" />:</td>
             <td><input name="email" value="<mm:write referid="email" />"/></td>
           </tr>
 
           <tr>
-            <td>Land:</td>
+            <td><di:translate key="register.country" />:</td>
             <td><input name="country" value="<mm:write referid="country" />"/></td>
           </tr>
           <tr>
-            <td>Opleiding:</td>
+            <td><di:translate key="register.education" />:</td>
             <td>
               <mm:present referid="education">
                 <input type="hidden" name="education" value="<mm:write referid="education" />" />
@@ -107,11 +107,14 @@
               <mm:present referid="provider">
                 <input type="hidden" name="provider" value="<mm:write referid="provider" />" />
               </mm:present>
-              <input type="submit" class="formSubmit" value="verstuur" />
+              <input type="submit" class="formSubmit" value="<di:translate key="register.submit" />" />
             </td>
           </tr>
         </form>
       </table>
+      <p>
+        <di:translate key="register.extra" />
+      </p>
     </div>
     <div class="columnRight">
     </div>
