@@ -56,14 +56,14 @@
               <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
                         referids="$popreferids,currentfolder">
                       <mm:param name="command">detail</mm:param>
-                    </mm:treefile>"><img src="/didactor/pop/gfx/1.gif" width=4 height=13 alt="" border="0" 
+                    </mm:treefile>"><img src="/didactor/pop/gfx/1.gif" width=4 height=13 title="" alt="" border="0" 
                                       /><img src="/didactor/pop/gfx/2.gif" width=<%= progress %> height=13 
-                                      alt="<di:translate key="pop.gototestrelults" />" border="0" 
-                                      /><img src="/didactor/pop/gfx/3.gif" width=2 height=13 alt="" 
+                                      title="<di:translate key="pop.gototestrelults" />"  alt="<di:translate key="pop.gototestrelults" />" border="0" 
+                                      /><img src="/didactor/pop/gfx/3.gif" width=2 height=13 title="" alt="" 
                                       border="0" /><img src="/didactor/pop/gfx/4.gif" 
                                       width=<%= 100-progress.doubleValue() %> height=13 
-                                      alt="<di:translate key="pop.gototestrelults" />" border="0" 
-                                      /><img src="/didactor/pop/gfx/5.gif" width=2 height=13 alt="" 
+                                      title="<di:translate key="pop.gototestrelults" />" alt="<di:translate key="pop.gototestrelults" />" border="0" 
+                                      /><img src="/didactor/pop/gfx/5.gif" width=2 height=13 title="" alt="" 
                                       border="0" /></a><mm:write referid="progress"/>%
           </td>
           <td class="listItem">
@@ -126,14 +126,14 @@
                         referids="$popreferids,currentfolder">
                       <mm:param name="command">detail</mm:param>
                       <mm:param name="direct_connection">true</mm:param>
-                    </mm:treefile>"><img src="/didactor/pop/gfx/1.gif" width=4 height=13 alt="" border="0" 
+                    </mm:treefile>"><img src="/didactor/pop/gfx/1.gif" width=4 height=13 title="" alt="" border="0" 
                                       /><img src="/didactor/pop/gfx/2.gif" width=<%= progress %> height=13 
-                                      alt="<di:translate key="pop.gototestrelults" />" border="0" 
-                                      /><img src="/didactor/pop/gfx/3.gif" width=2 height=13 alt="" 
+                                      title="<di:translate key="pop.gototestrelults" />" alt="<di:translate key="pop.gototestrelults" />" border="0" 
+                                      /><img src="/didactor/pop/gfx/3.gif" width=2 height=13 title="" alt="" 
                                       border="0" /><img src="/didactor/pop/gfx/4.gif" 
                                       width=<%= 100-progress.doubleValue() %> height=13 
-                                      alt="<di:translate key="pop.gototestrelults" />" border="0" 
-                                      /><img src="/didactor/pop/gfx/5.gif" width=2 height=13 alt="" 
+                                      title="<di:translate key="pop.gototestrelults" />" alt="<di:translate key="pop.gototestrelults" />" border="0" 
+                                      /><img src="/didactor/pop/gfx/5.gif" width=2 height=13 title="" alt="" 
                                       border="0" /></a><mm:write referid="progress"/>%
           </td>
           <td class="listItem">

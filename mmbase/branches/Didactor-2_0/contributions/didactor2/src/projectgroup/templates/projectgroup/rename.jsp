@@ -52,7 +52,7 @@
 
 <div class="navigationbar">
   <div class="titlebar">
-      <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="workspace.projectgroups" />" />
+      <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" title="<di:translate key="search.sendsearchrequest" />" alt="<di:translate key="workspace.projectgroups" />" />
       <di:translate key="workspace.projectgroups" />
   </div>
 </div>

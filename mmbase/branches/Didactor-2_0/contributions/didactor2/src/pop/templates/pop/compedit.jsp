@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.*" %>
-<mm:content postprocessor="reducespace">
+<mm:content postprocessor="reducespace" escaper="none">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <%@ include file="getids.jsp" %>
@@ -63,11 +63,11 @@
           <br/>
           <a href="#1" onclick="editcompform.command.value='addtodo';editcompform.submit();return false;"
             ><img src="<mm:treefile page="/pop/gfx/icon_add_todo.gif" objectlist="$includePath" referids="$popreferids"/>"
-                border="0" alt="<di:translate key="pop.compeditmakenewtodo"/>" /></a>
+                border="0" title="<di:translate key="pop.compeditmakenewtodo"/>" alt="<di:translate key="pop.compeditmakenewtodo"/>" /></a>
           <a href="#1" onclick="if (!window.confirm('<di:translate key="pop.areyousuredeltodo" />'))
                 return false;editcompform.command.value='deltodo';editcompform.submit();return false;">
             <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
-                border="0" alt="<di:translate key="pop.compeditremoveselectedtodo"/>" /></a>
+                border="0" title="<di:translate key="pop.compeditremoveselectedtodo"/>" alt="<di:translate key="pop.compeditremoveselectedtodo"/>" /></a>
 <br/>
 <br/>
     <mm:relatedcontainer path="popfeedback,pop">
@@ -115,7 +115,7 @@
     </mm:relatedcontainer>
         <a href="#1" onclick="editcompform.command.value='invite';editcompform.submit();return false;">
           <img src="<mm:treefile page="/pop/gfx/icon_invitation.gif" objectlist="$includePath" referids="$popreferids"/>"
-            border="0" alt="<di:translate key="pop.compeditinvitecolleague"/>" /></a>
+            border="0" title="<di:translate key="pop.compeditinvitecolleague"/>" alt="<di:translate key="pop.compeditinvitecolleague"/>" /></a>
     <br/><br/><br/>
     <table width="80%" border="0" class="popGreyTableHeader">
       <tr>
@@ -178,13 +178,13 @@
       </mm:node>
     </mm:compare>
     <br/>
-    <a href="#1" onclick="if (!window.confirm('<di:translate key="pop.areyousuredeldoc" />'))
-        return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
-      <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
-        border="0" alt="<di:translate key="pop.compeditremoveselecteddoc"/>" /></a>
     <a href="#1" onclick="editcompform.command.value='adddoc';editcompform.submit();return false;">
       <img src="<mm:treefile page="/portfolio/gfx/document plaatsen.gif" objectlist="$includePath" referids="$popreferids"/>" 
         border="0" alt="<di:translate key="pop.portfolioadddoc"/>" /></a>
+     <a href="#1" onclick="if (!window.confirm('<di:translate key="pop.areyousuredeldoc" />'))
+        return false;editcompform.command.value='deldocs';editcompform.submit();return false;">
+      <img src="<mm:treefile page="/pop/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$popreferids"/>"
+        border="0" alt="<di:translate key="pop.compeditremoveselecteddoc"/>" /></a>
   </form>
   </mm:node>
 </div>

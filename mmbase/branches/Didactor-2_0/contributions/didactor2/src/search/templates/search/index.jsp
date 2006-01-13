@@ -25,7 +25,7 @@
 <div class="rows">
   <div class="navigationbar">
     <div class="titlebar">
-     <img src="<mm:treefile write="true" page="/gfx/icon_search.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<di:translate key="search.advancedsearch" />" />
+     <img src="<mm:treefile write="true" page="/gfx/icon_search.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" title="<di:translate key="search.advancedsearch" />" alt="<di:translate key="search.advancedsearch" />" />
     <di:translate key="search.advancedsearch" />
     </div>
   </div>
