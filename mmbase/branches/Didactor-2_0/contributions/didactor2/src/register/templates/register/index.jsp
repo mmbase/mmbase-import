@@ -64,24 +64,23 @@
   </mm:compare>
 
   <mm:compare referid="formsubmit" value="true">
-      <%
-        // Generate a 8-character base username, consisting of the first
-   // character of the firstname, and the entire lastname. Strip out
-   // all non-letter characters, and append a number if the account
-   // already exists.
-
-        String uname = firstname.substring(0, 1) + lastname;
-   uname = uname.replaceAll(" ", "").toLowerCase().replaceAll("[^a-z]", "");
-   if (uname.length() > 8) {
-     uname = uname.substring(0, 8);
-   }
-   boolean founduser = false;
-   String constraint = "";
-   for (int i=-1; i<100 && !founduser; i++) {
-     constraint = uname;
-     if (i >= 0) {
-       constraint += i;
-     }
+    <%
+      // Generate a 8-character base username, consisting of the first
+      // character of the firstname, and the entire lastname. Strip out
+      // all non-letter characters, and append a number if the account
+      // already exists.
+      String uname = firstname.substring(0, 1) + lastname;
+      uname = uname.replaceAll(" ", "").toLowerCase().replaceAll("[^a-z]", "");
+      if (uname.length() > 8) {
+        uname = uname.substring(0, 8);
+      }
+      boolean founduser = false;
+      String constraint = "";
+      for (int i=-1; i<100 && !founduser; i++) {
+        constraint = uname;
+        if (i >= 0) {
+          constraint += i;
+        }
      %>
        <mm:listnodescontainer type="people">
          <mm:constraint field="username" operator="EQUAL" value="<%=constraint%>" />
@@ -94,19 +93,19 @@
          <mm:remove referid="peoplecount" />
        </mm:listnodescontainer>
           <%
-   }
+    }
 
-        // Generate a random 6-digit password
-        char[] dict = new char[] {
+    // Generate a random 6-digit password
+    char[] dict = new char[] {
      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
      'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
      'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
-        StringBuffer sb = new StringBuffer();
-        for (int i=0; i<6; i++) {
-          sb.append(dict[(int)(Math.random() * dict.length)]);
-        }
-        String password = sb.toString();
-      %>
+    StringBuffer sb = new StringBuffer();
+    for (int i=0; i<6; i++) {
+      sb.append(dict[(int)(Math.random() * dict.length)]);
+    }
+    String password = sb.toString();
+    %>
 
       <%-- Now create the person, and relate him to the education --%>
       <mm:createnode type="people" id="person">
