@@ -203,6 +203,7 @@
               <xsd:restriction base="xsd:string">
                 <xsd:enumeration value="true" />
                 <xsd:enumeration value="false" />
+                <xsd:enumeration value="implied" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:attribute>

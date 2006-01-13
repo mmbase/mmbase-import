@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.59 2006-01-02 22:37:49 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.60 2006-01-13 15:40:58 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -705,15 +705,16 @@ public class BuilderReader extends DocumentReader {
         String notnull = getElementAttributeValue(dbtype, "notnull"); // default for notnull is value of required
         def.setNotNull("true".equals(notnull) || ((notnull == null || "".equals(notnull)) && def.getDataType().isRequired()));
 
-
         // set unique property, but only if given
         String unique = getElementAttributeValue(dbtype, "unique");
-        if ("true".equalsIgnoreCase(unique)) {
+        if ("implied".equalsIgnoreCase(unique)) {
+            def.getDataType().setUnique(true);
+            def.getDataType().getUniqueRestriction().setEnforceStrength(DataType.ENFORCE_NEVER);
+        } else if ("true".equalsIgnoreCase(unique)) {
             def.getDataType().setUnique(true);
         }
 
         decodeFieldDef(field, def, collector);
-
 
         return def;
     }
