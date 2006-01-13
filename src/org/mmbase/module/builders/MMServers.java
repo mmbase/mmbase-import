@@ -13,6 +13,7 @@ package org.mmbase.module.builders;
 import java.util.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.38 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: MMServers.java,v 1.39 2006-01-13 15:41:42 pierre Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -44,6 +45,23 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     private String osstr;
     private String host;
     private Vector possibleServices = new Vector();
+
+    /**
+     * Function uptime
+     * @since MMBase-1.8
+     */
+    protected Function getUpTime = new AbstractFunction("uptime", Parameter.EMPTY, ReturnType.LONG) {
+            {
+                setDescription("The function 'uptime' returns the uptime of the current server.");
+            }
+            public Object getFunctionValue(Parameters parameters) {
+                int now = (int) (System.currentTimeMillis() / 1000);
+                return new Long(now - MMBase.startTime);
+            }
+        };
+    {
+        addFunction(getUpTime);
+    }
 
     /**
      * @javadoc
@@ -65,10 +83,8 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         } else {
             log.service("ProbeInterval defaults to " + intervalTime / 1000 + " seconds");
         }
-
         start();
         return true;
-
     }
 
     /**
@@ -89,7 +105,6 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             return getGUIIndicator("atime", node);
         } else if (field.equals("uptime")) {
             // The 'node' object is not used, so this info makes only sense for _this_ server.
-
             int now = (int) (System.currentTimeMillis() / 1000);
             int uptime = now - MMBase.startTime;
             return getUptimeString(uptime);
