@@ -44,10 +44,9 @@
             <mm:node id="n_workgroup" number="$chosenworkgroup" />
             <mm:createrelation source="n_student" destination="n_class" role="classrel" />
             <mm:createrelation source="n_student" destination="n_workgroup" role="related" />
-            <mm:createrelation source="n_student" destination="n_education" role="rolerel" id="n_rolerel"/>
             <mm:listnodes type="roles" constraints="roles.name='student'">
               <mm:node id="n_role" />
-              <mm:createrelation source="n_rolerel" destination="n_role" role="related" />
+              <mm:createrelation source="n_student" destination="n_role" role="related" />
               <mm:remove referid="n_role" />
             </mm:listnodes>
 
