@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * This class is the event broker implementation for the NodeEvent
- * 
+ *
  * @author Ernst Bunders
  * @since MMBase-1.8
  */
@@ -32,7 +32,7 @@ public class NodeEventBroker extends AbstractEventBroker {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see event.AbstractEventBroker#canBrokerFor(java.lang.Class)
      */
     public boolean canBrokerForListener(EventListener listener) {
@@ -41,7 +41,7 @@ public class NodeEventBroker extends AbstractEventBroker {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
     public boolean canBrokerForEvent(Event event) {
@@ -50,25 +50,13 @@ public class NodeEventBroker extends AbstractEventBroker {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see event.AbstractEventBroker#notifyEventListeners()
      */
     protected void notifyEventListener(Event event, EventListener listener) {
         NodeEvent ne = (NodeEvent) event; //!!!!!
         NodeEventListener nel = (NodeEventListener) listener;
-        Properties p = nel.getConstraintsForEvent(ne);
-        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(ne.getBuilderName()) ;
-        if (builder != null && builder.broadcastChanges()) {
-            if (p != null) {
-                String nodeType = p.getProperty(PROPERTY_NODETYPE);
-                if (nodeType.equals(builder.getTableName())) {
-                    nel.notify(ne);
-                }
-            } else {
-                // no constraints
-                nel.notify(ne);
-            }
-        }
+        nel.notify(ne);
     }
 
 }

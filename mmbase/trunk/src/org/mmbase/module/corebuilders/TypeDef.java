@@ -21,7 +21,6 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.BuilderReader;
 
-
 /**
  * TypeDef is used to define the* object types (builders).
  * Nodes of this builder have a vitual 'config' field.
@@ -33,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.62 2005-10-11 19:45:04 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.63 2006-01-13 15:44:30 pierre Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -65,15 +64,12 @@ public class TypeDef extends MMObjectBuilder {
      */
     private Vector typedefsLoaded = new Vector();     // Contains the names of all active builders
 
-    public boolean broadcastChanges() {
-        // set broadcasting of changes to false
-        return false;
-    }
     /**
      * Sets the default deploy directory for the builders.
      * @return true if init was completed, false if uncompleted.
      */
     public boolean init() {
+        broadCastChanges = false;
         boolean result = super.init();
         if (defaultDeploy == null) {
             // determine default deploy directory
@@ -82,9 +78,9 @@ public class TypeDef extends MMObjectBuilder {
                 builderDeployDir = "applications";
             }
             defaultDeploy = builderDeployDir;
-	    if (!defaultDeploy.endsWith("/") && !defaultDeploy.endsWith("\\")) {
-		defaultDeploy+="/";
-	    }
+        if (!defaultDeploy.endsWith("/") && !defaultDeploy.endsWith("\\")) {
+        defaultDeploy+="/";
+        }
             log.service("Using '" + defaultDeploy + "' as default deploy dir for our builders.");
         }
         return result;
@@ -399,7 +395,7 @@ public class TypeDef extends MMObjectBuilder {
      * Note that if this node is a node in cache, the changes are immediately visible to
      * everyone, even if the changes are not committed.
      * The fieldname is added to the (public) 'changed' vector to track changes.
-     * @param node 
+     * @param node
      * @param fieldName the name of the field to change
      * @param originalValue the value which was original in the field
      * @return <code>true</code> When an update is required(when changed),
@@ -410,7 +406,7 @@ public class TypeDef extends MMObjectBuilder {
         if (fieldName.equals("name")) {
             // the field with the name 'name' may not be changed.....
             if (originalValue != null && // perhaps legacy, name is null becaue name field was nullable?
-                ! originalValue.equals("") && // name field is 
+                ! originalValue.equals("") && // name field is
                 !originalValue.equals(newValue)) {
                 // restore the original value...
                 node.storeValue(fieldName, originalValue);
@@ -662,9 +658,7 @@ public class TypeDef extends MMObjectBuilder {
                 log.error(sqe);
             }
         }
-
     }
-
 
     /**
      * Returns the path, where the builder configuration file can be found, for not exising builders, a path will be generated.
@@ -690,7 +684,6 @@ public class TypeDef extends MMObjectBuilder {
             return null;
         }
 
-
         String pathInBuilderDir = mmb.getBuilderPath(node.getStringValue("name"), "");
         if (pathInBuilderDir != null) {
             // return the file path,..
@@ -711,7 +704,6 @@ public class TypeDef extends MMObjectBuilder {
         return null;
     }
 
-
     /**
      */
     protected MMObjectBuilder loadBuilder(MMObjectNode node) {
@@ -729,8 +721,6 @@ public class TypeDef extends MMObjectBuilder {
         mmb.initBuilder(builder);
         return builder;
     }
-
-
 
     /**
      */

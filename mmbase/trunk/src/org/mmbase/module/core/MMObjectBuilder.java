@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.361 2006-01-12 13:35:59 ernst Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.362 2006-01-13 15:44:30 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -81,12 +81,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.8
      */
     public static final String FIELD_OBJECT_TYPE = "otype";
-
-    /**
-     * The string that can be used inside the builder.xml as property,
-     * to define the maximum number of nodes to return.
-     */
-    private static String  MAX_NODES_FROM_QUERY_PROPERTY = "max-nodes-from-query";
 
     /**
      * @since MMBase-1.8
@@ -110,13 +104,20 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public final static int EVENT_TYPE_LOCAL = 0;
     public final static int EVENT_TYPE_REMOTE = 1;
 
-
-
     /**
      * Parameters for the age function
      * @since MMBase-1.7
      */
     public final static Parameter[] AGE_PARAMETERS = {};
+
+    /**
+     * Collection for temporary nodes,
+     * Used by the Temporarynodemanager when working with transactions
+     * The default size is 1024.
+     * @duplicate use Cache object instead
+     * @scope protected
+     */
+    public static Map temporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
 
     /**
      * Results of getNodes
@@ -140,16 +141,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * The cache that contains the X last requested nodes
      */
     protected static org.mmbase.cache.NodeCache nodeCache = org.mmbase.cache.NodeCache.getCache();
-
-    /**
-     * Collection for temporary nodes,
-     * Used by the Temporarynodemanager when working with transactions
-     * The default size is 1024.
-     * @duplicate use Cache object instead
-     * @scope protected
-     */
-    public static Map temporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
-
     /**
      * Default output when no data is available to determine a node's GUI description
      */
@@ -164,6 +155,18 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     private static int cacheLocked=0;
 
     private static final Logger log = Logging.getLoggerInstance(MMObjectBuilder.class);
+
+    /**
+     * The string that can be used inside the builder.xml as property,
+     * to define the maximum number of nodes to return.
+     */
+    private static String MAX_NODES_FROM_QUERY_PROPERTY = "max-nodes-from-query";
+
+    /**
+     * The string that can be used inside the builder.xml as property,
+     * to set whether the builder broadcasts changes to nodes to eventlisteners.
+     */
+    private static String BROADCAST_CHANGES_PROPERTY = "broadcast-changes";
 
     /**
      * Description of the builder in the currently selected language
@@ -186,6 +189,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @scope protected
      */
     public String searchAge="31";
+
+    /**
+     * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
+     */
+    protected boolean broadCastChanges = true;
 
     /**
      * Internal (instance) version number of this builder.
@@ -217,7 +225,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * It is relative from the '/builders/' subdir
      */
     String xmlPath = "";
-
 
     /**
      * Parameters for the GUI function
@@ -432,6 +439,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // first make sure parent builder is initalized
             initAncestors();
 
+            String broadCastChangesProperty = getInitParameter(BROADCAST_CHANGES_PROPERTY);
+            if (broadCastChangesProperty != null) {
+                broadCastChanges = broadCastChangesProperty.equals("true");
+            }
 
             if (!created()) {
                 log.info("Creating table for builder " + tableName);
@@ -652,7 +663,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * By default, all builders broadcast their changes, with the exception of the TypeDef builder.
      */
     public boolean broadcastChanges() {
-        return true;
+        return broadCastChanges;
     }
 
     /**
@@ -766,7 +777,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node The node to set the defaults of.
      */
     public void setDefaults(MMObjectNode node) {
-        for (Iterator i = getFields().iterator(); i.hasNext(); ) {            
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
             CoreField field = (CoreField) i.next();
             if (field.getName().equals(FIELD_NUMBER))      continue;
             if (field.getName().equals(FIELD_OWNER))       continue;
@@ -945,7 +956,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
     }
 
- 
+
     /**
      * Gets the number of nodes currently in the cache.
      * @return the number of nodes in the cache
@@ -1229,8 +1240,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         MMObjectNode node;
         node=(MMObjectNode) temporaryNodes.remove(key);
         if (node==null) {
-		log.debug("removeTmpNode: node with "+key+" didn't exists");
-	}
+        log.debug("removeTmpNode: node with "+key+" didn't exists");
+    }
     }
 
     /**
@@ -1827,36 +1838,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                 Function f = (Function) i.next();
                 info.put(f.getName(), f.getDescription());
             }
-            /*
-            info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
-            info.put("gui", "" + Arrays.asList(GUI_PARAMETERS) + "Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
-            // language is only implemented in TypeDef now, session in AbstractServletBuilder
-            // if needed on more place, then it can be generalized to here.
-
-            info.put("html", "(field), XHTML escape the field");
-            info.put("substring", "(string, length, fill)");
-            info.put("date", "deprecated, use time-tag");
-            info.put("time", "deprecated, use time-tag");
-            info.put("timesec", "deprecated, use time-tag");
-            info.put("longmonth", "deprecated, use time-tag");
-            info.put("monthnumber", "deprecated, use time-tag");
-            info.put("month", "deprecated, use time-tag");
-            info.put("weekday", "deprecated, use time-tag");
-            info.put("shortday", "deprecated, use time-tag");
-            info.put("day", "deprecated, use time-tag");
-            info.put("shortyear", "deprecated, use time-tag");
-            info.put("year", "deprecated, use time-tag");
-            info.put("thisdaycurtime", "deprecated, use time-tag");
-            info.put("age", "Returns the age of this object in days");
-            info.put("wap", "(string)");
-            info.put("shorted", "(string) Truncated version of string");
-            info.put("uppercase", "(string)");
-            info.put("lowercase", "(string)");
-            info.put("hostname", "");
-            info.put("urlencode", "");
-            info.put("wrap_<lengh>", "deprecated");
-            info.put("currency_euro", "");
-            */
             info.put("info", "(functionname) Returns information about a certain 'function'. Or a map of all function if no arguments.");
             if (arguments == null || arguments.size() == 0 || arguments.get(0) == null) {
                 log.info("returing " + info);
@@ -2976,7 +2957,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if(event.getType() == NodeEvent.EVENT_TYPE_DELETE || (! localEvent && event.getType() == NodeEvent.EVENT_TYPE_CHANGED)){
             if(nodeCache.contains(changedNodeNumber)) nodeCache.remove(changedNodeNumber);
         }
-        
+
         //and now refire the event for the parent builders
         MMObjectBuilder pb = getParentBuilder();
         if(pb != null){
@@ -2988,43 +2969,34 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
 
-
-    /**
-     * @since MMBase-1.8
-     */
-    public Properties getConstraintsForEvent(Event event) {
-        //we don't need this.
-        return null;
-    }
-
     /**
      * @since MMBase-1.8
      */
      public void notify(RelationEvent event) {
         log.debug("" + this + " received relation event " + event);
-        
+
         //for backwards compatibilty: create relation changed calls
-        if(event.getRelationSourceType().equals(getTableName())){
+        if (event.getRelationSourceType().equals(getTableName())) {
             eventBackwardsCompatibilty(event.getMachine(), event.getRelationSourceNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
-        }else if(event.getRelationDestinationType().equals(getTableName())){
+        }
+        if (event.getRelationDestinationType().equals(getTableName())) {
             eventBackwardsCompatibilty(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
         }
-        
-        
+
         //update the cache
         Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
         MMObjectNode node = (MMObjectNode)nodeCache.get(changedNode);
         if (node != null) {
             node.delRelationsCache();
         }
-        
+
 //      and now refire the event for the parent builders
         MMObjectBuilder pb = getParentBuilder();
         send_event:
         if(pb != null){
             RelationEvent parentBuilderEvent = (RelationEvent) event.clone();
             log.debug(getTableName() + "creating relation event for parent builder: " + pb.getTableName());
-            
+
             if(getTableName().equals(parentBuilderEvent.getRelationSourceType())){
                 log.debug(">> overwriting the relation source type");
                 parentBuilderEvent.setRelationSourceType(pb.getTableName());
@@ -3049,7 +3021,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     private void eventBackwardsCompatibilty(String machineName, int nodeNumber, int eventType){
         String ctype = NodeEvent.newTypeToOldType(eventType);
         boolean localEvent = mmb.getMachineName().equals(machineName);
-        
+
         if(localEvent) {
             nodeLocalChanged(machineName, "" + nodeNumber, getTableName(), ctype);
         } else {

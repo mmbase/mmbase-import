@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.24 2005-12-23 10:20:17 ernst Exp $
+ * @version $Id: QueryResultCache.java,v 1.25 2006-01-13 15:44:30 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -53,7 +53,7 @@ abstract public class QueryResultCache extends Cache {
      *
      * @see ChainedReleaseStrategy
      */
-    
+
     /**
      * this is only used for logging, to create readable queries out of query objects.
      */
@@ -68,7 +68,7 @@ abstract public class QueryResultCache extends Cache {
      *
      * @return number of entries invalidated
      */
-    
+
 
     // Keep a map of the existing Observers, for each nodemanager one.
     // @todo I think it can be done with one Observer instance too, (in which
@@ -114,7 +114,7 @@ abstract public class QueryResultCache extends Cache {
     public ChainedReleaseStrategy getReleaseStrategy() {
         return releaseStrategy;
     }
-    
+
     /**
      * @return an iterator of all observer instances
      */
@@ -262,15 +262,6 @@ abstract public class QueryResultCache extends Cache {
         /*
          * (non-Javadoc)
          *
-         * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
-         */
-        public Properties getConstraintsForEvent(Event event) {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         *
          * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
          */
         public void notify(NodeEvent event) {
@@ -296,13 +287,13 @@ abstract public class QueryResultCache extends Cache {
                     if (result.shouldRelease()) {
                         removeKeys.add(key);
                         i.remove();
-                        if(log.isDebugEnabled()){ 
+                        if(log.isDebugEnabled()){
                             try {
                                 log.debug("Release strategy said to release " + sqlHandler.toSql(key, sqlHandler));
                             } catch (SearchQueryException e) {}
                         }
                     } else {
-                        if(log.isDebugEnabled()){ 
+                        if(log.isDebugEnabled()){
                             try {
                                 log.debug("Release strategy said NOT to release " + sqlHandler.toSql(key, sqlHandler));
                             } catch (SearchQueryException e) {}
@@ -327,7 +318,7 @@ abstract public class QueryResultCache extends Cache {
             return "QueryResultCacheObserver for " + type + " watching " + cacheKeys.size() + " queries";
         }
     }
-    
+
     public void clear(){
         super.clear();
         releaseStrategy.clear();

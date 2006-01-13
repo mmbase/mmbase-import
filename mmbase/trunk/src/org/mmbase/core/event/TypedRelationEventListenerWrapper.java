@@ -11,11 +11,12 @@ import java.util.Properties;
 
 /**
  * This class is a wrapper for relation event listeners that only want to listen
- * to events from a specific builder.
- * 
+ * to events concerning a specific builder - more specifically, events concerning changes
+ * in the relations from a specific builder's nodes.
+ *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * 
+ *
  */
 public class TypedRelationEventListenerWrapper implements RelationEventListener {
     private String nodeType;
@@ -34,21 +35,13 @@ public class TypedRelationEventListenerWrapper implements RelationEventListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.core.event.RelationEventListener#fire(org.mmbase.core.event.RelationEvent)
      */
     public void notify(RelationEvent event) {
-        if(event.getRelationSourceType().equals(nodeType) || event.getRelationDestinationType().equals(nodeType))
+        if (event.getRelationSourceType().equals(nodeType) || event.getRelationDestinationType().equals(nodeType)) {
             wrappedListener.notify(event);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.mmbase.core.event.EventListener#getConstraintsForEvent(org.mmbase.core.event.Event)
-     */
-    public Properties getConstraintsForEvent(Event event) {
-        return null;
+        }
     }
 
     public String toString() {
