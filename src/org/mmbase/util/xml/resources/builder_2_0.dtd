@@ -52,7 +52,7 @@
 <!ATTLIST type state (persistent|virtual|system|systemvirtual) #REQUIRED>
 <!ATTLIST type size CDATA #IMPLIED>
 <!ATTLIST type notnull (true|false) #IMPLIED>
-<!ATTLIST type unique  (true|false) #IMPLIED>
+<!ATTLIST type unique  (true|false|implied) #IMPLIED>
 <!ATTLIST type required (true|false) #IMPLIED>
 <!ATTLIST type readonly (true|false) #IMPLIED>
 <!ATTLIST type doctype CDATA #IMPLIED>

@@ -70,7 +70,7 @@
       </editor>
       <db>
         <name>number</name>
-        <type state="system" notnull="true" required="false" unique="true">NODE</type><!-- must this be NODE, foreign key to itself??! -->
+        <type state="system" notnull="true" required="false" unique="implied">NODE</type><!-- must this be NODE, foreign key to itself??! -->
       </db>
     </field>
 
