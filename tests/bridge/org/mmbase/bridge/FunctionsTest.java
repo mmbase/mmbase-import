@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.7 2005-12-29 22:09:45 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.8 2006-01-13 14:20:51 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -54,6 +54,20 @@ public class FunctionsTest extends BridgeTest {
         node.commit();
         assertTrue(node.getFunctionValue("aaa", params).toInt() == 15);
     }
+
+    public void testNodeManagerFunction2() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("news");
+        Node newsNode = nm.createNode();
+        newsNode.commit();
+        Function function = nm.getFunction("latest");
+        Parameters params = function.createParameters();
+        params.set(Parameter.CLOUD, cloud);
+        params.set("max", new Integer(1));
+        NodeList nl = (NodeList) function.getFunctionValue(params);
+        assertTrue(nl.getNode(0).getNumber() == newsNode.getNumber());
+    }
+
 
     public void testNodeFunctionWithNodeResult() {
         Cloud cloud = getCloud();
