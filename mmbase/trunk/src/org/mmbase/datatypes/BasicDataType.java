@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.37 2006-01-05 18:12:49 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.38 2006-01-13 15:40:58 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -117,7 +117,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         enumerationRestriction = new EnumerationRestriction((LocalizedEntryListFactory) in.readObject());
         typeRestriction        = new TypeRestriction(); // its always the same, so no need actually persisting it.
         owner                  = in.readObject();
-        try {            
+        try {
             classType          =  (Class) in.readObject();
         } catch (Throwable t) {
             // if some unknown class, simply fall back
@@ -169,7 +169,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     protected void cloneRestrictions(BasicDataType origin) {
         enumerationRestriction = new EnumerationRestriction(origin.enumerationRestriction);
         requiredRestriction    = new RequiredRestriction(origin.requiredRestriction);
-        uniqueRestriction      = new UniqueRestriction(origin.uniqueRestriction);        
+        uniqueRestriction      = new UniqueRestriction(origin.uniqueRestriction);
     }
 
     /**
@@ -252,7 +252,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * Override {@link #preCast(Object, Cloud, Node, Field)}
      */
     public final Object cast(Object value, final Node node, final Field field) {
-        if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) { 
+        if (origin != null && (! origin.getClass().isAssignableFrom(getClass()))) {
             // if inherited from incompatible type, then first try to cast in the way of origin.
             // e.g. if origin is Date, but actual type is integer, then casting of 'today' works now.
             value = origin.cast(value, node, field);
@@ -437,7 +437,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             clone.inheritProperties(this);
             clone.cloneRestrictions(this);
             if (log.isDebugEnabled()) {
-                log.debug("Cloned " + this + " -> " + clone);
+                log.trace("Cloned " + this + " -> " + clone);
             }
             return clone;
         } catch (CloneNotSupportedException cnse) {
@@ -671,7 +671,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             if (source.enforceStrength == DataType.ENFORCE_ABSOLUTE) {
                 enforceStrength = DataType.ENFORCE_ALWAYS;
             }
-
         }
 
         protected StaticAbstractRestriction(BasicDataType parent, String name, Serializable value) {
@@ -687,7 +686,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         public Serializable getValue() {
             return value;
         }
-
 
         public void setValue(Serializable v) {
             parent.edit();
@@ -712,7 +710,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             this.errorDescription = errorDescription;
         }
 
-
         public boolean isFixed() {
             return fixed;
         }
@@ -723,8 +720,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             }
             this.fixed = fixed;
         }
-
-
 
         /**
          * Utility method to add a new error message to the errors collection, based on this
@@ -744,26 +739,24 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         /**
          * If value of a a restriction depends on node, field, then you can override this
          */
-
-
         protected String valueString(Node node, Field field) {
             return "" + value;
         }
-
 
         /**
          * Whether {@link #validate} must enforce this condition
          */
         protected final boolean enforce(Node node, Field field) {
             switch(enforceStrength) {
-            case DataType.ENFORCE_ABSOLUTE:
-            case DataType.ENFORCE_ALWAYS:   return true;
-            case DataType.ENFORCE_ONCHANGE: if (node == null || field == null || node.isChanged(field.getName())) return true;
-            case DataType.ENFORCE_ONCREATE: if (node == null || node.isNew()) return true;
-            case DataType.ENFORCE_NEVER:    return false;
-            default:                        return true;
+                case DataType.ENFORCE_ABSOLUTE:
+                case DataType.ENFORCE_ALWAYS:   return true;
+                case DataType.ENFORCE_ONCHANGE: if (node == null || field == null || node.isChanged(field.getName())) return true;
+                case DataType.ENFORCE_ONCREATE: if (node == null || node.isNew()) return true;
+                case DataType.ENFORCE_NEVER:    return false;
+                default:                        return true;
             }
         }
+
         /**
          * This method is called by {@link BasicDataType#validate(Object, Node, Field)} for each of its conditions.
          */
@@ -783,8 +776,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             }
         }
 
-
-
         public final boolean valid(Object v, Node node, Field field) {
             try {
                 if (absoluteParent != null) {
@@ -792,14 +783,14 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                 }
                 return simpleValid(parent.castToValidate(v, node, field), node, field);
             } catch (Throwable t) {
-                log.debug("Not valid because cast-to-validate threw exception " + t);
+                if (log.isServiceEnabled()) {
+                    log.service("Not valid because cast-to-validate threw exception " + t.getClass(), t);
+                }
                 return false;
             }
-
         }
 
         protected abstract boolean simpleValid(Object v, Node node, Field field);
-
 
         protected final void inherit(StaticAbstractRestriction source) {
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
@@ -811,6 +802,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         public int getEnforceStrength() {
             return enforceStrength;
         }
+
         public void setEnforceStrength(int e) {
             enforceStrength = e;
         }
@@ -818,6 +810,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         public final String toString() {
             return toString(null, null);
         }
+
         public final String toString(Node node, Field field) {
             return name + ": " +
                 (enforceStrength == DataType.ENFORCE_NEVER ? "*" : "") +
@@ -826,16 +819,16 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
     }
 
-
     // REQUIRED
-
     protected class RequiredRestriction extends AbstractRestriction {
         RequiredRestriction(RequiredRestriction source) {
             super(source);
         }
+
         RequiredRestriction(boolean b) {
             super("required", Boolean.valueOf(b));
         }
+
         final boolean isRequired() {
             return value.equals(Boolean.TRUE);
         }
@@ -846,16 +839,16 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
     }
 
-
-    // UNIQUE 
-
+    // UNIQUE
     protected class UniqueRestriction extends AbstractRestriction {
         UniqueRestriction(UniqueRestriction source) {
             super(source);
         }
+
         UniqueRestriction(boolean b) {
             super("unique", Boolean.valueOf(b));
         }
+
         final boolean isUnique() {
             return value.equals(Boolean.TRUE);
         }
@@ -872,7 +865,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                     // This will test for uniqueness using bridge, so you'll miss objects you can't
                     // see (and database doesn't know that!)
                     // So try using an administrator for that! That would probably work ok.
-                    Cloud adminCloud = cloud.getCloudContext().getCloud(cloud.getName(), "class", null);
+                    Cloud adminCloud = cloud.getCloudContext().getCloud("mmbase", "class", null);
                     if (adminCloud.getUser().getRank().getInt() > cloud.getUser().getRank().getInt()) {
                         cloud = adminCloud;
                         nodeManager = adminCloud.getNodeManager(nodeManager.getName());
@@ -899,14 +892,16 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
 
     // TYPE
-    
+
     protected class TypeRestriction extends AbstractRestriction {
         TypeRestriction(TypeRestriction source) {
             super(source);
         }
+
         TypeRestriction() {
             super("type", BasicDataType.this.getClass());
         }
+
         protected boolean simpleValid(Object v, Node node, Field field) {
             try {
                 BasicDataType.this.cast(v, node, field);
@@ -917,23 +912,25 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
     }
 
-
     // ENUMERATION
-
     protected class EnumerationRestriction extends AbstractRestriction {
+
         EnumerationRestriction(EnumerationRestriction source) {
             super(source);
             value = value != null ? (Serializable) ((LocalizedEntryListFactory) value).clone() : null;
         }
+
         EnumerationRestriction(LocalizedEntryListFactory entries) {
             super("enumeration", entries);
         }
+
         final LocalizedEntryListFactory getEnumerationFactory() {
             if(value == null) {
                 value = new LocalizedEntryListFactory();
             }
             return (LocalizedEntryListFactory) value;
         }
+
         public Collection getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
             if (value == null) return null;
             LocalizedEntryListFactory ef = (LocalizedEntryListFactory) value;
@@ -960,9 +957,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                 log.error("Could not find class " + ncdfe.getMessage() + " while casting " + v.getClass() + " " + v, ncdfe);
                 return v;
             }
-                
-        }
 
+        }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
             Cloud cloud = BasicDataType.this.getCloud(node, field);
@@ -987,7 +983,6 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         }
 
     }
-
 
     /**
      * Iterates over the collection provided by the EnumerationRestriction, but skips the values
@@ -1047,6 +1042,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         public boolean hasNext() {
             return next != null;
         }
+
         public Object next() {
             if (next == null) {
                 throw new NoSuchElementException();
@@ -1055,9 +1051,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             determineNext();
             return n;
         }
+
         public void remove() {
             throw new UnsupportedOperationException("Cannot remove entries from " + getClass());
         }
+
         public String toString() {
             return "restricted iterator(" + enumerationRestriction + ")";
         }
