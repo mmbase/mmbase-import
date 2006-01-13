@@ -24,11 +24,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
 /**
- * Abstract implementation of Node, all methods which are based on other methods are implemented
- * here, to minimalize the implemenation effort of fully implemented Nodes.
+ * Abstract implementation of Node.
+ * All methods which are based on other methods are implemented
+ * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.5 2006-01-13 14:28:11 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.6 2006-01-13 15:39:37 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -41,6 +42,7 @@ public abstract class AbstractNode implements Node {
     protected static final int ACTION_COMMIT = 10; // commit a node after changes
 
     protected abstract void edit(int action);
+
     public boolean isRelation() {
         return false;
     }
@@ -68,6 +70,7 @@ public abstract class AbstractNode implements Node {
     public boolean isNull(String fieldName) {
         return getValueWithoutProcess(fieldName) == null;
     }
+
     public int getNumber() {
         return Casting.toInt(getValueWithoutProcess("number"));
     }
@@ -84,21 +87,21 @@ public abstract class AbstractNode implements Node {
         } else {
             value = field.getDataType().cast(value, this, field);
             switch(field.getType()) {
-            case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
-            case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
-            case Field.TYPE_BINARY:    {
-                long length = getSize(fieldName);
-                setInputStreamValue(fieldName, Casting.toInputStream(value), length); break;
-            }
-            case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
-            case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
-            case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
-            case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
-            case Field.TYPE_NODE:    setNodeValue(fieldName, (Node) value); break;
-            case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
-            case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
-            case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
-            default:                 setObjectValue(fieldName, value);
+                case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
+                case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+                case Field.TYPE_BINARY:    {
+                    long length = getSize(fieldName);
+                    setInputStreamValue(fieldName, Casting.toInputStream(value), length); break;
+                }
+                case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
+                case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
+                case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+                case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
+                case Field.TYPE_NODE:    setNodeValue(fieldName, (Node) value); break;
+                case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
+                case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
+                case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
+                default:                 setObjectValue(fieldName, value);
             }
         }
     }
@@ -122,8 +125,8 @@ public abstract class AbstractNode implements Node {
         }
         setValueWithoutChecks(fieldName, value);
     }
-    protected abstract void setValueWithoutChecks(String fieldName, Object value);
 
+    protected abstract void setValueWithoutChecks(String fieldName, Object value);
 
     public final void setObjectValue(String fieldName, Object value) {
         Field field = getNodeManager().getField(fieldName);
@@ -164,7 +167,6 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-
     public final void setNodeValue(String fieldName, final Node value) {
         Field field = getNodeManager().getField(fieldName);
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_NODE).process(this, field, value);
@@ -202,11 +204,12 @@ public abstract class AbstractNode implements Node {
     }
 
     protected abstract void setSize(String fieldName, long size);
+
     private static final int readLimit = 10 * 1024 * 1024;
+
     public final void setInputStreamValue(String fieldName, final InputStream value, long size) {
         setSize(fieldName, size);
         Field field = getNodeManager().getField(fieldName);
-
         if (log.isDebugEnabled()) {
             log.debug("Setting binary value for " + field);
         }
@@ -240,10 +243,7 @@ public abstract class AbstractNode implements Node {
         } catch (IOException ioe) {
             log.error(ioe);
         }
-
         setValueWithoutProcess(fieldName, v);
-
-
     }
 
     public final void setStringValue(final String fieldName, final String value) {
@@ -258,6 +258,7 @@ public abstract class AbstractNode implements Node {
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_XML).process(this, field, value);
         setValueWithoutProcess(fieldName, v);
     }
+
     public final Object getValue(String fieldName) {
         Object value = getValueWithoutProcess(fieldName);
         if (value == null) return null;
@@ -286,6 +287,7 @@ public abstract class AbstractNode implements Node {
         }
 
     }
+
     public final Object getObjectValue(String fieldName) {
         Object result = getValueWithoutProcess(fieldName);
         NodeManager nodeManager = getNodeManager();
@@ -300,9 +302,6 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
-
-
-
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Casting.toBoolean(getValueWithoutProcess(fieldName)) ? Boolean.TRUE : Boolean.FALSE; // odd.
         NodeManager nodeManager = getNodeManager();
@@ -312,7 +311,6 @@ public abstract class AbstractNode implements Node {
         }
         return result.booleanValue();
     }
-
 
     public Date getDateValue(String fieldName) {
         Date result = Casting.toDate(getValueWithoutProcess(fieldName));
@@ -331,10 +329,8 @@ public abstract class AbstractNode implements Node {
             Field field = nodeManager.getField(fieldName);
             result = (List) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LIST).process(this, field, result);
         }
-
         return result;
     }
-
 
     public int getIntValue(String fieldName) {
         Integer result = Casting.toInteger(getValueWithoutProcess(fieldName));
@@ -344,7 +340,6 @@ public abstract class AbstractNode implements Node {
             result = (Integer) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result);
         }
         return result.intValue();
-
     }
 
     public float getFloatValue(String fieldName) {
@@ -386,6 +381,7 @@ public abstract class AbstractNode implements Node {
         }
         return result;
     }
+
     public java.io.InputStream getInputStreamValue(String fieldName) {
         java.io.InputStream result = Casting.toInputStream(getValueWithoutProcess(fieldName));
         NodeManager nodeManager = getNodeManager();
@@ -426,9 +422,6 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
-
-
-
     public final FieldValue getFieldValue(String fieldName) throws NotFoundException {
         return new BasicFieldValue(this, getNodeManager().getField(fieldName));
     }
@@ -437,7 +430,6 @@ public abstract class AbstractNode implements Node {
         return new BasicFieldValue(this, field);
     }
 
-
     public final Element getXMLValue(String fieldName, Document tree) {
         Document doc = getXMLValue(fieldName);
         if (doc == null) {
@@ -445,7 +437,6 @@ public abstract class AbstractNode implements Node {
         }
         return (Element)tree.importNode(doc.getDocumentElement(), true);
     }
-
 
     protected final void processCommit() {
         FieldIterator fi = getNodeManager().getFields().fieldIterator();
@@ -480,6 +471,7 @@ public abstract class AbstractNode implements Node {
     public final void deleteRelations() {
         deleteRelations("object");
     }
+
     public final RelationList getRelations() {
         return getRelations(null, (String) null);
     }
@@ -496,7 +488,6 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-
     public final int countRelations() {
         return countRelatedNodes(getCloud().getNodeManager("object"), null, "BOTH");
     }
@@ -505,8 +496,6 @@ public abstract class AbstractNode implements Node {
         //err
         return countRelatedNodes(getCloud().getNodeManager("object"), type, "BOTH");
     }
-
-
 
     public final NodeList getRelatedNodes() {
         return getRelatedNodes("object", null, null);
@@ -524,12 +513,10 @@ public abstract class AbstractNode implements Node {
         return getRelatedNodes(getCloud().getNodeManager(type), role, searchDir);
     }
 
-
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
         Relation relation = relationManager.createRelation(this, destinationNode);
         return relation;
     }
-
 
     /**
      * Compares this node to the passed object.
@@ -586,10 +573,10 @@ public abstract class AbstractNode implements Node {
     public boolean isChanged(String fieldName) {
         return false;
     }
+
     public boolean isChanged() {
         return false;
     }
-
 
     public void commit() {
         throw new UnsupportedOperationException("Cannot edit virtual node");
@@ -601,7 +588,6 @@ public abstract class AbstractNode implements Node {
     public void delete(boolean deleteRelations) {
         throw new UnsupportedOperationException("Cannot edit virtual node");
     }
-
 
     public void deleteRelations(String type) throws NotFoundException {
     }
@@ -617,8 +603,6 @@ public abstract class AbstractNode implements Node {
         return false;
     }
 
-
-
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
         return 0;
     }
@@ -630,7 +614,6 @@ public abstract class AbstractNode implements Node {
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
         return BridgeCollections.EMPTY_NODELIST;
     }
-
 
     public StringList getAliases() {
         return BridgeCollections.EMPTY_STRINGLIST;
@@ -652,7 +635,6 @@ public abstract class AbstractNode implements Node {
     public String getContext() {
         throw new UnsupportedOperationException("Virtual nodes have no security context");
     }
-
 
     // javadoc inherited (from Node)
     public StringList getPossibleContexts() {
@@ -689,7 +671,7 @@ public abstract class AbstractNode implements Node {
 
     protected FieldValue createFunctionValue(final Object result) {
         return new AbstractFieldValue(this, getCloud()) {
-            public Object get() { 
+            public Object get() {
                 return result;
             }
         };
@@ -701,6 +683,7 @@ public abstract class AbstractNode implements Node {
         params.setAll(parameters);
         return createFunctionValue(function.getFunctionValue(params));
     }
+
     protected Function getNodeFunction(String functionName) {
         return null;
     }
@@ -713,9 +696,8 @@ public abstract class AbstractNode implements Node {
         return new WrappedFunction(function) {
                 public final Object getFunctionValue(Parameters params) {
                     params.setIfDefined(Parameter.NODE, AbstractNode.this);
-                    params.set(Parameter.CLOUD, AbstractNode.this.getCloud());
+                    params.setIfDefined(Parameter.CLOUD, AbstractNode.this.getCloud());
                     return AbstractNode.this.createFunctionValue(super.getFunctionValue(params)).get();
-
                 }
             };
     }

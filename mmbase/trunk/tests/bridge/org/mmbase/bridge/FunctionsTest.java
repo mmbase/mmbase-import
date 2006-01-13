@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.8 2006-01-13 14:20:51 michiel Exp $
+ * @since $Id: FunctionsTest.java,v 1.9 2006-01-13 15:39:37 pierre Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -37,7 +37,6 @@ public class FunctionsTest extends BridgeTest {
         node.commit();
         assertTrue(node.getFunctionValue("test", null).toString().equals("[" + node.getNumber() + "]"));
     }
-
 
     public void testNodeManagerFunction() {
         Cloud cloud = getCloud();
@@ -68,6 +67,14 @@ public class FunctionsTest extends BridgeTest {
         assertTrue(nl.getNode(0).getNumber() == newsNode.getNumber());
     }
 
+    public void testNodeManagerFunction3() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("mmservers");
+        Function function = nm.getFunction("uptime");
+        Parameters params = function.createParameters();
+        Long value = (Long) function.getFunctionValue(params);
+        assertTrue(value.longValue() >= 0);
+    }
 
     public void testNodeFunctionWithNodeResult() {
         Cloud cloud = getCloud();
@@ -78,7 +85,7 @@ public class FunctionsTest extends BridgeTest {
         node2.commit();
         Node successorOfNode1 = node1.getFunctionValue("successor", null).toNode();
         assertTrue(successorOfNode1.equals(node2));
-        
+
     }
 
     public void testNodeFunctionWithNodeResult1() {
@@ -88,7 +95,7 @@ public class FunctionsTest extends BridgeTest {
         node1.commit();
         Function function = node1.getFunction("nodeFunction1");
         Parameters params = function.createParameters();
-        params.set("parameter1", "hoi");        
+        params.set("parameter1", "hoi");
         Node n = node1.getFunctionValue("nodeFunction1", params).toNode();
         assertTrue(n.getStringValue("bloe").equals("hoi"));
         n = (Node) function.getFunctionValue(params);
@@ -102,7 +109,7 @@ public class FunctionsTest extends BridgeTest {
         node1.commit();
         Function function = node1.getFunction("nodeFunction2");
         Parameters params = function.createParameters();
-        params.set("parameter1", "hoi");        
+        params.set("parameter1", "hoi");
         Node n = node1.getFunctionValue("nodeFunction2", params).toNode();
         assertTrue(n.getStringValue("bloe").equals("hoi"));
         n = (Node) function.getFunctionValue(params);
@@ -116,7 +123,7 @@ public class FunctionsTest extends BridgeTest {
         node1.commit();
         Function function = node1.getFunction("nodeListFunction");
         Parameters params = function.createParameters();
-        params.set("parameter1", "hoi");        
+        params.set("parameter1", "hoi");
         NodeList nl = new CollectionNodeList((Collection) node1.getFunctionValue("nodeListFunction", params).get(), cloud);
         NodeIterator i = nl.nodeIterator();
         while (i.hasNext()) {
@@ -137,7 +144,7 @@ public class FunctionsTest extends BridgeTest {
         node1.commit();
         Function function = node1.getFunction("nodeListFunction1");
         Parameters params = function.createParameters();
-        params.set("parameter1", "hoi");        
+        params.set("parameter1", "hoi");
         NodeList nl = (NodeList) node1.getFunctionValue("nodeListFunction1", params).get();
         NodeIterator i = nl.nodeIterator();
         while (i.hasNext()) {
@@ -151,7 +158,7 @@ public class FunctionsTest extends BridgeTest {
             assertTrue(n.getStringValue("bloe").equals("hoi"));
         }
     }
-    
+
     /**
      * test a variety of functionset possibilities
      * XXX really not complete yet
@@ -163,11 +170,11 @@ public class FunctionsTest extends BridgeTest {
         // long randomLong = testfunc1.getFunctionValue(null);
         Function testfunc2 = FunctionSets.getFunction("testfunctions", "testBoolean");
         assertTrue("function 'testBoolean' not found (functionset 'testfunctions')", testfunc2 != null);
-        
+
         Parameters params2 = testfunc2.createParameters();
         params2.set("inBoolean", Boolean.valueOf(true));
-        
-        
+
+
         Object result = testfunc2.getFunctionValue(params2);
         assertTrue("Expected return value of type 'Boolean', but got: '" + result + "'", result instanceof java.lang.Boolean);
         assertTrue("function 'testBoolean' didn't return true as was expected", ((Boolean) result).booleanValue());
