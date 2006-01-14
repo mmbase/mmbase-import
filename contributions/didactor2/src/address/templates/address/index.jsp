@@ -23,7 +23,7 @@
 <div class="rows">
 <div class="navigationbar">
   <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_addressbook.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" title="<di:translate key="address.addressbook" />" title="<di:translate key="address.addressbook" />" alt="<di:translate key="address.addressbook" />"/>
+    <img src="<mm:treefile write="true" page="/gfx/icon_addressbook.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" title="<di:translate key="address.addressbook" />" alt="<di:translate key="address.addressbook" />" />
     <di:translate key="address.addressbook" />
   </div>
 </div>
