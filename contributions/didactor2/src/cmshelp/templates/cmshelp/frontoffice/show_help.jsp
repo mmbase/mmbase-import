@@ -139,6 +139,16 @@
   	            </mm:relatednodes> 			             
   	          </td>
   	        </tr>
+  	        <%-- Added by Nix for paragraphs --%>
+  	        <mm:relatednodes type="paragraphs">
+  	        <tr>
+  	          <td colspan="2">
+  	            <%-- TODO: detect if "showtitle" was on and display paragraph accordingly --%>
+  	            <h2><mm:field name="title" /></h2>
+  	            <p><mm:field name="body" /></p>
+  	          </td>
+  	        </tr>
+  	        </mm:relatednodes>
   	      </table> 
         </p>
       </mm:notpresent>    
