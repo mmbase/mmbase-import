@@ -15,6 +15,7 @@
         <builder maintainer="didactor.nl" version="2">images</builder>
         <builder maintainer="didactor.nl" version="2">insrel</builder>
         <builder maintainer="didactor.nl" version="2">posrel</builder>
+        <builder maintainer="didactor.nl" version="2">paragraphs</builder>
     </neededbuilderlist>
 
     <neededreldeflist>
@@ -29,7 +30,12 @@
         <relation from="portalpagescontainers" to="portalpagesnodes" type="related" />
         <relation from="portalpagesnodes" to="portalpagescontainers" type="related" />
         <relation from="portalpagesnodes" to="portalpagesnodes" type="childppnn" /> 
-        <relation from="simplecontents" to="images" type="posrel" />        
+        <relation from="simplecontents" to="images" type="posrel" />
+        
+        <relation from="portalpagesnodes"  to="paragraphs"  type="posrel" />
+        <relation from="paragraphs"        to="images"      type="pos2rel" />
+        <relation from="paragraphs"        to="attachments" type="posrel" />
+        <relation from="paragraphs"        to="urls"        type="posrel" />
     </allowedrelationlist>
 
     <datasourcelist>
