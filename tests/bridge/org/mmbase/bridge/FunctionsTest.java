@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.9 2006-01-13 15:39:37 pierre Exp $
+ * @since $Id: FunctionsTest.java,v 1.10 2006-01-14 19:12:08 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -61,7 +61,9 @@ public class FunctionsTest extends BridgeTest {
         newsNode.commit();
         Function function = nm.getFunction("latest");
         Parameters params = function.createParameters();
-        params.set(Parameter.CLOUD, cloud);
+        // remote clouds are not serializable. It is not needed anyway. Cloud parameters are
+        // implicit, when using bridge.
+        // params.set(Parameter.CLOUD, cloud);
         params.set("max", new Integer(1));
         NodeList nl = (NodeList) function.getFunctionValue(params);
         assertTrue(nl.getNode(0).getNumber() == newsNode.getNumber());
