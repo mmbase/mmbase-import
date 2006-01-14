@@ -18,6 +18,10 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
+import org.xml.sax.InputSource;
+
+import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.*;
 
@@ -57,10 +61,9 @@ public class MultiLanguageGui {
     public static void readSets() {
 	languageguisets=new Hashtable();
         String languageguisetsfile="languageguisets.xml";
-        String filename = MMBaseContext.getConfigPath()+File.separator+"multilanguagegui"+File.separator+languageguisetsfile;
-        File file = new File(filename);
-        if(file.exists()) {
-            	XMLBasicReader reader = new XMLBasicReader(filename,MultiLanguageGui.class);
+        try {
+                InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("multilanguagegui/"+languageguisetsfile);
+                DocumentReader reader = new DocumentReader(is,MultiLanguageGui.class);
             	if(reader!=null) {
 	          	for(Iterator ns=reader.getChildElements("languageguisets","languageguiset");ns.hasNext(); ) {
             			Element n=(Element)ns.next();
@@ -73,7 +76,7 @@ public class MultiLanguageGui {
 					// decode filename
                        			org.w3c.dom.Node n3=nm.getNamedItem("file");
                         		if (n3!=null) {
-        					setfile = MMBaseContext.getConfigPath()+File.separator+"multilanguagegui"+File.separator+n3.getNodeValue();
+        					setfile = File.separator+n3.getNodeValue();
 						n3=nm.getNamedItem("name");
 						if (n3!=null) {
 							decodeLanguageGuiSet(setfile,n3.getNodeValue());
@@ -86,18 +89,18 @@ public class MultiLanguageGui {
 				}
 			}
 		} else {
-			log.error("Can't read/parse langaugeguiset : "+filename);
+			log.error("Can't read/parse langaugeguiset : "+languageguisetsfile);
 		}
-	} else {
-		log.error("Can't open languageguisets : "+filename);
+	} catch (Exception e) {
+		log.error("Can't open languageguisets : "+languageguisetsfile);
 	}
    }
 
 
    private static void decodeLanguageGuiSet(String filename,String setname) {
-        File file = new File(filename);
-        if(file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename,MultiLanguageGui.class);
+         try {
+            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("multilanguagegui"+filename);
+            DocumentReader reader = new DocumentReader(is,MultiLanguageGui.class);
 
 	    Hashtable languageguiset=new Hashtable();
 	    for (Iterator n = reader.getChildElements("languageguiset","keyword");n.hasNext();) {
@@ -117,7 +120,7 @@ public class MultiLanguageGui {
 		    }
 	    }
             languageguisets.put(setname,languageguiset);
-        } else {
+        } catch(Exception e) {
 		log.error("Can't read languageguiset : "+filename);
         }
     }
@@ -309,7 +312,8 @@ public class MultiLanguageGui {
 	if (filename!=null) {
 		saveFile(filename,createSetXML(setname));
 	}
-	saveFile(filename,createSetXML(setname));
+       	filename = "multilanguagegui"+File.separator+"languageguisets.xml";
+	saveFile(filename,createSetsXML());
 	return true;
     }
 
@@ -318,7 +322,7 @@ public class MultiLanguageGui {
 	Hashtable set=(Hashtable)languageguisets.get(setname);
 	if (set==null) { 
 		languageguisets.put(setname,new Hashtable());
-  		String setfile = MMBaseContext.getConfigPath()+File.separator+"multilanguagegui"+File.separator+"sets"+File.separator+setname+".xml";
+  		String setfile = "multilanguagegui"+File.separator+"sets"+File.separator+setname+".xml";
 		setfilenames.put(setname,setfile);
 	}
 
@@ -326,7 +330,7 @@ public class MultiLanguageGui {
 	if (filename!=null) {
 		saveFile(filename,createSetXML(setname));
 	}
-        filename = MMBaseContext.getConfigPath()+File.separator+"multilanguagegui"+File.separator+"languageguisets.xml";
+       	filename = "multilanguagegui"+File.separator+"languageguisets.xml";
 	saveFile(filename,createSetsXML());
 	return true;
     }
@@ -437,16 +441,16 @@ public class MultiLanguageGui {
     }
 
 
-    static boolean saveFile(String filename,String value) {
-        File sfile = new File(filename);
+    static boolean saveFile(String filename,String body) {
         try {
-            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
-            scan.writeBytes(value);
-            scan.flush();
-            scan.close();
+                Writer wr = ResourceLoader.getConfigurationRoot().getWriter(filename);
+                wr.write(body);
+                wr.flush();                
+		wr.close();
         } catch(Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
+                e.printStackTrace();        
+		return false;
+	}
         return true;
     }
 }
