@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.152 2006-01-16 15:06:49 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.153 2006-01-16 16:17:35 johannes Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, java.io.Serializable {
 
@@ -1020,26 +1020,42 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     }
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-        if (MMBaseContext.isInitialized()) {
-            this.name = (String)in.readObject();
-            this.userContext = (UserContext)in.readObject();
-            this.cloudContext = LocalContext.getCloudContext();
-            this.description = name;
-            init();
-            if (userContext == null) {
-                throw new java.lang.SecurityException("Login invalid: did not supply user object");
-            }
-
-            if (userContext.getAuthenticationType() == null) {
-                log.warn("Security implementation did not set 'authentication type' in the user object.");
-            }
-        } else {
-            throw new java.io.NotSerializableException(Cloud.class.getName());
-        }
+        this.name = (String)in.readObject();
+        this.userContext = (UserContext)in.readObject();
+        this.cloudContext = LocalContext.getCloudContext();
+        this.description = name;
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter(this));
     }
+
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
         out.writeObject(name);
         out.writeObject(userContext);
+    }
+
+    class BasicCloudStarter implements Runnable {
+        private BasicCloud parent;
+
+        public BasicCloudStarter(BasicCloud parent) {
+            this.parent = parent;
+        }
+
+        public void run() {
+            BasicCloudContext ctx = (BasicCloudContext)LocalContext.getCloudContext();
+            while (!MMBaseContext.isInitialized() || !ctx.isUp()) {
+                try {
+                    Thread.currentThread().sleep(10000);
+                } catch (Exception e) {
+                }
+            }
+            parent.init();
+            if (parent.userContext == null) {
+                throw new java.lang.SecurityException("Login invalid: did not supply user object");
+            }
+            
+            if (parent.userContext.getAuthenticationType() == null) {
+                log.warn("Security implementation did not set 'authentication type' in the user object.");
+            }
+        }
     }
 }
