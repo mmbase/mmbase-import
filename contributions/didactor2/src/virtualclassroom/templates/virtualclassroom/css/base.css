@@ -7,19 +7,12 @@
 	    /** for table   **/ 
 
 .contentBody {
-   font-weight: normal;
-   color: #000000;
-   overflow: visible;
    top: 2em;
    height: 100%;
-   width: 100%;
+   width: 99%;
    left: 0.2em;
    right: 0em;
-   position: absolute;
-   z-index: 4;
    padding: 0em;
-   background-color: #ffffff;
-   border-left: 0px solid #888888; 
    margin-left: auto;
    margin-right: auto;
 }
@@ -33,7 +26,7 @@
 }
 
 .bottomRow {
-	height: 33%;
+	height: 30%;
 	width: 75%;
 	top: 45%;
 	left: 0%;
@@ -56,7 +49,7 @@
 .rightHalfRow {
 	text-align: center;
 	padding: 0em 0em 0em 0.2em;
-	height: 74%;
+	height: 75%;
 	width: 24%;
 	top: 0%;
 	left: 75%;
@@ -141,4 +134,5 @@
  width: 100%;
  overflow: scroll;
  padding: 0em;
+ margin-right:0em;
 }
