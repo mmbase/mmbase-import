@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.3 2006-01-16 19:24:20 pierre Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.4 2006-01-16 20:24:48 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -135,24 +135,20 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
      * @throws SearchQueryException is the query to create the index out of failed
      */
     protected NodeIterator getNodeIterator(String id) {
-        try {
-            Query q = (Query) query.clone();
-            String elementNumberFieldName = "number";
-            if (isMultiLevel) {
-                elementNumberFieldName = elementManager.getName()+".number";
-            }
-            if (id != null) {
-                String numberFieldName = isMultiLevel ? ((Step) q.getSteps().get(0)).getAlias()+".number" : elementNumberFieldName;
-                Constraint constraint = Queries.createConstraint(q, numberFieldName, FieldCompareConstraint.EQUAL, new Integer(id));
-                Queries.addConstraint(q, constraint);
-            }
-            StepField elementNumberField = q.createStepField(elementNumberFieldName);
-            q.addSortOrder(elementNumberField, SortOrder.ORDER_DESCENDING);
-            return new HugeNodeListIterator(q, maxNodesInQuery);
-        } catch (Exception sqe) {
-            log.error(sqe);
-            return null;
+        Query q = (Query) query.clone();
+        String elementNumberFieldName = "number";
+        if (isMultiLevel) {
+            elementNumberFieldName = elementManager.getName()+".number";
         }
+        if (id != null) {
+            String numberFieldName = isMultiLevel ? ((Step) q.getSteps().get(0)).getAlias()+".number" : elementNumberFieldName;
+            Constraint constraint = Queries.createConstraint(q, numberFieldName, FieldCompareConstraint.EQUAL, new Integer(id));
+            Queries.addConstraint(q, constraint);
+        }
+        StepField elementNumberField = q.createStepField(elementNumberFieldName);
+        q.addSortOrder(elementNumberField, SortOrder.ORDER_DESCENDING);
+        return new HugeNodeListIterator(q, maxNodesInQuery);
+
     }
 
     public String toString() {

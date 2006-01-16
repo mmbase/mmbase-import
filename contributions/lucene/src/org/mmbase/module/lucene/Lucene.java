@@ -42,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.35 2006-01-16 20:15:59 michiel Exp $
+ * @version $Id: Lucene.java,v 1.36 2006-01-16 20:24:48 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -644,9 +644,8 @@ public class Lucene extends Module implements MMBaseObserver {
                         }
                     }
                 };
-            if (! indexAssignments.contains(assignment)) {
-                indexAssignments.add(assignment);
-            }
+            indexAssignments.remove(assignment);
+            indexAssignments.add(assignment);
         }
 
         public void fullIndex() {

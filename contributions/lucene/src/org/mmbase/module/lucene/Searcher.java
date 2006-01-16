@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.17 2006-01-05 13:58:29 michiel Exp $
+ * @version $Id: Searcher.java,v 1.18 2006-01-16 20:24:48 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -171,6 +171,7 @@ public class Searcher {
             query = MultiFieldQueryParser.parse(value, fields, analyzer);
         }
         if (extraQuery != null) {
+            log.info("Found an extra query " + extraQuery + " for " + query + " " + BooleanQuery.getMaxClauseCount());
             BooleanQuery booleanQuery = new BooleanQuery();
             booleanQuery.add(query, true, false);
             booleanQuery.add(extraQuery, true, false);
@@ -213,9 +214,10 @@ public class Searcher {
             if (type.equals("EQ") || type.equals("NE")) {
                 subQuery = new TermQuery(new Term(field, value));
             } else if (type.equals("GT")|| type.equals("GTE")) {
-                subQuery = new RangeQuery(new Term(field,value), null, type.equals("GTE"));
+                subQuery = new RangeQuery(new Term(field, value), null, type.equals("GTE"));
             } else if (type.equals("LT") || type.equals("LTE")) {
-                subQuery = new RangeQuery(null, new Term(field,value), type.equals("LTE"));
+                log.info("Instantatiating rangquery NULL->" + value);
+                subQuery = new RangeQuery(null, new Term(field, value), type.equals("LTE"));
             } else if (type.equals("IN") || type.equals("INC")) {
                 subQuery = new RangeQuery(new Term(field, value), new Term(field, value2), type.equals("INC"));
             } else {
