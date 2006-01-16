@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.175 2006-01-13 17:37:30 michiel Exp $
+ * @version $Id: MMBase.java,v 1.176 2006-01-16 13:35:31 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -321,11 +321,6 @@ public class MMBase extends ProcessorModule {
         log.service("MMBase machine name used for clustering:" + machineName);
         Logging.setMachineName(machineName);
 
-//        log.debug("Starting JDBC module");
-//
-//        // start the JDBC module if present
-//        getModule("JDBC", true);
-
         mmbaseState = STATE_LOAD;
 
         log.debug("Loading builders:");
@@ -336,7 +331,6 @@ public class MMBase extends ProcessorModule {
 
         log.service("Initializing  storage:");
         initializeStorage();
-
 
         log.debug("Checking MMBase");
         if (!checkMMBase()) {
@@ -478,6 +472,17 @@ public class MMBase extends ProcessorModule {
             log.trace("MMObject " + name + " could not be found"); // can happen...
         }
         return (MMObjectBuilder) o;
+    }
+
+    /**
+     * Returns whether the MMBase class has been instantiated. Use this with pocesses that are
+     * not themselves allwoed to start mmbase, such as serialization methods that require a MMBase cloud.
+     * Testing whether MMBase is instantiated prevents faulty startups through calls to getMMBase()
+     *
+     * @return <code>true</code> is MMBase has been instantiated.
+     */
+    public static boolean instantiated() {
+        return mmbaseroot != null;
     }
 
     /**
