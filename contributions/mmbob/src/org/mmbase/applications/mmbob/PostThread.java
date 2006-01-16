@@ -472,7 +472,7 @@ public class PostThread {
 	int a=parent.getId();
 	int p=getId();
 
-	if (!cssclass.equals("")) {
+	if (cssclass!=null && !cssclass.equals("")) {
 		cssclass=" class=\""+cssclass+"\"";	
 	}
 

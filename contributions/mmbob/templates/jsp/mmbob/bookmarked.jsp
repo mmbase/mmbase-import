@@ -62,6 +62,7 @@
     <th><mm:write referid="mlg.last_posting"/></th>
   </tr>
 	<mm:nodelistfunction set="mmbob" name="getBookmarkedThreads" referids="forumid,postareaid,posterid,page,pagesize">
+	<mm:first><mm:import id="resultfound" /></mm:first>
 	<tr>
 
     		<td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td>
@@ -76,7 +77,7 @@
 		<td><mm:field name="viewcount" /></td>
 
     		<td align="left">
-      		<mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> 
+      		<mm:field name="lastposttime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> 
      		 <mm:write referid="mlg.by"/>
     		  <mm:field name="lastposternumber">
        		 <mm:compare value="-1" inverse="true">
@@ -88,6 +89,9 @@
 		 </td>
 	</tr>
 	</mm:nodelistfunction>
+	<mm:notpresent referid="resultfound">
+	<tr><td colspan="8"><b><mm:write referid="mlg.NoBookmarksFound"/></b></td></tr>
+	</mm:notpresent>
 </table>
 </div>                                                                                                        
 <div class="footer">

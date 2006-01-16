@@ -134,7 +134,7 @@
 			<tr align="left">
 			<td class="<mm:field name="tdvar" />" align="left">
 			<a name="p<mm:field name="id" />">&nbsp;</a>
-			<mm:field name="posttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
+			<mm:field name="posttime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
 			</td>
 			<td class="<mm:field name="tdvar" />" align="right">
 			<mm:remove referid="postingid" />
@@ -229,7 +229,7 @@
                         </p>
 			</td>
 			<td class="<mm:field name="tdvar" />" valign="top" align="left">
-			<mm:field name="edittime"><mm:compare value="-1" inverse="true"><mm:write referid="mlg.last_time_edited"/> : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
+			<mm:field name="edittime"><mm:compare value="-1" inverse="true"><mm:write referid="mlg.last_time_edited"/> : <mm:field name="edittime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
            
             <mm:field name="body" />
 
@@ -299,12 +299,12 @@
 		<input name="poster" type="hidden" value="<mm:write referid="active_nick" />" >
 		</mm:compare>
 		<mm:compare referid="posterid" value="-1">
-		<input name="poster" type="hidden" style="width: 100%" value="<mm:write referid="mlg.guest"/>" >
+		<input name="poster" type="hidden" style="width: 99%" value="<mm:write referid="mlg.guest"/>" >
 		<mm:write referid="mlg.guest"/>
 		</mm:compare>
 
 		</td></tr>
-	<tr><th><mm:write referid="mlg.Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 100%"><mm:compare referid="error" value="none" inverse="true"><mm:import externid="body" from="session"></mm:import><mm:write referid="body" /><mm:import id="error" reset="true">none</mm:import><mm:write referid="error" session="error" /></mm:compare></textarea></td></tr>
+	<tr><th><mm:write referid="mlg.Reply"/> <center><table width="100"><tr><th><mm:compare referid="smileysenabled" value="true"><%@ include file="includes/smilies.jsp" %></mm:compare></th></tr></table></center> </th><td><textarea name="body" rows="5" style="width: 99%"><mm:compare referid="error" value="none" inverse="true"><mm:import externid="body" from="session"></mm:import><mm:write referid="body" /><mm:import id="error" reset="true">none</mm:import><mm:write referid="error" session="error" /></mm:compare></textarea></td></tr>
 	<tr><td colspan="3"><input type="hidden" name="action" value="postreply">
 	<center><input type="submit" value="<mm:write referid="mlg.Post_reply"/>"/></center>
 	</td></tr>

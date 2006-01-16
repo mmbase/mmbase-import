@@ -1283,6 +1283,12 @@ public class Forum {
 	}
    }
 
+   public void addProfileDef(ProfileEntryDef cm) {
+	if (checkConfig()) {
+		config.addProfileDef(cm);
+	}
+   }
+
 
    public void setLoginModeType(String type) {
 	if (checkConfig()) {

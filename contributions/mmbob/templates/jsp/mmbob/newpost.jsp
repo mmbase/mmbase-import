@@ -65,7 +65,7 @@
 		<mm:write referid="mlg.guest" />	
 		</mm:compare>
 	</td></tr>
-	<tr><th width="150"><mm:write referid="mlg.Topic" /></th><td colspan="2"><input name="subject" style="width: 100%"></td></th>
+	<tr><th width="150"><mm:write referid="mlg.Topic" /></th><td colspan="2"><input name="subject" style="width: 99%"></td></th>
 	<tr><th width="150"><mm:write referid="mlg.Mood" /></th><td colspan="2" align="left">
 		<select name="mood">
 		<option value="normal"><mm:write referid="mlg.normal"/>
@@ -86,7 +86,7 @@
 </mm:compare></mm:field>
 </mm:nodefunction>
 
-</center></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea>
+</center></th><td colspan="2"><textarea name="body" rows="20" style="width: 99%"></textarea>
 </td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="newpost">

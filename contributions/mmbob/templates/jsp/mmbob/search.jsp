@@ -79,6 +79,7 @@
 	<mm:listcontainer path="forums,postareas,postthreads,postings" fields="forums.number,postareas.number,postthreads.number,postthreads.subject,postings.c_poster,postareas.name">
 	  <mm:constraint field="postings.body" operator="LIKE" value="%$searchkey%" />
   	   <mm:list max="10">
+	   <mm:first><mm:import id="resultfound">true</mm:import></mm:first>
 	    <tr>
  	      <td>
 		<mm:field name="postareas.name" />
@@ -95,6 +96,8 @@
 		<mm:field name="postings.c_poster" /> 
 	      </td>
   	   </mm:list>
+	   <mm:present referid="resultfound">
+	   </mm:present>
 	</mm:listcontainer>
 </table>
 </mm:present>
@@ -172,6 +175,7 @@
 	<mm:import id="page">1</mm:import>
 	<mm:import id="pagesize">10</mm:import>
 	<mm:nodelistfunction set="mmbob" name="searchPostings" referids="forumid,searchareaid,postthreadid@searchpostthreadid,searchkey,page,pagesize">
+           <mm:first><mm:import id="resultfound">true</mm:import></mm:first>
 	    <tr>
  	      <td>
 		<mm:field name="postareaname" />
@@ -188,6 +192,9 @@
 	      </td>
             </tr>
 	</mm:nodelistfunction>
+	   <mm:notpresent referid="resultfound">
+	   <tr><td colspan="3"><b><mm:write referid="mlg.NoResultsFound" /></b></td></tr>
+	   </mm:notpresent>
 </table>
 </mm:present>
 </mm:compare>

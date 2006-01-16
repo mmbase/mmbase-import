@@ -2040,11 +2040,11 @@ public class Controller {
      * @param password default/first admin password name for this new forum
      * @return (map) containing the forumid of the newly created forum
      */
-    public Map newForum(String name, String language, String description, String account, String password,String email) {
+    public Map newForum(String name, String language, String description, String account, String password,String nick,String email) {
         Map map = new HashMap();
 	name = filterHTML(name);
 	description = filterHTML(description);
-        int forumid = ForumManager.newForum(name, language, description, account, password,email);
+        int forumid = ForumManager.newForum(name, language, description, account, password,nick,email);
         map.put("forumid",new Integer(forumid));
         return map;
     }

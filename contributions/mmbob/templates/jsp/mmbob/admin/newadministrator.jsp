@@ -56,7 +56,7 @@
 		  <form action="<mm:url page="newadministrator.jsp" referids="forumid" />" method="post">
 			search <input name="searchkey" size="20" value="<mm:write referid="searchkey" />" />
 		  </form>
-  		  <form action="<mm:url page="index.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="admincheck" value="true" /></mm:url>" method="post">
+  		  <form action="<mm:url page="newadministrator.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="admincheck" value="true" /></mm:url>" method="post">
 		  <select name="newadministrator">
   		  <mm:nodelistfunction set="mmbob" name="getNonAdministrators" referids="forumid,searchkey">
 				<option value="<mm:field name="id" />"><mm:field name="nick" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
