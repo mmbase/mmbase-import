@@ -17,7 +17,7 @@
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
- <mm:include page="../actions.jsp" />
+ <mm:include page="actions.jsp" />
 </mm:present>
 <!-- end action check -->
 
@@ -45,7 +45,7 @@
   
   </th></tr>
 
-  <form action="<mm:url page="index.jsp">
+  <form action="<mm:url page="removeadministrator.jsp">
 					<mm:param name="forumid" value="$forumid" />
 					<mm:param name="admincheck" value="true" />
 				</mm:url>" method="post">

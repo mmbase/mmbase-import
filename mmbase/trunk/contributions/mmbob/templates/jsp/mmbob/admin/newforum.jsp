@@ -14,8 +14,9 @@
 	<mm:import externid="language" />
 	<mm:import id="newaccount" externid="account" />
 	<mm:import id="newpassword" externid="password" />
+	<mm:import id="newnick" externid="nick"></mm:import>
 	<mm:import externid="email" />
-	<mm:nodefunction set="mmbob" name="newForum" referids="name,language,description,newaccount@account,newpassword@password,email">
+	<mm:nodefunction set="mmbob" name="newForum" referids="name,language,description,newaccount@account,newpassword@password,newnick@nick,email">
 		<mm:import id="feedback">true</mm:import>
 	</mm:nodefunction>
 </mm:compare>
@@ -52,6 +53,9 @@
 	<tr><th>Admin account</th><td colspan="2">
 	<input name="account" size="70" value="" style="width: 100%">
 	</td></tr>
+	<tr><th>Nick name</th><td colspan="2">
+	<input name="nick" size="70" value="" style="width: 100%">
+	</td></tr>
 	<tr><th>Admin wachtwoord</th><td colspan="2">
 	<input type="password" name="password" size="70" value="" style="width: 100%">
 	</td></tr>
@@ -65,6 +69,9 @@
 	</td></tr>
 	<tr><th>Admin wachtwoord</th><td colspan="2">
 	<input type="hidden" name="password" value="<%= request.getHeader("aad_nummer") %>" style="width: 100%"> *********
+	</td></tr>
+	<tr><th>Nick name</th><td colspan="2">
+	<input name="nick" size="70" value="" style="width: 100%">
 	</td></tr>
 	<tr><th>Admin email</th><td colspan="2">
 	<input type="hidden" name="email" value="<%= request.getHeader("aad_emailadres") %>" style="width: 100%"> *********

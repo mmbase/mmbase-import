@@ -2,10 +2,6 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
-<mm:import id="dac"><mm:function set="mmbob" name="getDefaultAccount" /></mm:import>
-<mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
-</mm:cloud>
-<mm:cloud sessionname="forum" username="$dac" password="$dpw">
 <mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
@@ -103,7 +99,7 @@
 	<td width="50%">
 		<br />
 		<mm:write referid="mlg.Subject" /> : <mm:field name="subject" /><br />
-		<mm:write referid="mlg.Date" /> : <mm:field name="createtime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field><br />
+		<mm:write referid="mlg.Date" /> : <mm:field name="createtime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field><br />
 		<mm:write referid="mlg.Sender" /> : <mm:field name="poster" /> (<mm:field name="fullname" />)<br />
 		<mm:write referid="mlg.Mailbox" /> : <mm:node referid="mailboxid"><mm:field name="name" /></mm:node><br />
 		<br />

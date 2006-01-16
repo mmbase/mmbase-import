@@ -69,7 +69,7 @@
   <tr>
     <td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="nick" />)</a></td>
     <td><mm:field name="location" /></td>
-    <td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td>
+    <td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td>
     <mm:compare referid="isadministrator" value="true">
       <td><a href="removeposter.jsp?forumid=<mm:write referid="forumid" />&removeposterid=<mm:field name="number" />"/><mm:write referid="mlg.Delete"/></a> / 
       <mm:field name="state">

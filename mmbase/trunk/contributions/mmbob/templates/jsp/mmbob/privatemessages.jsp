@@ -96,7 +96,7 @@
 	<mm:first>
 		<mm:import id="messagesfound">true</mm:import>
 	</mm:first>
-	<tr><td><mm:index /></td><td width="50%"><a href="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid"><mm:param name="messageid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="subject" /></a> <mm:field name="viewstate"><mm:compare value="0">*<mm:write referid="mlg.UNSEEN" />*</mm:compare></mm:field></td><td width="25%" ><mm:field name="poster" /> (<mm:field name="fullname" />)</td><td width="25%"><mm:field name="createtime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td><td><input type="checkbox" name="selectedmessages"></td></tr>
+	<tr><td><mm:index /></td><td width="50%"><a href="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid"><mm:param name="messageid"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="subject" /></a> <mm:field name="viewstate"><mm:compare value="0">*<mm:write referid="mlg.UNSEEN" />*</mm:compare></mm:field></td><td width="25%" ><mm:field name="poster" /> (<mm:field name="fullname" />)</td><td width="25%"><mm:field name="createtime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td><td><input type="checkbox" name="selectedmessages"></td></tr>
 	</mm:relatednodes>
 	</mm:node>
 	<tr>

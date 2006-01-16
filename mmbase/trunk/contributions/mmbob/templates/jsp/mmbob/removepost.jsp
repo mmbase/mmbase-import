@@ -50,7 +50,7 @@
   <mm:import id="tdvar">listpaging</mm:import>
   <tr>
     <td class="<mm:write referid="tdvar" />" align="left">
-      <mm:field name="createtime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
+      <mm:field name="createtime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
     </td>
     <td class="<mm:write referid="tdvar" />" align="right">
     </td>
@@ -63,7 +63,7 @@
   </td>
 
   <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-    <mm:field name="edittime"><mm:compare value="-1" inverse="true">** <mm:write referid="mlg.last_time_edited"/> **<mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
+    <mm:field name="edittime"><mm:compare value="-1" inverse="true">** <mm:write referid="mlg.last_time_edited"/> **<mm:field name="edittime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
 
 
   <mm:import id="tmpid" reset="true"><mm:field name="id"/></mm:import>

@@ -81,7 +81,6 @@
               </h4>
             </center>
             </mm:present>
-
           <mm:notpresent referid="loginfailed">
             <h4><mm:write referid="mlg.Welcome" /> <mm:write referid="mlg.on_the" /> <mm:field name="name" /> <mm:write referid="mlg.forum" /> !</h4>
             <p /><b><mm:write referid="mlg.login" /></b><p />
@@ -158,7 +157,7 @@
           <mm:write referid="mlg.last_time_logged_in" /> : 
           <mm:field name="active_lastseen">
             <mm:compare value="" inverse="true">
-              <mm:field name="active_lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
+              <mm:field name="active_lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
             </mm:compare>
           </mm:field>
 
@@ -166,7 +165,7 @@
           <mm:write referid="mlg.member_since" /> : 
           <mm:field name="active_firstlogin">
             <mm:compare value="" inverse="true">
-              <mm:field name="active_firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
+              <mm:field name="active_firstlogin"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
             </mm:compare>
           </mm:field>
  
@@ -198,7 +197,7 @@
         <b><mm:write referid="mlg.Areas" /></b> : <mm:field name="postareacount" /> <b><mm:write referid="mlg.Topics" /></b> : <mm:field name="postthreadcount" /><br />
         <b><mm:write referid="mlg.Messages" /></b> : <mm:field name="postcount" /> <b><mm:write referid="mlg.Views" /> </b> : <mm:field name="viewcount" /><br />
         <b><mm:write referid="mlg.Members" /></b> : <mm:field name="posterstotal" /> <b><mm:write referid="mlg.New" /></b> : <mm:field name="postersnew" /> <b><mm:write referid="mlg.Online"/></b> : <mm:field name="postersonline" /><p />
-        <b><mm:write referid="mlg.Last_posting"/></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg.by"/> <mm:field name="lastposter" /> '<mm:field name="lastsubject" />'</mm:compare><mm:compare value="-1"><mm:write referid="mlg.no_messages"/></mm:compare></mm:field>
+        <b><mm:write referid="mlg.Last_posting"/></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg.by"/> <mm:field name="lastposter" /> '<mm:field name="lastsubject" />'</mm:compare><mm:compare value="-1"><mm:write referid="mlg.no_messages"/></mm:compare></mm:field>
       </th>
     </tr>
   </mm:nodefunction>
@@ -237,7 +236,7 @@
 				<td><mm:field name="postthreadcount" /></td>
 				<td><mm:field name="postcount" /></td>
 				<td><mm:field name="viewcount" /></td>
-				<td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg.by" />  
+				<td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg.by" />  
   <mm:field name="lastposternumber">
     <mm:compare value="-1" inverse="true">
        <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a>
@@ -275,7 +274,7 @@
 				<td><mm:field name="postthreadcount" /></td>
 				<td><mm:field name="postcount" /></td>
 				<td><mm:field name="viewcount" /></td>
-				<td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg.by" />  
+				<td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg.by" />  
   <mm:field name="lastposternumber">
     <mm:compare value="-1" inverse="true">
        <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a>

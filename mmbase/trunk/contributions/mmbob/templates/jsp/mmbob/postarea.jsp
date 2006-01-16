@@ -67,7 +67,7 @@
 					<br />
 					</mm:compare>
 			<b><mm:write referid="mlg.Area_name"/></b> : <mm:field name="name" /> <b><mm:write referid="mlg.Topics"/></b> : <mm:field name="postthreadcount" /> <b><mm:write referid="mlg.Messages"/></b> : <mm:field name="postcount" /> <b><mm:write referid="mlg.Views"/></b> : <mm:field name="viewcount" /><br />
-			<b><mm:write referid="mlg.Last_posting"/></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b><mm:write referid="mlg.by"/></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><mm:write referid="mlg.no_messages"/></mm:compare></mm:field><br />
+			<b><mm:write referid="mlg.Last_posting"/></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> <b><mm:write referid="mlg.by"/></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><mm:write referid="mlg.no_messages"/></mm:compare></mm:field><br />
 			<mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
                         <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
 		  </mm:nodefunction>
@@ -121,7 +121,7 @@
     <td align="left"><mm:field name="replycount" /></td>
     <td align="left"><mm:field name="viewcount" /></td>
     <td align="left">
-      <mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> 
+      <mm:field name="lastposttime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> 
       <mm:write referid="mlg.by"/>
       <mm:field name="lastposternumber">
         <mm:compare value="-1" inverse="true">

@@ -155,7 +155,7 @@ public class ForumConfig {
 
                         String tmp = getAttributeValue(reader,n,"navigation","method");
 			if (tmp!=null) navigationmethod = tmp;
-                        setGuiEdit("navigationmethod",tmp);
+                        setGuiEdit("navigationmethod",getAttributeValue(reader,n,"navigation","guiedit"));
 
                         for(Iterator ns2=reader.getChildElements(n,"layout");ns2.hasNext(); ) {
                             Element n2=(Element)ns2.next();
@@ -640,6 +640,19 @@ public class ForumConfig {
         return profiledefs.values().iterator();
     }
 
+    public void addProfileDef(ProfileEntryDef cm) {
+           ProfileEntryDef pe = new ProfileEntryDef();
+           pe.setName(cm.getName());
+           pe.setGuiPos(cm.getGuiPos());
+           pe.setSize(cm.getSize());
+           pe.setEdit(cm.getEdit());
+           if (cm.getExternal()!=null) pe.setExternal(cm.getExternal());
+           if (cm.getExternalName()!=null) pe.setExternalName(cm.getExternalName());
+           if (cm.getType()!=null) pe.setType(cm.getType());
+           if (cm.getGuiName()!=null) pe.setGuiName(cm.getGuiName());
+           profiledefs.put(cm.getName(),pe);
+   }
+
     public ProfileEntryDef getProfileDef(String name) {
 	Object o = profiledefs.get(name);
 	if (o != null) return (ProfileEntryDef)o;
@@ -659,6 +672,8 @@ public class ForumConfig {
     }
 	
     public String getGuiEdit(String key) {
-	return (String)setguieditvalues.get(key);
+	String result=(String)setguieditvalues.get(key);
+	if (result==null || result.equals("")) return "true";
+	return result;
     }
 }
