@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.149 2006-01-13 15:44:29 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.150 2006-01-16 13:35:31 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, java.io.Serializable {
 
@@ -95,7 +95,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
 
         userContext = cloud.userContext;
         account = cloud.account;
-
     }
 
     /**
@@ -153,7 +152,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
 
         this.name = name;
         description = name;
-
     }
 
     private final void init() {
@@ -178,9 +176,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
 
         // generate an unique id for this instance...
         account = "U" + uniqueId();
-
-
-
     }
 
     // Makes a node or Relation object based on an MMObjectNode
@@ -1022,21 +1017,24 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      * Ignored by basic cloud. See {@link BasicTransaction#remove(String)}.
      */
     void remove(String currentObjectContext) {
-
     }
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-        this.name = (String)in.readObject();
-        this.userContext = (UserContext)in.readObject();
-        this.cloudContext = LocalContext.getCloudContext();
-        this.description = name;
-        init();
-        if (userContext == null) {
-            throw new java.lang.SecurityException("Login invalid: did not supply user object");
-        }
+        if (MMBase.instantiated()) {
+            this.name = (String)in.readObject();
+            this.userContext = (UserContext)in.readObject();
+            this.cloudContext = LocalContext.getCloudContext();
+            this.description = name;
+            init();
+            if (userContext == null) {
+                throw new java.lang.SecurityException("Login invalid: did not supply user object");
+            }
 
-        if (userContext.getAuthenticationType() == null) {
-            log.warn("Security implementation did not set 'authentication type' in the user object.");
+            if (userContext.getAuthenticationType() == null) {
+                log.warn("Security implementation did not set 'authentication type' in the user object.");
+            }
+        } else {
+            throw new java.io.NotSerializableException(MMBase.class.getName());
         }
     }
 
