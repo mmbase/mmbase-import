@@ -14,6 +14,8 @@ import org.mmbase.bridge.Field;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * VirtualBuilder is a builder which creates 'virtual' nodes.
@@ -22,9 +24,10 @@ import org.mmbase.core.util.Fields;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.21 2005-12-10 14:23:33 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.22 2006-01-16 15:17:59 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
+    private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
 
     private static int counter = 0;
     /**
@@ -51,7 +54,11 @@ public class VirtualBuilder extends MMObjectBuilder {
         this.tableName = tableName;
         this.description = "";
         virtual = true;
-        m.mmobjs.put(tableName, this);
+        if (m.addBuilder(tableName, this) != null) {
+            log.debug("Replaced virtual builder '" + tableName + "'");
+        } else {
+            log.debug("Created virtual builder '" + tableName + "'");
+        }
     }
 
     /**
