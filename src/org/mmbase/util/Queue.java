@@ -18,7 +18,8 @@ import java.util.*;
  * In 1.5, this class need to be replaced with the java.util.concurrent.BlockingQueue&lt;E&gt; interface.
  *
  * @author vpro
- * @version $Id: Queue.java,v 1.7 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id: Queue.java,v 1.8 2006-01-16 20:21:42 michiel Exp $
+ * @deprecated Use edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue, or some other Queue implementation.
  */
 public class Queue {
 
