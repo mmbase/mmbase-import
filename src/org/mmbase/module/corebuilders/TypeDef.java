@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.63 2006-01-13 15:44:30 pierre Exp $
+ * @version $Id: TypeDef.java,v 1.64 2006-01-16 14:53:02 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -308,7 +308,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public String getSingularName(String builderName, String language) {
         if (builderName == null) return "unknown";
-        MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(builderName);
+        MMObjectBuilder bul = mmb.getBuilder(builderName);
         if (bul!=null) {
             if (language == null) {
                 return bul.getSingularName();
@@ -483,12 +483,12 @@ public class TypeDef extends MMObjectBuilder {
     public boolean reloadBuilder(String objectname) {
         log.service("Trying to reload builder : "+objectname);
         // first get all the info we need from the builder allready running
-        MMObjectBuilder oldbul=mmb.getMMObject(objectname);
-        String classname=oldbul.getClass().getName();
-        String description=oldbul.getDescription();
+        MMObjectBuilder oldbul = mmb.getBuilder(objectname);
+        String classname = oldbul.getClass().getName();
+        String description = oldbul.getDescription();
 
         try {
-            Class newclass=Class.forName("org.mmbase.module.builders."+classname);
+            Class newclass = Class.forName("org.mmbase.module.builders." + classname);
             log.debug("Loaded load class : "+newclass);
 
             MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
@@ -498,7 +498,7 @@ public class TypeDef extends MMObjectBuilder {
             bul.setTableName(objectname);
             bul.setDescription(description);
             bul.init();
-            mmb.mmobjs.put(objectname,bul);
+            mmb.addBuilder(objectname, bul);
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
             return false;
@@ -525,7 +525,7 @@ public class TypeDef extends MMObjectBuilder {
         if (field == null || "".equals(field)) {
             return getLocaleGUIIndicator(locale, node);
         } else if ("description".equals(field)) {
-            MMObjectBuilder bul = (MMObjectBuilder)mmb.mmobjs.get(node.getStringValue("name"));
+            MMObjectBuilder bul = mmb.getBuilder(node.getStringValue("name"));
             if (bul != null) {
                 return bul.getDescription(locale.getLanguage());
             }
