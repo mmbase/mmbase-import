@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.66 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.67 2006-01-16 14:48:50 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -513,7 +513,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
         if (tableName.equals(event.getBuilderName())) {
             if (event.getType() == NodeEvent.EVENT_TYPE_NEW) {
-                log.service("Added to typerelcache: " + addCacheEntry(getNode(event.getNodeNumber()), true));
+                Set newTypeRels = addCacheEntry(getNode(event.getNodeNumber()), true);
+                log.service("Added to typerelcache: " + newTypeRels);
             } else {
                 //something else changed in a typerel node? reread the complete typeRelNodes Set
                 readCache();
@@ -528,8 +529,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      * @since MMBase-1.7
      */
-    public boolean optimizeRelationStep(BasicRelationStep relationStep, int sourceType, int destinationType,
-        int roleInt, int searchDir) {
+    public boolean optimizeRelationStep(BasicRelationStep relationStep, int sourceType, int destinationType, int roleInt, int searchDir) {
         // Determine in what direction(s) this relation can be followed:
 
         // Check directionality is requested and supported.
@@ -540,13 +540,15 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // this is a bit confusing, can the simple cases like explicit 'source'
         // or 'destination' not be handled first?
 
-        boolean sourceToDestination = searchDir != RelationStep.DIRECTIONS_SOURCE
-            && mmb.getTypeRel().contains(sourceType, destinationType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
-        boolean destinationToSource = searchDir != RelationStep.DIRECTIONS_DESTINATION
-            && mmb.getTypeRel().contains(destinationType, sourceType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
+        boolean sourceToDestination = 
+            searchDir != RelationStep.DIRECTIONS_SOURCE
+            && contains(sourceType, destinationType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
+        boolean destinationToSource = 
+            searchDir != RelationStep.DIRECTIONS_DESTINATION
+            && contains(destinationType, sourceType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
 
-        if (destinationToSource && sourceToDestination && (searchDir == RelationStep.DIRECTIONS_EITHER)) { // support
-            // old
+        if (destinationToSource && sourceToDestination && (searchDir == RelationStep.DIRECTIONS_EITHER)) { 
+            // support old
             destinationToSource = false;
         }
 
@@ -568,20 +570,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                 relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
             } else {
                 // no results possible, do something any way
-
-                if (searchDir == RelationStep.DIRECTIONS_SOURCE) { // explicitely
-                    // asked for
-                    // source, it
-                    // would be
-                    // silly to
-                    // try
-                    // destination
-                    // now
+                if (searchDir == RelationStep.DIRECTIONS_SOURCE) { 
+                    // explicitely asked for source, it would be silly to try destination now
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
                 } else {
-                    relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION); // the
-                    // 'normal'
-                    // way
+                    // the 'normal' way
+                    relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
                 }
                 return false;
             }
