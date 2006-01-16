@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.32 2006-01-12 14:12:27 ernst Exp $
+ * @version $Id: Lucene.java,v 1.33 2006-01-16 19:24:20 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -262,12 +262,14 @@ public class Lucene extends Module implements MMBaseObserver {
 
         factory = ContentExtractor.getInstance();
 
+        /*
         // traditional Lucenemodule extractors
         factory.addExtractor("org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor");
         factory.addExtractor("org.mmbase.module.lucene.extraction.impl.SwingRTFExtractor");
-        //factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIWordExtractor");
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIWordExtractor");
         factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIExcelExtractor");
-        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
+        //factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
+        */
 
         // path to the lucene index (a directory on disk writeable to the web-application)
         // this path should be a direct path
@@ -275,23 +277,22 @@ public class Lucene extends Module implements MMBaseObserver {
         if (path != null) {
             indexPath = path;
             log.service("found module parameter for lucine index path : " + indexPath);
-        }else {
+        } else {
             //try to get the index path from the strorage configuration
-            try{
+            try {
                 DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
                 indexPath = dsmf.getBinaryFileBasePath();
-                if(indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
+                if (indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
             } catch(Exception e) {}
         }
 
-        if(indexPath != null){
+        if (indexPath != null) {
             log.service("found storage configuration for lucine index path : " + indexPath);
-        }else{
+        } else {
             // expand the default path (which is relative to the web-application)
             indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
             log.service("fall back to default for lucine index path : " + indexPath);
         }
-
 
         // read only?
         readOnly = "true".equals(getInitParameter("readonly"));
@@ -315,7 +316,7 @@ public class Lucene extends Module implements MMBaseObserver {
                 log.warn("Invalid value '" + time +" ' for property 'initialwaittime'");
             }
         }
-        while(! mmbase.getState()) {
+        while (! mmbase.getState()) {
             if (mmbase.isShutdown()) break;
             try {
                 log.service("MMBase not yet up, waiting for 10 seconds.");
@@ -347,12 +348,13 @@ public class Lucene extends Module implements MMBaseObserver {
             }
         }
     }
+
     public void shutdown() {
         if (scheduler != null) {
             log.service("Stopping Lucene Scheduler");
             scheduler.interrupt();
         }
-}
+    }
 
     public String getModuleInfo() {
         return "This module performs lucene searches and maintains indices";
@@ -418,6 +420,14 @@ public class Lucene extends Module implements MMBaseObserver {
                 Document config = ResourceLoader.getDocument(url, true, Lucene.class);
                 log.service("Reading lucene search configuration from " + url);
                 Element root = config.getDocumentElement();
+                // read standard extractors to use
+                NodeList extractorElements = root.getElementsByTagName("extractor");
+                for (int i = 0; i < extractorElements.getLength(); i++) {
+                    Element extractorElement = (Element) extractorElements.item(i);
+                    String className = extractorElement.getAttribute("class");
+                    factory.addExtractor(className);
+                }
+                // read indices
                 NodeList indexElements = root.getElementsByTagName("index");
                 for (int i = 0; i < indexElements.getLength(); i++) {
                     Element indexElement = (Element) indexElements.item(i);
@@ -516,7 +526,6 @@ public class Lucene extends Module implements MMBaseObserver {
     }
 
     public boolean nodeChanged(String machine, String number, String builder, String ctype) {
-        log.info("Received " + number);
         if (!readOnly) {
             // if this concerns a change or new node, update the index with that node
             if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r")) {
@@ -524,6 +533,9 @@ public class Lucene extends Module implements MMBaseObserver {
             // if this concerns removing a node, remove the index of that node
             } else if (ctype.equals("d")) {
                 scheduler.deleteIndex(number);
+            // if this concerns changing a relation... what then?
+            } else if (ctype.equals("r")) {
+                // do nothing for the moment
             }
         }
         return true;

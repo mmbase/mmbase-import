@@ -24,13 +24,13 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.2 2005-12-29 23:13:06 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.3 2006-01-16 19:24:20 pierre Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
     /**
      * The default maximum number of nodes that are returned by a call to the searchqueryhandler.
-     */    
+     */
     public static final int MAX_NODES_IN_QUERY = 200;
 
     /**
