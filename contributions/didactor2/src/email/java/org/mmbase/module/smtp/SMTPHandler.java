@@ -104,6 +104,7 @@ public class SMTPHandler extends Thread {
      * </ul>
      */
     private void parseLine(String line) throws IOException {
+        log.debug("SMTP INCOMING: " + line);
         if (line.toUpperCase().startsWith("QUIT")) {
             state = STATE_FINISHED;
             return;
@@ -111,6 +112,8 @@ public class SMTPHandler extends Thread {
 
         if (line.toUpperCase().startsWith("RSET")) {
             state = STATE_MAILFROM;
+            mailboxes = new Vector();
+            users = new Vector();
             writer.write("250 Spontanious amnesia has struck me, I forgot everything!\r\n");
             writer.flush();
             return;
@@ -325,7 +328,7 @@ public class SMTPHandler extends Thread {
             Node mailbox = (Node)mailboxes.get(i);
             Node email = emailbuilder.createNode();
             if (properties.containsKey("emailbuilder.typefield")) {
-                email.setIntValue((String)properties.get("emailbuilder.typefield"), 2); // new unread mail
+                 email.setIntValue((String)properties.get("emailbuilder.typefield"), 2); // new unread mail
             }
             if (properties.containsKey("emailbuilder.headersfield")) {
                 email.setStringValue((String)properties.get("emailbuilder.headersfield"), "" + headers);
