@@ -15,6 +15,7 @@ import java.util.regex.*;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.Entry;
+import org.mmbase.util.Casting;
 
 import org.mmbase.util.logging.*;
 
@@ -119,9 +120,43 @@ public class RegexpReplacer extends ChunkedTransformer {
         if (list != null) {
             Iterator i = list.iterator();
             while (i.hasNext()) {
-                Map.Entry entry  = (Map.Entry) i.next();
-                Pattern p        = Pattern.compile((String) entry.getKey());
-                String  result   = (String) entry.getValue();
+                Object next = i.next();
+                Pattern p;
+                String result;
+                if (next == null) {
+                    log.warn("Found null in " + list);
+                    continue;
+                } else if (next instanceof Map.Entry) {
+                    Map.Entry entry  = (Map.Entry) next;
+                    p        = Pattern.compile(Casting.toString(entry.getKey()));
+                    Object value = entry.getValue();
+                    if (value instanceof Collection) {
+                        result = null;
+                        Iterator j = ((Collection) value).iterator();
+                        while (j.hasNext()) {
+                            Object n = j.next();
+                            if (! (n instanceof Map.Entry)) {
+                                log.warn("Could not understand " + n);
+                                continue;
+                            }
+                            Map.Entry subEntry = (Map.Entry) n;
+                            Object key = subEntry.getKey();
+                            if ("key".equals(key)) {
+                                p        = Pattern.compile(Casting.toString(subEntry.getValue()));
+                                continue;
+                            }
+                            if ("value".equals(key)) {
+                                result   = Casting.toString(subEntry.getValue());
+                            }
+                        }
+                        if (result == null) result = "";
+                    } else {
+                        result   = Casting.toString(value);
+                    }
+                } else {
+                    log.warn("Could understand " + next.getClass() + " '" + next + "'");
+                    continue;
+                }
                 patterns.add(new Entry(p, result));
             }
         }
@@ -137,7 +172,11 @@ public class RegexpReplacer extends ChunkedTransformer {
             if (m.matches()) {
                 String result = (String) entry.getValue();
                 for (int j = m.groupCount(); j >= 0; j--) {
-                    result = result.replaceAll("\\$" + j, m.group(j));
+                    if (replaceFirst) {
+                        result = result.replaceFirst("\\$" + j, m.group(j));
+                    } else {
+                        result = result.replaceAll("\\$" + j, m.group(j));
+                    }
                 }
                 w.write(result);
                 return true;
