@@ -29,7 +29,7 @@
     <mm:first> ---</mm:first><mm:index /><mm:last inverse="true">, </mm:last>
   </mm:previousbatches>
 
-  <font color="green"><mm:write value="${+$offset / $max + $indexoffset}" vartype="integer" /></font><!-- current page -->
+  <font color="green"><mm:write value="$[+$offset / $max + $indexoffset]" vartype="integer" /></font><!-- current page -->
   <mm:nextbatches max="5" indexoffset="$indexoffset">
     <mm:index /><mm:last inverse="true">, </mm:last>
   </mm:nextbatches>
@@ -39,7 +39,7 @@
   </mm:nextbatches>
 
   <p>
-    <a href="<mm:url><mm:param name="indexoffset"><mm:write id="newoffset" vartype="integer" value="${+1 - $indexoffset}" /></mm:param></mm:url>">With offset <mm:write referid="newoffset" /></a>
+    <a href="<mm:url><mm:param name="indexoffset"><mm:write id="newoffset" vartype="integer" value="$[+1 - $indexoffset]" /></mm:param></mm:url>">With offset <mm:write referid="newoffset" /></a>
 </p>
   <hr />
   <p>
