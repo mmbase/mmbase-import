@@ -5,6 +5,13 @@
   <mm:import externid="node2"/>
   <%@include file="/shared/setImports.jsp" %>
 
+  <mm:node number="$node" notfound="skipbody">
+    <mm:treeinclude page="/education/paragraph/paragraph_anonymous.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="node_id"><mm:write referid="node"/></mm:param>
+      <mm:param name="path_segment">../</mm:param>
+    </mm:treeinclude>
+  </mm:node>
+
   <mm:import jspvar="helpLink"><%=request.getRequestURL()%>?node=<mm:write referid="node"/></mm:import>
   <mm:node number="$node" notfound="skipbody">
     <h1><mm:field name="name"/></h1><br/>
