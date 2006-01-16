@@ -18,6 +18,7 @@
       <field name="questionsperpage">0</field>
       <field name="feedbackpage">0</field>
       <field name="always_online">0</field>
+      <field name="offline_date">2145928440</field>
     </object>
   </action>
 
