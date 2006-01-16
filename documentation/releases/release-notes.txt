@@ -206,6 +206,11 @@ Of course we try to mimimize this, but sometimes it happens...
  }
 
 
+-  The getChildElement methods on DocumentReaders (like XMLBasicReader) don't return Enumerations
+   any more but Iterators
+
+-  MMBase.mmbobjs has been made private.
+
 ========================
 Know Issues and Problems:
 ========================
