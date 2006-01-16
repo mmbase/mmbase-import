@@ -26,13 +26,13 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.13 2005-12-23 10:20:17 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.14 2006-01-16 13:23:22 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
     //public BetterStrategy() {}
     BasicSqlHandler sqlHandler = new BasicSqlHandler();
-    private static Logger log = Logging.getLoggerInstance(BetterStrategy.class);
+    private static final Logger log = Logging.getLoggerInstance(BetterStrategy.class);
 
     // inheritdoc
     public String getName() {
@@ -63,7 +63,9 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return true if query should be released
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
-        log.debug(event.toString());
+        if (log.isDebugEnabled()) {
+            log.debug(event.toString());
+        }
         return shouldRelease(event, query);
     }
 
@@ -93,54 +95,54 @@ public class BetterStrategy extends ReleaseStrategy {
         }
 
         switch (event.getType()) {
-            case NodeEvent.EVENT_TYPE_NEW:
-                log.debug(">> node event type new");
-                /*
-                 * Put all the rules that apply for new node events
-                 */
-
-                // query has more than one step, all 'new node' events can be ignored, becouse this
-                // node has no relations yet.
-                if (query.getSteps().size() > 1){
-                    logResult("no flush: 'new node' event in multistep query", query, event);
-                    return false; // don't release
-                }
-
-                break;
-
-            case NodeEvent.EVENT_TYPE_DELETE:
-                log.debug(">> node event type delete");
-                /*
-                 * Put all rules here that apply to removed node events
-                 */
-
-                break;
-
-            case NodeEvent.EVENT_TYPE_CHANGED:
-                log.debug(">> node event type changed");
-                /*
-                * Put all rules here that apply to changede nodes
-                */
-                
-                //if the changed field(s) do not occur in the fields or constraint section
-                //of the query, it dous not have to be flushed
-                if(! checkChangedFieldsMatch(event, query)){
-                    logResult("no flush: the fields that have changed are not used in the querie", query, event);
-                    return false;
-                }
-                
-                //if the query is aggregating, and of type count, and the changed fields(s) do 
-                //not occur in the constraint: don't flush the query
-                if(checkAggregationCount(event, query)){
-                    logResult("query is aggregating and fields are of type count, changed fields do not affect the query result", query, event);
-                    return false;
-                }
-                
+        case NodeEvent.EVENT_TYPE_NEW:
+            log.debug(">> node event type new");
+            /*
+             * Put all the rules that apply for new node events
+             */
+            
+            // query has more than one step, all 'new node' events can be ignored, becouse this
+            // node has no relations yet.
+            if (query.getSteps().size() > 1){
+                logResult("no flush: 'new node' event in multistep query", query, event);
+                return false; // don't release
+            }
+            
+            break;
+            
+        case NodeEvent.EVENT_TYPE_DELETE:
+            log.debug(">> node event type delete");
+            /*
+             * Put all rules here that apply to removed node events
+             */
+            
+            break;
+            
+        case NodeEvent.EVENT_TYPE_CHANGED:
+            log.debug(">> node event type changed");
+            /*
+             * Put all rules here that apply to changede nodes
+             */
+            
+            //if the changed field(s) do not occur in the fields or constraint section
+            //of the query, it dous not have to be flushed
+            if(! checkChangedFieldsMatch(event, query)){
+                logResult("no flush: the fields that have changed are not used in the querie", query, event);
+                return false;
+            }
+            
+            //if the query is aggregating, and of type count, and the changed fields(s) do 
+            //not occur in the constraint: don't flush the query
+            if(checkAggregationCount(event, query)){
+                logResult("query is aggregating and fields are of type count, changed fields do not affect the query result", query, event);
+                return false;
+            }
+            
         }
         logResult("flush: no reason not to", query, event);
         return true;
     }
-
+    
     /**
      * check all the rules that concern relation events. if no rules match we return
      * <code>true</code>.
@@ -170,40 +172,40 @@ public class BetterStrategy extends ReleaseStrategy {
 
              
          switch (event.getType()) {
-            case NodeEvent.EVENT_TYPE_NEW:
-                log.debug(">> relation event type new");
-                /*
-                 * Put all rules here that apply to new relation events
-                 */
+         case NodeEvent.EVENT_TYPE_NEW:
+             log.debug(">> relation event type new");
+             /*
+              * Put all rules here that apply to new relation events
+              */
+             
+             break;
+             
+         case NodeEvent.EVENT_TYPE_DELETE:
+             log.debug(">> relation event type delete");
+             /*
+              * Put all rules here that apply to removed relation events
+              */
+             
+             break;
+             
+         case NodeEvent.EVENT_TYPE_CHANGED:
+             log.debug(">> relation event type changed");
+             /*
+              * Put all rules here that apply to changed relation events
+              */
+             
+             //if the changed field(s) do not occur in the fields or constraint section
+             //of the query, it dous not have to be flushed
+             if(! checkChangedFieldsMatch(event.getNodeEvent(), query)) {
+                 logResult("no flush: the changed relation fields do not match the fields or constraints of the query", query, event);
+                 return false;
+             }
+             
+             break;
 
-                break;
-
-            case NodeEvent.EVENT_TYPE_DELETE:
-                log.debug(">> relation event type delete");
-                /*
-                 * Put all rules here that apply to removed relation events
-                 */
-
-                break;
-
-            case NodeEvent.EVENT_TYPE_CHANGED:
-                log.debug(">> relation event type changed");
-                /*
-                 * Put all rules here that apply to changed relation events
-                 */
-                
-                //if the changed field(s) do not occur in the fields or constraint section
-                //of the query, it dous not have to be flushed
-                if(! checkChangedFieldsMatch(event.getNodeEvent(), query)) {
-                    logResult("no flush: the changed relation fields do not match the fields or constraints of the query", query, event);
-                    return false;
-                }
-
-                break;
-
-        }
+         }
          logResult("flush: no reason not to", query, event);
-        return true;
+         return true;
     }
 
     /**
@@ -213,8 +215,8 @@ public class BetterStrategy extends ReleaseStrategy {
 	 * not occur in the constraint (no flush)
 	 */
 	private boolean checkAggregationCount(NodeEvent event, SearchQuery query) {
-		log.debug("method: checkAggregationCount()");
-		if(!query.isAggregating()){
+            log.debug("method: checkAggregationCount()");
+            if(!query.isAggregating()){
 			return false;
 		}
 		//test if all changed fields are aggreagting and of type count, if not: return false;
@@ -244,18 +246,20 @@ public class BetterStrategy extends ReleaseStrategy {
 		return true;
 	}
 
-	/**
-	 * @param event
-	 * @param query
-	 * @return true if sourcetype, role and destination from relation event match query
-	 */
-	private boolean checkPathMatches(RelationEvent event, SearchQuery query){
+    /**
+     * @param event
+     * @param query
+     * @return true if sourcetype, role and destination from relation event match query
+     */
+    private boolean checkPathMatches(RelationEvent event, SearchQuery query){
         // check if the path in the query maches the relation event:
         // - the source and destination objects should be there
         // - the role either matches or is not specified 
-        log.debug("method: checkPathMatches()");
-        log.debug(event.toString());
-        log.debug("query: "+query.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("method: checkPathMatches()");
+            log.debug(event.toString());
+            log.debug("query: "+query.toString());
+        }
         boolean match = false;
         for (Iterator i = getRelationSteps(query).iterator(); i.hasNext();) {
             RelationStep step = (RelationStep) i.next();
@@ -285,7 +289,9 @@ public class BetterStrategy extends ReleaseStrategy {
      * @return true if the type of the node for this event matches either a stepfield or a constriant
      */
     private boolean checkChangedFieldsMatch(NodeEvent event, SearchQuery query){
-        log.debug("method: checkChangedFieldsMatch(). changed fields: " + event.getChangedFields().size());
+        if (log.isDebugEnabled()) {
+            log.debug("method: checkChangedFieldsMatch(). changed fields: " + event.getChangedFields().size());
+        }
         boolean constraintsFound = false;
         boolean fieldsFound = false;
         search:
@@ -312,8 +318,8 @@ public class BetterStrategy extends ReleaseStrategy {
         }
         if(log.isDebugEnabled()){
             String logMsg ="";
-            if(!fieldsFound)logMsg = "no matching fields found, ";
-            if(!constraintsFound)logMsg = logMsg + "  no matching constraints found";
+            if( !fieldsFound ) logMsg = "no matching fields found, ";
+            if(!constraintsFound) logMsg = logMsg + "  no matching constraints found";
             log.debug(logMsg);
         }
         //now test the result
