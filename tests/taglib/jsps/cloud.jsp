@@ -34,7 +34,7 @@
     This page does not work in MMBase 1.5 (will cause a loop).
   </p>
   <hr />
-  <a href="cloud1.jsp">Next</a><br />
+  <a href="<mm:link page="cloud1.jsp" />">Next</a><br />
    <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 <hr />
 

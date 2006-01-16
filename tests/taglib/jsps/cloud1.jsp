@@ -12,8 +12,8 @@
       </mm:cloud>
     </p>
     <hr />
-    <a href="cloud.jsp">Previous</a><br />
-    <a href="cloud2.jsp">Next</a><br />
+    <a href="<mm:url page="cloud.jsp" />">Previous</a><br />
+    <a href="<mm:url page="cloud2.jsp" />">Next</a><br />
     <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
   <hr />
   </body>
