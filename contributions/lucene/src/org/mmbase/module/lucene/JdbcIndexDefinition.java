@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.3 2006-01-03 14:34:52 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.4 2006-01-16 17:13:03 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -107,11 +107,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
     protected CloseableIterator getCursor(String s) {
         try {
             long start = System.currentTimeMillis();
-            log.service("About to execute " + s);
+            log.debug("About to execute " + s);
             final Connection con = getDirectConnection();
             final Statement statement = con.createStatement();
             final ResultSet results = statement.executeQuery(s);
-            log.service("Executed " + s + " in " + (System.currentTimeMillis() - start) + " ms");
+            log.debug("Executed " + s + " in " + (System.currentTimeMillis() - start) + " ms");
             final ResultSetMetaData meta = results.getMetaData();
             return new CloseableIterator() {
                     int i = 0;
