@@ -30,6 +30,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.storage.StorageManagerFactory;
+import edu.emory.mathcs.backport.java.util.concurrent.*;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
@@ -41,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.33 2006-01-16 19:24:20 pierre Exp $
+ * @version $Id: Lucene.java,v 1.34 2006-01-16 20:06:05 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -554,7 +555,7 @@ public class Lucene extends Module implements MMBaseObserver {
         // status of the scheduler
         private int status = IDLE;
         // assignments: tasks to run
-        private Queue indexAssignments = new Queue();
+        private BlockingQueue indexAssignments = new DelayQueue();
 
         Scheduler() {
             super("Lucene.Scheduler");
@@ -579,7 +580,7 @@ public class Lucene extends Module implements MMBaseObserver {
             while (!mmbase.isShutdown()) {
                 log.debug("Obtain Assignment");
                 try {
-                    Runnable assignment = (Runnable) indexAssignments.get();
+                    Runnable assignment = (Runnable) indexAssignments.take();
                     // do operation...
                     assignment.run();
                     status = IDLE;
@@ -594,8 +595,25 @@ public class Lucene extends Module implements MMBaseObserver {
             }
         }
 
+        public abstract class Assignment implements Runnable, Delayed {
+            private final long startTime = System.currentTimeMillis();
+            private final long delay = 500; // 10 seconds
+            public long getDelay(TimeUnit tu) {
+                return tu.convert(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS); 
+            }
+            public boolean equals(Object o) {
+                return o.hashCode() == hashCode();
+            }                    
+            public int compareTo(Object o) {
+                return (int) (((Assignment) o).getDelay(TimeUnit.MILLISECONDS) - getDelay(TimeUnit.MILLISECONDS));
+                
+            }
+        }
         public void updateIndex(final String number) {
-            Runnable assignment = new Runnable() {
+            Assignment assignment = new Assignment() {
+                    public int hashCode() {
+                        return number.hashCode();
+                    }
                     public void run() {
                         log.service("update index");
                         status = BUSY_INDEX;
@@ -606,12 +624,17 @@ public class Lucene extends Module implements MMBaseObserver {
                     }
 
                 };
-            indexAssignments.append(assignment);
+            if (! indexAssignments.contains(assignment)) {
+                indexAssignments.add(assignment);
+            }
 
         }
 
         public void deleteIndex(final String number) {
-            Runnable assignment = new Runnable() {
+            Assignment assignment = new Assignment() {
+                    public int hashCode() {
+                        return number.hashCode();
+                    }
                     public void run() {
                         log.service("delete index");
                         status = BUSY_INDEX;
@@ -621,12 +644,17 @@ public class Lucene extends Module implements MMBaseObserver {
                         }
                     }
                 };
-            indexAssignments.append(assignment);
+            if (! indexAssignments.contains(assignment)) {
+                indexAssignments.add(assignment);
+            }
         }
 
         public void fullIndex() {
             if (status != BUSY_FULL_INDEX) {
-                Runnable assignment = new Runnable() {
+                Assignment assignment = new Assignment() {
+                        public int hashCode() {
+                            return 0;
+                        }
                         public void run() {
                             status = BUSY_FULL_INDEX;
                             log.service("start full index");
@@ -636,7 +664,8 @@ public class Lucene extends Module implements MMBaseObserver {
                             }
                         }
                     };
-                indexAssignments.append(assignment);
+                indexAssignments.clear();
+                indexAssignments.add(assignment);
                 log.service("Scheduled full index");
                 // only schedule a full index if none is currently busy.
             } else {
@@ -645,7 +674,10 @@ public class Lucene extends Module implements MMBaseObserver {
         }
         public void fullIndex(final String index) {
             if (status != BUSY_FULL_INDEX) {
-                Runnable assignment = new Runnable() {
+                Assignment assignment = new Assignment() {
+                        public int hashCode() {
+                            return index.hashCode();
+                        }
                         public void run() {
                             status = BUSY_FULL_INDEX;
                             log.service("start full index for index '" + index + "'");
@@ -653,7 +685,9 @@ public class Lucene extends Module implements MMBaseObserver {
                             indexer.fullIndex();
                         }
                     };
-                indexAssignments.append(assignment);
+                if (! indexAssignments.contains(assignment)) {
+                    indexAssignments.add(assignment);
+                }
                 log.service("Scheduled full index for '" + index + "'");
                 // only schedule a full index if none is currently busy.
             } else {
