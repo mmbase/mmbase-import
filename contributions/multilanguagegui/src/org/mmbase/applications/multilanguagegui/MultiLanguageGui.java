@@ -254,6 +254,39 @@ public class MultiLanguageGui {
     }
 
 
+    public List getLanguagesInSet(String setname) {
+       if (languageguisets == null) readSets();
+	ArrayList list = new ArrayList();
+	Hashtable set=(Hashtable)languageguisets.get(setname);
+	if (set!=null) { 
+		ArrayList ll =  new ArrayList();
+		Enumeration e=set.keys();
+		while (e.hasMoreElements()) {
+        		HashMap map = new HashMap();
+			String keyword=(String)e.nextElement();
+			Hashtable keywordset=(Hashtable)set.get(keyword);
+			log.info("K="+keyword);
+			if (keywordset != null) {
+				Enumeration e2=keywordset.keys();
+				while (e2.hasMoreElements()) {
+					String lang=(String)e2.nextElement();
+					if (!ll.contains(lang)) ll.add(lang);
+					log.info("L="+lang+" "+ll);
+				}
+			}
+		}
+        Iterator i = ll.iterator();
+        while (i.hasNext()) {
+		HashMap map =  new HashMap();
+		map.put("name",(String)i.next());
+		list.add(map);
+	}
+	}
+
+	return list;
+    }
+
+
     public String getTranslation(String setname,String keyword,String language) {
        if (languageguisets == null) readSets();
 	Hashtable set=(Hashtable)languageguisets.get(setname);
