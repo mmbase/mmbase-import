@@ -12,10 +12,16 @@
    <mm:compare referid="action" value="mail">
 
 
-    <mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=1">
+    <mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=11">
         <mm:field name="mailboxes.number" id="mailboxNumber" write="false"/>
         <mm:node referid="mailboxNumber" id="mailboxNode"/>
     </mm:list>
+    <mm:notpresent referid="mailboxNode">
+        <mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=1">
+            <mm:field name="mailboxes.number" id="mailboxNumber" write="false"/>
+            <mm:node referid="mailboxNumber" id="mailboxNode"/>
+        </mm:list>
+    </mm:notpresent>
     <mm:notpresent referid="mailboxNode">
         Deze gebruiker heeft geen sent mailbox!
     </mm:notpresent>
