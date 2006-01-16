@@ -20,7 +20,7 @@ import org.apache.lucene.analysis.Analyzer;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.8 2006-01-03 14:34:52 michiel Exp $
+ * @version $Id: IndexDefinition.java,v 1.9 2006-01-16 21:03:49 michiel Exp $
  **/
 interface IndexDefinition {
     /**
@@ -43,7 +43,7 @@ interface IndexDefinition {
     Analyzer getAnalyzer();
 
     /**
-     * Defines how a Node for this index must be produces. For MMBase indices this is of course
+     * Defines how a Node for this index must be produced. For MMBase indices this is of course
      * quite straight-forward, but other indices may create virtual nodes here.
      */
     Node getNode(Cloud cloud, String identifier);
