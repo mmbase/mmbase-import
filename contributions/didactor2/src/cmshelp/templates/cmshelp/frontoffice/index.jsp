@@ -13,12 +13,12 @@
   </mm:treeinclude>
   <div class="rows">
     <div class="navigationbar">
-      <div class="titlebar"/>
+      <div class="titlebar">
+      </div>
     </div>
+    <div class="folders">
     </div>
-    <div class="folders"/>
-    </div>
-    <div class="contentHeader"/>
+    <div class="contentHeader">
     </div>
     <div class="contentBodywit">
 	  <mm:treeinclude page="/cmshelp/frontoffice/show_help.jsp" objectlist="$includePath" referids="$referids">
