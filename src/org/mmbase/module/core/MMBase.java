@@ -32,6 +32,8 @@ import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.util.functions.*;
 import org.xml.sax.SAXException;
 
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+
 /**
  * The module which provides access to the MMBase storage defined
  * by the provided name/setup.
@@ -42,7 +44,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.177 2006-01-16 14:27:36 pierre Exp $
+ * @version $Id: MMBase.java,v 1.178 2006-01-16 14:52:37 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -133,7 +135,7 @@ public class MMBase extends ProcessorModule {
      * Should be made private and accessed using getBuilders()
      * @scope private
      */
-    public Hashtable mmobjs = new Hashtable();
+    private Map mmobjs = new ConcurrentHashMap();
 
     /**
      * Name of the machine used in the mmbase cluster.
@@ -345,9 +347,9 @@ public class MMBase extends ProcessorModule {
 
         String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
         if (writerpath != null && !writerpath.equals("")) {
-            Enumeration t = mmobjs.elements();
-            while (t.hasMoreElements()) {
-                MMObjectBuilder builder = (MMObjectBuilder)t.nextElement();
+            Iterator t = mmobjs.values().iterator();
+            while (t.hasNext()) {
+                MMObjectBuilder builder = (MMObjectBuilder)t.next();
                 if (!builder.isVirtual()) {
                     String name = builder.getTableName();
                     log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
@@ -458,6 +460,12 @@ public class MMBase extends ProcessorModule {
         }
         return builder;
     }
+    /**
+     * @since MMBase-1.8
+     */
+    public MMObjectBuilder addBuilder(String name, MMObjectBuilder bul) {
+        return (MMObjectBuilder) mmobjs.put(name, bul);
+    }
 
     /**
      * Retrieves a specified builder.
@@ -505,7 +513,7 @@ public class MMBase extends ProcessorModule {
      * @return an <code>Enumeration</code> listing the loaded builders
      */
     public Enumeration getMMObjects() {
-        return mmobjs.elements();
+        return Collections.enumeration(mmobjs.values());
     }
 
     /**
@@ -1053,7 +1061,7 @@ public class MMBase extends ProcessorModule {
                 }
                 builder = (MMObjectBuilder)newclass.newInstance();
 
-                mmobjs.put(builderName, builder);
+                addBuilder(builderName, builder);
 
                 builder.setXMLPath(ipath);
                 builder.setMMBase(this);
