@@ -23,7 +23,7 @@ import org.mmbase.module.corebuilders.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: FieldSelector.java,v 1.10 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: FieldSelector.java,v 1.11 2006-01-16 14:47:28 michiel Exp $
  */
 public class FieldSelector implements CommandHandlerInterface {
 
@@ -63,7 +63,7 @@ public class FieldSelector implements CommandHandlerInterface {
 
     Vector getRelTypes(EditState ed,StringTagger args) {
         Vector results=new Vector();
-        for (Enumeration h=stateMngr.mmBase.mmobjs.elements();h.hasMoreElements();) {
+        for (Enumeration h=stateMngr.mmBase.getMMObjects();h.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
             if (bul instanceof InsRel) {
                 results.addElement(""+bul.getNumber());
@@ -77,7 +77,7 @@ public class FieldSelector implements CommandHandlerInterface {
 
     Vector getDataTypes(EditState ed,StringTagger args) {
         Vector results=new Vector();
-        for (Enumeration h=stateMngr.mmBase.mmobjs.elements();h.hasMoreElements();) {
+        for (Enumeration h=stateMngr.mmBase.getMMObjects();h.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
             if (!(bul instanceof InsRel)) {
                 results.addElement(""+bul.getNumber());
