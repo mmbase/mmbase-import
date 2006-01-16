@@ -938,4 +938,12 @@
 		<translation language="nl" value="E-mail" />
 		<translation language="df" value="Email" />
 	</keyword>
+	<keyword name="NoResultsFound">
+		<translation language="nl" value="Geen resultaten gevonden" />
+		<translation language="df" value="No result(s) found" />
+	</keyword>
+	<keyword name="NoBookmarksFound">
+		<translation language="nl" value="Geen bookmarks gevonden, u kunt deze bij het lezen van een onderwerp selecteren" />
+		<translation language="df" value="No bookmarks found, you can add these while reading topics" />
+	</keyword>
 </languageguiset>

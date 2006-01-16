@@ -23,7 +23,7 @@ import org.mmbase.applications.thememanager.*;
  * It uses the thememanager for defining the smilies.
  *
  * @author Gerard van Enk 
- * @version $Id: Smilies.java,v 1.3 2005-03-04 13:48:35 mark Exp $
+ * @version $Id: Smilies.java,v 1.4 2006-01-16 10:43:10 daniel Exp $
  * @since MMBob-1.0
  */
 public class Smilies extends StringTransformer implements CharTransformer {
@@ -58,7 +58,7 @@ public class Smilies extends StringTransformer implements CharTransformer {
      * @param smileyKey the unique key of the smileyset
      */
     protected void initSmileySets(String themeID, String smileySetID, String smileyKey) {
-        log.info("init smileyset:\ntheme: " + themeID 
+        log.debug("init smileyset:\ntheme: " + themeID 
                 + "\nsmileySetID: " + smileySetID + "\nsmileyKey: " + smileyKey);
         Theme theme = ThemeManager.getTheme(themeID);
         if (theme != null) {

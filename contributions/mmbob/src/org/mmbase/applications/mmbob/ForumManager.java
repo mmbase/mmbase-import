@@ -228,7 +228,7 @@ public class ForumManager {
      * @param password password of the creator of the new forum
      * @return The MMBase node number of the newly created forum node
      */
-    public static int newForum(String name, String language, String description, String account, String password,String email) {
+    public static int newForum(String name, String language, String description, String account, String password,String nick,String email) {
         org.mmbase.bridge.Node node = forumnodemanager.createNode();
         node.setStringValue("name", name);
         node.setStringValue("language", language);
@@ -252,13 +252,12 @@ public class ForumManager {
 	p.setEmail(email);
 	p.savePoster();
 
-        f.addAdministrator(p);
+
 	
 	// check if we have a clone master
 	Forum cf = getForumCloneMaster();
 	if (cf!=null) {
 		// ok we have a clone master copy the wanted settings
-		log.info("L="+cf.getPostingsPerPage());
 		f.setPostingsPerPage(cf.getPostingsPerPage());
 		f.setPostingsOverflowPostArea(cf.getPostingsOverflowPostArea());
 		f.setPostingsOverflowThreadPage(cf.getPostingsOverflowThreadPage());
@@ -272,8 +271,22 @@ public class ForumManager {
 		f.setSpeedPostTime(cf.getSpeedPostTime());
 		f.setReplyOnEachPage(cf.getReplyOnEachPage());
 		f.save(); // some basic settings, weird
+
+		// check if we need to copy ProfileDefs
+                Iterator i = cf.getProfileDefs();
+                if (i!=null) {
+                	while (i.hasNext()) {
+                           ProfileEntryDef pd = (ProfileEntryDef) i.next();
+			   f.addProfileDef(pd); 
+			   if (pd.getName().equals("nick")) {
+				// kinda trick, we need a way to make forums.jsp optional for this *sigh*
+        			if (nick!=null && !nick.equals("")) p.setProfileValue("nick",nick);
+			   }
+			}
+		}
 		f.saveConfig();
 	}	
+        f.addAdministrator(p);
         return node.getNumber();
     }
 

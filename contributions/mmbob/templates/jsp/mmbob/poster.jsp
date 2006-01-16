@@ -64,8 +64,8 @@
 		<tr><th><mm:write referid="mlg.Messages" /></th><td><mm:field name="postcount" /></td></tr>
 		<tr><th><mm:write referid="mlg.Location" /></th><td><mm:field name="location" /></td></tr>
 
-		<tr><th><mm:write referid="mlg.Member_since" /></th><td><mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
-		<tr><th><mm:write referid="mlg.Last_visit" /></th><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		<tr><th><mm:write referid="mlg.Member_since" /></th><td><mm:field name="firstlogin"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		<tr><th><mm:write referid="mlg.Last_visit" /></th><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
 </mm:node>
 </mm:compare>
 <mm:compare referid="profileid" referid2="posterid">
@@ -105,8 +105,8 @@
 		</td></tr>
 		<tr><th><mm:write referid="mlg.Level" /></th><td><mm:field name="level" /></td></tr>
 		<tr><th><mm:write referid="mlg.Messages" /></th><td><mm:field name="postcount" /></td></tr
-		<tr><th><mm:write referid="mlg.Member_since" /></th><td><mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
-		<tr><th><mm:write referid="mlg.Last_seen" /></th><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		<tr><th><mm:write referid="mlg.Member_since" /></th><td><mm:field name="firstlogin"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		<tr><th><mm:write referid="mlg.Last_seen" /></th><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
 </mm:node>
 <tr><th colspan="2">
 <input type="hidden" name="action" value="editposter">

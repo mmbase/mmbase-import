@@ -29,6 +29,18 @@
 	</function>
 
 
+	<function name="getLanguagesInSet">
+		<description>Get the translations for the given keyword</description>
+		<type>class</type>
+		<class>org.mmbase.applications.multilanguagegui.MultiLanguageGui</class>
+		<method>getLanguagesInSet</method>
+		<param name="setname" type="String" description="Name of the language set" />
+		<return type="map"> 
+			<field name="name" type="String" description="Langauge code of the translation" />
+		</return> 
+	</function>
+
+
 	<function name="getTranslation">
 		<description>Get the translation for the given keyword</description>
 		<type>class</type>

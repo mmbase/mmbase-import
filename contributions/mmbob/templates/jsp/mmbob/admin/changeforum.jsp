@@ -111,7 +111,15 @@
 	<input name="name" size="70" value="<mm:field name="name" />" style="width: 100%">
 	</td></tr>
 	<tr><th><mm:write referid="mlg.Language"/></th><td colspan="2" align="left">
-	<input name="newlang" size="2" value="<mm:field name="language" />" >
+	<mm:import id="tmpl"><mm:field name="language" /></mm:import>
+	<select name="newlang">
+	<mm:import id="tmpname">mmbob</mm:import>
+	<mm:nodelistfunction set="mlg" name="getLanguagesInSet" referids="tmpname@setname">
+	<mm:field name="name">
+	<option <mm:compare referid2="tmpl">selected</mm:compare>><mm:field name="name" />
+	</mm:field>
+	</mm:nodelistfunction>
+	</select>
 	</td></tr>
 	<tr><th><mm:write referid="mlg.Description"/></th><td colspan="2">
 	<textarea name="description" rows="5" style="width: 100%"><mm:field name="description" /></textarea>

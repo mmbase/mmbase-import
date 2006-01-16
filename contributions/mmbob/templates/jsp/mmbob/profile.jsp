@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 
-<mm:cloud sessionname="forum">
+<mm:cloud>
 <mm:import id="entree" reset="true"><%= request.getHeader("aad_nummer") %></mm:import>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
@@ -342,13 +342,13 @@
         <div class="row">
           <span class="label"><mm:write referid="mlg.Member_since"/></span>
           <span class="formw">
-            <mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
+            <mm:field name="firstlogin"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
           </span>
         </div>
         <div class="row">
           <span class="label"><mm:write referid="mlg.Last_visit"/></span>
           <span class="formw">
-            <mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
+            <mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
           </span>
         </div>    
         </mm:nodefunction>
@@ -371,7 +371,7 @@
           <mm:compare referid="adminmode" value="true">
         <mm:nodelistfunction set="mmbob" name="getRemoteHosts" referids="forumid,profileid@posterid">
 		<mm:compare referid="adminmode" value="true">
-		host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
+		host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
 		</mm:compare>
 	</mm:nodelistfunction>
 </mm:compare>
@@ -398,7 +398,7 @@
 		<input type="hidden" name="action" value="setsinglesignature" />
 		<tr>
 		<td>
-			<textarea name="newbody" rows="5" cols="50"><mm:field name="body" /></textarea>
+			<textarea name="newbody" rows="5" cols="65"><mm:field name="body" /></textarea>
 		</td>
 		</tr>
 		<tr>
@@ -644,13 +644,13 @@
         <div class="row">
           <span class="label"><mm:write referid="mlg.Member_since"/></span>
           <span class="formw">
-            <mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
+            <mm:field name="firstlogin"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
           </span>
         </div>
         <div class="row">
           <span class="label"><mm:write referid="mlg.Last_visit"/></span>
           <span class="formw">
-            <mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
+            <mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field>
           </span>
         </div>   
              </mm:nodefunction>
@@ -664,7 +664,7 @@
     <mm:compare value="contact" referid="profile">
         <mm:nodelistfunction set="mmbob" name="getRemoteHosts" referids="forumid,profileid@posterid">
 		<mm:compare referid="adminmode" value="true">
-		host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
+		host : <mm:field name="host" /> lastchange : <mm:field name="lastupdatetime"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field> updatecount : <mm:field name="updatecount" /><br />
 		</mm:compare>
 	</mm:nodelistfunction>
     </mm:compare>
