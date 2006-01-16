@@ -42,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.36 2006-01-16 20:24:48 michiel Exp $
+ * @version $Id: Lucene.java,v 1.37 2006-01-16 21:04:01 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -83,8 +83,10 @@ public class Lucene extends Module implements MMBaseObserver {
 
     // initial wait time after startup, default 2 minutes
     private static final long INITIAL_WAIT_TIME = 2 * 60 * 1000;
-    // wait time bewteen individual checks, default 5 seconds
+    // wait time between individual checks, default 5 seconds
     private static final long WAIT_TIME = 5 * 1000;
+    // time to cumulate changes for index updates, every change event is delayed for so long. If the same event comed in in that time, it is ignored.
+    private static final long CUMULATE_TIME = 2 * 1000;
     // default path to the lucene data
     private static final String INDEX_CONFIG_FILE = "utils/luceneindex.xml";
 
@@ -97,6 +99,7 @@ public class Lucene extends Module implements MMBaseObserver {
 
     private long initialWaitTime = INITIAL_WAIT_TIME;
     private long waitTime = WAIT_TIME;
+    private long cumulateTime = CUMULATE_TIME;
     private String indexPath = null;
     private Scheduler scheduler;
     private String defaultIndex = null;
@@ -314,7 +317,16 @@ public class Lucene extends Module implements MMBaseObserver {
                 waitTime = Long.parseLong(time);
                 log.debug("Set initial wait time to " + time + " milliseconds");
             } catch (NumberFormatException nfe) {
-                log.warn("Invalid value '" + time +" ' for property 'initialwaittime'");
+                log.warn("Invalid value '" + time +" ' for property 'waittime'");
+            }
+        }
+        time = getInitParameter("cumulatetime");
+        if (time != null) {
+            try {
+                cumulateTime = Long.parseLong(time);
+                log.debug("Set initial cumulation time to " + cumulateTime + " milliseconds");
+            } catch (NumberFormatException nfe) {
+                log.warn("Invalid value '" + time +" ' for property 'cumulatetime'");
             }
         }
         while (! mmbase.getState()) {
@@ -597,46 +609,53 @@ public class Lucene extends Module implements MMBaseObserver {
 
         public abstract class Assignment implements Runnable, Delayed {
             private final long startTime = System.currentTimeMillis();
-            private final long delay = 2000; // 2 seconds
+            private final long delay = Lucene.this.cumulateTime; 
             public long getDelay(TimeUnit tu) {
                 return tu.convert(delay - (System.currentTimeMillis() - startTime), TimeUnit.MILLISECONDS); 
             }
             public boolean equals(Object o) {
-                return o.hashCode() == hashCode();
+                return o.toString().equals(toString());
             }                    
             public int compareTo(Object o) {
-                return (int) (((Assignment) o).getDelay(TimeUnit.MILLISECONDS) - getDelay(TimeUnit.MILLISECONDS));
-                
+                return (int) (((Assignment) o).getDelay(TimeUnit.MILLISECONDS) - getDelay(TimeUnit.MILLISECONDS));                
             }
         }
-        public void updateIndex(final String number) {
-            Assignment assignment = new Assignment() {
-                    public int hashCode() {
-                        return number.hashCode();
-                    }
-                    public void run() {
-                        log.service("update index");
-                        status = BUSY_INDEX;
-                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                            Indexer indexer = (Indexer) i.next();
-                            indexer.updateIndex(number);
-                        }
-                    }
 
-                };
+        protected Assignment getUpdateAssignment(final String number) {
+            return new Assignment() {
+                public String toString() {
+                    return "UPDATE " + number;
+                }
+                public void run() {
+                    log.service("update index for object '" + number + "'");
+                    status = BUSY_INDEX;
+                    for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                        Indexer indexer = (Indexer) i.next();
+                        indexer.updateIndex(number);
+                    }
+                }
+                
+            };
+        }
+
+        public void updateIndex(final String number) {
+            Assignment assignment = getUpdateAssignment(number);
             if (! indexAssignments.contains(assignment)) {
                 indexAssignments.add(assignment);
+                log.debug("Added update index assignment for object '" + number + "'.");
+            } else {
+                log.debug("Canceled a update index assignment for object '" + number + "', because one was assigned already");
             }
 
         }
 
         public void deleteIndex(final String number) {
             Assignment assignment = new Assignment() {
-                    public int hashCode() {
-                        return number.hashCode();
+                    public String toString() {
+                        return "DELETE " + number;
                     }
                     public void run() {
-                        log.service("delete index");
+                        log.service("delete index for object '" + number + "'");
                         status = BUSY_INDEX;
                         for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                             Indexer indexer = (Indexer) i.next();
@@ -644,8 +663,15 @@ public class Lucene extends Module implements MMBaseObserver {
                         }
                     }
                 };
-            indexAssignments.remove(assignment);
-            indexAssignments.add(assignment);
+            if (indexAssignments.remove(getUpdateAssignment(number))) {
+                log.debug("Canceled a update index assignment for object '" + number + "', because delete index is assigned.");
+            }
+            if (! indexAssignments.contains(assignment)) {
+                indexAssignments.add(assignment);
+                log.debug("Added delete index assignment for object '" + number + "'.");
+            } else {
+                log.debug("Canceled a delete index assignment for object '" + number + "', because one was assigned already");
+            }
         }
 
         public void fullIndex() {
@@ -665,7 +691,7 @@ public class Lucene extends Module implements MMBaseObserver {
                     };
                 indexAssignments.clear();
                 indexAssignments.add(assignment);
-                log.service("Scheduled full index");
+                log.service("Scheduled full index, cleared all other assignments.");
                 // only schedule a full index if none is currently busy.
             } else {
                 log.service("Cannot schedule full index because it is busy");
