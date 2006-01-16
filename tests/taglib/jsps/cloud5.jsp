@@ -23,8 +23,8 @@
      From: <mm:write referid="from" /> (must be '4' if you clicked from cloud4.jsp)
     </p>
   <hr />
-  <a href="cloud4.jsp">Previous</a><br />
-  <a href="cloud6.jsp">Next</a><br />
+  <a href="<mm:url page="cloud4.jsp" />">Previous</a><br />
+  <a href="<mm:url page="cloud6.jsp" />">Next</a><br />
     <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
   <hr />
   </body>
