@@ -18,7 +18,7 @@ import org.mmbase.security.*;
  * this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: ContextUserContext.java,v 1.7 2006-01-09 12:18:49 johannes Exp $
+ * @version $Id: ContextUserContext.java,v 1.8 2006-01-16 16:09:28 johannes Exp $
  */
 public class ContextUserContext extends BasicUser implements java.io.Serializable {
 
@@ -43,6 +43,9 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
     }
 
     public String getOwnerField() {
+        if (manager == null) {
+            manager = org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop();
+        }
         return ((ContextAuthorization)manager.getAuthorization()).getDefaultContext(this);
     }
 
@@ -58,7 +61,6 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
         this.username = (String)in.readObject();
         this.rank = (Rank)in.readObject();
         this.key = in.readLong();
-        this.manager = org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop();
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
