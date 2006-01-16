@@ -4,6 +4,14 @@
   <mm:import externid="node" required="true"/>
   <mm:import externid="node2" />
   <%@include file="/shared/setImports.jsp" %>
+  
+  <mm:node number="$node" notfound="skipbody">
+    <mm:treeinclude page="/education/paragraph/paragraph_anonymous.jsp" objectlist="$includePath" referids="$referids">
+      <mm:param name="node_id"><mm:write referid="node"/></mm:param>
+      <mm:param name="path_segment">../</mm:param>
+    </mm:treeinclude>
+  </mm:node>  
+  
   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
   <mm:import jspvar="faqLink"><%=request.getRequestURL()%>?node=<mm:write referid="node"/></mm:import>
   <mm:node number="$node" notfound="skipbody">
