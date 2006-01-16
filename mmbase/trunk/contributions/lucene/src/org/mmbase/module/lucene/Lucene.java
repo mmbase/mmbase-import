@@ -42,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.34 2006-01-16 20:06:05 michiel Exp $
+ * @version $Id: Lucene.java,v 1.35 2006-01-16 20:15:59 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -597,9 +597,9 @@ public class Lucene extends Module implements MMBaseObserver {
 
         public abstract class Assignment implements Runnable, Delayed {
             private final long startTime = System.currentTimeMillis();
-            private final long delay = 500; // 10 seconds
+            private final long delay = 2000; // 2 seconds
             public long getDelay(TimeUnit tu) {
-                return tu.convert(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS); 
+                return tu.convert(delay - (System.currentTimeMillis() - startTime), TimeUnit.MILLISECONDS); 
             }
             public boolean equals(Object o) {
                 return o.hashCode() == hashCode();
@@ -687,8 +687,10 @@ public class Lucene extends Module implements MMBaseObserver {
                     };
                 if (! indexAssignments.contains(assignment)) {
                     indexAssignments.add(assignment);
+                    log.service("Scheduled full index for '" + index + "'");
+                } else {
+                    log.service("Not scheduled full index for '" + index + "', because already assigned");
                 }
-                log.service("Scheduled full index for '" + index + "'");
                 // only schedule a full index if none is currently busy.
             } else {
                 log.service("Cannot schedule full index because it is busy");
