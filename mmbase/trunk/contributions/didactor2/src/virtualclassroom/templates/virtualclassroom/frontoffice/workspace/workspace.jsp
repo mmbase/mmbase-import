@@ -4,7 +4,11 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
+<html>
+<head>   
   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/virtualclassroom/css/base.css" objectlist="$includePath" referids="$referids" />" /> 
+</head>
+<body>
   <mm:import jspvar="theReferids"><mm:write referid="referids"/></mm:import>
   <%
     Vector existingReferids = new Vector();
@@ -42,5 +46,6 @@
   <mm:import externid="typeof">1</mm:import>
   <mm:import externid="destination">/virtualclassroom/frontoffice/workspace/index.jsp</mm:import>
   <mm:treeinclude page="$destination" objectlist="$includePath" referids="$referids,destination,typeof,$parameterlist"/>
+</body>
 </mm:cloud>
 </mm:content>			           
