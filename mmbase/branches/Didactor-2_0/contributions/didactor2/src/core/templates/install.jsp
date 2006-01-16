@@ -15,7 +15,7 @@
 
 <div class="columns">
   <div class="columnMiddle">
-    <img src="gfx/logo_didactor.gif" border="0" alt="Didactor logo" />
+    <img src="gfx/logo_didactor.gif" border="0" title="Didactor logo" alt="Didactor logo" />
 
 <mm:compare referid="installanyway" value="false"> 
   <h1>installation warning</h1>
