@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.82 2006-01-12 13:40:22 ernst Exp $
+ * @version $Id: Casting.java,v 1.83 2006-01-16 16:52:02 michiel Exp $
  */
 
 import java.util.*;
@@ -109,6 +109,8 @@ public class Casting {
         return toType(type, null, value);
     }
 
+    private static Cloud anonymousCloud = null;
+
     /**
      * Tries to 'cast' an object for use with the provided class. E.g. if value is a String, but the
      * type passed is Integer, then the string is act to an Integer.
@@ -166,7 +168,8 @@ public class Casting {
             } else if (type.equals(Node.class)) {
                 try {
                     if (cloud == null) {
-                        cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                        if (anonymousCloud == null) anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                        cloud = anonymousCloud;
                     }
                     return toNode(value, cloud);
                 } catch (Exception e) {
