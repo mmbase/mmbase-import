@@ -44,7 +44,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.178 2006-01-16 14:52:37 michiel Exp $
+ * @version $Id: MMBase.java,v 1.179 2006-01-16 15:11:38 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -132,8 +132,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * The table that contains all loaded builders. Includes virtual builders.
-     * Should be made private and accessed using getBuilders()
-     * @scope private
+     * A collection of builders from this map can be accessed by calling {@link #getBuilders}
      */
     private Map mmobjs = new ConcurrentHashMap();
 
