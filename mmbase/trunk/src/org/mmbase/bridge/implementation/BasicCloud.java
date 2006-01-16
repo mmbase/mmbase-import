@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.150 2006-01-16 13:35:31 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.151 2006-01-16 14:27:36 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, java.io.Serializable {
 
@@ -1020,7 +1020,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     }
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-        if (MMBase.instantiated()) {
+        if (MMBaseContext.isInitialized()) {
             this.name = (String)in.readObject();
             this.userContext = (UserContext)in.readObject();
             this.cloudContext = LocalContext.getCloudContext();

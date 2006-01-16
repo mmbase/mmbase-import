@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.176 2006-01-16 13:35:31 pierre Exp $
+ * @version $Id: MMBase.java,v 1.177 2006-01-16 14:27:36 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -472,17 +472,6 @@ public class MMBase extends ProcessorModule {
             log.trace("MMObject " + name + " could not be found"); // can happen...
         }
         return (MMObjectBuilder) o;
-    }
-
-    /**
-     * Returns whether the MMBase class has been instantiated. Use this with pocesses that are
-     * not themselves allwoed to start mmbase, such as serialization methods that require a MMBase cloud.
-     * Testing whether MMBase is instantiated prevents faulty startups through calls to getMMBase()
-     *
-     * @return <code>true</code> is MMBase has been instantiated.
-     */
-    public static boolean instantiated() {
-        return mmbaseroot != null;
     }
 
     /**
