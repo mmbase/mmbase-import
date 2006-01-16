@@ -53,22 +53,39 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
      */
     public final static int LINES    = 4;
 
-
     /**
      * Match the entire stream (so, one String must be created).
      */
     public final static int ENTIRE    = 5;
 
 
+    /**
+     * If this is added to the config-int, then only the first match should be used.
+     */
+    public final static int REPLACE_FIRST = 100;
+
+
+    protected boolean replaceFirst = false;
+
+    public void configure(int i) {
+        if (i >= 100) {
+            replaceFirst = true;
+            i -= 100;
+        }
+        super.configure(i);
+    }
 
     protected ChunkedTransformer(int i) {
         super(i);
     }
 
     public ChunkedTransformer() {
-        super(WORDS);
+        this(WORDS);
     }
 
+    /**
+     * Implement this. Return true if a replacement done.
+     */
     protected abstract boolean replace(String string, Writer w) throws IOException;
 
     protected boolean replaceWord(StringBuffer word, Writer writer) throws IOException {
@@ -119,15 +136,25 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         return result;
     }
 
+    /**
+     * Whether still to do replacing, given the number or replacements which happened already.
+     */
+    protected boolean replace(int replaced) {
+        return !replaceFirst || replaced == 0;
+    }
+
     public Writer transformXmlTextWords(Reader r, Writer w)  {
         int replaced = 0;
         StringBuffer word = new StringBuffer();  // current word
         boolean translating = true;
         try {
-            log.trace("Starting regexp replacing");
+            log.trace("Starting  replacing");
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
+                if (!replace(replaced)) {
+                    w.write(c);
+                } else
                 if (c == '<') {  // don't do it in existing tags and attributes
                     translating = false;
                     if (replaceWord(word, w)) replaced++;
@@ -149,8 +176,14 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 }
             }
             // write last word
-            if (translating && replaceWord(word, w)) replaced++;
-            log.debug("Finished regexp replacing. Replaced " + replaced + " words");
+            if (replace(replaced)) {
+                if (translating && replaceWord(word, w)) replaced++;
+            } else {
+                w.write(word.toString());
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Finished  replacing. Replaced " + replaced + " words");
+            }
         } catch (java.io.IOException e) {
             log.error(e.toString());
         }
@@ -162,10 +195,13 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         StringBuffer xmltext = new StringBuffer();  // current word
         boolean translating = true;
         try {
-            log.trace("Starting regexp replacing");
+            log.trace("Starting replacing");
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
+                if (!replace(replaced)) {
+                    w.write(c);
+                } else
                 // perhaps better use SAX to decently detect XML, but then it probably won't work
                 // very well on sloppy XML (like HTML).
                 if (c == '<') {  // don't do it in existing tags and attributes
@@ -183,8 +219,12 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 }
             }
             // write last word
-            if (translating && replace(xmltext.toString(), w)) replaced++;
-            log.debug("Finished regexp replacing. Replaced " + replaced + " words");
+            if (replace(replaced)) {
+                if (translating && replace(xmltext.toString(), w)) replaced++;
+            } else {
+                w.write(xmltext.toString());
+            }
+            log.debug("Finished  replacing. Replaced " + replaced + " words");
         } catch (java.io.IOException e) {
             log.error(e.toString());
         }
@@ -194,11 +234,11 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         int replaced = 0;
         StringBuffer word = new StringBuffer();  // current word
         try {
-            log.trace("Starting regexp replacing");
+            log.trace("Starting replacing words." + Logging.stackTrace());
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                if (Character.isWhitespace((char) c) || c == '\'' || c == '\"' || c == '(' || c == ')' || c == '<' || c == '>' ) {
+                if (replace(replaced) && (Character.isWhitespace((char) c) || c == '\'' || c == '\"' || c == '(' || c == ')' || c == '<' || c == '>' )) {
                     if (replaceWord(word, w)) replaced++;
                     word.setLength(0);
                     w.write(c);
@@ -207,8 +247,12 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 }
             }
             // write last word
-            if (replaceWord(word, w)) replaced++;
-            log.debug("Finished regexp replacing. Replaced " + replaced + " words");
+            if (replace(replaced)) {
+                if (replaceWord(word, w)) replaced++;
+            } else {
+                w.write(word.toString());
+            }
+            log.debug("Finished replacing. Replaced " + replaced + " words");
         } catch (java.io.IOException e) {
             log.error(e.toString());
         }
@@ -219,10 +263,15 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     public Writer transformLines(Reader r, Writer w) {
         BufferedReader reader = new BufferedReader(r);
+        int replaced = 0;
         try {
             String line = reader.readLine();
             while (line != null) {
-                replace(line, w);
+                if (replace(replaced)) {
+                    if (replace(line, w)) replaced ++; 
+                } else {
+                    w.write(line);
+                }
                 line = reader.readLine();
             }
         } catch (java.io.IOException e) {
