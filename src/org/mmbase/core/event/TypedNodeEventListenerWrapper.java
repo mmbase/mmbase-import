@@ -33,8 +33,7 @@ public class TypedNodeEventListenerWrapper implements NodeEventListener {
 
     /*
      * (non-Javadoc)
-     *
-     * @see org.mmbase.core.event.NodeEventListener#fire(org.mmbase.core.event.NodeEvent)
+     * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
      */
     public void notify(NodeEvent event) {
         if(event.getBuilderName().equals(nodeType))
