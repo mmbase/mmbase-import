@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.37 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id: RelDef.java,v 1.38 2006-01-16 14:49:21 michiel Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -406,9 +406,9 @@ public class RelDef extends MMObjectBuilder {
         if (relBuilderCache == null) {
             relBuilderCache = new HashMap();
             // add all builders that descend from InsRel
-            Enumeration buls = mmb.mmobjs.elements();
-            while (buls.hasMoreElements()) {
-                MMObjectBuilder fbul = (MMObjectBuilder)buls.nextElement();
+            Iterator buls = mmb.getBuilders().iterator();
+            while (buls.hasNext()) {
+                MMObjectBuilder fbul = (MMObjectBuilder) buls.next();
                 if (fbul instanceof InsRel) {
                     relBuilderCache.put(new Integer(fbul.getNumber()), fbul);
                 }
