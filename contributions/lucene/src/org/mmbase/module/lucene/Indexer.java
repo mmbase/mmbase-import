@@ -30,12 +30,11 @@ import org.mmbase.util.logging.*;
  *x
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.15 2006-01-03 13:28:07 michiel Exp $
+ * @version $Id: Indexer.java,v 1.16 2006-01-16 19:24:20 pierre Exp $
  **/
 public class Indexer {
 
     static private final Logger log = Logging.getLoggerInstance(Indexer.class);
-
 
     // reference to the cloud
     private final Cloud cloud;
@@ -48,7 +47,6 @@ public class Indexer {
 
     // Collection with queries to run
     private final Collection queries;
-
 
     /**
      * Instantiates an Indexer for a specified collection of queries and options.
@@ -163,7 +161,7 @@ public class Indexer {
                 index(j, writer);
             }
             writer.optimize();
-            
+
             log.service("Full index finished. Total nr documents in index: " + writer.docCount());
         } catch (Exception e) {
             log.error("Cannot run FullIndex: "+e.getMessage());
@@ -210,10 +208,7 @@ public class Indexer {
                 index(subEntry, document);
             }
         }
-        
     }
-
-
 
     public String toString() {
         return getName() + queries;

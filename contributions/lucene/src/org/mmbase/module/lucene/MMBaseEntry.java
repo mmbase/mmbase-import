@@ -30,8 +30,9 @@ import org.mmbase.util.logging.*;
  * This defines how MMBase Nodes are added to Lucene documents. This also takes into account
  * 'related' nodes, by using the 'sub definitions'.
  *
+ * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.2 2005-12-28 10:11:38 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.3 2006-01-16 19:24:20 pierre Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -50,14 +51,12 @@ public class MMBaseEntry implements IndexEntry {
     // of fields already indexed
     private final Set indexed = new HashSet();
 
-
     MMBaseEntry(Node node, Collection fields, boolean multiLevel, NodeManager elementManager, Collection subQueries) {
         this.fields = fields;
         this.multiLevel = multiLevel;
         this.elementManager = elementManager;
         this.subQueries = subQueries;
         this.node = node;
-
     }
 
     public String getIdentifier() {
@@ -103,14 +102,11 @@ public class MMBaseEntry implements IndexEntry {
         if (log.isDebugEnabled()) {
             log.trace("Indexed " + data + " --> " + document);
         }
-
     }
 
     public Collection getSubDefinitions() {
         return subQueries != null ? subQueries : Collections.EMPTY_LIST;
     }
-
-
 
     protected boolean shouldIndex(String fieldName, String alias) {
         // determine number
@@ -186,7 +182,11 @@ public class MMBaseEntry implements IndexEntry {
                             try {
                                 documentText = extractor.extract(input);
                             } catch (Exception e) {
-                                log.error(e.getMessage(), e);
+                                if (log.isDebugEnabled()) {
+                                    log.error(e.getMessage(), e);
+                                } else {
+                                    log.error(e.getMessage());
+                                }
                             }
                         } else  {
                             log.warn("Cannot read document: unknown mimetype, trying stringvalue");
@@ -261,6 +261,7 @@ public class MMBaseEntry implements IndexEntry {
             return "";
         }
     }
+
     /**
      * Add a name of a node with the specified number as having been indexed (so it won't be attempted to index it again)
      * @param number the number of the node
@@ -280,9 +281,6 @@ public class MMBaseEntry implements IndexEntry {
     boolean isIndexed(int number, String fieldName, String alias) {
         return indexed.contains(number + "_" + fieldName + "_" + alias);
     }
-
-
-
 
 }
 
