@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.151 2006-01-16 14:27:36 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.152 2006-01-16 15:06:49 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, java.io.Serializable {
 
@@ -1034,7 +1034,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
                 log.warn("Security implementation did not set 'authentication type' in the user object.");
             }
         } else {
-            throw new java.io.NotSerializableException(MMBase.class.getName());
+            throw new java.io.NotSerializableException(Cloud.class.getName());
         }
     }
 
