@@ -18,9 +18,8 @@
       This page does not work in MMBase 1.5 (loginpage attribute not supported).
     </p>
     <hr />
-    <a href="cloud1.jsp">Previous (interesting if you logged in as
-    different user now)</a><br />
-    <a href="cloud3.jsp">Next</a>
+    <a href="<mm:url page="cloud1.jsp" />">Previous (interesting if you logged in as different user now)</a><br />
+    <a href="<mm:url page="cloud3.jsp" />">Next</a>
     <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
   <hr />
   </body>

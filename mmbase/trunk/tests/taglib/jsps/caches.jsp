@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-  %><%@ page import="java.util.*,org.mmbase.util.*,org.mmbase.cache.Cache" %>
+%><%@ page import="java.util.*,org.mmbase.util.*,org.mmbase.cache.Cache" %>
 <html>
 <mm:cloud rank="basic user" method="http">
 <head><title>MMBase Caches</title></head>

@@ -56,7 +56,7 @@
   <mm:field name="wrap(title, 10)" escape="p" />
   <pre><mm:field name="wrap(title,10)" /></pre>
   --%>
-  <mm:field name="info()" />
+  <mm:field name="info()" escape="text/html" />
 </mm:node>
 
 
