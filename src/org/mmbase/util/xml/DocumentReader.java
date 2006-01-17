@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.21 2006-01-02 22:35:44 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.22 2006-01-17 12:25:21 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -72,13 +72,24 @@ public class DocumentReader  {
 
     private String systemId;
 
+    static UtilReader.PropertiesMap utilProperties = null;
     /**
      * Returns the default setting for validation for DocumentReaders.
-     * @todo add a way to configure this value, so validation can be turned off in i.e. production environments
      * @return true if validation is on
      */
     protected static final boolean validate() {
-        return true;
+        Object validate = utilProperties == null ? null : utilProperties.get("validate");
+        return validate == null || validate.equals("true");
+    }
+
+    /**
+     * Whether to validate given a request for that. So, the request is followed, unless it is configured to 'never' validate.
+     * @since MMBase-1.8
+     */    
+    protected static final boolean validate(boolean requested) {
+        Object validate = utilProperties == null ? null : utilProperties.get("validate");
+        if (validate != null && validate.equals("never")) return false;
+        return requested;
     }
 
 
@@ -233,6 +244,7 @@ public class DocumentReader  {
      * @since MMBase-1.8.
      */
     public static DocumentBuilder getDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
+        validating = validate(validating);
         if (handler == null && resolver == null) {
             String key = "" + validating + xsd;
             DocumentBuilder db = (DocumentBuilder) documentBuilders.get(key);

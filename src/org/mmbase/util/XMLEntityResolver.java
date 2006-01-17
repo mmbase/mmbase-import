@@ -11,7 +11,7 @@ package org.mmbase.util;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 import java.util.Map;
 import java.util.Hashtable;
 
@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.58 2006-01-02 21:38:29 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.59 2006-01-17 12:25:21 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -165,11 +165,15 @@ public class XMLEntityResolver implements EntityResolver {
     }
 
     /**
-     * takes the systemId and returns the local location of the dtd/xsd
+     * Takes the systemId and returns the local location of the dtd/xsd
      */
     public InputSource resolveEntity(String publicId, String systemId) {
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
+        }
+        if (! validate) {
+            log.debug("Not validating, not need to resolve DTD,  returning empty resource");
+            return new InputSource(new ByteArrayInputStream(new byte[0])); 
         }
 
         InputStream definitionStream = null;
@@ -192,10 +196,6 @@ public class XMLEntityResolver implements EntityResolver {
 
             //does systemId contain a mmbase-dtd
             if ((systemId == null) || (! systemId.startsWith(DOMAIN))) {
-                if (! validate) {
-                    log.debug("Not validating, cannot resolve,  returning empty resource");
-                    return new InputSource(new StringReader(""));
-                }
                 // it's a systemId we can't do anything with,
                 // so let the parser decide what to do
 
@@ -234,21 +234,18 @@ public class XMLEntityResolver implements EntityResolver {
                     }
                 }
                 if (definitionStream == null) {
-                    if (! validate) {
-                        return new InputSource(new StringReader(""));
+                    
+                    if (resolveBase != null) {
+                        log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
                     } else {
-                        if (resolveBase != null) {
-                            log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
-                        } else {
-                            log.service("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
-
-                        }
-                        // not sure, probably should return 'null' after all, then it will be resolved with internet.
-                        // but this can not happen, in fact...
-                        //return new InputSource(new StringReader(""));
-                        // FAILED
-                        return null;
+                        log.service("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
+                        
                     }
+                    // not sure, probably should return 'null' after all, then it will be resolved with internet.
+                    // but this can not happen, in fact...
+                    //return new InputSource(new StringReader(""));
+                    // FAILED
+                    return null;
                 }
             }
         }
