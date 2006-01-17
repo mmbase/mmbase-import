@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss) 
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
- * @version $Id: ASelectUser.java,v 1.1 2005-03-16 20:04:04 michiel Exp $
+ * @version $Id: ASelectUser.java,v 1.2 2006-01-17 21:38:49 michiel Exp $
  * @since  MMBase-1.7
  * @see ASelectAuthentication
  */
@@ -31,9 +31,9 @@ import org.mmbase.util.logging.Logging;
 public class ASelectUser extends BasicUser {
     private static final Logger log = Logging.getLoggerInstance(ASelectUser.class);
 
+    private static final long serialVersionUID = 1;
     private String identifier;
     private Rank   rank;
-
     long key;
 
 
@@ -60,6 +60,17 @@ public class ASelectUser extends BasicUser {
 
     public Rank getRank() throws SecurityException {
         return rank;
+    }
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+        identifier = in.readUTF();
+        rank = (Rank)in.readObject();
+        key = in.readLong();
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        out.writeUTF(identifier);
+        out.writeObject(rank);
+        out.writeLong(key);
     }
 
 }
