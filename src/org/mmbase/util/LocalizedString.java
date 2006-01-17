@@ -21,13 +21,17 @@ import org.w3c.dom.*;
  * this object.
  *</p>
  *<p>
+ * The 'set' mechanism can also be driven by {@link #fillFromXml}, which provides a sensible way to fill the LocalizedString with
+ * setting from a sub element of XML's.
+ *</p>
+ *<p>
  * The idea is that objects of this type can be used in stead of normal String objects, for error
  * messages, descriptions and other texts which need localization (e.g. because they are exposed to 
  * end-users).
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.19 2005-12-29 23:01:38 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.20 2006-01-17 12:23:52 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -247,7 +251,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
 
     /**
      * Given a certain tagname, and a DOM parent element, it configures this LocalizedString, using
-     * subtags with this tagname with 'xml:lang' attributes.
+     * subtags with this tagname with 'xml:lang' attributes. This boils down to repeative calls to {@link #set(String, Locale)}.
      */
 
     public void fillFromXml(final String tagName, final Element element) {
