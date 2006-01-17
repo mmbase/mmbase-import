@@ -29,14 +29,13 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.21 2005-11-01 12:16:30 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.22 2006-01-17 21:25:28 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
     private Map  loginModules = new LinkedHashMap();
     private Document document;
-    private long validKey;
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_0 = "-//MMBase//DTD security context config 1.0//EN";
@@ -55,7 +54,6 @@ public class ContextAuthentication extends Authentication {
     }
 
     public ContextAuthentication() {
-        validKey = System.currentTimeMillis();
     }
 
     protected void load() {
@@ -110,7 +108,7 @@ public class ContextAuthentication extends Authentication {
                 log.error( Logging.stackTrace(e));
                 throw new SecurityException(msg);
             }
-            module.load(document, validKey, moduleName, manager);
+            module.load(document, getKey(), moduleName, manager);
             log.info("loaded module with the name: '" + moduleName + "' with class: " + className);
             loginModules.put(moduleName, module);
         }
@@ -118,7 +116,7 @@ public class ContextAuthentication extends Authentication {
         if (!loginModules.containsKey("class")) {
             ContextLoginModule classModule =  new ClassLogin();
             log.info("The class login module was not configured. It is needed sometimes. Now loading module with the name 'class' with class: " + classModule.getClass());
-            classModule.load(document, validKey, "class", manager);
+            classModule.load(document, getKey(), "class", manager);
             loginModules.put("class", classModule);
         }
 
@@ -149,8 +147,10 @@ public class ContextAuthentication extends Authentication {
     /**
      * this method does nothing..
      */
-    public boolean isValid(UserContext usercontext) throws SecurityException {
-        return validKey == ((ContextUserContext)usercontext).getKey();
+    public boolean isValid(UserContext userContext) throws SecurityException {
+        if ( getKey() == ((ContextUserContext)userContext).getKey()) return true;
+        log.debug("not valid because " + getKey () + " != " + ((ContextUserContext) userContext).getKey());
+        return false;
     }
 
     public String[] getTypes() {
