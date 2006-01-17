@@ -31,15 +31,14 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.15 2005-10-18 21:58:12 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.16 2006-01-17 21:28:18 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
 
     protected static final String ADMINS_PROPS = "admins.properties";
 
-    private long uniqueNumber;
-    private long extraAdminsUniqueNumber;
+    private int extraAdminsUniqueNumber;
 
     private boolean allowEncodedPassword = false;
 
@@ -55,20 +54,12 @@ public class Authenticate extends Authentication {
                 extraAdmins.load(in);
             }
             log.service("Extra admins " + extraAdmins.keySet());
-            extraAdminsUniqueNumber = System.currentTimeMillis();
+            extraAdminsUniqueNumber = extraAdmins.hashCode();
         } catch (IOException ioe) {
             log.error(ioe);
         }
     }
 
-
-    /**
-     * Constructor. Only initializes an 'unique number' for this security instance, which can be used in
-     * 'isValid'.
-     */
-    public Authenticate() {
-        uniqueNumber = System.currentTimeMillis();
-    }
 
     // javadoc inherited
     protected void load() throws SecurityException {
@@ -153,8 +144,8 @@ public class Authenticate extends Authentication {
             if (li == null) {
                 throw new SecurityException("Class authentication failed  '" + s + "' (class not authorized)");
             }
-            String userName = (String) li.getMap().get("username");
-            String rank     = (String) li.getMap().get("rank");
+            String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
+            String rank     = (String) li.getMap().get(PARAMETER_RANK.getName());
             if (userName != null && (rank == null || (Rank.ADMIN.toString().equals(rank) && extraAdmins.containsKey(userName)))) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
                 User user = new LocalAdmin(userName, s);
@@ -174,7 +165,7 @@ public class Authenticate extends Authentication {
             throw new UnknownAuthenticationMethodException("login module with name '" + s + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
         }
         if (node == null)  return null;
-        return new User(node, uniqueNumber, s);
+        return new User(node, getKey(), s);
     }
 
     public static User getLoggedInExtraAdmin(String userName) {
@@ -188,7 +179,7 @@ public class Authenticate extends Authentication {
             return false;
         }
         User user = (User) userContext;
-        boolean flag = user.isValidNode() && user.getKey() == uniqueNumber;
+        boolean flag = user.isValidNode() && user.getKey() == getKey();
         if (flag) {
             log.debug(user.toString() + " was valid");
         } else if (user.isValidNode()) {
@@ -239,10 +230,12 @@ public class Authenticate extends Authentication {
     }
 
     protected class LocalAdmin extends User {
+        private static final long serialVersionUID = 1;
+
         private String userName;
         private long   l;
         LocalAdmin(String user, String app) {
-            super(null, uniqueNumber, app);
+            super(null, Authenticate.this.getKey(), app);
             node = new AdminVirtualNode();
             l = extraAdminsUniqueNumber;
             userName = user;
@@ -251,6 +244,22 @@ public class Authenticate extends Authentication {
         public String  getOwnerField() { return userName; }
         public Rank getRank() throws SecurityException { return Rank.ADMIN; }
         public boolean isValidNode() { return l == extraAdminsUniqueNumber; }
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+            userName = in.readUTF();
+            l        = extraAdminsUniqueNumber;
+            org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                    public void run() {
+                        org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
+                        node     = new AdminVirtualNode();
+                    }
+                });
+            
+        }
+        
+        
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            out.writeUTF(userName);
+        }
     }
     public  class AdminVirtualNode extends VirtualNode {
         AdminVirtualNode() {
