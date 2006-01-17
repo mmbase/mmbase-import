@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.26 2006-01-17 09:35:18 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.27 2006-01-17 17:35:04 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -274,7 +274,7 @@ abstract public class QueryResultCache extends Cache {
             int evaluatedResults = cacheKeys.size();
             Set removeKeys = new HashSet();
             long totalEvaluationTime = 0;
-            synchronized (this) {
+            synchronized (QueryResultCache.this) {
                 for (Iterator i = cacheKeys.iterator(); i.hasNext();) {
                     SearchQuery key = (SearchQuery) i.next();
                     ReleaseStrategy.StrategyResult result = null;
