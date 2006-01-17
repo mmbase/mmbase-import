@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="CloudSecurity" maintainer="cloud.security.mmbase.omroep.nl" version="1" auto-deploy="false">
-	<neededbuilderlist>
-		<builder maintainer="mmbase.org" version="1">mmbaseusers</builder>
-	</neededbuilderlist>
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="1">mmbaseusers</builder>
+  </neededbuilderlist>
 
-	<neededreldeflist>
-	</neededreldeflist>
+  <neededreldeflist>
+  </neededreldeflist>
 
-	<allowedrelationlist>
-	</allowedrelationlist>
+  <allowedrelationlist>
+  </allowedrelationlist>
 
-	<datasourcelist>
-	<datasource builder="mmbaseusers" path="CloudSecurity/mmbaseusers.xml" />
-	</datasourcelist>
+  <datasourcelist>
+    <datasource builder="mmbaseusers" path="CloudSecurity/mmbaseusers.xml" />
+  </datasourcelist>
 
-	<relationsourcelist>
-	</relationsourcelist>
+  <relationsourcelist>
+  </relationsourcelist>
 
-	<contextsourcelist>
-	</contextsourcelist>
+  <contextsourcelist>
+  </contextsourcelist>
 
-	<description><![CDATA[Installs the admin account for using mmbaseusers security
+  <description><![CDATA[Installs the admin account for using mmbaseusers security
 See /mmdocs/administrators/security-framework.html for more information.
-	]]></description>
+  ]]></description>
 
-	<install-notice><![CDATA[You have installed the admin account.
-	]]></install-notice>
+  <install-notice><![CDATA[You have installed the admin account.
+  ]]></install-notice>
 </application>
