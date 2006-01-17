@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.10 2005-12-21 17:43:47 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.11 2006-01-17 22:44:58 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -129,13 +129,6 @@ public class ASelectAuthentication extends Authentication {
      * file 'ranks.properties', stored in this object.
      */
     private Properties registeredRanks = null;
-
-
-    /**
-     * The idea is that on reload of configuration the existing user
-     * are invalid, because their uniqueNumber does not correspond.
-     */
-    private long uniqueNumber = System.currentTimeMillis();
 
 
 
@@ -356,9 +349,9 @@ public class ASelectAuthentication extends Authentication {
     protected UserContext getAnonymousUser() {
         if (useCloudContext) {
             Users users = Users.getBuilder();
-            return new ASelectCloudContextUser(users.getAnonymousUser(), uniqueNumber, "anonymous");
+            return new ASelectCloudContextUser(users.getAnonymousUser(), getKey(), "anonymous");
         } else {
-            return new ASelectUser("anonymous", Rank.ANONYMOUS, uniqueNumber, "anonymous");
+            return new ASelectUser("anonymous", Rank.ANONYMOUS, getKey(), "anonymous");
         }
     }
 
@@ -403,7 +396,7 @@ public class ASelectAuthentication extends Authentication {
                     r = rank != null ? Rank.BASICUSER : Rank.getRank(rank);
                 }
                 if (userName == null) throw new SecurityException("Should specify at least a username or a rank for class authenication (given " + li + ":" + li.getMap() + ")");
-                return new ASelectCloudContextUser(userName, uniqueNumber, "class", r.toString());
+                return new ASelectCloudContextUser(userName, getKey(), "class", r.toString());
             } else {
                 if (userName == null) {
                     if (rank != null) {
@@ -416,7 +409,7 @@ public class ASelectAuthentication extends Authentication {
                 } else {
                     r = Rank.getRank(rank);
                 }
-                return new ASelectUser(userName, r, uniqueNumber, "class");
+                return new ASelectUser(userName, r, getKey(), "class");
             }
         }
 
@@ -481,10 +474,10 @@ public class ASelectAuthentication extends Authentication {
                 String userName = getASelectUserId(request);
                 if (useCloudContext) {
                     String r = knownUsers.getProperty(userName);
-                    newUser = new ASelectCloudContextUser(userName, uniqueNumber, application, r);
+                    newUser = new ASelectCloudContextUser(userName, getKey(), application, r);
                 } else {
                     Rank rank = getRank(userName);
-                    newUser = new ASelectUser(userName, rank, uniqueNumber, application);
+                    newUser = new ASelectUser(userName, rank, getKey(), application);
                 }
             } else {
                 log.debug("User not fully authenticated and has been redirected to A-Select Agent.");
@@ -514,10 +507,10 @@ public class ASelectAuthentication extends Authentication {
                     }
                     if (useCloudContext) {
                         String r = knownUsers.getProperty(userName);
-                        newUser = new ASelectCloudContextUser(userName, uniqueNumber, application, r);
+                        newUser = new ASelectCloudContextUser(userName, getKey(), application, r);
                     } else {
                         Rank rank = getRank(userName);
-                        newUser = new ASelectUser(userName, rank, uniqueNumber, application);
+                        newUser = new ASelectUser(userName, rank, getKey(), application);
                     }
                     if (requiredRank != null && newUser.getRank().getInt() < requiredRank.getInt()) {
                         if (log.isDebugEnabled()) {
@@ -550,8 +543,8 @@ public class ASelectAuthentication extends Authentication {
                 return false;
             }
             ASelectCloudContextUser user = (ASelectCloudContextUser) userContext;
-            if (user.getKey() != uniqueNumber) {
-                log.service(user.toString() + " was NOT valid (different unique number, " + user.getKey() + " != " + uniqueNumber);
+            if (user.getKey() != getKey()) {
+                log.service(user.toString() + " was NOT valid (different unique number, " + user.getKey() + " != " + getKey());
                 return false;
             }
             if (! user.isValidNode()) {
@@ -561,7 +554,7 @@ public class ASelectAuthentication extends Authentication {
             log.debug(user.toString() + " was valid");
             return true;
         } else {
-            return ((ASelectUser) userContext).key == uniqueNumber;
+            return ((ASelectUser) userContext).key == getKey();
         }
     }
 
