@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.mmbase.core.event.*;
 import org.mmbase.storage.search.SearchQuery;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This class will manage a collection of <code>ReleaseStrategy</code>
@@ -24,9 +26,10 @@ import org.mmbase.storage.search.SearchQuery;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.10 2005-12-23 10:20:17 ernst Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.11 2006-01-17 09:36:03 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
+    private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
 
     private List cacheReleaseStrategies = new ArrayList(10);
 
@@ -102,27 +105,32 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
     protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+        if(log.isDebugEnabled()) {
+            log.trace("Chaining " + cacheReleaseStrategies + " for " + event);
+        }
         // first do the 'basic' strategy that is allways there. (see constructor)
         Iterator i = cacheReleaseStrategies.iterator();
-        StrategyResult result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
-
         // while the outcome of getResult is true (the cache should be fluhed), we have to keep trying.
-        while (i.hasNext() && result.shouldRelease() == true) {
-            result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
+        while (i.hasNext()) {
+            ReleaseStrategy strategy = (ReleaseStrategy) i.next();
+            StrategyResult result = strategy.evaluate(event, query, cachedResult);            
+            if (result.shouldRelease()) return true;
         }
-        return result.shouldRelease();
+        return false;
     }
-
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
+        if(log.isDebugEnabled()) {
+            log.trace("Chaining " + cacheReleaseStrategies + " for " + event);
+        }
         // first do the 'basic' strategy that is allways there. (see constructor)
         Iterator i = cacheReleaseStrategies.iterator();
-        StrategyResult result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
-
         // while the outcome of getResult is true (the cache should be fluhed), we have to keep trying.
-        while (i.hasNext() && result.shouldRelease() == true) {
-            result = ((ReleaseStrategy) i.next()).evaluate(event, query, cachedResult);
+        while (i.hasNext()) {
+            ReleaseStrategy strategy = (ReleaseStrategy) i.next();
+            StrategyResult result = strategy.evaluate(event, query, cachedResult);            
+            if (result.shouldRelease()) return true;
         }
-        return result.shouldRelease();
+        return false;
     }
     
     public void clear(){
