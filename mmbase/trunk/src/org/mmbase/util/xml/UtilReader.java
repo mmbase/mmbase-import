@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.19 2005-12-24 11:20:43 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.20 2006-01-17 12:25:21 michiel Exp $
  */
 public class UtilReader {
 
@@ -76,6 +76,11 @@ public class UtilReader {
             }
         }
         return utilReader;
+    }
+
+    static {
+        // doesnt startup, probably because of cyclic referecnes, if this happens in DocumentReader itself.
+        DocumentReader.utilProperties = UtilReader.get("documentreader.xml").getProperties();
     }
 
     private class UtilFileWatcher extends ResourceWatcher {
