@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.33 2005-11-04 23:17:55 michiel Exp $
+ * @version $Id: Authentication.java,v 1.34 2006-01-17 21:25:28 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -141,5 +141,18 @@ public abstract class Authentication extends Configurable implements Authenticat
         } else {
             return new AutodefiningParameters();
         }
+    }
+
+    long key = System.currentTimeMillis();
+
+    /**
+     * Some unique key associated with this security configuration. It can be explicitely set with
+     * the 'key' entry in security.xml. It falls back to the current time in millis at the time of
+     * initialization of authentication.
+     *
+     * @since MMBase-1.8
+     */
+    public long getKey() {
+        return key;
     }
 }
