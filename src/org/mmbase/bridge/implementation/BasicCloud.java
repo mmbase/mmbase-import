@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import java.util.*;
-
+import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.*;
@@ -29,9 +29,9 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.153 2006-01-16 16:17:35 johannes Exp $
+ * @version $Id: BasicCloud.java,v 1.154 2006-01-17 21:27:09 michiel Exp $
  */
-public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, java.io.Serializable {
+public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -69,7 +69,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
 
     protected UserContext userContext = null;
 
-    private Map properties = new HashMap();
+    private HashMap properties = new HashMap();
 
     private Locale locale;
 
@@ -960,7 +960,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     }
 
     public void setProperty(Object key, Object value) {
-        properties.put(key,value);
+        properties.put(key, value);
     }
 
     public Collection getFunctions(String setName) {
@@ -1019,43 +1019,50 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     void remove(String currentObjectContext) {
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-        this.name = (String)in.readObject();
-        this.userContext = (UserContext)in.readObject();
-        this.cloudContext = LocalContext.getCloudContext();
-        this.description = name;
-        org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter(this));
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        name = in.readUTF();
+        userContext = (UserContext)in.readObject();
+        cloudContext = LocalContext.getCloudContext();
+        description = name;
+        properties = (HashMap) in.readObject();
+        locale     = (Locale) in.readObject();
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter());        
+        transactions = new HashMap();
+        nodeManagerCache = new HashMap();
     }
 
 
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-        out.writeObject(name);
+    private void writeObject(ObjectOutputStream out) throws IOException {
+
+        out.writeUTF(name);
         out.writeObject(userContext);
+        HashMap props = new HashMap();
+        Iterator i = properties.entrySet().iterator();
+        while(i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            if ((key instanceof Serializable) && (value instanceof Serializable)) {
+                props.put(key, value);
+            }
+        }
+        out.writeObject(props);
+        out.writeObject(locale);
+        log.service("Serialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
     }
 
     class BasicCloudStarter implements Runnable {
-        private BasicCloud parent;
-
-        public BasicCloudStarter(BasicCloud parent) {
-            this.parent = parent;
-        }
-
         public void run() {
-            BasicCloudContext ctx = (BasicCloudContext)LocalContext.getCloudContext();
-            while (!MMBaseContext.isInitialized() || !ctx.isUp()) {
-                try {
-                    Thread.currentThread().sleep(10000);
-                } catch (Exception e) {
-                }
-            }
-            parent.init();
-            if (parent.userContext == null) {
+            LocalContext.getCloudContext().assertUp();
+            BasicCloud.this.init();
+            if (BasicCloud.this.userContext == null) {
                 throw new java.lang.SecurityException("Login invalid: did not supply user object");
             }
             
-            if (parent.userContext.getAuthenticationType() == null) {
+            if (BasicCloud.this.userContext.getAuthenticationType() == null) {
                 log.warn("Security implementation did not set 'authentication type' in the user object.");
             }
+            log.service("Deserialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
         }
     }
 }
