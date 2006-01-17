@@ -18,7 +18,7 @@ import org.mmbase.security.*;
  * this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: ContextUserContext.java,v 1.8 2006-01-16 16:09:28 johannes Exp $
+ * @version $Id: ContextUserContext.java,v 1.9 2006-01-17 21:36:57 michiel Exp $
  */
 public class ContextUserContext extends BasicUser implements java.io.Serializable {
 
@@ -58,13 +58,13 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
     }
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-        this.username = (String)in.readObject();
-        this.rank = (Rank)in.readObject();
-        this.key = in.readLong();
+        username = in.readUTF();
+        rank = (Rank)in.readObject();
+        key = in.readLong();
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-        out.writeObject(username);
+        out.writeUTF(username);
         out.writeObject(rank);
         out.writeLong(key);
     }
