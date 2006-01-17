@@ -10,6 +10,20 @@
  -->
 <security active="true">
 
+  <!--
+      The key of the security configuration can be used to identify the security configuration. In
+      many security implementations user objects need to have the same key to be valid.
+      
+      On default this key is the current time during intialization of security. If you want that
+      users don't need to login again after restart of MMBase, then you need to fix this key,
+      because it is stored in the serialization of the User objects.
+      
+      This is also needed if Cloud and User objects are serialized because of web applications load balancing.
+  -->
+  <!--
+      <key>1234567</key>
+  -->
+
     <!--
         tag authentication:
             attribute class: The class which should be used for
