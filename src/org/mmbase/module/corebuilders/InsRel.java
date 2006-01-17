@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.48 2005-12-09 09:53:34 pierre Exp $
+ * @version $Id: InsRel.java,v 1.49 2006-01-17 09:36:47 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -276,20 +276,20 @@ public class InsRel extends MMObjectBuilder {
      *   according to the specified filter(s).
      */
     public Enumeration getRelations(int source, int otype, int role, boolean usedirectionality) {
-        Vector re;
+        List re;
         if (usedirectionality) {
              re = getRelationsVector(source, role);
         } else {
              re = getAllRelationsVector(source, role);
         }
         if (otype==-1) {
-            return re.elements();
+            return Collections.enumeration(re);
         } else {
             TypeDef typedef = mmb.getTypeDef();
             MMObjectBuilder wantedBuilder = mmb.getBuilder(typedef.getValue(otype));
-            Vector list = new Vector();
-            for(Enumeration e = re.elements(); e.hasMoreElements(); ) {
-                MMObjectNode node = (MMObjectNode) e.nextElement();
+            List list = new ArrayList();
+            for(Iterator e = re.iterator(); e.hasNext(); ) {
+                MMObjectNode node = (MMObjectNode) e.next();
                 int nodenr = node.getIntValue(FIELD_SOURCE);
                 if (nodenr == source) {
                     nodenr = node.getIntValue(FIELD_DESTINATION);
@@ -302,7 +302,7 @@ public class InsRel extends MMObjectBuilder {
                     }
                 }
             }
-            return list.elements();
+            return Collections.enumeration(list);
         }
     }
 
