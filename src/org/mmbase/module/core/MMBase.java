@@ -44,7 +44,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.179 2006-01-16 15:11:38 pierre Exp $
+ * @version $Id: MMBase.java,v 1.180 2006-01-17 20:40:36 johannes Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -322,6 +322,9 @@ public class MMBase extends ProcessorModule {
         log.service("MMBase machine name used for clustering:" + machineName);
         Logging.setMachineName(machineName);
 
+        log.service("Initializing  storage:");
+        initializeStorage();
+
         mmbaseState = STATE_LOAD;
 
         log.debug("Loading builders:");
@@ -330,8 +333,6 @@ public class MMBase extends ProcessorModule {
 
         mmbaseState = STATE_INITIALIZE;
 
-        log.service("Initializing  storage:");
-        initializeStorage();
 
         log.debug("Checking MMBase");
         if (!checkMMBase()) {
