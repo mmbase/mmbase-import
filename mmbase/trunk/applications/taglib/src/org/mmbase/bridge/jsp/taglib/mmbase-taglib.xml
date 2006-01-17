@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.336 2006-01-03 16:12:36 nklasens Exp $
+version: $Id: mmbase-taglib.xml,v 1.337 2006-01-17 00:13:14 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4432,13 +4432,26 @@ like the parameter list or the session (where ever it is available) --&gt;
       </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
+    <attribute>
+      <name>resource</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        Specifies any resource relative to the WebRoot ResourceLoader to be included. This is more
+        or less equivalent to using cite="true", and using page="..". The only difference is that,
+        when using this, there are not restrictions (so you can also show resources in WEB-INF). So,
+        never use this with user input.
+      </info>
+      <since>MMBase-1.8</since>
+    </attribute>
     <see tag="param" />
     <see tag="url" />
     <see tag="haspage" />
     <see tag="treeinclude" />
     <see tag="leafinclude" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
-    </example>
+    </example>    
   </tag>
   <tag>
     <name>haspage</name>

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.63 2005-12-16 13:50:07 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.64 2006-01-17 00:13:14 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -60,6 +60,8 @@ public class IncludeTag extends UrlTag {
 
     protected Attribute notFound        = Attribute.NULL;
 
+    protected Attribute resource        = Attribute.NULL;
+
     /**
      * Test whether or not the 'cite' parameter is set
      */
@@ -76,16 +78,25 @@ public class IncludeTag extends UrlTag {
     }
 
     protected boolean getCite() throws JspTagException {
-        return cite.getBoolean(this, false);
+        return resource != Attribute.NULL || cite.getBoolean(this, false);
     }
 
     public void setAttributes(String a) throws JspTagException {
         attributes = getAttribute(a);
     }
 
+    public void setResource(String r) throws JspTagException {
+        resource = getAttribute(r);
+    }
+
+    protected String getPage() throws JspTagException {
+        if (resource != Attribute.NULL) return resource.getString(this);
+        return super.getPage();
+    }
+
     public int doStartTag() throws JspTagException {
-        if (page == Attribute.NULL) { // for include tags, page attribute is obligatory.
-            throw new JspTagException("Attribute 'page' was not specified");
+        if (page == Attribute.NULL && resource == Attribute.NULL) { // for include tags, page attribute is obligatory.
+            throw new JspTagException("No attribute 'page' or 'resource' was specified");
         }
         return super.doStartTag();
     }
@@ -93,7 +104,6 @@ public class IncludeTag extends UrlTag {
     protected void doAfterBodySetValue() throws JspTagException {
         includePage();
     }
-
     /**
      * Opens an Http Connection, retrieves the page, and returns the result.
      **/
@@ -284,8 +294,10 @@ public class IncludeTag extends UrlTag {
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
             if (log.isDebugEnabled()) log.trace("Citing " + relativeUrl);
-            if (relativeUrl.indexOf("..") > -1 || relativeUrl.toUpperCase().indexOf("WEB-INF") > -1)  { // toUpperCase: just for windows, of course
-                throw new JspTagException("Not allowed to cite " + relativeUrl);
+            if (resource == Attribute.NULL) {
+                if (relativeUrl.indexOf("..") > -1 || relativeUrl.toUpperCase().indexOf("WEB-INF") > -1)  { // toUpperCase: just for windows, of course
+                    throw new JspTagException("Not allowed to cite " + relativeUrl);
+                }
             }
 
             // take of the sessionid if it is present
