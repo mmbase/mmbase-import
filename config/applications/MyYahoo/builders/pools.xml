@@ -61,7 +61,7 @@
           <search>2</search>
         </positions>
       </editor>
-	  <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field"/>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field"/>
       <db>
         <name>description</name>
         <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
