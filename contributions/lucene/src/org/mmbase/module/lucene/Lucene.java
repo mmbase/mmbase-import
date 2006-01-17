@@ -42,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.37 2006-01-16 21:04:01 michiel Exp $
+ * @version $Id: Lucene.java,v 1.38 2006-01-17 22:17:12 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -339,9 +339,7 @@ public class Lucene extends Module implements MMBaseObserver {
                 return;
             }
         }
-        cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
-        cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
-        log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
+
         ResourceWatcher watcher = new ResourceWatcher() {
                 public void onChange(String resource) {
                     readConfiguration(resource);
@@ -360,6 +358,19 @@ public class Lucene extends Module implements MMBaseObserver {
                 scheduler.fullIndex();
             }
         }
+    }
+
+    protected Cloud getCloud() {
+        if (cloud == null) {
+            try {
+                cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
+                cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
+                log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
+            } catch (Exception e) {
+                log.warn("During production of cloud " + e.getMessage() + ", will retry on next occasion", e);
+            }
+        }
+        return cloud;
     }
 
     public void shutdown() {
@@ -386,7 +397,7 @@ public class Lucene extends Module implements MMBaseObserver {
 
             QueryConfigurer configurer = new IndexConfigurer(allIndexedFieldsSet, storeText, mergeText);
 
-            MMBaseIndexDefinition queryDefinition = (MMBaseIndexDefinition) QueryReader.parseQuery(queryElement, configurer, cloud, relateFrom);
+            MMBaseIndexDefinition queryDefinition = (MMBaseIndexDefinition) QueryReader.parseQuery(queryElement, configurer, getCloud(), relateFrom);
             queryDefinition.setAnalyzer(analyzer);
             // do not cache these queries
             queryDefinition.query.setCachePolicy(CachePolicy.NEVER);
@@ -494,7 +505,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                 }
                             }
                         }
-                        Indexer indexer = new Indexer(indexPath, indexName, queries, cloud, analyzer);
+                        Indexer indexer = new Indexer(indexPath, indexName, queries, getCloud(), analyzer);
                         indexer.getDescription().fillFromXml("description", indexElement);
                         log.service("Add lucene index with name " + indexName);
                         indexerMap.put(indexName, indexer);
