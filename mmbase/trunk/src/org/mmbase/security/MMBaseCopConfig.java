@@ -21,7 +21,7 @@ import org.mmbase.util.xml.DocumentReader;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.26 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.27 2006-01-17 21:25:28 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -124,6 +124,7 @@ public class MMBaseCopConfig {
         // load the sharedSecret
         sharedSecret = reader.getElementValue(reader.getElementByPath("security.sharedsecret"));
 
+
         if(active) {
             
             // first instantiate authentication and authorization, during load they can check each others class then.
@@ -133,6 +134,16 @@ public class MMBaseCopConfig {
             String authenticationUrl = reader.getElementAttributeValue(entry, "url");
             authentication = getAuthentication(authenticationClass);
 
+            // load the key
+            String key = reader.getElementValue(reader.getElementByPath("security.key"));
+            if (key != null && ! key.equals("")) {
+                try {
+                    long k = Long.parseLong(key);
+                    authentication.key = k;
+                } catch (NumberFormatException nfe) {
+                    log.error("Could not format '" + key + "', defaulting to " + authentication.key);
+                }
+            }
 
             entry = reader.getElementByPath("security.authorization");
             String authorizationClass = reader.getElementAttributeValue(entry,"class");
