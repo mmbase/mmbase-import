@@ -24,12 +24,15 @@ import org.mmbase.security.SecurityException;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.17 2005-05-11 14:27:45 pierre Exp $
+ * @version $Id: User.java,v 1.18 2006-01-17 21:28:18 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements MMBaseObserver {
+
+    private static final long serialVersionUID = 1;
+
     protected MMObjectNode node;
-    private long key;
+    protected long key;
 
     /**
      * @javadoc
@@ -118,6 +121,23 @@ public class User extends BasicUser implements MMBaseObserver {
             }
         }
         return true;
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+        final int number = in.readInt();
+        key = in.readLong();
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
+                    node = Users.getBuilder().getNode(number);
+                }
+            });
+    }
+
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        out.writeInt(node.getNumber());
+        out.writeLong(key);
     }
 
 }
