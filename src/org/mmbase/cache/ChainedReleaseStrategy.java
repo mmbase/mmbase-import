@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.11 2006-01-17 09:36:03 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.12 2006-01-17 14:58:05 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
@@ -114,9 +114,9 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
         while (i.hasNext()) {
             ReleaseStrategy strategy = (ReleaseStrategy) i.next();
             StrategyResult result = strategy.evaluate(event, query, cachedResult);            
-            if (result.shouldRelease()) return true;
+            if (! result.shouldRelease()) return false;
         }
-        return false;
+        return true;
     }
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         if(log.isDebugEnabled()) {
@@ -128,9 +128,9 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
         while (i.hasNext()) {
             ReleaseStrategy strategy = (ReleaseStrategy) i.next();
             StrategyResult result = strategy.evaluate(event, query, cachedResult);            
-            if (result.shouldRelease()) return true;
+            if (! result.shouldRelease()) return false;
         }
-        return false;
+        return true;
     }
     
     public void clear(){
