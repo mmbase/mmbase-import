@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.mmbase.module.core.MMBaseObserver;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.ThreadPools;
 
 /**
  * Invalidates the security caches if somethings changes in the
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @todo undoubtly, this is too crude.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheInvalidator.java,v 1.6 2005-12-19 09:38:47 michiel Exp $
+ * @version $Id: CacheInvalidator.java,v 1.7 2006-01-17 21:29:43 michiel Exp $
  * @since MMBase-1.7
  */
 class CacheInvalidator implements MMBaseObserver {
@@ -59,16 +60,36 @@ class CacheInvalidator implements MMBaseObserver {
         return nodeChanged(machine, number, builder, ctype);
     }
 
+    protected StringBuffer invalidationScheduled = null;
+
     /**
      * What happens if something changes: clear the caches
      */
     synchronized protected boolean nodeChanged(String machine, String number, String builder, String ctype) {
-        log.service("A security object " + number + " (" + builder + ") has changed, invalidating all security caches");
-        Iterator i = securityCaches.iterator();
-        while (i.hasNext()) {
-            Map c = (Map) i.next();
-            c.clear();
+        StringBuffer sb = invalidationScheduled;
+        if (sb == null) {
+            invalidationScheduled = new StringBuffer("" + number + " (" + builder + ")");
+            ThreadPools.jobsExecutor.execute(new Runnable() {
+                    public void run() {
+                        try {
+                            Thread.sleep(5000);
+                            log.service("Security objects " + invalidationScheduled + " have been changed changed, invalidating all security caches");
+                            Iterator i = securityCaches.iterator();
+                            while (i.hasNext()) {
+                                Map c = (Map) i.next();
+                                c.clear();
+                            }
+                        } catch (Exception e) {
+                            log.warn(e.getMessage());
+                        }
+                        invalidationScheduled = null;
+                    }
+                    
+                });
+        } else {
+            sb.append(", " + number + " (" + builder + ")");
         }
+
         return true;
     }
 
