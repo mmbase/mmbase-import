@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.43 2005-12-19 09:39:30 michiel Exp $
+ * @version $Id: Users.java,v 1.44 2006-01-17 21:28:56 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -392,15 +392,19 @@ public class Users extends MMObjectBuilder {
      * @javadoc
      */
     public boolean isValid(MMObjectNode node)  {
+        if (! (node.getBuilder() instanceof Users)) {
+            log.info("Node is no Users object but " + node.getBuilder().getTableName() + ", corresponding user is invalid");
+            return false;
+        }
         boolean valid = true;
         long time = System.currentTimeMillis() / 1000;
-        if (getField(FIELD_VALID_FROM) != null) {
+        if (hasField(FIELD_VALID_FROM)) {
             long from = node.getLongValue(FIELD_VALID_FROM);
             if (from > time) {
                 valid = false;
             }
         }
-        if (getField(FIELD_VALID_TO) != null) {
+        if (hasField(FIELD_VALID_TO)) {
             long to = node.getLongValue(FIELD_VALID_TO);
             if (to > 0 && to < time) {
                 valid = false;
