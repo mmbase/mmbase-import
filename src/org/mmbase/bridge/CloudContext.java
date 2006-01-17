@@ -18,7 +18,7 @@ import org.mmbase.security.AuthenticationData;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.26 2005-11-04 23:20:25 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.27 2006-01-17 21:26:34 michiel Exp $
  */
 public interface CloudContext {
 
@@ -176,5 +176,8 @@ public interface CloudContext {
      * @since MMBase-1.8
      */
     public boolean isUp();
-
+    /**
+     * @since MMBase-1.8
+     */
+    public void assertUp();
  }

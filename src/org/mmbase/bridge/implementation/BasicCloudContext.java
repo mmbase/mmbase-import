@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.48 2006-01-13 15:44:30 pierre Exp $
+ * @version $Id: BasicCloudContext.java,v 1.49 2006-01-17 21:26:34 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -208,6 +208,17 @@ public class BasicCloudContext implements CloudContext {
 
     public boolean isUp() {
         return mmb != null && mmb.getState() && check();
+    }
+
+    public void assertUp() {
+        // TODO implement with some nice notify-mechanism.
+        CloudContext ctx = LocalContext.getCloudContext();
+        while (!MMBaseContext.isInitialized() || ! isUp()) {
+            try {
+                Thread.currentThread().sleep(10000);
+            } catch (Exception e) {
+            }
+        }
     }
 
 }
