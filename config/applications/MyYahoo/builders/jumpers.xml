@@ -5,7 +5,7 @@
   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
 
   <status>active</status>
-  <classfile>Jumpers</classfile>
+  <class>Jumpers</class>
   <searchage>14</searchage>
 
   <names>
