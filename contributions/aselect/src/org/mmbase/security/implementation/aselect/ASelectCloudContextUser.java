@@ -26,12 +26,14 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
- * @version $Id: ASelectCloudContextUser.java,v 1.4 2005-12-09 16:14:00 pierre Exp $
+ * @version $Id: ASelectCloudContextUser.java,v 1.5 2006-01-17 21:38:49 michiel Exp $
  * @since  MMBase-1.8
  * @see ASelectAuthentication
  */
 
 public class ASelectCloudContextUser extends org.mmbase.security.implementation.cloudcontext.User {
+
+    private static final long serialVersionUID = 1;
 
     private static final Logger log = Logging.getLoggerInstance(ASelectCloudContextUser.class);
 
