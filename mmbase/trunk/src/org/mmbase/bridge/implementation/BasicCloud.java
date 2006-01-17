@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.154 2006-01-17 21:27:09 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.155 2006-01-17 22:39:24 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -581,7 +581,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
-        return mmbaseCop.getAuthorization().check(userContext, nodeID, operation);
+        return mmbaseCop != null && mmbaseCop.getAuthorization().check(userContext, nodeID, operation);
     }
 
     /**
@@ -590,6 +590,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     * @param nodeID the node on which to check the operation
     */
     void verify(Operation operation, int nodeID) {
+        if (mmbaseCop == null) throw new org.mmbase.security.SecurityException("No MMBaseCop"); // mmbase cop can be null if deserialization not yet ready.
         mmbaseCop.getAuthorization().verify(userContext, nodeID, operation);
     }
 
@@ -602,7 +603,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        return mmbaseCop.getAuthorization().check(userContext, nodeID, srcNodeID, dstNodeID, operation);
+        return mmbaseCop != null && mmbaseCop.getAuthorization().check(userContext, nodeID, srcNodeID, dstNodeID, operation);
     }
 
     /**
