@@ -59,17 +59,16 @@
     <type-mapping name="XML" min-size="1" max-size="255" type="varchar({0})" />
     <type-mapping name="XML" min-size="256" max-size="32776" type="char({0,number,#####})" />
     <type-mapping name="XML" min-size="32777" max-size="16577216" type="clob" />
-    <type-mapping name="BYTE" min-size="1" max-size="16777216" type="BLOB" />
+    <type-mapping name="BINARY" min-size="1" max-size="16777216" type="BLOB" />
   </type-mappings>
 
   <!-- disallowed fields
   -->
   <disallowed-fields >
     <disallowed-field name="avg" replacement="mmavg" /> <!-- standard SQL keyword -->
-    <disallowed-field name="count" replacement="mmcount" /> <!-- standard SQL keyword -->
     <disallowed-field name="database" replacement="dtbs" />
     <disallowed-field name="divide" replacement="mmdivide" />
-    <disallowed-field name="max" replacement="mmmax" /> <!-- standard SQL keyword -->
+    <disallowed-field name="max" replacement="maximum" /> <!-- standard SQL keyword -->
     <disallowed-field name="min" replacement="mmmin" /> <!-- standard SQL keyword -->
     <disallowed-field name="minus" replacement="mmminus" />
     <disallowed-field name="plus" replacement="mmplus" />
@@ -81,6 +80,8 @@
     <disallowed-field name="times" replacement="mmtimes" />
     <disallowed-field name="type" replacement="typ" /> <!-- standard SQL keyword -->
     <disallowed-field name="variance" replacement="mmvariance" />
+    <disallowed-field name="parent" replacement="prnt" />
+    <disallowed-field name="data" replacement="dt" />
   </disallowed-fields>
 
 </storage>
