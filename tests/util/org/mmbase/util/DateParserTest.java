@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DateParserTest.java,v 1.1 2005-10-17 16:05:48 michiel Exp $
+ * @verion $Id: DateParserTest.java,v 1.2 2006-01-18 09:10:25 michiel Exp $
  */
 public class DateParserTest extends TestCase {
 
@@ -24,7 +24,7 @@ public class DateParserTest extends TestCase {
         if (value1 == null) return value2 == null;
         if (value1 instanceof Date && value2 instanceof Date) {
             // for dynamic dates.
-            return Math.abs(((Date) value1).getTime() - ((Date) value2).getTime()) < 100L;
+            return Math.abs(((Date) value1).getTime() - ((Date) value2).getTime()) < 200L;
         } else {
             return value1.equals(value2);
         }
