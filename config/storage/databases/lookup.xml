@@ -45,6 +45,11 @@
   <filter resource="storage/databases/oracle.xml">
     <driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
   </filter>
+  
+  <!-- Informix -->
+  <filter resource="storage/databases/informix.xml">
+    <driver-class>com.informix.</driver-class>
+  </filter>
 
   <!-- 
        During boottrap a connection is gotten. If for some reason this must be done with a different URL, 
