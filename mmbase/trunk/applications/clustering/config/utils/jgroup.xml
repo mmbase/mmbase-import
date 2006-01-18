@@ -19,11 +19,18 @@
     protocol stack. Important to have every layer, otherwise stack setup will fail, 
     and no multicast will be available. Recommend only changing mcast_addr, mcast_port and ip_ttl.
 
-    JGroups automatically fragments large messages. Datagramsize is therefore not needed.
+    JGroups automatically fragments large message. Datagramsize is therefore not needed.
+    
+    MERGE2 is set for the following reason:
+    When a network error occurs, the cluster might be partitioned into
+    several different partitions. JGroups has a MERGE service that allows
+    the coordinators in partitions to communicate with each other and form a
+    single cluster back again.
     -->
    <property name="channelproperties">
      UDP(mcast_addr=224.0.0.1;mcast_port=16080;ip_ttl=1):
      PING(timeout=3000;num_initial_members=6):
+     MERGE2(min_interval=5000;max_interval=10000):
      FD(timeout=3000):
      VERIFY_SUSPECT(timeout=1500):
      pbcast.NAKACK(gc_lag=10;retransmit_timeout=600,1200,2400,4800):
