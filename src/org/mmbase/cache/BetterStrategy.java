@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.14 2006-01-16 13:23:22 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.15 2006-01-19 14:02:30 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -58,6 +58,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
     /**
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.core.event.NodeEvent,
+
      * org.mmbase.storage.search.SearchQuery, java.util.List)
      * 
      * @return true if query should be released
@@ -127,7 +128,7 @@ public class BetterStrategy extends ReleaseStrategy {
             //if the changed field(s) do not occur in the fields or constraint section
             //of the query, it dous not have to be flushed
             if(! checkChangedFieldsMatch(event, query)){
-                logResult("no flush: the fields that have changed are not used in the querie", query, event);
+                logResult("no flush: the fields that have changed are not used in the query", query, event);
                 return false;
             }
             
@@ -209,43 +210,43 @@ public class BetterStrategy extends ReleaseStrategy {
     }
 
     /**
-	 * @param event
-	 * @param query
-	 * @return true if query is aggragating, of type count, and the changed fields do 
-	 * not occur in the constraint (no flush)
-	 */
-	private boolean checkAggregationCount(NodeEvent event, SearchQuery query) {
-            log.debug("method: checkAggregationCount()");
-            if(!query.isAggregating()){
-			return false;
-		}
-		//test if all changed fields are aggreagting and of type count, if not: return false;
-		for(Iterator i = query.getFields().iterator();  i.hasNext(); ){
-			StepField field = (StepField) i.next();
-			if(event.getChangedFields().contains(field.getFieldName()) ){
-				if( ! (field instanceof AggregatedField)) {
-					return false;
-				}
-				if( ! (((AggregatedField)field).getAggregationType() == AggregatedField.AGGREGATION_TYPE_COUNT) ){
-					return false;
-				}
-			}
-		}
-		//now check the constraints: if there are any constraints for any of the changed fields: false;
-		Constraint constraint = query.getConstraint();
-		if(constraint == null){
-			return true;
-		}
-		for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
-			String fieldName = (String) i.next();
-			if(getConstraintsForField(fieldName, event.getBuilderName(), constraint, query).size() > 0){
-				return false;
-			}
-		}
-		//all tests survived, query should not be flused
-		return true;
-	}
-
+     * @param event
+     * @param query
+     * @return true if query is aggragating, of type count, and the changed fields do 
+     * not occur in the constraint (no flush)
+     */
+    private boolean checkAggregationCount(NodeEvent event, SearchQuery query) {
+        log.debug("method: checkAggregationCount()");
+        if(!query.isAggregating()){
+            return false;
+        }
+        //test if all changed fields are aggreagting and of type count, if not: return false;
+        for(Iterator i = query.getFields().iterator();  i.hasNext(); ){
+            StepField field = (StepField) i.next();
+            if(event.getChangedFields().contains(field.getFieldName()) ){
+                if( ! (field instanceof AggregatedField)) {
+                    return false;
+                }
+                if( ! (((AggregatedField)field).getAggregationType() == AggregatedField.AGGREGATION_TYPE_COUNT) ){
+                    return false;
+                }
+            }
+        }
+        //now check the constraints: if there are any constraints for any of the changed fields: false;
+        Constraint constraint = query.getConstraint();
+        if(constraint == null){
+            return true;
+            }
+        for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
+            String fieldName = (String) i.next();
+            if(getConstraintsForField(fieldName, event.getBuilderName(), constraint, query).size() > 0){
+                return false;
+            }
+        }
+        //all tests survived, query should not be flused
+        return true;
+    }
+    
     /**
      * @param event
      * @param query
