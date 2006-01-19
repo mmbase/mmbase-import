@@ -33,6 +33,7 @@ import org.mmbase.storage.StorageManagerFactory;
 import edu.emory.mathcs.backport.java.util.concurrent.*;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.mmbase.module.lucene.extraction.*;
 
@@ -42,7 +43,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.39 2006-01-19 09:32:50 michiel Exp $
+ * @version $Id: Lucene.java,v 1.40 2006-01-19 21:27:33 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -280,7 +281,7 @@ public class Lucene extends Module implements MMBaseObserver {
         String path = getInitParameter("indexpath");
         if (path != null) {
             indexPath = path;
-            log.service("found module parameter for lucine index path : " + indexPath);
+            log.service("Found module parameter for lucene index path : " + indexPath);
         } else {
             //try to get the index path from the strorage configuration
             try {
@@ -291,11 +292,24 @@ public class Lucene extends Module implements MMBaseObserver {
         }
 
         if (indexPath != null) {
-            log.service("found storage configuration for lucine index path : " + indexPath);
+            log.service("Found storage configuration for lucene index path : " + indexPath);
         } else {
             // expand the default path (which is relative to the web-application)
             indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
-            log.service("fall back to default for lucine index path : " + indexPath);
+            log.service("fall back to default for lucene index path : " + indexPath);
+        }
+
+        // make sure the indexPath directory is unlocked.
+        // We saw once that it remained locked after a crash of the webapp. Hopefully this will
+        // avoid that.
+        try {
+            IndexReader r = IndexReader.open(indexPath);
+            if (IndexReader.isLocked(r.directory())) {
+                IndexReader.unlock(r.directory());
+                log.service("Unlocked lucene index directory " + r.directory());
+            }
+        } catch (java.io.IOException ioe) {
+            log.warn(ioe.getMessage(), ioe);
         }
 
         // read only?
@@ -451,6 +465,7 @@ public class Lucene extends Module implements MMBaseObserver {
                     String className = extractorElement.getAttribute("class");
                     factory.addExtractor(className);
                 }
+
                 // read indices
                 NodeList indexElements = root.getElementsByTagName("index");
                 for (int i = 0; i < indexElements.getLength(); i++) {
