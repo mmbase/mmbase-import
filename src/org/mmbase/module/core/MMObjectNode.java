@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.171 2005-12-17 20:55:38 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.172 2006-01-19 10:38:35 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1454,7 +1454,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     log.error("Trying to set aliases for uncommited node!!");
                     return;
                 }
-                Integer n = new Integer(getNumber());
                 Iterator it = aliases.iterator();
                 while(it.hasNext()) {
                     try {
@@ -1651,34 +1650,40 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         int             otype   = -1;
         int             ootype  = -1;
 
+        List virtualNumbers = new ArrayList();
+        
         // fill the list
         while(i.hasNext()) {
             node    = (MMObjectNode)i.next();
-            otype   = node.getIntValue(type + ".otype");
+            Integer number = node.getIntegerValue(type + ".number");
+            if (!virtualNumbers.contains(number)) {
+                virtualNumbers.add(number);
 
-            // convert the nodes of type ootype to real numbers
-            if(otype != ootype) {
-                // if we have nodes return real values
-                if(ootype != -1) {
-                    result.addAll(getRealNodesFromBuilder(list, ootype));
-                    list = new ArrayList();
+                otype   = node.getIntValue(type + ".otype");
+    
+                // convert the nodes of type ootype to real numbers
+                if(otype != ootype) {
+                    // if we have nodes return real values
+                    if(ootype != -1) {
+                        result.addAll(getRealNodesFromBuilder(list, ootype));
+                        list = new ArrayList();
+                    }
+                    ootype  = otype;
                 }
-                ootype  = otype;
+                // convert current node type.number and type.otype to number and otype
+                String builderName = parent.mmb.getTypeDef().getValue(otype);
+                if (builderName == null) {
+                    log.warn("Could not find builder of node " + node.getNumber() + " taking 'object'");
+                    builderName = "object";
+                    otype = parent.mmb.getBuilder(builderName).getObjectType();
+                }
+    
+                convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
+                // parent needs to be set or else mmbase does nag nag nag on a setValue()
+                convert.setValue(MMObjectBuilder.FIELD_NUMBER, node.getValue(type + ".number"));
+                convert.setValue(MMObjectBuilder.FIELD_OBJECT_TYPE, ootype);
+                list.add(convert);
             }
-            // convert current node type.number and type.otype to number and otype
-            String builderName = parent.mmb.getTypeDef().getValue(otype);
-            if (builderName == null) {
-                log.warn("Could not find builder of node " + node.getNumber() + " taking 'object'");
-                builderName = "object";
-                otype = parent.mmb.getBuilder(builderName).getObjectType();
-            }
-
-
-            convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
-            // parent needs to be set or else mmbase does nag nag nag on a setValue()
-            convert.setValue(MMObjectBuilder.FIELD_NUMBER, node.getValue(type + ".number"));
-            convert.setValue(MMObjectBuilder.FIELD_OBJECT_TYPE, ootype);
-            list.add(convert);
             // first and only list or last list, return real values
             if(!i.hasNext()) {
                 // log.debug("subconverting last "+list.size()+" nodes of type("+otype+")");
@@ -1687,8 +1692,19 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
 
         // check that we didnt loose any nodes
-        if(virtuals.size() != result.size()) {
+        if(virtualNumbers.size() != result.size()) {
             log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
+            StringBuffer vNumbers = new StringBuffer();
+            for (int j = 0; j < virtualNumbers.size(); j++) {
+                vNumbers.append(virtualNumbers.get(j)).append(" ");
+            }
+            log.error("Virtual node numbers: " + vNumbers.toString());
+            StringBuffer rNumbers = new StringBuffer();
+            for (int j = 0; j < result.size(); j++) {
+                int resultNumber = ((MMObjectNode) result.get(j)).getIntValue("number");
+                rNumbers.append(resultNumber).append(" ");
+            }
+            log.error("Real node numbers: " + rNumbers.toString());
         }
 
         return result;
