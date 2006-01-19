@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.68 2005-12-29 19:06:33 michiel Exp $
+ * @version $Id: Queries.java,v 1.69 2006-01-19 17:00:54 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -605,7 +605,9 @@ abstract public class Queries {
 
                 }
             }
-            value = field.getDataType().cast(value, null, field);
+            if (operator != OPERATOR_IN) {
+                value = field.getDataType().cast(value, null, field);
+            }
 
             Object compareValue = getCompareValue(fieldType, operator, value, datePart);
 
@@ -1083,7 +1085,7 @@ abstract public class Queries {
      */
     public static Step searchStep(List steps, String stepAlias) {
         if (log.isDebugEnabled()) {
-            log.info("Searching '" + stepAlias + "' in " + steps);
+            log.debug("Searching '" + stepAlias + "' in " + steps);
         }
         // first try aliases
         Iterator i = steps.iterator();
@@ -1108,7 +1110,7 @@ abstract public class Queries {
      * Returns the NodeQuery returning the given Node. This query itself is not very useful, because
      * you already have its result (the node), but it is convenient as a base query for many other
      * goals.
-     * 
+     *
      * If the node is uncommited, it cannot be queried, and the node query returning all nodes from
      * the currect type will be returned.
      *
@@ -1160,7 +1162,7 @@ abstract public class Queries {
 
     /**
      * Returns a query to find the relations nodes between two given nodes.
-     * 
+     *
      * To test <em>whether</em> to nodes are related you can use e.g.:
      * <code>
      *  if (Queries.count(Queries.createRelationNodesQuery(node1, node2, "posrel", null)) > 0) {
@@ -1306,7 +1308,7 @@ abstract public class Queries {
     /**
      * Compare tho nodes, with a SortOrder. This determins where a certain node is smaller or bigger than a certain other node, with respect to some SortOrder.
      * This is used by {@link #compare(Node, Node, List)}
-     * 
+     *
      * If node2 is only 'longer' then node1, but otherwise equal, then it is bigger.
      *
      * @since MMBase-1.8
@@ -1358,7 +1360,7 @@ abstract public class Queries {
         if (node2 == null) return +1;
         int result = 0;
         Iterator i = sortOrders.iterator();
-        while (result == 0 && i.hasNext()) {            
+        while (result == 0 && i.hasNext()) {
             SortOrder order = (SortOrder) i.next();
             result = compare(node1, node2, order);
         }
