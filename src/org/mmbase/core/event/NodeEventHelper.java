@@ -37,20 +37,28 @@ public class NodeEventHelper {
      * @return new instance of NodeEvent
      */
     public static NodeEvent createNodeEventInstance(MMObjectNode node, int eventType, String machineName){
-        if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
-        Map oldEventValues = new HashMap(), newEventValues = new HashMap();
+        if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
+        Map oldEventValues = new HashMap();
+        Map newEventValues = new HashMap();
         
         //fill the old and new values maps for the event
-        if(eventType == NodeEvent.EVENT_TYPE_NEW){
+        switch(eventType) {
+        case NodeEvent.EVENT_TYPE_NEW:
             newEventValues.putAll(node.getValues());
-        }else if(eventType == NodeEvent.EVENT_TYPE_CHANGED){
+            break;
+        case NodeEvent.EVENT_TYPE_CHANGED:
             oldEventValues.putAll(node.getOldValues());
-            for(Iterator i = node.getOldValues().keySet().iterator(); i.hasNext(); ){
+            for(Iterator i = node.getOldValues().keySet().iterator(); i.hasNext(); ) {
                 Object key = i.next();
                 newEventValues.put(key, node.getValues().get(key));
             }
-        }else if(eventType == NodeEvent.EVENT_TYPE_DELETE){
+            break;
+        case NodeEvent.EVENT_TYPE_DELETE:
             oldEventValues.putAll(node.getValues());
+            break;
+        default: {
+            // err.
+        }
         }
         
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
@@ -73,7 +81,7 @@ public class NodeEventHelper {
         if (!(node.getBuilder() instanceof InsRel)) {
             throw new IllegalArgumentException( "you can not create a relation changed event with this node");
         }
-        if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
+        if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
         MMObjectNode reldef = node.getNodeValue("rnumber");
         MMObjectBuilder relationSourceBuilder = node.getNodeValue("snumber").getBuilder();
         MMObjectBuilder relationDestinationBuilder = node.getNodeValue("dnumber").getBuilder();
