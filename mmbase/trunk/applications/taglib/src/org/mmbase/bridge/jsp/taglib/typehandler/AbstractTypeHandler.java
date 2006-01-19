@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.37 2006-01-19 11:13:32 andre Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.38 2006-01-19 12:20:56 andre Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -317,8 +317,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected String prefixID(String s) throws JspTagException {
         String id = tag.findFieldProvider().getId();
-        if (id == null) id = "";
-        return id + "mm_" + s;
+        id = (id == null) ? "" : id + "_";
+        return "mm_" + id + s;
     }
     
 
