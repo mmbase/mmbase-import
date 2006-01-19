@@ -1,21 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
   <mm:import externid="node" required="true"/>
   <mm:import externid="node2" />
   <%@include file="/shared/setImports.jsp" %>
   
-  <mm:node number="$node" notfound="skipbody">
-    <mm:treeinclude page="/education/paragraph/paragraph_anonymous.jsp" objectlist="$includePath" referids="$referids">
-      <mm:param name="node_id"><mm:write referid="node"/></mm:param>
-      <mm:param name="path_segment">../</mm:param>
-    </mm:treeinclude>
-  </mm:node>  
-  
-  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>F.A.Q.</title>
+	<link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
+</head>
+<body>
   <mm:import jspvar="faqLink"><%=request.getRequestURL()%>?node=<mm:write referid="node"/></mm:import>
   <mm:node number="$node" notfound="skipbody">
-    <h1><mm:field name="name" write="true"/></h1><br/>
+    <h1><mm:field name="name" write="true"/></h1>
+    <br/>
+    
+	<mm:node number="$node" notfound="skipbody">
+		<mm:treeinclude page="/education/paragraph/paragraph_anonymous.jsp" objectlist="$includePath" referids="$referids">
+			<mm:param name="node_id"><mm:write referid="node"/></mm:param>
+			<mm:param name="path_segment">../</mm:param>
+		</mm:treeinclude>
+	</mm:node>  
     <table width="100%">
       <mm:relatednodes type="faqitems"> 
         <mm:import jspvar="itemNumber"><mm:field name="number"/></mm:import>
@@ -96,5 +104,7 @@
   
   </mm:node>
   
+</body>
+</html>
 </mm:cloud>
 </mm:content>

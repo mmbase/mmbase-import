@@ -37,7 +37,8 @@
     </steps>
 
     <form-schema id="step1">
-        <title>Naam</title>
+        <title xml:lang="nl">Naam</title>
+        <title xml:lang="en">Name</title>
         <field name="name" >
             <prompt> Naam</prompt>
         </field>        
