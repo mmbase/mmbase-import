@@ -70,8 +70,14 @@ public abstract class AbstractEventBroker {
     public void addListener(EventListener listener) {
         if (canBrokerForListener(listener)) {
             if (! listeners.add(listener)) {
-                log.warn("" + listener + " was already in " + this + ". Ignored.");
+                if (log.isDebugEnabled()) {
+                    log.trace("" + listener + " was already in " + this + ". Ignored.");
+                }
+            } else if (log.isDebugEnabled()) {
+                log.debug("listener added to " + this);
             }
+        } else {            
+            log.warn("Ignored listener for" + this + " because it cannot broker for that.");
         }
     }
 
@@ -83,17 +89,14 @@ public abstract class AbstractEventBroker {
     }
 
     public void notifyForEvent(Event event) {
-        synchronized (listeners) {
-            for (Iterator i = listeners.iterator(); i.hasNext();) {
-                EventListener listener = (EventListener) i.next();
-                try {
-                    notifyEventListener(event, listener);
-                } catch (ClassCastException e) {
-                    // warn the world!
-                    // this event is not proper for this broker
-                    // (this should never happen)
-                }
-                
+        for (Iterator i = listeners.iterator(); i.hasNext();) {
+            EventListener listener = (EventListener) i.next();
+            try {
+                notifyEventListener(event, listener);
+            } catch (ClassCastException e) {
+                // warn the world!
+                // this event is not proper for this broker
+                // (this should never happen)
             }
         }
     }
