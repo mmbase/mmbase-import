@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.362 2006-01-13 15:44:30 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.363 2006-01-19 13:59:05 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2947,70 +2947,78 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * this method covers for both node and relation events.
      * @since MMBase-1.8
      */
-   public void notify(NodeEvent event) {
-        log.debug("" + this + " received node event " + event);
+    public void notify(NodeEvent event) {
+        if (log.isDebugEnabled()) {
+            log.debug("" + this + " received node event " + event);
+        }
         eventBackwardsCompatibilty(event.getMachine(), event.getNodeNumber(), event.getType());
-
+        
         //update the cache
         boolean localEvent = (event.getMachine().equals(mmb.getMachineName()));
         Integer changedNodeNumber = new Integer(event.getNodeNumber());
         if(event.getType() == NodeEvent.EVENT_TYPE_DELETE || (! localEvent && event.getType() == NodeEvent.EVENT_TYPE_CHANGED)){
             if(nodeCache.contains(changedNodeNumber)) nodeCache.remove(changedNodeNumber);
         }
-
+       
         //and now refire the event for the parent builders
         MMObjectBuilder pb = getParentBuilder();
-        if(pb != null){
-            log.debug(getTableName() + "creating node event for parent builder: " + pb.getTableName());
+        if(pb != null) {
+            if (log.isDebugEnabled()) {
+                log.debug(getTableName() + "creating node event for parent builder: " + pb.getTableName());
+            }
             NodeEvent parentBuilderEvent = (NodeEvent) event.clone();
             parentBuilderEvent.setBuilderName(pb.getTableName());
             EventManager.getInstance().propagateEvent(parentBuilderEvent);
         }
     }
-
+    
 
     /**
      * @since MMBase-1.8
      */
-     public void notify(RelationEvent event) {
-        log.debug("" + this + " received relation event " + event);
-
-        //for backwards compatibilty: create relation changed calls
-        if (event.getRelationSourceType().equals(getTableName())) {
-            eventBackwardsCompatibilty(event.getMachine(), event.getRelationSourceNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+    public void notify(RelationEvent event) {
+        if (log.isDebugEnabled()) {
+            log.debug("" + this + " received relation event " + event);
         }
-        if (event.getRelationDestinationType().equals(getTableName())) {
-            eventBackwardsCompatibilty(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
-        }
-
-        //update the cache
-        Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
-        MMObjectNode node = (MMObjectNode)nodeCache.get(changedNode);
-        if (node != null) {
-            node.delRelationsCache();
-        }
-
-//      and now refire the event for the parent builders
-        MMObjectBuilder pb = getParentBuilder();
-        send_event:
-        if(pb != null){
-            RelationEvent parentBuilderEvent = (RelationEvent) event.clone();
-            log.debug(getTableName() + "creating relation event for parent builder: " + pb.getTableName());
-
-            if(getTableName().equals(parentBuilderEvent.getRelationSourceType())){
-                log.debug(">> overwriting the relation source type");
-                parentBuilderEvent.setRelationSourceType(pb.getTableName());
-            }else if(getTableName().equals(parentBuilderEvent.getRelationDestinationType())){
-                log.debug(">> overwriting the relation destination type");
-                parentBuilderEvent.setRelationDestinationType(pb.getTableName());
-            }else{
-                log.error(" relation source and destination type do not match builder "+ getTableName());
+        
+         //for backwards compatibilty: create relation changed calls
+         if (event.getRelationSourceType().equals(getTableName())) {
+             eventBackwardsCompatibilty(event.getMachine(), event.getRelationSourceNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+         }
+         if (event.getRelationDestinationType().equals(getTableName())) {
+             eventBackwardsCompatibilty(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+         }
+         
+         //update the cache
+         Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
+         MMObjectNode node = (MMObjectNode)nodeCache.get(changedNode);
+         if (node != null) {
+             node.delRelationsCache();
+         }
+         
+         //      and now refire the event for the parent builders
+         MMObjectBuilder pb = getParentBuilder();
+         send_event:
+         if(pb != null){
+             RelationEvent parentBuilderEvent = (RelationEvent) event.clone();
+             if (log.isDebugEnabled()) {
+                 log.debug(getTableName() + "creating relation event for parent builder: " + pb.getTableName());
+             }
+             
+             if(getTableName().equals(parentBuilderEvent.getRelationSourceType())) {
+                 log.debug(">> overwriting the relation source type");
+                 parentBuilderEvent.setRelationSourceType(pb.getTableName());
+             } else if(getTableName().equals(parentBuilderEvent.getRelationDestinationType())) {
+                 log.debug(">> overwriting the relation destination type");
+                 parentBuilderEvent.setRelationDestinationType(pb.getTableName());
+             } else {
+                log.error(" relation source and destination type do not match builder " + getTableName());
                 break send_event;
-            }
-            EventManager.getInstance().propagateEvent(parentBuilderEvent);
-        }
-    }
-
+             }
+             EventManager.getInstance().propagateEvent(parentBuilderEvent);
+         }
+     }
+    
     /**
      * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
      * here we handle all the backward compatibility stuff.
