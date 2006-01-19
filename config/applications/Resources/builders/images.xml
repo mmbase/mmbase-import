@@ -108,7 +108,6 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>description</name>
         <type state="persistent" size="1024" notnull="true" key="false">STRING</type>
