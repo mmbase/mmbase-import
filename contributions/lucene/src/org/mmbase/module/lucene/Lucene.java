@@ -42,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.38 2006-01-17 22:17:12 michiel Exp $
+ * @version $Id: Lucene.java,v 1.39 2006-01-19 09:32:50 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -716,9 +716,13 @@ public class Lucene extends Module implements MMBaseObserver {
                         }
                         public void run() {
                             status = BUSY_FULL_INDEX;
-                            log.service("start full index for index '" + index + "'");
                             Indexer indexer = (Indexer) indexerMap.get(index);
-                            indexer.fullIndex();
+                            if (indexer != null) {
+                                log.service("start full index for index '" + index + "'");
+                                indexer.fullIndex();
+                            } else {
+                                log.error("No index with name '" + index + "' found");
+                            }
                         }
                     };
                 if (! indexAssignments.contains(assignment)) {
