@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.35 2006-01-19 11:13:32 andre Exp $
+ * @version $Id: DateHandler.java,v 1.36 2006-01-19 18:19:43 pierre Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -170,7 +170,7 @@ public class DateHandler extends AbstractTypeHandler {
             if (pattern.length() < 1) continue;
             char firstChar = pattern.charAt(0);
             if (firstChar ==  '\'') {
-                buffer.append(pattern.substring(1)); 
+                buffer.append(pattern.substring(1));
                 continue;
             }
 
@@ -192,7 +192,7 @@ public class DateHandler extends AbstractTypeHandler {
             } else {
                 check = Integer.parseInt(searchValue);
             }
-            
+
             if (element.getMax() - element.getMin() < 400) {
                 buffer.append("<select class=\"mm_").append(element.getName()).append("\" ");
                 buffer.append("name=\"").append(name).append("\" ");
@@ -231,16 +231,16 @@ public class DateHandler extends AbstractTypeHandler {
                 } else {
                     buffer.append(searchValue);
                 }
-                buffer.append("\" />");                
+                buffer.append("\" />");
             }
             first = false;
-            
+
         }
-        
+
         buffer.append("</span>");
         return buffer.toString();
     }
-    
+
     /**
      * Just to override. For example if the date is stored in an int and not in a long, then the year can be checked.
      *
@@ -280,7 +280,7 @@ public class DateHandler extends AbstractTypeHandler {
             node.setDateValue(fieldName, newValue);
             return true;
         }
-        
+
         return false;
     }
 
@@ -292,7 +292,7 @@ public class DateHandler extends AbstractTypeHandler {
             log.debug("Using " + dt);
         }
         DateTimePattern dateTimePattern = getPattern(dt);
-        Calendar minDate = Calendar.getInstance(); 
+        Calendar minDate = Calendar.getInstance();
         minDate.setTime(DateTimeDataType.MIN_VALUE);
         Calendar maxDate = Calendar.getInstance();
         maxDate.setTime(DateTimeDataType.MAX_VALUE);
@@ -325,8 +325,8 @@ public class DateHandler extends AbstractTypeHandler {
                         if (cal != null) {
                             cal.set(element.getField(), value - element.getOffset());
                         }
-                    }    
-                }            
+                    }
+                }
             } catch (java.lang.NumberFormatException e) {
                 throw new TaglibException("Not a valid number (" + e.toString() + ") in field " + fieldName, e);
             }
@@ -339,7 +339,7 @@ public class DateHandler extends AbstractTypeHandler {
         return cal == null ? null : cal.getTime();
     }
     protected Calendar getCalendarValue(Node node, Field field) throws JspTagException {
-        Calendar cal = getSpecifiedValue(field, Calendar.getInstance());        
+        Calendar cal = getSpecifiedValue(field, Calendar.getInstance());
         if (cal == null) {
             if (node != null) {
                 Object value = node.getValue(field.getName());
@@ -411,7 +411,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Object time = getSpecifiedValue(field, Calendar.getInstance());
+        Object time = getSpecifiedValue(field, Calendar.getInstance()).getTime();
         if (field.getType() != Field.TYPE_DATETIME) {
             time = new Long(Casting.toLong(time));
         }
