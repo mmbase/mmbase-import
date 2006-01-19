@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.34 2006-01-05 11:54:32 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.35 2006-01-19 11:13:32 andre Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -126,9 +126,11 @@ public class DateHandler extends AbstractTypeHandler {
         ContextContainer container = tag.getContextProvider().getContextContainer();
         if (search) {
             String name = prefix(field.getName() + "_search");
+            String fieldid = prefixID(field.getName() + "_search");
             String searchi =  (String) container.find(tag.getPageContext(), name);
             if (searchi == null) searchi = "no";
-            buffer.append("<select name=\"" + name + "\" class=\"mm_search\">");
+            buffer.append("<select name=\"").append(name).append("\" ");
+            buffer.append("id=\"").append(fieldid).append("\" class=\"mm_search\">");
             buffer.append("  <option value=\"no\" ");
             if (searchi.equals("no")) buffer.append(" selected=\"selected\" ");
             buffer.append("> </option>");
@@ -178,6 +180,7 @@ public class DateHandler extends AbstractTypeHandler {
             }
 
             String name = prefix(field.getName() + "_" + element.getName());
+            String fieldid = prefixID(field.getName() + "_" + element.getName());
             String searchValue =  (String) container.find(tag.getPageContext(), name);
             int check;
             if (searchValue == null || searchValue.equals("")) {
@@ -191,11 +194,11 @@ public class DateHandler extends AbstractTypeHandler {
             }
             
             if (element.getMax() - element.getMin() < 400) {
-                buffer.append("<select class=\"mm_" + element.getName() + "\" name=\"");
-                buffer.append(name);
-                buffer.append("\"");
+                buffer.append("<select class=\"mm_").append(element.getName()).append("\" ");
+                buffer.append("name=\"").append(name).append("\" ");
+                buffer.append("id=\"").append(fieldid).append("\" ");
                 addExtraAttributes(buffer);
-                buffer.append(">");                    
+                buffer.append(">");
                 if (! required && first) {
                     buffer.append("<option value=\"-1\"");
                     if (check == -1) {
@@ -214,9 +217,9 @@ public class DateHandler extends AbstractTypeHandler {
                 }
                 buffer.append("</select>");
             } else {
-                buffer.append("<input class=\"mm_" + element.getName() + "\" type =\"text\" size=\"" + (pattern.length() + 1) + "\" name=\"");
-                buffer.append(name);
-                buffer.append("\" ");
+                buffer.append("<input class=\"mm_").append(element.getName()).append("\" type=\"text\" size=\"").append( (pattern.length() + 1) ).append("\" ");
+                buffer.append("name=\"").append(name).append("\" ");
+                buffer.append("id=\"").append(fieldid).append("\" ");
                 addExtraAttributes(buffer);
                 buffer.append("value=\"");
                 if (searchValue == null) {

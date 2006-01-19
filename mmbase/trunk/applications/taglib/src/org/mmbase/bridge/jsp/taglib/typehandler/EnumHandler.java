@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.32 2005-12-21 18:10:41 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.33 2006-01-19 11:13:32 andre Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -121,10 +121,9 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("<select name=\"");
         String fieldName = field.getName();
-        buffer.append(prefix(fieldName));
-        buffer.append("\" ");
+        buffer.append("<select name=\"").append(prefix(fieldName)).append("\" ");
+        buffer.append("id=\"").append(prefixID(fieldName)).append("\" ");
         addExtraAttributes(buffer);
         buffer.append(">");
         Object value  = getFieldValue(node, field, true);
@@ -162,10 +161,10 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         buffer.append("</select>");
         if (search) {
             String name = prefix(field.getName()) + "_search";
+            String fieldid = prefixID(field.getName() + "_search");
             String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
-            buffer.append("<input type=\"checkbox\" name=\"");
-            buffer.append(name);
-            buffer.append("\" ");
+            buffer.append("<input type=\"checkbox\" name=\"").append(name).append("\" ");
+            buffer.append("id=\"").append(fieldid).append("\" ");
             if (searchi != null) {
                 buffer.append(" checked=\"checked\"");
             }

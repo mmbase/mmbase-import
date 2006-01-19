@@ -28,7 +28,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.12 2005-10-18 14:18:46 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.13 2006-01-19 11:13:32 andre Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -59,9 +59,9 @@ public class XmlHandler extends StringHandler {
         if(! search) {
             StringBuffer buffer = new StringBuffer();
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-            buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"");
-            buffer.append(prefix(field.getName()));
-            buffer.append("\"");
+            buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\" ");
+            buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
+            buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">");
             String value;

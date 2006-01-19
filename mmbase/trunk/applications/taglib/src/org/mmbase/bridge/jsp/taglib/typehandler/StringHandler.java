@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.51 2005-12-29 12:32:27 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.52 2006-01-19 11:13:32 andre Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -63,14 +63,13 @@ public class StringHandler extends AbstractTypeHandler {
                 if (dataType.getPattern().matcher("\n").matches()) {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-                        buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
+                        buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\" ");
                     } else {
                         buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
                     }
                     addExtraAttributes(buffer);
-                    buffer.append(" name=\"");
-                    buffer.append(prefix(field.getName()));
-                    buffer.append("\">");
+                    buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
+                    buffer.append("id=\"").append(prefixID(field.getName())).append("\">");
                     if ("".equals(value)) {
                         String opt = tag.getOptions();
                         if (opt != null && opt.indexOf("noempty") > -1) {
@@ -95,16 +94,15 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input type =\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
-                    buffer.append("name=\"");
-                    buffer.append(prefix(field.getName()));
-                    buffer.append("\" ");
+                    buffer.append("<input type=\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
+                    buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
+                    buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");                   
                     String opt = tag.getOptions();
                     if (opt != null && opt.indexOf("noautocomplete") > -1) {
                         buffer.append("autocomplete=\"off\" ");
                     }
                     addExtraAttributes(buffer);
-                    buffer.append(" value=\"");
+                    buffer.append("value=\"");
                     Xml.XMLEscape(value, buffer);
                     buffer.append("\" />");
                 }

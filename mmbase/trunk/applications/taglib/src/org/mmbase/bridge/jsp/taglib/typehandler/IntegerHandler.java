@@ -1,4 +1,3 @@
-
 /*
 
 This software is OSI Certified Open Source Software.
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.32 2005-12-20 19:07:13 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.33 2006-01-19 11:13:32 andre Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -64,9 +63,8 @@ public class IntegerHandler extends AbstractTypeHandler {
             if (node != null) {
                 value = node.getBooleanValue(field.getName());
             }
-            buffer.append("<input type=\"checkbox\" name=\"");
-            buffer.append(prefix(field.getName()));
-            buffer.append("\"");
+            buffer.append("<input type=\"checkbox\" name=\"").append( prefix(field.getName()) ).append("\" ");
+            buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
             if (value) {
                 buffer.append(" checked=\"checked\" ");
             }
@@ -75,9 +73,8 @@ public class IntegerHandler extends AbstractTypeHandler {
             return buffer.toString();
         } else if (guiType.equals("types")) {
             log.warn("Guitype 'types' is deprecated. Use 'typedef' instead.");
-            buffer.append("<select name=\"");
-            buffer.append(prefix(field.getName()));
-            buffer.append("\"");
+            buffer.append("<select name=\"").append( prefix(field.getName()) ).append("\" ");
+            buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">\n");
             int value = 0;
@@ -111,16 +108,15 @@ public class IntegerHandler extends AbstractTypeHandler {
             }
             buffer.append("</select>");
             if (search) {
-                buffer.append("<input type=\"checkbox\" name=\"");
-                buffer.append(prefix(field.getName() + "_search"));
-                buffer.append("\" />\n");
+                buffer.append("<input type=\"checkbox\"" );
+                buffer.append("name=\"").append( prefix(field.getName() + "_search") ) ;
+                buffer.append("id=\"").append( prefixID(field.getName() + "_search") ).append("\" />\n");
             }
             return buffer.toString();
         } else if (guiType.equals("reldefs")) {
             log.warn("Guitype 'reldefs' is deprecated. Use 'reldef' instead.");
-            buffer.append("<select name=\"");
-            buffer.append(prefix(field.getName()));
-            buffer.append("\"");
+            buffer.append("<select name=\"").append(prefix(field.getName())).append("\" ");
+            buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">\n");
             int value = 0;
@@ -152,9 +148,9 @@ public class IntegerHandler extends AbstractTypeHandler {
             }
             buffer.append("</select>");
             if (search) {
-                buffer.append("<input type=\"checkbox\" name=\"");
-                buffer.append(prefix(field.getName() + "_search"));
-                buffer.append("\" />\n");
+                buffer.append("<input type=\"checkbox\" ");
+                buffer.append("name=\"").append(prefix(field.getName() + "_search")).append("\" ");
+                buffer.append("id=\"").append(prefixID(field.getName() + "_search")).append("\" />\n");
             }
             return buffer.toString();
         } else if (guiType.equals("eventtime")) {
