@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.38 2006-01-13 15:40:58 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.39 2006-01-19 11:55:24 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -858,6 +858,19 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             if (node != null && field != null && value != null) {
 
                 if (field.isVirtual()) return true; // e.g. if the field was defined in XML but not present in DB (after upgrade?)
+
+                if (!node.isNew()) {
+                    if (field.getName().equals("number")) {
+                        // on 'number' there is a unique constraint, if it is checked for a non-new node
+                        // we can simply avoid all quering because it will result in a query number == <number> and number <> <number>
+                        if (Casting.toInt(v) == node.getNumber()) {
+                            return true;
+                        } else {
+                            // changing 
+                            log.warn("Odd, changing number of node " + node + " ?!", new Exception());
+                        }
+                    }
+                }
 
                 NodeManager nodeManager = field.getNodeManager();
                 Cloud cloud = nodeManager.getCloud();
