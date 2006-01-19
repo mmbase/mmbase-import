@@ -1,17 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace" escaper="none">
 <mm:cloud jspvar="cloud">
 <mm:import externid="node" required="true"/>
 <mm:import externid="parentnode"/>
 <%@include file="/shared/setImports.jsp" %>
-<link rel="stylesheet" type="text/css" href="<mm:treefile page="/portalpages/css/base.css" objectlist="$includePath" referids="$referids" />" />
-  
-  <mm:node number="$parentnode" notfound="skipbody">
-    <mm:treeinclude page="/education/paragraph/paragraph_anonymous.jsp" objectlist="$includePath" referids="$referids">
-      <mm:param name="node_id"><mm:write referid="parentnode"/></mm:param>
-      <mm:param name="path_segment">../</mm:param>
-    </mm:treeinclude>
-  </mm:node>   
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>News content</title>
+	<link rel="stylesheet" type="text/css" href="<mm:treefile page="/portalpages/css/base.css" objectlist="$includePath" referids="$referids" />" />
+</head>
+<body>
   
   <mm:node number="$node">
   <table>
@@ -81,6 +83,17 @@
     </mm:compare>
   </mm:field>
   </mm:node>
+  
+	<mm:node number="$parentnode" notfound="skipbody">
+		<mm:treeinclude page="/education/paragraph/paragraph_anonymous.jsp" objectlist="$includePath" referids="$referids">
+			<mm:param name="node_id"><mm:write referid="parentnode"/></mm:param>
+			<mm:param name="path_segment">../</mm:param>
+		</mm:treeinclude>
+	</mm:node>   
+  
+</body>
+</html>
+
 </mm:cloud>
 </mm:content>
 
