@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.32 2005-11-04 23:28:23 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.33 2006-01-19 11:13:32 andre Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -89,7 +89,8 @@ public class NodeHandler extends AbstractTypeHandler {
            tag.getCloudVar().hasNodeManager(field.getGUIType())) { 
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
-            buffer.append("<select name=\"" + prefix(field.getName()) + "\"");
+            buffer.append("<select name=\"").append( prefix(field.getName()) ).append("\" ");
+            buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">\n");
             // list all our nodes of the specified builder here...
@@ -151,8 +152,9 @@ public class NodeHandler extends AbstractTypeHandler {
                 buffer.append(name);
                 String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
                 buffer.append("\" ");
+                buffer.append("id=\"").append(prefixID(field.getName() + "_search")).append("\" ");
                 if (searchi != null) {
-                    buffer.append(" checked=\"checked\"");
+                    buffer.append("checked=\"checked\"");
                 }
                 buffer.append(" />\n");
             }

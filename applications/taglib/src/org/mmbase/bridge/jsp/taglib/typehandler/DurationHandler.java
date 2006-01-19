@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.4 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: DurationHandler.java,v 1.5 2006-01-19 11:13:32 andre Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
@@ -77,9 +77,11 @@ public class DurationHandler extends AbstractTypeHandler {
 
         if (search) { // operator drop-down
             String name = prefix(field.getName() + "_search");
+            String fieldid = prefixID(field.getName() + "_search");
             String searchi =  (String) container.find(tag.getPageContext(), name);
             if (searchi == null) searchi = "no";
-            buffer.append("<select name=\"" + name + "\">\n");
+            buffer.append("<select name=\"").append(name).append("\" ");
+            buffer.append("id=\"").append(fieldid).append("\">\n");
             buffer.append("  <option value=\"no\" ");
             if (searchi.equals("no")) buffer.append(" selected=\"selected\" ");
             buffer.append("> </option>");
@@ -99,13 +101,15 @@ public class DurationHandler extends AbstractTypeHandler {
 
 
         String hoursName = prefix(field.getName() + "_hours");
+        String hoursId = prefixID(field.getName() + "_hours");
         String searchHours =  (String) container.find(tag.getPageContext(), hoursName);
-        buffer.append("<input size=\"5\" type=\"text\" name=\"" + hoursName + "\" value=\"" + (searchHours == null ? "" + currentHours : searchHours) + "\" /> h :\n");
+        buffer.append("<input size=\"5\" type=\"text\" name=\"").append(hoursName).append("\" id=\"").append(hoursId).append("\" ");
+        buffer.append("value=\"").append( (searchHours == null ? "" + currentHours : searchHours) ).append("\" /> h :\n");
 
         String minutesName = prefix(field.getName() + "_minutes");
-        buffer.append("<select name=\"");
-        buffer.append(minutesName);
-        buffer.append("\">\n");
+        String minutesId = prefixID(field.getName() + "_minutes");
+        buffer.append("<select name=\"").append(minutesName).append("\" ");
+        buffer.append("id=\"").append(minutesId).append("\">\n");
         for (int i = 0; i <= 59; i++) {
             if (currentMinutes == i) {
                 buffer.append("  <option selected=\"selected\">" + i + "</option>\n");
@@ -116,9 +120,9 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("</select> min : ");
 
         String secondsName = prefix(field.getName() + "_seconds");
-        buffer.append("<select name=\"");
-        buffer.append(secondsName);
-        buffer.append("\">\n");
+        String secondsId = prefixID(field.getName() + "_seconds");
+        buffer.append("<select name=\"").append(secondsName).append("\" ");
+        buffer.append("id=\"").append(secondsId).append("\">\n");
         for (int i = 0; i <= 59; i++) {
             if (currentSeconds == i) {
                 buffer.append("  <option selected=\"selected\">" + i + "</option>\n");
@@ -129,9 +133,10 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("</select> s . ");
 
         String milliSecondsName = prefix(field.getName() + "_milliseconds");
+        String milliSecondsId = prefixID(field.getName() + "_milliseconds");
         String searchMilliSeconds =  (String) container.find(tag.getPageContext(), milliSecondsName);
-        buffer.append("<input size=\"5\" type=\"text\" name=\"" + milliSecondsName + "\" value=\"" + (searchMilliSeconds == null ? "" + currentMilliSeconds : searchMilliSeconds) + "\" /> ms\n");
-
+        buffer.append("<input size=\"5\" type=\"text\" name=\"").append(milliSecondsName).append("\" id=\"").append(milliSecondsId).append("\" ");
+        buffer.append("value=\"").append( (searchMilliSeconds == null ? "" + currentMilliSeconds : searchMilliSeconds) ).append("\" /> ms\n");
 
         return buffer.toString();
     }

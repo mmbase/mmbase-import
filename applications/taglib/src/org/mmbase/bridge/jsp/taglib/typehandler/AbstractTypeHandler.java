@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.36 2005-12-21 18:10:41 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.37 2006-01-19 11:13:32 andre Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -137,9 +137,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.htmlInput(node, field, search);
         }
         // default implementation.
-        StringBuffer show =  new StringBuffer("<input type =\"text\" class=\"small\" size=\"80\" ");
+        StringBuffer show =  new StringBuffer("<input type=\"text\" class=\"small\" size=\"80\" ");
         addExtraAttributes(show);
-        show.append("name=\"").append(prefix(field.getName())).append("\" ").append("value=\"");
+        show.append("name=\"").append(prefix(field.getName())).append("\" ");
+        show.append("id=\"").append(prefixID(field.getName())).append("\" ");
+        show.append("value=\"");
         if (node != null) {
             show.append(node.getStringValue(field.getName()));
         } else {
@@ -306,6 +308,19 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (id == null) id = "";
         return id + "_" + s;
     }
+    
+    /**
+     * Puts a prefix 'mm_' before an id in form fields. To be used in ccs etc..
+     *
+     * @param   s   Fieldname
+     * @return  String with the id, like f.e. 'mm_title'
+     */
+    protected String prefixID(String s) throws JspTagException {
+        String id = tag.findFieldProvider().getId();
+        if (id == null) id = "";
+        return id + "mm_" + s;
+    }
+    
 
 
 }
