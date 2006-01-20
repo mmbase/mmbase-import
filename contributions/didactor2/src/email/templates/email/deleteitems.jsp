@@ -113,20 +113,26 @@
     <form name="deletemailboxitemform" method="post" action="<mm:treefile page="/email/deleteitems.jsp" objectlist="$includePath" referids="$referids"/>">
 
       <di:translate key="email.deletefolderitemsyesno" />
-      <p>
-
-      <% for (int i=0;i<list.size();i++) {%>
-      	<mm:import id="broj"><%=list.get(i)%></mm:import>
-      	<mm:node referid="broj">
-      		<mm:field name="subject"/>
-      	</mm:node>
-      	<mm:remove referid="broj"/>
-      	<br/>
-      <%} %> 
-      </p>
-      <!-- TODO show data in near future -->
-      <table class="Font">
-       </table>
+      <br/><br/>
+      <div><table class="listTable">
+        <tr>
+          <th class="listHeader"><di:translate key="email.sender" /></td>
+          <th class="listHeader"><di:translate key="email.recipient" /></td>
+          <th class="listHeader"><di:translate key="email.subject" /></td>
+          <th class="listHeader"><di:translate key="email.date" /></td>
+        </tr>
+        <% for (int i=0;i<list.size();i++) {%>
+          <mm:node number="<%= (String) list.get(i)%>">
+            <tr>
+              <td class="listItem"><mm:field name="from" /></td>
+              <td class="listItem"><mm:field name="to" /></td>
+              <td class="listItem"><mm:field name="subject" /></td>
+              <td class="listItem"><mm:field name="gui(date)" /></td>
+            </tr>
+          </mm:node>
+        <%} %> 
+      </table></div>
+      <br/><br/>
 
       <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
       <input type="hidden" name="mailbox" value="<mm:write referid="mailbox"/>"/>
