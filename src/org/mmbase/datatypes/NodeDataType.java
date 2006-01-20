@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.20 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.21 2006-01-20 19:50:07 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -49,6 +49,16 @@ public class NodeDataType extends BasicDataType {
     }
 
     /**
+     * Casting to Node can be a expensive, so we cast to integer in stead.
+     */
+    protected Object cast(Object value, Cloud cloud, Node node, Field field) {
+        Object preCast = preCast(value, cloud, node, field);
+        if (preCast == null) return null;
+        Object cast = org.mmbase.util.Casting.toType(Integer.class, cloud, preCast);
+        return cast;
+    }
+
+    /**
      * Whether the Node of the value must exist
      *
      * XXX MM: How can you have a non-existing node? I don't really get it. AFAIK all nodes exist.
@@ -72,20 +82,22 @@ public class NodeDataType extends BasicDataType {
     private class MustExistRestriction extends AbstractRestriction {
         MustExistRestriction(MustExistRestriction me) {
             super(me);
+            enforceStrength = DataType.ENFORCE_ONCHANGE;
         }
         MustExistRestriction() {
             super("mustExist", Boolean.TRUE);
+            enforceStrength = DataType.ENFORCE_ONCHANGE;
         }
-        protected boolean simpleValid(Object value, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if (getValue().equals(Boolean.TRUE)) {
-                if (value != null) {
-                    if (value instanceof String) {
-                        return node.getCloud().hasNode((String)value);
-                    } else if (value instanceof Number) {
-                        int num = ((Number)value).intValue();
+                if (v != null) {
+                    if (v instanceof String) {
+                        return node.getCloud().hasNode((String)v);
+                    } else if (v instanceof Number) {
+                        int num = ((Number)v).intValue();
                         if (num < 0) return true;
                         return node.getCloud().hasNode(num);
-                    } else if (value instanceof Node) {
+                    } else if (v instanceof Node) {
                         return true;
                     } else {
                         return false;
