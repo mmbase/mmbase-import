@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.39 2006-01-19 11:55:24 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.40 2006-01-20 14:41:03 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -855,7 +855,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
 
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (! isUnique()) return true;
-            if (node != null && field != null && value != null) {
+            if (node != null && field != null && v != null && value != null ) {
 
                 if (field.isVirtual()) return true; // e.g. if the field was defined in XML but not present in DB (after upgrade?)
 
