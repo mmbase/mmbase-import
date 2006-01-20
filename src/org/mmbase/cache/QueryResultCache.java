@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.27 2006-01-17 17:35:04 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.28 2006-01-20 20:10:23 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -264,8 +264,8 @@ abstract public class QueryResultCache extends Cache {
          * @see org.mmbase.core.event.NodeEventListener#notify(org.mmbase.core.event.NodeEvent)
          */
         public void notify(NodeEvent event) {
-                nodeChanged(event);
-         }
+            nodeChanged(event);
+        }
 
         protected int nodeChanged(Event event) throws IllegalArgumentException{
             if (log.isDebugEnabled()) {
@@ -275,15 +275,20 @@ abstract public class QueryResultCache extends Cache {
             Set removeKeys = new HashSet();
             long totalEvaluationTime = 0;
             synchronized (QueryResultCache.this) {
-                for (Iterator i = cacheKeys.iterator(); i.hasNext();) {
+                Iterator i = cacheKeys.iterator();
+                if (log.isDebugEnabled()) {
+                    log.debug("Considering " + cacheKeys.size() + " objects in " + QueryResultCache.this.getName() + " for flush.");
+                }
+                while(i.hasNext()) {
                     SearchQuery key = (SearchQuery) i.next();
                     ReleaseStrategy.StrategyResult result = null;
                     if(event instanceof NodeEvent){
                         result = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key));
-                    }else if (event instanceof RelationEvent){
+                    } else if (event instanceof RelationEvent){
                         result = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key));
-                    }else{
-                        throw new IllegalArgumentException("event " + event + " is of unsupported type");
+                    } else {                        
+                        log.error("event " + event.getClass() + " " + event + " is of unsupported type");
+                        continue;
                     }
                     if (result.shouldRelease()) {
                         removeKeys.add(key);
@@ -305,13 +310,13 @@ abstract public class QueryResultCache extends Cache {
 
                 // ernst: why is this in a separate loop?
                 // why not chuck em out in the first one?
-
-                for (Iterator i = removeKeys.iterator(); i.hasNext();) {
+                i = removeKeys.iterator();
+                while(i.hasNext()) {
                     QueryResultCache.this.remove(i.next());
                 }
             }
             if (log.isDebugEnabled()) {
-                log.debug(getName() + ": event analyzed in " + totalEvaluationTime + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
+                log.debug(QueryResultCache.this.getName() + ": event analyzed in " + totalEvaluationTime + " milisecs. evaluating " + evaluatedResults + ". Flushed " + removeKeys.size());
             }
             return removeKeys.size();
         }
