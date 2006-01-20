@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.141 2006-01-03 10:03:09 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.142 2006-01-20 19:54:13 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -121,10 +121,10 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     // for debug purposes
-    protected final void logQuery(String msg, long startTime) {
+    protected final void logQuery(String query, long startTime) {
         if (log.isDebugEnabled()) {
             long now = System.currentTimeMillis();
-            log.debug("Time:" + (now - startTime) + " Query :" + msg);
+            log.debug("Time:" + (now - startTime) + " Query :" + query);
             log.trace(Logging.stackTrace());
         }
     }
@@ -1491,6 +1491,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public MMObjectNode getNode(final MMObjectBuilder builder, final int number) throws StorageException {
+        if (builder == null) throw new IllegalArgumentException("Builder cannot be null when requesting node " + number);
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
         try {
             // create a new node (must be done before acquiring the connection, because this code might need a connection)
@@ -1691,6 +1692,7 @@ public class DatabaseStorageManager implements StorageManager {
                 MMBase mmbase = factory.getMMBase();
                 String query = scheme.format(new Object[] { this, mmbase, mmbase.getTypeDef().getField("number"), numberValue });
                 Statement s = activeConnection.createStatement();
+                long startTime = System.currentTimeMillis();
                 try {
                     ResultSet result = s.executeQuery(query);
                     if (result != null) {
@@ -1709,6 +1711,7 @@ public class DatabaseStorageManager implements StorageManager {
                         return -1;
                     }
                 } finally {
+                    logQuery(query, startTime);
                     s.close();
                 }
             } catch (SQLException se) {
