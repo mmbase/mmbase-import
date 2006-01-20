@@ -9,6 +9,7 @@ package org.mmbase.applications.crontab.modules;
 
 import java.util.*;
 import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.functions.*;
 import org.mmbase.applications.crontab.*;
 import org.mmbase.module.WatchedReloadableModule;
 import org.mmbase.util.logging.*;
@@ -17,14 +18,14 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.5 2006-01-19 17:02:01 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.6 2006-01-20 08:19:10 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
-	
+
     private static final Logger log = Logging.getLoggerInstance(CrontabModule.class);
     protected CronDaemon cronDaemon = null;
 
-    /** 
+    /**
      * Need to remember which crontab entries where 'mine', to known which must be removed if
      * configuration changes.
      */
@@ -41,8 +42,8 @@ public class CrontabModule extends WatchedReloadableModule {
      <pre>
       &lt;cron time&gt;
       &lt;class name of a CronJob&gt;
-      [&lt;description&gt;] 
-      [&lt;configuration-string&gt;] 
+      [&lt;description&gt;]
+      [&lt;configuration-string&gt;]
       </pre>
      */
     public void init() {
@@ -52,6 +53,10 @@ public class CrontabModule extends WatchedReloadableModule {
             addJob(entry);
         }
         readMoreJobs();
+    }
+
+    protected void shutdown() {
+        cronDaemon.stop();
     }
 
     protected void addJob(Map.Entry entry) {
@@ -80,14 +85,14 @@ public class CrontabModule extends WatchedReloadableModule {
         if (description == null || description.length() == 0) {
             description = (String)entry.getKey();
         }
-        
+
         if (tokens.length > 3) {
             configString = tokens[3].trim();
         }
         if (tokens.length > 4) {
             type = tokens[4].trim();
         }
-        
+
         try {
             CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString, type);
             log.debug("Found job: " + job);
@@ -98,7 +103,7 @@ public class CrontabModule extends WatchedReloadableModule {
         }
     }
 
-    
+
 
     /**
      * All previously added entries are removed from the cron-daemon and the currently configured
@@ -117,7 +122,6 @@ public class CrontabModule extends WatchedReloadableModule {
     /**
      * @since MMBase-1.8
      */
-
     private Map utilProperties = new UtilReader("crontab.xml", new Runnable() { public void run() { reload();}}).getProperties();
 
     public void readMoreJobs() {
@@ -126,7 +130,108 @@ public class CrontabModule extends WatchedReloadableModule {
             Map.Entry entry = (Map.Entry) i.next();
             addJob(entry);
         }
-        
+
     }
+    /**
+     * @since MMBase-1.8
+     */
+    protected Function listFunction = new AbstractFunction("list", Parameter.EMPTY, ReturnType.SET) {
+            public Object getFunctionValue(Parameters arguments) {
+                return cronDaemon.getEntries();
+            }
+
+        };
+    {
+        addFunction(listFunction);
+    }
+
+    protected final static Parameter ENTRY = new Parameter("entry", String.class, true);
+    protected final static Parameter THREAD = new Parameter("thread", Integer.class, new Integer(0));
+    /**
+     * @since MMBase-1.8
+     */
+    protected Function kickFunction = new AbstractFunction("kick", new Parameter[] {ENTRY}, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                String id = (String) arguments.get(ENTRY);
+                return Boolean.valueOf(cronDaemon.getCronEntry(id).kick());
+            }
+
+        };
+    {
+        addFunction(kickFunction);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected Function interruptFunction = new AbstractFunction("interrupt", new Parameter[] {ENTRY, THREAD}, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                String id = (String) arguments.get(ENTRY);
+                Integer thread = (Integer) arguments.get(THREAD);
+                Interruptable t = cronDaemon.getCronEntry(id).getThread(thread.intValue());
+                return Boolean.valueOf(t != null && t.interrupt());
+            }
+
+        };
+    {
+        addFunction(interruptFunction);
+    }
+
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected Function aliveFunction = new AbstractFunction("alive", Parameter.EMPTY, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                return Boolean.valueOf(cronDaemon.isAlive());
+            }
+
+        };
+    {
+        addFunction(aliveFunction);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected Function stopFunction = new AbstractFunction("stop", Parameter.EMPTY, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                cronDaemon.stop();
+                return Boolean.valueOf(cronDaemon.isAlive());
+            }
+
+        };
+    {
+        addFunction(stopFunction);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected Function startFunction = new AbstractFunction("start", Parameter.EMPTY, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                cronDaemon.start();
+                return Boolean.valueOf(cronDaemon.isAlive());
+            }
+
+        };
+    {
+        addFunction(startFunction);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected Function reloadFunction = new AbstractFunction("reload", Parameter.EMPTY, ReturnType.BOOLEAN) {
+            public Object getFunctionValue(Parameters arguments) {
+                reload();
+                return Boolean.valueOf(cronDaemon.isAlive());
+            }
+
+        };
+    {
+        addFunction(reloadFunction);
+    }
+
 
 }
