@@ -14,7 +14,7 @@
       <em><%=new java.util.Date()%></em> - This web-site is currently unavailable. Please come <a href="<%=url%>">back</a> in a few minutes.
     </p>
     <p>
-      If you are the administrator of this site, and this message does not dissappear, please check
+      If you are the administrator of this site, and this message does not disappear, please check
       the mmbase log, which probably contains an indication of the reason why MMBase is not yet
       successfully started.
     </p>
