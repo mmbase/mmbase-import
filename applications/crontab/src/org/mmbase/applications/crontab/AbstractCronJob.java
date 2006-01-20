@@ -17,7 +17,6 @@ package org.mmbase.applications.crontab;
 public abstract class AbstractCronJob implements CronJob {
 
     protected CronEntry cronEntry;
-
     /**
      * {@inheritDoc}
      *
