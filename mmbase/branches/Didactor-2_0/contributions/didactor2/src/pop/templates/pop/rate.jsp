@@ -35,7 +35,7 @@
     <div class="navigationbar">
       <div class="titlebar">
         <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" 
-            width="25" height="13" border="0" title="<di:translate key="pop.popfull" />"  alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
+            width="25" height="13" border="0" alt="<di:translate key="pop.popfull" />" /> <di:translate key="pop.popfull" />
       </div>		
     </div>
     <%@include file="leftpanel.jsp" %> 
@@ -294,7 +294,7 @@
        <input type="button" class="formbutton" value="<di:translate key="pop.laterbutton" />" 
 	     onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
              <mm:param name="command">intake</mm:param>
-           </mm:treefile>'"> 
+           </mm:treeinclude>'"> 
 
    <%
 

@@ -145,7 +145,7 @@
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/people/people&nodepath=people&fields=firstname,suffix,lastname,externid&orderby=lastname&searchfields=firstname,suffix,lastname,username,externid&orderby=lastname&search=yes<mm:write referid="forbidtemplate" escape="text/plain" />' title='<di:translate key="education.persons" />' target="text"><di:translate key="education.persons" /></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/people/people&nodepath=people&fields=username,firstname,suffix,lastname,roles_html,classes_html&orderby=username&searchfields=firstname,suffix,lastname,username,externid&main=people&search=yes<mm:write referid="forbidtemplate" escape="text/plain" />' title='<di:translate key="education.persons" />' target="text"><di:translate key="education.persons" /></a></nobr></td>
             </tr>
          </table>
          <table border="0" cellpadding="0" cellspacing="0">
@@ -514,7 +514,7 @@
                   <td>
                     <nobr>
                       <a href='<mm:write referid="wizardjsp"/>&wizard=config/metastandard/metastandard&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treatmetastandard" />' target="text"><mm:field name="name" /></a>
-                      <a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' title='Bewerk standaard waarden voor metadatastandaard' alt='Bewerk standaard waarden voor metadatastandaard'></a>
+                      <a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' alt='Bewerk standaard waarden voor metadatastandaard'></a>
                     </nobr>
                   </td>
                </tr>
@@ -588,28 +588,6 @@
          </mm:listnodes>
       </div>
    </mm:islessthan>
-</mm:compare>
-
-
-
-
-
-
-<mm:compare referid="mode" value="virtualclassroom">
-  <% //----------------------- virtualclassroom come from here ----------------------- %>
-  <mm:node number="component.virtualclassroom" notfound="skipbody">
-    <mm:import id="editcontextname" reset="true">virtualclassroom</mm:import>
-    <%@include file="/education/wizards/roles_chk.jsp" %>
-    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("virtualclassroom_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_virtualclassroom_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><span style='width:100px; white-space: nowrap'><a href='<mm:write referid="listjsp"/>&wizard=config/virtualclassroom/virtualclassroomsessions&nodepath=virtualclassroomsessions&fields=name&searchfields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' target="text"><di:translate key="virtualclassroom.virtualclassroomsession" /></a></span>
-      <br>
-      <div id='virtualclassroom_0' style='display: none'>
-        <mm:treeinclude page="/virtualclassroom/backoffice/index.jsp" objectlist="$includePath" referids="$referids">
-          <mm:param name="wizardjsp"><mm:write referid="wizardjsp"/></mm:param>
-        </mm:treeinclude>
-      </div>
-    </mm:islessthan>
-  </mm:node> 
 </mm:compare>
 
 
@@ -824,10 +802,10 @@
                        <nobr>
                          <a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations&objectnumber=<mm:field name="number" />" title="<di:translate key="education.editeducation" />" target="text"><mm:field name="name" /></a>
                          <mm:present referid="pdfurl">
-                           <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
+                           <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></a>
                          </mm:present>
                          <mm:node number="component.metadata" notfound="skip">
-                           <a href="metaedit.jsp?number=<%=sEducationID%>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
+                           <a href="metaedit.jsp?number=<%=sEducationID%>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a>
                          </mm:node>
                          <mm:node number="component.drm" notfound="skip">
                            <a target="text" href="<mm:write referid="wizardjsp"/>&wizard=educationslicense&objectnumber=<%= sEducationID %>" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">&copy;</a>
@@ -923,15 +901,15 @@
                                      <a href="<mm:write referid="wizardjsp"/>&wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />" title="<di:translate key="education.editexisting" /> <%= dummyName.toLowerCase() %>" target="text"><mm:field name="name" /></a>
                                      <mm:present referid="pdfurl">
                                        <mm:compare referid="this_node_type" value="pages">
-                                         <a href="<mm:write referid="pdfurl" />&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
+                                         <a href="<mm:write referid="pdfurl" />&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></a>
                                        </mm:compare>
                                        <mm:compare referid="this_node_type" value="learnblocks">
-                                         <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
+                                         <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></a>
                                        </mm:compare>
                                      </mm:present>
                                      <mm:field name="number" id="node_number" write="false" />
                                      <mm:node number="component.metadata" notfound="skip">
-                                       <a href="metaedit.jsp?number=<mm:write referid="node_number" />" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
+                                       <a href="metaedit.jsp?number=<mm:write referid="node_number" />" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" alt="<%= sAltText %>"></a>
                                      </mm:node>
                                      <mm:node number="component.versioning" notfound="skip">
                                        <a href="versioning.jsp?nodeid=<mm:write referid="node_number" />" target="text"><img src="gfx/versions.gif" border="0"></a>

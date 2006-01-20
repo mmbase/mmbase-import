@@ -18,7 +18,7 @@ public class DidactorPortalPages extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "portalpages";
+        return "DidactorPortalPages";
     }
 
     /**
@@ -60,7 +60,6 @@ public class DidactorPortalPages extends Component {
         return true;
     }
     public void init() {
-        super.init();
     	try{
         initRelations();
       } catch (Exception ex) {

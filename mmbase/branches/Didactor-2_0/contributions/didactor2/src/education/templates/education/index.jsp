@@ -224,9 +224,9 @@
       </div>
 
       <div class="stepNavigator">
-         <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.previous" />" alt="<di:translate key="education.previous" />" /></a>
-         <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a><img src="gfx/spacer.gif" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
-         <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="education.next" />" alt="<di:translate key="education.next" />" /></a>
+         <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="<di:translate key="education.previous" />" /></a>
+         <a href="javascript:previousContent();" class="path"><di:translate key="education.previous" /></a><img src="gfx/spacer.gif" width="15" height="1" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="education.next" /></a>
+         <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" alt="<di:translate key="education.next" />" /></a>
       </div>
    </div>
 
@@ -244,7 +244,7 @@
                //-->
             </script>
 
-            <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" title="" alt="" />
+            <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" alt="" />
             <a href="javascript:openContent( '<mm:nodeinfo type="type"/>','<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');"><mm:field name="name"/></a>
 
             <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
@@ -283,7 +283,7 @@
                      <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
 
                      <%-- determine if we may show this learnobject and its children --%>
-                     <mm:import id="mayshow"><di:getvalue component="education" name="showlo" arguments="$previousnumber" /></mm:import>
+                     <mm:import id="mayshow"><di:getsetting component="education" setting="showlo" arguments="$previousnumber" /></mm:import>
 
                      <%-- if 'showlo' is 0, then we may not show the subtree, so we ignore everything with a depth HIGHER than the current depth --%>
                      <mm:compare referid="mayshow" value="0">
@@ -302,7 +302,7 @@
                                  addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
                               //-->
                               </script>
-                              <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+                              <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
 
                               <mm:node number="component.pop" notfound="skip">
                                  <mm:relatednodes type="providers" constraints="providers.number=$provider">

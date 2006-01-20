@@ -19,7 +19,7 @@
             document.location.href = loc;
          }
       </script>
-      <img src="<mm:treefile page="/education/wizards/gfx/ok.gif" objectlist="$includePath" referids="$referids" />" title="OK" alt="OK">
+      <img src="<mm:treefile page="/education/wizards/gfx/ok.gif" objectlist="$includePath" referids="$referids" />" alt="OK">
    </body>
 </html>
 </mm:cloud>

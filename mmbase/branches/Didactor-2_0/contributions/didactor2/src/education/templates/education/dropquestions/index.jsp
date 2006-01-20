@@ -238,9 +238,7 @@ dropnumbers['<mm:write referid="question"/>'] = new Array();
 
 		style="position: absolute; top: <%= 200 * dragCounter++ %>px; left: 0px; width: 200px; height: 200px;" 
 
-		title="<mm:field name="title"/>"
-    
-     alt="<mm:field name="title"/>" 
+		alt="<mm:field name="title"/>" 
 
 		class="dragimage"
 
@@ -258,7 +256,7 @@ dropnumbers['<mm:write referid="question"/>'] = new Array();
             </mm:field> 
             <br>
 
-	    <img src="<mm:image template="s(150x150)"/>" title="<mm:field name="title"/>" alt="<mm:field name="title"/>">
+	    <img src="<mm:image template="s(150x150)"/>" alt="<mm:field name="title"/>">
 
 	    <br/>
 
@@ -326,7 +324,7 @@ dropnumbers['<mm:write referid="question"/>'] = new Array();
             </mm:field> 
             <br>
 
-	    <img src="<mm:image template="s(150x150)"/>" title="<mm:field name="title"/>" alt="<mm:field name="title"/>" >
+	    <img src="<mm:image template="s(150x150)"/>" alt="<mm:field name="title"/>" >
 
 	    </div>
 

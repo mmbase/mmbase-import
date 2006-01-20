@@ -19,7 +19,7 @@ public class DidactorFaq extends Component {
      * Returns the name of the component
      */
     public String getName() {
-        return "faq";
+        return "DidactorFaq";
     }
 
     /**
@@ -63,7 +63,6 @@ public class DidactorFaq extends Component {
         return true;
     }
     public void init() {
-        super.init();
       initRelations();
     }
       

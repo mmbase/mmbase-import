@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorEducation" maintainer="didactor.nl" version="19" auto-deploy="true">
+<application name="DidactorEducation" maintainer="didactor.nl" version="22" auto-deploy="true">
     <requirements>
         <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -119,15 +119,6 @@
         <relation from="flashpages" to="videotapes" type="posrel" />
         <relation from="flashpages" to="urls" type="posrel" />
         <relation from="flashpages" to="flashpages" type="descriptionrel" />
-
-        <!-- tips -->
-        <relation from="tips" to="attachments" type="related" />
-        <relation from="tips" to="images" type="related" />
-        
-        <!-- pdf -->
-        <relation from="pdf" to="attachments" type="related" />
-        
-
 
         <!-- tests -->
         <relation from="tests" to="questions" type="posrel" />
