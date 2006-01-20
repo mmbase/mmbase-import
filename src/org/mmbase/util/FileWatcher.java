@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.UtilReader;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Original javadoc.
@@ -62,7 +63,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.34 2005-12-24 11:19:49 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.35 2006-01-20 07:15:21 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -358,13 +359,7 @@ public abstract class FileWatcher {
         /**
          * Set of file-watchers, which are currently active.
          */
-        private Set watchers = new HashSet();
-
-        /**
-         * Set of watchers to be added. This set is used because
-         * in the run method of the this thread the filewachter implementation might decide to
-         * add a new fileWatcher (for example in in the onChange method)
-         */
+        private Set watchers = new CopyOnWriteArraySet();
         private Set watchersToAdd = new HashSet();
 
         FileWatcherRunner() {
@@ -375,9 +370,7 @@ public abstract class FileWatcher {
         }
 
         void add(FileWatcher f) {
-            synchronized (watchersToAdd) {
-                watchersToAdd.add(f);
-            }
+            watchers.add(f);
         }
 
         /**
@@ -389,34 +382,23 @@ public abstract class FileWatcher {
             while (run) {
                 try {
                     long now = System.currentTimeMillis();
-                    synchronized (watchers) {
-                        Iterator i = watchers.iterator();
-                        while (i.hasNext()) {
-                            FileWatcher f = (FileWatcher)i.next();
-                            if (now - f.lastCheck > f.delay) {
-                                if (log.isDebugEnabled()) {
-                                    log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + "Currently watching: " + f.getClass().getName() + " " + f.toString());
-                                }
-                                // System.out.print(".");
-                                f.removeFiles();
-                                //changed returns true if we can stop watching
-                                if (f.changed() || f.mustStop()) {
-                                    if (log.isDebugEnabled()) {
-                                        log.debug("Removing filewatcher " + f + " " + f.mustStop());
-                                    }
-                                    i.remove();
-                                }
-                                f.lastCheck = now;
+                    Iterator i = watchers.iterator();
+                    while (i.hasNext()) {
+                        FileWatcher f = (FileWatcher)i.next();
+                        if (now - f.lastCheck > f.delay) {
+                            if (log.isDebugEnabled()) {
+                                log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + "Currently watching: " + f.getClass().getName() + " " + f.toString());
                             }
-                        }
-                        synchronized (watchersToAdd) {
-                            if (watchersToAdd.size() > 0) {
+                            // System.out.print(".");
+                            f.removeFiles();
+                            //changed returns true if we can stop watching
+                            if (f.changed() || f.mustStop()) {
                                 if (log.isDebugEnabled()) {
-                                    log.debug("Adding" + watchersToAdd);
+                                    log.debug("Removing filewatcher " + f + " " + f.mustStop());
                                 }
-                                watchers.addAll(watchersToAdd);
-                                watchersToAdd.clear();
+                                i.remove();
                             }
+                            f.lastCheck = now;
                         }
                     }
                     log.debug("Sleeping " + THREAD_DELAY + " ms");
