@@ -63,7 +63,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.35 2006-01-20 07:15:21 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.36 2006-01-20 14:25:01 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -379,6 +379,7 @@ public abstract class FileWatcher {
          */
         public void run() {
             // todo: how to stop this thread except through interrupting it?
+            List removed = new ArrayList();
             while (run) {
                 try {
                     long now = System.currentTimeMillis();
@@ -396,11 +397,13 @@ public abstract class FileWatcher {
                                 if (log.isDebugEnabled()) {
                                     log.debug("Removing filewatcher " + f + " " + f.mustStop());
                                 }
-                                i.remove();
+                                removed.add(f);
                             }
                             f.lastCheck = now;
                         }
                     }
+                    watchers.removeAll(removed);
+                    removed.clear();
                     log.debug("Sleeping " + THREAD_DELAY + " ms");
                     Thread.sleep(THREAD_DELAY);
                 } catch (InterruptedException e) {
