@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.173 2006-01-20 19:52:32 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.174 2006-01-20 20:55:15 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -180,6 +180,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         parent = node.parent;
         isNew  = node.isNew();
         values.putAll(node.getValues());
+        values.putAll(node.getOldValues());
     }
 
     /**
@@ -556,7 +557,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (! changed) return false;
 
         if (log.isDebugEnabled()) {
-            log.debug("" + fieldName + ":" + originalValue + " --> " + fieldName);
+            log.debug("" + fieldName + ":" + originalValue + " --> " + fieldValue);
         }
 
         //store the old value
