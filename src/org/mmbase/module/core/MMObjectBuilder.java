@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.363 2006-01-19 13:59:05 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.364 2006-01-20 17:02:22 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2966,8 +2966,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (log.isDebugEnabled()) {
                 log.debug(getTableName() + "creating node event for parent builder: " + pb.getTableName());
             }
-            NodeEvent parentBuilderEvent = (NodeEvent) event.clone();
-            parentBuilderEvent.setBuilderName(pb.getTableName());
+            NodeEvent parentBuilderEvent = event.clone(pb.getTableName());
             EventManager.getInstance().propagateEvent(parentBuilderEvent);
         }
     }
@@ -3000,17 +2999,17 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
          MMObjectBuilder pb = getParentBuilder();
          send_event:
          if(pb != null){
-             RelationEvent parentBuilderEvent = (RelationEvent) event.clone();
+             RelationEvent parentBuilderEvent;
              if (log.isDebugEnabled()) {
                  log.debug(getTableName() + "creating relation event for parent builder: " + pb.getTableName());
              }
              
-             if(getTableName().equals(parentBuilderEvent.getRelationSourceType())) {
-                 log.debug(">> overwriting the relation source type");
-                 parentBuilderEvent.setRelationSourceType(pb.getTableName());
-             } else if(getTableName().equals(parentBuilderEvent.getRelationDestinationType())) {
+             if(getTableName().equals(event.getRelationSourceType())) {
+                 log.debug(">> overwriting the relation source type");                 
+                 parentBuilderEvent = event.clone(pb.getTableName(), event.getRelationDestinationType());
+             } else if(getTableName().equals(event.getRelationDestinationType())) {
                  log.debug(">> overwriting the relation destination type");
-                 parentBuilderEvent.setRelationDestinationType(pb.getTableName());
+                 parentBuilderEvent = event.clone(event.getRelationSourceType(), pb.getTableName());
              } else {
                 log.error(" relation source and destination type do not match builder " + getTableName());
                 break send_event;
