@@ -7,7 +7,7 @@
          return "";
       }
    }
-	 
+
 	 String savePercentage(float f1, float f2){
       try{
          return "" + ((100f /f1) * f2);
@@ -15,14 +15,14 @@
          return "";
       }
    }
-   
+
    String saveName(String name){
       return name.replace(' ', '_');
    }
 %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@page import="org.mmbase.bridge.*,org.mmbase.cache.*,java.util.*" 
-%><%@include file="../settings.jsp" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@page import="org.mmbase.bridge.*,org.mmbase.cache.*,java.util.*"
+%><%@include file="../settings.jsp"
 %><mm:content expires="0">
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <mm:import externid="rs_show">-</mm:import>
@@ -91,7 +91,9 @@
 <%
    List caches = new ArrayList();
    List queryCaches = new ArrayList();
-   
+       //first sort the caches
+
+
    for (Iterator i = Cache.getCaches().iterator(); i.hasNext(); ) {
       Cache cache = Cache.getCache((String) i.next());
       if(cache instanceof QueryResultCache){
@@ -100,20 +102,27 @@
          caches.add(cache);
       }
    }
+   Collections.sort(queryCaches, new Comparator(){
+        public int compare(Object o1, Object o2){
+            Cache c1 = (Cache)o1;
+            Cache c2 = (Cache)o2;
+            return c1.getName().compareTo(c2.getName());
+        }
+    });
 %>
    <tr><td colspan="6"><h3>Query Caches</h3></td></tr>
    <tr><td colspan="6"><p>Query caches are used to cache the result of different types of
    queries. These caches have a plugin like system of for (sets of) rules that will decide if
    a certain change in the cloud should invalidate a query from the cache. </p></td></tr>
-   
+
 <%
-   for(Iterator i =  queryCaches.iterator(); i.hasNext(); ){ 
+   for(Iterator i =  queryCaches.iterator(); i.hasNext(); ){
       QueryResultCache cache = (QueryResultCache) i.next();
 %>
    <mm:import id="cacheName" reset="true"><%=saveName(cache.getName())%></mm:import>
    <tr><td colspan="2">  <a name="<mm:write referid="cacheName"/>"></td></tr>
    <%@include file="cache/cache_detail.jsp"%>
-   
+
    <%-- Now the strategy performance overview line--%>
    <tr>
       <td class="data">Events Analyzed</td>
@@ -135,7 +144,7 @@
          <mm:url/>#<mm:write referid="cacheName"/>
       </mm:import>
    </mm:compare>
-   
+
    <tr>
       <td colspan="5">Switch cache release strategy statistics view</td>
       <td><a href="<mm:write referid="url"/>"><b>Toggle</b></a> </td>
@@ -145,28 +154,28 @@
 --%>
 
    <mm:compare referid="rs_show" referid2="cacheName">
-   
+
    <%-- show the statistics --%>
    <tr><td colspan="6">
    <table border="0" >
    <%
       ChainedReleaseStrategy base = cache.getReleaseStrategy();
       for(Iterator ii = base.iterator(); ii.hasNext(); ){
-         ReleaseStrategy strategy = (ReleaseStrategy) ii.next(); 
+         ReleaseStrategy strategy = (ReleaseStrategy) ii.next();
    %>
       <mm:import id="strategyName" reset="true"><%=saveName(strategy.getName())%></mm:import>
-   
-      <%-- handel actions for this strategy --%>  
+
+      <%-- handel actions for this strategy --%>
       <mm:compare referid="rs_name" referid2="strategyName">
          <mm:compare referid="rs_action"  value="setActive">
             <% strategy.setEnabled(true); %>
          </mm:compare>
          <mm:compare referid="rs_action"  value="setInactive">
             <% strategy.setEnabled(false); %>
-         </mm:compare>         
+         </mm:compare>
       </mm:compare>
-      
-      
+
+
       <%-- create some action urls --%>
       <mm:remove referid="toggleActiveUrl"/>
       <mm:import id="toggleActiveUrl" reset="true">
@@ -176,7 +185,7 @@
             <mm:param name="rs_name"><%=saveName(strategy.getName())%></mm:param>
          </mm:url>#<mm:write referid="cacheName"/>
       </mm:import>
-      
+
       <%-- define the text style --%>
       <mm:import id="strategyEnabled" reset="true"><%= strategy.isEnabled() ? "enabled" : "disabled" %></mm:import>
       <mm:compare referid="strategyEnabled" value="enabled">
@@ -187,7 +196,7 @@
          <mm:import id="textStyle" reset="true">color: #666666;</mm:import>
          <mm:import id="linkStyle" reset="true">color: red;</mm:import>
       </mm:compare>
-      
+
       <%-- show the values --%>
             <tr >
                <td align="left" valign="top" style="width: 50%;">
@@ -200,7 +209,7 @@
                         <div class="data" ><a href="<mm:write escape="none" referid="toggleActiveUrl"/>">
                             <span style="<mm:write referid="linkStyle"/>"><%= strategy.isEnabled() ? "enabled" : "disabled"%>(press to toggle)</a> </span>
                         </div>
-                     </div>               
+                     </div>
                      <div class="row">
                         <div class="label" style="<mm:write referid="textStyle"/>">total queries evaluated:</div>
                         <div class="data" style="<mm:write referid="textStyle"/>"><%=""+strategy.getTotalEvaluated()%></div>
@@ -208,7 +217,7 @@
                      <div class="row">
                         <div class="label" style="<mm:write referid="textStyle"/>">total queries preserved:</div>
                         <div class="data" style="<mm:write referid="textStyle"/>"><%=""+strategy.getTotalPreserved()%></div>
-                     </div>                  
+                     </div>
                      <div class="row">
                         <div class="label" style="<mm:write referid="textStyle"/>">total evaluation time (millis):</div>
                         <div class="data" style="<mm:write referid="textStyle"/>"><%=""+strategy.getTotalEvaluationTimeMillis()%></div>
@@ -220,29 +229,37 @@
                      <div class="row">
                         <div class="label" style="<mm:write referid="textStyle"/>">percentatge performance:</div>
                         <div class="data" style="<mm:write referid="textStyle"/>"><%="" + savePercentage(strategy.getTotalEvaluated(), strategy.getTotalPreserved())%> %</div>
-                     </div>                  
+                     </div>
                </td>
             </tr>
             <tr><td colspan="2"><hr/></td>  </tr>
    <%}%>
    </table>
-      
-   
+
+
       <div id="st_<%=cache.getName()%>" >
          <table>
-         
+
          </table>
       </td>
    </td></tr>
    </mm:compare>
 <%--
    End of release Strategy bit
---%>   
+--%>
 <% } %>
-<tr><td colspan="6"><h3>Other Caches</h3></td></tr>
+<tr><td colspan="6"><h3>Other Caches </h3></td></tr>
 <%
-   for( Iterator i = caches.iterator(); i.hasNext(); ){
-      Cache cache = (Cache) i.next();
+    //first sort the caches
+    Collections.sort(caches, new Comparator(){
+        public int compare(Object o1, Object o2){
+            Cache c1 = (Cache)o1;
+            Cache c2 = (Cache)o2;
+            return c1.getName().compareTo(c2.getName());
+        }
+    });
+    for( Iterator i = caches.iterator(); i.hasNext(); ){
+    Cache cache = (Cache) i.next();
 %>
 
    <%@include file="cache/cache_detail.jsp"%>
