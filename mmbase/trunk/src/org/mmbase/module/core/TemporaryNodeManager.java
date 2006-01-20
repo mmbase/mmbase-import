@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.43 2006-01-02 11:47:39 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.44 2006-01-20 19:50:51 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -135,13 +135,13 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         MMObjectBuilder bul = mmbase.getBuilder("object");
         MMObjectNode node;
         node = bul.getTmpNode(getTmpKey(owner, key));
-        if (node==null) {
+        if (node == null) {
             log.debug("getObject not tmp node found " + key);
-            node=bul.getHardNode(dbkey);
-            if (node==null) {
+            node = bul.getHardNode(dbkey);
+            if (node == null) {
                 log.warn("Node not found in database " + dbkey);
             } else {
-                bul.putTmpNode(getTmpKey(owner,key),node);
+                bul.putTmpNode(getTmpKey(owner, key), node);
             }
         }
         if (node != null) {
@@ -175,7 +175,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             if (!stringValue.equals("")) i = Integer.parseInt(stringValue);
                             node.setValue(field, i);
                         } catch (NumberFormatException x) {
-                            log.error("Value for field " + field + " is not a number " + stringValue);
+                            log.error("Value for field " + field + " is not a number '" + stringValue + "'");
                         }
                         break;
                     case Field.TYPE_BINARY:
