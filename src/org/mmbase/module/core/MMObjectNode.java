@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.172 2006-01-19 10:38:35 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.173 2006-01-20 19:52:32 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -171,6 +171,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         } else {
             throw new IllegalArgumentException("Contructor called with parent=null");
         }
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public MMObjectNode(MMObjectNode node) {
+        parent = node.parent;
+        isNew  = node.isNew();
+        values.putAll(node.getValues());
     }
 
     /**
@@ -539,6 +548,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 if (string.length()>200) string = string.substring(0, 200);
             }
             log.debug("Setting " + fieldName + " to " +  string);
+        }
+
+        boolean changed = 
+            (! values.containsKey(fieldName)) || 
+            (originalValue == null ? fieldValue != null : ! originalValue.equals(fieldValue));
+        if (! changed) return false;
+
+        if (log.isDebugEnabled()) {
+            log.debug("" + fieldName + ":" + originalValue + " --> " + fieldName);
         }
 
         //store the old value
