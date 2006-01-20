@@ -1,4 +1,5 @@
-<%-- news with related persons (posrel), mmevents (related), images (posrel), urls (posrel) --%>
+<%-- news with related persons (posrel), mmevents (related), images (posrel), urls (posrel) 
+	attachments (posrel) --%>
 <mm:present referid="newsnr">
 	<mm:node referid="newsnr" notfound="skipbody">
 	<table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -22,6 +23,7 @@
 	  <td width="540" valign="top">	
 	  <mm:field name="html(intro)"><mm:isnotempty><div class="newsintro"><mm:write /></div></mm:isnotempty></mm:field>
 	  <mm:remove referid="news"/><mm:import id="news"/><%@ include file="/includes/urls.jsp" %>
+	  <%@ include file="/includes/attachment.jsp" %>
 	  <div class="newsbody"><mm:field name="html(body)" /></div>
 	  </td>
 	  <td align="left" valign="top">
