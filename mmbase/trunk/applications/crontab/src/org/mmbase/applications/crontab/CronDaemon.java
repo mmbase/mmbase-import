@@ -123,7 +123,6 @@ public class CronDaemon implements Runnable {
     /**
      * If you like to temporary stop the daemon, call this.
      */
-
     public void stop() {
         log.info("Stopping CronDaemon");
         cronThread.interrupt();
@@ -133,6 +132,10 @@ public class CronDaemon implements Runnable {
             CronEntry entry = (CronEntry)i.next();
             entry.stop();
         }
+    }
+
+    public boolean isAlive() {
+        return cronThread != null && cronThread.isAlive();
     }
 
     /**
@@ -201,10 +204,17 @@ public class CronDaemon implements Runnable {
                 }
             } catch (InterruptedException ie) {
                 log.info("Interrupted: " + ie.getMessage());
+                return;
             } catch (Throwable t) {
                 log.error(t.getClass().getName() + " " + t.getMessage(), t);
             }
         }
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public Set getEntries() {
+        return Collections.unmodifiableSet(cronEntries);
     }
 
     /**
