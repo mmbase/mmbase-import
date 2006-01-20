@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden (javadoc)
- * @version $Id: StorageConnector.java,v 1.3 2006-01-02 11:45:51 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.4 2006-01-20 19:56:00 michiel Exp $
  */
 public class StorageConnector {
 
@@ -179,13 +179,15 @@ public class StorageConnector {
         return index != null && index.contains(field);
     }
 
+
+
     // retrieve nodes
     /**
      * Retrieves a node based on it's number (a unique key).
      * @todo when something goes wrong, the method currently catches the exception and returns null.
      *       It should actually throw a NotFoundException instead.
      * @param number The number of the node to search for
-     * @param useCache If true, the node is retrieved from the node cache if possible.
+     * @param useCache If false, a fresh copy is returned.
      * @return <code>null</code> if the node does not exist, the key is invalid,or a
      *       <code>MMObjectNode</code> containing the contents of the requested node.
      */
@@ -200,11 +202,13 @@ public class StorageConnector {
 
         Integer numberValue = new Integer(number);
         // try cache if indicated to do so
-        if (useCache) {
-            node = builder.getNodeFromCache(numberValue);
-            if (node != null) {
-                log.trace("Found in cache!");
+        node = builder.getNodeFromCache(numberValue);
+        if (node != null) {
+            log.trace("Found in cache!");
+            if (useCache) {
                 return node;
+            } else {
+                return new MMObjectNode(node);
             }
         }
 
@@ -246,7 +250,11 @@ public class StorageConnector {
         if (log.isDebugEnabled()) {
             log.debug("Returning " + node);
         }
-        return node;
+        if (useCache) {
+            return node;
+        } else {
+            return new MMObjectNode(node);
+        }
     }
 
     /**
