@@ -8,8 +8,8 @@
 package org.mmbase.core.event;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import org.mmbase.util.HashCodeUtil;
 
 /**
  * This class reflects a ,,change relation event. it contains information about the kind of event (new, delete, change),
@@ -19,7 +19,7 @@ import java.util.Map;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.14 2005-12-28 12:04:44 michiel Exp $
+ * @version $Id: RelationEvent.java,v 1.15 2006-01-20 17:02:04 michiel Exp $
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 
@@ -29,7 +29,6 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
     private static final long serialVersionUID = 1L;
 
     private final int relationSourceNumber, relationDestinationNumber;
-
     // these are not final becouse they can be reset by MMObjectBuilder.notify()
     private String relationSourceType, relationDestinationType;
 
@@ -72,19 +71,12 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         return relationSourceType;
     }
 
-    public void setRelationSourceType(String type) {
-        relationSourceType = type;
-    }
 
     /**
      * @return Returns the relationDestinationType.
      */
     public String getRelationDestinationType() {
         return relationDestinationType;
-    }
-
-    public void setRelationDestinationType(String type) {
-        relationDestinationType = type;
     }
 
     /**
@@ -112,6 +104,43 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         return role;
     }
 
+    public RelationEvent clone(String sourceType, String destType) {
+        RelationEvent clone = (RelationEvent) super.clone();
+        clone.nodeEvent = (NodeEvent) nodeEvent.clone();
+        clone.relationSourceType = sourceType;
+        clone.relationDestinationType = destType;
+        return clone;
+    }
+
+
+    public int hashCode() {
+        int result = nodeEvent.hashCode();
+        result = HashCodeUtil.hashCode(result, relationSourceNumber);
+        result = HashCodeUtil.hashCode(result, relationDestinationNumber);
+        result = HashCodeUtil.hashCode(result, relationSourceType);
+        result = HashCodeUtil.hashCode(result, relationDestinationType);
+        result = HashCodeUtil.hashCode(result, role);
+        result = HashCodeUtil.hashCode(result, eventType);
+        return result;
+        
+    }
+    public boolean equals(Object o) {
+        if (o instanceof RelationEvent) {
+            RelationEvent re = (RelationEvent) o;
+            return 
+                nodeEvent.equals(re.nodeEvent) && 
+                eventType == re.eventType && 
+                role == re.role && 
+                relationSourceType.equals(re.relationSourceType) && 
+                relationDestinationType.equals(re.relationDestinationType) && 
+                relationSourceNumber == re.relationSourceNumber && 
+                relationDestinationNumber == re.relationDestinationNumber;
+        } else {
+            return false;
+        }
+    }
+
+
     public NodeEvent getNodeEvent() {
         return nodeEvent;
     }
@@ -123,14 +152,6 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
                 + relationDestinationNumber + ", role: " + role + " node event: " + nodeEvent;
     }
 
-    public Object clone() {
-        Object clone = null;
-        clone = super.clone();
-        // deep clone the fields that can change
-        relationSourceType = new String(relationSourceType);
-        relationDestinationType = new String(relationDestinationType);
-        nodeEvent = (NodeEvent) nodeEvent.clone();
-        return clone;
-    }
+
 
 }
