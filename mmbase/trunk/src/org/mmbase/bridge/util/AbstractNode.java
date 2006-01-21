@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.6 2006-01-13 15:39:37 pierre Exp $
+ * @version $Id: AbstractNode.java,v 1.7 2006-01-21 11:55:38 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -87,21 +87,21 @@ public abstract class AbstractNode implements Node {
         } else {
             value = field.getDataType().cast(value, this, field);
             switch(field.getType()) {
-                case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
-                case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
-                case Field.TYPE_BINARY:    {
-                    long length = getSize(fieldName);
-                    setInputStreamValue(fieldName, Casting.toInputStream(value), length); break;
-                }
-                case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
-                case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
-                case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
-                case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
-                case Field.TYPE_NODE:    setNodeValue(fieldName, (Node) value); break;
-                case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
-                case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
-                case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
-                default:                 setObjectValue(fieldName, value);
+            case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
+            case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+            case Field.TYPE_BINARY:    {
+                long length = getSize(fieldName);
+                setInputStreamValue(fieldName, Casting.toInputStream(value), length); break;
+            }
+            case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
+            case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
+            case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+            case Field.TYPE_XML:     setXMLValue(fieldName, (Document) value); break;
+            case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, getCloud())); break;
+            case Field.TYPE_DATETIME: setDateValue(fieldName, (Date) value); break;
+            case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
+            case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
+            default:                 setObjectValue(fieldName, value);
             }
         }
     }
@@ -576,6 +576,9 @@ public abstract class AbstractNode implements Node {
 
     public boolean isChanged() {
         return false;
+    }
+    public Set getChanged() {
+        return Collections.EMPTY_SET;
     }
 
     public void commit() {
