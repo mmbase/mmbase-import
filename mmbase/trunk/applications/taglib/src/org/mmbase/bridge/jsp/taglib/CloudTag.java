@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.128 2005-11-23 10:23:51 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.129 2006-01-22 19:54:10 nklasens Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -553,11 +553,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private final boolean checkAnonymous() throws JspTagException {
         try {
-            setAnonymousCloud();
             int m = getMethod();
             if ((m == AuthenticationData.METHOD_UNSET && logon == null && rankAnonymous() && loginpage == Attribute.NULL) || m == AuthenticationData.METHOD_ANONYMOUS) { // anonymous cloud:
                 log.debug("Implicitely requested anonymous cloud. Not using session");
-                
+                setAnonymousCloud();
                 return true;
             } else {
                 return false;
