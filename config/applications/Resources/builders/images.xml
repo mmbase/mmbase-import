@@ -62,6 +62,12 @@
     <!-- generic properties for all converters -->
     <property name="MaxConcurrentRequests">3</property>
     <property name="DefaultImageType">jpg</property><!-- used if determination of image-type failed -->
+
+    <!-- Whether to check for 'legacy' CKeys (that is where the +ses are removed) Not needed for new
+         sites. Probably also not needed for old sites, certainly not if they runned for a while
+         with LegacyCKey on true.
+    -->
+    <property name="LegacyCKey">false</property>
   </properties>
 
   <fieldlist>
