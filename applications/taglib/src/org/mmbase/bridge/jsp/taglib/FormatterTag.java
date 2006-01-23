@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Referids;
 
 import javax.servlet.jsp.*;
 
@@ -29,6 +30,7 @@ import java.util.*;
 import javax.servlet.jsp.PageContext;
 
 import org.mmbase.util.Encode;
+import org.mmbase.util.Entry;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -40,9 +42,9 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.58 2005-11-23 10:25:28 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.59 2006-01-23 18:33:29 michiel Exp $ 
  */
-public class FormatterTag extends CloudReferrerTag   {
+public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(FormatterTag.class);
 
@@ -53,6 +55,9 @@ public class FormatterTag extends CloudReferrerTag   {
     protected Attribute wants   = Attribute.NULL; 
 
     protected Attribute namespaceAware   = Attribute.NULL; 
+    protected Attribute referids   = Attribute.NULL; 
+
+    protected List       extraParameters      = new ArrayList();
 
     protected Source   xsltSource = null;
 
@@ -201,6 +206,16 @@ public class FormatterTag extends CloudReferrerTag   {
         namespaceAware = getAttribute(n);
     }
 
+    public void setReferids(String r) throws JspTagException {
+        referids = getAttribute(r);
+    }
+
+    public void addParameter(String key, Object value) throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("adding parameter " + key + "/" + value);
+        }
+        extraParameters.add(new Entry(key, value));
+    }
     /**
      * The  Xslt tag will call this, to inform this tag about the XSLT which must be done.
      */
@@ -242,7 +257,7 @@ public class FormatterTag extends CloudReferrerTag   {
 
 
     public int doStartTag() throws JspTagException {
-        
+        extraParameters.clear();
         counter = (Counter) pageContext.getAttribute(PAGECONTEXT_COUNTER);
         if (counter == null) {
             log.debug("counter not found");
@@ -516,6 +531,14 @@ public class FormatterTag extends CloudReferrerTag   {
                 }
             }
         }
+        params.putAll(Referids.getReferids(referids, this));
+        Iterator i = extraParameters.iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            params.put(entry.getKey(), entry.getValue());
+        }
+                                            
+                      
        
         return ResultCache.getCache().get(cachedXslt, xsl,  params, null, doc);
 
