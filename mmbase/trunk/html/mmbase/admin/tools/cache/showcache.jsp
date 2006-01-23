@@ -49,7 +49,7 @@ synchronized(cache) {
    int deleted = 0;  
    while(i.hasNext() && j < 500 + deleted) {
      Map.Entry entry = (Map.Entry) i.next();
-     String k = entry.getKey().toString();
+     String k = entry.getKey() instanceof SearchQuery ? sqlHandler.toSql((SearchQuery)entry.getKey(), sqlHandler) : entry.getKey().toString();
      String v = "" + entry.getValue();
      if(!keyPattern.matcher(k).matches()) continue;
      if(!valuePattern.matcher(v).matches()) continue;
@@ -68,7 +68,9 @@ synchronized(cache) {
 <tr>
   <td class="data"><%=j%></td>
   <td class="data"><%=cache.getCount(k)%></td>
-  <td class="data"><p><%=k%></p><hr/><p><%=sqlHandler.toSql((SearchQuery)entry.getKey(), sqlHandler)%></p></td>
+  <td class="data">
+	<p><%=k%></p>
+  </td>
   <td class="data"><%=v%></td>
   <td class="data"><a href="<mm:url referids="cache"><mm:param name="deletekey" value="<%=k%>" /><mm:param name="deleteentry" value="<%="" + j%>" /></mm:url>">remove</a></td>
   <% j++; %>
