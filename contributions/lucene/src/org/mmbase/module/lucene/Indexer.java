@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.17 2006-01-23 10:18:17 pierre Exp $
+ * @version $Id: Indexer.java,v 1.18 2006-01-23 14:33:13 michiel Exp $
  **/
 public class Indexer {
 
@@ -54,9 +54,23 @@ public class Indexer {
      * @param queries a collection of IndexDefinition objects that select the nodes to index, and contain options on the fields to index.
      * @param cloud The Cloud to use for querying
      */
-    Indexer(String path, String index, Collection queries, Cloud cloud, Analyzer analyzer) {
+    Indexer(String path, String index, Collection queries, Cloud cloud, Analyzer analyzer, boolean readOnly) {
         this.index = index;
         this.path =  path + java.io.File.separator + index;
+        if (! readOnly) {
+            // make sure the indexPath directory is unlocked.
+            // We saw once that it remained locked after a crash of the webapp. Hopefully this will
+            // avoid that.
+            try {
+                IndexReader r = IndexReader.open(this.path);
+                if (IndexReader.isLocked(r.directory())) {
+                    IndexReader.unlock(r.directory());
+                    log.service("Unlocked lucene index directory " + r.directory());
+                }
+            } catch (java.io.IOException ioe) {
+                log.warn(ioe.getMessage(), ioe);
+            }
+        }
         this.queries = queries;
         this.cloud = cloud;
         if (analyzer == null) {
