@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.18 2006-01-16 20:24:48 michiel Exp $
+ * @version $Id: Searcher.java,v 1.19 2006-01-23 10:18:17 pierre Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -87,7 +87,7 @@ public class Searcher {
             searchLog.service(value);
         }
 
-        List list = new LinkedList(); 
+        List list = new LinkedList();
         if (log.isDebugEnabled()) {
             log.trace("Searching '" + value + "' in index " + index + " for " + sort + " " + analyzer + " " + extraQuery + " " + fields + " " + offset + " " + max);
         }
@@ -171,7 +171,9 @@ public class Searcher {
             query = MultiFieldQueryParser.parse(value, fields, analyzer);
         }
         if (extraQuery != null) {
-            log.info("Found an extra query " + extraQuery + " for " + query + " " + BooleanQuery.getMaxClauseCount());
+            if (log.isDebugEnabled()) {
+                log.debug("Found an extra query " + extraQuery + " for " + query + " " + BooleanQuery.getMaxClauseCount());
+            }
             BooleanQuery booleanQuery = new BooleanQuery();
             booleanQuery.add(query, true, false);
             booleanQuery.add(extraQuery, true, false);
@@ -216,7 +218,9 @@ public class Searcher {
             } else if (type.equals("GT")|| type.equals("GTE")) {
                 subQuery = new RangeQuery(new Term(field, value), null, type.equals("GTE"));
             } else if (type.equals("LT") || type.equals("LTE")) {
-                log.info("Instantatiating rangquery NULL->" + value);
+                if (log.isDebugEnabled()) {
+                    log.debug("Instantatiating rangquery NULL->" + value);
+                }
                 subQuery = new RangeQuery(null, new Term(field, value), type.equals("LTE"));
             } else if (type.equals("IN") || type.equals("INC")) {
                 subQuery = new RangeQuery(new Term(field, value), new Term(field, value2), type.equals("INC"));

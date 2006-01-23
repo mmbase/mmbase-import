@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Handles content extraction
  *
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ContentExtractor {
 
@@ -59,10 +59,10 @@ public class ContentExtractor {
             mimetype = extractor.getMimeType();
         }
         if (extractors.containsKey(mimetype)) {
-            log.info("Replacing Extractor for mimetype: '" + mimetype + "'");
+            log.service("Replacing Extractor for mimetype: '" + mimetype + "'");
             extractors.remove(mimetype);
         } else {
-            log.info("Adding Extractor for mimetype: '" + mimetype + "'");
+            log.service("Adding Extractor for mimetype: '" + mimetype + "'");
         }
         extractors.put(mimetype, extractor);
     }

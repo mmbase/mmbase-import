@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.3 2006-01-16 19:24:20 pierre Exp $
+ * @version $Id: MMBaseEntry.java,v 1.4 2006-01-23 10:18:17 pierre Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -177,7 +177,7 @@ public class MMBaseEntry implements IndexEntry {
                         }
                         Extractor extractor = ContentExtractor.getInstance().findExtractor(mimeType);
                         if (extractor != null) {
-                            log.service("Analyzing document of " + node.getNumber() + " with " + extractor);
+                            log.debug("Analyzing document of " + node.getNumber() + " with " + extractor);
                             InputStream input = node.getInputStreamValue(fieldName);
                             try {
                                 documentText = extractor.extract(input);
