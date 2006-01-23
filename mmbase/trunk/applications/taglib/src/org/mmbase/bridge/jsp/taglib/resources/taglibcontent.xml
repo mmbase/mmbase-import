@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.44 2005-12-29 19:53:30 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.45 2006-01-23 14:52:47 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -378,14 +378,6 @@
     <class>org.mmbase.util.transformers.Perl</class>
     <info>
       Interpret the complete body as a perl program, and write the result.
-    </info>
-  </postprocessor>
-  <postprocessor id="cp1252">
-    <class>org.mmbase.util.transformers.CP1252Surrogator</class>
-    <info>
-      Surrogates the characters which are specific for CP1552 to simple
-      ASCII. (Characters from the ISO-8859-1 character set remain
-      untouched).
     </info>
   </postprocessor>
   <postprocessor id="sitestat">
