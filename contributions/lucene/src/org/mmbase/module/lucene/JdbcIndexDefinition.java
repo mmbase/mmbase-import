@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.4 2006-01-16 17:13:03 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.5 2006-01-23 10:18:17 pierre Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -49,7 +49,6 @@ public class JdbcIndexDefinition implements IndexDefinition {
             }
         };
 
-
     private final DataSource dataSource;
     private final String sql;
     private final String key;
@@ -58,9 +57,9 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
     private final Set keyWords = new HashSet();
 
-    JdbcIndexDefinition(DataSource ds, Element element, 
-                        Set allIndexedFields, 
-                        boolean storeText, 
+    JdbcIndexDefinition(DataSource ds, Element element,
+                        Set allIndexedFields,
+                        boolean storeText,
                         boolean mergeText, Analyzer a) {
         this.dataSource = ds;
         sql = element.getAttribute("sql");
@@ -80,7 +79,6 @@ public class JdbcIndexDefinition implements IndexDefinition {
         this.analyzer = a;
     }
 
-
     /**
      * Jdbc connection pooling of MMBase would kill the statement if too duratious. This produces a
      * 'direct connection' in that case, to circumvent that problem (Indexing queries _may_ take a while).
@@ -97,13 +95,13 @@ public class JdbcIndexDefinition implements IndexDefinition {
         return analyzer;
     }
 
-
     protected String getSql(String identifier) {
         if (find == null) throw new RuntimeException("No find query defined");
         if (identifier == null) throw new RuntimeException("No find query defined");
         String s = find.replaceAll("\\[KEY\\]", identifier);
         return s;
     }
+
     protected CloseableIterator getCursor(String s) {
         try {
             long start = System.currentTimeMillis();
@@ -115,6 +113,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
             final ResultSetMetaData meta = results.getMetaData();
             return new CloseableIterator() {
                     int i = 0;
+
                     public boolean hasNext() {
                         boolean hasNext;
                         try {
@@ -128,19 +127,24 @@ public class JdbcIndexDefinition implements IndexDefinition {
                         }
                         return hasNext;
                     }
+
                     public Object next() {
                         JdbcEntry entry = new JdbcEntry(meta, results);
                         i++;
-                        if (i % 100 == 0) {
-                            log.service("jdbc cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
-                        } else {
-                            log.trace("jdbc cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                        if (log.isServiceEnabled()) {
+                            if (i % 100 == 0) {
+                                log.service("jdbc cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                            } else if (log.isDebugEnabled()) {
+                                log.trace("jdbc cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                            }
                         }
                         return entry;
                     }
+
                     public void remove() {
                         throw new UnsupportedOperationException();
                     }
+
                     public void close() {
                         try {
                             if (results != null) results.close();
@@ -155,7 +159,6 @@ public class JdbcIndexDefinition implements IndexDefinition {
             throw new RuntimeException(e);
         }
     }
-
 
     public org.mmbase.bridge.Node getNode(Cloud userCloud, String identifier) {
         Map map = (Map) nodeCache.get(identifier);
@@ -216,11 +219,13 @@ public class JdbcIndexDefinition implements IndexDefinition {
     class JdbcEntry implements IndexEntry {
         final ResultSetMetaData meta;
         final ResultSet results;
+
         JdbcEntry(ResultSetMetaData m, ResultSet r) {
             log.trace("new JDBC Entry");
             meta = m;
             results = r;
         }
+
         public void index(Document document) {
             if (log.isDebugEnabled()) {
                 log.trace("Indexing "+ results + " with " + keyWords);
@@ -245,9 +250,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 log.error(sqe);
             }
         }
+
         public Collection getSubDefinitions() {
             return Collections.EMPTY_LIST;
         }
+
         public String getIdentifier() {
             try {
                 return results.getString(JdbcIndexDefinition.this.key);
@@ -258,6 +265,5 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
 
     }
-
 
 }

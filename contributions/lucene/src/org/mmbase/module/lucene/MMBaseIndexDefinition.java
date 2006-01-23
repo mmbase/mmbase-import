@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.5 2006-01-16 21:03:37 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.6 2006-01-23 10:18:17 pierre Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -52,23 +52,13 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         this.parent = parent;
     }
 
-
     public void setAnalyzer(Analyzer a) {
         analyzer = a;
     }
+
     public Analyzer getAnalyzer() {
         return analyzer;
     }
-
-    /**
-     * Constructor, copies all data from the specified QueryDefinition object.
-
-    MMBaseIndexDefinition(MMBaseIndexDefinition queryDefinition) {
-        super(queryDefinition);
-        this.maxNodesInQuery = queryDefinition.maxNodesInQuery;
-        this.subQueries = queryDefinition.subQueries;
-    }
-     */
 
     public Node getNode(Cloud userCloud, String identifier) {
         if (userCloud.hasNode(identifier)) {
@@ -104,10 +94,12 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                     Node node = nodeIterator.nextNode();
                     MMBaseEntry entry = new MMBaseEntry(node, f, isMultiLevel, elementManager, subQueries);
                     i++;
-                    if (i % 100 == 0) {
-                        log.service("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
-                    } else {
-                        log.trace("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                    if (log.isServiceEnabled()) {
+                        if (i % 100 == 0) {
+                            log.service("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                        } else if (log.isDebugEnabled()) {
+                            log.trace("mmbase cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                        }
                     }
                     return entry;
                 }
@@ -121,7 +113,6 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         String id = parent != null ? parent.getIdentifier() : null;
         return getCursor(getNodeIterator(id), fields);
     }
-
 
     public CloseableIterator getSubCursor(String identifier) {
         return getCursor(getNodeIterator(identifier), fields);
