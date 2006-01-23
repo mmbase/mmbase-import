@@ -127,6 +127,10 @@ public class PeopleBuilder extends DidactorBuilder {
      * @return an object containing the value.
      */
     public Object getValue(MMObjectNode node, String field) {
+        if (node.getNumber() == -1) {
+            // cannot compute on new nodes
+            return super.getValue(node, field);
+        }
         if ("isonline".equals(field)) {
             int now = (int)(System.currentTimeMillis() / 1000);    
             int oldtime = node.getIntValue("lastactivity");
