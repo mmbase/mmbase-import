@@ -19,7 +19,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.22 2006-01-23 11:51:22 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.23 2006-01-23 12:16:47 pierre Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -54,11 +54,14 @@ public class NodeDataType extends BasicDataType {
      */
     protected Object cast(Object value, Cloud cloud, Node node, Field field) {
         Object preCast = preCast(value, cloud, node, field);
-        if (preCast == null) return null;
-        Object cast = Casting.toType(Integer.class, cloud, preCast);
-        return cast;
+        if (preCast == null) {
+            return null;
+        } else if (preCast instanceof Node || preCast instanceof Integer) {
+            return preCast;
+        } else {
+            return Casting.toType(Integer.class, cloud, preCast);
+        }
     }
-
 
     protected boolean isCorrectType(Object value) {
         return super.isCorrectType(value) || Casting.isType(Integer.class, value);
