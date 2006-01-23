@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.142 2006-01-20 19:54:13 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.143 2006-01-23 18:21:46 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -814,7 +814,7 @@ public class DatabaseStorageManager implements StorageManager {
         create(node, builder);
         commitChange(node, "n");
         unloadShortedFields(node, builder);
-//        refresh(node);
+        //refresh(node);
         return nodeNumber;
     }
 
@@ -973,7 +973,7 @@ public class DatabaseStorageManager implements StorageManager {
         change(node, builder);
         commitChange(node, "c");
         unloadShortedFields(node, builder);
-//        refresh(node);
+        refresh(node);
     }
 
     /**
@@ -1536,7 +1536,7 @@ public class DatabaseStorageManager implements StorageManager {
 
 
     /**
-     * Reloads the data from a node from the adtabase.
+     * Reloads the data from a node from the database.
      * Use this after a create or change action, so the data in memory is consistent with
      * any data stored in the database.
      * @param node the node to refresh
