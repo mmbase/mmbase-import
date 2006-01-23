@@ -39,6 +39,9 @@ public abstract class Component {
     /** The string indicating in which bar (application, education, provider) the cockpit menuitem must be placed */
     private String templatebar = null;
 
+    /** Location of the component in the bar. Default to 100, which is somewhere at the end. */
+    private int barposition = 100;
+
     /**
      * Register a component in the registry.
      */
@@ -97,6 +100,9 @@ public abstract class Component {
                 Node componentNode = XPathAPI.selectSingleNode(rootNode, "/component");
                 this.templatepath = getAttribute(componentNode, "templatepath");
                 this.templatebar = getAttribute(componentNode, "templatebar");
+                try {
+                    this.barposition = Integer.parseInt(getAttribute(componentNode, "barposition"));
+                } catch (Exception e) {}
 
                 NodeList scopeNodes = XPathAPI.selectNodeList(componentNode, "scope");
                 log.debug("Number of scopes: " + scopeNodes.getLength());
@@ -214,6 +220,14 @@ public abstract class Component {
 
     public String getTemplateBar() {
         return templatebar;
+    }
+
+    public int getBarPosition() {
+        return barposition;
+    }
+
+    public int getNumber() {
+        return node.getNumber();
     }
 
     public String getValue(String variablename, Cloud cloud, Map context, String[] arguments) {
