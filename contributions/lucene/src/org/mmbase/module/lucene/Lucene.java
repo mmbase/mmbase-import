@@ -43,7 +43,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.41 2006-01-23 10:18:17 pierre Exp $
+ * @version $Id: Lucene.java,v 1.42 2006-01-23 12:32:20 ernst Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -135,16 +135,19 @@ public class Lucene extends Module implements MMBaseObserver {
      * This function starts a full Index of Lucene.
      * This may take a while.
      * This function can be called through the function framework.
+     * It will do nothing if the module is configured to be 'read only'
      */
     protected Function fullIndexFunction = new AbstractFunction("fullIndex",
                                                                 new Parameter[] {INDEX},
                                                                 ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
-            String index = (String) arguments.get("index");
-            if (index == null || "".equals(index)) {
-                scheduler.fullIndex();
-            } else {
-                scheduler.fullIndex(index);
+            if(!readOnly){
+                String index = (String) arguments.get("index");
+                if (index == null || "".equals(index)) {
+                    scheduler.fullIndex();
+                } else {
+                    scheduler.fullIndex(index);
+                }
             }
             return null;
         }
@@ -154,12 +157,15 @@ public class Lucene extends Module implements MMBaseObserver {
     }
     /**
      * This function can be called through the function framework.
+     * It will do nothing if the module is configured to be 'read only'
      */
     protected Function updateIndexFunction = new AbstractFunction("updateIndex",
                                                                   new Parameter[] {new Parameter("identifier", String.class, true)},
                                                                   ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
-            scheduler.updateIndex(arguments.getString("identifier"));
+            if(!readOnly){
+                scheduler.updateIndex(arguments.getString("identifier"));
+            }
             return null;
         }
     };
@@ -170,16 +176,32 @@ public class Lucene extends Module implements MMBaseObserver {
 
     /**
      * This function returns the status of the scheduler.
+     * it will return '-1' if the module is configured to be 'read only'
      */
     protected Function statusFunction = new AbstractFunction("status", Parameter.EMPTY, ReturnType.INTEGER) {
         public Object getFunctionValue(Parameters arguments) {
-            return new Integer(scheduler.getStatus());
+            if(!readOnly){
+                return new Integer(scheduler.getStatus());
+            }
+            return new Integer(-1);
         }
     };
     {
         addFunction(statusFunction);
     }
+    
+    protected Function readOnlyFunction = new AbstractFunction("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
+        public Object getFunctionValue(Parameters arguments) {
+            return new Boolean(isReadOnly());
+        }
+    };
+    {
+        addFunction(readOnlyFunction);
+    }
 
+    /**
+     * This function returns a list of indexes present.
+     */
     protected Function listFunction = new AbstractFunction("list", Parameter.EMPTY, ReturnType.SET) {
             public Object getFunctionValue(Parameters arguments) {
                 return indexerMap.keySet();
@@ -189,6 +211,10 @@ public class Lucene extends Module implements MMBaseObserver {
     {
         addFunction(listFunction);
     }
+    
+    /**
+     *This function returns the description of a given index (for a given locale). 
+     */
     protected Function descriptionFunction = new AbstractFunction("description", new Parameter[] {INDEX, Parameter.LOCALE}, ReturnType.STRING ) {
             public Object getFunctionValue(Parameters arguments) {
                 String key = arguments.getString(INDEX);
@@ -570,6 +596,16 @@ public class Lucene extends Module implements MMBaseObserver {
             }
         }
         return true;
+    }
+    
+    /**
+     * When there are more than one instances of an MMBase application in a cluster, it is probably
+     * wise to delegate all the lucene index manipulation to one of the instnaces. The oher instance should
+     * be set to 'read only' (in the config file). before issuing indexing commands to the module
+     * it might be a good idear to check if the local instance is not set to 'read only'
+     */
+    public boolean isReadOnly(){
+        return readOnly;
     }
 
     /**
