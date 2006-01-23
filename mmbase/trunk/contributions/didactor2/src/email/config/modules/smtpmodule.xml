@@ -49,6 +49,7 @@
          if one of these is not set, the corresponding field is not
          filled with contect by the module -->
     <property name="emailbuilder.tofield">to</property>
+    <property name="emailbuilder.ccfield">cc</property>
     <property name="emailbuilder.fromfield">from</property>
     <property name="emailbuilder.subjectfield">subject</property>
     <property name="emailbuilder.headersfield">headers</property>
