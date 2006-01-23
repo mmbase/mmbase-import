@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.48 2006-01-09 10:30:35 nklasens Exp $
+ * @version $Id: ContentTag.java,v 1.49 2006-01-23 14:52:47 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -154,7 +154,7 @@ public class ContentTag extends LocaleTag  {
         log.service("Reading taglib write-escapers");
         InputStream stream = ContentTag.class.getResourceAsStream("resources/taglibcontent.xml");
         if (stream != null) {
-            log.info("Reading backwards compatible resource " + ContentTag.class.getName() + "/resources/taglibcontext.xml");
+            log.info("Reading backwards compatible resource " + ContentTag.class.getName() + "/resources/taglibcontent.xml");
             InputSource escapersSource = new InputSource(stream);
             readXML(escapersSource);
         }
@@ -187,28 +187,34 @@ public class ContentTag extends LocaleTag  {
             Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
-            if (charTransformers.containsKey(id)) {
-                log.warn("Replaced an escaper '" + id + "' : " + ct );
+            CharTransformer prev = (CharTransformer) charTransformers.put(id, ct);
+            if (prev != null) {
+                log.warn("Replaced an escaper '" + id + "' : " + ct + "(was " + prev + ")");
             } else {
                 log.service("Found an escaper '" + id + "' : " + ct);
             }
-            charTransformers.put(id, ct);
+
         }
         log.service("Reading content tag parameterizedescaperss");
         for (Iterator iter = reader.getChildElements(root, "parameterizedescaper"); iter.hasNext();) {
             Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             ParameterizedTransformerFactory fact = readTransformerFactory(reader, element, id);
-            if (parameterizedCharTransformerFactories.containsKey(id)) {
-                log.warn("Replaced an pescaper '" + id + "' : " + fact );
+            ParameterizedTransformerFactory prev = (ParameterizedTransformerFactory) parameterizedCharTransformerFactories.put(id, fact);
+            if (prev != null) {
+                log.warn("Replaced an parametrized escaper '" + id + "' : " + fact + " (was " + prev + ")");
             } else {
-                log.service("Found an pescaper '" + id + "' : " + fact);
+                log.service("Found an parameterized escaper '" + id + "' : " + fact);
             }
-            parameterizedCharTransformerFactories.put(id, fact);
+
             try {
                 CharTransformer ct = (CharTransformer) fact.createTransformer(fact.createParameters());
-                log.service("Could be instantiated with default parameters too");
-                charTransformers.put(id, ct);
+                if (! charTransformers.containsKey("id")) {
+                    log.service("Could be instantiated with default parameters too");
+                    charTransformers.put(id, ct);
+                } else {
+                    log.service("Already a chartransformer with id " + id);
+                }
             } catch (Exception ex) {
                 log.service("Could not be instantiated with default parameters only: " + ex.getMessage());
             }
@@ -219,12 +225,13 @@ public class ContentTag extends LocaleTag  {
             Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
-            if (charTransformers.containsKey(id)) {
-                log.warn("Replaced an postprocessor '" + id + "' : " + ct);
+            CharTransformer prev = (CharTransformer) charTransformers.put(id, ct);
+            if (prev != null) {
+                log.warn("Replaced an postprocessor '" + id + "' : " + ct + " (was " + prev + ")");
             } else {
                 log.service("Found an postprocessor '" + id + "' : " + ct);
             }
-            charTransformers.put(id, ct);
+
         }
 
         for (Iterator iter = reader.getChildElements(root, "content"); iter.hasNext();) {
