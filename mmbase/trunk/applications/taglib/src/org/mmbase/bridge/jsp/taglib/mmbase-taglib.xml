@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.338 2006-01-23 10:20:14 ernst Exp $
+version: $Id: mmbase-taglib.xml,v 1.339 2006-01-23 12:02:04 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6973,9 +6973,10 @@ The 0 is just counter, which starts at 0 on every page.
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
       <p>
-        A simple list iterating some list, coming from the `context. So the `referid' is required for this list.
-        The original list can for example have been produced by the import tag with vartype="list". Inside the list
-        you can access the current string througt the reference '$_'.
+        A simple list iterating some list, coming from the `context. So the `referid' is required
+        for this list.  The original list can for example have been produced by the import tag with
+        vartype="list". Since this tag is a 'Writer' tag, you can inside the list access the current
+        string by an mm:write tag without attributes, or by the reference '$_' (or ${_} in EL).
       </p>
       <p>
         You can also use `aliaslist' for this (as can be done in MMBase 1.6) but that is a bit
