@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.339 2006-01-23 12:02:04 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.340 2006-01-23 18:33:29 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5489,8 +5489,18 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        You can give options to the transformation.
+        You can give options to the transformation. Parameters can be done with 'referids' or mm:param subtags.
       </info>
+    </attribute>
+    <attribute>
+      <name>referids</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Similar to `referids' attribute of mm:url
+      </info>
+      <since>MMBase-1.8</since>
+      <see tag="url" attribute="referids" />
     </attribute>
     <attribute>
       <name>wants</name>
@@ -5549,6 +5559,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <extends>contextreferrer</extends>
     <extends>writer</extends>
     <see tag="xslt" />
+    <see tag="param" />
   </tag>
   <tag>
     <name>xslt</name>
