@@ -12,6 +12,8 @@ import java.sql.*;
 import java.util.*;
 import javax.sql.DataSource;
 
+import org.mmbase.cache.NodeCache;
+import org.mmbase.cache.Cache;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
@@ -32,7 +34,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.45 2006-01-03 10:03:59 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.46 2006-01-23 18:25:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -310,6 +312,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
         // Truncate results to provide weak support for maxnumber.
         try {
+            NodeCache nodeCache = NodeCache.getCache();
+            Cache typeCache = Cache.getCache("TypeCache");
+            Integer oTypeInteger = new Integer(builder.getObjectType());
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
                 try {
                     MMObjectNode node = new MMObjectNode(builder, false);
@@ -349,6 +354,22 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     }
                     node.clearChanged();
                     node.finish();
+
+                    // The following code fills the type- and node-cache as far as this is possible at this stage.
+                    int otype = node.getOType();
+                    Integer number = new Integer(node.getNumber());
+                    if (otype == builder.getObjectType()) {
+                        MMObjectNode cacheNode = (MMObjectNode) nodeCache.get(number);
+                        if (cacheNode != null) {
+                            node = cacheNode;
+                        } else {
+                            nodeCache.put(number, node);
+                        }
+                        typeCache.put(number, oTypeInteger);
+                    } else {
+                        typeCache.put(number, new Integer(otype));
+                    }
+
                     results.add(node);
                 } catch (Exception e) {
                     // log error, but continue with other nodes
