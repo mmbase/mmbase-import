@@ -27,10 +27,10 @@ import org.mmbase.util.logging.*;
 /**
  * An indexer object represents one Index in the MMBase lucene module. It contains the functionality
  * for creating and updating the indices by talking to the Lucene interfaces.
- *x
+ *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.16 2006-01-16 19:24:20 pierre Exp $
+ * @version $Id: Indexer.java,v 1.17 2006-01-23 10:18:17 pierre Exp $
  **/
 public class Indexer {
 
@@ -156,7 +156,7 @@ public class Indexer {
             // process all queries
             for (Iterator i = queries.iterator(); i.hasNext();) {
                 IndexDefinition indexDefinition = (IndexDefinition)i.next();
-                log.service("full index for " + indexDefinition);
+                log.debug("full index for " + indexDefinition);
                 Iterator j = indexDefinition.getCursor();
                 index(j, writer);
             }
@@ -176,7 +176,6 @@ public class Indexer {
             }
         }
     }
-
 
     /**
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
