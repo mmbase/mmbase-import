@@ -1,4 +1,3 @@
-
 <tr align="left">
   <th class="header" colspan="5"><span style="font-size: 120%"><%= cache.getName() %> </span>:<%= cache.getDescription() %> Cache</th>
   <th class="header" colspan="1">
