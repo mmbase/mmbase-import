@@ -18,15 +18,15 @@
     </div>
     <div class="columnMiddle">
       <p>
-        Thank you for your registration. Your account details are:
+        <di:translate key="register.thankyou" />
         <ul>
-          <li>Username: <mm:write referid="uname" /></li>
-          <li>Password: <mm:write referid="password" /></li>
+          <li><di:translate key="register.username" />: <mm:write referid="uname" /></li>
+          <li><di:translate key="register.password" />: <mm:write referid="password" /></li>
         </ul>
           <a href="<mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids">
                       <mm:param name="newusername"><mm:write referid="uname" /></mm:param>
                       <mm:param name="newpassword"><mm:write referid="password" /></mm:param>
-                   </mm:treefile>">To login page</a>
+                   </mm:treefile>"><di:translate key="register.tologin" /></a>
       </p>
     </div>
     <div class="columnRight">
