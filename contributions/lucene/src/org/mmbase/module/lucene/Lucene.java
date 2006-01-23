@@ -43,7 +43,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.42 2006-01-23 12:32:20 ernst Exp $
+ * @version $Id: Lucene.java,v 1.43 2006-01-23 12:41:20 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -315,21 +315,24 @@ public class Lucene extends Module implements MMBaseObserver {
             log.service("fall back to default for lucene index path : " + indexPath);
         }
 
-        // make sure the indexPath directory is unlocked.
-        // We saw once that it remained locked after a crash of the webapp. Hopefully this will
-        // avoid that.
-        try {
-            IndexReader r = IndexReader.open(indexPath);
-            if (IndexReader.isLocked(r.directory())) {
-                IndexReader.unlock(r.directory());
-                log.service("Unlocked lucene index directory " + r.directory());
-            }
-        } catch (java.io.IOException ioe) {
-            log.warn(ioe.getMessage(), ioe);
-        }
-
         // read only?
         readOnly = "true".equals(getInitParameter("readonly"));
+
+        if (! readOnly) {
+            // make sure the indexPath directory is unlocked.
+            // We saw once that it remained locked after a crash of the webapp. Hopefully this will
+            // avoid that.
+            try {
+                IndexReader r = IndexReader.open(indexPath);
+                if (IndexReader.isLocked(r.directory())) {
+                    IndexReader.unlock(r.directory());
+                    log.service("Unlocked lucene index directory " + r.directory());
+                }
+            } catch (java.io.IOException ioe) {
+                log.warn(ioe.getMessage(), ioe);
+            }
+        }
+
 
         // initial wait time?
         String time = getInitParameter("initialwaittime");
