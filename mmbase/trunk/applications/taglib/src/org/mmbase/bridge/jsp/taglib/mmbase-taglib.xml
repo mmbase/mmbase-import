@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.337 2006-01-17 00:13:14 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.338 2006-01-23 10:20:14 ernst Exp $
 
 -->
 <taglib author="MMBase community">
@@ -441,7 +441,7 @@ version: $Id: mmbase-taglib.xml,v 1.337 2006-01-17 00:13:14 michiel Exp $
         <p>
           This method is similar to the behavior of the 'add()' and 'addAll()' methods from the <code>java.util.Collection</code> interface.
         </p>
-      </info>      
+      </info>
     </attribute>
     <attribute>
       <name>retain</name>
@@ -451,7 +451,7 @@ version: $Id: mmbase-taglib.xml,v 1.337 2006-01-17 00:13:14 michiel Exp $
       <info>
         <p>
           Removes al the elements from the list, except the ones that are also present in the
-          list which is specified by this attribute. 
+          list which is specified by this attribute.
         </p>
         <p>
           This method is similar to the behavior of the 'retainAll()' method from the <code>java.util.Collection</code> interface.
@@ -470,16 +470,16 @@ version: $Id: mmbase-taglib.xml,v 1.337 2006-01-17 00:13:14 michiel Exp $
     <example>
       <pre><![CDATA[
 <mm:import id="list1" vartype="list">a,b,c,d,e</mm:import>
-<mm:import id="list2" vartype="list">c,d,e,f</mm:import> 
+<mm:import id="list2" vartype="list">c,d,e,f</mm:import>
 
 <mm:stringlist id="list3" referid="list1" add="list2" />
 <mm:stringlist id="list4" referid="list1" retain="list2" />
 <mm:stringlist id="list5" referid="list1" remove="list2" />
-  
+
 <mm:write referid="list3" /> / <mm:write referid="list4" /> / <mm:write referid="list5" />
 ]]>
       </pre>
-      This will print the following: 
+      This will print the following:
       <pre>
 a,b,c,d,e,c,d,e,f / c,d,e / a,b
       </pre>
@@ -591,14 +591,14 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
     <type>mmbase.basic</type>
     <info>
       Cloud provider tags provide a cloud to their body. Also a
-      `transaction' is a kind of cloud. 
+      `transaction' is a kind of cloud.
     </info>
     <see tag="cloudreferrer" />
   </taginterface>
   <taginterface>
     <name>nodereferrer</name>
     <info>
-      A node referrer tag is a tag that lives within the body of a node provider tag, 
+      A node referrer tag is a tag that lives within the body of a node provider tag,
       and uses the node provided by the node provider tag.
     </info>
     <!-- in reality nodereferrer extends cloudreferrer, but only few tags use that -->
@@ -617,7 +617,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
     <type>mmbase</type>
     <info>
       A cloud referrer tag is a tag that needs to live in the body of a cloud or transaction tag. This means that
-      it can use MMBase data. 
+      it can use MMBase data.
     </info>
     <see tag="cloud" />
     <see tag="cloudprovider" />
@@ -820,7 +820,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
     <info>
       <p>
         A `Query' container is a container for one of the `node list' tags (list providers that are
-        node providers too). A query container is actually a wrapper for a `Query' on the database, 
+        node providers too). A query container is actually a wrapper for a `Query' on the database,
         to which constraints can be added using the &lt;mm:constraint&gt; tag, sortorder can be specified,
         etc. If a 'node list tag' is inside a corresponding `nodelist container', it will use the query
         specified by the container.
@@ -876,7 +876,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         </ul>
         Using the 'nodemanager', 'set', and 'module' attributes, you can specify from which location
         the function should be retrieved. If none of these are given, the function will be
-        a 'node' function and the tag will act as a 'node referrer'. 
+        a 'node' function and the tag will act as a 'node referrer'.
       </p>
       <p>
         Parameters to the function can be specified in two ways:
@@ -3411,7 +3411,7 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        On default, the datatype of the specified field is used. But this can be overriden. 
+        On default, the datatype of the specified field is used. But this can be overriden.
       </info>
       <since>MMBase-1.8</since>
     </attribute>
@@ -3474,7 +3474,7 @@ transaction was commited, following should result anything:
       <rtexprvalue>true</rtexprvalue>
       <see tag="node" attribute="element" />
       <since>MMBase-1.8</since>
-    </attribute>    
+    </attribute>
     <example>&lt;mm:node number="1645"&gt;
 Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   &lt;mm:fieldlist type="edit"&gt;
@@ -3984,7 +3984,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Whether or not to produce fully qualified absolute URL's. (http://myhost.nl/context/..). Defaults to false.        
+        Whether or not to produce fully qualified absolute URL's. (http://myhost.nl/context/..). Defaults to false.
       </info>
       <possiblevalue>
         <value>false</value>
@@ -4451,7 +4451,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <see tag="treeinclude" />
     <see tag="leafinclude" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
-    </example>    
+    </example>
   </tag>
   <tag>
     <name>haspage</name>
@@ -6974,7 +6974,8 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       <p>
         A simple list iterating some list, coming from the `context. So the `referid' is required for this list.
-        The original list can for example have been produced by the import tag with vartype="list"
+        The original list can for example have been produced by the import tag with vartype="list". Inside the list
+        you can access the current string througt the reference '$_'.
       </p>
       <p>
         You can also use `aliaslist' for this (as can be done in MMBase 1.6) but that is a bit
@@ -7303,7 +7304,7 @@ The 0 is just counter, which starts at 0 on every page.
       <p>
         Lives in a tree-container tag. Constraints inside this tag are not defined as normal tree
         constraints but as 'leaf' constraint, which means that they are only taken into constraint
-        on the 'leafs' of the tree. 
+        on the 'leafs' of the tree.
       </p>
       <p>
         Practicly, this means that it can be used to search a tree.
