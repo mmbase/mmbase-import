@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.364 2006-01-20 17:02:22 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.365 2006-01-23 18:23:28 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -152,7 +152,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * clean invalid nodes), but nodes cannot be added.
      * Needed for committing nodes from transactions.
      */
-    private static int cacheLocked=0;
+    private static int cacheLocked = 0;
 
     private static final Logger log = Logging.getLoggerInstance(MMObjectBuilder.class);
 
@@ -649,9 +649,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public boolean commit(MMObjectNode node) {
         mmb.getStorageManager().change(node);
-        // change is in storage, caches can be invalidated immediately
-        //bad! bad!
-        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_CHANGED);
         return true;
     }
 
@@ -933,8 +930,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param number The number of the node to retrieve.
      * @return an MMObjectNode or <code>null</code> if the node is not in the cache
      */
-    public MMObjectNode getNodeFromCache(Integer number) {
-        return (MMObjectNode)nodeCache.get(number);
+    public final MMObjectNode getNodeFromCache(Integer number) {
+        return (MMObjectNode) nodeCache.get(number);
     }
 
     /**
@@ -1018,19 +1015,26 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Locks the node cache during the commit of a node.
      * This prevents the cache from gaining an invalid state
      * during the commit.
-     * @scope package Only used here, in MMObjectNode and TransactionManager
      */
     boolean safeCommit(MMObjectNode node) {
         boolean res = false;
         try {
             synchronized(nodeCache) {
                 cacheLocked++;
-                nodeCache.remove(new Integer(node.getNumber()));
             }
             res = node.commit();
-            if (res) {
-                nodeCache.put(new Integer(node.getNumber()), node);
-            };
+            Integer number = new Integer(node.getNumber());            
+            if (! res) {
+                // if somewhy commit unsuccessfull, remove node from cache.
+                nodeCache.remove(number);
+            } else {
+                // update the node in the cache if it was not this node (in temporarynodemanager a
+                // copy is instantiated, so I think that perhaps this code is used always.)
+                MMObjectNode cachedNode  = (MMObjectNode) nodeCache.get(number);
+                if (cachedNode != null && cachedNode != node) {
+                    cachedNode.values.putAll(node.values);
+                }
+            }
         } finally {
             synchronized(nodeCache) {
                 cacheLocked--;
@@ -1044,10 +1048,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This prevents the cache from adding the node, which
      * means that the next time the node is read it is 'refreshed'
      * from the storage
-     * @scope package Only used here, in MMObjectNode and TransactionManager
      */
     int safeInsert(MMObjectNode node, String userName) {
-        int res=-1;
+        int res = -1;
         try {
             synchronized(nodeCache) {
                 cacheLocked++;
@@ -1055,7 +1058,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // determine valid username
             if ((userName == null) || (userName.length() <= 1 )) { // may not have owner of 1 char??
                 userName = node.getStringValue(FIELD_OWNER);
-                log.info("Found username " + (userName == null ? "NULL" : userName));
+                log.service("Found username " + (userName == null ? "NULL" : userName));
             }
             res = node.insert(userName);
             if (res > -1) {
@@ -1650,7 +1653,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         Object rtn = getObjectValue(node, field);
 
         // Old code
-        if (field.indexOf("short_")==0) {
+        if (field.indexOf("short_") == 0) {
             String val = node.getStringValue(field.substring(6));
             val = getShort(val,34);
             rtn = val;
@@ -1894,72 +1897,72 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         // time functions
         if(function.equals("date")) {                    // date
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return DateSupport.date2string(v);
         } else if (function.equals("time")) {            // time hh:mm
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return DateSupport.getTime(v);
         } else if (function.equals("timesec")) {        // timesec hh:mm:ss
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return DateSupport.getTimeSec(v);
         } else if (function.equals("longmonth")) {        // longmonth September
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return DateStrings.ENGLISH_DATESTRINGS.getMonth(DateSupport.getMonthInt(v));
         } else if (function.equals("monthnumber")) {
-            int v=node.getIntValue(field);
-            return ""+(DateSupport.getMonthInt(v)+1);
+            int v = node.getIntValue(field);
+            return "" + (DateSupport.getMonthInt(v)+1);
         } else if (function.equals("month")) {            // month Sep
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return DateStrings.DUTCH_DATESTRINGS.getShortMonth(DateSupport.getMonthInt(v));
         } else if (function.equals("weekday")) {        // weekday Sunday
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return DateStrings.DUTCH_DATESTRINGS.getDay(DateSupport.getWeekDayInt(v));
         } else if (function.equals("shortday")) {        // shortday Sun
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return DateStrings.DUTCH_DATESTRINGS.getShortDay(DateSupport.getWeekDayInt(v));
         } else if (function.equals("day")) {            // day 4
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return ""+DateSupport.getDayInt(v);
         } else if (function.equals("shortyear")) {            // year 01
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return (DateSupport.getYear(v)).substring(2);
         } else if (function.equals("year")) {            // year 2001
-            int v=node.getIntValue(field);
+            int v = node.getIntValue(field);
             return DateSupport.getYear(v);
         } else if (function.equals("thisdaycurtime")) {            //
             int curtime=node.getIntValue(field);
             // gives us the next full day based on time (00:00)
-            int days=curtime/(3600*24);
-            return ""+((days*(3600*24))-3600);
+            int days = curtime/(3600*24);
+            return "" + ((days*(3600*24))-3600);
         } else if (function.equals("age")) {
             Integer val = new Integer(node.getAge());
             return val.toString();
         } else if (function.equals("wap")) {
-            String val=node.getStringValue(field);
+            String val = node.getStringValue(field);
             return getWAP(val);
         } else if (function.equals("html")) {
             String val = node.getStringValue(field);
             return getHTML(val);
         } else if (function.equals("shorted")) {
-            String val=node.getStringValue(field);
+            String val = node.getStringValue(field);
             return getShort(val,32);
         } else if (function.equals("uppercase")) {
-            String val=node.getStringValue(field);
+            String val = node.getStringValue(field);
             return val.toUpperCase();
         } else if (function.equals("lowercase")) {
-            String val=node.getStringValue(field);
+            String val = node.getStringValue(field);
             return val.toLowerCase();
         } else if (function.equals("hostname")) {
-            String val=node.getStringValue(field);
+            String val = node.getStringValue(field);
             return hostname_function(val);
         } else if (function.equals("urlencode")) {
-            String val=node.getStringValue(field);
+            String val = node.getStringValue(field);
             return getURLEncode(val);
         } else if (function.startsWith("wrap_")) {
-            String val=node.getStringValue(field);
+            String val = node.getStringValue(field);
             try {
-                int wrappos=Integer.parseInt(function.substring(5));
-                return wrap(val,wrappos);
+                int wrappos = Integer.parseInt(function.substring(5));
+                return wrap(val, wrappos);
             } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
              double val = node.getDoubleValue(field);
@@ -2951,14 +2954,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if (log.isDebugEnabled()) {
             log.debug("" + this + " received node event " + event);
         }
-        eventBackwardsCompatibilty(event.getMachine(), event.getNodeNumber(), event.getType());
+        int type = event.getType();
+        eventBackwardsCompatibilty(event.getMachine(), event.getNodeNumber(), type);
         
         //update the cache
         boolean localEvent = (event.getMachine().equals(mmb.getMachineName()));
         Integer changedNodeNumber = new Integer(event.getNodeNumber());
-        if(event.getType() == NodeEvent.EVENT_TYPE_DELETE || (! localEvent && event.getType() == NodeEvent.EVENT_TYPE_CHANGED)){
-            if(nodeCache.contains(changedNodeNumber)) nodeCache.remove(changedNodeNumber);
-        }
        
         //and now refire the event for the parent builders
         MMObjectBuilder pb = getParentBuilder();
@@ -2969,6 +2970,16 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             NodeEvent parentBuilderEvent = event.clone(pb.getTableName());
             EventManager.getInstance().propagateEvent(parentBuilderEvent);
         }
+
+        if(type == NodeEvent.EVENT_TYPE_DELETE || 
+           ((! localEvent) && type == NodeEvent.EVENT_TYPE_CHANGED)){
+            if (nodeCache.remove(changedNodeNumber) != null) {
+                log.service("Removed from " + changedNodeNumber + " from node cache");
+            }
+        }
+
+
+
     }
     
 

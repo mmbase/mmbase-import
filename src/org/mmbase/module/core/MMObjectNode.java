@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.174 2006-01-20 20:55:15 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.175 2006-01-23 18:23:28 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -285,6 +285,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public boolean commit(UserContext user) {
         boolean success = parent.safeCommit(this);
+        oldValues.clear();
+        changed.clear();
         if (success) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
             mmbaseCop.getAuthorization().update(user, getNumber());
