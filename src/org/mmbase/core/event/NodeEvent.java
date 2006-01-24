@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.23 2006-01-20 17:02:04 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.24 2006-01-24 17:56:48 michiel Exp $
  */
 public class NodeEvent extends Event implements Serializable, Cloneable {
 
@@ -40,62 +40,13 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
     public static final int EVENT_TYPE_RELATION_CHANGED = 3;
 
 
-    private int eventType;    
-    private int nodeNumber;    
+    private final int eventType;    
+    private final int nodeNumber;    
     private String builderName;
     
-    private Map oldValues = new HashMap();
-    private Map newValues = new HashMap();
+    private final Map oldValues;
+    private final Map newValues;
 
-    // implementation of serializable
-    /*
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        if (node.getNumber() < 0) throw new IOException("Cannot serialize " + node);
-        out.writeUTF(node.getBuilder().getTableName());
-        out.writeInt(node.getNumber());
-        out.writeInt(eventType);
-        out.writeUTF(machine);
-        out.writeObject(oldValues);
-        out.writeObject(newValues);
-    }
-    // implementation of serializable
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        String builderName = in.readUTF();
-        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(builderName);
-        int nodeNumber = in.readInt();
-        eventType = in.readInt();
-        machine = in.readUTF();
-        oldValues = (Map) in.readObject();
-        newValues = (Map) in.readObject();
-        node = builder.getNode(nodeNumber);
-        if (node == null) {
-            // probably the node was deleted. Happily, we know more or less enough to reconstruct it.            
-            node = new MMObjectNode(builder, false);            
-            Iterator it = oldValues.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
-                node.storeValue((String) entry.getKey(), entry.getValue());
-            }
-        }
-    }
-    */
-
-    /*
-    public NodeEvent(MMObjectNode node, int eventType) {
-        this(node, eventType, MMBase.getMMBase().getMachineName());
-    }
-
-    public NodeEvent(MMObjectNode node, int eventType, String machine) {
-        super(machine);
-        this.node = node;
-        this.eventType = eventType;
-
-        // at this point the new value for the changed fields is
-        // in the node, and the old values are in the oldValues map
-        oldValues.putAll(node.getOldValues());
-        newValues.putAll(node.getValues());
-    }
-    */
     
     /**
     *@param machineName (MMBase) name of the server
@@ -109,12 +60,8 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
         this.eventType = eventType;
-        if(oldValues != null) {
-            this.oldValues.putAll(oldValues);
-        }
-        if(newValues != null) {
-            this.newValues.putAll(newValues);
-        }
+        this.oldValues = oldValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(oldValues));
+        this.newValues = newValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(newValues));
     }
     
     public String getName() {
@@ -127,24 +74,24 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
      * @return an Object containing the old value (in case of change event), or
      *         null if the fieldName was not found in the old value list
      */
-    public Object getOldValue(String fieldName) {
+    public final Object getOldValue(String fieldName) {
         return oldValues.get(fieldName);
     }
     
     /**
      * @return a set containing the names of the fields that have changed
      */
-    public Set getChangedFields() {
+    public final Set getChangedFields() {
         switch(getType()) {
         case EVENT_TYPE_NEW:
-            return Collections.unmodifiableSet(newValues.keySet());
+            return newValues.keySet();
         case EVENT_TYPE_CHANGED:
             //for changed both old and new values are good (similar keys)
-            return Collections.unmodifiableSet(newValues.keySet());
+            return newValues.keySet();
         case  EVENT_TYPE_DELETE:
-            return Collections.unmodifiableSet(oldValues.keySet());
+            return oldValues.keySet();
         default: 
-            return new HashSet();
+            return Collections.EMPTY_SET;
         }
     }
 
@@ -154,11 +101,11 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
      *        list
      * @return the new value of the field
      */
-    public Object getNewValue(String fieldName) {
+    public final  Object getNewValue(String fieldName) {
         return newValues.get(fieldName);
     }
 
-    public int getType() {
+    public final int getType() {
         return eventType;
     }
 
@@ -166,22 +113,16 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
     /**
      * @return Returns the builderName.
      */
-    public String getBuilderName() {
+    public final String getBuilderName() {
         return builderName;
     }
     /**
      * @return Returns the nodeNumber.
      */
-    public int getNodeNumber() {
+    public final int getNodeNumber() {
         return nodeNumber;
     }
 
-    /**
-     * @param nodeNumber The nodeNumber to set.
-     */
-    public void setNodeNumber(int nodeNumber) {
-        this.nodeNumber = nodeNumber;
-    }
 
     public String toString() {
         String changedFields = "";
@@ -239,16 +180,15 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
      * @param eventType
      */
     public static int oldTypeToNewType(String eventType) {
-        if (eventType.equals("c")) {
-            return NodeEvent.EVENT_TYPE_CHANGED;
-        } else if (eventType.equals("d")) {
-            return NodeEvent.EVENT_TYPE_DELETE;
-        } else if (eventType.equals("n")) {
-            return NodeEvent.EVENT_TYPE_NEW;
-        } else if (eventType.equals("r")) {
-            return NodeEvent.EVENT_TYPE_RELATION_CHANGED;
-        } else {
+        if (eventType.length() > 1) {
             throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
+        }
+        switch(eventType.charAt(0)) {
+        case 'c': return NodeEvent.EVENT_TYPE_CHANGED;
+        case 'd': return NodeEvent.EVENT_TYPE_DELETE;
+        case 'n': return NodeEvent.EVENT_TYPE_NEW;
+        case 'r': return NodeEvent.EVENT_TYPE_RELATION_CHANGED;
+        default: throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
         }
     }
 
@@ -258,8 +198,7 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
      * @return true if the field of given name is among the changed fields 
      */
     public boolean hasChanged(String fieldName){
-        if(oldValues.keySet().contains(fieldName) || newValues.keySet().contains(fieldName))return true;
-        return false;
+        return oldValues.keySet().contains(fieldName) || newValues.keySet().contains(fieldName);
     }
     
 
@@ -280,6 +219,33 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         }
     }
     
+    /**
+     * old values can be different things.
+     * <ul>
+     * <li>if the event type is 'new' this collection is empty.
+     * <li>if the event type is 'changed' this collection contains the old values of the changed fields.
+     * <li>if the event type is 'delete' this collection contains all the values of the node to be deleted.
+     * </ul>
+     * @return a map where the key is a fieldname and the value the field's value
+     */
+    public final Map getOldValues(){
+        return oldValues;
+    }
+    
+    /**
+     * new values can be different things.
+     * <ul>
+     * <li>if the event type is 'new' this collection contains all the fields of the node.
+     * <li>if the event type is 'changed' this collection contains the new values of the changed fields.
+     * <li>if the event type is 'delete' this collection is empty.
+     * </ul>
+     * @return a map where the key is a fieldname and the value the field's value
+     */
+    public final Map getNewValues(){
+        return newValues;
+    }
+
+    
     public static void main(String[] args) {
         //test serializable
         Map  oldv = new HashMap(), newv = new HashMap();
@@ -294,30 +260,5 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         System.out.println("event 1: " + event.toString());
         
     }
-    
-    /**
-     * old values can be different things.
-     * <ul>
-     * <li>if the event type is 'new' this collection is empty.
-     * <li>if the event type is 'changed' this collection contains the old values of the changed fields.
-     * <li>if the event type is 'delete' this collection contains all the values of the node to be deleted.
-     * </ul>
-     * @return a map where the key is a fieldname and the value the field's value
-     */
-    public Map getOldValues(){
-        return Collections.unmodifiableMap(oldValues);
-    }
-    
-    /**
-     * new values can be different things.
-     * <ul>
-     * <li>if the event type is 'new' this collection contains all the fields of the node.
-     * <li>if the event type is 'changed' this collection contains the new values of the changed fields.
-     * <li>if the event type is 'delete' this collection is empty.
-     * </ul>
-     * @return a map where the key is a fieldname and the value the field's value
-     */
-    public Map getNewValues(){
-        return Collections.unmodifiableMap(newValues);
-    }
+
 }
