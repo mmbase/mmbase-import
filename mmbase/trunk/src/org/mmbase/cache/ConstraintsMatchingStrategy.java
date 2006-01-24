@@ -128,19 +128,25 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             	//becouse composite constraints can allso cover fields that are not in the changed field list of the node
             	//let's find the node and get all the values.
             	MMObjectNode node = MMBase.getMMBase().getBuilder(event.getBuilderName()).getNode(event.getNodeNumber());
-            	Map oldValues  = new HashMap();
-                Map newValues  = new HashMap();
-                Map nodeValues = new HashMap();
+            	Map oldValues;
+                Map newValues;
             	if(node != null){
                     //put all the (new) values in the value maps
-                    nodeValues.putAll(node.getValues());
-                    oldValues.putAll(nodeValues);
-                    newValues.putAll(nodeValues);
-            	}
+                    Map nodeValues = node.getValues();
+                    oldValues = new HashMap(nodeValues);
+                    newValues = new HashMap(nodeValues);
+                    //now add the values from the event
+                    oldValues.putAll(event.getOldValues());
+                    newValues.putAll(event.getNewValues());
+                    // MM is it possible that oldValues and newValues are different from event.getOldValue en events.getNewValues?
+                    //    otherwise we could spare the copying of hashmaps here.
 
-            	//now add the values from the event
-            	oldValues.putAll(event.getOldValues());
-            	newValues.putAll(event.getNewValues());
+            	} else {
+                    oldValues = event.getOldValues();
+                    newValues = event.getNewValues();
+                }
+
+
 
                 switch(event.getType()) {
                 case NodeEvent.EVENT_TYPE_NEW:
@@ -149,12 +155,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     if(matcher.eventApplies(newValues, event)){
                         boolean eventMatches =  matcher.nodeMatchesConstraint(newValues, event);
                         if (log.isDebugEnabled()) {
-                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, nodeValues);
+                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, node);
                         }
                         return eventMatches;
                     } else {
                         if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {"+matcher+"}:", query, event, nodeValues);
+                            logResult("flush: event does not apply to wrapper {"+matcher+"}:", query, event, node);
                         }
                         return true;
                     }                    
@@ -170,13 +176,13 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                             log.debug("** match with new values : " + (stillMatches ? "match" : "no match"));                            
                             log.debug("**old values: " + oldValues);
                             log.debug("**new values: " + newValues);
-                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, nodeValues);
+                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, node);
                         }
 
                         return eventMatches;
                     } else {
                         if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, nodeValues);
+                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, node);
                         }
                         return true;
                     }
@@ -186,12 +192,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     if(matcher.eventApplies(event.getOldValues(), event)){
                         boolean eventMatches = matcher.nodeMatchesConstraint(oldValues, event);
                         if (log.isDebugEnabled()) {
-                            logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, nodeValues);
+                            logResult( (eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, node);
                         }
                         return eventMatches;
                     } else {
                         if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {"+matcher+"}:", query, event, nodeValues);
+                            logResult("flush: event does not apply to wrapper {"+matcher+"}:", query, event, node);
                         }
                         return true;
                     }
@@ -808,7 +814,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
     }
 
-    private void logResult(String comment, SearchQuery query, Event event, Map values){
+    private void logResult(String comment, SearchQuery query, Event event, MMObjectNode node){
         if(log.isDebugEnabled()){
             String role="";
             // a small hack to limit the output
@@ -823,10 +829,10 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     return;
             }
             try {
-                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**nodevalues: " + values + "\n**"
+                log.debug("\n******** \n**" + comment + "\n**" + event.toString() + role + "\n**nodevalues: " + node.getValues() + "\n**"
                         + sqlHandler.toSql(query, sqlHandler) + "\n******");
             } catch (SearchQueryException e) {
-                e.printStackTrace();
+                log.error(e);
             }
         }
     }
