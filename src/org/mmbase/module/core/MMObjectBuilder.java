@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.365 2006-01-23 18:23:28 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.366 2006-01-24 21:56:14 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -119,11 +119,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public static Map temporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
 
-    /**
-     * Results of getNodes
-     * @since 1.7
-     */
-    protected static NodeListCache listCache = NodeListCache.getCache();
 
     /**
      * The cache for all blobs.
@@ -929,8 +924,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Retrieves a node from the cache, or <code>null</code> if it doesn't exist.
      * @param number The number of the node to retrieve.
      * @return an MMObjectNode or <code>null</code> if the node is not in the cache
+     * @todo This is a simple wrapper around node cache, why not expose node cache in stead?
+     * @since MMBase-1.8
      */
-    public final MMObjectNode getNodeFromCache(Integer number) {
+    public MMObjectNode getNodeFromCache(Integer number) {
         return (MMObjectNode) nodeCache.get(number);
     }
 
@@ -953,68 +950,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
     }
 
-
     /**
-     * Gets the number of nodes currently in the cache.
-     * @return the number of nodes in the cache
-     * @deprecated Can be asked from the cache.
-     */
-    /*
-    public int getCacheSize() {
-        return nodeCache.size();
-    }
-    */
-
-    /**
-     * Return the number of nodes in the cache of one objecttype.
-     * @param type the object type to count
-     * @return the number of nodes of that type in the cache
-     * @deprecated Has nothing to to with MMObjectBuilder. Should perhaps be moved to a utility class.
-     */
-    /*
-    public int getCacheSize(String type) {
-        int i = mmb.getTypeDef().getIntValue(type);
-        int j = 0;
-        for (Iterator e = nodeCache.values().iterator(); e.hasNext();) {
-            MMObjectNode n=(MMObjectNode)e.next();
-            if (n.getOType()==i) j++;
-        }
-        return j;
-    }
-    */
-
-    /**
-     * Get the numbers of the nodes cached (will be removed).
-     * @deprecated
-     */
-    /*
-    public String getCacheNumbers() {
-        StringBuffer results = new StringBuffer();
-        for (Iterator e = nodeCache.values().iterator(); e.hasNext();) {
-            MMObjectNode n = (MMObjectNode)e.next();
-            if (!results.equals("")) {
-                results.append(',').append(n.getNumber());
-            } else {
-                results.append(n.getNumber());
-            }
-        }
-        return results.toString();
-    }
-    */
-
-    /**
-     * Clears the nodes cache.
-     */
-    /*
-    public void deleteNodeCache() {
-        nodeCache.clear();
-    }
-    */
-
-    /**
-     * Locks the node cache during the commit of a node.
-     * This prevents the cache from gaining an invalid state
-     * during the commit.
+     * Locks the node cache during the commit of a node.  This prevents the cache from gaining an
+     * invalid state during the commit.
+     *
+     * Basicly the goals is to ensure that nothing is put into the cache during a commit of a node,
+     * because that may be the wrong node then.
      */
     boolean safeCommit(MMObjectNode node) {
         boolean res = false;
