@@ -30,10 +30,8 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.storage.StorageManagerFactory;
-import edu.emory.mathcs.backport.java.util.concurrent.*;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.mmbase.module.lucene.extraction.*;
 
@@ -43,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.44 2006-01-23 14:33:13 michiel Exp $
+ * @version $Id: Lucene.java,v 1.45 2006-01-24 12:40:27 ernst Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -71,6 +69,7 @@ public class Lucene extends Module implements MMBaseObserver {
      */
     protected final static Parameter VALUE = new Parameter("value", String.class);
     protected final static Parameter INDEX = new Parameter("index", String.class);
+    protected final static Parameter INDEXNAME = new Parameter("indexname", String.class);
     protected final static Parameter SORTFIELDS = new Parameter("sortfields", String.class);
     protected final static Parameter OFFSET = new Parameter("offset", Integer.class);
     protected final static Parameter MAX = new Parameter("max", Integer.class);
@@ -84,10 +83,8 @@ public class Lucene extends Module implements MMBaseObserver {
 
     // initial wait time after startup, default 2 minutes
     private static final long INITIAL_WAIT_TIME = 2 * 60 * 1000;
-    // wait time between individual checks, default 5 seconds
+    // wait time bewteen individual checks, default 5 seconds
     private static final long WAIT_TIME = 5 * 1000;
-    // time to cumulate changes for index updates, every change event is delayed for so long. If the same event comed in in that time, it is ignored.
-    private static final long CUMULATE_TIME = 2 * 1000;
     // default path to the lucene data
     private static final String INDEX_CONFIG_FILE = "utils/luceneindex.xml";
 
@@ -100,7 +97,6 @@ public class Lucene extends Module implements MMBaseObserver {
 
     private long initialWaitTime = INITIAL_WAIT_TIME;
     private long waitTime = WAIT_TIME;
-    private long cumulateTime = CUMULATE_TIME;
     private String indexPath = null;
     private Scheduler scheduler;
     private String defaultIndex = null;
@@ -135,19 +131,21 @@ public class Lucene extends Module implements MMBaseObserver {
      * This function starts a full Index of Lucene.
      * This may take a while.
      * This function can be called through the function framework.
-     * It will do nothing if the module is configured to be 'read only'
+     * <p>Parameters:</p>
+     * <ul>
+     * <li> - index: name of the index to reindex or empty for full indexing
+     * </ul>
+     * <p>Return: void</p>
      */
     protected Function fullIndexFunction = new AbstractFunction("fullIndex",
                                                                 new Parameter[] {INDEX},
                                                                 ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
-            if(!readOnly){
-                String index = (String) arguments.get("index");
-                if (index == null || "".equals(index)) {
-                    scheduler.fullIndex();
-                } else {
-                    scheduler.fullIndex(index);
-                }
+            String index = (String) arguments.get("index");
+            if (index == null || "".equals(index)) {
+                scheduler.fullIndex();
+            } else {
+                scheduler.fullIndex(index);
             }
             return null;
         }
@@ -155,17 +153,49 @@ public class Lucene extends Module implements MMBaseObserver {
     {
         addFunction(fullIndexFunction);
     }
+    
+    /**
+     * This function deletes an indexed entry from an index
+     * if the Parameter 'indexname' has value null, all indexes are iterated over, otherwise 
+     * the right index is addressed. 
+     * <p>Parameters:</p>
+     * <ul>
+     * <li> - index     id of the index item to delete
+     * <li> - indexname name of the index, if empty item searched for in all indexes
+     * </ul>
+     * <p>Return: void</p>
+     */
+    protected Function deleteIndexFunction = new AbstractFunction("deleteIndex",
+                                                                new Parameter[] {INDEX, INDEXNAME},
+                                                                ReturnType.VOID) {
+        public Object getFunctionValue(Parameters arguments) {
+            String index = (String) arguments.get("index");
+            if(!readOnly){
+                scheduler.deleteIndex(index);
+            }
+            return null;
+        }
+    };
+    {
+        addFunction(deleteIndexFunction);
+    }
+    
+    
+    
     /**
      * This function can be called through the function framework.
-     * It will do nothing if the module is configured to be 'read only'
+     * It (re)loads the index for a specific item
+     * <p>Parameters:</p>
+     * <ul>
+     *  <li> - identifier: the id of the indexed item
+     * </ul> 
+     * <p>Return: void</p>
      */
     protected Function updateIndexFunction = new AbstractFunction("updateIndex",
                                                                   new Parameter[] {new Parameter("identifier", String.class, true)},
                                                                   ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
-            if(!readOnly){
-                scheduler.updateIndex(arguments.getString("identifier"));
-            }
+            scheduler.updateIndex(arguments.getString("identifier"));
             return null;
         }
     };
@@ -175,32 +205,29 @@ public class Lucene extends Module implements MMBaseObserver {
 
 
     /**
-     * This function returns the status of the scheduler.
-     * it will return '-1' if the module is configured to be 'read only'
+     * This function returns the status of the scheduler. For possible values see: Lucene.Scheduler
+     * <p>Parameters:</p>
+     * <ul>
+     * <li> - none
+     * </ul>
+     * <p>Return: Integer</p>
      */
     protected Function statusFunction = new AbstractFunction("status", Parameter.EMPTY, ReturnType.INTEGER) {
         public Object getFunctionValue(Parameters arguments) {
-            if(!readOnly){
-                return new Integer(scheduler.getStatus());
-            }
-            return new Integer(-1);
+            return new Integer(scheduler.getStatus());
         }
     };
     {
         addFunction(statusFunction);
     }
-    
-    protected Function readOnlyFunction = new AbstractFunction("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
-        public Object getFunctionValue(Parameters arguments) {
-            return new Boolean(isReadOnly());
-        }
-    };
-    {
-        addFunction(readOnlyFunction);
-    }
 
     /**
-     * This function returns a list of indexes present.
+     * This function returns Set with the names of all confiured indexes.
+     * <p>Parameters:</p>
+     * <ul>
+     * <li> - none
+     * </ul>
+     * <p>Return: Set</p>
      */
     protected Function listFunction = new AbstractFunction("list", Parameter.EMPTY, ReturnType.SET) {
             public Object getFunctionValue(Parameters arguments) {
@@ -213,7 +240,13 @@ public class Lucene extends Module implements MMBaseObserver {
     }
     
     /**
-     *This function returns the description of a given index (for a given locale). 
+     *This function returns the description as configured for a specific index and a specific locale.
+     *<p>Parameters:</p>
+     * <ul>
+     * <li>- index: name of the index 
+     * <li>- Parameter.LOCALE: parameter for locale
+     * </ul>
+     * <p>Return: String</p>
      */
     protected Function descriptionFunction = new AbstractFunction("description", new Parameter[] {INDEX, Parameter.LOCALE}, ReturnType.STRING ) {
             public Object getFunctionValue(Parameters arguments) {
@@ -231,6 +264,17 @@ public class Lucene extends Module implements MMBaseObserver {
     /**
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
+     * <p>Parameters:</p>
+     * <ul>
+     * <li> - value: the search term(s)
+     * <li> - index: the name of the index to search in
+     * <li> - sortfields        
+     * <li> - offset: for creating sublists
+     * <li> - max: for creating sublists
+     * <li> - extraconstraints: @see org.mmbase.module.lucene.Searcher#createQuery()
+     * <li> - Parameter.CLOUD
+     * </ul>
+     * <p>Return: NodeList</p>   
      */
     protected Function searchFunction = new AbstractFunction("search",
                                                              new Parameter[] { VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD },
@@ -266,6 +310,17 @@ public class Lucene extends Module implements MMBaseObserver {
         addFunction(searchFunction);
     }
 
+    /**
+     * This function returns the size of a query on an index.
+     * <p>Parameters:</p>
+     * <ul>
+     * <li> - value: see searchFunction
+     * <li> - index:see searchFunction
+     * <li> - extraconstraints: see searchFunction
+     * <li> - Parameter.CLOUD
+     * </ul>
+     * <p>Return: Integer</p>
+     */
     protected Function searchSizeFunction = new AbstractFunction("searchsize",
                               new Parameter[] { VALUE, INDEX, EXTRACONSTRAINTS, Parameter.CLOUD },
                               ReturnType.INTEGER) {
@@ -289,37 +344,43 @@ public class Lucene extends Module implements MMBaseObserver {
         // Force init of MMBase
         mmbase = MMBase.getMMBase();
 
-        log.debug("Adding extractors");
+        log.info("Adding extractors");
+
         factory = ContentExtractor.getInstance();
+
+        // traditional Lucenemodule extractors
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor");
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.SwingRtfExtractor");
+        //factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIWordExtractor");
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIExcelExtractor");
+        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
 
         // path to the lucene index (a directory on disk writeable to the web-application)
         // this path should be a direct path
         String path = getInitParameter("indexpath");
         if (path != null) {
             indexPath = path;
-            log.service("Found module parameter for lucene index path : " + indexPath);
-        } else {
+            log.service("found module parameter for lucine index path : " + indexPath);
+        }else {
             //try to get the index path from the strorage configuration
-            try {
+            try{
                 DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
                 indexPath = dsmf.getBinaryFileBasePath();
-                if (indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
-            } catch(Exception e) {}
+                if(indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
+            }catch(Exception e){}
         }
 
-        if (indexPath != null) {
-            log.service("Found storage configuration for lucene index path : " + indexPath);
-        } else {
+        if(indexPath != null){
+            log.service("found storage configuration for lucine index path : " + indexPath);
+        }else{
             // expand the default path (which is relative to the web-application)
             indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
-            log.service("fall back to default for lucene index path : " + indexPath);
+            log.service("fall back to default for lucine index path : " + indexPath);
         }
+
 
         // read only?
         readOnly = "true".equals(getInitParameter("readonly"));
-
-
-
 
         // initial wait time?
         String time = getInitParameter("initialwaittime");
@@ -337,29 +398,22 @@ public class Lucene extends Module implements MMBaseObserver {
                 waitTime = Long.parseLong(time);
                 log.debug("Set initial wait time to " + time + " milliseconds");
             } catch (NumberFormatException nfe) {
-                log.warn("Invalid value '" + time +" ' for property 'waittime'");
+                log.warn("Invalid value '" + time +" ' for property 'initialwaittime'");
             }
         }
-        time = getInitParameter("cumulatetime");
-        if (time != null) {
-            try {
-                cumulateTime = Long.parseLong(time);
-                log.debug("Set initial cumulation time to " + cumulateTime + " milliseconds");
-            } catch (NumberFormatException nfe) {
-                log.warn("Invalid value '" + time +" ' for property 'cumulatetime'");
-            }
-        }
-        while (! mmbase.getState()) {
+        while(! mmbase.getState()) {
             if (mmbase.isShutdown()) break;
             try {
                 log.service("MMBase not yet up, waiting for 10 seconds.");
                 Thread.sleep(10000);
             } catch (InterruptedException ie) {
-                log.service(ie);
+                log.info(ie);
                 return;
             }
         }
-
+        cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
+        cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
+        log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
         ResourceWatcher watcher = new ResourceWatcher() {
                 public void onChange(String resource) {
                     readConfiguration(resource);
@@ -379,28 +433,12 @@ public class Lucene extends Module implements MMBaseObserver {
             }
         }
     }
-
-    protected Cloud getCloud() {
-        if (cloud == null) {
-            try {
-                cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
-                cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
-                if (log.isDebugEnabled()) {
-                    log.debug("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
-                }
-            } catch (Exception e) {
-                log.warn("During production of cloud " + e.getMessage() + ", will retry on next occasion", e);
-            }
-        }
-        return cloud;
-    }
-
     public void shutdown() {
         if (scheduler != null) {
             log.service("Stopping Lucene Scheduler");
             scheduler.interrupt();
         }
-    }
+}
 
     public String getModuleInfo() {
         return "This module performs lucene searches and maintains indices";
@@ -419,7 +457,7 @@ public class Lucene extends Module implements MMBaseObserver {
 
             QueryConfigurer configurer = new IndexConfigurer(allIndexedFieldsSet, storeText, mergeText);
 
-            MMBaseIndexDefinition queryDefinition = (MMBaseIndexDefinition) QueryReader.parseQuery(queryElement, configurer, getCloud(), relateFrom);
+            MMBaseIndexDefinition queryDefinition = (MMBaseIndexDefinition) QueryReader.parseQuery(queryElement, configurer, cloud, relateFrom);
             queryDefinition.setAnalyzer(analyzer);
             // do not cache these queries
             queryDefinition.query.setCachePolicy(CachePolicy.NEVER);
@@ -428,7 +466,7 @@ public class Lucene extends Module implements MMBaseObserver {
             if (!readOnly) {
                 // register. Unfortunately this can currently only be done through the core
                 MMObjectBuilder builder = mmbase.getBuilder(elementName);
-                log.debug("Observering for " + builder);
+                log.service("Observering for " + builder);
                 builder.addLocalObserver(this);
                 builder.addRemoteObserver(this);
             }
@@ -457,24 +495,15 @@ public class Lucene extends Module implements MMBaseObserver {
         indexerMap = new HashMap();
         searcherMap = new HashMap();
         List configList = ResourceLoader.getConfigurationRoot().getResourceList(resource);
-        log.debug("Reading " + configList);
+        log.service("Reading " + configList);
         Iterator configs = configList.iterator();
         while (configs.hasNext()) {
             URL url = (URL) configs.next();
             try {
                 if (! url.openConnection().getDoInput()) continue;
                 Document config = ResourceLoader.getDocument(url, true, Lucene.class);
-                log.debug("Reading lucene search configuration from " + url);
+                log.service("Reading lucene search configuration from " + url);
                 Element root = config.getDocumentElement();
-                // read standard extractors to use
-                NodeList extractorElements = root.getElementsByTagName("extractor");
-                for (int i = 0; i < extractorElements.getLength(); i++) {
-                    Element extractorElement = (Element) extractorElements.item(i);
-                    String className = extractorElement.getAttribute("class");
-                    factory.addExtractor(className);
-                }
-
-                // read indices
                 NodeList indexElements = root.getElementsByTagName("index");
                 for (int i = 0; i < indexElements.getLength(); i++) {
                     Element indexElement = (Element) indexElements.item(i);
@@ -494,7 +523,7 @@ public class Lucene extends Module implements MMBaseObserver {
                         }
                         if (defaultIndex == null) {
                             defaultIndex = indexName;
-                            log.debug("Default index: " + defaultIndex);
+                            log.info("Default index: " + defaultIndex);
                         }
                         Set allIndexedFieldsSet = new HashSet();
                         Collection queries = new ArrayList();
@@ -510,13 +539,13 @@ public class Lucene extends Module implements MMBaseObserver {
                                     "table".equals(name)) { // comp. finalist lucene
                                     IndexDefinition id = createIndexDefinition(childElement, allIndexedFieldsSet, storeText, mergeText, null, analyzer);
                                     queries.add(id);
-                                    log.service("Added mmbase index definition " + id);
+                                    log.info("Added mmbase index definition " + id);
                                 } else if ("jdbc".equals(name)) {
                                     DataSource ds =  (DataSource) mmbase.getStorageManagerFactory().getAttribute(org.mmbase.storage.implementation.database.Attributes.DATA_SOURCE);
                                     IndexDefinition id = new JdbcIndexDefinition(ds, childElement,
                                                                                  allIndexedFieldsSet, storeText, mergeText, analyzer);
                                     queries.add(id);
-                                    log.service("Added mmbase jdbc definition " + id);
+                                    log.info("Added mmbase jdbc definition " + id);
                                 } else if ("analyzer".equals(name)) {
                                     String className = childElement.getAttribute("class");
                                     try {
@@ -528,7 +557,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                 }
                             }
                         }
-                        Indexer indexer = new Indexer(indexPath, indexName, queries, getCloud(), analyzer, readOnly);
+                        Indexer indexer = new Indexer(indexPath, indexName, queries, cloud, analyzer, readOnly);
                         indexer.getDescription().fillFromXml("description", indexElement);
                         log.service("Add lucene index with name " + indexName);
                         indexerMap.put(indexName, indexer);
@@ -573,29 +602,17 @@ public class Lucene extends Module implements MMBaseObserver {
     }
 
     public boolean nodeChanged(String machine, String number, String builder, String ctype) {
+        log.info("Received " + number);
         if (!readOnly) {
             // if this concerns a change or new node, update the index with that node
-            if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r")) {
+            if (ctype.equals("c") || ctype.equals("n")) {
                 scheduler.updateIndex(number);
             // if this concerns removing a node, remove the index of that node
             } else if (ctype.equals("d")) {
                 scheduler.deleteIndex(number);
-            // if this concerns changing a relation... what then?
-            } else if (ctype.equals("r")) {
-                // do nothing for the moment
             }
         }
         return true;
-    }
-    
-    /**
-     * When there are more than one instances of an MMBase application in a cluster, it is probably
-     * wise to delegate all the lucene index manipulation to one of the instnaces. The oher instance should
-     * be set to 'read only' (in the config file). before issuing indexing commands to the module
-     * it might be a good idear to check if the local instance is not set to 'read only'
-     */
-    public boolean isReadOnly(){
-        return readOnly;
     }
 
     /**
@@ -611,7 +628,7 @@ public class Lucene extends Module implements MMBaseObserver {
         // status of the scheduler
         private int status = IDLE;
         // assignments: tasks to run
-        private BlockingQueue indexAssignments = new DelayQueue();
+        private Queue indexAssignments = new Queue();
 
         Scheduler() {
             super("Lucene.Scheduler");
@@ -627,7 +644,7 @@ public class Lucene extends Module implements MMBaseObserver {
             log.service("Start Lucene Scheduler");
             try {
                 if (initialWaitTime > 0) {
-                    log.debug("Sleeping for initialisation");
+                    log.info("Sleeping for initialisation");
                     Thread.sleep(initialWaitTime);
                 }
             } catch (InterruptedException ie) {
@@ -636,7 +653,7 @@ public class Lucene extends Module implements MMBaseObserver {
             while (!mmbase.isShutdown()) {
                 log.debug("Obtain Assignment");
                 try {
-                    Runnable assignment = (Runnable) indexAssignments.take();
+                    Runnable assignment = (Runnable) indexAssignments.get();
                     // do operation...
                     assignment.run();
                     status = IDLE;
@@ -651,55 +668,26 @@ public class Lucene extends Module implements MMBaseObserver {
             }
         }
 
-        public abstract class Assignment implements Runnable, Delayed {
-            private final long startTime = System.currentTimeMillis();
-            private final long delay = Lucene.this.cumulateTime;
-            public long getDelay(TimeUnit tu) {
-                return tu.convert(delay - (System.currentTimeMillis() - startTime), TimeUnit.MILLISECONDS);
-            }
-            public boolean equals(Object o) {
-                return o.toString().equals(toString());
-            }
-            public int compareTo(Object o) {
-                return (int) (((Assignment) o).getDelay(TimeUnit.MILLISECONDS) - getDelay(TimeUnit.MILLISECONDS));
-            }
-        }
-
-        protected Assignment getUpdateAssignment(final String number) {
-            return new Assignment() {
-                public String toString() {
-                    return "UPDATE " + number;
-                }
-                public void run() {
-                    log.debug("update index for object '" + number + "'");
-                    status = BUSY_INDEX;
-                    for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                        Indexer indexer = (Indexer) i.next();
-                        indexer.updateIndex(number);
-                    }
-                }
-
-            };
-        }
-
         public void updateIndex(final String number) {
-            Assignment assignment = getUpdateAssignment(number);
-            if (! indexAssignments.contains(assignment)) {
-                indexAssignments.add(assignment);
-                log.debug("Added update index assignment for object '" + number + "'.");
-            } else {
-                log.debug("Canceled a update index assignment for object '" + number + "', because one was assigned already");
-            }
+            Runnable assignment = new Runnable() {
+                    public void run() {
+                        log.service("update index");
+                        status = BUSY_INDEX;
+                        for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                            Indexer indexer = (Indexer) i.next();
+                            indexer.updateIndex(number);
+                        }
+                    }
+
+                };
+            indexAssignments.append(assignment);
 
         }
 
         public void deleteIndex(final String number) {
-            Assignment assignment = new Assignment() {
-                    public String toString() {
-                        return "DELETE " + number;
-                    }
+            Runnable assignment = new Runnable() {
                     public void run() {
-                        log.debug("delete index for object '" + number + "'");
+                        log.service("delete index");
                         status = BUSY_INDEX;
                         for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                             Indexer indexer = (Indexer) i.next();
@@ -707,35 +695,35 @@ public class Lucene extends Module implements MMBaseObserver {
                         }
                     }
                 };
-            if (indexAssignments.remove(getUpdateAssignment(number))) {
-                log.debug("Canceled a update index assignment for object '" + number + "', because delete index is assigned.");
-            }
-            if (! indexAssignments.contains(assignment)) {
-                indexAssignments.add(assignment);
-                log.debug("Added delete index assignment for object '" + number + "'.");
-            } else {
-                log.debug("Canceled a delete index assignment for object '" + number + "', because one was assigned already");
-            }
+            indexAssignments.append(assignment);
         }
 
+        public void deleteIndex(final String number, final String indexName) {
+            Runnable assignment = new Runnable() {
+                    public void run() {
+                        log.service("delete index");
+                        status = BUSY_INDEX;
+                        Indexer indexer = (Indexer)indexerMap.get(indexName);
+                        indexer.deleteIndex(number);
+                    }
+                };
+            indexAssignments.append(assignment);
+        }
+        
         public void fullIndex() {
             if (status != BUSY_FULL_INDEX) {
-                Assignment assignment = new Assignment() {
-                        public int hashCode() {
-                            return 0;
-                        }
+                Runnable assignment = new Runnable() {
                         public void run() {
                             status = BUSY_FULL_INDEX;
-                            log.debug("start full index");
+                            log.service("start full index");
                             for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                                 Indexer indexer = (Indexer) i.next();
                                 indexer.fullIndex();
                             }
                         }
                     };
-                indexAssignments.clear();
-                indexAssignments.add(assignment);
-                log.debug("Scheduled full index, cleared all other assignments.");
+                indexAssignments.append(assignment);
+                log.service("Scheduled full index");
                 // only schedule a full index if none is currently busy.
             } else {
                 log.service("Cannot schedule full index because it is busy");
@@ -743,27 +731,16 @@ public class Lucene extends Module implements MMBaseObserver {
         }
         public void fullIndex(final String index) {
             if (status != BUSY_FULL_INDEX) {
-                Assignment assignment = new Assignment() {
-                        public int hashCode() {
-                            return index.hashCode();
-                        }
+                Runnable assignment = new Runnable() {
                         public void run() {
                             status = BUSY_FULL_INDEX;
+                            log.service("start full index for index '" + index + "'");
                             Indexer indexer = (Indexer) indexerMap.get(index);
-                            if (indexer != null) {
-                                log.debug("start full index for index '" + index + "'");
-                                indexer.fullIndex();
-                            } else {
-                                log.error("No index with name '" + index + "' found");
-                            }
+                            indexer.fullIndex();
                         }
                     };
-                if (! indexAssignments.contains(assignment)) {
-                    indexAssignments.add(assignment);
-                    log.debug("Scheduled full index for '" + index + "'");
-                } else {
-                    log.debug("Not scheduled full index for '" + index + "', because already assigned");
-                }
+                indexAssignments.append(assignment);
+                log.service("Scheduled full index for '" + index + "'");
                 // only schedule a full index if none is currently busy.
             } else {
                 log.service("Cannot schedule full index because it is busy");
