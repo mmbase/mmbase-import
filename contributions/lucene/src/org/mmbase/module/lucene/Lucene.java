@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.45 2006-01-24 12:40:27 ernst Exp $
+ * @version $Id: Lucene.java,v 1.46 2006-01-24 13:00:51 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -219,6 +219,15 @@ public class Lucene extends Module implements MMBaseObserver {
     };
     {
         addFunction(statusFunction);
+    }
+    
+    protected Function readOnlyFunction = new AbstractFunction("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
+        public Object getFunctionValue(Parameters arguments) {
+            return Boolean.valueOf(isReadOnly());
+        }
+    };
+    {
+        addFunction(readOnlyFunction);
     }
 
     /**
