@@ -1,4 +1,4 @@
-package org.mmbase.util.logging;
+package org.mmbase.util.logging.log4j;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -10,7 +10,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * exception.
  * @author Johannes Verelst
  */
-public class ExceptionLoggingPatternLayout extends PatternLayout {
+public class StacktraceLoggingPatternLayout extends PatternLayout {
 
     /**
      * Overridden from PatternLayout; use the normal pattern to format
