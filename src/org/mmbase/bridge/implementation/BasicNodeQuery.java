@@ -30,7 +30,7 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.23 2005-11-04 23:24:03 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.24 2006-01-24 21:00:49 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -71,7 +71,14 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     public NodeManager getNodeManager() {
         if (step == null) return null;
-        return cloud.getNodeManager(step.getTableName());
+        if (step instanceof RelationStep) {
+            RelationStep rs = (RelationStep) step;
+            int role  = rs.getRole().intValue();
+            String roleName = role > 0 ? cloud.getNode(role).getStringValue("sname") : null;
+            return cloud.getRelationManager(rs.getPrevious().getTableName(), rs.getNext().getTableName(), roleName);
+        } else {
+            return cloud.getNodeManager(step.getTableName());
+        }
     }
     public Step getNodeStep() {
         return step;
