@@ -26,7 +26,6 @@ import org.mmbase.util.PageInfo;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.functions.Function;
 import org.mmbase.util.logging.*;
-import org.mmbase.cache.NodeListCache;
 
 /**
  * This class represents a node's type information object - what used to be the 'builder'.
@@ -39,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.117 2005-12-29 19:12:12 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.118 2006-01-24 21:34:12 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -55,8 +54,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     // field types
     protected Map fieldTypes = new HashMap();
-
-    private static NodeListCache nodeListCache = NodeListCache.getCache();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -506,7 +503,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             } catch (Exception e) {
                 log.warn("parameter 'ITEMS' must be a int value, it was :" + params.Value("ITEMS"));
             }
-            Vector fieldlist=params.Values("FIELDS");
+            Vector fieldlist = params.Values("FIELDS");
             Vector res = new Vector(v.size() / items);
             for(int i= 0; i<v.size(); i+=items) {
                 MMObjectNode node = new MMObjectNode(builder, true);
