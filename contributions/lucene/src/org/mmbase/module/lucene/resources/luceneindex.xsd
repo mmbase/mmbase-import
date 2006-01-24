@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             targetNamespace="http://www.mmbase.org/xmlns/luceneindex"
-            xmlns:mmlc="http://www.mmbase.org/xmlns/luceneindex"
+            xmlns="http://www.mmbase.org/xmlns/luceneindex"
+            xmlns:lucene="http://www.mmbase.org/xmlns/luceneindex"
             xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
             version="1.0">
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
   <xsd:annotation>
     <xsd:documentation>Lucene schema</xsd:documentation>
   </xsd:annotation>
@@ -14,21 +21,75 @@
   <xsd:element name="index">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="mmlc:list" maxOccurs="unbounded" minOccurs="0" />
+        <xsd:element ref="description" maxOccurs="unbounded" minOccurs="0" />
+        <xsd:element ref="analyzer" maxOccurs="1" minOccurs="0" />
+        <xsd:group ref="lists" maxOccurs="unbounded" minOccurs="0" />
       </xsd:sequence>
-      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="name"     type="xsd:NCName" />
       <xsd:attribute name="optimize" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
 
+  <xsd:group name="lists">
+    <xsd:choice>
+      <xsd:element ref="list" />
+      <xsd:element ref="jdbc" />
+    </xsd:choice>
+  </xsd:group>
+  
+
   <xsd:element name="luceneindex">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="mmlc:index" maxOccurs="unbounded" minOccurs="0" />
+        <xsd:element ref="extractor" maxOccurs="unbounded" minOccurs="0" />
+        <xsd:element ref="index"     maxOccurs="unbounded" minOccurs="0" />
       </xsd:sequence>
+    </xsd:complexType>
+    <xsd:unique name="indexNames">
+      <xsd:selector xpath="./lucene:index"/>
+      <xsd:field xpath="@name"/>
+    </xsd:unique> 
+  </xsd:element>
+
+  <xsd:element name="list" type="mmsq:SearchQuery"/>
+
+  <xsd:element name="jdbc">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="field" maxOccurs="unbounded" minOccurs="0" />
+      </xsd:sequence>
+      <xsd:attribute name="sql" type="xsd:string" />
+      <xsd:attribute name="key" type="xsd:string" />
+      <xsd:attribute name="find" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="field">
+    <xsd:complexType>
+      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="keyword" type="xsd:boolean" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="analyzer">
+    <xsd:complexType>
+      <xsd:attribute name="class" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="extractor">
+    <xsd:complexType>
+      <xsd:attribute name="class" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="list" type="mmsq:SearchQuery"></xsd:element>
+  <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
 
 </xsd:schema>
