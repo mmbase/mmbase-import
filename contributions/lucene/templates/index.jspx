@@ -9,6 +9,11 @@
         <p>
           The following indices are currently defined.
         </p>
+        <mm:booleanfunction name="readOnly" module="lucene">
+          <p>
+            The lucene module is configured to be read only.
+          </p>
+        </mm:booleanfunction>
         
         <mm:url id="next" write="false" page="/mmbase/style/images/next.gif" />
         <mm:url id="ok" write="false" page="/mmbase/style/images/ok.gif" />
@@ -39,14 +44,16 @@
               </mm:link>
             </td>
             <td>
-              <mm:link>
-                <mm:param name="fullindex" value="$index" />
-                <a href="${_}" class="navigate" 
-                   onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
-                   >
-                  <img src="${next}" alt="next"  />
-                </a>
-              </mm:link>
+              <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+                <mm:link>
+                  <mm:param name="fullindex" value="$index" />
+                  <a href="${_}" class="navigate" 
+                     onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
+                     >
+                    <img src="${next}" alt="next"  />
+                  </a>
+                </mm:link>
+              </mm:booleanfunction>
             </td>
           </tr>
         </mm:listfunction>
@@ -69,13 +76,15 @@
           <tr>
             <th>Full index on all indices</th>
             <td>
-              <mm:link>
-                <mm:param name="fullindex" />
-                <a href="${_}" onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
-                   class="navigate">
-                  <img src="${next}" alt="next"  />
-                </a>
-              </mm:link>
+              <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+                <mm:link>
+                  <mm:param name="fullindex" />
+                  <a href="${_}" onclick="return confirm('Are you sure? This will fully delete the current index ${index}, and may take some time.')"
+                     class="navigate">
+                    <img src="${next}" alt="next"  />
+                  </a>
+                </mm:link>
+              </mm:booleanfunction>
             </td>
           </tr>
           <tr>
