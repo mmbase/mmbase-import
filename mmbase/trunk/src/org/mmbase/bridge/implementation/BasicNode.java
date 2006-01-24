@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.192 2006-01-02 14:15:26 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.193 2006-01-24 12:26:59 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -227,6 +227,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public boolean isChanged() {
         return getNode().isChanged();
     }
+    public Set getChanged() {
+        return Collections.unmodifiableSet(getNode().getChanged());
+    }
 
     /**
      * Edit this node.
@@ -265,9 +268,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // this should not occur (hence internal error notice), but we test it anyway.
 
             if (action == ACTION_CREATE) {
-                String message = "This node cannot be added. It was not correctly instantiated (internal error).";
-                log.error(message);
-                throw new BridgeException(message);
+                throw new BridgeException("This node cannot be added. It was not correctly instantiated (internal error).");
             }
 
             // when editing a temporary node id must exist (otherwise create one)
@@ -498,12 +499,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
             temporaryNodeId = -1;
-            // invalid nodereference, so retrieve node anew
-            MMObjectNode newNode = BasicCloudContext.mmb.getTypeDef().getNode(node.getNumber());
-            if (newNode == null) {
-                throw new RuntimeException("Could not find node " + node.getNumber());
-            }
-            setNode(newNode);
         }
         changed = false;
     }
@@ -828,9 +823,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // call list: note: role can be null
         // XXX. Should perhaps not depend on core's getRelatedNodes becasue then the query remains unknown
 
-        List mmnodes = isNew()
-            ? new Vector()  // new nodes have no relations
-            : getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
+        if (isNew()) {
+            // new nodes have no relations
+            return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
+        }
+        List mmnodes = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
 
         // remove the elements which may not be read:
         ListIterator li = mmnodes.listIterator();
