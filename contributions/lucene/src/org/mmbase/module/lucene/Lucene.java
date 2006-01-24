@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.47 2006-01-24 13:05:17 ernst Exp $
+ * @version $Id: Lucene.java,v 1.48 2006-01-24 13:26:19 ernst Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -69,7 +69,6 @@ public class Lucene extends Module implements MMBaseObserver {
      */
     protected final static Parameter VALUE = new Parameter("value", String.class);
     protected final static Parameter INDEX = new Parameter("index", String.class);
-    protected final static Parameter INDEXNAME = new Parameter("indexname", String.class);
     protected final static Parameter SORTFIELDS = new Parameter("sortfields", String.class);
     protected final static Parameter OFFSET = new Parameter("offset", Integer.class);
     protected final static Parameter MAX = new Parameter("max", Integer.class);
@@ -166,12 +165,17 @@ public class Lucene extends Module implements MMBaseObserver {
      * <p>Return: void</p>
      */
     protected Function deleteIndexFunction = new AbstractFunction("deleteIndex",
-                                                                new Parameter[] {INDEX, INDEXNAME},
+                                                                new Parameter[] {INDEX, new Parameter("identifier", String.class)},
                                                                 ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
             String index = (String) arguments.get("index");
+            String identifier = (String) arguments.get("identifier");
             if(!readOnly){
-                scheduler.deleteIndex(index);
+                if(identifier == null || "".equals(identifier)){
+                    scheduler.deleteIndex(index);
+                }else{
+                    scheduler.deleteIndex(index, identifier);
+                }
             }
             return null;
         }
