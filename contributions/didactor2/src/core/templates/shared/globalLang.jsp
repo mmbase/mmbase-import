@@ -7,6 +7,16 @@
           <mm:isnotempty>
             <mm:import jspvar="locale"><mm:field name="locale" />_<mm:field name="path" /></mm:import>
             <mm:import id="language" reset="true"><mm:field name="locale" /></mm:import>
+            <mm:present referid="education">
+              <mm:node number="$education">
+                <mm:field jspvar="edupath" vartype="String" write="false" name="path">
+                  <% if (edupath != null && !"".equals(edupath)) {
+                       locale += "_" + edupath;
+                     }
+                  %>
+                </mm:field>
+              </mm:node>
+            </mm:present>
             <di:translate locale="<%=locale%>" debug="true" />
           </mm:isnotempty>
           <mm:isempty>
