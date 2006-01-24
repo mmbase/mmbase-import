@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.28 2006-01-20 20:10:23 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.29 2006-01-24 15:51:14 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -293,17 +293,6 @@ abstract public class QueryResultCache extends Cache {
                     if (result.shouldRelease()) {
                         removeKeys.add(key);
                         i.remove();
-                        if(log.isDebugEnabled()){
-                            try {
-                                log.debug("Release strategy said to release " + sqlHandler.toSql(key, sqlHandler));
-                            } catch (SearchQueryException e) {}
-                        }
-                    } else {
-                        if(log.isDebugEnabled()){
-                            try {
-                                log.debug("Release strategy said NOT to release " + sqlHandler.toSql(key, sqlHandler));
-                            } catch (SearchQueryException e) {}
-                        }
                     }
                     totalEvaluationTime += result.getCost();
                 }
