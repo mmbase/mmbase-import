@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.155 2006-01-17 22:39:24 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.156 2006-01-24 12:25:22 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -815,12 +815,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
             log.debug("Creating NodeList of size " + resultList.size());
         }
 
-        BasicNodeList resultNodeList; // this will be the result NodeList
-
         // create resultNodeList
         NodeManager  tempNodeManager = new VirtualNodeManager(query, this);
 
-        resultNodeList = new BasicNodeList(resultList, tempNodeManager);
+        BasicNodeList resultNodeList = new BasicNodeList(resultList, tempNodeManager);
         resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
 
         if (! checked) {
