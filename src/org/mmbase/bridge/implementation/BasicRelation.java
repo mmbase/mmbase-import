@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.39 2005-11-23 10:22:41 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.40 2006-01-24 12:29:27 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static final Logger log = Logging.getLoggerInstance(BasicRelation.class);
@@ -161,6 +161,15 @@ public class BasicRelation extends BasicNode implements Relation {
         int rnumber = getNode().getIntValue("rnumber");
         if (!BasicCloudContext.mmb.getTypeRel().contains(sourceNodeType, destinationNodeType, rnumber)) {
             if (!BasicCloudContext.mmb.getTypeRel().contains(destinationNodeType, sourceNodeType, rnumber)) {
+                if (! cloud.hasNode(sourceNodeType)) {
+                    throw new BridgeException("Source type of relation " + this + ": " + sourceNodeType + " does not point to a valid node.");
+                }
+                if (! cloud.hasNode(destinationNodeType)) {
+                    throw new BridgeException("Destination type of relation " + this + ": " + destinationNodeType + " does not point to a valid node.");
+                }
+                if (! cloud.hasNode(rnumber)) {
+                    throw new BridgeException("Rnumber of relation " + this + ": " + rnumber + " does not point to a valid node.");
+                }
                 throw new BridgeException("Source and/or Destination node are not of the correct type, or relation not allowed ("
                                           + cloud.getNode(sourceNodeType).getValue("name") + ","
                                           + cloud.getNode(destinationNodeType).getValue("name") + ","
