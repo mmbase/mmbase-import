@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.15 2006-01-19 14:02:30 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.16 2006-01-24 16:08:01 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -63,7 +63,7 @@ public class BetterStrategy extends ReleaseStrategy {
      * 
      * @return true if query should be released
      */
-    protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         if (log.isDebugEnabled()) {
             log.debug(event.toString());
         }
@@ -236,7 +236,7 @@ public class BetterStrategy extends ReleaseStrategy {
         Constraint constraint = query.getConstraint();
         if(constraint == null){
             return true;
-            }
+        }
         for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
             String fieldName = (String) i.next();
             if(getConstraintsForField(fieldName, event.getBuilderName(), constraint, query).size() > 0){

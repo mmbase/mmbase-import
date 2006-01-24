@@ -29,11 +29,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.11 2005-12-23 10:20:17 ernst Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.12 2006-01-24 16:08:01 michiel Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
-	private static Logger log = Logging.getLoggerInstance(BasicReleaseStrategy.class);
+    private static Logger log = Logging.getLoggerInstance(BasicReleaseStrategy.class);
 	
     public BasicReleaseStrategy(){
     }
@@ -56,24 +56,25 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
     /* (non-Javadoc)
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent, org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    protected boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         //this simple optimization only works for nodeEvents
         
         int shouldKeep = 0;
         List steps = getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()));
+        Integer number = new Integer(event.getNodeNumber());
         for (Iterator i = steps.iterator(); i.hasNext();) {
             Step step = (Step) i.next();
             Set nodes = step.getNodes();
             //if one of the steps for this node event has no nodes set: flush
-            if(nodes == null)return true;
-            //if all steps for this node event have nodes set, and the nodes collections exclude the event node: keep
-            if(nodes.size() > 0 && ! nodes.contains(new Integer(event.getNodeNumber()))) {
-                shouldKeep ++; 
+            if(nodes == null || nodes.size() == 0) return true;
+            //if a step defines nodes, than it does not want to invalidate the cache-entry if the node of the event is not one of them.
+            if(! nodes.contains(number)) {
+                shouldKeep++; 
             }
-            //if not all steps of this type had nodes that did not include this one, flush
-            return shouldKeep != steps.size(); //shouldrelease 
+
         }
-        return true;
+        //if not all steps of this type had nodes that did not include this one, flush
+        return shouldKeep != steps.size(); //shouldrelease         
     }
 
     protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
