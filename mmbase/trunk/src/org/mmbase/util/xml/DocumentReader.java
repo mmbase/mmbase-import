@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.22 2006-01-17 12:25:21 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.23 2006-01-24 17:28:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -507,6 +507,13 @@ public class DocumentReader  {
     }
 
     public static void main(String[] argv) throws Exception {
+        if (argv.length == 0) {
+            System.out.println("Usage: java -Dmmbase.config=<config dir> org.mmbase.util.xml.DocumentReader <path to xml>");
+            System.out.println(" The mmbase config dir is used to resolve XSD's (in config/xmlns) and DTD's (in config/dtd).");
+            System.out.println(" Errors will be reported if the XML is invalid");
+            
+            return;
+        }
         Document d = org.mmbase.util.ResourceLoader.getDocument(new java.io.File(argv[0]).toURL(), true, null);
         /*
         DocumentReader doc =  new DocumentReader(d);
