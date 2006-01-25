@@ -27,8 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.18 2005-12-10 14:28:20 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.19 2006-01-25 09:33:21 michiel Exp $
  */
 public class SortedBundle {
 
