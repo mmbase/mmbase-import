@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.143 2006-01-23 18:21:46 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.144 2006-01-25 10:21:43 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -973,6 +973,9 @@ public class DatabaseStorageManager implements StorageManager {
         change(node, builder);
         commitChange(node, "c");
         unloadShortedFields(node, builder);
+        // the node instance can be wrapped by other objects (org.mmbase.bridge.implementation.BasicNode) or otherwise still in use.
+        // this make sure that the values are realistic reflections of the database:
+        // This can change after a commit e.g. if the database enforces a maximum length for certain fields.
         refresh(node);
     }
 
@@ -1552,6 +1555,9 @@ public class DatabaseStorageManager implements StorageManager {
             for (Iterator f = builderFields.iterator(); f.hasNext();) {
                 CoreField field = (CoreField)f.next();
                 if (field.inStorage()) {
+                    if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
+                        continue;
+                    }
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
