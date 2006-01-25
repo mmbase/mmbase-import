@@ -1,18 +1,19 @@
-<%@ page errorPage="exception.jsp" %><%@ include file="settings.jsp" %>
-<%@ page import="org.mmbase.applications.editwizard.*" %>
-<%@ page import="org.mmbase.applications.editwizard.Config" %>
-<%@ page import="java.util.*" %>
-<%@ page import="java.net.URL" %>
-<%@ page import="java.io.Writer" %>
-<%@ page import="org.w3c.dom.Document" %>
-<%@ page import="org.w3c.dom.Node" %>
-<mm:content type="text/html" expires="0" language="en">
+<%@ page errorPage="exception.jsp" %><%@ include file="settings.jsp" 
+%><%@ page import="org.mmbase.applications.editwizard.*" 
+%><%@ page import="org.mmbase.applications.editwizard.Config" 
+%><%@ page import="java.util.*" 
+%><%@ page import="java.net.URL" 
+%><%@ page import="java.io.Writer" 
+%><%@ page import="org.w3c.dom.Document" 
+%><%@ page import="org.w3c.dom.Node"
+ %><mm:import externid="type">text/html</mm:import>
+<mm:content type="${type}" expires="0" language="en">
 <%
     /**
      * debug.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: debug.jsp,v 1.11 2004-12-02 15:46:41 pierre Exp $
+     * @version  $Id: debug.jsp,v 1.12 2006-01-25 12:36:11 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -28,8 +29,11 @@
         }
       }
     }
+    Document doc = null;
+%><mm:compare referid="type" value="text/html">
+<%
 
-    Document doc = Utils.parseXML("<debugdata/>");
+    doc = Utils.parseXML("<debugdata/>");
     if (con instanceof Config.WizardConfig) {
         wizard=((Config.WizardConfig)con).wizard;
         add(doc, ((Config.WizardConfig)con).wiz.getData(), wizard);
@@ -41,7 +45,16 @@
     map.put("session_byte_size", "" + org.mmbase.util.SizeOf.getByteSize(ewconfig));
     Utils.transformNode(doc, template, ewconfig.uriResolver, out,  map);
 %>
-<%!
+</mm:compare>
+<mm:compare referid="type" value="text/xml">
+  <mm:import externid="xml" jspvar="xml" vartype="string">schema</mm:import><%
+    if (xml.equals("schema")) doc = ((Config.WizardConfig)con).wiz.getSchema();
+    if (xml.equals("data")) doc = ((Config.WizardConfig)con).wiz.getData();
+    if (xml.equals("preform")) doc = ((Config.WizardConfig)con).wiz.getPreForm();    
+    URL template = ewconfig.uriResolver.resolveToURL("xslt/copy.xslt", null);
+    Utils.transformNode(doc, template, ewconfig.uriResolver, out,  null);
+%></mm:compare><%!
+
     public void add(Document dest, Document src, String name) {
 
         Node n = dest.importNode(src.getDocumentElement().cloneNode(true), true);
@@ -49,5 +62,4 @@
         dest.getDocumentElement().appendChild(n);
     }
 
-%>
-</mm:content>
+%></mm:content>
