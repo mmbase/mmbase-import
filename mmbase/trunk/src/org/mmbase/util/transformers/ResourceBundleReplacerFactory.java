@@ -24,7 +24,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ResourceBundleReplacerFactory.java,v 1.3 2005-11-01 23:36:02 michiel Exp $
+ * @version $Id: ResourceBundleReplacerFactory.java,v 1.4 2006-01-25 18:03:47 michiel Exp $
  */
 
 public class ResourceBundleReplacerFactory implements ParameterizedTransformerFactory {
@@ -64,9 +64,15 @@ class ResourceBundleReplacer extends ChunkedTransformer {
         this.bundle = bundle;
         this.name = name;
     }
-    protected boolean replace(String word, Writer w) throws IOException  {
+    protected boolean replace(final String word, final Writer w, final Status status) throws IOException  {
+         if (replaceFirstAll && status.used.contains(word)) {
+            w.write(word);
+            return false;
+        }
         try {
             w.write("" + bundle.getObject(word));
+            status.replaced++;
+            if (replaceFirstAll) status.used.add(word);
             return true;
         } catch (MissingResourceException mre) {
             w.write(word);

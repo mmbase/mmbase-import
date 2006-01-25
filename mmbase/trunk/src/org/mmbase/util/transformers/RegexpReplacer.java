@@ -54,6 +54,7 @@ public class RegexpReplacer extends ChunkedTransformer {
         new RegexpReplacer().readPatterns(regexps);
     }
 
+
     public RegexpReplacer(int i) {
         super(i);
     }
@@ -162,12 +163,13 @@ public class RegexpReplacer extends ChunkedTransformer {
         }
     }
 
-    protected boolean replace(String string, Writer w) throws IOException {
+    protected boolean replace(String string, Writer w, Status status) throws IOException {
         Iterator i  = getPatterns().iterator();
 
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
             Pattern p = (Pattern) entry.getKey();
+            if (replaceFirstAll && status.used.contains(p)) continue;
             Matcher m = p.matcher(string);
             if (m.matches()) {
                 String result = (String) entry.getValue();
@@ -177,7 +179,9 @@ public class RegexpReplacer extends ChunkedTransformer {
                     } else {
                         result = result.replaceAll("\\$" + j, m.group(j));
                     }
+                    status.replaced++;
                 }
+                if (replaceFirstAll) status.used.add(p);
                 w.write(result);
                 return true;
             }
