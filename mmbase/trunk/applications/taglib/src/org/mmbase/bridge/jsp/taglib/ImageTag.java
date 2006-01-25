@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.65 2006-01-09 10:31:17 nklasens Exp $
+ * @version $Id: ImageTag.java,v 1.66 2006-01-25 19:28:47 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -291,7 +291,10 @@ public class ImageTag extends FieldTag {
 
     public String getAltAttribute(Node node) throws JspTagException {
         String alt = null;
-        if (node.getNodeManager().hasField("title")) {
+        if (node.getNodeManager().hasField("alt")) {
+            alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("alt"));
+        }
+        if ((alt == null || "".equals(alt)) && node.getNodeManager().hasField("title")) {
             alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("title"));
         } 
         if ((alt == null || "".equals(alt)) && node.getNodeManager().hasField("name")) {
@@ -300,6 +303,7 @@ public class ImageTag extends FieldTag {
         if ((alt == null || "".equals(alt)) && node.getNodeManager().hasField("description")) {
             alt = org.mmbase.util.transformers.Xml.XMLAttributeEscape(node.getStringValue("description"));
         }
+
         
         return (alt == null ? "" : " alt=\"" + alt + "\" title=\"" + alt + "\"");
     }
@@ -309,7 +313,7 @@ public class ImageTag extends FieldTag {
         attributes.append((styleClass != Attribute.NULL) ? (" class=\"" + styleClass.getString(this) + "\"") : "");
         attributes.append((style != Attribute.NULL) ? (" style=\"" + style.getString(this) + "\"") : "");
         attributes.append((align != Attribute.NULL) ? (" align=\"" + align.getString(this) + "\"") : "");
-        attributes.append((border != Attribute.NULL) ? (" border=\"" + border.getString(this) + "\"") : " border=\"0\"");
+        attributes.append((border != Attribute.NULL) ? (" border=\"" + border.getString(this) + "\"") : "");
         attributes.append((hspace != Attribute.NULL) ? (" hspace=\"" + hspace.getString(this) + "\"") : "");
         attributes.append((vspace != Attribute.NULL) ? (" vspace=\"" + vspace.getString(this) + "\"") : "");
         return attributes.toString();
