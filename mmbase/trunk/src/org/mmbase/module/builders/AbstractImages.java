@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.41 2006-01-23 14:51:45 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.42 2006-01-25 19:11:45 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -264,7 +264,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             if (slashPos > -1) {
                 MagicFile magicFile = MagicFile.getInstance();
                 String fixedIType = magicFile.mimeTypeToExtension(itype);
-                log.warn("Found an odd itype " + itype + " (should be " + fixedIType + "?");
+                if ("".equals(fixedIType)) {                    
+                    fixedIType = itype.substring(slashPos + 1);
+                    log.warn("Could not find extension for mimetype " + itype  + ", guessing " + fixedIType);
+                }
+                log.warn("Found an odd itype " + itype + " on node " + node.getNumber() + " (should be " + fixedIType + "?)");
                 itype = fixedIType;
                 node.setValue(FIELD_ITYPE, itype);
                 if (!node.isNew()) {
