@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.156 2006-01-24 12:25:22 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.157 2006-01-25 12:40:49 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -364,7 +364,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
 
             return new BasicRelationManager(typeRel, this);
         } else {
-            log.error("Relation " + sourceManagerId + "/" + destinationManagerId + "/" + roleId + " does not exist");
+            log.error("Relation " + sourceManagerId + "/" + destinationManagerId + "/" + roleId + " does not exist", new Exception());
             return null; // calling method throws exception
         }
     }
