@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.24 2005-12-13 09:48:07 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.25 2006-01-25 19:39:13 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -191,6 +191,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         
         Function function;
         if ("".equals(functionName)) {  // no name given, certainly must use container.
+            if (functionContainer == null) throw new JspTagException("No function name given, and no function container tag found either");
             function = functionContainer.getFunction(functionContainer.getName());
             if (function == null) {
                 throw new JspTagException("Could not determine the name of the function to be executed");
