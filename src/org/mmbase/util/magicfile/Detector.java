@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.10 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Detector.java,v 1.11 2006-01-25 19:09:43 michiel Exp $
  */
 
 public class Detector {
@@ -58,7 +58,7 @@ public class Detector {
     private static final String[] label = new String[] { "big endian", "little endian" };
     
     private String rawinput; // Original input line
-    private int offset;
+    private int offset = -1;
     private String type;
     // types: byte, short, long, string, date, beshort, belong, bedate, leshort, lelong, ledate
     private String typeAND;
@@ -162,7 +162,7 @@ public class Detector {
      * @return Whether detector matches the prefix/lithmus of the file
      */
     public boolean test(byte[] lithmus) {
-        if (lithmus == null || lithmus.length == 0) {
+        if (lithmus == null || lithmus.length == 0 || offset == -1) {
             return false;
         }
         boolean hit;
