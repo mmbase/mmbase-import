@@ -63,11 +63,20 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
      * If this is added to the config-int, then only the first match should be used.
      */
     public final static int REPLACE_FIRST = 100;
+    /**
+     * If this is added to the config-int, then only the first match should be used.
+     */
+    public final static int REPLACE_FIRST_ALL = 200;
 
 
-    protected boolean replaceFirst = false;
+    protected boolean replaceFirst    = false;
+    protected boolean replaceFirstAll = false;
 
     public void configure(int i) {
+        if (i >= 200) {
+            replaceFirstAll = true;
+            i -= 200;
+        }
         if (i >= 100) {
             replaceFirst = true;
             i -= 100;
@@ -83,12 +92,23 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         this(WORDS);
     }
 
+    protected class Status {
+        int replaced = 0;
+        Set used = null;
+        {
+            if (replaceFirstAll) used = new HashSet();
+        }
+    }
+    protected Status newStatus() {
+        return new Status();
+        
+    }
     /**
      * Implement this. Return true if a replacement done.
      */
-    protected abstract boolean replace(String string, Writer w) throws IOException;
+    protected abstract boolean replace(String string, Writer w, Status status) throws IOException;
 
-    protected boolean replaceWord(StringBuffer word, Writer writer) throws IOException {
+    protected boolean replaceWord(StringBuffer word, Writer writer, Status status) throws IOException {
         int l = word.length();
         StringBuffer postFix = null;
         String w;
@@ -128,7 +148,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         }
 
         // ready to make the replacements now.
-        boolean result = replace(w, writer);
+        boolean result = replace(w, writer, status);
 
         if (postFix != null) {
             writer.write(postFix.toString());
@@ -137,14 +157,14 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
     }
 
     /**
-     * Whether still to do replacing, given the number or replacements which happened already.
+     * Whether still to do replacing, given status.
      */
-    protected boolean replace(int replaced) {
-        return !replaceFirst || replaced == 0;
+    protected boolean replace(Status status) {
+        return !replaceFirst || status.replaced == 0;
     }
 
     public Writer transformXmlTextWords(Reader r, Writer w)  {
-        int replaced = 0;
+        Status status = newStatus();
         StringBuffer word = new StringBuffer();  // current word
         boolean translating = true;
         try {
@@ -152,12 +172,12 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                if (!replace(replaced)) {
+                if (!replace(status)) {
                     w.write(c);
                 } else
                 if (c == '<') {  // don't do it in existing tags and attributes
                     translating = false;
-                    if (replaceWord(word, w)) replaced++;
+                    replaceWord(word, w, status);
                     w.write(c);
                 } else if (c == '>') {
                     translating = true;
@@ -167,7 +187,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                     w.write(c);
                 } else {
                     if (Character.isWhitespace((char) c) || c == '\'' || c == '\"' || c == '(' || c == ')' ) {
-                        if (replaceWord(word, w)) replaced++;
+                        replaceWord(word, w, status);
                         word.setLength(0);
                         w.write(c);
                     } else {
@@ -176,13 +196,13 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 }
             }
             // write last word
-            if (replace(replaced)) {
-                if (translating && replaceWord(word, w)) replaced++;
+            if (replace(status)) {
+                if (translating) replaceWord(word, w, status);
             } else {
                 w.write(word.toString());
             }
             if (log.isDebugEnabled()) {
-                log.debug("Finished  replacing. Replaced " + replaced + " words");
+                log.debug("Finished  replacing. Replaced " + status.replaced + " words");
             }
         } catch (java.io.IOException e) {
             log.error(e.toString());
@@ -191,7 +211,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
     }
 
     public Writer transformXmlText(Reader r, Writer w)  {
-        int replaced = 0;
+        Status status = newStatus();
         StringBuffer xmltext = new StringBuffer();  // current word
         boolean translating = true;
         try {
@@ -199,14 +219,14 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                if (!replace(replaced)) {
+                if (!replace(status)) {
                     w.write(c);
                 } else
                 // perhaps better use SAX to decently detect XML, but then it probably won't work
                 // very well on sloppy XML (like HTML).
                 if (c == '<') {  // don't do it in existing tags and attributes
                     translating = false;
-                    if (replace(xmltext.toString(), w)) replaced++;
+                    replace(xmltext.toString(), w, status);
                     w.write(c);
                 } else if (c == '>') {
                     translating = true;
@@ -219,27 +239,27 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 }
             }
             // write last word
-            if (replace(replaced)) {
-                if (translating && replace(xmltext.toString(), w)) replaced++;
+            if (replace(status)) {
+                if (translating) replace(xmltext.toString(), w, status);
             } else {
                 w.write(xmltext.toString());
             }
-            log.debug("Finished  replacing. Replaced " + replaced + " words");
+            log.debug("Finished  replacing. Replaced " + status.replaced + " words");
         } catch (java.io.IOException e) {
             log.error(e.toString());
         }
         return w;
     }
     public Writer transformWords(Reader r, Writer w)  {
-        int replaced = 0;
+        Status status = newStatus();
         StringBuffer word = new StringBuffer();  // current word
         try {
             log.trace("Starting replacing words." + Logging.stackTrace());
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                if (replace(replaced) && (Character.isWhitespace((char) c) || c == '\'' || c == '\"' || c == '(' || c == ')' || c == '<' || c == '>' )) {
-                    if (replaceWord(word, w)) replaced++;
+                if (replace(status) && (Character.isWhitespace((char) c) || c == '\'' || c == '\"' || c == '(' || c == ')' || c == '<' || c == '>' )) {
+                    replaceWord(word, w, status);
                     word.setLength(0);
                     w.write(c);
                 } else {
@@ -247,12 +267,12 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 }
             }
             // write last word
-            if (replace(replaced)) {
-                if (replaceWord(word, w)) replaced++;
+            if (replace(status)) {
+                replaceWord(word, w, status);
             } else {
                 w.write(word.toString());
             }
-            log.debug("Finished replacing. Replaced " + replaced + " words");
+            log.debug("Finished replacing. Replaced " + status.replaced + " words");
         } catch (java.io.IOException e) {
             log.error(e.toString());
         }
@@ -263,12 +283,12 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     public Writer transformLines(Reader r, Writer w) {
         BufferedReader reader = new BufferedReader(r);
-        int replaced = 0;
+        Status status = newStatus();
         try {
             String line = reader.readLine();
             while (line != null) {
-                if (replace(replaced)) {
-                    if (replace(line, w)) replaced ++; 
+                if (replace(status)) {
+                    replace(line, w, status);
                 } else {
                     w.write(line);
                 }
@@ -282,13 +302,14 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     public Writer transformEntire(Reader r, Writer w) {
         StringWriter sw = new StringWriter();
+        Status status = newStatus();
         try {
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
                 sw.write(c);
             }
-            replace(sw.toString(), w);
+            replace(sw.toString(), w, status);
         } catch (java.io.IOException e) {
             log.error(e.toString());
         }

@@ -30,7 +30,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter("patterns", Collection.class, true),
         new Parameter("mode", String.class),
-        new Parameter("replacefirst", Boolean.class)
+        new Parameter("replacefirst", String.class)
     };
 
     public Parameters createParameters() {
@@ -59,8 +59,13 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
         Config c = (Config)trans.transformers().get("REGEXPS_" + mode.toUpperCase());
         if (c == null) c = (Config)trans.transformers().get(mode);
         if (c == null) throw new IllegalArgumentException("" + mode + " cannot be found in " + trans.transformers());
-        boolean replaceFirst = Boolean.TRUE.equals(parameters.get("replacefirst"));
-        trans.configure(c.config + (replaceFirst ? RegexpReplacer.REPLACE_FIRST : 0));
+        String firstParam = (String) parameters.get("replacefirst");
+        boolean replaceFirst = "true".equals(firstParam);
+        boolean replaceFirstAll = "all".equals(firstParam);
+        trans.configure(c.config + 
+                        (replaceFirst ? RegexpReplacer.REPLACE_FIRST : 0) + 
+                        (replaceFirstAll ? RegexpReplacer.REPLACE_FIRST_ALL : 0)
+                        );
         return trans;
     }
 
