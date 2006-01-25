@@ -13,8 +13,7 @@ import java.util.*;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeQuery;
-import org.mmbase.cache.AggregatedResultCache;
-import org.mmbase.cache.NodeListCache;
+import org.mmbase.cache.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.*;
@@ -32,8 +31,8 @@ import org.mmbase.util.logging.Logging;
  * either indivbidual nodes or nodelists.
  *
  * @since MMBase-1.8
- * @author Pierre van Rooden (javadoc)
- * @version $Id: StorageConnector.java,v 1.4 2006-01-20 19:56:00 michiel Exp $
+ * @author Pierre van Rooden
+ * @version $Id: StorageConnector.java,v 1.5 2006-01-25 09:32:23 michiel Exp $
  */
 public class StorageConnector {
 
@@ -191,7 +190,7 @@ public class StorageConnector {
      * @return <code>null</code> if the node does not exist, the key is invalid,or a
      *       <code>MMObjectNode</code> containing the contents of the requested node.
      */
-    public  MMObjectNode getNode(final int number, boolean useCache) throws StorageException {
+    public  MMObjectNode getNode(final int number, final boolean useCache) throws StorageException {
         if (log.isDebugEnabled()) {
             log.trace("Getting node with number " + number);
         }
@@ -374,6 +373,30 @@ public class StorageConnector {
     }
 
     /**
+     * Returns the Cache which should be used for the result of a certain query. The current query
+     * only makes the distinction between a 'related nodes caches' and 'node list
+     * caches'. Multilevel queries are not done here.
+     * 
+     * It returns a Map rather then a Map. The idea behind this is that if in the future a
+     * query-result can be in more than one cache, a kind of 'chained map' can be returned, to
+     * reflect that.
+     * @todo Perhaps other userfull parameters like query-duration and query-result could be added as
+     * parameters (in that case searching a result should certainly returns such a chained map, because then of course you don't have those). 
+     */
+    protected Map getCache(SearchQuery query) {
+        List steps = query.getSteps();
+        if (steps.size() == 3) {
+            Step step0 = (Step) steps.get(0);
+            Collection nodes = step0.getNodes();
+            if (nodes != null && nodes.size() == 1) {
+                return RelatedNodesCache.getCache();
+            }
+        }
+        return NodeListCache.getCache();
+
+    }
+
+    /**
      * Returns nodes matching a specified constraint.
      * The constraint is specified by a query that selects nodes of
      * a specified type, which must be the nodetype corresponding
@@ -392,7 +415,7 @@ public class StorageConnector {
         verifyBuilderQuery(query);
         List results = null;
         if (useCache) {
-            results = (List) NodeListCache.getCache().get(query);
+            results = (List) getCache(query).get(query);
         }
         // if unavailable, obtain from storage
         if (results == null) {
@@ -435,7 +458,7 @@ public class StorageConnector {
         // Perform necessary postprocessing.
         processSearchResults(results);
         if (useCache) {
-            NodeListCache.getCache().put(query, results);
+            getCache(query).put(query, results);
         }
         return results;
     }
