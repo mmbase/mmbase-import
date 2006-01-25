@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.42 2005-12-24 11:35:45 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.43 2006-01-25 10:09:07 michiel Exp $
  */
 public class MultiConnection extends ConnectionWrapper {
     // states
@@ -39,6 +39,8 @@ public class MultiConnection extends ConnectionWrapper {
     public final static int CON_FINISHED = 2;
     public final static int CON_FAILED   = 3;
 
+
+    public static long queries = 0;
     private static final Logger log = Logging.getLoggerInstance(MultiConnection.class);
 
     /**
@@ -136,6 +138,8 @@ public class MultiConnection extends ConnectionWrapper {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * If "autoCommit" is true, then all subsequent SQL statements will
      * be executed and committed as individual transactions.  Otherwise
      * (if "autoCommit" is false) then subsequent SQL statements will
@@ -160,6 +164,9 @@ public class MultiConnection extends ConnectionWrapper {
      */
     private String getLogSqlMessage(long time) {
         StringBuffer mes = new StringBuffer();
+        mes.append('#');
+        mes.append(queries);
+        mes.append("  ");
         if (time < 10) mes.append(' ');
         if (time < 100) mes.append(' ');
         if (time < 1000) mes.append(' ');
@@ -174,9 +181,7 @@ public class MultiConnection extends ConnectionWrapper {
         long time = System.currentTimeMillis() - getStartTimeMillis();
         long maxLifeTime = parent.getMaxLifeTime();
         if (time < maxLifeTime / 24) {  //  ok, you can switch on query logging with setting logging of this class on debug
-            if (log.isDebugEnabled()) {
-                log.debug(getLogSqlMessage(time));
-            }
+            log.debug(getLogSqlMessage(time));
         } else if (time < maxLifeTime / 4) {     // maxLifeTime / 24 (~ 5 s) is too long, but perhaps that's still ok.
             if (log.isServiceEnabled()) {
                 log.service(getLogSqlMessage(time));
@@ -186,7 +191,10 @@ public class MultiConnection extends ConnectionWrapper {
         } else {                      // query took more than maxLifeTime / 2 (~ 60 s), that's worth a warning
             log.warn(getLogSqlMessage(time));
         }
-
+        if (log.isDebugEnabled()) {
+            log.trace("because", new Exception());
+        }
+        
         state = CON_FINISHED;
         // If there is a parent object, this connection belongs to a pool and should not be closed,
         // but placed back in the pool
@@ -219,6 +227,7 @@ public class MultiConnection extends ConnectionWrapper {
      */
     public void claim() {
         usage++;
+        queries++;
         startTimeMillis = System.currentTimeMillis();
     }
 
