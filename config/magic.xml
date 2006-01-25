@@ -1358,6 +1358,11 @@
       <test offset="0" type="string" comparator="=">hsi1</test>
     </detector>
     <detector>
+      <mimetype>image/pjpeg</mimetype>
+      <extension>jpg</extension>
+      <designation>JPEG image data</designation>
+    </detector>
+    <detector>
       <mimetype>???</mimetype>
       <extension>???</extension>
       <designation>PC icon data</designation>
