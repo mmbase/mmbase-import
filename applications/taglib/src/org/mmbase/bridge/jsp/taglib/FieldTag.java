@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import org.mmbase.bridge.jsp.taglib.editor.EditTag;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.57 2005-12-30 22:41:56 andre Exp $
+ * @version $Id: FieldTag.java,v 1.58 2006-01-25 14:58:17 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -33,9 +34,19 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     protected Field  field;
     protected String fieldName;
     protected Attribute name = Attribute.NULL;
+    protected Attribute notfound = Attribute.NULL;
+
+    private final static int NOT_FOUND_THROW = 0;
+    private final static int NOT_FOUND_SKIP  = 1;
+    private final static int NOT_FOUND_PROVIDENULL  = 2;
+
 
     public void setName(String n) throws JspTagException {
         name = getAttribute(n);
+    }
+
+    public void setNotfound(String i) throws JspTagException {
+        notfound = getAttribute(i);
     }
 
 
@@ -92,82 +103,82 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
 
     /**
-	 * Method to handle the EditTag if it is present around fields and their nodes.
-	 * <br /><br />
-	 * When the FieldTag finds itself inside an EditTag then it will register its
-	 * contents with the EditTag. The EditTag can provide access to an editor. 
-	 * Not only the field and its nodes will be registered but also the query it 
-	 * originated from. It passes these to the method
-	 * EditTag#registerField(Query query, int nodenr, String fieldName).
-	 * @see org.mmbase.bridge.jsp.taglib.editor.EditTag 
-	 *
+     * Method to handle the EditTag if it is present around fields and their nodes.
+     * <br /><br />
+     * When the FieldTag finds itself inside an EditTag then it will register its
+     * contents with the EditTag. The EditTag can provide access to an editor. 
+     * Not only the field and its nodes will be registered but also the query it 
+     * originated from. It passes these to the method
+     * EditTag#registerField(Query query, int nodenr, String fieldName).
+     * @see org.mmbase.bridge.jsp.taglib.editor.EditTag 
+     *
      * @since MMBase-1.8
-	 * @todo  EXPERIMENTAL
+     * @todo  EXPERIMENTAL
      */
     protected void handleEditTag() {
     	// See if this FieldTag has a parent EditTag
-		Tag t = findAncestorWithClass(this, EditTag.class);
-		if (t == null) {
-	        if (log.isDebugEnabled()) log.debug("No EditTag as parent. We don't want to edit, i presume.");
-		} else {
-			EditTag et = (EditTag)t;
-			Query query = null;
-			try {
-				query = findNodeProvider().getGeneratingQuery();
-			} catch (JspTagException jte) {
-				log.error("JspTagException, no GeneratingQuery found : " + jte);
-			}
-			
-			Node node = null;
-			try {
-				node = getNodeVar();
-			} catch (JspTagException jte) {
-				if (log.isDebugEnabled()) log.debug("Node not found in getNodeVar() " + jte);
-			}
-			
-			if (fieldName == null) {
-				if (log.isDebugEnabled()) log.debug("fieldName still null. Image tag? URL tag? Attachment?");
-				if (this instanceof ImageTag) {
-					if (log.isDebugEnabled()) log.debug("Image! fieldName = handle");
-					fieldName = "handle";
-				}
-			}
-			if (fieldName.indexOf(".") < 0) {	// No nodemanager? add one
-				fieldName = node.getNodeManager().getName() + "." + fieldName;
-			}
+        Tag t = findAncestorWithClass(this, EditTag.class);
+        if (t == null) {
+            if (log.isDebugEnabled()) log.debug("No EditTag as parent. We don't want to edit, i presume.");
+        } else {
+            EditTag et = (EditTag)t;
+            Query query = null;
+            try {
+                query = findNodeProvider().getGeneratingQuery();
+            } catch (JspTagException jte) {
+                log.error("JspTagException, no GeneratingQuery found : " + jte);
+            }
+            
+            Node node = null;
+            try {
+                node = getNodeVar();
+            } catch (JspTagException jte) {
+                if (log.isDebugEnabled()) log.debug("Node not found in getNodeVar() " + jte);
+            }
+            
+            if (fieldName == null) {
+                if (log.isDebugEnabled()) log.debug("fieldName still null. Image tag? URL tag? Attachment?");
+                if (this instanceof ImageTag) {
+                    if (log.isDebugEnabled()) log.debug("Image! fieldName = handle");
+                    fieldName = "handle";
+                }
+            }
+            if (fieldName.indexOf(".") < 0) {	// No nodemanager? add one
+                fieldName = node.getNodeManager().getName() + "." + fieldName;
+            }
 			
 						
-			int nodenr = node.getIntValue("number");		// nodenr of this field to pass to EditTag
-			if (nodenr < 0) {
-				java.util.List steps = query.getSteps();
-        		Step nodeStep = null;
-        		if (query instanceof NodeQuery) {
-            		nodeStep = ((NodeQuery) query).getNodeStep();
+            int nodenr = node.getIntValue("number");		// nodenr of this field to pass to EditTag
+            if (nodenr < 0) {
+                java.util.List steps = query.getSteps();
+                Step nodeStep = null;
+                if (query instanceof NodeQuery) {
+                    nodeStep = ((NodeQuery) query).getNodeStep();
             	}
-				for (int j = 0; j < steps.size(); j++) {
-					Step step = (Step)steps.get(j);
-					if (step.equals(nodeStep)) {
-						nodenr = node.getIntValue("number");
-					} else {
-						String pref = step.getAlias();
-						if (pref == null) pref = step.getTableName();
+                for (int j = 0; j < steps.size(); j++) {
+                    Step step = (Step)steps.get(j);
+                    if (step.equals(nodeStep)) {
+                        nodenr = node.getIntValue("number");
+                    } else {
+                        String pref = step.getAlias();
+                        if (pref == null) pref = step.getTableName();
 						
-						// check with correct nodemanager
-						String nm = fieldName.substring(0, fieldName.indexOf("."));
-						if (pref.equals(nm)) {
-						    nodenr = node.getIntValue(pref + ".number");
-						}
+                        // check with correct nodemanager
+                        String nm = fieldName.substring(0, fieldName.indexOf("."));
+                        if (pref.equals(nm)) {
+                            nodenr = node.getIntValue(pref + ".number");
+                        }
 						
 
-					}
-				}
-        	}
+                    }
+                }
+            }
 			
-			// register stuff with EditTag
-			if (log.isDebugEnabled()) log.debug("Registering fieldName '" + fieldName + "' with nodenr '" + nodenr + "' and query: " + query);
-			et.registerField(query, nodenr, fieldName);
-		}
-	}
+            // register stuff with EditTag
+            if (log.isDebugEnabled()) log.debug("Registering fieldName '" + fieldName + "' with nodenr '" + nodenr + "' and query: " + query);
+            et.registerField(query, nodenr, fieldName);
+        }
+    }
     
     public int doStartTag() throws JspTagException {
         Node node = getNode();
@@ -178,87 +189,101 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 throw new JspTagException("It does not make sense to ask 'number' field on uncommited node");
             }
         }
-        setFieldVar(fieldName); // set field and node
-        if (log.isDebugEnabled()) {
-            log.debug("Field.doStartTag(); '"  + fieldName + "'");
-        }
-
-        // found the node now. Now we can decide what must be shown:
-        Object value;
-        // now also 'node' is availabe;
-        if (field == null) { // some function, or 'referid' was used.
-            if (getReferid() != null) { // referid
-                value = getObject(getReferid());
-            } else {         // function
-                value = node.getValue(fieldName);
+        boolean findValue = true;
+        boolean hasField = node.getNodeManager().hasField(fieldName);
+        if (! hasField) {
+            switch(Notfound.get(notfound, this)) {
+            case Notfound.SKIP:
+                return SKIP_BODY;
+            case Notfound.PROVIDENULL:
+                findValue = false;
+                break;
+            default:
+                // will cause exception
             }
-        } else {        // a field was found!
-            // if direct parent is a Formatter Tag, then communicate
-            FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
-            if (f != null && f.wantXML()) {
-                if (log.isDebugEnabled()) log.debug("field " + field.getName() + " is in a formatter tag, creating objects Element. ");
-                f.getGenerator().add(node, field); // add the field
-                value = "";
-            } else { // do the rest as well.
+        }
+        Object value = null;
+        if (findValue) {
+            setFieldVar(fieldName); // set field and node
+            if (log.isDebugEnabled()) {
+                log.debug("Field.doStartTag(); '"  + fieldName + "'");
+            }
 
-                // if a value is really null, should it be past as null or cast?
-                // I am leaning to the latter but it would break backward compatibility.
-                // currently implemented this behavior for DateTime values (new fieldtype)
-                // Maybe better is an attribute on fieldtag that determines this?
-                // I.e. ifempty = "skip|asis|default"
-                // where:
-                //   skip: skips the field tag
-                //   asis: returns null as a value
-                //   default: returns a default value
+            // found the node now. Now we can decide what must be shown:
+            // now also 'node' is availabe;
+            if (field == null) { // some function, or 'referid' was used.
+                if (getReferid() != null) { // referid
+                    value = getObject(getReferid());
+                } else {         // function
+                    value = node.getValue(fieldName);
+                }
+            } else {        // a field was found!
+                // if direct parent is a Formatter Tag, then communicate
+                FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
+                if (f != null && f.wantXML()) {
+                    if (log.isDebugEnabled()) log.debug("field " + field.getName() + " is in a formatter tag, creating objects Element. ");
+                    f.getGenerator().add(node, field); // add the field
+                    value = "";
+                } else { // do the rest as well.
 
-                switch(helper.getVartype()) {
-                case WriterHelper.TYPE_NODE:
-                    value = node.getNodeValue(fieldName);
-                    break;
-                case WriterHelper.TYPE_FIELDVALUE:
-                    value = node.getFieldValue(fieldName);
-                    break;
-                case WriterHelper.TYPE_FIELD:
-                    value = node.getFieldValue(fieldName).getField();
-                    break;
-                default:
-                    switch(field.getType()) {
-                    case Field.TYPE_BINARY:
-                        value = node.getByteValue(fieldName);
+                    // if a value is really null, should it be past as null or cast?
+                    // I am leaning to the latter but it would break backward compatibility.
+                    // currently implemented this behavior for DateTime values (new fieldtype)
+                    // Maybe better is an attribute on fieldtag that determines this?
+                    // I.e. ifempty = "skip|asis|default"
+                    // where:
+                    //   skip: skips the field tag
+                    //   asis: returns null as a value
+                    //   default: returns a default value
+
+                    switch(helper.getVartype()) {
+                    case WriterHelper.TYPE_NODE:
+                        value = node.getNodeValue(fieldName);
                         break;
-                    case Field.TYPE_INTEGER:
-                    case Field.TYPE_NODE:
-                        value = new Integer(node.getIntValue(fieldName));
+                    case WriterHelper.TYPE_FIELDVALUE:
+                        value = node.getFieldValue(fieldName);
                         break;
-                    case Field.TYPE_DOUBLE:
-                        value = new Double(node.getDoubleValue(fieldName));
-                        break;
-                    case Field.TYPE_LONG:
-                        value = new Long(node.getLongValue(fieldName));
-                        break;
-                    case Field.TYPE_FLOAT:
-                        value = new Float(node.getFloatValue(fieldName));
-                        break;
-                    case Field.TYPE_DATETIME:
-                        value = node.getValue(fieldName);
-                        if (value != null) {
-                            value = node.getDateValue(fieldName);
-                        }
-                        break;
-                    case Field.TYPE_BOOLEAN:
-                        value = Boolean.valueOf(node.getBooleanValue(fieldName));
-                        break;
-                    case Field.TYPE_LIST:
-                        value = node.getListValue(fieldName);
+                    case WriterHelper.TYPE_FIELD:
+                        value = node.getFieldValue(fieldName).getField();
                         break;
                     default:
-                        value = convert(node.getStringValue(fieldName));
+                        switch(field.getType()) {
+                        case Field.TYPE_BINARY:
+                            value = node.getByteValue(fieldName);
+                            break;
+                        case Field.TYPE_INTEGER:
+                        case Field.TYPE_NODE:
+                            value = new Integer(node.getIntValue(fieldName));
+                            break;
+                        case Field.TYPE_DOUBLE:
+                            value = new Double(node.getDoubleValue(fieldName));
+                            break;
+                        case Field.TYPE_LONG:
+                            value = new Long(node.getLongValue(fieldName));
+                            break;
+                        case Field.TYPE_FLOAT:
+                            value = new Float(node.getFloatValue(fieldName));
+                            break;
+                        case Field.TYPE_DATETIME:
+                            value = node.getValue(fieldName);
+                            if (value != null) {
+                                value = node.getDateValue(fieldName);
+                            }
+                            break;
+                        case Field.TYPE_BOOLEAN:
+                            value = Boolean.valueOf(node.getBooleanValue(fieldName));
+                            break;
+                        case Field.TYPE_LIST:
+                            value = node.getListValue(fieldName);
+                            break;
+                        default:
+                            value = convert(node.getStringValue(fieldName));
+                        }
                     }
                 }
             }
+            if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
         }
-        if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
-
         handleEditTag();
 
         helper.setValue(value);

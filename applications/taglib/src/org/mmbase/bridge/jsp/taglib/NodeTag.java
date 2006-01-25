@@ -17,6 +17,7 @@ import javax.servlet.jsp.tagext.BodyTag;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Notfound;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.58 2005-12-22 13:41:04 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.59 2006-01-25 14:58:17 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -36,37 +37,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private Attribute number    = Attribute.NULL;
     private Attribute element   = Attribute.NULL;
 
-    private final static int NOT_FOUND_THROW = 0;
-    private final static int NOT_FOUND_SKIP  = 1;
-    private final static int NOT_FOUND_PROVIDENULL  = 2;
-
-
     private Attribute notfound = Attribute.NULL;
 
-
-    private int getNotfound() throws JspTagException {
-        if (notfound == Attribute.NULL) {
-            return  NOT_FOUND_THROW;
-        }
-        String is = notfound.getString(this).toLowerCase();
-        if ("skip".equals(is)) {
-            return NOT_FOUND_SKIP;
-        } else if ("skipbody".equals(is)) {
-            return NOT_FOUND_SKIP;
-        } else if ("throw".equals(is)) {
-            return NOT_FOUND_THROW;
-        } else if ("exception".equals(is)) {
-            return NOT_FOUND_THROW;
-        } else if ("throwexception".equals(is)) {
-            return NOT_FOUND_THROW;
-        } else if ("null".equals(is)) {
-            return NOT_FOUND_PROVIDENULL;
-        } else if ("providenull".equals(is)) {
-            return  NOT_FOUND_PROVIDENULL;
-        } else {
-            throw new JspTagException("Invalid value for attribute 'notfound' " + is + "(" + notfound + ")");
-        }
-    }
     /**
      * Release all allocated resources.
      */
@@ -117,13 +89,13 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             if (log.isDebugEnabled()) {
                 log.debug("Looking up Node with " + referString + " in context");
             }
-            switch(getNotfound()) {
-            case NOT_FOUND_SKIP:         {
+            switch(Notfound.get(notfound, this)) {
+            case Notfound.SKIP:         {
                 node = getNodeOrNull(referString);
                 if (node == null) return SKIP_BODY;
                 break;
             }
-            case NOT_FOUND_PROVIDENULL:  {
+            case Notfound.PROVIDENULL:  {
                 node = getNodeOrNull(referString);
                 break;
             }
@@ -149,10 +121,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 // explicity indicated which node (by number or alias)
                 Cloud c = getCloudVar();
                 if (! c.hasNode(n) || ! c.mayRead(n)) {
-                    switch(getNotfound()) {
-                    case NOT_FOUND_SKIP:
+                    switch(Notfound.get(notfound, this)) {
+                    case Notfound.SKIP:
                         return SKIP_BODY;
-                    case NOT_FOUND_PROVIDENULL:
+                    case Notfound.PROVIDENULL:
                         node = null;
                         break;
                     default:
@@ -173,10 +145,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 if (element != Attribute.NULL) {
                     node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
                     if (node == null) {
-                        switch(getNotfound()) {
-                        case NOT_FOUND_SKIP:
+                        switch(Notfound.get(notfound, this)) {
+                        case Notfound.SKIP:
                             return SKIP_BODY;
-                        case NOT_FOUND_PROVIDENULL:
+                        case Notfound.PROVIDENULL:
                             node = null;
                             break;
                         default:

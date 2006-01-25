@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.340 2006-01-23 18:33:29 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.341 2006-01-25 14:58:17 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2275,6 +2275,32 @@ access the value of title:
         <value>wrap(title,10)</value>
         <info>Wraps the title to 10 chars.</info>
       </examplevalue>
+    </attribute>
+    <attribute>
+      <name>notfound</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+          If the node doesn't have the given field, what to do then?
+        </p>
+      </info>
+      <possiblevalue>
+        <value>skip|skipbody</value>
+        <info>Simply skip the body if the field is not available</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>throw|throwexception</value>
+        <info>Throw an exception if the field is not available (default)</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>null|providenull</value>
+        <info>
+          Provides null has the value for the field
+        </info>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
     </attribute>
     <example>See the example for tag `node'.</example>
   </tag>
