@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.193 2006-01-24 12:26:59 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.194 2006-01-25 09:30:47 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -626,65 +626,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
     }
 
-    /**
-     * Returns an enumeration of MMObjectNodes, which respresent relations of this node
-     * with specified role and otype
-     * @param role the role (reldef) number, can be -1
-     * @param otype the destination object type number, can be -1
-     * @param usedirectionality if <code>true</code> teh result si filtered on unidirectional relations.
-     *                          specify <code>false</code> if you want to show unidoerctional relations
-     *                          from destination to source.
-     * @return an Enumeration with the relations
-     */
-    private Enumeration getRelationEnumeration(int role, int otype, boolean usedirectionality) {
-        InsRel relbuilder = BasicCloudContext.mmb.getInsRel();
-        if ((role != 1) || (otype != -1)) {
-            if (role != -1) {
-                relbuilder = BasicCloudContext.mmb.getRelDef().getBuilder(role);
-            }
-            return relbuilder.getRelations(getNumber(), otype, role, usedirectionality);
-        } else {
-            return getNode().getRelations();
-        }
-    }
-
-    /**
-     * Returns a list of Relation objects, which represent relations of this node
-     * with specified role and otype
-     * @param role the role (reldef) number, can be -1
-     * @param otype the destination object type number, can be -1
-     * @return a RelationList with the relations
-     */
-    private RelationList getRelations(int role, int otype) {
-        Enumeration e = getRelationEnumeration(role, otype, true);
-        List relvector = new ArrayList();
-        if (e != null) {
-            while (e.hasMoreElements()) {
-                MMObjectNode mmnode = (MMObjectNode)e.nextElement();
-                if (cloud.check(Operation.READ, mmnode.getNumber())) {
-                    relvector.add(mmnode);
-                }
-            }
-        }
-        return new BasicRelationList(relvector, cloud);
-    }
 
     public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
-        int otype = -1;
-        if (nodeManager != null) {
-            otype = BasicCloudContext.mmb.getTypeDef().getIntValue(nodeManager);
-            if (otype == -1) {
-                throw new NotFoundException("NodeManager " + nodeManager + " does not exist.");
-            }
-        }
-        int rolenr = -1;
-        if (role != null) {
-            rolenr = BasicCloudContext.mmb.getRelDef().getNumberByName(role);
-            if (rolenr == -1) {
-                throw new NotFoundException("Relation with role " + role + " does not exist.");
-            }
-        }
-        return getRelations(rolenr, otype);
+        if ("".equals(nodeManager)) nodeManager = null;
+        return getRelations(role, nodeManager == null ? (NodeManager) null : cloud.getNodeManager(nodeManager), "BOTH");
     }
 
     /**
@@ -698,38 +643,14 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
-        // temporay implementation to get it working for now. Really we would want to make separate queries, I think.
-
-        RelationList  relations = getRelations(role, nodeManager);
-
-        int dir = RelationStep.DIRECTIONS_BOTH;
-        if (searchDir != null) {
-            dir = ClusterBuilder.getSearchDir(searchDir);
+        if (searchDir == null) searchDir = "BOTH";
+        if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
+        NodeQuery query = Queries.createRelationNodesQuery(this, nodeManager, role, searchDir);
+        NodeManager nm = query.getNodeManager();
+        if (! (nm instanceof RelationManager)) {
+            throw new BridgeException("Node manager of query is not a relation manager but " + nm);
         }
-        if (dir == RelationStep.DIRECTIONS_BOTH) return relations;
-
-        RelationIterator it = relations.relationIterator();
-
-        RelationList result = cloud.createRelationList();
-
-        while (it.hasNext()) {
-            Relation relation = it.nextRelation();
-            switch(dir) {
-            case RelationStep.DIRECTIONS_DESTINATION:
-                if(relation.getSource().getNumber() == getNumber()) {
-                    result.add(relation);
-                }
-                break;
-            case RelationStep.DIRECTIONS_SOURCE:
-                if(relation.getDestination().getNumber() == getNumber()) {
-                    result.add(relation);
-                }
-                break;
-            default:
-                result.add(relation); // er..
-            }
-        }
-        return result;
+        return (RelationList) nm.getList(query);
     }
 
     public boolean hasRelations() {
@@ -811,37 +732,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (log.isDebugEnabled()) {
             log.debug("type(" + nodeManager.getName() + "), role(" + role + "), dir(" + searchDir + ")");
         }
-
-        // default directionalty to query for the bridge is SEARCH_BOTH;
-        // SEARCH_EITHER is intended for SCAN - unfortunately, since SCAN does not provide directionality,
-        // the Clusterbuidler has to assume SEARCH_EITHER as a default.
-        // therefor we have to set SEARCH_BOTH manually
-        int dir = RelationStep.DIRECTIONS_BOTH;
-        if (searchDir != null) {
-            dir = ClusterBuilder.getSearchDir(searchDir);
-        }
-        // call list: note: role can be null
-        // XXX. Should perhaps not depend on core's getRelatedNodes becasue then the query remains unknown
-
         if (isNew()) {
             // new nodes have no relations
             return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
         }
-        List mmnodes = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
-
-        // remove the elements which may not be read:
-        ListIterator li = mmnodes.listIterator();
-        while (li.hasNext()) {
-            MMObjectNode node = (MMObjectNode)li.next();
-            if (!cloud.check(Operation.READ, node.getNumber())) {
-                li.remove();
-            }
-        }
-        if (nodeManager != null) {
-            return new BasicNodeList(mmnodes, nodeManager);
-        } else {
-            return new BasicNodeList(mmnodes, cloud);
-        }
+        if (searchDir == null) searchDir = "BOTH";
+        NodeQuery query = Queries.createRelatedNodesQuery(this, nodeManager, role, searchDir);        
+        return query.getNodeManager().getList(query);
     }
 
     public int countRelatedNodes(String type) {
