@@ -4,7 +4,7 @@
 <!ELEMENT author (#PCDATA)>
 <!ELEMENT description (#PCDATA)>
 <!ELEMENT detectorlist (detector*)>
-<!ELEMENT detector (mimetype,extension,designation,test,childlist?)>
+<!ELEMENT detector (mimetype,extension,designation,test?,childlist?)>
 <!ELEMENT extension (#PCDATA)>
 <!ELEMENT mimetype (#PCDATA)>
 <!ELEMENT designation (#PCDATA)>

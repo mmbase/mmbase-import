@@ -158,21 +158,22 @@ public class MagicXMLReader extends DocumentReader implements DetectorProvider {
         d.setDesignation(getElementValue(e1));
 
         e1 = getElementByPath(e, "detector.test");
-        d.setTest(convertOctals(getElementValue(e1)));
-
-        d.setOffset(getElementAttributeValue(e1, "offset"));
-        d.setType(getElementAttributeValue(e1, "type"));
-        String comparator = getElementAttributeValue(e1, "comparator");
-        if (comparator.equals("&gt;")) {
-            d.setComparator('>');
-        } else if (comparator.equals("&lt;")) {
-            d.setComparator('<');
-        } else if (comparator.equals("&amp;")) {
-            d.setComparator('&');
-        } else if (comparator.length() == 1) {
-            d.setComparator(comparator.charAt(0));
-        } else {
-            d.setComparator('=');
+        if (e1 != null) {
+            d.setTest(convertOctals(getElementValue(e1)));
+            d.setOffset(getElementAttributeValue(e1, "offset"));
+            d.setType(getElementAttributeValue(e1, "type"));
+            String comparator = getElementAttributeValue(e1, "comparator");
+            if (comparator.equals("&gt;")) {
+                d.setComparator('>');
+            } else if (comparator.equals("&lt;")) {
+                d.setComparator('<');
+            } else if (comparator.equals("&amp;")) {
+                d.setComparator('&');
+            } else if (comparator.length() == 1) {
+                d.setComparator(comparator.charAt(0));
+            } else {
+                d.setComparator('=');
+            }
         }
 
         e1 = getElementByPath(e, "detector.childlist");
