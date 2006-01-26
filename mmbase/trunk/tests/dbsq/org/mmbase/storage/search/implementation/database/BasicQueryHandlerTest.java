@@ -12,7 +12,7 @@ import org.mmbase.module.core.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandlerTest.java,v 1.8 2005-05-29 11:20:04 nico Exp $
+ * @version $Id: BasicQueryHandlerTest.java,v 1.9 2006-01-26 10:43:54 michiel Exp $
  */
 public class BasicQueryHandlerTest extends TestCase {
 
@@ -108,21 +108,17 @@ public class BasicQueryHandlerTest extends TestCase {
         // as is now the case).
         {
             query = new BasicSearchQuery();
-            BasicStep newsStep = query.addStep(news)
-                .setAlias("news1");
+            BasicStep newsStep = query.addStep(news) .setAlias("news1");
             FieldDefs newsTitle = news.getField("title");
-            BasicStepField newsTitleField = query.addField(newsStep, newsTitle)
-                .setAlias("a_title"); // should not affect result node fieldnames!
-            query.addSortOrder(newsTitleField)
-                .setDirection(SortOrder.ORDER_ASCENDING);
+            BasicStepField newsTitleField = query.addField(newsStep, newsTitle) .setAlias("a_title"); // should not affect result node fieldnames!
+            query.addSortOrder(newsTitleField) .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs newsDescription = news.getField("body");
             query.addField(newsStep, newsDescription);
             FieldDefs otypeDescription = news.getField("otype");
             query.addField(newsStep, otypeDescription);
             FieldDefs newsOwner = news.getField("owner");
             BasicStepField newsOwnerField = query.addField(newsStep, newsOwner);
-            BasicFieldValueConstraint constraint
-            = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
+            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
             query.setConstraint(constraint);
             List resultNodes = instance.getNodes(query, mmbase.getBuilder("news"));
             Iterator iResultNodes = resultNodes.iterator();
@@ -134,7 +130,7 @@ public class BasicQueryHandlerTest extends TestCase {
                 assertTrue(resultNode.getBuilder() == news);
                 assertTrue(resultNode.getStringValue("title") != null
                 && resultNode.getStringValue("title").length() > 0);
-                assertTrue(resultNode.getStringValue("title").equals(testNode.getStringValue("title")));
+                assertTrue("" + resultNode.getStringValue("title") + "!=" + testNode.getStringValue("title"), resultNode.getStringValue("title").equals(testNode.getStringValue("title")));
                 assertTrue(resultNode.getStringValue("body") != null
                 && resultNode.getStringValue("body").length() > 0);
                 assertTrue(resultNode.getStringValue("body").equals(testNode.getStringValue("body")));
