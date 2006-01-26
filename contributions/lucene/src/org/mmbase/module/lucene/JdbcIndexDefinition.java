@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.5 2006-01-23 10:18:17 pierre Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.6 2006-01-26 15:30:13 ernst Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -178,7 +178,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                         map.put(meta.getColumnName(i).toLowerCase(), value);
                     }
                 } else {
-                    map = null;
+                    map = null;    
                 }
                 long duration = (System.currentTimeMillis() - start);
                 if (duration > 500) {
@@ -191,6 +191,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 if (results != null) results.close();
                 if (statement != null) statement.close();
                 if (connection != null) connection.close();
+                if(map == null)return null;
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
             }
