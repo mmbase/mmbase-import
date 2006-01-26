@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,8 @@ import org.mmbase.storage.search.SearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * This class will manage a collection of <code>ReleaseStrategy</code>
  * instances, and call them hierarchically. It is not really thread safe, but I
@@ -26,12 +29,16 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.13 2006-01-24 15:50:49 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.14 2006-01-26 10:08:46 ernst Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
 
-    private List cacheReleaseStrategies = new ArrayList(10);
+    private List releaseStrategies = new CopyOnWriteArrayList();
+    
+    //this map is used to store the 'enabled' status of wrapped strategies when this one is being disabled
+    //so the old settings can be returned when it is enabled again
+    private Map childStrategyMemory = new HashMap();
 
     private String basicStrategyName;
 
@@ -42,6 +49,37 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
         addReleaseStrategy(st);
     }
 
+    
+    
+    /**
+     * This method provides a way of globally switching off all strategies this one wraps.
+     * When this strategy is set to 'disabled', the state of all wrapped strategies is being
+     * preserved, so when it is being 'enabled' again, these settings are restored, in stead of 
+     * just setting all wrapped strategies to 'enabled'
+     */
+    public void setEnabled(boolean newStatus) {
+        if(newStatus != isEnabled()){
+            super.setEnabled(newStatus);
+            
+            //if the strategy is enabled and we have recorded settings, we must put them back
+            
+            
+            for(Iterator i = iterator(); i.hasNext();){
+                ReleaseStrategy strategy = (ReleaseStrategy)i.next();
+                
+                //if it must be switched on, we must use the memeory if present
+                if(newStatus == true){
+                    Boolean memory = (Boolean) childStrategyMemory.get(strategy.getName());
+                    strategy.setEnabled( memory == null ? true :  memory.booleanValue());
+                }else{
+                    //if it must switch of, we must record the status
+                    childStrategyMemory.put(strategy.getName(), new Boolean(strategy.isEnabled()));
+                    strategy.setEnabled(false);
+                    strategy.clear();
+                }
+            }
+        }
+    }
     /**
      * Adds the strategy if it is not allerady there. Strategies should only
      * occure once.
@@ -49,14 +87,14 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * @param strategy
      */
     public void addReleaseStrategy(ReleaseStrategy strategy) {
-        if (! cacheReleaseStrategies.contains(strategy)){
-        	cacheReleaseStrategies.add(strategy);
+        if (! releaseStrategies.contains(strategy)){
+        	releaseStrategies.add(strategy);
         }
     }
 
     public void removeStrategy(ReleaseStrategy strategy) {
         if (!strategy.getName().equals(basicStrategyName)) {
-            cacheReleaseStrategies.remove(strategy);
+            releaseStrategies.remove(strategy);
         }
     }
     
@@ -95,7 +133,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      *         contains the strategies added by the user.
      */
     public Iterator iterator() {
-        return cacheReleaseStrategies.iterator();
+        return releaseStrategies.iterator();
     }
 
     /*
@@ -106,7 +144,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      */
     protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
-        Iterator i = cacheReleaseStrategies.iterator();
+        Iterator i = releaseStrategies.iterator();
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
         while (i.hasNext()) {
             ReleaseStrategy strategy = (ReleaseStrategy) i.next();
@@ -117,7 +155,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
     }
     protected final boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
-        Iterator i = cacheReleaseStrategies.iterator();
+        Iterator i = releaseStrategies.iterator();
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
         while (i.hasNext()) {
             ReleaseStrategy strategy = (ReleaseStrategy) i.next();
