@@ -11,8 +11,7 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 
-import java.io.FileInputStream;
-import java.io.StringReader;
+import java.io.*;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
@@ -39,7 +38,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.1 2003-08-18 16:50:52 pierre Exp $
+ * @version $Id: DocumentReader.java,v 1.1.2.1 2006-01-26 09:55:09 michiel Exp $
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
@@ -89,10 +88,20 @@ public class DocumentReader  {
      */
     private static InputSource getInputSource(String path) {
         try {
+
             // remove file protocol if present to avoid errors in accessing file
-            if (path.startsWith("file://")) path= path.substring(7);
+            if (path.startsWith("file://")) {
+                try {
+                    path = new java.net.URL(path).getPath();
+                } catch (java.net.MalformedURLException mfe) {
+                }                   
+            }
             InputSource is = new InputSource(new FileInputStream(path));
-            is.setSystemId("file://" + path);
+            try {
+                is.setSystemId(new File(path).toURL().toExternalForm());
+            } catch (java.net.MalformedURLException mfe) {
+            }                   
+            
             return is;
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
