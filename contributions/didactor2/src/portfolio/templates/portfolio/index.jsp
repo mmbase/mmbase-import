@@ -7,6 +7,7 @@
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
+<mm:locale language="$language">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title><di:translate key="portfolio.mydocuments" /></title>
@@ -498,26 +499,26 @@
 
 <mm:node referid="myuser">
 
-Mijn gegevens:
+<di:translate key="portfolio.myinfo" />:
 
 <table class="Font">
   <tr>
     <td>
       <table class="Font">
         <tr>
-          <td>Initialen:</td>
+          <td><mm:field name="initials" write="false"><mm:fieldinfo type="guiname"/></mm:field>:</td>
           <td><mm:field name="initials"/></td>
         </tr>
         <tr>
-          <td>Voornaam:</td>
+          <td><mm:field name="firstname" write="false"><mm:fieldinfo type="guiname"/></mm:field>:</td>
           <td><mm:field name="firstname"/></td>
         </tr>
         <tr>
-          <td>Achternaam:</td>
+          <td><mm:field name="lastname" write="false"><mm:fieldinfo type="guiname"/></mm:field>:</td>
           <td><mm:field name="lastname"/></td>
         </tr>
         <tr>
-          <td style="vertical-align: top">Opmerkingen:</td>
+          <td style="vertical-align: top"><mm:field name="remarks" write="false"><mm:fieldinfo type="guiname"/></mm:field>:</td>
           <td><mm:field name="remarks" escape="p"/></td>
         </tr>
       </table>
@@ -559,22 +560,20 @@ Mijn gegevens:
     <td>
       <table class="Font">
         <mm:node number="$user">
-          <mm:locale language="$language">
             <mm:fieldlist fields="initials,firstname,lastname,email,address,zipcode,city,telephone,remarks">
               <tr>
                 <td style="vertical-align: top"><mm:fieldinfo type="guiname"/></td>
                 <td><mm:fieldinfo type="input"/></td>
               </tr>
             </mm:fieldlist>
-          </mm:locale>
           <tr>
             <td>
               <mm:relatednodes type="images">
                 <mm:import id="image_present" reset="true"/>
-                Nieuwe pasfoto
+                <di:translate key="portfolio.newphoto" />
               </mm:relatednodes>
               <mm:present referid="image_present" inverse="true">
-                Pasfoto
+                <di:translate key="portfolio.photo" />
               </mm:present>
             </td>
             <td><input type="file" name="_handle"/></td>
@@ -632,5 +631,6 @@ Mijn gegevens:
 
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+</mm:locale>
 </mm:cloud>
 </mm:content>
