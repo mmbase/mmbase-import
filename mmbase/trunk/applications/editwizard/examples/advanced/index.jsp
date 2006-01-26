@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.28 2005-03-16 22:16:43 michiel Exp $
+    @version  $Id: index.jsp,v 1.29 2006-01-26 15:12:52 pierre Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -160,6 +160,26 @@ view XML</a></td>
 
      </td>
   <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/news.xml</mm:param></mm:url>">view XML</a></td>
+   </tr>
+    <tr><td>
+    <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
+             <mm:param name="wizard">tasks/news_origin</mm:param>
+           <mm:param name="startnodes">default.mags</mm:param>
+           <mm:param name="origin">default.mags</mm:param>
+           <mm:param name="nodepath">mags,news</mm:param>
+           <mm:param name="fields">news.number,news.title</mm:param>
+           <mm:param name="orderby">news.number</mm:param>
+           <mm:param name="directions">down</mm:param>
+           </mm:url>">News (with origin = default.mags)</a>
+     </td><td>
+       <ul>
+         <li> Similar to above, but demonstrates the use of 'origin'. A new article isa utomatically added to teh default magazin.</li>
+       <li>'subwizards'</li>
+       <li>fieldset</li>
+        </ul>
+
+     </td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/tasks/news_origin.xml</mm:param></mm:url>">view XML</a></td>
    </tr>
     <tr><td>
     <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
