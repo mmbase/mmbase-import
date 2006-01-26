@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.19 2006-01-23 10:18:17 pierre Exp $
+ * @version $Id: Searcher.java,v 1.20 2006-01-26 16:04:03 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -81,10 +81,12 @@ public class Searcher {
 
     public NodeList search(Cloud cloud, String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, int offset, int max) throws ParseException  {
         // log the value searched
-        if (extraQuery != null && ! extraQuery.equals("")) {
-            searchLog.service("(" + extraQuery + ") " + value);
-        } else {
-            searchLog.service(value);
+        if (searchLog.isServiceEnabled()) {
+            if (extraQuery != null && ! extraQuery.equals("")) {
+                searchLog.service("(" + extraQuery + ") " + value);
+            } else {
+                searchLog.service(value);
+            }
         }
 
         List list = new LinkedList();
@@ -96,13 +98,16 @@ public class Searcher {
             try {
                 searcher = new IndexSearcher(index.getPath());
                 Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
-                log.trace("hits " + hits);
+                if (log.isDebugEnabled()) {
+                    log.trace("hits " + hits + (hits != null ? "(" + hits.length() + " results)" : ""));
+                }
                 if (hits != null) {
-                    log.trace("Found " + hits.length() + " results");
                     for (int i = offset; (i < offset + max || max < 0) && i < hits.length(); i++) {
                         String hit = hits.doc(i).get("number");
-                        log.trace("Found " + hit);
-                        list.add(index.getNode(cloud, hit));
+                        Node node = index.getNode(cloud, hit);
+                        if (node != null) {
+                            list.add(node);
+                        }
                     }
                 }
             } catch (java.io.IOException e) {
