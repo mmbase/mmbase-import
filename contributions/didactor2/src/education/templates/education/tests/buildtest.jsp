@@ -110,6 +110,11 @@
       <mm:islessthan referid="questionperpageamount" value="1">
          <mm:import id="questionperpageamount" reset="true"><mm:write referid="questionamount"/></mm:import>
       </mm:islessthan>
+      <mm:isgreaterthan referid="questionamount" value="0">
+         <mm:islessthan referid="questionamount" referid2="questionperpageamount">
+            <mm:import id="questionperpageamount" reset="true"><mm:write referid="questionamount"/></mm:import>
+         </mm:islessthan>
+      </mm:isgreaterthan>
       <mm:islessthan referid="questionperpageamount" value="1">
             <mm:import id="questionperpageamount" reset="true">1</mm:import>
       </mm:islessthan>
@@ -240,17 +245,22 @@
    <% } %>
 
    <%-- Determine if all questions are showed --%>
-   <% if ( currentpos > 0 ) { %>
-      <input type="button" value="<di:translate key="education.buttontextprev" />" class="formbutton" onClick="questionform.command.value='back';questionform.submit()"/>
-   <% } %>
-   <% if ( currentpos < listTestPath.size()-1 ) { %>
-      <input type="submit" value="<di:translate key="education.buttontextnext" />" class="formbutton"/>
-   <% } else { %>
-      <mm:import id="testdone" reset="true">true</mm:import>
-   <% } %>
-   <mm:present referid="testdone">
+   <mm:isgreaterthan referid="questionamount" referid2="questionperpageamount" inverse="true">
       <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton" onClick="questionform.command.value='done';questionform.submit()"/>
-   </mm:present>
+   </mm:isgreaterthan>
+   <mm:isgreaterthan referid="questionamount" referid2="questionperpageamount">
+      <% if ( currentpos > 0 ) { %>
+         <input type="button" value="<di:translate key="education.buttontextprev" />" class="formbutton" onClick="questionform.command.value='back';questionform.submit()"/>
+      <% } %>
+      <% if ( currentpos < listTestPath.size()-1 ) { %>
+         <input type="submit" value="<di:translate key="education.buttontextnext" />" class="formbutton"/>
+      <% } else { %>
+         <mm:import id="testdone" reset="true">true</mm:import>
+      <% } %>
+      <mm:present referid="testdone">
+         <input type="submit" value="<di:translate key="education.buttontextdone" />" class="formbutton" onClick="questionform.command.value='done';questionform.submit()"/>
+      </mm:present>
+   </mm:isgreaterthan>
 </mm:node>
 </form>
 
