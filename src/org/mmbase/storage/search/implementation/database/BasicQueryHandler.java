@@ -34,7 +34,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.47 2006-01-26 14:00:24 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.48 2006-01-26 16:54:14 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -312,15 +312,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
         // Test if ALL fields are queried
         List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-        String missingFields = null;
+        StringBuffer missingFields = null;
         for (Iterator f = builderFields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
             if (field.inStorage()) {
+                if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
                 if (fieldIndices.get(field) == null) {
                     if (missingFields == null) {
-                        missingFields = field.getName();
+                        missingFields = new StringBuffer(field.getName());
                     } else {
-                        missingFields += " ," + field.getName();
+                        missingFields.append(" ,").append(field.getName());
                     }
                 }
             }
@@ -336,7 +337,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
         try {
             NodeCache nodeCache = NodeCache.getCache();
             Cache typeCache = Cache.getCache("TypeCache");
-            Integer oTypeInteger = new Integer(builder.getObjectType());
+            int builderType = builder.getObjectType();
+            Integer oTypeInteger = new Integer(builderType);
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
                 try {
                     MMObjectNode node;
@@ -382,10 +384,10 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
                     // The following code fills the type- and node-cache as far as this is possible at this stage.
                     // (provided the node is persistent)
-                    if (isVirtual) {
+                    if (! isVirtual) {
                         int otype = node.getOType();
                         Integer number = new Integer(node.getNumber());
-                        if (otype == builder.getObjectType()) {
+                        if (otype == builderType) {
                             MMObjectNode cacheNode = (MMObjectNode) nodeCache.get(number);
                             if (cacheNode != null) {
                                 node = cacheNode;
