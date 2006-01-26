@@ -106,7 +106,7 @@
         public int compare(Object o1, Object o2){
             Cache c1 = (Cache)o1;
             Cache c2 = (Cache)o2;
-            return c1.getName().compareTo(c2.getName());
+            return c1.getName().toLowerCase().compareTo(c2.getName().toLowerCase());
         }
     });
 %>
@@ -120,30 +120,53 @@
       QueryResultCache cache = (QueryResultCache) i.next();
 %>
    <mm:import id="cacheName" reset="true"><%=saveName(cache.getName())%></mm:import>
-   <tr><td colspan="2">  <a name="<mm:write referid="cacheName"/>"></td></tr>
+   <tr><td colspan="6">  <a name="<mm:write referid="cacheName"/>"></td></tr>
    <%@include file="cache/cache_detail.jsp"%>
 
-   <%-- Now the strategy performance overview line--%>
+
+  <%-- Handle the possible action of globally switching strategies on or off --%>
+  <mm:import id="globalStrategyEnabled" reset="true"><%= cache.getReleaseStrategy().isEnabled() ? "enabled" : "disabled"%></mm:import>
+  <mm:present referid="rs_name">
+    <mm:compare referid="rs_name" referid2="cacheName">
+        <mm:present referid="rs_action">
+            <mm:compare referid="rs_action" referid2="globalStrategyEnabled" inverse="true">
+                <% cache.getReleaseStrategy().setEnabled( request.getParameter("rs_action").equals("enabled") ? true : false );%>
+            </mm:compare>
+        </mm:present>
+    </mm:compare>
+  </mm:present>
+
+     <%-- determin the colors for the global strategy line--%>
+    <mm:import id="globalStrategyEnabled" reset="true"><%= cache.getReleaseStrategy().isEnabled() ? "enabled" : "disabled"%></mm:import>
+    <mm:compare referid="globalStrategyEnabled" value="enabled">
+        <mm:import id="textStyle" reset="true">color: green;</mm:import>
+        <mm:import id="linkStyle" reset="true">color: green;</mm:import>
+    </mm:compare>
+    <mm:compare referid="globalStrategyEnabled" value="enabled" inverse="true">
+        <mm:import id="textStyle" reset="true">color: red;</mm:import>
+        <mm:import id="linkStyle" reset="true">color: red;</mm:import>
+    </mm:compare>
+
+  <%-- Create the url to toggle global strategy active/inactive for this cache --%>
+  <mm:import reset="true" id="url">
+      <mm:url>
+         <mm:param name="rs_name"><mm:write referid="cacheName"/></mm:param>
+         <mm:compare referid="globalStrategyEnabled" value="disabled"> <mm:param name="rs_action">enabled</mm:param> </mm:compare>
+         <mm:compare referid="globalStrategyEnabled" value="disabled" inverse="true"> <mm:param name="rs_action">disabled</mm:param> </mm:compare>
+      </mm:url>#<mm:write referid="cacheName"/>
+   </mm:import>
+
    <tr>
-      <td class="data">Events Analyzed</td>
-      <td class="data"><%= cache.getReleaseStrategy().getTotalEvaluated()%></td>
-      <td class="data">Queries preserved</td>
-      <td class="data"><%= cache.getReleaseStrategy().getTotalPreserved() %></td>
-      <td class="data">Queries flushed</td>
-      <td class="data"><%= cache.getReleaseStrategy().getTotalEvaluated() - cache.getReleaseStrategy().getTotalPreserved()%></td>
+      <td  colspan="5" style="<mm:write referid="textStyle"/>">Events Analyzed : <%= cache.getReleaseStrategy().getTotalEvaluated()%>, Queries preserved : <%= cache.getReleaseStrategy().getTotalPreserved() %>, Queries flushed : <%= cache.getReleaseStrategy().getTotalEvaluated() - cache.getReleaseStrategy().getTotalPreserved()%></td>
+      <td  ><a href="<mm:write referid="url" escape="none"/>"/><b><%= cache.getReleaseStrategy().isEnabled() ? "disable" : "enable"%></b></a> </td>
     </tr>
 
    <%-- create the toggle link for showing / hiding strategy details --%>
    <mm:import reset="true" id="url">
       <mm:url>
-         <mm:param name="rs_show"><mm:write referid="cacheName"/></mm:param>
+      <mm:compare referid="rs_show" referid2="cacheName" inverse="true"> <mm:param name="rs_show"><mm:write referid="cacheName"/></mm:param> </mm:compare>
       </mm:url>#<mm:write referid="cacheName"/>
    </mm:import>
-   <mm:compare referid="rs_show" referid2="cacheName">
-      <mm:import id="url" reset="true">
-         <mm:url/>#<mm:write referid="cacheName"/>
-      </mm:import>
-   </mm:compare>
 
    <tr>
       <td colspan="5">Switch cache release strategy statistics view</td>
@@ -255,7 +278,7 @@
         public int compare(Object o1, Object o2){
             Cache c1 = (Cache)o1;
             Cache c2 = (Cache)o2;
-            return c1.getName().compareTo(c2.getName());
+            return c1.getName().toLowerCase().compareTo(c2.getName().toLowerCase());
         }
     });
     for( Iterator i = caches.iterator(); i.hasNext(); ){
