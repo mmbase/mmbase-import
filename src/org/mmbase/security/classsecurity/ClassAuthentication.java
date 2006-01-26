@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.11 2005-12-29 20:44:08 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.12 2006-01-26 16:46:57 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -65,7 +65,7 @@ public class ClassAuthentication {
     /**
      * Reads the configuration file and instantiates and loads the wrapped Authentication.
      */
-    protected static void load(String configFile) throws SecurityException {
+    protected static synchronized void load(String configFile) throws SecurityException {
         List resourceList = MMBaseCopConfig.securityLoader.getResourceList(configFile);
         log.info("Loading " + configFile + "( " + resourceList + ")");
         authenticatedClasses = new ArrayList();
@@ -129,16 +129,19 @@ public class ClassAuthentication {
      */
     public static Login classCheck(String application) {
         if (authenticatedClasses == null) {
-            String configFile = "classauthentication.xml";
-            load(configFile);
-            watcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
-                public void onChange(String resource) {
-                    load(resource);
+            synchronized(ClassAuthentication.class) { // if load is running this locks
+                if (authenticatedClasses == null) { // if locked, load was running and this now skips, so load is not called twice.
+                    String configFile = "classauthentication.xml";
+                    load(configFile);
+                    watcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
+                            public void onChange(String resource) {
+                                load(resource);
+                            }
+                        };
+                    watcher.add(configFile);
+                    watcher.start();
                 }
-            };
-            watcher.add(configFile);
-            watcher.start();
-
+            }
         }
         if (log.isDebugEnabled()) {
             log.trace("Class authenticating (" + authenticatedClasses + ")");
