@@ -70,6 +70,7 @@
       <gui>
         <guiname xml:lang="en">Initials</guiname>
         <guiname xml:lang="nl">Initialen</guiname>
+        <guiname xml:lang="fr">Initials</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
