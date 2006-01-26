@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.FileInputStream;
-import java.io.StringReader;
+import java.io.*;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -32,7 +31,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.45 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: XMLBasicReader.java,v 1.46 2006-01-26 10:21:50 michiel Exp $
  */
 public class XMLBasicReader extends DocumentReader {
 
@@ -82,10 +81,18 @@ public class XMLBasicReader extends DocumentReader {
         InputSource is;
         try {
             // remove file protocol if present to avoid errors in accessing file
-            if (path.startsWith("file://")) path= path.substring(7);
+            if (path.startsWith("file://")) {
+                try {
+                    path = new java.net.URL(path).getPath();
+                } catch (java.net.MalformedURLException mfe) {
+                }                   
+            }
             is = new InputSource(new FileInputStream(path));
-            is.setSystemId("file://" + path);
-            return is;
+            try {
+                is.setSystemId(new File(path).toURL().toExternalForm());
+            } catch (java.net.MalformedURLException mfe) {
+            }                   
+            is.setSystemId("file://" + path);            
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
