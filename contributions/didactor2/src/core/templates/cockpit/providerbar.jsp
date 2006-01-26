@@ -11,10 +11,26 @@
 
 <mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
+<script language="JavaScript1.1" type="text/javascript">
 
+function getUrl(url){
+  var i = new Image();
+  i.src = url;
+  i = null;
+}
+
+function keepalive(){
+  getUrl("<mm:treefile page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" />");
+  setTimeout("keepalive();",1000 * 60 * 2); // keep alive every 2 minutes
+}
+
+keepalive();
+</script>
+<%--
 <div style="display:none;">
     <mm:treeinclude write="true" page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" />
 </div>
+--%>
  
 
 <div class="providerMenubar" style="white-space: nowrap">
