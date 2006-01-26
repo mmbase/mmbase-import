@@ -39,8 +39,8 @@
   </form>
   <mm:node number="component.register" notfound="skipbody">
     <br />
-	 Nog geen account? <br />
-	 Registreer jezelf <a href="<mm:treefile page="/register/index.jsp" objectlist="$includePath" referids="$referids" />">hier</a>
+    <di:translate key="register.noaccountyet" /><br />
+    <di:translate key="register.registeryourself" /> <a href="<mm:treefile page="/register/index.jsp" objectlist="$includePath" referids="$referids" />"><di:translate key="register.here" /></a>
   </mm:node>
 </mm:cloud>
 </mm:content>         
