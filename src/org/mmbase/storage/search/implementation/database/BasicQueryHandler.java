@@ -34,7 +34,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.46 2006-01-23 18:25:48 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.47 2006-01-26 14:00:24 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -300,7 +300,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
             if (fields[i].getType() == CoreField.TYPE_BINARY && storesAsFile) continue;
             Integer index = new Integer(j++);
             if (fields[i].getStep() == nodeStep) {
-                String fieldName =  fields[i].getFieldName();                
+                String fieldName =  fields[i].getFieldName();
                 CoreField field = builder.getField(fieldName);
                 if (field == null) {
                     log.warn("Did not find the field '" + fieldName + "' in builder " + builder);
@@ -310,6 +310,28 @@ public class BasicQueryHandler implements SearchQueryHandler {
             }
         }
 
+        // Test if ALL fields are queried
+        List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+        String missingFields = null;
+        for (Iterator f = builderFields.iterator(); f.hasNext();) {
+            CoreField field = (CoreField)f.next();
+            if (field.inStorage()) {
+                if (fieldIndices.get(field) == null) {
+                    if (missingFields == null) {
+                        missingFields = field.getName();
+                    } else {
+                        missingFields += " ," + field.getName();
+                    }
+                }
+            }
+        }
+
+        // if not all field are queried, this is a virtual node
+        boolean isVirtual = missingFields != null;
+        if (isVirtual) {
+            log.warn("This query returns virtual nodes (not querying: '" + missingFields + "')");
+        }
+
         // Truncate results to provide weak support for maxnumber.
         try {
             NodeCache nodeCache = NodeCache.getCache();
@@ -317,7 +339,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
             Integer oTypeInteger = new Integer(builder.getObjectType());
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
                 try {
-                    MMObjectNode node = new MMObjectNode(builder, false);
+                    MMObjectNode node;
+                    if (!isVirtual) {
+                        node = new MMObjectNode(builder, false);
+                    } else {
+                        node = new VirtualNode(builder);
+                    }
                     node.start();
                     for (Iterator i = builder.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext(); ) {
                         CoreField field = (CoreField)i.next();
@@ -328,16 +355,15 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         if (index != null) {
                             value = storageManager.getValue(rs, index.intValue(), field, true);
                         } else {
-                            java.sql.Blob b;
+                            java.sql.Blob b = null;
                             if (field.getType() == CoreField.TYPE_BINARY && storesAsFile) {
-                                log.debug("No index found for '" + fieldName + "', supposing it on disk");
+                                log.debug("Storage did not return data for '" + fieldName + "', supposing it on disk");
                                 // must have been a explicitely specified 'blob' field
                                 b = storageManager.getBlobValue(node, field, true);
-                            } else {
-                                // could even throw RuntimeException here, because this should not
-                                // happen!
-                                log.error("No index found for '" + fieldName + "'");
-                                b = null;
+                            } else if (! isVirtual){
+                                // field wasn't returned by the db - this must be a Virtual node, otherwise fail!
+                                // (this shoudln't occur)
+                                throw new IllegalStateException("Storage did not return data for field '" + fieldName + "'");
                             }
                             if (b == null) {
                                 value = null;
@@ -348,7 +374,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
                                     value = b.getBytes(0L, (int) b.length());
                                 }
                             }
-
                         }
                         node.storeValue(fieldName, value);
                     }
@@ -356,18 +381,21 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     node.finish();
 
                     // The following code fills the type- and node-cache as far as this is possible at this stage.
-                    int otype = node.getOType();
-                    Integer number = new Integer(node.getNumber());
-                    if (otype == builder.getObjectType()) {
-                        MMObjectNode cacheNode = (MMObjectNode) nodeCache.get(number);
-                        if (cacheNode != null) {
-                            node = cacheNode;
+                    // (provided the node is persistent)
+                    if (isVirtual) {
+                        int otype = node.getOType();
+                        Integer number = new Integer(node.getNumber());
+                        if (otype == builder.getObjectType()) {
+                            MMObjectNode cacheNode = (MMObjectNode) nodeCache.get(number);
+                            if (cacheNode != null) {
+                                node = cacheNode;
+                            } else {
+                                nodeCache.put(number, node);
+                            }
+                            typeCache.put(number, oTypeInteger);
                         } else {
-                            nodeCache.put(number, node);
+                            typeCache.put(number, new Integer(otype));
                         }
-                        typeCache.put(number, oTypeInteger);
-                    } else {
-                        typeCache.put(number, new Integer(otype));
                     }
 
                     results.add(node);
