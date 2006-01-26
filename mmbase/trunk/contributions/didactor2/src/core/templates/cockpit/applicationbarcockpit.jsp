@@ -5,7 +5,7 @@
 <div class="applicationMenubarCockpit" style="white-space: nowrap">
   <mm:node number="$user" notfound="skipbody">
     <div class="menuItemApplicationMenubar">
-      <a title="<di:translate key="core.logout" />" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.logout" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
+      <a title="<di:translate key="core.logout" />" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.logout" /> <mm:field name="firstname"/> <mm:field name="suffix"/> <mm:field name="lastname"/></a>
     </div>
 
     <!-- <div class="menuSeperatorApplicationMenubar"></div>
