@@ -22,7 +22,7 @@
   <di:hasrole role="teacher">
     <mm:remove referid="posterid"/>
     <mm:remove referid="lang"/>
-    <mm:listnodes type="posters" constraints="account='admin' AND password='${cloudprovider.adminpassword}'">
+    <mm:listnodes type="posters" constraints="account='admin' AND password='admin2k'">
         <mm:import id="adminposter" reset="true"><mm:field name="number"/></mm:import>
     </mm:listnodes>
 
