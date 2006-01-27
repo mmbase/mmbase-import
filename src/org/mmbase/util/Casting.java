@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.83 2006-01-16 16:52:02 michiel Exp $
+ * @version $Id: Casting.java,v 1.84 2006-01-27 18:15:37 michiel Exp $
  */
 
 import java.util.*;
@@ -224,7 +224,7 @@ public class Casting {
         if (o instanceof String) {
             return (String)o;
         }
-        if (o == null) {
+        if (o == null || "".equals(o)) {
             return "";
         }
 
@@ -634,7 +634,9 @@ public class Casting {
      * @return the converted value as a <code>Integer</code>
      */
     static public Integer toInteger(Object i) {
-        if (i instanceof Integer) {
+        if (i == null || "".equals(i)) {
+            return null;
+        } else if (i instanceof Integer) {
             return (Integer)i;
         } else {
             return new Integer(toInt(i));
