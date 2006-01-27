@@ -28,7 +28,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.25 2005-11-07 18:02:42 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.26 2006-01-27 18:13:36 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -82,35 +82,31 @@ public class ImageServlet extends HandleServlet {
      */
 
     protected boolean setContent(QueryParts query, Node node, String mimeType) throws java.io.IOException {
-        String fileName; // will be based on the 'title' field, because images lack a special field for this now.
+        Node originalNode;
         if (node.getNodeManager().getName().equals("icaches")) {
-            int originalNode = node.getIntValue("id");
             Cloud c = node.getCloud();
+            int originalNodeNumber = node.getIntValue("id");
 
-            if (! c.mayRead(originalNode) && c.getUser().getRank().equals(Rank.ANONYMOUS)) {
+            if (! c.mayRead(originalNodeNumber) && c.getUser().getRank().equals(Rank.ANONYMOUS)) {
                 // try (again?) cloud from session
                 c = getCloud(query);
             }
 
-            if (c == null || ! c.mayRead(originalNode)) {
-                query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied on original image node '" + originalNode + "'");
+            if (c == null || ! c.mayRead(originalNodeNumber)) {
+                query.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied on original image node '" + originalNodeNumber + "'");
                 return false;
             }
-            fileName = c.getNode(originalNode).getStringValue("title");
-
+            originalNode = c.getNode(originalNodeNumber);
         } else { // 'images', but as you see this is not explicit, so you can also name your image builder otherwise.
-            fileName = node.getStringValue("title");
+            originalNode = node;
         }
 
-        // still not found a sensible fileName? Give it up then.
-        if (fileName == null || fileName.equals("")) fileName = "mmbase-image";
-
-        query.getResponse().setHeader("Content-Disposition", "inline; filename=\"" + legalizeFileName.matcher(fileName).replaceAll("_")  + "." + node.getFunctionValue("format", null).toString() + "\"");
+        query.getResponse().setHeader("Content-Disposition", "inline; filename=\"" + getFileName(originalNode, node, "mmbase-image")+ "\"");
         return true;
     }
 
     /**
-     * ImageServlet can serve a icache node in stead (using the 'extra parameters'
+     * ImageServlet can serve a icache node in stead (using the 'extra parameters)'
      *
      * @since MMBase-1.7.4
      */
