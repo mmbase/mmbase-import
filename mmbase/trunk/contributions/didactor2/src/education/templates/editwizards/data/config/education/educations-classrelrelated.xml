@@ -1,7 +1,7 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="educations" role="classrel" minoccurs="0" maxoccurs="*">
-    <title xml:lang="nl">Bijbehorende Opleidingen</title>
-    <title xml:lang="en">Related educations</title>
+    <title xml:lang="nl">Bijbehorende Opleidingen (als student)</title>
+    <title xml:lang="en">Related educations (as student)</title>
     <item>
         <field name="name" ftype="data">
             <prompt xml:lang="nl">Naam</prompt>
