@@ -83,32 +83,33 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
         String classname = component.getStringValue("classname");
         String componentname = component.getStringValue("name");
         log.info("Registering component " + componentname + " with class '" + classname + "'");
+        Component comp = null;
        
         if (classname == null || "".equals(classname)) {
-            return new BasicComponent(componentname);
-        }
-
-        try {
-            Class c = Class.forName(classname);
-            if (c == null) {
-                return new BasicComponent(componentname);
+            comp = new BasicComponent(componentname);
+        } else {
+            try {
+                Class c = Class.forName(classname);
+                if (c == null) {
+                    comp = new BasicComponent(componentname);
+                } else {
+                    comp = (Component)c.newInstance();
+                    if (comp == null) {
+                        comp = new BasicComponent(componentname);
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                log.error("Class not found: " + classname);
+            } catch (Exception e) {
+                log.error("Exception while initializing (" + component + "): " + e);
             }
-
-            Component comp = (Component)c.newInstance();
-            if (comp == null) {
-                return new BasicComponent(componentname);
-            }
-            
-            comp.setNode(component);
-            Component.register(componentname, comp);
-            return comp;
-        } catch (ClassNotFoundException e) {
-            log.error("Class not found: " + classname);
-            return new BasicComponent(componentname);
-        } catch (Exception e) {
-            log.error("Exception while initializing (" + component + "): " + e);
-            return new BasicComponent(componentname);
         }
+        if (comp == null) {
+            comp = new BasicComponent(componentname);
+        }
+        comp.setNode(component);
+        Component.register(componentname, comp);
+        return comp;
     }
 
     /**
