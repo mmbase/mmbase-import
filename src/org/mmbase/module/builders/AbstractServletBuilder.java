@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.36 2006-01-27 17:50:54 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.37 2006-01-27 20:00:40 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -319,10 +319,17 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     protected static final Pattern legalizeFileName = Pattern.compile("[\\/\\:\\;\\\\ ]+");
 
+
     /**
      * @since MMBase-1.8
      */
-    protected String getFileName(MMObjectNode node) {
+    protected String getDefaultFileName() {
+        return getSingularName("en");
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    protected StringBuffer getFileName(MMObjectNode node, StringBuffer buf) {
         String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
         if (fileName.equals("")) {
             String fileTitle;
@@ -334,7 +341,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 fileTitle = "";
             }
             if (fileTitle.equals("")) {
-                fileTitle = getSingularName("en");
+                fileTitle = getDefaultFileName();
             }
             fileName = fileTitle  + "." + node.getFunctionValue("format", null);
         }
@@ -344,7 +351,37 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (backSlash > -1)  {
             fileName = fileName.substring(backSlash + 1);
         }
-        return legalizeFileName.matcher(fileName).replaceAll("_");
+        buf.append(legalizeFileName.matcher(fileName).replaceAll("_"));
+        return buf;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected boolean addFileName(MMObjectNode node, String servlet) {
+        if (addsFileName == FILENAME_CHECKSETTING) {
+            javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
+            if (sx != null) {                            
+                String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename");
+                if (res == null) res = "";
+                res = res.toLowerCase();
+                log.trace("res " + res);
+                if ("no".equals(res) || "false".equals(res)) {
+                    addsFileName = FILENAME_DONTADD;
+                } else if ("yes".equals(res) || "true".equals(res)) {
+                    addsFileName = FILENAME_ADD;
+                } else {
+                    log.debug("Found " + res + " for mmbase.servlet." + getAssociation() + ".addfilename");
+                    addsFileName = FILENAME_IFSENSIBLE;
+                }
+            }
+        }
+        log.debug("addsFileName " + addsFileName);
+        
+        String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
+        return  addsFileName == FILENAME_ADD ||  
+            ( addsFileName == FILENAME_IFSENSIBLE && (!servlet.endsWith("?")) &&  (! "".equals(fileName)));
+        
     }
 
 
@@ -424,29 +461,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                             argument = node.getStringValue(fieldName);
                         }
                     }
-                    
-                    if (addsFileName == FILENAME_CHECKSETTING) {
-                        javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
-                        if (sx != null) {                            
-                            String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename");
-                            if (res == null) res = "";
-                            res = res.toLowerCase();
-                            log.trace("res " + res);
-                            if ("no".equals(res) || "false".equals(res)) {
-                                addsFileName = FILENAME_DONTADD;
-                            } else if ("yes".equals(res) || "true".equals(res)) {
-                                addsFileName = FILENAME_ADD;
-                            } else {
-                                log.debug("Found " + res + " for mmbase.servlet." + getAssociation() + ".addfilename");
-                                addsFileName = FILENAME_IFSENSIBLE;
-                            }
-                        }
-                    }
-                    log.debug("addsFileName " + addsFileName);
-
-                    String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
-                    boolean addFileName =  addsFileName == FILENAME_ADD ||  
-                        ( addsFileName == FILENAME_IFSENSIBLE && (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName)));
+                    MMObjectNode mmnode = new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
+                    boolean addFileName = addFileName(mmnode, servlet.toString());
                     
                     if (usesBridgeServlet && ! session.equals("")) {
                         servlet.append("session=" + session + "+");
@@ -455,7 +471,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     if (! addFileName) {
                         return servlet.append(argument).toString();
                     } else {
-                        servlet.append(argument).append('/').append(getFileName(new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node))));
+                        servlet.append(argument).append('/');
+                        getFileName(mmnode, servlet);
                         return servlet.toString();
                     }
                 }

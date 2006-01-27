@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.49 2005-12-18 23:13:33 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.50 2006-01-27 20:00:40 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -59,6 +59,27 @@ public class ImageCaches extends AbstractImages {
      **/
     private MMObjectNode originalImage(MMObjectNode node) {
         return getNode(node.getIntValue(FIELD_ID));
+    }
+
+    protected StringBuffer getFileName(MMObjectNode node, StringBuffer buf) {        
+        MMObjectNode originalImage = originalImage(node);
+        Images images = (Images) originalImage.getBuilder();
+        images.getFileName(originalImage, buf);
+        String ext = getImageFormat(node);
+        if (images.storesImageType()) { // otherwise too expensive
+            if (! ext.equals(images.getImageFormat(originalImage))) {
+                buf.append('.').append(ext);
+            }
+        } else {
+            buf.append('.').append(ext);
+        }
+        return buf;
+    }
+    protected boolean addFileName(MMObjectNode node, String servlet) {
+        if (super.addFileName(node, servlet)) return true;
+        MMObjectNode originalImage = originalImage(node);
+        Images images = (Images) originalImage.getBuilder();
+        return images.addFileName(originalImage, servlet);
     }
 
     /**
@@ -277,7 +298,7 @@ public class ImageCaches extends AbstractImages {
     public void removeNode(MMObjectNode node) {
         String ckey = node.getStringValue(Imaging.FIELD_CKEY);
         log.service("Icaches: removing node " + node.getNumber() + " " + ckey);
-        ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache(node.getIntValue(FIELD_ID));
+        ((Images) mmb.getBuilder("images")).invalidateTemplateCacheNumberCache(node.getIntValue(FIELD_ID));
         // also delete from LRU Cache
         super.removeNode(node);
 
