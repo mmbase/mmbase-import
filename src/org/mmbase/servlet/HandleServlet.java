@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.24 2006-01-27 18:13:36 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.25 2006-01-27 18:30:04 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -91,13 +91,23 @@ public class HandleServlet extends BridgeServlet {
         if (node == titleNode) {
             fileName = nm.hasField("filename") ? titleNode.getStringValue("filename") : null;
         } else {
-            fileName = nm.hasField("filename") ? titleNode.getStringValue("filename") + node.getFunctionValue("format", null).toString() : null;
+            if (nm.hasField("filename")) {
+                fileName = titleNode.getStringValue("filename");
+                String ext = node.getFunctionValue("format", null).toString();
+                if (! ext.equals(titleNode.getFunctionValue("format", null).toString())) {
+                    fileName += '.' + ext;
+                }
+            } else {
+                fileName = null;
+            }
         }
-        int backSlash = fileName.lastIndexOf("\\");
-        // if uploaded in MSIE, then the path may be in the fileName
-        // this is also fixed in the set-processor, but if that is or was missing, be gracefull here.
-        if (backSlash > -1)  {
-            fileName = fileName.substring(backSlash + 1);
+        if (fileName != null) {
+            int backSlash = fileName.lastIndexOf("\\");
+            // if uploaded in MSIE, then the path may be in the fileName
+            // this is also fixed in the set-processor, but if that is or was missing, be gracefull here.
+            if (backSlash > -1)  {
+                fileName = fileName.substring(backSlash + 1);
+            }
         }
 
         if (fileName == null || fileName.equals("")) {
