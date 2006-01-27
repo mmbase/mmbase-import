@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.366 2006-01-24 21:56:14 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.367 2006-01-27 15:15:10 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2915,7 +2915,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if(type == NodeEvent.EVENT_TYPE_DELETE || 
            ((! localEvent) && type == NodeEvent.EVENT_TYPE_CHANGED)){
             if (nodeCache.remove(changedNodeNumber) != null) {
-                log.service("Removed from " + changedNodeNumber + " from node cache");
+                log.service("Removed node " + changedNodeNumber + " from node cache");
             }
         }
 
