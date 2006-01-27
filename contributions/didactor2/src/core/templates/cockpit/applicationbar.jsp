@@ -15,12 +15,6 @@
       </mm:node>
     </div>
      
-   <!--  <div class="menuSeperatorApplicationMenubar"></div>
-                
-    <div class="menuItemApplicationMenubar">
-      <a title="<di:translate key="core.help" />" href="<mm:treefile page="/help/index.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.help" /></a>
-    </div>-->
-    
     <div class="menuSeperatorApplicationMenubar"></div>
     
     <div class="menuItemApplicationMenubar">
