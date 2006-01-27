@@ -502,7 +502,6 @@ a.path:hover {
 /* ###### treelevel ###### */
 
 .lbLevel0 {
-	height: 20px;
 	padding: 0.2em 0em 0.2em 0em;
 	background-color: #EE8628;
 	BORDER-LEFT: #FFFFFF 1px solid;
@@ -510,7 +509,6 @@ a.path:hover {
 	BORDER-TOP: #FFFFFF 1px solid }
 
 .lbLevel1 {
-	height: 20px;
 	padding: 0.2em 0em 0.2em 0em;
 	background-color: #F19E53;
 	BORDER-LEFT: #FFFFFF 1px solid;
@@ -518,25 +516,21 @@ a.path:hover {
 	BORDER-TOP: #FFFFFF 1px solid }
 
 .lbLevel2 {
-	height: 20px;
 	padding: 0.2em 0em 0.2em 0em;
   	background-color: #F5B67E;
 	BORDER-TOP: #FFFFFF 1px solid }
 
 .lbLevel3 {
-	height: 20px;
 	padding: 0.2em 0em 0.2em 0em;
 	background-color: #F8CFA9;
 	BORDER-TOP: #FFFFFF 1px solid }
 
 .lbLevel4 {
-	height: 20px;
 	padding: 0.2em 0em 0.2em 0em;
   	background-color: #FBE1C9;
 	BORDER-TOP: #FFFFFF 1px solid }
 
 .loLevel {
-	height: 20px;
 	padding: 0.2em 0em 0.2em 0em;
   	background-color: #FEEEE0;
 	BORDER-TOP: #FFFFFF 1px solid }
