@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.13 2006-01-17 21:31:00 nklasens Exp $
+ * @version $Id: RemoteMMCI.java,v 1.14 2006-01-27 17:17:01 michiel Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -61,7 +61,7 @@ public class RemoteMMCI extends ProcessorModule {
         String host = getHost();
         String bindName = getBindName();
         createRemoteMMCI(host, registryPort, bindName);
-        
+        log.info("Listening on rmi://" + host + ":" + registryPort + "/" + bindName);
         startChecker(this);
     }
 
@@ -77,7 +77,7 @@ public class RemoteMMCI extends ProcessorModule {
                 bindName = bindNameParam;
             }
         } else {
-            log.warn("missing bindname init param, using (default)=(" + bindName + ")");
+            log.warn("missing bindname init param, using default '" + bindName + "'");
         }
         return bindName;
     }
@@ -116,7 +116,7 @@ public class RemoteMMCI extends ProcessorModule {
                 log.warn("port parameter '" + portString + "' of rmmci.xml is not of type int.");
             };
         } else {
-            log.info("missing port init param, using (default)=(" + registryPort + ")");
+            log.info("missing port init param, using default " + registryPort);
         }
         return registryPort;
     }
@@ -348,9 +348,8 @@ public class RemoteMMCI extends ProcessorModule {
                 if (!remoteMMCI.test(host, port, bindName)) {
                     remoteMMCI.resetBind(host, port, bindName);
                 }
-            }
-            catch (RemoteException e) {
-                log.warn(Logging.stackTrace(e));
+            } catch (RemoteException e) {
+                log.warn(e.getClass().getName() + ": " + e.getMessage(), e);
             }
         }
     }
