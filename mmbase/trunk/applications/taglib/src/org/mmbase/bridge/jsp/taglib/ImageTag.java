@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.66 2006-01-25 19:28:47 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.67 2006-01-27 20:01:52 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -47,6 +47,7 @@ public class ImageTag extends FieldTag {
 
 
     private static Boolean makeRelative = null;
+    private static Boolean urlConvert   = null;
 
     /** Holds value of property template. */
     private Attribute template = Attribute.NULL;
@@ -151,6 +152,7 @@ public class ImageTag extends FieldTag {
         }
     }
 
+
     private String getCrop() throws JspTagException {
         String m = crop.getString(this).toLowerCase();
         if (m.equals("")) { 
@@ -166,6 +168,31 @@ public class ImageTag extends FieldTag {
         }
     }
 
+    private boolean makeRelative() {
+        if (makeRelative == null) {            
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
+            makeRelative = Boolean.valueOf("true".equals(setting));
+        }
+        return makeRelative.booleanValue();
+    }
+
+    protected Node getServletNode(Node node, String template) {
+        if (urlConvert() || "".equals(template)) {
+            return node;
+        } else {
+            // the cached image
+            return node.getFunctionValue("cachednode", new Parameters(Images.CACHE_PARAMETERS).set("template", template)).toNode();
+        }
+
+    }
+
+    private boolean urlConvert() {
+        if (urlConvert == null) {
+            urlConvert = Boolean.valueOf("true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert")));
+        }
+        return urlConvert.booleanValue();
+    }
+
     public int doStartTag() throws JspTagException {
         Node node = getNode();
         if (!node.getNodeManager().hasField("handle")) {
@@ -175,10 +202,13 @@ public class ImageTag extends FieldTag {
         helper.useEscaper(false);
         prevDimension = pageContext.getAttribute("dimension");
 
-        String templateStr = getTemplate(node, template.getString(this), width.getInt(this, 0),
-                height.getInt(this, 0), getCrop());
+        String templateStr = getTemplate(node, template.getString(this), width.getInt(this, 0), height.getInt(this, 0), getCrop());
         Dimension dim = getDimension(node, templateStr);
+
+        node = getServletNode(node, templateStr);
+
         String servletArgument = getServletArgument(node, templateStr);
+
         String servletPath = getServletPath(node, servletArgument);
         String outputValue = getOutputValue(getMode(), node, servletPath, dim);
 
@@ -206,21 +236,15 @@ public class ImageTag extends FieldTag {
 
     public String getServletArgument(Node node, String t) {
         String servletArgument; // can be the node-number or a template (if that is configured to be allowed).
-        if ("".equals(t)) {
+        if ("".equals(t) || ! urlConvert()) {
             // the node/image itself
             servletArgument = node.getStringValue("number");
         } else {
-            boolean urlconvert = "true".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.image.urlconvert"));
-            if (urlconvert) {
-                try {                    
-                    servletArgument = "" + node.getNumber() + "+" + java.net.URLEncoder.encode(t, "UTF-8");
-                } catch (java.io.UnsupportedEncodingException uee) {
-                    // cannot happen 'UTF-8' is supported.
-                    servletArgument = "" + node.getNumber() + "+" + t;
-                }
-            } else {
-                // the cached image
-                servletArgument = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
+            try {                    
+                servletArgument = "" + node.getNumber() + "+" + java.net.URLEncoder.encode(t, "UTF-8");
+            } catch (java.io.UnsupportedEncodingException uee) {
+                // cannot happen 'UTF-8' is supported.
+                servletArgument = "" + node.getNumber() + "+" + t;
             }
         }
         return servletArgument;
@@ -239,15 +263,9 @@ public class ImageTag extends FieldTag {
     }
 
     public Parameters getServletArguments(String servletArgument, Function servletPathFunction) {
-        if (makeRelative == null) {            
-            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
-            makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
-        }
-
-        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
-        
+        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();        
         Parameters args = servletPathFunction.createParameters();
-        args.set("context",  makeRelative.booleanValue() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
+        args.set("context",  makeRelative() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
             .set("argument", servletArgument);
         return args;
     }
