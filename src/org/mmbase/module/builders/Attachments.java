@@ -26,7 +26,7 @@ import org.mmbase.util.magicfile.MagicFile;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.40 2005-12-17 16:16:09 michiel Exp $
+ * @version $Id: Attachments.java,v 1.41 2006-01-27 17:50:54 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -46,7 +46,7 @@ public class Attachments extends AbstractServletBuilder {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
 
-            String fileName = node.getStringValue("filename");
+            String fileName = getFileName(node);
             String title;
 
             if (fileName == null || fileName.equals("")) {
