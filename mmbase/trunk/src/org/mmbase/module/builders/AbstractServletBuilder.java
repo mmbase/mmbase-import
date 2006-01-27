@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.util.regex.*;
 
 import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.servlet.BridgeServlet;
@@ -29,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.35 2005-12-23 13:16:04 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.36 2006-01-27 17:50:54 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -201,7 +202,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             byte[] handle = node.getByteValue(FIELD_HANDLE);
 
             String extension = null;                
-            if (getField(FIELD_FILENAME) != null) {
+            if (hasField(FIELD_FILENAME)) {
                 String filename = node.getStringValue(FIELD_FILENAME);
                 int dotIndex = filename.lastIndexOf("."); 
                 if (dotIndex > -1) {
@@ -316,6 +317,37 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
     }
 
+    protected static final Pattern legalizeFileName = Pattern.compile("[\\/\\:\\;\\\\ ]+");
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected String getFileName(MMObjectNode node) {
+        String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
+        if (fileName.equals("")) {
+            String fileTitle;
+            if (hasField("title")) {
+                fileTitle = node.getStringValue("title");
+            } else if (hasField("name")) {
+                fileTitle = node.getStringValue("name");
+            } else {
+                fileTitle = "";
+            }
+            if (fileTitle.equals("")) {
+                fileTitle = getSingularName("en");
+            }
+            fileName = fileTitle  + "." + node.getFunctionValue("format", null);
+        }
+        int backSlash = fileName.lastIndexOf("\\");
+        // if uploaded in MSIE, then the path may be in the fileName
+        // this is also fixed in the set-processor, but if that is or was missing, be gracefull here.
+        if (backSlash > -1)  {
+            fileName = fileName.substring(backSlash + 1);
+        }
+        return legalizeFileName.matcher(fileName).replaceAll("_");
+    }
+
+
     {
         // you can of course even implement it anonymously.
         addFunction(new NodeFunction("servletpath", 
@@ -393,7 +425,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                         }
                     }
                     
-                    String fileName = getField(FIELD_FILENAME) != null ? node.getStringValue("filename") : "";
                     if (addsFileName == FILENAME_CHECKSETTING) {
                         javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
                         if (sx != null) {                            
@@ -413,6 +444,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     }
                     log.debug("addsFileName " + addsFileName);
 
+                    String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
                     boolean addFileName =  addsFileName == FILENAME_ADD ||  
                         ( addsFileName == FILENAME_IFSENSIBLE && (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName)));
                     
@@ -423,12 +455,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     if (! addFileName) {
                         return servlet.append(argument).toString();
                     } else {
-                        if (fileName.equals("")) {
-                            String fileTitle = node.getStringValue("title");
-                            if (fileTitle.equals("")) fileTitle = getSingularName("en");
-                            fileName = fileTitle  + "." + node.getFunctionValue("format", null);
-                        }
-                        servlet.append(argument).append('/').append(fileName.replace(' ', '_'));
+                        servlet.append(argument).append('/').append(getFileName(new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node))));
                         return servlet.toString();
                     }
                 }

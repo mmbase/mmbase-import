@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.175 2006-01-23 18:23:28 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.176 2006-01-27 17:50:54 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -181,6 +181,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         isNew  = node.isNew();
         values.putAll(node.getValues());
         values.putAll(node.getOldValues());
+    }
+
+    /**
+     * Creates an MMObject based on a given Map.  This can e.g. be used to make an MMObjectNode of a bridge node (use {@link org.mmbase.bridge.util.NodeMap}).
+     *
+     * @since MMBase-1.8
+     */
+    public MMObjectNode(MMObjectBuilder parent, Map map) {
+        isNew = false;
+        this.parent = parent;
+        values = map;
     }
 
     /**
