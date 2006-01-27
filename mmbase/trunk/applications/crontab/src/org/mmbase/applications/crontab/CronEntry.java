@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.4 2006-01-20 08:19:10 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.5 2006-01-27 20:35:16 michiel Exp $
  */
 
 public class CronEntry {
@@ -117,6 +117,13 @@ public class CronEntry {
     }
 
     public void stop() {
+        synchronized(threads) {
+            Iterator i = threads.iterator();
+            while (i.hasNext()) {
+                Interruptable thread = (Interruptable) i.next();
+                thread.interrupt();
+            }
+        }
         cronJob.stop();
     }
     /**
