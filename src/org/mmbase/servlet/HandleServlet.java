@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.23 2005-11-07 18:02:42 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.24 2006-01-27 18:13:36 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -77,30 +77,47 @@ public class HandleServlet extends BridgeServlet {
         return "application/x-binary";
     }
 
+    
+    protected static final Pattern legalizeFileName = Pattern.compile("[\\/\\:\\;\\\\\"]+");
 
-    protected static final Pattern legalizeFileName = Pattern.compile("[ \\.\\/\\:\\\\]+");
+    /**
+     * @since MMBase-1.8
+     */
+    protected String getFileName(final Node node, Node titleNode, final String def) {
+        if (titleNode == null) titleNode = node;
+        NodeManager nm = titleNode.getNodeManager();
+        // Try to find a sensible filename to use in the content-disposition header.
+        String fileName;
+        if (node == titleNode) {
+            fileName = nm.hasField("filename") ? titleNode.getStringValue("filename") : null;
+        } else {
+            fileName = nm.hasField("filename") ? titleNode.getStringValue("filename") + node.getFunctionValue("format", null).toString() : null;
+        }
+        int backSlash = fileName.lastIndexOf("\\");
+        // if uploaded in MSIE, then the path may be in the fileName
+        // this is also fixed in the set-processor, but if that is or was missing, be gracefull here.
+        if (backSlash > -1)  {
+            fileName = fileName.substring(backSlash + 1);
+        }
+
+        if (fileName == null || fileName.equals("")) {
+            fileName = nm.hasField("title") ? titleNode.getStringValue("title") + '.' + node.getFunctionValue("format", null).toString() : null;
+        }
+        if (fileName == null || fileName.equals("")) {
+            fileName = nm.hasField("name") ? titleNode.getStringValue("name") + '.' + node.getFunctionValue("format", null).toString() : null;
+        }
+        if (fileName == null || fileName.equals("")) { // give it up
+            fileName = def + "." + node.getFunctionValue("format", null).toString();
+        }
+
+        return legalizeFileName.matcher(fileName).replaceAll("_");
+    }
+
     /**
      * Sets the content disposition header.
      * @return true on success
      */
     protected boolean setContent(QueryParts query, Node node, String mimeType) throws IOException {
-        // Try to find a sensible filename to use in the content-disposition header.
-        String fileName = node.getStringValue("filename");
-        if (fileName == null || fileName.equals("")) {
-            fileName = node.getStringValue("title");
-            if (fileName == null || fileName.equals("")) { // give it up
-                fileName = "mmbase-attachment";
-            }
-            // try to add an extension. 
-            String format = node.getFunctionValue("format", null).toString();
-            if (format != null && !format.equals("")) {
-                fileName += "." + format;
-            } 
-        }
-
-        // Why we don't set Content-Disposition:
-        // - IE can't handle that. (IE sucks!)
-
         String disposition;
         String fileNamePart = query.getFileName();
         if(fileNamePart != null && fileNamePart.startsWith("/inline/")) {
@@ -108,7 +125,7 @@ public class HandleServlet extends BridgeServlet {
         } else {
             disposition = "attachment";
         }
-        query.getResponse().setHeader("Content-Disposition", disposition + "; filename=\""  + legalizeFileName.matcher(fileName).replaceAll("_") + "\"");
+        query.getResponse().setHeader("Content-Disposition", disposition + "; filename=\""  + getFileName(node, null, "mmbase-attachment")+ "\"");
         //res.setHeader("X-MMBase-1", "Not sending Content-Disposition because this might confuse Microsoft Internet Explorer");
         return true;
     }
