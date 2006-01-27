@@ -44,7 +44,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.180 2006-01-17 20:40:36 johannes Exp $
+ * @version $Id: MMBase.java,v 1.181 2006-01-27 17:16:25 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -331,6 +331,11 @@ public class MMBase extends ProcessorModule {
 
         loadBuilders();
 
+        if(Thread.currentThread().isInterrupted()) {
+            log.info("Interrupted");
+            return;
+        }
+
         mmbaseState = STATE_INITIALIZE;
 
 
@@ -363,6 +368,10 @@ public class MMBase extends ProcessorModule {
                     }
                 }
             }
+        }
+        if(Thread.currentThread().isInterrupted()) {
+            log.info("Interrupted");
+            return;
         }
 
         // try to load security...
@@ -825,6 +834,9 @@ public class MMBase extends ProcessorModule {
         log.info("Loading builders: " + builders);
         Iterator i = builders.iterator();
         while (i.hasNext()) {
+            if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
             String builderXml  = (String) i.next();
             loadBuilderFromXML(ResourceLoader.getName(builderXml), ResourceLoader.getDirectory(builderXml) + "/");
         }
