@@ -111,10 +111,9 @@
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("components_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_components_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:treefile write="true" page="/components/frame.jsp" objectlist="$includePath" />' title='<di:translate key="education.editcomponentsdescription" />' target="text"><di:translate key="education.editcomponents" /></nobr></a>
-      <br>
-      <div id='components_0' style='display: none'>
-      </div>
+     <mm:listnodes type="components">
+       &nbsp;&nbsp;&nbsp; <a target="text" href="<mm:treefile page="/components/edit.jsp" objectlist="$includePath" />?component=<mm:field name="number" />"><mm:field name="name" /></a> <br />
+     </mm:listnodes>
    </mm:islessthan>
 </mm:compare>
 
