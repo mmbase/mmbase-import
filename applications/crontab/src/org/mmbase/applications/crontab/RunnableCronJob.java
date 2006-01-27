@@ -11,6 +11,7 @@ package org.mmbase.applications.crontab;
  * Just wraps a Runnable into a CronJob.
  *
  * @author Michiel Meeuwissen
+ * @since MMBase-1.8
  */
 
 public class RunnableCronJob extends AbstractCronJob {
