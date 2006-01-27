@@ -116,7 +116,8 @@ public class CronDaemon implements Runnable {
     public void start() {
         log.info("Starting CronDaemon");
         cronThread = new Thread(this, "CronDaemon");
-        cronThread.setDaemon(true);
+        // some tasks need a decent shutdown (database administration), so depend op 'stop'.
+        cronThread.setDaemon(false);
         cronThread.start();
     }
 
@@ -191,6 +192,7 @@ public class CronDaemon implements Runnable {
                 // start jobs which need starting on this minute
                 z = cronEntries.iterator();
                 while (z.hasNext()) {
+                    if (Thread.currenThread().isInterrupted()) return;
                     CronEntry entry = (CronEntry)z.next();
                     if (entry.mustRun(currentMinute)) {
                         if (entry.kick()) {

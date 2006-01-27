@@ -39,6 +39,7 @@ public abstract class AbstractCronJob implements CronJob {
      */
     public void stop() {}
 
+
     /**
      * Implement this.
      */
