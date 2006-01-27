@@ -8,13 +8,17 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.crontab;
 import java.util.*;
 
+import org.mmbase.util.logging.*;
+
 /**
- * A Runnable wich also has an 'interrupt' method.
+ * A Runnable wich also has an 'interrupt' method. This only works well
+ * if the job does sleeps (InterruptedException) or check Thread.isInterrupted().
  * @author Michiel Meeuwissen
+ * @since MMBase-1.8
  */
 
 public class Interruptable implements Runnable {
-
+    private static final Logger log = Logging.getLoggerInstance(Interruptable.class);
     private Thread runThread = null;
     private Date   startTime;
     private final Runnable runnable;
@@ -29,7 +33,13 @@ public class Interruptable implements Runnable {
         if (collection != null) collection.add(this);
         runThread = Thread.currentThread();
         startTime = new Date();
-        runnable.run();
+        try {
+            runnable.run();
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
+        }
+
+
         runThread = null;
         if (collection != null) collection.remove(this);
     }

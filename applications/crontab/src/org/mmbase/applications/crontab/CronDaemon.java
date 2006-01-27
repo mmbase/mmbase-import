@@ -192,7 +192,7 @@ public class CronDaemon implements Runnable {
                 // start jobs which need starting on this minute
                 z = cronEntries.iterator();
                 while (z.hasNext()) {
-                    if (Thread.currenThread().isInterrupted()) return;
+                    if (Thread.currentThread().isInterrupted()) return;
                     CronEntry entry = (CronEntry)z.next();
                     if (entry.mustRun(currentMinute)) {
                         if (entry.kick()) {

@@ -37,16 +37,13 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.2 2006-01-02 22:00:18 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.3 2006-01-27 20:35:16 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseStatsJob.class);
-    private static final int MEMORY = 1;
-    private static final int CACHE  = 2;
 
-    private int type;
-    private Cache cache = null; // used if type == CACHE
+    private Runnable job;
 
     private Logger statsLogger;
 
@@ -56,13 +53,40 @@ public class MMBaseStatsJob extends AbstractCronJob  {
         statsLogger = Logging.getLoggerInstance("org.mmbase.STATS." + what);
         String w = what.toUpperCase();
         if (w.equals("MEMORY")) {
-            type = MEMORY;
-        } else if (w.startsWith("CACHE.")) {
-            type = CACHE;
-            if (! getCache()) {
-                log.info("No cache with name " + cronEntry.getConfiguration().substring(6)  + " found (yet).");
-            }
+            job = new Runnable() {
+                    public void run() {
+                        Runtime runtime = Runtime.getRuntime();
+                        statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
+                    }
+                };
+        } else if (w.equals("QUERIES")) {
+            job = new Runnable() {
+                    public void run() {
+                        statsLogger.service("" + org.mmbase.module.database.MultiConnection.queries);
+                    }
+                };
 
+        } else if (w.startsWith("CACHE.")) {
+            job = new Runnable() {
+                    private Cache cache = getCache();
+                    {
+                        if (cache == null) {
+                            log.info("No cache with name " + cronEntry.getConfiguration().substring(6)  + " found (yet).");
+                        }
+                    }
+                    public void run() {
+                        if (cache == null) cache = getCache();
+                        if (cache != null) {
+                            int h = cache.getHits();
+                            statsLogger.service("" +  h + "\t" + (h + cache.getMisses()));
+                        }
+                    }
+                };
+        } else {
+            job = new Runnable() {
+                    public void run() {
+                    }
+                };
         }
 
     }
@@ -70,28 +94,12 @@ public class MMBaseStatsJob extends AbstractCronJob  {
      * Fills the 'cache' member.
      * @return Whether successful.
      */
-    private boolean getCache() {
+    private Cache getCache() {
         String cacheName = cronEntry.getConfiguration().substring(6);
-        cache     = Cache.getCache(cacheName);
-        return cache != null;
-
+        return Cache.getCache(cacheName);
     }
 
     public final void run() {
-        switch(type) {
-        case CACHE: {
-            if (cache == null) getCache();
-            if (cache != null) {
-                int h = cache.getHits();
-                statsLogger.service("" +  h + "\t" + (h + cache.getMisses()));
-            }
-            break;
-        }
-        case MEMORY: {
-            Runtime runtime = Runtime.getRuntime();
-            statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
-            break;
-        }
-        }
+        job.run();
     }
 }
