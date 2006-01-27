@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.42 2006-01-25 19:11:45 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.43 2006-01-27 20:00:40 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -174,19 +174,19 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * Whether this builders has width and height fields
      */
     protected boolean storesDimension() {
-        return getField(FIELD_WIDTH) != null && getField(FIELD_HEIGHT) != null;
+        return hasField(FIELD_WIDTH) && hasField(FIELD_HEIGHT);
     }
     /**
      * Whether this builders has a filesize field.
      */
     protected boolean storesFileSize() {
-        return getField(FIELD_FILESIZE) != null;
+        return hasField(FIELD_FILESIZE);
     }
     /**
      * Whether this builders has a filesize field.
      */
     protected boolean storesImageType() {
-        return getField(FIELD_ITYPE) != null;
+        return hasField(FIELD_ITYPE);
     }
 
 
