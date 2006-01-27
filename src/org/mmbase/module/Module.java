@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.73 2006-01-13 15:42:10 pierre Exp $
+ * @version $Id: Module.java,v 1.74 2006-01-27 17:16:25 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -287,6 +287,10 @@ public abstract class Module extends FunctionProvider {
         // call the onload to get properties
         log.service("Starting modules " + modules.keySet());
         for (Iterator i = modules.values().iterator(); i.hasNext();) {
+            if (Thread.currentThread().isInterrupted()) {
+                log.info("Interrupted");
+                return;
+            }
             Module mod = (Module)i.next();
             if( log.isDebugEnabled() ) {
                 log.debug("startModules(): modules.onload(" + mod + ")");
@@ -302,6 +306,10 @@ public abstract class Module extends FunctionProvider {
             log.debug("startModules(): init the modules(" + modules + ")");
         }
         for (Iterator i = modules.values().iterator(); i.hasNext();) {
+            if (Thread.currentThread().isInterrupted()) {
+                log.info("Interrupted");
+                return;
+            }
             Module mod = (Module) i.next();
             log.info("Starting module " + mod.getName());
             if ( log.isDebugEnabled()) {
