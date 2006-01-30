@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.1 2005-11-28 10:09:29 nklasens Exp $
+    @version $Id: prompts.xsl,v 1.2 2006-01-30 09:20:04 nklasens Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -198,7 +198,7 @@
     <xsl:if test="$age=7"> from the previous 7 days</xsl:if>
     <xsl:if test="$age=31"> from the previous month</xsl:if>
     <xsl:if test="$age=356"> from the previous year</xsl:if>
-    <xsl:if test="$age=-1"> over the whole cloud</xsl:if>
+    <xsl:if test="$age=-1"> all</xsl:if>
   </xsl:template>
 
   <!-- prompts and tooltips for lists -->
@@ -208,6 +208,7 @@
       <xsl:call-template name="prompt_search_age" >
         <xsl:with-param name="age" select="$age" />
       </xsl:call-template>
+      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
       <xsl:value-of select="$title" disable-output-escaping="yes"  />
       <xsl:if test="$searchvalue" >
         - search for <xsl:value-of select="$searchvalue" />
