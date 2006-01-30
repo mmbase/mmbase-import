@@ -15,8 +15,7 @@ import java.util.*;
 import javax.mail.internet.MimeMultipart;
 
 import org.mmbase.util.StringObject;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.*;
 
 
 import org.mmbase.util.logging.Logger;
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.15 2005-10-27 15:19:44 pierre Exp $
+ * @version $Id: EmailHandler.java,v 1.16 2006-01-30 11:03:17 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -107,11 +106,18 @@ public class EmailHandler {
     private static Map getHeaders(MMObjectNode node) {
         Map headers = new HashMap();
 
+        MMObjectBuilder email = node.getBuilder();
         // headers.put("From", node.getStringValue("from"));
-        headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
-        headers.put("CC",       unemptyString(node.getStringValue("cc")));
-        headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
-        headers.put("Subject",  unemptyString(node.getStringValue("subject")));
+        if (email.hasField("replyto")) {
+            headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
+        }
+        if (email.hasField("cc")) {
+            headers.put("CC",       unemptyString(node.getStringValue("cc")));
+        }
+        if (email.hasField("bcc")) {
+            headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
+        }
+        headers.put("Subject",  unemptyString(node.getStringValue("subject"))); // subject field is obligory
         return headers;
     }
 
