@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.194 2006-01-25 09:30:47 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.195 2006-01-30 15:52:06 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -647,10 +647,12 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
         NodeQuery query = Queries.createRelationNodesQuery(this, nodeManager, role, searchDir);
         NodeManager nm = query.getNodeManager();
-        if (! (nm instanceof RelationManager)) {
-            throw new BridgeException("Node manager of query is not a relation manager but " + nm);
+        // returned nodemanger should either be a realtionl
+        NodeList list = nm.getList(query);
+        if (! (list instanceof RelationList)) {
+            throw new BridgeException("Node manager " + nm + " of the query does not produce a relation list");
         }
-        return (RelationList) nm.getList(query);
+        return (RelationList) list;
     }
 
     public boolean hasRelations() {
@@ -737,7 +739,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
         }
         if (searchDir == null) searchDir = "BOTH";
-        NodeQuery query = Queries.createRelatedNodesQuery(this, nodeManager, role, searchDir);        
+        NodeQuery query = Queries.createRelatedNodesQuery(this, nodeManager, role, searchDir);
         return query.getNodeManager().getList(query);
     }
 
