@@ -115,9 +115,12 @@ public class WizardWorkspace {
                     } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
                         result = request.getParameter(name);
                     }
-
+                    
                     if ("date".equals(result)) {
                         result = buildDate(request, name, timezone);
+                    }
+                    if ("time".equals(result)) {
+                        result = buildTime(request, name, timezone);
                     }
                     if ("datetime".equals(result)) {
                         result = buildDatetime(request, name, timezone);
@@ -181,6 +184,22 @@ public class WizardWorkspace {
         }
     }
 
+    private String buildTime(ServletRequest req, String name, String timezone) {
+        try {
+            int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
+            int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
+
+            Calendar cal = getCalendar(timezone);
+            cal.set(1970, 0, 1, hours, minutes, 0);
+            return "" + cal.getTimeInMillis() / 1000;
+        } catch (RuntimeException e) { //NumberFormat NullPointer
+            log.debug("Failed to parse time for " + name + " "
+                    + e.getMessage());
+            return "";
+        }
+    }
+
+    
     /**
      * get the datatime paramter's value from request. the value passed by some form fields
      * @param req
