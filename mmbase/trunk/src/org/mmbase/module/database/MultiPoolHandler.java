@@ -12,6 +12,7 @@ package org.mmbase.module.database;
 import java.sql.*;
 import java.util.*;
 
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 /**
  * MultiPoolHandler handles multi pools so we can have more than one database
  * open and they can all have a multipool.
@@ -25,7 +26,8 @@ public class MultiPoolHandler {
     private static final Logger log = Logging.getLoggerInstance(MultiPoolHandler.class);
     private int maxConnections;
     private int maxQueries;
-    private Map pools = new Hashtable();
+    private Map pools = new ConcurrentHashMap();
+
     private DatabaseSupport databaseSupport;
 
     public MultiPoolHandler(DatabaseSupport databaseSupport, int maxConnections) {
@@ -44,13 +46,11 @@ public class MultiPoolHandler {
 	    return pool.getFree();
 	} else {
             log.service("No multipool present, creating one now");
-            synchronized(pools) {
-                pool = new MultiPool(databaseSupport, url, name, password, maxConnections, maxQueries);
-                if (pools.put(url + "," + name + "," + password, pool) != null) {
-                    log.error("Replaced an old MultiPool!? " + Logging.stackTrace());
-                }
-                return pool.getFree();
+            pool = new MultiPool(databaseSupport, url, name, password, maxConnections, maxQueries);
+            if (pools.put(url + "," + name + "," + password, pool) != null) {
+                log.error("Replaced an old MultiPool!? " + Logging.stackTrace());
             }
+            return pool.getFree();
 	}
     }
 
