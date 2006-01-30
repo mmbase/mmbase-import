@@ -201,7 +201,7 @@ public class ISBOReader {
         	if (!currentEducations.contains(ename.toLowerCase())) {
         		org.mmbase.bridge.Node education = getEducation(ename);
         		log.info("coupling class to education '"+education.getStringValue("name")+"' ("+ename+")");
-        		klas.createRelation(education,cloud.getRelationManager("related")).commit();
+        		klas.createRelation(education,cloud.getRelationManager("classrel")).commit();
         	}
         }
 
