@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 import org.mmbase.applications.editwizard.WizardException;
 import org.mmbase.applications.editwizard.action.*;
 import org.mmbase.applications.editwizard.util.HttpUtil;
-import org.mmbase.bridge.ContextProvider;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -70,7 +69,7 @@ public class SessionDataManager {
 
         String templates = HttpUtil.getParam(request,"templates","");
         if (!"".equals(templates)) {
-            // request contain language parameter
+            // request contain templates parameter
             sessionData.setTemplates(templates);
         }
         
@@ -78,11 +77,6 @@ public class SessionDataManager {
         if (!"".equals(language)) {
             // request contain language parameter
             sessionData.setLanguage(language);
-        } else {
-            if (sessionData.getLanguage() == null) { 
-                // otherwise, the first time, get the default setting of context
-                sessionData.setLanguage(ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
-            }
         }
 
         String timezone = HttpUtil.getParam(request, "timezone", "");
