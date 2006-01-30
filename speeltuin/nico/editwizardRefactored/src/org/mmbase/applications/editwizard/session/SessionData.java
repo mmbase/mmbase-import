@@ -24,7 +24,7 @@ import org.mmbase.util.xml.URIResolver;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: SessionData.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
+ * @version $Id: SessionData.java,v 1.3 2006-01-30 09:21:26 nklasens Exp $
  */
 
 public class SessionData {
@@ -51,11 +51,11 @@ public class SessionData {
     
     private final Map attributes = new HashMap();
     
-    public String getAttribute(String attrName) {
+    protected String getAttribute(String attrName) {
         return (String)this.attributes.get(attrName);
     }
 
-    public void setAttribute(String attrName, String attrValue) {
+    protected void setAttribute(String attrName, String attrValue) {
         this.attributes.put(attrName,attrValue);
     }
 

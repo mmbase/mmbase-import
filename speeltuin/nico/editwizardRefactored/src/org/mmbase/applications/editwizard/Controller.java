@@ -610,7 +610,9 @@ public class Controller {
         }
         
         map.put("cloud", cloud);
-        map.put("language", cloud.getLocale().getLanguage());
+        if (sessionData.getLanguage() == null) {
+            map.put("language", cloud.getLocale().getLanguage());
+        }
         map.put("username", cloud.getUser().getIdentifier());
         
         Enumeration enumeration = request.getParameterNames();
