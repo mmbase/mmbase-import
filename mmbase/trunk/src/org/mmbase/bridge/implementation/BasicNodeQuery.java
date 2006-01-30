@@ -30,7 +30,7 @@ import org.mmbase.storage.search.implementation.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.25 2006-01-25 19:13:00 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.26 2006-01-30 15:52:06 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -73,7 +73,11 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         if (step == null) return null;
         if (step instanceof RelationStep) {
             RelationStep rs = (RelationStep) step;
-            int role  = rs.getRole().intValue();
+            int role  = -1;
+            Integer roleValue = rs.getRole();
+            if (roleValue != null) {
+                role = roleValue.intValue();
+            }
             String roleName = role > 0 ? cloud.getNode(role).getStringValue("sname") : null;
             NodeManager previous = cloud.getNodeManager(rs.getPrevious().getTableName());
             NodeManager next     = cloud.getNodeManager(rs.getNext().getTableName());
@@ -81,15 +85,16 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
                 return cloud.getRelationManager(previous, next, roleName);
             } else {
                 if (roleName == null) {
-                    return cloud.getRelationManager(cloud.getNodeManager("insrel").getNumber());
+                    return cloud.getNodeManager("insrel"); // not a relation manager, no role known
                 } else {
                     return cloud.getRelationManager(roleName);
                 }
-            } 
+            }
         } else {
             return cloud.getNodeManager(step.getTableName());
         }
     }
+
     public Step getNodeStep() {
         return step;
     }
