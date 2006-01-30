@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.118 2006-01-24 21:34:12 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.119 2006-01-30 15:52:06 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -356,11 +356,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public NodeList getList(NodeQuery query) {
         try {
             boolean checked = cloud.setSecurityConstraint(query);
-
             List resultList = builder.getStorageConnector().getNodes(query);
-
             BasicNodeList resultNodeList;
-            if (query.getNodeManager() instanceof RelationManager) {
+            NodeManager nm = query.getNodeManager();
+            if (nm instanceof RelationManager || (nm == this && builder instanceof InsRel)) {
                 resultNodeList = new BasicRelationList(resultList, cloud);
             } else {
                 resultNodeList = new BasicNodeList(resultList, cloud);
@@ -377,8 +376,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             throw new BridgeException(sqe);
         }
     }
-
-
 
 
     public NodeList getList(String constraints, String sorted, String directions) {
