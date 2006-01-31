@@ -42,10 +42,10 @@
   
 <%
 String proba=(String) request.getAttribute("number");
-System.out.println("proba="+proba);
-System.out.println("number;"+qq.getNumber());
-System.out.println("type:"+qq.getFieldValue("otype"));
-System.out.println("owner:"+qq.getFieldValue("owner"));
+//System.out.println("proba="+proba);
+//System.out.println("number;"+qq.getNumber());
+//System.out.println("type:"+qq.getFieldValue("otype"));
+//System.out.println("owner:"+qq.getFieldValue("owner"));
 // mapa parametara vezanih za pitanje
 java.util.Map varMap = new java.util.HashMap();
 org.mmbase.bridge.NodeList l = qq.getRelatedNodes("variables");
@@ -54,7 +54,7 @@ while (itr.hasNext()) {
 	org.mmbase.bridge.Node v = (org.mmbase.bridge.Node)itr.next(); 
     varMap.put("[%"+v.getValue("name")+"%]", v.getValue("value"));
 }
-System.out.println("  varMap=" + varMap);
+//System.out.println("  varMap=" + varMap);
 	
 // description form question
 
@@ -66,12 +66,12 @@ while (itr1.hasNext()) {
 	Object key = itr1.next();
 	String val = (String)varMap.get(key);
     String keyString=(String) key;
-    System.out.println("keyString="+keyString);
-    System.out.println("val="+val);
+    //System.out.println("keyString="+keyString);
+    //System.out.println("val="+val);
     
     String forChange="[{][%]["+keyString+"][%][}]";
 	desc = desc.replaceAll(forChange, val);
-    System.out.println(desc);
+    //System.out.println(desc);
 	   
     
 }
