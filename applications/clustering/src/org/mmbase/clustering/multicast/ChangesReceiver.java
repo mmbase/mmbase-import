@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.4 2005-10-06 17:37:51 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.5 2006-01-31 13:19:00 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -63,7 +63,7 @@ public class ChangesReceiver implements Runnable {
     public ChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn) {
         this.mport = mport;
         this.dpsize = dpsize;
-        this.nodesToSpawn=nodesToSpawn;
+        this.nodesToSpawn = nodesToSpawn;
         try {
             this.ia = InetAddress.getByName(multicastHost);
         }
@@ -132,7 +132,8 @@ public class ChangesReceiver implements Runnable {
             try {
                 ms.receive(dp);
                 // maybe we should use encoding here?
-                byte[] message = dp.getData();
+                byte[] message = new byte[dp.getLength()];
+                System.arraycopy(dp.getData(), 0, message, 0, dp.getLength());
                 if (log.isDebugEnabled()) {
                     log.debug("RECEIVED=> " + dp.getLength() + " bytes from " + dp.getAddress());
                 }
