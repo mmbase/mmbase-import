@@ -21,7 +21,7 @@ function getUrl(url){
 }
 
 function keepalive(){
-  getUrl("<mm:treefile page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" />");
+  getUrl("<mm:treefile page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>");
   setTimeout("keepalive();",1000 * 60 * 2); // keep alive every 2 minutes
 }
 
