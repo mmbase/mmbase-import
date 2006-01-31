@@ -8,7 +8,7 @@
 <%@taglib uri="oscache" prefix="os" %>
 
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
 
   <%@include file="/education/wizards/roles_defs.jsp" %>

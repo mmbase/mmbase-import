@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <mm:content postprocessor="reducespace">
-<mm:cloud jspvar="cloud">
+<mm:cloud jspvar="cloud" username="admin" password="admin2k">
   <%@include file="/shared/setImports.jsp" %>
   <html>
     <head>
@@ -25,6 +25,7 @@
     </body>
   </html>
 </mm:cloud>
+<mm:cloud method="delegate" jspvar="cloud" authenticate="didactor-logout"/>
 </mm:content>
 
 						    

@@ -4,7 +4,7 @@
 <mm:import externid="scope">none</mm:import>
 <%-- 'sources' is only valid in the 'education' scope --%>
 <mm:compare referid="scope" value="education">
-  <mm:cloud loginpage="/login.jsp" jspvar="cloud">
+  <mm:cloud method="delegate" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
   <mm:compare referid="type" value="div">
     <div class="menuSeperator"> </div>

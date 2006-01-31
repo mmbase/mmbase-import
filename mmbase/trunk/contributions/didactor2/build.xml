@@ -22,6 +22,7 @@
     <delete file="${build.dir}/webapp/WEB-INF/taglib.tld" />
     <delete file="${build.dir}/webapp/WEB-INF/web.xml" />
     <foreach list="${components}" target="build.component" inheritall="true" param="component" />
+    <foreach list="${security_components}" target="build.security.component" inheritall="true" param="component" />
     <foreach list="${providers}" target="build.provider" inheritall="true" param="provider" />
     <replace file="${build.dir}/webapp/WEB-INF/web.xml"
              token="$${filemanagement.data.directory}"
@@ -54,6 +55,7 @@
   <target name="compileonly">
     <echo message="Only compiling all classes" />
     <foreach list="${components}" target="compile.component" inheritall="true" param="component" />
+    <foreach list="${security_components}" target="compile.security.component" inheritall="true" param="component" />
   </target>
 
   <target name="clean">
@@ -97,7 +99,7 @@
               </fileset>
             </copy>
           </then>
-          <else>   
+          <else>
             <echo message="WARNING! provider ${provider} does not have any templates in /src/core/templates/${provider} or /providers/${provider}/templates"/>
           </else>
         </if>
@@ -176,6 +178,72 @@
       </then>
     </if>
   </target>
+
+
+
+
+
+  <target name="compile.security.component">
+    <echo message="Compiling security component ${component}" />
+    <!-- copy external libs -->
+    <if>
+      <available file="src/security/${component}/lib" type="dir" />
+      <then>
+        <copy todir="${build.dir}/webapp/WEB-INF/lib">
+          <fileset dir="src/security/${component}/lib">
+            <include name="**"/>
+            <exclude name="**/CVS"/>
+          </fileset>
+        </copy>
+      </then>
+    </if>
+
+    <!-- build java sources and create a jar file -->
+    <if>
+      <available file="src/security/${component}/java" type="dir"/>
+      <then>
+        <path id="classpath">
+          <fileset dir="lib/">
+            <include name="*.jar" />
+          </fileset>
+          <fileset dir="${build.dir}/webapp/WEB-INF/lib">
+            <include name="*.jar" />
+          </fileset>
+          <fileset dir="src/security/${component}/lib">
+            <include name="*.jar" />
+          </fileset>
+        </path>
+        <mkdir dir="${build.dir}/classes/${component}" />
+
+        <copy todir="${build.dir}/classes/${component}">
+          <fileset dir="src/security/${component}/java">
+           <include name="**/*.properties" />
+            <exclude name="**/*.java"/>
+          </fileset>
+        </copy>
+
+        <javac srcdir="src/security/${component}/java"
+               destdir="${build.dir}/classes/${component}"
+               deprecation="on"
+               debug="yes"
+               classpathref="classpath" />
+        <jar jarfile="${build.dir}/webapp/WEB-INF/lib//didactor-security-${component}.jar"
+             includes="**"
+             basedir="${build.dir}/classes/${component}" />
+      </then>
+    </if>
+    <if>
+      <available file="src/security/${component}/build.xml" type="file" />
+      <then>
+        <echo message="running src/security/${component}/build.xml"/>
+        <ant antfile="src/security/${component}/build.xml" target="build"/>
+      </then>
+    </if>
+  </target>
+
+
+
+
 
   <target name="build.component" depends="compile.component">
     <echo message="Building component ${component}" />
@@ -279,7 +347,7 @@
     </if>
 
 
-    <!-- merge editwizard definitions --> 
+    <!-- merge editwizard definitions -->
     <if>
       <available file="src/${component}/templates/editwizards/data/config/" />
       <then>
@@ -295,6 +363,105 @@
 
   </target>
 
+
+
+
+  <target name="build.security.component" depends="compile.security.component">
+    <echo message="Building security component ${component}" />
+
+    <!-- copy templates -->
+    <if>
+      <available file="src/security/${component}/templates" type="dir" />
+      <then>
+        <copy todir="${build.dir}/webapp" overwrite="true">
+          <fileset dir="src/security/${component}/templates">
+            <include name="**"/>
+            <exclude name="**/CVS"/>
+            <exclude name="templates/**"/>
+            <exclude name="editwizards/**/extra_*.xml"/>
+          </fileset>
+        </copy>
+      </then>
+    </if>
+
+    <!-- copy webinf -->
+    <if>
+      <available file="src/security/${component}/webinf" type="dir" />
+      <then>
+        <copy todir="${build.dir}/webapp/WEB-INF">
+          <fileset dir="src/security/${component}/webinf">
+            <include name="**"/>
+            <exclude name="**/CVS"/>
+            <exclude name="**/taglib-extra.tld" />
+          </fileset>
+        </copy>
+      </then>
+    </if>
+
+
+    <!-- add extra tag definitions -->
+    <if>
+      <available file="src/security/${component}/webinf/taglib-extra.tld" type="file" />
+      <then>
+        <loadfile property="rp1"
+                  srcFile="src/security/${component}/webinf/taglib-extra.tld"/>
+        <property name="replacevalue" value="--&gt;${rp1}&lt;!-- EXTRATAGDEF" />
+        <replace file="${build.dir}/webapp/WEB-INF/taglib.tld"
+                 token="EXTRATAGDEF"
+                 value="${replacevalue}" />
+      </then>
+    </if>
+
+    <!-- add extra tag inclusions in web.xml -->
+    <if>
+      <available file="src/security/${component}/webinf/web-extra.xml" type="file" />
+      <then>
+        <loadfile property="rp2"
+                  srcFile="src/security/${component}/webinf/web-extra.xml"/>
+        <property name="replacevalue2" value="--&gt;${rp2}&lt;!-- EXTRATAGLIB" />
+        <replace file="${build.dir}/webapp/WEB-INF/web.xml"
+                 token="EXTRATAGLIB"
+                 value="${replacevalue2}" />
+      </then>
+    </if>
+
+    <!-- copy configuration files -->
+    <if>
+      <available file="src/security/${component}/config" type="dir" />
+      <then>
+        <copy todir="${build.dir}/webapp/WEB-INF/config">
+          <fileset dir="src/security/${component}/config">
+            <include name="**"/>
+            <exclude name="**/CVS"/>
+          </fileset>
+        </copy>
+      </then>
+    </if>
+
+
+    <!-- merge editwizard definitions -->
+    <if>
+      <available file="src/security/${component}/templates/editwizards/data/config/" />
+      <then>
+        <foreach target="mergewizards" param="file">
+          <path>
+            <fileset dir="src/security/${component}/templates/editwizards/data/config/">
+              <include name="**/extra_*.xml" />
+            </fileset>
+          </path>
+        </foreach>
+      </then>
+    </if>
+
+  </target>
+
+
+
+
+
+
+
+
   <target name="mergewizards">
     <echo>MergeWizards: ${file}</echo>
     <pathconvert property="cleaned_filename" dirsep="${file.separator}" pathsep="${path.separator}">
@@ -305,7 +472,7 @@
     </pathconvert>
     <pathconvert property="destfile" dirsep="${file.separator}" pathsep="${path.separator}">
       <path path="${build.dir}/webapp/editwizards/data/config/${cleaned_filename}" />
-    </pathconvert> 
+    </pathconvert>
     <echo>Destfile: ${destfile}</echo>
     <if>
       <available file="${destfile}" />
@@ -364,38 +531,38 @@
      />
    </target>
 
-   <!-- 
-     If you want to precompile the webapplicationn, you need to use Tomcat5, and 
-     set the property 'tomcat.home' in your properties file 
+   <!--
+     If you want to precompile the webapplicationn, you need to use Tomcat5, and
+     set the property 'tomcat.home' in your properties file
      Also, you might want to set:
        build.compiler=jikes
      because compilation with the classic/modern compilers takes a lot of time and memory.
     -->
    <target name="precompile" depends="webapp">
-     <taskdef classname="org.apache.jasper.JspC" name="jasper2" > 
-       <classpath id="jspc.classpath"> 
-         <pathelement location="${java.home}/../lib/tools.jar"/> 
-         <fileset dir="${tomcat.home}/server/lib"> 
-           <include name="*.jar"/> 
-         </fileset> 
-         <fileset dir="${tomcat.home}/common/lib"> 
-           <include name="*.jar"/> 
-         </fileset> 
+     <taskdef classname="org.apache.jasper.JspC" name="jasper2" >
+       <classpath id="jspc.classpath">
+         <pathelement location="${java.home}/../lib/tools.jar"/>
+         <fileset dir="${tomcat.home}/server/lib">
+           <include name="*.jar"/>
+         </fileset>
+         <fileset dir="${tomcat.home}/common/lib">
+           <include name="*.jar"/>
+         </fileset>
          <fileset dir="src/core/lib">
-           <include name="*.jar"/> 
-         </fileset> 
-       </classpath> 
-     </taskdef> 
+           <include name="*.jar"/>
+         </fileset>
+       </classpath>
+     </taskdef>
 
      <jasper2
-             validateXml="false" 
+             validateXml="false"
              addWebXmlMappings="true"
-             uriroot="${build.dir}/webapp" 
-             webXmlFragment="${build.dir}/webapp/WEB-INF/jsp.xml" 
-             outputDir="${build.dir}/jspjava" /> 
+             uriroot="${build.dir}/webapp"
+             webXmlFragment="${build.dir}/webapp/WEB-INF/jsp.xml"
+             outputDir="${build.dir}/jspjava" />
 
      <mkdir dir="${build.dir}/jspclasses" />
-     <javac destdir="${build.dir}/jspclasses" 
+     <javac destdir="${build.dir}/jspclasses"
            optimize="off"
            debug="on" failonerror="false"
            srcdir="${build.dir}/jspjava"
@@ -418,7 +585,7 @@
          includes="**"
          basedir="${build.dir}/jspclasses" />
   </target>
-  
+
   <target name="precompiledwar" depends="precompile,war" />
 
   <target name="srcdist">

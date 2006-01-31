@@ -6,7 +6,7 @@
    if (request.getParameter("path") == null)
    {
       %>
-         <mm:cloud loginpage="/login.jsp" jspvar="cloud">
+         <mm:cloud method="delegate" jspvar="cloud">
             <%@include file="/shared/setImports.jsp" %>
             <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
                <mm:param name="extraheader">

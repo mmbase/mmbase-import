@@ -63,6 +63,47 @@ public class PeopleBuilder extends DidactorBuilder {
         }
     }
  
+    public MMObjectNode getUser(String username)
+    {
+        try
+        {
+            NodeSearchQuery query = new NodeSearchQuery(this);
+            StepField usernameField = query.getField(getField("username"));
+            query.setConstraint(new BasicFieldValueConstraint(usernameField, username));
+            //StepField passwordField = query.getField(getField("password"));
+            //query.setConstraint(new BasicFieldValueConstraint(passwordField, "{md5}" + encoder.encode(password)));
+
+            List nodelist = getNodes(query);
+            if (nodelist.size() == 0)
+            {
+               log.info( "No users with the name");
+                return null;
+                // fail silently
+            }
+            else if (nodelist.size() > 1)
+            {
+               for ( int i=0;i <nodelist.size() ;i++)
+               {
+                  MMObjectNode n = (MMObjectNode)nodelist.get(0);
+                  log.info( n.getStringValue("lastname") + ""+ n.getStringValue("username"));
+               }
+
+               log.error("Too many users with username '" + username + "': " + nodelist.size());
+               return null;
+            }
+            else
+            {
+                log.info( "1 user found" + username);
+                MMObjectNode node = (MMObjectNode)nodelist.get(0);
+                return node;
+            }
+        }
+        catch (SearchQueryException e)
+        {
+            log.error(e.toString());
+            return null;
+        }
+    }
     /**
      * Initialize this builder
      */

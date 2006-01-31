@@ -3,7 +3,7 @@
 <%@page import="nl.didactor.component.Component,java.util.Vector"%>
 <%-- expires is 0; show always new content --%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <mm:node referid="user">
   <%

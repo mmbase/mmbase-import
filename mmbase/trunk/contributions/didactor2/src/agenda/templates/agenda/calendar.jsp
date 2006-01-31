@@ -11,7 +11,7 @@ this stylesheet can be overridden in the same manner as other parts of the site.
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 
   <mm:import id="calmonth" externid="calmonth"/>
