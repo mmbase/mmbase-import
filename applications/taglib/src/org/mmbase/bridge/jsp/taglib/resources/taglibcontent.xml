@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.45 2006-01-23 14:52:47 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.46 2006-01-31 16:47:48 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -201,6 +201,10 @@
     <class>org.mmbase.util.transformers.LinkFinder</class>
     <info>Finds and makes clickable URL's.</info>
   </escaper>
+  <escaper id="plainlinks">
+    <class config="WORDS">org.mmbase.util.transformers.LinkFinder</class>
+    <info>Finds and makes clickable URL's, assuming plain/text input.</info>
+  </escaper>
   <escaper id="figlet">
     <class>org.mmbase.util.transformers.Figlet</class>
     <info>Filters through the command-line tool 'figlet', which can have amusing results.</info>
@@ -231,7 +235,7 @@
     <class>org.mmbase.util.transformers.SpaceRemover</class>
     <info>
       Replace 1 or more white space characters by one space, unless, those are the first or last of
-      the string.
+      the string, those are replaced with nothing.
     </info>
   </escaper>
   <escaper id="spaceswallower">
@@ -296,6 +300,17 @@
     <param name="regexps">
       <info>
         A list of entries describing regular expresions replacements. Replacements happens per word.
+      </info>
+    </param>
+  </parameterizedescaper>
+  <parameterizedescaper id="wrap">
+    <class>org.mmbase.util.transformers.WordWrapperFactory</class>
+    <info>
+      Word wrapping. Works on plain/text, and wraps with newlines. Can be converted to HTML with a chained escaper.
+    </info>
+    <param name="length">
+      <info>
+        Length of lines (default to 80).
       </info>
     </param>
   </parameterizedescaper>
