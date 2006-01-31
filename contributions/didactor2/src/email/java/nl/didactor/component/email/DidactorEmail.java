@@ -59,28 +59,6 @@ public class DidactorEmail extends Component {
     }
 
     /**
-     * Permission framework: indicate whether or not a given operation may be done, with the
-     * given arguments. The return value is a list of 2 booleans; the first boolean indicates
-     * whether or not the operation is allowed, the second boolean indicates whether or not
-     * this result may be cached.
-     */
-    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
-        if ("maynot".equals(operation)) {
-            return new boolean[] {false, false};
-        } else {
-            return new boolean[]{true, true};
-        }
-    }
-
-    public String getSetting(String setting, Cloud cloud, Map context, String[] arguments) {
-        if ("mayforward".equals(setting)) {
-            return getUserSetting(setting, "" + context.get("user"), cloud, arguments);
-        } else { 
-            throw new IllegalArgumentException("Unknown setting '" + setting + "'");
-        }
-    }
-
-    /**
      * This method is called when a new object is added to Didactor. If the component
      * needs to insert objects for this object, it can do so. 
      */
