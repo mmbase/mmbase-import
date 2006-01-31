@@ -29,7 +29,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.14 2006-01-26 10:08:46 ernst Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.15 2006-01-31 09:59:44 ernst Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
@@ -103,7 +103,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      */
     public void removeAllStrategies(){
         for (Iterator i = iterator(); i.hasNext(); ){
-            if( ! ((ReleaseStrategy)i.next()).getName().equals(basicStrategyName)) i.remove();
+            removeStrategy((ReleaseStrategy)i.next());
         }
     }
 
