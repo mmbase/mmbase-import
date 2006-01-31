@@ -55,7 +55,7 @@
 %>
 
 <mm:content postprocessor="reducespace">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
 <%@include file="/education/wizards/roles_defs.jsp" %>
 <mm:import id="editcontextname" reset="true">filemanagement</mm:import>

@@ -7,7 +7,7 @@
 <%@ page import = "java.util.ListIterator" %>
 
 <mm:content postprocessor="reducespace">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 
 <mm:import externid="learnobject" required="true"/>
 

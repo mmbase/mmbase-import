@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <%--
   This page originally was the 'mtmcode.js' of www.treemenu.com.
   Changed for finding the correct images.
