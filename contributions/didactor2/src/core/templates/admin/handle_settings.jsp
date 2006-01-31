@@ -9,23 +9,20 @@
   <%
     Component[] comps = Component.getComponents();
     for (int i=0; i<comps.length; i++) {
-      System.out.println("0");
       Vector settings = comps[i].getSettings("people");
       for (int j=0; j<settings.size(); j++) {
         Component.Setting setting = (Component.Setting)settings.get(j);
         if (setting.getType() == Component.Setting.TYPE_BOOLEAN) {
           String paramName = comps[i].getName() + "-" + setting.getName();
           String val1 = (String)request.getParameter(paramName);
-          System.out.println("[" + paramName + "] = [" + val1 + "]");
           %>
           <mm:import externid="<%=paramName%>" jspvar="val" id="val"/>
           <mm:import jspvar="usernumber" vartype="Integer"><mm:write referid="user" /></mm:import>
           <%
-          System.out.println("[" + paramName + "] = [" + val + "]");
           if ("on".equals(val)) {
-            comps[i].setObjectSetting(setting.getName(), usernumber.intValue(), cloud, "1");
+            comps[i].setObjectSetting(setting.getName(), usernumber.intValue(), cloud, "true");
           } else {
-            comps[i].setObjectSetting(setting.getName(), usernumber.intValue(), cloud, "0");
+            comps[i].setObjectSetting(setting.getName(), usernumber.intValue(), cloud, "false");
           }
         }
       }
