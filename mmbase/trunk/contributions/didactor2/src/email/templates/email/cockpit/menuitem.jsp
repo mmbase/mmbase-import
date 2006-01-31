@@ -6,7 +6,7 @@
 <mm:compare referid="type" value="div">
   <div class="menuSeperator"> </div>
   <div class="menuItem" id="menuEmail">
-    <a href="<mm:treefile page="/email/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">
+    <a href="<mm:treefile page="/email/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="so">down</mm:param></mm:treefile>" class="menubar">
 </mm:compare>
 
 <mm:compare referid="type" value="option">
