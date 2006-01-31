@@ -22,5 +22,6 @@
 
 <a href="<mm:treefile page="/email/index.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="mailbox"><mm:field name="number" /></mm:param>
+  <mm:param name="so">down</mm:param>
 </mm:treefile>"><mm:write referid="activemailbox" /> (<mm:write referid="newmails"/>/<mm:write referid="mails"/>)</a> 
 <br />
