@@ -115,18 +115,10 @@
    </tr>
    <tr>
       <td style="width:20%">
-         <div id="left_menu" style="overflow:scroll; width:100%; height:100%; position:absolute" >
+         <div id="left_menu" style="overflow:scroll; width:100%; height:100%" >
              <mm:treeinclude page="/education/wizards/code.jsp" objectlist="$includePath" />
          </div>
       </td>
-
-      <script>
-         if(browserVersion()[0] == "Mozilla")
-         {
-            document.getElementById('left_menu').style.position = "";
-         };
-      </script>
-
 
       <td width="100%">
          <iframe id="text" name="text" width="99%" height="100%" marginwidth="0" marginheight="0" border="1" src="<mm:treefile page="/education/wizards/ok.jsp" objectlist="$includePath" referids="$referids"/>"></iframe>
