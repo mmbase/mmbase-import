@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.5 2006-01-31 13:19:00 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.6 2006-01-31 21:10:21 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -131,8 +131,11 @@ public class ChangesReceiver implements Runnable {
             DatagramPacket dp = new DatagramPacket(new byte[dpsize], dpsize);
             try {
                 ms.receive(dp);
-                // maybe we should use encoding here?
                 byte[] message = new byte[dp.getLength()];
+
+                // the dp.getData array always has dpsize length. 
+                // That's not what we want. Especially when falling back to legacy, this is translated to a String.
+                // which otherwise gets dpsize length (64k!)
                 System.arraycopy(dp.getData(), 0, message, 0, dp.getLength());
                 if (log.isDebugEnabled()) {
                     log.debug("RECEIVED=> " + dp.getLength() + " bytes from " + dp.getAddress());
