@@ -3,7 +3,7 @@
 <%@ page import="java.text.*,java.util.*" %>
 
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <mm:import id="testNo" externid="learnobject" required="true"/>
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
