@@ -71,7 +71,7 @@ public class ExtendedJMSendMail extends JMSendMail {
                 MimeBodyPart bodypart = new MimeBodyPart();
                 MimeMultipart mmp = new MimeMultipart("mixed");
 
-                bodypart.setText(body);
+                bodypart.setText(body, "UTF-8");
                 mmp.addBodyPart(bodypart);
 
                 for (int i=0; i<attachments.size(); i++) {
@@ -106,7 +106,7 @@ public class ExtendedJMSendMail extends JMSendMail {
                 }
                 msg.setContent(mmp);
             } else {
-                msg.setText(body);
+                msg.setText(body, "UTF-8");
             }
             
             try {
