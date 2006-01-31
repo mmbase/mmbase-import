@@ -399,7 +399,7 @@ public class SMTPHandler extends Thread {
 
             //TODO: send to this user if he wants to
             Node user = (Node)users.get(i);
-            if (user.getIntValue("email-mayforward") == 1) {
+            if (user.getBooleanValue("email-mayforward")) {
                 String mailadres = user.getStringValue("email");
                 ExtendedJMSendMail sendmail = (ExtendedJMSendMail)org.mmbase.module.Module.getModule("sendmail");
                 sendmail.startModule();
