@@ -6,7 +6,7 @@
 
 
 <mm:content postprocessor="reducespace">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp" %>
 

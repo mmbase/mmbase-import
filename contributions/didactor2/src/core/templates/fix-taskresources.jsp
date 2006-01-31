@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <html>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <% if (!cloud.hasNodeManager("resources")) { 
 %>
       You don't have builder 'resources'.<br/> 

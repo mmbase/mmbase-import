@@ -11,7 +11,7 @@
 <%@ page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
 
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 
 <% //education-people connector

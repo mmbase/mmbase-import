@@ -83,7 +83,7 @@
 <%--<h1>mayread: <mm:write referid="mayread"/>, user: <mm:write referid="user"/></h1>--%>
 
 <mm:compare referid="mayread" value="false">
-    <mm:cloud loginpage="/login.jsp" jspvar="cloud">
+    <mm:cloud method="delegate" jspvar="cloud">
        <h1> U heeft geen rechten om dit bestand te bekijken. </h1>
     </mm:cloud>
 </mm:compare>
