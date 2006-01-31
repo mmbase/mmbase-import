@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.38 2006-01-16 14:49:21 michiel Exp $
+ * @version $Id: RelDef.java,v 1.39 2006-01-31 13:29:05 michiel Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -234,11 +234,17 @@ public class RelDef extends MMObjectBuilder {
         if (builderName == null) {
             throw new RuntimeException("Node " + node + " has no builder?");
         }
-        InsRel builder = (InsRel) mmb.getMMObject(builderName);
+        MMObjectBuilder builder = mmb.getBuilder(builderName);
         if (builder == null) {
             return mmb.getInsRel();
         } else {
-            return builder;
+            if (builder instanceof InsRel) {
+                return (InsRel) builder;
+            } else {
+                log.warn("The builder " + builderName + " of node " + node.getNumber() + " is no InsRel (but " + builder.getClass() + ").  Perhaps it is inactive? Impossible here. Returing InsRel any way.");
+                return mmb.getInsRel();
+
+            }
         }
     }
 
