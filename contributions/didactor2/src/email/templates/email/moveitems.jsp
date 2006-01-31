@@ -6,7 +6,7 @@
 
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 
 <%@include file="/shared/setImports.jsp" %>
 

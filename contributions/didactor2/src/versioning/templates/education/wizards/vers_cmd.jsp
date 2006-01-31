@@ -3,7 +3,7 @@
 <%@page import="nl.didactor.versioning.VersioningController" %> 
 
 <mm:content postprocessor="reducespace">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 
 <mm:import externid="command">-1</mm:import>
 <mm:import externid="archiveid" jspvar="archiveId" vartype="String" reset="true">-1</mm:import>

@@ -4,7 +4,7 @@
 <mm:import externid="scope">none</mm:import>
 <%-- mmbob is only valid in the 'education' scope --%>
 <mm:compare referid="scope" value="education">
-  <mm:cloud loginpage="/login.jsp" jspvar="cloud">
+  <mm:cloud method="delegate" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
   <%@include file="/mmbob/check.jsp" %>
   <mm:import id="template" reset="true"><mm:treefile page="/mmbob/index.jsp" objectlist="$includePath" referids="$referids" /></mm:import>

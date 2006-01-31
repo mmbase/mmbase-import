@@ -15,7 +15,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace" expires="0" type="text/html" encoding="UTF-8" escaper="entities">
-<mm:cloud jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud" >
   <mm:import externid="provider" />
   <mm:import externid="education" />
   <mm:import externid="class" />

@@ -6,7 +6,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 
 <mm:import externid="callerpage">/agenda/index.jsp</mm:import>
 

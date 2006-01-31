@@ -7,7 +7,7 @@
 <mm:import id="objectnumber" externid="objectnumber" jspvar="objectnumber"></mm:import>
 <mm:import id="origin" externid="origin" jspvar="origin"></mm:import>
 
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 
 <%--
   String url = "/mmapps/editwizard/jsp/wizard.jsp?wizard=data/didactor/lib/"; //+ wizard;

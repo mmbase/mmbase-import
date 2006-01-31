@@ -7,7 +7,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
 <mm:content postprocessor="reducespace">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 
 <mm:import externid="urlcat">-1</mm:import>
 

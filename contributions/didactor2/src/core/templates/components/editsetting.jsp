@@ -53,7 +53,7 @@
   }
 %>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <mm:import externid="component" jspvar="component" />
 <mm:import externid="setting" id="settingname" jspvar="settingname" />

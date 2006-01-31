@@ -29,7 +29,7 @@
   </script>
   <mm:import externid="referrer" required="true" />
   <form method="post" action="<mm:write referid="referrer" />" name="loginForm" onSubmit="return(check_passwords())">
-    <input type="hidden" name="authenticate"  value="name/password"  />
+    <input type="hidden" name="authenticate"  value="plain"  />
     <input type="hidden" name="command" value="login" />
     <di:translate key="core.username" /><br />
     <input id="loginUsername" type="text" size="20" name="username" value="<mm:write referid="newusername"/>" /> <br />
@@ -43,5 +43,5 @@
     <di:translate key="register.registeryourself" /> <a href="<mm:treefile page="/register/index.jsp" objectlist="$includePath" referids="$referids" />"><di:translate key="register.here" /></a>
   </mm:node>
 </mm:cloud>
-</mm:content>         
-            
+</mm:content>
+

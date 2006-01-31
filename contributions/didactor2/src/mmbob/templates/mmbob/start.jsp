@@ -3,7 +3,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:content type="text/html">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <%@ include file="thememanager/loadvars.jsp" %>
 <%@ include file="settings.jsp" %>

@@ -30,7 +30,7 @@
 
 
 
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <mm:import id="import_package"  jspvar="requestImportPackageID"  vartype="String"><%= request.getParameter("import_package") %></mm:import>
 <mm:import id="delete_package"  jspvar="requestDeletePackageID"  vartype="String"><%= request.getParameter("delete_package") %></mm:import>
 <mm:import id="publish_package" jspvar="requestPublishPackageID" vartype="String"><%= request.getParameter("publish_package") %></mm:import>

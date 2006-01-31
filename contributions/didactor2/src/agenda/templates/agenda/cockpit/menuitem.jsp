@@ -5,7 +5,7 @@
 <%-- agenda is only valid in the 'provider' scope --%>
 <%-- TODO use translate tag for use of more languages --%>
 <mm:compare referid="scope" value="provider">
-  <mm:cloud loginpage="/login.jsp" jspvar="cloud">
+  <mm:cloud method="delegate" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
   <mm:compare referid="type" value="div">
     <div class="menuSeperator"> </div>
