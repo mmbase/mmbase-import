@@ -235,7 +235,8 @@ public abstract class Component {
     }
 
     /**
-     * Settings: return a setting in the given context.
+     * Settings: return a setting in the given context. If no value can be found for any
+     * of the scopes in the context, the default value for the setting will be returned.
      * @param setting The name of the setting for which a value should be 
      * returned
      * @param context A 'Map' containing name-value pairs, that can be needed
@@ -249,7 +250,7 @@ public abstract class Component {
             throw new RuntimeException("Setting '" + settingName + "' is not defined for component '" + getName() + "'");
         }
         Vector scope = setting.getScope();
-        String retval = setting.getDefault();
+        Object retval = null;
 
         for (int i=0; i<scope.size(); i++) {
             String scopeName = (String)scope.get(i);
@@ -264,7 +265,7 @@ public abstract class Component {
             }
 
             if (objectid > 0) {
-                String cloudSetting = getObjectSetting(settingName, objectid, cloud);
+                Object cloudSetting = getObjectSetting(settingName, objectid, cloud);
                 if (cloudSetting != null) {
                     retval = cloudSetting;
                     log.debug("Found value: " + retval);
@@ -272,14 +273,10 @@ public abstract class Component {
             }
         }
 
-        if (setting.getType() == Setting.TYPE_INTEGER) {
-            return new Integer(retval);
-        } else if (setting.getType() == Setting.TYPE_BOOLEAN) {
-            return new Boolean(retval);
-        } else if (setting.getType() == Setting.TYPE_DOMAIN) {
+        if (retval != null) {
             return retval;
         } else {
-            return retval;
+            return setting.getDefault();
         }
     }
 
@@ -287,16 +284,24 @@ public abstract class Component {
      * Get the setting for an object and a component from MMBase. This object can be a 'people' object,
      * 'component' object, etc. If the object is the component, and no value can be found in the database,
      * the setting's default value will be returned.
+     * This method is used internally to get a setting on a specific layer. This is the reason that the
+     * default value is not returned for objects other than the component itself, because it would be
+     * impossible to distinguish between a 'real' value and a default value later on.
      * @param settingname The name of the setting in MMBase.
      * @param objectid The number of the node representing this object to get the component setting value for
      */
-    public String getObjectSetting(String settingName, int id, Cloud cloud) {
+    public Object getObjectSetting(String settingName, int id, Cloud cloud) {
         org.mmbase.bridge.NodeList settingNodes = null;
-        String defaultValue = null;
+        Object defaultValue = null;
+        Setting setting = (Setting)settings.get(settingName);
+        if (setting == null) {
+            throw new RuntimeException("Setting with name '" + settingName + "' is not defined for component '" + getName() + "'");
+        }
+
         if (id == node.getNumber()) {
             // direct setting to this component
             settingNodes = cloud.getNode(id).getRelatedNodes("settings");
-            defaultValue = ((Setting)settings.get(settingName)).getDefault();
+            defaultValue = setting.getDefault();
         } else {
             org.mmbase.bridge.NodeList settingrel = nl.didactor.util.GetRelation.getRelations(id, node.getNumber(), "settingrel", cloud);
 
@@ -316,14 +321,49 @@ public abstract class Component {
 
         for (int i=0; i<settingNodes.size(); i++) {
             if (settingNodes.getNode(i).getStringValue("name").equals(settingName)) {
-                return settingNodes.getNode(i).getStringValue("value");
+                return setting.cast(settingNodes.getNode(i).getStringValue("value"));
             }
         }
 
         return defaultValue;
     }
 
+    /**
+     * Set a new value for a setting on a specific object.
+     * @param settingName The name of the setting
+     * @param newValue the new value for the setting
+     * @param id The objectnumber of the object to set the setting for
+     * @param cloud The cloud in which to set the setting
+     * @throws RuntimeException In case the setting doesnt exist, or the new value falls outside of
+     * the domain of the datatype of the setting.
+     */
     public void setObjectSetting(String settingName, int id, Cloud cloud, String newValue) {
+        Setting setting = (Setting)settings.get(settingName);
+        if (setting == null) {
+            throw new RuntimeException("Setting with name '" + settingName + "' is not defined for component '" + getName() + "'");
+        }
+
+        // Verify that the new value is valid for this setting
+        if (setting.getType() == Setting.TYPE_INTEGER) {
+            try {
+                int i = Integer.parseInt(newValue);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Value '" + newValue + "' is invalid for setting '" + settingName + "' of type Integer");
+            }
+        } else if (setting.getType() == Setting.TYPE_BOOLEAN || setting.getType() == Setting.TYPE_DOMAIN) {
+            String[] domain = setting.getDomain();
+            boolean valid = false;
+            for (int i=0; i<domain.length; i++) {
+                if (domain[i].equals(newValue)) {
+                    valid = true;
+                    break;
+                }
+            }
+            if (!valid) {
+                throw new RuntimeException("Value '" + newValue + "' is invalid for setting '" + settingName + ", not inside domain");
+            }
+        }
+
         org.mmbase.bridge.Node baseNode = null;
         if (id == node.getNumber()) {
             baseNode = cloud.getNode(id);
@@ -331,12 +371,15 @@ public abstract class Component {
             org.mmbase.bridge.NodeList settingrel = nl.didactor.util.GetRelation.getRelations(id, node.getNumber(), "settingrel", cloud);
 
             if (settingrel.size() == 0) {
-                throw new RuntimeException("Cannot set a value for setting '" + settingName + "' if there is no settingrelation between component '" + node.getNumber() + "' and object '" + id + "'");
-            }
-            if (settingrel.size() > 1) {
+                org.mmbase.bridge.RelationManager nm = cloud.getRelationManager("settingrel");
+                baseNode = nm.createRelation(cloud.getNode(id), cloud.getNode(node.getNumber()));
+                baseNode.commit();
+            } else if (settingrel.size() > 1) {
+                baseNode = settingrel.getNode(0);
                 log.warn("Too many relations from " + id + " to " + node.getNumber() +". Picking first one!");
+            } else {
+                baseNode = settingrel.getNode(0);
             }
-            baseNode = settingrel.getNode(0);
         }
 
         org.mmbase.bridge.NodeList settingNodes = baseNode.getRelatedNodes("settings");
@@ -365,11 +408,17 @@ public abstract class Component {
      * @param settingname The name of the setting in MMBase.
      * @param userid The number of the node representing this user
      */
-    public String getUserSetting(String settingname, String userid, Cloud cloud, String[] arguments) {
+    public Object getUserSetting(String settingname, String userid, Cloud cloud) {
+        log.debug("getUserSetting(" + settingname + ", " + userid + ", " + cloud + ")");
+        Setting setting = (Setting)settings.get(settingname);
+        if (setting == null) {
+            throw new RuntimeException("Setting with name '" + settingname + "' is not defined for component '" + getName() + "'");
+        }
         org.mmbase.bridge.NodeList settingrel = nl.didactor.util.GetRelation.getRelations(Integer.parseInt(userid), node.getNumber(), "settingrel", cloud);
 
         if (settingrel.size() == 0) {
-            return "";
+            log.debug("Returning default value: " + setting.getDefault());
+            return setting.getDefault();
         }
         if (settingrel.size() > 1) {
             log.warn("Too many relations from " + userid + " to " + node.getNumber() +". Picking first one!");
@@ -378,10 +427,12 @@ public abstract class Component {
         org.mmbase.bridge.NodeList settings = settingRelNode.getRelatedNodes("settings");
         for (int i=0; i<settings.size(); i++) {
             if (settings.getNode(i).getStringValue("name").equals(settingname)) {
-                return settings.getNode(i).getStringValue("value");
+                log.debug("Returning database value: " + settings.getNode(i).getStringValue("value"));
+                return setting.cast(settings.getNode(i).getStringValue("value"));
             }
         }
-        return "";
+        log.debug("Returning default value: " + setting.getDefault());
+        return setting.getDefault();
     }
 
 
@@ -393,6 +444,9 @@ public abstract class Component {
         interestedComponents.add(comp);
     }
 
+    /**
+     * Small helper method that returns an attribute value of a w3c DOM Node.
+     */
     private static String getAttribute(Node n, String attr) {
         if (n == null) {
             throw new RuntimeException("Node is null!");
@@ -425,6 +479,21 @@ public abstract class Component {
         return settings;
     }
 
+    /**
+     * Return a list of settings that are settable on a given scope
+     */
+    public Vector getSettings(String scope) {
+        Vector result = new Vector();
+        Iterator i = settings.values().iterator();
+        while (i.hasNext()) {
+            Setting s = (Setting)i.next();
+            if (s.getScope().contains(scope)) {
+                result.add(s);
+            }
+        }
+        return result;
+    }
+
     public Vector getScopes() {
         return scopes;
     }
@@ -438,7 +507,7 @@ public abstract class Component {
         private String name;
         private int type;
         private String[] domain;
-        private String defaultvalue;
+        private Object defaultvalue;
         private Vector scope;
         private String prompt;
 
@@ -459,7 +528,27 @@ public abstract class Component {
         }
 
         public void setDefault(String defaultvalue) {
-            this.defaultvalue = defaultvalue;
+            this.defaultvalue = cast(defaultvalue);
+        }
+
+        public Object cast(String value) {
+            switch (this.type) {
+                case TYPE_BOOLEAN:
+                    if ("true".equals(value)) {
+                        return Boolean.TRUE;
+                    } else if ("false".equals(value)) {
+                        return Boolean.FALSE;
+                    } else {
+                        log.warn("Warning: boolean value '" + value + "' is not one of {true,false}, defaulting to false");
+                        return Boolean.FALSE;
+                    }
+                case TYPE_INTEGER:
+                    return new Integer(value);
+                case TYPE_STRING:
+                case TYPE_DOMAIN:
+                    return value;
+            }
+            return null;
         }
 
         public void setDomain(String[] domain) {
@@ -474,7 +563,7 @@ public abstract class Component {
             return scope;
         }
 
-        public String getDefault() {
+        public Object getDefault() {
             return defaultvalue;
         }
 
