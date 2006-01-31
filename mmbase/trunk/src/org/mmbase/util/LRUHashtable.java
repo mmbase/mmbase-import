@@ -20,7 +20,7 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.21 2005-11-17 14:11:43 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.22 2006-01-31 20:38:31 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface {
@@ -54,7 +54,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      * @param cap the starting capacity (used to improve performance)
      * @param lf the amount with which current capacity frows
      */
-    public LRUHashtable(int size,int cap,float lf) {
+    public LRUHashtable(int size, int cap, float lf) {
         super(cap, lf);
         root.next = dangling;
         dangling.prev = root;
@@ -66,7 +66,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      * @param size the maximum capacity
      * @param cap the starting capacity (used to improve performance)
      */
-    public LRUHashtable(int size,int cap) {
+    public LRUHashtable(int size, int cap) {
         this(size, cap, 0.75f);
     }
 
@@ -477,6 +477,116 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
                 LRUHashtable.this.currentSize--;
             }
         }
+    }
+
+    public static void main(String argv[]) {
+        int treesiz = 1024;
+        int opers = 1000000;
+        int thrds  = 1;
+
+        try {
+            if (argv.length > 0) {
+                treesiz = Integer.parseInt(argv[0]);
+            }
+            if (argv.length > 1) {
+                opers = Integer.parseInt(argv[1]);
+            }
+            if (argv.length > 2) {
+                thrds = Integer.parseInt(argv[2]);
+            }
+        } catch (Exception e) {
+            System.out.println("Usage: java org.mmbase.util.LRUHashtable <size of table> <number of operation to do> <threads>");
+            return;
+        }
+
+        final int TREESIZ = treesiz;
+        final int OPERS = opers;
+        final int THREADS = thrds;
+
+        final LRUHashtable treap = new LRUHashtable(TREESIZ);
+        long ll1 = System.currentTimeMillis();
+
+        // fill the map
+        for (int i = 0; i < TREESIZ; i++) {
+            treap.put(""+i,""+i);
+        }
+        long ll2=System.currentTimeMillis();
+        System.out.println("Size "+treap.size());
+
+        if (TREESIZ <= 1024) {
+            System.out.println("LRUHashtable initaly " + treap.toString(true));
+        }
+
+        final  int score[][] = new int[TREESIZ][THREADS];
+        long ll3 = System.currentTimeMillis();
+
+        Thread[] threads = new Thread[THREADS];
+        for (int t = 0; t < THREADS; t++) {
+            final int  threadnr = t;
+            Runnable runnable = new Runnable() {
+                    public void run() {
+                        if (THREADS > 1) {
+                            System.out.println("Thread " + threadnr + " started");
+                        }
+                        Random rnd = new Random();
+                        for (int i = 0;i<OPERS;i++) {
+                            // Put and get mixed
+                            int j = Math.abs(rnd.nextInt())%(TREESIZ/2)+(TREESIZ/4);
+                            int k = Math.abs(rnd.nextInt())%2;
+                            Object rtn;
+                            switch (k) {
+                            case 0:
+                                rtn=treap.put(""+j,""+j);
+                                score[j][threadnr]++;
+                                break;
+                            case 1:
+                                rtn=treap.get(""+j);
+                                score[j][threadnr]++;
+                                break;
+                            }
+                            // Only a get
+                            j = Math.abs(rnd.nextInt())%(TREESIZ);
+                            rtn = treap.get(""+j);
+                            score[j][threadnr]++;
+                        }
+                        if (THREADS > 1) {
+                            System.out.println("Thread " + threadnr + " ready");
+                        }
+                    }
+            };
+            threads[t] = new Thread(runnable);
+            threads[t].start();
+        }
+        long ll4 = System.currentTimeMillis();
+        for (int i = 0; i < THREADS; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException ie) {
+                System.err.println("Interrupted");
+            }
+        }
+                
+        long ll5 = System.currentTimeMillis();
+        if (TREESIZ <= 1024) {
+            System.out.println("LRUHashtable afterwards " + treap.toString(true));
+
+            for (int i = 0; i <TREESIZ; i++) {
+                int totscore = 0;
+                for (int j = 0; j < THREADS; j++) {
+                    totscore += score[i][j];
+                }
+                System.out.println("" + i + " score " + totscore);
+            }
+        }
+        System.out.println("Creation " + (ll2-ll1) + " ms");
+        System.out.println("Thread starting " + (ll4-ll3) + " ms");
+        if (TREESIZ <= 1024) {
+            System.out.println("Print    " + (ll3-ll2) + " ms");
+        } else {
+            System.out.println("Not printed (too huge)");
+        }
+        long timePerKop = (ll5 - ll3) * 1000 / (OPERS);
+        System.out.println("Run      " + (ll5-ll3) + " ms (" + timePerKop + " ms/koperation,  " + (timePerKop / THREADS) + " ms/koperation total from " + THREADS + " threads)");
     }
 }
 
