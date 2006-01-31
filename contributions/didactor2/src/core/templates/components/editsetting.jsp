@@ -8,7 +8,7 @@
         component.setObjectSetting(setting.getName(), Integer.parseInt(objectnum), cloud, newValue);
     }
 
-    String value = component.getObjectSetting(setting.getName(), Integer.parseInt(objectnum), cloud);
+    String value = component.getObjectSetting(setting.getName(), Integer.parseInt(objectnum), cloud).toString();
     String editValue = "";
     out.print("<span id='val_" + objectnum + "'>");
     if (value == null && settingDefault == null) {
