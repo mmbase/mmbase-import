@@ -29,7 +29,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.15 2006-01-31 09:59:44 ernst Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.16 2006-01-31 10:06:09 ernst Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
@@ -55,7 +55,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
      * This method provides a way of globally switching off all strategies this one wraps.
      * When this strategy is set to 'disabled', the state of all wrapped strategies is being
      * preserved, so when it is being 'enabled' again, these settings are restored, in stead of 
-     * just setting all wrapped strategies to 'enabled'
+     * just setting all wrapped strategies to 'enabled'.
      */
     public void setEnabled(boolean newStatus) {
         if(newStatus != isEnabled()){
@@ -81,8 +81,8 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
         }
     }
     /**
-     * Adds the strategy if it is not allerady there. Strategies should only
-     * occure once.
+     * Adds the strategy if it is not already there. Strategies should only
+     * occur once.
      *
      * @param strategy
      */
@@ -128,10 +128,6 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
             + "user to configure.";
     }
 
-    /**
-     * @return an iterator of present cache release strategies. This only
-     *         contains the strategies added by the user.
-     */
     public Iterator iterator() {
         return releaseStrategies.iterator();
     }
@@ -172,5 +168,4 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
             rs.clear();
         }
     }
-
 }
