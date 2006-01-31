@@ -254,7 +254,9 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         Status status = newStatus();
         StringBuffer word = new StringBuffer();  // current word
         try {
-            log.trace("Starting replacing words." + Logging.stackTrace());
+            if (log.isDebugEnabled()) {
+                log.trace("Starting replacing words." + Logging.stackTrace());
+            }
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
