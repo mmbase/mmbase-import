@@ -39,7 +39,7 @@
         }
         else {
             learnObject = (String) bookmarks.get(educationNumber+",learnobject");
-            System.err.println("read "+educationNumber+",learnobject="+learnObject+" from session");
+            //System.err.println("read "+educationNumber+",learnobject="+learnObject+" from session");
             if (learnObject != null) {
                 %><mm:import id="learnobject" reset="true"><%= learnObject %></mm:import><%
             }
