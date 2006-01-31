@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@page import="java.util.HashMap"%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <mm:import externid="learnobject" jspvar="learnObject"/>
 <mm:import externid="learnobjecttype" jspvar="learnObjectType"/>
