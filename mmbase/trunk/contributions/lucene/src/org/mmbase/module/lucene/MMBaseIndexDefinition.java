@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.6 2006-01-23 10:18:17 pierre Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.7 2006-02-01 15:40:57 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -137,7 +137,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 Queries.addConstraint(q, constraint);
             }
             StepField elementNumberField = q.createStepField(elementNumberFieldName);
-            q.addSortOrder(elementNumberField, SortOrder.ORDER_DESCENDING);
+            q.addSortOrder(elementNumberField, SortOrder.ORDER_DESCENDING); // this sort order makes it possible to filter out duplicates.
             return new HugeNodeListIterator(q, maxNodesInQuery);
         } catch (Exception e) {
             log.warn(e.getMessage(), e);

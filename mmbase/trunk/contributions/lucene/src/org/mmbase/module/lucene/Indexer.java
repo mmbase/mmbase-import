@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.19 2006-02-01 11:10:55 michiel Exp $
+ * @version $Id: Indexer.java,v 1.20 2006-02-01 15:40:57 michiel Exp $
  **/
 public class Indexer {
 
@@ -195,12 +195,20 @@ public class Indexer {
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
      */
     protected void index(Iterator i, IndexWriter writer) throws IOException {
+        Document document = null;
+        String   lastIdentifier = null;
         while(i.hasNext()) {
             IndexEntry entry = (IndexEntry) i.next();
-            Document document = new Document();
-            index(entry, document);
-            writer.addDocument(document);
+            String newIdentifier = entry.getIdentifier();
+            // This code depends on the fact that if the same nodes appear multipible times, they are at least queried like so, that they appear next to each other
+            if (! newIdentifier.equals(lastIdentifier)) {
+                if (document != null) writer.addDocument(document);
+                document = new Document();
+            }
+            index(entry, document);            
+            lastIdentifier = newIdentifier;
         }
+        if (document != null) writer.addDocument(document);
     }
 
     /**
