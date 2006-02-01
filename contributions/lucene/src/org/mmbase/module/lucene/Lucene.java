@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.48 2006-01-24 13:26:19 ernst Exp $
+ * @version $Id: Lucene.java,v 1.49 2006-02-01 11:12:00 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -362,11 +362,11 @@ public class Lucene extends Module implements MMBaseObserver {
         factory = ContentExtractor.getInstance();
 
         // traditional Lucenemodule extractors
-        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor");
-        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.SwingRtfExtractor");
+        // factory.addExtractor("org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor");
+        // factory.addExtractor("org.mmbase.module.lucene.extraction.impl.SwingRtfExtractor");
         //factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIWordExtractor");
-        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIExcelExtractor");
-        factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
+        // factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIExcelExtractor");
+        // factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
 
         // path to the lucene index (a directory on disk writeable to the web-application)
         // this path should be a direct path
