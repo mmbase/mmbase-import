@@ -71,6 +71,14 @@
 
       
       <mm:import externid="$givenanswer" id="givenanswertext" jspvar="givenAnswerText"/>
+      <%
+        if (givenAnswerText == null) {
+          givenAnswerText = "";
+        }
+        if (answerText == null) {
+          answerText = "";
+        }
+      %>
       <% if (givenAnswerText.trim().equals(answerText.trim())) { %>
 
         <%-- Relate each given answer to the possible answers --%>
