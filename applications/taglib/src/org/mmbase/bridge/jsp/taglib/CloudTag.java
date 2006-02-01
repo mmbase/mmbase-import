@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.129 2006-01-22 19:54:10 nklasens Exp $
+ * @version $Id: CloudTag.java,v 1.130 2006-02-01 14:00:31 nklasens Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -57,7 +57,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private static final String LOGINPAGE_DENYREASON_FAIL = "failed";
     private static final String LOGINPAGE_DENYREASON_RANKTOOLOW = "rank";
 
-    private static final int DENYREASON_NEED = 0;
     private static final int DENYREASON_FAIL = 1;
     private static final int DENYREASON_RANKTOOLOW = 2;
 
@@ -175,7 +174,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     // javadoc inherited (from ParameterHandler)
-    public void addParameter(String key, Object value) throws JspTagException {
+    public void addParameter(String key, Object value) {
         if (cloud != null) {
             cloud.setProperty(key, value);
         }
@@ -438,7 +437,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             // removeCloud(); // should not remove existing cloud from session
             if (logoutInfo != null) logoutInfo.checkRequiredParameters();
             cloud = getDefaultCloudContext().getCloud(getName(), "anonymous", logoutInfo == null ? null : logoutInfo.toMap());
-            cloud.setLocale(locale);
+            if (locale != null) {
+                cloud.setLocale(locale);
+            }
             return true;
         } catch (java.lang.SecurityException e) {
             // login failed for anymous ?! That's odd, provide null.

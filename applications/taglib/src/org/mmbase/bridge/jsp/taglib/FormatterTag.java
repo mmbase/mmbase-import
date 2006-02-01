@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.59 2006-01-23 18:33:29 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.60 2006-02-01 14:00:31 nklasens Exp $ 
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -503,9 +503,12 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         Locale locale;
         if (localeTag != null) {
             locale = localeTag.getLocale();
+            if (locale == null) {
+                locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
+            }
         } else {
             locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
-        }          
+        }
         params.put("formatter_language", locale.getLanguage());
         params.put("formatter_counter", counter.toString());
         CloudProvider cp = findCloudProvider(false);
