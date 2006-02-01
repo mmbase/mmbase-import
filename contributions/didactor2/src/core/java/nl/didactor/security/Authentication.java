@@ -156,12 +156,16 @@ public class Authentication extends org.mmbase.security.Authentication
          response = (HttpServletResponse) loginInfo.get(KEY_RESPONSE);
       }
 
-      if(bDebugMode) System.out.print(sDebugIndo + "authenticate=");
-      if((request != null)){
-         System.out.println(request.getParameter("authenticate"));
-      }
-      else{
-         System.out.println("null");
+      if(bDebugMode){
+         System.out.print(sDebugIndo + "authenticate=");
+         if ( (request != null))
+         {
+            System.out.println(request.getParameter("authenticate"));
+         }
+         else
+         {
+            System.out.println("null");
+         }
       }
 
       if("didactor-logout".equals(application)){
@@ -321,7 +325,7 @@ public class Authentication extends org.mmbase.security.Authentication
          //System.out.println("==================================");
          try{
             String sRedirect = response.encodeRedirectURL(this.sLoginPage + "?referrer=" + request.getRequestURI());
-            System.out.println(sRedirect);
+            if(bDebugMode) System.out.println(sRedirect);
             response.sendRedirect(sRedirect);
          }
          catch(Exception e){
@@ -776,7 +780,6 @@ public class Authentication extends org.mmbase.security.Authentication
        {
            if (xResultCode.equals(ASelectErrors.ASELECT_UNKNOWN_USER) || xResultCode.equals(ASelectErrors.ASELECT_COULD_NOT_AUTHENTICATE_USER))
            {
-               System.out.println();
                xRedirectUrl = new String(HttpUtils.getRequestURL(request));
                try
                {
