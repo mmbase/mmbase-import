@@ -546,6 +546,17 @@ a.treeNavigation:active  {
 
 a.treeNavigation:hover {
 	 text-decoration: underline }	
+
+div.selectedContent {
+  background: #999999;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+div.selectedContent a {
+  color: #FFFFFF;
+}
+
 		
 /* ###### content - header ###### */
 
