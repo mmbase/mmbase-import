@@ -8,7 +8,6 @@
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title><di:translate key="education.learnenvironmenttitle" /></title>
-    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
   </mm:param>
 </mm:treeinclude>
 
@@ -72,6 +71,7 @@
   var currentnumber = -1;
   var contenttype = new Array();
   var contentnumber = new Array();
+
   function addContent( type, number ) {
     contenttype[contenttype.length] = type;
     contentnumber[contentnumber.length] = number;
@@ -79,6 +79,7 @@
       currentnumber = contentnumber[0];
     }
   }
+
   function nextContent() {
     for(var count = 0; count <= contentnumber.length; count++) {
      if ( contentnumber[count] == currentnumber ) {
@@ -92,27 +93,31 @@
        }
      }
    }
-
    openContent( opentype, opennumber );
    openOnly('div'+opennumber,'img'+opennumber);
   }
+
   function previousContent() {
     for(var count = 0; count <= contentnumber.length; count++) {
-     if ( contentnumber[count] == currentnumber ) {
-       if ( count > 0 ) {
-         if ("tests" == contenttype[count]) {
-           alert("<di:translate key="education.testalert" />");
-           return;
-         }
-         var opentype = contenttype[count-1];
-         var opennumber = contentnumber[count-1];
-       }
-     }
-   }
+      if ( contentnumber[count] == currentnumber ) {
+        if ( count > 0 ) {
+          if ("tests" == contenttype[count]) {
+            alert("<di:translate key="education.testalert" />");
+            return;
+          }
+          var opentype = contenttype[count-1];
+          var opennumber = contentnumber[count-1];
+        }
+      }
+    }
     openContent( opentype, opennumber );
     openOnly('div'+opennumber,'img'+opennumber);
   }
+
   function openContent( type, number ) {
+    if (document.getElementById('content-'+currentnumber)) {
+      document.getElementById('content-'+currentnumber).className = "";
+    }
     if ( number > 0 ) {
       currentnumber = number;
     }
@@ -138,7 +143,12 @@
         frames['content'].location.href='<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>'+'&learnobject='+number;
         break;
     }
+    if (document.getElementById('content-'+currentnumber)) {
+      document.getElementById('content-'+currentnumber).className = "selectedContent";
+    }
+
   }
+
   function openClose(div, img) {
     var realdiv = document.getElementById(div);
     var realimg = document.getElementById(img);
@@ -154,6 +164,7 @@
       }
     }
   }
+
   function openOnly(div, img) {
     var realdiv = document.getElementById(div);
     var realimg = document.getElementById(img);
@@ -183,8 +194,7 @@
                 }
             }
         }
-    }
-    else { // find enclosing div
+    } else { // find enclosing div
         var finddiv = realimg;
         while (finddiv != null && (! finddiv.className || finddiv.className.substring(0,7) != "lbLevel")) {
             finddiv = finddiv.parentNode;
@@ -196,7 +206,8 @@
             openOnly(divid,imgid);
         }
     }
- }
+  }
+
   function closeAll() {
     var divs = document.getElementsByTagName("div");
     for (i=0; i<divs.length; i++) {
@@ -207,6 +218,7 @@
       }
     }
   }
+
   function removeButtons() {
     // Remove all the buttons in front of divs that have no children
     var imgs = document.getElementsByTagName("img");
@@ -305,7 +317,7 @@
                         <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
                            <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
 
-                           <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;">
+                           <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;" id="content-<mm:field name="number" />">
                               <script type="text/javascript">
                               <!--
                                  addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
