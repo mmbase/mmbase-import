@@ -60,4 +60,11 @@ public class RelationEventBroker extends AbstractEventBroker {
         rel.notify(re);
     }
 
+    /* (non-Javadoc)
+     * @see org.mmbase.core.event.AbstractEventBroker#toString()
+     */
+    public String toString() {
+        return "RelationEvent Broker";
+    }
+
 }

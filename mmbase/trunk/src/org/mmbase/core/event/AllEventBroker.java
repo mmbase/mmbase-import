@@ -34,4 +34,11 @@ public class AllEventBroker extends AbstractEventBroker {
         ((AllEventListener)listener).notify(event);
     }
 
+    /* (non-Javadoc)
+     * @see org.mmbase.core.event.AbstractEventBroker#toString()
+     */
+    public String toString() {
+        return "All Event Broker";
+    }
+
 }
