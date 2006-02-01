@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.4 2006-01-23 10:18:17 pierre Exp $
+ * @version $Id: MMBaseEntry.java,v 1.5 2006-02-01 15:40:57 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -75,6 +75,7 @@ public class MMBaseEntry implements IndexEntry {
         storeData(data);
         document.add(Field.Keyword("builder", node.getNodeManager().getName()));
         document.add(Field.Keyword("number", getIdentifier()));
+
         for (Iterator i = fields.iterator(); i.hasNext(); ) {
             IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
             String fieldName = fieldDefinition.alias;
