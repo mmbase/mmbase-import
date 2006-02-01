@@ -144,7 +144,7 @@
 <span style="float: right"><a href="<mm:treefile  page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
 
     <mm:param name="startAt"><%= startAt + 15 %></mm:param>
-    <mm:param name="command">detail</mm:param>
+    <mm:param name="popcmd">detail</mm:param>
     <mm:param name="direct_connection"><mm:write referid="direct_connection"/></mm:param>
 
 </mm:treefile>"><di:translate key="pop.nextresults" /></a></span>
@@ -156,7 +156,7 @@
 <a href="<mm:treefile  page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder">
 
     <mm:param name="startAt"><%= startAt - 15 %></mm:param>
-    <mm:param name="command">detail</mm:param>
+    <mm:param name="popcmd">detail</mm:param>
     <mm:param name="direct_connection"><mm:write referid="direct_connection"/></mm:param>
 
 </mm:treefile>"><di:translate key="pop.prevresults" /></a>

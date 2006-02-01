@@ -6,9 +6,9 @@
 
   <%@include file="/shared/setImports.jsp" %>
 
-  <mm:import externid="command">no</mm:import>
+  <mm:import externid="popcmd">no</mm:import>
 
-  <mm:compare referid="command" value="sendfeedback" inverse="true">
+  <mm:compare referid="popcmd" value="sendfeedback" inverse="true">
     <mm:redirect page="/pop/index.jsp" referids="$referids"/>
   </mm:compare>
 

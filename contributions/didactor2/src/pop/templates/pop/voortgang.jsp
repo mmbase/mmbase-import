@@ -55,7 +55,7 @@
           <td class="listItem">
               <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
                         referids="$popreferids,currentfolder">
-                      <mm:param name="command">detail</mm:param>
+                      <mm:param name="popcmd">detail</mm:param>
                     </mm:treefile>"><img src="/didactor/pop/gfx/1.gif" width=4 height=13 title="" alt="" border="0" 
                                       /><img src="/didactor/pop/gfx/2.gif" width=<%= progress %> height=13 
                                       title="<di:translate key="pop.gototestrelults" />"  alt="<di:translate key="pop.gototestrelults" />" border="0" 
@@ -83,7 +83,7 @@
             <mm:compare referid="intake" value="0">
                   <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
                         referids="$popreferids,currentfolder">
-                      <mm:param name="command">intake</mm:param>
+                      <mm:param name="popcmd">intake</mm:param>
                     </mm:treefile>'" value="intake" 
                     title="<di:translate key="pop.intakecoursebutton" />">
             </mm:compare>
@@ -124,7 +124,7 @@
           <td class="listItem">
               <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
                         referids="$popreferids,currentfolder">
-                      <mm:param name="command">detail</mm:param>
+                      <mm:param name="popcmd">detail</mm:param>
                       <mm:param name="direct_connection">true</mm:param>
                     </mm:treefile>"><img src="/didactor/pop/gfx/1.gif" width=4 height=13 title="" alt="" border="0" 
                                       /><img src="/didactor/pop/gfx/2.gif" width=<%= progress %> height=13 
@@ -153,7 +153,7 @@
             <mm:compare referid="intake" value="0">
                   <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
                         referids="$popreferids,currentfolder">
-                      <mm:param name="command">intake</mm:param>
+                      <mm:param name="popcmd">intake</mm:param>
                     </mm:treefile>'" value="intake" 
                     title="<di:translate key="pop.intakecoursebutton" />">
             </mm:compare>

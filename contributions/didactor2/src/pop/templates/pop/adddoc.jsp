@@ -4,7 +4,7 @@
   <form name="newdocform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
           referids="$popreferids,currentfolder,currentcomp">
         </mm:treefile>" method="post">
-    <input type="hidden" name="command" value="savedoc">
+    <input type="hidden" name="popcmd" value="savedoc">
     <input type="hidden" name="returnto" value="<mm:write referid="returnto"/>">
     <input type="hidden" name="myfeedback1" value="<mm:write referid="myfeedback1"/>">
     <input type="hidden" name="myfeedback2" value="<mm:write referid="myfeedback2"/>">
@@ -105,6 +105,6 @@
     </mm:notpresent>
     <br/>
     <br/>
-    <input type="submit" class="formbutton" value="<di:translate key="pop.backbuttonlc" />" onClick="newdocform.command.value='continue'">
+    <input type="submit" class="formbutton" value="<di:translate key="pop.backbuttonlc" />" onClick="newdocform.popcmd.value='continue'">
   </form>
 </div>
