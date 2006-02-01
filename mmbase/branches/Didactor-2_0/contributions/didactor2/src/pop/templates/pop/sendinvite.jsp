@@ -40,7 +40,7 @@
 </mm:node>
 
 <mm:import id="link" jspvar="linktofeedback"><%= request.getRequestURL() 
-    %>?provider=<mm:write referid="provider"/>&command=getinvite&nfeedback=<mm:write referid="newfeedback"/></mm:import>
+    %>?provider=<mm:write referid="provider"/>&popcmd=getinvite&nfeedback=<mm:write referid="newfeedback"/></mm:import>
 
 <mm:node number="$currentcomp">
   <mm:import id="compname"><mm:field name="name"/></mm:import>

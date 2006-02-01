@@ -61,7 +61,7 @@
     <%-- Take care: form name is used in JavaScript of the specific question jsp pages! --%>
 
     <form name="questionform" action="<mm:treefile page="/pop/intakerate.jsp" objectlist="$includePath" referids="$popreferids,currentfolder"/>" method="POST">
-    <input type="hidden" name="command" value="intaketest">
+    <input type="hidden" name="popcmd" value="intaketest">
     <mm:list nodes="<%= notpassedIntakes %>" path="tests">
       <mm:node element="tests">
         <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
