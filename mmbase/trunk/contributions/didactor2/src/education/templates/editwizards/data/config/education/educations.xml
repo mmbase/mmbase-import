@@ -21,13 +21,6 @@
         <relation destination="classes" role="classrel" />
         <relation destination="news" role="related" />
         <relation destination="learnblocks" role="posrel" />
-        <relation destination="people" role="rolerel">
-          <object type="people">
-            <relation destination="roles" role="related">
-              <object type="roles"/>
-            </relation>
-          </object>
-        </relation>
         <relation destination="paragraphs" role="posrel">
            <object>
               <relation destination="attachments" role="posrel" />
@@ -100,7 +93,6 @@
         <list destination="news" extends="config/news/news-list.xml" />
         <list destination="learnblocks" role="posrel" extends="config/learnblocks/learnblocks-list.xml" />
         <list destination="classes" role="classrel" extends="config/class/classes-list.xml" />
-        <list destination="people" role="rolerel" extends="config/people/people-education.xml" />
         &extra_lists;
 
     </form-schema>
