@@ -1,6 +1,6 @@
 <mm:import externid="whatselected" reset="true">0</mm:import>
 <mm:import id="currentpop">-1</mm:import>
-<mm:import externid="command">no</mm:import>
+<mm:import externid="popcmd">no</mm:import>
 <mm:import externid="returnto">-1</mm:import>
 <mm:import externid="currentfolder">-1</mm:import>
 <mm:import externid="t_mode">-1</mm:import>

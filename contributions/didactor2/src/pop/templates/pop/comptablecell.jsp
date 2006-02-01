@@ -1,7 +1,7 @@
               <td class="listItem">
                 <a href="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentprofile">
                     <mm:param name="currentcomp"><%= thisCompetencie %></mm:param>
-                    <mm:param name="command">editcomp</mm:param>
+                    <mm:param name="popcmd">editcomp</mm:param>
                    </mm:treefile>"><mm:field name="name"/>
                 </a>
               </td>
@@ -68,7 +68,7 @@
                              referids="$popreferids,currentfolder,currentprofile">
                            <mm:param name="currentcomp"><%= thisCompetencie %></mm:param>
                            <mm:param name="todonumber"><mm:field name="todoitems.number"/></mm:param>
-                           <mm:param name="command">addtodo</mm:param>
+                           <mm:param name="popcmd">addtodo</mm:param>
                            <mm:param name="returnto">no</mm:param>
                          </mm:treefile>"><mm:field name="todoitems.name" jspvar="todoName" vartype="String"
                          ><% if (todoName.length()>0) { %><%= todoName %><% } else { %>...<% } %></mm:field></a><br/>

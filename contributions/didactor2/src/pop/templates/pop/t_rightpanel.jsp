@@ -35,20 +35,20 @@
               <div class="contentHeader"><di:translate key="pop.progressmonitor" />
                 <%@include file="nameintitle.jsp" %>
               </div>
-              <mm:compare referid="command" value="intake">
+              <mm:compare referid="popcmd" value="intake">
                 <mm:import id="competencies" jspvar="competencies" />
                 <jsp:include page="intaketest.jsp">
                   <jsp:param name="competencies" value="<%= competencies %>"/>
                 </jsp:include>
-                <mm:remove referid="command"/>
-                <mm:import id="command">-1</mm:import>
+                <mm:remove referid="popcmd"/>
+                <mm:import id="popcmd">-1</mm:import>
               </mm:compare>
-              <mm:compare referid="command" value="detail">
+              <mm:compare referid="popcmd" value="detail">
                 <jsp:include page="progressdetail.jsp"/>
-                <mm:remove referid="command"/>
-                <mm:import id="command">-1</mm:import>
+                <mm:remove referid="popcmd"/>
+                <mm:import id="popcmd">-1</mm:import>
               </mm:compare>
-              <mm:compare referid="command" value="no">
+              <mm:compare referid="popcmd" value="no">
                 <jsp:include page="voortgang.jsp">
                   <jsp:param name="msg" value="<%= msgString %>"/>
                 </jsp:include>

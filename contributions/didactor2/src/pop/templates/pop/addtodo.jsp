@@ -24,7 +24,7 @@
   <form name="newtodoform" action="<mm:treefile page="/pop/index.jsp" objectlist="$includePath" 
           referids="$popreferids,currentfolder,currentcomp">
         </mm:treefile>" method="post">
-    <input type="hidden" name="command" value="savetodo">
+    <input type="hidden" name="popcmd" value="savetodo">
     <input type="hidden" name="returnto" value="<mm:write referid="returnto"/>">
     <input type="hidden" name="todonumber" value="<mm:write referid="todonumber"/>">
     <input type="hidden" name="myfeedback1" value="<mm:write referid="myfeedback1"/>">
@@ -79,6 +79,6 @@
     <mm:compare referid="todonumber" value="-1" inverse="true">
       <input type="submit" class="formbutton" value="<di:translate key="pop.savebutton" />">
     </mm:compare>
-    <input type="submit" class="formbutton" value="<di:translate key="pop.backbuttonlc" />" onClick="newtodoform.command.value='continue'">
+    <input type="submit" class="formbutton" value="<di:translate key="pop.backbuttonlc" />" onClick="newtodoform.popcmd.value='continue'">
   </form>
 </div>
