@@ -18,6 +18,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.store.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.LocalizedString;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.18 2006-01-23 14:33:13 michiel Exp $
+ * @version $Id: Indexer.java,v 1.19 2006-02-01 11:10:55 michiel Exp $
  **/
 public class Indexer {
 
@@ -58,14 +59,13 @@ public class Indexer {
         this.index = index;
         this.path =  path + java.io.File.separator + index;
         if (! readOnly) {
-            // make sure the indexPath directory is unlocked.
-            // We saw once that it remained locked after a crash of the webapp. Hopefully this will
-            // avoid that.
             try {
-                IndexReader r = IndexReader.open(this.path);
-                if (IndexReader.isLocked(r.directory())) {
-                    IndexReader.unlock(r.directory());
-                    log.service("Unlocked lucene index directory " + r.directory());
+                if (IndexReader.isLocked(this.path)) {
+                    log.info("The directory " + this.path + " is locked! Trying to unlock.");
+                    Directory dir = FSDirectory.getDirectory(this.path, false);
+                    IndexReader.unlock(dir);
+                    log.service("Unlocked lucene index directory " + dir);
+
                 }
             } catch (java.io.IOException ioe) {
                 log.warn(ioe.getMessage(), ioe);
