@@ -100,5 +100,7 @@ public abstract class AbstractEventBroker {
             }
         }
     }
+    
+    public abstract String toString();
 
 }

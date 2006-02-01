@@ -59,4 +59,11 @@ public class NodeEventBroker extends AbstractEventBroker {
         nel.notify(ne);
     }
 
+    /* (non-Javadoc)
+     * @see org.mmbase.core.event.AbstractEventBroker#toString()
+     */
+    public String toString() {
+        return "NodeEvent Broker";
+    }
+
 }
