@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.49 2006-01-23 14:52:47 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.50 2006-02-01 14:00:31 nklasens Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -462,7 +462,16 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-
+    /**
+     * @see org.mmbase.bridge.jsp.taglib.LocaleTag#determineLocale()
+     */
+    protected void determineLocale() throws JspTagException {
+        // only set the locale when attributes are present or inside CloudProviderTag
+        determineLocaleFromAttributes();
+        if (locale == null) {
+            determineFromCloudProvider();
+        }
+    }
 
     public int doStartTag() throws JspTagException {
         super.doStartTag();
@@ -472,7 +481,9 @@ public class ContentTag extends LocaleTag  {
         if (! type.equals("")) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            response.setLocale(locale);
+            if (locale != null) {
+                response.setLocale(locale);
+            }
             String enc  = getEncoding();
             log.debug("Found encoding " + enc);
             if (enc.equals("")) {

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.18 2005-12-13 08:18:37 michiel Exp $ 
+ * @version $Id: LocaleTag.java,v 1.19 2006-02-01 14:00:31 nklasens Exp $ 
  */
 
 public class LocaleTag extends CloudReferrerTag  {
@@ -71,6 +71,54 @@ public class LocaleTag extends CloudReferrerTag  {
     
     
     public int doStartTag() throws JspTagException {
+        determineLocale();
+        if (locale != null) {
+            if (jspvar != null) {
+                pageContext.setAttribute(jspvar, locale);
+            }
+            // compatibility with jstl fmt tags:
+            // should use their constant, but that would make compile-time dependency.
+            prevLocale = (Locale) pageContext.getAttribute(KEY, PageContext.PAGE_SCOPE);
+            pageContext.setAttribute(KEY, locale, PageContext.PAGE_SCOPE);
+            CloudProvider cloudProvider = findCloudProvider(false);
+            if (cloudProvider != null) {
+                cloud = cloudProvider.getCloudVar();
+                prevLocale = cloud.getLocale();
+                cloud.setLocale(locale);
+            } else {
+                cloud = null;
+            }
+        }
+        return EVAL_BODY;
+    }
+
+    /**
+     * @throws JspTagException
+     */
+    protected void determineLocale() throws JspTagException {
+        determineLocaleFromAttributes();
+        if (locale == null) {
+            determineFromCloudProvider();
+        }
+        if (locale == null) {
+            locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
+        }
+    }
+
+    /**
+     * @throws JspTagException
+     */
+    protected void determineFromCloudProvider() throws JspTagException {
+        CloudProvider cloudProvider = findCloudProvider(false);
+        if (cloudProvider != null) {
+            locale = cloudProvider.getCloudVar().getLocale();
+        }
+    }
+
+    /**
+     * @throws JspTagException
+     */
+    protected void determineLocaleFromAttributes() throws JspTagException {
         String l = language.getString(this);
         if (! l.equals("")) {
             if (l.equalsIgnoreCase("client")) {
@@ -78,26 +126,9 @@ public class LocaleTag extends CloudReferrerTag  {
             } else {
                 locale = new Locale(l, country.getString(this), variant.getString(this));
             }
-        } else {
-            locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
         }
-        if (jspvar != null) {
-            pageContext.setAttribute(jspvar, locale);
-        }
-        // compatibility with jstl fmt tags:
-        // should use their constant, but that would make compile-time dependency.
-        prevLocale = (Locale) pageContext.getAttribute(KEY, PageContext.PAGE_SCOPE);
-        pageContext.setAttribute(KEY, locale, PageContext.PAGE_SCOPE);
-        CloudProvider cloudProvider = findCloudProvider(false);
-        if (cloudProvider != null) {
-            cloud = cloudProvider.getCloudVar();
-            prevLocale = cloud.getLocale();
-            cloud.setLocale(locale);
-        } else {
-            cloud = null;
-        }
-        return EVAL_BODY;
     }
+    
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             if (bodyContent != null) {
