@@ -25,10 +25,10 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.URIResolver;
 
 public class ActionUtils {
-    
+
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(ActionUtils.class.getName());
-    
+
     /**
      * get stacktrace information of exception
      * @param throwable
@@ -37,35 +37,32 @@ public class ActionUtils {
     public static String getStackTrace(Throwable throwable) {
         CharArrayWriter caw = new CharArrayWriter();
         throwable.printStackTrace(new PrintWriter(caw));
-        
+
         caw.flush();
         String stacktrace = caw.toString();
         caw.close();
-        
+
         return stacktrace;
     }
-    
+
     /**
-     * convert string into escaped HTML code¡£
-     * '&'->'&amp;'
-     * '>'->'&gt;'
-     * '<'->'&lt;'
-     * '"'->'&quot;'
-     * '\r\n'->'<br/>' 
+     * convert string into escaped HTML codeï¿½ï¿½
+     * '&amp;'->'&amp;amp'
+     * '&lt;'->'&amp;lt;'
+     * '&gt;'->'&amp;gt;'
+     * '&quot;'->'&amp;quot;'
+     * '\r\n'->'&lt;br /&gt'
      * @param value the string to be convert
-     * @return the string converted¡£
+     * @return the string convertedï¿½ï¿½
      */
-    public static String escapeForHTML(String value)
-    {
-        if (value == null)
-        {
+    public static String escapeForHTML(String value) {
+        if (value == null) {
             return value;
         }
         StringBuffer buffer = new StringBuffer();
-        for (int i=0;i<value.length();i++)
-        {
+        for (int i=0;i<value.length();i++) {
             char ch = value.charAt(i);
-            switch (ch){
+            switch (ch) {
                 case '"': // '"'-->'&quot;' (&#34;)
                     buffer.append("&quot;");
                     break;
@@ -79,7 +76,7 @@ public class ActionUtils {
                     buffer.append("&gt;");
                     break;
                 case (char)0x0D : //return '\r\n'->'<br/>'
-                    if (value.charAt(i+1)==(char)0x0A){
+                    if (value.charAt(i+1) == (char)0x0A) {
                         i++;
                     }
                 case (char)0x0A : //new line
@@ -91,7 +88,7 @@ public class ActionUtils {
         }
         return buffer.toString();
     }
-    
+
     private final static String PROTOCOL = "http://";
 
     public static String getBackPage(HttpServletRequest request) {
@@ -100,10 +97,10 @@ public class ActionUtils {
             referrer = "";
         }
         referrer = referrer.replace('\\', '/');
-        
+
         // this translations seems to be needed by some windows setups
-        String backpage = org.mmbase.util.Encode.decode("ESCAPE_URL_PARAM", referrer); 
-    
+        String backpage = org.mmbase.util.Encode.decode("ESCAPE_URL_PARAM", referrer);
+
         if ("".equals(backpage)) {
             log.debug("No backpage getting from header");
             backpage = request.getHeader("Referer");
@@ -116,27 +113,26 @@ public class ActionUtils {
     }
 
     public static URIResolver getURIResolver(HttpServletRequest request, SessionData sessionData) throws MalformedURLException, WizardException {
-    
-        
+
         if (sessionData==null) {
             sessionData = new SessionData();
         }
-        
+
         String backpage = sessionData.getBackPage();
         if (backpage==null) {
             backpage = getBackPage(request);
         }
-        
+
         String language = HttpUtil.getParam(request,"language",sessionData.getLanguage());
         URIResolver.EntryList extraDirs = new URIResolver.EntryList();
-    
+
         /* Determin the 'referring' page, and add its directory to the URIResolver.
            That means that xml can be placed relative to this page, and xsl's int xsl-dir.
          */
         URL ref;
         // capture direct reference of http:// and https:// referers
         int protocolPos= backpage.indexOf(PROTOCOL);
-    
+
         if (protocolPos >=0 ) { // given absolutely
             String path = new URL(backpage).getPath();
             ref = new URL(getResource(path.substring(request.getContextPath().length())), ".");
@@ -149,7 +145,7 @@ public class ActionUtils {
                 bp = bp.substring(0, questionPos);
             }
             URL path = getResource(bp);
-    
+
             if (path != null) {
                 ref = new URL(path, ".");
             } else {
@@ -176,15 +172,15 @@ public class ActionUtils {
             }
             extraDirs.add("templates:", templatesDir);
         }
-    
+
         /**
          * Then of course also the directory of editwizard installation must be added. This will allow for the 'basic' xsl's to be found,
          * and also for 'library' editors.
          */
-    
+
         URL jspFileDir = new URL(getResource(request.getServletPath()), "."); // the directory of this jsp (list, wizard)
         URL basedir    = new URL(jspFileDir, "../data/");                      // ew default data/xsls is in ../data then
-    
+
         if (! language.equals("")) {
             URL i18n = new URL(basedir, "i18n/" + language + "/");
             if (i18n == null) {
@@ -195,7 +191,7 @@ public class ActionUtils {
                 extraDirs.add("i18n:", i18n);
             }
         }
-    
+
         extraDirs.add("ew:", basedir);
         return new URIResolver(jspFileDir, extraDirs);
     }

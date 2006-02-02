@@ -31,27 +31,28 @@ public class SessionDataManager {
         HttpSession session = request.getSession();
 
         SessionData sessionData = null;
-        
+
         // proceed with the current wizard only if explicitly stated,
         // or if this page is a debug page
         boolean proceed = "true".equals(HttpUtil.getParam(request, "proceed")) || (request.getRequestURI().endsWith("debug.jsp"));
-        
+
         // Look if there is already a configuration in the session.
         Object configObject = session.getAttribute(sessionKey);
         if (proceed && configObject == null) {
             throw new WizardException("Your data cannot be found anymore, you waited too long (more than an hour), or the server was restarted");
         }
-        
-        if (configObject == null || ! (configObject instanceof SessionData) || ! (proceed)) { // nothing (ok) in the session
+
+        if (configObject == null || ! (configObject instanceof SessionData) || !proceed) { // nothing (ok) in the session
             if (log.isDebugEnabled()) {
                 if (proceed) {
+                    // when does this happen?
                     log.debug("creating new configuration (in session is " + configObject + ")");
                 } else {
                     log.debug("creating new configuration (missing proceed parameter)");
                 }
             }
             sessionData = new SessionData();
-            session.setAttribute(sessionKey, sessionData);  // put it in the session (if not a search window)
+            session.setAttribute(sessionKey, sessionData);  // put it in the session (if not a search window)(?)
         } else {
             log.debug("using configuration from session");
             sessionData = (SessionData) configObject;
@@ -61,8 +62,8 @@ public class SessionDataManager {
         return sessionData;
     }
 
-    
-    private static void initSessionData(HttpServletRequest request, SessionData sessionData) throws MalformedURLException, WizardException{
+
+    private static void initSessionData(HttpServletRequest request, SessionData sessionData) throws MalformedURLException, WizardException {
         if (log.isDebugEnabled()) {
             log.debug("Sessionid : " + sessionData.getSessionId());
         }
@@ -72,18 +73,18 @@ public class SessionDataManager {
             // request contain templates parameter
             sessionData.setTemplates(templates);
         }
-        
+
         String language = HttpUtil.getParam(request, "language","");
-        if (!"".equals(language)) {
+        if (sessionData.getLanguage() == null || !"".equals(language)) {
             // request contain language parameter
             sessionData.setLanguage(language);
         }
 
         String timezone = HttpUtil.getParam(request, "timezone", "");
-        if (sessionData.getTimezone() == null || "".equals(timezone)!=false) {
+        if (sessionData.getTimezone() == null || "".equals(timezone)) {
             //request contains timezone parameter or first time init
             sessionData.setTimezone(timezone);
-        } 
+        }
 
         // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
         // It can be specified by a 'referrer' parameter. If this is missing the
@@ -104,44 +105,44 @@ public class SessionDataManager {
         int maxsize = HttpUtil.getParam(request, "maxsize", sessionData.getMaxUploadSize());
         sessionData.setMaxUploadSize(maxsize);
     }
-    
+
     /**
      * find list config in stack.
      */
     public static ListConfig findListConfig(SessionData sessionDate) throws WizardException {
         return findListConfig(sessionDate, null);
     }
-    
+
     /**
      * find list config in stack.
      */
     public static ListConfig findListConfig(SessionData sessionDate, String popupId) throws WizardException {
         AbstractConfig top = sessionDate.findConfig(popupId);
-        if (top instanceof ListConfig == false) {
+        if (!(top instanceof ListConfig)) {
             log.debug("The top config on the stack is not suitable for list?");
             return null;
         }
         return (ListConfig)top;
     }
-    
+
     /**
      * find wizard config in stack.
      */
     public static WizardConfig findWizardConfig(SessionData sessionDate, String popupId) throws WizardException {
         AbstractConfig top = sessionDate.findConfig(popupId);
-        if (top instanceof WizardConfig == false) {
+        if (!(top instanceof WizardConfig)) {
             log.debug("The top config on the stack is not suitable for wizard?");
             return null;
         }
         return (WizardConfig)top;
     }
-    
+
     /**
      * create list config and store in config stack
      */
     public static ListConfig createListConfig(SessionData sessionDate, String popupId, boolean replace) throws WizardException {
         ListConfig listConfig = new ListConfig();
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.trace("putting new config on the stack for list " + listConfig.getTitle());
         }
         sessionDate.addConfig(listConfig, popupId, replace);
@@ -159,7 +160,7 @@ public class SessionDataManager {
         sessionDate.addConfig(wizardConfig, popupId, false);
         return wizardConfig;
     }
-    
+
     public static AbstractConfig removeCurrentConfig(SessionData sessionData, String popupId) throws WizardException {
         AbstractConfig curConfig = sessionData.removeTop(popupId);
         if (curConfig==null) {
@@ -169,7 +170,7 @@ public class SessionDataManager {
             throw new WizardException("could not find the wizard should be closed");
         }
         AbstractConfig config = null;
-        if (popupId!=null && "".equals(popupId)==false) {
+        if (popupId!=null && !"".equals(popupId)) {
             config = sessionData.getTop(popupId);
         }
         if (config == null) {
@@ -183,7 +184,6 @@ public class SessionDataManager {
         session.removeAttribute(sessionKey);
     }
 
-
     public static boolean closePopupConfig(SessionData sessionData, String popupId) {
         AbstractConfig top = sessionData.getTop();
         Stack stack = (Stack) top.getPopups().get(popupId);
@@ -195,7 +195,6 @@ public class SessionDataManager {
         return false;
     }
 
-
     public static Object getPopupConfig(SessionData sessionData, String popupId) {
         AbstractConfig top = sessionData.getTop();
         Stack stack = (Stack) top.getPopups().get(popupId);
@@ -203,16 +202,13 @@ public class SessionDataManager {
         return closedObject;
     }
 
-
     public static void closeConfig(SessionData sessionData) {
         sessionData.removeTop();
     }
 
-
     public static boolean isFinished(SessionData sessionData) {
         return sessionData.isEmpty();
     }
-
 
     public static boolean isListOnTop(SessionData sessionData) {
         return sessionData.getTop() instanceof ListConfig;

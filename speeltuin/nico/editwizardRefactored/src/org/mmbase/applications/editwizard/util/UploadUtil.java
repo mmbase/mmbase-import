@@ -18,7 +18,7 @@ import org.apache.commons.fileupload.*;
 import org.mmbase.applications.editwizard.WizardException;
 import org.mmbase.applications.editwizard.data.BinaryData;
 import org.mmbase.applications.editwizard.data.FieldData;
-import org.mmbase.applications.editwizard.session.WizardConfig;
+import org.mmbase.applications.editwizard.session.WizardWorkSpace;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -27,8 +27,8 @@ public class UploadUtil {
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(UploadUtil.class.getName());
-    
-    public static String uploadFiles(HttpServletRequest request, WizardConfig wizardConfig, int maxsize) throws WizardException {
+
+    public static String uploadFiles(HttpServletRequest request, WizardWorkSpace workSpace, int maxsize) throws WizardException {
         // Initialization
         DiskFileUpload fu = new DiskFileUpload();
         // maximum size before a FileUploadException will be thrown
@@ -60,10 +60,9 @@ public class UploadUtil {
                                   + binaryData.getOriginalFilePath() + " name");
                        }
                       String did = fi.getFieldName();
-                      FieldData fieldData = wizardConfig.wizardData.findFieldById(did);
-                      fieldData.setBinary(binaryData);
+                      workSpace.storeBinaryField(did, binaryData);
                       fileCount++;
-                    } 
+                    }
                 }
             }
             return "Uploaded files:" + fileCount;
@@ -77,5 +76,5 @@ public class UploadUtil {
             throw new WizardException(errorMessage, e);
         }
     }
-    
+
 }

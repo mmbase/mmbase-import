@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.editwizard.session;
 
 import java.net.URL;
@@ -10,6 +19,11 @@ import org.mmbase.applications.editwizard.data.ObjectData;
 import org.mmbase.applications.editwizard.util.HttpUtil;
 import org.mmbase.util.xml.URIResolver;
 
+/**
+ * @javadoc
+ * @author Finalist
+ * @version $Id: WizardConfig.java,v 1.3 2006-02-02 12:18:33 pierre Exp $
+ */
 public class WizardConfig extends AbstractConfig {
     // the result objectnumber (the number of the object after a commit)
     // this value is only assigned after COMMIT is called - otherwise it is null
@@ -17,17 +31,17 @@ public class WizardConfig extends AbstractConfig {
     public String parentFid;
     public String parentDid;
     public String origin;
-    
-    public ObjectData wizardData = null;
-    
+
+    protected WizardWorkSpace workSpace = null;
+
     // stores the current formid
     private String currentFormId;
 
     // filename of the stylesheet which should be used to make the html form.
     private URL wizardStylesheetFile;
+    // language (used where ???)
     private String language = "en";
 
-    
     /**
      * Configure a wizard. The configuration object passed is updated with information retrieved
      * from the request object with which the configurator was created. The following parameters are accepted:
@@ -49,7 +63,7 @@ public class WizardConfig extends AbstractConfig {
         origin = HttpUtil.getParam(request, "origin","");
         objectNumber = HttpUtil.getParam(request, "objectnumber");
         URL wizardSchemaFile;
-        
+
         try {
             wizardSchemaFile     = uriResolver.resolveToURL(getWizardName() + ".xml", null);
         } catch (Exception e) {
@@ -69,6 +83,13 @@ public class WizardConfig extends AbstractConfig {
         }
     }
 
+    public WizardWorkSpace getWorkSpace() {
+        if (workSpace == null) {
+            workSpace = new WizardWorkSpace(this);
+        }
+        return workSpace;
+    }
+
     /**
      * Returns available attributes in a map, so they can be passed to the list stylesheet
      */
@@ -81,7 +102,6 @@ public class WizardConfig extends AbstractConfig {
         return attributeMap;
     }
 
-    
     /**
      * @return Returns the currentFormId.
      */
@@ -92,7 +112,6 @@ public class WizardConfig extends AbstractConfig {
         return currentFormId;
     }
 
-    
     /**
      * @return Returns the language.
      */
@@ -100,7 +119,6 @@ public class WizardConfig extends AbstractConfig {
         return language;
     }
 
-    
     /**
      * @param language The language to set.
      */
@@ -108,7 +126,6 @@ public class WizardConfig extends AbstractConfig {
         this.language = language;
     }
 
-    
     /**
      * jump to the form
      */
@@ -116,7 +133,5 @@ public class WizardConfig extends AbstractConfig {
         currentFormId = formId;
         return true;
     }
-
 }
 
-    
