@@ -14,19 +14,20 @@ import java.util.*;
 /**
  * this object is the abstract object for data object
  * @todo javadoc
- * 
+ *
  * @author caicai
  * @created 2005-10-11
- * @version $Id: BaseData.java,v 1.2 2005-12-11 11:51:04 nklasens Exp $
+ * @version $Id: BaseData.java,v 1.3 2006-02-02 12:18:33 pierre Exp $
  */
 public abstract class BaseData {
 
-    public static final int STATUS_NEW      = 4;
-    public static final int STATUS_DELETE   = 3;
-    public static final int STATUS_CHANGE   = 2;
-    public static final int STATUS_LOAD     = 1;
-    public static final int STATUS_NOT_INIT = 0;
-    
+    public static final int STATUS_NEW        = 4;
+    public static final int STATUS_DELETE     = 3;
+    public static final int STATUS_CHANGE     = 2;
+    public static final int STATUS_LOAD       = 1;
+    public static final int STATUS_NOT_INIT   = 0;
+    public static final int STATUS_NOT_LOADED = -1;
+
     public static final String ELEM_OBJECT      = "object";
     public static final String ELEM_RELATION    = "relation";
     public static final String ELEM_FIELD       = "field";
@@ -43,22 +44,22 @@ public abstract class BaseData {
 
     // store the attributes of this node
     private final Map attributes = new HashMap();
-    
+
     //object unique id number
 //    private final String did  = DataUtils.getDataId();
-    
+
     protected BaseData parent = null;
-    
-    // child elements' list, used within this class 
+
+    // child elements' list, used within this class
     // should not be changed by other class directly
     protected final List children = new ArrayList();
-    
+
     // status
     private int status = BaseData.STATUS_NOT_INIT;
 
     // used to store fielddata
     private final List fieldDataList = new ArrayList();
-    // used to manage field.name-->fielddata mapping, 
+    // used to manage field.name-->fielddata mapping,
     // only be used within this class as a index for fast search.
     private final Map fieldNameIndex = new HashMap();
     // used to manage field.id-->fielddata mapping
@@ -68,7 +69,7 @@ public abstract class BaseData {
     public BaseData() {
         this.setAttribute(ATTR_DID,DataUtils.getDataId());
     }
-    
+
     /**
      * add field data into object
      */
@@ -78,9 +79,9 @@ public abstract class BaseData {
         this.fieldDidIndex.put(fieldData.getDid(),fieldData);
         fieldData.setMainObject(this);
     }
-    
+
     /**
-     * 
+     *
      * @param fieldDataList
      */
     public void addFields(List fieldDataList) {
@@ -114,7 +115,7 @@ public abstract class BaseData {
     public List getFieldDataList() {
         return Collections.unmodifiableList(fieldDataList);
     }
-    
+
     /**
      * @return Returns the number.
      */
@@ -173,7 +174,7 @@ public abstract class BaseData {
         this.setAttribute(ATTR_TYPE,type);
     }
 
-    
+
     /**
      * get object's unique identify number
      * @return Returns the id.
@@ -181,7 +182,7 @@ public abstract class BaseData {
     public String getDid() {
         return this.getAttribute(ATTR_DID);
     }
-    
+
     /**
      * find field by specified field's did
      * @return
@@ -205,7 +206,7 @@ public abstract class BaseData {
         }
         return null;
     }
-    
+
     /**
      * set status of current data
      * @param status The status to set.
@@ -221,7 +222,7 @@ public abstract class BaseData {
     public int getStatus() {
         return status;
     }
-    
+
     /**
      * set attribute to data
      * @param attrName
@@ -230,7 +231,7 @@ public abstract class BaseData {
     public void setAttribute(String attrName, String attrValue) {
         this.attributes.put(attrName,attrValue);
     }
-    
+
     /**
      * get attribute to data
      * @param attrName
@@ -239,7 +240,7 @@ public abstract class BaseData {
     public String getAttribute(String attrName) {
         return (String)this.attributes.get(attrName);
     }
-    
+
     /**
      * clear attributes of the data
      *
@@ -247,7 +248,7 @@ public abstract class BaseData {
     public void clearAttributes() {
         this.attributes.clear();
     }
-    
+
     /**
      * get root node of the tree in which current node located
      * @return
@@ -264,8 +265,8 @@ public abstract class BaseData {
      */
     public BaseData getParent() {
         if (parent!=null && parent.getChildren().contains(this)==false) {
-            // this scenario means that already removed current node from parent but not update 
-            // this parent attribute's value 
+            // this scenario means that already removed current node from parent but not update
+            // this parent attribute's value
             parent = null;
         }
         return parent;
@@ -278,7 +279,7 @@ public abstract class BaseData {
     public List getChildren() {
         return children;
     }
-    
+
     /**
      * add node into current node as child
      * @param child
@@ -287,7 +288,7 @@ public abstract class BaseData {
         this.children.add(child);
         child.parent = this;
     }
-    
+
     /**
      * remove child from current node
      * @param child
@@ -296,5 +297,5 @@ public abstract class BaseData {
         this.children.remove(child);
         child.parent = null;
     }
-    
+
 }

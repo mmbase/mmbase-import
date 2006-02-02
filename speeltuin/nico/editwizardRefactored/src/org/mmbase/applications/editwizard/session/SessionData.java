@@ -24,7 +24,7 @@ import org.mmbase.util.xml.URIResolver;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: SessionData.java,v 1.3 2006-01-30 09:21:26 nklasens Exp $
+ * @version $Id: SessionData.java,v 1.4 2006-02-02 12:18:33 pierre Exp $
  */
 
 public class SessionData {
@@ -43,20 +43,20 @@ public class SessionData {
     private static final Logger log = Logging.getLoggerInstance(SessionData.class);
 
 //    private URIResolver uriResolver = null;
-    
+
     private int maxupload = DEFAULT_MAX_UPLOAD_SIZE;
-    
+
     // stores the Lists and Wizards' config object.
     private final Stack configStack = new Stack();
-    
+
     private final Map attributes = new HashMap();
-    
+
     protected String getAttribute(String attrName) {
-        return (String)this.attributes.get(attrName);
+        return (String)attributes.get(attrName);
     }
 
     protected void setAttribute(String attrName, String attrValue) {
-        this.attributes.put(attrName,attrValue);
+        attributes.put(attrName,attrValue);
     }
 
     /**
@@ -64,22 +64,22 @@ public class SessionData {
      * @return
      */
     public Map getAttributes() {
-        return this.attributes;
+        return attributes;
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     public String toString() {
         return configStack.toString();
     }
-    
+
     /**
      * get config manage stack
      * @param popupId
      * @return stack of config manage
-     * @throws WizardException 
+     * @throws WizardException
      */
     private Stack getConfigStack(String popupId) throws WizardException {
         AbstractConfig config = (AbstractConfig) configStack.peek();
@@ -108,7 +108,7 @@ public class SessionData {
      * indicate whether the stack of configs is empty.
      * @param popoupId popup's id
      * @return
-     * @throws WizardException 
+     * @throws WizardException
      */
     boolean isEmpty(String popupId) throws WizardException {
         Stack stack = getConfigStack(popupId);
@@ -130,10 +130,10 @@ public class SessionData {
      * get current config in stack.
      * @param popoupId popup's id
      * @return
-     * @throws WizardException 
+     * @throws WizardException
      */
     AbstractConfig getTop(String popupId) throws WizardException {
-        Stack stack = this.getConfigStack(popupId);
+        Stack stack = getConfigStack(popupId);
         if (stack.empty()) {
             return null;
         }
@@ -145,7 +145,7 @@ public class SessionData {
      * @return
      */
     AbstractConfig removeTop() {
-        if (this.configStack.empty()) {
+        if (configStack.empty()) {
             return null;
         }
         return (AbstractConfig)configStack.pop();
@@ -155,10 +155,10 @@ public class SessionData {
      * remove current stack
      * @param popoupId popup's id
      * @return
-     * @throws WizardException 
+     * @throws WizardException
      */
     AbstractConfig removeTop(String popupId) throws WizardException {
-        Stack stack = this.getConfigStack(popupId);
+        Stack stack = getConfigStack(popupId);
         if (stack.empty()) {
             return null;
         }
@@ -167,24 +167,24 @@ public class SessionData {
 
     /**
      * push current config into stack
-     * @param config 
+     * @param config
      * @return
      */
     AbstractConfig push(AbstractConfig config) {
-        return (AbstractConfig)this.configStack.push(config);
+        return (AbstractConfig)configStack.push(config);
     }
-    
+
     /**
      * push current config into stack
-     * @param config 
+     * @param config
      * @return
-     * @throws WizardException 
+     * @throws WizardException
      */
     AbstractConfig push(AbstractConfig config, String popupId) throws WizardException {
         Stack stack = getConfigStack(popupId);
         return (AbstractConfig)stack.push(config);
     }
-    
+
     /**
      * find proper config in config stack
      * @param popupId identify name of popup window; null, if not a popup window.
@@ -194,14 +194,14 @@ public class SessionData {
     AbstractConfig findConfig(String popupId) throws WizardException{
         AbstractConfig top = null;
         boolean isPopup = isPopup(popupId);
-        
+
         if (!isEmpty()) {
             if (!isPopup) {
                 log.debug("This is not a popup window");
                 top  = getTop();
             } else {
                 log.debug("this is a popup window");
-                top = this.getTop(popupId);
+                top = getTop(popupId);
             }
         } else {
             log.debug("nothing found on stack");
@@ -211,23 +211,23 @@ public class SessionData {
         }
         return top;
     }
-    
+
 
     public void addConfig(AbstractConfig listConfig, String popupId, boolean replace) throws WizardException {
         boolean isPopup = isPopup(popupId);
         if (isPopup) {
             if (log.isDebugEnabled()) log.trace("putting new config in popup map");
             listConfig.setPopupId(popupId);
-            if (replace && this.isEmpty(popupId)==false) {
+            if (replace && isEmpty(popupId)==false) {
                 removeTop(popupId);
             }
-            this.push(listConfig,popupId);
+            push(listConfig,popupId);
         } else {
             if (log.isDebugEnabled()) log.trace("putting new config on the stack");
-            this.push(listConfig);
+            push(listConfig);
         }
     }
-    
+
     /**
      * get previous config.
      * @param popupId
@@ -245,7 +245,7 @@ public class SessionData {
         }
         return config;
     }
-    
+
     /**
      * indicate whether it is a popup window.
      * @param popupId
@@ -274,28 +274,28 @@ public class SessionData {
      * @param uriResolver The uriResolver to set.
      */
     public void setUriResolver(URIResolver uriResolver) {
-        this.attributes.put(ATTR_URIRESOLVER, uriResolver);
+        attributes.put(ATTR_URIRESOLVER, uriResolver);
     }
 
     /**
      * @return Returns the uriResolver.
      */
     public URIResolver getUriResolver() {
-        return (URIResolver) this.attributes.get(ATTR_URIRESOLVER);
+        return (URIResolver) attributes.get(ATTR_URIRESOLVER);
     }
-    
+
     /**
      * @param sessionId The sessionId to set.
      */
     public void setSessionId(String sessionId) {
-        this.setAttribute(ATTR_SESSIONID, sessionId);
+        setAttribute(ATTR_SESSIONID, sessionId);
     }
 
     /**
      * @return Returns the sessionId.
      */
     public String getSessionId() {
-        return this.getAttribute(ATTR_SESSIONID);
+        return getAttribute(ATTR_SESSIONID);
     }
 
     /**
@@ -303,9 +303,9 @@ public class SessionData {
      */
     public void setBackPage(String backPage) {
         backPage = backPage.replace('\\','/');
-        this.setAttribute(ATTR_BACKPAGE, backPage);
+        setAttribute(ATTR_BACKPAGE, backPage);
         try {
-            this.setAttribute("referrer_encoded", java.net.URLEncoder.encode(backPage,"UTF8"));
+            setAttribute("referrer_encoded", java.net.URLEncoder.encode(backPage,"UTF8"));
         }
         catch (UnsupportedEncodingException e) {
             log.debug("What happened to the required encodings?" + e.getMessage(), e);
@@ -316,49 +316,49 @@ public class SessionData {
      * @return Returns the backPage.
      */
     public String getBackPage() {
-        return this.getAttribute(ATTR_BACKPAGE);
+        return getAttribute(ATTR_BACKPAGE);
     }
 
     /**
      * @param templates The templates to set.
      */
     public void setTemplates(String templates) {
-        this.setAttribute(ATTR_TEMPLATES, templates);
+        setAttribute(ATTR_TEMPLATES, templates);
     }
 
     /**
      * @return Returns the templates.
      */
     public String getTemplates() {
-        return this.getAttribute(ATTR_TEMPLATES);
+        return getAttribute(ATTR_TEMPLATES);
     }
 
     /**
      * @param language The language to set.
      */
     public void setLanguage(String language) {
-        this.setAttribute(ATTR_LANGUAGE, language);
+        setAttribute(ATTR_LANGUAGE, language);
     }
 
     /**
      * @return Returns the language.
      */
     public String getLanguage() {
-        return this.getAttribute(ATTR_LANGUAGE);
+        return getAttribute(ATTR_LANGUAGE);
     }
 
     /**
      * @param timezone The timezone to set.
      */
     public void setTimezone(String timezone) {
-        this.setAttribute(ATTR_TIMEZONE, timezone);
+        setAttribute(ATTR_TIMEZONE, timezone);
     }
 
     /**
      * @return Returns the timezone.
      */
     public String getTimezone() {
-        return this.getAttribute(ATTR_TIMEZONE);
+        return getAttribute(ATTR_TIMEZONE);
     }
 
 }
