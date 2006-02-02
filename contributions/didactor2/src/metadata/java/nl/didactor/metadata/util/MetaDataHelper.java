@@ -19,13 +19,13 @@ public class MetaDataHelper {
    public static String EMPTY_VALUE = "...";
    public static String [] MONTHS = { "januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december" };
    MetaHelper [] metaHelpers = null;
-   
+
    public MetaDataHelper() {
       metaHelpers = new MetaHelper[] { new MetaHelper(), new MetaVocabularyHelper(), new MetaDateHelper(), new MetaLangStringHelper(), new MetaDurationHelper() };
    }
 
    public NodeList getLangCodes(Cloud cloud) {
-   
+
       NodeList nl = cloud.getList(null,
          "metastandard,metadefinition,metavocabulary",
          "metavocabulary.value",
@@ -35,12 +35,12 @@ public class MetaDataHelper {
    }
 
    public NodeList getRelatedMetaData(Cloud cloud, String sCurrentNode) {
-      
+
       return cloud.getNode(sCurrentNode).getRelatedNodes("metadata");
    }
 
    public NodeList getRequiredMetadefs(Cloud cloud) {
-     
+
      NodeList nl = cloud.getList(null,
          "metastandard,metadefinition",
          "metadefinition.name,metadefinition.number",
@@ -54,7 +54,7 @@ public class MetaDataHelper {
      }
      return nlMetadef;
    }
-   
+
    public void log(HttpServletRequest request, String sPage) {
       log.info("Calling " + sPage + " with the following parameters");
       log.info("number:       " + request.getParameter("number"));
@@ -66,7 +66,7 @@ public class MetaDataHelper {
       log.info("query string: " + request.getQueryString());
    }
 
-   private String parametersToString(String[] arrstrParameters) { 
+   private String parametersToString(String[] arrstrParameters) {
       String sParameters = "[";
       for(int f = 0; f < arrstrParameters.length ; f++) {
          if(f>0) { sParameters += ";"; }
@@ -97,7 +97,7 @@ public class MetaDataHelper {
       boolean isRequired = metadefNode.getStringValue("required").equals("1");
       boolean bValid = metaHelpers[iType].check(cloud, sCurrentNode, sMetadefNode, isRequired);
       if(!bValid) {
-         log.debug(sCurrentNode + " has invalid metadata, because "  + metaHelpers[iType].getReason() + " for metadefinition " + sMetadefNode); 
+         log.debug(sCurrentNode + " has invalid metadata, because "  + metaHelpers[iType].getReason() + " for metadefinition " + sMetadefNode);
       }
       return bValid;
    }
@@ -119,60 +119,153 @@ public class MetaDataHelper {
    }
 
    public boolean hasValidMetadata(Cloud cloud, String[] arrstrParameters, String sMetadefNode, ArrayList arliSizeErrors) {
-      
+
       Node metadefNode = cloud.getNode(sMetadefNode);
       boolean isRequired = metadefNode.getStringValue("required").equals("1");
       int iType = getIType(metadefNode);
       boolean bValid = metaHelpers[iType].check(cloud, arrstrParameters, metadefNode, isRequired, arliSizeErrors);
       if(!bValid) {
-         log.debug(parametersToString(arrstrParameters) + " has invalid metadata, because "  + metaHelpers[iType].getReason() + " for metadefinition " + sMetadefNode); 
+         log.debug(parametersToString(arrstrParameters) + " has invalid metadata, because "  + metaHelpers[iType].getReason() + " for metadefinition " + sMetadefNode);
       }
       return bValid;
-   }   
-           
+   }
+
    public Node getMetadataNode(Cloud cloud, String sCurrentNode, String sMetadefNode, boolean useDefaults) {
-      
+
       Node currentNode = cloud.getNode(sCurrentNode);
       Node metadefNode = cloud.getNode(sMetadefNode);
       int iType = getIType(metadefNode);
-      
+
       Node metaDataNode = null;
-      
+
       NodeList nl = metaHelpers[iType].getRelatedMetaData(cloud,sCurrentNode,sMetadefNode);
       if (nl.size()==0) {
-           
+
          metaDataNode = metaHelpers[iType].createMetaDataNode(cloud,currentNode,metadefNode);
-         
+
       } else {
-      
+
          metaDataNode = cloud.getNode(nl.getNode(0).getStringValue("metadata.number"));
 
       }
-   
+
       Node defaultNode = null;
-      
+
       if(useDefaults) {  // Add default values to new metadata here
-    
+
          NodeList nlDefaultMetadata = cloud.getList(sMetadefNode,
             "metadefinition,metadata,metastandard",
             "metadata.number",
             null,null,null,null,true);
          defaultNode = cloud.getNode(nlDefaultMetadata.getNode(0).getStringValue("metadata.number"));
-         
+
       }
-        
+
       if (defaultNode != null)
       {
          metaHelpers[iType].copy(cloud, metaDataNode,currentNode);
       }
       return metaDataNode;
    }
-   
+
    public void setMetadataNode(Cloud cloud, String[] arrstrParameters, Node metadataNode, String sMetadefNode, int skipParameter) {
       Node metadefNode = cloud.getNode(sMetadefNode);
       int iType = getIType(metadefNode);
       log.debug("Using " + parametersToString(arrstrParameters) + " to set metadata " + metadataNode.getStringValue("number") + " for " +  metaHelpers[iType].toString() + " metadefinition " + sMetadefNode);
       metaHelpers[iType].set(cloud, arrstrParameters, metadataNode, metadefNode, skipParameter);
    }
+
+   /**
+    *
+    * Get synonym for any supported object
+    *
+    * @param cloud Cloud
+    * @param sObjectID String
+    * @param sUserID String
+    * @return String
+    */
+   public String getAliasForObject(Cloud cloud, String sObjectID, String sUserID){
+       try{
+           NodeList nlSynonyms = cloud.getList(sUserID,
+              "people,workgroups,synonym,object",
+              "synonym.number",
+              "object.number='" + sObjectID + "'",
+              null,null,null,false);
+           Node nodeSynonym = cloud.getNode(nlSynonyms.getNode(0).getStringValue("synonym.number"));
+           return (String) nodeSynonym.getValue("name");
+       }
+       catch(Exception e){
+       }
+       return (String) cloud.getNode(sObjectID).getValue("name");
+   }
+
+
+   public String getAliasForObject(Cloud cloud, int iObjectID, int iUserID){
+       return getAliasForObject(cloud, "" + iObjectID, "" + iUserID);
+   }
+   public String getAliasForObject(Cloud cloud, String sObjectID, int iUserID){
+       return getAliasForObject(cloud, sObjectID, "" + iUserID);
+   }
+   public String getAliasForObject(Cloud cloud, int iObjectID, String sUserID){
+       return getAliasForObject(cloud, "" + iObjectID, sUserID);
+   }
+
+
+/*
+   public String getAliasForMetaStandard(Cloud cloud, String  sMetaStandartID, String sUserID){
+       try{
+           NodeList nlSynonyms = cloud.getList(sUserID,
+              "people,workgroups,synonym,metastandard",
+              "synonym.number",
+              "metastandard.number='" + sMetaStandartID + "'",
+              null,null,null,false);
+           Node nodeSynonym = cloud.getNode(nlSynonyms.getNode(0).getStringValue("synonym.number"));
+           return (String) nodeSynonym.getValue("name");
+       }
+       catch(Exception e){
+       }
+       return (String) cloud.getNode(sMetaStandartID).getValue("name");
+   }
+
+
+
+   public String getAliasForMetaDefinition(Cloud cloud, String  sMetaDefinitionID, String sUserID){
+       System.out.println("sMetaDefinitionID = " + sMetaDefinitionID);
+       System.out.println("sUserID = " + sUserID);
+       try{
+           NodeList nlSynonyms = cloud.getList(sUserID,
+              "people,workgroups,synonym,metadefinition",
+              "synonym.number",
+              "metadefinition.number='" + sMetaDefinitionID + "'",
+              null,null,null,false);
+           Node nodeSynonym = cloud.getNode(nlSynonyms.getNode(0).getStringValue("synonym.number"));
+           return (String) nodeSynonym.getValue("name");
+       }
+       catch(Exception e){
+           System.out.println(e);
+       }
+       return (String) cloud.getNode(sMetaDefinitionID).getValue("name");
+   }
+
+
+   public String getAliasForMetaVocabulary(Cloud cloud, String  sMetaVocabularyID, String sUserID){
+       System.out.println("sMetaVocabularyID = " + sMetaVocabularyID);
+       System.out.println("sUserID = " + sUserID);
+       try{
+           NodeList nlSynonyms = cloud.getList(sUserID,
+              "people,workgroups,synonym,metavocabulary",
+              "synonym.number",
+              "metavocabulary.number='" + sMetaVocabularyID + "'",
+              null,null,null,false);
+           Node nodeSynonym = cloud.getNode(nlSynonyms.getNode(0).getStringValue("synonym.number"));
+           return (String) nodeSynonym.getValue("name");
+       }
+       catch(Exception e){
+           System.out.println(e);
+       }
+       return (String) cloud.getNode(sMetaVocabularyID).getValue("name");
+   }
+*/
+
 
 }

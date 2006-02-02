@@ -21,10 +21,10 @@
       MetaDataHelper mdh = new MetaDataHelper();
       // mdh.log(request,"metaedit.jsp");
 
-      String sNode = request.getParameter("number");     
+      String sNode = request.getParameter("number");
       String sRequest_Submitted = request.getParameter("submitted");
       String sRequest_DoCloseMetaeditor = request.getParameter("close");
-      String sRequest_SetDefaults = request.getParameter("set_defaults"); 
+      String sRequest_SetDefaults = request.getParameter("set_defaults");
 
       if (sRequest_Submitted == null) {
          //Empty form
@@ -47,7 +47,8 @@
          //------------------------------- Check form -------------------------------
          %>
          <mm:content postprocessor="reducespace">
-            <mm:cloud jspvar="cloud">      
+            <mm:cloud method="delegate" jspvar="cloud">
+               <%@include file="/shared/setImports.jsp" %>
                <%
                   NodeList nlRequiredMetadefs = mdh.getRequiredMetadefs(cloud);
                   HashSet nlPassedNodes = new HashSet();
@@ -56,7 +57,7 @@
                   if( !sRequest_Submitted.equals("add")
                      && !sRequest_Submitted.equals("remove")
                      && sRequest_SetDefaults == null) {
-                    
+
                      // Check for all required metadefinitions
                      // If the metadefinition is present, we remove it from "nlRequiredMetadefs"
                      enumParamNames = request.getParameterNames();
@@ -64,11 +65,11 @@
                      while(enumParamNames.hasMoreElements()) {
                         String sParameter = (String) enumParamNames.nextElement();
                         String[] arrstrParameters = request.getParameterValues(sParameter);
-                        if(sParameter.charAt(0) == 'm') {                           
+                        if(sParameter.charAt(0) == 'm') {
                            String sMetadataDefinitionID = sParameter.substring(1);
                            Node thisMetaDef = cloud.getNode(sMetadataDefinitionID);
-                           if (nlRequiredMetadefs.contains(thisMetaDef)) {                        
-                              if(mdh.hasValidMetadata(cloud,arrstrParameters,sMetadataDefinitionID,arliSizeErrors)) {                        
+                           if (nlRequiredMetadefs.contains(thisMetaDef)) {
+                              if(mdh.hasValidMetadata(cloud,arrstrParameters,sMetadataDefinitionID,arliSizeErrors)) {
                                  nlRequiredMetadefs.remove(thisMetaDef);
                               }
                            }
@@ -105,7 +106,12 @@
                      for(NodeIterator it = nlRequiredMetadefs.nodeIterator(); it.hasNext();) {
                         Node emptyNode = (Node) it.next();
                         %>
-                        <li><%= emptyNode.getStringValue("name") %> <di:translate key="metadata.is_required" /></li>
+                        <li>
+                           <mm:write referid="user" jspvar="sUserID" vartype="String">
+                              <%= mdh.getAliasForObject(cloud, emptyNode.getNumber(), sUserID) %>
+                           </mm:write>
+                           <di:translate key="metadata.is_required" />
+                        </li>
                         <%
                      }
                      //List of error for errors with "size"
@@ -135,9 +141,9 @@
                            }
                         </script>
                         <%
-                        
+
                      } else {
-                        
+
                         if(session.getAttribute("show_metadata_in_list") == null) {
                            //We use metaeditor from content_metadata or not?
                            %>
@@ -155,16 +161,16 @@
                            <br/><br/>
                            <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none"><di:translate key="metadata.back_to_metaeditform" /></font></a>
                            <%
-                        
+
                         } else {
-                        
+
                            if ((sRequest_DoCloseMetaeditor != null) && (sRequest_DoCloseMetaeditor.equals("yes"))) {
 
                               //User has selected "SAVE&CLOSE"
                               response.sendRedirect((String) session.getAttribute("metalist_url"));
-                           
+
                            } else {
-                              
+
                               response.sendRedirect("metaedit.jsp?number=" + sNode + "&random=" + (new Date()).getTime());
                            }
                         }
@@ -172,7 +178,7 @@
                   }
 
                   //If we set only defaults values, always redirect
-                  if((sRequest_SetDefaults != null) 
+                  if((sRequest_SetDefaults != null)
                         && (!sRequest_Submitted.equals("add"))
                         && (!sRequest_Submitted.equals("remove"))) {
                         %>
@@ -191,10 +197,10 @@
                   if(sRequest_Submitted.equals("add")) {
 
                      // We have got "add lang string" command, it creates a new metalangstring
-                     
+
                      Node mNode = mdh.getMetadataNode(cloud,sNode,request.getParameter("add"),false);
                      String sMetadataID = mNode.getStringValue("number");
-                     
+
                      %>
                      <mm:remove referid="lang_id" />
                      <mm:remove referid="metadata_id" />
@@ -212,33 +218,33 @@
                         // Parse all parameters from http-request
                         String sParameter = (String) enumParamNames.nextElement();
                         String[] arrstrParameters = request.getParameterValues(sParameter);
-   
+
                         if(sParameter.charAt(0) == 'm') {
-                        
+
                            String sMetadefID = sParameter.substring(1);
                            Node metadataNode = mdh.getMetadataNode(cloud,sNode,sMetadefID,false);
-                           
+
                            // Add this node to the "passed" list, we shouldn't erase values from it in future
                            nlPassedNodes.add(metadataNode);
-                           
+
                            int skipParameter = -1;
                            if(sRequest_Submitted.equals("remove")){
-               
-                              // if we have got "remove" command, 
+
+                              // if we have got "remove" command,
                               // we should skip processing of the langstring defined by the add parameter
                               String[] sTarget = request.getParameter("add").split("\\,");
                               if (sMetadefID.equals(sTarget[0])) {
                                  try {
                                     skipParameter = Integer.parseInt(sTarget[1]);
                                  } catch (Exception e ){
-                                    
+
                                  }
                               }
                            }
                            mdh.setMetadataNode(cloud,arrstrParameters,metadataNode,sMetadefID,skipParameter);
                         }
                      }
-                     
+
                      // ------------ Remove nodes which are not passed by this form ---------------
 
                      %>
@@ -270,7 +276,7 @@
                      </jsp:include>
                   <%
                   }
-                  // We have to update metadate.value field (it is handled by metadata builder) 
+                  // We have to update metadate.value field (it is handled by metadata builder)
                %>
                <mm:node number="<%= sNode %>">
                   <mm:relatednodes type="metadata">
