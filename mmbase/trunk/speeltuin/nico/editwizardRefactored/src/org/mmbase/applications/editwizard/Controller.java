@@ -1,12 +1,12 @@
 /*
- * 
- * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the
- * Open Source Initiative.
- * 
- * The license (Mozilla version 1.0) can be read at the MMBase site. See
- * http://www.MMBase.org/license
- * 
- */
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.editwizard;
 
 import java.io.IOException;
@@ -34,55 +34,54 @@ import org.w3c.dom.Node;
 /**
  * this object initialed and used by settings.jsp
  * it will act as a controller
+ * @javadoc
+ * @author Finalist
+ * @version $Id: Controller.java,v 1.3 2006-02-02 12:18:33 pierre Exp $
  */
 public class Controller {
-    
+
     public static final String ATTRKEY_XSLT_DOCUMENT = "xslt.document";
     public static final String ATTRKEY_XSLT_PARAMS = "xslt.params";
     public static final String ATTRKEY_XSLT_FILEPATH = "xslt.filepath";
     public static final String ATTRKEY_XSLT_URIRESOLVER = "xslt.uriresolver";
-    
+
     public static final String ATTRKEY_REDIRECT_URI = "redirect.uri";
     public static final String ATTRKEY_EXCEPTION = "error.exception";
 
     public static final String ATTRKEY_SESSIONKEY = "sessionkey";
 
-    
-    static final Logger log = Logging.getLoggerInstance(Controller.class);
-
-    public static Controller getInstance(PageContext pageContext) {
-        Controller controller = new Controller();
-        controller.request = (HttpServletRequest)pageContext.getRequest();
-        controller.response = (HttpServletResponse)pageContext.getResponse();
-        return controller;
-    }
+    private static final Logger log = Logging.getLoggerInstance(Controller.class);
 
     private HttpServletRequest request = null;
     private HttpServletResponse response = null;
+    private Cloud cloud = null;
 
     // Stores the current configuration for the wizard as whole, so all open lists
     // and wizards are stored in this struct.
     private SessionData sessionData = null;
-    
+
     //default means: 'this is not a popup'
     private String popupId = "";
     private String sessionkey = "";
-    
+
     /**
-     * construct is not allowed out of this class.
+     * Create a controller for the passed page and cloud.
      */
-    private Controller() {
-        // construct is not allowed out of this class.
+    public Controller(PageContext pageContext, Cloud cloud) throws WizardException, IOException {
+        request = (HttpServletRequest)pageContext.getRequest();
+        response = (HttpServletResponse)pageContext.getResponse();
+        this.cloud = cloud;
+        init();
     }
-    
+
     /**
      * init controller's parameter
      */
     public boolean init() throws WizardException, IOException {
         // default means: 'this is not a popup'
         popupId = HttpUtil.getParam(request, "popupid", "");
-        
-        // It is possible to specify an alternatvie 'sessionkey'
+
+        // It is possible to specify an alternate 'sessionkey'
         sessionkey = HttpUtil.getParam(request, "sessionkey","editwizard");
         sessionData = SessionDataManager.getSessionData(request, sessionkey);
         return false;
@@ -93,9 +92,10 @@ public class Controller {
     }
 
     /**
-     * process request
+     * Process the data passed by the user, depending on the calling jsp page. (???)
+     * @javadoc
      */
-    public String processRequest(Cloud cloud) {
+    public String processRequest() {
         String servletPath = request.getServletPath();
         try {
             if (request.getParameter("logout") != null) {
@@ -113,9 +113,8 @@ public class Controller {
             }
 
             if (servletPath.endsWith("wizard.jsp")) {
-                return doWizard(cloud);
-            }
-            else if (servletPath.endsWith("list.jsp")) {
+                return doWizard();
+            } else if (servletPath.endsWith("list.jsp")) {
                 boolean replace = false;
                 if (isPopup()) {
                     log.debug("this is a popup");
@@ -123,26 +122,22 @@ public class Controller {
                 } else {
                     log.debug("this is not a popup");
                 }
-                return doList(cloud, replace);
-            }
-            else if (servletPath.endsWith("deletelistitem.jsp")) {
-                return doDeleteNode(cloud);
-            }
-            else if (servletPath.endsWith("upload.jsp")) {
+                return doList(replace);
+            } else if (servletPath.endsWith("deletelistitem.jsp")) {
+                return doDeleteNode();
+            } else if (servletPath.endsWith("upload.jsp")) {
                 return gotoUpload();
-            }
-            else if (servletPath.endsWith("processuploads.jsp")) {
+            } else if (servletPath.endsWith("processuploads.jsp")) {
                 return doUpload();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace(System.err);
             return processException(e);
         }
         return servletPath;
     }
-    
+
     private String gotoUpload() throws WizardException {
         WizardConfig wizardConfig = SessionDataManager.findWizardConfig(sessionData, popupId);
         if (wizardConfig==null) {
@@ -153,7 +148,7 @@ public class Controller {
         if (did==null) {
             throw new WizardException("No valid parameters for the upload routines. Make sure to supply did field.");
         }
-        
+
         request.setAttribute("did",did);
         request.setAttribute("wizardname", wizardConfig.getWizardName());
         request.setAttribute("sessionkey", sessionkey);
@@ -164,7 +159,7 @@ public class Controller {
 
     private String doUpload() throws WizardException {
         String did = request.getParameter("did");
-        
+
         String errorMessage = null;
         WizardConfig wizardConfig = SessionDataManager.findWizardConfig(sessionData, popupId);
         if (wizardConfig==null) {
@@ -175,7 +170,7 @@ public class Controller {
         request.setAttribute("sessionkey", sessionkey);
         request.setAttribute("popupid", popupId);
         request.setAttribute("maxsize", sessionData.getMaxUploadSize()+"");
-        
+
         int maxsize = sessionData.getMaxUploadSize();
         try {
             String maxSizeParameter = request.getParameter("maxsize");
@@ -187,14 +182,14 @@ public class Controller {
         }
         String returnMessage = null;
         try {
-            returnMessage = UploadUtil.uploadFiles(request, wizardConfig, maxsize);
-        }catch (WizardException we) {
+            returnMessage = UploadUtil.uploadFiles(request, wizardConfig.getWorkSpace(), maxsize);
+        } catch (WizardException we) {
             errorMessage = we.getMessage();
         }
         request.setAttribute("did",did);
         request.setAttribute("returnmessage",returnMessage);
         request.setAttribute("errormessage",errorMessage);
-        
+
         return "uploadmessage.jsp";
     }
 
@@ -202,7 +197,7 @@ public class Controller {
         request.setAttribute(ATTRKEY_EXCEPTION,exception);
         return "error.jsp";
     }
-    
+
     /**
      * process logout request. backpage and sessionkey of the session data is required.
      * @return true, processed request and jumped to logout page; false, should contiue;
@@ -221,7 +216,7 @@ public class Controller {
         request.setAttribute("refer",refer);
         return "logout.jsp";
     }
-    
+
     /**
      * process remove request
      */
@@ -231,15 +226,14 @@ public class Controller {
             if (!isPopup()) { // remove inline
                 log.debug("popping one of subObjects " + sessionData);
                 SessionDataManager.closeConfig(sessionData);
-            }
-            else { // popup
+            } else { // popup
                 log.debug("a separate running popup, so remove sessiondata for " + popupId);
                 Object closedObject = SessionDataManager.getPopupConfig(sessionData, popupId);
                 boolean popupFinished = SessionDataManager.closePopupConfig(sessionData, popupId);
-                if (popupFinished) { 
+                if (popupFinished) {
                     log.debug("going to close this window");
                     if (closedObject instanceof WizardConfig) {
-                        //    && ((WizardConfig) closedObject).isCommited()) { 
+                        //    && ((WizardConfig) closedObject).isCommited()) {
                         // data already commit to mmbase
                         // XXXX I find all this stuff in wizard.jsp too. Why??
 
@@ -263,17 +257,16 @@ public class Controller {
                                 String parentDid = popupWiz.parentDid;
                                 sendCmd = "cmd/add-item/" + parentFid + "/" + parentDid + "//";
                             }
-                        }
-                        else {
-                            if (log.isDebugEnabled())
-                                log.debug("Aha, this was existing, send an 'update-item' cmd for object "
-                                                + objnr);
+                        } else {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Aha, this was existing, send an 'update-item' cmd for object " + objnr);
+                            }
                             sendCmd = "cmd/update-item////";
                         }
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("Sending command " + sendCmd + " , " + objnr);
+                        }
                     }
-                    
                     return redirectTo("remove.jsp");
                 }
             } // popup
@@ -283,8 +276,7 @@ public class Controller {
             log.debug("last object cleared, redirecting");
             log.debug("Redirecting to " + refer);
             return redirectTo(refer);
-        }
-        else if (SessionDataManager.isListOnTop(sessionData)) {
+        } else if (SessionDataManager.isListOnTop(sessionData)) {
             log.debug("Redirecting to list");
             return redirectTo(response.encodeRedirectURL("list.jsp?proceed=true&sessionkey="
                     + sessionkey));
@@ -292,31 +284,29 @@ public class Controller {
         return null;
     }
 
-      private String doList(Cloud cloud, boolean replace) throws WizardException {
+    private String doList(boolean replace) throws WizardException {
         // stores the configuration specific for this list.
-        ListConfig listConfig = null; 
-        
+        ListConfig listConfig = null;
+
         ListConfig config = SessionDataManager.findListConfig(sessionData, popupId);
         if (config==null) {
             listConfig = SessionDataManager.createListConfig(sessionData, popupId, replace);
-            listConfig.setPage(response.encodeURL(request.getServletPath() 
-                    + "?proceed=true&sessionkey=" + sessionkey));
+            listConfig.setPage(response.encodeURL(request.getServletPath() +
+                    "?proceed=true&sessionkey=" + sessionkey));
         } else {
             listConfig = config;
-            
         }
         listConfig.configure(request, cloud, sessionData.getUriResolver());
 
         ListWorkspace workspace = new ListWorkspace(listConfig);
-        
+
         Document listDoc = workspace.getDocument(cloud);
         Map params = workspace.getParams();
-        fillAttributes(params, cloud);
+        fillAttributes(params);
         return doXslt(listDoc, params,listConfig.getTemplate());
     }
-    
-    private String doDeleteNode(Cloud cloud) throws WizardException {
 
+    private String doDeleteNode() throws WizardException {
         ListConfig listConfig = SessionDataManager.findListConfig(sessionData);
         WizardSchema schema = listConfig.getWizardSchema();
         ActionElm actionElm = schema.getActionByType("delete");
@@ -327,7 +317,7 @@ public class Controller {
             return redirectTo("list.jsp?proceed=true&sessionkey=" + sessionkey);
         } else {
             // No delete action defined in the wizard schema. We cannot delete.
-            throw new WizardException("No delete action is defined in the wizard schema: '"+ listConfig.getWizardName() 
+            throw new WizardException("No delete action is defined in the wizard schema: '"+ listConfig.getWizardName()
                     + "'. You should place &lt;action type=\"delete\" /> in your schema so that delete actions will be allowed.");
         }
     }
@@ -345,55 +335,54 @@ public class Controller {
      * <li>cancel</li>
      * <li>commit</li>
      * </ul>
-     * 
+     *
      * @param cmd The command to be processed
      */
-    private String doWizard(Cloud cloud) throws WizardException {
-        
+    private String doWizard() throws WizardException {
+
         WizardCommand command = this.getRequestCommand();
-        
+
         WizardConfig wizardConfig = SessionDataManager.findWizardConfig(sessionData, popupId);
-        
-        if (wizardConfig!=null && (command!=null && command.getType()==WizardCommand.CANCEL)==false) {
+
+        if (wizardConfig != null && !(command != null && command.getType() == WizardCommand.CANCEL)) {
             // 1) save data into current wizard config
             // 2) in another case : when upload dialog close to refresh the opener
             //    we also need to save current data.\
             // 3) if cancel, do not need to save
-            WizardWorkspace workspace = new WizardWorkspace();
-            workspace.saveWizardData(request, wizardConfig, sessionData.getTimezone());
+            WizardWorkSpace workspace = wizardConfig.getWorkSpace();
+            workspace.saveWizardData(request, sessionData.getTimezone());
         }
         if (command == null) {
             // check whether we need create new wizard config
             // in two case we need to create new config:
             // 1) specified object number is new
             // 2) specified object number is differ with current object number
-            WizardConfig config = this.checkWizardConfig(wizardConfig);
-            wizardConfig = config;
-            WizardWorkspace workspace = new WizardWorkspace();
+            wizardConfig = this.checkWizardConfig(wizardConfig);
+            WizardWorkSpace workSpace = wizardConfig.getWorkSpace();
             //start new wizard
-            if (wizardConfig.wizardData==null) {
-                workspace.doLoad(wizardConfig, cloud);
+            if (!workSpace.isLoaded()) {
+                workSpace.doLoad(cloud);
             }
-            Document doc = workspace.getDocument(wizardConfig, cloud);
+            Document doc = workSpace.getDocument(cloud);
             Map params = new HashMap();
             params.putAll(wizardConfig.getAttributes());
-            fillAttributes(params, cloud);
+            fillAttributes(params);
             return doXslt(doc, params,"xsl/wizard.xsl");
         } else {
-            if (wizardConfig==null) {
+            if (wizardConfig == null) {
                 //TODO: handle exception here
                 throw new WizardException("this scenario is not defined in editwizard");
             }
             // doing command in current wizard config
-            WizardWorkspace workspace = new WizardWorkspace();
+            WizardWorkSpace workSpace = wizardConfig.getWorkSpace();
             AbstractConfig returnConfig = wizardConfig;
             // here we need this status to judge what to do next
             // 1, continue another command/save, for example:
             //    after a commit maybe we need a add item
             // 2, get another config, for example:
-            //    after commit, we could use original wizardconfig to add item 
+            //    after commit, we could use original wizardconfig to add item
             // 3, judge redirect to other page to refresh, for example:
-            //    goto list.jsp or wizard.jsp  
+            //    goto list.jsp or wizard.jsp
             log.debug("Processing command " + command);
             // processes the given command
             switch (command.getType()) { //switch
@@ -409,25 +398,25 @@ public class Controller {
                     List list = new ArrayList();
                     while (st.hasMoreTokens()) {
                         String number = st.nextToken();
-                        if ("".equals(number)==false) {
+                        if (!"".equals(number)) {
                             list.add(number);
                         }
                     }
-                    workspace.doAddItem(wizardConfig, cloud, command.getFid(),command.getDid(), list);
+                    workSpace.doAddItem(cloud, command.getFid(),command.getDid(), list);
                     break;
                 }
                 case WizardCommand.DELETE_ITEM: {
                     // delete item! sample: cmd/delete-item/f_8/d_7//=
                     // The command parameters is the did of the node to delete.
                     // note that a fid parameter is expected in the command syntax but ignored
-                    workspace.doDeleteItem(wizardConfig, command.getFid(),command .getDid());
+                    workSpace.doDeleteItem(command.getFid(),command .getDid());
                     break;
                 }
                 case WizardCommand.UPDATE_ITEM: {
                     // update an item - replaces all fields of the item with updated values
                     // retrieved from MMbase
                     // The command parameters is a value indicating the number of the node(s) to update.
-                    workspace.doUpdateItem(wizardConfig, cloud, command.getFid(),command.getDid(),command.getParameter(2), command.getParameter(3), command.getValue());
+                    workSpace.doUpdateItem(cloud, command.getFid(),command.getDid(),command.getParameter(2), command.getParameter(3), command.getValue());
                     break;
                 }
                 case WizardCommand.MOVE_UP:
@@ -435,7 +424,7 @@ public class Controller {
                     // This is in fact a SWAP action (swapping the order-by fieldname), not really move up or down.
                     // The command parameters are the fid of the list in which the item falls (determines order),
                     // and the did's of the nodes that are to be swapped.
-                    workspace.doMoveItem(wizardConfig, command.getFid(),command.getDid(),command.getParameter(2));
+                    workSpace.doMoveItem(command.getFid(),command.getDid(),command.getParameter(2));
                     break;
                 }
                 case WizardCommand.START_WIZARD: {
@@ -452,13 +441,13 @@ public class Controller {
                     //    wizard=tasks/news
                     //    fid=f_7
                     return this.redirectTo("wizard.jsp?proceed=true&sessionkey=" + sessionkey
-                            + "&objectnumber=" + command.getParameter(2) 
-                            + "&fid=" + command.getFid() 
-                            + "&did=" + command.getDid() 
-                            + "&origin="+command.getParameter(3) 
-                            + "&wizard="+command.getValue()
-                            + "&popupid="+this.popupId);
-                    
+                            + "&objectnumber=" + command.getParameter(2)
+                            + "&fid=" + command.getFid()
+                            + "&did=" + command.getDid()
+                            + "&origin=" + command.getParameter(3)
+                            + "&wizard=" + command.getValue()
+                            + "&popupid=" + this.popupId);
+
                 }
                 case WizardCommand.GOTO_FORM: {
                     // The command parameters is the did of the form to jump to.
@@ -474,7 +463,7 @@ public class Controller {
                         // wizardConfig is popup
                         if (returnConfig instanceof WizardConfig) {
                             WizardConfig wizconfig = (WizardConfig)returnConfig;
-                            if (wizardConfig.getPopupId().equals(wizconfig.getPopupId())==false) {
+                            if (!wizardConfig.getPopupId().equals(wizconfig.getPopupId())) {
                                 return closePopup(null,null,false);
                             }
                         }
@@ -483,47 +472,47 @@ public class Controller {
                 }
                 case WizardCommand.SAVE: {
                     log.debug("Wizard " + wizardConfig.objectNumber + " will be saved (but not closed)");
-                    workspace.doSave(wizardConfig, cloud);
-                    workspace.doLoad(wizardConfig, cloud);
+                    workSpace.doSave(cloud);
+                    workSpace.doLoad(cloud);
                     break;
                 }
                 case WizardCommand.COMMIT: {
                     log.debug("Committing wizard " + wizardConfig.objectNumber);
-                    boolean isNew = wizardConfig.wizardData.getStatus()==BaseData.STATUS_NEW;
-                    workspace.doSave(wizardConfig, cloud);
+                    boolean isNew = workSpace.getStatus() == BaseData.STATUS_NEW;
+                    workSpace.doSave(cloud);
                     returnConfig = SessionDataManager.removeCurrentConfig(sessionData, popupId);
-                    if (wizardConfig.getPopupId()!=null && "".equals(wizardConfig.getPopupId())==false) {
+                    if (wizardConfig.getPopupId()!=null && !"".equals(wizardConfig.getPopupId())) {
                         if (returnConfig instanceof WizardConfig) {
                             WizardConfig wizconfig = (WizardConfig)returnConfig;
-                            if (wizardConfig.getPopupId().equals(wizconfig.getPopupId())==false) {
+                            if (!wizardConfig.getPopupId().equals(wizconfig.getPopupId())) {
                                 //if popup window, shoud send invoke opener.sendcommand
                                 //if prevconfig is a wizard config, should invoke add-item/update-item command
                                 String sendcmd = null;
                                 String objnumber = null;
                                 if (isNew) {
                                     sendcmd = "cmd/add-item/"+wizardConfig.parentFid+"/"+wizardConfig.parentDid+"//";
-                                    objnumber = wizardConfig.wizardData.getNumber();
+                                    objnumber = workSpace.getObjectNumber();
                                 } else {
-                                    sendcmd = "cmd/update-item/"+wizardConfig.parentFid+"/"+wizardConfig.parentDid + 
+                                    sendcmd = "cmd/update-item/"+wizardConfig.parentFid+"/"+wizardConfig.parentDid +
                                         "/" + wizardConfig.objectNumber+ "/" + wizardConfig.origin+ "/";
-                                    objnumber = wizardConfig.wizardData.getNumber();
+                                    objnumber = workSpace.getObjectNumber();
                                 }
                                 return closePopup(sendcmd,objnumber,true);
                             }
                         }
                     }
-                    if (wizardConfig.parentDid!=null && "".equals(wizardConfig.parentDid)==false) {
-                        workspace = new WizardWorkspace();
+                    if (wizardConfig.parentDid != null && !"".equals(wizardConfig.parentDid)) {
+                        workSpace = wizardConfig.getWorkSpace();
                         if (isNew) {
                             List numberList = new ArrayList();
-                            numberList.add(wizardConfig.wizardData.getNumber());
-                            workspace.doAddItem(wizardConfig, cloud, wizardConfig.parentFid,wizardConfig.parentDid,numberList);
+                            numberList.add(workSpace.getObjectNumber());
+                            workSpace.doAddItem(cloud, wizardConfig.parentFid,wizardConfig.parentDid,numberList);
                         } else {
-                            workspace.doUpdateItem(wizardConfig, cloud, wizardConfig.parentFid,
+                            workSpace.doUpdateItem(cloud, wizardConfig.parentFid,
                                     wizardConfig.parentDid,
                                     wizardConfig.objectNumber,
                                     wizardConfig.origin,
-                                    wizardConfig.wizardData.getNumber());
+                                    workSpace.getObjectNumber());
                         }
                     }
                     //TODO: if prevconfig is list config, it will return to list
@@ -533,7 +522,7 @@ public class Controller {
                     log.warn("Received an unknown wizard command '" + command.getValue() + "'");
                 }
             } // switch
-            if (returnConfig==null) {
+            if (returnConfig == null) {
                 // use current config
                 String refer = sessionData.getBackPage();
                 return this.redirectTo(refer);
@@ -541,13 +530,11 @@ public class Controller {
                 return redirectTo(returnConfig.getPage());
             }
         }
-        
     }
-    
+
     private String redirectTo(String uri) {
-        assert(uri!=null);
-        if (uri.startsWith("http:")==false 
-                && uri.startsWith("/")==true) {
+        assert uri != null;
+        if (uri.startsWith("/")) {
             uri = request.getContextPath()+uri;
         }
         log.debug("Redirecting to " + uri);
@@ -557,28 +544,25 @@ public class Controller {
 //      response.sendRedirect(uri);
         return "redirect.jsp";
     }
-    
+
     /**
      * jumped to xslt.jsp to transform the dom object to html page
      */
     private String doXslt(Node node, Map params, String xslFilePath) throws WizardException{
         URIResolver uriResolver = sessionData.getUriResolver();
-        URL stylesheetFile = null;     
+        URL stylesheetFile = null;
         try {
             stylesheetFile = uriResolver.resolveToURL(xslFilePath, null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new WizardException(e);
         }
-
         if (stylesheetFile == null) {
-            throw new WizardException("Could not resolve XSL " + stylesheetFile + "  with "
-                    + uriResolver);
+            throw new WizardException("Could not resolve XSL " + stylesheetFile + "  with " +
+                    uriResolver);
         }
-        
         return doXslt(node,params,stylesheetFile);
     }
-    
+
     /**
      * jumped to xslt.jsp to transform the dom object to html page
      */
@@ -589,10 +573,10 @@ public class Controller {
         request.setAttribute(ATTRKEY_XSLT_URIRESOLVER,sessionData.getUriResolver());
         return "xslt.jsp";
     }
-    
+
     private String closePopup(String sendCmd, String objNumbers, boolean isCommited) {
         request.setAttribute("committed",""+isCommited);
-        if (isCommited==true) {
+        if (isCommited) {
             request.setAttribute("sendcmd",sendCmd);
             request.setAttribute("objnumber",objNumbers);
         }
@@ -604,17 +588,17 @@ public class Controller {
      * first call are added.  No arrays supported, only single values.
      * @since MMBase-1.7
      */
-    protected void fillAttributes(Map map, Cloud cloud) {
+    protected void fillAttributes(Map map) {
         if (sessionData!=null && sessionData.getAttributes()!=map) {
             map.putAll(sessionData.getAttributes());  // start with setting in global config
         }
-        
+
         map.put("cloud", cloud);
         if (sessionData.getLanguage() == null) {
             map.put("language", cloud.getLocale().getLanguage());
         }
         map.put("username", cloud.getUser().getIdentifier());
-        
+
         Enumeration enumeration = request.getParameterNames();
         while (enumeration.hasMoreElements()) {
             String param = (String) enumeration.nextElement();
@@ -630,7 +614,7 @@ public class Controller {
         map.put("sessionid", sessionId);
         map.put("sessionkey", sessionkey);
     }
-    
+
     private WizardCommand getRequestCommand(){
         Enumeration enu = request.getParameterNames();
         while(enu.hasMoreElements()) {
@@ -642,7 +626,7 @@ public class Controller {
         }
         return null;
     }
-    
+
     /**
      * In the following two case, create new wizard config object.
      * 1) if wizardConfig's objectnumber is differ with current objectnumber in request
@@ -652,19 +636,19 @@ public class Controller {
      */
     WizardConfig checkWizardConfig(WizardConfig wizardConfig) throws WizardException{
         String objectNumber = HttpUtil.getParam(request, "objectnumber");
-        if (wizardConfig!=null) {
+        if (wizardConfig != null) {
             if (objectNumber != null && (objectNumber.equals("new") ||
-                    objectNumber.equals(wizardConfig.objectNumber)==false)) {
+                    !objectNumber.equals(wizardConfig.objectNumber))) {
                 log.debug("found wizard is for other other object (" + objectNumber + "!= " + wizardConfig.objectNumber + ")");
                 //prepare for new wizard
                 wizardConfig = null;
             }
         }
-        if (wizardConfig==null){
+        if (wizardConfig == null) {
             log.trace("creating new wizard");
             wizardConfig = SessionDataManager.createWizardConfig(sessionData, popupId);
             String page = request.getServletPath()+ "?proceed=true"+"&sessionkey=" + sessionkey;
-            if ("".equals(popupId)==false) {
+            if (!"".equals(popupId)) {
                 page += "&popupid="+popupId;
             }
             wizardConfig.setPage(page);
@@ -677,5 +661,5 @@ public class Controller {
         }
         return wizardConfig;
     }
-    
+
 }
