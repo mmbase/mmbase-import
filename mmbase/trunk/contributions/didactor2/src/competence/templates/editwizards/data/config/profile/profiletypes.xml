@@ -5,7 +5,7 @@
     <title xml:lang="en">Profile type</title>
 
     <action type="create">
-        <object type="competencetypes">
+        <object type="profiletypes">
         </object>
     </action>
 
