@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**
@@ -18,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: FloatHandler.java,v 1.5 2004-01-19 17:22:09 michiel Exp $
+ * @version $Id: FloatHandler.java,v 1.6 2006-02-03 16:02:49 michiel Exp $
  */
 
 public class FloatHandler extends AbstractTypeHandler {
@@ -30,5 +31,11 @@ public class FloatHandler extends AbstractTypeHandler {
     public FloatHandler(FieldInfoTag tag) {
         super(tag);
     }
+
+    protected Object cast(Object value, Node node, Field field) {
+        if (value == null || "".equals(value)) return "";
+        return  super.cast(value, node, field);
+    }
+
 
 }
