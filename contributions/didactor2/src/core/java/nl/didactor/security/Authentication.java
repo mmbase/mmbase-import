@@ -324,7 +324,7 @@ public class Authentication extends org.mmbase.security.Authentication
          //System.out.println(" Move to login page, damned user! ");
          //System.out.println("==================================");
          try{
-            String sRedirect = response.encodeRedirectURL(this.sLoginPage + "?referrer=" + request.getRequestURI());
+            String sRedirect = request.getContextPath() + response.encodeRedirectURL(this.sLoginPage + "?referrer=" + request.getRequestURI());
             if(bDebugMode) System.out.println(sRedirect);
             response.sendRedirect(sRedirect);
          }
