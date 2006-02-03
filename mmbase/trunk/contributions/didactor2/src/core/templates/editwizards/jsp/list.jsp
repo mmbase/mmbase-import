@@ -1,7 +1,7 @@
 <%@ page errorPage="exception.jsp"%>
 <%@ include file="settings.jsp"%>
 <mm:locale language="<%=ewconfig.language%>">
-<mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname">
+<mm:cloud method="delegate" jspvar="cloud">
 <mm:log jspvar="log">
 <%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"%>
 <%@ page import="org.w3c.dom.Document"%>
@@ -13,7 +13,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.6 2006-01-06 10:01:58 dstanisavljevic Exp $
+     * @version  $Id: list.jsp,v 1.7 2006-02-03 11:03:15 azemskov Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -327,7 +327,7 @@ if(request.getParameter("forbiddelete") == null) {
 } else {
    params.put("deletable",  "false");
 }
-    
+
 params.put("creatable",  creatable+"");
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);
