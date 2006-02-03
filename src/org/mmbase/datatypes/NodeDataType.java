@@ -12,6 +12,7 @@ package org.mmbase.datatypes;
 import java.util.Collection;
 import org.mmbase.util.Casting;
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 
 /**
  * The Node data type describes a data type which is based on an MMBase 'node' field. So the value
@@ -19,10 +20,12 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.23 2006-01-23 12:16:47 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.24 2006-02-03 16:12:26 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
+
+    private static final Logger log = Logging.getLoggerInstance(NodeDataType.class);
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
@@ -97,18 +100,31 @@ public class NodeDataType extends BasicDataType {
             super("mustExist", Boolean.TRUE);
             enforceStrength = DataType.ENFORCE_ONCHANGE;
         }
+        protected Cloud getCloud(Node node, Field field) {
+            Cloud cloud = node != null ? node.getCloud() : null;
+            if (cloud == null) cloud = field != null ? field.getNodeManager().getCloud() : null;
+            if (cloud == null) {
+                cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+            }
+            return cloud;
+        }
+
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (getValue().equals(Boolean.TRUE)) {
                 if (v != null) {
+         
                     if (v instanceof String) {
-                        return node.getCloud().hasNode((String)v);
+                        Cloud cloud = getCloud(node, field);
+                        return cloud != null && cloud.hasNode((String)v);
                     } else if (v instanceof Number) {
                         int num = ((Number)v).intValue();
                         if (num < 0) return true;
-                        return node.getCloud().hasNode(num);
+                        Cloud cloud = getCloud(node, field);
+                        return cloud != null && cloud.hasNode(num);
                     } else if (v instanceof Node) {
                         return true;
                     } else {
+                        //log.info("Not valid because node value is a " + v.getClass());
                         return false;
                     }
                 }
