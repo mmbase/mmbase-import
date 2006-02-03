@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.33 2006-01-19 11:13:32 andre Exp $
+ * @version $Id: NodeHandler.java,v 1.34 2006-02-03 16:02:49 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -189,5 +189,11 @@ public class NodeHandler extends AbstractTypeHandler {
         }
         return super.whereHtmlInput(field, query);
     }
+
+    protected Object cast(Object value, Node node, Field field) {
+        if (value == null || "".equals(value)) return "";
+        return super.cast(value, node, field);
+    }
+
 
 }
