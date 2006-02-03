@@ -26,7 +26,12 @@
     <mm:fieldlist id="my_form" type="edit" nodetype="$node_type" >
        <tr>
          <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
-         <td class="listdata"><mm:fieldinfo type="input" /></td>
+         <td class="listdata">
+           <mm:fieldinfo type="input" />
+           <mm:fieldinfo type="errors">
+             <mm:isnotempty>***</mm:isnotempty><mm:write escape="none" />
+           </mm:fieldinfo>
+         </td>
        </tr>
     </mm:fieldlist>
 <%--tr><td class="data"><em><%=m.getString("change_node.context")%></em></td>
