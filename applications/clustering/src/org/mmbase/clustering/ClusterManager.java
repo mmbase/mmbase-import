@@ -30,9 +30,9 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.18 2006-01-13 15:44:30 pierre Exp $
+ * @version $Id: ClusterManager.java,v 1.19 2006-02-03 15:15:11 michiel Exp $
  */
-public abstract class ClusterManager implements AllEventListener, Runnable{
+public abstract class ClusterManager implements AllEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
@@ -50,6 +50,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
     private Thread kicker = null;
 
     protected boolean spawnThreads = true;
+
+    protected boolean compatible17 = false;
 
 
     public void shutdown(){
@@ -94,6 +96,33 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
         }
         try {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            if (compatible17) {
+                if (event instanceof  NodeEvent || event instanceof RelationEvent) {
+                    NodeEvent ne;
+                    if (event instanceof RelationEvent) {
+                        RelationEvent re = (RelationEvent) event;
+                        ne = re.getNodeEvent();
+                        ByteArrayOutputStream b1 = new ByteArrayOutputStream();
+                        byte[] rel1 = createMessage(re.getMachine(), re.getRelationSourceNumber(), re.getRelationSourceType(), "r").getBytes();
+                        b1.write(rel1, 0, rel1.length);
+                        b1.write(',');
+                        b1.write(0);
+                        nodesToSend.append(b1.toByteArray());
+                        ByteArrayOutputStream b2 = new ByteArrayOutputStream();
+                        byte[] rel2 = createMessage(re.getMachine(), re.getRelationDestinationNumber(), re.getRelationDestinationType(), "r").getBytes();
+                        b2.write(rel2, 0, rel2.length);
+                        b2.write(',');
+                        b2.write(0);
+                        nodesToSend.append(b2.toByteArray());
+                    } else {
+                        ne = (NodeEvent) event;
+                    }
+                    byte[] oldStyleEvent = createMessage(ne.getMachine(), ne.getNodeNumber(), ne.getBuilderName(), NodeEvent.newTypeToOldType(ne.getType())).getBytes();
+                    bytes.write(oldStyleEvent, 0, oldStyleEvent.length);
+                }
+            }
+            bytes.write(',');
+            bytes.write(0);            
             ObjectOutputStream out = new ObjectOutputStream(bytes);
             out.writeObject(event);
             return bytes.toByteArray();
@@ -104,17 +133,48 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
 
     }
 
+
+    /** Followup number of message */
+    protected int follownr = 1;
+    /**
+     * Creates MMBase 1.7 parseable message. This is simple String, which is prefixed before the actual 1.8 message.
+     *
+     * @param nodenr node number
+     * @param tableName node type (tablename)
+     * @param type command type
+     * @param xml node xml
+     * @return message
+     */
+    protected String createMessage(String machine, int nodenr, String tableName, String type) {
+        return machine + "," + (follownr++) + "," + nodenr + "," + tableName + "," + type;
+    }
+
     protected Event parseMessage(byte[] message) {
         try {
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(message));
+            ByteArrayInputStream stream = new ByteArrayInputStream(message);
+            int c = 1;
+            while (c > 0) {
+                // ignore backwards compatibility message
+                c = stream.read();
+            }
+            ObjectInputStream in = new ObjectInputStream(stream);
             Event event = (Event) in.readObject();
             if (log.isDebugEnabled()) {
                 log.debug("Unserialized " + event);
             }
             return event;
         } catch (StreamCorruptedException scc) {
+            // not sure that this can happen, now, because of the while(c>0) trick.
             log.debug(scc.getMessage() + ". Supposing old style message.");
             // Possibly, it is a message from an 1.7 system
+            String mes = new String(message);
+            NodeEvent event = parseMessageBackwardCompatible(mes);
+            if (log.isDebugEnabled()) {
+                log.debug("Old style message " + event);
+            }
+            return event;
+        } catch (EOFException eofe) {
+            // suppose that this is a 1.7 message
             String mes = new String(message);
             NodeEvent event = parseMessageBackwardCompatible(mes);
             if (log.isDebugEnabled()) {
@@ -144,7 +204,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable{
                     if (tok.hasMoreTokens()) {
                         String tb = tok.nextToken();
                         if (tok.hasMoreTokens()) {
-                            String ctype=tok.nextToken();
+                            String ctype = tok.nextToken();
                             if (!ctype.equals("s")) {
                                 MMBase mmbase = MMBase.getMMBase();
                                 MMObjectBuilder builder = mmbase.getBuilder(tb);
