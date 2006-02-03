@@ -24,7 +24,7 @@
 */
 
 
-   String sBasePath = (String) getServletContext().getInitParameter("internalUrl");
+   String sBasePath = request.getContextPath();
 //   String sReferRef = (String) request.getAttribute("javax.servlet.forward.request_uri");
    String sReferRef = (String) request.getParameter("referrer");
 
