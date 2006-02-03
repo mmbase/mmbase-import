@@ -9,31 +9,38 @@
 <mm:import externid="page">0</mm:import>
 
 <mm:import externid="node_number" />
+<mm:import externid="delete" />
 
 <!-- first, check validity -->
-<mm:form>  
-  <mm:present referid="node_number">    
-    <mm:node referid="node_number">
+<mm:notpresent referid="delete">
+  <mm:form>  
+    <mm:present referid="node_number">    
+      <mm:node referid="node_number">
+        <mm:context>
+          <mm:fieldlist id="my_form" type="edit">
+            <mm:fieldinfo type="check" />
+          </mm:fieldlist>
+        </mm:context>
+      </mm:node>
+    </mm:present>
+    <mm:notpresent referid="node_number">
       <mm:context>
-        <mm:fieldlist id="my_form" type="edit">
+        <mm:fieldlist nodetype="$node_type" id="my_form" type="edit">
           <mm:fieldinfo type="check" />
         </mm:fieldlist>
       </mm:context>
-    </mm:node>
-  </mm:present>
-  <mm:notpresent referid="node_number">
-    <mm:context>
-      <mm:fieldlist nodetype="$node_type" id="my_form" type="edit">
-        <mm:fieldinfo type="check" />
-      </mm:fieldlist>
-    </mm:context>
-  </mm:notpresent>
-  <mm:valid inverse="true">
-    <mm:import id="invalid" />
-    <mm:include  page="change_node.jsp" />
-  </mm:valid>
-</mm:form>
-
+    </mm:notpresent>
+    <mm:valid inverse="true">
+      <mm:import id="invalid" />
+      <mm:present referid="node_number">
+        <mm:include  page="change_node.jsp" />
+      </mm:present>
+      <mm:notpresent referid="node_number">
+        <mm:include  page="create_node.jsp" />
+      </mm:notpresent>
+    </mm:valid>
+  </mm:form>
+</mm:notpresent>
 <mm:notpresent referid="invalid">
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
@@ -47,7 +54,6 @@
 <title><%=m.getString("commit_node.commit")%></title>
 <mm:import externid="cancel" />
 <mm:import externid="new" />
-<mm:import externid="delete" />
 <mm:import externid="deleterelations" />
 <mm:import externid="ok" />
 <mm:import externid="save" />
