@@ -16,6 +16,8 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
+ * This module bootstraps and configures MMBase clustering. 
+ *
  * @since MMBase-1.8
  */
 public class ClusteringModule extends WatchedReloadableModule {
@@ -29,13 +31,8 @@ public class ClusteringModule extends WatchedReloadableModule {
     public void init() {
         String clusterManagerClassName = getInitParameter("ClusterManagerImplementation");
         if(clusterManagerClassName != null){
-            try {
-                clusterManager = (ClusterManager)findInstance(clusterManagerClassName);
-                EventManager.getInstance().addEventListener(clusterManager);
-            } catch (ClassCastException e) {
-                log.error("Instance of Class with name " + clusterManagerClassName +
-                          "could not be successfully cast to type ClusterManager.");
-            }
+            clusterManager = findInstance(clusterManagerClassName);
+            EventManager.getInstance().addEventListener(clusterManager);
         }else{
             log.error("Parameter 'ClusterManagerImplementation' is missing from config file. can not load clustering");
         }
@@ -43,26 +40,29 @@ public class ClusteringModule extends WatchedReloadableModule {
         if(clusterManager == null){
             log.error("ClusterManager loading failed.");
         }else{
-            log.service("ClusterManager loaded successfull");
+            log.service("ClusterManager loaded successful");
+            String compat17 = getInitParameter("mmbase17.compatible");
+            clusterManager.compatible17 = "true".equals(compat17);
+            if (clusterManager.compatible17) {
+                log.info("Sending MMBase 1.7 compatible messages.");
+            }
         }
     }
 
-    private static Object findInstance(String className) {
+    private static ClusterManager findInstance(String className) {
         if (className == null || "".equals(className)) return null;
         try {
             Class aClass = Class.forName(className);
-            Object newInstance = aClass.newInstance();
-            return newInstance;
-            
+            ClusterManager newInstance = (ClusterManager) aClass.newInstance();
+            return newInstance;            
         } catch (ClassNotFoundException e) {
-            log.error("could not find class with name " + className);
-            log.error(e);
+            log.error("could not find class with name " + className, e);
         } catch (InstantiationException e) {
-            log.error("could not instantiate class with name" + className);
-            log.error(e);
+            log.error("could not instantiate class with name" + className, e);
         } catch (IllegalAccessException e) {
-            log.error("the constructor of " + className + " is not accessible");
-            log.error(e);
+            log.error("the constructor of " + className + " is not accessible", e);
+        } catch (ClassCastException e) {
+            log.error("Instance of Class with name " + className + "could not be successfully cast to type ClusterManager.", e);
         }
         return null;
     }
