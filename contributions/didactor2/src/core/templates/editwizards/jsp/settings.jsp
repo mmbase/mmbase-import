@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.3 2005-09-09 14:20:11 jdiepenmaat Exp $
+ * @version  $Id: settings.jsp,v 1.4 2006-02-03 11:03:15 azemskov Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -19,8 +19,8 @@ Config ewconfig = null;    // Stores the current configuration for the wizard as
 Config.Configurator configurator = null; // Fills the ewconfig if necessary.
 
 String popupId = "";  // default means: 'this is not a popup'
-boolean popup = false;  
-String sessionKey = "editwizard"; 
+boolean popup = false;
+String sessionKey = "editwizard";
 
  boolean done=false;
      Object closedObject=null;
@@ -102,7 +102,7 @@ String refer = ewconfig.backPage;
 if (log.isDebugEnabled()) log.trace("backpage in root-config is " + refer);
 
 if (request.getParameter("logout") != null) {
-    %><mm:cloud method="logout" /><%
+    %><mm:cloud method="delegate" jspvar="cloud" authenticate="didactor-logout"/><%
     // what to do if 'logout' is requested?
     // return to the deeped backpage and clear the session.
     log.debug("logout parameter given, clearing session");
@@ -121,8 +121,8 @@ configurator = new Config.Configurator(pageContext, ewconfig);
 if (request.getParameter("remove") != null) {
 
     if (log.isDebugEnabled()) log.debug("Removing top object requested from " + configurator.getBackPage());
-    if(! ewconfig.subObjects.empty()) {    
-        if (! popup) { // remove inline             
+    if(! ewconfig.subObjects.empty()) {
+        if (! popup) { // remove inline
             log.debug("popping one of subObjects " + ewconfig.subObjects);
             closedObject = ewconfig.subObjects.pop();
         } else { //popup
@@ -131,8 +131,8 @@ if (request.getParameter("remove") != null) {
             Stack stack =  (Stack) top.popups.get(popupId);
             closedObject = stack.pop();
             if (stack.size() == 0) {
-                top.popups.remove(popupId);        
-                log.debug("going to close this window"); 
+                top.popups.remove(popupId);
+                log.debug("going to close this window");
 %>
 <html>
 <script language="javascript">
@@ -140,8 +140,8 @@ if (request.getParameter("remove") != null) {
 <%
  if (closedObject instanceof Config.WizardConfig && ((Config.WizardConfig) closedObject).wiz.committed()) {
    // XXXX I find all this stuff in wizard.jsp too. Why??
-   
-   
+
+
    log.debug("A popup was closed (commited)");
    String sendCmd = "";
    String objnr = "";
