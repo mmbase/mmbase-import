@@ -104,18 +104,20 @@ var API = new GenericAPIAdaptor;
 <%
    String sTopFrame = "0";
    String sLeftFrame= "0";
+   String sBorder = "no";
 
    if((request.getParameter("path") == null) || (request.getParameter("path").equals("")))
    {
       sTopFrame = "42";
       sLeftFrame= "300";
+      sBorder = "yes";
    }
 %>
 
 <frameset rows="<%= sTopFrame %>,*" name="ContentPreview" framespacing="0" frameborder="no" border="0">
     <frame id="CPFrame" name="CPFrame" src="ReloadContentPreviewFiles/CPFrame.jsp?path=<%= request.getParameter("path") %>" frameborder="no" border="1" scrolling="no" noresize>
-    <frameset cols="<%= sLeftFrame %>,*" framespacing="1" frameborder="yes" border="1" resize>
-         <frameset rows="0,*,0" cols="*" framespacing="1" frameborder="no" border="0" noresize>
+    <frameset cols="<%= sLeftFrame %>,*" framespacing="1" frameborder="<%= sBorder %>" border="1" resize>
+         <frameset rows="0,*,0" cols="*" framespacing="0" frameborder="no" border="0" noresize>
                <frame id="code" src="ReloadContentPreviewFiles/code.htm" name="code" frameborder="no" border="0" scrolling="no" resize>
                <frame src="ReloadContentPreviewFiles/menu_empty.htm" name="menu" frameborder="no" border="0" scrolling="auto" resize>
                <frame src="ReloadContentPreviewFiles/search.htm" name="search" frameborder="no" border="0" scrolling="auto" resize>
