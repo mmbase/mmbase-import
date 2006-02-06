@@ -2,16 +2,16 @@
 <list destination="metadata" role="related" minoccurs="0" maxoccurs="*">
     <title>Bijbehorende Metadata</title>
     <item>
-       <field fdatapath="object/relation[@role='related']/object[@type='metadefinition']/field[@name='name']" ftype="data">
+       <field name="name" ftype="data">
             <prompt>Naam</prompt>
         </field>
-       <field fdatapath="object/relation[@role='related']/object[@type='metadefinition']/field[@name='type']" ftype="data">
+       <field name="type" ftype="data">
             <prompt>Type</prompt>
         </field>
-       <field fdatapath="object/relation[@role='related']/object[@type='metadefinition']/field[@name='maxvalues']" ftype="data">
+       <field name="maxvalues" ftype="data">
             <prompt>Maxvalues</prompt>
         </field>
-       <field fdatapath="object/relation[@role='related']/object[@type='metadefinition']/field[@name='handler']" ftype="data">
+       <field name="handler" ftype="data">
             <prompt>Handler</prompt>
         </field>
         <field name="value" ftype="data">
@@ -20,7 +20,7 @@
 
         <list extends="config/metalangstring/metalangstring-list.xml"/>
         <list extends="config/metadate/metadate-list.xml"/>
-        <list extends="config/metavocabulary/metavocabulary.xml"/>
+        <list extends="config/metavocabulary/metavocabulary-list.xml"/>
     </item>
 
 

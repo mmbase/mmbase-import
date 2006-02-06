@@ -1,33 +1,39 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list destination="metavocabulary" role="related">
-  <title>Waarden van de metadatavocabulary</title>
+<list destination="metavocabulary" role="constraints">
+  <title>Beperkt door metavocabulary</title>
 
   <item>
     <field name="value" ftype="data">
       <prompt>Waarde</prompt>
     </field>
-    <field ftype="startwizard" wizardname="config/metavocabulary/metavocabularydefinition" />
+    <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
+    <field fdatapath="field[@name='type']" ftype="enum">
+      <prompt>Constraint type</prompt>
+      <optionlist select="constraint_type" />
+    </field>
+    <field fdatapath="field[@name='minvalues']" ftype="line" dttype="int" />
+    <field fdatapath="field[@name='maxvalues']" ftype="line" dttype="int" />
   </item>
 
   <action type="create">
-    <relation destinationtype="metavocabulary" role="related">
+    <relation destinationtype="metavocabulary" role="constraints">
       <object type="metavocabulary"></object>
     </relation>
   </action>
 
   <action type="add">
-    <relation destinationtype="metavocabulary" role="related">
+    <relation destinationtype="metavocabulary" role="constraints">
       <object type="metavocabulary"></object>
     </relation>
   </action>
 
   <action type="load">
-    <relation destinationtype="metavocabulary" role="related">
-      <object type="providers"></object>
+    <relation destinationtype="metavocabulary" role="constraints">
+       <object type="metavocabulary"></object>
     </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularydefinition" objectnumber="new" />
+  <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
 
   <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar Waarden</prompt>
