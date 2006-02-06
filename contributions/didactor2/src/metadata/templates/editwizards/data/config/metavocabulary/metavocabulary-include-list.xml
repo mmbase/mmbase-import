@@ -6,7 +6,7 @@
     <field name="value" ftype="data">
       <prompt>Waarde</prompt>
     </field>
-    <field ftype="startwizard" wizardname="config/metavocabulary/metavocabularydefinition" />
+    <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
   </item>
 
   <action type="create">
@@ -27,7 +27,7 @@
     </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularydefinition" objectnumber="new" />
+  <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
 
   <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar Waarden</prompt>

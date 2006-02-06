@@ -9,7 +9,7 @@
             <prompt>Constraint type</prompt>
             <optionlist select="constraint_type" />
         </field>
-        <field ftype="startwizard" wizardname="config/metavocabulary/metavocabularydefinition" />
+        <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
       </item> 
 
      <action type="add">
@@ -22,7 +22,7 @@
       <relation destinationtype="metavocabulary" role="posrel"/>
      </action>
 
-    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularydefinition" objectnumber="new" />
+    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
 
     <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" 
                               directions="down"  >
