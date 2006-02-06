@@ -192,7 +192,7 @@ div.ListLeft {
   	width: 100%;
   	height: 18em;
   	padding: 0.5em 0.25em 0.5em 0.25em;
-	overflow: auto;
+	overflow: visible;
 	white-space: wrap;
 	background-color: #EEEEEE;
   	border-top: 1px solid #CCCCCC;
@@ -208,6 +208,13 @@ div.ListRight {
 	background-color: #EEEEEE;
   	border-top: 1px solid #CCCCCC;
   	border-bottom: 1px solid #CCCCCC }
+
+div.titlefield {
+	text-align: left;
+	overflow: visible;
+	white-space: normal;
+	width: 160px;
+}
 
 a.users:link,
 a.users:visited,
