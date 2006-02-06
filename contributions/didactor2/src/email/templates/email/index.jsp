@@ -100,17 +100,11 @@
     <mm:write referid="mailboxname"/>
   </div>
   <div class="contentSubHeader">
-   <%-- <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids"/>">
-      <img src="<mm:treefile write="true" page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" />" width="50" height="28" border="0" alt="<di:translate key="email.writenewemail" />" />
-      </a> --%>
-
-
-
       <a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
                  <mm:param name="mailboxname"><mm:write referid="mailboxname"/></mm:param>
                  <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
                </mm:treefile>">
-      <img src="<mm:treefile write="true"  page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" referids="$referids"/> "width="50" height="28" border="0" title="<di:translate key="email.deletefolder" />" alt="<di:translate key="email.writenewemail" />"/></a>
+      <img src="<mm:treefile write="true"  page="/gfx/icon_emailschrijven.gif" objectlist="$includePath" referids="$referids"/> "width="50" height="28" border="0" title="<di:translate key="email.writenewemail" />" alt="<di:translate key="email.writenewemail" />"/></a>
 
 
        <input type="image" src="<mm:treefile page="/email/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" title="<di:translate key="email.moveselected" />" alt="<di:translate key="email.moveselected" />" name="action_move" value=move"/>
