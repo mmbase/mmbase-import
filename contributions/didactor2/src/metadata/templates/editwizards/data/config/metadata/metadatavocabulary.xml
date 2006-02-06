@@ -15,7 +15,7 @@
             <prompt>Handler</prompt>
         </field>
 
-        <list extends="config/metavocabulary/metavocabulary.xml"/>
+        <list extends="config/metavocabulary/metavocabulary-list.xml"/>
     </item>
 
 

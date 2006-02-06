@@ -5,7 +5,7 @@
        <prompt>Metavocabulary waarde</prompt>
      </field>
      <field fdatapath="field[@name='pos']" ftype="line" dttype="int" />
-     <field ftype="startwizard" wizardname="config/metavocabulary/metavocabularydefinition" />
+     <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
    </item> 
    
    <action type="add">
@@ -18,7 +18,7 @@
    <relation destinationtype="metavocabulary" role="related"/>
    </action>
    
-   <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabularydefinition" objectnumber="new" />
+   <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
    
    <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number"  directions="down"  >
    <prompt>Zoeken naar metavocabulary </prompt>
