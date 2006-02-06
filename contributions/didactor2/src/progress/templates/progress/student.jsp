@@ -333,10 +333,6 @@
                         <mm:field name="owner">
 
                           <mm:compare referid2="usern">
-                            <mm:field name="owner" write="true" />
-
-
-
                             <mm:field name="score">
                               <mm:compare value="1">
                                 <%
