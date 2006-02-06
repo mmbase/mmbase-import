@@ -107,13 +107,10 @@
     <table class="Font">
       <tr>
         <td><di:translate key="progress.perccompleted" /></td>
-        <td><mm:import jspvar="progress" id="progress" vartype="Double">
-          <mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids">
-            <mm:param name="student">
-              <mm:write referid="student" />
-            </mm:param>
-          </mm:treeinclude>
-        </mm:import> <%=(int) (progress.doubleValue() * 100.0)%>%</td>
+        <td>
+          <mm:import jspvar="progress" id="progress" vartype="Double"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids"><mm:param name="student"><mm:write referid="student" /></mm:param></mm:treeinclude></mm:import>
+          <%=(int) (progress.doubleValue() * 100.0)%>%
+        </td>
       </tr>
 
       <%//direct relation people-classrel-educations %>
