@@ -175,7 +175,7 @@
                }
                %>
                   <script>
-                     parent.frames['content'].location.href='<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>&rnd=<%= (new Date()).getTime() %>';
+                     parent.frames['content'].location.href='<%= sUserSettings_BaseURL %>/scorm/<%= sPackageNode %>_player/index.jsp?path=<%= nodeLearnObject.getNumber() %>';
                   </script>
 
                   <%--

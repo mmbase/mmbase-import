@@ -1,6 +1,10 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="java.util.HashMap"%>
+
+
+<script src="js/browser_version.js"></script>
+
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
@@ -63,8 +67,11 @@
 <mm:import id="gfx_item_none"><mm:treefile page="/gfx/spacer.gif" objectlist="$includePath" referids="$referids" /></mm:import>
 <mm:import id="gfx_item_opened"><mm:treefile page="/gfx/icon_arrow_tab_open.gif" objectlist="$includePath" referids="$referids" /></mm:import>
 <mm:import id="gfx_item_closed"><mm:treefile page="/gfx/icon_arrow_tab_closed.gif" objectlist="$includePath" referids="$referids" /></mm:import>
+
+
 <script type="text/javascript">
 <!--
+
   var ITEM_NONE = "<mm:write referid="gfx_item_none" />";
   var ITEM_OPENED = "<mm:write referid="gfx_item_opened" />";
   var ITEM_CLOSED = "<mm:write referid="gfx_item_closed" />";
@@ -121,6 +128,8 @@
     if ( number > 0 ) {
       currentnumber = number;
     }
+
+
     switch ( type ) {
       case "educations":
 
@@ -232,6 +241,10 @@
       }
     }
   }
+
+
+
+
   //-->
 </script>
 
@@ -343,14 +356,45 @@
       </div>
    </div>
 
+
+
    <script type="text/javascript">
+
+      rightframesrc = "---";
       function resize() {
+/*
          var frameElem = document.getElementById("content");
-         frameElem.style.height = "0px";
-         iframedoc = window.frames[0].document;
+         alert(frameElem.contentWindow.document.body.clientHeight + " " + frameElem.contentWindow.document.body.scrollHeight);
+//         alert(divleftMenu.innerHTML());
          iframedoc.onupdate = resize;
-         frameHeight = (iframedoc.body.scrollHeight + 40) + "px";
-         frameElem.style.height = frameHeight;
+         var frameContentHeight = frameElem.contentWindow.document.body.scrollHeight;
+//         contentBodywit.style.height = frameContentHeight + 80;
+         if(frameElem.contentWindow.document.body.clientHeight + 20 < frameElem.contentWindow.document.body.scrollHeight)
+         {
+            frameElem.height = frameContentHeight + 0;
+         }
+*/
+         if(rightframesrc != frames['content'].location.href)
+         {
+            if(browserVersion()[0] == "IE")
+            {
+               var oBody = content.document.body;
+               var oFrame = document.all("content");
+
+               oFrame.style.height = oBody.scrollHeight + 280;
+            }
+            else
+            {
+               var frameElem = document.getElementById("content");
+               frameElem.style.overflow = "";
+               var frameContentHeight = frameElem.contentWindow.document.body.scrollHeight;
+               frameElem.style.height = frameContentHeight + 80;
+               frameElem.height = frameContentHeight + 80;
+               frameElem.style.overflow = "hidden";
+            }
+//            alert(rightframesrc);
+         }
+         rightframesrc = frames['content'].location.href;
       }
    </script>
 
@@ -359,7 +403,7 @@
          &nbsp;
       </div>
       <div class="contentBodywit" id="contentBodywit">
-         <iframe width="100%" onload="resize()" height="100%" name="content" id="content" frameborder="0" scrolling="none"></iframe>
+         <iframe width="100%" height="100%" onload="resize()" name="content" id="content" frameborder="0" style="overflow:hidden"></iframe>
       </div>
    </div>
 </div>
