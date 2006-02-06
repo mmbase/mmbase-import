@@ -22,6 +22,7 @@
     <neededreldeflist>
         <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
         <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
+        <reldef source="pos2rel" target="pos2rel" direction="bidirectional" guisourcename="Pos2Rel" guitargetname="Pos2Rel" builder="pos2rel" />
     </neededreldeflist>
 
     <allowedrelationlist>
