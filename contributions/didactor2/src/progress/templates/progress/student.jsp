@@ -259,9 +259,7 @@
               <mm:relatednodescontainer type="tests" role="posrel">
                 <mm:sortorder field="posrel.pos" direction="up" />
                 <mm:relatednodes>
-                  <mm:import id="testNo" reset="true">
-                    <mm:field name="number" />
-                  </mm:import>
+                  <mm:import id="testNo" reset="true"><mm:field name="number" /></mm:import>
                   <%int numberOfquestions = 0;
 
           %>
