@@ -30,14 +30,12 @@
   <div class="folderBody">&nbsp;</div>
   </div>
 
-  <mm:import id="student" reset="true">
-    <mm:write referid="user" />
-  </mm:import> <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+  <mm:import id="student" reset="true"><mm:write referid="user" /></mm:import> 
+  <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
     <mm:import id="student" externid="student" reset="true" />
-  </mm:islessthan> <mm:isempty referid="student">
-    <mm:import id="student" reset="true">
-      <mm:write referid="user" />
-    </mm:import>
+  </mm:islessthan>
+  <mm:isempty referid="student">
+    <mm:import id="student" reset="true"><mm:write referid="user" /></mm:import>
   </mm:isempty>
 
   <div class="mainContent">
@@ -49,8 +47,9 @@
     <mm:field name="username" id="usern" />
   </mm:node></div>
 
-  <div class="contentBodywit"><mm:import externid="showfeedback" /> <mm:present
-    referid="showfeedback">
+  <div class="contentBodywit">
+    <mm:import externid="showfeedback" />
+    <mm:present referid="showfeedback">
     <mm:import externid="madetest" required="true" />
     <mm:import externid="tests" required="true" />
 
@@ -108,17 +107,13 @@
     <table class="Font">
       <tr>
         <td><di:translate key="progress.perccompleted" /></td>
-        <td><mm:import jspvar="progress" id="progress"
-          vartype="Double">
-          <mm:treeinclude page="/progress/getprogress.jsp"
-            objectlist="$includePath" referids="$referids">
+        <td><mm:import jspvar="progress" id="progress" vartype="Double">
+          <mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids">
             <mm:param name="student">
               <mm:write referid="student" />
             </mm:param>
-
           </mm:treeinclude>
         </mm:import> <%=(int) (progress.doubleValue() * 100.0)%>%</td>
-
       </tr>
 
       <%//direct relation people-classrel-educations %>
@@ -172,9 +167,7 @@
           <mm:tree type="learnblocks" role="posrel"
             searchdir="destination" orderby="posrel.pos"
             directions="up">
-            <mm:import jspvar="depth" vartype="Integer">
-              <mm:depth />
-            </mm:import>
+            <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
             <%if (depth.intValue() == 2) {
 
               %>
@@ -237,9 +230,7 @@
             <mm:tree type="learnblocks" role="posrel"
               searchdir="destination" orderby="posrel.pos"
               directions="up">
-              <mm:import jspvar="depth" vartype="Integer">
-                <mm:depth />
-              </mm:import>
+              <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
               <%for (int i = blockName.size() - 1; i < depth.intValue() - 1; i++) {
               blockName.add(null);
           }
@@ -312,9 +303,7 @@
                       <mm:islessthan value="1">
                         <mm:countrelations type="questions"
                           write="true" id="amount" jspvar="proba">
-                          <mm:import jspvar="amount">
-                            <mm:write referid="amount" />
-                          </mm:import>
+                          <mm:import jspvar="amount"><mm:write referid="amount" /></mm:import>
                           <%
                             numberOfquestions = proba.intValue();
                           %>
