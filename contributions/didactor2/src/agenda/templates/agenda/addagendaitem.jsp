@@ -270,11 +270,10 @@
         <%-- Only valid for making items in the personal scope --%>
         <mm:notpresent referid="myclasses">
           <mm:notpresent referid="myworkgroups">
-            <mm:node referid="mycurrentagenda">
-              <tr>
-              <td/><td><mm:field name="name"/></td>
-              </tr>
-            </mm:node>
+            <tr>
+              <td/>
+              <td><di:translate key="agenda.personal_agenda_of" /> <mm:node number="$user"><mm:field name="firstname"/> <mm:field name="suffix"/> <mm:field name="lastname"/></mm:node></td>
+            </tr>
           </mm:notpresent>
         </mm:notpresent>
 

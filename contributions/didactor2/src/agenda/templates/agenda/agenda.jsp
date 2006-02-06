@@ -103,7 +103,7 @@
             </mm:relatednodes>
             <mm:relatednodes type="people">
                 <mm:import id="agendaname" reset="true">
-                    <di:translate key="agenda.agenda_of" /> <mm:field name="firstname"/> <mm:field name="lastname"/>
+                    <di:translate key="agenda.agenda_of" /> <mm:field name="firstname"/> <mm:field name="suffix"/> <mm:field name="lastname"/>
                 </mm:import>    
             </mm:relatednodes>
         </mm:relatednodes>
