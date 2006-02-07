@@ -1,6 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@page import="nl.didactor.tree.*,nl.didactor.metadata.tree.*" %>
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud">
    <%@include file="/shared/setImports.jsp"%>
    <mm:import externid="wizardjsp" jspvar="wizardjsp" />
    <mm:import externid="listjsp" jspvar="listjsp" />
