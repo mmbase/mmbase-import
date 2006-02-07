@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.177 2006-02-07 21:45:28 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.178 2006-02-07 23:50:03 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -257,13 +257,26 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public boolean commit() {
         boolean success = parent.commit(this);
         if (success) {
-            oldValues.clear();
-            changed.clear();        
             isNew = false; // perhaps it is always already false (otherwise insert is called, I think), but no matter, now it certainly isn't new!
+        } else {
+            values.putAll(oldValues);
         }
+        oldValues.clear();
+        changed.clear();                       
         return success;
     }
 
+    
+    /** 
+     * Undo changes made to the node.
+     *
+     * @since MMBase-1.8
+     */
+    public void rollBack() {
+        values.putAll(oldValues);
+        oldValues.clear();
+        changed.clear();
+    }
     /**
      * Insert this node into the storage
      * @param userName the name of the user who inserts the node. This value is ignored
