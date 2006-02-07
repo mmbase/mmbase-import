@@ -196,6 +196,9 @@ public class MetaDataHelper {
        }
        catch(Exception e){
        }
+       if("metavocabulary".equals(cloud.getNode(sObjectID).getNodeManager().getName())){
+           return (String) cloud.getNode(sObjectID).getValue("value");
+       }
        return (String) cloud.getNode(sObjectID).getValue("name");
    }
 
@@ -209,63 +212,4 @@ public class MetaDataHelper {
    public String getAliasForObject(Cloud cloud, int iObjectID, String sUserID){
        return getAliasForObject(cloud, "" + iObjectID, sUserID);
    }
-
-
-/*
-   public String getAliasForMetaStandard(Cloud cloud, String  sMetaStandartID, String sUserID){
-       try{
-           NodeList nlSynonyms = cloud.getList(sUserID,
-              "people,workgroups,synonym,metastandard",
-              "synonym.number",
-              "metastandard.number='" + sMetaStandartID + "'",
-              null,null,null,false);
-           Node nodeSynonym = cloud.getNode(nlSynonyms.getNode(0).getStringValue("synonym.number"));
-           return (String) nodeSynonym.getValue("name");
-       }
-       catch(Exception e){
-       }
-       return (String) cloud.getNode(sMetaStandartID).getValue("name");
-   }
-
-
-
-   public String getAliasForMetaDefinition(Cloud cloud, String  sMetaDefinitionID, String sUserID){
-       System.out.println("sMetaDefinitionID = " + sMetaDefinitionID);
-       System.out.println("sUserID = " + sUserID);
-       try{
-           NodeList nlSynonyms = cloud.getList(sUserID,
-              "people,workgroups,synonym,metadefinition",
-              "synonym.number",
-              "metadefinition.number='" + sMetaDefinitionID + "'",
-              null,null,null,false);
-           Node nodeSynonym = cloud.getNode(nlSynonyms.getNode(0).getStringValue("synonym.number"));
-           return (String) nodeSynonym.getValue("name");
-       }
-       catch(Exception e){
-           System.out.println(e);
-       }
-       return (String) cloud.getNode(sMetaDefinitionID).getValue("name");
-   }
-
-
-   public String getAliasForMetaVocabulary(Cloud cloud, String  sMetaVocabularyID, String sUserID){
-       System.out.println("sMetaVocabularyID = " + sMetaVocabularyID);
-       System.out.println("sUserID = " + sUserID);
-       try{
-           NodeList nlSynonyms = cloud.getList(sUserID,
-              "people,workgroups,synonym,metavocabulary",
-              "synonym.number",
-              "metavocabulary.number='" + sMetaVocabularyID + "'",
-              null,null,null,false);
-           Node nodeSynonym = cloud.getNode(nlSynonyms.getNode(0).getStringValue("synonym.number"));
-           return (String) nodeSynonym.getValue("name");
-       }
-       catch(Exception e){
-           System.out.println(e);
-       }
-       return (String) cloud.getNode(sMetaVocabularyID).getValue("name");
-   }
-*/
-
-
 }
