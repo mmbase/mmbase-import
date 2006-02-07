@@ -13,6 +13,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * The basic implementation for a Transaction cLoud.
@@ -20,14 +21,17 @@ import org.mmbase.module.core.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.19 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id: BasicTransaction.java,v 1.20 2006-02-07 18:13:14 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
     /**
      * The id of the transaction for use with the transaction manager.
      */
-    protected String transactionContext;
+    protected final String transactionContext;
+
+    private boolean canceled = false;
+    private boolean committed  = false;
     /**
      * The name of the transaction as used by the user.
      */
@@ -64,10 +68,15 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
+
     public boolean commit() {
-        if (transactionContext==null) {
-            throw new BridgeException("No valid transaction : " + name);
+        if (canceled) {
+            throw new BridgeException("Cannot commit transaction'" + name + "' (" + transactionContext +"), it was already canceled.");
         }
+        if (committed) {
+            throw new BridgeException("Cannot commit transaction'" + name + "' (" + transactionContext +"), it was already committed.");
+        }
+
         // if this is a transaction within a transaction (theoretically possible)
         // leave the committing to the 'parent' transaction
         if (parentCloud instanceof Transaction) {
@@ -83,16 +92,20 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             }
         }
         // remove the transaction from the parent cloud
-        parentCloud.transactions.remove(transactionName);
-        // clear the transactioncontext
-        transactionContext = null;
+        parentCloud.transactions.remove(transactionName);        
+        committed = true;        
         return true;
     }
 
     public void cancel() {
-        if (transactionContext==null) {
-            throw new BridgeException("No valid transaction : " + name);
+        if (canceled) {
+            throw new BridgeException("Cannot cancel transaction'" + name + "' (" + transactionContext +"), it was already canceled.");
         }
+        if (committed) {
+            throw new BridgeException("Cannot cancel transaction'" + name + "' (" + transactionContext +"), it was already committed.");
+        }
+
+
         // if this is a transaction within a transaction (theoretically possible)
         // call the 'parent' transaction to cancel everything
         if (parentCloud instanceof Transaction) {
@@ -108,8 +121,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
         // remove the transaction from the parent cloud
         parentCloud.transactions.remove(transactionName);
-        // clear the transactioncontext
-        transactionContext = null;
+        canceled = true;
     }
 
     /*
@@ -135,7 +147,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             throw new BridgeException(e.getMessage(), e);
         }
     }
-
     /*
      * Transaction-notification: remove an existing node in a transaction.
      * @param currentObjectContext the context of the object to remove
