@@ -1,6 +1,7 @@
-<list destination="metavocabulary" role="posrel" minoccurs="0" maxoccurs="*" searchdir="destination">
-      <title xml:lang="en">Constraint for metavocabulary</title>
-      <title xml:lang="nl">Beperking voor metavocabulary</title>
+<!-- used in config/metavocabulary/metavocabulary.xml -->
+<list destination="metavocabulary" role="posrel" minoccurs="0" maxoccurs="*" searchdir="source">
+      <title xml:lang="en">Constrained by metavocabulary</title>
+      <title xml:lang="nl">Beperkt door metavocabulary</title>
       <item> 
         <field name="value" ftype="data" dtminlength="1" >
           <prompt>Metavocabulary waarde</prompt>
@@ -21,16 +22,5 @@
      <action type="load">
       <relation destinationtype="metavocabulary" role="posrel"/>
      </action>
-
-    <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
-
-    <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" 
-                              directions="down"  >
-      <prompt>Zoeken naar metavocabulary </prompt>
-        <search-filter>
-            <name>Waarde bevat</name>
-            <search-fields>value</search-fields>
-        </search-filter>
-    </command>
 
 </list>

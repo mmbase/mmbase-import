@@ -22,7 +22,7 @@
      </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition-noorigin" objectnumber="new" >
+  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition" objectnumber="new" >
   </command>
 
   <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >

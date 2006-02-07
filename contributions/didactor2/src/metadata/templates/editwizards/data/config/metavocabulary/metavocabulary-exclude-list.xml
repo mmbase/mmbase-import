@@ -1,3 +1,4 @@
+<!-- used in config/metastandard/metastandard.xml -->
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="metavocabulary" role="exclude" orderby="value">
   <title xml:lang="en">Exclude metadatavocabulary from this metastandard</title>

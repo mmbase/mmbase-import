@@ -11,7 +11,9 @@
   </action>
 
   <action type="create">
-    <object type="metavocabulary" />
+    <object type="metavocabulary">
+      <relation destination="{$origin}" role="related" createdir="source" />
+    </object>
   </action>
 
  <lists>

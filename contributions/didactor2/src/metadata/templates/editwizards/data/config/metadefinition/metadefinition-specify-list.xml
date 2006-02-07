@@ -1,7 +1,8 @@
+<!-- used in config/metastandard/metastandard.xml -->
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*" orderby="metadefinition.name">
-  <title xml:lang="en">Constraint for metadata definitions</title>
-  <title xml:lang="nl">Beperking voor metadata definitie</title>
+  <title xml:lang="en">Extra constraints for metadata definitions</title>
+  <title xml:lang="nl">Extra beperkingen voor metadata definitie</title>
   <item>
     <field name="name" ftype="data">
       <prompt>Naam</prompt>
@@ -23,7 +24,7 @@
      </relation>
   </action>
 
-  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition-noorigin" objectnumber="new" >
+  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition" objectnumber="new" >
   </command>
 
   <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >

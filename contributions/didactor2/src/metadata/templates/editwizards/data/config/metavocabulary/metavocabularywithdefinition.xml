@@ -1,15 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title>Metadata Editor</title>
+  <title>Metavocabulary Editor</title>
 
   <action type="load">
-    <relation destinationtype="metavocabulary" role="posrel">
-      <object type="metavocabulary"/>
-    </relation>
-    <relation destinationtype="metadefinition" role="constraints">
-      <object type="metadefinition"/>
-    </relation>
+    <field name="value" />
+    <relation destinationtype="metavocabulary" role="posrel" />
+    <relation destinationtype="metadefinition" role="constraints" />
   </action>
 
   <action type="create">

@@ -5,7 +5,6 @@
 
   <action type="create">
     <object type="metadefinition">
-      <relation destination="{$origin}" role="posrel" />
     </object>
   </action>
 
@@ -26,9 +25,8 @@
   <action type="delete" />
 
   <lists>
-    <optionlist include="config/option_list/constraint_type.xml" />
-    <optionlist include="config/option_list/metadatatypes.xml" />
-    <optionlist include="config/option_list/boolean.xml" />
+   <optionlist include="config/option_list/metadatatypes.xml" />
+   <optionlist include="config/option_list/boolean.xml" />
   </lists>
 
   <steps>
@@ -69,10 +67,10 @@
     </field>
 
     <!-- has to be only visible if type=3, but that's not possible atm -->
-    <list destination="metavocabulary" role="related" extends="config/metavocabulary/metavocabularydefinition-list.xml" />
-    <list destination="metavocabulary" role="constraints" extends="config/metavocabulary/metavocabularydefinition-constraint-list.xml"/>
+    <list destination="metavocabulary" role="related" extends="config/metavocabulary/metavocabulary-list.xml" />
+    <list destination="metavocabulary" role="constraints" extends="config/metavocabulary/metavocabulary-constraint-list.xml"/>
     <list destination="metastandard" role="constraints" extends="config/metastandard/metastandard-constraint-list.xml"/>
     <list destination="synonym" role="related" extends="config/synonym/synonym-list.xml" />
-     
+
     </form-schema>
 </wizard-schema>
