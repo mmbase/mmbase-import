@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.367 2006-01-27 15:15:10 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.368 2006-02-07 21:45:28 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -756,14 +756,24 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return A newly initialized <code>MMObjectNode</code>.
      */
     public MMObjectNode getNewNode(String owner) {
-        MMObjectNode node = new MMObjectNode(this, true);
+        MMObjectNode node = getEmptyNode(owner);
+        node.isNew = true;
+        return node;
+    }
+
+    /**
+     * Returns a new empty node object. This is used by Storage to create a non-new node object (isNew is false), which is then 
+     * be filled with actual values from storage.
+     * @since MMBase-1.8.
+     */
+    public MMObjectNode getEmptyNode(String owner) {
+        MMObjectNode node = new MMObjectNode(this, false);
         node.setValue(FIELD_NUMBER, -1);
         node.setValue(FIELD_OWNER, owner);
         node.setValue(FIELD_OBJECT_TYPE, oType);
         setDefaults(node);
         return node;
     }
-
     /**
      * Sets defaults for a node. Fields "number", "owner" and "otype" are not set by this method.
      * @param node The node to set the defaults of.
