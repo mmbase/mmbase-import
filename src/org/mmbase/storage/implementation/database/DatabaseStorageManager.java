@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.144 2006-01-25 10:21:43 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.145 2006-02-07 21:47:00 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1498,7 +1498,7 @@ public class DatabaseStorageManager implements StorageManager {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
         try {
             // create a new node (must be done before acquiring the connection, because this code might need a connection)
-            MMObjectNode node = builder.getNewNode("system");
+            MMObjectNode node = builder.getEmptyNode("system");
 
             getActiveConnection();
             // get a builders fields
