@@ -13,7 +13,7 @@ public class MetaVocabularyHelper extends MetaHelper {
    public String toString() {
       return "VOCABULARY_TYPE";
    }
-   
+
    public MetaVocabularyHelper() {
       setReason("number_of_vocabularies_should_match_min_max");
    }
@@ -29,31 +29,31 @@ public class MetaVocabularyHelper extends MetaHelper {
       }
       return bValid;
    }
-   
+
    public boolean check(Cloud cloud, String[] arrstrParameters, Node metadefNode, boolean isRequired, ArrayList arliSizeErrors) {
       boolean bValid = true;
       int iMin = getMin(metadefNode,isRequired);
       int iMax = getMax(metadefNode);
       if ((arrstrParameters.length > 1) || (!arrstrParameters[0].equals(MetaDataHelper.EMPTY_VALUE))) {
-         
+
          if( (iMax < arrstrParameters.length) || (iMin > arrstrParameters.length)) {
-            
+
             bValid = false;
          }
       } else if(iMin>0) {
-         
+
          bValid = false;
       }
       if(!bValid) {
          arliSizeErrors.add(metadefNode.getStringValue("number"));
-         log.debug("For " + metadefNode.getStringValue("name") + " at least " 
+         log.debug("For " + metadefNode.getStringValue("name") + " at least "
             + iMin + " and at most " + iMax + " values have to be selected.");
       }
       return bValid;
    }
-   
+
    public void copy(Cloud cloud, Node metaDataNode, Node defaultNode) {
-      
+
       RelationManager rm = cloud.getRelationManager("posrel");
       NodeList nl = defaultNode.getRelatedNodes("metavocabulary");
       for(int m = 0; m< nl.size(); m++) {
@@ -63,7 +63,8 @@ public class MetaVocabularyHelper extends MetaHelper {
    }
 
    public void set(Cloud cloud, String[] arrstrParameters, Node metaDataNode, Node metadefNode, int skipParameter) {
-   
+
+
       RelationManager rm = cloud.getRelationManager("posrel");
       RelationList rl = metaDataNode.getRelations("posrel","metavocabulary");
       for(int r = 0; r< rl.size(); r++) {
@@ -77,7 +78,7 @@ public class MetaVocabularyHelper extends MetaHelper {
             NodeList nl = cloud.getList(metadefNode.getStringValue("number"),
                "metadefinition,related,metavocabulary",
                "metavocabulary.number",
-               "metavocabulary.value='" + arrstrParameters[f] + "'",
+               "metavocabulary.number='" + arrstrParameters[f] + "'",
                null,null,null,true);
             for(int n = 0; n< nl.size(); n++) {
                String sMetavocabulary = nl.getNode(n).getStringValue("metavocabulary.number");
