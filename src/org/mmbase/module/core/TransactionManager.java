@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.30 2005-11-03 14:38:24 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.31 2006-02-07 21:45:56 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -34,7 +34,7 @@ public class TransactionManager implements TransactionManagerInterface {
 
     private TemporaryNodeManagerInterface tmpNodeManager;
     private MMBase mmbase;
-    protected Map transactions = new HashMap();
+    protected Map transactions = new HashMap(); /* String -> Collection */
     protected TransactionResolver transactionResolver;
 
     public TransactionManager(MMBase mmbase,TemporaryNodeManagerInterface tmpn) {
@@ -140,8 +140,7 @@ public class TransactionManager implements TransactionManagerInterface {
         return tmpnumber;
     }
 
-    public String cancel(Object user, String transactionName)
-            throws TransactionManagerException {
+    public String cancel(Object user, String transactionName) throws TransactionManagerException {
         Collection transaction = getTransaction(transactionName);
         // remove nodes from the temporary node cache
         MMObjectBuilder builder = mmbase.getTypeDef();
@@ -163,7 +162,7 @@ public class TransactionManager implements TransactionManagerInterface {
             if (!resolved) {
                 log.error("Can't resolve transaction " + transactionName);
                 log.error("Nodes \n" + transaction);
-                throw new TransactionManagerException("Can't resolve transaction " + transactionName);
+                throw new TransactionManagerException("Can't resolve transaction " + transactionName + "" + transaction);
             } else {
                 resolved = performCommits(user, transaction);
                 if (!resolved) {
