@@ -9,8 +9,13 @@ package org.mmbase.core.event;
 
 import java.util.*;
 
+import javax.swing.border.TitledBorder;
+
+import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import sun.rmi.runtime.GetThreadPoolAction;
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -64,43 +69,62 @@ public abstract class AbstractEventBroker {
      * @param event
      * @param listener
      * @throws ClassCastException
+     * @return true if this broker could accept the listener
      */
     protected abstract void notifyEventListener(Event event, EventListener listener) throws ClassCastException;
 
-    public void addListener(EventListener listener) {
+    public boolean addListener(EventListener listener) {
         if (canBrokerForListener(listener)) {
             if (! listeners.add(listener)) {
                 if (log.isDebugEnabled()) {
-                    log.trace("" + listener + " was already in " + this + ". Ignored.");
+                    log.debug("" + listener + " was already in " + this.getClass().getName() + ". Ignored.");
                 }
+                return false;
             } else if (log.isDebugEnabled()) {
-                log.debug("listener added to " + this);
+                log.debug("listener added to " + this.getClass().getName());
             }
+            return true;
         } else {            
-            log.warn("Ignored listener for" + this + " because it cannot broker for that.");
+            log.warn("Ignored listener for" + this.getClass().getName() + " because it cannot broker for that.");
         }
+        return false;
     }
 
     public void removeListener(EventListener listener) {
         if (! listeners.remove(listener)) {
-            log.warn("Tried to remove " + listener + " from " + this + " but it was not in in. Ignored.");
+            log.warn("Tried to remove " + listener + " from " + this.getClass().getName() + " but it was not found. Ignored.");
         }
 
     }
 
     public void notifyForEvent(Event event) {
+        if(log.isDebugEnabled())log.debug("will notify " + listeners.size() + " listeners");
         for (Iterator i = listeners.iterator(); i.hasNext();) {
             EventListener listener = (EventListener) i.next();
             try {
                 notifyEventListener(event, listener);
             } catch (ClassCastException e) {
-                // warn the world!
-                // this event is not proper for this broker
                 // (this should never happen)
+                log.error("could not notify listener " + listener + " of event " + event);
             }
         }
     }
     
-    public abstract String toString();
+    public String toString(){
+        return "Abstract Event Broker";
+    }
+    
+    public boolean equals(Object o) {
+        //  we can only have one instance so this will do to prevent adding more instances of an envent broker
+        return this.getClass().getName().equals(o.getClass().getName());
+    }
+    
+    
 
+    public int hashCode() {
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, toString());
+        result = HashCodeUtil.hashCode(result, this.getClass().getName());
+        return result;
+    }
 }

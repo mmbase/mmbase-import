@@ -29,7 +29,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.7 2006-01-19 14:00:56 michiel Exp $
+ * @version $Id: EventManager.java,v 1.8 2006-02-07 13:24:18 ernst Exp $
  */
 public class EventManager {
 
@@ -138,10 +138,14 @@ public class EventManager {
      * @param broker
      */
     public void addEventBroker(AbstractEventBroker broker) {
-        if (log.isServiceEnabled()) {
-            log.service("adding broker " + broker);
+        
+        //we want only one instance of each broker
+        if(! eventBrokers.contains(broker)){
+            log.service("adding broker " + broker.toString());
+            eventBrokers.add(broker);
+        }else{
+            log.service("broker " + broker.toString() + "was already registered: rejected.");
         }
-        eventBrokers.add(broker);
     }
 
     /**
@@ -156,12 +160,10 @@ public class EventManager {
      * @param listener
      */
     public void addEventListener(EventListener listener) {
-        if (log.isDebugEnabled()) {
-            log.debug("adding listener " + listener);
-        }
         BrokerIterator i =  findBrokers(listener);
-        while (i.hasNext()) {            
-            i.nextBroker().addListener(listener);
+        while (i.hasNext()) {
+            AbstractEventBroker broker = i.nextBroker(); 
+            if(broker.addListener(listener))log.info("listener " + listener + " added to broker " + broker );
         }
     }
 
@@ -207,7 +209,7 @@ public class EventManager {
      */
     private BrokerIterator findBrokers(final EventListener listener) {
         if (log.isDebugEnabled()) {
-            log.debug("try to find broker for " + listener);
+            log.debug("try to find broker for " + listener.getClass().getName());
         }
         return new BrokerIterator(eventBrokers.iterator(), listener);
     }
@@ -216,6 +218,7 @@ public class EventManager {
         AbstractEventBroker next;
         final Iterator i;
         final EventListener listener;
+        
         BrokerIterator(final Iterator i, final EventListener listener) {
             this.i = i;
             this.listener = listener;
@@ -241,12 +244,12 @@ public class EventManager {
                 AbstractEventBroker broker = (AbstractEventBroker) i.next();
                 if (broker.canBrokerForListener(listener)) {
                     if (log.isDebugEnabled()) {
-                        log.debug("broker " + broker + " can broker for eventlistener.");
+                        log.debug("broker " + broker + " can broker for eventlistener " + listener.getClass().getName());
                     }
                     next = broker;
                     return;
                 } else if (log.isDebugEnabled()) {
-                    log.debug("broker " + broker + " cannot boker for eventlistener.");
+                    log.debug("broker " + broker + " cannot boker for eventlistener." + listener.getClass().getName());
                 }
             }
             next = null;
