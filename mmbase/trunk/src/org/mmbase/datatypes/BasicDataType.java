@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.40 2006-01-20 14:41:03 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.41 2006-02-07 15:10:23 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -978,10 +978,14 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
             Collection validValues = getEnumeration(null, cloud, node, field);
             if (validValues == null) return true;
             Object candidate = BasicDataType.this.cast(v, cloud, node, field);
+            // tragic hack to compesate for the decision that in NodeDataType we sometime are content with an Integer when casting.
+            // if we can somehow migrate this to NodeDataType too, then that would be nice.
+            if (candidate instanceof Node) candidate = new Integer(((Node) candidate).getNumber());
             Iterator i = validValues.iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
                 Object valid = BasicDataType.this.cast(e.getKey(), cloud, node, field);
+                if (valid instanceof Node) valid = new Integer(((Node) valid).getNumber());
                 if (valid.equals(candidate)) {
                     return true;
                 }
