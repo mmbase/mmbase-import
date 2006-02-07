@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.69 2006-01-19 17:00:54 pierre Exp $
+ * @version $Id: Queries.java,v 1.70 2006-02-07 14:50:03 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -238,7 +238,7 @@ abstract public class Queries {
                 String fieldName = constraints.substring(posa + 1, posb);
                 int posc = fieldName.indexOf('.');
                 if (posc == -1) {
-                    fieldName = (String)factory.getStorageIdentifier(fieldName);
+                    fieldName = factory.getStorageIdentifier(fieldName).toString();
                 } else {
                     fieldName = fieldName.substring(0, posc + 1) + factory.getStorageIdentifier(fieldName.substring(posc + 1));
                 }
@@ -605,8 +605,16 @@ abstract public class Queries {
 
                 }
             }
-            if (operator != OPERATOR_IN) {
-                value = field.getDataType().cast(value, null, field);
+            if (operator != OPERATOR_IN) { // should the elements of the collection then not be casted?
+
+                if (fieldType == Field.TYPE_XML) {
+                    // XML's are treated as String in the query-handler so, let's anticipate that here...
+                    // a bit of a hack, perhaps we need something like a 'searchCast' or so.
+                    value = Casting.toString(value);
+                } else {
+                    value = field.getDataType().cast(value, null, field);
+
+                }
             }
 
             Object compareValue = getCompareValue(fieldType, operator, value, datePart);
@@ -1077,6 +1085,34 @@ abstract public class Queries {
     }
 
     /**
+     * @since MMBase-1.8
+     */
+    protected static Object aggregate(Query query, StepField field, int type) {
+        Cloud cloud = query.getCloud();
+        Query aggregate = query.aggregatingClone();
+        String resultName = field.getFieldName();
+        Step step = field.getStep();
+        aggregate.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
+        NodeList r = cloud.getList(aggregate);
+        if (r.size() != 1) throw new RuntimeException("Aggregated query " + query + " did not give one result but " + r);
+        Node result = r.getNode(0);
+        return result.getValue(resultName);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public static Object min(Query query, StepField field) {
+        return aggregate(query, field, AggregatedField.AGGREGATION_TYPE_MIN);
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public static Object max(Query query, StepField field) {
+        return aggregate(query, field, AggregatedField.AGGREGATION_TYPE_MAX);
+    }
+
+    /**
      * Searches a list of Steps for a step with a certain name. (alias or tableName)
      * @param steps steps to search through
      * @param stepAlias alias to search for
@@ -1119,7 +1155,7 @@ abstract public class Queries {
      */
     public static NodeQuery createNodeQuery(Node node) {
         NodeManager nm = node.getNodeManager();
-        NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can acept more steops
+        NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can accept more steps
         Step step       = query.addStep(nm);
         query.setNodeStep(step);
         if (! node.isNew()) {
@@ -1314,9 +1350,16 @@ abstract public class Queries {
      * @since MMBase-1.8
      */
     public static int compare(Node node1, Node node2, SortOrder sortOrder) {
+        return compare(getSortOrderFieldValue(node1, sortOrder),
+                       getSortOrderFieldValue(node2, sortOrder),
+                       sortOrder);
+     
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public static int compare(Object value, Object value2, SortOrder sortOrder) {
         int result;
-        Object value  = getSortOrderFieldValue(node1, sortOrder);
-        Object value2 = getSortOrderFieldValue(node2, sortOrder);
         // compare values - if they differ, detemrine whether
         // they are bigger or smaller and return the result
         // remaining fields are not of interest ionce a difference is found
