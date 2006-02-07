@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.176 2006-01-27 17:50:54 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.177 2006-02-07 21:45:28 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -255,7 +255,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
      */
     public boolean commit() {
-        return parent.commit(this);
+        boolean success = parent.commit(this);
+        if (success) {
+            oldValues.clear();
+            changed.clear();        
+            isNew = false; // perhaps it is always already false (otherwise insert is called, I think), but no matter, now it certainly isn't new!
+        }
+        return success;
     }
 
     /**
@@ -264,7 +270,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the new node key (number field), or -1 if the insert failed
      */
     public int insert(String userName) {
-        return parent.insert(userName, this);
+        int number = parent.insert(userName, this);
+        if (number >= 0) {
+            isNew = false;
+        }
+        return number;
     }
 
     /**
@@ -296,8 +306,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public boolean commit(UserContext user) {
         boolean success = parent.safeCommit(this);
-        oldValues.clear();
-        changed.clear();
         if (success) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
             mmbaseCop.getAuthorization().update(user, getNumber());
