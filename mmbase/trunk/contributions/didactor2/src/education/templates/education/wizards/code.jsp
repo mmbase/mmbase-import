@@ -455,144 +455,18 @@
    </mm:islessthan>
 </mm:compare>
 
-
-
-
 <mm:compare referid="mode" value="metadata">
    <% //----------------------- Metadata comes from here ----------------------- %>
    <mm:import id="editcontextname" reset="true">metadata</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-      <a href='javascript:clickNode("metadata_0")'><img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle' id='img_metadata_0'/></a>&nbsp;<img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/metastandard/metastandard&nodepath=metastandard&fields=name&searchfields=name&orderby=name<mm:write referid="forbidtemplate" escape="text/plain" />' title='' target="text"><di:translate key="education.metadata" /></nobr></a>
-      <br>
-
-      <mm:import id="number_of_metadata" reset="true">0</mm:import>
-      <mm:listnodes type="metastandard">
-         <mm:import id="number_of_metadata" reset="true"><mm:size /></mm:import>
-      </mm:listnodes>
-
-      <div id='metadata_0' style='display: none'>
-         <%// create new metadata standard %>
-         <table border="0" cellpadding="0" cellspacing="0">
-            <tr>
-               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                  <%// We have to detect the last element %>
-                  <mm:isgreaterthan referid="number_of_metadata" value="0">
-                     <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-                  </mm:isgreaterthan>
-
-                  <mm:islessthan referid="number_of_metadata" value="1">
-                     <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
-                  </mm:islessthan>
-
-               <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/metastandard/metastandard&objectnumber=new' title='<di:translate key="education.createnewmetadatastandarddescription" />' target="text"><di:translate key="education.createnewmetadatastandard" /></a></nobr></td>
-            </tr>
-         </table>
-
-
-         <%// edit existing metadata standards %>
-         <mm:listnodes type="metastandard">
-            <mm:remove referid="metastandardNumber"/>
-            <mm:field id="metastandardNumber" name="number" write="false"/>
-
-            <table border="0" cellpadding="0" cellspacing="0">
-               <tr>
-                  <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                     <%// We have to detect the last element %>
-
-                     <mm:last inverse="true">
-                        <td><a href='javascript:clickNode("<mm:field name="number"/>")'><img src="gfx/tree_plus.gif" border="0" align="middle" id='img_<mm:field name="number"/>'/></a></td>
-                     </mm:last>
-
-                     <mm:last>
-                        <td><a href='javascript:clickNode("<mm:field name="number"/>")'><img src="gfx/tree_pluslast.gif" border="0" align="middle" id='img_<mm:field name="number"/>'/></a></td>
-                     </mm:last>
-
-                  <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_<mm:field name="number"/>'/></td>
-                  <td>
-                    <nobr>
-                      <a href='<mm:write referid="wizardjsp"/>&wizard=config/metastandard/metastandard&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treatmetastandard" />' target="text"><mm:field name="name" /></a>
-                      <a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' title='Bewerk standaard waarden voor metadatastandaard' alt='Bewerk standaard waarden voor metadatastandaard'></a>
-                    </nobr>
-                  </td>
-               </tr>
-            </table>
-
-            <mm:import id="the_last_parent" reset="true">false</mm:import>
-            <mm:last>
-               <mm:import id="the_last_parent" reset="true">true</mm:import>
-            </mm:last>
-
-
-            <div id='<mm:field name="number"/>' style="display:none">
-               <%// Create new metadefinition %>
-
-               <mm:import id="the_last_element" reset="true">true</mm:import>
-               <mm:relatednodes type="metadefinition" max="1">
-                  <mm:import id="the_last_element" reset="true">false</mm:import>
-               </mm:relatednodes>
-
-
-               <table border="0" cellpadding="0" cellspacing="0">
-                  <tr>
-                     <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                        <%// We have to detect the last element %>
-                        <mm:compare referid="the_last_parent" value="true" inverse="true">
-                           <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
-                        </mm:compare>
-                        <mm:compare referid="the_last_parent" value="true">
-                           <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                        </mm:compare>
-
-                        <mm:compare referid="the_last_element" value="true" inverse="true">
-                           <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-                        </mm:compare>
-
-                        <mm:compare referid="the_last_element" value="true">
-                           <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
-                        </mm:compare>
-
-                     <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-                     <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/metadefinition/metadefinition&objectnumber=new&origin=<mm:write referid="metastandardNumber" />' title='<di:translate key="education.createnewmetadefinitiondescription" />' target="text"><di:translate key="education.createnewmetadefinition" /></a></nobr></td>
-                  </tr>
-               </table>
-
-               <mm:relatednodes type="metadefinition" orderby="metadefinition.name">
-                  <table border="0" cellpadding="0" cellspacing="0">
-                     <tr>
-                        <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                           <%// We have to detect the last element %>
-                           <mm:compare referid="the_last_parent" value="true" inverse="true">
-                              <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
-                           </mm:compare>
-                           <mm:compare referid="the_last_parent" value="true">
-                              <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
-                           </mm:compare>
-
-                           <mm:last inverse="true">
-                              <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
-                           </mm:last>
-
-                           <mm:last>
-                              <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
-                           </mm:last>
-
-                        <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                        <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:nodeinfo type="type" />/<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treatmetadefinition" /> <mm:nodeinfo type="type" />' target="text"><mm:field name="name" /></a></nobr></td>
-                     </tr>
-                  </table>
-               </mm:relatednodes>
-            </div>
-         </mm:listnodes>
-      </div>
+     <mm:treeinclude page="/metadata/tree/tree.jsp" objectlist="$includePath" referids="$referids">
+       <mm:param name="locale"><%= pageContext.getAttribute("t_locale") %></mm:param>
+       <mm:param name="wizardjsp"><mm:write referid="wizardjsp"/></mm:param>
+       <mm:param name="listjsp"><mm:write referid="listjsp"/></mm:param>
+     </mm:treeinclude>
    </mm:islessthan>
 </mm:compare>
-
-
-
-
-
 
 <mm:compare referid="mode" value="virtualclassroom">
   <% //----------------------- virtualclassroom come from here ----------------------- %>
@@ -610,10 +484,6 @@
     </mm:islessthan>
   </mm:node> 
 </mm:compare>
-
-
-
-
 
 <mm:compare referid="mode" value="tests">
    <% //----------------------- Tests come from here ----------------------- %>
