@@ -8,13 +8,14 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.datatypes;
+import org.mmbase.util.Casting;
 
 /**
  * A NumberDataType, but provides getMin and getMax as long.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.7 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: LongDataType.java,v 1.8 2006-02-07 14:47:58 michiel Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {
@@ -35,16 +36,16 @@ public class LongDataType extends NumberDataType {
      * @return the minimum value as an <code>long</code>, or {@link Long#MIN_VALUE} if there is no minimum.
      */
     public long getMin() {
-        Number min = (Number) getMinRestriction().getValue();
-        return min == null ? Long.MIN_VALUE : min.longValue();
+        Object min = getMinRestriction().getValue(); 
+        return min == null ? Long.MIN_VALUE : Casting.toLong(min); // casting, mainly to anticipate dates
     }
 
     /**
      * @return the maximum value as an <code>long</code>, or {@link Long#MAX_VALUE} if there is no maximum.
      */
     public long getMax() {
-        Number max = (Number) getMaxRestriction().getValue();
-        return max == null ? Long.MAX_VALUE : max.longValue();
+        Object max = getMaxRestriction().getValue(); 
+        return max == null ? Long.MAX_VALUE : Casting.toLong(max); // casting, mainly to anticipate dates
     }
 
 }
