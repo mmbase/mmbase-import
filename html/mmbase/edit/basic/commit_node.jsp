@@ -10,6 +10,7 @@
 
 <mm:import externid="node_number" />
 <mm:import externid="delete" />
+<mm:import externid="cancel" />
 
 <!-- first, check validity -->
 <mm:notpresent referid="delete">
@@ -31,12 +32,14 @@
       </mm:context>
     </mm:notpresent>
     <mm:valid inverse="true">
-      <mm:import id="invalid" />
-      <mm:present referid="node_number">
-        <mm:include  page="change_node.jsp" />
-      </mm:present>
-      <mm:notpresent referid="node_number">
-        <mm:include  page="create_node.jsp" />
+      <mm:notpresent referid="cancel">
+        <mm:import id="invalid" />
+        <mm:present referid="node_number">
+          <mm:include  page="change_node.jsp" />
+        </mm:present>
+        <mm:notpresent referid="node_number">
+          <mm:include  page="create_node.jsp" />
+        </mm:notpresent>
       </mm:notpresent>
     </mm:valid>
   </mm:form>
@@ -52,7 +55,6 @@
       <link rel="StyleSheet" type="text/css" href="css/<mm:write referid="config.style_sheet" />"/>
     </mm:import>
 <title><%=m.getString("commit_node.commit")%></title>
-<mm:import externid="cancel" />
 <mm:import externid="new" />
 <mm:import externid="deleterelations" />
 <mm:import externid="ok" />
