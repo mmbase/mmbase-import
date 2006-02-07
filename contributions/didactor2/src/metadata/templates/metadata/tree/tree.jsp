@@ -1,0 +1,16 @@
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@page import="nl.didactor.tree.*,nl.didactor.metadata.tree.*" %>
+<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+   <%@include file="/shared/setImports.jsp"%>
+   <mm:import externid="wizardjsp" jspvar="wizardjsp" />
+   <mm:import externid="listjsp" jspvar="listjsp" />
+   <mm:import externid="locale" jspvar="locale" />
+   <% MetadataTreeModel model = new MetadataTreeModel(cloud);
+      HTMLTree t = new HTMLTree(model,"metadata");
+      t.setCellRenderer(new MetadataRenderer(cloud, wizardjsp, listjsp, locale));
+      t.setExpandAll(false);
+      t.setImgBaseUrl("gfx/");
+      t.render(out);
+   %>
+   <script language="Javascript1.2">restoreNavTree();</script>
+</mm:cloud>
