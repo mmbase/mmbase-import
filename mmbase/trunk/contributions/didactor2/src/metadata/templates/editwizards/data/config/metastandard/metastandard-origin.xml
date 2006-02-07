@@ -4,7 +4,9 @@
   <title>Metadata-standaard Editor</title>
 
   <action type="create">
-    <object type="metastandard" />
+    <object type="metastandard">
+      <relation destination="{$origin}" role="posrel" createdir="source" />
+    </object>
   </action>
 
   <action type="load">

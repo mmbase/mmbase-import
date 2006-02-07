@@ -1,6 +1,6 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="metadefinition" role="related" minoccurs="0" maxoccurs="*">
-  <title>Bijbehorende Metadata definities</title>
+  <title>Metadata definities waarin deze metavocabulary wordt gebruikt</title>
   <item>
     <field name="name" ftype="data">
       <prompt>Naam</prompt>
@@ -15,7 +15,6 @@
       <prompt>Handler</prompt>
     </field>
   </item>
-
 
   <action type="create">
     <relation destinationtype="metadata" role="related">
@@ -41,7 +40,7 @@
       <object type="metadefinition"/>
     </relation>
 
-  <relation destinationtype="metavocabulary" role="posrel">
+      <relation destinationtype="metavocabulary" role="posrel">
         <object type="metavalue"/>
       </relation>
 

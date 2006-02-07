@@ -1,7 +1,8 @@
+<!-- used in config/metastandard/metastandard.xml -->
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="metadefinition" role="posrel" ordertype="number" orderby="field[@name='pos']"
    minoccurs="0" maxoccurs="*">
-  <title>Bijbehorende Metadata Definitie</title>
+  <title>Metadata definities die behoren tot deze metadatastandard</title>
   <item>
     <field name="name" ftype="data">
       <prompt>Naam</prompt>
@@ -20,12 +21,10 @@
   </item>
 
   <action type="create">
-    <relation destinationtype="metadefinition" role="posrel">
-     </relation>
+    <relation destinationtype="metadefinition" role="posrel" />
   </action>
 
-  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition-noorigin" objectnumber="new" >
-  </command>
+  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition" objectnumber="new" />
 
   <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar metadata definities</prompt>
