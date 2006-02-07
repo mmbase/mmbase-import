@@ -105,8 +105,10 @@ public class ExtendedJMSendMail extends JMSendMail {
                     mmp.addBodyPart(mbp); 
                 }
                 msg.setContent(mmp);
+            }else if( body.toLowerCase().indexOf( "<html>" ) != -1 ){
+              msg.setContent(body, "text/html; charset=UTF-8");
             } else {
-                msg.setText(body, "UTF-8");
+              msg.setText(body, "UTF-8");
             }
             
             try {
