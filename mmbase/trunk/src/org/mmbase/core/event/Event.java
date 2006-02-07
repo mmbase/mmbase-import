@@ -9,35 +9,32 @@ package org.mmbase.core.event;
 
 import java.io.Serializable;
 
+import org.mmbase.module.core.MMBase;
+
 /**
  * This class is the base class for all mmbase events
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.5 2005-11-18 15:11:30 ernst Exp $
+ * @version $Id: Event.java,v 1.6 2006-02-07 13:21:00 ernst Exp $
  */
 public abstract class Event implements Serializable, Cloneable{
 
     protected String machine;
 
-    /**
-     * @return Returns the machine.
-     */
     public String getMachine() {
         return machine;
     }
 
-    /**
-     * @return Returns the name.
-     */
     public String getName() {
         return "Event";
     }
 
     /**
-     * @param machine
+     * @param machine the (local) machine name. if null the local machine name is extracted from MMBase
      */
     public Event(String machine) {
+        if(machine == null)machine = MMBase.getMMBase().getMachineName();
         this.machine = machine;
     }
     
