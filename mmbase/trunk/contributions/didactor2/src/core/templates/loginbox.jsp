@@ -11,7 +11,7 @@
     <mm:import externid="message"/>
     <mm:isnotempty referid="message">
       <br/>
-      Error <mm:write referid="message"/>
+      Error <mm:write referid="message" escape="none"/>
     </mm:isnotempty>
     <mm:import externid="reason" />
     <mm:isnotempty referid="reason">
