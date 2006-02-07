@@ -1,3 +1,4 @@
+<!-- used in config/metadefinition/metadefinition.xml -->
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="metastandard" role="constraints" minoccurs="0" maxoccurs="*" orderby="metastandard.name"> 
 
@@ -22,7 +23,7 @@
   </action>
 
   <!--
-  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition-noorigin" objectnumber="new" >
+  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition" objectnumber="new" >
   </command>
   -->
 
