@@ -9,9 +9,9 @@ if(sMaxValues.equals("1"))
             {
                %>
                   <mm:relatednodes type="metavocabulary" orderby="value">
-                     <mm:field name="value" jspvar="sValue" vartype="String" write="false">
+                     <mm:field name="number" jspvar="sID" vartype="String" write="false">
                         <%
-                           sSelected = sValue;
+                           sSelected = sID;
                         %>
                      </mm:field>
                   </mm:relatednodes>
@@ -22,15 +22,21 @@ if(sMaxValues.equals("1"))
       <select name="m<mm:field name="number"/>">
           <option><%= mdh.EMPTY_VALUE %></option>
           <mm:relatednodes type="metavocabulary" orderby="value">
-             <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
-                <option name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
+             <mm:field name="number" jspvar="sID" vartype="String" write="false">
+                <option name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
                    <%
-                      if(sSelected.equals(sCurrent))
+                      if(sSelected.equals(sID))
                       {
                          %> selected="selected" <%
                       }
                    %>
-                ><%= sCurrent %></option>
+                >
+                <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
+                   <mm:node number="$user" jspvar="nodeUser">
+                      <%= mdh.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
+                   </mm:node>
+                </mm:field>
+                </option>
              </mm:field>
           </mm:relatednodes>
       </select>
@@ -46,9 +52,9 @@ else
             {
                %>
                   <mm:relatednodes type="metavocabulary" orderby="value">
-                     <mm:field name="value" jspvar="sValue" vartype="String" write="false">
+                     <mm:field name="number" jspvar="sID" vartype="String" write="false">
                         <%
-                           hsetSelected.add(sValue);
+                           hsetSelected.add(sID);
                         %>
                      </mm:field>
                   </mm:relatednodes>
@@ -57,15 +63,20 @@ else
          %>
       </mm:relatednodes>
       <mm:relatednodes type="metavocabulary" orderby="value">
-         <mm:field name="value" jspvar="sCurrent" vartype="String" write="false">
-            <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sCurrent %>"
+         <mm:field name="number" jspvar="sID" vartype="String" write="false">
+            <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
             <%
-               if(hsetSelected.contains(sCurrent))
+               if(hsetSelected.contains(sID))
                {
                   %> checked="checked" <%
                }
             %>
-            /><%= sCurrent %>
+            />
+            <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
+               <mm:node number="$user" jspvar="nodeUser">
+                  <%= mdh.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
+               </mm:node>
+            </mm:field>
             <br/>
          </mm:field>
       </mm:relatednodes>
