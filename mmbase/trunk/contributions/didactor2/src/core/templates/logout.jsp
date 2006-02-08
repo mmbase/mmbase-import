@@ -32,4 +32,4 @@
 
 </mm:cloud>
 
-<mm:redirect page="/login.jsp" />
+<mm:redirect page="/" />
