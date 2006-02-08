@@ -52,11 +52,11 @@ public class UserContext extends org.mmbase.security.UserContext {
         String rankstring = "people";
         this.wrappedNode = node;
 
-        if ("admin".equals(owner))
+        if ("admin".equals(owner)) {
             rank = Rank.ADMIN;
-        else
+        } else {
             rank = Rank.getRank(rankstring);
-
+        }
     } 
 
     /**
