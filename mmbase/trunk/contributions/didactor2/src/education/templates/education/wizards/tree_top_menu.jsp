@@ -3,7 +3,7 @@
 <%@page import = "nl.didactor.component.education.utils.EducationPeopleConnector" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<mm:cloud jspvar="cloud" method="asis">
+<mm:cloud jspvar="cloud" method="delegate">
    <%@include file="/shared/setImports.jsp" %>
    <%@include file="/education/wizards/roles_defs.jsp" %>
 
