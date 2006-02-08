@@ -4,20 +4,13 @@
 <mm:import externid="extraheader" />
 <mm:import externid="extrabody" />
 <mm:content postprocessor="reducespace">
-<mm:cloud jspvar="cloud" method="asis">
+<mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
 <%@include file="/shared/setImports.jsp" %>
-
-<%--
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
---%>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <mm:write referid="extraheader" escape="none" />
-<%--    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/menubars.css" objectlist="$includePath" referids="$referids" />" />--%>
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
-<%--    <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/calendar.css" objectlist="$includePath" referids="$referids" />" />--%>
   </head>
   <body class="componentbody" <mm:write referid="extrabody" escape="none" />>
    <div class="">

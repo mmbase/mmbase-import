@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"%>
 
-<mm:cloud jspvar="cloud" method="asis">
+<mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
 <%@include file="/shared/setImports.jsp" %>
 <div class="educationMenubar" style="white-space: nowrap">
 <mm:isgreaterthan referid="user" value="0">
