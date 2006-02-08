@@ -19,7 +19,17 @@
         </mm:compare>
         <mm:compare referid="currentpop" value="-1">
           <div class="contentBody"> 
-            <p><di:translate key="pop.msgfornopop" /></p>
+            <mm:compare referid="student" referid2="user">
+              <p><di:translate key="pop.msgfornopop" /></p>
+            </mm:compare>
+            <mm:compare referid="student" referid2="user" inverse="true">
+              <mm:node number="$student">
+                <mm:import id="studentfullname"><mm:field name="firstname"/> <mm:field name="suffix"/> <mm:field name="lastname"/></mm:import>
+                <p><di:translate key="pop.msgfornopop1" /> <mm:write referid="studentfullname"/> <di:translate key="pop.msgfornopop2" />
+                   <mm:write referid="studentfullname"/> <di:translate key="pop.msgfornopop3" /></p>
+                <mm:remove referid="studentfullname"/>
+              </mm:node>
+            </mm:compare>
           </div>
         </mm:compare>
         <mm:compare referid="currentpop" value="-1" inverse="true">
