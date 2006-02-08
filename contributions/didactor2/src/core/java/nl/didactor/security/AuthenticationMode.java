@@ -2,41 +2,34 @@ package nl.didactor.security;
 
 import org.mmbase.module.core.*;
 
+public class AuthenticationMode {
 
-public class AuthenticationMode{
+    private String name = null;
 
-   private String name = null;
-   private MMObjectNode user = null;
+    private MMObjectNode user = null;
 
+    public AuthenticationMode() {
+    }
 
+    public AuthenticationMode(String name, MMObjectNode user) {
+        this.name = name;
+        this.user = user;
+    }
 
-   public AuthenticationMode(){
-   }
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public void setUser(MMObjectNode user) {
+        this.user = user;
+    }
 
-   public AuthenticationMode(String name, MMObjectNode user){
-      this.name = name;
-      this.user = user;
-   }
+    public String getName() {
+        return name;
+    }
 
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-
-   public void setUser(MMObjectNode user)
-   {
-      this.user = user;
-   }
-
-   public String getName()
-   {
-      return name;
-   }
-
-   public MMObjectNode getUser()
-   {
-      return user;
-   }
+    public MMObjectNode getUser() {
+        return user;
+    }
 
 }
