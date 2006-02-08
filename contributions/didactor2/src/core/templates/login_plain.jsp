@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
-<mm:cloud jspvar="cloud" username="admin" password="admin2k">
+<mm:cloud jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
   <mm:import externid="extraheader" />
   <mm:import externid="extrabody" />
