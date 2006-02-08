@@ -111,7 +111,7 @@
    <mm:import id="editcontextname" reset="true">componenten</mm:import>
    <%@include file="/education/wizards/roles_chk.jsp" %>
    <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-     <mm:listnodes type="components">
+     <mm:listnodes type="components" orderby="name">
        &nbsp;&nbsp;&nbsp; <a target="text" href="<mm:treefile page="/components/edit.jsp" objectlist="$includePath" />?component=<mm:field name="number" />"><mm:field name="name" /></a> <br />
      </mm:listnodes>
    </mm:islessthan>
