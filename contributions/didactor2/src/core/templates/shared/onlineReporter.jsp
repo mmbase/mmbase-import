@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud jspvar="cloud" method="asis">
+<mm:cloud jspvar="cloud" method="delegate" authenticate="asis">
    <%@include file="/shared/setImports.jsp"%>
 
 <mm:isgreaterthan referid="user" value="0">
