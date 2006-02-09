@@ -32,9 +32,10 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addRelationStep(InsRel,MMObjectBuilder) addRelationStep()}
  * <li>{@link #addField(Step,CoreField) addField()}
  * <li>{@link #addAggregatedField(Step,CoreField,int) addAggregatedField()}
+ * </ul>
  *
  * @author  Rob van Maris
- * @version $Id: NodeSearchQuery.java,v 1.12 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id: NodeSearchQuery.java,v 1.13 2006-02-09 12:04:19 johannes Exp $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
