@@ -28,7 +28,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.13 2006-01-19 11:13:32 andre Exp $
+ * @version $Id: XmlHandler.java,v 1.14 2006-02-09 13:53:00 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -50,7 +50,7 @@ public class XmlHandler extends StringHandler {
         x.configure(Xml.ESCAPE);
         ct.add(x);
     }
-    
+
 
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
@@ -66,7 +66,7 @@ public class XmlHandler extends StringHandler {
             buffer.append(">");
             String value;
             if (node != null) {
-                value = org.mmbase.util.Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)); 
+                value = org.mmbase.util.Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node));
             } else {
                 value = "";
             }
@@ -74,7 +74,7 @@ public class XmlHandler extends StringHandler {
             String opt = tag.getOptions();
             if (opt != null && opt.indexOf("noempty") > -1 && value.equals("")) {
                 buffer.append(" ");
-            }            
+            }
             buffer.append("</textarea>");
             return buffer.toString();
         } else {
