@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.60 2006-02-01 14:00:31 nklasens Exp $ 
+ * @version $Id: FormatterTag.java,v 1.61 2006-02-09 09:55:17 michiel Exp $ 
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -61,8 +61,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
     protected Source   xsltSource = null;
 
-    private static DocumentBuilder documentBuilder;
-    private static DocumentBuilder documentBuilderNS;
+    private DocumentBuilder documentBuilder;
+    private DocumentBuilder documentBuilderNS;
     private URL cwd;
 
     private static final class Counter {
@@ -106,8 +106,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
     private static final String PAGECONTEXT_COUNTER = "formatter__counter";
 
-    static {
-        log.service("static init of FormatterTag.");
+    {
+        log.debug("Init of FormatterTag.");
 
         try {            
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
