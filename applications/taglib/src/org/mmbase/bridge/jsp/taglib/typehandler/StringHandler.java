@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.52 2006-01-19 11:13:32 andre Exp $
+ * @version $Id: StringHandler.java,v 1.53 2006-02-09 13:53:00 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -77,16 +77,16 @@ public class StringHandler extends AbstractTypeHandler {
                             // If included, e.g. with xmlhttprequest,
                             // the textarea can collaps: <textarea />
                             // This does not work in either FF or IE if the contenttype is text/html
-                            // The more logical contenttype application/xml or text/xml would make it behave normally in FF, 
+                            // The more logical contenttype application/xml or text/xml would make it behave normally in FF,
                             // but that is absolutely not supported by IE. IE sucks. FF too, but less so.
-                            // 
+                            //
                             // Any how, in short, sometimes you _must_ output one space here if empty otherwise.
                             // I _reall_ cannot think of anything more sane then this.
                             // e.g. <!-- empty --> would simply produce a textarea containing that...
                             // also <![CDATA[]]> produces a textarea containing that...
                             //
                             // HTML is broken.
-                            
+
                             buffer.append(" ");
                         }
                     } else {
@@ -96,7 +96,7 @@ public class StringHandler extends AbstractTypeHandler {
                 } else { // not 'field' perhaps it's 'string'.
                     buffer.append("<input type=\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
-                    buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");                   
+                    buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
                     String opt = tag.getOptions();
                     if (opt != null && opt.indexOf("noautocomplete") > -1) {
                         buffer.append("autocomplete=\"off\" ");

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.38 2006-01-19 12:20:56 andre Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.39 2006-02-09 13:53:00 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -46,7 +46,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public AbstractTypeHandler(FieldInfoTag tag) {
         super();
         this.tag = tag;
-        
+
     }
     public void init() {
         eh = null;
@@ -113,7 +113,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     };
             }
         }
-        
+
         return null;
     }
 
@@ -153,7 +153,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     }
 
     protected Object getFieldValue(String fieldName) throws JspTagException {
-        return  tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+        Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+        if ("".equals(found)) found = null;
+        return found;
     }
     protected Object cast(Object value, Node node, Field field) {
         return field.getDataType().cast(value, node, field);
@@ -161,7 +163,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         String fieldName = field.getName();
         Object value = getFieldValue(fieldName);
-        if (value == null) {            
+        if (value == null) {
             if (node != null) {
                 value = node.getValue(fieldName);
             } else if (useDefault) {
@@ -173,7 +175,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return value;
     }
 
-    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException { 
+    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         eh = getEnumHandler(node, field);
         if (eh != null) {
             return eh.checkHtmlInput(node, field, errors);
@@ -183,6 +185,10 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         DataType dt = field.getDataType();
         Collection col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
+            // do actually set the field, because some need cross-field checking
+            if (fieldValue != null && node != null && ! fieldValue.equals(node.getValue(fieldName))) {
+                node.setValue(fieldName,  fieldValue);
+            }
             return "";
         } else {
             FormTag form =  (FormTag) tag.findParentTag(FormTag.class, null, false);
@@ -308,7 +314,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (id == null) id = "";
         return id + "_" + s;
     }
-    
+
     /**
      * Puts a prefix 'mm_' before an id in form fields. To be used in ccs etc..
      *
@@ -320,7 +326,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         id = (id == null) ? "" : id + "_";
         return "mm_" + id + s;
     }
-    
+
 
 
 }
