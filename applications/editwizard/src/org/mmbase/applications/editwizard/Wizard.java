@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.141 2005-12-07 10:33:08 pierre Exp $
+ * @version $Id: Wizard.java,v 1.142 2006-02-09 17:21:51 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -2607,12 +2607,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // since wizards only understand formats 'date', 'time', 'duartion' and 'datetime',
         // 'ftype' values of new date guitypes (such as new datatypes) need to be converted to
         // datetime
-        if ("date".equals(dttype) || "time".equals(dttype)) {
-            ftype = dttype;
-            dttype = "datetime";
-        } else if ("datetime".equals(dttype) &&
-                   (!"date".equals(ftype) && !"time".equals(ftype) && !"duration".equals(ftype))) {
-            ftype = "datetime";
+        if (!"data".equals(ftype)) {
+            if ("date".equals(dttype) || "time".equals(dttype)) {
+                ftype = dttype;
+                dttype = "datetime";
+            } else if ("datetime".equals(dttype) &&
+                       (!"date".equals(ftype) && !"time".equals(ftype) && !"duration".equals(ftype))) {
+                ftype = "datetime";
+            }
         }
 
         // in the old format, 'html' could also be assigned to dttype
