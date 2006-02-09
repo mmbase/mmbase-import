@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.49 2006-02-01 11:12:00 michiel Exp $
+ * @version $Id: Lucene.java,v 1.50 2006-02-09 09:49:40 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -373,22 +373,22 @@ public class Lucene extends Module implements MMBaseObserver {
         String path = getInitParameter("indexpath");
         if (path != null) {
             indexPath = path;
-            log.service("found module parameter for lucine index path : " + indexPath);
-        }else {
+            log.service("found module parameter for lucene index path : " + indexPath);
+        } else {
             //try to get the index path from the strorage configuration
-            try{
+            try {
                 DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
                 indexPath = dsmf.getBinaryFileBasePath();
                 if(indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
-            }catch(Exception e){}
+            } catch(Exception e){}
         }
 
-        if(indexPath != null){
-            log.service("found storage configuration for lucine index path : " + indexPath);
-        }else{
+        if(indexPath != null) {
+            log.service("found storage configuration for lucene index path : " + indexPath);
+        } else {
             // expand the default path (which is relative to the web-application)
             indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
-            log.service("fall back to default for lucine index path : " + indexPath);
+            log.service("fall back to default for lucene index path : " + indexPath);
         }
 
 
