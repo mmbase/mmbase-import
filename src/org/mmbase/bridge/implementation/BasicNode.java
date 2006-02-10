@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.195 2006-01-30 15:52:06 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.196 2006-02-10 17:59:07 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -75,10 +75,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      */
     private String account = null;
 
-    /**
-     * Determines whether this node was created for insert.
-     */
-    private boolean isNew = false;
 
 
     BasicNode(BasicCloud cloud) {
@@ -124,7 +120,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         setNode(node);
         setNodeManager(node);
         temporaryNodeId = id;
-        isNew = true;
         init();
         edit(ACTION_CREATE);
     }
@@ -217,7 +212,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @return is a new node
      */
     public boolean isNew() {
-        return isNew;
+        return getNode().isNew();
     }
 
     public boolean isChanged(String fieldName) {
@@ -473,25 +468,27 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
     public void commit() {
-        if (isNew) {
+        if (isNew()) {
             cloud.verify(Operation.CREATE, BasicCloudContext.mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
         edit(ACTION_COMMIT);
+
+        Collection errors = validate();
+        if (errors.size() > 0) {
+            String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
+            noderef.cancel();
+            throw new IllegalArgumentException(mes);
+        }
         processCommit();
         if (log.isDebugEnabled()) {
             log.debug("committing " + noderef.getChanged());
         }
-        Collection errors = validate();
-        if (errors.size() > 0) {
-            throw new IllegalArgumentException("node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString());
-        }
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) { // sigh sigh sigh.
             MMObjectNode node = getNode();
-            if (isNew) {
+            if (isNew()) {
                 node.insert(cloud.getUser());
                 // cloud.createSecurityInfo(getNumber());
-                isNew = false;
             } else {
                 node.commit(cloud.getUser());
                 //cloud.updateSecurityInfo(getNumber());
@@ -511,12 +508,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         } else {
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
-            if (isNew) {
-                isNew = false;
+            if (isNew()) {
                 invalidateNode();
             } else {
-                // update the node, reset fields etc...
-                setNode(BasicCloudContext.mmb.getTypeDef().getNode(noderef.getNumber()));
+                noderef.cancel();
             }
             temporaryNodeId = -1;
         }
@@ -526,7 +521,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     public void delete(boolean deleteRelations) {
         edit(ACTION_DELETE);
-        if (isNew) {
+        if (isNew()) {
             // remove from the Transaction
             // note that the node is immediately destroyed !
             // possibly older edits will fail if they refernce this node
@@ -647,12 +642,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
         NodeQuery query = Queries.createRelationNodesQuery(this, nodeManager, role, searchDir);
         NodeManager nm = query.getNodeManager();
-        // returned nodemanger should either be a realtionl
-        NodeList list = nm.getList(query);
-        if (! (list instanceof RelationList)) {
-            throw new BridgeException("Node manager " + nm + " of the query does not produce a relation list");
-        }
-        return (RelationList) list;
+        assert nm instanceof RelationManager;
+        return (RelationList) nm.getList(query);
     }
 
     public boolean hasRelations() {
@@ -786,7 +777,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (cloud instanceof Transaction) {
             String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + temporaryNodeId, "" + temporaryNodeId);
             ((BasicTransaction)cloud).add(aliasContext); // sigh
-        } else if (isNew) {
+        } else if (isNew()) {
             throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
             if (!getNode().getBuilder().createAlias(getNumber(), aliasName)) {
@@ -810,7 +801,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // so no attempt has been made to rectify this (cause its not worth all the trouble).
         // If people remove a node for which they created aliases in the same transaction, that transaction will fail.
         // Live with it.
-        if (!isNew) {
+        if (!isNew()) {
             NodeManager oalias = cloud.getNodeManager("oalias");
             NodeQuery q = oalias.createQuery();
             Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
@@ -853,15 +844,15 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public boolean mayWrite() {
-        return isNew || cloud.check(Operation.WRITE, getNode().getNumber());
+        return isNew() || cloud.check(Operation.WRITE, getNode().getNumber());
     }
 
     public boolean mayDelete() {
-        return isNew || cloud.check(Operation.DELETE, getNode().getNumber());
+        return isNew() || cloud.check(Operation.DELETE, getNode().getNumber());
     }
 
     public boolean mayChangeContext() {
-        return isNew || cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
+        return isNew() || cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
     }
 
     /**
