@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.18 2005-12-09 10:03:14 johannes Exp $
+  @version $Id: caches.xml,v 1.19 2006-02-10 11:22:00 ernst Exp $
   @author  Michiel Meeuwissen
   @author  Ernst Bunders
 
@@ -17,11 +17,11 @@
   <!--
   	Here you can add release strategies to all QueryResultCache specializations.
   	You can allso add them to individual (multilevel) caches.
-  	This part is still in developement stage. It is expected that the caches will 
-  	gradually become more economical.
+    For more information about the release strategies see the documentation
   -->
   <releaseStrategies>
     <strategy>org.mmbase.cache.BetterStrategy</strategy>
+    <strategy>org.mmbase.cache.ConstraintsMatchingStrategy</strategy>
   </releaseStrategies>
 
 
