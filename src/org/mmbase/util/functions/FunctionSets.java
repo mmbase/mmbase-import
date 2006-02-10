@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.21 2005-12-10 11:47:42 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.22 2006-02-10 14:52:17 michiel Exp $
  */
 public class FunctionSets {
 
@@ -96,7 +96,7 @@ public class FunctionSets {
         } catch (Throwable t) {
             log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
         }
-     
+
     }
 
     /**
@@ -118,15 +118,15 @@ public class FunctionSets {
      */
 
     private static void readSets(ResourceWatcher watcher) {
-        
+
         List resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
-        log.info("Using " + resources);
+        log.service("Using " + resources);
         ListIterator i = resources.listIterator();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
                 URL u = (URL) i.previous();
-                log.info("Reading " + u);
+                log.service("Reading " + u);
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource source = new InputSource(con.getInputStream());
@@ -134,7 +134,7 @@ public class FunctionSets {
 
                     for(Iterator ns = reader.getChildElements("functionsets", "functionset"); ns.hasNext(); ) {
                         Element n = (Element)ns.next();
-                        
+
                         String setName     = n.getAttribute("name");
                         if (functionSets.containsKey(setName)) {
                             log.warn("The function-set '" + setName + "' did exist already");
@@ -150,7 +150,7 @@ public class FunctionSets {
             }
         }
     }
-                
+
     /**
      * Reads a 'sub' xml (a functionset XML) referred to by functionsets.xml.
      * The read set is added to the functionset cache.
@@ -186,7 +186,7 @@ public class FunctionSets {
                 // read the return types and values
                 a = reader.getElementByPath(element, "function.return");
                	ReturnType returnType = null;
-		if (a != null) {                    
+		if (a != null) {
                     String returnTypeClassName = reader.getElementAttributeValue(a, "type");
                     if (returnTypeClassName != null) {
                         try {
@@ -197,8 +197,8 @@ public class FunctionSets {
                         }
                     }
                 }
-                
-                
+
+
                 /* obtaining field definitions for a result Node... useful ??
 
                 for (Enumeration n2 = reader.getChildElements(a, "field"); n2.hasMoreElements();) {
@@ -261,11 +261,11 @@ public class FunctionSets {
         if (!fullyQualified) {
             if (className.equals("int")) { // needed?
                 return int.class;
-            } else if (className.equals("NodeList")) { 
+            } else if (className.equals("NodeList")) {
                 return org.mmbase.bridge.NodeList.class;
-            } else if (className.equals("Node")) { 
+            } else if (className.equals("Node")) {
                 return org.mmbase.bridge.Node.class;
-            } 
+            }
             fullClassName = "java.lang." + fullClassName;
         }
         try {
