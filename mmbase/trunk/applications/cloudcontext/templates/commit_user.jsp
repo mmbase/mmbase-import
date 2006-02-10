@@ -6,23 +6,34 @@
 <mm:import externid="user" required="true" />
 <mm:cloud loginpage="login.jsp" rank="$rank">
 
-<%  
-  try {
-%> 
 <mm:compare referid="user" value="new">
   <mm:remove referid="user" />
   <mm:import id="wasnew" />  
   <mm:createnode id="user" type="mmbaseusers" />
 </mm:compare>
 
-<mm:node id="user" referid="user">
 <mm:import id="current">users</mm:import>
 <%@include file="navigate.div.jsp" %>
 <%@include file="you.div.jsp" %>
-<mm:context id="blabla">
-  <mm:fieldlist type="edit" fields="owner">
-    <mm:fieldinfo type="useinput" />
-  </mm:fieldlist>
+  <mm:form>
+    <mm:node referid="user">
+      <mm:fieldlist type="edit" fields="owner">
+        <mm:fieldinfo type="errors">
+          <mm:isnotempty>
+            <mm:fieldinfo type="guiname" />: <mm:write escape="none" />
+        </mm:isnotempty>
+        </mm:fieldinfo>
+      </mm:fieldlist>
+      <mm:valid>
+        <mm:import id="valid" />
+      </mm:valid>
+    </mm:node>
+    <mm:commit />
+  </mm:form>
+
+  <mm:node id="user" referid="user">
+
+    <mm:context>
   <mm:cloudinfo type="user" write="false" id="clouduser" />
   <mm:field name="username">
     <mm:compare referid2="clouduser" inverse="true">
@@ -59,25 +70,17 @@
   </mm:field>
   
   <%@include file="commitGroupOrUserRights.jsp" %>
-</mm:context>
+    </mm:context>
 
+<mm:present referid="valid">
+  <h1><mm:function name="gui" /> (<%=getPrompt(m, "commited")%>)</h1>
+</mm:present>
+<mm:notpresent referid="valid">
+  <h1><mm:function name="gui" /> (<%=getPrompt(m, "notvalid")%>)</h1>
+</mm:notpresent>
 
-<h1><mm:function name="gui" /> (<%=getPrompt(m, "commited")%>)</h1>
 <%@include file="edit_user.form.jsp" %>
 </mm:node>
-
-
-<% } catch (org.mmbase.storage.StorageException se) { %>
-<p>
-  <%=getPrompt(m, "commitusererror")%>
-</p>
-<p>
-   Storage error <%= se.getMessage() %>.
-</p>
-<p>
-  <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_users.jsp</mm:param></mm:url>"><%=getPrompt(m, "back")%></a>
-</p>
-<% } %>
 
 </mm:cloud>
 </mm:content>

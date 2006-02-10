@@ -7,7 +7,7 @@
 
 <h1><%=getPrompt(m,"create_user")%></h1>
 
- <%@include file="you.div.jsp" %>
+<%@include file="you.div.jsp" %>
 
 <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_user.jsp</mm:param></mm:url>" method="post">
  <table>
