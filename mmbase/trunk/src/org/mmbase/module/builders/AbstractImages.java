@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.43 2006-01-27 20:00:40 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.44 2006-02-10 15:18:14 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -174,19 +174,20 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * Whether this builders has width and height fields
      */
     protected boolean storesDimension() {
-        return hasField(FIELD_WIDTH) && hasField(FIELD_HEIGHT);
+        return hasField(FIELD_WIDTH) && hasField(FIELD_HEIGHT) &&
+            ! getField(FIELD_WIDTH).isVirtual() && ! getField(FIELD_HEIGHT).isVirtual();
     }
     /**
      * Whether this builders has a filesize field.
      */
     protected boolean storesFileSize() {
-        return hasField(FIELD_FILESIZE);
+        return hasField(FIELD_FILESIZE) && ! getField(FIELD_FILESIZE).isVirtual();
     }
     /**
      * Whether this builders has a filesize field.
      */
     protected boolean storesImageType() {
-        return hasField(FIELD_ITYPE);
+        return hasField(FIELD_ITYPE) && ! getField(FIELD_ITYPE).isVirtual();
     }
 
 
@@ -223,7 +224,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             log.warn("Requested dimension on image object without height / width fields, this may be heavy on resources!");
         }
 
-        return dim;        
+        return dim;
     }
 
 
@@ -259,12 +260,12 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     protected String getImageFormat(MMObjectNode node) {
         String itype = null;
         if (storesImageType()) {
-            itype = node.getStringValue(FIELD_ITYPE); 
+            itype = node.getStringValue(FIELD_ITYPE);
             int slashPos = itype.indexOf("/");
             if (slashPos > -1) {
                 MagicFile magicFile = MagicFile.getInstance();
                 String fixedIType = magicFile.mimeTypeToExtension(itype);
-                if ("".equals(fixedIType)) {                    
+                if ("".equals(fixedIType)) {
                     fixedIType = itype.substring(slashPos + 1);
                     log.warn("Could not find extension for mimetype " + itype  + ", guessing " + fixedIType);
                 }
@@ -290,7 +291,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                     if (mimeType.startsWith("image/")) {
                         itype = mimeType.substring(6);
                         log.debug("set itype to " + itype);
-                    } else {                        
+                    } else {
                         log.warn("Mimetype " + mimeType + " is not an image type");
                         int pos = mimeType.indexOf('/');
                         itype = mimeType.substring(pos + 1);
@@ -326,11 +327,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         }
         if (storesImageType()) {
             getImageFormat(node);
-        }        
+        }
     }
 
 
-    
+
     /**
      * Every image of course has a format and a mimetype. Two extra functions to get them.
      *
