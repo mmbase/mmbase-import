@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.20 2006-02-07 18:13:14 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.21 2006-02-10 17:58:07 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -147,6 +147,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             throw new BridgeException(e.getMessage(), e);
         }
     }
+
+    void delete(String currentObjectContext, MMObjectNode node) {
+        delete(currentObjectContext);
+    }
     /*
      * Transaction-notification: remove an existing node in a transaction.
      * @param currentObjectContext the context of the object to remove
@@ -184,6 +188,13 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         if ((transactionContext!=null) && !(parentCloud instanceof Transaction)) {
             cancel();
         }
+    }
+
+    public boolean isCanceled() {
+        return canceled;
+    }
+    public boolean isCommitted() {
+        return committed;
     }
 }
 
