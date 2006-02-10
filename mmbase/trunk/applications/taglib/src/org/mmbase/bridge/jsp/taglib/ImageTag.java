@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.68 2006-01-31 14:34:11 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.69 2006-02-10 18:02:40 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -206,8 +206,15 @@ public class ImageTag extends FieldTag {
         Dimension dim = getDimension(node, templateStr);
 
         node = getServletNode(node, templateStr);
-
-        String servletArgument = getServletArgument(node, templateStr);
+        
+        String servletArgument;
+        if (node == null) {            
+            node = getNode();
+            log.warn("Found null from " + node + " with '" + templateStr + "'");
+            servletArgument = node.getStringValue("number");
+        } else {
+            servletArgument = getServletArgument(node, templateStr);
+        }
 
         String servletPath = getServletPath(node, servletArgument);
         String outputValue = getOutputValue(getMode(), node, servletPath, dim);
