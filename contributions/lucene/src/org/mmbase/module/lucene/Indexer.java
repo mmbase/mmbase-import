@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.20 2006-02-01 15:40:57 michiel Exp $
+ * @version $Id: Indexer.java,v 1.21 2006-02-10 15:24:29 michiel Exp $
  **/
 public class Indexer {
 
@@ -60,15 +60,26 @@ public class Indexer {
         this.path =  path + java.io.File.separator + index;
         if (! readOnly) {
             try {
-                if (IndexReader.isLocked(this.path)) {
-                    log.info("The directory " + this.path + " is locked! Trying to unlock.");
-                    Directory dir = FSDirectory.getDirectory(this.path, false);
-                    IndexReader.unlock(dir);
-                    log.service("Unlocked lucene index directory " + dir);
-
+                File d = new File(this.path);
+                if (d.exists()) {
+                    if (d.isDirectory()) {
+                        if (IndexReader.isLocked(this.path)) {
+                            log.info("The directory " + this.path + " is locked! Trying to unlock.");
+                            Directory dir = FSDirectory.getDirectory(this.path, false);
+                            IndexReader.unlock(dir);
+                            log.service("Unlocked lucene index directory " + dir);
+                        }
+                    } else {
+                        log.warn("" + this.path + " is not a directory !");
+                    }
+                } else {
+                    log.info("The directory " + this.path + " does not exist!");
+                    d.mkdirs();
                 }
             } catch (java.io.IOException ioe) {
                 log.warn(ioe.getMessage(), ioe);
+            } catch (SecurityException  se) {
+                log.warn(se.getMessage(), se);
             }
         }
         this.queries = queries;
