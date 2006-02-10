@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.74 2005-12-01 12:51:00 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.75 2006-02-10 18:05:44 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -82,7 +82,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
-        extraParameters = new ArrayList();        
+        extraParameters = new ArrayList();
         helper.useEscaper(false);
         return EVAL_BODY_BUFFERED;
     }
@@ -121,14 +121,14 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     /**
      * Whether URL must be generatored relatively. This default to false, and can be configured with
      * the servlet context init parameter 'mmbase.taglib.url.makerelative'. It can be useful to be
-     * sure that url's are relative, if e.g. the context path is taken away in an URL-rewrite (e.g. by proxy). 
+     * sure that url's are relative, if e.g. the context path is taken away in an URL-rewrite (e.g. by proxy).
      * This might give problems with redirects, but if you happen to solve that too, or don't do that...
      *
      * @since MMBase-1.7
      */
     protected boolean doMakeRelative() {
-        if (makeRelative == null) {            
-            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");            
+        if (makeRelative == null) {
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
         return makeRelative.booleanValue();
@@ -157,14 +157,14 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             String page = getPage();
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
             if (page.equals("")) { // means _this_ page
-                 
+
                 String requestURI = req.getRequestURI();
                 if (requestURI.endsWith("/")) {
                     page = ".";
                 } else {
                     page = new File(requestURI).getName();
                 }
-                
+
             }
             String abs = absolute.getString(this);
             if (abs.equals("")) abs = "false";
@@ -187,14 +187,14 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                         uri = new URI("servlet", req.getServletPath() + "/../" + page, null);
                     } else {
                         uri = new URI("servlet", page, null);
-                    }                    
+                    }
                     uri = uri.normalize(); // resolves .. and so one
                     show.append(uri.getSchemeSpecificPart());
                 } catch (URISyntaxException  use) {
                     throw new TaglibException(use.getMessage(), use);
                 }
             } else {
-                if (doMakeRelative()) { 
+                if (doMakeRelative()) {
                     show.append(page);
                     page = "";
                     makeRelative(show);
@@ -205,9 +205,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 }
                 show.append(page);
             }
-            
+
         }
-            
+
 
         // url is now complete up to query string, which we are to construct now
 
