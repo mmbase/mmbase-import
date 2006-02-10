@@ -18,16 +18,12 @@ import org.mmbase.bridge.jsp.taglib.Writer;
 import org.mmbase.util.Casting;
 
 
-
-
-
-
 /**
  * True write version of mm:url (named mm:link). Meaning that in it's body ${_} is available (and that the body is evaluated).
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.8 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: UrlWriterTag.java,v 1.9 2006-02-10 18:05:44 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -43,11 +39,10 @@ public class UrlWriterTag extends UrlTag  implements Writer {
                                     // this means that it is written to page by ${_} and that consequently there _must_ be a body.
                                     // this is needed when body is not buffered.
                                     haveBody();
-                                    return string;  
+                                    return string;
                                 } catch (Throwable e){
                                     return e.toString();
                                 }
-                                
                             }
                             public int compareTo(Object o) {
                                 return toString().compareTo(Casting.toString(o));
@@ -60,11 +55,11 @@ public class UrlWriterTag extends UrlTag  implements Writer {
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), getUrl(false, false));  // write it as cleanly as possible in the context.
-        } 
+        }
         helper.doEndTag();
         extraParameters = null;
         return Tag.EVAL_PAGE;
-        
+
     }
 
     public int doAfterBody() throws JspException {
