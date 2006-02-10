@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.67 2006-01-06 15:00:30 michiel Exp $
+ * @version $Id: Node.java,v 1.68 2006-02-10 17:56:37 michiel Exp $
  */
 public interface Node extends Comparable {
 
@@ -502,6 +502,8 @@ public interface Node extends Comparable {
      * @since MMBase-1.8
      */
     public boolean isChanged(String fieldName);
+
+    public Set getChanged();
 
     /**
      * Whether  field values were changed since the last commit.
