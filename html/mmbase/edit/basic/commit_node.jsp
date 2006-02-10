@@ -14,25 +14,25 @@
 
 <!-- first, check validity -->
 <mm:notpresent referid="delete">
-  <mm:form>  
-    <mm:present referid="node_number">    
-      <mm:node referid="node_number">
+  <mm:notpresent referid="cancel">
+    <mm:form>  
+      <mm:present referid="node_number">    
+        <mm:node referid="node_number">
+          <mm:context>
+            <mm:fieldlist id="my_form" type="edit">
+              <mm:fieldinfo type="check" />
+            </mm:fieldlist>
+          </mm:context>
+        </mm:node>
+      </mm:present>
+      <mm:notpresent referid="node_number">
         <mm:context>
-          <mm:fieldlist id="my_form" type="edit">
+          <mm:fieldlist nodetype="$node_type" id="my_form" type="edit">
             <mm:fieldinfo type="check" />
           </mm:fieldlist>
         </mm:context>
-      </mm:node>
-    </mm:present>
-    <mm:notpresent referid="node_number">
-      <mm:context>
-        <mm:fieldlist nodetype="$node_type" id="my_form" type="edit">
-          <mm:fieldinfo type="check" />
-        </mm:fieldlist>
-      </mm:context>
-    </mm:notpresent>
-    <mm:valid inverse="true">
-      <mm:notpresent referid="cancel">
+      </mm:notpresent>
+      <mm:valid inverse="true">
         <mm:import id="invalid" />
         <mm:present referid="node_number">
           <mm:include  page="change_node.jsp" />
@@ -40,9 +40,9 @@
         <mm:notpresent referid="node_number">
           <mm:include  page="create_node.jsp" />
         </mm:notpresent>
-      </mm:notpresent>
-    </mm:valid>
-  </mm:form>
+      </mm:valid>
+    </mm:form>
+  </mm:notpresent>
 </mm:notpresent>
 <mm:notpresent referid="invalid">
 <?xml version="1.0" encoding="UTF-8"?>
