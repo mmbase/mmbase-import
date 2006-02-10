@@ -44,7 +44,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.181 2006-01-27 17:16:25 michiel Exp $
+ * @version $Id: MMBase.java,v 1.182 2006-02-10 16:04:32 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1057,7 +1057,7 @@ public class MMBase extends ProcessorModule {
             if (parser == null) return null;
             String status = parser.getStatus();
             if (status.equals("active")) {
-                log.info("Starting builder: " + builderName);
+                log.service("Starting builder: " + builderName);
                 Class newclass;
                 try {
                     String classname = parser.getClassName();
