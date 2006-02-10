@@ -15,6 +15,7 @@ import org.mmbase.datatypes.*;
 import org.mmbase.core.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
 import java.util.Collection;
@@ -310,7 +311,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     public Object getStorageIdentifier() throws StorageException {
         // determine the storage identifier from the name
         if (storageIdentifier == null) {
-            storageIdentifier = parent.getMMBase().getStorageManagerFactory().getStorageIdentifier(this);
+            storageIdentifier = MMBase.getMMBase().getStorageManagerFactory().getStorageIdentifier(this);
         }
         return storageIdentifier;
     }
