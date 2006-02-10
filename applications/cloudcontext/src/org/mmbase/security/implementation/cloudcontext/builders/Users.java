@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.44 2006-01-17 21:28:56 michiel Exp $
+ * @version $Id: Users.java,v 1.45 2006-02-10 15:01:28 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -217,8 +217,8 @@ public class Users extends MMObjectBuilder {
             return null;
         }
         String encodedPassword = encode ? encode(password) : password;
-
-        if (encodedPassword.equals(user.getStringValue(FIELD_PASSWORD))) {
+        String dbPassword = user.getStringValue(FIELD_PASSWORD);
+        if (encodedPassword.equals(dbPassword)) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
             }
@@ -252,7 +252,7 @@ public class Users extends MMObjectBuilder {
             return user;
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("username: '" + userName + "' found in node #" + user.getNumber() + " --> PASSWORDS NOT EQUAL");
+                log.debug("username: '" + userName + "' found in node #" + user.getNumber() + " --> PASSWORDS NOT EQUAL (" + encodedPassword + " != " + dbPassword + ")");
             }
             return null;
         }
@@ -378,7 +378,11 @@ public class Users extends MMObjectBuilder {
      * @return The string representation the username of the User node.
      */
     public String getUserName(MMObjectNode node) {
-         return node.getStringValue(FIELD_USERNAME);
+        if (node.getBuilder().hasField(FIELD_USERNAME)) {
+            return node.getStringValue(FIELD_USERNAME);
+        } else {
+            return null;
+        }
     }
 
     /**
