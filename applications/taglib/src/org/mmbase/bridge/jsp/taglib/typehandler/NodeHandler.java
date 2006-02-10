@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.34 2006-02-03 16:02:49 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.35 2006-02-10 10:51:04 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -134,11 +134,11 @@ public class NodeHandler extends AbstractTypeHandler {
                 buffer.append("  <option ");
                 if(gui.getValue().equals(value)) {
                     // this is the selected one!
-                    buffer.append("selected=\"selected\"");
+                    buffer.append("selected=\"selected\" ");
                 } else if (search) {
                     String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
                     if (gui.getValue().equals(searchi)) {
-                        buffer.append(" selected=\"selected\"");
+                        buffer.append(" selected=\"selected\" ");
                     }
                 }
                 buffer.append("value=\"" + gui.getValue() + "\">");
