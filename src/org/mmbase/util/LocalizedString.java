@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.20 2006-01-17 12:23:52 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.21 2006-02-10 14:13:48 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -280,6 +280,27 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
             log.error("Cannot clone this LocalizedString");
             throw new RuntimeException("Cannot clone this LocalizedString", cnse);
         }
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof LocalizedString) {
+            LocalizedString os = (LocalizedString) o;
+            return
+                key.equals(os.key) &&
+                (values == null ? os.values == null : values.equals(os.values)) &&
+                (bundle == null ? os.bundle == null : bundle.equals(os.bundle))
+                ;
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, key);
+        result = HashCodeUtil.hashCode(result, values);
+        result = HashCodeUtil.hashCode(result, bundle);
+        return result;
     }
 
 }
