@@ -22,12 +22,12 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * This class contains various utility methods for manipulating and creating query objecs.
+ * This class contains various utility methods for manipulating and creating query objects.
  * Most essential methods are available on the Query object itself, but too specific or legacy-ish
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.70 2006-02-07 14:50:03 michiel Exp $
+ * @version $Id: Queries.java,v 1.71 2006-02-10 18:00:47 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */

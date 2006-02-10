@@ -17,10 +17,10 @@ import java.util.*;
 
 /**
  * This implementation of the Field Value interface is used by getFunctionValue of Node. This
- * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
+ * represents the result of a `function' on a node and it (therefore) is an unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractFieldValue.java,v 1.1 2005-12-27 22:10:56 michiel Exp $
+ * @version $Id: AbstractFieldValue.java,v 1.2 2006-02-10 18:00:47 michiel Exp $
  * @since   MMBase-1.8
  */
 public abstract class AbstractFieldValue implements FieldValue {
