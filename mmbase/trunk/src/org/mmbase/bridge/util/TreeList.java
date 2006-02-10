@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.18 2005-11-11 15:16:35 pierre Exp $
+ * @version $Id: TreeList.java,v 1.19 2006-02-10 18:00:47 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -206,15 +206,19 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
     // javadoc inherited
     public ListIterator listIterator(int ind) {
-        return new TreeItr(ind);
+        return treeIterator(ind);
     }
 
     public NodeIterator nodeIterator() {
-        return (NodeIterator)listIterator(0);
+        return treeIterator(0);
     }
 
     public TreeIterator treeIterator() {
-        return (TreeIterator)listIterator(0);
+        return treeIterator(0);
+    }
+
+    protected TreeIterator treeIterator(int ind) {
+        return new TreeItr(ind);
     }
 
     // javadoc inherited

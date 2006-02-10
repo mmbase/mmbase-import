@@ -25,10 +25,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A Node based on a Map.
+ * A bridge Node based on a Map. It can come in handy sometimes to be able to present any Map as an
+ * MMBase Node. E.g. because then it can be accessed in MMBase taglib using mm:field tags.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.4 2005-12-29 19:08:01 michiel Exp $
+ * @version $Id: MapNode.java,v 1.5 2006-02-10 18:00:47 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -45,14 +46,27 @@ public class MapNode extends AbstractNode implements Node {
     final protected Map sizes = new HashMap();
     final protected Map originalValues = new HashMap();
 
+    /**
+     * This constructor explicitely specifies the node manager of the Node. This is used for {#getNodeManager} and {#getCloud}.
+     */
     public MapNode(Map v, NodeManager nm) {
         values = v;
         originalValues.putAll(values);
         nodeManager = nm;
     }
+    /**
+     * A node with a 'virtual' nodemanager will be contructed. This virtual node manager will have
+     * fields which are guessed based on the keys and values of the given map.
+     */
     public MapNode(Map v, Cloud cloud) {
         this(v, createVirtualNodeManager(cloud, v));
+
     }
+    /**
+     * This allows you to create a Node object even without having a Cloud object. 'Class' security
+     * is used to acquire a Cloud, because every bridge node must be associated with some Cloud
+     * object.
+     */
     public MapNode(Map v) {
         this(v, ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null));
     }
@@ -60,22 +74,22 @@ public class MapNode extends AbstractNode implements Node {
     protected static NodeManager createVirtualNodeManager(Cloud cloud, final Map map) {
         return new AbstractNodeManager(cloud) {
             Map fieldTypes = new HashMap();
-            {                
+            {
                 Iterator i = map.entrySet().iterator();
                 while (i.hasNext()) {
                     Map.Entry entry = (Map.Entry) i.next();
                     String fieldName = (String) entry.getKey();
                     Object value = entry.getValue();
-                    CoreField fd = Fields.createField(fieldName, Fields.classToType(value == null ? Object.class : value.getClass()), 
+                    CoreField fd = Fields.createField(fieldName, Fields.classToType(value == null ? Object.class : value.getClass()),
                                                       Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
                     Field ft = new BasicField(fd, this);
                     fieldTypes.put(fieldName, ft);
-                }                
-            }   
+                }
+            }
             protected Map getFieldTypes() {
                 return fieldTypes;
             }
-            
+
         };
     }
 

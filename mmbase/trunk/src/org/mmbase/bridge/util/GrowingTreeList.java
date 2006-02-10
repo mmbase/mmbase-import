@@ -17,12 +17,12 @@ import org.mmbase.storage.search.*;
 
 /**
  *
- * This version of {@link TreeList} is automaticly growing with the same 'branch' every when that is possible. For that
+ * This version of {@link TreeList} is automaticly growing with the same 'branch' every time when that is possible. For that
  * it needs a kind of template query for every branch, which is defined by the constructor.
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.13 2005-12-10 14:30:09 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.14 2006-02-10 18:00:47 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -37,7 +37,7 @@ public  class GrowingTreeList extends TreeList {
     /**
      * @param q              The 'base' query defining the minimal depth of the tree elements. The trunk of the tree.
      * @param maxDepth       You must supply a maximal depth of the nodes, because MMBase is basicly a network rather then a tree, so
-     *                        tree representations could be infinitely deep.
+     *                       tree representations could be infinitely deep.
      * @param nodeManager    Destination Nodemanager in the tree
      * @param role           Role of the relations in the tree
      * @param searchDir      Direction of the relations in the tree
