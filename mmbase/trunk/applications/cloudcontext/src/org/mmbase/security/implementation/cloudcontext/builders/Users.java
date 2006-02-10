@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.45 2006-02-10 15:01:28 michiel Exp $
+ * @version $Id: Users.java,v 1.46 2006-02-10 18:30:40 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -100,7 +100,7 @@ public class Users extends MMObjectBuilder {
         } else {
             encoder = new Encode(s);
         }
-        log.info("Using " + encoder.getEncoding() + " as our encoding for password");
+        log.service("Using " + encoder.getEncoding() + " as our encoding for password");
 
         return super.init();
     }
