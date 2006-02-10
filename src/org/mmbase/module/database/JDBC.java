@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.45 2005-12-23 14:56:39 michiel Exp $
+ * @version $Id: JDBC.java,v 1.46 2006-02-10 16:03:00 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -111,7 +111,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             // to be registered; should have no effect on other drivers
             Class.forName(jdbcDriver).newInstance();
 
-            log.info("Loaded JDBC driver: " + jdbcDriver);
+            log.service("Loaded JDBC driver: " + jdbcDriver);
 
         } catch (Exception e) {
             log.fatal("JDBC driver not found: " + jdbcDriver + "\n" + Logging.stackTrace(e));
@@ -176,7 +176,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         if (tmp != null) {
             try {
                 maxLifeTime = (new Float(tmp)).longValue() * 1000;
-                log.info("Set jdbc max life time to " + maxLifeTime + " ms");
+                log.service("Set jdbc max life time to " + maxLifeTime + " ms");
             } catch (NumberFormatException e) {
                 log.warn("Specified max life time is not a invalid float :" + e + "(using default " + (maxLifeTime / 1000) + " s)");
             }
@@ -420,8 +420,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Give some info about the jdbc connection
      * @return a <code>String</code> whith some information about the connection
      */
-     public String toString() {
-            if (driver == null) return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultname + "'";
-            return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultname + "' driver: '" + driver.getClass().getName() + "'";
+    public String toString() {
+        return "host: '" + jdbcHost + "' port: '"  + jdbcPort + "' database: '" + jdbcDatabase + "' user: '" + defaultname + "'" + (driver != null ? " driver: " + driver.getClass().getName() + "'" : "") + " max life time: " + maxLifeTime + " ms  probe time: " + probeTime + " ms";
      }
 }
