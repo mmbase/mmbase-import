@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.17 2005-11-05 19:06:21 nklasens Exp $
+ * @version $Id: DataTypes.java,v 1.18 2006-02-10 14:37:01 michiel Exp $
  */
 
 public class DataTypes {
@@ -277,6 +277,10 @@ public class DataTypes {
             dataTypeCollector.addDataType(dataType);
         }
         return dataType;
+    }
+
+    public static  DataTypeCollector getSystemCollector() {
+        return dataTypeCollector;
     }
 
 }
