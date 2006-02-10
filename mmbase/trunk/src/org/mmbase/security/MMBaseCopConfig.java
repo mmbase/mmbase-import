@@ -21,7 +21,7 @@ import org.mmbase.util.xml.DocumentReader;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.27 2006-01-17 21:25:28 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.28 2006-02-10 16:12:43 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -48,16 +48,16 @@ public class MMBaseCopConfig {
     private MMBaseCop cop;
 
     /** the class that watches if we have to reload...*/
-    private class SecurityConfigWatcher extends ResourceWatcher  { 
+    private class SecurityConfigWatcher extends ResourceWatcher  {
         private MMBaseCop cop;
-        
+
         public SecurityConfigWatcher(MMBaseCop cop) {
-            super(securityLoader); 
+            super(securityLoader);
             if(cop == null) throw new RuntimeException("MMBase cop was null");
             // log.debug("Starting the file watcher");
             this.cop = cop;
         }
-        
+
         public void onChange(String s) {
             try {
                 cop.reload();
@@ -79,21 +79,21 @@ public class MMBaseCopConfig {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0, DTD_SECURITY_1_0, MMBaseCopConfig.class);
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0_FAULT, DTD_SECURITY_1_0, MMBaseCopConfig.class);
     }
-    
+
     /**
      * The constructor, will load the classes for authorization and authentication
      * with their config files, as specied in the xml from configUrl
      * @exception  java.io.IOException When reading the file failed
      * @exception   .. When XML not validates.
      * @exception  org.mmbase.security.SecurityException When the class could not  be loaded
-     *	   
+     *
      *  @param mmbaseCop  The MMBaseCop for which this is a configurator
      */
     MMBaseCopConfig(MMBaseCop mmbaseCop) throws java.io.IOException, NoSuchMethodException, SecurityException {
 
         java.net.URL config = securityLoader.getResource("security.xml");
         log.info("using: '" + config + "' as configuration file for security");
-        
+
         watcher = new SecurityConfigWatcher(mmbaseCop);
         watcher.add("security.xml");
         watcher.start();
@@ -126,7 +126,7 @@ public class MMBaseCopConfig {
 
 
         if(active) {
-            
+
             // first instantiate authentication and authorization, during load they can check each others class then.
 
             org.w3c.dom.Element entry = reader.getElementByPath("security.authentication");
@@ -153,7 +153,7 @@ public class MMBaseCopConfig {
 
             if (log.isDebugEnabled()) {
                 log.debug("Loading class:" + authentication.getClass().getName() + " with config:" + authenticationUrl + " for Authentication");
-            }           
+            }
             authentication.load(cop, watcher, authenticationUrl);
 
             if (log.isDebugEnabled()) {
@@ -230,7 +230,7 @@ public class MMBaseCopConfig {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
             result = (Authentication) o;
-            log.info("Setting manager of " + result + " to " + cop);
+            log.debug("Setting manager of " + result + " to " + cop);
             result.manager = cop;
         } catch(ClassNotFoundException cnfe) {
             throw new SecurityException(cnfe);
@@ -248,8 +248,8 @@ public class MMBaseCopConfig {
         try {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
-            result = (Authorization) o;            
-            log.info("Setting manager of " + result + " to " + cop);
+            result = (Authorization) o;
+            log.debug("Setting manager of " + result + " to " + cop);
             result.manager = cop;
         }
         catch(java.lang.ClassNotFoundException cnfe) {
