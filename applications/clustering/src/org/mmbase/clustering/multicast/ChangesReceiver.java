@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.6 2006-01-31 21:10:21 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.7 2006-02-10 13:42:24 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -127,7 +127,7 @@ public class ChangesReceiver implements Runnable {
      * @todo determine what encoding to use on receiving packages
      */
     public void doWork() {
-        while (kicker!=null) {
+        while (kicker != null) {
             DatagramPacket dp = new DatagramPacket(new byte[dpsize], dpsize);
             try {
                 ms.receive(dp);
@@ -141,6 +141,9 @@ public class ChangesReceiver implements Runnable {
                     log.debug("RECEIVED=> " + dp.getLength() + " bytes from " + dp.getAddress());
                 }
                 nodesToSpawn.append(message);
+            } catch (java.net.SocketException se) {
+                // happens on shutdown
+                log.service(se.getMessage());
             } catch (Exception f) {
                 log.error(Logging.stackTrace(f));
             }
