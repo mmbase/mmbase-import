@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.60 2006-01-13 15:40:58 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.61 2006-02-10 14:37:01 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -285,9 +285,10 @@ public class BuilderReader extends DocumentReader {
      * If applicable, this includes the fields inherited from a parent builder.
      *
      * @return a List of all Fields as CoreField
+     * @since MMBase-1.8
      */
     public List getFields() {
-        return getFields(null, null);
+        return getFields(null, DataTypes.getSystemCollector());
     }
 
     /**
@@ -297,6 +298,7 @@ public class BuilderReader extends DocumentReader {
      * @param builder the MMObjectBuilder to which the fields will be added
      * @param collector the datatype collector used to access the datatypes available for the fields to read.
      * @return a List of all Fields as CoreField
+     * @since MMBase-1.8
      */
     public List getFields(MMObjectBuilder builder, DataTypeCollector collector) {
         List results = new ArrayList();
@@ -599,7 +601,9 @@ public class BuilderReader extends DocumentReader {
                 // 'string' is an exception, it is surrogated with the datatype 'line'.
                 if ("string".equals(guiType)) {
                     guiType = "line";
-                    log.debug("Converted deprecated guitype 'string' for field " + builder.getTableName() + "." + fieldName + " with datatype 'line'.");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Converted deprecated guitype 'string' for field " + (builder != null ? builder.getTableName() + "."  : "") + fieldName + " with datatype 'line'.");
+                    }
                 }
 
                 dataType = collector.getDataTypeInstance(guiType, baseDataType);
@@ -626,10 +630,12 @@ public class BuilderReader extends DocumentReader {
             String base = dataTypeElement.getAttribute("base");
             BasicDataType requestedBaseDataType;
             if (base.equals("")) {
-                log.debug("No base defined, using '" + baseDataType + "'");
+                if (log.isDebugEnabled()) {
+                    log.debug("No base defined, using '" + baseDataType + "'");
+                }
                 requestedBaseDataType = baseDataType;
             } else {
-                requestedBaseDataType = collector.getDataType(base, true);
+                requestedBaseDataType = collector == null ? null : collector.getDataType(base, true);
                 if (requestedBaseDataType == null) {
                     log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType);
                     requestedBaseDataType = baseDataType;
@@ -644,12 +650,12 @@ public class BuilderReader extends DocumentReader {
                     }
                 }
             }
-            // i'm not sure why it must be clone here.
+            // i'm not sure why it must be cloned here.
             dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType.clone();
         }
 
         if (dataType == null && forceInstance) {
-            dataType = (BasicDataType)baseDataType.clone();
+            dataType = (BasicDataType) baseDataType.clone();
         }
 
         return dataType;
@@ -662,9 +668,9 @@ public class BuilderReader extends DocumentReader {
      */
     private CoreField decodeFieldDef(MMObjectBuilder builder, DataTypeCollector collector, Element field) {
         // create a new CoreField we need to fill
-        Element db = getElementByPath(field,"field.db");
-        String fieldName = getElementValue(getElementByPath(db,"db.name"));
-        Element dbtype = getElementByPath(db,"db.type");
+        Element db = getElementByPath(field, "field.db");
+        String fieldName = getElementValue(getElementByPath(db, "db.name"));
+        Element dbtype = getElementByPath(db, "db.type");
         String baseType = getElementValue(dbtype);
         int type = Fields.getType(baseType);
         int listItemType = Field.TYPE_UNKNOWN;
@@ -673,7 +679,7 @@ public class BuilderReader extends DocumentReader {
                 listItemType = Fields.getType(baseType.substring(5, baseType.length() - 1));
             }
         }
-        int state = Fields.getState(getElementAttributeValue(dbtype,"state"));
+        int state = Fields.getState(getElementAttributeValue(dbtype, "state"));
 
         DataType dataType = decodeDataType(builder, collector, fieldName, field, type, listItemType, true);
 
@@ -884,8 +890,10 @@ public class BuilderReader extends DocumentReader {
     public boolean equals(Object o) {
         if (o instanceof BuilderReader) {
             BuilderReader b = (BuilderReader) o;
+            List fields = getFields();
+            List otherFields = b.getFields();
             return
-                getFields().equals(b.getFields()) &&
+                fields.equals(otherFields) &&
                 getMaintainer().equals(b.getMaintainer()) &&
                 getVersion() == b.getVersion() &&
                 getExtends().equals(b.getExtends()) &&
