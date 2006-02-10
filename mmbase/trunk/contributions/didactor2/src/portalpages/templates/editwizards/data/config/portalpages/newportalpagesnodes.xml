@@ -38,12 +38,14 @@
 											<description></description>
 										</field>										
 									</item>	
+ 
 									<command name="startwizard" inline="true" wizardname="config/portalpages/portalpagesnodes" objectnumber="new" />
 									<action type="create">
 										<relation destinationtype="portalpagesnodes" role="childppnn" >
 										  <object type="portalpagesnodes"/>
 										</relation>
 									</action>																		
+                                    
 				</list>        
     </form-schema>
     
