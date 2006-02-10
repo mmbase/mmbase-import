@@ -26,7 +26,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.4 2006-01-02 14:33:56 nklasens Exp $
+ * @version $Id: Multicast.java,v 1.5 2006-02-10 15:50:00 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -97,10 +97,10 @@ public class Multicast extends ClusterManager {
             } catch (Exception e) {}
         }
 
-        log.info("multicasthost: " + multicastHost);
-        log.info("multicastport: " + multicastPort);
-        log.info("multicastTTL: " + multicastTTL);
-        log.info("datapacketsize: " + dpsize);
+        log.info("multicast host: " + multicastHost +
+                 ", port: " + multicastPort + 
+                 ", TTL: " + multicastTTL + 
+                 ", datapacketsize: " + dpsize);
         start();
     }
 
