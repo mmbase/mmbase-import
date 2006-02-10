@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.341 2006-01-25 14:58:17 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.342 2006-02-10 18:08:10 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -532,13 +532,23 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <rtexprvalue>true</rtexprvalue>
       <info>
         Whether the node must be committed after evaluation of the body. The
-        default is true.
+        default is true. 
       </info>
       <possiblevalue>
         <value>true</value>
+        <info>
+          If 'commit on close' is true for a NodeProvider, and <em>the current tag</em> (perhaps using
+          'referid') made changes to it, then on the close of the tag, the 'commit' method of the
+          Node is called. That means that if there are invalid values, an exception may occur.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>false</value>
+        <info>
+          If 'commit on close' is false for a NodeProvider, and <em>the current tag</em> (perhaps using
+          'referid') made changes to it, then on the close of the tag, the 'commit' method of the
+          Node is called. That means that if there are invalid values, an exception may occur.
+        </info>
       </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
@@ -6012,7 +6022,9 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The output text encoding.
+        The output text encoding. Don't attribute too much value too this. Normally it's better to
+        arrange this with the page-directive of JSP. Certainly this attribute cannot arrange the
+        <em>pageEncoding</em> (or the coding of the JSP source itself).
       </info>
       <examplevalue>
         <value>UTF-8</value>
@@ -7276,6 +7288,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.tree.list</type>
     <extends>queryreferrer</extends>
     <extends>contextreader</extends>
+    <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag</tagclass>
     <info>
       <p>
@@ -7504,8 +7517,7 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>form</name>
-    <extends>url</extends>
-    <extends>contextreferrer</extends>
+    <extends>transaction</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.FormTag</tagclass>
     <info>
       A form tag collects validation from mm:fieldinto type="check" and mm:fieldinfo
