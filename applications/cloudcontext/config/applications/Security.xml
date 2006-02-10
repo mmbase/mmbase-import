@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="Security" maintainer="mmbase://security.mmbase.org/" version="1" auto-deploy="true">
 	<neededbuilderlist>
     <!-- builder maintainer="mmbase://security.mmbase.org/" version="1">containsrel</builder-->
@@ -47,10 +47,10 @@
   </contextsourcelist>
 
   <description>
-      Security in MMBase, which has nested groups
+    Security in MMBase, which has nested groups
   </description>
 
   <install-notice>
-      Installation is finished.
+    Installation is finished.
   </install-notice>
 </application>
