@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.36 2005-11-04 23:21:13 michiel Exp $
+ * @version $Id: Query.java,v 1.37 2006-02-10 17:59:59 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -368,5 +368,14 @@ public interface Query extends SearchQuery, Cacheable, Cloneable {
      * @since MMBase-1.8
      */
     NodeList getList();
+
+    /**
+     * Shows the query in a human-readable SQL form. This is probably not the query which will
+     * actually be sent to the database. This method is provided because 'toString' on a Query object
+     * is pretty complete, but pretty undigestable for mere mortals too.
+     *
+     * @since MMBase-1.8
+     */
+    String toSql();
 
 }
