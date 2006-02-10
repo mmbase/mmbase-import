@@ -17,6 +17,8 @@ import org.mmbase.util.functions.Parameters;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 /**
  * A tag which is a 'NodeReferrerTag's can be the child of a
  * NodeProvider tag, which supplies a 'Node' to its child tags. For
@@ -24,11 +26,12 @@ import org.mmbase.bridge.Cloud;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.22 2005-08-18 14:40:00 michiel Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.23 2006-02-10 18:04:26 michiel Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
 
+    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class); 
     protected Attribute parentNodeId = Attribute.NULL;
     private Attribute element  = Attribute.NULL;
     /**
