@@ -16,7 +16,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.Stack;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.13 2005-11-24 09:17:25 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.14 2006-02-10 18:04:02 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -35,8 +35,8 @@ public class NodeProviderHelper implements NodeProvider {
 
     public static final String STACK_ATTRIBUTE = "org.mmbase.bridge.jsp.taglib._nodeStack";
     public static final String _NODE = "_node";
-        
-    private   Node   node;        
+
+    private   NodeChanger   node;
     private   Query  query = null;
     private   String jspvar = null;
     private   ContextReferrerTag thisTag;
@@ -52,7 +52,7 @@ public class NodeProviderHelper implements NodeProvider {
         this.thisTag     = thisTag;
     }
 
-    
+
 
     // general attributes for NodeProviders
     // id from TagSupport
@@ -61,30 +61,38 @@ public class NodeProviderHelper implements NodeProvider {
         jspvar = jv;
         if ("".equals(jspvar)) jspvar = null;
     }
+
+    /**
+     * @since MMBase-1.8
+     */
     public void setCommitonclose(String c) throws JspTagException {
         commit = thisTag.getAttribute(c);
     }
 
-        
+
     /**
     * For use by children, they can find the current 'node' belonging
     * to this tag.
     */
-    
+
     public Node getNodeVar() {
         return node;
     }
-    
+
     /**
      * Children can also directly access the node member, but the
      * prefered method is to treat this variable as much as possible
      * as private, and use this.
      */
 
-    public void setNodeVar(Node node) {        
-        this.node = node;
+    public void setNodeVar(Node node) {
+        if (node instanceof NodeChanger) {
+            this.node = (NodeChanger) node;
+        } else {
+            this.node = new NodeChanger(node);
+        }
     }
-    
+
 
     public void setGeneratingQuery(Query q) {
         query = q;
@@ -93,7 +101,7 @@ public class NodeProviderHelper implements NodeProvider {
     public Query getGeneratingQuery() throws JspTagException {
         if (query == null) {
             query = Queries.createNodeQuery(getNodeVar());
-        } 
+        }
         return query;
     }
 
@@ -112,7 +120,7 @@ public class NodeProviderHelper implements NodeProvider {
      *
      */
 
-    public void fillVars() throws JspTagException {    
+    public void fillVars() throws JspTagException {
         org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = thisTag.getContextProvider().getContextContainer();
         if (thisTag.id != Attribute.NULL) {
             cc.registerNode(getId(), node);
@@ -130,8 +138,8 @@ public class NodeProviderHelper implements NodeProvider {
         _Stack.push(node);
         pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(node, (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)));
     }
-               
-    private String getSimpleReturnValueName(String fieldName){        
+
+    private String getSimpleReturnValueName(String fieldName){
         return getSimpleReturnValueName(jspvar, fieldName);
     }
     /**
@@ -141,7 +149,7 @@ public class NodeProviderHelper implements NodeProvider {
      * @param fieldName The name of the field.
      */
     static String getSimpleReturnValueName(String prefix, String fieldName){
-        String field = fieldName.replace('.','_');
+        String field = fieldName.replace('.', '_');
         if (prefix != null && ! "".equals(prefix)) {
             field = prefix + "_" + field;
         }
@@ -157,9 +165,20 @@ public class NodeProviderHelper implements NodeProvider {
     * something without a body.
     **/
     public int doAfterBody() throws JspTagException {
-        if ((node != null) && (node.isChanged() || node.isNew()) && commit.getBoolean(thisTag, true)) {
-            node.commit();
-            log.service("Committed node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier());
+        if (node != null) {
+            if (node.isNew() || node.isChangedByThis()) {
+                // node can need committing
+                if (commit.getBoolean(thisTag, true)) {
+                    log.service("Committing node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier() + " changed fields: " + node.getChanged() + " " + node.isNew() + " " + node.isChanged() + " becaus", new Exception());
+                    node.commit();
+                } else {
+                    log.service("Not committing " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier() + " changed fields: " + node.getChanged() + " " + node.isNew() + " " + node.isChanged());
+                }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Node " + node.getNumber() + " was not changed " + thisTag.getClass() + " ");
+                }
+            }
         }
         if (_Stack != null) {
             Object pop = _Stack.pop();
@@ -172,11 +191,13 @@ public class NodeProviderHelper implements NodeProvider {
         }
         return BodyTagSupport.SKIP_BODY;
     }
-    
+
     public int doEndTag() throws JspTagException {
         // to enable gc:
         node     = null;
         checked  = false;
         return BodyTagSupport.EVAL_PAGE;
     }
+
+
 }
