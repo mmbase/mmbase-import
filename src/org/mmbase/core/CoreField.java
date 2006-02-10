@@ -201,7 +201,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
             && getDataType().isUnique()  == f.getDataType().isUnique()
             && maxLength == f.getMaxLength()
             && (parent == null ? f.getParent() == null : parent.equals(f.getParent()))
-            && (storageIdentifier == null ? f.getStorageIdentifier() == null : storageIdentifier.equals(f.getStorageIdentifier()))
+            && getStorageIdentifier().equals(f.getStorageIdentifier())
             && getStorageType() == f.getStorageType() // implies equal MMBase types
             && storagePosition == f.getStoragePosition();
     }
