@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.178 2006-02-07 23:50:03 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.179 2006-02-11 08:41:09 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -272,7 +272,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *
      * @since MMBase-1.8
      */
-    public void rollBack() {
+    public void cancel() {
         values.putAll(oldValues);
         oldValues.clear();
         changed.clear();
