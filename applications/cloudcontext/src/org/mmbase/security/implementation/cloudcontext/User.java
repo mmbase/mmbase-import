@@ -16,6 +16,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBaseObserver;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
+import org.mmbase.util.HashCodeUtil;
 
 /**
  * Implementation of UserContext (the security presentation of a User).
@@ -24,7 +25,7 @@ import org.mmbase.security.SecurityException;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.19 2006-02-10 18:30:29 michiel Exp $
+ * @version $Id: User.java,v 1.20 2006-02-13 18:17:32 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements MMBaseObserver {
@@ -142,6 +143,25 @@ public class User extends BasicUser implements MMBaseObserver {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
         out.writeInt(node == null ? -1 : node.getNumber());
         out.writeLong(key);
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof User) {
+            User ou = (User) o;
+            return
+                super.equals(o) &&
+                (node == null ? ou.node == null : node.getNumber() == ou.node.getNumber()) &&
+                key == ou.key;
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        int result = super.hashCode();
+        result = HashCodeUtil.hashCode(result, node);
+        result = HashCodeUtil.hashCode(result, key);
+        return result;
     }
 
 }
