@@ -27,8 +27,8 @@
     <type-mapping name="FLOAT" type="FLOAT" />
     <type-mapping name="INTEGER" type="INTEGER" />
     <type-mapping name="NODE" type="INTEGER" />
-    <type-mapping name="STRING" min-size="1" max-size="8000" type="NVARCHAR({0,number,########})" />
-    <type-mapping name="STRING" min-size="8000" max-size="16777216" type="NTEXT" />
+    <type-mapping name="STRING" min-size="1" max-size="1000" type="NVARCHAR({0,number,########})" />
+    <type-mapping name="STRING" min-size="1000" max-size="16777216" type="NTEXT" />
     <type-mapping name="XML" min-size="1" max-size="8000" type="NVARCHAR({0,number,########})" />
     <type-mapping name="XML" min-size="8000" max-size="16777216" type="NTEXT" />
     <type-mapping name="BYTE" min-size="1" max-size="16777216" type="BINARY" />    
