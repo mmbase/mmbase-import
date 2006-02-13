@@ -170,7 +170,14 @@ public class Authentication extends org.mmbase.security.Authentication {
             log.debug("" + ac + ".getLoginPage() -> " + loginPage);
             if (loginPage != null) {
                 try {
-                    String sRedirect = request.getContextPath() + response.encodeRedirectURL(loginPage + "?referrer=" + request.getRequestURI());
+                    String referUrl = loginPage;
+                    if (referUrl.indexOf("?") > -1) {
+                        referUrl += "&";
+                    } else {
+                        referUrl += "?";
+                    }
+                    referUrl += "referrer=" + request.getRequestURI();
+                    String sRedirect = request.getContextPath() + response.encodeRedirectURL(referUrl);
                     response.sendRedirect(sRedirect);
                 } catch (Exception e) {
                     throw new SecurityException("Can't redirect to login page(" + loginPage + ")", e);
