@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.157 2006-01-25 12:40:49 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.158 2006-02-13 18:05:31 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -951,7 +951,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     public boolean equals(Object o) {
         // XXX: Currently, all clouds (i.e. transactions/user clouds) within a CloudContext
         // are treated as the 'same' cloud. This may change in future implementations
-        return (o instanceof Cloud) && cloudContext.equals(((Cloud)o).getCloudContext());
+        if (o instanceof Cloud) {
+            Cloud oc = (Cloud) o;
+            return cloudContext.equals(oc.getCloudContext()) && userContext.equals(oc.getUser());
+        } else {
+            return false;
+        }
     }
 
     public Object getProperty(Object key) {
