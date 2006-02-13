@@ -112,7 +112,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 }
                 constraintWrapperCache.put(query, matcher);
                 //if anything goes wrong constraintMatches is true, which means the query should be flushed
-            } catch (ConstraintMatcherCreationException e) {
+            } catch (Exception e) {
                 log.error("Could not create constraint matcher for constraint: " + constraint + "main reason: " + e, e);
             }
         } else{
@@ -220,10 +220,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
      * UnsupportedConstraintMatcher if non is found
      *
      * @param constraint
-     * @throws ConstraintMatcherCreationException
-     *             when instantiation went wrong
      */
-    protected final static AbstractConstraintMatcher findMatcherForConstraint(Constraint constraint) throws ConstraintMatcherCreationException {
+    protected final static AbstractConstraintMatcher findMatcherForConstraint(Constraint constraint) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         String constraintClassName = constraint.getClass().getName();
         constraintClassName = constraintClassName.substring(constraintClassName.lastIndexOf(".") + 1);
 
@@ -241,17 +239,10 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
 
         Constructor c = null;
-        try {
-            c = matcherClass.getConstructor(new Class[] { Constraint.class });
-            if(c == null) log.debug("help! constructor is null");
-            return (AbstractConstraintMatcher) c.newInstance(new Object[] { constraint });
-        }catch(InvocationTargetException e){
-            throw new ConstraintMatcherCreationException("During instantiation the constructor of matcher " + matcherClass.toString() + " threw the following exception: " +
-                                                         e.getTargetException().toString(), e);
-        }catch(Exception e){
-            throw new ConstraintMatcherCreationException("Could not create instance of class " + matcherClass.toString() +
-                                                         ". main reason: " + e.toString(), e);
-        }
+        c = matcherClass.getConstructor(new Class[] { Constraint.class });
+        if(c == null) log.debug("help! constructor is null");
+        return (AbstractConstraintMatcher) c.newInstance(new Object[] { constraint });
+
     }
 
     /**
@@ -274,7 +265,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     private static abstract class AbstractConstraintMatcher {
         protected Constraint wrappedConstraint;
 
-        public AbstractConstraintMatcher(Constraint constraint) throws ConstraintMatcherCreationException {
+        public AbstractConstraintMatcher(Constraint constraint)  {
             wrappedConstraint = constraint;
         }
 
@@ -303,7 +294,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         private List wrappedConstraints;
         private BasicCompositeConstraint wrappedCompositeConstraint;
 
-        public BasicCompositeConstraintMatcher(Constraint constraint) throws ConstraintMatcherCreationException {
+        public BasicCompositeConstraintMatcher(Constraint constraint) throws NoSuchMethodException, InstantiationException, InvocationTargetException, IllegalAccessException  {
             super(constraint);
             wrappedCompositeConstraint = (BasicCompositeConstraint) wrappedConstraint;
             wrappedConstraints = new ArrayList();
@@ -402,7 +393,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
     private static class UnsupportedConstraintMatcher extends AbstractConstraintMatcher {
 
-        public UnsupportedConstraintMatcher(Constraint constraint) throws ConstraintMatcherCreationException {
+        public UnsupportedConstraintMatcher(Constraint constraint)  {
             super(constraint);
         }
 
@@ -435,7 +426,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     private static abstract class FieldCompareConstraintMatcher extends AbstractConstraintMatcher {
         protected FieldCompareConstraint wrappedFieldCompareConstraint;
 
-        public FieldCompareConstraintMatcher(Constraint constraint) throws ConstraintMatcherCreationException {
+        public FieldCompareConstraintMatcher(Constraint constraint) {
             super(constraint);
             wrappedFieldCompareConstraint = (FieldCompareConstraint) wrappedConstraint;
         }
@@ -732,7 +723,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         protected StepField stepField;
         protected BasicFieldValueConstraint wrappedFieldValueConstraint;
 
-        public BasicFieldValueConstraintMatcher(Constraint constraint) throws ConstraintMatcherCreationException {
+        public BasicFieldValueConstraintMatcher(Constraint constraint)  {
             super(constraint);
             MMBase mmbase = MMBase.getMMBase();
             stepField = ((FieldConstraint) constraint).getField();
@@ -752,8 +743,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     fieldTypeClass.equals(String.class) ){
                 log.debug("** found field type: " + fieldTypeClass.getName());
                 wrappedFieldValueConstraint = (BasicFieldValueConstraint) constraint;
-            }else{
-                throw new ConstraintMatcherCreationException("Field type " + fieldTypeClass + " is not supported");
+            } else {
+                throw new RuntimeException("Field type " + fieldTypeClass + " is not supported");
             }
         }
 
@@ -792,18 +783,6 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
 
     }
-
-
-    private static class ConstraintMatcherCreationException extends Exception {
-        public ConstraintMatcherCreationException(String string) {
-            super(string);
-        }
-        public ConstraintMatcherCreationException(String string, Throwable t) {
-            super(string, t);
-        }
-    }
-
-
 
 
 
