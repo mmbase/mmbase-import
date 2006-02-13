@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.29 2006-01-26 15:12:52 pierre Exp $
+    @version  $Id: index.jsp,v 1.30 2006-02-13 16:17:20 pierre Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -145,7 +145,7 @@ view XML</a></td>
     <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
              <mm:param name="wizard">tasks/news</mm:param>
            <mm:param name="nodepath">news</mm:param>
-           <mm:param name="fields">number,title</mm:param>
+           <mm:param name="fields">number,title,date</mm:param>
            <mm:param name="orderby">number</mm:param>
            <mm:param name="directions">down</mm:param>
            </mm:url>">News</a>
@@ -167,7 +167,7 @@ view XML</a></td>
            <mm:param name="startnodes">default.mags</mm:param>
            <mm:param name="origin">default.mags</mm:param>
            <mm:param name="nodepath">mags,news</mm:param>
-           <mm:param name="fields">news.number,news.title</mm:param>
+           <mm:param name="fields">news.number,news.title,news.date</mm:param>
            <mm:param name="orderby">news.number</mm:param>
            <mm:param name="directions">down</mm:param>
            </mm:url>">News (with origin = default.mags)</a>
