@@ -185,4 +185,23 @@ public class TranslateTable {
             }
         }
     }
+
+    /**
+     * Set a new translation value
+     */
+    public static void changeTranslation(String tkey, String locale, String newvalue) {
+        StringTokenizer st = new StringTokenizer(tkey, ".");
+        String namespace = st.nextToken();
+        String key = st.nextToken();
+
+        String gkey = namespace;
+        if (locale != null && !"".equals(locale)) {
+            gkey += "." + locale;
+        }
+        gkey += "." + key;
+        if (translationTable.containsKey(gkey)) {
+            translationTable.remove(gkey);
+        }
+        translationTable.put(gkey, newvalue);
+    }
 }
