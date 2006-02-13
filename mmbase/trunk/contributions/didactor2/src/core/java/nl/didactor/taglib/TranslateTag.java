@@ -114,6 +114,19 @@ public class TranslateTag extends BodyTagSupport {
             }
         }
 
+        // Save some debugging information about the translation id's that are
+        // used on this page.
+        if ("true".equals(translateDebug)) {
+            Vector usedTranslations = (Vector)pageContext.getAttribute("t_usedtrans", PageContext.REQUEST_SCOPE);
+            if (usedTranslations == null) {
+                usedTranslations = new Vector();
+            }
+            if (!usedTranslations.contains(key)) {
+                usedTranslations.add(key);
+                pageContext.setAttribute("t_usedtrans", usedTranslations, PageContext.REQUEST_SCOPE);
+            }
+        }
+
         //Arguments like arg0="John" arg1="eats" arg2="an apple"
         if(sArg0 != null){
            translation = translation.replaceFirst("\\{\\$\\$\\$\\}", sArg0);
