@@ -75,6 +75,7 @@ public class MetaVocabularyHelper extends MetaHelper {
       {
          for(int f = 0; f < arrstrParameters.length; f++)
          {
+            /*
             NodeList nl = cloud.getList(metadefNode.getStringValue("number"),
                "metadefinition,related,metavocabulary",
                "metavocabulary.number",
@@ -85,6 +86,11 @@ public class MetaVocabularyHelper extends MetaHelper {
                Node metavocabularyNode = cloud.getNode(sMetavocabulary);
                metaDataNode.createRelation(metavocabularyNode,rm).commit();
             }
+            */
+           String sMetavocabulary = arrstrParameters[f];
+           Node metavocabularyNode = cloud.getNode(sMetavocabulary);
+           metaDataNode.createRelation(metavocabularyNode,rm).commit();
+
          }
       }
    }
