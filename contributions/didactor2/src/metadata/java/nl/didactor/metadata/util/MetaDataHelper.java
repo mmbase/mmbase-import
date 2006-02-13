@@ -4,9 +4,11 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.BasicNodeList;
+import org.mmbase.bridge.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import nl.didactor.metadata.tree.MetadataTreeModel;
 
 public class MetaDataHelper {
 
@@ -212,4 +214,49 @@ public class MetaDataHelper {
    public String getAliasForObject(Cloud cloud, int iObjectID, String sUserID){
        return getAliasForObject(cloud, "" + iObjectID, sUserID);
    }
+
+
+
+   /**
+    * Give all MetaStandars from all branches where .isused==1 at the top level.
+    *
+    * @param cloud Cloud
+    * @param sNode String
+    * @param sUserID String
+    * @return String Comma separated node list
+    */
+   public String getActiveMetastandards(Cloud cloud, String sNode, String sUserID){
+      String sResultSet = new String();
+      MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
+      Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
+
+      NodeList nlTopLevelMetaStandarts = cloud.getList("" + nodeRootMetaStandart.getNumber(),
+          "metastandard1,metastandard2",
+          "metastandard2.number",
+          "metastandard2.isused='1'",
+          null,null,null,false);
+
+
+      for(int f = 0; f < nlTopLevelMetaStandarts.size(); f++){
+         Node nodeMetaStandart = cloud.getNode(nlTopLevelMetaStandarts.getNode(f).getStringValue("metastandard2.number"));
+//         System.out.println("+++" + nodeMetaStandart.getNumber());
+
+         GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(nodeMetaStandart), 30, nodeMetaStandart.getNodeManager(), "posrel", "destination");
+         TreeIterator it = tree.treeIterator();
+
+         while(it.hasNext()){
+            Node nodeChildMetaStandart = it.nextNode();
+//            System.out.println(nodeChildMetaStandart.getNumber() + " " + nodeChildMetaStandart.getStringValue("name"));
+            if(sResultSet.length() > 0){
+               sResultSet += ",";
+            }
+            sResultSet += nodeChildMetaStandart.getNumber();
+         }
+      }
+      return sResultSet;
+   }
 }
+
+
+
+
