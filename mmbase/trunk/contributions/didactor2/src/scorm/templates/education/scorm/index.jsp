@@ -99,7 +99,7 @@
       if (FileUpload.isMultipartContent(request))
       {
          DiskFileUpload upload = new DiskFileUpload();
-         upload.setSizeMax(250*1024*1024);
+         upload.setSizeMax(-1); // allow for unlimited file sizes
          upload.setSizeThreshold(4096);
          upload.setRepositoryPath(System.getProperties().getProperty("java.io.tmpdir"));
          List items = upload.parseRequest(request);
