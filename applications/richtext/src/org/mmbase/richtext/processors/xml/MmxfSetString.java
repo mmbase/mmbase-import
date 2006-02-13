@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.7 2006-02-13 16:08:25 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.8 2006-02-13 18:14:59 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -369,6 +369,9 @@ public class MmxfSetString implements  Processor {
             try {
                 // based on the request as viewed by the client.
                 String requestURL = (String) request.getAttribute("javax.servlet.include.servlet_path");
+                if (request.getScheme() == null) {
+                    log.warn("How odd, we got a request with no scheme!!");
+                }
                 if (requestURL == null) requestURL = request.getRequestURL().toString();
                 u = new URL(new URL(requestURL), url).toString();
             } catch (java.net.MalformedURLException mfe) {
@@ -489,8 +492,9 @@ public class MmxfSetString implements  Processor {
         }
         String hrefBefore = href;
         if (! "".equals(href)) {
-            if (href.startsWith("mmbase:")) return href;
-            href = normalizeURL((HttpServletRequest) cloud.getProperty("request"), href);
+            if (! href.startsWith("mmbase:")) {
+                href = normalizeURL((HttpServletRequest) cloud.getProperty("request"), href);
+            }
         }
 
         // IE Tends to make URL's absolute (http://localhost:8070/mm18/mmbase/images/1234)
@@ -522,7 +526,9 @@ public class MmxfSetString implements  Processor {
             id = "_" + indexCounter++;
             a.setAttribute("id", id);
         }
-        log.debug("Considering " + href + " (from " + hrefBefore + ")");
+        if (log.isDebugEnabled()) {
+            log.debug("Considering " + href + " (from " + hrefBefore + ")");
+        }
         return href;
     }
 
