@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.14 2005-10-02 17:04:44 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.15 2006-02-13 18:02:35 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -173,8 +173,9 @@ public class TemplateCache extends Cache {
     public synchronized Object remove(Object key) {
         if (log.isDebugEnabled()) log.debug("Removing " + key);
         Object result = super.remove(key);
-        remove((String) key);
-        templateWatcher.remove(((Key) key).getURL());
+        String url = ((Key) key).getURL();
+        remove(url);
+        templateWatcher.remove(url);
         return result;
     }
 
