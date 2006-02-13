@@ -34,13 +34,14 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.6 2006-01-02 16:57:25 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.7 2006-02-13 16:08:25 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class MmxfSetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(MmxfSetString.class);
     private static final long serialVersionUID = 1L;
+
 
     private static XmlField xmlField = new XmlField(XmlField.WIKI);
 
@@ -363,15 +364,24 @@ public class MmxfSetString implements  Processor {
                 log.warn("Did not receive a request, don't know how to normalize '" + url + "'");
                 return url;
             }
-            // based on the request as viewed by the client.
+
+
             try {
-                u = new URL(new URL(request.getRequestURL().toString()), url).toString();
+                // based on the request as viewed by the client.
+                String requestURL = (String) request.getAttribute("javax.servlet.include.servlet_path");
+                if (requestURL == null) requestURL = request.getRequestURL().toString();
+                u = new URL(new URL(requestURL), url).toString();
             } catch (java.net.MalformedURLException mfe) {
-                log.warn("" + mfe); // should not happen
+                log.warn("" + mfe, mfe); // should not happen
                 return url;
+            } catch (NullPointerException npe) {
+                log.warn("NPE ", npe);
             }
         } else {
             u = url;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("url " + url + " ->" + u);
         }
         Matcher matcher = ABSOLUTE_URL.matcher(u);
         if (matcher.matches()) {
@@ -464,7 +474,7 @@ public class MmxfSetString implements  Processor {
 
 
     private String getHref(Element a, Cloud cloud) {
-        String href = a.getAttribute("href");                    
+        String href = a.getAttribute("href");
         if ("".equals(href)) {
             // must be an image then.
             // Images are _always_ on the same server.
@@ -475,20 +485,21 @@ public class MmxfSetString implements  Processor {
                 log.warn(se);
                 href = src;
             }
-            
+
         }
         String hrefBefore = href;
         if (! "".equals(href)) {
+            if (href.startsWith("mmbase:")) return href;
             href = normalizeURL((HttpServletRequest) cloud.getProperty("request"), href);
         }
-           
+
         // IE Tends to make URL's absolute (http://localhost:8070/mm18/mmbase/images/1234)
         // FF Tends to make URL's relative (../../../../mmbase/images/1234)
         // What we want is absolute on server (/mm18/mmbase/images/1234), because that is how URL was probably given in the first place.
-           
+
         String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
-           
+
         if (klass.startsWith("div ") && href.equals("")) {
             klass = klass.substring(4);
             Matcher divId = DIV_ID.matcher(id);
@@ -505,7 +516,7 @@ public class MmxfSetString implements  Processor {
                 id   = ""; // generated one
             }
             a.setAttribute("id", id);
-               
+
         }
         if (id.equals("")) {
             id = "_" + indexCounter++;
@@ -514,8 +525,8 @@ public class MmxfSetString implements  Processor {
         log.debug("Considering " + href + " (from " + hrefBefore + ")");
         return href;
     }
-    
-    
+
+
     private boolean handleImage(String href, Element a, NodeList usedImages, NodeList relatedImages, Node editedNode) {
         Cloud cloud = editedNode.getCloud();
         NodeManager images = cloud.getNodeManager("images");
@@ -547,7 +558,7 @@ public class MmxfSetString implements  Processor {
                 idrel.setStringValue("class", klass);
                 idrel.commit();
             }
-            
+
         } else {
             log.service(" to" + image + ", creating new relation");
             RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), images, "idrel");
@@ -568,7 +579,7 @@ public class MmxfSetString implements  Processor {
         if (! matcher.matches()) return false;
         if (! matcher.group(1).equals("attachments")) return false;
         String nodeNumber = matcher.group(2);
-        Cloud cloud = editedNode.getCloud();        
+        Cloud cloud = editedNode.getCloud();
         if (! cloud.hasNode(nodeNumber)) {
             log.error("No such node '" + nodeNumber + "' (deduced from " + matcher.group() + ")");
             return false;
@@ -587,7 +598,7 @@ public class MmxfSetString implements  Processor {
                 idrel.setStringValue("class", klass);
                 idrel.commit();
             }
-            
+
         } else {
             log.service(" to " + attachment + "(class='" + klass+ "'), creating new relation");
             RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), attachments, "idrel");
@@ -625,7 +636,7 @@ public class MmxfSetString implements  Processor {
                 idrel.setStringValue("class", klass);
                 idrel.commit();
             }
-            
+
         } else {
             log.service("Found new cross link " + text.getNumber() + ", creating new relation now");
             RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), text.getNodeManager(), "idrel");
@@ -634,7 +645,7 @@ public class MmxfSetString implements  Processor {
             newIdRel.setStringValue("class", klass);
             newIdRel.commit();
         }
-        
+
         a.removeAttribute("href");
         a.removeAttribute("alt");
         return true;
@@ -653,20 +664,20 @@ public class MmxfSetString implements  Processor {
         } else {
             block = cloud.getNode(nodeNumber);
         }
-        
+
         DocumentBuilder documentBuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder();
         DOMImplementation impl = documentBuilder.getDOMImplementation();
         Document blockDocument = impl.createDocument("http://www.w3.org/1999/xhtml", "body", null);
         Element blockBody = blockDocument.getDocumentElement();
         copyChilds(a, blockBody);
-        
-        
+
+
         org.w3c.dom.Node child = a.getFirstChild();
         while (child != null) {
             a.removeChild(child);
             child = a.getFirstChild();
         }
-        
+
         if (log.isDebugEnabled()) {
             log.debug("Setting body to " + XMLWriter.write(blockDocument, false));
         }
@@ -684,7 +695,7 @@ public class MmxfSetString implements  Processor {
                 idrel.setStringValue("class", klass);
                 idrel.commit();
             }
-            
+
         } else {
             log.service(" to " + block + ", creating new relation");
             RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), blocks, "idrel");
@@ -792,7 +803,7 @@ public class MmxfSetString implements  Processor {
                         continue;
                     } else { // must have been really an URL
                         String klass = a.getAttribute("class");
-                        String id = a.getAttribute("id");                        
+                        String id = a.getAttribute("id");
                         NodeList idLinkedUrls = get(cloud, relatedUrls, "idrel.id", id);
                         if (!idLinkedUrls.isEmpty()) {
                             Node url   = idLinkedUrls.getNode(0).getNodeValue("urls");
@@ -836,9 +847,6 @@ public class MmxfSetString implements  Processor {
             cleanDanglingIdRels(relatedImages,   usedImages,   "images");
             cleanDanglingIdRels(relatedUrls,     usedUrls,     "urls");
             cleanDanglingIdRels(relatedAttachments, usedAttachments, "attachments");
-            if (log.isDebugEnabled()) {
-                log.debug("Cleaning dangling objects related: " + relatedTexts + " used: " + usedTexts);
-            }
             cleanDanglingIdRels(relatedTexts, usedTexts, texts.getName());
         }
 
@@ -863,7 +871,7 @@ public class MmxfSetString implements  Processor {
                    log.debug("Idrel returned null from " + clusterNode + " propbably deleted already in previous cleandDanglingIdRels");
                } else {
                    if (idrel.mayDelete()) {
-                       log.service("Removing unused irel " + idrel);
+                       log.service("Removing unused idrel " + idrel);
                        idrel.delete(true);
                    }
                }
@@ -925,7 +933,9 @@ public class MmxfSetString implements  Processor {
 
     // javadoc inherited
     public Object process(Node node, Field field, Object value) {
-        log.debug("Found for setstring " + value.getClass() + " " + toString(value));
+        if (log.isDebugEnabled()) {
+            log.debug("Found for setstring " + value.getClass() + " " + toString(value));
+        }
         try {
             switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
             case Modes.KUPU: {
