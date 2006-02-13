@@ -42,14 +42,17 @@ public class PlainSecurityComponent implements AuthenticationComponent {
         String sPassword = request.getParameter("password");
 
         if (sLogin == null || sPassword == null) {
+            log.debug("Did not find matching credentials");
             return null;
         }
 
         MMObjectNode user = users.getUser(sLogin, sPassword);
         if (user == null) {
+            log.debug("Found credentials, but no matching user. Returning null");
             return null;
         }
 
+        log.debug("Found matching credentials, so user is now logged in.");
         request.getSession(true).setAttribute("didactor-plainlogin-userid", "" + user.getNumber());
 
         return new UserContext(user);
@@ -62,14 +65,25 @@ public class PlainSecurityComponent implements AuthenticationComponent {
             if (onum != null) {
                 checkBuilder();
                 MMObjectNode user = users.getNode(onum);
+                log.debug("Found 'didactor-plainlogin-userid' in session");
                 return new UserContext(user);
+            } else {
+                log.debug("There is a session, but no 'didactor-plainlogin-userid' in it");
             }
+        } else {
+            log.debug("No session, so the user is not logged in");
         }
         return null;
     }
     
     public String getLoginPage(HttpServletRequest request, HttpServletResponse response) {
-        return "/login_plain.jsp";
+        String sLogin = request.getParameter("username");
+        String sPassword = request.getParameter("password");
+        if (sLogin != null && sPassword != null) {
+            return "/login_plain.jsp?reason=failed";
+        } else {
+            return "/login_plain.jsp";
+        }
     }
     
     public String getName() {
@@ -77,6 +91,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
     
     public void logout(HttpServletRequest request, HttpServletResponse respose) {
+        log.debug("logout() called");
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.removeAttribute("didactor-plainlogin-userid");
