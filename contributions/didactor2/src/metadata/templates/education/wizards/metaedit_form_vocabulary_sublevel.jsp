@@ -72,7 +72,7 @@
          %>
             <mm:node number="<%= "" + nodeMetaVocabulary.getNumber() %>">
                   <mm:field name="number" jspvar="sID" vartype="String" write="false">
-                     <span style="width:<%= (depth) * 30 %>px; background:#00FF00"><%= depth %></span>
+                     <span style="width:<%= (depth - 1) * 30 %>px;">&nbsp;</span>
                      <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
 
 
