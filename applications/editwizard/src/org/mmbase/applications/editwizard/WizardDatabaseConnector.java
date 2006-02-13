@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.45 2006-02-13 13:17:22 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.46 2006-02-13 16:16:50 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -76,7 +76,9 @@ public class WizardDatabaseConnector {
         didcounter = Utils.tagNodeList(nodes, "did", "d", didcounter);
         // if value is a datetime or boolean value,it should be parsed and converted to an integer,
         // as this is how the wizards currently accept datetime/boolean values.
-        convertDateTimeToInt(node);
+        /* not needed for dates as currently dates are still passed as integers
+          convertDateTimeToInt(node);
+        */
         convertBooleanToInt(node);
     }
 
@@ -646,7 +648,11 @@ public class WizardDatabaseConnector {
     }
 
     /**
-     * @javadoc
+     * The editwizard uses integer values to represent dates.
+     * This method convert the integer values of date fields (seconds per 1/1/1970) to the
+     * MMBase string representation of a date value before sending the data to MMBase.
+     * @since MMBase 1.8
+     * @param rootNode the node whose field sub nodes should be converted
      */
     protected void convertIntToDateTime(Node rootNode) {
         // convert all datetime values
@@ -662,7 +668,11 @@ public class WizardDatabaseConnector {
     }
 
     /**
-     * @javadoc
+     * Booleans in MMBase are represented by a boolean value. The editwizard uses integer values to represent true/false.
+     * This method convert the integer values of boolean fields to as boolean string value (true or false)
+     * before sending the data to MMBase.
+     * @since MMBase 1.8
+     * @param rootNode the node whose field sub nodes should be converted
      */
     protected void convertIntToBoolean(Node rootNode) {
         // convert all datetime values
@@ -679,7 +689,11 @@ public class WizardDatabaseConnector {
     }
 
     /**
-     * @javadoc
+     * The editwizard uses integer values to represent dates.
+     * This method converts the MMBase string representation of a date field's value to this
+     * integer value (seconds per 1/1/1970) after reading the data from MMBase.
+     * @since MMBase 1.8
+     * @param rootNode the node whose field sub nodes should be converted
      */
     protected void convertDateTimeToInt(Node rootNode) {
         // convert all datetime values
@@ -696,7 +710,11 @@ public class WizardDatabaseConnector {
     }
 
     /**
-     * @javadoc
+     * Booleans in MMBase are represented by a boolean value. The editwizard uses integer values to represent true/false.
+     * This method convert the boolean values of boolean fields to an integer value (0 or 1)
+     * after reading the data from MMBase.
+     * @since MMBase 1.8
+     * @param rootNode the node whose field sub nodes should be converted
      */
     protected void convertBooleanToInt(Node rootNode) {
         // convert all datetime values
@@ -752,8 +770,10 @@ public class WizardDatabaseConnector {
 
         // if value is a datetime or boolean field, it should converted from integer
         // to a date or time string value
+/* not needed for dates as currently dates are still passed as integers
         convertIntToDateTime(reqorig);
         convertIntToDateTime(reqnew);
+*/
         convertIntToBoolean(reqorig);
         convertIntToBoolean(reqnew);
 
