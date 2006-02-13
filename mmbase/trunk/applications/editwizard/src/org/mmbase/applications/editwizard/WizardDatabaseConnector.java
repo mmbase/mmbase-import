@@ -13,6 +13,7 @@ import org.mmbase.bridge.Cloud;
 import java.util.*;
 import org.mmbase.applications.dove.Dove;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Casting;
 import org.w3c.dom.*;
 
 
@@ -30,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.44 2005-10-05 10:41:38 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.45 2006-02-13 13:17:22 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -515,7 +516,7 @@ public class WizardDatabaseConnector {
                 // but annotate that this one is loaded from mmbase. Not a new one
                 Utils.setAttribute(inside_object, "already-exists", "true");
                 // grab the type
-                dtype=Utils.getAttribute(inside_object, "type", "");
+                dtype = Utils.getAttribute(inside_object, "type", "");
             } else {
                 // type should be determined from the destinationtype
                 dtype=Utils.getAttribute(relation, "destinationtype", "");
@@ -654,7 +655,7 @@ public class WizardDatabaseConnector {
             Node node = nodes.item(i);
             String value = Utils.getText(node);
             if (!"".equals(value)) {
-                value = org.mmbase.util.Casting.toString(org.mmbase.util.Casting.toDate(value));
+                value = Casting.toString(Casting.toDate(value));
                 Utils.storeText(node, value);
             }
         }
@@ -670,8 +671,8 @@ public class WizardDatabaseConnector {
             Node node = nodes.item(i);
             String value = Utils.getText(node);
             if (!"".equals(value)) {
-                int boolAsInt = org.mmbase.util.Casting.toInt(value);
-                value = org.mmbase.util.Casting.toString(Boolean.valueOf(boolAsInt > 0));
+                int boolAsInt = Casting.toInt(value);
+                value = Casting.toString(Boolean.valueOf(boolAsInt > 0));
                 Utils.storeText(node, value);
             }
         }
@@ -687,7 +688,8 @@ public class WizardDatabaseConnector {
             Node node = nodes.item(i);
             String value = Utils.getText(node);
             if (!"".equals(value)) {
-                value = "" + org.mmbase.util.Casting.toDate(value).getTime() / 1000;
+                long time = Casting.toDate(value).getTime();
+                value = time == -1 ? "-1"  : "" + time / 1000;
                 Utils.storeText(node, value);
             }
         }
@@ -703,7 +705,7 @@ public class WizardDatabaseConnector {
             Node node = nodes.item(i);
             String value = Utils.getText(node);
             if (!"".equals(value)) {
-                if (org.mmbase.util.Casting.toBoolean(value)) {
+                if (Casting.toBoolean(value)) {
                     value = "1";
                 } else {
                     value = "0";
@@ -958,15 +960,15 @@ public class WizardDatabaseConnector {
     public boolean isDifferent(Node node1, Node node2) {
         // only checks textnodes and childnumbers
         boolean res = false;
-        if (node1.getChildNodes().getLength()!=node2.getChildNodes().getLength()) {
+        if (node1.getChildNodes().getLength() != node2.getChildNodes().getLength()) {
             // ander aantal kindjes!
             return true;
         }
         // andere getnodetype?
-        if (node1.getNodeType()!=node2.getNodeType()) {
+        if (node1.getNodeType() != node2.getNodeType()) {
             return true;
         }
-        if ((node1.getNodeType()==Node.TEXT_NODE) || (node1.getNodeType()==Node.CDATA_SECTION_NODE)) {
+        if ((node1.getNodeType() == Node.TEXT_NODE) || (node1.getNodeType() == Node.CDATA_SECTION_NODE)) {
             String s1 = node1.getNodeValue();
             String s2 = node2.getNodeValue();
             if (!s1.equals(s2)) return true;
