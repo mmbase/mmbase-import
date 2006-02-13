@@ -18,7 +18,7 @@ import org.mmbase.security.*;
  * this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: ContextUserContext.java,v 1.9 2006-01-17 21:36:57 michiel Exp $
+ * @version $Id: ContextUserContext.java,v 1.10 2006-02-13 18:19:55 michiel Exp $
  */
 public class ContextUserContext extends BasicUser implements java.io.Serializable {
 
@@ -67,6 +67,15 @@ public class ContextUserContext extends BasicUser implements java.io.Serializabl
         out.writeUTF(username);
         out.writeObject(rank);
         out.writeLong(key);
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof ContextUserContext) {
+            ContextUserContext ou = (ContextUserContext) o;
+            return super.equals(o) && key == ou.key;
+        } else {
+            return false;
+        }
     }
 
 

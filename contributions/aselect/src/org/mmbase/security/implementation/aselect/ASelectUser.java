@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss) 
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
- * @version $Id: ASelectUser.java,v 1.2 2006-01-17 21:38:49 michiel Exp $
+ * @version $Id: ASelectUser.java,v 1.3 2006-02-13 18:21:38 michiel Exp $
  * @since  MMBase-1.7
  * @see ASelectAuthentication
  */
@@ -41,7 +41,9 @@ public class ASelectUser extends BasicUser {
     // constructor, perhaps needs more argumetns
     protected ASelectUser(String name, Rank r, long uniqueNumber, String app) {
         super(app);
-        log.debug("Instantiating " + name);
+        if (log.isDebugEnabled()) {
+            log.debug("Instantiating " + name);
+        }
         identifier = name;
         rank       = r;
         key = uniqueNumber;
@@ -71,6 +73,15 @@ public class ASelectUser extends BasicUser {
         out.writeUTF(identifier);
         out.writeObject(rank);
         out.writeLong(key);
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof ASelectUser) {
+            ASelectUser ou = (ASelectUser) o;
+            return super.equals(o) && key == ou.key;
+        } else {
+            return false;
+        }
     }
 
 }
