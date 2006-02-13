@@ -163,8 +163,8 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                             logResult("flush: event does not apply to wrapper {"+matcher+"}:", query, event, node);
                         }
                         return true;
-                    }                    
-                case NodeEvent.EVENT_TYPE_CHANGED:                    
+                    }
+                case NodeEvent.EVENT_TYPE_CHANGED:
                     // we have to compare the old value and then the new value of the changed field to see if the status
                     // has changed. if the node used to match the constraint but now dousn't or the reverse of this, flush.
                     if(matcher.eventApplies(newValues, event)){
@@ -173,7 +173,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                         boolean eventMatches = usedToMatch != stillMatches;
                         if (log.isDebugEnabled()) {
                             log.debug("** match with old values : " + (usedToMatch ? "match" : "no match"));
-                            log.debug("** match with new values : " + (stillMatches ? "match" : "no match"));                            
+                            log.debug("** match with new values : " + (stillMatches ? "match" : "no match"));
                             log.debug("**old values: " + oldValues);
                             log.debug("**new values: " + newValues);
                             logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, node);
@@ -442,7 +442,6 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
             int operator = wrappedFieldCompareConstraint.getOperator();
 
-            // handle boolean type
             if (fieldType.equals(Boolean.class)) {
                 log.debug("**> type: boolean");
                 boolean constraintBoolean = Casting.toBoolean(constraintValue);
@@ -452,9 +451,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 case FieldCompareConstraint.NOT_EQUAL: return booleanToCompare != constraintBoolean;
                 default:   throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type Boolean");
                 }
-            } else 
-            // handle float type
-            if (fieldType.equals(Float.class)) {
+            } else if (fieldType.equals(Float.class)) {
                 log.debug("**> type: Float");
                 float constraintFloat = Casting.toFloat(constraintValue, Float.MAX_VALUE);
                 float floatToCompare = Casting.toFloat(valueToCompare, Float.MAX_VALUE);
@@ -462,9 +459,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 if(constraintFloat == Float.MAX_VALUE || floatToCompare == Float.MAX_VALUE)
                     throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type float (while that is supposed to be their type");
                 return floatMatches(constraintFloat, floatToCompare, operator);
-            } else
-               // handle double type
-            if (fieldType.equals(Double.class)) {
+            } else if (fieldType.equals(Double.class)) {
                 log.debug("**> type: Double");
                 double constraintDouble = Casting.toDouble(constraintValue, Double.MAX_VALUE);
                 double doubleToCompare = Casting.toDouble(valueToCompare, Double.MAX_VALUE);
@@ -473,9 +468,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type double (while that is supposed to be their type");
                 }
                 return floatMatches(constraintDouble, doubleToCompare, operator);
-            } else
-            // handle  Date type
-            if (fieldType.equals(Date.class)) {
+            } else if (fieldType.equals(Date.class)) {
                 log.debug("**> type: Date");
                 long constraintLong = Casting.toLong(constraintValue, Long.MAX_VALUE);
                 long longToCompare = Casting.toLong(valueToCompare, Long.MAX_VALUE);
@@ -484,9 +477,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 if(constraintLong == Long.MAX_VALUE || longToCompare == Long.MAX_VALUE)
                     throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type long (while they are supposed to be of type Date supposed to be their type");
                 return intMatches(constraintLong, longToCompare, operator);
-            } else
-            // handle integer type
-            if (fieldType.equals(Integer.class)) {
+            } else if (fieldType.equals(Integer.class)) {
                 log.debug("**> type: Integer");
                 int constraintInt = Casting.toInt(constraintValue, Integer.MAX_VALUE);
                 int intToCompare = Casting.toInt(valueToCompare, Integer.MAX_VALUE);
@@ -495,9 +486,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 if(constraintInt == Integer.MAX_VALUE || intToCompare == Integer.MAX_VALUE)
                     throw new FieldComparisonException("either " + constraintValue + " or " + valueToCompare + " could not be casted to type int (while that is supposed to be their type");
                 return intMatches(constraintInt, intToCompare, operator);
-            } else
-            // handle long type
-            if (fieldType.equals(Long.class)) {
+            } else if (fieldType.equals(Long.class)) {
                 log.debug("**> type: Long");
                 long constraintLong = Casting.toLong(constraintValue, Long.MAX_VALUE);
                 long longToCompare = Casting.toLong(valueToCompare, Long.MAX_VALUE);
@@ -506,9 +495,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     throw new FieldComparisonException("either [" + constraintValue +"] of type " +constraintValue.getClass().getName() + " or [" + valueToCompare +
                 "] of type " + valueToCompare.getClass().getName()+" could not be casted to type long (while that is supposed to be their type)");
                 return intMatches(constraintLong, longToCompare, operator);
-            }  else
-//          handle type Node
-            if (fieldType.equals(Node.class)) {
+            }  else if (fieldType.equals(Node.class)) {
                 log.debug("**> type: Node");
                 if(constraintValue instanceof MMObjectNode) constraintValue = new Integer(((MMObjectNode)constraintValue).getNumber());
                 if(valueToCompare instanceof MMObjectNode) valueToCompare   = new Integer(((MMObjectNode)valueToCompare).getNumber());
@@ -519,12 +506,10 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     throw new FieldComparisonException("either [" + constraintValue +"] of type " +constraintValue.getClass().getName() + " or [" + valueToCompare +
                 "] of type " + valueToCompare.getClass().getName()+" could not be casted to type int  (while they should be type node)");
                 return intMatches(constraintInt, intToCompare, operator);
-            } else 
-            //handle String type
-            if (fieldType.equals(String.class)) {
+            } else if (fieldType.equals(String.class) || fieldType.equals(org.w3c.dom.Document.class)) {
                 log.debug("**> type: String");
-                String constraintString = constraintValue.toString();
-                String stringToCompare = valueToCompare.toString();
+                String constraintString = Casting.toString(constraintValue);
+                String stringToCompare =  Casting.toString(valueToCompare);
                 switch(operator) {
                 case FieldCompareConstraint.EQUAL: {
                     boolean result =  stringToCompare.equals(constraintString);
@@ -575,7 +560,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     }
                     return result;
                 }
-                default: 
+                default:
                     throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "is not supported for type String");
                 }
             }
@@ -676,7 +661,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 }
                 return result;
             }
-            default: 
+            default:
                 throw new FieldComparisonException("operator " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[operator] + "for any numeric type");
             }
         }
@@ -730,18 +715,23 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             if (log.isDebugEnabled()) {
                 log.debug("** builder: " + stepField.getStep().getTableName()+". field: " + stepField.getFieldName());
             }
+
+            // why it this checked anyway?
             CoreField field = mmbase.getBuilder(stepField.getStep().getTableName()).getField(stepField.getFieldName());
             DataType fieldType = field.getDataType();
             fieldTypeClass = fieldType.getTypeAsClass();
             if( fieldTypeClass.equals(Boolean.class) ||
-                    fieldTypeClass.equals(Date.class) ||
-                    fieldTypeClass.equals(Integer.class) ||
-                    fieldTypeClass.equals(Long.class) ||
-                    fieldTypeClass.equals(Float.class) ||
-                    fieldTypeClass.equals(Double.class) ||
-                    fieldTypeClass.equals(Node.class) ||
-                    fieldTypeClass.equals(String.class) ){
-                log.debug("** found field type: " + fieldTypeClass.getName());
+                fieldTypeClass.equals(Date.class) ||
+                fieldTypeClass.equals(Integer.class) ||
+                fieldTypeClass.equals(Long.class) ||
+                fieldTypeClass.equals(Float.class) ||
+                fieldTypeClass.equals(Double.class) ||
+                fieldTypeClass.equals(Node.class) ||
+                fieldTypeClass.equals(String.class) ||
+                fieldTypeClass.equals(org.w3c.dom.Document.class)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("** found field type: " + fieldTypeClass.getName());
+                }
                 wrappedFieldValueConstraint = (BasicFieldValueConstraint) constraint;
             } else {
                 throw new RuntimeException("Field type " + fieldTypeClass + " is not supported");
@@ -756,7 +746,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             log.debug("**method: nodeMatchesConstraint");
             if(! eventApplies(valuesToMatch, event))
                 throw new FieldComparisonException("constraint " + wrappedFieldCompareConstraint.toString() +
-                        "dous not match event of type " +event.getBuilderName());
+                        "does not match event of type " +event.getBuilderName());
             Object constraintValue = ((FieldValueConstraint) wrappedConstraint).getValue();
             boolean isCaseSensitive = ((FieldValueConstraint) wrappedConstraint).isCaseSensitive();
             return valueMatches(fieldTypeClass, constraintValue, valuesToMatch.get(stepField.getFieldName()), isCaseSensitive);
