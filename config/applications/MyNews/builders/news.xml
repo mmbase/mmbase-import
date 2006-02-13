@@ -119,6 +119,30 @@
         <type state="persistent" size="64000" notnull="false" key="false">STRING</type>
       </db>
     </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Publication date of the newsitem</description>
+        <description xml:lang="nl">Publicatiedatum van het nieuwsitem</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Date</guiname>
+        <guiname xml:lang="fr">Date</guiname>
+        <guiname xml:lang="nl">Datum</guiname>
+        <guiname xml:lang="eo">Date</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>5</input>
+          <list>2</list>
+          <search>5</search>
+        </positions>
+      </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>date</name>
+        <type state="persistent" notnull="false" key="false">DATETIME</type>
+      </db>
+    </field>
   </fieldlist>
   <functionlist>
     <!--

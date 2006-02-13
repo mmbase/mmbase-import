@@ -46,6 +46,7 @@
       <item>
         <title>News article</title>
         <field name="title" ftype="data" />
+        <field name="date" ftype="data" />
         <field fdatapath="field[@name='pos']" ftype="data" />
       </item>
 

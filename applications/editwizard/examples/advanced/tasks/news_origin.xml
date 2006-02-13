@@ -26,7 +26,7 @@
     <field name="subtitle" />
     <field name="intro" />
     <field name="body" ftype="html" />
-    <!-- field name="date" /-->
+    <field name="date" />
 
 
     <list role="related" destination="people" minoccurs="0"  maxoccurs="3">
