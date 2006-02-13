@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.50 2006-01-05 12:34:38 daniel Exp $
+ * @version $Id: MMBaseContext.java,v 1.51 2006-02-13 08:39:46 pierre Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -55,8 +55,8 @@ public class MMBaseContext {
      */
     public synchronized static void init(ServletContext servletContext) {
         if (!initialized) {
-	    // get the java version we are running
-	    javaVersion = System.getProperty("java.version");
+        // get the java version we are running
+        javaVersion = System.getProperty("java.version");
             // store the current context
             sx = servletContext;
             // Get the user directory using the user.dir property.
@@ -132,6 +132,11 @@ public class MMBaseContext {
      * @since MMBase-1.8
      */
     public static ThreadGroup getThreadGroup() {
+        if (threadGroup == null) {
+            String groupName = org.mmbase.Version.get();
+            log.service("Creating threadGroup: " + groupName);
+            threadGroup = new ThreadGroup(groupName);
+        }
         return threadGroup;
     }
 
@@ -177,20 +182,18 @@ public class MMBaseContext {
         log.info("===========================");
         log.info("MMBase logging initialized.");
         log.info("===========================");
-	log.info("java.version       : " + javaVersion);
+        log.info("java.version       : " + javaVersion);
         log.info("user.dir          : " + userDir);
         String configPath = ResourceLoader.getConfigurationRoot().toString();
         log.info("configuration     : " + configPath);
         log.info("webroot           : " + ResourceLoader.getWebRoot());
         String version = org.mmbase.Version.get();
-        threadGroup = new ThreadGroup(version + ":" + configPath);
         log.info("version           : " + version);
         Runtime rt = Runtime.getRuntime();
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte");
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
         log.info("system locale     : " + Locale.getDefault());
         log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) MMBase.startTime)));
-
     }
 
     /**
