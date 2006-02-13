@@ -34,12 +34,10 @@ public class HTMLTree {
    }
 
    public HTMLTree(TreeModel model) {
-      assert model != null;
       this.model = model;
    }
    
    public HTMLTree(TreeModel model, String treeId) {
-      assert model != null;
       this.model = model;
       this.treeId = treeId;
    }
@@ -231,12 +229,10 @@ public class HTMLTree {
    }
 
    public void setImgBaseUrl(String imgBaseUrl) {
-      assert imgBaseUrl.charAt(imgBaseUrl.length() - 1) == '/';
       this.imgBaseUrl = imgBaseUrl;
    }
 
    public void setModel(TreeModel model) {
-      assert model != null;
       this.model = model;
    }
 
