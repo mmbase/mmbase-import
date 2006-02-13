@@ -1,4 +1,6 @@
 <%
+boolean bBlocked = false;
+
 if(sMaxValues.equals("1"))
 {
    String sSelected = "";
@@ -79,9 +81,13 @@ else
             <mm:field name="number" jspvar="sID" vartype="String" write="false">
                <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
                <%
-                  if(hsetSelected.contains(sID))
-                  {
+
+                  if(hsetSelected.contains(sID)){
                      %> checked="checked" <%
+                     bBlocked = false;
+                  }
+                  else{
+                     bBlocked = true;
                   }
                %>
                />
@@ -100,6 +106,7 @@ else
             <jsp:include page="metaedit_form_vocabulary_sublevel.jsp" flush="true">
                <jsp:param name="vocabulary" value="<%= nodeMetavocabulary.getStringValue("number") %>" />
                <jsp:param name="metadefinition" value="<%= thisMetadefinition.getNumber() %>" />
+               <jsp:param name="blocked" value="<%= bBlocked %>" />
             </jsp:include>
          </mm:node>
       </mm:related>

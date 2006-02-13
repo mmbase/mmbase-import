@@ -17,6 +17,11 @@
    MetaDataHelper mdh = (MetaDataHelper) session.getAttribute("metaeditor_multilevel_metavocabulary_metadatahelper");
 
    Node nodeTemporalRootMetaVocabulary = cloud.getNode(sVocabularyID);
+
+   int iBlockedLevel = 255;
+   if("true".equals(request.getParameter("blocked"))){
+       iBlockedLevel = 0;
+   }
 %>
 
 
@@ -60,7 +65,7 @@
       while(it.hasNext()){
          Node nodeMetaVocabulary = it.nextNode();
 
-         System.out.println(nodeMetaVocabulary.getNumber());
+//         System.out.println(nodeMetaVocabulary.getNumber());
 
          if(hsetNodesToSkip.contains(nodeMetaVocabulary)){
              //We have returned to the top element from one of the subbranches
@@ -71,30 +76,41 @@
          depth = it.currentDepth();
          %>
             <mm:node number="<%= "" + nodeMetaVocabulary.getNumber() %>">
-                  <mm:field name="number" jspvar="sID" vartype="String" write="false">
-                     <span style="width:<%= (depth - 1) * 30 %>px;">&nbsp;</span>
-                     <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
+               <mm:field name="number" jspvar="sID" vartype="String" write="false">
+                  <span style="width:<%= (depth - 1) * 30 %>px;">&nbsp;</span>
+                  <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
+                     <%
+                        if(iBlockedLevel < depth){
+                           %> disabled="disabled" <%
+                        }
 
+                        if(iBlockedLevel > depth){
+                           iBlockedLevel = depth;
+                        }
+                     %>
 
+                     <mm:relatednodes type="metadata" jspvar="mNode">
+                        <%
 
-      <mm:relatednodes type="metadata" jspvar="mNode">
-         <%
-            if(nlRelatedNodes.contains(mNode))
-            {
-                           %> checked="checked" <%
-            }
-         %>
-      </mm:relatednodes>
+                           if(nlRelatedNodes.contains(mNode))
+                           {
+                              %> checked="checked" <%
+                               if(iBlockedLevel >= depth){
+                                  iBlockedLevel = depth + 1;
+                               }
+                           }
+                        %>
+                     </mm:relatednodes>
 
-                     />
-                     <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
-                        <mm:node number="$user" jspvar="nodeUser">
-                           <%= mdh.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
-                        </mm:node>
-                     </mm:field>
-                     (<mm:field name="number"/>)
+                  />
+                  <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
+                     <mm:node number="$user" jspvar="nodeUser">
+                        <%= mdh.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
+                     </mm:node>
                   </mm:field>
-                  <br/>
+                  (<mm:field name="number"/>)
+               </mm:field>
+               <br/>
             </mm:node>
          <%
       }
