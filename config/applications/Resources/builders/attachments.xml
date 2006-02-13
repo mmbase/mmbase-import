@@ -103,15 +103,15 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
+          <input>4</input>
           <list>-1</list>
-          <search>4</search><!-- I think it absurd that you can search on filename but not otherwise see it -->
+          <search>4</search>
         </positions>
       </editor>
       <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filename</name>
-        <type state="persistent" size="128" notnull="true" key="false">STRING</type>
+        <type state="system" size="128" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
