@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title xml:lang="nl">Type hier de wizard titel</title>
+  <title xml:lang="nl">Voer hier de wizard titel in</title>
   <title xml:lang="en">Enter Wizard Title Here</title>
 
   <action type="create">
@@ -20,11 +20,12 @@
 
   <form-schema id="step1">
     <title>Enter form title here</title>
-    <title xml:lang="nl">Type de formulier titel hier</title>
+    <title xml:lang="nl">Voer hier de formulier titel in</title>
     <field name="title" />
     <field name="subtitle" />
     <field name="intro" ftype="text" rows="4" />
     <field name="body" ftype="text" rows="8" />
+    <field name="date" />
 
     <list role="related" destination="people" minoccurs="0" maxoccurs="*">
       <title xml:lang="nl">Auteurs</title>
