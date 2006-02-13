@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.3 2005-12-17 19:02:41 michiel Exp $
+    @version  $Id: index.jsp,v 1.4 2006-02-13 16:17:20 pierre Exp $
     -->
 
    <link rel="stylesheet" type="text/css" href="../style.css" />
@@ -75,7 +75,7 @@
     <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
              <mm:param name="wizard">../advanced/tasks/news</mm:param>
            <mm:param name="nodepath">news</mm:param>
-           <mm:param name="fields">number,title</mm:param>
+           <mm:param name="fields">number,title,date</mm:param>
            <mm:param name="orderby">number</mm:param>
            <mm:param name="directions">down</mm:param>
            </mm:url>">News</a>
@@ -95,9 +95,10 @@
     <a href="<mm:url referids="referrer,pagelength" page="$jsps/list.jsp">
                <mm:param name="title">MyNews Magazine news</mm:param>
                <mm:param name="startnodes">default.mags</mm:param>
-             <mm:param name="wizard">../advanced/tasks/news</mm:param>
+               <mm:param name="origin">default.mags</mm:param>
+             <mm:param name="wizard">../advanced/tasks/news_origin</mm:param>
            <mm:param name="nodepath">mags,news</mm:param>
-           <mm:param name="fields">news.number,news.title</mm:param>
+           <mm:param name="fields">news.number,news.title,news.date</mm:param>
            <mm:param name="orderby">news.number</mm:param>
            <mm:param name="directions">down</mm:param>
            <mm:param name="searchdirs">destination</mm:param>

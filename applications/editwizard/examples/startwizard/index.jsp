@@ -42,7 +42,7 @@
     <a href="<mm:url referids="language,referrer,loginmethod" page="$jsps/list.jsp">
         <mm:param name="wizard">tasks/news</mm:param>
         <mm:param name="nodepath">news</mm:param>
-        <mm:param name="fields">number,title,owner</mm:param>
+        <mm:param name="fields">number,title,date,owner</mm:param>
         <mm:param name="orderby">number</mm:param>
         <mm:param name="directions">down</mm:param>
       </mm:url>">List news</a>
