@@ -9,12 +9,9 @@
 <%@ include file="getids.jsp" %>
   <div class="contentBody">
 
-  <%
-
-     final String SEPARATOR = "_";
-
-  %> 
-<%	String intakeCompetencies = ""; 
+<%
+   final String SEPARATOR = "_";
+   String intakeCompetencies = ""; 
 	String notpassedIntakes = ""; 
 %>
 
@@ -23,7 +20,30 @@
    <%@include file="find_copybook.jsp"%>
 </mm:node>
 
+<%--
 
+The object model looks as follows:
+
+1. To the education one or more tests can be added, these tests function as gatekeepers for the education. 
+2. To every education, learnblock and learnobjects needed competences can be added. 
+   It is possible to relate tests to these competences, these are the intake-tests for the competences. 
+   So to each education tree a set of intake-tests are related.
+
+The intake procedure for an education works as follows:
+
+1. When a student starts an education first he should pass the gatekeeper-tests. 
+   If he fails for he gatekeeper-tests he is asked to contact his coach or teacher. (intaketest.jsp)
+2. When he succesfully finished the gatekeeper-test, one question is asked from
+   each intake-test related to the education tree. After the answers are given an overview of
+   the intake-tests is shown (intakerate.jsp) Based on the answer to this question it is determined
+   whether the student already has the competence related to this intake-test.
+3. When a student starts the education every learnblock or learnobject is checked.
+   If the user has all needed competencies for that learnblock this is indicated with a check-icoon (popcheck.jsp).
+
+
+show all tests related to the education, for which the intake is not passed
+the tests related to the education are the gatekeeper tests
+--%>
 <mm:import id="gatekeeper" reset="true">1</mm:import>
 <mm:import id="incompletetestNo" reset="true">-1</mm:import>
 <mm:node number="$education">
@@ -40,7 +60,7 @@
 </mm:node>
 
 <mm:compare referid="gatekeeper" value="0">
-  <%-- "you failed the test for this education and are not allowed to continue, please contact your teacher / coach for advice" --%>
+  <% // "you failed the test for this education and are not allowed to continue, please contact your teacher / coach for advice" %>
   <p><di:translate key="pop.intakemsgyoufailedtest" /></p>
 <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/pop/index.jsp" objectlist="$includePath" referids="$popreferids,currentfolder"/>'" value="terug">
 </mm:compare>
@@ -65,29 +85,16 @@
     <mm:list nodes="<%= notpassedIntakes %>" path="tests">
       <mm:node element="tests">
         <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
-
-        <h1><mm:field name="name"/></h1>
-    
+        <h1><mm:field name="name"/></h1>    
         <mm:relatednodes type="questions" max="1" comparator="SHUFFLE">
-
              <mm:import id="page">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
-
              <mm:treeinclude page="$page" objectlist="$includePath" referids="$popreferids">
-
                <mm:param name="question"><mm:field id="questionNo" name="number"/></mm:param>
-
-	       <mm:param name="testnumber"><mm:write referid="testNo"/></mm:param>
-
+	            <mm:param name="testnumber"><mm:write referid="testNo"/></mm:param>
              </mm:treeinclude>
-
-
-
              <input type="hidden" name="shown<mm:write referid="testNo"/>" value="<mm:field name="number"/>"/>
-
         </mm:relatednodes>
-
       <br/>
-
       <br/>
       </mm:node>
     </mm:list>
