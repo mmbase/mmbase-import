@@ -58,7 +58,7 @@ public class Factory {
 
         String tmp = (String) properties.get("MaxConcurrentRequests");
         if (tmp != null) {
-            try {                
+            try {
                 maxConcurrentRequests = Integer.parseInt(tmp);
             } catch (NumberFormatException e) {
                 //
@@ -69,7 +69,7 @@ public class Factory {
         if (tmp != null && ! tmp.equals("")) {
             defaultImageFormat = tmp;
         }
-        
+
 
         ImageConverter imageConverter = loadImageConverter();
         imageInformer = loadImageInformer();
@@ -77,24 +77,24 @@ public class Factory {
 
         imageConverter.init(params);
         imageInformer.init(params);
-        
+
 
         // Startup parrallel converters
         ireqprocessors = new ImageConversionRequestProcessor[maxConcurrentRequests];
-        log.info("Starting " + maxConcurrentRequests + " Converters");
+        log.info("Starting " + maxConcurrentRequests + " Converters for " + imageConverter);
         for (int i = 0; i < maxConcurrentRequests; i++) {
             ireqprocessors[i] = new ImageConversionRequestProcessor(imageCaches, imageConverter, imageInformer, imageRequestQueue, imageRequestTable);
         }
     }
-    
-    
+
+
     public static String getDefaultImageFormat() {
         return defaultImageFormat;
     }
 
-    
+
     private static ImageConverter loadImageConverter() {
-        
+
         String className  = DEFAULT_IMAGECONVERTER.getName();
         String tmp = (String) params.get("ImageConvertClass");
         if (tmp != null) className = tmp;
@@ -115,7 +115,7 @@ public class Factory {
         try {
             Class cl = Class.forName(className);
             ici = (ImageConverter) cl.newInstance();
-            log.info("loaded '" + className+"' for image Factory");
+            log.service("loaded '" + className+"' for image Factory");
         } catch (ClassNotFoundException e) {
             log.error("is classname in " + params.get("configfile") + " correct? ('not found class " + className + "')");
             log.error(Logging.stackTrace(e));
@@ -142,7 +142,7 @@ public class Factory {
         try {
             Class cl = Class.forName(className);
             ii = (ImageInformer) cl.newInstance();
-            log.info("loaded '" + className+"' for image Factory");
+            log.service("loaded '" + className+"' for image Factory");
         } catch (ClassNotFoundException e) {
             log.error("is classname in " + params.get("configfile") + " correct? ('not found class " + className + "')");
             log.error(Logging.stackTrace(e));
