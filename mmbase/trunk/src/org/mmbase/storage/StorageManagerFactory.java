@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.24 2005-12-17 15:45:20 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.25 2006-02-14 22:26:27 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -379,7 +379,7 @@ public abstract class StorageManagerFactory {
      */
     public void setAttributes(Map attributes) {
         this.attributes.putAll(attributes);
-        log.info("Database attributes " + this.attributes);
+        log.debug("Database attributes " + this.attributes);
     }
 
     /**
