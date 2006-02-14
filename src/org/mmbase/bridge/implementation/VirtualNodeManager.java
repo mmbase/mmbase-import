@@ -29,11 +29,12 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.38 2005-12-29 22:04:19 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.39 2006-02-14 22:34:55 michiel Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(AbstractNodeManager.class);
 
+    private static final boolean allowNonQueriedFields = true; // not yet configurable
 
     // field types
     final protected Map fieldTypes = new HashMap();
@@ -74,6 +75,9 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             builder = BasicCloudContext.mmb.getBuilder(((NodeQuery) query).getNodeManager().getName());
         } else {
             builder = null;
+            if (log.isDebugEnabled()) {
+                log.debug("Creating NodeManager for " + query.toSql());
+            }
             // code to solve the fields.
             Iterator steps = query.getSteps().iterator();
             while (steps.hasNext()) {
@@ -85,25 +89,43 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                 fd.finish();
                 Field ft = new BasicField(fd, this);
                 fieldTypes.put(name, ft);
-            }
-            Iterator fields = query.getFields().iterator();
-            while(fields.hasNext()) {
-                StepField field = (StepField) fields.next();
-                Step step = field.getStep();
-                Field f = cloud.getNodeManager(step.getTableName()).getField(field.getFieldName());
-                String name = field.getAlias();
-                if (name == null) {
-                    name = step.getAlias();
-                    if (name == null) name = step.getTableName();
-                    name += "." + field.getFieldName();
-                }
-                final String fieldName = name;
-                fieldTypes.put(name, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
-                        public String getName() {
-                            return fieldName;
-                        }
-                    });
 
+                if (allowNonQueriedFields && ! query.isAggregating()) {
+                    /// if hasField returns true also for unqueried fields
+                    Iterator fields = cloud.getNodeManager(step.getTableName()).getFields().iterator();
+                    while (fields.hasNext()) {
+                        Field f = (Field) fields.next();
+                        final String fieldName = name + "." + f.getName();
+                        log.info("adding field " + fieldName);
+                        fieldTypes.put(fieldName, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
+                                public String getName() {
+                                    return fieldName;
+                                }
+                            });
+                    }
+                }
+            }
+            if (! allowNonQueriedFields || query.isAggregating()) {
+                //hasField only returns true for queried fields
+                Iterator fields = query.getFields().iterator();
+                while(fields.hasNext()) {
+                    StepField field = (StepField) fields.next();
+                    Step step = field.getStep();
+                    Field f = cloud.getNodeManager(step.getTableName()).getField(field.getFieldName());
+                    String name = field.getAlias();
+                    if (name == null) {
+                        name = step.getAlias();
+                        if (name == null) name = step.getTableName();
+                        name += "." + field.getFieldName();
+                    }
+                    final String fieldName = name;
+                    fieldTypes.put(name, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
+                            public String getName() {
+                                return fieldName;
+                            }
+                        });
+
+                }
             }
             setStringValue("name", "cluster builder");
             setStringValue("description", "cluster builder");
@@ -123,8 +145,8 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
 
 
     public String getGUIName(int plurality, Locale locale) {
-        if (locale==null) locale = cloud.getLocale();
-        if (builder!=null) {
+        if (locale == null) locale = cloud.getLocale();
+        if (builder != null) {
             if (plurality == NodeManager.GUI_SINGULAR) {
                 return builder.getSingularName(locale.getLanguage());
             } else {
