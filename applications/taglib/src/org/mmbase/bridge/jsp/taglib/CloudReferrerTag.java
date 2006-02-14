@@ -29,21 +29,21 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Tags which are meant to live as a child of the CloudTag, could extend this
- * class. 
+ * class.
  *
- * @author Michiel Meeuwissen 
- * @version $Id: CloudReferrerTag.java,v 1.27 2005-11-11 09:24:34 nklasens Exp $ 
+ * @author Michiel Meeuwissen
+ * @version $Id: CloudReferrerTag.java,v 1.28 2006-02-14 22:27:18 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
-	
-    private static final Logger log = Logging.getLoggerInstance(CloudReferrerTag.class); 
+
+    private static final Logger log = Logging.getLoggerInstance(CloudReferrerTag.class);
 
 
     private static CloudContext cloudContext;
 
 
-    private Attribute cloudId = Attribute.NULL; 
+    private Attribute cloudId = Attribute.NULL;
     // the id of the cloud to which we refer
     // not yet supported by CloudTag
 
@@ -51,7 +51,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     /**
      * If there are more clouds to choose from, you can have a 'cloud'
      * attribute in your tag, in wich you can indicate the id of the
-     * cloud you mean.    
+     * cloud you mean.
      */
     public void setCloud(String c) throws JspTagException {
         cloudId = getAttribute(c);
@@ -63,7 +63,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     *
     * @return the CloudTag if found, else an exception.
     */
-	
+
     protected CloudProvider findCloudProvider() throws JspTagException {
         return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
     }
@@ -73,12 +73,12 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
      * @return the CloudProvider or null.
      *
-    */	
-    public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {        
+    */
+    public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {
         return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
     }
 
-    
+
     /**
      * Find the CloudProvider and return its cloud variable in one
      * step. And the result of findCloudProvider is stored, so
@@ -94,12 +94,12 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
 
     /**
-    * @return the cloud context 
+    * @return the cloud context
     */
     protected CloudContext getCloudContext(){
         if (cloudContext == null){
             cloudContext = ContextProvider.getDefaultCloudContext();
-        } 
+        }
         return cloudContext;
     }
 
@@ -112,7 +112,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      * Gets a node from the context.
      */
 
-    protected Node getNodeOrNull(String key) throws JspTagException {        
+    protected Node getNodeOrNull(String key) throws JspTagException {
         Object n = getObject(key);
         if (n instanceof Node) {
             log.debug("found a Node in Context");
@@ -138,7 +138,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
             }
         }
     }
-    
+
     /**
      * @since MMBase-1.8
      */
