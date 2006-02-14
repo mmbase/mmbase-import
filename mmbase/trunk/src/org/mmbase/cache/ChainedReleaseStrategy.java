@@ -29,13 +29,13 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.16 2006-01-31 10:06:09 ernst Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.17 2006-02-14 22:42:50 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
 
     private List releaseStrategies = new CopyOnWriteArrayList();
-    
+
     //this map is used to store the 'enabled' status of wrapped strategies when this one is being disabled
     //so the old settings can be returned when it is enabled again
     private Map childStrategyMemory = new HashMap();
@@ -49,24 +49,24 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
         addReleaseStrategy(st);
     }
 
-    
-    
+
+
     /**
      * This method provides a way of globally switching off all strategies this one wraps.
      * When this strategy is set to 'disabled', the state of all wrapped strategies is being
-     * preserved, so when it is being 'enabled' again, these settings are restored, in stead of 
+     * preserved, so when it is being 'enabled' again, these settings are restored, in stead of
      * just setting all wrapped strategies to 'enabled'.
      */
     public void setEnabled(boolean newStatus) {
         if(newStatus != isEnabled()){
             super.setEnabled(newStatus);
-            
+
             //if the strategy is enabled and we have recorded settings, we must put them back
-            
-            
+
+
             for(Iterator i = iterator(); i.hasNext();){
                 ReleaseStrategy strategy = (ReleaseStrategy)i.next();
-                
+
                 //if it must be switched on, we must use the memeory if present
                 if(newStatus == true){
                     Boolean memory = (Boolean) childStrategyMemory.get(strategy.getName());
@@ -97,7 +97,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
             releaseStrategies.remove(strategy);
         }
     }
-    
+
     /**
      * removes all strategies but the base one
      */
@@ -144,7 +144,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
         while (i.hasNext()) {
             ReleaseStrategy strategy = (ReleaseStrategy) i.next();
-            StrategyResult result = strategy.evaluate(event, query, cachedResult);            
+            StrategyResult result = strategy.evaluate(event, query, cachedResult);
             if (! result.shouldRelease()) return false;
         }
         return true;
@@ -155,17 +155,21 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
         while (i.hasNext()) {
             ReleaseStrategy strategy = (ReleaseStrategy) i.next();
-            StrategyResult result = strategy.evaluate(event, query, cachedResult);            
+            StrategyResult result = strategy.evaluate(event, query, cachedResult);
             if (! result.shouldRelease()) return false;
         }
         return true;
     }
-    
+
     public void clear(){
         super.clear();
         for(Iterator i = iterator(); i.hasNext();){
             ReleaseStrategy rs = (ReleaseStrategy) i.next();
             rs.clear();
         }
+    }
+
+    public String toString() {
+        return "" + releaseStrategies;
     }
 }
