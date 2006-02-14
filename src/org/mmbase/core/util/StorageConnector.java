@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.5 2006-01-25 09:32:23 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.6 2006-02-14 22:45:50 michiel Exp $
  */
 public class StorageConnector {
 
@@ -373,15 +373,17 @@ public class StorageConnector {
     }
 
     /**
-     * Returns the Cache which should be used for the result of a certain query. The current query
-     * only makes the distinction between a 'related nodes caches' and 'node list
-     * caches'. Multilevel queries are not done here.
+     * Returns the Cache which should be used for the result of a certain query. The current
+     * implementation only makes the distinction between queries for the 'related nodes caches' and
+     * for the 'node list caches'. Multilevel queries are not done here, so are at the moment not
+     * anticipated.
      * 
-     * It returns a Map rather then a Map. The idea behind this is that if in the future a
+     * It returns a Map rather then a Cache. The idea behind this is that if in the future a
      * query-result can be in more than one cache, a kind of 'chained map' can be returned, to
      * reflect that.
-     * @todo Perhaps other userfull parameters like query-duration and query-result could be added as
-     * parameters (in that case searching a result should certainly returns such a chained map, because then of course you don't have those). 
+     * @todo Perhaps other usefull parameters like query-duration and query-result could be added
+     * (in that case searching a result should certainly returns such a chained map, because then of
+     * course you don't have those).
      */
     protected Map getCache(SearchQuery query) {
         List steps = query.getSteps();
