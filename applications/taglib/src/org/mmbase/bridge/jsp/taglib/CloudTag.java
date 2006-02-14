@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.130 2006-02-01 14:00:31 nklasens Exp $
+ * @version $Id: CloudTag.java,v 1.131 2006-02-14 22:28:54 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -343,7 +343,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                     }
                 }
             }
-        } else {            
+        } else {
             session.removeAttribute(REALM + getSessionName());
         }
     }
@@ -386,7 +386,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (response.isCommitted()) {
             throw new JspTagException("Response is commited already, cannot send a deny");
         }
-        
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         if (getRealm() == null) {
@@ -477,7 +477,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
 
     private int evalBody() throws JspTagException {
-        
+
         if (getId() != null) { // writeclou to context.
             getContextProvider().getContextContainer().register(getId(), cloud);
         }
@@ -486,13 +486,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             return SKIP_BODY;
         }
         cloud.setProperty("request", request);
-
         if (jspVar != null) {
             log.debug("Setting jspVar " + jspVar);
             Object was = pageContext.getAttribute(jspVar);
             if (was != null && ! was.equals(cloud)) {
                 throw new JspTagException("Jsp-var '" + jspVar + "' already in pagecontext! (" + was + "), can't write " + cloud + " in it. This may be a backwards-compatibility issue. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
-            }            
+            }
             pageContext.setAttribute(jspVar, cloud);
         }
 
@@ -527,7 +526,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             int method = getMethod();
             if ((method != AuthenticationData.METHOD_UNSET &&
                  method != AuthenticationData.METHOD_PAGELOGON &&
-                 method != AuthenticationData.METHOD_SESSIONLOGON) || 
+                 method != AuthenticationData.METHOD_SESSIONLOGON) ||
                 logonatt != Attribute.NULL) { // probably add some more
                 throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method'  or 'logon' attributes");
             }
@@ -613,7 +612,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             Parameters logoutInfo = cloudContext.getAuthentication().createParameters("anonymous");
             fillStandardParameters(logoutInfo);
             if (cloud != null) {
-                String authenticate = cloud.getUser().getAuthenticationType();            
+                String authenticate = cloud.getUser().getAuthenticationType();
                 logoutInfo.setIfDefined(AuthenticationData.PARAMETER_AUTHENTICATE, authenticate);
             }
             logoutInfo.setIfDefined(AuthenticationData.PARAMETER_LOGOUT, Boolean.TRUE);
@@ -648,17 +647,17 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                     if (log.isDebugEnabled()) {
                         log.debug("Created/found a session. Cloud '" + sessionName + "' in it is of: " + cloud.getUser());
                     }
-                    
+
                 } else {
-                    if (log.isDebugEnabled()) {                        
+                    if (log.isDebugEnabled()) {
                         log.debug("Found invalid cloud in session variable '" + sessionName + "' of '" + cloud.getUser() + "'. Discarding.");
-                    }                    
+                    }
                     cloud = null;
                 }
             } else {
                 log.debug("No cloud found in session variable '" + sessionName + "'");
             }
-            
+
         } else {
             log.debug("Not succeeded creating a session");
         }
@@ -800,10 +799,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             }
 
         }
-        if (meth != AuthenticationData.METHOD_UNSET && 
-            meth != AuthenticationData.METHOD_ASIS && 
+        if (meth != AuthenticationData.METHOD_UNSET &&
+            meth != AuthenticationData.METHOD_ASIS &&
             cloud != null &&
-            authenticate != Attribute.NULL && 
+            authenticate != Attribute.NULL &&
             (!cloud.getUser().getAuthenticationType().equals(getAuthenticate()))) {
             log.debug("Cloud was logged on with different authentication type ('" + cloud.getUser().getAuthenticationType()
                       + "' in stead of the requested '" + getAuthenticate() + "'. Should do procedure again.");
@@ -880,7 +879,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
 
-    
+
 
     /**
      * Sets logon-variables using the login page (with the loginpage attribute) in the Map argument.
@@ -949,7 +948,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
 
             /*
-            if (1 == 0) { 
+            if (1 == 0) {
                 // XXXXX hmm, should test this in freeze
                 // making relative urls'.
 
@@ -1033,7 +1032,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             default :
                 return denyHTTP("<h2>This page requires authentication</h2>");
             }
-        case AuthenticationData.METHOD_LOGINPAGE: 
+        case AuthenticationData.METHOD_LOGINPAGE:
             switch (reason) {
             case DENYREASON_RANKTOOLOW :
                 return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW, exactReason);
@@ -1041,7 +1040,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             default :
                 return denyLoginPage(LOGINPAGE_DENYREASON_FAIL, exactReason);
             }
-        case AuthenticationData.METHOD_DELEGATE: 
+        case AuthenticationData.METHOD_DELEGATE:
         case AuthenticationData.METHOD_SESSIONDELEGATE:
             switch (reason) {
             case DENYREASON_RANKTOOLOW :
@@ -1125,7 +1124,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private final int makeCloud() throws JspTagException {
         Parameters user = null;
         int meth = getMethodOrDefault();
-        log.debug("Creating the cloud with method " + meth);
+        if (log.isDebugEnabled()) {
+            log.debug("Creating the cloud with method " + meth);
+        }
 
         // check how to log on:
         switch(meth) {
@@ -1231,7 +1232,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     public void setTAGINFO(Object o) {
         log.info("" + o);
     }
-                                        
+
 
     /**
      *  Sets the cloud variable considering all requirements. SKIP_BODY if this can not be done.
@@ -1252,7 +1253,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         }
         if (checkAnonymous()) { // check if requested, and create
             if (cloud == null) { // could not be created!
-                // what can we do now?                
+                // what can we do now?
                 return SKIP_BODY;
             } else {
                 // yes, found
@@ -1281,10 +1282,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             }
             return SKIP_BODY;
         }
-        if (checkLogoutMethod()) { 
+        if (checkLogoutMethod()) {
             return evalBody();
         }
-        
+
         if (cloud != null) {
             checkCloud();
         }
