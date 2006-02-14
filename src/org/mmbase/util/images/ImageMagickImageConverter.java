@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.util.images;
 
@@ -26,22 +26,22 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.2 2005-08-17 20:54:08 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.3 2006-02-14 22:53:34 michiel Exp $
  */
 public class ImageMagickImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
-    
+
     // Currently only ImageMagick works, this are the default value's
     private static String converterPath = "convert"; // in the path.
-    
+
     private static int colorizeHexScale = 100;
     // The modulate scale base holds the builder property to specify the scalebase.
     // If ModulateScaleBase property is not defined, then value stays max int.
     private static int modulateScaleBase = Integer.MAX_VALUE;
 
     // private static String CONVERT_LC_ALL= "LC_ALL=en_US.UTF-8"; I don't know how to change it.
-    
-    
+
+
     /**
      * This function initalises this class
      * @param params a <code>Map</code> of <code>String</code>s containing informationn, this should contain the key's
@@ -51,19 +51,19 @@ public class ImageMagickImageConverter implements ImageConverter {
     public void init(Map params) {
         String converterRoot = "";
         String converterCommand = "convert";
-        
+
         if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
             // on the windows system, we _can_ assume the it uses .exe as extention...
             // otherwise the check on existance of the program will fail.
             converterCommand += ".exe";
         }
-        
+
         String tmp;
         tmp = (String) params.get("ImageConvert.ConverterRoot");
         if (tmp != null && ! tmp.equals("")) {
             converterRoot = tmp;
         }
-        
+
         tmp = (String) params.get("ImageConvert.ConverterCommand");
         if (tmp != null && ! tmp.equals("")) {
             converterCommand = tmp;
@@ -72,7 +72,7 @@ public class ImageMagickImageConverter implements ImageConverter {
 
         String configFile = params.get("configfile").toString();
         if (configFile == null) configFile = "images builder xml";
-        
+
         converterPath = converterCommand; // default.
         if (!converterRoot.equals("")) { // also a root was indicated, add it..
             // now check if the specified ImageConvert.converterRoot does exist and is a directory
@@ -95,25 +95,25 @@ public class ImageMagickImageConverter implements ImageConverter {
         // do a test-run, maybe slow during startup, but when it is done this way, we can also output some additional info in the log about version..
         // and when somebody has failure with converting images, it is much earlier detectable, when it wrong in settings, since it are settings of
         // the builder...
-        
+
         // TODO: on error switch to Dummy????
         // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
         //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
-        
+
         CommandLauncher launcher = new CommandLauncher("ConvertImage");
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             log.debug("Starting convert");
             launcher.execute(converterPath);
-            
+
             launcher.waitAndRead(outputStream, errorStream);
-            
+
             // make stringtokenizer, with nextline as new token..
             StringTokenizer tokenizer =
                 new StringTokenizer(outputStream.toString(), "\n\r");
             if (tokenizer.hasMoreTokens()) {
-                log.info("Will use: " + converterPath + ", " + tokenizer.nextToken());
+                log.service("Will use: " + converterPath + ", " + tokenizer.nextToken());
             } else {
                 log.error( "converter from location " + converterPath + ", gave strange result: " + outputStream.toString()
                            + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
@@ -138,7 +138,7 @@ public class ImageMagickImageConverter implements ImageConverter {
             catch (IOException ioe) {
             }
         }
-        
+
         // Cant do more checking then this, i think....
         tmp = (String) params.get("ImageConvert.ColorizeHexScale");
         if (tmp != null) {
@@ -164,13 +164,13 @@ public class ImageMagickImageConverter implements ImageConverter {
             "ModulateScaleBase property not found, ignoring the modulateScaleBase.");
         }
     }
-    
+
     private static class ParseResult {
         List args;
         String format;
         File cwd;
     }
-    
+
     /**
      * This functions converts an image by the given parameters
      * @param input an array of <code>byte</code> which represents the original image
@@ -190,7 +190,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         }
         return pict;
     }
-    
+
     /**
      * Translates MMBase color format (without #) to an convert color format (with or without);
      */
@@ -206,8 +206,8 @@ public class ImageMagickImageConverter implements ImageConverter {
             return c.toLowerCase();
         }
     }
-    
-    
+
+
     /**
      * Translates the arguments for img.db to arguments for convert of ImageMagick.
      * @param params  List with arguments. First one is the image's number, which will be ignored.
@@ -222,7 +222,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         result.args = cmds;
         result.cwd = null;
         result.format = Factory.getDefaultImageFormat();
-        
+
         String key, type;
         String cmd;
         int pos, pos2;
@@ -251,7 +251,7 @@ public class ImageMagickImageConverter implements ImageConverter {
                     String hex = cmd;
                     // Check if hex length is 123456 6 chars.
                     if (hex.length() == 6) {
-                        
+
                         // Byte.decode doesn't work correctly.
                         int r = colorizeHexScale - Math.round( colorizeHexScale * Integer.parseInt( hex.substring(0, 2), 16) / 255.0f);
                         int g = colorizeHexScale - Math.round( colorizeHexScale * Integer.parseInt( hex.substring(2, 4), 16) / 255.0f);
@@ -324,7 +324,7 @@ public class ImageMagickImageConverter implements ImageConverter {
                             "Using named font without MMBase 'fonts' directory, using ImageMagick defaults only");
                         }
                     }
-                    
+
                 } else if (type.equals("circle")) {
                     type = "draw";
                     cmd = "circle " + cmd;
@@ -371,7 +371,7 @@ public class ImageMagickImageConverter implements ImageConverter {
                     cmds.add(type);
                 }
                 cmds.add(cmd);
-                
+
             } else {
                 key = Imaging.getAlias(key);
                 if (key.equals("lowcontrast")) {
@@ -389,7 +389,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         }
         return result;
     }
-    
+
     /**
      * @since MMBase-1.7
      */
@@ -398,7 +398,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         char c = s.charAt(0);
         return c == '-' || c == '+';
     }
-    
+
     /**
      * Calculates the modulate parameter values (brightness,saturation,hue) using a scale base.
      * ImageMagick's convert command changed its modulate scale somewhere between version v4.2.9 and v5.3.8.<br />
@@ -427,7 +427,7 @@ public class ImageMagickImageConverter implements ImageConverter {
         log.debug("Modulate cmd after calculation: " + modCmd);
         return modCmd;
     }
-    
+
     /**
      * Does the actual conversion.
      *
