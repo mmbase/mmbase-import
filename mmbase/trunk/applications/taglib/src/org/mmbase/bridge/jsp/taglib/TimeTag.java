@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.50 2005-12-05 22:52:50 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.51 2006-02-14 22:29:17 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -289,7 +289,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     private Date handlePrecision(Date date) throws JspTagException  {
         // precision sets fields of date opbject to 0 starting with least relevant bits (for caching purposes)
         if (precision != Attribute.NULL) {
-            Calendar cal = Calendar.getInstance(getLocale());
+            Calendar cal = Calendar.getInstance(getTimeZone(), getLocale());
             cal.setTime(date);
             int prec = getPrecision();
             switch (prec) {
@@ -324,7 +324,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         // relevance bit'. If for example you set it to 'months', then the year is set to 0 and can
         // be ignored. In this way you can e.g. check if it january, or if it is somebody's birthday.
         if (relevance != Attribute.NULL) {
-            Calendar cal = Calendar.getInstance(getLocale());
+            Calendar cal = Calendar.getInstance(getTimeZone(), getLocale());
             cal.setTime(date);
             int rel = getRelevance();
             switch (rel) {

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: DateFormats.java,v 1.1 2004-06-02 16:17:39 michiel Exp $
+ * @version $Id: DateFormats.java,v 1.2 2006-02-14 22:24:42 michiel Exp $
  */
 public class DateFormats {
 
@@ -49,13 +49,14 @@ public class DateFormats {
                                                             getDateFormatStyle(format.substring(i+1)), locale);
             }
         } else if (format.equals("e")) {
-            df = new DayOfWeekDateFormat();            
+            df = new DayOfWeekDateFormat();
         } else {
             df = new SimpleDateFormat(format, locale);
         }
-        
         if (!( timeZone == null ||  timeZone.equals(""))) {
             df.setTimeZone(TimeZone.getTimeZone(timeZone));
+        } else {
+            df.setTimeZone(org.mmbase.util.dateparser.DateParser.defaultTimeZone);
         }
         return df;
 
@@ -90,21 +91,15 @@ public class DateFormats {
     protected static class DayOfWeekDateFormat extends DateFormat {
         private TimeZone zone = null;
         public Date parse(String source, ParsePosition pos) {
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance(zone != null ? zone :  org.mmbase.util.dateparser.DateParser.defaultTimeZone);
             int day = source.charAt(0) - '0';
-            pos.setIndex(pos.getIndex() + 1);            
+            pos.setIndex(pos.getIndex() + 1);
             calendar.set(Calendar.DAY_OF_WEEK, day);
-            if (zone != null) {
-                calendar.setTimeZone(zone);
-            }
             return calendar.getTime();
         }
         public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance(zone != null ? zone :  org.mmbase.util.dateparser.DateParser.defaultTimeZone);
             calendar.setTime(date);
-            if (zone != null) {
-                calendar.setTimeZone(zone);
-            }
             // pos.setBeginIndex(0); pos.setEndIndex(1);
             toAppendTo.append(calendar.get(Calendar.DAY_OF_WEEK));
             return toAppendTo;

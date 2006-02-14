@@ -44,7 +44,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.182 2006-02-10 16:04:32 michiel Exp $
+ * @version $Id: MMBase.java,v 1.183 2006-02-14 22:24:07 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -191,9 +191,11 @@ public class MMBase extends ProcessorModule {
     private  ClusterBuilder clusterBuilder;
 
     /**
-     * Currently used locale. Access using getLanguage()
+     * Currently used locale. Access using getLocale()
      */
     private Locale locale = Locale.ENGLISH;
+
+    private TimeZone timeZone = TimeZone.getDefault();
 
     /**
      * Currently used encoding. Access using getEncoding(). This
@@ -264,6 +266,13 @@ public class MMBase extends ProcessorModule {
         if (tmp != null && !tmp.equals("")) {
             authtype = tmp;
         }
+
+        tmp = getInitParameter("TIMEZONE");
+        if (tmp != null && !tmp.equals("")) {
+            timeZone = TimeZone.getTimeZone(tmp);
+        }
+        log.info("MMBase Time zone      : " + timeZone.getDisplayName(true, TimeZone.LONG, Locale.US));
+        org.mmbase.util.dateparser.DateParser.setDefault(timeZone);
 
         tmp = getInitParameter("LANGUAGE");
         if (tmp != null && !tmp.equals("")) {
@@ -1238,6 +1247,20 @@ public class MMBase extends ProcessorModule {
      */
     public Locale getLocale() {
         return locale;
+    }
+
+    /**
+     * Retrieves the timezone asociated with this MMBase's 'DateTime' objects. MMBase stores dates
+     * in storage as 'Date' but without time-zone information, and therefore to a certain
+     * degree open to interpretation.
+     * 
+     * Together with this timezone the times can be defined absoletely (that is, of course, relative
+     * to the time frame of out planet).
+     (
+     * @since MMBase-1.8
+     */
+    public TimeZone getTimeZone() {
+        return timeZone;
     }
 
 
