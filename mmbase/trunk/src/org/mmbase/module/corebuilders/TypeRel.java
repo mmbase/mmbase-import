@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.67 2006-01-16 14:48:50 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.68 2006-02-14 22:55:10 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -424,7 +424,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * Note that this routine returns false both when a snumber/dnumber are swapped, and when a
      * typecombo does not exist - it is not possible to derive whether one or the other has
      * occurred.
-     * <p>
+     * </p>
      * @deprecated use {@link #contains}instead
      * @param n1 The source type number.
      * @param n2 The destination type number.
