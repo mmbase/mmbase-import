@@ -33,11 +33,16 @@ import java.io.*;
 public class DateParser {
 
     private static Random random = new Random();
+    public static TimeZone defaultTimeZone = TimeZone.getDefault();
+
+    public static void setDefault(TimeZone tz) {
+        defaultTimeZone = tz;
+    }
     private boolean dynamic = true;
     private long prev = 0;
     private int amount = 0;
     private int field = 0;
-    private Calendar date = Calendar.getInstance(TimeZone.getDefault());
+    private Calendar date = Calendar.getInstance(defaultTimeZone);
 
     public static void main(String argv[]) throws ParseException, InterruptedException {
         DateParser parser = new DateParser(new StringReader(argv[0]));
