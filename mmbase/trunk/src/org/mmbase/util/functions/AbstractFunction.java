@@ -21,12 +21,12 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.10 2006-01-13 15:37:24 pierre Exp $
+ * @version $Id: AbstractFunction.java,v 1.11 2006-02-14 22:52:33 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
  */
-abstract public class AbstractFunction implements Function, Comparable {
+abstract public class AbstractFunction implements Function, Comparable, java.io.Serializable {
 
     protected String    name;
     protected ReturnType  returnType;
