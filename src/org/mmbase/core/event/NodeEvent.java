@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.24 2006-01-24 17:56:48 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.25 2006-02-14 22:45:10 michiel Exp $
  */
 public class NodeEvent extends Event implements Serializable, Cloneable {
 
@@ -181,7 +181,7 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
      */
     public static int oldTypeToNewType(String eventType) {
         if (eventType.length() > 1) {
-            throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
+            throw new IllegalArgumentException("HELP! event of type '" + eventType + "' is unknown. This should not happen. (length = " + eventType.length() + ")");
         }
         switch(eventType.charAt(0)) {
         case 'c': return NodeEvent.EVENT_TYPE_CHANGED;
