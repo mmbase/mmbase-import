@@ -50,8 +50,6 @@
 
         <relation from="educations" to="people" type="classrel" />
         
-        <relation from="providers" to="flashpages" type="related" />
-
         <!-- People and their fields -->
         <relation from="people" to="fields" type="authrel" />
 
