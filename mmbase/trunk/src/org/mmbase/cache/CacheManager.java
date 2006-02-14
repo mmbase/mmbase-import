@@ -25,12 +25,12 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.3 2005-12-17 19:59:13 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.4 2006-02-14 22:42:32 michiel Exp $
  */
 public class CacheManager {
 
     private static final Logger log = Logging.getLoggerInstance(CacheManager.class);
-    
+
     /**
      * All registered caches
      */
@@ -55,7 +55,7 @@ public class CacheManager {
     public static Set getCaches() {
         return caches.keySet();
     }
-    
+
 
     /**
      * Puts a cache in the caches repository. This function will be
@@ -69,7 +69,7 @@ public class CacheManager {
         configure(configReader, cache.getName());
         return old;
     }
-    
+
     /**
      * Configures the caches using a config File. There is only one
      * config file now so the argument is a little overdone, but it
@@ -151,14 +151,14 @@ public class CacheManager {
                         //see if there are globally configured release strategies
                         List strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
                         if(strategies != null){
-                            log.debug("found "+strategies.size()+" globally configured strategies");
+                            log.debug("found " + strategies.size() + " globally configured strategies");
                             ((QueryResultCache)cache).addReleaseStrategies(strategies);
                         }
 
                         //see if there are strategies configured for this cache
                         strategies = findReleaseStrategies(xmlReader, cacheElement);
                         if(strategies != null){
-                            log.debug("found "+strategies.size()+" strategies for cache "+cache.getName());
+                            log.debug("found " + strategies.size() + " strategies for cache " + cache.getName());
                             ((QueryResultCache)cache).addReleaseStrategies(strategies);
                         }
                     }
@@ -196,7 +196,7 @@ public class CacheManager {
                     if(releaseStrategy != null){
 
                         result.add(releaseStrategy);
-                        log.info("Successfully created and added "+releaseStrategy.getName() + " instance");
+                        log.debug("Successfully created and added "+releaseStrategy.getName() + " instance");
                     }else{
                         log.error("release strategy instance is null.");
                     }
@@ -249,7 +249,7 @@ public class CacheManager {
         log.debug("exit getStrategyInstance()");
         return strategy;
     }
-    
+
     /**
      * The caches can be configured with an XML file, this file can
      * be changed which causes the caches to be reconfigured automaticly.
