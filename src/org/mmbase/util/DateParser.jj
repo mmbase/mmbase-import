@@ -74,7 +74,7 @@ public class DateParser {
         beginOfMonth();
     }
     protected void now() {
-        date = Calendar.getInstance();
+        date = Calendar.getInstance(defaultTimeZone);
     }
 
 }
@@ -113,18 +113,18 @@ void date() :  {}
     year_number() "-" month_number() "-" day_number() { beginOfDay(); dynamic = false; }
     | day_of_week() {beginOfDay();}
     | month_of_year() {beginOfMonth();}
-    | "now"      { date = Calendar.getInstance(); }
+    | "now"      { date = Calendar.getInstance(defaultTimeZone); }
     | integer() { date.setTimeInMillis(Long.parseLong(token.toString()) * 1000); dynamic = false; }
-    | "today"      { date = Calendar.getInstance(); beginOfDay(); }
-    | "tomonth"     { date = Calendar.getInstance(); beginOfMonth(); }
-    | "toyear"      { date = Calendar.getInstance(); beginOfYear(); }
-    | "tomorrow" { date = Calendar.getInstance(); date.add(Calendar.DAY_OF_YEAR, 1); beginOfDay(); }
-    | "yesterday" { date = Calendar.getInstance(); date.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
-    | "yestermonth" { date = Calendar.getInstance(); date.add(Calendar.MONTH, -1); beginOfMonth(); }
-    | "yesteryear" { date = Calendar.getInstance(); date.add(Calendar.YEAR, -1); beginOfYear(); }
+    | "today"      { date = Calendar.getInstance(defaultTimeZone); beginOfDay(); }
+    | "tomonth"     { date = Calendar.getInstance(defaultTimeZone); beginOfMonth(); }
+    | "toyear"      { date = Calendar.getInstance(defaultTimeZone); beginOfYear(); }
+    | "tomorrow" { date = Calendar.getInstance(defaultTimeZone); date.add(Calendar.DAY_OF_YEAR, 1); beginOfDay(); }
+    | "yesterday" { date = Calendar.getInstance(defaultTimeZone); date.add(Calendar.DAY_OF_YEAR, -1); beginOfDay(); }
+    | "yestermonth" { date = Calendar.getInstance(defaultTimeZone); date.add(Calendar.MONTH, -1); beginOfMonth(); }
+    | "yesteryear" { date = Calendar.getInstance(defaultTimeZone); date.add(Calendar.YEAR, -1); beginOfYear(); }
     | "duration" { beginOfYear(); date.set(Calendar.YEAR, 1970); }
     | "borreltijd"  { beginOfHour(); date.set(Calendar.HOUR_OF_DAY, 17); date.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-                     if (Calendar.getInstance().after(date)) date.add(Calendar.WEEK_OF_YEAR, 1);
+                     if (Calendar.getInstance(defaultTimeZone).after(date)) date.add(Calendar.WEEK_OF_YEAR, 1);
 
     }
 }
