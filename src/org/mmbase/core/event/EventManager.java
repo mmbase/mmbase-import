@@ -29,7 +29,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.8 2006-02-07 13:24:18 ernst Exp $
+ * @version $Id: EventManager.java,v 1.9 2006-02-14 22:44:29 michiel Exp $
  */
 public class EventManager {
 
@@ -163,7 +163,9 @@ public class EventManager {
         BrokerIterator i =  findBrokers(listener);
         while (i.hasNext()) {
             AbstractEventBroker broker = i.nextBroker(); 
-            if(broker.addListener(listener))log.info("listener " + listener + " added to broker " + broker );
+            if(broker.addListener(listener)) {
+                log.service("listener " + listener + " added to broker " + broker );
+            }
         }
     }
 
