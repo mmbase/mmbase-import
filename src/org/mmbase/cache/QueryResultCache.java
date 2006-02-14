@@ -32,7 +32,7 @@ import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.30 2006-01-26 10:08:46 ernst Exp $
+ * @version $Id: QueryResultCache.java,v 1.31 2006-02-14 22:43:30 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -79,7 +79,7 @@ abstract public class QueryResultCache extends Cache {
     QueryResultCache(int size) {
         super(size);
         releaseStrategy = new ChainedReleaseStrategy();
-        log.info("Instantiated a " + this.getClass().getName()); // should happen limited number of times
+        log.debug("Instantiated a " + this.getClass().getName() + " (" + releaseStrategy + ")"); // should happen limited number of times
         if (queryCaches.put(this.getName(), this) != null) {
             log.error("" + queryCaches + "already containing " + this + "!!");
         }
@@ -282,26 +282,26 @@ abstract public class QueryResultCache extends Cache {
                 while(i.hasNext()) {
                     ReleaseStrategy.StrategyResult result = null;
                     SearchQuery key = (SearchQuery) i.next();
-                    
+
                     //only if the strategy is enabled
                     if(releaseStrategy.isEnabled()){
-                        
+
                         if(event instanceof NodeEvent){
                             result = releaseStrategy.evaluate((NodeEvent)event, key, (List) get(key));
                         } else if (event instanceof RelationEvent){
                             result = releaseStrategy.evaluate((RelationEvent)event, key, (List) get(key));
-                        } else {                        
+                        } else {
                             log.error("event " + event.getClass() + " " + event + " is of unsupported type");
                             continue;
                         }
                         totalEvaluationTime += result.getCost();
                     }
-                    
+
                     if (!releaseStrategy.isEnabled() || (result != null &&result.shouldRelease())) {
                         removeKeys.add(key);
                         i.remove();
                     }
-                    
+
                 }
 
                 // ernst: why is this in a separate loop?
