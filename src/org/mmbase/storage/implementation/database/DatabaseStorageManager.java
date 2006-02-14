@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.145 2006-02-07 21:47:00 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.146 2006-02-14 22:25:55 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -479,7 +479,9 @@ public class DatabaseStorageManager implements StorageManager {
         if (ts == null) {
             return null;
         } else {
-            return new java.util.Date(ts.getTime());
+            long time = ts.getTime();
+            java.util.Date d = new java.util.Date(time + TimeZone.getDefault().getOffset(time));
+            return d;
         }
     }
 
@@ -1248,7 +1250,9 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Store a Date value of a field in a prepared statement.
      * The method uses the Casting class to convert to the appropriate value.
-     * Null values are stored as NULL if possible, otherwise they are stored as the date 31/12/1969 23:59:59 (-1)
+     * Null values are stored as NULL if possible, otherwise they are stored as the date 31/12/1969 23:59:59 GMT (-1) 
+     * TODO: I think that is -1000, not -1.
+     *
      * Override this method if you use another way to store dates
      * @since MMBase-1.8
      * @param statement the prepared statement
@@ -1263,7 +1267,10 @@ public class DatabaseStorageManager implements StorageManager {
     protected void setDateTimeValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, value, field, java.sql.Types.TIMESTAMP)) {
             java.util.Date date = Casting.toDate(value);
-            statement.setTimestamp(index, new Timestamp(date.getTime()));
+            long time = date.getTime();
+            // The driver will interpret the date object and convert it to the default timezone when storing.
+            // undo that..
+            statement.setTimestamp(index, new Timestamp(time - TimeZone.getDefault().getOffset(time)));
             node.storeValue(field.getName(), date);
         }
     }
