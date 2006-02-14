@@ -18,7 +18,7 @@ import org.mmbase.security.AuthenticationData;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.27 2006-01-17 21:26:34 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.28 2006-02-14 22:28:06 michiel Exp $
  */
 public interface CloudContext {
 
@@ -103,6 +103,13 @@ public interface CloudContext {
      * @since   MMBase-1.6
      */
     public java.util.Locale getDefaultLocale();
+
+
+    /**
+     * Returns the default time zone.
+     * @since MMBase-1.8
+     */
+    public java.util.TimeZone getDefaultTimeZone();
 
     /**
      * Returns a new, empty field list

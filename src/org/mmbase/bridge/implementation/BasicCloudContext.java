@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.49 2006-01-17 21:26:34 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.50 2006-02-14 22:28:06 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -165,6 +165,11 @@ public class BasicCloudContext implements CloudContext {
     public java.util.Locale getDefaultLocale() {
         if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
         return mmb.getLocale();
+    }
+
+    public java.util.TimeZone getDefaultTimeZone() {
+        if (!check()) throw new BridgeException("MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + ")");
+        return mmb.getTimeZone();
     }
 
     public FieldList createFieldList() {

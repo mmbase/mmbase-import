@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.36 2006-01-19 18:19:43 pierre Exp $
+ * @version $Id: DateHandler.java,v 1.37 2006-02-14 22:29:17 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -39,13 +39,16 @@ public class DateHandler extends AbstractTypeHandler {
     private static boolean EXIST_YEAR_0 = false;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-    private static final Date NODATE = new Date(-1);
-
     /**
      * @param tag
      */
     public DateHandler(FieldInfoTag tag) {
         super(tag);
+    }
+
+
+    private Calendar getInstance() throws JspTagException {
+        return Calendar.getInstance(tag.getCloudVar().getCloudContext().getDefaultTimeZone());
     }
 
     private void yearFieldValue(Calendar cal, StringBuffer buffer) {
@@ -147,8 +150,8 @@ public class DateHandler extends AbstractTypeHandler {
         }
         DataType dt = field.getDataType();
         DateTimePattern dateTimePattern = getPattern(dt);
-        Calendar minDate = Calendar.getInstance();
-        Calendar maxDate = Calendar.getInstance();
+        Calendar minDate = getInstance();
+        Calendar maxDate = getInstance();
         if (dt instanceof DateTimeDataType) {
             Date min = ((DateTimeDataType) dt).getMin();
             minDate.setTime(min);
@@ -260,7 +263,7 @@ public class DateHandler extends AbstractTypeHandler {
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = getInstance();
         Object oldValue = node.getValue(fieldName);
         if (oldValue != null) {
             oldValue = node.getDateValue(fieldName);
@@ -271,6 +274,7 @@ public class DateHandler extends AbstractTypeHandler {
 
         Calendar newCal = getSpecifiedValue(field, cal);
         Date newValue = newCal == null ? null : newCal.getTime();
+        log.info("Using " + cal + " -> " + newValue);
         if (oldValue == null) {
             if (newValue != null) {
                 node.setDateValue(fieldName, newValue);
@@ -285,16 +289,19 @@ public class DateHandler extends AbstractTypeHandler {
     }
 
 
-    protected Calendar getSpecifiedValue(Field field, Calendar cal) throws JspTagException {
+    /**
+     * @return The given Calendar instance or <code>null</code>
+     */
+    protected Calendar getSpecifiedValue(final Field field, Calendar cal) throws JspTagException {
         String fieldName = field.getName();
         DataType dt = field.getDataType();
         if (log.isDebugEnabled()) {
             log.debug("Using " + dt);
         }
         DateTimePattern dateTimePattern = getPattern(dt);
-        Calendar minDate = Calendar.getInstance();
+        Calendar minDate = getInstance();
         minDate.setTime(DateTimeDataType.MIN_VALUE);
-        Calendar maxDate = Calendar.getInstance();
+        Calendar maxDate = getInstance();
         maxDate.setTime(DateTimeDataType.MAX_VALUE);
 
 
@@ -339,12 +346,15 @@ public class DateHandler extends AbstractTypeHandler {
         return cal == null ? null : cal.getTime();
     }
     protected Calendar getCalendarValue(Node node, Field field) throws JspTagException {
-        Calendar cal = getSpecifiedValue(field, Calendar.getInstance());
+        Calendar cal = Calendar.getInstance();
+        cal.set(0, 0, 0, 0, 0, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal = getSpecifiedValue(field, cal);
         if (cal == null) {
             if (node != null) {
                 Object value = node.getValue(field.getName());
                 if (value != null) {
-                    cal = Calendar.getInstance();
+                    cal = getInstance();
                     cal.setTime(node.getDateValue(field.getName()));
                 } else {
                     cal = null;
@@ -352,13 +362,13 @@ public class DateHandler extends AbstractTypeHandler {
             } else {
                 Object def = field.getDataType().getDefaultValue();
                 if (def != null) {
-                    cal = Calendar.getInstance();
+                    cal = getInstance();
                     cal.setTime(Casting.toDate(def));
                 } else {
                     if (! field.getDataType().isRequired()) {
                         cal = null;
                     }  else {
-                        cal = Calendar.getInstance();
+                        cal = getInstance();
                     }
                 }
             }
@@ -376,8 +386,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Date timeValue = getSpecifiedValue(field, Calendar.getInstance()).getTime();
-        if (timeValue == NODATE) return null;
+        Date timeValue = getSpecifiedValue(field, getInstance()).getTime();
 
         String time;
         if (field.getType() == Field.TYPE_DATETIME) {
@@ -411,7 +420,7 @@ public class DateHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Object time = getSpecifiedValue(field, Calendar.getInstance()).getTime();
+        Object time = getSpecifiedValue(field, getInstance()).getTime();
         if (field.getType() != Field.TYPE_DATETIME) {
             time = new Long(Casting.toLong(time));
         }
