@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.6 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.7 2006-02-14 22:49:50 michiel Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
@@ -89,14 +89,20 @@ public class ConfirmPasswordDataType extends StringDataType {
             return (String) value;
         }
 
-        protected boolean simpleValid(Object v, Node node, Field field) {
+        protected boolean simpleValid(final Object v, final Node node, final Field field) {
             if (node != null && field != null && v != null) {
+                if (! node.isChanged(getField())) return true;
+
                 Field passwordField = node.getNodeManager().getField(getField());
                 Processor setProcessor = passwordField.getDataType().getProcessor(PROCESS_SET);
-                v = setProcessor.process(node, field, v);
+                Object processedValue = setProcessor.process(node, field, v);
                 String passwordValue = (String) node.getObjectValue(getField());
-                log.debug("Comparing '" + passwordValue + "' with '" + v + "'");
-                return passwordValue.equals(v);
+                if (log.isDebugEnabled()) {
+                    log.debug("Password checking " + (node.isNew() ? "new" : "existing") + " node. Password field " + passwordField + " set-processor " + setProcessor);
+                    log.debug("Offered value '" + v + "' --> '" + processedValue);
+                    log.debug("Comparing '" + passwordValue + "' with '" + processedValue + "'(" + v + ")");
+                }
+                return passwordValue.equals(v) || passwordValue.equals(processedValue);
             } else {
                 return true;
             }
