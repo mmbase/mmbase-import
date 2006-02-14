@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.77 2005-10-19 18:36:53 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.78 2006-02-14 22:58:54 michiel Exp $
  */
 
 public class WriterHelper {
@@ -168,17 +168,6 @@ public class WriterHelper {
     }
 
     /**
-     * Gets specified escaper (as a string) or null (if not set)
-     * @since MMBase-1.7
-     */
-
-    public String getEscape() throws JspTagException {
-        String e = (String) escape.getValue(thisTag);
-        if ("".equals(e)) return null;
-        return e;
-    }
-
-    /**
      * @deprecated Use setWrite(Attribute)
      */
     public void setWrite(Boolean b) {
@@ -259,15 +248,32 @@ public class WriterHelper {
     public void setValue(Object v) throws JspTagException {
         setValue(v, IMPLICITLIST);
     }
+
+    /**
+     * Gets specified escaper (as a string) or null (if not set)
+     * @since MMBase-1.7
+     */
+
+    public String getEscape() throws JspTagException {
+        String e = (String) escape.getValue(thisTag);
+        if ("".equals(e)) return null;
+        return e;
+    }
+
+
     /**
      * @since MMBase-1.8
      */
     public CharTransformer getEscaper() throws JspTagException {
-        String e = getEscape();
-        if (e == null) {
-            return (CharTransformer) thisTag.getPageContext().getAttribute(ContentTag.ESCAPER_KEY);
+        if (useEscaper || escape != Attribute.NULL) {            
+            String e = getEscape();
+            if (e == null) {
+                return (CharTransformer) thisTag.getPageContext().getAttribute(ContentTag.ESCAPER_KEY);
+            } else {
+                return ContentTag.getCharTransformer((String) e, thisTag);
+            }
         } else {
-            return ContentTag.getCharTransformer((String) e, thisTag);
+            return null;
         }
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
@@ -405,6 +411,8 @@ public class WriterHelper {
         pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
         if (log.isDebugEnabled()) {
             log.debug("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
+            log.debug("Escaper: " + getEscaper());
+            log.debug("_:" + pageContext.getAttribute("_"));
         }
     }
 
@@ -455,32 +463,23 @@ public class WriterHelper {
     protected java.io.Writer getPageString(java.io.Writer w) throws JspTagException, IOException {
         if (value == null) return w;
 
-        if (value instanceof byte[]) {
-            // writing bytes to the page?? We write base64 encoded...
-            // this is an ondocumented feature...
-            w.write(org.mmbase.util.Encode.encode("BASE64", (byte[]) value));
-            return w;
-        }
-        if (useEscaper || escape != Attribute.NULL) {
-            CharTransformer escaper;
-            if (! escape.getString(thisTag).equals("")) {
-                escaper = ContentTag.getCharTransformer(escape.getString(thisTag), thisTag);
+        Object writeValue = thisTag.getPageContext().getAttribute("_");
+        if (writeValue == value) {
+            if (value instanceof byte[]) {
+                // writing bytes to the page?? We write base64 encoded...
+                // this is an ondocumented feature...
+                value = org.mmbase.util.Encode.encode("BASE64", (byte[]) value);
             } else {
-                escaper = thisTag.getContentTag().getWriteEscaper();
+                // perhaps this could not be decently wrapped, and it was not wrapped.
+                CharTransformer ct = getEscaper();
+                if (ct != null) {
+                    writeValue = ct.transform(Casting.toString(value));
+                }
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Using escaper " + escaper);
-            }
-            if (escaper != null) {
-                w.write(escaper.transform(Casting.toString(value)));
-                return w;
-            } else {
-                return  Casting.toWriter(w, value);
-            }
-        } else {
-            Casting.toWriter(w, value);
-            return w;
         }
+        if (writeValue == null) writeValue = "";
+        w.write(writeValue.toString());
+        return w;
     }
 
     /**
