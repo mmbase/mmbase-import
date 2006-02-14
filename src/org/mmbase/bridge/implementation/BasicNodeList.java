@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.43 2005-12-29 19:38:45 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.44 2006-02-14 22:30:42 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -100,7 +100,11 @@ public class BasicNodeList extends BasicList implements NodeList {
             } else if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
                 MMObjectBuilder builder = coreNode.getBuilder();
                 if (builder instanceof VirtualBuilder) {
-                    node = new VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
+                    if (nodeManager != null) {
+                        node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, nodeManager);
+                    } else {
+                        node = new VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
+                    }
                 } else {
                     node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, cloud.getNodeManager(builder.getObjectType()));
                 }
