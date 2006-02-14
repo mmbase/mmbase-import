@@ -10,27 +10,29 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
-import java.util.Date;
 
 /**
- * This processor can be used as a 'commit' processor on a (datetime) field. The field will then be set
- * to the current time when the node is committed. 
+ * This processor can be used as a 'set' processor on a (datetime) field. The field will then be set
+ * to the current user id when this field is not yet set.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModified.java,v 1.4 2006-02-14 22:46:41 michiel Exp $
+ * @version $Id: Creator.java,v 1.1 2006-02-14 22:46:41 michiel Exp $
  * @since MMBase-1.8
  * @see   LastModifier
  */
 
-public class LastModified implements CommitProcessor {
+
+public class Creator implements CommitProcessor {
 
     private static final long serialVersionUID = 1L;
 
     public void commit(Node node, Field field) {
-        node.setValueWithoutProcess(field.getName(), new Date());
+        if (node.isNull(field.getName())) {
+            node.setValueWithoutProcess(field.getName(), node.getCloud().getUser().getIdentifier());
+        }
     }
 
     public String toString() {
-        return "lastmodified";
+        return "creator";
     }
 }

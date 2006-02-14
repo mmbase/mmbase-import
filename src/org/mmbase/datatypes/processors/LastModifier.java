@@ -12,13 +12,14 @@ package org.mmbase.datatypes.processors;
 import org.mmbase.bridge.*;
 
 /**
- * This processor can be used as a 'set' processor on a (datetime) field. The field will then be set
+ * This processor can be used as a 'commit' processor on a string field. The field will then be set
  * to the current user id when the node is committed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifier.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id: LastModifier.java,v 1.4 2006-02-14 22:46:41 michiel Exp $
  * @since MMBase-1.8
- * @see   LastModifier
+ * @see   LastModified
+ * @see   Creator
  */
 
 
