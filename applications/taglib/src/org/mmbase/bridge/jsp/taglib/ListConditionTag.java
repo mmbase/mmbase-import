@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListConditionTag.java,v 1.21 2005-12-13 09:49:14 michiel Exp $ 
+ * @version $Id: ListConditionTag.java,v 1.22 2006-02-14 13:27:27 michiel Exp $ 
  */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
@@ -73,26 +73,27 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
 
     public int doStartTag() throws JspTagException{
         // find the parent list:
-        LoopTagStatus list = getLoopTag().getLoopStatus();
+        LoopTag list = getLoopTag();
 
 
         boolean i = getInverse();
         boolean result = false;
-        int j = getValue();        
+        int j = getValue();
         //
         // One would expect a switch, but for some odd reason, that does not work in my resin 3.0.6
         //
         switch(j) {
-        case CONDITION_LAST:   result = list.isLast() != i; break;
-        case CONDITION_FIRST:  result = list.isFirst() != i; break;
-        case CONDITION_EVEN:   result = ((list.getIndex() + 1) % 2 == 0) != i; break;
-        case CONDITION_ODD:    result = ((list.getIndex() + 1) % 2 != 0) != i; break;
+        case CONDITION_LAST:   result = list.getLoopStatus().isLast() != i; break;
+        case CONDITION_FIRST:  result = list.getLoopStatus().isFirst() != i; break;
+        case CONDITION_EVEN:   result = ((list.getLoopStatus().getIndex() + 1) % 2 == 0) != i; break;
+        case CONDITION_ODD:    result = ((list.getLoopStatus().getIndex() + 1) % 2 != 0) != i; break;
         case CONDITION_CHANGED: 
             if (list instanceof ListProvider) {
                 result = ((ListProvider) list).isChanged() != i; 
             } else {
                 result = ! i;
             }
+
             break;
         default:
             throw new JspTagException("Don't know what to do (" + getValue() + ")");
