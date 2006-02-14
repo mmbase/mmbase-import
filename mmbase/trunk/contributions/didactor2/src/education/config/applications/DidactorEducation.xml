@@ -8,6 +8,9 @@
     </requirements>
 
     <neededbuilderlist>
+        <!-- Imported from DidactorCore -->
+        <builder maintainer="didactor.nl" version="2">providers</builder>
+
         <builder maintainer="didactor.nl" version="2">learnobjects</builder>
         <builder maintainer="didactor.nl" version="2">learnblocks</builder>
 
@@ -56,7 +59,6 @@
         <!-- Builders for saving made tests -->
         <builder maintainer="didactor.nl" version="2">givenanswers</builder>
         <builder maintainer="didactor.nl" version="2">madetests</builder>
-
 
         <builder maintainer="didactor.nl" version="1">packages</builder>
         <builder maintainer="didactor.nl" version="1">htmlpages</builder>
@@ -119,6 +121,8 @@
         <relation from="flashpages" to="videotapes" type="posrel" />
         <relation from="flashpages" to="urls" type="posrel" />
         <relation from="flashpages" to="flashpages" type="descriptionrel" />
+
+        <relation from="providers" to="flashpages" type="related" />
 
         <!-- tips -->
         <relation from="tips" to="attachments" type="related" />
