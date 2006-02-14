@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.12 2005-12-23 10:20:17 ernst Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.13 2006-02-14 22:43:57 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
@@ -38,14 +38,14 @@ public abstract class ReleaseStrategy {
     private long totalEvaluationTimeInMillis = 0;
 
     private boolean isActive = true;
-    
+
     private static final Logger log = Logging.getLoggerInstance(ReleaseStrategy.class);
 
     public ReleaseStrategy() {
     }
 
     public abstract String getName();
-   
+
     public abstract String getDescription();
 
     /*
@@ -81,7 +81,7 @@ public abstract class ReleaseStrategy {
             return new StrategyResult(true, timer);
         }
     }
-    
+
     public final StrategyResult evaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         Timer timer = new Timer();
         if (isActive) {
@@ -123,7 +123,7 @@ public abstract class ReleaseStrategy {
      * @return true if the cache entry should be released
      */
     protected abstract boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult);
-    
+
     /**
      * implement this method to create your own strategy.
      *
@@ -145,17 +145,17 @@ public abstract class ReleaseStrategy {
             isActive = newStatus;
         }
     }
-    
+
     public boolean isEnabled(){
        return isActive;
     }
-    
+
     public void clear(){
         totalEvaluated = 0;
         totalPreserved = 0;
         totalEvaluationTimeInMillis = 0;
     }
-    
+
     public boolean equals(Object ob){
         return ob instanceof ReleaseStrategy && this.getName().equals(((ReleaseStrategy)ob).getName());
     }
@@ -164,8 +164,12 @@ public abstract class ReleaseStrategy {
         return getName().hashCode();
     }
 
+    public String toString() {
+        return getName();
+    }
+
     /**
-     * utility for specializations: get all the constraints in the query that apply to 
+     * utility for specializations: get all the constraints in the query that apply to
      * a certain field
      * @param fieldName
      * @param constraint
@@ -200,7 +204,7 @@ public abstract class ReleaseStrategy {
         }
         return result;
     }
-        
+
     /**
      * utility for specializations: get all the relation steps of a query
      * @param query
@@ -213,7 +217,7 @@ public abstract class ReleaseStrategy {
         }
         return result;
     }
-    
+
     /**
      * utility for specializations: get all the field steps of a query
      * @param query
@@ -226,7 +230,7 @@ public abstract class ReleaseStrategy {
         }
         return result;
     }
-    
+
     /**
      * utility for specializations: get all the steps in a query of a give type
      * @param query
@@ -240,8 +244,8 @@ public abstract class ReleaseStrategy {
         }
         return result;
     }
-    
- 
+
+
     /**
      * @author Ernst Bunders This class is a bean containing shouldRelease of an
      *         event evaluation
@@ -254,7 +258,7 @@ public abstract class ReleaseStrategy {
             this.shouldRelease = shouldRelease;
             this.cost = cost.getTimeMillis();
         }
-        
+
 
         StrategyResult(boolean shouldRelease, long cost) {
             this.shouldRelease = shouldRelease;
@@ -292,5 +296,6 @@ public abstract class ReleaseStrategy {
             return System.currentTimeMillis() - now;
         }
     }
+
 
 }
