@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.10 2005-12-23 12:32:26 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.11 2006-02-14 22:50:21 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -122,10 +122,10 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
     protected StringBuffer toStringBuffer() {
         StringBuffer buf = super.toStringBuffer();
         if (getMinLength() > 0) {
-            buf.append("minLength:" + getMinLength() + "\n");
+            buf.append("minLength:" + getMinLength() + " ");
         }
         if (getMaxLength() < Long.MAX_VALUE) {
-            buf.append("maxLength:" + getMaxLength() + "\n");
+            buf.append("maxLength:" + getMaxLength() + " ");
         }
         return buf;
     }
