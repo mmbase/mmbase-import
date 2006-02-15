@@ -292,11 +292,24 @@ function processReqChange() {
   }
 }
 
+function toggleOpenClose(link) {
+  var fbody = document.getElementById('float_body');
+  if (fbody) {
+    if (fbody.style.display == 'block') {
+      fbody.style.display = 'none';
+      link.innerHTML = 'open';
+    } else {
+      fbody.style.display = 'block';
+      link.innerHTML = 'close';
+    }
+  }
+}
+
 </script>
   <div class="floating" id="box">
     <div class="float_title" onmousedown="dragStart(event, 'box')" >
       <span style="float: left">Translations</span>
-      <span style="float: right"><a href="#" onclick="javascript: document.getElementById('float_body').style.display='block';">open</a></span>
+      <span style="float: right"><a style="color: #fff" href="#" onclick="javascript: toggleOpenClose(this);">open</a></span>
     </div>
     <div class="float_body" id="float_body" style="display: none" />
     <ul>
