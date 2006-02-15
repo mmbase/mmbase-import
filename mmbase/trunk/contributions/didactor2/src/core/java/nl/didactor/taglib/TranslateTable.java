@@ -33,11 +33,13 @@ public class TranslateTable {
      * reloads them into the translation table in case they are
      * changed */
     static class TranslationFileWatcher extends FileWatcher { 
+        public String basepath;
         /**
          * Constructor
          */
-        public TranslationFileWatcher() { 
+        public TranslationFileWatcher(String path) { 
             super(true); 
+            this.basepath = path;
         } 
         
         /**
@@ -62,7 +64,7 @@ public class TranslateTable {
             path = (new File(path)).getCanonicalPath();
         } catch (IOException e) {}
 
-        watcher = new TranslationFileWatcher();
+        watcher = new TranslationFileWatcher(path);
         watcher.setDelay(10 * 1000);
         addFiles(new File(path), watcher);
 
@@ -115,12 +117,14 @@ public class TranslateTable {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith("#"))
+                if (line.startsWith("#")) {
                     continue;
+                }
 
                 int equalsign = line.indexOf("=");
-                if (equalsign == -1)
+                if (equalsign == -1) {
                     continue;
+                }
 
                 String key = line.substring(0, equalsign).trim();
                 String value = line.substring(equalsign + 1, line.length()).trim();
@@ -140,6 +144,79 @@ public class TranslateTable {
             }
         } catch (Exception e) {
             log.error("Exception: " + e);
+        }
+    }
+
+    /**
+     * Sync the entire translation tables to disk. This is done by iterating
+     * over the (sorted) set of translation keys, and parsing them into component,
+     * locale and messagekey. The file for this component+locale is emptied, the new
+     * keys are saved to that file. During this process the file is unsubscribed from 
+     * the filewatcher, to make sure that there are no re-reads of the translation table
+     * when we are writing it to disk.
+     */
+    public static void save() {
+        Vector seenFiles = new Vector();
+        synchronized(translationTable) {
+            TreeSet ts = new TreeSet(translationTable.keySet());
+            String previousFilename = "";
+            Iterator i = ts.iterator();
+            PrintWriter out = null;
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                StringTokenizer st = new StringTokenizer(key, ".");
+                String component = st.nextToken();
+                String locale = st.nextToken();
+                String filename = "";
+                String completekey = key;
+
+                // There are two options: component.keyname and component.locale.keyname
+                if (st.hasMoreTokens()) {
+                    key = st.nextToken();
+                    filename = component + "." + locale + ".properties";
+                } else {
+                    key = locale;
+                    locale = "";
+                    filename = component + ".properties";
+                }
+
+                // If we were not already writing to this filename, we have to open up
+                // the new file (and close the previous one)
+                if (!filename.equals(previousFilename)) {
+                    if (out != null) {
+                        out.flush();
+                        out.close();
+                    }
+                    try {
+                        String fname = watcher.basepath + File.separator + filename;
+
+                        // If we have written to this file before, we must append to it!
+                        if (seenFiles.contains(fname)) {
+                            out = new PrintWriter(new BufferedWriter(new FileWriter(fname, true)));
+                        } else {
+                            // New file, remove it from the filewatcher (so we are sure that there is nobody
+                            // reading the file when we are writing it.
+                            watcher.remove(new File(fname));
+                            out = new PrintWriter(new BufferedWriter(new FileWriter(fname, false)));
+                            seenFiles.add(fname);
+                        }
+                    } catch (IOException e) {
+                        log.error("Exception while trying to write file '" + watcher.basepath + File.separator + filename + "': " + e);
+                        log.error(e);
+                    }
+                }
+                previousFilename = filename;
+                out.println(key + "=" + translationTable.get(completekey));
+            }
+            if (out != null) {
+                out.flush();
+                out.close();
+            }
+        }
+
+        // Final step: add the files to the filewatcher again
+        for (int i=0; i<seenFiles.size(); i++) {
+            watcher.add(new File((String)seenFiles.get(i)));
         }
     }
     
@@ -190,18 +267,20 @@ public class TranslateTable {
      * Set a new translation value
      */
     public static void changeTranslation(String tkey, String locale, String newvalue) {
-        StringTokenizer st = new StringTokenizer(tkey, ".");
-        String namespace = st.nextToken();
-        String key = st.nextToken();
+        synchronized(translationTable) {
+            StringTokenizer st = new StringTokenizer(tkey, ".");
+            String namespace = st.nextToken();
+            String key = st.nextToken();
 
-        String gkey = namespace;
-        if (locale != null && !"".equals(locale)) {
-            gkey += "." + locale;
+            String gkey = namespace;
+            if (locale != null && !"".equals(locale)) {
+                gkey += "." + locale;
+            }
+            gkey += "." + key;
+            if (translationTable.containsKey(gkey)) {
+                translationTable.remove(gkey);
+            }
+            translationTable.put(gkey, newvalue);
         }
-        gkey += "." + key;
-        if (translationTable.containsKey(gkey)) {
-            translationTable.remove(gkey);
-        }
-        translationTable.put(gkey, newvalue);
     }
 }
