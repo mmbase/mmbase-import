@@ -203,6 +203,7 @@
              <include name="users/**"/>
              <include name="metadata/**"/>
              <include name="migrate/**"/>
+             <include name="translation/**"/>
              <include name="${component}/**"/>
              <include name="classes/**"/>
              <exclude name="**/CVS"/>
