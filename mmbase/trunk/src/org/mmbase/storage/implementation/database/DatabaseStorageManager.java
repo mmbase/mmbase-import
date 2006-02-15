@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.146 2006-02-14 22:25:55 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.147 2006-02-15 09:32:29 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -453,6 +453,16 @@ public class DatabaseStorageManager implements StorageManager {
      }
 
     /**
+     * Returns the offset which must be used in the database. Currently this is based on te system's
+     * default time zone. It is imaginable that can have configuration or database specific details later.
+     * @param time The time at which it is evaluated (summer time issues)
+     * @since MMBase-1.8
+     */
+    protected int getTimeZoneOffset(long time) {
+        return TimeZone.getDefault().getOffset(time);
+    }
+
+    /**
      * Retrieve a date for a specified object field.
      * The default method uses {@link ResultSet#getTimestamp(int)} to obtain the date.
      * @param result the resultset to retrieve the value from
@@ -461,6 +471,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @return the retrieved java.util.Date value, <code>null</code> if no text was stored
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
+     * @since MMBase-1.8
      */
     protected java.util.Date getDateTimeValue(ResultSet result, int index, CoreField field) throws StorageException, SQLException {
         Timestamp ts = null;
@@ -480,7 +491,7 @@ public class DatabaseStorageManager implements StorageManager {
             return null;
         } else {
             long time = ts.getTime();
-            java.util.Date d = new java.util.Date(time + TimeZone.getDefault().getOffset(time));
+            java.util.Date d = new java.util.Date(time + getTimeZoneOffset(time));
             return d;
         }
     }
@@ -494,6 +505,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @return the retrieved Boolean value, <code>null</code> if no text was stored
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
+     * @since MMBase-1.8
      */
     protected Boolean getBooleanValue(ResultSet result, int index, CoreField field) throws StorageException, SQLException {
         boolean value = result.getBoolean(index);
@@ -1229,7 +1241,6 @@ public class DatabaseStorageManager implements StorageManager {
      * The method uses the Casting class to convert to the appropriate value.
      * Null values are stored as NULL if possible, otherwise they are stored as <code>false</code>
      * Override this method if you use another way to store booleans
-     * @since MMBase-1.8
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
      * @param value the data (boolean) to store
@@ -1238,6 +1249,7 @@ public class DatabaseStorageManager implements StorageManager {
      *             to the data (i.e. creating a default value for a non-null field that had a null value)
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
+     * @since MMBase-1.8
      */
     protected void setBooleanValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) {
@@ -1254,7 +1266,6 @@ public class DatabaseStorageManager implements StorageManager {
      * TODO: I think that is -1000, not -1.
      *
      * Override this method if you use another way to store dates
-     * @since MMBase-1.8
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
      * @param value the data (date) to store
@@ -1263,6 +1274,7 @@ public class DatabaseStorageManager implements StorageManager {
      *             to the data (i.e. creating a default value for a non-null field that had a null value)
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
+     * @since MMBase-1.8
      */
     protected void setDateTimeValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, value, field, java.sql.Types.TIMESTAMP)) {
@@ -1270,7 +1282,7 @@ public class DatabaseStorageManager implements StorageManager {
             long time = date.getTime();
             // The driver will interpret the date object and convert it to the default timezone when storing.
             // undo that..
-            statement.setTimestamp(index, new Timestamp(time - TimeZone.getDefault().getOffset(time)));
+            statement.setTimestamp(index, new Timestamp(time - getTimeZoneOffset(time)));
             node.storeValue(field.getName(), date);
         }
     }
@@ -1280,7 +1292,6 @@ public class DatabaseStorageManager implements StorageManager {
      * The method uses the Casting class to convert to the appropriate value.
      * Null values are stored as NULL if possible, otherwise they are stored as an empty list.
      * Override this method if you use another way to store lists
-     * @since MMBase-1.8
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
      * @param value the data (List) to store
@@ -1289,6 +1300,7 @@ public class DatabaseStorageManager implements StorageManager {
      *             to the data (i.e. creating a default value for a non-null field that had a null value)
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
+     * @since MMBase-1.8
      */
     protected void setListValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, value, field, java.sql.Types.ARRAY)) {
