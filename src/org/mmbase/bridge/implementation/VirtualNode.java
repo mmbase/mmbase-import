@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.18 2005-12-29 19:10:14 michiel Exp $
+ * @version $Id: VirtualNode.java,v 1.19 2006-02-15 12:57:46 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -69,7 +69,10 @@ public class VirtualNode extends AbstractNode implements Node {
      */
     public VirtualNode(Map values, Cloud cloud) {
         this(getVirtualNode(values), cloud);
+    }
 
+    public String toString() {
+        return "BridgeVirtualNode " + noderef;
     }
 
     protected static org.mmbase.module.core.VirtualNode getVirtualNode(Map values) {

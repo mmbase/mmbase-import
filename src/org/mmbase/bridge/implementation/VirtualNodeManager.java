@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.39 2006-02-14 22:34:55 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.40 2006-02-15 12:57:46 michiel Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(AbstractNodeManager.class);
@@ -63,6 +63,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             setStringValue("description", "virtual builder");
         } else {
             builder = node.getBuilder();
+            BasicNodeManager.sync(builder, fieldTypes, this);
         }
     }
 
@@ -73,6 +74,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         super(cloud);
         if (query instanceof NodeQuery) {
             builder = BasicCloudContext.mmb.getBuilder(((NodeQuery) query).getNodeManager().getName());
+            BasicNodeManager.sync(builder, fieldTypes, this);
         } else {
             builder = null;
             if (log.isDebugEnabled()) {
@@ -96,7 +98,6 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                     while (fields.hasNext()) {
                         Field f = (Field) fields.next();
                         final String fieldName = name + "." + f.getName();
-                        log.info("adding field " + fieldName);
                         fieldTypes.put(fieldName, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
                                 public String getName() {
                                     return fieldName;
@@ -130,6 +131,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             setStringValue("name", "cluster builder");
             setStringValue("description", "cluster builder");
         }
+
     }
 
     /**

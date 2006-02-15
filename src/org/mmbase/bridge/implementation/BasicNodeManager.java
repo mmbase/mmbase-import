@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.119 2006-01-30 15:52:06 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.120 2006-02-15 12:57:46 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -163,6 +163,25 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         sync();
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected static void sync(MMObjectBuilder builder, Map fieldTypes, NodeManager nodeManager) {
+        Collection fields = builder.getFields();
+        if (fields != null) { // when is it null?
+            fieldTypes.clear();
+            for(Iterator i = fields.iterator(); i.hasNext();){
+                CoreField f = (CoreField) i.next();
+                Field ft = new BasicField(f, nodeManager);
+                if (f.getStoragePosition() > 0) {
+                    fieldTypes.put(ft.getName(),ft);
+                }
+            }
+        }
+    }
+
+
     /**
      * Syncs the nodemanger with the builder.
      * Loads the fieldlist from the associated builder if needed.
@@ -172,17 +191,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         long builderVersion = builder.getInternalVersion();
         if (internalVersion < builderVersion) {
             internalVersion = builderVersion;
-            Collection fields = builder.getFields();
-            if (fields != null) { // when is it null?
-                fieldTypes.clear();
-                for(Iterator i = fields.iterator(); i.hasNext();){
-                    CoreField f = (CoreField) i.next();
-                    Field ft = new BasicField(f, this);
-                    if (f.getStoragePosition() > 0) {
-                        fieldTypes.put(ft.getName(),ft);
-                    }
-                }
-            }
+            sync(builder, fieldTypes, this);
         }
     }
 
