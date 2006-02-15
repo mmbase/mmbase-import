@@ -27,7 +27,10 @@
      else return true;
      }
   </script>
-  <mm:import externid="referrer" required="true" />
+  <mm:import externid="referrer" />
+  <mm:compare referid="referrer" value="">
+     <mm:import id="referrer" reset="true">index.jsp</mm:import>
+  </mm:compare>
   <form method="post" action="<mm:write referid="referrer" />" name="loginForm" onSubmit="return(check_passwords())">
     <input type="hidden" name="authenticate"  value="plain"  />
     <input type="hidden" name="command" value="login" />
