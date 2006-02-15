@@ -11,6 +11,7 @@ package org.mmbase.module.core;
 
 import java.io.File;
 import java.util.*;
+import java.text.DateFormat;
 
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataTypes;
@@ -44,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.183 2006-02-14 22:24:07 michiel Exp $
+ * @version $Id: MMBase.java,v 1.184 2006-02-15 09:56:34 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -271,7 +272,9 @@ public class MMBase extends ProcessorModule {
         if (tmp != null && !tmp.equals("")) {
             timeZone = TimeZone.getTimeZone(tmp);
         }
-        log.info("MMBase Time zone      : " + timeZone.getDisplayName(true, TimeZone.LONG, Locale.US));
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
+        format.setTimeZone(timeZone);
+        log.info("MMBase Time zone      : " + timeZone.getDisplayName(Locale.US) + " (it's now " + format.format(new Date()) + ")");
         org.mmbase.util.dateparser.DateParser.setDefault(timeZone);
 
         tmp = getInitParameter("LANGUAGE");
