@@ -16,9 +16,11 @@ import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.jstl.core.*;
 
-import org.mmbase.bridge.*;
 import java.io.IOException;
 import java.util.*;
+
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.19 2005-12-13 09:56:38 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.20 2006-02-15 09:36:50 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -188,9 +190,9 @@ public class NodeListHelper implements ListProvider {
             if (q != null) cloud = q.getCloud();
         }
         if (cloud == null && nodes.size() > 0) {
-            cloud = nodes.getNode(0).getCloud();            
+            cloud = nodes.getNode(0).getCloud();
         }
-        
+
         if (add != Attribute.NULL) {
             Object addObject = thisTag.getObject(add.getString(thisTag));
             if (addObject instanceof Collection) {
@@ -329,6 +331,53 @@ public class NodeListHelper implements ListProvider {
         return EVAL_PAGE;
     }
 
+
+    /**
+     * The first ordered field is used to determin the 'changed' status of a Node in a NodeList.
+     * @since MMBase-1.8
+     */
+    protected String getFirstOrderedField(NodeList returnList, NodeManager nextNodeManager) {
+        // the orderby attribute is arranged in AbstractNodeListTag#setReturnValues
+        // Perhaps its code could more logically be present here.
+        /*
+        Query query = (Query) returnList.getProperty(NodeList.QUERY_PROPERTY);
+        if (query != null && false) {
+            List sortOrders = query.getSortOrders();
+            if (sortOrders.size() > 0) {
+                SortOrder order = (SortOrder) sortOrders.get(0);
+                StepField stepField = order.getField();
+                String alias = stepField.getAlias();
+                if (alias == null) {
+                    Step step = stepField.getStep();
+                    String stepAlias = step.getAlias();
+                    if (stepAlias == null) stepAlias = step.getTableName();
+                    alias = stepAlias + "." + stepField.getFieldName();
+                }
+                return alias;
+            } else {
+                return null;
+            }
+
+        } else {
+        */
+            // use order as stored in the nodelist (the property of the tag may not be set
+            // if you use referid to get the result of a previous listtag)
+            String listOrder = (String) returnList.getProperty("orderby");
+            if (listOrder != null && ! "".equals(listOrder)) {
+                // then you can also ask if 'changed' the node
+                // look only at first field of sorted for the moment.
+                String[] fa = listOrder.trim().split("\\s*,\\s*");
+                int i = 0;
+                while(i < fa.length && ! nextNodeManager.hasField(fa[i])) {
+                    i++;
+                }
+                return i < fa.length ? fa[i] : null;
+            } else {
+                return null;
+            }
+            // }
+    }
+
     public void setNext() throws JspTagException {
         currentItemIndex ++;
         try {
@@ -336,16 +385,9 @@ public class NodeListHelper implements ListProvider {
             if (next == null) throw new RuntimeException("Found null in node list " + returnList);
             NodeManager nextNodeManager = next.getNodeManager();
             if (nextNodeManager == null) throw new RuntimeException("Found node " + next + " has no NodeManager");
-            // use order as stored in the nodelist (the property of the tag may not be set
-            // if you use referid to get the result of a prevuious listtag)
-            String listOrder=(String) returnList.getProperty("orderby");
-            if (listOrder != null && ! "".equals(listOrder)) {
-                // then you can also ask if 'changed' the node
-                // look only at first field of sorted for the /moment.
-                String[] fa = listOrder.trim().split("\\s*,\\s*");
-                int i = 0;
-                while(i < fa.length && ! nextNodeManager.hasField(fa[i])) i++;
-                String value = i < fa.length ? "" + next.getValue(fa[i]) : ""; // cannot cast  to String, since it can also be e.g. Integer.
+            String orderField = getFirstOrderedField(returnList, nextNodeManager);
+            if (orderField != null) {
+                String value =  "" + next.getValue(orderField);
                 if (previousValue != null) {
                     if (value.equals(previousValue)) {
                         changed = false;
@@ -354,6 +396,7 @@ public class NodeListHelper implements ListProvider {
                     }
                 }
                 previousValue = value;
+
             }
             nodeHelper.setNodeVar(next);
             nodeHelper.fillVars();
@@ -400,7 +443,7 @@ public class NodeListHelper implements ListProvider {
     // unused
     public void setPageContext(PageContext pc) {
     }
-    
+
 
 
 }
