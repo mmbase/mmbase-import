@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.78 2006-02-14 22:58:54 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.79 2006-02-15 01:04:08 michiel Exp $
  */
 
 public class WriterHelper {
@@ -265,7 +265,7 @@ public class WriterHelper {
      * @since MMBase-1.8
      */
     public CharTransformer getEscaper() throws JspTagException {
-        if (useEscaper || escape != Attribute.NULL) {            
+        if (useEscaper || escape != Attribute.NULL) { 
             String e = getEscape();
             if (e == null) {
                 return (CharTransformer) thisTag.getPageContext().getAttribute(ContentTag.ESCAPER_KEY);
@@ -433,7 +433,11 @@ public class WriterHelper {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
 
-        thisTag.getContextProvider().getContextContainer().setJspVar(thisTag.getPageContext(), jspvar, vartype, value);
+        // If this tag explicitely specified an escaper, and also a jspvar attribute, then use it too for the jspvar value itself:
+        String e = getEscape();
+        CharTransformer ct = e == null ? null : ContentTag.getCharTransformer((String) e, thisTag);
+        Object jspValue = ct != null ? Casting.wrap(value, ct) : value;
+        thisTag.getContextProvider().getContextContainer().setJspVar(thisTag.getPageContext(), jspvar, vartype, jspValue);
     }
 
 
