@@ -5,7 +5,7 @@
 
   Web-app 2.4 gives the possibility to  of use EL (Expression Language)
 
-  $Id: web.xml,v 1.29 2005-12-10 14:20:49 michiel Exp $
+  $Id: web.xml,v 1.30 2006-02-15 10:13:58 nklasens Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -82,6 +82,16 @@
     <param-name>mmbase.taglib.image.format.asis</param-name>
     <param-value>false</param-value>
   </context-param>
+
+  <context-param>
+    <param-name>mmbase.taglib.field.nonExistance</param-name>
+    <param-value>exception</param-value>
+  </context-param>
+  <context-param>
+    <param-name>mmbase.taglib.function.nonExistance</param-name>
+    <param-value>exception</param-value>
+  </context-param>
+
 
 
   <!--
