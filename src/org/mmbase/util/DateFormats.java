@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: DateFormats.java,v 1.2 2006-02-14 22:24:42 michiel Exp $
+ * @version $Id: DateFormats.java,v 1.3 2006-02-16 14:34:02 andre Exp $
  */
 public class DateFormats {
 
@@ -30,7 +30,10 @@ public class DateFormats {
      * Creates a DateFormat instance, based on a String.
      *
      * @param format The format defining the DateFormat. This can be constants like :FULL, :FULL.FULL, :LONG, :MEDIUM or :SHORT. 
-     *               It can also be 'e' for weekday. Of none of those, then a SimpleDateFormat is instantiated.
+     *               It can also be 'e' for weekday. Also 'RFC822' or 'rfc822' is possible then the 
+     *               quite complicated http://www.faqs.org/rfcs/rfc822.html compliant date and time
+     *               is made, which comes in handy when you need to create a rss feed f.e.
+     *               Or none of those, then a SimpleDateFormat is instantiated.
      * @param timeZone A String describing the timeZone (see DateFormat#setTimeZone)
      * @param locale   Most DateFormat's need a Locale too.
      * @throws IllegalArgumentException
@@ -50,6 +53,8 @@ public class DateFormats {
             }
         } else if (format.equals("e")) {
             df = new DayOfWeekDateFormat();
+        } else if (format.equals("RFC822") || format.equals("rfc822")) {
+            df = new SimpleDateFormat("EE, dd MMM yyyy hh:mm:ss Z", Locale.US);
         } else {
             df = new SimpleDateFormat(format, locale);
         }
@@ -65,7 +70,7 @@ public class DateFormats {
     /**
      * Converts a string to a DateFormat constant.
      *
-     * @param style A string describing the dateformat style (FULL, LONG, MEDIUM, SHORT)
+     * @param style A string describing the dateformat style (FULL, LONG, MEDIUM, SHORT, RFC822)
      * @return A DateFormat style constant.
      * @see    java.text.DateFormat
      */
