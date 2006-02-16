@@ -79,7 +79,7 @@ else
       <mm:related path="metavocabulary" orderby="metavocabulary.value">
          <mm:node element="metavocabulary" jspvar="nodeMetavocabulary">
             <mm:field name="number" jspvar="sID" vartype="String" write="false">
-               <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
+               <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>" checkbox_id="<%= nodeMetavocabulary.getNumber() %>" onClick="switchMetaVocabularyTree(this)"
                <%
 
                   if(hsetSelected.contains(sID)){
