@@ -178,7 +178,7 @@
       </mm:compare>
 
       <mm:compare referid="questionscore" value="0">
-        <b><di:translate key="educaton.answer_incorrect" /></b>
+        <b><di:translate key="education.answer_incorrect" /></b>
       </mm:compare>
 
       <mm:compare referid="questionscore" referid2="TESTSCORE_TBS">
