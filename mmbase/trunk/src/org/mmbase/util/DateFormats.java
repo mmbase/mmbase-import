@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: DateFormats.java,v 1.3 2006-02-16 14:34:02 andre Exp $
+ * @version $Id: DateFormats.java,v 1.4 2006-02-16 14:35:59 andre Exp $
  */
 public class DateFormats {
 
@@ -70,7 +70,7 @@ public class DateFormats {
     /**
      * Converts a string to a DateFormat constant.
      *
-     * @param style A string describing the dateformat style (FULL, LONG, MEDIUM, SHORT, RFC822)
+     * @param style A string describing the dateformat style (FULL, LONG, MEDIUM, SHORT)
      * @return A DateFormat style constant.
      * @see    java.text.DateFormat
      */
