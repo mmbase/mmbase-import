@@ -28,6 +28,34 @@
     }
 </style>
 
+
+<script>
+   function switchMetaVocabularyTree(checkbox){
+      f = 0;
+      while(checkbox.form[f] != null){
+         if(checkbox.form[f].getAttribute("checkbox_id", false) != null)
+         {
+            if(checkbox.checked)
+            {
+               if(checkbox.form[f].getAttribute("checkbox_id", false).match("^" + checkbox.getAttribute("checkbox_id", false) + "_\\d*$"))
+               {
+                  checkbox.form[f].disabled = !checkbox.checked;
+               }
+            }
+            else
+            {
+               if(checkbox.form[f].getAttribute("checkbox_id", false).match("^" + checkbox.getAttribute("checkbox_id", false) + "_\\d*"))
+               {
+                  checkbox.form[f].disabled = !checkbox.checked;
+                  checkbox.form[f].checked = false;
+               }
+            }
+         }
+         f++;
+      }
+   }
+
+</script>
 <mm:content postprocessor="reducespace">
     <mm:cloud method="delegate" jspvar="cloud">
         <%@include file="/shared/setImports.jsp" %>
