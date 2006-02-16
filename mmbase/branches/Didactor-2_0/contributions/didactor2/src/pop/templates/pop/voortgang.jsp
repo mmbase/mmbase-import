@@ -70,12 +70,12 @@
             <mm:compare referid="intake" value="1">
               <mm:compare referid="startflag" value="1">
                 <mm:compare referid="finished" value="0">
-                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
+                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
                     </mm:treefile>'" value="<di:translate key="pop.continuebutton" />" title="<di:translate key="pop.continuecoursebutton" />">
                 </mm:compare>
               </mm:compare>
               <mm:compare referid="startflag" value="0">
-                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
+                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
                     </mm:treefile>'" value="<di:translate key="pop.startbutton" />"
                     title="<di:translate key="pop.begincoursebutton" />">
               </mm:compare>
@@ -140,12 +140,12 @@
             <mm:compare referid="intake" value="1">
               <mm:compare referid="startflag" value="1">
                 <mm:compare referid="finished" value="0">
-                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
+                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
                     </mm:treefile>'" value="<di:translate key="pop.continuebutton" />" title="<di:translate key="pop.continuecoursebutton" />">
                 </mm:compare>
               </mm:compare>
               <mm:compare referid="startflag" value="0">
-                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$popreferids">
+                  <input type="button" class="formbutton" onClick="top.location.href='<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
                     </mm:treefile>'" value="<di:translate key="pop.startbutton" />"
                     title="<di:translate key="pop.begincoursebutton" />">
               </mm:compare>
