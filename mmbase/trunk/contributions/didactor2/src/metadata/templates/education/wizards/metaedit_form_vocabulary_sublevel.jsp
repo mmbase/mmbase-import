@@ -108,7 +108,6 @@
                         <%= mdh.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
                      </mm:node>
                   </mm:field>
-                  (<mm:field name="number"/>)
                </mm:field>
                <br/>
             </mm:node>
