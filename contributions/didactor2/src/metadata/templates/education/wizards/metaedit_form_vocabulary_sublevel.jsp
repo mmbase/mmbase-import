@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 
+<%@page import = "java.util.ArrayList" %>
 <%@page import = "java.util.Iterator" %>
 <%@page import = "java.util.HashSet" %>
 <%@page import = "org.mmbase.bridge.*" %>
@@ -58,6 +59,9 @@
    hsetNodesToSkip.add(nodeTemporalRootMetaVocabulary);
 
 
+   ArrayList arliPathToCheckBox = new ArrayList();
+   arliPathToCheckBox.add(0, cloud.getNode(sVocabularyID));
+
    if(bIsMoreThanOneElement){
       it = tree.treeIterator();
 
@@ -74,11 +78,34 @@
          }
 
          depth = it.currentDepth();
+
+         //Adding a new node number to the chain of MetaVocabularies
+         //"null" means the end of the tree
+         arliPathToCheckBox.add(depth - 2, nodeMetaVocabulary);
+         arliPathToCheckBox.add(depth - 1, null);
+
+
+         //Generating unique checkbox id
+         String sCheckBoxUniqueID = new String(sVocabularyID);
+         for(Iterator itVocabularyNode = arliPathToCheckBox.iterator(); itVocabularyNode.hasNext();){
+            Node nodeMetaVocabularyCheckBox = (Node) itVocabularyNode.next();
+
+
+            if(nodeMetaVocabularyCheckBox == null){
+            //We current branch is over, but the list can have got rubbish from other branches
+            //So the "null" is a end-marker.
+               break;
+            }
+
+            sCheckBoxUniqueID += "_" + nodeMetaVocabularyCheckBox.getNumber();
+         }
+
+         //"switchMetaVocabularyTree(this)" is declared in metaedit_form.jsp
          %>
             <mm:node number="<%= "" + nodeMetaVocabulary.getNumber() %>">
                <mm:field name="number" jspvar="sID" vartype="String" write="false">
                   <span style="width:<%= (depth - 1) * 30 %>px;">&nbsp;</span>
-                  <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
+                  <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>" checkbox_id="<%= sCheckBoxUniqueID %>" onClick="switchMetaVocabularyTree(this)"
                      <%
                         if(iBlockedLevel < depth){
                            %> disabled="disabled" <%
