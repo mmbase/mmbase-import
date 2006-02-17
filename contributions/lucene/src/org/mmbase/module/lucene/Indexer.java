@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.21 2006-02-10 15:24:29 michiel Exp $
+ * @version $Id: Indexer.java,v 1.22 2006-02-17 14:38:21 michiel Exp $
  **/
 public class Indexer {
 
@@ -128,7 +128,7 @@ public class Indexer {
             Term term = new Term("number", number);
             reader.delete(term);
         } catch (Exception e) {
-            log.error("Cannot delete Index:" + e.getMessage());
+            log.error("Cannot delete Index:" + e.getMessage() + " for index entry '" + number + "'");
         } finally {
             if (reader != null) {
                 try {
