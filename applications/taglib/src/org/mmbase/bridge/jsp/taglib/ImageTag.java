@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.69 2006-02-10 18:02:40 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.70 2006-02-17 13:04:23 andre Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -330,7 +330,7 @@ public class ImageTag extends FieldTag {
         }
 
         
-        return (alt == null ? "alt=\"\"" : " alt=\"" + alt + "\" title=\"" + alt + "\"");
+        return (alt == null ? " alt=\"\"" : " alt=\"" + alt + "\" title=\"" + alt + "\"");
     }
 
     protected String getOtherAttributes() throws JspTagException {
