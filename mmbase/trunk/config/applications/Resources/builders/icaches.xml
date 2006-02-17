@@ -64,7 +64,7 @@
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>ckey</name>
-        <type state="persistent" size="255" notnull="false" key="true">STRING</type>
+        <type state="system" size="255" notnull="false" key="true">STRING</type>
       </db>
     </field>
 
@@ -85,6 +85,7 @@
           <input>3</input><list>3</list><search>3</search>
         </positions>
       </editor>
+      <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>id</name>
         <type state="persistent" notnull="false">NODE</type>
@@ -110,7 +111,7 @@
       </editor>
       <db>
         <name>handle</name>
-        <type state="persistent" notnull="false">BYTE</type>
+        <type state="system" notnull="false">BINARY</type>
       </db>
     </field>
     <field>
@@ -128,7 +129,7 @@
 
       <editor>
         <positions>
-          <input>-1</input>
+          <input>4</input>
           <list>-1</list>
           <search>-1</search>
         </positions>
@@ -160,7 +161,7 @@
       <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filesize</name>
-        <type state="persistent" notnull="false">INTEGER</type>
+        <type state="system" notnull="false">INTEGER</type>
       </db>
     </field>
     <field>
@@ -174,11 +175,11 @@
       </gui>
 
       <editor>
-        <positions><input>-1</input><list>-1</list><search>-1</search></positions>
+        <positions><input>6</input><list>-1</list><search>-1</search></positions>
       </editor>
       <db>
         <name>width</name>
-        <type state="persistent" notnull="false">INTEGER</type>
+        <type state="system" notnull="false">INTEGER</type>
       </db>
     </field>
     <field>
@@ -192,11 +193,11 @@
       </gui>
 
       <editor>
-        <positions><input>-1</input><list>-1</list><search>-1</search></positions>
+        <positions><input>7</input><list>-1</list><search>-1</search></positions>
       </editor>
       <db>
         <name>height</name>
-        <type state="persistent" notnull="false">INTEGER</type>
+        <type state="system" notnull="false">INTEGER</type>
       </db>
     </field>
 
