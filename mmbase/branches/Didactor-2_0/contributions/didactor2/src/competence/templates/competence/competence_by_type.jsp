@@ -239,7 +239,7 @@
 
 
 <%//         ------------------ MAIN TABLE ------------------              %>
-<table border="1" cellpadding="0" cellspacing="0" style="border:0px; width:100%" class="titlefield2">
+<table border="1" cellpadding="0" cellspacing="0" style="border:0px; width:100%; text-align:left" class="titlefield2">
    <tr>
       <%
          int iCounter = 1;
