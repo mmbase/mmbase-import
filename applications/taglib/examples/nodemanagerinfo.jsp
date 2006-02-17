@@ -16,7 +16,7 @@
 
 <h1>Nodemanager info</h1>
 
-<p>This example shows how to retrieve information from the MMBase node managers (which descrive the objecttypes). </p>
+<p>This example shows how to retrieve information from the MMBase node managers (which describe the objecttypes). </p>
 
 <%@include file="codesamples/nodemanagerinfo.jsp.1" %>
 
