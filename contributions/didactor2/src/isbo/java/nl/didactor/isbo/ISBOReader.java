@@ -162,7 +162,7 @@ public class ISBOReader {
                     NodeList sl = n.getChildNodes();
                     for (int j = 0; j < sl.getLength(); j++) {
                         Node s = sl.item(j);
-                        if ("username".equals(fieldname)) {
+                        if ("username".equals(s.getNodeName())) {
                         	Node child = s.getFirstChild();
                         	String value = child == null ? null : child.getNodeValue().trim();
                             students.add(value);
@@ -251,6 +251,7 @@ public class ISBOReader {
         }
         eventNode.setIntValue("start",parseDate((String) fields.get("startdate")));
         eventNode.setIntValue("stop",parseDate((String) fields.get("enddate")));
+      	eventNode.commit();
     }
 
     private int parseDate(String date) {
