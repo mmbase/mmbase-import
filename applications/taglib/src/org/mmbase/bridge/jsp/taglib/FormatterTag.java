@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.61 2006-02-09 09:55:17 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.62 2006-02-17 21:17:52 michiel Exp $ 
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -486,11 +486,16 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                 cachedXslt = getFactory().newTemplates(xsl);
                 cache.put(xsl, cachedXslt);
             } catch (javax.xml.transform.TransformerConfigurationException e) {
-                // throw new JspTagException(e.toString())
                 return e.toString() + ": " + Logging.stackTrace(e);
             }
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
+        }
+
+        if (cachedXslt == null) {
+            // according to javadoc of TransformerFactory, this cannot happen, but 
+            // I say it occur any way!
+            throw new JspTagException("Could not create Templates object from " + xsl);
         }
 
         // set some parameters to the XSLT style sheet.
@@ -527,7 +532,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                 List o = Arrays.asList( option.trim().split("\\s*=\\s*") );
                 if (o.size() != 2) {
                     throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
-                    
+
                 } else {
                     if (log.isDebugEnabled()) log.debug("Setting XSLT option " + option);
                     params.put(o.get(0), o.get(1));
@@ -540,9 +545,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             Map.Entry entry = (Map.Entry) i.next();
             params.put(entry.getKey(), entry.getValue());
         }
-                                            
-                      
-       
+
         return ResultCache.getCache().get(cachedXslt, xsl,  params, null, doc);
 
     }
