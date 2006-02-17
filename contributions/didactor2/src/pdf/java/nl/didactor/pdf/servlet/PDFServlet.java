@@ -7,7 +7,12 @@ import javax.servlet.ServletException;
 import java.io.OutputStream;
 import java.net.URL;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class PDFServlet extends HttpServlet {
+
+    private static Logger log = Logging.getLoggerInstance(PDFServlet.class);
     
     public void doGet (HttpServletRequest req, HttpServletResponse resp) 
         throws ServletException, java.io.IOException
