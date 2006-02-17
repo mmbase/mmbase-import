@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/address/java"/>
+	<classpathentry kind="src" path="src/aselect/java"/>
+	<classpathentry kind="src" path="src/faq/java"/>
+	<classpathentry kind="src" path="src/news/java"/>
+	<classpathentry kind="src" path="src/portalpages/java"/>
+	<classpathentry kind="src" path="src/redspider/java"/>
+	<classpathentry kind="src" path="src/virtualclassroom/java"/>
 	<classpathentry kind="src" path="src/report/java"/>
 	<classpathentry kind="src" path="src/chat/java"/>
 	<classpathentry kind="src" path="src/competence/java"/>
 	<classpathentry kind="src" path="src/core/java"/>
-	<classpathentry kind="src" path="src/drm/java"/>
 	<classpathentry kind="src" path="src/education/java"/>
 	<classpathentry kind="src" path="src/email/java"/>
 	<classpathentry kind="src" path="src/forum/java"/>
 	<classpathentry kind="src" path="src/isbo/java"/>
 	<classpathentry kind="src" path="src/metadata/java"/>
 	<classpathentry kind="src" path="src/pdf/java"/>
-	<classpathentry kind="src" path="src/pop/java"/>
 	<classpathentry kind="src" path="src/portfolio/java"/>
 	<classpathentry kind="src" path="src/scorm/java"/>
-	<classpathentry kind="src" path="src/search/java"/>
 	<classpathentry kind="src" path="src/sources/java"/>
 	<classpathentry kind="src" path="src/utils/java"/>
 	<classpathentry kind="src" path="src/versioning/java"/>
