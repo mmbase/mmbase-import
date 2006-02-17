@@ -99,7 +99,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">cronjob type(1= short, 2= singleton jobs,3= multiple threads possible)</description>
-        <description xml:lang="nl">het tiepe job (1 = kort, 2= enkelvoudig, 3= meerdere gelijktijdige jobs mogelijk)</description>
+        <description xml:lang="nl">het type job (1 = kort, 2= enkelvoudig, 3= meerdere gelijktijdige jobs mogelijk)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="nl">Tiepe jobs</guiname>
@@ -112,7 +112,7 @@
       </datatype>
       <db>
         <name>type</name>
-        <type state="persistent" notnull="true" key="false">STRING</type>
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
       </db>
     </field>
   </fieldlist>
