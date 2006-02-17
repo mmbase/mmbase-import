@@ -12,6 +12,11 @@
     <action type="load">
         <object type="faqitems"/>      
     </action>
+    
+    <lists>
+        <optionlist include="config/option_list/active.xml" />
+    </lists>
+    
 
     <steps>
         <step form-schema="step1" />
@@ -27,10 +32,7 @@
         </field>
         <field name="active" ftype="enum">
             <prompt>Item zichtbaar maken</prompt>
-            	<optionlist name="active">
-								<option id="0">ja</option>
-								<option id="1">nee</option>
-							</optionlist>
+            	<optionlist select="active" />
 				</field>			
         <field name="order_number" >
             <prompt>Positie</prompt>
