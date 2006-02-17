@@ -41,7 +41,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.51 2006-02-15 09:15:27 michiel Exp $
+ * @version $Id: Lucene.java,v 1.52 2006-02-17 12:29:56 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -354,95 +354,107 @@ public class Lucene extends Module implements MMBaseObserver {
     public void init() {
         super.init();
 
-        // Force init of MMBase
-        mmbase = MMBase.getMMBase();
 
-        factory = ContentExtractor.getInstance();
+        ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    // Force init of MMBase
+                    mmbase = MMBase.getMMBase();
 
-        // traditional Lucenemodule extractors
-        // factory.addExtractor("org.mmbase.module.lucene.extraction.impl.PDFBoxExtractor");
-        // factory.addExtractor("org.mmbase.module.lucene.extraction.impl.SwingRtfExtractor");
-        //factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIWordExtractor");
-        // factory.addExtractor("org.mmbase.module.lucene.extraction.impl.POIExcelExtractor");
-        // factory.addExtractor("org.mmbase.module.lucene.extraction.impl.TextMiningExtractor");
-
-        // path to the lucene index (a directory on disk writeable to the web-application)
-        // this path should be a direct path
-        String path = getInitParameter("indexpath");
-        if (path != null) {
-            indexPath = path;
-            log.service("found module parameter for lucene index path : " + indexPath);
-        } else {
-            //try to get the index path from the strorage configuration
-            try {
-                DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
-                indexPath = dsmf.getBinaryFileBasePath();
-                if(indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
-            } catch(Exception e){}
-        }
-
-        if(indexPath != null) {
-            log.service("found storage configuration for lucene index path : " + indexPath);
-        } else {
-            // expand the default path (which is relative to the web-application)
-            indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
-            log.service("fall back to default for lucene index path : " + indexPath);
-        }
+                    factory = ContentExtractor.getInstance();
 
 
-        // read only?
-        readOnly = "true".equals(getInitParameter("readonly"));
+                    String path = getInitParameter("indexpath");
+                    if (path != null) {
+                        indexPath = path;
+                        log.service("found module parameter for lucene index path : " + indexPath);
+                    } else {
+                        //try to get the index path from the strorage configuration
+                        try {
+                            DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
+                            indexPath = dsmf.getBinaryFileBasePath();
+                            if(indexPath != null) indexPath =indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
+                        } catch(Exception e){}
+                    }
 
-        // initial wait time?
-        String time = getInitParameter("initialwaittime");
-        if (time != null) {
-            try {
-                initialWaitTime = Long.parseLong(time);
-                log.debug("Set initial wait time to " + time + " milliseconds");
-            } catch (NumberFormatException nfe) {
-                log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
-            }
-        }
-        time = getInitParameter("waittime");
-        if (time != null) {
-            try {
-                waitTime = Long.parseLong(time);
-                log.debug("Set initial wait time to " + time + " milliseconds");
-            } catch (NumberFormatException nfe) {
-                log.warn("Invalid value '" + time +" ' for property 'initialwaittime'");
-            }
-        }
-        while(! mmbase.getState()) {
-            if (mmbase.isShutdown()) break;
-            try {
-                log.service("MMBase not yet up, waiting for 10 seconds.");
-                Thread.sleep(10000);
-            } catch (InterruptedException ie) {
-                log.info(ie);
-                return;
-            }
-        }
-        cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
-        cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
-        log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
-        ResourceWatcher watcher = new ResourceWatcher() {
-                public void onChange(String resource) {
-                    readConfiguration(resource);
+                    if(indexPath != null) {
+                        log.service("found storage configuration for lucene index path : " + indexPath);
+                    } else {
+                        // expand the default path (which is relative to the web-application)
+                        indexPath = MMBaseContext.getServletContext().getRealPath(indexPath);
+                        log.service("fall back to default for lucene index path : " + indexPath);
+                    }
+
+
+                    // read only?
+                    readOnly = "true".equals(getInitParameter("readonly"));
+
+                    // initial wait time?
+                    String time = getInitParameter("initialwaittime");
+                    if (time != null) {
+                        try {
+                            initialWaitTime = Long.parseLong(time);
+                            log.debug("Set initial wait time to " + time + " milliseconds");
+                        } catch (NumberFormatException nfe) {
+                            log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
+                        }
+                    }
+                    time = getInitParameter("waittime");
+                    if (time != null) {
+                        try {
+                            waitTime = Long.parseLong(time);
+                            log.debug("Set initial wait time to " + time + " milliseconds");
+                        } catch (NumberFormatException nfe) {
+                            log.warn("Invalid value '" + time +" ' for property 'initialwaittime'");
+                        }
+                    }
+                    while(! mmbase.getState()) {
+                        if (mmbase.isShutdown()) break;
+                        try {
+                            log.service("MMBase not yet up, waiting for 10 seconds.");
+                            Thread.sleep(10000);
+                        } catch (InterruptedException ie) {
+                            log.info(ie);
+                            return;
+                        }
+                    }
+                    while (cloud == null) {
+                        try {
+                            cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
+                            cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
+                            log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
+                        } catch (Throwable t) {
+                            log.info(t.getMessage());
+                        }
+                        if (cloud == null) {
+                            try {
+                                log.info("No cloud found, waiting for 5 seconds");
+                                Thread.sleep(5000);
+                            } catch (InterruptedException ie) {
+                                return;
+                            }
+                        }
+                    }
+                    ResourceWatcher watcher = new ResourceWatcher() {
+                            public void onChange(String resource) {
+                                readConfiguration(resource);
+                            }
+                        };
+                    watcher.add(INDEX_CONFIG_FILE);
+                    watcher.onChange();
+                    watcher.start();
+
+                    if (!readOnly) {
+                        scheduler = new Scheduler();
+                        log.service("Module Lucene started");
+                        // full index ?
+                        String fias = getInitParameter("fullindexatstartup");
+                        if (initialWaitTime < 0 || "true".equals(fias)) {
+                            scheduler.fullIndex();
+                        }
+                    }
                 }
-            };
-        watcher.add(INDEX_CONFIG_FILE);
-        watcher.onChange();
-        watcher.start();
+            });
 
-        if (!readOnly) {
-            scheduler = new Scheduler();
-            log.service("Module Lucene started");
-            // full index ?
-            String fias = getInitParameter("fullindexatstartup");
-            if (initialWaitTime < 0 || "true".equals(fias)) {
-                scheduler.fullIndex();
-            }
-        }
     }
     public void shutdown() {
         if (scheduler != null) {
