@@ -417,8 +417,9 @@ public abstract class Component {
         org.mmbase.bridge.NodeList settingrel = nl.didactor.util.GetRelation.getRelations(Integer.parseInt(userid), node.getNumber(), "settingrel", cloud);
 
         if (settingrel.size() == 0) {
-            log.debug("Returning default value: " + setting.getDefault());
-            return setting.getDefault();
+            Object retVal = getObjectSetting(settingname, node.getNumber(), cloud);
+            log.debug("Returning default value: " + retVal);
+            return retVal;
         }
         if (settingrel.size() > 1) {
             log.warn("Too many relations from " + userid + " to " + node.getNumber() +". Picking first one!");
