@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.46 2006-02-10 18:30:40 michiel Exp $
+ * @version $Id: Users.java,v 1.47 2006-02-17 13:52:14 pierre Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -86,7 +86,7 @@ public class Users extends MMObjectBuilder {
         addFunction(rankFunction);
     }
 
-
+    private boolean userNameCaseSensitive = false;
 
     // javadoc inherited
     public boolean init() {
@@ -101,6 +101,14 @@ public class Users extends MMObjectBuilder {
             encoder = new Encode(s);
         }
         log.service("Using " + encoder.getEncoding() + " as our encoding for password");
+
+        s = (String)getInitParameters().get("userNameCaseSensitive");
+        if (s != null) {
+            userNameCaseSensitive = "true".equals(s);
+            log.debug("property 'userNameCaseSensitive' set to '" +userNameCaseSensitive);
+        } else {
+            encoder = new Encode(s);
+        }
 
         return super.init();
     }
@@ -262,11 +270,15 @@ public class Users extends MMObjectBuilder {
      */
     public MMObjectNode getUser(String userName)  {
         if (userName == null ) return null;
+        if (!userNameCaseSensitive) {
+            userName = userName.toLowerCase();
+        }
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
             StepField sf        = nsq.getField(getField("username"));
-            Constraint cons = new BasicFieldValueConstraint(sf, userName);
+            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(sf, userName);
+            cons.setCaseSensitive(userNameCaseSensitive);
             nsq.setConstraint(cons);
             nsq.addSortOrder(nsq.getField(getField("number")));
             SearchQueryException e = null;
