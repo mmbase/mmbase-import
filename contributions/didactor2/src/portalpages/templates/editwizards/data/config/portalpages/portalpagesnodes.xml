@@ -16,6 +16,7 @@
     <action type="delete" />
     
     <lists>
+        <optionlist include="config/option_list/active.xml" />
         <optionlist include="config/option_list/images_position.xml" />
         <optionlist include="config/option_list/boolean.xml" />
         <optionlist include="config/option_list/layout.xml" />
@@ -34,12 +35,10 @@
         <field name="name" >
             <prompt>Naam</prompt>
         </field>
-        <field name="active" ftype="enum">
-            <prompt>Map zichtbaar maken</prompt>
-            	<optionlist name="active">
-								<option id="0">ja</option>
-								<option id="1">nee</option>
-							</optionlist>
+        <field name="active" ftype="enum" >
+            <prompt xml:lang="en">Map zichtbaar maken</prompt>
+            <prompt xml:lang="nl">Map zichtbaar maken</prompt>
+            	<optionlist select="active" />
         </field>
         <field name="body" ftype="html">
             <prompt>Tekst</prompt>
