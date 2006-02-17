@@ -1,7 +1,7 @@
    <%// Direct relation people->classrel->education %>
    <mm:compare referid="class" value="null">
 
-      <mm:import id="copybookNo" reset="true"/>
+      <mm:import id="copybookNo"/>
       <mm:relatedcontainer path="classrel,educations">
          <mm:constraint field="educations.number" value="$education"/>
 
