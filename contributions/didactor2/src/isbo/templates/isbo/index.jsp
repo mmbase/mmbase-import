@@ -85,8 +85,8 @@ if (top == self) {
                <td>
     
 <form action="index.jsp" method="POST" enctype="multipart/form-data">
-<input type="file" name="filename"/> ISBO file<br/>
-<input type="submit" value="Start"/>
+<input type="file" name="filename" style="width:200px; height:20px" /> ISBO file<br/>
+<input type="submit" value="Start" style="width:60px; text-align:center" />
 </form>
 </td>
 </tr></table></td></tr></table>
