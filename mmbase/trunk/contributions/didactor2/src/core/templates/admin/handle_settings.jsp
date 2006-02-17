@@ -16,7 +16,7 @@
           String paramName = comps[i].getName() + "-" + setting.getName();
           String val1 = (String)request.getParameter(paramName);
           %>
-          <mm:import externid="<%=paramName%>" jspvar="val" id="val"/>
+          <mm:import externid="<%=paramName%>" jspvar="val" id="val" reset="true"/>
           <mm:import jspvar="usernumber" vartype="Integer"><mm:write referid="user" /></mm:import>
           <%
           if ("on".equals(val)) {
