@@ -99,17 +99,23 @@
 </mm:notpresent>
 
 <%--
-  Step 4: found a provider, if there one or more educations then we can find it
+  Step 4: found a provider, if there is only one education then we can find it
 --%>
 <mm:notpresent referid="education">
+  <%-- if there is only 1 education for this provider, then we can figure it out --%>  
   <mm:node number="$provider" notfound="skipbody">
     <mm:relatednodescontainer type="educations">
-      <mm:relatednodes>
-        <mm:field id="education" write="false" name="number" />
-      </mm:relatednodes>
+      <mm:size id="educations_size" write="false" />
+      <mm:compare referid="educations_size" value="1">
+        <mm:relatednodes>
+          <mm:field id="education" write="false" name="number" />
+        </mm:relatednodes>
+      </mm:compare>
+      <mm:remove referid="educations_size" />
     </mm:relatednodescontainer>
   </mm:node>
 </mm:notpresent>
+
 <%--
   Step 5: found a provider, if there is only one education with a matching URL then we can find it
 --%>
@@ -171,7 +177,7 @@
 
 <mm:isnotempty referid="validatemessage">
   <mm:cloud method="delegate" jspvar="cloud" authenticate="didactor-logout"/>
-  <mm:redirect page="/declined.jsp">
+  <mm:redirect page="/login.jsp">
     <mm:param name="referrer"><mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids" /></mm:param>
     <mm:param name="message"><mm:write referid="validatemessage" /></mm:param>
   </mm:redirect>
