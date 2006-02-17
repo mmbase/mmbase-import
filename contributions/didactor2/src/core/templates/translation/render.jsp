@@ -318,17 +318,23 @@ function toggleOpenClose(link) {
       String loc = "";
       locales.add(loc);
     %>
-    <mm:node number="$provider" notfound="skip">
-      <mm:field jspvar="locale" name="locale" write="false">
-        <% loc += locale; if (loc.equals("")) { loc = "en"; } else { locales.add(loc); } %>
-      </mm:field>
-      <mm:node number="$education" notfound="skip">
-        <mm:field jspvar="path" name="path" write="false"><% loc += "_" + path; locales.add(loc); %></mm:field>
-        <mm:node number="$class" notfound="skip">
-          <mm:field jspvar="path" name="path" write="false"><% loc += "_" + path; locales.add(loc); %></mm:field>
-        </mm:node>
+    <mm:present referid="provider">
+      <mm:node number="$provider" notfound="skip">
+        <mm:field jspvar="locale" name="locale" write="false">
+          <% loc += locale; if (loc.equals("")) { loc = "en"; } else { locales.add(loc); } %>
+        </mm:field>
+        <mm:present referid="education">
+          <mm:node number="$education" notfound="skip">
+            <mm:field jspvar="path" name="path" write="false"><% loc += "_" + path; locales.add(loc); %></mm:field>
+            <mm:present referid="class">
+              <mm:node number="$class" notfound="skip">
+                <mm:field jspvar="path" name="path" write="false"><% loc += "_" + path; locales.add(loc); %></mm:field>
+              </mm:node>
+            </mm:present>
+          </mm:node>
+        </mm:present>
       </mm:node>
-    </mm:node>
+    </mm:present>
         
     <%
       Vector transIds = (Vector)pageContext.getAttribute("t_usedtrans", PageContext.REQUEST_SCOPE);
