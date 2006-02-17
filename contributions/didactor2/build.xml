@@ -6,6 +6,7 @@
     </classpath>
   </taskdef>
 
+  <property file="my.properties"/>
   <property file="build.properties"/>
 
   <target name="create.dirs">
