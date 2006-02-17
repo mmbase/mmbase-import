@@ -22,7 +22,7 @@ import javax.xml.transform.stream.StreamSource;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.20 2005-05-24 12:52:35 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.21 2006-02-17 21:18:13 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -84,17 +84,19 @@ public class XsltTag extends ContextReferrerTag  {
                 totalString = xsltString;
             } else {
                 totalString =
-                    "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\"" + 
+                    "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" " + 
                     " xmlns:taglib=\"" +  Functions.class.getName() + "\"" + 
                     " xmlns:mm=\"" +  Functions.class.getName() + "\"" + 
                     " xmlns:node=\"" + org.mmbase.bridge.util.xml.NodeFunction.class.getName() + "\""+
-                    " xmlns:o=\"http://www.mmbase.org/objects\"" +
-                    " xmlns:mmxf=\"http://www.mmbase.org/mmxf\"" +
+                    " xmlns:o=\"" + org.mmbase.bridge.util.xml.Generator.NAMESPACE + "\"" + 
+                    " xmlns:mmxf=\"http://www.mmbase.org/xmlns/mmxf\"" +
                     " extension-element-prefixes=\"mm taglib node\"" +
                     " exclude-result-prefixes=\"node mmxf o mm taglib node\"" +
-                    " >\n" +
+                    " version=\"1.0\"" + 
+                    " >" +
+                    " <xsl:output method=\"xml\" omit-xml-declaration=\"yes\" />" +
                     xsltString +
-                    "\n</xsl:stylesheet>";
+                    "</xsl:stylesheet>";
             }
             StreamSource src = new StreamSource(new java.io.StringReader(totalString));
             String systemId = ((HttpServletRequest)pageContext.getRequest()).getRequestURL().append('/').append(((long) xsltString.hashCode() & 0xffff)).toString();
