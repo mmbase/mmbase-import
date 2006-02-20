@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.31 2006-01-02 09:36:27 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.32 2006-02-20 17:39:51 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -159,12 +159,14 @@ public class ResourceLoader extends ClassLoader {
 
 
 
+    // This should perhaps be a member (too) to allow for better authorisation support.
     static NodeManager resourceBuilder = null;
 
 
     /**
      * The URLStreamHandler for 'mm' URL's.
      */
+
     private final MMURLStreamHandler mmStreamHandler = new MMURLStreamHandler();
 
     /**
@@ -236,6 +238,7 @@ public class ResourceLoader extends ClassLoader {
         resourceBuilder = b;
         // must be informed to existing ResourceWatchers.
         ResourceWatcher.setResourceBuilder(); // this will also set ResourceWatcher.resourceWatchers to null.
+        log.info("A resources builder is available: " + b + "(user: " + b.getCloud().getUser() + ")");
     }
 
 
@@ -1345,13 +1348,16 @@ public class ResourceLoader extends ClassLoader {
         }
 
         public boolean getDoOutput() {
-            return ResourceLoader.resourceBuilder != null;
+            getResourceNode();
+            return
+                (node != null && node.mayWrite()) || 
+                (ResourceLoader.resourceBuilder != null && ResourceLoader.resourceBuilder.mayCreateNode());
         }
 
         public InputStream getInputStream() throws IOException {
             getResourceNode();
             if (node != null) {
-                return new ByteArrayInputStream(node.getByteValue(HANDLE_FIELD));
+                return node.getInputStreamValue(HANDLE_FIELD);
             } else {
                 throw new IOException("No such (node) resource for " + name);
             }
@@ -1378,7 +1384,6 @@ public class ResourceLoader extends ClassLoader {
                             URLConnection.guessContentTypeFromName(name);
                         }
                         node.setValue("mimetype", mimeType);
-                        node.setValue(LASTMODIFIED_FIELD, new Date());
                         node.commit();
                     }
                     public void write(int b) {
