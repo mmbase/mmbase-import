@@ -4,6 +4,10 @@
     <title xml:lang="en">Related files</title>
 
     <item>
+        <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line">
+          <prompt xml:lang="nl">Positie</prompt>
+          <prompt xml:lang="en">Position</prompt>
+        </field>
         <field name="title" ftype="data">
             <prompt xml:lang="nl">Titel</prompt>
             <prompt xml:lang="en">Title</prompt>
@@ -12,22 +16,23 @@
             <prompt xml:lang="nl">Omschrijving</prompt>
             <prompt xml:lang="en">Description</prompt>
         </field>
-        <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line">
-          <prompt xml:lang="nl">Positie</prompt>
-          <prompt xml:lang="en">Position</prompt>
-        </field>
         <field wizardname="config/attachment/attachment" ftype="startwizard" />
    </item>
 
     <command name="startwizard" inline="true" wizardname="config/attachment/attachment" objectnumber="new" />
 
-    <command name="search" nodepath="attachments" fields="title" age="-1" orderby="number" directions="down" >
+    <command name="search" nodepath="attachments" fields="title,filename,description" age="-1" orderby="number" directions="down" >
         <prompt xml:lang="nl">Zoeken naar bestand</prompt>
         <prompt xml:lang="en">Search files</prompt>
         <search-filter>
             <name xml:lang="nl">Titel bevat</name>
             <name xml:lang="en">Title contains</name>
             <search-fields>title</search-fields>
+        </search-filter>
+        <search-filter>
+             <name xml:lang="nl">Filenaam bevat</name>
+             <name xml:lang="en">Filename contains</name>
+             <search-fields>filename</search-fields>
         </search-filter>
         <search-filter>
             <name xml:lang="nl">Omschrijving bevat</name>
