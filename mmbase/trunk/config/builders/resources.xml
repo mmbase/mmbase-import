@@ -1,18 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="object" maintainer="mmbase.org" name="resources" version="0">
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="resources" maintainer="mmbase.org" version="0" extends="object">
 
-  <!-- The `resources' builder.
-       Most MMBase configuration can also be stored in nodes of this type, if at least you make
-       this builder active.
-       There is a specialized 'resource editor' available in /mmbase/admin.
+  <!--
+      The `resources' builder.
+      Most MMBase configuration can also be stored in nodes of this type, if at least you make
+      this builder active.
+      There is a specialized 'resource editor' available in /mmbase/admin.
 
        @since MMBase-1.8
-       @version $Id: resources.xml,v 1.2 2005-12-18 09:08:39 michiel Exp $
+       @version $Id: resources.xml,v 1.3 2006-02-20 17:43:39 michiel Exp $
     -->
   <status>inactive</status>
-
-  <classfile>Resources</classfile>
+  <class>org.mmbase.module.builders.Resources</class>
   <searchage>31</searchage>
   <names>
     <singular xml:lang="en">Resource</singular>
@@ -42,13 +46,13 @@
       <gui>
         <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>name</name>
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
@@ -63,13 +67,13 @@
       <gui>
         <guiname xml:lang="en">File Name</guiname>
         <guiname xml:lang="nl">Bestandsnaam</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <input>-1</input>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filename</name>
         <type key="false" notnull="true" size="255" state="virtual">STRING</type>
@@ -84,8 +88,13 @@
       <gui>
         <guiname xml:lang="en">Type</guiname>
         <guiname xml:lang="nl">Type</guiname>
-        <guitype>org.mmbase.module.builders.resources.resourcetypes</guitype>
       </gui>
+      <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry value="0"  display="configuration" />
+          <entry value="1"   display="web" />
+        </enumeration>
+      </datatype>
       <db>
         <name>type</name>
         <type key="false" notnull="true"  state="persistent">INTEGER</type>
@@ -100,7 +109,6 @@
       <gui>
         <guiname xml:lang="en">Resource</guiname>
         <guiname xml:lang="nl">Resource</guiname>
-        <guitype>newfile</guitype>
       </gui>
       <editor>
         <positions>
@@ -109,7 +117,7 @@
       </editor>
       <db>
         <name>handle</name>
-        <type key="false" notnull="true" size="16777215" state="persistent">BYTE</type>
+        <type key="false" notnull="true" size="16777215" state="persistent">BINARY</type>
       </db>
     </field>
 
@@ -121,13 +129,13 @@
       <gui>
         <guiname xml:lang="en">MimeType</guiname>
         <guiname xml:lang="nl">MimeType</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>4</list>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>mimetype</name>
         <type key="false" notnull="true" size="32" state="persistent">STRING</type>
@@ -143,7 +151,6 @@
         <guiname xml:lang="en">Size</guiname>
         <guiname xml:lang="nl">Grootte</guiname>
         <guiname xml:lang="eo">Grando</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -167,7 +174,6 @@
         <guiname xml:lang="en">Last modified time</guiname>
         <guiname xml:lang="nl">Laatste verandering</guiname>
         <guiname xml:lang="eo">Lasta ŝanĝo</guiname>
-        <guitype>lastmodified</guitype>
       </gui>
       <editor>
         <positions>
@@ -175,6 +181,7 @@
           <list>99</list>
         </positions>
       </editor>
+      <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>lastmodified</name>
         <type state="persistent" notnull="false" key="false">DATETIME</type>
