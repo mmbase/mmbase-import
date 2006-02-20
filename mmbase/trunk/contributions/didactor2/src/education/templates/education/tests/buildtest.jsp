@@ -263,8 +263,11 @@
    </mm:isgreaterthan>
 </mm:node>
 </form>
-
+<mm:import id="copybook_used" />
 </mm:node>
+<mm:notpresent referid="copybook_used">
+   <di:translate key="education.nocopybookfound" />
+</mm:notpresent>
 </div>
 </body>
 </html>
