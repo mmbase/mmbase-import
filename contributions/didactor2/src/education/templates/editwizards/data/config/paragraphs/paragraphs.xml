@@ -28,7 +28,7 @@
          <prompt xml:lang="en">Paragraph body</prompt>
       </field>
       <list include="config/image/add_images_pos2rel_position.xml" />
-      <list include="config/attachment/add_attachments_posrel.xml" />
+      <list include="config/attachment/attachments-posrel.xml" />
       <list include="config/url/add_exturls_posrel.xml" />
    </form-schema>
 </wizard-schema>
