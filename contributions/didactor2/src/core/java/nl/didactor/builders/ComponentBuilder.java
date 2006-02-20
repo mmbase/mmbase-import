@@ -82,6 +82,9 @@ public class ComponentBuilder extends AbstractSmartpathBuilder {
     private Component registerComponent(MMObjectNode component) {
         String classname = component.getStringValue("classname");
         String componentname = component.getStringValue("name");
+        if (componentname != null) {
+            componentname = componentname.toLowerCase();
+        }
         log.info("Registering component " + componentname + " with class '" + classname + "'");
         Component comp = null;
        
