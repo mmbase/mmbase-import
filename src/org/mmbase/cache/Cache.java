@@ -20,7 +20,7 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.33 2005-12-17 19:59:13 michiel Exp $
+ * @version $Id: Cache.java,v 1.34 2006-02-20 16:18:09 michiel Exp $
  */
 abstract public class Cache implements SizeMeasurable, Map {
 
@@ -69,7 +69,7 @@ abstract public class Cache implements SizeMeasurable, Map {
             log.error("For cache " + this + " " + iae.getClass().getName() + ": " + iae.getMessage());
         }
     }
-    
+
     /**
      * Returns a name for this cache type. Default it is the class
      * name, but this normally will be overriden.
@@ -193,7 +193,7 @@ abstract public class Cache implements SizeMeasurable, Map {
     public  int maxSize() {
         return implementation.maxSize();
     }
-    
+
     /**
      * @see java.util.Map#size()
      */
@@ -248,8 +248,7 @@ abstract public class Cache implements SizeMeasurable, Map {
     }
 
     public String toString() {
-        String implStr = implementation.toString();
-        return "Cache " + getName() + ", Ratio: " + getRatio() + " " + implStr;
+        return "Cache " + getName() + ", Ratio: " + getRatio() + " " + implementation;
     }
 
     /**
@@ -264,14 +263,9 @@ abstract public class Cache implements SizeMeasurable, Map {
     }
 
     public int getByteSize(SizeOf sizeof) {
-        Iterator i = entrySet().iterator();
-        int len = 0;
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
-            len += sizeof.sizeof(entry.getKey());
-            len += sizeof.sizeof(entry.getValue());
-        }
-        return len;
+        return 26 + 
+            implementation.getByteSize(sizeof);
+        // sizeof.sizeof(implementation) does not work because this.equals(implementation)
     }
 
 
@@ -303,6 +297,7 @@ abstract public class Cache implements SizeMeasurable, Map {
      * @see java.util.Map#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
+        // odd, but this is accordinding to javadoc of Map.
         return implementation.equals(o);
     }
 
@@ -353,10 +348,10 @@ abstract public class Cache implements SizeMeasurable, Map {
     public Collection values() {
         return implementation.values();
     }
-    
+
 
     /**
-     * Puts this cache in the caches repository. 
+     * Puts this cache in the caches repository.
      * @see CacheManager#putCache(Cache)
      */
 
@@ -370,7 +365,7 @@ abstract public class Cache implements SizeMeasurable, Map {
     protected static Cache putCache(Cache cache) {
         return CacheManager.putCache(cache);
     }
-    
+
     /**
      * @see CacheManager#getCache(String)
      */
@@ -392,30 +387,44 @@ abstract public class Cache implements SizeMeasurable, Map {
         return CacheManager.getTotalByteSize();
     }
 
-    
+
     public static void main(String args[]) {
-        Cache mycache = new Cache(20) {
+        Cache mycache = new Cache(20000000) {
                 public String getName()        { return "test cache"; }
                 public String getDescription() { return ""; }
             };
-        
+        Runtime rt = Runtime.getRuntime();
+        rt.gc();
+        long usedBefore = rt.totalMemory() - rt.freeMemory();
+
         System.out.println("putting some strings in cache");
         mycache.put("aaa", "AAA"); // 6 bytes
         mycache.put("bbb", "BBB"); // 6 bytes
-        
+
         System.out.println("putting an hashmap in cache");
         Map m = new HashMap();
-        m.put("ccc", "CCCCCC");
-        m.put("ddd", "DDD");
-        m.put("abc", "EEE");
-        mycache.put("eee", m);
-        
+        m.put("ccc", "CCCCCC"); // 9
+        m.put("ddd", "DDD");    // 6
+        m.put("abc", "EEE");    // 6
+        mycache.put("eee", m);  // 3
 
-        
-        //node.setValue("hoi", "hoi");
-        //mycache.put("node", node);
 
-        System.out.println("size of cache: " + mycache.getByteSize());
+        //String[] list = new String[1000000];
+        //ArrayList list = new ArrayList();
+        // should cause 16M of char
+        for (int i = 1000000; i < 2000000; i++) {
+            mycache.put("a" + 1000000 + i, "b" + 1000000 + i);
+            //list[i - 1000000] = "a" + i + "b" + i;
+            //list.add("a" + i + "b" + i);
+            //list.add(new String( new byte[] {}).intern());
+        }
+        rt.gc();
+
+        long usedAfter = rt.totalMemory() - rt.freeMemory();
+
+        System.out.println("1M of String costs "  + (usedAfter - usedBefore) + " bytes");
+        System.out.println("Sizeof reports " + SizeOf.getByteSize(mycache));
+        System.out.println("size of cache: " + mycache.getByteSize() + " ");
 
     }
 
