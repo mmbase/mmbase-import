@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screen exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
+	<node number="255" owner="default">
+		<use_expirydate>no</use_expirydate>
+		<title>TestScreen</title>
+	</node>
+</screen>
