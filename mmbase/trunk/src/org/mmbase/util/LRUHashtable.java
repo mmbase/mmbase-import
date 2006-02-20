@@ -20,10 +20,10 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.22 2006-01-31 20:38:31 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.23 2006-02-20 16:18:09 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
-public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface {
+public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface, SizeMeasurable {
 
     private static final String ROOT     = "root";
     private static final String DANGLING = "dangling";
@@ -258,7 +258,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      */
     public String toString(boolean which) {
         if (which) {
-            StringBuffer b= new StringBuffer();
+            StringBuffer b = new StringBuffer();
             b.append("Size " + currentSize + ", Max " + size + " : ");
             b.append(super.toString());
             return b.toString();
@@ -303,22 +303,22 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      * @deprecated use getOrderedEntries
      */
     public Enumeration getOrderedElements(int maxnumber) {
-        Vector results = new Vector();
+        List results = new ArrayList();
         LRUEntry current = root.next;
         if (maxnumber != -1) {
             int i = 0;
             while (current!=null && current!=dangling && i<maxnumber) {
-                results.insertElementAt(current.value,0);
-                current=current.next;
-                i+=1;
+                results.add(0, current.value);
+                current = current.next;
+                i++;
             }
         } else {
             while (current!=null && current!=dangling) {
-                results.insertElementAt(current.value,0);
-                current=current.next;
-                }
+                results.add(0, current.value);
+                current = current.next;
+            }
         }
-        return results.elements();
+        return Collections.enumeration(results);
     }
 
     /**
@@ -339,7 +339,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      */
 
     public List getOrderedEntries(int maxNumber) {
-        List results = new Vector();
+        List results = new ArrayList();
         LRUEntry current = root.next;
         int i = 0;
         while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
@@ -350,8 +350,24 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
         return Collections.unmodifiableList(results);
     }
 
+
     public void config(Map map) {
         // lru needs no configuration.
+    }
+
+    public int getByteSize() {
+        return getByteSize(new SizeOf());
+    }
+    public int getByteSize(SizeOf sizeof) {
+        System.out.println("Getting byte size of " + this);
+        int len = 4 * SizeOf.SZ_REF + (30 + 5 * SizeOf.SZ_REF) * currentSize;  // 30:overhead of Hashtable, 5*SZ_REF: overhead of LRUEntry
+        LRUEntry current = root.next;
+        while (current != null && current != dangling) {
+            current = current.next;
+            len += sizeof.sizeof(current.key);
+            len += sizeof.sizeof(current.value);
+        }
+        return len;
     }
 
     /**
@@ -428,7 +444,8 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
             return new SizeOf().sizeof(value);
         }
         public int getByteSize(SizeOf sizeof) {
-            return sizeof.sizeof(value);
+            return 20 + // 5 references
+                sizeof.sizeof(value);
         }
         public String toString() {
             return  value == LRUHashtable.this ? "[this lru]" : String.valueOf(value);
