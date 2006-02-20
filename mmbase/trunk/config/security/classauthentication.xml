@@ -16,4 +16,9 @@
     <property name="rank" value="administrator" />
   </authenticate>
 
+  <!-- Used to make the Resource NodeManager in ResourceLoader -->
+  <authenticate class="org\.mmbase\.module\.builders\.Resources.*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
 </security>
