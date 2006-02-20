@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.37 2006-01-27 20:00:40 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.38 2006-02-20 17:37:11 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -169,7 +169,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (log.isServiceEnabled()) {
                 log.service(getAssociation() + " are served on: " + servletPath + "  root: " + root);
             }
-            servletPathAbsolute = servletPath.startsWith("http:") || servletPath.startsWith("https");                
+            servletPathAbsolute = servletPath.startsWith("http:") || servletPath.startsWith("https");
         }
 
         String result;
@@ -198,18 +198,20 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     protected String getMimeType(MMObjectNode node) {
         String mimeType = node.getStringValue(FIELD_MIMETYPE);
         if (mimeType == null || mimeType.equals("")) {
-            log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determine it automaticly.");
+            if (log.isServiceEnabled()) {
+                log.service("Mimetype of attachment '" + node.getNumber() + "' was not set. Using magic to determine it automaticly.");
+            }
             byte[] handle = node.getByteValue(FIELD_HANDLE);
 
-            String extension = null;                
+            String extension = null;
             if (hasField(FIELD_FILENAME)) {
                 String filename = node.getStringValue(FIELD_FILENAME);
-                int dotIndex = filename.lastIndexOf("."); 
+                int dotIndex = filename.lastIndexOf(".");
                 if (dotIndex > -1) {
                     extension = filename.substring(dotIndex + 1);
                 }
             }
-            
+
             MagicFile magic = MagicFile.getInstance();
             try {
                 if (extension == null) {
@@ -223,7 +225,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 log.warn("Exception in MagicFile  for " + node);
                 mimeType = "application/octet-stream";
                 node.setValue(FIELD_MIMETYPE, mimeType);
-            }            
+            }
 
         }
         return mimeType;
@@ -237,10 +239,10 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (getField(FIELD_MIMETYPE) != null) {
             getMimeType(node);
         }
-        
+
     }
 
-    /** 
+    /**
      * Returns the fields which tell something about the 'handle' field, and can be calculated from it.
      */
 
@@ -262,7 +264,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("Committing node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node) + " fields " + changed);
         }
-        
+
         Object h;
         if (changed.contains(FIELD_HANDLE)) {
             // set those fields to null, which are not changed too:
@@ -361,7 +363,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     protected boolean addFileName(MMObjectNode node, String servlet) {
         if (addsFileName == FILENAME_CHECKSETTING) {
             javax.servlet.ServletContext sx = MMBaseContext.getServletContext();
-            if (sx != null) {                            
+            if (sx != null) {
                 String res = sx.getInitParameter("mmbase.servlet." + getAssociation() + ".addfilename");
                 if (res == null) res = "";
                 res = res.toLowerCase();
@@ -377,17 +379,17 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             }
         }
         log.debug("addsFileName " + addsFileName);
-        
+
         String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
-        return  addsFileName == FILENAME_ADD ||  
+        return  addsFileName == FILENAME_ADD ||
             ( addsFileName == FILENAME_IFSENSIBLE && (!servlet.endsWith("?")) &&  (! "".equals(fileName)));
-        
+
     }
 
 
     {
         // you can of course even implement it anonymously.
-        addFunction(new NodeFunction("servletpath", 
+        addFunction(new NodeFunction("servletpath",
                                          new Parameter[] {
                                              new Parameter("session",  String.class), // For read-protection
                                              new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
@@ -428,7 +430,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     String session = (String) a.get("session");
                     if (session == null) {
                         Cloud cloud = (Cloud) a.get(Parameter.CLOUD);
-                        
+
                         if(cloud != null && ! cloud.getUser().getRank().equals(Rank.ANONYMOUS)) {
                             // the user is not anonymous!
                             // Need to check if node is readable by anonymous.
@@ -448,10 +450,10 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                         }
                         if (session == null) session = "";
                     }
-                    
+
                     String argument = (String) a.get("argument");
                     // argument representint the node-number
-                    
+
                     if (argument == null) {
                         String fieldName   = (String) a.get("field");
                         if (fieldName == null) {
@@ -463,11 +465,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     }
                     MMObjectNode mmnode = new MMObjectNode(AbstractServletBuilder.this, new org.mmbase.bridge.util.NodeMap(node));
                     boolean addFileName = addFileName(mmnode, servlet.toString());
-                    
+
                     if (usesBridgeServlet && ! session.equals("")) {
                         servlet.append("session=" + session + "+");
                     }
-                    
+
                     if (! addFileName) {
                         return servlet.append(argument).toString();
                     } else {
@@ -480,7 +482,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 public Object getFunctionValue(Parameters a) {
                     return getServletPath(a).toString();
                 }
-            });    
+            });
 
     }
 
@@ -511,7 +513,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     } else {
                         root = MMBaseContext.getHtmlRootUrlPath();
                     }
-                    
+
                     if ("true".equals(absolute) && request != null) {
                         int port = request.getServerPort();
                         root = request.getScheme() + "://" + request.getServerName() + (port == 80 ? "" : ":" + port) + root;
@@ -520,7 +522,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     if (root.endsWith("/") && iconRoot.startsWith("/")) iconRoot = iconRoot.substring(1);
 
                     if (! iconRoot.endsWith("/")) iconRoot = iconRoot + '/';
-                    
+
                     String resource = iconRoot + mimeType + ".gif";
                     try {
                         if (! webRoot.getResource(resource).openConnection().getDoInput()) {
@@ -537,7 +539,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     }
 
 
-        
+
     /**
      * Overrides the executeFunction of MMObjectBuilder with a function to get the servletpath
      * associated with this builder. The field can optionally be the number field to obtain a full
