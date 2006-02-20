@@ -47,10 +47,18 @@ public class DidactorCore extends Component {
             DidactorRel classrel = (DidactorRel)mmbase.getBuilder("classrel");
             MMObjectNode source = classrel.getSource(node);
             MMObjectNode destination = classrel.getDestination(node);
+            // adding a copybook to the relation between people and classes
             if (source.getBuilder().getTableName().equals("classes") && destination.getBuilder().getTableName().equals("people")) {
                 return insertCopybook(node);
             }
             if (source.getBuilder().getTableName().equals("people") && destination.getBuilder().getTableName().equals("classes")) {
+                return insertCopybook(node);
+            }
+            // if people are directly connected to educations they should also have a copybook
+            if (source.getBuilder().getTableName().equals("educations") && destination.getBuilder().getTableName().equals("people")) {
+                return insertCopybook(node);
+            }
+            if (source.getBuilder().getTableName().equals("people") && destination.getBuilder().getTableName().equals("educations")) {
                 return insertCopybook(node);
             }
         }
