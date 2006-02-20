@@ -92,7 +92,7 @@ public class Transformers {
                 } catch (NumberFormatException nfe) {
                     try {
                         log.debug("With static field");
-                        conf = clazz.getDeclaredField(config).getInt(null);
+                        conf = clazz.getField(config).getInt(null);
                     } catch (Exception nsfe) {
                         log.error("Type " + errorId + " is not well configured : " + nfe.toString() + " and " + nsfe.toString());
                         return null;
