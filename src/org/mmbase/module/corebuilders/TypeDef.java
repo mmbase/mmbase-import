@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.64 2006-01-16 14:53:02 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.65 2006-02-20 18:23:21 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -170,10 +170,17 @@ public class TypeDef extends MMObjectBuilder {
         try {
             MMObjectBuilder builder = getBuilder(node);
             BuilderReader originalBuilderXml = new BuilderReader(mmb.getBuilderLoader().getDocument(getBuilderConfiguration(node)), getMMBase());
-            BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                                                                                  "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
-                                                                                                  "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
-                                                                                                  node.getStringValue("config"))), getMMBase());
+            String config = node.getStringValue("config");
+            StringReader stringReader;
+            if (config.indexOf("xmlns=\"http://www.mmbase.org/xmlns/builder\"") > 0) {
+                stringReader = new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + config);
+            } else {
+                stringReader = new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                                "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
+                                                "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
+                                                config);
+            } 
+            BuilderReader newBuilderXml      = new BuilderReader(new InputSource(stringReader), getMMBase());
             if (!originalBuilderXml.equals(newBuilderXml)) {
                 try {
                     // unload the builder...
@@ -240,7 +247,6 @@ public class TypeDef extends MMObjectBuilder {
         numberToNameCache = Collections.synchronizedMap(new HashMap());
         nameToNumberCache = Collections.synchronizedMap(new HashMap());
         NodeSearchQuery query = new NodeSearchQuery(this);
-        log.info("query: " + query);
         try {
             Iterator typedefs = getNodes(query).iterator();
             while (typedefs.hasNext()) {
