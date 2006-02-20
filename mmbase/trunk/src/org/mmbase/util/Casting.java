@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.85 2006-01-30 09:49:31 michiel Exp $
+ * @version $Id: Casting.java,v 1.86 2006-02-20 16:17:11 michiel Exp $
  */
 
 import java.util.*;
@@ -298,7 +298,8 @@ public class Casting {
             return new java.util.Date(((Date)o).getTime()) {
                     private static final long serialVersionUID = 1L; // increase this if object chages.
                     public String toString() {
-                        return "" + getTime() / 1000;
+                        long time = getTime();
+                        return time == -1 ? ("" + time) : ("" + time / 1000);
                     }
                 };
         } else if (o instanceof org.w3c.dom.Node) {
@@ -553,7 +554,6 @@ public class Casting {
                 res = (int) l;
             }
         } else if (i != null) {
-            
             try {
                 res = Integer.parseInt("" + i);
             } catch (NumberFormatException e) {
@@ -588,6 +588,7 @@ public class Casting {
     static public int toInt(Object i) {
         return toInt(i, -1);
     }
+
 
 
     /**
@@ -766,7 +767,7 @@ public class Casting {
             res = ((Number)i).doubleValue();
         } else if (i instanceof Date) {
             res = ((Date)i).getTime();
-            if (res!=-1) res = res / 1000;
+            if (res != -1) res = res / 1000;
         } else if (i instanceof Node) {
             res = ((Node)i).getNumber();
         } else if (i != null) {
@@ -797,6 +798,8 @@ public class Casting {
     static public double toDouble(Object i) {
         return toDouble(i, -1);
     }
+
+
 
     /**
      * Convert an object to a <code>Date</code>.
