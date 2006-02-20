@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
+	<node number="257" owner="default">
+		<editor_title>TestLayout</editor_title>
+		<jsp>testLayout.jsp</jsp>
+		<columns>3</columns>
+		<rows>3</rows>
+	</node>
+</layout>
