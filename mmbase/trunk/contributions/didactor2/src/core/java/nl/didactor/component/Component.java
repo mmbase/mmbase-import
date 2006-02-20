@@ -53,7 +53,7 @@ public abstract class Component {
      * Retrieve a component from the registry.
      */
     public static Component getComponent(String name) {
-        return (Component)components.get(name);
+        return (Component)components.get(name.toLowerCase());
     }
 
     public static Component[] getComponents() {
