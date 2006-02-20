@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<insrel exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
+	<node number="288" owner="default" snumber="253" dnumber="255" rtype="related" dir="bidirectional">
+	</node>
+   <node number="332" owner="default" snumber="255" dnumber="257" rtype="related" dir="bidirectional">
+   </node>
+</insrel>
