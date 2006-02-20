@@ -37,7 +37,7 @@
     </command>
 
     <action type="create">
-        <relation destinationtype="attachments" role="posrel">
+        <relation role="posrel">
           <object type="attachments" />
           <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
         </relation>
