@@ -369,5 +369,11 @@ function toggleOpenClose(link) {
     </ul>
     </div>
   </div>
+  <script type="text/javascript">
+    // Temporarily disable this functionality on IE
+    if (browser.isIE) {
+      document.getElementById('box').style.display = 'none';
+    }
+  </script>
 </mm:cloud>
 </mm:content>
