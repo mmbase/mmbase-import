@@ -66,13 +66,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.15 2006-01-26 16:05:26 michiel Exp $
+ * @version $Id: SizeOf.java,v 1.16 2006-02-20 16:18:09 michiel Exp $
  * @todo   We need to know how well this actually works...
  */
 public class SizeOf {
     private static final Logger log = Logging.getLoggerInstance(SizeOf.class);
 
-    private static final int SZ_REF = 4;
+    public static final int SZ_REF = 4;
     private static int size_prim(Class t) {
         if      (t == Boolean.TYPE)   return 1;
         else if (t == Byte.TYPE)      return 1;
@@ -101,7 +101,7 @@ public class SizeOf {
     public static int getByteSize(Object obj) {
         return new SizeOf().sizeof(obj);
     }
-    
+
     /**
      * @since MMBase-1.8
      */
@@ -117,12 +117,8 @@ public class SizeOf {
             return 0;
         }
 
-        if (countedObjects.contains(obj)) {
-            log.trace("already counted");
+        if (!countedObjects.add(obj)) {
             return 0;
-        } else {
-            log.trace("adding to countedObject");
-            countedObjects.add(obj);
         }
 
         Class c = obj.getClass();
@@ -132,7 +128,7 @@ public class SizeOf {
             return size_arr(obj, c);
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("an object " + obj);
+                log.debug("an object " + obj + " " + c);
             }
             try {
                 if (SizeMeasurable.class.isAssignableFrom(c)) return sizeof((SizeMeasurable) obj);
@@ -141,30 +137,35 @@ public class SizeOf {
                 if (Map.class.isAssignableFrom(c))      return sizeof((Map) obj);
                 if (Collection.class.isAssignableFrom(c))      return sizeof((Collection) obj);
                 if (String.class.isAssignableFrom(c))   return sizeof((String) obj);
+                // it's odd that all these seem to cost 16 bytes each, but this is a result of simply trying it on Sun JVM 1.5
+                // See also http://www.javaworld.com/javaworld/javatips/jw-javatip130.html
+                if (Integer.class.isAssignableFrom(c))  return 16;
+                if (Long.class.isAssignableFrom(c))     return 16;
+                if (Float.class.isAssignableFrom(c))    return 16;
+                if (Double.class.isAssignableFrom(c))   return 16;
                 // more insteresting stuff can be added here.
             } catch (Throwable e) {
-                log.debug("Error during determination of size of " + obj + " :" + e);
+                log.warn("Error during determination of size of " + obj + " :" + e.getMessage(), e);
             }
             return size_inst(obj, c);
         }
     }
 
     private int sizeof(Map m) {
-        log.debug("sizeof Map");
-        int len = size_inst(m, m.getClass());
+        int len =
+            size_inst(m, m.getClass()) + 
+            m.size() * 30; // estimated overhead per entry. Is about correct for Hashtable and HashMap
         Iterator i = m.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
-            log.trace("key");
             len += sizeof(entry.getKey());
-            log.trace("value");
             len += sizeof(entry.getValue());
         }
         return len;
     }
 
     private int sizeof(Collection m) {
-        log.debug("sizeof List");
+        log.debug("sizeof List" );
         int len = size_inst(m, m.getClass());
         Iterator i = m.iterator();
         while (i.hasNext()) {
@@ -192,21 +193,22 @@ public class SizeOf {
     }
 
     private int sizeof(String m) {
-        log.debug("sizeof String " + m);
-        int len = size_inst(m, m.getClass());
-        return len + m.getBytes().length;
+        // just a guess, but on a Sun 1.5 JVM this is pretty good.
+        return 44 + m.length() * 2; // probably 11 (!) references + array of 16 bits unicode?
     }
 
+
     private int sizeof(SizeMeasurable m) {
-        log.debug("sizeof SizeMeasureable " + m);
-        int len = size_inst(m, m.getClass());
-        return len + m.getByteSize(this);
+        if (log.isDebugEnabled()) {
+            log.debug("sizeof SizeMeasureable " + m);
+        }
+        return  m.getByteSize(this);
     }
 
 
     private int size_inst(Object obj, Class c) {
         Field flds[] = c.getDeclaredFields();
-        int sz = 0;
+        int sz = 8; // wild guess for the size of an Object. (reference + hashcode?
 
         for (int i = 0; i < flds.length; i++) {
             Field f = flds[i];
@@ -218,22 +220,20 @@ public class SizeOf {
             if (f.isAccessible()) {
                 try {
                     sz += sizeof(f.get(obj)); // recursion
-                    if (log.isDebugEnabled()) log.debug("found an (accessible) field " + f);
-                    
                 } catch (java.lang.IllegalAccessException e) {
                     // well...
-                    log.trace(e);                    
+                    log.trace(e);
                 }
             }
         }
 
         if (c.getSuperclass() != null) {
-            sz += size_inst(obj, c.getSuperclass());
+            sz += size_inst(obj, c.getSuperclass()) - 8; // 8: already guessed
         }
 
         Class cv[] = c.getInterfaces();
         for (int i = 0; i < cv.length; i++) {
-            sz += size_inst(obj, cv[i]);
+            sz += size_inst(obj, cv[i]) - 8; // 8: already guessed
         }
 
         return sz;
@@ -245,21 +245,48 @@ public class SizeOf {
 
         if (ct.isPrimitive()) {
             return len * size_prim(ct);
-        }
-        else {
+        } else {
             int sz = 0;
             for (int i = 0; i < len; i++) {
-                sz += SZ_REF;
                 Object obj2 = Array.get(obj, i);
-                if (obj2 == null)
-                    continue;
-                Class c2 = obj2.getClass();
-                if (!c2.isArray())
-                    continue;
-                sz += size_arr(obj2, c2);
+                sz += sizeof(obj2);
             }
             return sz;
         }
+    }
+
+    public static void main(String argv[]) throws InterruptedException {
+        final Runtime rt = Runtime.getRuntime();
+        final int SIZE = Math.round((float) Math.pow(10, 4)); // I hate java
+
+        //final Object[] list = new Object[SIZE];
+        List list = new ArrayList();
+        //ArrayList list = new ArrayList();
+        //Map map = new HashMap();
+
+        rt.runFinalization();
+        rt.gc();
+        Thread.sleep(1000);
+        long usedBefore = rt.totalMemory() - rt.freeMemory();
+        // create one million objects
+        for (int i = SIZE; i < 2 * SIZE; i++) {
+            //list[i - 1000000] = "a" + i + "b" + i; 
+            //list.add("a" + i + "b" + i); // of 16 byte
+            //list.add(new String( new byte[] {})); // of 0 byte
+            //list.add(new String( new byte[] {}).intern());
+            //map.put("a" + i , "b" + i); // of 16 byte
+            list.add(new Integer(i));
+            //list[i - SIZE] = new Double(i);
+        }
+        rt.runFinalization();
+        rt.gc();
+        Thread.sleep(1000);
+        long usedAfter = rt.totalMemory() - rt.freeMemory();
+        System.out.println("" + SIZE +" of Integer costs "  + (usedAfter - usedBefore) + " bytes");
+        System.out.println("Sizeof reports: " + SizeOf.getByteSize(list) + " bytes");
+        //System.out.println("" + list);
+
+
     }
 }
 

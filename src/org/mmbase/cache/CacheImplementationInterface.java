@@ -17,10 +17,10 @@ import java.util.*;
  * An implementation of this interface has to be thread-safe to guarantee correctness.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.3 2005-11-18 22:43:59 nklasens Exp $
+ * @version $Id: CacheImplementationInterface.java,v 1.4 2006-02-20 16:18:09 michiel Exp $
  * @since MMBase-1.8
  */
-public interface CacheImplementationInterface extends Map {
+public interface CacheImplementationInterface extends Map, org.mmbase.util.SizeMeasurable {
 
     /**
      * Sets the (maximal)  size  of the cache (if implementable).
