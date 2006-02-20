@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.16 2006-01-17 21:28:18 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.17 2006-02-20 18:34:16 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -179,15 +179,20 @@ public class Authenticate extends Authentication {
             return false;
         }
         User user = (User) userContext;
-        boolean flag = user.isValidNode() && user.getKey() == getKey();
-        if (flag) {
-            log.debug(user.toString() + " was valid");
-        } else if (user.isValidNode()) {
-            log.service(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number)");
-        } else {
-            log.service(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (node was different)");
+        if (user.node == null) {
+            log.debug("No node associated to user object, --> user object is invalid");
+            return false;
+        } 
+        if (! user.isValidNode()) {
+            log.debug("Node associated to user object, is invalid");
+            return false;
         }
-        return flag;
+        if ( user.getKey() != getKey()) {
+            log.service(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number)");
+            return false;
+        }
+        log.debug(user.toString() + " was valid");
+        return true;
     }
 
 
@@ -214,6 +219,7 @@ public class Authenticate extends Authentication {
             PARAMETER_USERNAME,
             PARAMETER_ENCODEDPASSWORD,
             new Parameter.Wrapper(PARAMETERS_USERS) };
+
     public Parameters createParameters(String application) {
         application = application.toLowerCase();
         if ("anonymous".equals(application)) {
@@ -235,8 +241,7 @@ public class Authenticate extends Authentication {
         private String userName;
         private long   l;
         LocalAdmin(String user, String app) {
-            super(null, Authenticate.this.getKey(), app);
-            node = new AdminVirtualNode();
+            super(new AdminVirtualNode(), Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
         }
@@ -253,12 +258,23 @@ public class Authenticate extends Authentication {
                         node     = new AdminVirtualNode();
                     }
                 });
-            
+
         }
-        
-        
+
         private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
             out.writeUTF(userName);
+        }
+
+        public boolean equals(Object o) {
+            if (o instanceof LocalAdmin) {
+                LocalAdmin ou = (LocalAdmin) o;
+                return
+                    super.equals(o) &&
+                    userName.equals(ou.userName) &&
+                    l == ou.l;
+            } else {
+                return false;
+            }
         }
     }
     public  class AdminVirtualNode extends VirtualNode {
