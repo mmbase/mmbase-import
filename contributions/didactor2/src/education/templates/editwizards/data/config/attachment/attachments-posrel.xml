@@ -12,6 +12,10 @@
             <prompt xml:lang="nl">Omschrijving</prompt>
             <prompt xml:lang="en">Description</prompt>
         </field>
+        <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line">
+          <prompt xml:lang="nl">Positie</prompt>
+          <prompt xml:lang="en">Position</prompt>
+        </field>
         <field wizardname="config/attachment/attachment" ftype="startwizard" />
    </item>
 
@@ -34,6 +38,7 @@
 
     <action type="create">
         <relation destinationtype="attachments" role="posrel">
+          <object type="attachments" />
           <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
         </relation>
    </action>
