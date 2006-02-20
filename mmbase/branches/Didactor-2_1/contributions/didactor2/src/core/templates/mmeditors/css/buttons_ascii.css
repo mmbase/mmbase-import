@@ -1,0 +1,35 @@
+
+span.select:before {
+  font-weight: bold;
+  content: "->";
+}
+
+span.create:before {
+  font-weight: bold;
+  content: "+";
+}
+
+span.change:before {
+  font-weight: bold;
+  content: "->";
+}
+
+span.delete:before {
+  font-weight: bold;
+  content: "X";
+}
+
+span.previous:before {
+  font-weight: bold;
+  content: "<";
+}
+
+span.next:before {
+  font-weight: bold;
+  content: ">";
+}
+
+span.tree:before {
+  font-weight: bold;
+  content: ":-)";
+}

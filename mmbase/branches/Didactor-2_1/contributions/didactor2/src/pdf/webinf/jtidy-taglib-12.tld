@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE taglib PUBLIC
+	"-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+	  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>1.2</jsp-version>
+    <short-name>jtidy</short-name>
+    <uri>http://jtidy.sf.net</uri>
+    <display-name>jtidy *: Tag Library</display-name>
+    <description>A tab library for the JTidy HTML syntax checker and pretty printer</description>
+    <tag>
+        <name>tidy</name>
+        <tag-class>org.w3c.tidy.servlet.jsp.tagext.TidyTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>Tidy</display-name>
+        <description>Tidy JSP printer. You should use this to encapulate the full context of your page.</description>
+        <attribute>
+            <name>config</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>JTidy configuration options separated by semicolon</description>
+        </attribute>
+        <attribute>
+            <name>validateOnly</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>
+                Valid values are true or false. Disable Formated HTML output and only produce the report. By default,
+                false
+            </description>
+        </attribute>
+        <attribute>
+            <name>bypass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>Bypass validation. Can be used to quickly enable/disable validation. Has the same effect as ignore tag before tidy</description>
+        </attribute>
+        <example>
+            <![CDATA[
+<jtidy:tidy config="indent: auto; indent-spaces: 2">
+<html>
+<head>
+	<title>My Page</title>
+</head>
+<body>
+</body>
+    My page body
+</html>
+</jtidy:tidy>
+]]>
+        </example>
+    </tag>
+    <tag>
+        <name>validationImage</name>
+        <tag-class>org.w3c.tidy.servlet.jsp.tagext.ValidationImageTag</tag-class>
+        <description>Tidy Validation Image, Error Warning indicator.</description>
+        <attribute>
+            <name>requestID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>RequestID. By default use current request</description>
+        </attribute>
+        <attribute>
+            <name>onclick</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>JavaScript onclick event code</description>
+        </attribute>
+        <attribute>
+            <name>srcOnly</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>Valid values are true or false. Just generate URI for image. By default, false</description>
+        </attribute>
+        <attribute>
+            <name>imgName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>Name of img element in html, By default JTidyValidationImage</description>
+        </attribute>
+    </tag>
+    <tag>
+        <name>requestID</name>
+        <tag-class>org.w3c.tidy.servlet.jsp.tagext.RequestIDTag</tag-class>
+        <description>RequestID (number) used by Tidy to identify this page</description>
+    </tag>
+    <tag>
+        <name>pass</name>
+        <tag-class>org.w3c.tidy.servlet.jsp.tagext.PassTag</tag-class>
+        <description>Do not change this Responce, Perform only validation</description>
+    </tag>
+    <tag>
+        <name>ignore</name>
+        <tag-class>org.w3c.tidy.servlet.jsp.tagext.IgnoreTag</tag-class>
+        <description>
+            Do not change this Responce, Do not perform validation, Do not store this responce in Repository. This affects filter and tidy tag.
+            Could be before (same as bypass attribute) or inside tidy tag.
+        </description>
+    </tag>
+    <tag>
+        <name>link</name>
+        <tag-class>org.w3c.tidy.servlet.jsp.tagext.LinkTag</tag-class>
+        <description>
+            Link or href to access the Tidy Processing Report via TidyServlet for given request, create href to report
+        </description>
+        <attribute>
+            <name>requestID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>RequestID. By default 'this' use current request</description>
+        </attribute>
+        <attribute>
+            <name>href</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>
+                Valid values are true or false. Create valid only href to reports. By default, false
+            </description>
+        </attribute>
+        <attribute>
+            <name>report</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>
+                Valid values are true or false. Create valid link to report page. By default, false
+            </description>
+        </attribute>
+        <attribute>
+            <name>source</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>Valid values are true or false. Print original HTML source. By default, true</description>
+        </attribute>
+        <attribute>
+            <name>result</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>Valid values are true or false. Print result HTML source. By default, false</description>
+        </attribute>
+        <attribute>
+            <name>text</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>If href is false then the text of the generate A tag</description>
+        </attribute>
+    </tag>
+    <tag>
+        <name>report</name>
+        <tag-class>org.w3c.tidy.servlet.jsp.tagext.ReportTag</tag-class>
+        <description>Access the Tidy Processing Report for given request</description>
+        <attribute>
+            <name>requestID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+            <description>RequestID. By default use last request in repository</description>
+        </attribute>
+        <attribute>
+            <name>source</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>Valid values are true or false. Print original HTML source. By default, true</description>
+        </attribute>
+        <attribute>
+            <name>result</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>Valid values are true or false. Print result HTML source. By default, false</description>
+        </attribute>
+        <attribute>
+            <name>wrapSource</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+            <description>
+                Valid values are true or false. Wrap long lines when printing original HTML source. By default, true
+            </description>
+        </attribute>
+        <attribute>
+            <name>wrapLen</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+            <description>Max string lenght. By default 100</description>
+        </attribute>
+    </tag>
+</taglib>

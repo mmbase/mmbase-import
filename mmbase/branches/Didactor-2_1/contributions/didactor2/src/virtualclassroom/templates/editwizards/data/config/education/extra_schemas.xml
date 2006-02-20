@@ -1,0 +1,6 @@
+    <form-schema id="step_virtualclassroomsessions">
+      <title xml:lang="nl">Virtual Classroom Sessies</title>
+      <title xml:lang="en">Virtual Classroom Sessions</title>
+      <field name="name" ftype="data"/>
+      <list extends="config/virtualclassroom/virtualclassroomsessions-list.xml"/>
+    </form-schema>
