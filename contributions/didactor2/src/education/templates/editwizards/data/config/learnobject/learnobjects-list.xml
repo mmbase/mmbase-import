@@ -14,6 +14,7 @@
 
   <action type="create">
     <relation destinationtype="learnobjects" role="posrel">
+      <object type="learnbobjects" />
       <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
     </relation>
   </action>
