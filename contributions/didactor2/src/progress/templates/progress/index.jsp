@@ -76,6 +76,10 @@
          <mm:import id="tr_online" vartype="String"><di:translate key="progress.online"/></mm:import>
          <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_online')+rotate(90)"/>">
       </th>
+      <th style="border-color:#000000; border-left:0px">
+         <mm:import id="tr_lastlogin" vartype="String"><di:translate key="progress.lastlogin"/></mm:import>
+         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_lastlogin')+rotate(90)"/>">
+      </th>
    </mm:node>
 
 <%
