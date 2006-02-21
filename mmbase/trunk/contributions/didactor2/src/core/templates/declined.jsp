@@ -5,7 +5,8 @@
 <mm:import externid="message"/>
 
 
-<mm:cloud>
+<mm:cloud jspvar="cloud">
+   <%@include file="/shared/setImports.jsp" %>
 
    <di:translate key="core.validatelogin_any_error_header" />
 
