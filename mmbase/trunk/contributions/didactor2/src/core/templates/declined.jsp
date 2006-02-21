@@ -7,7 +7,7 @@
 
 <mm:cloud>
 
-   <di:translate key="core.accountdisabled" />
+   <di:translate key="core.validatelogin_any_error_header" />
 
    <br/>
    <br/>
