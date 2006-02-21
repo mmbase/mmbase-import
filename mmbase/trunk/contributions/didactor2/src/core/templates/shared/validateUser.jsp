@@ -42,8 +42,6 @@
             <di:hasrole referid="user" role="contenteditor" inverse="true">
 
               <mm:isnotempty referid="provider">
-                <mm:isempty referid="education">
-                  <mm:isempty referid="class">
                     <mm:node number="$user">
                       <mm:import id="all_ok" reset="true">false</mm:import>
                       <mm:relatednodes type="educations" role="classrel">
@@ -94,9 +92,6 @@
                         <di:translate key="core.validatelogin_invalid" />
                       </mm:compare>
                     </mm:compare>
-
-                  </mm:isempty>
-                </mm:isempty>
 
               </mm:isnotempty>
             </di:hasrole>
