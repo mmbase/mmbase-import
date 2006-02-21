@@ -29,9 +29,6 @@
    </mm:compare>
 </mm:compare>
 
-<%--
-<di:may component="education" action="isSelfOrTeacherOf" arguments="student">
---%>
    <mm:node number="$student">
       <tr>
          <td style="border-color:#000000; border-top:0px; border-left:0px">
@@ -78,6 +75,11 @@
                   %><%=min%>
                </mm:field>
             </td>
+            <td style="border-color:#000000; border-top:0px; border-left:0px">
+              <mm:node number="$student">
+                <mm:field name="gui(lastactivity)" />
+              </mm:node>
+            </td>
          </mm:node>
 
          <%
@@ -101,14 +103,6 @@
                         %>
                            <mm:import id="testNo" reset="true"><mm:field  name="number" /></mm:import>
                            <mm:field id="feedback" name="feedbackpage" write="false"/>
-
-<%--
-                           <mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><mm:treeinclude page="/progress/teststatus.jsp" objectlist="$includePath" referids="$referids"><mm:param name="copybookNo"><mm:write referid="copybookNo"/></mm:param><mm:param name="testNo"><mm:field name="number"/></mm:param></mm:treeinclude></mm:import>
-                           <%
-                              testStatus = testStatus.trim();
-                           %>
-                           <mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><%= testStatus %></mm:import>
---%>
 
                            <%@include file="teststatus.jsp"%>
 
@@ -162,10 +156,6 @@
          <mm:remove referid="copybookNo"/>
       </tr>
    </mm:node> <%-- student --%>
-<%--
-</di:may>
---%>
-
 </mm:cloud>
 </mm:content>
 
