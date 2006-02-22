@@ -1,8 +1,8 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1"  prefix="mm"
-%><%@ include file="page_base_functionality.jsp"
-%><mm:import externid="userlogon" from="parameters" />
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1"  prefix="mm" %>
+<%@ include file="page_base_functionality.jsp" %>
+<mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" type="text/html" expires="0">
-<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud" rank="administrator">
 <mm:context id="context_search">
 <%-- for selecting next page with listings --%>
 <mm:import externid="page" vartype="integer" from="parameters"><mm:write referid="config.indexoffset" /></mm:import>
