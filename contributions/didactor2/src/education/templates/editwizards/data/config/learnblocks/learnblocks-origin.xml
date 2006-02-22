@@ -32,6 +32,7 @@
     <relation destination="videotapes" role="posrel" />
     <relation destination="attachments" role="posrel" />
     <relation destination="urls" role="posrel" />
+    <relation destination="feedback" role="descriptionrel" /> 
     &extra_loads;
   </action>
 
@@ -99,7 +100,7 @@
       select the correct JSP for finding learnobjects. DO NOT CHANGE THIS TITLE!
     -->
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
-          fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' )]" 
+          fdatapath="relation[@role='posrel' and ( object/@type='learnblocks' or object/@type='flashpages' or object/@type='tests' or object/@type='pages' or object/@type='htmlpages')]"
           searchdir="destination">
       <title xml:lang="nl">Bijbehorende leerobjecten</title>
       <title xml:lang="en">Related learnobjects</title>
@@ -158,6 +159,7 @@
       </command>
     </list>
 
+    <list role="descriptionrel" extends="config/feedback/feedback-described.xml" /> 
     <list role="related" extends="config/online/online-list.xml" />
     &extra_lists;
   </form-schema>
