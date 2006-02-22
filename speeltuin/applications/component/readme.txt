@@ -24,6 +24,9 @@ src\education\templates\educations\wizards\code.jsp
 src\education\templates\editwizards\data\config\attachment
 --> the basic attachment editwizard
 
+src\email\config\components\email.xml
+--> component specific settings for the email component
+
 src\metadata\config\applications
 -> the metadata component including the metadata component object, which is created at install
 
