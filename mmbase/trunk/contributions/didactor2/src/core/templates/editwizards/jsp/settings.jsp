@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.4 2006-02-03 11:03:15 azemskov Exp $
+ * @version  $Id: settings.jsp,v 1.5 2006-02-22 12:40:51 hhangyi Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -204,7 +204,7 @@ if (!done) {
         }
         log.debug("URIResolver "      + ewconfig.uriResolver.getPrefixPath());
     }
-    log.service("end of settings.jsp");// meaning that the rest of the list/wizard page will be done (those include setting.jsp).
+    log.debug("end of settings.jsp"); // meaning that the rest of the list/wizard page will be done (those include setting.jsp).
 }
 %></mm:log><%
     if (done) return;
