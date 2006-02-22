@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp"
 %><mm:content language="$config.lang" expires="0" type="text/html">
-<mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud" rank="administrator">
 <mm:write referid="style" escape="none" />
 <title><%= m.getString("change_node.change")%></title>
 </head>
