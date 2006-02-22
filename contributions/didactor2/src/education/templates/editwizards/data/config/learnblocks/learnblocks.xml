@@ -31,6 +31,7 @@
     <relation destination="videotapes" role="posrel" />
     <relation destination="attachments" role="posrel" />
     <relation destination="urls" role="posrel" />
+    <relation destination="feedback" role="descriptionrel" /> 
     &extra_loads;
   </action>
 
@@ -157,6 +158,7 @@
       </command>
     </list>
 
+    <list role="descriptionrel" extends="config/feedback/feedback-described.xml" /> 
     <list role="related" extends="config/online/online-list.xml" />
     &extra_lists;
   </form-schema>
