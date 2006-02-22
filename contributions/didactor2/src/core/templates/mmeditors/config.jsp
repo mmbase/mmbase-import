@@ -95,7 +95,7 @@
   </form>
   
   <mm:locale language="$config.lang">
-    <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+    <mm:cloud method="delegate" jspvar="cloud" rank="administrator">
       <%@ include file="foot.jsp"  %>      
     </mm:cloud>
   </mm:locale>

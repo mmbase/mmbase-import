@@ -1,5 +1,5 @@
-<%@ include file="page_base.jsp" 
-%><mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+%@ include file="page_base.jsp" %>
+<mm:cloud method="delegate" jspvar="cloud" rank="administrator">
 <title><%=m.getString("commit_node.commit")%></title>
 <mm:context id="commit_node">
 <mm:import externid="node_type" required="true" />

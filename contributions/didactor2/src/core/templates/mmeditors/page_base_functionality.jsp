@@ -71,7 +71,7 @@ if (urlStack == null) {
   <mm:import id="liststyle"   externid="mmjspeditors_liststyle" from="parameters,cookie,this">short</mm:import>  
   <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
   <mm:import id="lang"        externid="mmjspeditors_language"  from="parameters,cookie,this" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
-  <mm:import id="method"      externid="mmjspeditors_method"    from="parameters,cookie,this" >loginpage</mm:import>
+  <mm:import id="method" reset="true">delegate</mm:import>
   <mm:import id="session"     externid="mmjspeditors_session"   from="parameters,cookie,this">mmbase_editors_cloud</mm:import>
   <mm:import externid="batches" from="parameters,this" >30</mm:import>
 </mm:context>

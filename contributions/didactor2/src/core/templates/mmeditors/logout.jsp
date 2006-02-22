@@ -1,9 +1,10 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm"%>
-<mm:cloud method="logout" />
+<mm:cloud method="delegate" authenticate="didactor-logout" jspvar="cloud"/>
+
 <mm:redirect page="/mmeditors/" />
 <%--<%@ include file="page_base.jsp" 
 %><mm:content type="text/html" language="$config.lang" expires="0">
-<mm:cloud jspvar="cloud" sessionname="$config.session" method="asis">
+<mm:cloud method="delegate" authenticate="asis">
   <mm:import id="userlogon"><%= "" + cloud.getUser().getIdentifier() %> </mm:import>
   <mm:log><%= "" + cloud.getUser().getIdentifier() %> </mm:log>
 </mm:cloud>
@@ -15,7 +16,7 @@
   <mm:import id="userlogon" />
 </mm:compare>
 
-<mm:cloud method="logout" sessionname="$config.session" />
+<mm:cloud method="delegate" authenticate="didactor-logout" jspvar="cloud"/>
 <mm:write referid="style" escape="none" />
 <title>Logging out</title>
 </head>
