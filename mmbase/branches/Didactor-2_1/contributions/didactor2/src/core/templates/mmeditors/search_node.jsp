@@ -1,10 +1,11 @@
-<%@ include file="page_base.jsp"
+<%@ include file="page_base.jsp" %>
+<% 
+  urlStack.clear();
+  push(urlStack, "home", request);
 %>
-<% urlStack.clear();
-   push(urlStack, "home", request);
- %><mm:import externid="userlogon" from="parameters" />
+<mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" type="text/html" expires="0">
-<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud">
+<mm:cloud method="delegate" jspvar="cloud" rank="administrator">
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
