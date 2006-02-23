@@ -1,5 +1,6 @@
 package org.mmbase.cache.oscache;
 import org.mmbase.cache.CacheImplementationInterface;
+import org.mmbase.util.SizeOf;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import com.opensymphony.oscache.base.algorithm.AbstractConcurrentReadCache;
@@ -211,5 +212,19 @@ public class OSCacheImplementation implements CacheImplementationInterface  {
      */
     private static String computeKey(Object o) {
         return o.getClass().getName() + "_" + o.hashCode();
+    }
+
+    /**
+     * @see org.mmbase.util.SizeMeasurable#getByteSize()
+     */
+    public int getByteSize() {
+        throw new UnsupportedOperationException("Size is not available for OSCache");
+    }
+
+    /**
+     * @see org.mmbase.util.SizeMeasurable#getByteSize(org.mmbase.util.SizeOf)
+     */
+    public int getByteSize(SizeOf sizeof) {
+        throw new UnsupportedOperationException("Size is not available for OSCache");
     }
 }
