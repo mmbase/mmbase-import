@@ -17,7 +17,7 @@ import java.util.*;
 
 import org.mmbase.core.event.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 
 /**
  *  Like {@link org.mmbase.util.FileWatcher} but for Resources. If (one of the) file(s) to which the resource resolves
@@ -26,7 +26,7 @@ import org.mmbase.bridge.Node;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.11 2006-01-13 15:44:30 pierre Exp $
+ * @version $Id: ResourceWatcher.java,v 1.12 2006-02-23 17:36:02 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -201,8 +201,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * If so, {@link #onChange} is called.
      */
     public void notify(NodeEvent event) {
-        String number = "" + event.getNodeNumber();
-        switch(event.getType()) {
+        if (event.getBuilderName().equals("resources")) {
+            String number = "" + event.getNodeNumber();
+            switch(event.getType()) {
             case NodeEvent.EVENT_TYPE_DELETE: {
                 // hard..
                 String name = (String) nodeNumberToResourceName.get(number);
@@ -218,10 +219,11 @@ public abstract class ResourceWatcher implements NodeEventListener  {
                 int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
                 String name = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
                 if (name.length() > contextPrefix && resources.contains(name.substring(contextPrefix))) {
-                    log.service("Resource " + name + " changed (node added)");
+                    log.service("Resource " + name + " changed (node added or changed)");
                     nodeNumberToResourceName.put(number, name);
                     onChange(name);
                 }
+            }
             }
         }
     }
