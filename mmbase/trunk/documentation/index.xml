@@ -7,7 +7,7 @@
 
     <date>2005-12-12</date>
 
-    <edition>$Id: index.xml,v 1.53 2006-01-10 11:29:53 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.54 2006-02-23 16:01:10 andre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -547,10 +547,8 @@
     links to mmbase.org, for now).</para>
 
     <itemizedlist>
-      <listitem>
-        <para><ulink
-        url="http://www.mmbase.org/development/api/1.8/overview-summary.html">MMBase
-        ApiDocs 1.8</ulink></para>
+      <listitem> <!-- is this allways correct? -->
+        <para><ulink url="javadoc/">MMBase ApiDocs 1.8</ulink></para>
       </listitem>
 
       <listitem>
