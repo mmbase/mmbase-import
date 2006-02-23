@@ -20,7 +20,7 @@ import org.mmbase.bridge.Cacheable;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.34 2006-02-20 16:18:09 michiel Exp $
+ * @version $Id: Cache.java,v 1.35 2006-02-23 17:36:55 michiel Exp $
  */
 abstract public class Cache implements SizeMeasurable, Map {
 
@@ -263,9 +263,38 @@ abstract public class Cache implements SizeMeasurable, Map {
     }
 
     public int getByteSize(SizeOf sizeof) {
-        return 26 + 
-            implementation.getByteSize(sizeof);
-        // sizeof.sizeof(implementation) does not work because this.equals(implementation)
+        int size = 26;
+        if (implementation instanceof SizeMeasurable) {
+            size += ((SizeMeasurable) implementation).getByteSize(sizeof);
+        } else {
+            // sizeof.sizeof(implementation) does not work because this.equals(implementation)
+            Iterator i = implementation.entrySet().iterator();
+            while(i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                size += sizeof.sizeof(entry.getKey());
+                size += sizeof.sizeof(entry.getValue());
+            }
+        }
+        return size;
+    }
+
+    /**
+     * Returns the sum of bytesizes of every key and value. This may count too much, because objects
+     * (like Nodes) may occur in more then one value, but this is considerably cheaper then {@link
+     * getByteSize()}, which has to keep a Collection of every counted object.
+     * @since MMBase-1.8
+     */
+    public int getCheapByteSize() {
+        int size = 0;
+        SizeOf sizeof = new SizeOf();
+        Iterator i = implementation.entrySet().iterator();
+        while(i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            size += sizeof.sizeof(entry.getKey());
+            size += sizeof.sizeof(entry.getValue());
+            sizeof.clear();
+        }
+        return size;
     }
 
 
