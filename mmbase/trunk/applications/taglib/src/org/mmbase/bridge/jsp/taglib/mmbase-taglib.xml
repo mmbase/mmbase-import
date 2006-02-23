@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.342 2006-02-10 18:08:10 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.343 2006-02-23 09:29:03 andre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5716,6 +5716,14 @@ Of course, the default behavior of getSmartPath can still be overridden.
         <info>
           Day of the week as in integer (7=Saturday, 1=Sunday). This is not done by
           SimpleDateFormat, because it doesn't support that (Don't ask me why).
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>rfc822</value>
+        <info>
+          Date and time in the format specified in the RFC822, see http://www.faqs.org/rfcs/rfc822.html ,
+          which can be handy when creating f.e. RSS-feeds http://blogs.law.harvard.edu/tech/rss that 
+          require this format.
         </info>
       </possiblevalue>
       <possiblevalue>
