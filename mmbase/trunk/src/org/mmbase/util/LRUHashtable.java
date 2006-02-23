@@ -20,7 +20,7 @@ import java.util.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.23 2006-02-20 16:18:09 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.24 2006-02-23 17:37:23 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface, SizeMeasurable {
@@ -359,7 +359,6 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
         return getByteSize(new SizeOf());
     }
     public int getByteSize(SizeOf sizeof) {
-        System.out.println("Getting byte size of " + this);
         int len = 4 * SizeOf.SZ_REF + (30 + 5 * SizeOf.SZ_REF) * currentSize;  // 30:overhead of Hashtable, 5*SZ_REF: overhead of LRUEntry
         LRUEntry current = root.next;
         while (current != null && current != dangling) {
