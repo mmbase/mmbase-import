@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<navchannel exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
-	<node number="253" owner="default">
-		<name>Homepage</name>
-		<pathname>home</pathname>
-		<description>test nav channel</description>
-		<visible>yes</visible>
-	</node>
-</navchannel>
