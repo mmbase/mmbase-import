@@ -1,4 +1,4 @@
-%@ include file="page_base.jsp" %>
+<%@ include file="page_base.jsp" %>
 <mm:cloud method="delegate" jspvar="cloud" rank="administrator">
 <title><%=m.getString("commit_node.commit")%></title>
 <mm:context id="commit_node">
