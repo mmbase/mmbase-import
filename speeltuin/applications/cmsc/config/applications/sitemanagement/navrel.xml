@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<navrel exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
-	<node number="283" owner="default" snumber="281" dnumber="253" rtype="navrel" dir="bidirectional">
-		<pos>1</pos>
-	</node>
-</navrel>
