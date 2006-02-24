@@ -172,9 +172,9 @@
    <!-- menu left previous,next (vorige,volgende) -->
       <div class="stepNavigator">
         <br/><br/>
-	      <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="vorige" alt="vorige" /></a>
-	      <a href="javascript:previousContent();" class="path">vorige</a><img src="gfx/spacer.gif" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path">volgende</a>
-	      <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="volgende" alt="volgende" /></a>
+	      <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="portalpages.previos"/>" alt="<di:translate key="portalpages.previos"/>" /></a>
+	     <a href="javascript:previousContent();" class="path"><di:translate key="portalpages.previos"/></a><img src="gfx/spacer.gif" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="portalpages.next"/></a>
+	     <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="portalpages.next"/>" alt="<di:translate key="portalpages.next"/>" /></a>
       </div>
     </div>
     
