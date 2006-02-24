@@ -135,6 +135,7 @@ public class Processor
       nodePerson.setValue("city", participant.getCity());
       nodePerson.setValue("country", participant.getCountry());
       nodePerson.setValue("email", participant.getEmail());
+      nodePerson.setValue("username", participant.getExternid());
 
 
       SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
