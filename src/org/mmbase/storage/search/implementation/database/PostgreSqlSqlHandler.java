@@ -36,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.19 2005-12-30 14:24:43 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.20 2006-02-27 23:55:26 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -206,6 +206,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 }
                 sb.append(" ONLY ");
             } else {
+                org.mmbase.module.core.MMBase mmbase = org.mmbase.module.core.MMBase.getMMBase();
                 // no role specified, check if more then one roles on sub tables are possible...
                 int sourceBuilder = mmbase.getBuilder(rs.getPrevious().getTableName()).getObjectType();
                 int destinationBuilder = mmbase.getBuilder(rs.getNext().getTableName()).getObjectType();
