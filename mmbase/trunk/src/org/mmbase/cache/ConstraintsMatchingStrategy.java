@@ -47,25 +47,25 @@ import org.mmbase.util.logging.*;
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
     private static final Logger log = Logging.getLoggerInstance(ConstraintsMatchingStrategy.class);
-    BasicSqlHandler sqlHandler = new BasicSqlHandler();
+    private static final BasicSqlHandler sqlHandler = new BasicSqlHandler();
     private final static String escapeChars=".\\?+*$()[]{}^|&";
 
     /**
     * This field contains the characters that are being escaped for the 'like' comparison of strings,
     * where, the string that should match the other is converted to a regexp
     **/
-    private static Cache constraintWrapperCache = Cache.getCache("Constraint Matcher Cache");
+    private static final Cache constraintWrapperCache;
 
 
     static{
-        if (constraintWrapperCache == null) constraintWrapperCache =  new Cache(1000){
-            public String getName(){      return "Constraint Matcher Cache";}
-            public String getDescription() {return "Caches query constraint wrappers used by ConstraintsMatchingStrategy";}
+        constraintWrapperCache =  new Cache(1000) {
+                public String getName(){      return "ConstraintMatcherCache";}
+                public String getDescription() {return "Caches query constraint wrappers used by ConstraintsMatchingStrategy";}
         };
         Cache.putCache(constraintWrapperCache);
     }
 
-    private static HashMap constraintMatcherClasses;
+    private static Map constraintMatcherClasses;
     static {
         constraintMatcherClasses = new HashMap();
         Class[] innerClasses = ConstraintsMatchingStrategy.class.getDeclaredClasses();
