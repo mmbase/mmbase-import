@@ -83,26 +83,33 @@
       }
    %>
 
+   <mm:import id="path" reset="true"><mm:field name="path"/></mm:import>
+   <mm:compare referid="path" value="" inverse="true">
+      <mm:import id="it_is_a_package" reset="true">true</mm:import>
+   </mm:compare>
 
-   <mm:relatednodes type="learnblocks" role="posrel" directions="up">
-      <mm:import id="path"><mm:field name="path"/></mm:import>
-      <mm:compare referid="path" value="" inverse="true">
 
-         <mm:tree type="learnblocks" role="posrel" searchdir="source" directions="up">
-            <mm:import id="temp_path"><mm:field name="path"/></mm:import>
-            <mm:compare referid="temp_path" value="" inverse="true">
-               <mm:write referid="temp_path" jspvar="sStep" vartype="String">
-                  <%
-                     String[] arrstrStep = sStep.split("-");
-                     arliPath.add(arrstrStep[1]);
-                     sPackageNode = arrstrStep[0];
-                  %>
-               </mm:write>
-            </mm:compare>
-         </mm:tree>
-         <mm:import id="it_is_a_package">true</mm:import>
-      </mm:compare>
-   </mm:relatednodes>
+   <mm:notpresent referid="it_is_a_package">
+      <mm:relatednodes type="learnblocks" role="posrel" directions="up">
+         <mm:import id="path" reset="true"><mm:field name="path"/></mm:import>
+         <mm:compare referid="path" value="" inverse="true">
+
+            <mm:tree type="learnblocks" role="posrel" searchdir="source" directions="up">
+               <mm:import id="temp_path"><mm:field name="path"/></mm:import>
+               <mm:compare referid="temp_path" value="" inverse="true">
+                  <mm:write referid="temp_path" jspvar="sStep" vartype="String">
+                     <%
+                        String[] arrstrStep = sStep.split("-");
+                        arliPath.add(arrstrStep[1]);
+                        sPackageNode = arrstrStep[0];
+                     %>
+                  </mm:write>
+               </mm:compare>
+            </mm:tree>
+            <mm:import id="it_is_a_package" reset="true">true</mm:import>
+         </mm:compare>
+      </mm:relatednodes>
+   </mm:notpresent>
 
 
    <mm:notpresent referid="it_is_a_package">
