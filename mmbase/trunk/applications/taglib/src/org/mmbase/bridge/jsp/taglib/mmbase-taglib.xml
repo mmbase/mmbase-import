@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.343 2006-02-23 09:29:03 andre Exp $
+version: $Id: mmbase-taglib.xml,v 1.344 2006-02-27 14:35:32 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6332,6 +6332,7 @@ The 0 is just counter, which starts at 0 on every page.
     <name>listcontainer</name>
     <type>mmbase.list</type>
     <extends>querycontainer</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListContainerTag</tagclass>
     <info>
       Surrounds a list tag and  provides a query object.
@@ -6341,7 +6342,7 @@ The 0 is just counter, which starts at 0 on every page.
     <since>MMBase-1.7</since>
     <attribute>
       <name>path</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
          A path.
@@ -6385,6 +6386,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>querycontainer</extends>
     <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedContainerTag</tagclass>
     <info>
       Surrounds a list tag and  provides a query object.
@@ -6395,7 +6397,7 @@ The 0 is just counter, which starts at 0 on every page.
     <since>MMBase-1.7</since>
     <attribute>
       <name>path</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
 

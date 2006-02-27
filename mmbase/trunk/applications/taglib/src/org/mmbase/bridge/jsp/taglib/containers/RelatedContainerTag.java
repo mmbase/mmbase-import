@@ -23,7 +23,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.16 2005-12-13 10:01:00 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.17 2006-02-27 14:35:32 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -60,21 +60,29 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
 
     public int doStartTag() throws JspTagException {
-        if (path == Attribute.NULL) {
-            throw new JspTagException("Path attribute is mandatory");
+        if (getReferid() != null) {
+            query = (Query) getContextProvider().getContextContainer().getObject(getReferid());
+        } else {
+            if (path == Attribute.NULL) {
+                throw new JspTagException("Path attribute is mandatory");
+            }
+            Node node = getNode();
+            Cloud cloud = node.getCloud();
+            query = cloud.createQuery();
+
+            Step step = query.addStep(node.getNodeManager());
+            query.setAlias(step, node.getNodeManager().getName() + "0");
+            query.addNode(step, node);
+
         }
-        Node node = getNode();
-        Cloud cloud = node.getCloud();
-        query = cloud.createQuery();
+
+        if (getId() != null) { // write to context.
+            getContextProvider().getContextContainer().register(getId(), query);
+        }
 
         if (cachePolicy != Attribute.NULL) {
             query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
-
-
-        Step step = query.addStep(node.getNodeManager());
-        query.setAlias(step, node.getNodeManager().getName() + "0");
-        query.addNode(step, node);
 
         Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
