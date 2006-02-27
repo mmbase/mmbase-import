@@ -28,12 +28,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.13 2006-02-14 22:43:57 michiel Exp $
+ * @version $Id: ReleaseStrategy.java,v 1.14 2006-02-27 23:49:46 michiel Exp $
  */
 
 public abstract class ReleaseStrategy {
 
-    private int totalEvaluated = 0, totalPreserved = 0;
+    private int totalEvaluated = 0;
+    private int totalPreserved = 0;
 
     private long totalEvaluationTimeInMillis = 0;
 
