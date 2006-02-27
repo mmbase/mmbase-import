@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.56 2005-12-30 14:24:43 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.57 2006-02-27 23:51:18 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -32,8 +32,6 @@ public class BasicSqlHandler implements SqlHandler {
 
     private static final SimpleDateFormat dateFormat          = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final FieldPosition dontcareFieldPosition = new FieldPosition(DateFormat.YEAR_FIELD);
-    
-    protected MMBase mmbase = MMBase.getMMBase();
 
     /**
      * Constructor.
@@ -355,7 +353,7 @@ public class BasicSqlHandler implements SqlHandler {
             }
         }
 
-        boolean storesAsFile = mmbase.getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
+        boolean storesAsFile = MMBase.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         Iterator iFields = lFields.iterator();
         boolean appended = false;
         while (iFields.hasNext()) {
@@ -525,7 +523,7 @@ public class BasicSqlHandler implements SqlHandler {
      */
     protected void appendTableName(StringBuffer sb, Step step) {
         // Tablename, prefixed with basename and underscore
-        sb.append(mmbase.getBaseName()).
+        sb.append(MMBase.getMMBase().getBaseName()).
         append('_').
         //Currently no replacement strategy is implemented for
         //invalid tablenames.
