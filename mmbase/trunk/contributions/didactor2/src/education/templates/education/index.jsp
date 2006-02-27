@@ -287,10 +287,22 @@
                <mm:import id="showsubtree" reset="true">true</mm:import>
 
                <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" directions="up" maxdepth="15">
+
                   <mm:import id="learnobjectnumber"><mm:field name="number"/></mm:import>
                   <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
                   <mm:depth id="currentdepth" write="false" />
 
+                  <mm:import id="block_this_first_htmlpage" reset="true">false</mm:import>
+                  <mm:compare referid="nodetype" value="htmlpages">
+                     <mm:related path="posrel,learnblocks" directions="up">
+                        <mm:node element="posrel">
+                           <mm:import id="htmlpage_number" reset="true"><mm:field name="pos"/></mm:import>
+                           <mm:compare referid="htmlpage_number" value="-1">
+                              <mm:import id="block_this_first_htmlpage" reset="true">true</mm:import>
+                           </mm:compare>
+                        </mm:node>
+                     </mm:related>
+                  </mm:compare>
 
 
                   <mm:compare referid="showsubtree" value="false">
@@ -301,6 +313,7 @@
                   </mm:compare>
 
                   <mm:compare referid="showsubtree" value="true">
+
                      <mm:grow>
                         <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
                            <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
@@ -327,29 +340,36 @@
                      </mm:compare>
 
                      <mm:compare referid="showsubtree" value="true">
-                        <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
-                           <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
 
-                           <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;" id="content-<mm:field name="number" />">
-                              <script type="text/javascript">
-                              <!--
-                                 addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
-                              //-->
-                              </script>
-                              <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+                        <%// have to skip the first entrace in scorm tree %>
+                        <mm:compare referid="block_this_first_htmlpage" value="false">
 
-                              <mm:node number="component.pop" notfound="skip">
-                                 <mm:relatednodes type="providers" constraints="providers.number=$provider">
-                                    <mm:list nodes="$user" path="people,related,pop">
-                                       <mm:first><%@include file="popcheck.jsp" %></mm:first>
-                                    </mm:list>
-                                 </mm:relatednodes>
-                              </mm:node>
-                           </div>
+                           <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">
+
+                              <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
+
+                              <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;" id="content-<mm:field name="number" />">
+                                 <script type="text/javascript">
+                                 <!--
+                                    addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
+                                 //-->
+                                 </script>
+                                 <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" /><a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a>
+
+                                 <mm:node number="component.pop" notfound="skip">
+                                    <mm:relatednodes type="providers" constraints="providers.number=$provider">
+                                       <mm:list nodes="$user" path="people,related,pop">
+                                          <mm:first><%@include file="popcheck.jsp" %></mm:first>
+                                       </mm:list>
+                                    </mm:relatednodes>
+                                 </mm:node>
+                              </div>
+                           </mm:compare>
                         </mm:compare>
                      </mm:compare>
                      <mm:shrink/>
                   </mm:compare>
+
                </mm:tree>
             </mm:relatednodescontainer>
          </mm:node>
