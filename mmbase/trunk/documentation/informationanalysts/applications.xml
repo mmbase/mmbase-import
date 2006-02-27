@@ -263,9 +263,9 @@
           this application. The <sgmltag class="attribute">path</sgmltag>
           specifies where to find the file. the <sgmltag
           class="attribute">type</sgmltag> attribute specifies the export
-          algorithm to use (currently, only 'depth' is possible). The <sgmltag
-          class="attribute">goal</sgmltag> is a freeform field used to
-          identify the contextsource to the user.</para>
+          algorithm to use. Currently, only 'depth' and 'full' (see below) are
+          supported. The <sgmltag class="attribute">goal</sgmltag> is a
+          freeform field used to identify the contextsource to the user</para>
         </listitem>
 
         <listitem>
