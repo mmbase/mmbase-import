@@ -22,7 +22,7 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.16 2005-12-13 10:01:00 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.17 2006-02-27 14:35:32 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
@@ -70,11 +70,19 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
 
 
     public int doStartTag() throws JspTagException {
-        if (path == Attribute.NULL) {
-            throw new JspTagException("Path attribute is mandatory");
+        if (getReferid() != null) {
+            query = (Query) getContextProvider().getContextContainer().getObject(getReferid());
+        } else {
+            if (path == Attribute.NULL) {
+                throw new JspTagException("Path attribute is mandatory");
+            }
+            Cloud cloud = getCloudVar();
+            query = cloud.createQuery();
         }
-        Cloud cloud = getCloudVar();
-        query = cloud.createQuery();
+
+        if (getId() != null) { // write to context.
+            getContextProvider().getContextContainer().register(getId(), query);
+        }
 
         if (cachePolicy != Attribute.NULL) {
             query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
