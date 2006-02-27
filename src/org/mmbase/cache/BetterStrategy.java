@@ -26,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.16 2006-01-24 16:08:01 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.17 2006-02-27 23:49:22 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
     //public BetterStrategy() {}
-    BasicSqlHandler sqlHandler = new BasicSqlHandler();
+    private static final BasicSqlHandler sqlHandler = new BasicSqlHandler();
     private static final Logger log = Logging.getLoggerInstance(BetterStrategy.class);
 
     // inheritdoc
