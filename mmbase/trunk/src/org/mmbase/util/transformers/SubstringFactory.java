@@ -17,10 +17,12 @@ import java.io.Writer;
 /**
  * Factories {@link CharTransformer}'s which mirror the input, but only between 'from' and 'to'
  * parameters. So, those transformers work like {@link java.lang.String#substring}.
+ * And as a bonus you can specify the parameter 'ellipsis' (the three dots at the end of the text) 
+ * to use when a text has been 'substringed'...
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: SubstringFactory.java,v 1.4 2005-10-18 21:52:09 michiel Exp $
+ * @version $Id: SubstringFactory.java,v 1.5 2006-02-27 16:51:43 andre Exp $
  */
 
 public class SubstringFactory implements ParameterizedTransformerFactory {
@@ -28,11 +30,14 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
     
     protected final static Parameter[] PARAMS = {
         new Parameter("from", Integer.class, new Integer(0)),
-        new Parameter("to"  , Integer.class, new Integer(-1))
+        new Parameter("to"  , Integer.class, new Integer(-1)),
+        new Parameter("ellipsis"  , String.class, "")
     };
 
     public  Transformer createTransformer(Parameters parameters) {
-        return new Substring((Integer) parameters.get("from"), (Integer) parameters.get("to"));
+        return new Substring( (Integer) parameters.get("from"), 
+                              (Integer) parameters.get("to"), 
+                              (String) parameters.get("ellipsis") );
     }
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -45,9 +50,10 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
     protected class Substring extends ReaderTransformer {
         private int from = 0;
         private int to   = -1;
+        private String ellipsis  = "";
         
-        Substring(Integer f, Integer t) {
-            from = f.intValue(); to = t.intValue();
+        Substring(Integer f, Integer t, String e) {
+            from = f.intValue(); to = t.intValue(); ellipsis = e;
         }
 
 
@@ -63,7 +69,10 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
                         w.write(c);
                     }
                     current++;
-                    if (to > -1 && current >= to) break;
+                    if (to > -1 && current >= to) {
+                        if (!ellipsis.equals("")) w.write(ellipsis);
+                        break;
+                    }
                 }
             } catch (java.io.IOException e) {
                 throw new RuntimeException(e);
