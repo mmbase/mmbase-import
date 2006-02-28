@@ -153,6 +153,12 @@ public interface Logger {
      */
     void fatal(Object m, Throwable t);
 
+    /**
+     * Returns true if for this category (Logger), a call to trace
+     * would do something.
+     */
+    public boolean isTraceEnabled();
+
 
     /**
      * Returns true if for this category (Logger), a call to debug (or
