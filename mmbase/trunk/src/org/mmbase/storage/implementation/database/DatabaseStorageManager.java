@@ -13,8 +13,6 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-import javax.sql.DataSource;
-
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.cache.Cache;
@@ -37,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.147 2006-02-15 09:32:29 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.148 2006-02-28 12:17:31 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -125,7 +123,9 @@ public class DatabaseStorageManager implements StorageManager {
         if (log.isDebugEnabled()) {
             long now = System.currentTimeMillis();
             log.debug("Time:" + (now - startTime) + " Query :" + query);
-            log.trace(Logging.stackTrace());
+            if (log.isTraceEnabled()) {
+                log.trace(Logging.stackTrace());
+            }
         }
     }
 
