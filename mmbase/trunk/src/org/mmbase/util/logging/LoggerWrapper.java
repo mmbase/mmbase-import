@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: LoggerWrapper.java,v 1.4 2005-12-18 10:05:00 michiel Exp $
+ * @version $Id: LoggerWrapper.java,v 1.5 2006-02-28 12:16:53 nklasens Exp $
  **/
 
 public class LoggerWrapper implements Logger {
@@ -108,6 +108,10 @@ public class LoggerWrapper implements Logger {
         log.fatal(m, t);
     }
 
+    final public boolean isTraceEnabled() {
+        return log.isTraceEnabled();
+    }
+    
     final public boolean isDebugEnabled() {
         return log.isDebugEnabled();
     }
