@@ -10,7 +10,6 @@
 <%@taglib uri="/WEB-INF/tld/struts-template.tld" prefix="template"%>
 <%@taglib uri="/WEB-INF/tld/struts-tiles.tld" prefix="tiles"%>
 <%@taglib uri="/WEB-INF/tld/struts-nested.tld" prefix="nested"%>
-
 <%@taglib uri="/WEB-INF/tld/error.tld" prefix="error"%>
 <%@taglib uri="/WEB-INF/tld/oneclickedit.tld" prefix="oce"%>
 <%@taglib uri="/WEB-INF/tld/oneclickedit-staging.tld" prefix="oce_staging"%>
