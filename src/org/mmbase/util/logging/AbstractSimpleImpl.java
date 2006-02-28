@@ -151,6 +151,10 @@ abstract public class AbstractSimpleImpl  implements Logger {
         }
     }
 
+    public boolean isTraceEnabled() {
+        return level <= Level.TRACE_INT;
+    }
+
     public boolean isDebugEnabled() {
         return level <= Level.DEBUG_INT;
     }

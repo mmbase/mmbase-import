@@ -174,16 +174,17 @@ public final class Impl implements Logger {
         return level;
     }
 
+    public boolean isTraceEnabled() {
+        return (getLevel().intValue() <= java.util.logging.Level.FINER.intValue());
+    }
+    
     public boolean isDebugEnabled() {
-
         return (getLevel().intValue() <= java.util.logging.Level.FINE.intValue());
     }
-    public boolean isServiceEnabled() {
 
+    public boolean isServiceEnabled() {
         return (getLevel().intValue() <= java.util.logging.Level.CONFIG.intValue());
     }
-
-
 
 }
 
