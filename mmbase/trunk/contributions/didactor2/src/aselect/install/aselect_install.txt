@@ -108,6 +108,28 @@ See the ASelect documentation on how to create a key:
 
 http://a-select.surfnet.nl/version/1.4.2/guide/aselectsrv.html#deploy
 
+To use authentication without flatfile.udb, you should change the A-Select Server
+config file (aselect.xml) in order to use another (probably LDAP) UserDB (UDB).
+See the deployment guide on the A-Select Server for the UDB:
+
+http://www.a-select.org/version/1.4.2/guides.html#deployment
+
+Out of the box there's 3 different UDB's:
+    * FlatFile User Database
+    * LDAP User Database
+    * JDBC User Database
+    (* SASDB User Database -> specific!)
+
+I you want to use LDAP, please refer to:
+
+http://www.a-select.org/version/1.4.2/guide/udb/jndi.html#deploy
+
+This describes how to deploy a JDNI compatible backend such as LDAP. It
+also shows a configuration example. Make sure that the LDAP has/support
+the A-Select schema to provide the A-Select Server with the right
+attributes for a user (think of the config as it is in de flatfile, but
+now registerd in the LDAP).
+
 CHECK
 1. the logs are in \A-Select\1.4.2\log\aselectserver (or somewhere else depending on the settings in aselect.xml)
 2. you can see the aselectserver run on: http://localhost/aselectserver/server
