@@ -29,10 +29,10 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.40 2006-02-15 12:57:46 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.41 2006-02-28 08:53:01 nklasens Exp $
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
-    private static final  Logger log = Logging.getLoggerInstance(AbstractNodeManager.class);
+    private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
 
     private static final boolean allowNonQueriedFields = true; // not yet configurable
 
