@@ -34,7 +34,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.48 2006-01-26 16:54:14 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.49 2006-02-28 08:53:32 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -90,6 +90,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
             sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
 
+            log.debug("sql: " + sqlString);
+            
             // Execute the SQL... ARGH !!! Has to move!
             // get connection...
             DataSource dataSource = ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
