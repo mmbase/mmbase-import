@@ -8,6 +8,8 @@ import org.mmbase.bridge.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import nl.didactor.component.metadata.autofill.HandlerInterface;
+
 import nl.didactor.metadata.tree.MetadataTreeModel;
 
 public class MetaDataHelper {
@@ -254,6 +256,68 @@ public class MetaDataHelper {
          }
       }
       return sResultSet;
+   }
+
+   public NodeList getActiveMetastandardsNodeList(Cloud cloud, String sNode, String sUserID){
+      MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
+      Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
+
+      NodeList nlTopLevelMetaStandarts = cloud.getList("" + nodeRootMetaStandart.getNumber(),
+         "metastandard1,metastandard2",
+         "metastandard2.number",
+         "metastandard2.isused='1'",
+         null,null,null,false);
+
+      HashSet hsetResult = new HashSet();
+
+      for(int f = 0; f < nlTopLevelMetaStandarts.size(); f++){
+         Node nodeMetaStandart = cloud.getNode(nlTopLevelMetaStandarts.getNode(f).getStringValue("metastandard2.number"));
+
+         GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(nodeMetaStandart), 30, nodeMetaStandart.getNodeManager(), "posrel", "destination");
+         TreeIterator it = tree.treeIterator();
+
+         while (it.hasNext()) {
+             Node nodeChildMetaStandart = it.nextNode();
+             hsetResult.add(nodeChildMetaStandart);
+         }
+      }
+
+      return (NodeList) hsetResult;
+   }
+
+
+
+   /**
+    * Fills autovalues for any supported object
+    * @param nodeObject Node
+    */
+   public void fillAutoValues(Node nodeObject){
+       // <mm:field name="age()" />
+
+      NodeList nlMetaDefinitions = nodeObject.getCloud().getList(this.getActiveMetastandards(nodeObject.getCloud(), null, null),
+         "metastandard,metadefinition",
+         "metadefinition.number",
+         null,null,null,null,false);
+
+      for(int f = 0; f < nlMetaDefinitions.size(); f++){
+         Node nodeMetaDefinition = nodeObject.getCloud().getNode(nlMetaDefinitions.getNode(f).getStringValue("metadefinition.number"));
+
+         //Start handler, all exceptions to /dev/null
+         //(in case users enter wrong value we do nothing)
+         String sHandler = nodeMetaDefinition.getStringValue("handler");
+         if ((sHandler != null) && (!"".equals(sHandler))){
+            try{
+               Class classMetaDataHandler = Class.forName("nl.didactor.component.metadata.autofill.handlers." + sHandler);
+               HandlerInterface handler = (HandlerInterface) classMetaDataHandler.newInstance();
+               if (!handler.checkMetaData(nodeMetaDefinition, nodeObject)){
+                   handler.addMetaData(nodeMetaDefinition, nodeObject);
+               }
+            }
+            catch(Exception e){
+            }
+//            System.out.println("=" + nodeMetaDefinition.getNumber() + " " + sHandler);
+         }
+      }
    }
 }
 
