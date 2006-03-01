@@ -89,7 +89,7 @@
    </mm:compare>
 
 
-   <mm:notpresent referid="it_is_a_package">
+   <mm:present referid="it_is_a_package">
       <mm:relatednodes type="learnblocks" role="posrel" directions="up">
          <mm:import id="path" reset="true"><mm:field name="path"/></mm:import>
          <mm:compare referid="path" value="" inverse="true">
@@ -109,7 +109,7 @@
             <mm:import id="it_is_a_package" reset="true">true</mm:import>
          </mm:compare>
       </mm:relatednodes>
-   </mm:notpresent>
+   </mm:present>
 
 
    <mm:notpresent referid="it_is_a_package">
@@ -145,10 +145,12 @@
             String sScormDir = sUserSettings_PathBaseDirectory + File.separator + "scorm";
             String sNodePlayer = sScormDir + File.separator + sPackageNode + "_player";
 
+
             //package checking
             File filePackageDir = new File(sScormDir + File.separator + sPackageNode);
             File filePackageUnzippedDir = new File(sScormDir + File.separator + sPackageNode + "_");
             File filePackagePlayerDir = new File(sNodePlayer);
+
             if(filePackageDir.exists() && filePackageUnzippedDir.exists() && filePackagePlayerDir.exists())
             {//The package exists
                File fileCustomMenu = new File(sNodePlayer + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs" + nodeLearnObject.getNumber() +  ".js");
