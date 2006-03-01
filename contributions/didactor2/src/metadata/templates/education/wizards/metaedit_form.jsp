@@ -65,6 +65,7 @@
         MetaDataHelper mdh = new MetaDataHelper();
         NodeList nlLangCodes = mdh.getLangCodes(cloud);              // *** Get languages list
         NodeList nlRelatedNodes = mdh.getRelatedMetaData(cloud,sNode); // *** Get all related metadata to this node
+           mdh.fillAutoValues(cloud.getNode(sNode));
         %>
         <form name="meta_form">
 
