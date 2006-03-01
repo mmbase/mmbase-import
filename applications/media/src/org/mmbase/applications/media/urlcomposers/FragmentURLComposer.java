@@ -25,7 +25,7 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Rob Vermeulen (VPRO)
  */
-abstract public class FragmentURLComposer extends URLComposer  {
+public class FragmentURLComposer extends URLComposer  {
     protected MMObjectNode fragment;
     
     public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, Set cacheExpireObjects) {
