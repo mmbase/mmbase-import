@@ -89,7 +89,7 @@
    </mm:compare>
 
 
-   <mm:notpresent referid="it_is_a_package">
+   <mm:present referid="it_is_a_package">
       <mm:relatednodes type="learnblocks" role="posrel" directions="up">
          <mm:import id="path" reset="true"><mm:field name="path"/></mm:import>
          <mm:compare referid="path" value="" inverse="true">
@@ -109,7 +109,7 @@
             <mm:import id="it_is_a_package" reset="true">true</mm:import>
          </mm:compare>
       </mm:relatednodes>
-   </mm:notpresent>
+   </mm:present>
 
 
    <mm:notpresent referid="it_is_a_package">
