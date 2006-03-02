@@ -45,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.184 2006-02-15 09:56:34 michiel Exp $
+ * @version $Id: MMBase.java,v 1.185 2006-03-02 16:13:25 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1131,7 +1131,7 @@ public class MMBase extends ProcessorModule {
                     }
                 }
             }
-        } catch (Exception e) { // what kind of exceptions are these?
+        } catch (Throwable e) { // what kind of exceptions are these?
             loading.remove(builderName);
             log.error(Logging.stackTrace(e));
             return null;
