@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.20 2006-01-13 15:37:24 pierre Exp $
+ * @version $Id: NodeFunction.java,v 1.21 2006-03-02 17:25:13 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -104,7 +104,13 @@ public abstract class NodeFunction extends AbstractFunction {
             Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
             if (cloud == null) {
                 // lets try this
-                cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                try {
+                    cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                } catch (org.mmbase.security.SecurityException se) {
+                    // perhaps class-security not implemented by security implementation.
+                    log.warn("" + se.getMessage());
+                    cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                }
                 if (cloud == null) {
                     throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
                 }
