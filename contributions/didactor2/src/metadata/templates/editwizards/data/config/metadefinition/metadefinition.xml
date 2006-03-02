@@ -27,6 +27,7 @@
   <lists>
    <optionlist include="config/option_list/metadatatypes.xml" />
    <optionlist include="config/option_list/boolean.xml" />
+   <optionlist include="config/option_list/metahandlers_type.xml" />
   </lists>
 
   <steps>
@@ -62,8 +63,10 @@
       <prompt>Maximaal aantal waarden</prompt>
     </field>
 
-    <field name="handler" dtminlength="0">
-      <prompt>Classname van een handler om metadata uit te lezen</prompt>
+    <field name="handler" ftype="enum">
+      <prompt xml:lang="nl">Classname van een handler om metadata uit te lezen</prompt>
+      <prompt xml:lang="en">Classname for meta autofiller</prompt>
+      <optionlist select="metahandlers_type" />
     </field>
 
     <!-- has to be only visible if type=3, but that's not possible atm -->
