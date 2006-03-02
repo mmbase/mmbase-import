@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<optionlist name="metahandlers_type">
+   <option id="">none</option>
+   <option id="FileSize">filesize</option>
+   <option id="MimeType">filetype</option>
+   <option id="Extension">fileextension</option>
+   <option id="CreationDate">creation date</option>
+</optionlist>
