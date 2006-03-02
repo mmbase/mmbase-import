@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.148 2006-02-28 12:17:31 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.149 2006-03-02 16:26:03 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -410,7 +410,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         } else {
             untrimmedResult = result.getString(index);
-            if (factory.hasOption(Attributes.LIE_CP1252)) {
+            if (factory.hasOption(Attributes.LIE_CP1252) && untrimmedResult != null) {
                 try {
                     String encoding = factory.getMMBase().getEncoding();
                     if (encoding.equalsIgnoreCase("ISO-8859-1")) {
