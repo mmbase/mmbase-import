@@ -14,7 +14,7 @@ public class Extension extends Handler{
 
     protected boolean handlerCheckMetaData(Node nodeLangString, Node nodeObject){
         String sExtension = nodeObject.getFunctionValue("format", null).toString();
-        System.out.println("---" + sExtension);
+
         if (sExtension.equals(nodeLangString.getStringValue("value"))) {
             return true;
         }
