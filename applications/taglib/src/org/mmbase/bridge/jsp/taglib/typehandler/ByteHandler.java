@@ -19,7 +19,6 @@ import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.functions.*;
-import org.mmbase.module.core.MMObjectBuilder;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -28,7 +27,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.24 2006-03-03 10:32:04 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.25 2006-03-03 14:47:12 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -45,16 +44,20 @@ public class ByteHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
-        args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
-        args.set(Parameter.LANGUAGE, tag.getLocale().getLanguage());
-        args.set("session",  tag.getSessionName());
-        PageContext pc = tag.getContextTag().getPageContext();
-        args.set(Parameter.RESPONSE, pc.getResponse());
-        args.set(Parameter.REQUEST,  pc.getRequest());
-        args.set(Parameter.LOCALE, tag.getLocale());
-        StringBuffer show = new StringBuffer((node != null ? node.getFunctionValue("gui", args).toString() : ""));
-        show.append("<input type=\"" + (search ? "text" : "file") + "\" name=\"" + prefix(field.getName()) + "\" id=\"" + prefixID(field.getName()) + "\" ");
+        StringBuffer show = new StringBuffer();
+        if (node != null) {
+            Function gui = node.getFunction("gui");
+            Parameters args = gui.createParameters();
+            args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
+            args.set(Parameter.LANGUAGE, tag.getLocale().getLanguage());
+            args.set("session",  tag.getSessionName());
+            PageContext pc = tag.getContextTag().getPageContext();
+            args.set(Parameter.RESPONSE, pc.getResponse());
+            args.set(Parameter.REQUEST,  pc.getRequest());
+            args.set(Parameter.LOCALE, tag.getLocale());
+            show.append("" + gui.getFunctionValue(args));
+        }
+        show.append("<input type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
         addExtraAttributes(show);
         show.append("/>");
         return show.toString();
