@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.120 2006-02-15 12:57:46 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121 2006-03-03 14:52:50 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -511,8 +511,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             }
             Vector fieldlist = params.Values("FIELDS");
             Vector res = new Vector(v.size() / items);
-            for(int i= 0; i<v.size(); i+=items) {
-                MMObjectNode node = new MMObjectNode(builder, true);
+            for (int i= 0; i<v.size(); i+=items) {
+                MMObjectNode node = new org.mmbase.module.core.VirtualNode(builder);
                 for(int j= 0; (j<items) && (j<v.size()); j++) {
                     if ((fieldlist!=null) && (j<fieldlist.size())) {
                         node.setValue((String)fieldlist.get(j),v.get(i+j));
