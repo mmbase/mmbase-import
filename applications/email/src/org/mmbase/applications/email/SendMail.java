@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.14 2005-11-02 16:40:54 michiel Exp $
+ * @version $Id: SendMail.java,v 1.15 2006-03-03 15:50:14 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -105,12 +105,12 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 Context envCtx = (Context)initCtx.lookup(context);
                 Object o = envCtx.lookup(dataSource);
                 if (o instanceof Session) {
-                    session = (Session) o;
+                    session = (javax.mail.Session) o;
                 } else {
                     log.fatal("Configured dataSource '" + dataSource + "' of context '" + context + "' is not a Session but " + (o == null ? "NULL" : "a " + o.getClass().getName()));
                     return;
                 }
-                log.info("Module SendMail started (datasource = " + dataSource + ")");
+                log.info("Module SendMail started (datasource = " + dataSource + " -> " + session.getProperties() + ")");
             } else {
                 if (context != null) {
                     log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
