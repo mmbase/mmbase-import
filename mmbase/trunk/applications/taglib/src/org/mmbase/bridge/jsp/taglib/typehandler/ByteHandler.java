@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.23 2006-01-19 11:13:32 andre Exp $
+ * @version $Id: ByteHandler.java,v 1.24 2006-03-03 10:32:04 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -53,8 +53,12 @@ public class ByteHandler extends AbstractTypeHandler {
         args.set(Parameter.RESPONSE, pc.getResponse());
         args.set(Parameter.REQUEST,  pc.getRequest());
         args.set(Parameter.LOCALE, tag.getLocale());
-        return  (node != null ? node.getFunctionValue("gui", args).toString() : "") +
-                 "<input type=\"" + (search ? "text" : "file") + "\" name=\"" + prefix(field.getName()) + "\" id=\"" + prefixID(field.getName()) + "\" />";
+        StringBuffer show = new StringBuffer((node != null ? node.getFunctionValue("gui", args).toString() : ""));
+        show.append("<input type=\"" + (search ? "text" : "file") + "\" name=\"" + prefix(field.getName()) + "\" id=\"" + prefixID(field.getName()) + "\" ");
+        addExtraAttributes(show);
+        show.append("/>");
+        return show.toString();
+
     }
 
     public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
