@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.14 2006-02-10 18:04:02 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.15 2006-03-03 14:47:44 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -169,10 +169,12 @@ public class NodeProviderHelper implements NodeProvider {
             if (node.isNew() || node.isChangedByThis()) {
                 // node can need committing
                 if (commit.getBoolean(thisTag, true)) {
-                    log.service("Committing node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier() + " changed fields: " + node.getChanged() + " " + node.isNew() + " " + node.isChanged() + " becaus", new Exception());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Committing node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier() + " changed fields: " + node.getChanged() + " " + node.isNew() + " " + node.isChanged() + " because ", new Exception());
+                    }
                     node.commit();
-                } else {
-                    log.service("Not committing " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier() + " changed fields: " + node.getChanged() + " " + node.isNew() + " " + node.isChanged());
+                } else if (log.isDebugEnabled()) {
+                    log.debug("Not committing " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier() + " changed fields: " + node.getChanged() + " " + node.isNew() + " " + node.isChanged());
                 }
             } else {
                 if (log.isDebugEnabled()) {
