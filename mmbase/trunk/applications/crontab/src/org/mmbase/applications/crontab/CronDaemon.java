@@ -81,7 +81,7 @@ public class CronDaemon implements Runnable {
     protected void addEntry(CronEntry entry) {
         entry.init();
         cronEntries.add(entry);
-        log.info("Added entry " + entry);
+        log.service("Added entry " + entry);
     }
 
     public CronEntry getCronEntry(String id) {
