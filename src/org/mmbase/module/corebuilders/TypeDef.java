@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.65 2006-02-20 18:23:21 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.66 2006-03-03 14:53:20 pierre Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -179,7 +179,7 @@ public class TypeDef extends MMObjectBuilder {
                                                 "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
                                                 "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
                                                 config);
-            } 
+            }
             BuilderReader newBuilderXml      = new BuilderReader(new InputSource(stringReader), getMMBase());
             if (!originalBuilderXml.equals(newBuilderXml)) {
                 try {

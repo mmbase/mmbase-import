@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.369 2006-02-09 12:52:52 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.370 2006-03-03 14:53:20 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -604,6 +604,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public int insert(String owner, MMObjectNode node) {
         int n = mmb.getStorageManager().create(node);
+        if (n >= 0) {
+            node.isNew = false;
+        }
 
         node.useAliases();
 

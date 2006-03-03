@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.180 2006-02-20 18:33:01 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.181 2006-03-03 14:53:20 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -141,8 +141,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     private MMObjectBuilder builder = null;
 
 
-
-    protected boolean isNew = true;
+    protected boolean isNew = false;
 
     /**
      * New aliases of the node
@@ -170,7 +169,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (parent != null) {
             this.parent = parent;
         } else {
-            throw new IllegalArgumentException("Contructor called with parent=null");
+            throw new IllegalArgumentException("Constructor called with parent=null");
         }
     }
 
@@ -284,11 +283,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the new node key (number field), or -1 if the insert failed
      */
     public int insert(String userName) {
-        int number = parent.insert(userName, this);
-        if (number >= 0) {
-            isNew = false;
-        }
-        return number;
+        return parent.insert(userName, this);
     }
 
     /**
