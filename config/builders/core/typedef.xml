@@ -97,7 +97,7 @@
       </gui>
       <db>
         <name>config</name>
-        <type required="true" state="virtual">XML</type>
+        <type required="true" notnull="false" state="virtual">XML</type>
       </db>
     </field>
   </fieldlist>
