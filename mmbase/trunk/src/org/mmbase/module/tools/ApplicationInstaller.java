@@ -27,10 +27,10 @@ import org.xml.sax.InputSource;
 
 /**
  * Application installations functionalite of MMAdmin.
- * 
+ *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.5 2005-11-28 22:02:12 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.6 2006-03-03 14:53:20 pierre Exp $
  */
 public class ApplicationInstaller {
 
@@ -731,13 +731,13 @@ public class ApplicationInstaller {
                     return result.error("Could not find the typedef builder.");
                 }
                 // try to add a node to typedef, same as adding a builder...
-                MMObjectNode type = typeDef.getNewNode("system");
+                MMObjectNode typeNode = typeDef.getNewNode("system");
                 // fill the name....
-                type.setValue("name", name);
+                typeNode.setValue("name", name);
 
-                type.setValue("config", config);
+                typeNode.setValue("config", config);
                 // insert into mmbase
-                typeDef.insert("system", type);
+                typeNode.insert("system");
                 // we now made the builder active.. look for other builders...
             }
         }
