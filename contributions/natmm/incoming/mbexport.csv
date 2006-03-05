@@ -1,0 +1,4 @@
+Obj-Class,Alias Name,Directory Name,E-mail Addresses
+Mailbox,BenholtM,BenholtM,SMTP:M.vanBenholt@Natuurmonumenten.nl%X400:c=US;a= ;p=Natuurmonumenten;o=Hoofdkantoor;s=BenholtM;
+Mailbox,BeP,BeP,SMTP:P.vanderBe@Natuurmonumenten.nl%X400:c=US;a= ;p=Natuurmonumenten;o=Hoofdkantoor;s=BeP;
+Mailbox,activesynt,activesynct,X400:c=US;a= ;p=Natuurmonumenten;o=Hoofdkantoor;s=activesync;g=test;%SMTP:t.activesyn@natuurmonumenten.nl

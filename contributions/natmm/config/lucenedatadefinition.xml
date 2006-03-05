@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lucenemodule defaultindex="natmmDefaultIndex">
+
+   <index name="natmmIndexArtikel">
+      <table name="artikel">
+         <field name="titel">titel</field>
+         <field name="intro">intro</field>
+         <field name="tekst">tekst</field>
+         <related name="paragraaf">
+            <field name="titel">titel</field>
+            <field name="tekst">tekst</field>
+            <related name="attachments">
+               <field name="titel">titel</field>
+               <field name="description">description</field>
+               <field name="filename">filename</field>
+            </related>
+            <related name="link">
+               <field name="titel">titel</field>
+               <field name="omschrijving">omschrijving</field>
+               <field name="url">url</field>
+               <field name="alt_tekst">alt_tekst</field>
+            </related>
+            <related name="images">
+               <field name="titel">titel</field>
+               <field name="omschrijving">omschrijving</field>
+               <field name="titel_fra">titel_fra</field>
+               <field name="alt_tekst">alt_tekst</field>
+            </related>
+         </related>
+      </table>
+   </index>
+   
+   <index name="natmmIndexNatuurgebieden">
+      <table name="natuurgebieden">
+         <field name="titel">titel</field>
+         <related name="artikel">
+            <field name="titel">titel</field>
+            <field name="intro">intro</field>
+            <field name="tekst">tekst</field>
+            <related name="paragraaf">
+               <field name="titel">titel</field>
+               <field name="tekst">tekst</field>
+            </related>
+         </related>
+         <related name="paragraaf">
+            <field name="titel">titel</field>
+            <field name="tekst">tekst</field>
+         </related>
+         <related name="shorty">
+            <field name="titel">titel</field>
+            <field name="omschrijving">omschrijving</field>
+         </related>
+         <related name="vertrekpunten">
+            <field name="titel">titel</field>
+            <field name="tekst">tekst</field>
+         </related>
+         <related name="provincies">
+            <field name="titel">titel</field>
+         </related>
+      </table>
+   </index>
+
+   <index name="natmmFormulier">
+      <table name="formulier">
+         <field name="titel">titel</field>
+         <related name="formulierveld">
+            <field name="label">label</field>
+         </related>
+      </table>
+   </index>
+
+   <index name="natmmIndexEvenement">
+      <table name="evenement">
+         <field name="titel">titel</field>
+         <field name="tekst">tekst</field>
+         <related name="paragraaf">
+            <field name="titel">titel</field>
+            <field name="tekst">tekst</field>
+         </related>
+         <related name="natuurgebieden">
+            <field name="titel">titel</field>
+         </related>
+         <related name="vertrekpunten">
+            <field name="titel">titel</field>
+            <field name="tekst">tekst</field>
+         </related>
+      </table>
+   </index>
+   <!--
+   <index name="natmmIndexMeta">
+      <table name="pagina">
+         <field name="metatags" />
+         <related name="artikel">
+            <field name="metatags">metatags</field>
+            <related name="paragraaf">
+               <field name="metatags">metatags</field>
+            </related>
+         </related>
+      </table>
+   </index>
+   -->
+</lucenemodule>
