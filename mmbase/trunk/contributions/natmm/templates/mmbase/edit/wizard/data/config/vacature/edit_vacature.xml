@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_vacatures">
+   <title>Vacatures</title>
+   <field name="titel">
+     <prompt>Titel</prompt>
+   </field>
+   <field name="omschrijving_fra" ftype="html" rows="16">
+      <prompt>Inleidende tekst</prompt>
+   </field>
+   <field name="functienaam" ftype="html" rows="16" dtrequired="false">
+      <prompt>Functienaam</prompt>
+   </field>
+   <field name="embargo">
+     <prompt>PubliseerDatum</prompt>
+   </field>
+   <field name="verloopdatum">
+     <prompt>VerloopDatum</prompt>
+   </field>
+   <field name="omschrijving" ftype="html" rows="16">
+      <prompt>Omschrijving</prompt>
+   </field>
+   <field name="functieinhoud" ftype="html" rows="16">
+      <prompt>Functieinhoud</prompt>
+   </field>
+   <field name="functieomvang" ftype="html" rows="16" dtrequired="false">
+      <prompt>Functieomvang</prompt>
+   </field>
+   <field name="duur">
+      <prompt>Duur</prompt>
+   </field>
+   <field name="afdeling" ftype="html" rows="16" dtrequired="false">
+      <prompt>Afdeling</prompt>
+   </field>
+   <field name="functieeisen" ftype="html" rows="16">
+      <prompt>Functie eisen</prompt>
+   </field>
+   <field name="opleidingseisen" ftype="html" rows="16">
+      <prompt>Opleidingseisen</prompt>
+   </field>
+   <field name="competenties" ftype="html" rows="16">
+      <prompt>Competenties</prompt>
+   </field>
+   <field name="salarisschaal" ftype="html" rows="16">
+      <prompt>Salarisschaal</prompt>
+   </field> 
+   <field name="omschrijving_eng" ftype="html" rows="16">
+      <prompt>Afsluitende tekst</prompt>
+   </field>
+   <list include="config/attachments/zoek_contentelement_related_attachments.xml" />
+</form-schema>
