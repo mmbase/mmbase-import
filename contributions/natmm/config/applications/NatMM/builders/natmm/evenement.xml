@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!-- Generated for MMBase version: 1.6  -->
+<builder extends="contentelement" maintainer="mmbase.org" name="evenement" version="0">
+<!--
+activiteit
+-->
+
+   <!-- Status of the builder: active or inactive -->
+   <status>active</status>
+   <!-- Classname of the builder.
+   This is a optional tag, it names the classfile to use for this builder
+   Providing an alternate buidler class allows you to add or change support routines. -->
+   <classfile>nl.leocms.builders.ContentEvenement</classfile>
+   <!-- The default maximum age of objects in a search
+   used by some MMBase editors to limit the results of a search -->
+   <searchage>9999</searchage>
+   <!-- Names defines the different names used in user visible parts
+    Singular names are used when talking about one object (Url,Person) and plurar when talking about multiple objects (Urls, people).
+    Names can be provided in various languages. -->
+   <names>
+      <!-- singular names per language as defined by ISO 639 -->
+      <singular xml:lang="nl">Evenement</singular>
+      <singular xml:lang="en">Event</singular>
+      <!-- plural names per language as defined by ISO 639 -->
+      <plural xml:lang="nl">Evenementen</plural>
+      <plural xml:lang="en">Events</plural>
+   </names>
+   <!-- Descriptions are meant to provide some additional clarification to an object.
+ They are useful for GUI editors to provide helptexts.
+ Descriptions can be provided in various languages. -->
+   <descriptions>
+      <description xml:lang="nl">Evenement</description>
+      <description xml:lang="en">Event</description>
+   </descriptions>
+   <!-- description per language as defined by ISO 639 -->
+
+   <!-- You can define properties to be used by the classfile.
+ Properties are entered using name/value pairs.
+ The actual properties available differ by class. -->
+   <properties>
+      <property name="max-nodes-from-query">250</property>
+      <!-- Fields that are considered html-fields, seperate them with a space. -->
+      <property name="htmlFields">omschrijving tekst</property>
+   </properties>
+
+   <fieldlist>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">Groepsactiviteit</guiname>
+            <guiname xml:lang="en">GroupsActivity</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>4</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">groepsexcursie</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">MinAantalDeelnemers</guiname>
+            <guiname xml:lang="en">MinNumberParticipants</guiname>
+            <guitype>integer</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+               <!-- position in the input area of the editor -->
+               <input>5</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">min_aantal_deelnemers</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">MaxAantalDeelnemers</guiname>
+            <guiname xml:lang="en">MaxNumberParticipants</guiname>
+            <guitype>integer</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+               <!-- position in the input area of the editor -->
+               <input>6</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">max_aantal_deelnemers</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+         </db>
+      </field>
+       <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">CurAantalDeelnemers</guiname>
+            <guiname xml:lang="en">CurNumberParticipants</guiname>
+            <guitype>integer</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+               <!-- position in the input area of the editor -->
+               <input>6</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">cur_aantal_deelnemers</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">AanmeldenVooraf</guiname>
+            <guiname xml:lang="en">SubscribeInAdvance</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>7</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">aanmelden_vooraf</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">AchterafBevestigen</guiname>
+            <guiname xml:lang="en">Confirmation</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>8</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">achteraf_bevestigen</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">VoorkeurVerplicht</guiname>
+            <guiname xml:lang="en">PreferenceObliged</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>9</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">voorkeur_verplicht</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">BeginInschrijving</guiname>
+            <guiname xml:lang="en">BeginSubscription</guiname>
+            <guitype>eventtime</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>10</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">begininschrijving</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">EindInschrijving</guiname>
+            <guiname xml:lang="en">EndSubscription</guiname>
+            <guitype>eventtime</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>11</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">eindinschrijving</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">BeginDatum</guiname>
+            <guiname xml:lang="en">BeginDate</guiname>
+            <guitype>eventtime</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>12</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">begindatum</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">EindDatum</guiname>
+            <guiname xml:lang="en">EndDate</guiname>
+            <guitype>eventtime</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>13</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">einddatum</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">DagOmschrijving</guiname>
+            <guiname xml:lang="en">DayDescription</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>14</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">dagomschrijving</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">Tijd</guiname>
+            <guiname xml:lang="en">Time</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>15</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">tijd</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">Tekst</guiname>
+            <guiname xml:lang="en">Text</guiname>
+            <guitype>field</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>16</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>10</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">tekst</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">Lokatie</guiname>
+            <guiname xml:lang="en">Lokation</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>17</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">lokatie</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">Soort</guiname>
+            <guiname xml:lang="en">Soort</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>18</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">soort</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">Discipline</guiname>
+            <guiname xml:lang="en">Discipline</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>19</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">discipline</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">Doelgroep</guiname>
+            <guiname xml:lang="en">TargetGroup</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>20</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">doelgroep</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">Type</guiname>
+            <guiname xml:lang="en">Type</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+                                           <!-- position in the input area of the editor -->
+               <input>21</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">type</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">IsReserve</guiname>
+            <guiname xml:lang="en">IsSpare</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+               <!-- position in the input area of the editor -->
+               <input>22</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">isspare</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">IsOpInternet</guiname>
+            <guiname xml:lang="en">IsOnInternet</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+               <!-- position in the input area of the editor -->
+               <input>23</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">isoninternet</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">IsGeannulleerd</guiname>
+            <guiname xml:lang="en">IsCanceled</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+               <!-- position in the input area of the editor -->
+               <input>24</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name xml:lang="nl">iscanceled</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+         </db>
+      </field>
+</fieldlist>
+</builder>
