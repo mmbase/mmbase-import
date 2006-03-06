@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.38 2006-02-14 22:56:51 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.39 2006-03-06 13:14:12 pierre Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -196,27 +196,36 @@ public class DateHandler extends AbstractTypeHandler {
                 check = Integer.parseInt(searchValue);
             }
 
-            if (element.getMax() - element.getMin() < 400) {
+            if (element.getMax() - element.getMin() < 200) {
                 buffer.append("<select class=\"mm_").append(element.getName()).append("\" ");
                 buffer.append("name=\"").append(name).append("\" ");
                 buffer.append("id=\"").append(fieldid).append("\" ");
                 addExtraAttributes(buffer);
                 buffer.append(">");
+                String checkOption = "  <option selected=\"selected\" value=\"" + check + "\">" +
+                    (check == -1 ? "==" : element.toString(check - element.getOffset(), locale, pattern.length())) +
+                    "</option>";
                 if (! required && first) {
-                    buffer.append("<option value=\"-1\"");
                     if (check == -1) {
-                        buffer.append(" selected=\"selected\"");
+                        buffer.append(checkOption);
+                    } else {
+                        buffer.append("<option value=\"-1\">--</option>");
                     }
-                    buffer.append(">--</option>");
+                }
+                if (check > -1 && check < element.getMin()) {
+                    buffer.append(checkOption);
                 }
                 for (int i = element.getMin(); i <= element.getMax(); i++) {
                     if (firstChar == 'y' && i == 0 && ! EXIST_YEAR_0) continue;
-                    String val = element.toString(i - element.getOffset(), locale, pattern.length());
                     if (check == i) {
-                        buffer.append("  <option selected=\"selected\" value=\"" + i + "\">" + val + "</option>");
+                        buffer.append(checkOption);
                     } else {
+                        String val = element.toString(i - element.getOffset(), locale, pattern.length());
                         buffer.append("  <option value=\"" + i + "\">" + val + "</option>");
                     }
+                }
+                if (check > element.getMax()) {
+                    buffer.append(checkOption);
                 }
                 buffer.append("</select>");
             } else {
