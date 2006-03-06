@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.142 2006-02-09 17:21:51 pierre Exp $
+ * @version $Id: Wizard.java,v 1.143 2006-03-06 13:08:46 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -846,106 +846,111 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // now, resolve optionlist values:
         // - The schema contains the list definitions, from which the values are copied.
         // - Each list may have a query attached, which is performed before the copying.
-        NodeList optionlists = Utils.selectNodeList(wizardnode, ".//optionlist[@select]");
+        NodeList optionlists = Utils.selectNodeList(wizardnode, ".//field/optionlist");
 
         for (int i = 0; i < optionlists.getLength(); i++) {
             Node optionlist = optionlists.item(i);
 
             String listname = Utils.getAttribute(optionlist, "select");
-            log.debug("Handling optionlist: " + i + ": " + listname);
 
-            Node list = Utils.selectSingleNode(wizardSchema, "/*/lists/optionlist[@name='" + listname + "']");
+            // import and create list if select was set - otherwise, this optionlist is defined 'inline'
+            if (listname != null && !listname.equals("")) {
+                log.debug("Handling optionlist: " + i + ": " + listname);
 
-            if (list == null) {
-                // Not found in definition. Put an error in the list and proceed with the
-                // next list.
-                log.debug("Not found! Proceeding with next list.");
+                Node list = Utils.selectSingleNode(wizardSchema, "/*/lists/optionlist[@name='" + listname + "']");
 
-                Element option = optionlist.getOwnerDocument().createElement("option");
-                option.setAttribute("id", "-");
-                Utils.storeText(option,
-                                "Error: optionlist '" + listname + "' not found");
-                optionlist.appendChild(option);
+                if (list == null) {
+                    // Not found in definition. Put an error in the list and proceed with the
+                    // next list.
+                    log.debug("Not found! Proceeding with next list.");
 
-                continue;
-            }
-
-            // Test if this list has a query and get the time-out related values.
-            Node query = Utils.selectSingleNode(list, "query");
-            long currentTime = new Date().getTime();
-            long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list,
-                                                                         "query-timeout", String.valueOf(this.listQueryTimeOut)));
-            long lastExecuted = currentTime - queryTimeOut - 1;
-
-            if (query != null) {
-                String lastExecutedString = Utils.getAttribute(query, "last-executed", "never");
-
-                if (!lastExecutedString.equals("never")) {
-                    lastExecuted = Long.parseLong(lastExecutedString);
-                }
-            }
-
-            // Execute the query if it's there and only if it has timed out.
-            if ((query != null) && ((currentTime - lastExecuted) > queryTimeOut)) {
-                log.debug("Performing query for optionlist '" + listname +
-                          "'. Cur time " + currentTime + " last executed " + lastExecuted +
-                          " timeout " + queryTimeOut + " > " + (currentTime - lastExecuted));
-
-                Node queryresult = null;
-
-                try {
-                    // replace {$origin} and such
-                    String newWhere = Utils.fillInParams(Utils.getAttribute(query, "where"), variables);
-                    Utils.setAttribute(query, "where", newWhere);
-                    queryresult = databaseConnector.getList(query);
-                    queryresult = Utils.selectSingleNode(queryresult, "/getlist/query");
-                } catch (Exception e) {
-                    // Bad luck, tell the user and try the next list.
-                    log.debug("Error during query, proceeding with next list: " + e.toString());
-
-                    Element option = list.getOwnerDocument().createElement("option");
+                    Element option = optionlist.getOwnerDocument().createElement("option");
                     option.setAttribute("id", "-");
-                    Utils.storeText(option, "Error: query for '" + listname + "' failed");
+                    Utils.storeText(option,
+                                    "Error: optionlist '" + listname + "' not found");
                     optionlist.appendChild(option);
 
                     continue;
                 }
 
-                // Remind the current time.
-                Utils.setAttribute(query, "last-executed", String.valueOf(currentTime));
+                // Test if this list has a query and get the time-out related values.
+                Node query = Utils.selectSingleNode(list, "query");
+                long currentTime = new Date().getTime();
+                long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list,
+                                                                             "query-timeout", String.valueOf(this.listQueryTimeOut)));
+                long lastExecuted = currentTime - queryTimeOut - 1;
 
-                // Remove any already existing options.
-                NodeList olditems = Utils.selectNodeList(list, "option");
+                if (query != null) {
+                    String lastExecutedString = Utils.getAttribute(query, "last-executed", "never");
 
-                for (int itemindex = 0; itemindex < olditems.getLength();
-                     itemindex++) {
-                    list.removeChild(olditems.item(itemindex));
+                    if (!lastExecutedString.equals("never")) {
+                        lastExecuted = Long.parseLong(lastExecutedString);
+                    }
                 }
 
-                // Loop through the queryresult and add the included objects by creating
-                // an option element for each one. The id and content of the option
-                // element are taken from the object by performing the xpaths on the object,
-                // that are given by the list definition.
-                NodeList items = Utils.selectNodeList(queryresult, "*");
-                String idPath = Utils.getAttribute(list, "optionid", "@number");
-                String contentPath = Utils.getAttribute(list, "optioncontent", "field");
+                // Execute the query if it's there and only if it has timed out.
+                if ((query != null) && ((currentTime - lastExecuted) > queryTimeOut)) {
+                    log.debug("Performing query for optionlist '" + listname +
+                              "'. Cur time " + currentTime + " last executed " + lastExecuted +
+                              " timeout " + queryTimeOut + " > " + (currentTime - lastExecuted));
 
-                for (int itemindex = 0; itemindex < items.getLength();
-                     itemindex++) {
-                    Node item = items.item(itemindex);
-                    String optionId = Utils.transformAttribute(item, idPath, true);
-                    String optionContent = Utils.transformAttribute(item,
-                                                                    contentPath, true);
-                    Element option = list.getOwnerDocument().createElement("option");
-                    option.setAttribute("id", optionId);
-                    Utils.storeText(option, optionContent);
-                    list.appendChild(option);
+                    Node queryresult = null;
+
+                    try {
+                        // replace {$origin} and such
+                        String newWhere = Utils.fillInParams(Utils.getAttribute(query, "where"), variables);
+                        Utils.setAttribute(query, "where", newWhere);
+                        queryresult = databaseConnector.getList(query);
+                        queryresult = Utils.selectSingleNode(queryresult, "/getlist/query");
+                    } catch (Exception e) {
+                        // Bad luck, tell the user and try the next list.
+                        log.debug("Error during query, proceeding with next list: " + e.toString());
+
+                        Element option = list.getOwnerDocument().createElement("option");
+                        option.setAttribute("id", "-");
+                        Utils.storeText(option, "Error: query for '" + listname + "' failed");
+                        optionlist.appendChild(option);
+
+                        continue;
+                    }
+
+                    // Remind the current time.
+                    Utils.setAttribute(query, "last-executed", String.valueOf(currentTime));
+
+                    // Remove any already existing options.
+                    NodeList olditems = Utils.selectNodeList(list, "option");
+
+                    for (int itemindex = 0; itemindex < olditems.getLength();
+                         itemindex++) {
+                        list.removeChild(olditems.item(itemindex));
+                    }
+
+                    // Loop through the queryresult and add the included objects by creating
+                    // an option element for each one. The id and content of the option
+                    // element are taken from the object by performing the xpaths on the object,
+                    // that are given by the list definition.
+                    NodeList items = Utils.selectNodeList(queryresult, "*");
+                    String idPath = Utils.getAttribute(list, "optionid", "@number");
+                    String contentPath = Utils.getAttribute(list, "optioncontent", "field");
+
+                    for (int itemindex = 0; itemindex < items.getLength();
+                         itemindex++) {
+                        Node item = items.item(itemindex);
+                        String optionId = Utils.transformAttribute(item, idPath, true);
+                        String optionContent = Utils.transformAttribute(item,
+                                                                        contentPath, true);
+                        Element option = list.getOwnerDocument().createElement("option");
+                        option.setAttribute("id", optionId);
+                        Utils.storeText(option, optionContent);
+                        list.appendChild(option);
+                    }
                 }
+
+                // Now copy the items of the list definition to the preHTML list.
+                NodeList items = Utils.selectNodeList(list, "option");
+                Utils.appendNodeList(items, optionlist);
+
             }
-
-            // Now copy the items of the list definition to the preHTML list.
-            NodeList items = Utils.selectNodeList(list, "option");
-            Utils.appendNodeList(items, optionlist);
 
             // set selected=true for option which is currently selected
             String selectedValue = Utils.selectSingleNodeText(optionlist,
