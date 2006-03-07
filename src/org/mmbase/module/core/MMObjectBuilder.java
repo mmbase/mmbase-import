@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.370 2006-03-03 14:53:20 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.371 2006-03-07 15:15:22 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -976,19 +976,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             synchronized(nodeCache) {
                 cacheLocked++;
             }
-            res = node.commit();
-            Integer number = new Integer(node.getNumber());
-            if (! res) {
-                // if somewhy commit unsuccessfull, remove node from cache.
+            if (node.getNumber() > 0 ) {
+                Integer number = new Integer(node.getNumber());
                 nodeCache.remove(number);
-            } else {
-                // update the node in the cache if it was not this node (in temporarynodemanager a
-                // copy is instantiated, so I think that perhaps this code is used always.)
-                MMObjectNode cachedNode  = (MMObjectNode) nodeCache.get(number);
-                if (cachedNode != null && cachedNode != node) {
-                    cachedNode.values.putAll(node.values);
-                }
             }
+
+            res = node.commit();
         } finally {
             synchronized(nodeCache) {
                 cacheLocked--;
