@@ -23,7 +23,7 @@ import java.io.Writer;
  * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
  * @since MMBase-1.8
- * @version $Id: SubstringFactory.java,v 1.6 2006-02-27 20:48:12 michiel Exp $
+ * @version $Id: SubstringFactory.java,v 1.7 2006-03-07 14:01:03 michiel Exp $
  */
 
 public class SubstringFactory implements ParameterizedTransformerFactory {
@@ -43,10 +43,6 @@ public class SubstringFactory implements ParameterizedTransformerFactory {
     public Parameters createParameters() {
         return new Parameters(PARAMS);
     }
-    public Parameters createParameters(java.util.List values) {
-        return new Parameters(PARAMS, values);
-    }
-
 
     protected class Substring extends ReaderTransformer {
 
