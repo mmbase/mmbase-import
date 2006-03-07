@@ -62,10 +62,10 @@
 
 
         <%
-        MetaDataHelper mdh = new MetaDataHelper();
-        NodeList nlLangCodes = mdh.getLangCodes(cloud);              // *** Get languages list
-        NodeList nlRelatedNodes = mdh.getRelatedMetaData(cloud,sNode); // *** Get all related metadata to this node
-           mdh.fillAutoValues(cloud.getNode(sNode));
+           MetaDataHelper mdh = new MetaDataHelper();
+           NodeList nlLangCodes = mdh.getLangCodes(cloud);              // *** Get languages list
+           NodeList nlRelatedNodes = mdh.getRelatedMetaData(cloud,sNode); // *** Get all related metadata to this node
+           mdh.fillAutoValues(cloud.getNode(sNode), getServletContext());
         %>
         <form name="meta_form">
 
