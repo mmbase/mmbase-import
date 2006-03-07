@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.15 2005-07-25 16:08:55 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.16 2006-03-07 17:37:58 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -248,9 +248,9 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      */
     public static String getEncoding(String contentType) {
         String contentTypeLowerCase = contentType.toLowerCase();
-        int cs = contentTypeLowerCase.indexOf(";charset=");
+        int cs = contentTypeLowerCase.indexOf("charset=");
         if (cs > 0) {
-            return  contentType.substring(cs + 9);
+            return  contentType.substring(cs + 8);
         } else {
             return null;
         }
