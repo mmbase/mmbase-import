@@ -1,6 +1,7 @@
 package nl.didactor.metadata.util;
 
 import java.util.*;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
@@ -291,7 +292,7 @@ public class MetaDataHelper {
     * Fills autovalues for any supported object
     * @param nodeObject Node
     */
-   public void fillAutoValues(Node nodeObject){
+   public void fillAutoValues(Node nodeObject, ServletContext servletContext){
        // <mm:field name="age()" />
 
       NodeList nlMetaDefinitions = nodeObject.getCloud().getList(this.getActiveMetastandards(nodeObject.getCloud(), null, null),
@@ -308,14 +309,16 @@ public class MetaDataHelper {
          if ((sHandler != null) && (!"".equals(sHandler))){
             try{
                Class classMetaDataHandler = Class.forName("nl.didactor.component.metadata.autofill.handlers." + sHandler);
-               HandlerInterface handler = (HandlerInterface) classMetaDataHandler.newInstance();
+               Object[] arrobjParams = {servletContext};
+               HandlerInterface handler = (HandlerInterface) classMetaDataHandler.getConstructors()[0].newInstance(arrobjParams);
+
                if (!handler.checkMetaData(nodeMetaDefinition, nodeObject)){
                    handler.addMetaData(nodeMetaDefinition, nodeObject);
                }
             }
             catch(Exception e){
             }
-//            System.out.println("=" + nodeMetaDefinition.getNumber() + " " + sHandler);
+            System.out.println("=" + nodeMetaDefinition.getNumber() + " " + sHandler);
          }
       }
    }
