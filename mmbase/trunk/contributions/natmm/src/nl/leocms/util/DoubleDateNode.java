@@ -28,7 +28,7 @@ import org.mmbase.bridge.Node;
  * DoubleDateNode
  *
  * @author Henk Hangyi
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:59 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 10:52:11 $
  *
  */
  
@@ -221,7 +221,7 @@ public class DoubleDateNode implements Comparable
   } 
 
   public String getReadableValue() {
-   return  getReadableDate() + ", " + getReadableTime();
+      return  getReadableDate() + ", " + getReadableTime();
   }
   
   public boolean getMultiDay() {
@@ -236,7 +236,7 @@ public class DoubleDateNode implements Comparable
   }
 
   public String toString() {
-        return beginDate.toString() + " - " + endDate.toString() + " (" + nodeNumber + ")";
+      return beginDate.toString() + " - " + endDate.toString() + " (" + nodeNumber + ")";
   }
 
   public int compareTo(Object obj) { 
@@ -247,19 +247,24 @@ public class DoubleDateNode implements Comparable
     long yBegin = ((DoubleDateNode) obj).getBegin().getTime()/1000;
     long yEnd = ((DoubleDateNode) obj).getEnd().getTime()/1000;
     String yNumber = ((DoubleDateNode) obj).nodeNumber;
-    
+
+    int compareTo = 0;
+
     if(xBegin < yBegin || (xBegin==yBegin && xEnd < yEnd)) {
       /* instance lt received */
-      return -1;
+      compareTo = -1;
       
     } else if(xBegin > yBegin || (xBegin==yBegin && xEnd > yEnd)) {
       /* instance gt received */        
-      return 1;
+      compareTo = 1;
       
-    } 
-    
-    /* instance == received */
-    return xNumber.compareTo(yNumber);  
+    } else {
+      /* instance == received */
+      compareTo = xNumber.compareTo(yNumber);
+   
+    }
+    log.debug(this + " compared to " + (DoubleDateNode) obj + " is " + compareTo);
+    return compareTo;  
   }
   
 }

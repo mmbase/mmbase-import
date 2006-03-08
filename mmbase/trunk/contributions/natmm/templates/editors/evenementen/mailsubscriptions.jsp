@@ -55,7 +55,7 @@ if(!toAddress.equals("-1")) {
    <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
 </head>
 <body style="overflow:auto;">
-   <div align="right"><a href="#" onClick="window.close()"><img src='/editors/img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div>
+   <div align="right"><a href="#" onClick="window.close()"><img src='../img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div>
    <h4>Verstuur aanmeldingen per email</h4>
    <% if(!toAddress.equals("-1")) { %>
       De lijst met aanmeldingen is verstuurd naar: <%= toAddress %>

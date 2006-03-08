@@ -18,19 +18,23 @@
 <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
 <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
 <style rel="stylesheet" type="text/css">
-	body, td{
+	body, td {
 	   color:#000000;
       background-color: #FFFFFF;
-      font: 11px;
+      font: 14px;
 	}
+   table {
+      margin-left: -3px;
+   }
 </style>
 </head>
 <body style="overflow:auto;" onload="self.print();">
 <% 
 cal.setTime(new Date());
 %>
+<% for(int i = 0; i<11; i++) { %><br/><% } %>
 's Graveland, <%= cal.get(Calendar.DAY_OF_MONTH) + " " + months_lcase[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR) %>
-<br/><br/><br/><br/>
+<% for(int i = 0; i<4; i++) { %><br/><% } %>
 <%= thisParticipant.getStringValue("prefix") %><br/>
 <%= thisParticipant.getStringValue("straatnaam") %> <%= thisParticipant.getStringValue("huisnummer") %><br/>
 <%= thisParticipant.getStringValue("postcode") %> <%= thisParticipant.getStringValue("plaatsnaam") %><br/>

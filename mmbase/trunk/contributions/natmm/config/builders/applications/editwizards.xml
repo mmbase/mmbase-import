@@ -440,6 +440,25 @@
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
+	
+	<field>
+      <gui>
+        <guiname xml:lang="nl">Startnodes</guiname>
+        <guiname xml:lang="en">Startnodes</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>23</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <db>
+        <name>startnodes</name>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
 
   </fieldlist>
 </builder>

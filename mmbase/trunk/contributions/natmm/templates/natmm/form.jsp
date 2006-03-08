@@ -9,7 +9,7 @@ if(referer!=null) { session.setAttribute("form_referer",referer); }
 <%@include file="includes/top2_cacheparams.jsp" %>
 <% String postingStr = request.getParameter("pst");
 if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
-<cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>

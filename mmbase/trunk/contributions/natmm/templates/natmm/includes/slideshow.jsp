@@ -3,7 +3,7 @@
 <mm:cloud jspvar="cloud">
 <%@include file="../includes/top1_params.jsp" %>
 <%@include file="../includes/top2_cacheparams.jsp" %>
-<cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" >
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" >
 <!-- <%= new java.util.Date() %> -->
 <% String previousImage = "-1";
    String nextImage = "-1";

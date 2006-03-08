@@ -47,23 +47,38 @@
       <mm:listnodes type="rubriek">
          <mm:field name="naam" id="rubriek_naam" write="false" />
          <%
-         String addresses = ""; 
-         %>
-         <mm:related path="rolerel,users" orderby="users.emailadres" fields="users.emailadres" distinct="true"
-            ><mm:field name="users.emailadres" jspvar="address" vartype="String" write="false"><%
-             address.replace(';',',');
-             if(address.indexOf("@")!=-1) {                       
-               addresses += address + ", ";
-             }
-            %></mm:field
-         ></mm:related>
-         <%
-         if(!addresses.equals("")) {
+         for(int r= 0; r<2; r++) { 
+            String addresses = ""; 
+            String rankConstraint = "users.rank = 'basic user'";
+            String rankTitle = "Gebruikers";
+            if(r==1) {
+               rankConstraint = "users.rank != 'basic user'";
+               rankTitle = "Rubrieken beheerders en Admins";
+            }
             %>
-            <h5><mm:write referid="rubriek_naam" /></h5>
-            <%= addresses %>
-            <% 
-         } %>
+            <mm:related path="rolerel,users" orderby="users.emailadres" fields="users.emailadres"
+                distinct="true" constraints="<%= rankConstraint %>"
+               ><mm:field name="users.emailadres" jspvar="address" vartype="String" write="false"><%
+                address.replace(';',',');
+                if(address.indexOf("@")!=-1) {                       
+                  addresses += address + ", ";
+                }
+               %></mm:field
+            ></mm:related>
+            <%
+            if(!addresses.equals("")) {
+               if(r==0) { 
+                  %>
+                  <h5><mm:write referid="rubriek_naam" /></h5>
+                  <%
+               }               
+               %>
+               <b><%= rankTitle %></b>
+               <%= addresses %><br/>
+               <% 
+            } 
+         }
+         %>
       </mm:listnodes>
    </body>
 </html>

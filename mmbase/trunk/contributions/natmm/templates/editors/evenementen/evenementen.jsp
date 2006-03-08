@@ -381,13 +381,13 @@ if(!provincieId.equals("")) {
     <td style="width:50%;vertical-align:middle;color:red;font-weight:bold;padding-left:5px;padding-right:5px;" id="message"></td>
     <td style="vertical-align:bottom;"><% 
       if(actionId.indexOf("print")>-1) {
-         %><a href="#" onClick="window.close()"><img src='/editors/img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a><%
+         %><a href="#" onClick="window.close()"><img src='../img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a><%
       } else {
          %><nobr><a href="<%= "evenementen.jsp?action=print&orderby=" + orderbyId + "&direction=" + directionId + "&soort=" +  soortId + "&offset=" +  offsetId + searchSetting 
-             %>" target="_blank"><img src='/editors/img/print.gif' align='absmiddle' border='0' alt='Print het overzicht'></a>
+             %>" target="_blank"><img src='../img/print.gif' align='absmiddle' border='0' alt='Print het overzicht'></a>
          <% if (soortId.equals("activiteiten")) { %>	
 			 	    <a href="#" onClick="javascript:launchCenter('download_popup.jsp?type=ad', 'center', 300, 400);setTimeout('newwin.focus();',250);">
-					 	 <img src='/editors/img/icexcel.gif' align='absmiddle' border='0' alt='Download alle geselecteerde activiteiten'>
+					 	 <img src='../img/icexcel.gif' align='absmiddle' border='0' alt='Download alle geselecteerde activiteiten'>
 				    </a>
 			 <% } %>	
          <select name="afdeling">
@@ -479,32 +479,32 @@ if(actionId.indexOf("print")==-1) {
        <a href="evenementen.jsp?orderby=titel&soort=<%= soortId %>&direction=<%
          if(orderbyId.equals("titel")) { %><%=newDirection%><% } else { %><%=directionId%><% } %><%= searchSetting %>">
             <b>Naam</b><%
-         if(orderbyId.equals("titel")) { %><img src="/editors/img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+         if(orderbyId.equals("titel")) { %><img src="../img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
          </td>
    <!--2--><td class="fieldname" style="vertical-align:bottom;">
        <a href="evenementen.jsp?orderby=natuurgebieden&soort=<%= soortId %>&direction=<%
          if(orderbyId.equals("natuurgebieden")) { %><%=newDirection%><% } else { %><%=directionId%><% } %><%= searchSetting %>">
             <b>Natuurgebied</b><%
-         if(orderbyId.equals("natuurgebieden")) { %><img src="/editors/img/<%= newDirection %>.gif" border='0' align='absmiddle' alt='Keer sorteervolgorde om' /><% } %><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+         if(orderbyId.equals("natuurgebieden")) { %><img src="../img/<%= newDirection %>.gif" border='0' align='absmiddle' alt='Keer sorteervolgorde om' /><% } %><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
    <!--3--><td class="fieldname" style="vertical-align:bottom;"><a href="evenementen.jsp?orderby=begindatum&soort=<%= soortId %>&direction=<%
          if(orderbyId.equals("begindatum")) { %><%=newDirection%><% } else { %><%=directionId%><% } %><%= searchSetting %>">
          <b>Datum</b><%
-         if(orderbyId.equals("begindatum")) { %><img src="/editors/img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+         if(orderbyId.equals("begindatum")) { %><img src="../img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
          <a href="evenementen.jsp?orderby=<%= orderbyId %>&soort=<%= soortId %>&direction=<%= directionId
             %>&endMnth=<%= endMnthId %>&beginMnth=<%= Integer.parseInt(beginMnthId)-1 %><%= searchSettingMinMonth %>">
-            <img src="/editors/img/prev.gif" border='0'  align='absmiddle' alt='Begindatum één maand terug' /></a>
+            <img src="../img/prev.gif" border='0'  align='absmiddle' alt='Begindatum één maand terug' /></a>
          <a href="evenementen.jsp?orderby=<%= orderbyId %>&soort=<%= soortId %>&direction=<%= directionId 
             %>&endMnth=<%= endMnthId %>&beginMnth=<%= Integer.parseInt(beginMnthId)+1 %><%= searchSettingMinMonth %>">
-            <img src="/editors/img/next.gif" border='0' align='absmiddle' alt='Begindatum één maand vooruit'/></a>
+            <img src="../img/next.gif" border='0' align='absmiddle' alt='Begindatum één maand vooruit'/></a>
          </td>
    <!--4--><td colspan="2" style="text-align:right;vertical-align:bottom;">
        <% if(!endMnthId.equals("")) { %>
           <a href="evenementen.jsp?orderby=<%= orderbyId %>&soort=<%= soortId %>&direction=<%= directionId
             %>&beginMnth=<%= beginMnthId %>&endMnth=<%= Integer.parseInt(endMnthId)-1 %><%= searchSettingMinMonth %>">
-            <img src="/editors/img/prev.gif" border='0'  align='absmiddle' alt='Eindatum één maand terug'/></a>
+            <img src="../img/prev.gif" border='0'  align='absmiddle' alt='Eindatum één maand terug'/></a>
           <a href="evenementen.jsp?orderby=<%= orderbyId %>&soort=<%= soortId %>&direction=<%= directionId 
             %>&beginMnth=<%= beginMnthId %>&endMnth=<%= Integer.parseInt(endMnthId)+1 %><%= searchSettingMinMonth %>">
-            <img src="/editors/img/next.gif" border='0' align='absmiddle' alt='Einddatum één maand vooruit'/></a>
+            <img src="../img/next.gif" border='0' align='absmiddle' alt='Einddatum één maand vooruit'/></a>
        <% } %>
        <input type="submit" name="button" value="Zoek" style="width:40px;margin-left:20px;" onclick="javascript:showMessage(this,'Uw zoekopdracht wordt uitgevoerd.<br>Een moment geduld a.u.b.');">
        </td>
@@ -623,30 +623,30 @@ while(events.size()>0&&iEventCtr<pageSize) {
             if(isAdmin&&!hasChilds) { 
                %><a href="evenementen.jsp?orderby=<%= orderbyId %>&direction=<%= directionId %>&soort=<%= soortId %>&delete=<mm:field name="number" /><%= searchSetting %>">
                   <img onclick="return doDelete('Weet u zeker dat u <%= titel.replace('"',' ').replace('\'',' ') + ", " + ddn.getReadableDate() + ", " + ddn.getReadableTime() %> wilt verwijderen?');"  onmousedown="cancelClick=true;"
-                     src="/editors/img/delete.gif" border='0' align='absmiddle' alt='Deze activiteit verwijderen'/></a><% 
+                     src="../img/delete.gif" border='0' align='absmiddle' alt='Deze activiteit verwijderen'/></a><% 
             }
             if(isAdmin||isChiefEditor){
                if(soortId.equals("activiteiten")) { 
                   %><a href="evenementen.jsp?orderby=begindatum&direction=up&soort=<%= soortId %>&docopy=<mm:field name="number" /><%= searchSetting %>">
                      <img onclick="return doDelete('Weet u zeker dat u <%= titel.replace('"',' ').replace('\'',' ') + ", " + ddn.getReadableDate() + ", " + ddn.getReadableTime() %> wilt kopieren? Wijzig na kopieren de datum van de copy.');"  onmousedown="cancelClick=true;"
-                        src="/editors/img/copy.gif" border='0' align='absmiddle' alt='Deze activiteit kopieren'/></a>
+                        src="../img/copy.gif" border='0' align='absmiddle' alt='Deze activiteit kopieren'/></a>
 			 	        <a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= parent_number %>&type=as', 'center', 300, 400);setTimeout('newwin.focus();',250);">
-						 	 <img src='/editors/img/icexcel.gif' align='absmiddle' border='0' alt='Download alle data met aanmeldingen voor deze activiteit'></a><% 
+						 	 <img src='../img/icexcel.gif' align='absmiddle' border='0' alt='Download alle data met aanmeldingen voor deze activiteit'></a><% 
                }
                %>
-               <a href="javascript:void(0);" onClick="newwin = window.open('/editors/evenementen/findwriters.jsp?p=<%= parent_number %>&e=<%= event_number %>','writers','width=800,height=400,scrollbars=yes,toolbar=no,location=no');setTimeout('newwin.focus();',250);"><img src="/editors/img/people.gif" border='0'  align='absmiddle' alt='Medewerkers die aan deze activiteit hebben gewerkt.' 
+               <a href="javascript:void(0);" onClick="newwin = window.open('/editors/evenementen/findwriters.jsp?p=<%= parent_number %>&e=<%= event_number %>','writers','width=800,height=400,scrollbars=yes,toolbar=no,location=no');setTimeout('newwin.focus();',250);"><img src="../img/people.gif" border='0'  align='absmiddle' alt='Medewerkers die aan deze activiteit hebben gewerkt.' 
                   /></a>
                <%
             }
             if(!soortId.equals("activiteiten")) { %>
                <mm:field name="isoninternet"><mm:compare value="true">
-                  <img src='/editors/img/preview.gif' align='absmiddle' border='0' alt='Activiteit staat op internet'>       
+                  <img src='../img/preview.gif' align='absmiddle' border='0' alt='Activiteit staat op internet'>       
                </mm:compare></mm:field>
                <mm:field name="isspare"><mm:compare value="true">
-                  <img src='/editors/img/rubriek.gif' align='absmiddle' border='0' alt='Reserve datum voor activiteit'>       
+                  <img src='../img/rubriek.gif' align='absmiddle' border='0' alt='Reserve datum voor activiteit'>       
                </mm:compare></mm:field>
                <mm:field name="iscanceled"><mm:compare value="true">
-                  <img src='/editors/img/remove.gif' align='absmiddle' border='0' alt='Activiteit is geannuleerd'>       
+                  <img src='../img/remove.gif' align='absmiddle' border='0' alt='Activiteit is geannuleerd'>       
                </mm:compare></mm:field>
                <% 
             } %>
@@ -687,7 +687,7 @@ while(events.size()>0&&iEventCtr<pageSize) {
    <!--6--><td>
             <% if(soortId.equals("activiteiten")&&hasChilds) {
                                 
-                  String ticketIcon = "/editors/img/ticket_act.gif";
+                  String ticketIcon = "../img/ticket_act.gif";
                   String altText = "Bekijk data voor deze activiteit";
                   
                   %><%@include file="event_parent_status.jsp" %><%

@@ -140,6 +140,7 @@ public class SubscribeAction extends Action {
       }
       return message;
    }
+
    private static String necessaryInfo(Node thisParent, String newline) {
       String message = "";
       RelationList relations = thisParent.getRelations("posrel","vertrekpunten");
@@ -286,7 +287,7 @@ public class SubscribeAction extends Action {
       ddn.setEnd(new Date(thisEvent.getLongValue("einddatum")*1000));
 
       String message = "U heeft voor uw groep " + thisEvent.getStringValue("titel") + " gereserveerd op " +  ddn.getReadableDate() + "."
-            + " De excursie duurt van " + ddn.getReadableStartTime() + " tot " + ddn.getReadableEndTime() + ".";
+            + " De excursie begint om " + ddn.getReadableStartTime() + ".";
 
       Node confirmationText = null;
       NodeList nl = thisSubscription.getRelatedNodes("bevestigings_teksten","daterel",null);
@@ -390,7 +391,7 @@ public class SubscribeAction extends Action {
       String message = dearSir(thisParticipant, thisParticipantName, newline);
 
       if(isGroupExcursion) {
-         message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline);
+         message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline) + newline;
          message += youSubscribedAs(thisParticipant, thisSubscription, thisParticipantName, isGroupExcursion, newline);
          message += yourGroupExcursion(thisParent, thisEvent, thisSubscription, newline) + newline + newline;
          message += withKindRegards(thisParticipant, phoneAndEmail[1], newline);

@@ -229,6 +229,7 @@ public class EvenementForm extends ActionForm {
       cal.setTime(beginTime);
       int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
       String [] selectedDaysOfWeek = this.getSelectedDaysOfWeek();
+      Evenement newEvent = thisEvent; // overwrite the current multi-day event
       for(int d=0; d< selectedDaysOfWeek.length; d++) {
          String thisSelection = selectedDaysOfWeek[d];
          if(thisSelection!=null) {
@@ -240,10 +241,9 @@ public class EvenementForm extends ActionForm {
                   if((day+1)<dayOfWeek) { // *** this would mean setting the time before beginTime, so add one week ***
                      cal.add(Calendar.WEEK_OF_YEAR,1);
                   }
-                  Date nextTime = cal.getTime();  
-                  Evenement newEvent = thisEvent;
+                  Date nextTime = cal.getTime();
                   while(nextTime.getTime()<endTime.getTime()) {
-                     if(newEvent==null) newEvent = new Evenement(this.nextNewNodeNumber());
+                     if(newEvent==null) { newEvent = new Evenement(this.nextNewNodeNumber()); }
                      newEvent.setBegin(nextTime);
                      cal.set(Calendar.HOUR_OF_DAY,endHour);
                      cal.set(Calendar.MINUTE,endMinute);
@@ -280,6 +280,14 @@ public class EvenementForm extends ActionForm {
          datesMap.put(thisEvent.getKey(),thisEvent);
       }
       return datesMap;
+   }
+
+   private void logDates() {
+      Iterator datesIterator = this.getDates().iterator();
+      while(datesIterator.hasNext()) {
+         Evenement thisEvent = (Evenement) datesIterator.next();
+         log.info(thisEvent);
+      }
    }
    
    private Vector selectedDays(Node thisNode){
