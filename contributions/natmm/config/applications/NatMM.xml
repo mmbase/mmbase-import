@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="NatMM" maintainer="mmbase.org" version="3" auto-deploy="true">
+<application name="NatMM" maintainer="mmbase.org" version="4" auto-deploy="true">
    <requirements>
       <!-- <requires type="application" name="LeoCMS" maintainer="LeoCMS.nl" version="1" />  -->
      <requires type="application" name="Resources" maintainer="mmbase.org" version="1" />
@@ -73,6 +73,7 @@
         <builder maintainer="mmbase.org" version="0">extra_info</builder>
         <builder maintainer="mmbase.org" version="0">groups</builder>
         <builder maintainer="mmbase.org" version="0">inschrijvingen</builder>
+        <builder maintainer="mmbase.org" version="0">inschrijvings_categorie</builder>
         <builder maintainer="mmbase.org" version="0">inschrijvings_status</builder>
         <builder maintainer="mmbase.org" version="0">jumpers</builder>
         <builder maintainer="mmbase.org" version="0">leden</builder>
@@ -206,6 +207,7 @@
         <relation from="inschrijvingen" to="email" type="related" />
         <relation from="inschrijvingen" to="inschrijvings_status" type="related" />
         <relation from="inschrijvingen" to="users" type="schrijver" />
+        <relation from="inschrijvingen" to="inschrijvings_categorie" type="related" />
         <relation from="deelnemers" to="leden" type="related" />
         <relation from="medewerkers" to="locations" type="readmore" />
         <relation from="media" to="artikel" type="posrel" />
@@ -298,6 +300,7 @@
         <datasource builder="extra_info" path="NatMM/extra_info.xml" />
         <datasource builder="groups" path="NatMM/groups.xml" />
         <datasource builder="inschrijvingen" path="NatMM/inschrijvingen.xml" />
+        <datasource builder="inschrijvings_categorie" path="NatMM/inschrijvings_categorie.xml" />
         <datasource builder="inschrijvings_status" path="NatMM/inschrijvings_status.xml" />
         <datasource builder="jumpers" path="NatMM/jumpers.xml" />
         <datasource builder="leden" path="NatMM/leden.xml" />

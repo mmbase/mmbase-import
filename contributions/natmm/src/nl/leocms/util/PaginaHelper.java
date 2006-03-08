@@ -301,9 +301,14 @@ public class PaginaHelper {
                if(ewType.equals("list")) {
                   NodeList nl = cloud.getList(pageNumber, editwizardNode.getStringValue("nodepath"), "pagina.number", null, null, null, null, false);
                   if(nl.size()>0) {
-                     ewUrl += "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + editwizardNode.getStringValue("wizard")
-                         + "&startnodes=" + pageNumber 
-                         + "&nodepath=" + editwizardNode.getStringValue("nodepath") 
+                     ewUrl += "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + editwizardNode.getStringValue("wizard");
+                     String startnodes = editwizardNode.getStringValue("startnodes");
+                     if(startnodes!=null&&!startnodes.equals("")) {
+                        ewUrl += "&startnodes=" + startnodes;
+                     } else {
+                        ewUrl += "&startnodes=" + pageNumber;
+                     }
+                     ewUrl += "&nodepath=" + editwizardNode.getStringValue("nodepath") 
                          + "&fields=" + editwizardNode.getStringValue("fields")      
                        //  + "&constraints=" + editwizardNode.getStringValue("constraints") *** empty constraint will result in don't panic ***
                        //  + "&age=" + editwizardNode.getStringValue("age")

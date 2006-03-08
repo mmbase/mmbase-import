@@ -37,7 +37,7 @@ String cardID = "-1";
 </mm:notpresent>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <% if(!cardID.equals("-1")||!imgID.equals("-1")) { expireTime = 0; } %>
-<cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>

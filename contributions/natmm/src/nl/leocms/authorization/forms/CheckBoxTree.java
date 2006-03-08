@@ -46,20 +46,21 @@ public class CheckBoxTree{
       if (nlMenuUsers.size()>0){
         pw.print("checked");
       }
-      pw.print("></td><td colspan=\"2\" class=\"fieldname\">");
+      pw.print("/></td><td colspan=\"3\" class=\"fieldname\">");
       pw.print(me.getValue());
       pw.println("</td></tr>");
       NodeList nlEditwizards = cloud.getList(sMenuNumber,"menu,posrel,editwizards","editwizards.number,editwizards.name","","posrel.pos","UP","",false);
       for (int i=0; i<nlEditwizards.size();i++){
         String sEditwizardNumber = nlEditwizards.getNode(i).getStringValue("editwizards.number");
-        String sEditwizardName = nlEditwizards.getNode(i).getStringValue("editwizards.name");
         pw.print("<tr><td></td><td class=\"field\" style=\"width:20px\"><input type=\"checkbox\" name=\"ed_" + sMenuNumber + "_" + sEditwizardNumber + "\" ");
         NodeList nlEditwizardsUsers = cloud.getList(sEditwizardNumber,"editwizards,gebruikt,users","users.number","users.number='" + id + "'","","UP","",false);
         if (nlEditwizardsUsers.size()>0){
           pw.print("checked");
         }
-        pw.print("></td><td class=\"fieldname\">");
-        pw.print(sEditwizardName);
+        pw.print("/></td><td class=\"fieldname\">");
+        pw.print(nlEditwizards.getNode(i).getStringValue("editwizards.name"));
+        pw.println("</td><td class=\"fieldname\">");
+        pw.print(nlEditwizards.getNode(i).getStringValue("editwizards.description"));
         pw.println("</td></tr>");
       }
     }
@@ -111,6 +112,9 @@ public class CheckBoxTree{
       NodeList nlEditwizards = cloud.getList(sMenuNumber,"menu,posrel,editwizards","editwizards.number,editwizards.name","","posrel.pos","UP","",false);
       for (int i=0; i<nlEditwizards.size();i++){
         String sEditwizardNumber = nlEditwizards.getNode(i).getStringValue("editwizards.number");
+        if(alEditwizards.contains(sEditwizardNumber)) {
+            alEditwizards.remove(sEditwizardNumber);
+        }
         Relation relation = rmEdiwizard.createRelation(cloud.getNode(sEditwizardNumber),user);
         relation.commit();
       }

@@ -40,8 +40,8 @@
    }
    boolean isAdmin = cloud.getUser().getRank().equals("administrator");
    boolean isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
-   
    String rubriekID = "";
+   boolean hasEditwizards = false;
 %>
 <mm:listnodes type="users" constraints="<%= "[account]='" + cloud.getUser().getIdentifier() + "'" %>" max="1" id="thisuser">
    <mm:related path="rolerel,rubriek" max="1">
@@ -52,6 +52,9 @@
             </mm:write>
          </mm:aliaslist>
       </mm:node>
+   </mm:related>
+   <mm:related path="gebruikt,editwizards" max="1">
+      <% hasEditwizards = true; %>
    </mm:related>
 </mm:listnodes>
 <h1 style="text-align:center;width:100%;">Beheeromgeving <mm:node number="root" notfound="skipbody"><mm:field name="naam" /></mm:node></h1>
@@ -69,13 +72,20 @@ if(rubriekID.equals("naardermeer")) {
    %>
    <td class="fieldname"><a href="/activiteiten" target="_blank" class='menu'>Website</a></td>
    <td class="fieldname"><a href="evenementen/evenementen.jsp" target="bottompane" class='menu'>Activiteiten</a></td>
+   <% 
+   if(hasEditwizards) {
+      %><td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class='menu'>Pagina-editor</a></td><%
+   } %>
    <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
    <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
    <% 
 } else {
    %>
+   <%--
    <td class="fieldname"><a href="signalering/takenlijst.jsp" target="bottompane" class='menu'>Takenlijst</a></td>
-   <td class="fieldname"><a href="../workflow/workflow.jsp" target="bottompane" class='menu'>Workflow</a></td>
+   <td lass="fieldname"><a href="../workflow/workflow.jsp" target="bottompane" class='menu'>Workflow</a></td>
+   --%>
+   <td class="fieldname"><a href="/index.jsp" target="_blank" class='menu'>Website</a></td>
    <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td>
    <td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class='menu'>Activiteiten</a></td>
    <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class='menu'>Pagina-editor</a></td>
