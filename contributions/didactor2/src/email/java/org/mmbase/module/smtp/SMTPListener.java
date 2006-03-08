@@ -57,7 +57,14 @@ public class SMTPListener extends Thread {
     public void interrupt() {
         // Interrupted; this only happens when we are shutting down
         log.info("Interrupt() called");
+        if (ssocket != null) {
+            try {
+                ssocket.close();
+            } catch (Exception e) {
+            }
+            ssocket = null;
+        }
+            
         running = false;
-        ssocket = null;
     }
 }
