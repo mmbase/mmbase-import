@@ -20,18 +20,19 @@
  */
 package nl.leocms.util;
 
-import org.apache.log4j.Category;
-
 import java.text.DateFormatSymbols;
 import java.util.Locale;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * @author Jeoffrey Bakker
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:59 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  */
 public class LocaleUtil {
-   static Category log = Category.getInstance(LocaleUtil.class);
 
+   private static final Logger log = Logging.getLoggerInstance(LocaleUtil.class);
 
    public static DateFormatSymbols getDateFormatSymbols(Locale locale) {
       DateFormatSymbols dateFormatSymbols = null;
@@ -53,6 +54,9 @@ public class LocaleUtil {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/03/05 21:43:59  henk
+ * First version of the NatMM contribution.
+ *
  * Revision 1.1  2003/12/15 15:16:30  jeoffrey
  * fix for jira bug LEEUW-194
  *

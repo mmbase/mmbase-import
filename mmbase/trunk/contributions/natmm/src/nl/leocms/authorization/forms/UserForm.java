@@ -25,13 +25,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionError;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.security.Rank;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import com.finalist.mmbase.util.CloudFactory;
 
@@ -41,13 +42,14 @@ import javax.servlet.http.HttpServletRequest;
  * Form bean for the UserForm page.
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:form name="UserForm"
  */
 
 public class UserForm extends ActionForm {
-   static Category log = Category.getInstance(UserForm.class);
+
+   private static final Logger log = Logging.getLoggerInstance(UserForm.class);
 
    private String username;
    private String password;

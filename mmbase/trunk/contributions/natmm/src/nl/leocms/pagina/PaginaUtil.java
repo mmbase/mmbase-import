@@ -80,23 +80,28 @@ public class PaginaUtil {
    /**
     * Verander de volgorde van pagina's 
     * @param parentNode - Node van de parent
-    * @param childs - String met childnodenumbers bv. "170,173,178"
+    * @param childs - String with childnodenumbers eg. "170,173,178"
     */
    public void changeOrder(Node parentNode, String childs) {
      
       StringTokenizer tokenizer = new StringTokenizer(childs, ",");
+      log.info("childs = " + childs);
       List tokens = new ArrayList();
       while (tokenizer.hasMoreTokens()) {
          tokens.add(tokenizer.nextToken());
       }
       // *** save the order of the pages
-      RelationList cList = parentNode.getRelations("posrel");
+      RelationList cList = parentNode.getRelations("posrel","pagina");
       RelationIterator iter = cList.relationIterator();
       while (iter.hasNext()) {
          Relation rel = iter.nextRelation();
          int destination = rel.getDestination().getNumber();
-         rel.setIntValue("pos", tokens.indexOf("" + destination));
-         rel.commit();
+         if(tokens.indexOf("" + destination)!=-1) {
+            rel.setIntValue("pos", tokens.indexOf("" + destination));
+            rel.commit();
+         } else {
+            log.error("Could not find pagina " + destination + " in list of childs " + childs);
+         }
      /* hh    NodeManager manager = cloud.getNodeManager("remotenodes");
         NodeList nodeList = manager.getList("sourcenumber = " + destination, null, null);
         if ((nodeList != null) && (nodeList.size() > 0)) {
@@ -105,14 +110,16 @@ public class PaginaUtil {
      */
       }
       // *** save the order of the rubrieken related to this parent (if any)
-      cList = parentNode.getRelations("parent");
+      cList = parentNode.getRelations("parent",cloud.getNodeManager("rubriek"),"DESTINATION");
       iter = cList.relationIterator();
       while (iter.hasNext()) {
          Relation rel = iter.nextRelation();
          int destination = rel.getDestination().getNumber();
-         if(tokens.indexOf("" + destination)!=-1) { // childs contains destination
+         if(tokens.indexOf("" + destination)!=-1) {
             rel.setIntValue("pos", tokens.indexOf("" + destination));
             rel.commit();
+         } else {
+            log.error("Could not find rubriek " + destination + " in list of childs " + childs);
          }
       }
    }

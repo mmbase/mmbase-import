@@ -20,12 +20,13 @@
  */
 package nl.leocms.forms;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.Globals;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +37,7 @@ import java.util.Locale;
  * LanguageAction
  *
  * @author Jeoffrey Bakker
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:action
  *                path="/LanguageAction"
@@ -46,7 +47,8 @@ import java.util.Locale;
  *
  */
 public class LanguageAction extends Action {
-   transient Category log = Category.getInstance(this.getClass());
+
+   private static final Logger log = Logging.getLoggerInstance(LanguageAction.class);
 
 
    /**
@@ -77,6 +79,9 @@ public class LanguageAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/03/05 21:43:58  henk
+ * First version of the NatMM contribution.
+ *
  * Revision 1.3  2003/11/14 14:17:00  jeoffrey
  * fixed redirect
  *

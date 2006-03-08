@@ -25,18 +25,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import nl.leocms.pagina.PaginaUtil;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 import com.finalist.mmbase.util.CloudFactory;
 
 /**
  * @author Gerard van de Weerd
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  * 
  * @struts:action name="ReorderPaginaForm" path="/editors/paginamanagement/ReorderPaginaAction"
  * scope="request" validate="false"
@@ -45,7 +47,9 @@ import com.finalist.mmbase.util.CloudFactory;
  * path="/editors/paginamanagement/frames.jsp"
  */
 public class ReorderPaginaAction extends Action {
-   transient Category log = Category.getInstance(this.getClass());
+
+   /** Logger instance. */
+   private static Logger log = Logging.getLoggerInstance(ReorderPaginaAction.class);
 
    /**
 	 * The actual perform function: MUST be implemented by subclasses.

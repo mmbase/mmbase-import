@@ -27,7 +27,8 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import nl.leocms.oneclickedit.OneClickEditUtils;
 
-import org.apache.log4j.Category;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 /**
  * @author Gerard van de Weerd
@@ -39,7 +40,8 @@ import org.apache.log4j.Category;
  * <li>
  */
 public class EditmodeTag extends TagSupport {
-   static Category log = Category.getInstance(EditmodeTag.class);
+
+   private static final Logger log = Logging.getLoggerInstance(EditmodeTag.class);
 
    private boolean inverse;
 
