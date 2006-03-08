@@ -298,11 +298,17 @@ public class SubscribeForm extends ActionForm {
    }
 
    public Node createParticipant(Cloud cloud, String action, Node thisEvent, Node thisSubscription, String thisCategory, String thisNumber) {
+ 
       Node thisParticipant = null;
-
       if(action.indexOf("Wijzig")>-1) {
-        thisParticipant = cloud.getNode(getSelectedParticipant());
-      } else {
+        try {
+            thisParticipant = cloud.getNode(getSelectedParticipant());
+        } catch (Exception e) {
+            log.info("Action 'Wijzig' for a none existing participant."
+               + " Probably editor (1) first selected, (2) then deleted and (3) then tried to change the participant");
+        }
+      }
+      if(thisParticipant==null) {
         thisParticipant = cloud.getNodeManager("deelnemers").createNode();
       }
 
