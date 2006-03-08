@@ -20,11 +20,13 @@
  */
 package nl.leocms.signalering.forms;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionError;
+
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,13 +37,14 @@ import java.text.ParseException;
  * Form bean for the NieuwSignaleringForm page.
  *
  * @author Ronald Kramp
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:59 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:form name="NieuwSignaleringForm"
  */
 
 public class NieuwSignaleringForm extends ActionForm {
-   static Category log = Category.getInstance(NieuwSignaleringForm.class);
+
+   private static final Logger log = Logging.getLoggerInstance(NieuwSignaleringForm.class);
    
    final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
    

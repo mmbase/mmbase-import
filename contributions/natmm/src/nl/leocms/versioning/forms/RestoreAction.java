@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import nl.leocms.versioning.VersioningController;
 import nl.leocms.workflow.WorkflowController;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,11 +33,14 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 import com.finalist.mmbase.util.CloudFactory;
 
 /**
  * @author Edwin van der Elst
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:59 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  * 
  * @struts:action path="/editors/beheerbibliotheek/RestoreAction" scope="request" validate="false"
  * 
@@ -46,7 +48,8 @@ import com.finalist.mmbase.util.CloudFactory;
  * redirect="true"
  */
 public class RestoreAction extends Action {
-   transient Category log = Category.getInstance(this.getClass());
+
+   private static final Logger log = Logging.getLoggerInstance(RestoreAction.class);
 
    /**
 	 * Restore a version of a contentelement from the archive to the actual node.
@@ -78,6 +81,9 @@ public class RestoreAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/03/05 21:43:59  henk
+ * First version of the NatMM contribution.
+ *
  * Revision 1.2  2003/11/10 14:05:58  edwin
  * documentation
  *

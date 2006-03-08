@@ -20,11 +20,13 @@
  */
 package nl.leocms.forms;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionError;
+
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,13 +34,14 @@ import javax.servlet.http.HttpServletRequest;
  * Form bean for the ReactionForm page.
  *
  * @author Jeoffrey Bakker
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:form name="ReactionForm"
  */
 
 public class ReactionForm extends ActionForm {
-   static Category log = Category.getInstance(ReactionForm.class);
+
+   private static final Logger log = Logging.getLoggerInstance(ReactionForm.class);
 
    private String referer;
    private String email;
@@ -178,6 +181,9 @@ public class ReactionForm extends ActionForm {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/03/05 21:43:58  henk
+ * First version of the NatMM contribution.
+ *
  * Revision 1.3  2003/12/12 08:54:47  nico
  * unused imports and other small issues
  *

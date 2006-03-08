@@ -24,10 +24,11 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Category;
-
 import java.util.Date;
 import java.text.SimpleDateFormat;
+
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 /**
  * Utility methods to check wether we are running in staging or live.
@@ -39,7 +40,7 @@ public class ServerUtil {
    /** the date + time long format */
    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-   static Category log = Category.getInstance(ServerUtil.class);
+   private static final Logger log = Logging.getLoggerInstance(ServerUtil.class);
 
    public static boolean isLive() {
       getSetting();
@@ -68,7 +69,7 @@ public class ServerUtil {
             live = "live".equals(liveOrStaging);
             loaded=true;
          } catch (NamingException ne) {
-            log.error("Error looking up leocms/LiveOrStaging",ne);
+            log.error("Error looking up leocms/LiveOrStaging" + ne);
          }
       }
    }
