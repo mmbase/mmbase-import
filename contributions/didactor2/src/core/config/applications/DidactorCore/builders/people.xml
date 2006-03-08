@@ -104,7 +104,7 @@
       <gui>
         <guiname xml:lang="en">Suffix</guiname>
         <guiname xml:lang="nl">Tussenvoegsel</guiname>
-        <guitype>field</guitype>
+        <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
       <editor>
@@ -273,7 +273,7 @@
       <gui>
         <guiname xml:lang="en">Country</guiname>
         <guiname xml:lang="nl">Land</guiname>
-        <guitype>field</guitype>
+        <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
       <editor>
@@ -341,7 +341,7 @@
       <gui>
         <guiname xml:lang="en">Mobile</guiname>
         <guiname xml:lang="nl">Mobiel</guiname>
-        <guitype>field</guitype>
+        <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
       <editor>
@@ -410,7 +410,7 @@
       <gui>
         <guiname xml:lang="en">Website</guiname>
         <guiname xml:lang="nl">Website</guiname>
-        <guitype>field</guitype>
+        <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
       <editor>
@@ -643,7 +643,7 @@
       <gui>
         <guiname xml:lang="en">Externid</guiname>
         <guiname xml:lang="nl">ExterneId</guiname>
-        <guitype>field</guitype>
+        <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
       <editor>
