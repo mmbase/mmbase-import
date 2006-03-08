@@ -9,14 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Locale;
 import java.util.Vector;
-import java.io.*;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.util.logging.Logger;
@@ -29,93 +24,22 @@ import org.xml.sax.InputSource;
  * This class reads a relation node from an exported application.
  * @application Applications
  * @move org.mmbase.util.xml
- * @rename ContextDepthReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.27 2005-10-07 18:40:30 michiel Exp $
+ * @version $Id: XMLRelationNodeReader.java,v 1.28 2006-03-08 12:51:58 nklasens Exp $
  */
-public class XMLRelationNodeReader extends XMLBasicReader {
+public class XMLRelationNodeReader extends XMLNodeReader {
 
 
    private static final Logger log = Logging.getLoggerInstance(XMLRelationNodeReader.class);
 
-    String applicationpath;
-
-    /**
-     * Constructor
-     * @param filename from the file to read from
-     * @param applicationpath the path where this application was exported to
-     * @param mmbase
-     */
-    public XMLRelationNodeReader(String filename, String applicationpath, MMBase mmbase) {
-        super(filename, false);
-        this.applicationpath = applicationpath;
-    }
-
     /**
      * @since MMBase-1.8
      */
-    public XMLRelationNodeReader(InputSource is, String applicationpath) {
-        super(is, false);
-        this.applicationpath = applicationpath;
+    public XMLRelationNodeReader(InputSource is, ResourceLoader path) {
+        super(is, path);
     }
 
-   /**
-    * get the name of this application
-    */
-   public String getExportSource() {
-      Node n1 = document.getFirstChild();
-
-      if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
-         n1 = n1.getNextSibling();
-      }
-      if (n1 != null) {
-         NamedNodeMap nm = n1.getAttributes();
-         if (nm != null) {
-            Node n2 = nm.getNamedItem("exportsource");
-            return (n2.getNodeValue());
-         }
-      }
-      else {
-          log.warn("exportsource attribute missing");
-      }
-      return null;
-   }
-
-   /**
-   * get the name of this application
-   */
-   public int getTimeStamp() {
-      Node n1 = document.getFirstChild();
-      if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
-         n1 = n1.getNextSibling();
-      }
-      if (n1 != null) {
-         NamedNodeMap nm = n1.getAttributes();
-         if (nm != null) {
-            Node n2 = nm.getNamedItem("timestamp");
-            try {
-               java.text.SimpleDateFormat formatter =
-                  new java.text.SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
-               int times =
-                  (int) (formatter.parse(n2.getNodeValue()).getTime() / 1000);
-               //int times=DateSupport.parsedatetime(n2.getNodeValue());
-               return times;
-            }
-            catch (java.text.ParseException e) {
-               return -1;
-            }
-         }
-      }
-      else {
-          log.warn("timestamp attribute missing");
-      }
-      return -1;
-   }
-
-   /**
-   */
    public Vector getNodes(MMBase mmbase) {
       Vector nodes = new Vector();
       Node n1 = document.getFirstChild();
@@ -135,18 +59,18 @@ public class XMLRelationNodeReader extends XMLBasicReader {
                   NamedNodeMap nm = n2.getAttributes();
                   if (nm != null) {
                      Node n4 = nm.getNamedItem("owner");
-                     MMObjectNode newnode = bul.getNewNode(n4.getNodeValue());
+                     MMObjectNode newNode = bul.getNewNode(n4.getNodeValue());
                      try {
                         n4 = nm.getNamedItem("number");
                         int num = Integer.parseInt(n4.getNodeValue());
-                        newnode.setValue("number", num);
+                        newNode.setValue("number", num);
 
                         n4 = nm.getNamedItem("snumber");
                         int rnum = Integer.parseInt(n4.getNodeValue());
-                        newnode.setValue("snumber", rnum);
+                        newNode.setValue("snumber", rnum);
                         n4 = nm.getNamedItem("dnumber");
                         int dnum = Integer.parseInt(n4.getNodeValue());
-                        newnode.setValue("dnumber", dnum);
+                        newNode.setValue("dnumber", dnum);
                         n4 = nm.getNamedItem("rtype");
                         String rname = n4.getNodeValue();
                         RelDef reldef = mmbase.getRelDef();
@@ -157,7 +81,7 @@ public class XMLRelationNodeReader extends XMLBasicReader {
                         }
                         // figure out rnumber
                         int rnumber = reldef.getNumberByName(rname);
-                        newnode.setValue("rnumber", rnumber);
+                        newNode.setValue("rnumber", rnumber);
 
                         // directionality
 
@@ -189,7 +113,7 @@ public class XMLRelationNodeReader extends XMLBasicReader {
                            }
                            if (dir != 1)
                               dir = 2;
-                           newnode.setValue("dir", dir);
+                           newNode.setValue("dir", dir);
                         }
 
                      }
@@ -206,58 +130,11 @@ public class XMLRelationNodeReader extends XMLBasicReader {
                            if (n6 != null) {
                                value = n6.getNodeValue(); // needs to be a loop
                            }
-                           int type = bul.getDBType(key);
-                           if (type != -1) {
-                                if (type == Field.TYPE_STRING || type == Field.TYPE_XML) {
-                                    if (value == null)
-                                        value = "";
-                                    newnode.setValue(key, value);
-                                } else if (type == Field.TYPE_NODE) {
-                                    // do not really set it, because we need syncnodes later for this.
-                                    newnode.storeValue("__" + key, value); // yes, this is hackery, I'm sorry.
-                                    newnode.setValue(key, null);
-                                } else if (type == Field.TYPE_INTEGER) {
-                                   try {
-                                        newnode.setValue(key, Integer.parseInt(value));
-                                    } catch (Exception e) {
-                                        log.warn("error setting integer-field " + e);
-                                        newnode.setValue(key, -1);
-                                    }
-                                } else if (type == Field.TYPE_FLOAT) {
-                                    try {
-                                        newnode.setValue(key, Float.parseFloat(value));
-                                    } catch (Exception e) {
-                                        log.warn("error setting float-field " + e);
-                                        newnode.setValue(key, -1);
-                                    }
-                                } else if (type == Field.TYPE_DOUBLE) {
-                                    try {
-                                        newnode.setValue(key, Double.parseDouble(value));
-                                    } catch (Exception e) {
-                                        log.warn("error setting double-field " + e);
-                                        newnode.setValue(key, -1);
-                                    }
-                                } else if (type == Field.TYPE_LONG) {
-                                    try {
-                                        newnode.setValue(key, Long.parseLong(value));
-                                    } catch (Exception e) {
-                                        log.warn("error setting long-field " + e);
-                                        newnode.setValue(key, -1);
-                                    }
-                                } else if (type == Field.TYPE_BINARY) {
-                                    NamedNodeMap nm2 = n5.getAttributes();
-                                    Node n7 = nm2.getNamedItem("file");
-
-                                    newnode.setValue(key, readBytesFile(applicationpath + n7.getNodeValue()));
-                                } else {
-                                    log.error("CoreField not found for #" + type + " was not known for field with name: '"
-                                              + key + "' and with value: '" + value + "'");
-                                }
-                           }
+                           setValue(bul, newNode, n5, key, value);
                         }
                         n5 = n5.getNextSibling();
                      }
-                     nodes.addElement(newnode);
+                     nodes.add(newNode);
                   }
                }
                n2 = n2.getNextSibling();
@@ -267,20 +144,4 @@ public class XMLRelationNodeReader extends XMLBasicReader {
       }
       return nodes;
    }
-
-    byte[] readBytesFile(String filename) {
-        File bfile = new File(filename);
-        int filesize = (int)bfile.length();
-        byte[] buffer = new byte[filesize];
-        try {
-            FileInputStream scan = new FileInputStream(bfile);
-            scan.read(buffer, 0, filesize);
-            scan.close();
-        } catch (FileNotFoundException e) {
-            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
-        } catch (IOException e) {
-            log.error("error getfile : " + filename + " " + Logging.stackTrace(e));
-        }
-        return buffer;
-    }
 }
