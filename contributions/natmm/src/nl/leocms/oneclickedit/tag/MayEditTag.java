@@ -32,9 +32,10 @@ import nl.leocms.authorization.UserRole;
 import nl.leocms.util.PaginaHelper;
 import nl.leocms.workflow.WorkflowController;
 
-import org.apache.log4j.Category;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import com.finalist.mmbase.util.CloudFactory;
 
@@ -48,7 +49,8 @@ import com.finalist.mmbase.util.CloudFactory;
  * <li>
  */
 public class MayEditTag extends TagSupport {
-   static Category log = Category.getInstance(MayEditTag.class);
+
+   private static final Logger log = Logging.getLoggerInstance(MayEditTag.class);
 
    private boolean inverse = false;
    private String paginaNumber;

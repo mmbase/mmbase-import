@@ -22,13 +22,14 @@ package nl.leocms.authorization.forms;
 
 import nl.leocms.util.PublishUtil;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionForm;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import com.finalist.mmbase.util.CloudFactory;
 
@@ -39,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Nico Klasens
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:action path="/editors/usermanagement/ChatModeratorAction"
  *                scope="request"
@@ -48,7 +49,8 @@ import javax.servlet.http.HttpServletResponse;
  * @struts:action-forward name="success" path="/editors/usermanagement/userlist.jsp"
  */
 public class ChatModeratorAction extends Action {
-   transient Category log = Category.getInstance(this.getClass());
+
+   private static final Logger log = Logging.getLoggerInstance(ChatModeratorAction.class);
 
    /**
     * @param mapping

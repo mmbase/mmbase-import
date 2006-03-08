@@ -23,7 +23,6 @@ package nl.leocms.pagina.forms;
 import nl.leocms.pagina.PaginaUtil;
 import nl.leocms.workflow.WorkflowController;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -33,6 +32,8 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.RelationManager;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import com.finalist.mmbase.util.CloudFactory2;
 
@@ -43,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * PaginaAction
  *
  * @author Gerard van de Weerd
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:action name="PaginaForm"
  *                path="/editors/paginamanagement/PaginaAction"
@@ -54,7 +55,8 @@ import javax.servlet.http.HttpServletResponse;
  * @struts:action-forward name="success" path="/editors/paginamanagement/frames.jsp"
  */
 public class PaginaAction extends Action {
-   transient Category log = Category.getInstance(this.getClass());
+
+   private static final Logger log = Logging.getLoggerInstance(PaginaAction.class);
    
    private static final int NO_ACTION = 0;
    private static final int CANCEL = 1;

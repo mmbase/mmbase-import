@@ -20,7 +20,6 @@
  */
 package nl.leocms.authorization.forms;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -28,6 +27,8 @@ import org.apache.struts.action.ActionError;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import com.finalist.mmbase.util.CloudFactory;
 
@@ -37,13 +38,14 @@ import javax.servlet.http.HttpServletRequest;
  * Form bean for the ChangePasswordForm page.
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:form name="ChangePasswordForm"
  */
 
 public class ChangePasswordForm extends ActionForm {
-   static Category log = Category.getInstance(ChangePasswordForm.class);
+
+   private static final Logger log = Logging.getLoggerInstance(ChangePasswordForm.class);
 
    private String password;
    private String newpassword;

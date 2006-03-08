@@ -20,7 +20,6 @@
  */
 package nl.leocms.signalering.forms;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.ActionForm;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,17 +27,20 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 /**
  * Form bean for the takenlijst page.
  *
  * @author Ronald Kramp
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:59 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:form name="DeleteSignaleringForm"
  */
 
 public class DeleteSignaleringForm extends ActionForm {
-   static Category log = Category.getInstance(DeleteSignaleringForm.class);
+
+   private static final Logger log = Logging.getLoggerInstance(DeleteSignaleringForm.class);
    
    /** A TreeSet of Integers indicating which signalringen were checked */
    private Set checked;

@@ -20,11 +20,13 @@
  */
 package nl.leocms.signalering.forms;
 
-import org.apache.log4j.Category;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionForm;
+
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +38,7 @@ import nl.leocms.signalering.SignaleringUtil;
  * DeleteSignaleringAction
  *
  * @author Ronald Kramp
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:59 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
  *
  * @struts:action name="DeleteSignaleringForm"
  *                path="/editors/signalering/DeleteSignaleringAction"
@@ -47,7 +49,8 @@ import nl.leocms.signalering.SignaleringUtil;
  * @struts:action-forward name="success" path="/editors/signalering/takenlijst.jsp"
  */
 public class DeleteSignaleringAction extends Action {
-   transient Category log = Category.getInstance(this.getClass());
+
+   private static final Logger log = Logging.getLoggerInstance(DeleteSignaleringAction.class);
 
    /**
     * The actual perform function: MUST be implemented by subclasses.
