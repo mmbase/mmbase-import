@@ -79,6 +79,10 @@ public class SMTPModule extends org.mmbase.module.Module {
         return result;
     }
 
+    public String getLocalEmailDomains() {
+        return (String)properties.get("domains");
+    }
+
     public void onload() {
     }
     /**
