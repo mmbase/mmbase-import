@@ -77,8 +77,8 @@ CHECK:
 
 1. make sure the AuthSPServer can connect to your LDAP back-end i.e. try telnet 80.127.88.230 389 from console
 2. the logs are in \A-Select\1.4.2\log\authspserver (or somewhere else depending on the settings in authsp.xml)
-3. you can see the SAM service run on: http://localhost/authspserver/sam
-4. you can see the LDAP service run on: http://localhost/authspserver/ldap
+3. you can see the SAM service run on: http://[yourhost]/authspserver/sam
+4. you can see the LDAP service run on: http://[yourhost]/authspserver/ldap
 
 B. ASELECTSERVER
 
@@ -132,8 +132,8 @@ now registerd in the LDAP).
 
 CHECK
 1. the logs are in \A-Select\1.4.2\log\aselectserver (or somewhere else depending on the settings in aselect.xml)
-2. you can see the aselectserver run on: http://localhost/aselectserver/server
-3. you can see the SAM service run on: http://localhost/aselectserver/sam
+2. you can see the aselectserver run on: http://[yourhost]/aselectserver/server
+3. you can see the SAM service run on: http://[yourhost]/aselectserver/sam
 
 C. ASELECT AGENT
 The agent runs as a service on the webserver and facilitates Didactor to connect to the aselectserver.
