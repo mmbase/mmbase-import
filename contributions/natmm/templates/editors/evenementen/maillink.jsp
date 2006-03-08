@@ -13,7 +13,7 @@
 
 if(snumber.indexOf("-1")==-1) {
 
-   String emailIcon = "/editors/img/confirmdo.gif";
+   String emailIcon = "../img/confirmdo.gif";
    String altText = "Verstuur bevestigings email";
    int iConfirmNumber;
    
@@ -22,12 +22,12 @@ if(snumber.indexOf("-1")==-1) {
       ><mm:relatednodes type="email" orderby="mailedtime" directions="down" jspvar="lastEmail" max="1"><%
          Date dd = new Date(lastEmail.getLongValue("mailedtime")*1000);
          String status = lastEmail.getStringValue("mailstatus");
-         if(status.equals("-1")) { status = "onbekend"; emailIcon = "/editors/img/confirmquestion.gif"; } 
-         if(status.equals("0")) { status = "in de wachtrij"; emailIcon = "/editors/img/confirmwait.gif"; } 
-         if(status.equals("1")) { status = "verstuurd"; emailIcon = "/editors/img/confirmdone.gif"; } 
-         if(status.equals("2")) { status = "kan niet worden verstuurd, controleer het emailadres"; emailIcon = "/editors/img/confirmfail.gif"; } 
-         if(status.equals("3")) { status = "geblokkeerd door een spamfilter"; emailIcon = "/editors/img/confirmblocked.gif"; } 
-         if(status.equals("4")) { status = "in de wachtrij"; emailIcon = "/editors/img/confirmwait.gif"; } 
+         if(status.equals("-1")) { status = "onbekend"; emailIcon = "../img/confirmquestion.gif"; } 
+         if(status.equals("0")) { status = "in de wachtrij"; emailIcon = "../img/confirmwait.gif"; } 
+         if(status.equals("1")) { status = "verstuurd"; emailIcon = "../img/confirmdone.gif"; } 
+         if(status.equals("2")) { status = "kan niet worden verstuurd, controleer het emailadres"; emailIcon = "../img/confirmfail.gif"; } 
+         if(status.equals("3")) { status = "geblokkeerd door een spamfilter"; emailIcon = "../img/confirmblocked.gif"; } 
+         if(status.equals("4")) { status = "in de wachtrij"; emailIcon = "../img/confirmwait.gif"; } 
                   
          altText = "LAATST VERSTUURDE BEVESTIGINGSEMAIL"
             + "\nAan: " + lastEmail.getStringValue("to")

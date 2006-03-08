@@ -1,14 +1,15 @@
 <%
 int expireTime =  3600*24; // cache for one day
-String refreshID = request.getParameter("refresh");  
-if(refreshID==null) { refreshID = ""; }
-if(refreshID.equals("on")) {
-   session.setAttribute("refresh","on"); 
-} else if(refreshID.equals("off")) {
-   session.setAttribute("refresh","off"); 
+String previewID = request.getParameter("preview");  
+boolean isPreview = false;
+if(previewID==null) { previewID = ""; }
+if(previewID.equals("on")) {
+   session.setAttribute("preview","on"); 
+} else if(previewID.equals("off")) {
+   session.setAttribute("preview","off"); 
 } else {
-   refreshID = (String) session.getAttribute("refresh");
-   if(refreshID==null) { refreshID = "off"; }
+   previewID = (String) session.getAttribute("preview");
+   if(previewID==null) { previewID = "off"; }
 }
-if(refreshID.equals("on")) { expireTime = 0; }
+if(previewID.equals("on")) { isPreview = true; }
 %><%@include file="../includes/cachekey.jsp" %>

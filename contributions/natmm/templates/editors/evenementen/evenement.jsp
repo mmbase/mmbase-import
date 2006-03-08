@@ -197,11 +197,11 @@ String evenementId = "";
       </logic:equal>
       <logic:equal name="EvenementForm" property="showPastDates" value="false">
          Komende data<br/>
-         <html:image src="/editors/img/add.gif" style="width:13px;" property="buttons.showPastDates" alt="Toon alle data"  />
+         <html:image src="../img/add.gif" style="width:13px;" property="buttons.showPastDates" alt="Toon alle data"  />
       </logic:equal>
       <logic:equal name="EvenementForm" property="showPastDates" value="true">
          Alle data<br/>
-         <html:image src="/editors/img/minus.gif" style="width:13px;" property="buttons.showPastDates" alt="Laat data uit het verleden niet zien"  />
+         <html:image src="../img/minus.gif" style="width:13px;" property="buttons.showPastDates" alt="Laat data uit het verleden niet zien"  />
          <% bShowPastDates = true; %>
       </logic:equal>
     </td>
@@ -246,9 +246,9 @@ String evenementId = "";
                          </logic:iterate>
                          <mm:import id="multidayfound" reset="true"/> 
                       </logic:equal></td>
-                 <td style="text-align:center;"><logic:equal name="event" property="isOnInternet" value="true"><img src='/editors/img/preview.gif' align='absmiddle' border='0' alt='Activiteit staat op internet'></logic:equal></td>
-                 <td style="text-align:center;"><logic:equal name="event" property="isSpareDate" value="true"><img src='/editors/img/rubriek.gif' align='absmiddle' border='0' alt='Reserve datum voor activiteit'></logic:equal></td>
-                 <td style="text-align:center;"><logic:equal name="event" property="isCanceled" value="true"><img src='/editors/img/remove.gif' align='absmiddle' border='0' alt='Activiteit is geannuleerd'> </logic:equal></td>
+                 <td style="text-align:center;"><logic:equal name="event" property="isOnInternet" value="true"><img src='../img/preview.gif' align='absmiddle' border='0' alt='Activiteit staat op internet'></logic:equal></td>
+                 <td style="text-align:center;"><logic:equal name="event" property="isSpareDate" value="true"><img src='../img/rubriek.gif' align='absmiddle' border='0' alt='Reserve datum voor activiteit'></logic:equal></td>
+                 <td style="text-align:center;"><logic:equal name="event" property="isCanceled" value="true"><img src='../img/remove.gif' align='absmiddle' border='0' alt='Activiteit is geannuleerd'> </logic:equal></td>
                  <td style="text-align:right;"><div id="n_<%= eventnr %>">
                      <%= curNmbParticipants %>
                      <jsp:include page="subscribelink.jsp">

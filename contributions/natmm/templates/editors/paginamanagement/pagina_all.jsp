@@ -1,5 +1,11 @@
 <%@page import="com.finalist.tree.*,nl.leocms.pagina.*,nl.leocms.authorization.*" %>
 <%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud" rank="basic user" method='http'>
+<%
+String account = cloud.getUser().getIdentifier();
+%>
+<cache:cache groups="pagina_all" key="<%= "pagina_all_" + account %>" time="<%= 3600*24*7 %>" scope="application">
+<!-- <%= new java.util.Date() %> -->
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="../css/tree.css">
@@ -44,7 +50,6 @@
    </style>
 </head>
 <body style="padding-left:2px;" onLoad="javascript:showEditorsButton();">
-<mm:cloud jspvar="cloud" rank="basic user" method='http'>
 <div id="paginas">
 	<table cellpadding="3" cellspacing="0" style="width:100%;">
       <tr>
@@ -80,7 +85,6 @@
 	<%
    	PaginaTreeModel model = new PaginaTreeModel(cloud);
 	   HTMLTree t=new HTMLTree(model,"pagina");
-   	String account = cloud.getUser().getIdentifier();
 	   AuthorizationHelper helper = new AuthorizationHelper(cloud);
    	java.util.Map roles=helper.getRolesForUser(helper.getUserNode(account));
 	   t.setCellRenderer(new PaginaAllRenderer( model, roles, account, cloud, "workpane", request.getContextPath()) );
@@ -106,5 +110,7 @@
    </table>
 	<%@include file="../includes/menu_editwizards.jsp" %>
 </div>
-</mm:cloud>
 </body>
+</html>
+</cache:cache>
+</mm:cloud>

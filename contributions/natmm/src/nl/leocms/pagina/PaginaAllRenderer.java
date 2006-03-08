@@ -38,7 +38,7 @@ import com.finalist.tree.TreeCellRendererAdapter;
  * Renderer voor de pagina editor. Kijkt naar de rechten van de gebruiker of
  * wijzigen/ordenen mogelijk is.
  * 
- * @author Gerard van de Weerd Date :Oct 20, 2003
+ * @author gerard Date :Oct 20, 2003
  *  
  */
 public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCellRenderer {
@@ -107,9 +107,15 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
             }
             NodeList ptNodeList = n.getRelatedNodes("paginatemplate");
             if(ptNodeList.size()>0) {
+               String subDir = "";
+               String rootRubriek = PaginaHelper.getRootRubriek(cloud,n.getStringValue("number"));
+               if(rootRubriek!=null) {
+                  subDir = cloud.getNode(rootRubriek).getStringValue("url_live");
+                  if(!subDir.equals("")) { subDir += "/"; }
+               }
                String paginaTemplate = ((Node) ptNodeList.get(0)).getStringValue("url");
-               out.println("<a href='/" + paginaTemplate + "?p=" + n.getNumber() + "&refresh=on' target='" + targetFrame 
-                  + "'><img src='../img/refresh.gif' border='0' align='top' onClick='return warnOnEditwizardOpen();' onmousedown='cancelClick=true;' title='Ververs en bekijk deze pagina'/></a>");
+               out.println("<a href='" + contextPath + "/" + subDir + paginaTemplate + "?p=" + n.getNumber() + "&preview=on' target='" + targetFrame 
+                  + "'><img src='../img/refresh.gif' border='0' align='top' onClick='return warnOnEditwizardOpen();' onmousedown='cancelClick=true;' title='Bekijk deze pagina in de preview'/></a>");
             }
          }
          if (n.getBooleanValue("verwijderbaar")) {

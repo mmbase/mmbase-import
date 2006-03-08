@@ -56,11 +56,11 @@ String userConstraint = "";
                                  <mm:param name="orderby"><mm:field name="orderby"/></mm:param>
                                  <mm:param name="search">yes</mm:param>   
                               </mm:url>"
-                              alt='<mm:field name="description"/>'>
+                              title='<mm:field name="description"/>'>
                         </mm:compare>
                         <mm:compare referid="type" value="jsp">
                            <a target="workpane" href="<mm:field name="wizard"/>"
-                               alt='<mm:field name="description"/>'>
+                               title='<mm:field name="description"/>'>
                         </mm:compare>
                      </mm:field>
                      <mm:field name="name"/>

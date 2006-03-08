@@ -172,13 +172,13 @@ DoubleDateNode ddn = new DoubleDateNode();
    boolean isExtendedAct = false;
    
    if(actionId.indexOf("print")==-1) { 
-      %><html:image src="/editors/img/left.gif" property="buttons.goBack" style="width:13px;" alt="Naar overzicht" />
+      %><html:image src="../img/left.gif" property="buttons.goBack" style="width:13px;" alt="Naar overzicht" />
       <a href="SubscribeInitAction.eb?number=<%= nodenr %>&action=printsubscriptions&orderby=lastname&direction=up" target="_blank">
-         <img src='/editors/img/print_subscriptions.gif' align='absmiddle' border='0' alt='Print de aanmeldingen voor deze activiteit'></a>
+         <img src='../img/print_subscriptions.gif' align='absmiddle' border='0' alt='Print de aanmeldingen voor deze activiteit'></a>
       <a href="#" onClick="javascript:launchCenter('mailsubscriptions.jsp?event=<%= nodenr %>', 'mail', 300, 400);setTimeout('newwin.focus();',250);">
-         <img src='/editors/img/mail_subscriptions.gif' align='absmiddle' border='0' alt='Verstuur de aanmeldingen voor deze activiteit per email'></a>
+         <img src='../img/mail_subscriptions.gif' align='absmiddle' border='0' alt='Verstuur de aanmeldingen voor deze activiteit per email'></a>
    	<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=s', 'center', 300, 400);setTimeout('newwin.focus();',250);">
-			<img src='/editors/img/excel_subscriptions.gif' align='absmiddle' border='0' alt='Download de aanmeldingen voor deze activiteit'></a><%
+			<img src='../img/excel_subscriptions.gif' align='absmiddle' border='0' alt='Download de aanmeldingen voor deze activiteit'></a><%
    } %>
    <h1 style="margin-top:0px;"><% 
       if(actionId.indexOf("printdates")>-1) { 
@@ -222,10 +222,10 @@ DoubleDateNode ddn = new DoubleDateNode();
              function toggle() {
              if( document.getElementById("toggle_div").style.display=='none' ){
                document.getElementById("toggle_div").style.display = '';
-               document.getElementById("toggle_image").src = "/editors/img/tmin.gif";
+               document.getElementById("toggle_image").src = "../img/tmin.gif";
              } else {
                document.getElementById("toggle_div").style.display = 'none';
-               document.getElementById("toggle_image").src = "/editors/img/tplus.gif";
+               document.getElementById("toggle_image").src = "../img/tplus.gif";
              }
             }
             </script>
@@ -236,7 +236,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                   %><b><mm:field name="titel" /></b><br/><mm:field name="tekst" /><% 
                } else { 
                   %>
-                  <span onClick="toggle();"><b><mm:field name="titel" /></b><img src="/editors/img/tplus.gif" border="0" align="absmiddle" id="toggle_image" /></span><br/>
+                  <span onClick="toggle();"><b><mm:field name="titel" /></b><img src="../img/tplus.gif" border="0" align="absmiddle" id="toggle_image" /></span><br/>
                   <div id="toggle_div" style="display='none'"><mm:field name="tekst" /></div>
                   <%
                } %>
@@ -249,7 +249,7 @@ DoubleDateNode ddn = new DoubleDateNode();
             if(isGroupExcursion) {
                %>
                <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/evenement/evenement_medewerker&nodepath=evenement&objectnumber=<%= nodenr %>&referer=<%= sReferer %>&language=nl">
-                  <img src='/editors/img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk betrokken personen'>
+                  <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk betrokken personen'>
                </a>
                <%
                source = nodenr;
@@ -444,7 +444,7 @@ DoubleDateNode ddn = new DoubleDateNode();
          if(actionId.indexOf("print")==-1) { 
             %><a href="subscribe.jsp?orderby=number&direction=<% if(orderbyId.equals("number")) { %><%=newDirection%><% } else { %><%=directionId%><% } %>">
             nummer
-            <% if(orderbyId.equals("number")) { %><img src="/editors/img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a><%
+            <% if(orderbyId.equals("number")) { %><img src="../img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a><%
          } else {
             %>nummer<%
          } %>&nbsp;</nobr>
@@ -457,7 +457,7 @@ DoubleDateNode ddn = new DoubleDateNode();
          if(actionId.indexOf("print")==-1) { 
             %><a href="subscribe.jsp?orderby=lastname&direction=<% if(orderbyId.equals("lastname")) { %><%=newDirection%><% } else { %><%=directionId%><% } %>">
             achternaam
-            <% if(orderbyId.equals("lastname")) { %><img src="/editors/img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a><%
+            <% if(orderbyId.equals("lastname")) { %><img src="../img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a><%
          } else {
             %>achternaam<%
          } %>&nbsp;
@@ -505,7 +505,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                </mm:list>
             </html:select>
          </td>
-         <td><html:image src="/editors/img/add.gif" style="width:13px;" property="buttons.addParticipant"
+         <td><html:image src="../img/add.gif" style="width:13px;" property="buttons.addParticipant"
                onclick="<%= (!isGroupExcursion ? "checkMaxPerGroup()": "") %>" alt="Voeg toe aan de geselecteerde inschrijving" /></td>
          <td>
             <bean:define id="phoneOnClickEvent" property="phoneOnClickEvent" name="SubscribeForm" scope="session" type="java.lang.String"/>
@@ -527,7 +527,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                   return false;
                }
             </script>
-            <a href="#form" onClick="javascript:memberIdPopup();setTimeout('newwin.focus();',250);"><img src="/editors/img/qmark.gif" border='0'  align='absmiddle' alt='Zoek lidnummer op basis van achternaam, postcode en huisnummer' 
+            <a href="#form" onClick="javascript:memberIdPopup();setTimeout('newwin.focus();',250);"><img src="../img/qmark.gif" border='0'  align='absmiddle' alt='Zoek lidnummer op basis van achternaam, postcode en huisnummer' 
                      /></a><html:text property="memberId" style="width:55px;" tabindex="9"/>
          </td>
          <td><html:text property="zipCode" style="width:50px;" tabindex="10" maxlength="6" /></td>
@@ -635,7 +635,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                </td>
                <td colspan="5">
                   <mm:compare referid="sticket_office" value="website"
-                     ><img src="<%= nl.mmatch.NatMMConfig.liveUrl %>/editors/img/preview.gif" border='0'  align='absmiddle' alt='Aangemeld via de website' />
+                     ><img src="<%= nl.mmatch.NatMMConfig.liveUrl %>../img/preview.gif" border='0'  align='absmiddle' alt='Aangemeld via de website' />
                   </mm:compare
                   ><mm:remove referid="hascomma" 
                   /><mm:field name="gender" jspvar="sGender" vartype="String" write="false"
@@ -686,7 +686,7 @@ DoubleDateNode ddn = new DoubleDateNode();
             <td style="text-align:right;">
                <mm:first inverse="true">
                   <% if(actionId.indexOf("print")==-1) {
-                     %><html:image src="/editors/img/delete.gif" style="width:16px;" property="buttons.deleteParticipant" alt="Verwijder deelnemers" onclick="<%= "document.forms[0].selectedParticipant.value='" + dnumber + "';return doDelete('Weet u zeker dat u deze deelnemers wilt verwijderen?');" %>"  /><%
+                     %><html:image src="../img/delete.gif" style="width:16px;" property="buttons.deleteParticipant" alt="Verwijder deelnemers" onclick="<%= "document.forms[0].selectedParticipant.value='" + dnumber + "';return doDelete('Weet u zeker dat u deze deelnemers wilt verwijderen?');" %>"  /><%
                      } %>
                </mm:first>
             </td>
@@ -722,12 +722,12 @@ DoubleDateNode ddn = new DoubleDateNode();
                <td style="text-align:right;"><nobr>
                   <% if(actionId.indexOf("print")==-1) {
                      %><a href="printsubscription.jsp?e=<%= nodenr %>&p=<%= parent_number %>&s=<%= snumber %>&d=<%= dnumber %>" target="_blank">
-                        <img src='/editors/img/printsubscription.gif' align='absmiddle' border='0' alt='Print bevestigingsbrief'></a>
+                        <img src='../img/printsubscription.gif' align='absmiddle' border='0' alt='Print bevestigingsbrief'></a>
                      <jsp:include page="maillink.jsp">
                         <jsp:param name="s" value="<%= snumber %>" />
                         <jsp:param name="d" value="<%= dnumber %>" />
                      </jsp:include>
-                     <html:image src="/editors/img/delete.gif" style="width:16px;" property="buttons.deleteSubscription" alt="Verwijder aanmelding" onclick="<%= "document.forms[0].subscriptionNumber.value='" + snumber + "';return doDelete('Weet u zeker dat u aanmelding " + snumber + " wilt verwijderen?');" %>"  />
+                     <html:image src="../img/delete.gif" style="width:16px;" property="buttons.deleteSubscription" alt="Verwijder aanmelding" onclick="<%= "document.forms[0].subscriptionNumber.value='" + snumber + "';return doDelete('Weet u zeker dat u aanmelding " + snumber + " wilt verwijderen?');" %>"  />
                   <% } %></nobr>
                </td>
             </mm:first>
@@ -740,9 +740,9 @@ DoubleDateNode ddn = new DoubleDateNode();
          if(isGroupExcursion) { 
             %>
             <tr <% row++; if(row%2==1){ %><%= sHighLight %><% } %>>
-               <td colspan="10" style="vertical-align:top;text-align:right;">bijzonderheden en aard van de groep
+               <td colspan="10" style="vertical-align:top;text-align:right;">bijzonderheden
                   <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_descr&nodepath=inschrijvingen&objectnumber=<%= snumber %>&referer=<%= sReferer %>&language=nl">
-                     <img src='/editors/img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk bijzonderheden'>
+                     <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk bijzonderheden'>
                   </a>
                </td>
                <td colspan="8">   
@@ -750,9 +750,21 @@ DoubleDateNode ddn = new DoubleDateNode();
                </td>
             </tr>
             <tr <% row++; if(row%2==1){ %><%= sHighLight %><% } %>>
+               <td colspan="10" style="vertical-align:top;text-align:right;">aard van de groep
+                  <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_addcategorie&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referer=<%= sReferer %>&language=nl">
+                     <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Selecteer aanmeldingscategorie'>
+                  </a>
+               </td>
+               <td colspan="8">   
+                  <mm:list nodes="<%= snumber %>" path="inschrijvingen,related,inschrijvings_categorie">
+                     <mm:field name="inschrijvings_categorie.name" />
+                  </mm:list>
+               </td>
+            </tr>
+            <tr <% row++; if(row%2==1){ %><%= sHighLight %><% } %>>
                <td colspan="10" style="vertical-align:top;text-align:right;">bevestigings tekst en afwijkende kosten
                   <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_confirmationtexts&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referer=<%= sReferer %>&language=nl">
-                     <img src='/editors/img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk bevestigingstekst'>
+                     <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Selecteer bevestigingstekst'>
                   </a>
                </td>
                <td colspan="8">   
@@ -814,17 +826,17 @@ if(actionId.indexOf("printsubscriptions")==-1) {
          if(actionId.indexOf("print")==-1) {
             %><logic:equal name="SubscribeForm" property="showPastDates" value="false">
                overzicht komende data voor deze activiteit
-               <html:image src="/editors/img/add.gif" style="width:13px;" property="buttons.showPastDates" alt="Toon alle data"  />
+               <html:image src="../img/add.gif" style="width:13px;" property="buttons.showPastDates" alt="Toon alle data"  />
             </logic:equal>
             <logic:equal name="SubscribeForm" property="showPastDates" value="true">
                overzicht alle data voor deze activiteit
-               <html:image src="/editors/img/minus.gif" style="width:13px;" property="buttons.showPastDates" alt="Laat data uit het verleden niet zien"  />
+               <html:image src="../img/minus.gif" style="width:13px;" property="buttons.showPastDates" alt="Laat data uit het verleden niet zien"  />
                <% bShowPastDates = true; %>
             </logic:equal>
             <a href="SubscribeInitAction.eb?number=<%= nodenr %>&action=printdates&showpastdates=<%= bShowPastDates %>" target="_blank">
-               <img src='/editors/img/print_dates.gif' align='absmiddle' border='0' alt='Print het overzicht van data voor deze activiteit'></a>
+               <img src='../img/print_dates.gif' align='absmiddle' border='0' alt='Print het overzicht van data voor deze activiteit'></a>
 				<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=d', 'center', 300, 400);setTimeout('newwin.focus();',250);">
-					<img src='/editors/img/excel_dates.gif' align='absmiddle' border='0' alt='Download alle data voor deze activiteit'></a><%
+					<img src='../img/excel_dates.gif' align='absmiddle' border='0' alt='Download alle data voor deze activiteit'></a><%
          } else {
             if(showpastdatesId.equals("false")) {
                %>overzicht komende data voor deze activiteit<%
@@ -871,7 +883,7 @@ if(actionId.indexOf("printsubscriptions")==-1) {
 } 
 if(actionId.indexOf("print")>-1&&!showpastdatesId.equals("true")) {
    %><div style="position:absolute;right:5px;top:5px;z-index:100">
-      <a href="#" onClick="window.close()"><img src='/editors/img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a>
+      <a href="#" onClick="window.close()"><img src='../img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a>
    </div><%
 } %> 
 </html:form>

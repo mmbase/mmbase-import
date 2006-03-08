@@ -33,7 +33,9 @@
         <html:text property="username" size='15' maxlength='15'/> <span class="notvalid"><html:errors bundle="LEOCMS" property="username"/>
     </logic:equal>
     <logic:notEqual name="UserForm" property="nodeNumber" value="-1">
-        <bean:write name="UserForm" property="username"/> 
+        <bean:define name="UserForm" id="username" property="username"/> 
+        <cache:flush scope="application" key="<%= "pagina_all_" + username %>" />
+        <%= username %>
     </logic:notEqual>
     </td></tr>
     <tr><td class="fieldname">Voornaam </td><td><html:text property="voornaam" size='30'/></td></tr>

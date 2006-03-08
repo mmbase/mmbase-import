@@ -5,7 +5,7 @@
 
 if(eventId.indexOf("-")==-1) { //*** it has to be - because none-saved nodes have number -1,-2,-3, etc
 
-   String ticketIcon = "/editors/img/ticket.gif";
+   String ticketIcon = "../img/ticket.gif";
    String altText = "Aanmelden voor activiteit";
 
    %><mm:cloud method="http" rank="basic user" jspvar="cloud"

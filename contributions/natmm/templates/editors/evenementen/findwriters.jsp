@@ -13,7 +13,7 @@ Date now = new Date();
    <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
 </head>
 <body style="overflow:auto;">
-   <div align="right"><a href="#" onClick="window.close()"><img src='/editors/img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div>
+   <div align="right"><a href="#" onClick="window.close()"><img src='../img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div>
    <mm:node number="$p">
       <h4 style="margin-top:0px;">Medewerkers die gewerkt hebben aan 
             <mm:field name="titel" />

@@ -33,7 +33,7 @@ public Vector findKeys(TreeMap thisMap, String thisValue,  Vector fromKeys) {
    <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
 </head>
 <body style="overflow:auto;">
-   <div align="right"><a href="#" onClick="window.close()"><img src='/editors/img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div>
+   <div align="right"><a href="#" onClick="window.close()"><img src='../img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div>
    <h4>Lidnummers op basis van achternaam, postcode en huisnummer</h4>
    <% zipCode = zipCode.trim().toUpperCase();
       houseNumber = houseNumber.trim();

@@ -2,7 +2,7 @@
 <% boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1); %>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top2_cacheparams.jsp" %>
-<cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <!-- <%= new java.util.Date() %> -->
 <%@include file="includes/image_vars.jsp" %>
 <%@include file="includes/getstyle.jsp" %>
@@ -121,7 +121,7 @@ if(!artikelID.equals("-1")) { %>
                   <mm:compare value="0" inverse="true">
             			<mm:field name="titel">
             				<mm:isnotempty>
-            				   <a href="#<mm:field name="number" />"><mm:write /></a> | 
+            				   <a href="route_pop.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><mm:write /></a> | 
             				</mm:isnotempty>
             		   </mm:field>
             		</mm:compare>

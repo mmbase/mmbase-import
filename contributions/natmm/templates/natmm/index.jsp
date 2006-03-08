@@ -6,7 +6,7 @@
 <%@include file="includes/top1_params.jsp" %>
 <% if(rubriekExists&&pageExists) { %>
 <%@include file="includes/top2_cacheparams.jsp" %>
-<cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/top3_nav.jsp" %>
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>

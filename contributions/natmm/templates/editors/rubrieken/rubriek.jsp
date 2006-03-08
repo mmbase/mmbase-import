@@ -90,7 +90,6 @@ Rubriek:<b>
     <tr><td class="fieldname">Url</td><td><html:text property="url" maxlength='100' />
     <span class="notvalid"><html:errors bundle="LEOCMS" property="url" /></span></td></tr>
 <logic:equal name="RubriekForm" property="level" value="1">
-    <tr><td class="fieldname">Url Live</td><td><html:text property="url_live" maxlength='100' /></td></tr>
 </logic:equal>
     <tr><td class="fieldname">Beschikbare talen</td><td><html:checkbox property="fra_active" styleClass="check"/>Frans *</br><html:checkbox property="eng_active" styleClass="check"/>Engels *</br><html:checkbox property="de_active" styleClass="check"/>Duits *</br></td></tr>
 <logic:equal name="RubriekForm" property="level" value="1">
@@ -98,7 +97,7 @@ Rubriek:<b>
 </logic:equal>
    <tr><td></td><td><b>* Wanneer bij een subsite een taal wordt uitgeschakeld, zal dit voor de hele subsite gelden. Hoewel het nog steeds mogelijk is binnen een subrubriek dezelfde taal aan te zetten zal dit geen effect hebben, zolang bij de subsite de taal uit staat.</b></td></tr>
 --%>
-    <tr><td class="fieldname">Layout</td><td>
+   <tr><td class="fieldname">Layout</td><td>
          <html:select property="naam_fra">
              <html:option value="<%= "" + PARENT_LAYOUT %>">Layout van parent rubriek</html:option>
              <html:option value="<%= "" + DEFAULT_LAYOUT %>">Natuurmonumenten</html:option>
@@ -106,9 +105,9 @@ Rubriek:<b>
              <html:option value="<%= "" + SUBSITE2_LAYOUT %>">ING-Perspectief</html:option>
          </html:select>
       </td>
-    </tr>
-    <tr><td class="fieldname">Style</td>
-       <td>
+   </tr>
+   <tr><td class="fieldname">Style</td>
+      <td>
          <html:select property="style">
             <html:option value="parentstyle">Style van parent rubriek</html:option>
             <%
@@ -124,6 +123,7 @@ Rubriek:<b>
          </html:select>
       </td>
    </tr>
+   <tr><td class="fieldname">Subdir (only for developers)</td><td><html:text property="url_live" maxlength='100' /></td></tr>
    <tr><td class="fieldname">Rubriek is zichtbaar</td>
        <td>
         <html:select property="url">
