@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.6 2006-03-03 14:53:20 pierre Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.7 2006-03-08 12:51:58 nklasens Exp $
  */
 public class ApplicationInstaller {
 
@@ -591,8 +591,7 @@ public class ApplicationInstaller {
             log.info("No relationsource resource " + path);
         }
         if (is != null) {
-            //TODO change "applications/"  + appname + "/" to applicationLoader.getChildResourceLoader(appName)
-            nodereader = new XMLRelationNodeReader(is, "applications/"  + appname + "/");
+            nodereader = new XMLRelationNodeReader(is, applicationLoader.getChildResourceLoader(appname));
         }
         return nodereader;
     }
