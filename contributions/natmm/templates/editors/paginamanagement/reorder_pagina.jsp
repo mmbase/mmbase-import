@@ -18,7 +18,7 @@ input.button { width : 100; }
    RubriekHelper h=new RubriekHelper(cloud);
    out.print( h.getPathToRootString(parentID));
    
-   TreeMap subObjects = h.getSubObjects(parentID);
+   TreeMap subObjects = h.getSubObjects(parentID,true);
        
 %>
 </h2>
