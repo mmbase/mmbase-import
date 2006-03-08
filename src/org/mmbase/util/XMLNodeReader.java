@@ -11,12 +11,14 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
-import java.util.*;
+import java.util.Locale;
+import java.util.Vector;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -24,15 +26,12 @@ import org.xml.sax.InputSource;
  * This class reads a node from an exported application.
  * @application Applications
  * @move org.mmbase.util.xml
- * @rename ContextDepthReader
- * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.40 2005-11-05 19:04:51 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.41 2006-03-08 12:51:58 nklasens Exp $
  */
-public class XMLNodeReader extends XMLBasicReader {
+public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
-
 
     private ResourceLoader path;
 
@@ -45,7 +44,7 @@ public class XMLNodeReader extends XMLBasicReader {
     }
 
     /**
-     *
+    * get the name of this application
      */
     public String getExportSource() {
         Node n1 = document.getFirstChild();
@@ -66,7 +65,7 @@ public class XMLNodeReader extends XMLBasicReader {
     }
 
     /**
-     *
+     * get the name of this application
      */
     public int getTimeStamp() {
         Node n1 = document.getFirstChild();
@@ -78,15 +77,16 @@ public class XMLNodeReader extends XMLBasicReader {
             if (nm != null) {
                 Node n2 = nm.getNamedItem("timestamp");
                 try {
-                    java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
-                    int times = (int) (formatter.parse(n2.getNodeValue()).getTime() / 1000);
+                    java.text.SimpleDateFormat formatter =
+                  new java.text.SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
+                    int times =
+                  (int) (formatter.parse(n2.getNodeValue()).getTime() / 1000);
                     //int times=DateSupport.parsedatetime(n2.getNodeValue());
                     return times;
-                } catch (java.text.ParseException e) {
-                    log.warn("error retrieving timestamp: " + Logging.stackTrace(e));
+                }
+                catch (java.text.ParseException e) {
                     return -1;
                 }
-
             }
         }
         else {
@@ -95,9 +95,6 @@ public class XMLNodeReader extends XMLBasicReader {
         return -1;
     }
 
-    /**
-     *
-     */
     public Vector getNodes(MMBase mmbase) {
         Vector nodes = new Vector();
         Node n1 = document.getFirstChild();
@@ -106,7 +103,11 @@ public class XMLNodeReader extends XMLBasicReader {
         }
         while (n1 != null) {
             MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
-            if (bul != null) {
+         if (bul == null) {
+            log.error(
+               "Can't get builder with name: '" + n1.getNodeName() + "'");
+         }
+         else {
                 Node n2 = n1.getFirstChild();
                 while (n2 != null) {
                     if (n2.getNodeName().equals("node")) {
@@ -144,64 +145,7 @@ public class XMLNodeReader extends XMLBasicReader {
                                     }
                                     String value = res.toString();
 
-                                    int type = bul.getDBType(key);
-                                    if (type != -1) {
-                                        if (type == Field.TYPE_STRING || type == Field.TYPE_XML) {
-                                            if (value == null) {
-                                                value = "";
-                                            }
-                                            newNode.setValue(key, value);
-                                            if (log.isDebugEnabled()) {
-                                                log.debug("After value " + Casting.toString(newNode.getValue(key)));
-                                            }
-                                        } else if (type == Field.TYPE_NODE) {
-                                            // do not really set it, because we need syncnodes later for this.
-                                            newNode.storeValue("__" + key, value); // yes, this is hackery, I'm sorry.
-                                            newNode.setValue(key, null);
-                                        } else if (type == Field.TYPE_INTEGER) {
-                                           try {
-                                                newNode.setValue(key, Integer.parseInt(value));
-                                            } catch (Exception e) {
-                                                log.warn("error setting integer-field '" + key + "' to '" + value + "' because " + e);
-                                                newNode.setValue(key, -1);
-                                            }
-                                        } else if (type == Field.TYPE_FLOAT) {
-                                            try {
-                                                newNode.setValue(key, Float.parseFloat(value));
-                                            } catch (Exception e) {
-                                                log.warn("error setting float-field '" + key + "' to '" + value + "' because " + e);
-                                                newNode.setValue(key, -1);
-                                            }
-                                        } else if (type == Field.TYPE_DOUBLE) {
-                                            try {
-                                                newNode.setValue(key, Double.parseDouble(value));
-                                            } catch (Exception e) {
-                                                log.warn("error setting double-field '" + key + "' to '" + value + "' because " + e);
-                                                newNode.setValue(key, -1);
-                                            }
-                                        } else if (type == Field.TYPE_LONG) {
-                                            try {
-                                                newNode.setValue(key, Long.parseLong(value));
-                                            } catch (Exception e) {
-                                                log.warn("error setting long-field '" + key + "' to '" + value + "' because " + e);
-                                                newNode.setValue(key, -1);
-                                            }
-                                        } else if (type == Field.TYPE_DATETIME) {                                            
-                                            newNode.setValue(key, Casting.toDate(value));
-                                        } else if (type == Field.TYPE_BOOLEAN) {                                            
-                                            newNode.setValue(key, Casting.toBoolean(value));
-                                        } else if (type == Field.TYPE_BINARY) {
-                                            NamedNodeMap nm2 = n5.getAttributes();
-                                            Node n7 = nm2.getNamedItem("file");
-                                            try {
-                                                newNode.setValue(key, readBytesStream(n7.getNodeValue()));
-                                            } catch (IOException ioe) {
-                                                log.warn("Could not set field " + key + " " + ioe);
-                                            }
-                                        } else {
-                                            log.error("CoreField not found for #" + type + " was not known for field with name: '" + key + "' and with value: '" + value + "'");
-                                        }
-                                    }
+                                    setValue(bul, newNode, n5, key, value);
                                 }
                                 n5 = n5.getNextSibling();
                             }
@@ -210,12 +154,69 @@ public class XMLNodeReader extends XMLBasicReader {
                     }
                     n2 = n2.getNextSibling();
                 }
-            } else {
-                log.error("Could not find builder with name  '" + n1.getNodeName() + "'");
             }
             n1 = n1.getNextSibling();
         }
         return nodes;
+    }
+
+    protected void setValue(MMObjectBuilder bul, MMObjectNode newNode, Node n5, String key, String value) {
+        int type = bul.getDBType(key);
+        if (type != -1) {
+            if (type == Field.TYPE_STRING || type == Field.TYPE_XML) {
+                if (value == null) {
+                    value = "";
+                }
+                newNode.setValue(key, value);
+            } else if (type == Field.TYPE_NODE) {
+                // do not really set it, because we need syncnodes later for this.
+                newNode.storeValue("__" + key, value); // yes, this is hackery, I'm sorry.
+                newNode.setValue(key, null);
+            } else if (type == Field.TYPE_INTEGER) {
+               try {
+                    newNode.setValue(key, Integer.parseInt(value));
+                } catch (Exception e) {
+                    log.warn("error setting integer-field '" + key + "' to '" + value + "' because " + e);
+                    newNode.setValue(key, -1);
+                }
+            } else if (type == Field.TYPE_FLOAT) {
+                try {
+                    newNode.setValue(key, Float.parseFloat(value));
+                } catch (Exception e) {
+                    log.warn("error setting float-field '" + key + "' to '" + value + "' because " + e);
+                    newNode.setValue(key, -1);
+                }
+            } else if (type == Field.TYPE_DOUBLE) {
+                try {
+                    newNode.setValue(key, Double.parseDouble(value));
+                } catch (Exception e) {
+                    log.warn("error setting double-field '" + key + "' to '" + value + "' because " + e);
+                    newNode.setValue(key, -1);
+                }
+            } else if (type == Field.TYPE_LONG) {
+                try {
+                    newNode.setValue(key, Long.parseLong(value));
+                } catch (Exception e) {
+                    log.warn("error setting long-field '" + key + "' to '" + value + "' because " + e);
+                    newNode.setValue(key, -1);
+                }
+            } else if (type == Field.TYPE_DATETIME) {                                            
+                newNode.setValue(key, Casting.toDate(value));
+            } else if (type == Field.TYPE_BOOLEAN) {                                            
+                newNode.setValue(key, Casting.toBoolean(value));
+            } else if (type == Field.TYPE_BINARY) {
+                NamedNodeMap nm2 = n5.getAttributes();
+                Node n7 = nm2.getNamedItem("file");
+                try {
+                    newNode.setValue(key, readBytesStream(n7.getNodeValue()));
+                } catch (IOException ioe) {
+                    log.warn("Could not set field " + key + " " + ioe);
+                }
+            } else {
+                log.error("CoreField not found for #" + type + " was not known for field with name: '"
+                		  + key + "' and with value: '" + value + "'");
+            }
+        }
     }
 
     private byte[] readBytesStream(String resourceName) throws IOException {
