@@ -615,11 +615,18 @@ public class SubscribeAction extends Action {
             Node thisEvent = cloud.getNode(subscribeForm.getNode());
 
             Node thisSubscription = null;
-            if(action.indexOf("Meld aan")>-1) { // *** create new inschrijving
+            if(action.indexOf("Meld aan")==-1) {
+               try { 
+                  thisSubscription = cloud.getNode(subscribeForm.getSubscriptionNumber());
+               } catch (Exception e) {
+                  log.info("Action 'Wijzig' or 'AddParticipant' for a none existing subscription."
+                  + " Probably editor (1) first selected, (2) then deleted and (3) then tried to change the subscription.");
+               }
+            }
+            if(thisSubscription==null) {
+               // *** create new inschrijving
                thisSubscription = cloud.getNodeManager("inschrijvingen").createNode();
                thisSubscription.setLongValue("datum_inschrijving",(new Date()).getTime()/1000);
-            } else {
-               thisSubscription = cloud.getNode(subscribeForm.getSubscriptionNumber());
             }
             thisSubscription.setStringValue("source",subscribeForm.getSource());
             thisSubscription.setStringValue("description",subscribeForm.getDescription());
