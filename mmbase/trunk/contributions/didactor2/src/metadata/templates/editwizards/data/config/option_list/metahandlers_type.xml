@@ -6,4 +6,5 @@
    <option id="MimeType">filetype</option>
    <option id="Extension">fileextension</option>
    <option id="CreationDate">creation date</option>
+   <option id="StreamingHandler">media info</option>
 </optionlist>
