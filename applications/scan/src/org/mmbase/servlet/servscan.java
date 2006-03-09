@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.44 2005-04-12 15:04:59 michiel Exp $
+ * @version $Id: servscan.java,v 1.45 2006-03-09 16:39:20 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -46,7 +46,7 @@ public class servscan extends JamesServlet {
     public static final String SHTML_CONTENTTYPE = "text/html";
     public static final String DEFAULT_CHARSET = "UTF-8"; // can be overriden by parameter 'encoding' (in web.xml)
 
-    protected String charSet = DEFAULT_CHARSET;    
+    protected String charSet = DEFAULT_CHARSET;
 
     /**
      * Initialize this servlet
@@ -56,22 +56,22 @@ public class servscan extends JamesServlet {
         String encodingParameter = getInitParameter("encoding");
         if (encodingParameter != null) {
             charSet = encodingParameter;
-        }    
+        }
     }
-    
+
 
     public void setMMBase(MMBase mmb) {
-        super.setMMBase(mmb);        
+        super.setMMBase(mmb);
 
-        // bugfix #6648: scan.init() is not called, this will sometimes result in a crash of mmbase 
+        // bugfix #6648: scan.init() is not called, this will sometimes result in a crash of mmbase
         log = Logging.getLoggerInstance(servscan.class);
 
-        try {            
+        try {
             MMBaseContext.initHtmlRoot();
         } catch (Exception e){
-            log.error(e);            
+            log.error(e);
         }
-        log.info("Getting scan parser");        
+        log.info("Getting scan parser");
         parser = (scanparser)getModule("SCANPARSER");
         if(parser == null) {
             String msg = "Module with name 'scanparser' should be active";
@@ -90,11 +90,11 @@ public class servscan extends JamesServlet {
      * of the charset used by the database
      */
     private String addCharSet(String mimetype) {
-        if (mimetype.equals(SHTML_CONTENTTYPE)) {            
+        if (mimetype.equals(SHTML_CONTENTTYPE)) {
             return mimetype + "; charset=\"" + charSet + "\"";
-        } else {            
+        } else {
             return mimetype;
-        }        
+        }
     }
 
     /**
@@ -113,12 +113,12 @@ public class servscan extends JamesServlet {
      */
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         if (!checkInited(res)) {
-            return;            
+            return;
         }
         if (parser == null) {
             throw new ServletException("No scan parser for request " + req.getRequestURI());
         }
-        
+
 
         incRefCount(req);
         try {
@@ -145,13 +145,13 @@ public class servscan extends JamesServlet {
                 if (!doCrcCheck(sp,res)) {
                     throw new PageCRCException("invalid crc");
                 }
-                doSecure(sp,res); // name=doSecure(sp,res); but name not used here
+                doSecure(sp, res); // name=doSecure(sp,res); but name not used here
                 long stime = handleTime(sp);
                 try {
                     if (handleCache(sp, res, out)) return;
                 } catch (Exception e) {
                     log.error("servscan - something is wrong with scancache: " + e.getClass().getName() + " " + e.getMessage());
-                    log.service(Logging.stackTrace(e));                    
+                    log.service(Logging.stackTrace(e));
                 }
 
                 if (log.isDebugEnabled()) {
@@ -163,13 +163,13 @@ public class servscan extends JamesServlet {
                     sp.body = handle_line(sp.body, sp.session, sp);
                     // Send data back
                     if (sp.body != null) {
-                        if (sp.rstatus == 0) {
+                        if (sp.rstatus == 0) { // ok
                             sp.mimetype = addCharSet(sp.mimetype);
-                            res.reset();                            
-                            res.setContentType(addCharSet(sp.mimetype));
+                            //res.reset();
+                            res.setContentType(sp.mimetype);
                             if (out == null) {
-                                out = res.getWriter();                            
-                            }                            
+                                out = res.getWriter();
+                            }
                             out.print(sp.body);
                             handleCacheSave(sp, res);
                         } else if (sp.rstatus == 1) {
@@ -177,9 +177,9 @@ public class servscan extends JamesServlet {
                             res.setContentType(addCharSet(sp.mimetype));
                             if (out == null) {
                                 out = res.getWriter();
-                            }                            
+                            }
                             res.setHeader("Location", sp.body);
-                        } else if (sp.rstatus == 2) {
+                        } else if (sp.rstatus == 2) { // 'new page'
                             sp.req_line = sp.body;
                             if (sp.req_line.indexOf('\n') !=- 1) {
                                 sp.req_line = sp.req_line.substring(0 ,sp.req_line.indexOf('\n'));
@@ -188,17 +188,17 @@ public class servscan extends JamesServlet {
                             String tmp = req.getHeader("If-Modified-Since:");
                             if (tmp != null && sp.processor != null) {
                                 res.setStatus(HttpServletResponse.SC_NOT_MODIFIED); // 304, "Not Modified"
-                                res.reset();                            
+                                res.reset();
                                 res.setContentType(addCharSet(sp.mimetype));
                                 if (out == null) {
                                     out = res.getWriter();
-                                }                                
+                                }
                             } else {
                             	// last-modification date and expire will be set to default
                                 setHeaders(sp, res, sp.body,0,0);
                                 if (out == null) {
                                     out = res.getWriter();
-                                }                                
+                                }
                                 out.print(sp.body);
                             }
                         }
@@ -208,7 +208,7 @@ public class servscan extends JamesServlet {
                         setHeaders(sp, res, sp.body,0,0);
                         if (out == null) {
                             out = res.getWriter();
-                        }                        
+                        }
                         out.print(sp.body);
                     }
                 } else {
@@ -218,7 +218,7 @@ public class servscan extends JamesServlet {
                 if (out == null) {
                     out = res.getWriter();
                 }
-                
+
                 if (stime != -1) {
                     stime = System.currentTimeMillis()-stime;
                     if (log.isDebugEnabled()) {
@@ -229,7 +229,7 @@ public class servscan extends JamesServlet {
             // End of page parser
             // pageLog.debug("END parsing SCAN page");
             out.flush();
-            out.close();
+            //out.close();
         } catch(NotLoggedInException e) {
             log.debug("service(): page(" + getRequestURL(req) + "): NotLoggedInException: ");
         } catch(PageCRCException e) {
@@ -237,7 +237,9 @@ public class servscan extends JamesServlet {
         } catch(Exception a) {
             log.debug("service(): exception on page: " + getRequestURL(req));
             a.printStackTrace();
-        } finally { decRefCount(req); }
+        } finally { 
+            decRefCount(req); 
+        }
 
     }
 
@@ -248,13 +250,13 @@ public class servscan extends JamesServlet {
      */
     private final void setHeaders(scanpage sp, HttpServletResponse res, String len, long lastModDate, long expireDate) {
         res.reset();
-            
+
         res.setContentType(addCharSet(sp.mimetype));
-        
-        
+
+
         // Guess this will be set by the app server if we don't set it.
         // mm: guessed wrong.
-        if (sp.mimetype.equals(SHTML_CONTENTTYPE)) {  
+        if (sp.mimetype.equals(SHTML_CONTENTTYPE)) {
             try {
                 res.setContentLength(len.getBytes(charSet).length);
             } catch (java.io.UnsupportedEncodingException uee) {
@@ -263,8 +265,8 @@ public class servscan extends JamesServlet {
         } else {
             res.setContentLength(len.getBytes().length);
         }
-        
-        
+
+
 
     	Date lastmod = null;
         if (lastModDate > 0) {
@@ -277,23 +279,25 @@ public class servscan extends JamesServlet {
             expire = new Date(expireDate);
         } else {
             // 2 hours back in time. So it will expire at once?
-            expire = new Date(System.currentTimeMillis() - 7200000); 
+            expire = new Date(System.currentTimeMillis() - 7200000);
         }
-        
+
         //    	String dateStr = RFC1123.makeDate(new Date());
         String lastmodStr = RFC1123.makeDate(lastmod);
         String expireStr = RFC1123.makeDate(expire);
 
-        log.debug("Set headers for URL: " + sp.req_line + "\nExpires: " + expireStr + "\nLast-Modified: " + lastmodStr );
-            
+        if (log.isDebugEnabled()) {
+            log.debug("Set headers for URL: " + sp.req_line + "\nExpires: " + expireStr + "\nLast-Modified: " + lastmodStr );
+        }
+
         res.setHeader("Expires", expireStr);
         res.setHeader("Last-Modified", lastmodStr);
         //        res.setHeader("Date", dateStr);
-        
-        // You dhoulfn't set the no-cache headers 
+
+        // You shouldn't set the no-cache headers
         // when you want the browser and proxies to cache the page until it is expired
         // otherwise it will go through the proxies to MMBase.
-        
+
         //      res.setHeader("Cache-Control"," no-cache");
         //      res.setHeader("Pragma", "no-cache");
     }
@@ -403,13 +407,13 @@ public class servscan extends JamesServlet {
         // Which Internet Explorer does not send.
 
         if (sp.body != null) {
-            	
+
             int start = sp.body.indexOf("<CACHE HENK");
             if (start >= 0) {
                 start += 11;
                 int end = sp.body.indexOf(">", start);
                 sp.wantCache  ="HENK";
-                    
+
                 String rst = parser.scancache.get(sp.wantCache, req_line, sp.body.substring(start, end + 1), sp);
                 if (log.isDebugEnabled()) {
                     log.debug("handleCache: sp.reload: " + sp.reload);
@@ -421,15 +425,15 @@ public class servscan extends JamesServlet {
 
                     setHeaders(sp, res, rst, lastModDate, expireDate);
                     // org.mmbase res.writeHeaders();
-                    try {                        
+                    try {
                         if (out == null) {
-                            out = res.getWriter();                            
-                        }                            
+                            out = res.getWriter();
+                        }
                         out.print(rst);
                         out.flush();
                         out.close();
                     } catch (IOException io) {
-                        log.error(io);                        
+                        log.error(io);
                     }
                     if (log.isDebugEnabled()) {
                         log.debug("handleCache(): cache.hit(" + req_line + ")");
@@ -443,30 +447,30 @@ public class servscan extends JamesServlet {
             }
 
             if (sp.body.indexOf("<CACHE PAGE>") !=- 1) {
-                    
+
                 sp.wantCache="PAGE";
                 String rst=parser.scancache.get(sp.wantCache, req_line, sp);
-                    
+
                 if (log.isDebugEnabled()) {
                     log.debug("handleCache: sp.reload: " + sp.reload);
                 }
                 if (rst != null && !sp.reload) {
                     long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
-                        
+
                     setHeaders(sp, res,rst,lastModDate,0);
                     // org.mmbase res.writeHeaders();
                     try {
-                        
+
                         if (out == null) {
-                            out = res.getWriter();                            
-                        }                            
+                            out = res.getWriter();
+                        }
                         out.print(rst);
                         out.flush();
                         out.close();
                     } catch (IOException io) {
-                        log.error(io);                        
-                    }                    
-                     
+                        log.error(io);
+                    }
+
                     if (log.isDebugEnabled()) {
                         log.debug("handleCache(): cache.hit(" + req_line + ")");
                     }
@@ -476,7 +480,7 @@ public class servscan extends JamesServlet {
                 }
             }
         }
-            
+
         return  false;
     }
 
