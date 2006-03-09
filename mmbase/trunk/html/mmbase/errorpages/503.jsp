@@ -1,4 +1,4 @@
-<%@page session="false"
+<%@page session="false" %><% response.setStatus(503); 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html>
   <head>
