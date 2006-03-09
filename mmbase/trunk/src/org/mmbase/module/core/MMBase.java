@@ -45,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.185 2006-03-02 16:13:25 michiel Exp $
+ * @version $Id: MMBase.java,v 1.186 2006-03-09 14:09:22 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -156,11 +156,6 @@ public class MMBase extends ProcessorModule {
      * Authorisation type. Access using getAuthType()
      */
     private String authtype = "none";
-
-    /**
-     * Cookie domain (?). Access using getCookieDomain()
-     */
-    private String cookieDomain = null;
 
     /**
      * The storage manager factory to use. Retrieve using getStorageManagerFactory();
@@ -293,11 +288,6 @@ public class MMBase extends ProcessorModule {
         tmp = getInitParameter("DTDBASE");
         if (tmp != null && !tmp.equals("")) {
             dtdbase = tmp;
-        }
-
-        tmp = getInitParameter("COOKIEDOMAIN");
-        if (tmp != null && !tmp.equals("")) {
-            cookieDomain = tmp;
         }
 
         // default machine name is the local host name plus context-path.
@@ -723,15 +713,6 @@ public class MMBase extends ProcessorModule {
      */
     public String getHost() {
         return host;
-    }
-
-    /**
-     * Retrieves the cookiedomain (whatever that is)
-     * This value is set using the configuration file.
-     * @return the cookie domain as a <code>String</code>
-     */
-    public String getCookieDomain() {
-        return cookieDomain;
     }
 
     /**
@@ -1256,7 +1237,7 @@ public class MMBase extends ProcessorModule {
      * Retrieves the timezone asociated with this MMBase's 'DateTime' objects. MMBase stores dates
      * in storage as 'Date' but without time-zone information, and therefore to a certain
      * degree open to interpretation.
-     * 
+     *
      * Together with this timezone the times can be defined absoletely (that is, of course, relative
      * to the time frame of out planet).
      (

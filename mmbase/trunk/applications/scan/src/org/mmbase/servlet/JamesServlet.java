@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application SCAN - the cookie code is specific for SCAN
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.47 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: JamesServlet.java,v 1.48 2006-03-09 14:09:22 pierre Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -153,8 +153,9 @@ public class JamesServlet extends MMBaseServlet {
                 return null;
             }
             String mmbaseCookie = MMBASE_COOKIENAME+"="+System.currentTimeMillis();
-            domain = mmbase.getCookieDomain();
-            if (domain == null) {
+
+            domain = mmbase.getInitParameter("COOKIEDOMAIN");
+            if (domain == null || domain.equals("")) {
                 res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; expires="+FUTUREDATE));
             } else {
                 res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; domain="+domain+"; expires="+FUTUREDATE));
