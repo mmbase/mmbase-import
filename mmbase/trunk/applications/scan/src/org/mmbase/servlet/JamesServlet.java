@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.AuthorizationException;
@@ -39,10 +40,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @application SCAN - the cookie code is specific for SCAN
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.48 2006-03-09 14:09:22 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.49 2006-03-09 16:39:03 michiel Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
+    private static final Logger log = Logging.getLoggerInstance(JamesServlet.class);
     protected static Logger pageLog;
 
     /**
@@ -96,7 +98,7 @@ public class JamesServlet extends MMBaseServlet {
      * @exception NotLoggedInException if the user hasn't logged in yet.
      */
     public String getAuthorization(HttpServletRequest req,HttpServletResponse res) throws AuthorizationException, NotLoggedInException {
-        return getAuthorization(req,res,"www","Basic");
+        return getAuthorization(req, res, "www", "Basic");
     }
 
     /**
@@ -110,7 +112,7 @@ public class JamesServlet extends MMBaseServlet {
      * @exception NotLoggedInException if the user hasn't logged in yet.
      */
     public String getAuthorization(HttpServletRequest req,HttpServletResponse res,String server, String level) throws AuthorizationException, NotLoggedInException {
-        return HttpAuth.getAuthorization(req,res,server,level);
+        return HttpAuth.getAuthorization(req, res, server, level);
     }
 
     /**
@@ -125,43 +127,48 @@ public class JamesServlet extends MMBaseServlet {
      */
     public String getCookie(HttpServletRequest req, HttpServletResponse res) {
 
-        String HEADERNAME = "COOKIE";
-        String MMBASE_COOKIENAME = "MMBase_Ident";
-        String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";   // weird date?
-        String PATH = "/";
+        final String MMBASE_COOKIENAME = "MMBase_Ident";
+        //String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";   // weird date?
+        final String PATH = "/";
         String domain = null;
-        String cookies = req.getHeader(HEADERNAME); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
+        Cookie[] cookies = req.getCookies(); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
 
-        if ((cookies!= null) && (cookies.indexOf(MMBASE_COOKIENAME) != -1)) {
-            StringTokenizer st = new StringTokenizer(cookies, ";");
-            while (st.hasMoreTokens()) {
-                String cookie = st.nextToken().trim();
-                if (cookie.startsWith(MMBASE_COOKIENAME)) { // Return the first cookie with a MMBASE_COOKIENAME.
-                    return cookie.replace('=','/');
+        if (cookies!= null) {
+            for (int i = 0; i < cookies.length; i++) {
+                Cookie cookie = cookies[i];
+                if (cookie.getName().equals(MMBASE_COOKIENAME)) {
+                    return MMBASE_COOKIENAME + '/' + cookie.getValue();
                 }
             }
-            return null;
-        } else {
-            // Added address in output to see if multiple cookies are being requested from same computer.
-            // This would imply improper use of our service :)
-            //
-            // added output to see why certain browsers keep asking for new cookie (giving a cookie
-            // with no reference in them with 'MMBASE_COOKIENAME'
-            // ------------------------------------------------------------------------------------------
-            MMBase mmbase = MMBase.getMMBase();
-            if (mmbase == null) {
-                return null;
-            }
-            String mmbaseCookie = MMBASE_COOKIENAME+"="+System.currentTimeMillis();
-
-            domain = mmbase.getInitParameter("COOKIEDOMAIN");
-            if (domain == null || domain.equals("")) {
-                res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; expires="+FUTUREDATE));
-            } else {
-                res.setHeader("Set-Cookie", (mmbaseCookie+"; path="+PATH+"; domain="+domain+"; expires="+FUTUREDATE));
-            }
-            return mmbaseCookie.replace('=','/');
         }
+
+        log.debug("No mmbase cookie found");
+        // Added address in output to see if multiple cookies are being requested from same computer.
+        // This would imply improper use of our service :)
+        //
+        // added output to see why certain browsers keep asking for new cookie (giving a cookie
+        // with no reference in them with 'MMBASE_COOKIENAME'
+        // ------------------------------------------------------------------------------------------
+        MMBase mmbase = MMBase.getMMBase();
+        if (mmbase == null) {
+            log.warn("No mmbase found");
+            return null;
+        }
+        String cookieValue = "" + System.currentTimeMillis();
+        domain = mmbase.getInitParameter("COOKIEDOMAIN");
+        log.debug("Setting MMBase cookie on domain " + domain);
+        Cookie cookie = new Cookie(MMBASE_COOKIENAME, cookieValue);
+        cookie.setPath(PATH);
+        if (domain != null) {
+            cookie.setDomain(domain);
+        }
+        cookie.setMaxAge((int) (20 * 365.25 * 24 * 60 * 60));
+        res.addCookie(cookie);
+        if (res.isCommitted()) {
+            log.error("Could not add cookie " + cookie + " because response is already committed");
+        }
+        return MMBASE_COOKIENAME + '/' + cookieValue;
+
     }
 
     /**
