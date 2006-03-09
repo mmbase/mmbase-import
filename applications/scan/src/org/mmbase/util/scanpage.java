@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.28 2004-10-25 08:08:35 pierre Exp $
+ * @version $Id: scanpage.java,v 1.29 2006-03-09 16:38:36 michiel Exp $
  */
 public class scanpage extends PageInfo {
     // logger
@@ -104,7 +104,7 @@ public class scanpage extends PageInfo {
         if (mimetype==null) mimetype = "text/html";
 
         sname = servlet.getCookie(req, res);
-        if (sessions!=null) session = sessions.getSession(this, sname);
+        if (sessions != null) session = sessions.getSession(this, sname);
         CheckEditorReload();
     }
 
