@@ -1,4 +1,5 @@
 <%@page isErrorPage="true" import="org.mmbase.bridge.*,java.util.*" 
+%><% response.setStatus(500); 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
 <mm:import jspvar="ticket"><mm:time time="now" format="yyyyMMddHHmmssSSS" /></mm:import>
