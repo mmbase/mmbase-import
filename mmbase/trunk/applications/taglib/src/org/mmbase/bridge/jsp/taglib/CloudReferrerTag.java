@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.28 2006-02-14 22:27:18 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.29 2006-03-09 13:24:31 nklasens Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -145,10 +145,12 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     public Locale getLocale() throws JspTagException {
         LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
-            return localeTag.getLocale();
-        } else {
-            return  getCloudVar().getLocale();
+            Locale locale = localeTag.getLocale();
+            if (locale != null) {
+                return locale;
+            }
         }
+        return  getCloudVar().getLocale();
     }
 
 }
