@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.196 2006-02-10 17:59:07 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.197 2006-03-10 17:03:50 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -638,6 +638,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
+        if (isNew()) {
+            // new nodes have no relations
+            return org.mmbase.bridge.util.BridgeCollections.EMPTY_RELATIONLIST;
+        }
         if (searchDir == null) searchDir = "BOTH";
         if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
         NodeQuery query = Queries.createRelationNodesQuery(this, nodeManager, role, searchDir);
@@ -652,6 +656,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
+        if (isNew()) return 0;
         if (otherNodeManager == null || otherNodeManager.getName().equals("object")) {
             // can be done on only insrel, which is often much quicker.
             NodeManager insrel;
@@ -735,10 +740,14 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public int countRelatedNodes(String type) {
+        if (isNew()) return 0;
         return getNode().getRelationCount(type);
     }
 
     public StringList getAliases() {
+        if (isNew()) {
+            return org.mmbase.bridge.util.BridgeCollections.EMPTY_STRINGLIST;
+        }
         NodeManager oalias = cloud.getNodeManager("oalias");
         NodeQuery q = oalias.createQuery();
         Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
