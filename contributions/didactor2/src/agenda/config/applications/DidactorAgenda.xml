@@ -27,6 +27,7 @@
         <relation from="classes" to="agendas" type="related" />
         <relation from="workgroups" to="agendas" type="related" />
         <relation from="agendas" to="items" type="eventrel" />
+        <relation from="agendas" to="items" type="related" />
 	<relation from="people" to="items" type="invitationrel" />
     </allowedrelationlist>
 
