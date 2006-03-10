@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.15 2006-03-03 15:50:14 michiel Exp $
+ * @version $Id: SendMail.java,v 1.16 2006-03-10 15:13:14 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -61,11 +61,6 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         return ("Sends mail through J2EE/JavaMail, supporting MultiPart");
     }
 
-    /**
-     * =========================================================================================================
-     * BELOW THIS IS COPIED . DONT CHANGE ANYTHING HERE WITHOUT DOING IT IN JMSENDMAIL AS WELL
-     * from JMSendMail 1.7.1. overriden to be compitable with mmbase 1.7.0, can be removed later (and then _extend_ from JMSendMail)
-     */
 
     private Session session;
 
