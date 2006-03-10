@@ -9,7 +9,8 @@
 <%@ page import="java.text.SimpleDateFormat,
                  java.text.ParseException,
                  java.util.Date,
-                 java.util.Calendar"%>
+                 java.util.Calendar,
+                 java.util.HashMap" %>
 
 <mm:import externid="year" jspvar="year" vartype="Integer"/>
 <mm:import externid="day" jspvar="day" vartype="Integer"/>
@@ -19,6 +20,8 @@
 <mm:import id="linkedlist" jspvar="linkedlist" vartype="List"/>
 
 <%
+ HashMap typeoflinked = new HashMap();
+ String typeof = "";
  Calendar tmpCal = Calendar.getInstance();
  tmpCal.set(year.intValue(),month.intValue()-1,day.intValue(),0,0,0);
  int startseconds = (int) (tmpCal.getTime().getTime() / 1000L);
@@ -30,12 +33,14 @@
 
 
 <%-- Get the personal agendas --%>
+<% typeof = "1"; %>
 <mm:node number="$user">
   <mm:relatednodes type="agendas" id="agenda">
    <%@include file="getselecteditems.jsp"%>
   </mm:relatednodes>
 
 <%-- Get the workgroups agendas of the user--%>
+<% typeof = "3"; %>
   <mm:relatednodes type="workgroups">
     <mm:relatednodes type="agendas" id="agenda">
      <%@include file="getselecteditems.jsp"%>
@@ -43,6 +48,7 @@
   </mm:relatednodes>
 
 <%-- Get the classes agendas of the user--%>
+<% typeof = "2"; %>
   <mm:relatednodes type="classes">
     <mm:relatednodes type="agendas" id="agenda">
      <%@include file="getselecteditems.jsp"%>
@@ -50,11 +56,13 @@
   </mm:relatednodes>
 
 <%-- get invitations --%>
+<% typeof = "4"; %>
 
   <mm:related path="invitationrel,items,eventrel,agendas" constraints="eventrel.stop > $startseconds AND eventrel.start < $endseconds">
      <mm:field name="items.number" jspvar="itemNumber" vartype="String" write="false">
      <%
       linkedlist.add( itemNumber );
+      typeoflinked.put( itemNumber, typeof ); 
      %>
      </mm:field>
   </mm:related>
@@ -78,17 +86,27 @@
 
     <mm:listnodes>
       <di:row>
+        <mm:import jspvar="itemNumber"><mm:field name="number"/></mm:import>
         <mm:remove referid="link"/>
         <mm:import id="link">
-            <a href="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids">
-		               <mm:param name="currentitem"><mm:field name="number"/></mm:param>
-		               <mm:param name="callerpage">/agenda/index.jsp</mm:param>
-			       <mm:param name="day"><mm:write referid="day"/></mm:param>
-			       <mm:param name="month"><mm:write referid="month"/></mm:param>
-		               <mm:param name="year"><mm:write referid="year"/></mm:param>
-		             </mm:treefile>">
+          <a href="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids">
+                     <mm:param name="currentitem"><mm:field name="number"/></mm:param>
+                     <mm:param name="callerpage">/agenda/index.jsp</mm:param>
+                     <mm:param name="day"><mm:write referid="day"/></mm:param>
+                     <mm:param name="month"><mm:write referid="month"/></mm:param>
+                     <mm:param name="year"><mm:write referid="year"/></mm:param>
+                   </mm:treefile>">
         </mm:import>
-
+        <mm:import id="editlink" reset="true">
+          <a href="<mm:treefile page="/agenda/editagendaitem.jsp" objectlist="$includePath" referids="$referids">
+                     <mm:param name="currentitem"><mm:field name="number"/></mm:param>
+                     <mm:param name="callerpage">/agenda/index.jsp</mm:param>
+                     <mm:param name="day"><mm:write referid="day"/></mm:param>
+                     <mm:param name="month"><mm:write referid="month"/></mm:param>
+                     <mm:param name="year"><mm:write referid="year"/></mm:param>
+                     <mm:param name="typeof"><%= typeoflinked.get(itemNumber) %></mm:param>
+                   </mm:treefile>">
+        </mm:import>
         
         <mm:relatednodes type="agendas" max="1">
             <mm:relatednodes type="classes">
@@ -119,6 +137,8 @@
         <di:cell>
           <mm:relatednodes type="agendas" max="1">
             <mm:write escape="none" referid="link"/><mm:write referid="agendaname"/></a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <mm:write escape="none" referid="editlink"/><di:translate key="agenda.edit" /></a>
           </mm:relatednodes>
         </di:cell>
         <di:cell><mm:write escape="none" referid="link"/><mm:field name="title"/></a></di:cell>
