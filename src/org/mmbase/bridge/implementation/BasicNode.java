@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.197 2006-03-10 17:03:50 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.198 2006-03-11 16:46:42 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -745,9 +745,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public StringList getAliases() {
-        if (isNew()) {
-            return org.mmbase.bridge.util.BridgeCollections.EMPTY_STRINGLIST;
-        }
         NodeManager oalias = cloud.getNodeManager("oalias");
         NodeQuery q = oalias.createQuery();
         Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
