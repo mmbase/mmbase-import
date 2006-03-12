@@ -305,7 +305,7 @@ public class HtmlCleaner {
            "&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;","&lsquo;",
            "&rsquo;","&rsquo;","&rsquo;","&rsquo;","&rsquo;","&rsquo;","&rsquo;","&rsquo;","&rsquo;","&rsquo;","&rsquo;",
            "&quot;","&quot;","&quot;","&quot;","&quot;","&quot;","&quot;","&quot;","&quot;",
-           "&quot;","&quot;","&quot;","&quot;","&quot;","&quot;","&quot;","..","&ellips;",
+           "&quot;","&quot;","&quot;","&quot;","&quot;","&quot;","&quot;","..","&hellip;",
            "-","-","-","-","-","-","-","-","-","&shy;"};
        return rawString;
    }
