@@ -30,12 +30,14 @@ public class MetadataRenderer extends TreeCellRendererAdapter implements TreeCel
       String sTypeDef = n.getNodeManager().getName();
       out.println("<span style='width:100px;white-space:nowrap;valign:middle;' >");
       if(level>0) {
+         String title = n.getStringValue((sTypeDef.equals("metavocabulary")?"value":"name"));
+         if(title.length()>19) {  title = title.substring(0,19) + "&hellip;"; }
          out.println("<a href='" 
                         + wizardjsp
                         + "&wizard=config/" + sTypeDef + "/" + sTypeDef + "&objectnumber=" 
                         + n.getNumber()
                         + "' title='" + tt.translate("metadata.treat" + sTypeDef) + "' target='text'>&nbsp;"
-                        + n.getStringValue((sTypeDef.equals("metavocabulary")?"value":"name"))
+                        + title
                         + "</a>");
          if (sTypeDef.equals("metastandard")) {
             out.println("<a href='metaedit.jsp?number="
@@ -66,13 +68,16 @@ public class MetadataRenderer extends TreeCellRendererAdapter implements TreeCel
             sTypeDef = "metavocabulary"; 
          }
       }
-
+      String title = tt.translate("metadata.createnew" + sTypeDef);
+      if(title.length()>19&&level>2) {
+          title = title.substring(0,19) + "&hellip;"; 
+      }
       out.println("<span style='width:100px;white-space:nowrap;valign:middle;' >");
       out.println("<a href='" 
                      + wizardjsp
                      + "&wizard=config/" + sTypeDef + "/" + sTypeDef + "-origin&objectnumber=new&origin=" + n.getNumber() + "'" 
                      + " title='" + tt.translate("metadata.createnewdescription" + sTypeDef) + "' target='text'>&nbsp;"
-                     + tt.translate("metadata.createnew" + sTypeDef)
+                     + title
                      + "</a>");
       out.println("</span>");
    }

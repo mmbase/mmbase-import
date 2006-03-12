@@ -26,7 +26,7 @@ public class MetadataTreeModel extends TreeModelAdapter implements TreeModel {
       try {
          root = cloud.getNode("metadata_root");
       } catch (Exception e) {
-         log.info("No root found for metastandards, creating one now.");
+         log.debug("No root found for metastandards, creating one now.");
          NodeManager nm = cloud.getNodeManager("metastandard");
          NodeList nl = nm.getList(null,"name","UP");
          root = nm.createNode();
@@ -51,15 +51,12 @@ public class MetadataTreeModel extends TreeModelAdapter implements TreeModel {
       NodeList nl = null;
       log.debug("getChildCount(" + sTypeDef + " " + p.getStringValue((sTypeDef.equals("metavocabulary")?"value":"name")) + " (" + p.getNumber() + ")");
       if(sTypeDef.equals("metastandard")) {
-         // nl = p.getRelatedNodes("metastandard", "posrel", "DESTINATION");
          nl = cloud.getList(p.getStringValue("number"),"metastandard1,posrel,metastandard2","metastandard2.number", null, "posrel.pos", "UP", "DESTINATION", true);
          iChildCount += nl.size();
-         // nl = p.getRelatedNodes("metadefinition", "posrel", "DESTINATION");
          nl = cloud.getList(p.getStringValue("number"),"metastandard,posrel,metadefinition","metadefinition.number", null, "posrel.pos", "UP", "DESTINATION", true);   
          iChildCount += nl.size();
       } else if(sTypeDef.equals("metadefinition")||sTypeDef.equals("metavocabulary")) {
-         // nl = p.getRelatedNodes("metavocabulary", "related", "DESTINATION");
-         nl = cloud.getList(p.getStringValue("number"),sTypeDef + ",related,metavocabulary","metavocabulary.number", null, "metavocabulary.value", "UP", "DESTINATION", true);
+         nl = cloud.getList(p.getStringValue("number"),sTypeDef + ",related,metavocabulary1","metavocabulary1.number", null, "metavocabulary1.value", "UP", "DESTINATION", true);
          iChildCount += nl.size();
       } else {
          log.error("unsupported nodetype in getChildCount for " + sTypeDef + " " + p.getNumber());
