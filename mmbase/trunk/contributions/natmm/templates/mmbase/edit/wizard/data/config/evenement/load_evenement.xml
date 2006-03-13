@@ -52,7 +52,7 @@
    <relation destination="bevestigings_teksten" role="posrel"/>
    <relation destination="deelnemers_categorie" role="posrel"/>
    <relation destination="evenement" role="altrel"/>
-   <relation destination="evenement" role="partrel"/>
+   <!-- relation destination="evenement" role="partrel"/ -->
    <relation destination="evenement_type" role="related"/>
    <relation destination="extra_info" role="readmore"/>
    <relation destination="formulier" role="related"/>

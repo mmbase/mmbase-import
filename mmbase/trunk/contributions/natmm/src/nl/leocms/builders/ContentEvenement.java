@@ -33,7 +33,7 @@ import nl.leocms.evenementen.Evenement;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ContentEvenement extends ContentElementBuilder {
    private static final Logger log = Logging.getLoggerInstance(ContentEvenement.class);
@@ -62,7 +62,7 @@ public class ContentEvenement extends ContentElementBuilder {
       // *** setting lokatie to list of provincie numbers ***
       String sParent = Evenement.findParentNumber(node.getStringValue("number"));
       iNodes= cloud.getList(sParent
-               , "evenement,related,natuurgebieden,posrel,provincies"
+               , "evenement,related,natuurgebieden,pos4rel,provincies"
                , "provincies.number", null, null, null, null, false).nodeIterator();
       String relatedProv = ",";
       if(iNodes.hasNext()) {

@@ -1015,7 +1015,7 @@ public class PaginaHelper {
         if (paginas.size() > 0) {
             return paginas.getNode(0);
         }
-        NodeList natuurgebieden = cloud.getList(""+contentElement.getNumber(),"natuurgebieden,posrel,provincies,contentrel,pagina", "pagina.number", null, null, null, "SOURCE", true);
+        NodeList natuurgebieden = cloud.getList(""+contentElement.getNumber(),"natuurgebieden,pos4rel,provincies,contentrel,pagina", "pagina.number", null, null, null, "SOURCE", true);
         if (natuurgebieden.size() > 0) {
             Cloud cloud = contentElement.getCloud();
             return cloud.getNode(natuurgebieden.getNode(0).getStringValue("pagina.number"));
@@ -1047,7 +1047,7 @@ public class PaginaHelper {
          }
       }
       if (winner==null) {
-         winner = getContentElementNode(page, itemName, "pagina,contentrel,provincies,posrel,natuurgebieden", "natuurgebieden");
+         winner = getContentElementNode(page, itemName, "pagina,contentrel,provincies,pos4rel,natuurgebieden", "natuurgebieden");
       }
       if (winner==null) {
          winner = getContentElementNode(page, itemName, "pagina,posrel,dossier,posrel,artikel", "artikel");
