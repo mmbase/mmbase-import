@@ -11,7 +11,7 @@ package org.mmbase.util.xml;
 
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
-import java.io.File;
+import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -41,11 +41,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.25 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.26 2006-03-13 13:19:38 michiel Exp $
  */
 
-public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
+public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable, Serializable {
 
+
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
     private static final Logger log = Logging.getLoggerInstance(URIResolver.class);
 
     private EntryList     dirs;  // prefix -> URL pairs
@@ -389,7 +391,8 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      *
      */
 
-    static class Entry {
+    static class Entry implements java.io.Serializable {
+        private static final long serialVersionUID = 1L; 
         private String prefix;
         private URL    dir;
         private int    prefixLength;
@@ -404,6 +407,32 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 throw new IllegalArgumentException(d.toString() + " is not an existing directory");
             }
             */
+        }
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                out.writeUTF(prefix);
+                if (dir.getProtocol().equals("mm")) {
+                    out.writeObject("mm");
+                } else {
+                    out.writeObject(dir);
+                }
+            } catch (Throwable t) {
+                log.warn(t);
+            }
+        }
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException  {
+            try {
+                prefix = in.readUTF();
+                Object o = in.readObject();
+                if ("mm".equals(o)) {
+                    dir = ResourceLoader.getConfigurationRoot().getResource("/");
+                } else {
+                    dir = (URL) o;
+                }
+            } catch (Throwable t) {
+                log.warn(t);
+            }
+            prefixLength = prefix.length(); 
         }
 
         String getPrefix() {
@@ -439,20 +468,29 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * For testing only
      * @since MMBase-1.8
      */
-    public static void main(String argv[]) {
-        try {
-            URIResolver resolver = new URIResolver(new URL("file:///tmp/"));
-            System.out.println("Resolving with " + resolver);
-            String href, base;
+    public static void main(String argv[]) throws Exception {
 
-            href = "xsl/list.xsl";  base = null;
-            System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
-            href = "xsl/prompts.xsl";  base = "file:///home/mmbase/mmbase17/mmbase/edit/wizard/data/xsl/base.xsl";
-            System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
+        URIResolver resolver = new URIResolver(new URL("file:///tmp/"));
+        System.out.println("Resolving with " + resolver);
+        String href, base;
 
-        } catch (Throwable t) {
-            System.err.println(t.getClass().getName() + " : " + t.getMessage());
-        }
+        href = "xsl/list.xsl";  base = null;
+        System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
+        href = "xsl/prompts.xsl";  base = "file:///home/mmbase/mmbase17/mmbase/edit/wizard/data/xsl/base.xsl";
+        System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
+
+        FileOutputStream fos = new FileOutputStream("/tmp/uriresolver.ser");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(resolver);
+        oos.close();
+
+        FileInputStream fis = new FileInputStream("/tmp/uriresolver.ser");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        URIResolver resolver2 = (URIResolver) ois.readObject();
+        ois.close();
+
+        System.out.println("r" + resolver.resolveToURL("mm:hoi", null).getProtocol());
+
 
     }
 
