@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.41 2006-02-07 15:10:23 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.42 2006-03-13 14:30:44 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -517,6 +517,25 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         getUniqueRestriction().setValue(Boolean.valueOf(unique));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key) {
+        Object value = null;
+        if (key != null) {
+            // cast to the appropriate datatype value.
+            // Note that for now it is assumed that the keys are of the same type.
+            // I'm not 100% sure that this is always the case.
+            Object keyValue = cast(key, node, field);
+            for (Iterator i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) i.next();
+                if (keyValue.equals(entry.getKey()) ) {
+                    value = entry.getValue();
+                }
+            }
+        }
+        return value;
+    }
 
     /**
      * {@inheritDoc}
@@ -866,7 +885,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
                         if (Casting.toInt(v) == node.getNumber()) {
                             return true;
                         } else {
-                            // changing 
+                            // changing
                             log.warn("Odd, changing number of node " + node + " ?!", new Exception());
                         }
                     }

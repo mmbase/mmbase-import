@@ -28,6 +28,8 @@ import org.mmbase.core.event.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.core.util.StorageConnector;
 
+import org.mmbase.datatypes.DataType;
+
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.StorageNotFoundException;
 import org.mmbase.storage.search.*;
@@ -60,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.371 2006-03-07 15:15:22 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.372 2006-03-13 14:30:44 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1375,24 +1377,32 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         if (rtn == null) {
             CoreField fdef = getField(field);
-            if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getType() == Field.TYPE_DATETIME)) { // do something reasonable for this
-                Date date;
-                if (fdef.getType() == Field.TYPE_DATETIME) {
-                    date = node.getDateValue(field);
-                } else {
-                    date = new Date(node.getLongValue(field) * 1000);
-                }
-                rtn = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, locale).format(date);
-                Calendar calendar = new GregorianCalendar(locale);
-                calendar.setTime(date);
-                if (calendar.get(Calendar.ERA) == GregorianCalendar.BC) {
-                    java.text.DateFormat df = new java.text.SimpleDateFormat(" G", locale);
-                    rtn += df.format(date);
-                }
+
+            // test if the value can be derived from the enumerationlist of a datatype
+            DataType dataType = fdef.getDataType();
+            Object returnValue = dataType.getEnumerationValue(locale, (Cloud) pars.get(Parameter.CLOUD), (Node) pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+            if (returnValue != null) {
+                rtn = returnValue.toString();
             } else {
-                rtn = (String) pars.get("stringvalue");
-                if (rtn == null) {
-                    rtn = node.getStringValue(field);
+                if (fdef != null && ("eventtime".equals(fdef.getGUIType()) || fdef.getType() == Field.TYPE_DATETIME)) { // do something reasonable for this
+                    Date date;
+                    if (fdef.getType() == Field.TYPE_DATETIME) {
+                        date = node.getDateValue(field);
+                    } else {
+                        date = new Date(node.getLongValue(field) * 1000);
+                    }
+                    rtn = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, locale).format(date);
+                    Calendar calendar = new GregorianCalendar(locale);
+                    calendar.setTime(date);
+                    if (calendar.get(Calendar.ERA) == GregorianCalendar.BC) {
+                        java.text.DateFormat df = new java.text.SimpleDateFormat(" G", locale);
+                        rtn += df.format(date);
+                    }
+                } else {
+                    rtn = (String) pars.get("stringvalue");
+                    if (rtn == null) {
+                        rtn = node.getStringValue(field);
+                    }
                 }
             }
         }
@@ -1435,6 +1445,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public String getGUIIndicator(String fieldName, MMObjectNode node) {
         CoreField field = getField(fieldName);
+
         if (field != null && field.getType() == Field.TYPE_NODE && ! fieldName.equals(FIELD_NUMBER)) {
             try {
                 MMObjectNode otherNode = node.getNodeValue(fieldName);
