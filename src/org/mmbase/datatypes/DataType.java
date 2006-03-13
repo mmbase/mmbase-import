@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.47 2005-12-18 09:37:57 michiel Exp $
+ * @version $Id: DataType.java,v 1.48 2006-03-13 14:30:44 pierre Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -250,6 +250,19 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      *
      */
     public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
+
+
+    /**
+     * Returns a (gui) value from a list of retsricted enumerated values, or
+     * <code>null</code> if no enumeration restrictions apply or teh value cannot be found.
+     *
+     * @param locale for which to produce
+     * @param cloud  Possibly the possible values depend on a cloud (security)
+     * @param node   Possibly the possible values depend on an actual node (this may be, and in the default implementation is, ignored)
+     * @param field  Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
+     * @param key    the key for which to look up the (gui) value
+     */
+    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
 
     /**
      * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
