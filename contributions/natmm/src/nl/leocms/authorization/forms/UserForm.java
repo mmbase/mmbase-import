@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * Form bean for the UserForm page.
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-03-13 17:13:10 $
  *
  * @struts:form name="UserForm"
  */
@@ -318,7 +318,7 @@ public class UserForm extends ActionForm {
    public List getRanks() {
       List ret=new ArrayList();
       ret.add(new UserRank("Gebruiker","basic user"));
-      ret.add(new UserRank("Rubrieken beheerder","chiefeditor"));
+      ret.add(new UserRank("Hoofdgebruiker","chiefeditor"));
       ret.add(new UserRank("Admin","administrator"));
       return ret; 
    }

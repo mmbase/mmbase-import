@@ -1,5 +1,6 @@
 <%@page import="nl.leocms.evenementen.forms.*,
    nl.leocms.evenementen.Evenement,
+   nl.leocms.authorization.*,
    nl.leocms.util.DoubleDateNode,
    java.util.*,
    org.mmbase.bridge.*,
@@ -105,6 +106,12 @@
 <%
 boolean isAdmin = cloud.getUser().getRank().equals("administrator");
 boolean isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
+
+String account = cloud.getUser().getIdentifier();
+AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud);
+UserRole role = authorizationHelper.getRoleForUser(authorizationHelper.getUserNode(account), cloud.getNode("natuurin_rubriek"));
+boolean isEditor = (role.getRol()>0);
+
 
 String dateStyle = "width:40px;text-align:right;"; 
 String buttonStyle = "width:90px;";
@@ -246,7 +253,7 @@ DoubleDateNode ddn = new DoubleDateNode();
       <tr><td class="fieldname" style="<%= fNStyle %>">betrokken personen</td>
           <td><%
             String source = parent_number;
-            if(isGroupExcursion) {
+            if(isEditor && isGroupExcursion) {
                %>
                <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/evenement/evenement_medewerker&nodepath=evenement&objectnumber=<%= nodenr %>&referer=<%= sReferer %>&language=nl">
                   <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk betrokken personen'>
@@ -421,7 +428,7 @@ DoubleDateNode ddn = new DoubleDateNode();
 <% if(actionId.indexOf("printdates")==-1) { %>
 <a name="form"></a>
 <mm:node number="<%= nodenr %>" jspvar="thisEvent"><%
-   if(actionId.indexOf("print")==-1) { 
+   if(isEditor && actionId.indexOf("print")==-1) { 
       %><html:submit property="action" value="Nieuwe aanmelding" style="width:130px;" /><% 
    } %>
    <b><mm:field name="titel" />, <%= ddn.getReadableDate() %>, <%= ddn.getReadableTime() %></b> |
@@ -479,7 +486,7 @@ DoubleDateNode ddn = new DoubleDateNode();
       <td colspan="2">status&nbsp;</td>
    </tr>
 	<% 
-   if(actionId.indexOf("print")==-1) {
+   if(isEditor && actionId.indexOf("print")==-1) {
       %>
       <tr>
          <td></td>
@@ -720,7 +727,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                   } %></td>
                <td><mm:list nodes="<%= snumber %>" path="inschrijvingen,related,inschrijvings_status"><mm:field name="inschrijvings_status.naam" /></mm:list></td>
                <td style="text-align:right;"><nobr>
-                  <% if(actionId.indexOf("print")==-1) {
+                  <% if(isEditor && actionId.indexOf("print")==-1) {
                      %><a href="printsubscription.jsp?e=<%= nodenr %>&p=<%= parent_number %>&s=<%= snumber %>&d=<%= dnumber %>" target="_blank">
                         <img src='../img/printsubscription.gif' align='absmiddle' border='0' alt='Print bevestigingsbrief'></a>
                      <jsp:include page="maillink.jsp">
@@ -741,9 +748,12 @@ DoubleDateNode ddn = new DoubleDateNode();
             %>
             <tr <% row++; if(row%2==1){ %><%= sHighLight %><% } %>>
                <td colspan="10" style="vertical-align:top;text-align:right;">bijzonderheden
-                  <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_descr&nodepath=inschrijvingen&objectnumber=<%= snumber %>&referer=<%= sReferer %>&language=nl">
-                     <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk bijzonderheden'>
-                  </a>
+                  <%
+                  if(isEditor) {
+                     %><a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_descr&nodepath=inschrijvingen&objectnumber=<%= snumber %>&referer=<%= sReferer %>&language=nl">
+                        <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Bewerk bijzonderheden'>
+                     </a><%
+                  } %>
                </td>
                <td colspan="8">   
                   <mm:write referid="sdescription" />
@@ -751,9 +761,12 @@ DoubleDateNode ddn = new DoubleDateNode();
             </tr>
             <tr <% row++; if(row%2==1){ %><%= sHighLight %><% } %>>
                <td colspan="10" style="vertical-align:top;text-align:right;">aard van de groep
-                  <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_addcategorie&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referer=<%= sReferer %>&language=nl">
-                     <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Selecteer aanmeldingscategorie'>
-                  </a>
+                  <%
+                  if(isEditor) {
+                     %><a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_addcategorie&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referer=<%= sReferer %>&language=nl">
+                        <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Selecteer aanmeldingscategorie'>
+                     </a><%
+                  } %>
                </td>
                <td colspan="8">   
                   <mm:list nodes="<%= snumber %>" path="inschrijvingen,related,inschrijvings_categorie">
@@ -763,9 +776,12 @@ DoubleDateNode ddn = new DoubleDateNode();
             </tr>
             <tr <% row++; if(row%2==1){ %><%= sHighLight %><% } %>>
                <td colspan="10" style="vertical-align:top;text-align:right;">bevestigings tekst en afwijkende kosten
-                  <a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_confirmationtexts&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referer=<%= sReferer %>&language=nl">
-                     <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Selecteer bevestigingstekst'>
-                  </a>
+                  <%
+                  if(isEditor) {
+                     %><a href="/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/inschrijvingen/inschrijvingen_confirmationtexts&nodepath=inschrijvingen&objectnumber=<%= snumber %>&origin=<%= parent_number %>&referer=<%= sReferer %>&language=nl">
+                        <img src='../img/edit_w.gif' align='absmiddle' border='0' alt='Selecteer bevestigingstekst'>
+                     </a><%
+                  } %>
                </td>
                <td colspan="8">   
                   <mm:list nodes="<%= snumber %>" path="inschrijvingen,daterel,bevestigings_teksten">

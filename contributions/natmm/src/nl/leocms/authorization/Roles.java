@@ -26,7 +26,7 @@ package nl.leocms.authorization;
  * 
  */
 public interface Roles {
-   public static int NONE = 0; // DENY all rights
+   public static int LEZER = 0; // DENY all rights
    public static int SCHRIJVER = 1;
    public static int REDACTEUR = 2;
    public static int EINDREDACTEUR = 3;

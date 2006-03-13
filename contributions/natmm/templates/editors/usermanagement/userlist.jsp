@@ -42,7 +42,7 @@
          <mm:field name="rubriek.naam" />
          (<mm:field name="rolerel.rol">
             <mm:compare value="-1">-</mm:compare>
-            <mm:compare value="0">GEEN</mm:compare>
+            <mm:compare value="0">Lezer</mm:compare>
             <mm:compare value="1">Schrijver</mm:compare>
             <mm:compare value="2">Redacteur</mm:compare>
             <mm:compare value="3">Eindredacteur</mm:compare>
