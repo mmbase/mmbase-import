@@ -7,15 +7,25 @@
       <field ftype="data" name="titel"><prompt>titel</prompt></field>
       <list include="config/natuurgebieden/zoek_dossier_related_natuurgebieden.xml" />
    </item>
-   <command name="search" nodepath="evenement" age="-1" fields="titel,metatags"  constraints="soort='parent'" orderby="titel">
+   <command name="search" nodepath="evenement,related,natuurgebieden" age="-1" 
+         fields="evenement.number,evenement.titel,evenement.metatags,natuurgebieden.naam"
+         constraints="evenement.soort='parent'" orderby="evenement.titel">
       <prompt>zoek evenement</prompt>
       <search-filter>
+         <name>nummer bevat</name>
+         <search-fields>[evenement.number]</search-fields>
+      </search-filter>
+      <search-filter>
          <name>titel bevat</name>
-         <search-fields>[titel]</search-fields>
+         <search-fields>[evenement.titel]</search-fields>
       </search-filter>
       <search-filter>
          <name>redactionele aantekening</name>
-         <search-fields>[metatags]</search-fields>
+         <search-fields>[evenement.metatags]</search-fields>
+      </search-filter>
+      <search-filter>
+         <name>natuurgebied</name>
+         <search-fields>[natuurgebieden.naam]</search-fields>
       </search-filter>
    </command>
    <action type="create">
