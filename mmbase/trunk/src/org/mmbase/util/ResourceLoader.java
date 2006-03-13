@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.33 2006-02-20 18:19:13 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.34 2006-03-13 13:19:09 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1669,7 +1669,7 @@ public class ResourceLoader extends ClassLoader {
      * use). It combines the Connection types implented here above.
      */
 
-    private class MMURLStreamHandler extends URLStreamHandler {
+    private class MMURLStreamHandler extends URLStreamHandler implements java.io.Serializable {
 
         MMURLStreamHandler() {
             super();
@@ -1685,6 +1685,7 @@ public class ResourceLoader extends ClassLoader {
             return new MMURLConnection(u).getInputConnection().getURL().toExternalForm();
         }
     }
+
 
     /**
      * Implements the logic for our MM protocol. This logic consists of iterating in <code>ResourceLoader.this.roots</code>.
