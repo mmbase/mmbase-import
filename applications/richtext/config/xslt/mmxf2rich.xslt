@@ -2,11 +2,11 @@
   This translates a mmbase XML field to enriched ASCII
 
   @author: Michiel Meeuwissen
-  @version: $Id: mmxf2rich.xslt,v 1.1 2005-10-25 21:16:45 michiel Exp $
+  @version: $Id: mmxf2rich.xslt,v 1.2 2006-03-13 09:33:54 michiel Exp $
   @since:  MMBase-1.6   
 -->
 <xsl:stylesheet 
-    xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
+  xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
   xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
     version = "1.0" >
   <xsl:output method = "text" />
