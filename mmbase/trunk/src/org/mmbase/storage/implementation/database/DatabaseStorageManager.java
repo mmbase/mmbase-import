@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.149 2006-03-02 16:26:03 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.150 2006-03-13 09:25:13 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1262,7 +1262,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Store a Date value of a field in a prepared statement.
      * The method uses the Casting class to convert to the appropriate value.
-     * Null values are stored as NULL if possible, otherwise they are stored as the date 31/12/1969 23:59:59 GMT (-1) 
+     * Null values are stored as NULL if possible, otherwise they are stored as the date 31/12/1969 23:59:59 GMT (-1)
      * TODO: I think that is -1000, not -1.
      *
      * Override this method if you use another way to store dates
@@ -2314,6 +2314,9 @@ public class DatabaseStorageManager implements StorageManager {
                                       + Fields.getTypeDescription(curtype)
                                       + ", but in storage " + Fields.getTypeDescription(type)
                                       + " (" + colInfo.get("TYPE_NAME") + "). Storage type will be used.");
+                            // set the new type (keep the old datatype)
+                            field.setType(type);
+/*
                             DataType originalDataType = field.getDataType();
                             DataType newDataType      = (DataType) DataTypes.getDataType(type).clone(originalDataType.getName());
                             field.setType(Fields.classToType(newDataType.getTypeAsClass()));
@@ -2325,7 +2328,7 @@ public class DatabaseStorageManager implements StorageManager {
                             }
                             field.setDataType(newDataType);
                             log.info("" + originalDataType + " -> " + field.getDataType());
-
+*/
                         }
                         boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
                         if (nullable == field.isNotNull()) {
