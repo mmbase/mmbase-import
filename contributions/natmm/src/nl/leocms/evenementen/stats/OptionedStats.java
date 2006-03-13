@@ -255,7 +255,7 @@ public class OptionedStats {
          // *** put names on tsNames ***
          String sStatName = "";
          String sNumber = "";
-         NodeList nlNatuurgebieden = cloud.getList("","natuurgebieden,posrel,provincies",
+         NodeList nlNatuurgebieden = cloud.getList("","natuurgebieden,pos4rel,provincies",
             "natuurgebieden.naam,natuurgebieden.number,provincies.naam",null,null,null,null,false);
          for (int j = 0; j < nlNatuurgebieden.size(); j++ ){
             Node nNatuurgebieden = nlNatuurgebieden.getNode(j);

@@ -204,7 +204,7 @@ public class ExcelWriter {
       }
       counter += nl2.size();
 
-      NodeList nl3 = cloud.getList(sParentNumber,"evenement,related,natuurgebieden,posrel,provincies","provincies.naam",null,null,null,null,false);
+      NodeList nl3 = cloud.getList(sParentNumber,"evenement,related,natuurgebieden,pos4rel,provincies","provincies.naam",null,null,null,null,false);
       llXlsData.add(new Label(0,counter,"Provincie"));
       if (nl3.size()>0){
          llXlsData.add(new Label(1,counter,nl3.getNode(0).getStringValue("provincies.naam")));
