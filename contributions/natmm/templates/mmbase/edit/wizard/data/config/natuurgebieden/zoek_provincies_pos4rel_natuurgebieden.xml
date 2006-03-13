@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="natuurgebieden" minoccurs="0" maxoccurs="*"
-   orderby="field[@name='pos']" ordertype="number" hidecommand="move-up|move-down">
+<list role="pos4rel" destination="natuurgebieden" minoccurs="0" maxoccurs="*"
+   orderby="naam" ordertype="string" hidecommand="move-up|move-down">
    <title>natuurgebieden</title>
    <item>
       <field ftype="data" name="naam"><prompt>naam</prompt></field>
-      <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
+      <field ftype="line" fdatapath="field[@name=&apos;pos1&apos;]"><prompt>horizontale pixels vanaf rechts</prompt></field>
+      <field ftype="line" fdatapath="field[@name=&apos;pos2&apos;]"><prompt>verticale pixels vanaf boven __________________________</prompt></field>
       <field ftype="startwizard" wizardname="config/natuurgebieden/natuurgebieden" />
    </item>
-
-    <command name="search" nodepath="natuurgebieden" age="-1" fields="titel,metatags" orderby="titel">
+   <command name="search" nodepath="natuurgebieden" age="-1" fields="titel,metatags" orderby="titel">
       <prompt>zoek natuurgebieden</prompt>
       <search-filter>
          <name>naam bevat</name>
@@ -20,14 +20,12 @@
          <search-fields>[metatags]</search-fields>
       </search-filter>
 	</command>
-
    <command name="startwizard" inline="true" wizardname="config/natuurgebieden/natuurgebieden" objectnumber="new">
        <prompt></prompt>
    </command>
-
    <action type="create">
-      <relation destinationtype="natuurgebieden" role="posrel">
-         <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+      <relation destinationtype="natuurgebieden" role="pos4rel">
+         <field name="pos">{sum(//relation[@role='pos4rel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
       </relation>
    </action>
 </list>
