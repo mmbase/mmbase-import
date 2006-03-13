@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.5 2005-11-05 08:08:14 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.6 2006-03-13 09:33:54 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -21,6 +21,9 @@
   <xsl:param name="cloud">mmbase</xsl:param>
   <xsl:param name="request"></xsl:param>
   <xsl:param name="formatter_requestcontext">/</xsl:param>
+  <xsl:param name="thumbwidth">200</xsl:param>
+  <xsl:param name="thumbheight"></xsl:param>
+  <xsl:param name="thumbsize">s(<xsl:value-of select="$thumbwidth" /><xsl:value-of select="$thumbheight" />&gt;)</xsl:param>
 
   <xsl:variable name="newstype">xmlnews</xsl:variable>
   <!-- I had an 'xmlnews' type... Can easily switch beteen them like
@@ -90,7 +93,7 @@
   -->
   <xsl:template match="o:object[@type = 'images']" mode="img">
     <xsl:param name="relation" />
-    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', 's(100x100&gt;)')" />
+    <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $thumbsize)" />
     <img src="{node:function($cloud, string($icache/@id ), 'servletpath')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
@@ -109,21 +112,37 @@
        Produces output for one o:object of type images.
        params: relation, position, last
   -->
-  <xsl:template match="o:object[@type = 'images']" mode="inline">
+  <xsl:template match="o:object[@type = 'images']" mode="inline">    
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
-    <a>
-      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-      <xsl:apply-templates select="." mode="img">
-        <xsl:with-param name="relation" select="$relation" />
-        <xsl:with-param name="position" select="$position"  />
-        <xsl:with-param name="last"  select="$last"  />
-      </xsl:apply-templates>
-    </a>
+    <xsl:choose>
+      <xsl:when test="o:field[@name='width'] &gt; $thumbwidth + 20">
+        <!-- if thumb is smaller than actual image, produce a link to popup -->
+        <a>
+          <xsl:attribute name="onclick">window.open(this.href,'_blank'); return false;</xsl:attribute>
+          <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+          <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+          <xsl:apply-templates select="." mode="img">
+            <xsl:with-param name="relation" select="$relation" />
+            <xsl:with-param name="position" select="$position"  />
+            <xsl:with-param name="last"  select="$last"  />
+          </xsl:apply-templates>
+        </a>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="img">
+          <xsl:with-param name="relation" select="$relation" />
+          <xsl:with-param name="position" select="$position"  />
+          <xsl:with-param name="last"  select="$last"  />
+        </xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
+
+  
+
 
   <!--
        Produces output for one o:object of type attachments
@@ -147,7 +166,7 @@
   </xsl:template>
 
   <!--
-       Produces output for one o:object of type attachments
+       Produces output for one o:object of type 'blocks'
        params: relation
   -->
   <xsl:template match="o:object[@type = 'blocks']" mode="inline">
@@ -247,7 +266,15 @@
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'segments']" mode="title">
-    <xsl:value-of select="node:function($cloud, string(@id), 'index')" />
+    <xsl:variable name="index" select="node:function($cloud, string(@id), 'index')" />
+    <xsl:choose>
+      <xsl:when test="$index = ''">
+        <xsl:value-of select="./o:field[@name='title']" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$index" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 
@@ -337,7 +364,6 @@
       <xsl:variable name="toNodeNumber" select="$fromNode/o:relation[@object = current()/@id]/@related" />
       <xsl:variable name="position" select="position()" />
       <xsl:variable name="last"     select="last()" />
-
       <xsl:apply-templates select="//o:objects/o:object[@id = $toNodeNumber]" mode="inline">
         <xsl:with-param name="relation" select="." />
         <xsl:with-param name="position" select="$position" />
