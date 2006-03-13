@@ -56,7 +56,7 @@ public class FormRenderer extends TreeCellRendererAdapter implements TreeCellRen
 
       out.println("<select name=\"rol_"+rubriekNumber+"\" class='input.select'>");
       renderOption(out,"-1","-", val==-1);
-      renderOption(out,"0","GEEN", val==0);
+      renderOption(out,"0","Geen", val==0);
       renderOption(out,"1","Schrijver", val==1);
       renderOption(out,"2","Redacteur", val==2);
       renderOption(out,"3","Eindredacteur", val==3);
