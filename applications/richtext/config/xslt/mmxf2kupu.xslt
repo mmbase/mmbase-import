@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: mmxf2kupu.xslt,v 1.3 2005-12-13 14:31:02 michiel Exp $
+  @version: $Id: mmxf2kupu.xslt,v 1.4 2006-03-13 09:33:54 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -145,6 +145,7 @@
     <img>
       <xsl:attribute name="src"><xsl:apply-templates select="$icache" mode="url" /></xsl:attribute>
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:attribute name="class"><xsl:value-of select="$relation/o:field[@name='class']"  /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name='id']"  /></xsl:attribute>
       <xsl:if test="$icache/o:field[@name='width']">
@@ -190,12 +191,29 @@
   </xsl:template>
 
 
-  <xsl:template match="o:object[@type = 'urls' or @type='segments']" mode="inline_body">
+  <xsl:template match="o:object[@type='segments']" mode="inline_body">
     <xsl:param name="relation" />
     <xsl:param name="body" />
     <a>
       <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+      <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:attribute name="title"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:if test="$body = ''">
+        <xsl:attribute name="class">generated</xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates select="$body"  />
+    </a>
+  </xsl:template>
+
+  <xsl:template match="o:object[@type = 'urls']" mode="inline_body">
+    <xsl:param name="relation" />
+    <xsl:param name="body" />
+    <a>
+      <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+      <xsl:attribute name="alt">External: <xsl:apply-templates select="." mode="title" /></xsl:attribute>
+      <xsl:attribute name="title">External: <xsl:apply-templates select="." mode="title" /></xsl:attribute>
       <xsl:if test="$body = ''">
         <xsl:attribute name="class">generated</xsl:attribute>
       </xsl:if>
