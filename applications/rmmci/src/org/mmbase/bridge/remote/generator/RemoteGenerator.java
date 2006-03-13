@@ -553,7 +553,7 @@ public class RemoteGenerator {
                     sb.append("    return retval;\n");
                 }
 
-                sb.append("      } catch (Exception e){\n if (e instanceof BridgeException){\n throw (BridgeException)e ;\n} else {\nthrow new BridgeException(e.getMessage(), e);\n}\n}\n");
+                sb.append("      } catch (RuntimeException e){ throw e ;} catch(Exception e) {\nthrow new BridgeException(e.getMessage(), e);\n}\n");
 
                 sb.append("   }\n");
                 sb.append("\n");
