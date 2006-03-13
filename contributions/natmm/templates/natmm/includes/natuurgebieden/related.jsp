@@ -13,20 +13,15 @@ int listSize =0;
       <mm:size jspvar="natuurgebiedenCount" vartype="String" write="false">
 			<% listSize = Integer.parseInt(natuurgebiedenCount);%>
 		</mm:size>
-	   <mm:field name="provincies.afkorting" jspvar="afk" vartype="String" write="false">
-         <% if(afk.equals("DR")){ %><jsp:include page="../../includes/ngb/dr.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("FL")){ %><jsp:include page="../../includes/ngb/fl.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("FR")){ %><jsp:include page="../../includes/ngb/fr.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("GL")){ %><jsp:include page="../../includes/ngb/gl.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("GR")){ %><jsp:include page="../../includes/ngb/gr.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("LB")){ %><jsp:include page="../../includes/ngb/lb.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("NB")){ %><jsp:include page="../../includes/ngb/nb.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("NH")){ %><jsp:include page="../../includes/ngb/nh.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("OV")){ %><jsp:include page="../../includes/ngb/ov.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("UT")){ %><jsp:include page="../../includes/ngb/ut.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("ZH")){ %><jsp:include page="../../includes/ngb/zh.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-         <% if(afk.equals("ZL")){ %><jsp:include page="../../includes/ngb/zl.jsp" flush="true"><jsp:param name="p" value="<%= paginaID %>"/></jsp:include><% } %>
-	   </mm:field>
+		<mm:node element="provincies">
+			<mm:related path="posrel,images" max="1">
+				<div style="position:relative">
+					<img src="<mm:node element="images"><mm:image /></mm:node>" alt="" border="0">
+					<%@include file="relatedcoordinates.jsp" %>	
+				</div>	
+			</mm:related>
+		</mm:node>
+      <%@include file="../../scripts/images.js" %>
     	<table width="100%" border="0" cellspacing="0" cellpadding="2">
 		<tr>
 		<td valign="top">

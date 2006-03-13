@@ -14,6 +14,6 @@
    <relation destination="teaser" role="readmore"/>
    <relation destination="shorty" role="posrel"/>
    <relation destination="extra_info" role="readmore"/>
-   <relation destination="provincies" role="posrel"/>
+   <relation destination="provincies" role="pos4rel"/>
    <relation destination="vertrekpunten" role="posrel"/>
 </action>

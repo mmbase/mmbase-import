@@ -17,7 +17,11 @@ if ((refresh != null) && (refresh.equals("yes"))) {
 
    // flush cache
    String referer = request.getParameter("referer");
-   referer = referer.substring(0,referer.indexOf("&preview=on"));
+   if(referer!=null&&referer.indexOf("&preview=on")>-1) {
+      referer = referer.substring(0,referer.indexOf("&preview=on"));
+   } else {
+      referer = request.getHeader("referer");
+   }
    session.setAttribute("preview","off"); 
    %>
    <cache:flush scope="application" group="<%= number %>" />

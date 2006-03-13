@@ -4,5 +4,6 @@
    <field name="naam"/>
    <field name="afkorting"/>
    <field name="metatags"/>
-   <relation destination="natuurgebieden" role="posrel" />
+   <relation destination="images" role="posrel" />
+   <relation destination="natuurgebieden" role="pos4rel" />
 </action>

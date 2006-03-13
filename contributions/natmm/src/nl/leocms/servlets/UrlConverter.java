@@ -31,8 +31,11 @@ import org.apache.commons.lang.StringUtils;
 import nl.leocms.util.RubriekHelper;
 import nl.leocms.util.PaginaHelper;
 import com.finalist.mmbase.util.CloudFactory;
-import nl.mmatch.HtmlCleaner; 
+import nl.mmatch.HtmlCleaner;
 import nl.mmatch.NatMMConfig;
+
+import javax.servlet.ServletContext;
+import org.mmbase.module.core.MMBaseContext;
 
 /**
  * Utility class that contains the logic that converts a URL into
@@ -41,7 +44,7 @@ import nl.mmatch.NatMMConfig;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.1 2006-03-05 21:43:59 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.2 2006-03-13 14:06:43 henk Exp $
  */
 public final class UrlConverter {
    // some constants.
@@ -53,7 +56,10 @@ public final class UrlConverter {
    public static String RUBRIEK_PARAM = "r";
    public static String ITEM_PARAM = "id";
    public static String SEPARATOR = "/";
-   
+
+   public static String URL_CACHE = "url_cache";
+
+
    private UrlConverter() {
    }
 
@@ -88,19 +94,36 @@ public final class UrlConverter {
     */
    public static String convertUrl(String url, String params) {
       log.debug("converting url: " + url);
-      
+
       Cloud cloud = CloudFactory.getCloud();
-      
-      //split URL in an item part, a page part and rubriekenpad 
+
+      MMBaseContext mc = new MMBaseContext();
+      ServletContext application = mc.getServletContext();
+      UrlCache cache = (UrlCache)application.getAttribute(URL_CACHE);
+      if (cache==null) {
+        cache = new UrlCache();
+        application.setAttribute(URL_CACHE,cache);
+      }
+      String processedURL = cache.getCacheEntry(url);
+      if (processedURL!=null) {
+        log.debug("processed from cache: " + processedURL);
+        StringBuffer sb = new StringBuffer(processedURL);
+        if (params != null) {
+          sb.append('&').append(params);
+        }
+        return sb.toString();
+      }
+
+      //split URL in an item part, a page part and rubriekenpad
       int sPos = url.indexOf(SEPARATOR);
-      
+
       String itemName = url.substring(sPos);
       Date itemDate = null;
       String pageName = "";
       String rubriekenPad = "";
-      
+
       try {
-         itemName = StringUtils.substringAfterLast(url,SEPARATOR);           
+         itemName = StringUtils.substringAfterLast(url,SEPARATOR);
          itemName = StringUtils.substringBefore(itemName,PAGE_EXTENSION);
          int year = (new Integer(itemName.substring(0,2))).intValue();
          if(year<50) {
@@ -115,25 +138,25 @@ public final class UrlConverter {
          itemDate = cal.getTime();
       } catch (Exception e) {
          log.debug("itemName does not contain valid date string");
-      } 
-      
+      }
+
       if(itemDate==null) { // no itemName specified
          itemName = "";
-         pageName = StringUtils.substringAfterLast(url,SEPARATOR);           
+         pageName = StringUtils.substringAfterLast(url,SEPARATOR);
          pageName = StringUtils.substringBefore(pageName,PAGE_EXTENSION);
          rubriekenPad = StringUtils.substringBeforeLast(url,SEPARATOR);
       } else { // itemName specified
          itemName = itemName.substring(6);
          url = StringUtils.substringBeforeLast(url,SEPARATOR);
-         pageName = StringUtils.substringAfterLast(url,SEPARATOR);           
+         pageName = StringUtils.substringAfterLast(url,SEPARATOR);
          rubriekenPad = StringUtils.substringBeforeLast(url,SEPARATOR);
       }
-      
+
       log.debug("itemName = " + itemName);
       log.debug("itemDate = " + itemDate);
       log.debug("pageName = " + pageName);
       log.debug("rubriekenPad = " + rubriekenPad);
-      
+
       RubriekHelper rh = new RubriekHelper(cloud);
       ArrayList nlRubriek = rh.getRubriekWithRubriekenUrlPath(rubriekenPad, null);
       if (nlRubriek == null ) {
@@ -153,10 +176,10 @@ public final class UrlConverter {
          page = pg.retrievePaginaNumber("" + iRubriek, pageName);
          i++;
       }
-      
+
       if(page == null) {
          log.debug("No matching page found, interception stopped");
-         return null;         
+         return null;
       } else {
          int pPos = rubriekenPad.indexOf(rh.getUrlPath(iRubriek).toString());
          if(pPos>0) {
@@ -167,7 +190,7 @@ public final class UrlConverter {
       }
 
       String pageNumber = page.getStringValue("number");
-      
+
       StringBuffer forwardUrl = new StringBuffer("");
       forwardUrl.append(rubriekenPad);
 
@@ -177,17 +200,17 @@ public final class UrlConverter {
       } else {
          forwardUrl.append(ROOT_TEMPLATE);
       }
-      
+
       forwardUrl.append('?');
-      
-      if (params != null) { forwardUrl.append(params).append('&'); }
+
+      //if (params != null) { forwardUrl.append(params).append('&'); }
 
       forwardUrl.append(RUBRIEK_PARAM);
       forwardUrl.append('=');
       forwardUrl.append(iRubriek);
 
       forwardUrl.append('&');
-   
+
       forwardUrl.append(PAGE_PARAM);
       forwardUrl.append('=');
       forwardUrl.append(pageNumber);
@@ -195,13 +218,17 @@ public final class UrlConverter {
       if(itemDate!=null) {
          Node item = pg.getContentElementNode(page, itemName);
          String itemNumber = item.getStringValue("number");
-   
+
          forwardUrl.append('&');
-   
+
          forwardUrl.append(ITEM_PARAM);
          forwardUrl.append('=');
-         forwardUrl.append(itemNumber);   
+         forwardUrl.append(itemNumber);
       }
+
+      cache.putInCache(url,forwardUrl.toString());
+      if (params != null) { forwardUrl.append('&').append(params); }
+
       log.debug(forwardUrl);
       return forwardUrl.toString();
 

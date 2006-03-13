@@ -11,7 +11,7 @@
    <list include="config/paragraaf/zoek_natuurgebieden_readmore_paragraaf.xml" />
    <list include="config/shorty/zoek_natuurgebieden_posrel_shorty.xml" />
    <list include="config/teaser/zoek_natuurgebieden_readmore_teaser.xml" />
-   <list include="config/provincies/zoek_natuurgebieden_posrel_provincies.xml" />
+   <list include="config/provincies/zoek_natuurgebieden_pos4rel_provincies.xml" />
    <list include="config/vertrekpunten/zoek_natuurgebieden_posrel_vertrekpunten.xml" />
    <list include="config/afdelingen/zoek_natuurgebieden_posrel_afdelingen.xml" />
    <!-- list include="config/extra_info/zoek_natuurgebieden_readmore_extra_info.xml" / -->

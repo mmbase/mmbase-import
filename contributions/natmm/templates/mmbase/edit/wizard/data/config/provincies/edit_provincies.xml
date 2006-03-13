@@ -4,5 +4,6 @@
    <field name="naam" ftype="line" ><prompt>naam</prompt></field>
    <field name="afkorting" ftype="line" ><prompt>afkorting</prompt></field>
    <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
-   <list include="config/natuurgebieden/zoek_provincies_posrel_natuurgebieden.xml" />
+   <list include="config/images/zoek_posrel_images.xml" />
+   <list include="config/natuurgebieden/zoek_provincies_pos4rel_natuurgebieden.xml" />
 </form-schema>
