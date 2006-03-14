@@ -98,6 +98,7 @@
 		<method>getStyleSheetClasses</method>
 		<param name="id" type="String" description="the id of theme" />
 		<param name="cssid" type="String" description="the id of theme" />
+		<param name="searchkey" type="String" description="to limit the list" />
 		<return type="NodeList"> 
 		</return> 
 	</function>
@@ -189,6 +190,61 @@
 	</function>
 
 
+	<function name="addStyleSheetProperty">
+		<description>Change the theme for a assign</description>
+		<type>class</type>
+		<class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+		<method>addStyleSheetProperty</method>
+		<param name="tid" type="String" description="the id of assign" />
+		<param name="cssid" type="String" description="the id of assign" />
+		<param name="id" type="String" description="the id of assign" />
+		<param name="name" type="String" description="the id of assign" />
+		<param name="value" type="String" description="the id of assign" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="addStyleSheetClass">
+		<description>add style sheet class</description>
+		<type>class</type>
+		<class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+		<method>addStyleSheetClass</method>
+		<param name="tid" type="String" description="the id of assign" />
+		<param name="cssid" type="String" description="the id of assign" />
+		<param name="name" type="String" description="the id of assign" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="removeStyleSheetClass">
+		<description>remove style sheet class</description>
+		<type>class</type>
+		<class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+		<method>removeStyleSheetClass</method>
+		<param name="tid" type="String" description="the id of assign" />
+		<param name="cssid" type="String" description="the id of assign" />
+		<param name="name" type="String" description="the id of assign" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="removeStyleSheetProperty">
+		<description>remove a property</description>
+		<type>class</type>
+		<class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+		<method>removeStyleSheetProperty</method>
+		<param name="tid" type="String" description="the id of assign" />
+		<param name="cssid" type="String" description="the id of assign" />
+		<param name="id" type="String" description="the id of assign" />
+		<param name="name" type="String" description="the id of assign" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
 	<function name="removeAssign">
 		<description>remove a assign</description>
 		<type>class</type>
@@ -206,6 +262,17 @@
 		<class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
 		<method>addAssign</method>
 		<param name="newid" type="String" description="the newid of assign" />
+		<param name="newtheme" type="String" description="the new theme" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+	<function name="copyTheme">
+		<description>add the theme</description>
+		<type>class</type>
+		<class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+		<method>addTheme</method>
+		<param name="copytheme" type="String" description="the newid of assign" />
 		<param name="newtheme" type="String" description="the new theme" />
 		<return type="Boolean"> 
 		</return> 

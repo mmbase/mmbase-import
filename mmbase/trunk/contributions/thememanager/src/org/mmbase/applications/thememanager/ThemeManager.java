@@ -95,7 +95,7 @@ public class ThemeManager {
                         		if (n3!=null) {
 						themefilename=n3.getNodeValue();
 					}
-					Theme newtheme=new Theme(id,themefilename);
+					Theme newtheme=new Theme(id,themefilename,false);
 					themes.put(id,newtheme);
 			    	}
 			}
@@ -104,6 +104,82 @@ public class ThemeManager {
 	} catch (Exception e) {
             log.error("missing themes file ");
 	}
+    }
+
+    public static boolean copyTheme(Theme th,String newname) {
+	String filename = "thememanager/themes/"+newname+"/theme.xml";
+	Theme nt=new Theme(newname,filename,true);	
+        themes.put(newname,nt);
+
+	// now copy the content
+        HashMap m=th.getStyleSheets();
+        if (m!=null) {
+            Iterator keys=m.keySet().iterator();
+            while (keys.hasNext()) {
+                String k=(String)keys.next();
+                String v=(String)m.get(k);
+		// kind of a weird way. needs a rethink
+		nt.addStyleSheet(k,newname+"/"+k+".css");
+		// get the stylesheet manager to copy the content
+		StyleSheetManager sts=th.getStyleSheetManager(k);
+		StyleSheetManager nsts=nt.getStyleSheetManager(k);
+
+		// copy the styleheets
+		if (sts!=null && nsts!=null) {
+                        Iterator i=sts.getStyleSheetClasses();
+                        while (i.hasNext()) {
+                                StyleSheetClass stc=(StyleSheetClass)i.next();
+				StyleSheetClass nstc=nsts.addStyleSheetClass(stc.getId());
+                                Iterator i2=stc.getProperties();
+                                while (i2.hasNext()) {
+                                   StyleSheetProperty ssp=(StyleSheetProperty)i2.next();
+				   nstc.setProperty(ssp.getName(),ssp.getValue());
+				}
+			}
+			nsts.save();
+		}
+	    }
+        }
+
+	// now copy the image sets
+        m=th.getImageSets();
+        if (m!=null) {
+            Iterator keys=m.keySet().iterator();
+            while (keys.hasNext()) {
+                String k=(String)keys.next();
+                ImageSet im=(ImageSet)m.get(k);
+                ImageSet nim=new ImageSet(k,im.getRole());
+                Iterator i3=im.getImageIds();
+                while (i3.hasNext()) {
+                    String id=(String)i3.next();
+		    String idf=im.getImage(id);
+		    nim.setImage(id,idf);
+		    String fname = "mmbase/thememanager/images/"+th.getId()+"/"+k+"/"+idf;
+        	    InputStream in = ResourceLoader.getWebRoot().getResourceAsStream(fname);
+		    if (in!=null) {
+        	    try {                
+		       fname = "mmbase/thememanager/images/"+newname+"/"+k+"/"+idf;
+                       OutputStream out = ResourceLoader.getWebRoot().createResourceAsStream(fname);
+        		byte[] buf = new byte[1024];
+        		int len;
+        		while ((len = in.read(buf)) > 0) {
+            			out.write(buf, 0, len);
+        		}
+        		in.close();
+                        out.flush();
+        		out.close();
+                    } catch(Exception e) {
+                       e.printStackTrace();
+                    }
+		    } 
+		}
+		nt.addImageSet(k,nim);
+	    }
+	}
+
+	nt.save();
+	save();
+	return true;
     }
 
 
@@ -230,6 +306,31 @@ public class ThemeManager {
 	  AssignedFileWriter.write();
           return true;
    }
+
+
+    public static void save() {
+	String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	body += "<!DOCTYPE themes PUBLIC \"//MMBase - theme//\" \"http://www.mmbase.org/dtd/themes_1_0.dtd\">\n";
+	body += "<themes>\n";
+        HashMap m=getThemes();
+        if (m!=null) {
+            Iterator keys=m.keySet().iterator();
+            while (keys.hasNext()) {
+                String k=(String)keys.next();
+                Theme th=(Theme)m.get(k);
+		body += "\t<theme id=\""+k+"\" file=\""+th.getFileName()+"\" />\n";
+	    }
+	}
+	body += "</themes>\n";
+        try {                
+                Writer wr = ResourceLoader.getConfigurationRoot().getWriter("thememanager/themes.xml");
+                wr.write(body);
+                wr.flush();
+                wr.close();
+        } catch(Exception e) {
+                e.printStackTrace();
+        }
+    }
 
 
 }

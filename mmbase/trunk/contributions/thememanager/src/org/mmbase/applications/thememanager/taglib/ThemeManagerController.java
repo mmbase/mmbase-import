@@ -91,14 +91,16 @@ public class ThemeManagerController extends ThemeManager {
 		Theme th=getTheme(id);
 		if (th!=null) {
 			HashMap m=th.getStyleSheets();
-			Iterator keys=m.keySet().iterator();
-			while (keys.hasNext()) {
-				String k=(String)keys.next();
-				String v=(String)m.get(k);
-				HashMap map = new HashMap();
-                        	map.put("id",k);
-                        	map.put("path",v);
-				list.add(map);
+			if (m!=null) {
+				Iterator keys=m.keySet().iterator();
+				while (keys.hasNext()) {
+					String k=(String)keys.next();
+					String v=(String)m.get(k);
+					HashMap map = new HashMap();
+                        		map.put("id",k);
+                        		map.put("path",v);
+					list.add(map);
+				}
 			}
 		}
 		return list;
@@ -113,6 +115,7 @@ public class ThemeManagerController extends ThemeManager {
 
 	public static List getThemeImageSetsList(String id, String role) {
         List list = new ArrayList();
+	if (role==null) role="";
 
         //don't know if this is a nice way of doing this
         String assignedID = getAssign(id);
@@ -131,6 +134,7 @@ public class ThemeManagerController extends ThemeManager {
             } else {
                 m = th.getImageSets(role);
             }
+	    if (m!=null) {
 			Iterator keys=m.keySet().iterator();
 			while (keys.hasNext()) {
 				String k=(String)keys.next();
@@ -142,25 +146,30 @@ public class ThemeManagerController extends ThemeManager {
                 		list.add(map);
 			}
 		}
-		return list;
+	}
+	return list;
         }
 
 
 
 
-	public static List getStyleSheetClasses(String id,String cssid) {
+	public static List getStyleSheetClasses(String id,String cssid,String searchkey) {
                 List list = new ArrayList();
 
 		Theme th=getTheme(id);
 		if (th!=null) {
-			 StyleSheetManager sts=th.getStyleSheetManager(cssid);
-			Iterator i=sts.getStyleSheetClasses();
-			while (i.hasNext()) {
-				StyleSheetClass stc=(StyleSheetClass)i.next();
-				HashMap map =  new HashMap();
-                        	map.put("id",stc.getId());
-                        	map.put("propertycount",new Integer(stc.getPropertyCount()));
-				list.add(map);
+			StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			if (sts!=null) {
+				Iterator i=sts.getStyleSheetClasses();
+				while (i.hasNext()) {
+					StyleSheetClass stc=(StyleSheetClass)i.next();
+					HashMap map =  new HashMap();
+					if (searchkey.equals("*") || stc.getId().indexOf(searchkey)!=-1) {
+                        			map.put("id",stc.getId());
+                        			map.put("propertycount",new Integer(stc.getPropertyCount()));
+						list.add(map);
+					}
+				}
 			}
 		}
 		return list;
@@ -185,6 +194,72 @@ public class ThemeManagerController extends ThemeManager {
 		return true;
  	}
 
+
+	public static boolean addStyleSheetProperty(String themeid,String cssid,String id,String name,String value) { 
+		Theme th=getTheme(themeid);
+		if (th!=null) {
+			StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			if (sts!=null) {
+				StyleSheetClass ssc=sts.getStyleSheetClass(id);
+				if (ssc!=null) {
+					ssc.setProperty(name,value);
+					sts.save();
+				}
+			}
+		}
+		return true;
+ 	}
+
+
+	public static boolean addStyleSheetClass(String themeid,String cssid,String name) { 
+		Theme th=getTheme(themeid);
+		if (th!=null) {
+			StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			if (sts!=null) {
+				sts.addStyleSheetClass(name);
+				sts.save();
+			}
+		}
+		return true;
+ 	}
+
+
+	public static boolean addTheme(String copytheme,String newtheme) { 
+		Theme th=getTheme(copytheme);
+		if (th!=null) {
+			copyTheme(th,newtheme);
+		}
+		return true;
+ 	}
+
+
+	public static boolean removeStyleSheetClass(String themeid,String cssid,String name) { 
+		Theme th=getTheme(themeid);
+		if (th!=null) {
+			StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			if (sts!=null) {
+				sts.removeStyleSheetClass(name);
+				sts.save();
+			}
+		}
+		return true;
+ 	}
+
+
+	public static boolean removeStyleSheetProperty(String themeid,String cssid,String id,String name) { 
+		Theme th=getTheme(themeid);
+		if (th!=null) {
+			StyleSheetManager sts=th.getStyleSheetManager(cssid);
+			if (sts!=null) {
+				StyleSheetClass ssc=sts.getStyleSheetClass(id);
+				if (ssc!=null) {
+					ssc.removeProperty(name);
+					sts.save();
+				}
+			}
+		}
+		return true;
+ 	}
 
 	public static String getStyleSheetProperty(String themeid,String cssid,String id,String name) { 
 		Theme th=getTheme(themeid);
@@ -255,12 +330,6 @@ public class ThemeManagerController extends ThemeManager {
 					String classname =  tok.nextToken();
 					if (tok.hasMoreTokens()) {
 						String propertyname =  tok.nextToken();
-						/*
-						log.info("themename="+themename);
-						log.info("stylesheet="+stylesheet);
-						log.info("classname="+classname);
-						log.info("propertyname="+propertyname);
-						*/
 						setStyleSheetProperty(themename,stylesheet,classname,propertyname,value);
 					}
 				}

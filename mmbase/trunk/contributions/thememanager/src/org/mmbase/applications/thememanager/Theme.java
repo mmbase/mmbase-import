@@ -34,7 +34,7 @@ public class Theme {
     private HashMap stylesheets;
     private HashMap stylesheetmanagers = new HashMap();
     private HashMap imagesets;
-    private String mainid;
+    private String mainid,themefilename;
 
 
     public static final String DTD_THEME_1_0 = "theme_1_0.dtd";
@@ -52,9 +52,12 @@ public class Theme {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_ASSIGNED_1_0, DTD_ASSIGNED_1_0, Theme.class);
     }
 
-   public Theme(String mainid,String themefilename) {
+   public Theme(String mainid,String themefilename,boolean create) {
 	this.mainid=mainid;
-	readTheme(themefilename);	
+	this.themefilename = themefilename;
+	if (!create) {
+		readTheme(themefilename);	
+	}
    }
 
 
@@ -93,6 +96,16 @@ public class Theme {
 	return (String)stylesheets.get(id);
    }
 
+   public void addStyleSheet(String id,String value) {
+	if (stylesheets==null) stylesheets=new HashMap();
+	stylesheets.put(id,value);
+   }
+
+   public void addImageSet(String id,ImageSet im) {
+	if (imagesets==null) imagesets=new HashMap();
+	imagesets.put(id,im);
+   }
+
    public int getStyleSheetsCount() {
 	if (stylesheets!=null) {
 		return stylesheets.size();
@@ -107,6 +120,59 @@ public class Theme {
 	}
 	return 0;
    }
+
+    public void save() {
+	String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	body += "<!DOCTYPE theme PUBLIC \"//MMBase - theme//\" \"http://www.mmbase.org/dtd/theme_1_0.dtd\">\n";
+	body += "<theme>\n";
+        HashMap m=getStyleSheets();
+        if (m!=null) {
+            Iterator keys=m.keySet().iterator();
+            while (keys.hasNext()) {
+                String k=(String)keys.next();
+                String v=(String)m.get(k);
+		if (v.equals("default")) {
+			body += "\t<stylesheet file=\""+v+"\" />\n";
+		} else {
+			body += "\t<stylesheet id=\""+k+"\" file=\""+v+"\" />\n";
+		}
+	    }
+	}
+        m=getImageSets();
+        if (m!=null) {
+            Iterator keys=m.keySet().iterator();
+            while (keys.hasNext()) {
+                String k=(String)keys.next();
+                ImageSet im=(ImageSet)m.get(k);
+		if (k.equals("default")) {
+			body += "\t<imageset role=\""+im.getRole()+"\">\n";
+		} else {
+			body += "\t<imageset id=\""+k+"\" role=\""+im.getRole()+"\">\n";
+		}
+                Iterator i3=im.getImageIds();
+                while (i3.hasNext()) {
+                    String id=(String)i3.next();
+                    String idf=im.getImage(id);
+	   	    body += "\t\t<image id=\""+id+"\" size=\"small\" file=\""+idf+"\" />\n";
+		}
+		body += "\t</imageset>\n";
+	    }
+        }
+	body += "</theme>\n";
+        try {                
+                Writer wr = ResourceLoader.getConfigurationRoot().getWriter(themefilename);
+                wr.write(body);
+                wr.flush();
+                wr.close();
+        } catch(Exception e) {
+                e.printStackTrace();
+        }
+    }
+
+    public String getFileName() {
+	if (themefilename.startsWith("thememanager/")) return themefilename.substring(13);
+	return themefilename;
+    }
 
     public void readTheme(String themefilename) {
        stylesheets=new HashMap();
@@ -198,7 +264,6 @@ public class Theme {
 		return (StyleSheetManager)o;
 	} else {
 		String filename=getStyleSheet(stylesheet);
-		log.info("F1="+filename);
 		if (filename!=null) {
 			StyleSheetManager nm =  new StyleSheetManager(filename);
 			stylesheetmanagers.put(stylesheet,nm);
@@ -206,6 +271,10 @@ public class Theme {
 		}
 	}
 	return null;
+    }
+
+    public String getId() {
+	return mainid;
     }
 
 }
