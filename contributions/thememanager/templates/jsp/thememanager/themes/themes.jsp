@@ -32,7 +32,7 @@
  Add Theme
  <A HREF="<mm:url page="index.jsp">
 	<mm:param name="main" value="$main" />
-	<mm:param name="sub" value="addassign" />
+	<mm:param name="sub" value="addtheme" />
 	</mm:url>"><IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0"></A>
   </td>
 

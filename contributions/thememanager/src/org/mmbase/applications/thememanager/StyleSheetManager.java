@@ -50,6 +50,16 @@ public class StyleSheetManager {
    public StyleSheetClass getStyleSheetClass(String id) {
 	return (StyleSheetClass)stylesheetclasses.get(id);
    }
+
+   public StyleSheetClass addStyleSheetClass(String id) {
+	StyleSheetClass nc=  new StyleSheetClass(id);
+	stylesheetclasses.put(id,nc);
+	return nc;
+   }
+
+   public void removeStyleSheetClass(String id) {
+	stylesheetclasses.remove(id);
+   }
 	
 
    public boolean readStyleSheet() {
@@ -79,8 +89,7 @@ public class StyleSheetManager {
 	      }
 	      body+="}\n\n";
 	}
-       String filename = MMBaseContext.getHtmlRoot()+File.separator+"mmbase"+File.separator+"thememanager"+File.separator+"css"+File.separator+id;
-	//log.info("BODY="+body);
+       String filename = "mmbase"+File.separator+"thememanager"+File.separator+"css"+File.separator+id;
 	saveFile(filename,body);
 	return true;
    }
@@ -89,7 +98,6 @@ public class StyleSheetManager {
         String str;
 	line = line.substring(0,line.indexOf("{"));
 	line = Strip.Whitespace(line,Strip.BOTH);
-	log.info("setc="+line+"*");
 	StyleSheetClass sc = new StyleSheetClass(line);
 	stylesheetclasses.put(line,sc);
 	try {
@@ -102,7 +110,6 @@ public class StyleSheetManager {
 				if (end!=-1) {
 					String value = str.substring(pos+1,end);
 					value = Strip.Whitespace(value,Strip.BOTH);
-					log.info("setp="+name+"* *"+value+"*");
 					sc.setProperty(name,value);
 				}
 			}
@@ -114,14 +121,13 @@ public class StyleSheetManager {
 
 
     static boolean saveFile(String filename,String value) {
-        File sfile = new File(filename);
-        try {
-            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
-            scan.writeBytes(value);
-            scan.flush();
-            scan.close();
+        try {                
+		Writer wr = ResourceLoader.getWebRoot().getWriter(filename);
+                wr.write(value);
+                wr.flush();
+                wr.close();
         } catch(Exception e) {
-            log.error(Logging.stackTrace(e));
+                e.printStackTrace();
         }
         return true;
     }

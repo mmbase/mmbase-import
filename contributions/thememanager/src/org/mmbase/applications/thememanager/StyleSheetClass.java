@@ -55,6 +55,8 @@ public class StyleSheetClass {
    }
 
    public void setProperty(String name,String value) {
+	// a little weird i guess i wanted/want to extend it to different
+	// options per type. Needs work. fallback to just string based.
 	if (name.equals("background-color")) {
 		StyleSheetPropertyBackgroundColor sp = new StyleSheetPropertyBackgroundColor(name,value);
 		properties.put(name,sp);
@@ -62,6 +64,11 @@ public class StyleSheetClass {
 		StyleSheetProperty sp = new StyleSheetProperty(name,value);
 		properties.put(name,sp);
 	}
+   }	
+
+
+   public void removeProperty(String name) {
+	properties.remove(name);
    }	
 
 }
