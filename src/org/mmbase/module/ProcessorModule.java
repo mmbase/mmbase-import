@@ -35,6 +35,8 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     }
 
     protected static final Parameter[] PARAMS_PAGEINFO = new Parameter[] {Parameter.REQUEST, Parameter.RESPONSE, Parameter.CLOUD};
+    protected static final Parameter.Wrapper PARAM_PAGEINFO = new Parameter.Wrapper(PARAMS_PAGEINFO);
+
 
     /**
      * Used by function wrappers.
@@ -87,6 +89,38 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         }
         public Object getFunctionValue(Parameters arguments) {
             return replace(getPageInfo(arguments), getCommand(getName(), arguments));
+        }
+    }
+    /**
+     * Function implementation around {@link #process(PageInfo, Hashtable, Hashtable)}. See in
+     * MMAdmin for an example on how to use.  It does not support multipible commands, so the first
+     * Hashtable always contains precesely one entry. The value of the entry is the value of the
+     * first string parameter or the empty string. All parameters are added to the second Hashtable
+     * parameter ('vars'), and this is also returned (because sometimes also results are put in it).
+     * @since MMBase-1.8
+     */
+    protected class ProcessFunction extends AbstractFunction {
+        public ProcessFunction(String name, Parameter[] params) {
+            super(name, params, ReturnType.MAP);
+        }
+
+        public Object getFunctionValue(Parameters arguments) {
+            Hashtable cmds = new Hashtable();
+            Hashtable vars = new Hashtable();
+            Iterator i = arguments.toMap().entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Object value = entry.getValue();
+                if (value != null) {
+                    if (value instanceof String) {
+                        cmds.put(getName(), value);
+                    }
+                    vars.put(entry.getKey(), value);
+                }
+            }
+            if (cmds.size() == 0) cmds.put(getName(), "");
+            boolean ok = process(getPageInfo(arguments), cmds, vars);
+            return vars;
         }
     }
 
