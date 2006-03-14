@@ -10,6 +10,11 @@
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 2px;" width="75%">
 <tr>
+	<th colspan="3" align="left">
+	<a href="<mm:url page="index.jsp" referids="main" />">back</a>
+	</th>
+</tr>
+<tr>
 	<th width="33%">
 	Theme	
 	</th>

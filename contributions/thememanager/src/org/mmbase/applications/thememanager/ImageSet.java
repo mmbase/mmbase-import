@@ -71,7 +71,7 @@ public class ImageSet {
    public Iterator getImageIds() {
 	return images.keySet().iterator();
    }
-  
+
    public int getCount() {
 	return images.size();
    }
