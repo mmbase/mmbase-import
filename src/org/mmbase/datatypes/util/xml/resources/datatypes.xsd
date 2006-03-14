@@ -147,8 +147,10 @@
 
   <xsd:simpleType name="type_enforce">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="absolute" />
       <xsd:enumeration value="always" />
       <xsd:enumeration value="onchange" />
+      <xsd:enumeration value="oncreate" />
       <xsd:enumeration value="never" />
     </xsd:restriction>
   </xsd:simpleType>
