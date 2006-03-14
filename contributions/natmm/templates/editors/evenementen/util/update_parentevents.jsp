@@ -12,7 +12,7 @@
    </head>
    <body style="width:100%;padding:5px;">
       <mm:listnodes type="evenement" constraints="soort='parent'">
-         Updated: <mm:field name="number" />-<mm:field name="title" /><br/>
+         Updated: <mm:field name="number" />-<mm:field name="titel" /><br/>
          <mm:setfield name="embargo">0</mm:setfield>
       </mm:listnodes>
    </body>
