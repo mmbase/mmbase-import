@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="texts" maintainer="mmbase.org" name="xmlnews" version="0">
+<builder extends="content" maintainer="mmbase.org" name="xmlnews" version="0">
   <status>active</status>
   <searchage>14</searchage>
   <names>
