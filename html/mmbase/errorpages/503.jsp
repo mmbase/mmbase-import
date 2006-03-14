@@ -3,7 +3,17 @@
 <html>
   <head>
     <title>503 temporary unavailable</title>
-    <% String url = (String) request.getAttribute("javax.servlet.forward.request_uri"); %>
+    <%
+    String url = (String) request.getAttribute("javax.servlet.forward.request_uri"); 
+    String q = (String) request.getAttribute("javax.servlet.forward.query_string"); 
+    if (url == null) {
+       // mainly for debugging of this page itself
+       url = request.getServletPath();
+       q   = request.getQueryString();
+    }
+    if (q != null) url += "?" + q;
+    %>
+
     <% response.setHeader("Refresh", "30; url=" + url);%>
     <%@include file="meta.jsp"%>
   </head>
