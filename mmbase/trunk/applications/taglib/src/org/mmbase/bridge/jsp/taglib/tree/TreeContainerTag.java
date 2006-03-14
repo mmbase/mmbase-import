@@ -17,24 +17,32 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Container cognate for TreeTag
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.5 2005-11-01 09:32:56 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.6 2006-03-14 17:57:04 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
+    private static final Logger log = Logging.getLoggerInstance(TreeContainerTag.class);
+
     protected Attribute maxDepth    = Attribute.NULL;
     protected Attribute container   = Attribute.NULL;
+    private String jspVar;
 
     public void setMaxdepth(String md) throws JspTagException {
         maxDepth = getAttribute(md);
     }
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
+    }
+
+    public void setJspvar(String jv) {
+        jspVar = jv;
     }
 
     protected GrowingTreeList tree;
@@ -45,14 +53,14 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
 
 
     public Query getQuery() {
-        return tree.getTemplate();
+        return getNodeQuery();
     }
     public NodeQuery getNodeQuery() {
-        return (NodeQuery) getQuery();
+        return tree.getTemplate();
     }
-    
+
     /**
-     * Retrieves the starting query from environment. 
+     * Retrieves the starting query from environment.
      * Static because also used by TreeTag itself.
      */
     static NodeQuery  getStartQuery(ContextReferrerTag thisTag, Attribute containerAttribute, Attribute nodeAttribute) throws JspTagException {
@@ -83,25 +91,33 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
     }
 
 
+    void addBranch(NodeManager nodeManager, String r, String sd) {
+        tree.grow(nodeManager, r, sd);
+    }
+
     public int doStartTag() throws JspTagException {
-        // first of all, we need a 'start' query, take it from a surrounding 'nodequery container' 
+        // first of all, we need a 'start' query, take it from a surrounding 'nodequery container'
 
         query = getStartQuery(this, container, parentNodeId);
 
-        
+
         if (nodeManager != Attribute.NULL) {
-            tree = new GrowingTreeList(query, 
-                                       maxDepth.getInt(this, 5),  
+            tree = new GrowingTreeList(query,
+                                       maxDepth.getInt(this, 5),
                                        query.getCloud().getNodeManager(nodeManager.getString(this)),
                                        role.getString(this),
                                        searchDirs.getString(this));
-                                       
-            if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
+
+            if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on treecontainer");
         } else {
-            if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
             tree = new GrowingTreeList(query, maxDepth.getInt(this, 5));
-            Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));
-            query.setNodeStep((Step) tree.getTemplate().getSteps().get(2));
+            if (path != Attribute.NULL) {
+                Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));
+                query.setNodeStep((Step) tree.getTemplate().getSteps().get(2));
+            }
+        }
+        if (jspVar != null) {
+            pageContext.setAttribute(jspVar, tree);
         }
         return EVAL_BODY;
     }
@@ -114,9 +130,9 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
                 }
             } catch (java.io.IOException ioe){
                 throw new JspTagException(ioe.toString());
-            } 
+            }
         }
-        return SKIP_BODY;        
+        return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
         tree = null;
