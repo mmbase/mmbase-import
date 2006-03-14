@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="MediaExampleData" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="false">
+
+  <requirements>
+    <requires name="Media" maintainer="mmbase.org" version="1" />
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="mediaproject.mmbase.org" version="1">audiofragments</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">videofragments</builder>
+
+    <builder maintainer="mediaproject.mmbase.org" version="1">audiosources</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">videosources</builder>
+
+    <builder maintainer="mediaproject.mmbase.org" version="1">mediaproviders</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">templates</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">insrel</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">posrel</builder>
+
+  </neededbuilderlist>
+
+  <neededreldeflist>
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    
+  </allowedrelationlist>
+  
+  <datasourcelist>
+    <datasource builder="videofragments"      path="MediaExampleData/videofragments.xml" />
+    <datasource builder="audiofragments"      path="MediaExampleData/audiofragments.xml" />
+    <datasource builder="videosources"        path="MediaExampleData/videosources.xml" />
+    <datasource builder="audiosources"        path="MediaExampleData/audiosources.xml" />
+    <datasource builder="templates"           path="MediaExampleData/templates.xml" />
+    <datasource builder="mediaproviders"      path="MediaExampleData/mediaproviders.xml" />
+  </datasourcelist>
+
+  <relationsourcelist>
+    <relationsource builder="insrel" path="MediaExampleData/insrel.xml" />
+    <relationsource builder="insrel" path="MediaExampleData/posrel.xml" />
+  </relationsourcelist>
+  
+  <contextsourcelist>
+  </contextsourcelist>
+
+  <description>
+    Some Media example data
+  </description>
+
+  <install-notice>
+    Some examples were installed.
+  </install-notice>
+</application>
