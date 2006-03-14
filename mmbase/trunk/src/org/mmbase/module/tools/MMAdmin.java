@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.131 2005-11-28 23:09:04 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.132 2006-03-14 20:05:51 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -62,14 +62,14 @@ public class MMAdmin extends ProcessorModule {
      */
     private boolean kioskmode = false;
 
-    private static final Parameter PARAM_APPLICATION = new Parameter("application", String.class);    
-    private static final Parameter PARAM_BUILDER = new Parameter("builder", String.class);    
-    private static final Parameter PARAM_MODULE = new Parameter("module", String.class);    
-    private static final Parameter PARAM_FIELD = new Parameter("field", String.class);    
-    private static final Parameter PARAM_KEY = new Parameter("key", String.class);    
-    private static final Parameter[] PARAMS_BUILDER = new Parameter[] { PARAM_BUILDER, new Parameter.Wrapper(PARAMS_PAGEINFO)};
-    private static final Parameter[] PARAMS_APPLICATION = new Parameter[] { PARAM_APPLICATION, new Parameter.Wrapper(PARAMS_PAGEINFO)}; 
-    
+    private static final Parameter PARAM_APPLICATION = new Parameter("application", String.class);
+    private static final Parameter PARAM_BUILDER = new Parameter("builder", String.class);
+    private static final Parameter PARAM_MODULE = new Parameter("module", String.class);
+    private static final Parameter PARAM_FIELD = new Parameter("field", String.class);
+    private static final Parameter PARAM_KEY = new Parameter("key", String.class);
+    private static final Parameter[] PARAMS_BUILDER = new Parameter[] { PARAM_BUILDER, PARAM_PAGEINFO};
+    private static final Parameter[] PARAMS_APPLICATION = new Parameter[] { PARAM_APPLICATION, PARAM_PAGEINFO};
+
     {
         addFunction(new GetNodeListFunction("APPLICATIONS", PARAMS_PAGEINFO));
         addFunction(new GetNodeListFunction("BUILDERS", PARAMS_PAGEINFO));
@@ -80,24 +80,25 @@ public class MMAdmin extends ProcessorModule {
         addFunction(new GetNodeListFunction("FIELDS", PARAMS_BUILDER));
 
         addFunction(new ReplaceFunction("VERSION", PARAMS_APPLICATION));
+        addFunction(new ReplaceFunction("INSTALLEDVERSION", PARAMS_APPLICATION));
         addFunction(new ReplaceFunction("DESCRIPTION", PARAMS_APPLICATION));
 
         addFunction(new ReplaceFunction("BUILDERVERSION", PARAMS_BUILDER));
         addFunction(new ReplaceFunction("BUILDERCLASSFILE", PARAMS_BUILDER));
         addFunction(new ReplaceFunction("BUILDERDESCRIPTION", PARAMS_BUILDER));
 
-        addFunction(new ReplaceFunction("GETDESCRIPTION", new Parameter[] {PARAM_BUILDER, PARAM_FIELD, Parameter.LANGUAGE, new Parameter.Wrapper(PARAMS_PAGEINFO)}));
-        addFunction(new ReplaceFunction("GETGUINAMEVALUE", new Parameter[] {PARAM_BUILDER, PARAM_FIELD, Parameter.LANGUAGE, new Parameter.Wrapper(PARAMS_PAGEINFO)}));
-        addFunction(new ReplaceFunction("GETBUILDERFIELD", new Parameter[] {PARAM_BUILDER, PARAM_FIELD, PARAM_KEY, new Parameter.Wrapper(PARAMS_PAGEINFO)}));
-        addFunction(new ReplaceFunction("GETMODULEPROPERTY", new Parameter[] {PARAM_MODULE, PARAM_KEY, new Parameter.Wrapper(PARAMS_PAGEINFO)}));
-        addFunction(new ReplaceFunction("MODULEDESCRIPTION", new Parameter[] {PARAM_MODULE, new Parameter.Wrapper(PARAMS_PAGEINFO)}));
-        addFunction(new ReplaceFunction("MODULECLASSFILE", new Parameter[] {PARAM_MODULE, new Parameter.Wrapper(PARAMS_PAGEINFO)}));
+        addFunction(new ReplaceFunction("GETDESCRIPTION", new Parameter[] {PARAM_BUILDER, PARAM_FIELD, Parameter.LANGUAGE, PARAM_PAGEINFO}));
+        addFunction(new ReplaceFunction("GETGUINAMEVALUE", new Parameter[] {PARAM_BUILDER, PARAM_FIELD, Parameter.LANGUAGE, PARAM_PAGEINFO}));
+        addFunction(new ReplaceFunction("GETBUILDERFIELD", new Parameter[] {PARAM_BUILDER, PARAM_FIELD, PARAM_KEY, PARAM_PAGEINFO}));
+        addFunction(new ReplaceFunction("GETMODULEPROPERTY", new Parameter[] {PARAM_MODULE, PARAM_KEY, PARAM_PAGEINFO}));
+        addFunction(new ReplaceFunction("MODULEDESCRIPTION", new Parameter[] {PARAM_MODULE, PARAM_PAGEINFO}));
+        addFunction(new ReplaceFunction("MODULECLASSFILE", new Parameter[] {PARAM_MODULE, PARAM_PAGEINFO}));
 
         addFunction(new ReplaceFunction("MULTILEVELCACHEHITS", PARAMS_PAGEINFO));
         addFunction(new ReplaceFunction("MULTILEVELCACHEMISSES", PARAMS_PAGEINFO));
         addFunction(new ReplaceFunction("MULTILEVELCACHEREQUESTS", PARAMS_PAGEINFO));
         addFunction(new ReplaceFunction("MULTILEVELCACHEPERFORMANCE", PARAMS_PAGEINFO));
-        addFunction(new ReplaceFunction("MULTILEVELCACHESTATE", new Parameter[] {new Parameter("state", String.class), new Parameter.Wrapper(PARAMS_PAGEINFO)}));
+        addFunction(new ReplaceFunction("MULTILEVELCACHESTATE", new Parameter[] {new Parameter("state", String.class), PARAM_PAGEINFO}));
         addFunction(new ReplaceFunction("MULTILEVELCACHESIZE", PARAMS_PAGEINFO));
 
         addFunction(new ReplaceFunction("NODECACHEHITS", PARAMS_PAGEINFO));
@@ -110,8 +111,10 @@ public class MMAdmin extends ProcessorModule {
         addFunction(new ReplaceFunction("RELATIONCACHEMISSES", PARAMS_PAGEINFO));
         addFunction(new ReplaceFunction("RELATIONCACHEREQUESTS", PARAMS_PAGEINFO));
         addFunction(new ReplaceFunction("RELATIONCACHEPERFORMANCE", PARAMS_PAGEINFO));
+
+        addFunction(new ProcessFunction("LOAD", new Parameter[] {PARAM_APPLICATION, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
     }
-    
+
 
     /**
      * @javadoc
@@ -291,7 +294,7 @@ public class MMAdmin extends ProcessorModule {
                 } catch (SearchQueryException e) {
                     log.warn(Logging.stackTrace(e));
                 }
-                if (vars != null) {                    
+                if (vars != null) {
                     vars.put("RESULT", lastmsg);
                 }
             } else if (token.equals("SAVE")) {
@@ -405,6 +408,17 @@ public class MMAdmin extends ProcessorModule {
             String cmd = tok.nextToken();
             if (cmd.equals("VERSION")) {
                 return "" + getVersion(tok.nextToken());
+            } else if (cmd.equals("INSTALLEDVERSION")) {
+                try {
+                    Versions ver = (Versions) mmb.getBuilder("versions");
+                    if (ver == null) {
+                        log.warn("Versions builder not installed, Can't get to apps");
+                        return null;
+                    }
+                    return "" + ver.getInstalledVersion(tok.nextToken(), "application");
+                } catch (SearchQueryException sqe) {
+                    return sqe.getMessage();
+                }
             } else if (cmd.equals("DESCRIPTION")) {
                 return escape(getDescription(tok.nextToken()));
             } else if (cmd.equals("LASTMSG")) {
@@ -474,7 +488,7 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("RELATIONCACHEREQUESTS")) {
                 return ("" + (RelationsCache.getCache().getHits() + RelationsCache.getCache().getMisses()));
             } else if (cmd.equals("RELATIONCACHEPERFORMANCE")) {
-                return 
+                return
                     ""
                     + (1.0 * RelationsCache.getCache().getHits())
                     / (RelationsCache.getCache().getHits() + RelationsCache.getCache().getMisses() + 0.0000000001)
