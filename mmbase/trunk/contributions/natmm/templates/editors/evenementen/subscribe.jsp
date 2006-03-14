@@ -136,10 +136,12 @@ String sHighLight = "style=\"background-color:#729DC2;\"";
 <html:hidden property="userId" value="<%= cloud.getUser().getIdentifier() %>" />
 <html:hidden property="selectedParticipant" />
 <html:hidden property="subscriptionNumber" />
+<bean:define id="validateCounter" property="validateCounter" name="SubscribeForm" scope="session" type="java.lang.Integer"/>
 <bean:define id="nodenr" property="node" name="SubscribeForm" scope="session" type="java.lang.String"/>
 <bean:define id="parent_number" property="parent" name="SubscribeForm" scope="session" type="java.lang.String"/>
 <%
 boolean isGroupExcursion = Evenement.isGroupExcursion(cloud,parent_number);
+boolean addressIsRequired = false;
 String sReferer = "/editors/evenementen/SubscribeInitAction.eb?number=" + nodenr;
 TreeMap subscriptions = new TreeMap();
 int iTotalParticipants = 0;
@@ -175,7 +177,9 @@ DoubleDateNode ddn = new DoubleDateNode();
    if(iMinNumber==-1) iMinNumber = 0;
    try { iMaxNumber = parentEvent.getIntValue("max_aantal_deelnemers"); } catch (Exception e) { }
    if(iMaxNumber==-1) iMaxNumber = 9999; 
-   
+
+   addressIsRequired = parentEvent.getStringValue("adres_verplicht").equals("1");
+
    boolean isExtendedAct = false;
    
    if(actionId.indexOf("print")==-1) { 
@@ -429,7 +433,7 @@ DoubleDateNode ddn = new DoubleDateNode();
 <a name="form"></a>
 <mm:node number="<%= nodenr %>" jspvar="thisEvent"><%
    if(isEditor && actionId.indexOf("print")==-1) { 
-      %><html:submit property="action" value="Nieuwe aanmelding" style="width:130px;" /><% 
+      %><html:submit property="action" value="<%= SubscribeForm.NEW_SUBSCRIPTION_ACTION %>" style="width:130px;" /><% 
    } %>
    <b><mm:field name="titel" />, <%= ddn.getReadableDate() %>, <%= ddn.getReadableTime() %></b> |
    <% // *** details on subscriptions *** %>
@@ -462,20 +466,20 @@ DoubleDateNode ddn = new DoubleDateNode();
       <td>tussenv.&nbsp;</td>
       <td><%
          if(actionId.indexOf("print")==-1) { 
-            %><a href="subscribe.jsp?orderby=lastname&direction=<% if(orderbyId.equals("lastname")) { %><%=newDirection%><% } else { %><%=directionId%><% } %>">
+            %><a href="subscribe.jsp?orderby=lastname&direction=<% if(orderbyId.equals("lastname")) { %><%=newDirection%><% } else { %><%=directionId%><% } %>" style="font-weight:bold;">
             achternaam
             <% if(orderbyId.equals("lastname")) { %><img src="../img/<%= newDirection %>.gif" border='0'  align='absmiddle' alt='Keer sorteervolgorde om' /><% } %></a><%
          } else {
             %>achternaam<%
          } %>&nbsp;
       </td>
-      <td>aantal&nbsp;</td>
-      <td colspan="2">categorie&nbsp;</td>
+      <td style="font-weight:bold;">aantal&nbsp;</td>
+      <td colspan="2" style="font-weight:bold;">categorie&nbsp;</td>
       <td>kosten&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>telefoon&nbsp;</td>
-      <td>email&nbsp;</td>
+      <td style="font-weight:bold;">telefoon&nbsp;</td>
+      <td style="font-weight:bold;">email&nbsp;</td>
       <td>lidnummer&nbsp;</td>
-      <td>postcode&nbsp;</td>
+      <td style="font-weight:bold;">postcode&nbsp;</td>
       <td>bron&nbsp;</td>
       <td><% 
          if(!isGroupExcursion) { 
@@ -570,10 +574,12 @@ DoubleDateNode ddn = new DoubleDateNode();
       <logic:equal name="SubscribeForm" property="showAddress" value="true">
       <tr>
          <td colspan="2"></td>
-         <td colspan="16">
+         <td colspan="16" >
+            <% if(addressIsRequired) { %><span style="font-weight:bold;"><% } %>
             Straat:&nbsp;<html:text property="streetName"style="width:150px;" tabindex="13" />&nbsp;&nbsp;
             Huisnummer:&nbsp;<html:text property="houseNumber" style="width:35px;" tabindex="14" />&nbsp;&nbsp;
             Plaats:&nbsp;<html:text property="city" style="width:100px;" tabindex="15"/>&nbsp;&nbsp;
+            <% if(addressIsRequired) { %></span><% } %>
             Land:&nbsp;<html:text property="country" style="width:100px;" tabindex="16"/>&nbsp;&nbsp;
    			Betalingswijze:&nbsp;<html:select property="paymentType" tabindex="17">
    			<mm:listnodes type="payment_type" orderby="naam">
@@ -593,12 +599,23 @@ DoubleDateNode ddn = new DoubleDateNode();
    		<html:hidden property="paymentType"/>
       </logic:equal>
       <tr>
-         <td colspan="13"></td>
+         <td colspan="13" style="text-align:right;">
+            <% 
+            if(validateCounter.intValue()>0) { 
+               %>
+               Negeer controle op postcode en telefoonnummer
+               <html:radio property="skipValidation" style="width:14px;" value="Y" /> ja
+               <html:radio property="skipValidation" style="width:14px;" value="N" /> nee
+               <% 
+            }
+            %>
+         </td>
          <td colspan="5">
             <nobr>
-               <html:submit property="action" value="Adres en betalingswijze" style="<%= extButtonStyle %>" />
-               <html:submit property="action" value="Meld aan" style="<%= buttonStyle %>" onclick="<%= (!isGroupExcursion ? "checkMaxPerGroup()": "") %>" />
-               <html:submit property="action" value="Wijzig" style="<%= buttonStyle %>" onclick="<%= (!isGroupExcursion ? "checkMaxPerGroup()": "") %>" />
+               <html:submit property="action" value="<%= SubscribeForm.ADDRESS_ACTION %>" style="<%= extButtonStyle %>" />
+               <html:submit property="action" value="<%= SubscribeForm.SUBSCRIBE_ACTION %>" style="<%= buttonStyle %>" onclick="<%= (!isGroupExcursion ? "checkMaxPerGroup()": "") %>" />
+               <html:submit property="action" value="<%= SubscribeForm.CHANGE_ACTION %>" style="<%= buttonStyle %>" onclick="<%= (!isGroupExcursion ? "checkMaxPerGroup()": "") %>" />
+               
             </nobr>
          </td>
       </tr>
@@ -642,7 +659,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                </td>
                <td colspan="5">
                   <mm:compare referid="sticket_office" value="website"
-                     ><img src="<%= nl.mmatch.NatMMConfig.liveUrl %>../img/preview.gif" border='0'  align='absmiddle' alt='Aangemeld via de website' />
+                     ><img src="<%= nl.mmatch.NatMMConfig.liveUrl %>editors/img/preview.gif" border='0'  align='absmiddle' alt='Aangemeld via de website' />
                   </mm:compare
                   ><mm:remove referid="hascomma" 
                   /><mm:field name="gender" jspvar="sGender" vartype="String" write="false"

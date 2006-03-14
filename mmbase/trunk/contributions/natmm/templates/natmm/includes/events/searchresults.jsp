@@ -142,6 +142,7 @@ try{
       String parent_number = Evenement.findParentNumber(event_number);
       %><mm:node number="<%= event_number %>" jspvar="evenement"><% 
          DoubleDateNode ddn = new DoubleDateNode(evenement);
+         ddn.clipBeginOnToday();
          %>
          <tr>
             <td style="vertical-align:top;width:50%;padding-right:3px;">

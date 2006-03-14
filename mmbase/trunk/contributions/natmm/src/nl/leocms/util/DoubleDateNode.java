@@ -28,7 +28,7 @@ import org.mmbase.bridge.Node;
  * DoubleDateNode
  *
  * @author Henk Hangyi
- * @version $Revision: 1.2 $, $Date: 2006-03-08 10:52:11 $
+ * @version $Revision: 1.3 $, $Date: 2006-03-14 13:37:15 $
  *
  */
  
@@ -64,6 +64,20 @@ public class DoubleDateNode implements Comparable
   public Date getBegin() { return beginDate; }
   public void setEnd(Date endDate) { this.endDate = endDate; }
   public Date getEnd() { return endDate; }
+   
+  public void clipBeginOnToday() {
+      Date now = new Date();
+      if(beginDate.getTime()<now.getTime()) {
+         Calendar cal = Calendar.getInstance();
+         cal.setTime(now);
+         int year = cal.get(Calendar.YEAR);
+         int month = cal.get(Calendar.MONTH);
+         int day_of_month =cal.get(Calendar.DAY_OF_MONTH);
+         cal.setTime(beginDate); // to set start time
+         cal.set(year,month,day_of_month); // to clip begin on today
+         this.beginDate = cal.getTime();
+      }  
+  }
 
   public String getKey() {
       return beginDate.getTime()/1000 + "," + endDate.getTime()/1000;

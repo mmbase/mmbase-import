@@ -6,6 +6,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.evenementen.forms.SubscribeAction;
+import nl.leocms.util.DoubleDateNode;
 import javax.servlet.*;
 import nl.mmatch.NatMMConfig;
 
@@ -17,6 +18,63 @@ public class EventNotifier implements Runnable {
 
    private static final Logger log = Logging.getLoggerInstance(EventNotifier.class);
    
+   private static String FULLYBOOKED_EVENT = "Volgeboekte activiteit";
+   private static String LESSTHANMIN_EVENT = "Activiteit met minder dan het minimum aantal deelnemers";
+
+   public String getEventMessage(Node thisEvent, String eventMessage, String type) {
+      String newline = "<br/>";
+      if(type.equals("plain")) { newline = "\n"; }
+      String message = "Beste CAD contactpersoon," + newline + newline 
+               + "De activiteit " + thisEvent.getStringValue("titel") + " op " + (new DoubleDateNode(thisEvent)).getReadableValue()
+               + " " + eventMessage + newline + newline 
+               + "Dit bericht is automatisch door het CAD gegenereerd.";
+      return message;
+   }
+
+   public int sendEventNotification(Cloud cloud, Node thisEvent, String eventType, String eventMessage) {
+      
+      String fromEmailAddress = NatMMConfig.fromCADAddress;
+      String emailSubject = eventType + " " + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue();
+      int nEmailSend = 0;
+
+      Node emailNode = cloud.getNodeManager("email").createNode();
+      emailNode.setValue("from", fromEmailAddress);
+      emailNode.setValue("subject", emailSubject);
+      emailNode.setValue("replyto", fromEmailAddress);
+      emailNode.setValue("body",
+                      "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
+                         + getEventMessage(thisEvent, eventMessage, "plain")
+                      + "</multipart>"
+                      + "<multipart id=\"htmltext\" alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">"
+                      + "<html>"
+                        + getEventMessage(thisEvent, eventMessage, "html") + "</html>"
+                      + "</multipart>");
+      emailNode.commit();
+       
+      String emailField = "medewerkers.email";
+      NodeIterator uNodes= cloud.getList(thisEvent.getStringValue("number")
+         , "evenement,related,medewerkers"
+         , emailField, null, null, null, null, true).nodeIterator();  
+      if(!uNodes.hasNext()) {
+         emailField = "users.emailadres";
+         uNodes= cloud.getList(thisEvent.getStringValue("number")
+            , "evenement,schrijver,users"
+            , emailField, null, null, null, null, true).nodeIterator();
+      }
+      while(uNodes.hasNext()) {
+         String emailAddress = uNodes.nextNode().getStringValue(emailField);
+         if(emailAddress!=null&&!emailAddress.equals("")) {
+            emailNode.setValue("to", emailAddress);
+            emailNode.commit();
+            emailNode.getValue("mail(oneshotkeep)");
+            nEmailSend++;
+         }
+      }
+
+      thisEvent.createRelation(emailNode,cloud.getRelationManager("related")).commit();
+      return nEmailSend;
+   }
+
    public static void updateAppAttributes(Cloud cloud) {
       // *** updating the application attributes
       MMBaseContext mc = new MMBaseContext();
@@ -55,53 +113,119 @@ public class EventNotifier implements Runnable {
       return logMessage;
    }
 
-   public String notifyParticipants(Cloud cloud, String requestUrl, String liveUrl) { 
+   public String notifyParticipants(Cloud cloud) { 
    
       String logMessage = "";
       int nEmailSend = 0;
-      
-      try {
-         
-         // use liveUrl to make sure that notifications are only send from live server
-         if(requestUrl.indexOf(liveUrl)>-1) {
-
-            // list all the subscription:
-            // - who booked for an event more than one month ago,
-            // - and the event is now less than one week ahead,
-            // - the participants did not receive a reminder email.
-            long now = (new Date().getTime())/1000;
-            long one_day = 24*60*60;
-            long one_week = 7*one_day;
-            long one_month = 31*one_day;
-            NodeIterator iNodes= cloud.getList(null
-               , "evenement,posrel,inschrijvingen"
-               , "inschrijvingen.number"
-               , "inschrijvingen.datum_inschrijving < '" + (now - one_month) + "' AND evenement.begindatum > '" + now + "' AND evenement.begindatum < '" + (now + one_week) + "'"
-               , null, null, null, false).nodeIterator();
-            while(iNodes.hasNext()) {
-                Node nextNode = iNodes.nextNode();
-                String thisSubscription = nextNode.getStringValue("inschrijvingen.number");
-                if(cloud.getList(thisSubscription
-                      , "inschrijvingen,related,email"
-                      , null
-                      , "email.subject LIKE 'Herinnering aanmelding %'"
-                      , null, null, null, false).isEmpty()) {
-                  SubscribeAction.sendReminderEmail(cloud, thisSubscription);
-                  nEmailSend++;
-               }
+      try {   
+         // list all the subscription:
+         // - who booked for an event more than one month ago,
+         // - and the event is now less than one week ahead,
+         // - the participants did not receive a reminder email.
+         long now = (new Date().getTime())/1000;
+         long one_day = 24*60*60;
+         long one_week = 7*one_day;
+         long one_month = 31*one_day;
+         NodeIterator iNodes= cloud.getList(null
+            , "evenement,posrel,inschrijvingen"
+            , "inschrijvingen.number"
+            , "inschrijvingen.datum_inschrijving < '" + (now - one_month) + "' AND evenement.begindatum > '" + now + "' AND evenement.begindatum < '" + (now + one_week) + "'"
+            , null, null, null, false).nodeIterator();
+         while(iNodes.hasNext()) {
+             Node nextNode = iNodes.nextNode();
+             String thisSubscription = nextNode.getStringValue("inschrijvingen.number");
+             if(cloud.getList(thisSubscription
+                   , "inschrijvingen,related,email"
+                   , null
+                   , "email.subject LIKE 'Herinnering aanmelding %'"
+                   , null, null, null, false).isEmpty()) {
+               SubscribeAction.sendReminderEmail(cloud, thisSubscription);
+               nEmailSend++;
             }
-
-         } else {
-            logMessage += "\n<br>'" + requestUrl + "' does not match with '" + liveUrl + "' therefore no reminder emails send";
-            log.info("'" + requestUrl + "' does not match with '" + liveUrl + "' therefore no reminder emails send");
-         }
-         
+         }   
       } catch(Exception e) {
          log.info(e);
       }
       logMessage += "\n<br>Number of reminders send " + nEmailSend;
       return logMessage;
    }
+
+   public void isCanceledNotification(Cloud cloud, String sEvent) {      
+      int nEmailSend = sendEventNotification(cloud, cloud.getNode(sEvent), "Geannuleerde activiteit"," is geannuleerd.");  ;
+   }
+
+
+   public String lessThanMin(Cloud cloud) { 
+   
+      String logMessage = "";
+      int nEmailSend = 0;
+      
+      try {
+         
+         // list all the events:
+         // - the event is now less than one week ahead,
+         // - and the minimum number of participants is not reached
+         long now = (new Date().getTime())/1000;
+         long one_day = 24*60*60;
+         long one_week = 7*one_day;
+         
+         NodeIterator eNodes = cloud.getNodeManager("evenement").getList(
+                                    "begindatum > '" + now + "'"
+                                    + " AND begindatum < '" + (now + one_week) + "'"
+                                    + " AND cur_aantal_deelnemers < min_aantal_deelnemers",
+                                    "begindatum", 
+                                    "UP").nodeIterator();
+         while(eNodes.hasNext()) {
+            Node childEvent = eNodes.nextNode();
+            if(cloud.getList(childEvent.getStringValue("number")
+                   , "evenement,related,email"
+                   , null
+                   , "email.subject LIKE '" + LESSTHANMIN_EVENT + "%'"
+                   , null, null, null, false).isEmpty()) {
+               nEmailSend += sendEventNotification(cloud, childEvent, LESSTHANMIN_EVENT, 
+                  " valt binnen een week, maar heeft minder dan het minimum aantal deelnemers.");
+            }
+         }
+      } catch(Exception e) {
+         log.info(e);
+      }
+      logMessage += "\n<br>Number of 'less than minimum' notifications send " + nEmailSend;
+      return logMessage;
+   }
+
+   public String isFullyBooked(Cloud cloud) { 
+   
+      String logMessage = "";
+      int nEmailSend = 0;
+      
+      try {
+         
+         // list all the events:
+         // - that are fully booked,
+         // - and no notification email was send
+         long now = (new Date().getTime())/1000;
+         NodeIterator eNodes = cloud.getNodeManager("evenement").getList("begindatum > '" + now + "'", "begindatum", "UP").nodeIterator();
+         while(eNodes.hasNext()) {
+             Node childEvent = eNodes.nextNode();
+             String sChild = childEvent.getStringValue("number");
+             String sParent = Evenement.findParentNumber(sChild);
+             Node parentEvent = cloud.getNode(sParent);
+             if(Evenement.isFullyBooked(parentEvent, childEvent)) {
+               if(cloud.getList(sChild
+                      , "evenement,related,email"
+                      , null
+                      , "email.subject LIKE '" + FULLYBOOKED_EVENT + "%'"
+                      , null, null, null, false).isEmpty()) {
+                  nEmailSend += sendEventNotification(cloud, childEvent, FULLYBOOKED_EVENT," is volgeboekt. Indien aanwezig, open een reservedatum.");
+               }
+            }
+         }
+      } catch(Exception e) {
+         log.info(e);
+      }
+      logMessage += "\n<br>Number of 'fully booked' notifications send " + nEmailSend;
+      return logMessage;
+   }  
 
    public void updateEventDB() { 
    
@@ -119,8 +243,17 @@ public class EventNotifier implements Runnable {
 
       log.info("Started updateEventDB");
       String logMessage =  "\n<br>Started updateEventDB " + new Date();
-      
-      logMessage += notifyParticipants(cloud, requestUrl, liveUrl);
+
+      // use liveUrl to make sure that notifications are only send from live server
+      if(requestUrl.indexOf(liveUrl)>-1) {
+         logMessage += notifyParticipants(cloud);
+         logMessage += lessThanMin(cloud);
+         logMessage += isFullyBooked(cloud);
+      } else {
+         logMessage += "\n<br>'" + requestUrl + "' does not match with '" + liveUrl + "' therefore no reminder emails send";
+         log.info("'" + requestUrl + "' does not match with '" + liveUrl + "' therefore no reminder emails send");
+      }
+
       updateAppAttributes(cloud);
       logMessage += "\n<br>Updated application attributes";
       logMessage += checkOnEventsWithoutLocation(cloud);

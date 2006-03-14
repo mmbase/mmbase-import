@@ -4,5 +4,6 @@
    <option id="1">ja, telefonisch en via internet</option>
    <option id="3">ja, alleen telefonisch</option>
    <option id="2">ja, alleen door derde partij (info beschrijven in intro)</option>
+   <option id="4">sponsoractiviteit, aanmelden bij het desbetreffende bezoekerscentra</option>
    <option id="0">nee, is niet nodig</option>
 </optionlist>

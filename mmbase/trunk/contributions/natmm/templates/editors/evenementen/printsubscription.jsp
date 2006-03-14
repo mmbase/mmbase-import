@@ -32,7 +32,7 @@
 <% 
 cal.setTime(new Date());
 %>
-<% for(int i = 0; i<11; i++) { %><br/><% } %>
+<% for(int i = 0; i<8; i++) { %><br/><% } %>
 's Graveland, <%= cal.get(Calendar.DAY_OF_MONTH) + " " + months_lcase[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR) %>
 <% for(int i = 0; i<4; i++) { %><br/><% } %>
 <%= thisParticipant.getStringValue("prefix") %><br/>

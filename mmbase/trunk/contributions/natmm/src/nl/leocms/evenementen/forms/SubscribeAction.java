@@ -95,13 +95,6 @@ public class SubscribeAction extends Action {
       return sFPrice;
    }   
    
-   private static String getDateTime(Node thisEvent) {
-      DoubleDateNode ddn = new DoubleDateNode();
-      ddn.setBegin(new Date(thisEvent.getLongValue("begindatum")*1000));
-      ddn.setEnd(new Date(thisEvent.getLongValue("einddatum")*1000));
-      return ddn.getReadableDate() + ", " + ddn.getReadableTime();
-   }
-
    private static String dearSir(Node thisParticipant, String thisParticipantName, String newline) {
       String message = "";
       if (thisParticipant.getStringValue("gender").equals("male")) {
@@ -121,7 +114,7 @@ public class SubscribeAction extends Action {
          message += "Met deze brief bevestigen wij";
       }
       if(!isGroupExcursion) {
-         message += " uw aanmelding voor " + thisEvent.getStringValue("titel") + ", " + getDateTime(thisEvent) + newline;
+         message += " uw aanmelding voor " + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue() + newline;
       } else {
          message += " uw boeking van een groepsexcursie";
          NodeList nl = thisParent.getRelatedNodes("natuurgebieden","related",null);
@@ -319,8 +312,13 @@ public class SubscribeAction extends Action {
    }      
 
    private static String withKindRegards(Node thisParticipant, String emailAddresses, String newline) {
-      String message = "Met vriendelijke groeten," + newline + newline + newline + emailAddresses + newline + newline;
+      String message = "Met vriendelijke groeten," + newline + newline + newline 
+                     + emailAddresses + newline + newline;
+      return message;
+   }
 
+   private static String becomeMember(Node thisParticipant) {
+      String message = "";
       if(thisParticipant.getStringValue("lidnummer").equals("")) {
          message += "Nog geen lid? Meld u nu aan als lid op http://www.natuurmonumenten.nl/lidworden";
       }
@@ -330,7 +328,7 @@ public class SubscribeAction extends Action {
    public static String [] getPhoneAndEmail(Node thisParent, String newline) {
       
       String bookPhone = "(035) 655 99 55";
-      String bookEmail = "denatuurin@natuurmonumenten.nl";
+      String bookEmail = NatMMConfig.fromCADAddress;
       String phoneNumbers = "";
       String emailAddresses = "";
 
@@ -405,7 +403,7 @@ public class SubscribeAction extends Action {
             message += necessaryInfo(thisParent, newline);
       
          } else { // *** the visitor booked on the website
-            message += "Gebruik de onderstaande link om uw aanmelding voor "  + thisEvent.getStringValue("titel") + ", " + getDateTime(thisEvent) + " te bevestigen: " + newline + newline;
+            message += "Gebruik de onderstaande link om uw aanmelding voor "  + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue() + " te bevestigen: " + newline + newline;
             if(type.equals("plain")) {
                message += confirmUrl + newline + newline;
             } else {
@@ -420,6 +418,7 @@ public class SubscribeAction extends Action {
                message += youSubscribedAs(thisParticipant, thisSubscription, thisParticipantName, isGroupExcursion, newline);
             }
             message += withKindRegards(thisParticipant, phoneAndEmail[1], newline);
+            message += becomeMember(thisParticipant);
          }
       }
       return message;
@@ -427,7 +426,7 @@ public class SubscribeAction extends Action {
 
    private static void sendConfirmEmail(Cloud cloud, Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl) {
 
-      String fromEmailAddress = "denatuurin@natuurmonumenten.nl";
+      String fromEmailAddress = NatMMConfig.fromCADAddress;
       String emailSubject = "";
 
       if(thisEvent!=null && thisSubscription !=null && thisParticipant!=null) {
@@ -444,8 +443,8 @@ public class SubscribeAction extends Action {
                emailSubject += "Aanmelding";
             }
 
-            emailSubject += " " + thisEvent.getStringValue("titel") + ", " + getDateTime(thisEvent);
-            log.info(confirmUrl);
+            emailSubject += " " + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue();
+            log.debug(confirmUrl);
             Node emailNode = cloud.getNodeManager("email").createNode();
             emailNode.setValue("to", toEmailAddress);
             emailNode.setValue("from", fromEmailAddress);
@@ -538,16 +537,17 @@ public class SubscribeAction extends Action {
         Cloud cloud = CloudFactory.getCloud();
 
         if (subscribeForm.getButtons().getGoBack().pressed()
-            ||(action.indexOf("Annuleer")>-1)
-            ||(action.indexOf("Naar agenda")>-1)
-            ||(action.indexOf("andere data")>-1)
-            ||(action.indexOf("fix_date")>-1)) {                                           // **************** GoBack / Annuleer / .... ********
+            ||(action.indexOf(subscribeForm.CANCEL_ACTION)>-1)
+            ||(action.indexOf(subscribeForm.TO_AGENDA_ACTION)>-1)
+            ||(action.indexOf(subscribeForm.OTHER_DATES_ACTION)>-1)
+            ||(action.indexOf(subscribeForm.FIX_DATE_ACTION)>-1)) {                          // **************** GoBack, Cancel ********
 
            // removeObsoleteFormBean(mapping, request);
            subscribeForm.resetNumbers();
-           if(action.indexOf("andere data")>-1) {
-               subscribeForm.setAction("select_date");
-           } else if(!(action.indexOf("fix_date")>-1)) { // *** leave fix_date unchanged ***
+           
+           if(action.indexOf(subscribeForm.OTHER_DATES_ACTION)>-1) {
+               subscribeForm.setAction(subscribeForm.SELECT_DATE_ACTION);
+           } else if(!(action.indexOf(subscribeForm.FIX_DATE_ACTION)>-1)) {                  // *** leave fix_date unchanged ***
                subscribeForm.setAction("canceled");
            }
            forwardAction = mapping.findForward("success");
@@ -583,12 +583,12 @@ public class SubscribeAction extends Action {
 
            forwardAction = mapping.findForward("continue");
 
-        } else if(action.indexOf("Nieuwe aanmelding")>-1) {                                  // ****************** Nieuwe aanmelding *********************
+        } else if(action.equals(subscribeForm.NEW_SUBSCRIPTION_ACTION)) {                     // ****************** Nieuwe aanmelding *********************
 
            subscribeForm.resetBean();
            forwardAction = mapping.findForward("continue");
 
-        } else if(subscribeForm.getButtons().getShowPastDates().pressed()) {                 // ****************** ShowPastDates *************
+        } else if(subscribeForm.getButtons().getShowPastDates().pressed()) {                  // ****************** ShowPastDates *************
 
            if(subscribeForm.getShowPastDates().equals("true")) {
                subscribeForm.setShowPastDates("false");
@@ -598,7 +598,7 @@ public class SubscribeAction extends Action {
 
            forwardAction = mapping.findForward("continue");
 
-       } else if(action.indexOf("Adres")>-1) {                                               // ****************** Address *********************
+       } else if(action.equals(subscribeForm.ADDRESS_ACTION)) {                                 // ****************** Address *********************
 
            if(subscribeForm.getShowAddress().equals("true")) {
                subscribeForm.setShowAddress("false");
@@ -608,14 +608,14 @@ public class SubscribeAction extends Action {
 
            forwardAction = mapping.findForward("continue");
 
-        } else if(action.indexOf("Meld aan")>-1
-                  ||action.indexOf("Wijzig")>-1
-                  ||subscribeForm.getButtons().getAddParticipant().pressed()) {              // ****************** Meld aan / Wijzig / AddParticipant *********************
+        } else if(action.equals(subscribeForm.SUBSCRIBE_ACTION)
+                  ||action.equals(subscribeForm.CHANGE_ACTION)
+                  ||subscribeForm.getButtons().getAddParticipant().pressed()) {                 // ****************** Meld aan / Wijzig / AddParticipant *********************
 
             Node thisEvent = cloud.getNode(subscribeForm.getNode());
 
             Node thisSubscription = null;
-            if(action.indexOf("Meld aan")==-1) {
+            if(!action.equals(subscribeForm.SUBSCRIBE_ACTION)) {
                try { 
                   thisSubscription = cloud.getNode(subscribeForm.getSubscriptionNumber());
                } catch (Exception e) {
@@ -634,7 +634,7 @@ public class SubscribeAction extends Action {
             thisSubscription.setStringValue("betaalwijze", subscribeForm.getPaymentType());
             thisSubscription.commit();
 
-            if(action.indexOf("Meld aan")>-1) { // *** create inschrijvingen,posrel,evenementen
+            if(action.equals(subscribeForm.SUBSCRIBE_ACTION)) { // *** create inschrijvingen,posrel,evenementen
                thisEvent.createRelation(thisSubscription,cloud.getRelationManager("posrel")).commit();
                                                 // *** create inschrijvingen,schrijver,users
                NodeList userList = cloud.getNodeManager("users").getList("account='"+subscribeForm.getUserId()+"'",null,null);
@@ -719,7 +719,7 @@ public class SubscribeAction extends Action {
             }
             forwardAction = mapping.findForward("continue");
 
-       } else if(subscribeForm.getButtons().getConfirmSubscription().pressed()) {            // ******************* Confirm *************************
+       } else if(subscribeForm.getButtons().getConfirmSubscription().pressed()) {               // ******************* Confirm *************************
 
          Node thisEvent = cloud.getNode(subscribeForm.getNode());
          Node thisParent = cloud.getNode(subscribeForm.getParent());
