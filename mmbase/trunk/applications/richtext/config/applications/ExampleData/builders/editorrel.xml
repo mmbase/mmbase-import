@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="editorrel" maintainer="mmbase.org" version="0" extends="posrel">
+  <names>
+    <singular xml:lang="en">Editor Relation</singular>
+    <singular xml:lang="nl">Editorrelatie</singular>
+    <plural xml:lang="en">Editor Relations</plural>
+    <plural xml:lang="nl">Editorrelaties</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="nl">
+      Deze relatie heeft een 'size' veld. Met een relatie geef je een bepaalde andere relatie aan,
+      en hoveel er daarvan bestaan. Typisch gebruikt dussen template en typedef. Als 'size' klein is (bijv
+      als != -1), dan zal er typisch een posrel gebruikt worden.
+    </description>
+  </descriptions>
+  <fieldlist>
+    <field>
+      <descriptions>
+        <description xml:lang="nl">
+          -1: oneindig (blijft maar groeien dus)
+           1: er zit er maar 1 aan (related:?)
+           10: er zitten er een paar aan (posrel)
+           100: er zitten er veel aan (maar beperkt) -> subcategorieen
+         </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Size</guiname>
+        <guiname xml:lang="nl">Grootte</guiname>
+      </gui>
+      <db>
+        <name>size</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <gui>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="fr">Nom</guiname>
+        <guiname xml:lang="en">Name</guiname>
+      </gui>
+      <editor><positions><list>1</list></positions></editor>
+      <db>
+        <name>name</name>
+        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="nl">
+          Als andere dan default editwizard nodig is, kan dat hierin worden gespecificeerd
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Wizard</guiname>
+        <guiname xml:lang="en">Wizard</guiname>
+      </gui>
+      <db>
+        <name>wizard</name>
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="nl">
+          Als andere dan default editwizard nodig is, kan dat hierin worden gespecificeerd
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Wizard-JSP</guiname>
+        <guiname xml:lang="en">Wizard JSP</guiname>
+      </gui>
+      <db>
+        <name>wizardjsp</name>
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+  </fieldlist>
+</builder>
