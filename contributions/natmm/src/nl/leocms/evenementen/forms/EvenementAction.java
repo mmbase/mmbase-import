@@ -132,10 +132,12 @@ public class EvenementAction extends Action {
                   } else {
                       thisEventNode.setStringValue("soort","child");
                   }
+                  // these values are set to their defaults (and will not be updated for child events)
                   thisEventNode.setIntValue("min_aantal_deelnemers",0);
                   thisEventNode.setIntValue("max_aantal_deelnemers",9999);
                   thisEventNode.setIntValue("cur_aantal_deelnemers",0);
                   thisEventNode.setStringValue("groepsexcursie","0");
+                  thisEventNode.setStringValue("adres_verplicht","0");
                   thisEventNode.setStringValue("aanmelden_vooraf","1");
                   thisEventNode.setStringValue("achteraf_bevestigen","1");
                   thisEventNode.setStringValue("voorkeur_verplicht","0");

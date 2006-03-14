@@ -35,7 +35,7 @@ int ti = 1;
    <table style="width:559px;margin-bottom:10px;" border="0">
       <tr>
          <td colspan="2" style="width:80%;"><span class="boldtitle">Aanmelden voor: <mm:field name="titel" /></span></td>
-         <td style="text-align:right;padding-right:19px;"><html:submit property="action" value="Naar agenda" styleClass="submit_image" style="width:150px;" /></td>
+         <td style="text-align:right;padding-right:19px;"><html:submit property="action" value="<%= SubscribeForm.TO_AGENDA_ACTION %>" styleClass="submit_image" style="width:150px;" /></td>
       </tr>
       <tr>
          <td style="<%= fNStyle %>"><strong>Wanneer</strong></td>
@@ -49,8 +49,8 @@ int ti = 1;
             && parentEvent.getStringValue("isoninternet").equals("true")
             && parentEvent.getStringValue("iscanceled").equals("false")
             && !nl.leocms.evenementen.Evenement.isFullyBooked(parentEvent,parentEvent);
-         if(actionId.equals("select_date")) { 
-            %><html:hidden property="action" value="fix_date" /><% } 
+         if(actionId.equals(SubscribeForm.SELECT_DATE_ACTION)) { 
+            %><html:hidden property="action" value="<%= SubscribeForm.FIX_DATE_ACTION %>" /><% } 
          %>
          <mm:relatednodescontainer type="evenement">
             <mm:constraint field="isspare" value="false" />
@@ -61,7 +61,7 @@ int ti = 1;
                if(!nl.leocms.evenementen.Evenement.isFullyBooked(parentEvent,childEvent)
                   && (childEvent.getLongValue("einddatum") * 1000 > (new Date()).getTime()) ) { 
                   
-                  if(actionId.equals("select_date")) { 
+                  if(actionId.equals(SubscribeForm.SELECT_DATE_ACTION)) { 
                      DoubleDateNode childDDN = new DoubleDateNode(childEvent);   
                      String child_number = childEvent.getStringValue("number");
                      if(iEventFound==0) { 
@@ -69,7 +69,7 @@ int ti = 1;
                            <select name="node" style="font-size:11px;" tabindex="<%= ti %>" onChange="javascript:form.submit();"><% 
                         ti++;
                      }
-                     if(actionId.equals("select_date")) { // show the child date, proceeded by the parent date if necessary
+                     if(actionId.equals(SubscribeForm.SELECT_DATE_ACTION)) { // show the child date, proceeded by the parent date if necessary
                         if(parentIsBookable && (parentDDN.compareTo(childDDN)<0) && (iEventFound==0)) {
                           %><option value="<%= parent_number %>" <%= (parent_number.equals(nodenr) ? "SELECTED" : "") %>>
                               <%= parentDDN.getReadableDate(" | ") + " | " + parentDDN.getReadableTime() %></option><%
@@ -84,7 +84,7 @@ int ti = 1;
          </mm:relatednodescontainer>
          <%
          if(parentIsBookable && (iEventFound==0)) {
-            if(actionId.equals("select_date")) { 
+            if(actionId.equals(SubscribeForm.SELECT_DATE_ACTION)) { 
                if(iEventFound==0) { 
                   %><td>
                      <select name="node" style="font-size:11px;" tabindex="<%= ti %>" onChange="javascript:form.submit();"><% 
@@ -95,16 +95,16 @@ int ti = 1;
             }
             iEventFound++;
          }
-         if(!(iEventFound>0)&&actionId.equals("select_date")) { 
+         if(!(iEventFound>0)&&actionId.equals(SubscribeForm.SELECT_DATE_ACTION)) { 
             %></select>
             </td><%
          }
-         if(!actionId.equals("select_date")) { 
+         if(!actionId.equals(SubscribeForm.SELECT_DATE_ACTION)) { 
             %><td><%= nodeDDN.getReadableDate() %>, <%= nodeDDN.getReadableTime() %></td><%
          } %>
          <td>
             <% if(iEventFound>1) { %>
-               <html:submit property="action" value="andere data" style="text-decoration:underline;color:#D71920;width:100px;line-height:0.80em;height:16px;padding:2px;border:0;background-color:#FFFFFF;" />
+               <html:submit property="action" value="<%= SubscribeForm.OTHER_DATES_ACTION %>" style="text-decoration:underline;color:#D71920;width:100px;line-height:0.80em;height:16px;padding:2px;border:0;background-color:#FFFFFF;" />
             <% } %>
          </td>
       </tr>
@@ -312,10 +312,10 @@ int ti = 1;
       </tr>
       <tr>
          <td>
-            <html:submit property="action" value="Annuleer" styleClass="submit_image" style="width:150px;" />
+            <html:submit property="action" value="<%= SubscribeForm.CANCEL_ACTION %>" styleClass="submit_image" style="width:150px;" />
          </td>
          <td align="right">
-            <html:submit property="action" value="Meld aan" tabindex="<%= "" + ti %>" styleClass="submit_image" style="width:150px;" />
+            <html:submit property="action" value="<%= SubscribeForm.SUBSCRIBE_ACTION %>" tabindex="<%= "" + ti %>" styleClass="submit_image" style="width:150px;" />
          </td>
       </tr>
    </table>

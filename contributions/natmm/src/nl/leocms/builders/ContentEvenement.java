@@ -26,14 +26,14 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import com.finalist.mmbase.util.CloudFactory;
 import org.mmbase.util.logging.*;
-import nl.leocms.evenementen.Evenement;
+import nl.leocms.evenementen.*;
 
 /**
  * @todo javadoc
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ContentEvenement extends ContentElementBuilder {
    private static final Logger log = Logging.getLoggerInstance(ContentEvenement.class);
@@ -73,20 +73,20 @@ public class ContentEvenement extends ContentElementBuilder {
       node.setValue("lokatie",relatedProv);
       // *** setting embargo / verloopdatum of parent to min begindatum and max einddatum of childs ***
       if(node.getStringValue("soort").equals("parent")) {
-         int iMinBeginDatum = node.getIntValue("begindatum");
-         int iMaxEindDatum =  node.getIntValue("einddatum");
+         long lMinBeginDatum = node.getLongValue("begindatum");
+         long lMaxEindDatum =  node.getLongValue("einddatum");
          iNodes= cloud.getList(node.getStringValue("number")
                , "evenement1,partrel,evenement2"
                , "evenement2.begindatum,evenement2.einddatum", null, null, null, "destination", false).nodeIterator();
          while(iNodes.hasNext()) {
             Node nextNode = iNodes.nextNode();
-            int iBeginDatum = nextNode.getIntValue("evenement2.begindatum");
-            if(iBeginDatum<iMinBeginDatum) { iMinBeginDatum = iBeginDatum; }
-            int iEindDatum = nextNode.getIntValue("evenement2.einddatum");
-            if(iEindDatum>iMaxEindDatum) { iMaxEindDatum =iEindDatum; }
+            long lBeginDatum = nextNode.getLongValue("evenement2.begindatum");
+            if(lBeginDatum<lMinBeginDatum) { lMinBeginDatum = lBeginDatum; }
+            long lEindDatum = nextNode.getLongValue("evenement2.einddatum");
+            if(lEindDatum>lMaxEindDatum) { lMaxEindDatum =lEindDatum; }
          }
-         node.setValue("embargo",iMinBeginDatum);
-         node.setValue("verloopdatum",iMaxEindDatum);
+         node.setValue("embargo",lMinBeginDatum);
+         node.setValue("verloopdatum",lMaxEindDatum);
       }
       // *** update cur_aantal_deelnemers ***
       boolean isGroupExcursion = Evenement.isGroupExcursion(cloud,sParent);
@@ -103,6 +103,11 @@ public class ContentEvenement extends ContentElementBuilder {
          }
       }
       node.setValue("cur_aantal_deelnemers",iCurPart);
+      // *** send email, if the event is canceled ***
+      if(node.getChanged().contains("iscanceled")
+            && node.getStringValue("iscanceled").equals("true")) {
+         (new EventNotifier()).isCanceledNotification(cloud, node.getStringValue("number"));
+      }
 
       boolean bSuperCommit = super.commit(node);
          

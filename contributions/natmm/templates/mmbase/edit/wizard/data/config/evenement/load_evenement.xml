@@ -12,6 +12,7 @@
    <field name="verloopdatum"/>
    <field name="reageer"/>
    <field name="status"/>
+   <field name="adres_verplicht"/>
    <field name="groepsexcursie"/>
    <field name="min_aantal_deelnemers"/>
    <field name="max_aantal_deelnemers"/>

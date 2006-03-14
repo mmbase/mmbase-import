@@ -44,6 +44,7 @@
           <title>aanmelden</title>
           <field name="titel" ftype="data" ><prompt>naam</prompt></field>
           <field name="aanmelden_vooraf" ftype="enum"><prompt>aanmelden vooraf</prompt><optionlist select="aanmelden_vooraf"/></field>
+          <field name="adres_verplicht" ftype="enum"><prompt>adres is verplicht</prompt><optionlist select="ja_nee"/> </field>
           <field name="reageer" ftype="enum"><prompt>sluiting aanmelding</prompt><optionlist select="evenement_closetime"/></field>
           <list include="config/afdelingen/zoek_evenement_readmore_afdelingen.xml" />
           <!-- field name="begininschrijving"><prompt>aanvang aanmelden</prompt></field -->

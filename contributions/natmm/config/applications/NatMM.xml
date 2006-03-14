@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="NatMM" maintainer="mmbase.org" version="4" auto-deploy="true">
+<application name="NatMM" maintainer="mmbase.org" version="5" auto-deploy="true">
    <requirements>
       <!-- <requires type="application" name="LeoCMS" maintainer="LeoCMS.nl" version="1" />  -->
      <requires type="application" name="Resources" maintainer="mmbase.org" version="1" />
@@ -188,6 +188,7 @@
         <relation from="evenement" to="afdelingen" type="readmore" />
         <relation from="evenement" to="bevestigings_teksten" type="posrel" />
         <relation from="evenement" to="deelnemers_categorie" type="posrel" />
+        <relation from="evenement" to="email" type="related" />
         <relation from="evenement" to="evenement" type="altrel" />
         <relation from="evenement" to="evenement" type="partrel" />
         <relation from="evenement" to="evenement_type" type="related" />
