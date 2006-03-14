@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.14 2006-02-10 18:00:47 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.15 2006-03-14 17:49:37 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -55,8 +55,22 @@ public  class GrowingTreeList extends TreeList {
         setMaxDepth(maxDepth);
     }
 
+    /**
+     * This may be used in combination with 
+     * <code>Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));</code>
+     * So you add a template constisting of a bunch of elements.
+     */
     public GrowingTreeList(NodeQuery q, int maxDepth) {
         super(q);
+        pathElementTemplate = cloud.createNodeQuery();
+        Step step = pathElementTemplate.addStep(cloud.getNodeManager("object"));
+        pathElementTemplate.setAlias(step, "object0");
+
+        setMaxDepth(maxDepth);
+    }
+
+    public GrowingTreeList(TreeList tl, int maxDepth) {
+        super(tl);
         pathElementTemplate = cloud.createNodeQuery();
         Step step = pathElementTemplate.addStep(cloud.getNodeManager("object"));
         pathElementTemplate.setAlias(step, "object0");
@@ -72,7 +86,6 @@ public  class GrowingTreeList extends TreeList {
 
     public void setMaxDepth(int maxDepth) {
         maxNumberOfSteps = 2 * maxDepth - 1; // dont consider relation steps.
-
 
         if (maxNumberOfSteps < numberOfSteps) {
             throw new IllegalArgumentException("Query is already deeper than maxdepth");
@@ -222,15 +235,19 @@ public  class GrowingTreeList extends TreeList {
 
         GrowingTreeList tree = new GrowingTreeList(q, 40, object, "index", "destination");
 
+        String text = "godverdomme";
         NodeQuery temp = tree.getTemplate();
         Queries.addSortOrders(temp, "index.pos", "up");
         NodeQuery template = tree.getLeafTemplate();
-        Constraint cons1 = Queries.createConstraint(template, "title", FieldCompareConstraint.LIKE, "%asdf%");
-        Constraint cons2 = Queries.createConstraint(template, "body",  FieldCompareConstraint.LIKE, "%asdf%");
+        Constraint cons1 = Queries.createConstraint(template, "title", FieldCompareConstraint.LIKE, "%" + text + "%");
+        Constraint cons2 = Queries.createConstraint(template, "body",  FieldCompareConstraint.LIKE, "%" + text + "%");
         Constraint compConstraint = template.createConstraint(cons1, CompositeConstraint.LOGICAL_OR, cons2);
         template.setConstraint(compConstraint);
 
-        System.out.println("size " + tree.size());
+        //System.out.println("size " + tree.size());
+        System.out.println("template " + tree.getTemplate());
+        System.out.println("leaf template " + tree.getLeafTemplate());
+
         int k = 0;
         TreeIterator i = tree.treeIterator();
         while (i.hasNext()) {
