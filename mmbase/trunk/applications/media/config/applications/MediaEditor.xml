@@ -7,6 +7,7 @@
 
   <requirements>
     <requires name="Media" maintainer="mmbase.org" version="1" />
+    <requires name="MediaExampleData" maintainer="mmbase.org" version="1" />
     <requires name="Security" maintainer="mmbase://security.mmbase.org/" version="1" /><!-- cloud context security -->
   </requirements>
 
