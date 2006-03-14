@@ -45,19 +45,8 @@
     
   </allowedrelationlist>
 
-  <datasourcelist>
-    <datasource builder="videofragments"      path="Media/videofragments.xml" />
-    <datasource builder="audiofragments"      path="Media/audiofragments.xml" />
-    <datasource builder="videosources"        path="Media/videosources.xml" />
-    <datasource builder="audiosources"        path="Media/audiosources.xml" />
-    <datasource builder="templates"           path="Media/templates.xml" />
-    <datasource builder="mediaproviders"      path="Media/mediaproviders.xml" />
-  </datasourcelist>
-
-  <relationsourcelist>
-    <relationsource builder="insrel" path="Media/insrel.xml" />
-    <relationsource builder="insrel" path="Media/posrel.xml" />
-  </relationsourcelist>
+  <datasourcelist />
+  <relationsourcelist />
   
   <contextsourcelist>
   </contextsourcelist>
