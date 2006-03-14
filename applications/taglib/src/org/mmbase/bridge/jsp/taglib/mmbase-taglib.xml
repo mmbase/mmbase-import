@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.345 2006-03-14 18:02:25 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.346 2006-03-14 22:12:57 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2599,12 +2599,12 @@ access the value of title:
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.NodeListFunctionTag</tagclass>
     <info>
       <p>
-  Gets the function value of function `name'.  The function value
-  is supposed to be NodeList, and this tags acts as a `listprovider' tag and `nodeprovider'.
+        Gets the function value of function `name'.  The function value
+        is supposed to be NodeList, and this tags acts as a `listprovider' tag and `nodeprovider'.
       </p>
       <p>
-  For more information about how function tags work generally see the the `functiontag' entry
-  of this reference.
+        For more information about how function tags work generally see the the `functiontag' entry
+        of this reference.
       </p>
     </info>
     <since>MMBase-1.7</since>
@@ -2637,6 +2637,7 @@ access the value of title:
     <extends>containerreferrer</extends>
     <type>mmbase.basic</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.functions.NodeFunctionTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       Gets the function value of function `name' from surrounding nodeprovider.  The function value
       is supposed to be a Node.
@@ -3708,15 +3709,15 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>true</rtexprvalue>
       <info>
         <p>
-    The `externid' is the name of an attribute in the session,
-    parameter in the request, or id in the parent context. The
-    value of this thing is imported in the current context, with
-    the id given by the attribute `id'.
+          The `externid' is the name of an attribute in the session,
+          parameter in the request, or id in the parent context. The
+          value of this thing is imported in the current context, with
+          the id given by the attribute `id'.
         </p>
         <p>
-    If there is no attribute `externid' then the value of the new
-    object in the context is taken from the body of this import
-    tag. In that way you can create a variable.
+          If there is no attribute `externid' then the value of the new
+          object in the context is taken from the body of this import
+          tag. In that way you can create a variable.
         </p>
       </info>
     </attribute>
@@ -3725,11 +3726,11 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-    If this object is required to be present. If it has to be
-    present, then the present tag will always evaluate. If nothing
-    can be found by externid and a default value in the
-    body is missing too, then an exception will follow if required
-    is true.
+        If this object is required to be present. If it has to be
+        present, then the present tag will always evaluate. If nothing
+        can be found by externid and a default value in the
+        body is missing too, then an exception will follow if required
+        is true.
     </info>
     </attribute>
     <attribute>
@@ -3865,6 +3866,16 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         value of the generated taglib variable. You can for example use it to uppercase an URL
         parameter or so (for searching).
       </info>
+    </attribute>
+    <attribute>
+      <name>listdelimiter</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        If the vartype is 'list', but a String is received, then it will be converted to a List of
+        String, using this delimiter. It defaults to a comma.
+      </info>
+      <since>MMBase-1.8</since>
     </attribute>
     <example>&lt;!-- Create a variable `hoi' from the parameter `haj',
      Generate an exception if this parameter is not present --&gt;
