@@ -3,12 +3,13 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.6 2006-03-13 09:33:54 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.7 2006-03-14 23:04:14 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+    xmlns:taglib="org.mmbase.bridge.jsp.taglib.functions.Functions"
     xmlns:o="http://www.mmbase.org/xmlns/objects"
     xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
     exclude-result-prefixes="node mmxf o"
@@ -21,9 +22,27 @@
   <xsl:param name="cloud">mmbase</xsl:param>
   <xsl:param name="request"></xsl:param>
   <xsl:param name="formatter_requestcontext">/</xsl:param>
+
+
+  <!--
+      The thumbwidth parameter specifies the size of inline images.
+      If an image is bigger then this, then it is clickable, to a popup.
+      T
+  -->
   <xsl:param name="thumbwidth">200</xsl:param>
   <xsl:param name="thumbheight"></xsl:param>
   <xsl:param name="thumbsize">s(<xsl:value-of select="$thumbwidth" /><xsl:value-of select="$thumbheight" />&gt;)</xsl:param>
+
+
+  <!--
+      If a popupwidth parameter is specified, then image popups will be maximally that size.
+      If is empty, then simply a link to the original images will be created.
+  -->
+  <xsl:param name="popupwidth"></xsl:param>
+  <xsl:param name="popupheight"></xsl:param>
+  <xsl:param name="popupsize">s(<xsl:value-of select="$popupwidth" /><xsl:value-of select="$popupheight" />&gt;)</xsl:param>
+
+
 
   <xsl:variable name="newstype">xmlnews</xsl:variable>
   <!-- I had an 'xmlnews' type... Can easily switch beteen them like
@@ -92,7 +111,7 @@
        params: relation, position, last
   -->
   <xsl:template match="o:object[@type = 'images']" mode="img">
-    <xsl:param name="relation" />
+    <xsl:param name="relation" />    
     <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $thumbsize)" />
     <img src="{node:function($cloud, string($icache/@id ), 'servletpath')}" >
       <xsl:attribute name="alt"><xsl:apply-templates select="." mode="title" /></xsl:attribute>
@@ -119,16 +138,39 @@
     <xsl:choose>
       <xsl:when test="o:field[@name='width'] &gt; $thumbwidth + 20">
         <!-- if thumb is smaller than actual image, produce a link to popup -->
-        <a>
-          <xsl:attribute name="onclick">window.open(this.href,'_blank'); return false;</xsl:attribute>
-          <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
-          <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
-          <xsl:apply-templates select="." mode="img">
-            <xsl:with-param name="relation" select="$relation" />
-            <xsl:with-param name="position" select="$position"  />
-            <xsl:with-param name="last"  select="$last"  />
-          </xsl:apply-templates>
-        </a>
+        <xsl:choose>
+          <xsl:when test="$popupwidth = ''">
+            <!-- original image -->
+            <a>
+              <xsl:attribute name="onclick">window.open(this.href,'_blank'); return false;</xsl:attribute>
+              <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+              <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
+              <xsl:apply-templates select="." mode="img">
+                <xsl:with-param name="relation" select="$relation" />
+                <xsl:with-param name="position" select="$position"  />
+                <xsl:with-param name="last"  select="$last"  />
+              </xsl:apply-templates>
+            </a>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:variable name="icache" select="node:nodeFunction(., $cloud, string(./@id), 'cachednode', $popupsize)" />
+            <xsl:variable name="href"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'servletpath')" /></xsl:variable>
+            <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'width')" /></xsl:variable>
+            <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'height')" /></xsl:variable>
+            <a onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;"
+               >
+              <xsl:attribute name="href"><xsl:value-of select="$href" /></xsl:attribute>
+
+              <xsl:attribute name="title"><xsl:value-of select="./o:field[@name = 'title']" /></xsl:attribute>
+              <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+              <xsl:apply-templates select="." mode="img">
+                <xsl:with-param name="relation" select="$relation" />
+                <xsl:with-param name="position" select="$position"  />
+                <xsl:with-param name="last"  select="$last"  />
+              </xsl:apply-templates>
+            </a>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="." mode="img">
