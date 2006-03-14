@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.14 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.15 2006-03-14 17:52:32 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -137,7 +137,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     public boolean isChanged() {
         return true;
     }
-    
+
     public Object getCurrent() {
         return getNodeVar();
     }
@@ -154,6 +154,19 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
     public int getNextDepth() {
         return nextDepth;
+    }
+
+
+    protected void noSpecification() throws JspTagException {
+        if (nodeManager != Attribute.NULL) {
+            throw new JspTagException("'type' attribute does not make sense with 'referid' attribute");
+        }
+        if (role != Attribute.NULL) {
+            throw new JspTagException("'role' attribute does not make sense with 'referid' attribute");
+        }
+        if (searchDir!= Attribute.NULL) {
+            throw new JspTagException("'searchdir' attribute does not make sense with 'referid' attribute");
+        }
     }
 
     /**
@@ -175,15 +188,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             if (! (o instanceof TreeList)) {
                 throw new JspTagException("Context variable " + getReferid() + " is not a TreeList");
             }
-            if (nodeManager != Attribute.NULL) {
-                throw new JspTagException("'type' attribute does not make sense with 'referid' attribute");
-            }
-            if (role != Attribute.NULL) {
-                throw new JspTagException("'role' attribute does not make sense with 'referid' attribute");
-            }
-            if (searchDir!= Attribute.NULL) {
-                throw new JspTagException("'searchdir' attribute does not make sense with 'referid' attribute");
-            }
+            noSpecification();
 
             if (getReferid().equals(getId())) { // in such a case, don't whine
                 getContextProvider().getContextContainer().unRegister(getId());
@@ -194,27 +199,30 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             if (parentNodeId == Attribute.NULL) {
                 TreeContainerTag c = (TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), false);
                 if (c != null) {
-                    tree = c.getTree();
-                    if (! "".equals(maxDepth.getString(this)) && tree instanceof GrowingTreeList) {
-                        ((GrowingTreeList)  tree).setMaxDepth(maxDepth.getInt(this, 5));
+                    GrowingTreeList growingTree = c.getTree();
+                    if (! "".equals(maxDepth.getString(this))) {
+                        growingTree.setMaxDepth(maxDepth.getInt(this, 5));
                     }
+                    tree = growingTree;
+                    noSpecification();
                 }
             }
             if (tree == null) {
                 NodeQuery query = TreeContainerTag.getStartQuery(this, container, parentNodeId);
-                tree = new GrowingTreeList(query, maxDepth.getInt(this, 5),
-                                           getCloudVar().getNodeManager(nodeManager.getString(this)), 
-                                           role.getString(this), 
-                                           searchDir.getString(this));
-                Query template = ((GrowingTreeList) tree).getTemplate();
+                GrowingTreeList growingTree = new GrowingTreeList(query, maxDepth.getInt(this, 5),
+                                                                  getCloudVar().getNodeManager(nodeManager.getString(this)),
+                                                                  role.getString(this),
+                                                                  searchDir.getString(this));
+                Query template = growingTree.getTemplate();
                 if (orderby != Attribute.NULL) {
                     Queries.addSortOrders(template, (String) orderby.getValue(this), (String) directions.getValue(this));
                 }
+                tree = growingTree;
             }
 
         }
         iterator = tree.treeIterator();
-        
+
         // returnList is known, now we can serve parent formatter tag
         FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
@@ -224,9 +232,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
         if (iterator.hasNext()) {
             index = 0;
-            previousDepth = iterator.currentDepth();            
+            previousDepth = iterator.currentDepth();
             initialDepth  = previousDepth;
-            Node node     = iterator.nextNode();            
+            Node node     = iterator.nextNode();
             setNodeVar(node);
             fillVars();
             depth         = iterator.currentDepth();
@@ -239,7 +247,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
                 nextNode  = null;
                 nextDepth = initialDepth;
                 log.debug("no next " + nextDepth);
-                    
+
             }
             return EVAL_BODY_BUFFERED;
         } else {
@@ -259,7 +267,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (getId() != null) {
             getContextProvider().getContextContainer().unRegister(getId());
         }
-        
+
         collector.doAfterBody();
 
         if (nextNode != null) {
@@ -268,7 +276,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             fillVars();
             previousDepth = depth;
             depth         = nextDepth;
-            
+
             if (iterator.hasNext()) {
                 nextNode  = iterator.nextNode();
                 nextDepth = iterator.currentDepth();
@@ -278,7 +286,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
                 nextDepth = initialDepth;
                 log.debug("no next " + nextDepth);
             }
-            index ++;
+            index++;
             return EVAL_BODY_AGAIN;
         } else {
             log.debug("writing body");
