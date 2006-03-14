@@ -1,0 +1,360 @@
+<mm:content 
+xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    type="text/css" >
+  <jsp:directive.page session="false" />
+  <jsp:output omit-xml-declaration="true" />
+@import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
+@import url(<mm:url page="/mmbase/style/css/mmxf.css" />);
+
+#frame {
+  margin-right: auto;
+  margin-left: auto;
+  padding: 0px;
+  text-align: left;
+  background-repeat: no-repeat;
+}
+
+#menu {
+  position: relative;
+  height: 18px;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 22px;
+  font-weight: bold;
+}
+
+#menu a {
+  padding-left: 1ex;
+  padding-right: 1ex;  
+}
+
+#menu div a { 
+  display: block;
+  margin-right: 0ex;
+  padding-right: 1ex;
+  font-weight: normal;
+}
+
+#menu a:hover { 
+  text-decoration : none;  
+}
+#menu div {
+  font-size: 8pt;
+  color: #fff;
+  font-weight: bold;
+  text-decoration : none;
+  display: none;
+  position: absolute;
+}
+#menu div a { 
+  display: block;
+}
+
+
+#content {
+  padding: 0px 0px 0px 0px;
+  line-height: 1.5;
+
+}
+#content table {
+}
+
+table.layout td {
+ padding-left: 2ex;
+}
+
+
+#content tr td {
+  border: none;
+}
+
+.mmxf table tr td {
+  padding-right: 2ex !important;
+}
+
+
+#content img {
+  margin: 3px 5px 0px 0px;
+  border: none;
+  float: left;
+  border: solid 2px;
+}
+
+#content img.icon { 
+  background-color: transparent;
+  float: none;
+  border-style: none;
+}
+
+#content img.inline { 
+  float: none;
+}
+
+#content a.navigate { 
+  white-space: nowrap;
+}
+.block { 
+  padding-top: 0px;
+  color: white;
+  float: left;
+  margin-left: 10px;
+  margin-right: 0px;
+  clear: left;
+  margin-top: 0px;
+  display: inline; /* should be ignored (because of float), but work around bug in IE */
+}
+
+.right {
+  margin-right: 10px;
+  margin-left: 0px;
+  float: right;
+  clear: right;  
+}
+
+.helpIE  {
+  float: left !important;
+}
+
+.titel {
+  height: 30px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 11pt;
+}
+
+
+.duration{
+  font-size: 9pt;
+  color: #B1A300;
+  font-style: italic;
+  vertical-align: top;
+}
+
+.intro p, .outtro p {
+  font-size : 9pt;
+  font-weight : bold;
+  letter-spacing : 1px;
+  clear: both;
+}
+.outro p { 
+
+}
+
+#search {
+  clear: none;
+}
+#search p { 
+  border: none;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  display: block;
+  float: right;
+}
+#search input { 
+  border: none;
+}
+#search img { 
+  float: right;
+  border: none;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  display: block;
+}
+
+#bottom{
+  padding: 10px 0px 0px 0px;
+  width: 743px;
+  height: 20%;
+  font-size: 12pt;
+  line-height: 2ex;
+  color: white;
+}
+
+#content h2 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size : 10pt;
+  color: #fff;
+  font-weight: bold;
+  border-bottom: solid 1px #557C95;
+  
+}
+#content h1 {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 12pt;
+  color: #fff;
+  font-weight: bold;  
+  border-bottom: solid 1px;
+}
+
+
+#content p, #content td {
+  margin-top: 2px;
+  font-size : 9pt;
+}
+
+#content .genres h2 { 
+  border-bottom: none;
+  font-size: 10pt;
+  color: #fff;
+  font-weight: bold;
+  vertical-align: top;
+  border-bottom: none;
+  padding: 0 0 0 0;
+}
+.genres, .article, .search {
+  width: 720px;
+  color: white;
+  font-size : 9pt;
+  color: #fff;
+}
+
+.article td {
+
+}
+
+
+#content .genres h2 a{
+  padding: 0 0 0 0;
+  font-size: 10pt;
+  color: #fff;
+  font-weight: bold;
+  
+}
+.genres h2 a:hover{
+  text-decoration: none;
+}
+
+table td { 
+  vertical-align: top;
+}
+table td p {
+  margin-left: 0ex;  
+}
+table td img {
+  margin: 0px 0px 0px 0px !important;
+  padding: 0px 0px 0px 0px !important;
+}
+table td img.icon {
+  margin-right: 1ex !important;
+}
+
+.fields {
+  width: 343px;
+  padding: 0px 0px 0px 0px !important;
+  
+}
+.fields p { 
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  font-size: 10pt;
+}
+.fields p.field {
+  padding-left: 4px;
+  background-color : black;
+}
+
+.fields p.image {
+  padding: 0px;
+  padding-top: 1ex;
+}
+
+.fields img { 
+  float: none !important;
+  display: inline !important;
+  margin: 0px 0px 0px 0px !important;
+  padding: 0px 0px 0px 0px !important;
+}
+span.field { 
+  color : #958A02;
+  padding-left: 0px;
+  
+}
+
+.people table { 
+  width: 100%;
+}
+.people table td {
+  background-color : black;
+  padding: 10px 0px 0px 0px;
+  margin: 14px 0px 0px 0px;
+  font-size: 10pt;
+  border-left: solid 2px #023B61;
+  border-right: solid 4px #023B61;
+}
+.people .specialization { 
+  font-style: italic;
+}
+a{
+  color :#9FC3E5;
+  text-decoration: none;
+}
+a:hover{
+  color :#9FC3E5;
+  text-decoration: underline;
+
+}
+
+h1 {
+  font-size: 10pt;
+  color: #fff;
+  font-weight: bold;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  clear: both;
+}
+
+
+
+.listitem { 
+  padding: 0ex;
+  float: left;
+  clear: both;
+  width: 100%;
+}
+
+.genreitem {
+  padding-bottom: 1ex;
+  padding-top: 0.5ex;
+  border-bottom: solid 1px;
+}
+
+.highlight {
+  clear: both;
+  margin-bottom: 5ex;
+}
+
+/* debug: give import block a color, so you can easily see where they stop and start */
+/*
+.people {
+  background-color: yellow;
+}
+
+.thiscategory {
+  background-color: green;
+}
+.texts {
+  background-color: red;
+}
+.article {
+  background-color: yellow;
+}
+.fields {
+  background-color: green;
+}
+#search {
+  background-color: blue;
+}
+.helpIE {
+  background-color: purple;
+}
+*/
+
+#end-of-page {
+ float: left;
+ height: 1px; 
+ width: 100%;
+}
+
+</mm:content>
