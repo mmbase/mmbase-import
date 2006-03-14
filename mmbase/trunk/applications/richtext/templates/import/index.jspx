@@ -4,12 +4,19 @@
             xmlns:jsp="http://java.sun.com/JSP/Page"
             xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
             language="nl">
-  <jsp:directive.page import="org.mmbase.util.*,org.mmbase.bridge.util.xml.Mmxf,java.util.*,org.w3c.dom.Document,org.mmbase.bridge.*,java.io.*,org.mmbase.util.transformers.*" />
+  <jsp:directive.page import="org.mmbase.util.*,org.mmbase.richtext.Mmxf,java.util.*,org.w3c.dom.Document,org.mmbase.bridge.*,java.io.*,org.mmbase.util.transformers.*" />
   <mm:cloud rank="basic user" jspvar="cloud">
     <mm:param name="org.mmbase.xml-mode" value="docbook" />
   <html>
     <head>
       <title>MMBase documentation import</title>
+      <mm:link page="/mmbase/style/css/mmbase.css">
+        <link rel="stylesheet"    href="${_}"     type="text/css" />
+      </mm:link>
+      <mm:link page="/mmbase/style/images/favicon.ico">
+        <link rel="icon"          href="${_}" type="image/x-icon" />
+        <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+      </mm:link>
     </head>
     <body>
       <jsp:scriptlet>        
