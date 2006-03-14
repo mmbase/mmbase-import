@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.344 2006-02-27 14:35:32 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.345 2006-03-14 18:02:25 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -7300,6 +7300,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.tree.TreeTEI</teiclass>
     <info>
       <p>
         The treecontainer tag is a the `container' tag for the tree-tag. It searches on the same way
@@ -7354,7 +7355,45 @@ The 0 is just counter, which starts at 0 on every page.
         a `network' of nodes), there should always be a `maximal' depth to which relations are followed. This defaults to 5.
       </info>
     </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <since>MMBase-1.8</since>
+    </attribute>
   </tag>
+  <!--
+  <tag>
+    <name>branch</name>
+    <type>mmbase.tree.list</type>
+    <extends>contextreader</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.tree.BranchTag</tagclass>
+    <see type="tree" />
+    <since>MMBase-1.8</since>
+    <info>
+      A branch tag would grow a tree before it starts growing automaticly.
+      The idea is that these extra steps can also have 'leafconstraints'.
+    </info>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainer" attribute="type" />
+    </attribute>
+    <attribute>
+      <name>role</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainer" attribute="role" />
+    </attribute>
+    <attribute>
+      <name>searchdir</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainers" attribute="searchdir" />
+    </attribute>
+  </tag>
+  -->
   <tag>
     <name>leafconstraints</name>
     <type>mmbase.tree.list</type>
@@ -7373,6 +7412,30 @@ The 0 is just counter, which starts at 0 on every page.
     </info>
     <see type="tree" />
     <see tag="queryreferrer" />
+    <attribute>
+      <name>on</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Decides wether the leaf-contraint is going to work on the template, or on the trunk.
+      </info>
+      <possiblevalue>
+        <value>template</value>
+        <info>
+          The constraints in this tag will be applied on all the new branches of the tree when they
+          are still 'leafs', so it applies to the template for that (determined by the attributes of
+          treecontainer)
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>trunk</value>
+        <info>
+          The constraints in this tag will be applied to the trunk query, which is normally defined
+          by the surrounding nodequery container of the treecontainer.
+          This makes it possible to also consider the trunk when searing a tree.
+        </info>
+      </possiblevalue>
+    </attribute>
     <since>MMBase-1.8.0</since>
   </tag>
 
