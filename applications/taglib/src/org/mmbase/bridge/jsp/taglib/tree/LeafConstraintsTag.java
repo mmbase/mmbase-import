@@ -25,11 +25,16 @@ import org.mmbase.bridge.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: LeafConstraintsTag.java,v 1.5 2005-12-13 10:01:05 michiel Exp $
+ * @version $Id: LeafConstraintsTag.java,v 1.6 2006-03-14 17:56:24 michiel Exp $
  */
-public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryContainer, QueryContainerReferrer { 
+public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryContainer, QueryContainerReferrer {
 
-    private Attribute container = Attribute.NULL;
+    private static final int ON_TEMPLATE = 1;
+    private static final int ON_TRUNK    = 2;
+    private Attribute container   = Attribute.NULL;
+    private Attribute onAttribute = Attribute.NULL;
+    private int       on          = 1;
+    private NodeQuery trunkClone;
 
     protected GrowingTreeList tree;
 
@@ -37,23 +42,54 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
         container = getAttribute(c);
     }
 
+    public void setOn(String c) throws JspTagException {
+        onAttribute = getAttribute(c);
+    }
+
     public Query getQuery() {
-        return tree.getLeafTemplate();
+        return getNodeQuery();
     }
     public NodeQuery getNodeQuery() {
-        return (NodeQuery) getQuery();
+        switch(on) {
+        case ON_TRUNK:
+            if (trunkClone == null) {
+                trunkClone = (NodeQuery) tree.getLeafQuery().clone();
+                trunkClone.setConstraint(null);
+            }
+            return trunkClone;
+        case ON_TEMPLATE:
+        default:         return tree.getLeafTemplate();
+        }
     }
+
     public Cloud getCloudVar() throws JspTagException {
         return getQuery().getCloud();
     }
 
+
     public int doStartTag() throws JspTagException {
-        TreeContainerTag c = (TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), false);
-        tree = c.getTree();
+
+        String o = onAttribute.getString(this);
+        if ("".equals(o)) {
+            on = ON_TEMPLATE;
+        }  else if ("template".equals(o)) {
+            on = ON_TEMPLATE;
+        } else if ("trunk".equals(o)) {
+            on = ON_TRUNK;
+        } else {
+            throw new JspTagException("Unknown value for 'on' attribute '" + o + "' (known are 'template' and 'trunk')");
+        }
+        tree = ((TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), true)).getTree();
         return EVAL_BODY;
     }
 
     public int doAfterBody() throws JspTagException {
+        if(trunkClone != null) {
+            tree.setLeafConstraint(trunkClone.getConstraint());
+        }
+        // for garbage collection:
+        tree = null;
+        trunkClone = null;
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
                 if (bodyContent != null) {
@@ -61,14 +97,9 @@ public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryC
                 }
             } catch (java.io.IOException ioe){
                 throw new JspTagException(ioe.toString());
-            } 
+            }
         }
-        return SKIP_BODY;        
+        return SKIP_BODY;
     }
-
-    public Object getCurrent() {
-        return null;
-    }
-
 
 }
