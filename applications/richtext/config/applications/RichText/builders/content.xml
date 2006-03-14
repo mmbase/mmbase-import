@@ -20,19 +20,95 @@
   </descriptions>
   <fieldlist>
     <field>
+      <descriptions>
+        <description xml:lang="en">Title of this object</description>
+        <description xml:lang="nl">Titel van dit object</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="fr">Titre</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+        <guiname xml:lang="eo">Titolo</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>title</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Subtitle of the object</description>
+        <description xml:lang="nl">Sub hoofd van het object</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">SubTitle</guiname>
+        <guiname xml:lang="fr">Sous-titre</guiname>
+        <guiname xml:lang="nl">SubTitel</guiname>
+        <guiname xml:lang="eo">Subtitolo</guiname>
+      </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>subtitle</name>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Introduction text or teaser</description>
+        <description xml:lang="nl">Introductietekst of teaser</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Intro</guiname>
+        <guiname xml:lang="fr">Intro</guiname>
+        <guiname xml:lang="nl">Intro</guiname>
+        <guiname xml:lang="eo">Enkonduko</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name xml:lang="en">intro</name>
+        <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="en">Main text of the object</description>
+        <description xml:lang="nl">Hoofdtekst van het object</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Text</guiname>
+        <guiname xml:lang="fr">Texte</guiname>
+        <guiname xml:lang="nl">Tekst</guiname>
+        <guiname xml:lang="eo">Teksto</guiname>
+      </gui>
+      <datatype base="mmxfunp" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>body</name>
+        <type key="false" notnull="false" size="64000" state="persistent">XML</type>
+      </db>
+    </field>
+    <field>
       <gui>
         <guiname xml:lang="nl">Online op</guiname>
         <guiname xml:lang="en">Online on</guiname>
       </gui>
       <editor>
         <positions>
-          <input>10</input>
           <list>10</list>
-          <search>10</search>
         </positions>
       </editor>
       <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="now" />
+        <default value="today" />
+        <minInclusive value="yesterday"  enforce="oncreate" />
+        <maxInclusive value="today + 150 year" enforce="never" />
       </datatype>
       <db>
         <name>begin</name>
@@ -47,11 +123,12 @@
       <editor>
         <positions>
           <input>11</input>
-          <search>11</search>
-        </positions>
+         </positions>
       </editor>
       <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="next month" />
+        <minInclusive value="yesterday"        enforce="oncreate" />
+        <maxInclusive value="today + 150 year" enforce="never" />
       </datatype>
       <db>
         <name>end</name>
@@ -68,12 +145,6 @@
         <guiname xml:lang="nl">Laatste veranderaar</guiname>
         <guiname xml:lang="eo">Lasta ŝanĝinto</guiname>
       </gui>
-      <editor>
-        <positions>
-          <input>-1</input>
-          <list>98</list>
-        </positions>
-      </editor>
       <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>lastmodifiedby</name>
@@ -90,15 +161,43 @@
         <guiname xml:lang="nl">Laatste verandering</guiname>
         <guiname xml:lang="eo">Lasta ŝanĝo</guiname>
       </gui>
-      <editor>
-        <positions>
-          <input>-1</input>
-          <list>99</list>
-        </positions>
-      </editor>
       <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>lastmodified</name>
+        <type state="system" notnull="false" key="false">DATETIME</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Created by</description>
+        <description xml:lang="nl">Gecreëerd door</description>
+        <description xml:lang="nl">Kreinto</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Creator</guiname>
+        <guiname xml:lang="nl">Creëerder</guiname>
+        <guiname xml:lang="eo">Kreinto</guiname>
+      </gui>
+      <datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>creator</name>
+        <type key="false" notnull="false" size="255" state="system">STRING</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Created on</description>
+        <description xml:lang="nl">Gecreëeerd op</description>
+        <description xml:lang="nl">Kreita je</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Created time</guiname>
+        <guiname xml:lang="nl">Creëertijd</guiname>
+        <guiname xml:lang="eo">Kretempo</guiname>
+      </gui>
+      <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
+      <db>
+        <name>created</name>
         <type state="system" notnull="false" key="false">DATETIME</type>
       </db>
     </field>

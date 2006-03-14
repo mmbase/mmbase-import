@@ -7,9 +7,8 @@
   </requirements>
 
   <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="0">content</builder> <!-- segments extends content -->
     <builder maintainer="mmbase.org" version="0">segments</builder>
-    <builder maintainer="mmbase.org" version="0">categories</builder>
-
     <builder maintainer="mmbase.org" version="0">indexrel</builder>
   </neededbuilderlist>
 
@@ -18,14 +17,12 @@
   </neededreldeflist>
 
   <allowedrelationlist>
-    <relation from="segments"    to="segments"   type="index" /><!-- chapter structure -->
-    <relation from="categories"  to="segments"   type="index" /><!-- chapter structure -->
-
-    <relation from="segments"    to="urls"        type="idrel" /><!-- inline urls -->
-    <relation from="segments"    to="images"      type="idrel" /><!-- inline images -->
-    <relation from="segments"    to="attachments" type="idrel" /><!-- inline images -->
-    <relation from="segments"    to="segments"   type="idrel" /> <!-- cross-references-->
-    <relation from="segments"    to="blocks"    type="idrel" /> <!-- notes-->
+    <relation from="segments"   to="segments"   type="index" /><!-- chapter structure -->
+    <relation from="content"    to="urls"        type="idrel" /><!-- inline urls -->
+    <relation from="content"    to="images"      type="idrel" /><!-- inline images -->
+    <relation from="content"    to="attachments" type="idrel" /><!-- inline images -->
+    <relation from="content"    to="segments"   type="idrel" /> <!-- cross-references-->
+    <relation from="content"    to="blocks"    type="idrel" /> <!-- notes-->
 
     <relation from="blocks"    to="segments"    type="idrel" /> <!-- cross-references-->
 
@@ -38,8 +35,8 @@
 
   <contextsourcelist />
 
-  <description><![CDATA[Installs a few builders and relations needed for fully fledged 'rich text' in MMBase. You can acquire some sample data by running the documentation import utility]]></description>
+  <description><![CDATA[Installs a few builders and relations needed for  'rich text' with chapters.]]></description>
 
-  <install-notice><![CDATA[Segments, categories, and belonging idrel, index relations were created. ]]></install-notice>
+  <install-notice><![CDATA[Segments with belonging idrel were created. ]]></install-notice>
 
 </application>

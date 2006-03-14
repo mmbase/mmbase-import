@@ -2,7 +2,7 @@
 <xmlnews
     exportsource="mmbase://www.mmbase.org/richtext" timestamp="20050921221010">
   <node number="5673" owner="system" alias="xmltest">
-    <body>&lt;mmxf xmlns="http://www.mmbase.org/mmxf"&gt;
+    <body>&lt;mmxf xmlns="http://www.mmbase.org/xmlns/mmxf"&gt;
 &lt;section&gt;
 &lt;h&gt;Strange languages and so on&lt;/h&gt;
 &lt;p id=&quot;lang&quot;&gt;Strange languages are very interesting. As everybody knows. There are two url's and one image related to this paragraph.&lt;/p&gt;
@@ -21,7 +21,7 @@
 </body>
 <title>This is a test article.</title>
 <subtitle>And Jiři Šimek is a czech name.</subtitle>
-<intro>&lt;mmxf xmlns="http://www.mmbase.org/mmxf"&gt;
+<intro>&lt;mmxf xmlns="http://www.mmbase.org/xmlns/mmxf"&gt;
 &lt;p&gt;nederlands: Café tweeëntwintig&lt;/p&gt;
 &lt;p&gt;hebreews: דשךצ&lt;/p&gt;
 &lt;p&gt;russisch: перестоыка&lt;/p&gt;
