@@ -8,7 +8,7 @@
     String q = (String) request.getAttribute("javax.servlet.forward.query_string"); 
     if (url == null) {
        // mainly for debugging of this page itself
-       url = request.getServletPath();
+       url = request.getContextPath() + request.getServletPath();
        q   = request.getQueryString();
     }
     if (q != null) url += "?" + q;
