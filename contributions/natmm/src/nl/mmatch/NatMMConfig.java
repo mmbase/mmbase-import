@@ -8,6 +8,7 @@ public class NatMMConfig {
     public static String adminAccount = "admin";
     public static String adminPassword = "<removed>";
     public static String fromEmailAddress = "website@natuurmonumenten.nl";
+    public static String fromCADAddress = "denatuurin@natuurmonumenten.nl";
     public static String toEmailAddress = "hangyi@xs4all.nl";
     public static String liveUrl = "http://www.natuurmonumenten.nl/";
     public static String tmpMemberId = "9002162";

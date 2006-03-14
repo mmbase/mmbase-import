@@ -14,18 +14,21 @@
    </head>
    <body style="width:100%;padding:5px;">
    Changes made in this update:<br/>
-   1. importing images media/images/ngb/XX.gif, where XX is equal provincies.afkorting to the object cloud and relates them to the corresponding province.<br/>
-   2. migrating the editwizard<br/>
+   1. Added field evenement.adres_verplicht:<br/>  
+   ALTER TABLE `v1_evenement` ADD `adres_verplicht` VARCHAR(40);<br/>
+   UPDATE `v1_evenement` SET `adres_verplicht` = '0';<br/>
+   2. importing images media/images/ngb/XX.gif, where XX is equal provincies.afkorting to the object cloud and relates them to the corresponding province.<br/>
+   3. migrating the editwizard<br/>
    <mm:node number="89579">
       <mm:setfield name="nodepath">pagina,contentrel,provincies,pos4rel,natuurgebieden</mm:setfield>
       <mm:setfield name="fields">natuurgebieden.naam,natuurgebieden.bron,pos4rel.pos1,pos4rel.pos2</mm:setfield>
       <mm:setfield name="m_distinct">0</mm:setfield>
    </mm:node>
-	3. Migrating all province-posrel-natuurgebieden relations to province-pos4rel-natuurgebieden relations.<br/>
+	4. Migrating all province-posrel-natuurgebieden relations to province-pos4rel-natuurgebieden relations.<br/>
    Processing...<br/>
    <% 
-     String mediaDir = "C:/data/natmm/webapps/ROOT/natmm/media/images/ngb/";
-     // String mediaDir = "/export/www/natuurmm/jakarta-tomcat/webapps/ROOT/natmm/media/images/ngb/";
+     // String mediaDir = "C:/data/natmm/webapps/ROOT/natmm/media/images/ngb/";
+     String mediaDir = "/export/www/natuurmm/jakarta-tomcat/webapps/ROOT/media/images/ngb/";
      NodeList nlProvincies =  cloud.getNodeManager("provincies").getList(null,null,null);
 	  int i = 0;
 	  while(i<nlProvincies.size()) {

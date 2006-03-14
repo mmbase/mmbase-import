@@ -47,8 +47,23 @@ public class SubscribeForm extends ActionForm {
    private static final Logger log = Logging.getLoggerInstance(EvenementForm.class);
    public static String initPhone = "0..-....";
    public static String cashPaymentType = "Contant";
+   
+   // backoffice subscriptions from /editors/evenementen/subscribe.jsp
+   public static String CHANGE_ACTION           = "Wijzig"; 
+   public static String SUBSCRIBE_ACTION        = "Meld aan"; 
+   public static String NEW_SUBSCRIPTION_ACTION = "Nieuwe aanmelding";
+   public static String ADDRESS_ACTION          = "Adres en betalingswijze";
+
+   // website subscriptions from /natmm/includes/events/subscribe.jsp
+   public static String TO_AGENDA_ACTION        = "Naar agenda";  
+   public static String CANCEL_ACTION           = "Annuleer";
+   public static String OTHER_DATES_ACTION      = "andere data";
+   public static String SELECT_DATE_ACTION      = "select_date";
+   public static String FIX_DATE_ACTION         = "fix_date";
 
    private String action;
+   private int validateCounter = 0;
+   private String skipValidation;
    private SubscribeButtons buttons = null;
    private String showAddress;
    private String showPastDates;
@@ -93,6 +108,15 @@ public class SubscribeForm extends ActionForm {
          if(action==null) { action= ""; }
          this.action = action;
    }
+
+   public int getValidateCounter() { return validateCounter; }
+   public void setValidateCounter(int validateCounter) { this.validateCounter = validateCounter; }
+
+   public String getSkipValidation() {
+      if(skipValidation==null) { skipValidation = "N"; }
+      return skipValidation; 
+   }
+   public void setSkipValidation(String skipValidation) { this.skipValidation = skipValidation;  }
 
    public SubscribeButtons getButtons() { return buttons; }
    public void setButtons(SubscribeButtons buttons) { this.buttons = buttons; }
@@ -273,8 +297,17 @@ public class SubscribeForm extends ActionForm {
    public void resetNumbers() {
       // *** called by SubscribeInitAction.execute and resetBean
       this.action = "startsubscription";
-      this.showAddress ="false";
-      if(CloudFactory.getCloud().getNode(this.getNode()).getLongValue("embargo") < (new Date()).getTime()/1000) {
+      this.validateCounter = 0;
+      this.skipValidation = "N";
+      
+      Node thisEvent = CloudFactory.getCloud().getNode(this.getNode());
+      if(thisEvent.getStringValue("adres_verplicht").equals("1")) {
+         this.showAddress = "true";
+      } else {
+         this.showAddress = "false";
+      }
+
+      if(thisEvent.getLongValue("embargo") < (new Date()).getTime()/1000) {
          this.showPastDates = "false";
       } else {
          this.showPastDates = "";
@@ -300,7 +333,7 @@ public class SubscribeForm extends ActionForm {
    public Node createParticipant(Cloud cloud, String action, Node thisEvent, Node thisSubscription, String thisCategory, String thisNumber) {
  
       Node thisParticipant = null;
-      if(action.indexOf("Wijzig")>-1) {
+      if(action.equals(CHANGE_ACTION)) {
         try {
             thisParticipant = cloud.getNode(getSelectedParticipant());
         } catch (Exception e) {
@@ -334,13 +367,14 @@ public class SubscribeForm extends ActionForm {
       }
 
       Relation thisRel = null;
-      if(action.indexOf("Wijzig")==-1) { // create inschrijvingen,posrel,deelnemers
-         thisRel = thisSubscription.createRelation(thisParticipant,cloud.getRelationManager("posrel"));
-      } else {
+      if(action.equals(CHANGE_ACTION)) {
          RelationList relations = thisParticipant.getRelations("posrel","inschrijvingen");
          if(relations.size()>0) {
             thisRel = relations.getRelation(0);
          }
+      }
+      if(thisRel==null) {
+         thisRel = thisSubscription.createRelation(thisParticipant,cloud.getRelationManager("posrel"));
       }
 
       // set the price for this participant
@@ -502,15 +536,15 @@ public class SubscribeForm extends ActionForm {
 
          log.info("null action in SubscribeForm");
 
-      } else if(this.getAction().indexOf("Wijzig")>-1&&this.getSelectedParticipant().equals("")) {             // *** Wijzig ***
+      } else if(this.getAction().equals(CHANGE_ACTION)&&this.getSelectedParticipant().equals("")) {                // *** Wijzig ***
 
          errors.add("warning",new ActionError("evenementen.noselection.change"));
 
-      } else if(this.getButtons().getAddParticipant().pressed()&&this.getSelectedParticipant().equals("")) {   // *** Add ***
+      } else if(this.getButtons().getAddParticipant().pressed()&&this.getSelectedParticipant().equals("")) {       // *** Add ***
 
          errors.add("warning",new ActionError("evenementen.noselection.add"));
 
-      } else if(this.getButtons().getConfirmSubscription().pressed()) {                                        // *** Confirm ***
+      } else if(this.getButtons().getConfirmSubscription().pressed()) {                                            // *** Confirm ***
 
          Node thisParticipant = cloud.getNode(this.getSelectedParticipant());
          String toEmailAddress = thisParticipant.getStringValue("email");
@@ -523,22 +557,27 @@ public class SubscribeForm extends ActionForm {
 
       }
 
-      if(this.getAction().indexOf("Meld aan")>-1||this.getAction().indexOf("Wijzig")>-1) {                       // *** Meld aan / Wijzig ***
-
+      if(this.getAction().equals(SUBSCRIBE_ACTION)||this.getAction().equals(CHANGE_ACTION)) {                       // *** Meld aan / Wijzig ***
+         
+         validateCounter++;
+      
          if(this.getLastName().equals("")) {
             errors.add("warning",new ActionError("evenementen.required.lastname"));
          }
+
          String memberIdMessage = getMemberIdMessage(memberId,this.getZipCode());
-         if(!memberIdMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {             // *** check whether member info can be found in application attribute ***
+         if(!memberIdMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {                // *** check whether member info can be found in application attribute ***
             errors.add("warning",new ActionError(memberIdMessage));
          }
-         String zipCodeMessage = getZipCodeMessage(this.getZipCode());
-         if(!zipCodeMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {              // *** check if the zipcode is valid ***
-            errors.add("warning",new ActionError(zipCodeMessage));
+         if(this.getSkipValidation().equals("N")) {
+            String zipCodeMessage = getZipCodeMessage(this.getZipCode());
+            if(!zipCodeMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {              // *** check if the zipcode is valid ***
+               errors.add("warning",new ActionError(zipCodeMessage));
+            }
          }
          boolean bPhoneFound = false;
          String phoneMessage = getPhoneMessage(this.getPrivatePhone());
-         if(!phoneMessage.equals("")) {                                                                          // *** check if the phonenumber is valid ***
+         if(this.getSkipValidation().equals("N") && !phoneMessage.equals("")) {                                      // *** check if the phonenumber is valid ***
             errors.add("warning",new ActionError(phoneMessage));
          } else if(!this.getPrivatePhone().equals(initPhone)){
             bPhoneFound = true;
@@ -590,6 +629,19 @@ public class SubscribeForm extends ActionForm {
                }
             }
          } else {
+   
+            if(cloud.getNode(parent).getStringValue("adres_verplicht").equals("1")) {
+               if(this.getStreetName().equals("")) {
+                  errors.add("warning",new ActionError("evenementen.required.streetname"));
+               }
+               if(this.getHouseNumber().equals("")) {
+                  errors.add("warning",new ActionError("evenementen.required.housenumber"));
+               }
+               if(this.getCity().equals("")) {
+                  errors.add("warning",new ActionError("evenementen.required.city"));
+               }
+            }
+
             String sParticipants = this.getNumberInCategory();
             try {
                int dummy = (new Integer(sParticipants)).intValue();
