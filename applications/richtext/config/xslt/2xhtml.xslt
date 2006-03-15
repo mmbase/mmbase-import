@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.7 2006-03-14 23:04:14 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.8 2006-03-15 14:17:44 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -27,9 +27,8 @@
   <!--
       The thumbwidth parameter specifies the size of inline images.
       If an image is bigger then this, then it is clickable, to a popup.
-      T
   -->
-  <xsl:param name="thumbwidth">200</xsl:param>
+  <xsl:param name="thumbwidth">100</xsl:param>
   <xsl:param name="thumbheight"></xsl:param>
   <xsl:param name="thumbsize">s(<xsl:value-of select="$thumbwidth" /><xsl:value-of select="$thumbheight" />&gt;)</xsl:param>
 
@@ -141,8 +140,9 @@
         <xsl:choose>
           <xsl:when test="$popupwidth = ''">
             <!-- original image -->
-            <a>
-              <xsl:attribute name="onclick">window.open(this.href,'_blank'); return false;</xsl:attribute>
+            <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string(./@id ), 'width')" /></xsl:variable>
+            <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string(./@id ), 'height')" /></xsl:variable>
+            <a onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
               <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
               <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
               <xsl:apply-templates select="." mode="img">
