@@ -7,15 +7,11 @@
   --%>
   <mm:node number="default.mags" notfound="skip">
     <h2><mm:field name="title" /></h2>
-    <mm:related path="posrel,news"
-      fields="news.number,news.title,posrel.pos" orderby="posrel.pos">
-      <mm:node element="news">
-        <strong><mm:field name="title" /></strong><br />
-        <mm:related path="people" 
-          fields="people.email">
-          by <mm:field name="people.email" /><br />
-        </mm:related>
-      </mm:node>
-    </mm:related>
+    <mm:relatednodes role="posrel" orderby="posrel.pos"  type="news">
+      <h3><mm:field name="title" /></h3>
+      <mm:relatednodes type="people">
+        by <mm:field name="email" />
+      </mm:relatednodes>
+    </mm:relatednodes>
   </mm:node>
 </mm:edit>

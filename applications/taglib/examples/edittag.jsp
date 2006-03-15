@@ -5,6 +5,11 @@
 <head>
  <title>The edit tag</title>
  <link href="style.css" rel="stylesheet" type="text/css"/>
+ <style>
+h3 {
+ margin: 0;
+}
+ </style>
 </head>
 <body>
 <%@ include file="menu.jsp"%>
