@@ -54,8 +54,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
         }
         catch (Exception e){
             //There is no metadata node yet, let's create it
-            MetaHelper metaHelper = new MetaHelper();
-            nodeMetaData = metaHelper.createMetaDataNode(nodeObject.getCloud(), nodeObject, nodeMetaDefinition);
+            nodeMetaData = MetaHelper.createMetaDataNode(nodeObject.getCloud(), nodeObject, nodeMetaDefinition);
         }
 
 

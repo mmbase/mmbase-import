@@ -34,8 +34,7 @@ public class CreationDate implements HandlerInterface{
         }
         catch (Exception e){
             //There is no metadata node yet, let's create it
-            MetaHelper metaHelper = new MetaHelper();
-            nodeMetaData = metaHelper.createMetaDataNode(nodeObject.getCloud(), nodeObject, nodeMetaDefinition);
+            nodeMetaData = MetaHelper.createMetaDataNode(nodeObject.getCloud(), nodeObject, nodeMetaDefinition);
         }
 
         long lNodeObjectAge = (new Date()).getTime() - (new Integer(nodeObject.getFunctionValue("age", null).toString())).longValue() * 86400000;

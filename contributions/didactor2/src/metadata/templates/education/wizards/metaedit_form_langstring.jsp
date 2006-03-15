@@ -25,7 +25,7 @@
                                           </mm:compare>
 
                                        >
-                                          <option style="width:20px"><%= mdh.EMPTY_VALUE %></option>
+                                          <option style="width:20px"><%= MetaDataHelper.EMPTY_VALUE %></option>
                                              <%
                                                 for(NodeIterator it = nlLangCodes.nodeIterator(); it.hasNext();)
                                                 {
@@ -87,7 +87,7 @@
                         disabled="disabled"
                      </mm:compare>
                   >
-                     <option style="width:20px"><%= mdh.EMPTY_VALUE %></option>
+                     <option style="width:20px"><%= MetaDataHelper.EMPTY_VALUE %></option>
                         <%
                            boolean bFirst = true;
                            for(NodeIterator it = nlLangCodes.nodeIterator(); it.hasNext();)

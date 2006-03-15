@@ -7,7 +7,7 @@
       <td>
          <mm:node number="<%= sNode %>" jspvar="nodeHeader">
             <mm:node number="$user" jspvar="nodeUser">
-               <mm:import id="header_name"><%= mdh.getAliasForObject(cloud, nodeHeader.getNumber(), nodeUser.getNumber()) %></mm:import>
+               <mm:import id="header_name"><%= MetaDataHelper.getAliasForObject(cloud, nodeHeader.getNumber(), nodeUser.getNumber()) %></mm:import>
 
                <mm:write referid="header_name">
                   <mm:isempty><mm:field name="title" /></mm:isempty>

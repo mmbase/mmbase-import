@@ -6,6 +6,9 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import nl.didactor.component.metadata.constraints.Constraint;
+import nl.didactor.component.metadata.constraints.Error;
+
 public class MetaLangStringHelper extends MetaHelper {
 
    private static Logger log = Logging.getLoggerInstance(MetaLangStringHelper.class);
@@ -15,17 +18,18 @@ public class MetaLangStringHelper extends MetaHelper {
    }
 
    public MetaLangStringHelper() {
-      setReason("langstring_is_required");
    }
 
-   public boolean check(Cloud cloud, String sCurrentNode, String sMetadefNode, boolean isRequired) {
-      return super.check(cloud, sCurrentNode, sMetadefNode, isRequired);
+
+   public Error check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData){
+       return null;
    }
 
-   public boolean check(Cloud cloud, String[] arrstrParameters, Node metadefNode, boolean isRequired, ArrayList arliSizeErrors) {
-      boolean bValid = true;
-      return bValid;
+   public ArrayList check(Node nodeMetaDefinition, Constraint constraint, String[] arrstrParameters){
+       return new ArrayList();
    }
+
+
 
    public void copy(Cloud cloud, Node metaDataNode, Node defaultNode) {
 

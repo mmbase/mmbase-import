@@ -8,6 +8,7 @@
 <%@page import = "org.mmbase.bridge.util.*" %>
 
 <%@page import = "nl.didactor.metadata.util.MetaDataHelper" %>
+<%@page import = "nl.didactor.component.metadata.constraints.*" %>
 
 <%
     String sNode = request.getParameter("number");
@@ -57,15 +58,14 @@
 
 </script>
 <mm:content postprocessor="reducespace">
-    <mm:cloud method="delegate" jspvar="cloud">
+    <mm:cloud method="delegate" jspvar="cloud" username="admin" password="admin2k">
         <%@include file="/shared/setImports.jsp" %>
 
 
         <%
-           MetaDataHelper mdh = new MetaDataHelper();
-           NodeList nlLangCodes = mdh.getLangCodes(cloud);              // *** Get languages list
-           NodeList nlRelatedNodes = mdh.getRelatedMetaData(cloud,sNode); // *** Get all related metadata to this node
-           mdh.fillAutoValues(cloud.getNode(sNode), getServletContext());
+           NodeList nlLangCodes = MetaDataHelper.getLangCodes(cloud);              // *** Get languages list
+           NodeList nlRelatedNodes = MetaDataHelper.getRelatedMetaData(cloud,sNode); // *** Get all related metadata to this node
+           MetaDataHelper.fillAutoValues(cloud.getNode(sNode), getServletContext());
         %>
         <form name="meta_form">
 
@@ -93,10 +93,10 @@
                     if(request.getParameter("set_defaults") != null) {
                         sMetastandartNodes = sNode;
                     } else {
-                        sMetastandartNodes = mdh.getActiveMetastandards(cloud, null, null);
+                        sMetastandartNodes = MetaDataHelper.getActiveMetastandards(cloud, null, null);
                     }
 
-                    //System.out.println("result=" + mdh.getActiveMetastandards(cloud, null, null));
+                    //System.out.println("result=" + MetaDataHelper.getActiveMetastandards(cloud, null, null));
 
                 %>
                 <mm:list nodes="<%= sMetastandartNodes %>" path="metastandard" orderby="metastandard.name">
@@ -110,7 +110,7 @@
                           <%-- Taking the synonym if there is any --%>
                           <mm:field name="number" jspvar="sMetaStandartID" vartype="String">
                               <mm:write referid="user" jspvar="sUserID" vartype="String">
-                                  <%= mdh.getAliasForObject(cloud, sMetaStandartID, sUserID) %>
+                                  <%= MetaDataHelper.getAliasForObject(cloud, sMetaStandartID, sUserID) %>
                               </mm:write>
                           </mm:field>
                       </font>
@@ -123,18 +123,17 @@
                           <mm:node element="metadefinition" jspvar="thisMetadefinition">
                           <%
                               String sDefType = thisMetadefinition.getStringValue("type");
-                              String sMinValues = thisMetadefinition.getStringValue("minvalues");
                               String sMaxValues = thisMetadefinition.getStringValue("maxvalues");
                               String sMetaDefinitionID = thisMetadefinition.getStringValue("number");
 
-                              Node metadataNode = mdh.getMetadataNode(cloud,sNode,sMetaDefinitionID,request.getParameter("set_defaults") != null);
+                              Node metadataNode = MetaDataHelper.getMetadataNode(cloud,sNode,sMetaDefinitionID,request.getParameter("set_defaults") != null);
                               nlRelatedNodes.add(metadataNode);
                           %>
                           <a name="m<mm:field name="number"/>"/>
                               <%-- Taking the synonym if there is any --%>
                               <font style="font-family:arial; font-size:13px; font-weight:bold">
                                   <mm:write referid="user" jspvar="sUserID" vartype="String">
-                                      <%= mdh.getAliasForObject(cloud, sMetaDefinitionID, sUserID) %>
+                                      <%= MetaDataHelper.getAliasForObject(cloud, sMetaDefinitionID, sUserID) %>
                                   </mm:write>
                               </font>
                           <br/>
@@ -142,35 +141,29 @@
 
                           <mm:field name="description"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
                           <%
-                              if(!mdh.hasValidMetadata(cloud,sNode,sMetaDefinitionID)) {
-                                  %>
+                              nl.didactor.component.metadata.constraints.Error error = MetaDataHelper.hasTheMetaDefinitionValidMetadata(thisMetadefinition, cloud.getNode(sNode), session);
+                              if(error != null) {
+                                %>
                                   <br/>
-                                  <font style="color:#FF0000;font-size:90%"><di:translate key="<%= "metadata." + mdh.getReason(cloud,sMetaDefinitionID) %>" />
-                                  <%
-                                  if(mdh.getReason(cloud,sMetaDefinitionID).equals("number_of_vocabularies_should_match_min_max")) {
-                                      %>
-                                      = [ <mm:field name="minvalues"/>, <mm:field name="maxvalues"/> ]
-                                      <%
-                                  }
-                                  %>.</font>
-                                  <%
+                                  <font style="color:#FF0000;font-size:90%"><%= error.getErrorReport() %>.</font>
+                                <%
                               }
                           %>
                           <br/>
                           <%
-                              if(sDefType.equals("" + mdh.VOCABULARY_TYPE))
+                              if(sDefType.equals("" + MetaDataHelper.VOCABULARY_TYPE))
                               {
                                   %><%@include file="metaedit_form_vocabulary.jsp" %><%
                               }
-                              if(sDefType.equals("" + mdh.DATE_TYPE))
+                              if(sDefType.equals("" + MetaDataHelper.DATE_TYPE))
                               {
                                   %><%@include file="metaedit_form_date.jsp" %><%
                               }
-                              if(sDefType.equals("" + mdh.LANGSTRING_TYPE))
+                              if(sDefType.equals("" + MetaDataHelper.LANGSTRING_TYPE))
                               {
                                   %><%@include file="metaedit_form_langstring.jsp" %><%
                               }
-                              if(sDefType.equals("" + mdh.DURATION_TYPE))
+                              if(sDefType.equals("" + MetaDataHelper.DURATION_TYPE))
                               {
                                   %><%@include file="metaedit_form_duration.jsp" %><%
                               }
