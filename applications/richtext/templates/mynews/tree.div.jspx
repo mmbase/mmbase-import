@@ -1,80 +1,77 @@
-<!-- 
+<!--
    Displays one full segment, plus a crumb-path, and overview of sub-segments.
    dynamic include
-   $Id: tree.div.jspx,v 1.1 2006-03-14 23:35:00 michiel Exp $
+   $Id: tree.div.jspx,v 1.2 2006-03-15 12:21:12 michiel Exp $
 -->
-<div class="segment"
-     xmlns:jsp="http://java.sun.com/JSP/Page" 
+<div class="segment ${param.class}"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-<mm:content type="text/xml" escaper="inline">
+  <mm:content type="text/xml" escaper="inline">
+    <jsp:directive.page session="false" />
+    <jsp:output omit-xml-declaration="true" />
+    <jsp:directive.include file="vars.jspx" />
+    <mm:cloud>
+      <mm:param name="org.mmbase.xml-mode" value="flat" />
+      <mm:import externid="segments" vartype="list" />
+      <mm:import externid="cat" required="true" />
+      <mm:node referid="cat">
 
-  <jsp:directive.page session="false" />
-  <jsp:output omit-xml-declaration="true" />
-  <mm:cloud>
-    <mm:param name="org.mmbase.xml-mode" value="flat" />
-    <mm:import externid="home">my.rich.magazine</mm:import>
+        <!-- crumb path -->
+        <div class="path">
+          <mm:link referids="$vars,cat">
+            <a href="${_}" title="index">home -&amp;gt;</a>
+          </mm:link>
+          <mm:tree id="psegment" maxdepth="40" type="segments" role="index" orderby="index.pos" searchdir="source">
+            <mm:last inverse="true">
+              <mm:grow>
+                <mm:onshrink>
+                  <mm:depth>
+                    <mm:isgreaterthan value="0">
+                      <mm:link referids="$vars,cat,psegment@segment">
+                        <a href="${_}"><mm:field name="title" /></a>
+                        -&amp;gt;
+                      </mm:link>
+                    </mm:isgreaterthan>
+                    <mm:isgreaterthan value="0" inverse="true">
+                      <mm:field name="title" />
+                    </mm:isgreaterthan>
+                  </mm:depth>
+                </mm:onshrink>
+              </mm:grow>
+            </mm:last>
+            <mm:last>
+              <mm:field name="number" id="topsegment" write="false" />
+            </mm:last>
+            <mm:shrink />
+          </mm:tree>
+        </div>
 
-    <mm:import externid="segments" vartype="list" />
+        <!-- display of the segment itself -->
+        <jsp:directive.include file="rich.jspx" />
 
-    <mm:import externid="cat" required="true" />
-    <mm:node referid="cat">
 
-      <!-- crumb path -->
-      <div class="path">        
-        <mm:link referids="cat,home?">
-          <a href="${_}" title="index">home -&amp;gt;</a>
+        <!-- sub-chapters -->
+        <jsp:directive.include file="index-segments.ul.jspx" />
+
+        <!-- up-button -->
+        <mm:relatednodescontainer searchdirs="source" type="segments" role="index">
+          <mm:relatednodes id="parentsegment">
+            <mm:compare referid="parentsegment" referid2="topsegment" inverse="true">
+              <mm:link referids="$vars,parentsegment@segment">
+                <mm:stringlist referid="segments">
+                  <mm:last inverse="true"><mm:param name="segments" value="$_" /></mm:last>
+                </mm:stringlist>
+                <p><a href="${_}" title="omhoog naar ${parentsegment.title}">&amp;lt; omhoog naar ${parentsegment.title}</a></p>
+              </mm:link>
+            </mm:compare>
+          </mm:relatednodes>
+        </mm:relatednodescontainer>
+        <!-- index-button -->
+        <mm:link referids="$vars,cat">
+          <p><a href="${_}" title="index">&amp;lt; inhoudsopgave</a></p>
         </mm:link>
-        <mm:tree id="psegment" maxdepth="40" type="segments" role="index" orderby="index.pos" searchdir="source">
-          <mm:last inverse="true">
-            <mm:grow>
-              <mm:onshrink>
-                <mm:depth>
-                  <mm:isgreaterthan value="0"> 
-                    <mm:link referids="cat,psegment@segment,home?">
-                      <a href="${_}"><mm:field name="title" /></a>                    
-                      -&amp;gt; 
-                    </mm:link>
-                  </mm:isgreaterthan>
-                <mm:isgreaterthan value="0" inverse="true"> 
-                  <mm:field name="title" />
-                </mm:isgreaterthan>
-                </mm:depth>
-              </mm:onshrink>
-            </mm:grow>
-          </mm:last>
-          <mm:last>
-            <mm:field name="number" id="topsegment" write="false" />
-          </mm:last>
-          <mm:shrink />
-        </mm:tree>
-      </div>
 
-      <!-- display of the segment itself -->
-      <jsp:directive.include file="rich.jspx" />
-      
-      
-      <!-- sub-chapters -->
-      <jsp:directive.include file="index-segments.ul.jspx" />
-
-      <!-- up-button -->
-      <mm:relatednodescontainer searchdirs="source" type="segments" role="index">
-        <mm:relatednodes id="parentsegment">
-          <mm:compare referid="parentsegment" referid2="topsegment" inverse="true">
-            <mm:link referids="parentsegment@segment,home?">
-              <mm:stringlist referid="segments">
-                <mm:last inverse="true"><mm:param name="segments" value="$_" /></mm:last>
-              </mm:stringlist>
-              <p><a href="${_}" title="omhoog naar ${parentsegment.title}">&amp;lt; omhoog naar ${parentsegment.title}</a></p>
-            </mm:link>
-          </mm:compare>
-        </mm:relatednodes>
-      </mm:relatednodescontainer>
-      <!-- index-button -->
-      <mm:link referids="cat,home?">
-        <p><a href="${_}" title="index">&amp;lt; inhoudsopgave</a></p>
-      </mm:link>
-
-    </mm:node>
-  </mm:cloud>
-</mm:content>
+      </mm:node>
+    </mm:cloud>
+  </mm:content>
 </div>

@@ -16,7 +16,7 @@
             <mm:import externid="home">my.rich.magazine</mm:import>
 
             <mm:import externid="tab">contents</mm:import>
-            <div id="menu">              
+            <div id="menu">
               <mm:link page=".">
                 <mm:param name="tab" value="contents" />
                 <a class="${tab == 'contents' ? 'active' : ''}" href="${_}">Contents</a>
@@ -35,11 +35,11 @@
                   <a class="${tab == 'security' ? 'active' : ''}" href="${_}">Security</a>
                 </mm:link>
               </mm:haspage>
-            </div>            
-            
+            </div>
+
             <div id="content">
               <mm:include page="${tab}.div.jspx" />
-            </div>      
+            </div>
             <div>
               Logged in as: <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
               <mm:link page="logout.jspx">

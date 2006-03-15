@@ -9,18 +9,21 @@
       <field name="title">Vergeet geen titel te bedenken!</field>
     </object>
   </action>
-  
+
   <action type="delete" />
-  
+
   <action type="load">
   </action>
 
   <form-schema>
-    <title xml:lang="nl">Bijlage</title>    
-    <title xml:lang="en">Attachment</title>    
+    <title xml:lang="nl">Bijlage</title>
+    <title xml:lang="en">Attachment</title>
     <field name="title" />
+    <field name="description" />
+    <!--
     <field name="subtitle" />
-    <field name="intro" />    
+    <field name="intro" />
+    -->
     <field name="handle" ftype="upload" dtrequired="true" />
   </form-schema>
 
