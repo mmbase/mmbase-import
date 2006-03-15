@@ -3,11 +3,11 @@
      xmlns:jsp="http://java.sun.com/JSP/Page">
   <jsp:directive.page session="false" />
   <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.include file="vars.jspx" />
   <mm:content type="application/xml">
     <mm:cloud>
       <mm:time id="now" time="now" precision="minutes" write="false" />
-      <mm:import externid="home">my.rich.magazine</mm:import>
-      <mm:node number="$home">
+      <mm:node number="$h">
         <mm:relatednodes  id="menucat" type="categories" role="posrel" orderby="posrel.pos">          
           <mm:relatednodescontainer  type="categories" searchdirs="destination" role="posrel">
             <mm:constraint field="begin" operator="LESS" value="$now" />
@@ -19,7 +19,7 @@
                 </a>
                 <div id="sub_a${menucat}">
                   <mm:relatednodes id="subcat">
-                    <mm:link referids="menucat@supercat,subcat@cat">
+                    <mm:link referids="$vars,menucat@supercat,subcat@cat">
                       <a id="a${subcat}" href="${_}">
                         <mm:field name="title" />  
                       </a>
@@ -28,7 +28,7 @@
                 </div>
               </mm:isgreaterthan>
               <mm:compare value="0">
-                <mm:link>
+                <mm:link referids="$vars">
                   <mm:first inverse="true"><mm:param name="cat" referid="menucat" /></mm:first>
                   <a id="a${menucat}" href="${_}">
                     <mm:field name="title" />  
