@@ -6,6 +6,11 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import nl.didactor.component.metadata.constraints.Constraint;
+import nl.didactor.component.metadata.constraints.Error;
+
+
+
 public class MetaVocabularyHelper extends MetaHelper {
 
    private static Logger log = Logging.getLoggerInstance(MetaVocabularyHelper.class);
@@ -15,42 +20,74 @@ public class MetaVocabularyHelper extends MetaHelper {
    }
 
    public MetaVocabularyHelper() {
-      setReason("number_of_vocabularies_should_match_min_max");
    }
 
-   public boolean check(Cloud cloud, String sCurrentNode, String sMetadefNode, boolean isRequired) {
-      Node metadefNode =  cloud.getNode(sMetadefNode);
-      int iMin = getMin(metadefNode, isRequired);
-      int iMax = getMax(metadefNode);
-      int iCounter = sizeOfRelatedMetaValue(cloud,sCurrentNode,sMetadefNode);
-      boolean bValid = (iCounter >= iMin) && (iCounter <= iMax);
-      if(!bValid) {
-         log.debug(sCurrentNode + " has range ["  + iMin + "," + iMax + "] but " + iCounter + " metavocabularies for metadefinition " + sMetadefNode);
-      }
-      return bValid;
+
+
+   public Error check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData){
+
+       int iRelatedMetaValues = nodeMetaData.getRelatedNodes("metavalue").size();
+
+       if(constraint.getType() == constraint.FORBIDDEN){
+           if(iRelatedMetaValues > 0){
+              Error error = new Error(nodeMetaDefinition, Error.FORBIDDEN, constraint);
+              return error;
+           }
+       }
+
+       if(constraint.getType() == constraint.MANDATORY){
+           if(iRelatedMetaValues == 0){
+              Error error = new Error(nodeMetaDefinition, Error.MANDATORY, constraint);
+              return error;
+           }
+       }
+
+       if(constraint.getType() == constraint.LIMITED){
+           if((iRelatedMetaValues <  constraint.getMin()) || (iRelatedMetaValues >  constraint.getMax())) {
+              Error error = new Error(nodeMetaDefinition, Error.LIMITED, constraint);
+              return error;
+           }
+       }
+
+       return null;
    }
 
-   public boolean check(Cloud cloud, String[] arrstrParameters, Node metadefNode, boolean isRequired, ArrayList arliSizeErrors) {
-      boolean bValid = true;
-      int iMin = getMin(metadefNode,isRequired);
-      int iMax = getMax(metadefNode);
-      if ((arrstrParameters.length > 1) || (!arrstrParameters[0].equals(MetaDataHelper.EMPTY_VALUE))) {
 
-         if( (iMax < arrstrParameters.length) || (iMin > arrstrParameters.length)) {
 
-            bValid = false;
-         }
-      } else if(iMin>0) {
 
-         bValid = false;
-      }
-      if(!bValid) {
-         arliSizeErrors.add(metadefNode.getStringValue("number"));
-         log.debug("For " + metadefNode.getStringValue("name") + " at least "
-            + iMin + " and at most " + iMax + " values have to be selected.");
-      }
-      return bValid;
+
+
+   public ArrayList check(Node nodeMetaDefinition, Constraint constraint, String[] arrstrParameters){
+       ArrayList arliResult = new ArrayList();
+
+       if(constraint.getType() == constraint.FORBIDDEN){
+           if((arrstrParameters.length > 1) || (!arrstrParameters[0].equals(MetaDataHelper.EMPTY_VALUE))) {
+              Error error = new Error(nodeMetaDefinition, Error.FORBIDDEN, constraint);
+              arliResult.add(error);
+              return arliResult;
+           }
+       }
+
+       if(constraint.getType() == constraint.MANDATORY){
+           if((arrstrParameters.length == 0) || (arrstrParameters[0].equals(MetaDataHelper.EMPTY_VALUE))) {
+              Error error = new Error(nodeMetaDefinition, Error.MANDATORY, constraint);
+              arliResult.add(error);
+              return arliResult;
+           }
+       }
+
+       if(constraint.getType() == constraint.LIMITED){
+           if((arrstrParameters.length <  constraint.getMin()) || (arrstrParameters.length >  constraint.getMax())) {
+              Error error = new Error(nodeMetaDefinition, Error.LIMITED, constraint);
+              arliResult.add(error);
+              return arliResult;
+           }
+       }
+
+       return arliResult;
    }
+
+
 
    public void copy(Cloud cloud, Node metaDataNode, Node defaultNode) {
 
@@ -94,5 +131,4 @@ public class MetaVocabularyHelper extends MetaHelper {
          }
       }
    }
-
 }

@@ -45,7 +45,7 @@ for(int f = 0; f < 2; f++)
          <td><input type="text" name="m<%= sMetaDefinitionID %>" value="<% if (date[f] != null) out.print(date[f].getDate()); %>" style="width:30px;"/></td>
          <td>
             <select name="m<%= sMetaDefinitionID %>">
-                <option><%= mdh.EMPTY_VALUE %></option>
+                <option><%= MetaDataHelper.EMPTY_VALUE %></option>
                 <%
                    for(int i = 0; i < 12; i++)
                    {
@@ -57,7 +57,7 @@ for(int f = 0; f < 2; f++)
                                %> selected="selected" <%
                             }
                          %>
-                         ><%= mdh.MONTHS[i] %></option>
+                         ><%= MetaDataHelper.MONTHS[i] %></option>
                       <%
                    }
                 %>
@@ -67,7 +67,7 @@ for(int f = 0; f < 2; f++)
          <td>&nbsp;<di:translate key="metadata.at" />&nbsp;</td>
          <td>
             <select name="m<%= sMetaDefinitionID %>">
-                <option><%= mdh.EMPTY_VALUE %></option>
+                <option><%= MetaDataHelper.EMPTY_VALUE %></option>
                 <%
                    for(int i = 0; i < 24; i++)
                    {
@@ -88,7 +88,7 @@ for(int f = 0; f < 2; f++)
          </td>
          <td>
             <select name="m<%= sMetaDefinitionID %>">
-                <option><%= mdh.EMPTY_VALUE %></option>
+                <option><%= MetaDataHelper.EMPTY_VALUE %></option>
                 <%
                    for(int i = 0; i < 60; i++)
                    {

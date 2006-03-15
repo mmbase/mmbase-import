@@ -30,7 +30,7 @@ Date date = null;
       <td><input type="text" name="m<%= sMetaDefinitionID %>" value="<% if (date != null) out.print(date.getDate()); %>" style="width:30px;"/></td>
       <td>
          <select name="m<%= sMetaDefinitionID %>">
-             <option><%= mdh.EMPTY_VALUE %></option>
+             <option><%= MetaDataHelper.EMPTY_VALUE %></option>
              <%
                 for(int i = 0; i < 12; i++)
                 {
@@ -42,7 +42,7 @@ Date date = null;
                             %> selected="selected" <%
                          }
                       %>
-                      ><%= mdh.MONTHS[i] %></option>
+                      ><%= MetaDataHelper.MONTHS[i] %></option>
                    <%
                 }
              %>
@@ -52,7 +52,7 @@ Date date = null;
       <td>&nbsp;<di:translate key="metadata.at" />&nbsp;</td>
       <td>
          <select name="m<%= sMetaDefinitionID %>">
-             <option><%= mdh.EMPTY_VALUE %></option>
+             <option><%= MetaDataHelper.EMPTY_VALUE %></option>
              <%
                 for(int i = 0; i < 24; i++)
                 {
@@ -78,7 +78,7 @@ Date date = null;
       </td>
       <td>
          <select name="m<%= sMetaDefinitionID %>">
-             <option><%= mdh.EMPTY_VALUE %></option>
+             <option><%= MetaDataHelper.EMPTY_VALUE %></option>
              <%
                 for(int i = 0; i < 60; i++)
                 {

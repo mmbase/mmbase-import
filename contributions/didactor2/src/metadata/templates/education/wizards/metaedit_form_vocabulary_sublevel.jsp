@@ -15,7 +15,6 @@
    String sVocabularyID = (String) request.getParameter("vocabulary");
    String sMetaDefinitionID = (String) request.getParameter("metadefinition");
    NodeList nlRelatedNodes = (NodeList) session.getAttribute("metaeditor_multilevel_metavocabulary_all_metadata");
-   MetaDataHelper mdh = (MetaDataHelper) session.getAttribute("metaeditor_multilevel_metavocabulary_metadatahelper");
 
    Node nodeTemporalRootMetaVocabulary = cloud.getNode(sVocabularyID);
 
@@ -132,7 +131,7 @@
                   />
                   <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
                      <mm:node number="$user" jspvar="nodeUser">
-                        <%= mdh.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
+                        <%= MetaDataHelper.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
                      </mm:node>
                   </mm:field>
                </mm:field>
