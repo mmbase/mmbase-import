@@ -38,18 +38,14 @@
 
   <allowedrelationlist>
 
-    <relation from="texts"       to="images"      type="idrel" />
-    <relation from="texts"       to="attachments" type="idrel" />
-    <relation from="texts"       to="texts"       type="idrel" />
-    <relation from="texts"       to="urls"        type="idrel" />
-
-    <relation from="texts"       to="images"       type="posrel" />
-    <relation from="texts"       to="attachments"  type="posrel" />
-    <relation from="texts"       to="urls"         type="posrel" />
-    <relation from="texts"       to="mediasources"   type="posrel" />
+    <relation from="content"       to="images"      type="idrel" />
+    <relation from="content"       to="attachments" type="idrel" />
+    <relation from="content"       to="content"       type="idrel" />
+    <relation from="content"       to="urls"        type="idrel" />
+    <relation from="content"       to="blocks"        type="idrel" />
 
 
-    <!-- site struct 
+    <!-- site struct
          Must perhaps be replaced by ContentChannels/Content ('Karma')
     -->
     <relation from="categories" to="content"    type="related" />
