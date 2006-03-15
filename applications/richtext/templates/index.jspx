@@ -1,9 +1,9 @@
 <html
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xml:lang="en" 
+    xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.1 2006-03-14 23:36:13 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.2 2006-03-15 12:51:38 michiel Exp $ --&gt;</jsp:text>
   <mm:content type="text/html" expires="0">
     <head>
       <title>MMBase Richtext Application</title>
@@ -15,21 +15,23 @@
         <link rel="shortcut icon" href="${_}" type="image/x-icon" />
       </mm:link>
     </head>
-    
-    <body >      
+
+    <body >
       <mm:url id="ok" write="false" page="/mmbase/style/images/ok.gif" />
       <mm:url id="next" write="false" page="/mmbase/style/images/next.gif" />
+      <h1>MMBase RichText</h1>
+      <p>
+        
+      </p>
       <table>
+        <tr><th class="main" colspan="3">Example site 'My News'</th></tr>
         <tr>
-          <th class="main" colspan="3">RichText Demos</th>
-        </tr>
-        <tr>
+          <td>The richtext demo 'My Needs' need the 'ExampleData' application to be deployed.</td>
           <td>
-            <p>
-              The richtext demo's need the 'ExampleData' application to be deployed.
-            </p>
+            Example Data offers the data for a fully functional site, complete with a managable site
+            structure.
           </td>
-          <td colspan="2">
+          <td>
             <mm:cloud>
               <mm:functioncontainer module="mmadmin">
                 <mm:param name="application" value="ExampleData" />
@@ -54,7 +56,8 @@
                     </mm:notpresent>
                   </mm:compare>
                   <mm:compare value="-1" inverse="true">
-                    <p>That has happened already (version <mm:write /> is installed).</p>
+                    <img src="${ok}" alt="[ok]"  />
+                    That has happened already (version <mm:write /> is installed).
                   </mm:compare>
                 </mm:function>
               </mm:functioncontainer>
@@ -62,9 +65,37 @@
           </td>
         </tr>
         <tr>
+          <td>The example site also needs Editwizards.</td>
+          <td>Those are used for editing the site's structure. Also the 'list' pages of the
+          editwizards are used sometimes</td>
           <td>
-            <p>This tools import the MMBase documentation in this example site.</p>
-            
+            <mm:haspage page="/mmbase/edit/wizard">
+              <img src="${ok}" alt="[ok]"  />
+              Those seem to be installed.
+            </mm:haspage>
+            <mm:haspage page="/mmbase/edit/wizard" inverse="true">
+              Those seem <em>not</em> to be installed.
+            </mm:haspage>
+          </td>
+        </tr>
+        <tr>
+          <td>Also the generic JSPs for RichText (kupu) need to be installed in /mmbase/kupu</td>
+          <td></td>
+          <td>
+            <mm:haspage page="/mmbase/kupu">
+              <img src="${ok}" alt="[ok]"  />
+              Those seem to be installed.
+            </mm:haspage>
+            <mm:haspage page="/mmbase/kupu" inverse="true">
+              Those seem <em>not</em> to be installed.
+            </mm:haspage>
+          </td>
+        </tr>
+        <tr>
+          <td>Documentation importer</td>
+          <td>
+            This tool (tries to) import the MMBase documentation in this example site. This is
+            unfished work.
           </td>
           <td colspan="2">
             <p>
@@ -75,27 +106,25 @@
           </td>
         </tr>
         <tr>
+          <td>MyNews FrondEnd</td>
           <td>
-            <p>
-              MyNews FrondEnd
-            </p>
+            For every site you make, will need a front-end. In this case it is just a bunch of jsps
+            which present the site.
           </td>
-          <td>
-            <a href="mynews" class="navigate"><img src="${next}" alt="mynews"  /></a>
-          </td>
+          <td><a href="mynews" class="navigate"><img src="${next}" alt="mynews" /></a></td>
         </tr>
         <tr>
-          <td>
-            <p>
-              MyNews BackEnd
-            </p>
-          </td>
-          <td>
-            <a href="mynews/edit" class="navigate"><img src="${next}" alt="mynews"  /></a>
-          </td>
+          <td>MyNews BackEnd</td>
+          <td>Normally every site also needs some kind of back-end for editors.</td>
+          <td><a href="mynews/edit" class="navigate"><img src="${next}" alt="mynews" /></a></td>
+        </tr>
+        <tr>
+          <td>MyNews FrontEnd with edit links</td>
+          <td>The MMBase edit tag is utilized to make links to editors directly from the pages</td>
+          <td><a href="mynews/?edit=true" class="navigate"><img src="${next}" alt="mynews" /></a></td>
         </tr>
       </table>
     </body>
   </mm:content>
 </html>
-  
+
