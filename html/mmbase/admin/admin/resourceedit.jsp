@@ -136,7 +136,7 @@
           <mm:write value=".*\.properties$$">
              <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >properties</option>
            </mm:write>
-          <mm:write value=".*\.jsp$$">
+          <mm:write value=".*\.jsp[x]?$$">
              <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >JSP's</option>
            </mm:write>
         </select>
