@@ -2,14 +2,17 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <!---
   TODO: Needs simplicication.
   -->
-  <mm:import id="kupu_back"><mm:url absolute="server" page="" /></mm:import>
-  <mm:url write="false" id="wizardjsp" referids="kupu_back" page="/mmbase/kupu/mmbase/"><mm:param name="tools" value="related" /><mm:param name="link_nodetypes" value="urls,attachments,products,news" /></mm:url>
-  <mm:related path="editor,typedef" orderby="editor.pos" fields="typedef.name,editor.size,editor.name,editor.wizard">    
+  <mm:url id="kupu_back" write="false" absolute="server" page="" />
+  <mm:url write="false" id="wizardjsp" referids="kupu_back" page="/mmbase/kupu/mmbase/">
+    <mm:param name="tools" value="related" />
+    <mm:param name="link_nodetypes" value="urls,attachments,xmlnews" />
+  </mm:url>
+  <mm:related path="editor,typedef" orderby="editor.pos" fields="typedef.name,editor.size,editor.name,editor.wizard">
 
     <mm:field name="editor.name">
       <mm:isnotempty>
@@ -72,7 +75,7 @@
           </mm:link>
         </c:when>
         <c:when test="${size == 1}">
-          <!-- 
+          <!--
                call a wizard to relate one object to this category.
           -->
           <!--
@@ -86,7 +89,7 @@
           </mm:link>
         </c:when>
         <c:otherwise>
-          <!-- 
+          <!--
                call a list with limited number of objects related to this category.
           -->
           <mm:field name="editor.wizard">
@@ -105,7 +108,7 @@
             </a>
           </mm:link>
         </c:otherwise>
-      </c:choose>    
+      </c:choose>
     </c:otherwise>
   </c:choose>
   <mm:last inverse="true">, </mm:last>

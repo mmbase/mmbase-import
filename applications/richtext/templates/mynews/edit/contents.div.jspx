@@ -14,7 +14,7 @@
       <mm:node number="$home" >
         <mm:relatednodes  id="supercat" type="categories" role="posrel" orderby="posrel.pos">
           <mm:tree id="cat" type="categories" role="posrel" orderby="posrel.pos" searchdir="destination">
-            <mm:grow>                      
+            <mm:grow>
               <![CDATA[<ul>]]>
               <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
             </mm:grow>
@@ -22,7 +22,7 @@
             <mm:shrink />
           </mm:tree>
         </mm:relatednodes>
-      </mm:node>          
+      </mm:node>
     </mm:cloud>
   </mm:content>
 </div>

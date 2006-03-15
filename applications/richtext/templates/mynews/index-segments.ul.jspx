@@ -1,10 +1,10 @@
-<!--  
+<!-- 
      Presents tree of segments of surrounding segment
-     static include. 
-     $Id: index-segments.ul.jspx,v 1.1 2006-03-14 23:38:05 michiel Exp $
+     static include.
+     $Id: index-segments.ul.jspx,v 1.2 2006-03-15 12:21:12 michiel Exp $
 -->
 <mm:context
-    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <mm:import externid="segments" vartype="list" />
@@ -16,7 +16,7 @@
           <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
         </mm:grow>
         <![CDATA[<li>]]><mm:onshrink><![CDATA[</li>]]></mm:onshrink>
-        <mm:link referids="maintopic,segment,path?,segments?,home?,thumbwidth?">
+        <mm:link referids="$vars,maintopic,segment,path?,segments?,thumbwidth?">
           <mm:param name="template"  value="segment.div.jspx" />
           <span class="index"><mm:function name="index" /></span>
           <a href="${_}" title="${segment.subtitle}">

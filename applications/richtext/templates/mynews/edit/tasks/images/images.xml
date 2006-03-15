@@ -3,17 +3,17 @@
 <wizard-schema id="empty">
   <title xml:lang="nl">Plaatjes</title>
   <title xml:lang="en">Images</title>
-  
+
   <action type="create">
     <object type="images">
       <field name="title">Vergeet geen titel te bedenken!</field>
     </object>
   </action>
-  
+
   <action type="delete" />
-  
+
   <action type="load">
   </action>
-  
+
   <form-schema include="tasks/images/schema.xml" id="basics" />
 </wizard-schema>

@@ -9,7 +9,7 @@
         <jsp:text> </jsp:text>
         <a href="${_}">Pagina</a>
       </mm:link>
-      
+
       <mm:relatednodes  type="templates" role="block" orderby="block.pos" >
         <jsp:directive.include file="cat.template.as.jspx" />
         <mm:last inverse="true">, </mm:last>

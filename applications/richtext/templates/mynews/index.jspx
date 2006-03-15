@@ -1,21 +1,18 @@
 <html
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xml:lang="en" 
+    xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.2 2006-03-15 02:42:49 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.3 2006-03-15 12:21:12 michiel Exp $ --&gt;</jsp:text>
   <jsp:directive.page session="false" />
-  <mm:content type="text/html" language="en" expires="${param.edit == 'true' ? -1 : 60}">
+  <jsp:directive.include file="vars.jspx" />
+  <mm:content type="text/html" language="en" expires="${edit == 'true' ? -1 : 60}">
     <!-- better: application/xhtml+xml , but IE doesn't swallow that -->
     <jsp:output doctype-root-element="html"
                 doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
     <mm:cloud>
-      <mm:import externid="cat" from="parameters" />
-      <mm:import externid="home">my.rich.magazine</mm:import>
-      <mm:import externid="supercat" />
-      <mm:import externid="article" />
-      
+      <mm:import externid="cat" />
       <mm:notpresent referid="cat">
         <!-- no cat given (home page?), autodetermin -->
         <mm:present referid="article">
@@ -31,7 +28,7 @@
           </mm:node>
         </mm:present>
         <mm:notpresent referid="cat">
-          <mm:node number="$home">
+          <mm:node number="$h">
             <mm:relatednodes  type="categories" role="posrel" orderby="posrel.pos" max="1">
               <mm:remove referid="cat" />
               <mm:node id="cat" />
@@ -39,10 +36,10 @@
           </mm:node>
         </mm:notpresent>
       </mm:notpresent>
-      
+
       <!-- subcategory ? -->
       <mm:import externid="subcat"><mm:write referid="cat" /></mm:import>
-      
+
     <head>
       <title>
         <jsp:text>My News</jsp:text>
@@ -57,18 +54,18 @@
           <mm:node referid="article"> - <mm:field name="title" /></mm:node>
         </mm:present>
       </title>
-      <jsp:include page="head.links.jspx" />
+      <mm:include page="head.links.jspx" />
     </head>
     <body onload="initMenu('menu');">
       <div id="frame">
 
         <jsp:include page="menu.div.jspx" />
 
-        <div id="content">          
+        <div id="content">
 
           <mm:import externid="template" from="parameters" />
-          
-          <!-- 
+
+          <!--
                define an escaper 'replace', based on the optional 'search' parameter, provided by the search page.
                it causes highlighting of the search terms
           -->
@@ -77,7 +74,7 @@
             <mm:isnotempty referid="search">
               <mm:escaper id="replace" type="regexps">
                 <mm:param name="patterns">
-                  <mm:param name="(?i)(.*)($search)(.*)" 
+                  <mm:param name="(?i)(.*)($search)(.*)"
                             value="$$1&lt;span style='background-color: yellow; color:black;' id='searchresult'&gt;$$2&lt;/span&gt;$$3" />
                 </mm:param>
                 <mm:param name="mode" value="XMLTEXT" />
@@ -88,20 +85,18 @@
           <mm:notpresent referid="replace">
             <mm:escaper id="replace" referid="none" />
           </mm:notpresent>
-          
+
           <mm:present referid="template">
-            <!-- explicit template -->
-            <mm:include  page="search.div.jspx"><mm:param name="class" value="left" /></mm:include>
             <mm:include  referids="subcat@cat" page="${template}.div.jspx" escape="replace" />
           </mm:present>
 
           <mm:notpresent referid="template">
             <!-- show all template related to this (sub) category -->
             <mm:node referid="cat">
-              <mm:listrelations type="templates" role="block" orderby="block.pos" >
-                <mm:field name="class" id="class" write="false" />
+              <mm:listrelations id="blockrel" type="templates" role="block" orderby="block.pos" >
+                ${blockrel.class}
                 <mm:relatednode>
-                  <mm:include referids="subcat@cat,class" page="${_node.url}" escape="replace" />
+                  <mm:include debug="html" referids="subcat@cat,blockrel.class@class" page="${_node.url}" escape="replace" />
                 </mm:relatednode>
               </mm:listrelations>
             </mm:node>
