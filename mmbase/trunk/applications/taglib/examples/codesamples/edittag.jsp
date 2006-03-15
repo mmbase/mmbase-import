@@ -1,6 +1,10 @@
 <mm:edit type="yammeditor">
+  <%--
+      optional parameters
+
   <mm:param name="url" value="/yammeditor/yammeditor.jsp" />
   <mm:param name="icon">/mmbase/edit/my_editors/img/mmbase-edit.gif</mm:param>
+  --%>
   <mm:node number="default.mags" notfound="skip">
     <h2><mm:field name="title" /></h2>
     <mm:related path="posrel,news"
