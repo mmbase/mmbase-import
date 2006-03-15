@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="NatMM" maintainer="mmbase.org" version="5" auto-deploy="true">
+<application name="NatMM" maintainer="mmbase.org" version="6" auto-deploy="true">
    <requirements>
       <!-- <requires type="application" name="LeoCMS" maintainer="LeoCMS.nl" version="1" />  -->
      <requires type="application" name="Resources" maintainer="mmbase.org" version="1" />
@@ -116,7 +116,7 @@
         <reldef source="daterel" target="daterel" direction="bidirectional" guisourcename="daterel" guitargetname="daterel" builder="daterel" />
         <reldef source="partrel" target="partrel" direction="bidirectional" guisourcename="partrel" guitargetname="partrel" builder="partrel" />
         <reldef source="readmore" target="readmore" direction="bidirectional" guisourcename="readmore" guitargetname="readmore" builder="readmore" />
-		<reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel" />
+		  <reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel" />
    </neededreldeflist>
    <allowedrelationlist>
         <!-- LeoCMS -->
@@ -221,8 +221,10 @@
         <relation from="natuurgebieden" to="evenement" type="related" />
         <relation from="natuurgebieden" to="extra_info" type="posrel" />
         <relation from="natuurgebieden" to="paragraaf" type="readmore" />
+        <relation from="pagina" to="artikel" type="readmore" />
         <relation from="pagina" to="afdelingen" type="posrel" />
         <relation from="pagina" to="evenement_type" type="posrel" />
+        <relation from="pagina" to="pagina" type="readmore" />
         <relation from="pagina" to="payment_type" type="posrel" />
         <relation from="pagina" to="panno" type="posrel" />
         <relation from="pagina" to="provincies" type="posrel" />
