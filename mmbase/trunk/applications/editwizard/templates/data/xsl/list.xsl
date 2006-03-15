@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.42 2005-06-03 14:10:18 pierre Exp $
+    @version $Id: list.xsl,v 1.43 2006-03-15 08:36:58 nklasens Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -119,6 +119,10 @@
         </xsl:if>
       </td>
     </tr>
+    <xsl:call-template name="listlinks" />
+  </xsl:template>
+
+  <xsl:template name="listlinks">
     <tr class="linkcanvas">
       <td>
         <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}">
