@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <typedef exportsource="mmbase://www.mmbase.org/richtext" timestamp="20050921221010">
   <node number="1" owner="system">
-	<description>Texts</description>
-	<name>texts</name>
+    <description>Content</description>
+    <name>content</name>
   </node>
-  
+
   <node number="2" owner="system">
-  <description>News item</description>
-  <name>news</name>
+    <description>News item</description>
+    <name>xmlnews</name>
   </node>
-  
+
   <node number="3" owner="system">
     <description>People</description>
     <name>people</name>
