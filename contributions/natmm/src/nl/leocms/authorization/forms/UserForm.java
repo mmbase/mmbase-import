@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * Form bean for the UserForm page.
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.3 $, $Date: 2006-03-13 17:13:10 $
+ * @version $Revision: 1.4 $, $Date: 2006-03-16 22:17:17 $
  *
  * @struts:form name="UserForm"
  */
@@ -50,6 +50,11 @@ import javax.servlet.http.HttpServletRequest;
 public class UserForm extends ActionForm {
 
    private static final Logger log = Logging.getLoggerInstance(UserForm.class);
+   
+   public static String ANONYMOUS = "Verlopen";
+   public static String BASIC_USER = "Gebruiker";
+   public static String CHIEFEDITOR = "Hoofdgebruiker";
+   public static String ADMINISTRATOR = "Admin";
 
    private String username;
    private String password;
@@ -317,9 +322,10 @@ public class UserForm extends ActionForm {
 
    public List getRanks() {
       List ret=new ArrayList();
-      ret.add(new UserRank("Gebruiker","basic user"));
-      ret.add(new UserRank("Hoofdgebruiker","chiefeditor"));
-      ret.add(new UserRank("Admin","administrator"));
+      ret.add(new UserRank(ANONYMOUS,"anonymous"));
+      ret.add(new UserRank(BASIC_USER,"basic user"));
+      ret.add(new UserRank(CHIEFEDITOR,"chiefeditor"));
+      ret.add(new UserRank(ADMINISTRATOR,"administrator"));
       return ret; 
    }
    
