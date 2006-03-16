@@ -234,7 +234,6 @@ public class RelationsMigrator {
       while (it.hasNext()) {
          Map.Entry me = (Map.Entry) it.next();
          String sContent = (String) me.getValue();
-         log.info("deleting relation of deleted builders");
          String sBuilderName = (String) me.getKey();
          if ( (sBuilderName.equals("childrel")) ||
              (sBuilderName.equals("contentrel")) ) {

@@ -109,7 +109,7 @@ public class NMIntraToNatMMigrator {
       TreeMap tmDeletingFields = new TreeMap();
       tmDeletingFields.put("answer","layout;total_answers");
       tmDeletingFields.put("formulier","layout;total_answers");
-      tmDeletingFields.put("article","creditline;quote;quote_title");
+      tmDeletingFields.put("article","creditline;quote;quote_title;copyright");
       tmDeletingFields.put("employees","position;intro;deptdescr;progdescr;showinfo");
       tmDeletingFields.put("locations","city2;country2;mobile");
       tmDeletingFields.put("pijler","description");
@@ -204,15 +204,15 @@ public class NMIntraToNatMMigrator {
       "phone:telefoonnummer;fax:faxnummer;description:omschrijving");
       tmRenamingFields.put("mmbaseusers","username:account");
       tmRenamingFields.put("page","title:titel;subtitle:titel_fra");
-      tmRenamingFields.put("paragraph","title:titel;body:text");
+      tmRenamingFields.put("paragraph","title:titel;body:tekst");
       tmRenamingFields.put("pijler","title:naam;subtitle:naam_eng");
       tmRenamingFields.put("providers","name:naam;address:bezoekadres;postalcode:bezoekadres_postcode;" +
       "city:plaatsnaam;country:land;phone:telefoonnummer;fax:faxnummer;description:omschrijving");
       tmRenamingFields.put("rubriek","title:naam;subtitle:naam_eng");
-      tmRenamingFields.put("questions","body:omschrijving_fra;required:verplicht");
+      tmRenamingFields.put("questions","title:label;body:omschrijving_fra;required:verplicht");
       tmRenamingFields.put("site","title:naam");
       tmRenamingFields.put("teasers","title:titel;body:omschrijving;expiredate:verloopdatum;" +
-      "tarnsmissiondate:embargo");
+      "transmissiondate:embargo");
       tmRenamingFields.put("templates","linktext:naam;description:omschrijving");
       tmRenamingFields.put("users","firstname:voornaam;lastname:achternaam;email:emailadres");
 
@@ -277,7 +277,6 @@ public class NMIntraToNatMMigrator {
         }
         sContent = renamingFields(sContent, tmThisRenamingFields);
 
-        log.info("#NZ# analyz will be added after migration");
 
         if (!sBuilderName.equals("editwizards")){
           int iBegIndex = sEditwizardsContent.indexOf("nodepath=" + sBuilderName + "&amp;");
@@ -303,6 +302,8 @@ public class NMIntraToNatMMigrator {
 
         }
       }
+
+      log.info("#NZ# analyz of artikel and paragraaf titels will be added after migration");
 
       log.info("analyzing editwizards.url");
 
@@ -384,7 +385,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFiles.put("mmbaseusers","users");
       tmRenamingFiles.put("page","pagina");
       tmRenamingFiles.put("paragraph","paragraaf");
-      tmRenamingFiles.put("questions","formulierenveld");
+      tmRenamingFiles.put("questions","formulierveld");
       tmRenamingFiles.put("shop_items","items");
       tmRenamingFiles.put("teasers","teaser");
       tmRenamingFiles.put("templates","paginatemplate");
@@ -397,6 +398,14 @@ public class NMIntraToNatMMigrator {
         String sNew = (String)me.getValue();
         sEditwizardsContent = sEditwizardsContent.replaceAll(sOld,sNew);
       }
+
+      sEditwizardsContent = sEditwizardsContent.replaceAll("cleanartikels","cleanarticles");
+      sEditwizardsContent = sEditwizardsContent.replaceAll("medewerkers.jsp","employees.jsp");
+      sEditwizardsContent = sEditwizardsContent.replaceAll("shopshorty","items");	
+      sEditwizardsContent = sEditwizardsContent.replaceAll("shop_shorty","shop_items");
+      sEditwizardsContent = sEditwizardsContent.replaceAll("paginalength","pagelength");
+      sEditwizardsContent = sEditwizardsContent.replaceAll("maxpaginacount","maxpagecount");
+      sEditwizardsContent = sEditwizardsContent.replaceAll("homepagina","homepage");
 
       sEditwizardsContent = sEditwizardsContent.replaceAll("wizards/","config/");
 
