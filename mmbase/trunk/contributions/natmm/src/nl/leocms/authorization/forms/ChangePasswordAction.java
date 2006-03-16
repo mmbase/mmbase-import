@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
  * ChangePasswordAction
  *
  * @author Ronald Kramp
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-03-16 22:17:17 $
  *
  * @struts:action name="ChangePasswordForm"
  *                path="/editors/usermanagement/ChangePasswordAction"
@@ -53,6 +53,9 @@ import javax.servlet.http.HttpServletResponse;
 public class ChangePasswordAction extends Action {
 
    private static final Logger log = Logging.getLoggerInstance(ChangePasswordAction.class);
+
+   public static int PASSWORD_LIFETIME = 180*24*60*60; // half year
+   public static int WARNING_INTERVAL = 10*24*60*60; // 10 days
 
    /**
     * The actual perform function: MUST be implemented by subclasses.
@@ -71,12 +74,13 @@ public class ChangePasswordAction extends Action {
          Cloud cloud = CloudFactory.getCloud();
          Node userNode = cloud.getNode(changePasswordForm.getNodenumber());
          userNode.setStringValue("password", changePasswordForm.getNewpassword());
+         userNode.setIntValue("gracelogins", 3);
+         userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + PASSWORD_LIFETIME );
          userNode.commit();
-         /* hh 
+         // only change admin password by real admins
          if (userNode.getStringValue("account").equals("admin")) {
             Util.updateAdminPassword(changePasswordForm.getNewpassword());
          }
-         */ 
       }
       ActionForward af = mapping.findForward("success");
       af = new ActionForward(af.getPath() + "?succeeded=true");

@@ -44,7 +44,7 @@ import org.mmbase.module.core.MMBaseContext;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.2 2006-03-13 14:06:43 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.3 2006-03-16 22:17:17 henk Exp $
  */
 public final class UrlConverter {
    // some constants.
@@ -65,6 +65,18 @@ public final class UrlConverter {
 
    /** Logger instance. */
    private static Logger log = Logging.getLoggerInstance(UrlConverter.class.getName());
+
+   public static UrlCache getCache() {
+      MMBaseContext mc = new MMBaseContext();
+      ServletContext application = mc.getServletContext();
+      UrlCache cache = (UrlCache)application.getAttribute(URL_CACHE);
+      if (cache==null) {
+        cache = new UrlCache();
+        application.setAttribute(URL_CACHE,cache);
+      }
+      return cache;
+   }
+   
 
    /**
     * Method converts the semantic URL's into usable url.
@@ -96,18 +108,12 @@ public final class UrlConverter {
       log.debug("converting url: " + url);
 
       Cloud cloud = CloudFactory.getCloud();
+      UrlCache cache = getCache();
 
-      MMBaseContext mc = new MMBaseContext();
-      ServletContext application = mc.getServletContext();
-      UrlCache cache = (UrlCache)application.getAttribute(URL_CACHE);
-      if (cache==null) {
-        cache = new UrlCache();
-        application.setAttribute(URL_CACHE,cache);
-      }
-      String processedURL = cache.getCacheEntry(url);
-      if (processedURL!=null) {
-        log.debug("processed from cache: " + processedURL);
-        StringBuffer sb = new StringBuffer(processedURL);
+      String jspURL = cache.getJSPEntry(url);
+      if (jspURL!=null) {
+        log.debug("processed from cache: " + jspURL);
+        StringBuffer sb = new StringBuffer(jspURL);
         if (params != null) {
           sb.append('&').append(params);
         }
@@ -226,7 +232,7 @@ public final class UrlConverter {
          forwardUrl.append(itemNumber);
       }
 
-      cache.putInCache(url,forwardUrl.toString());
+      cache.putInCache(forwardUrl.toString(),url);
       if (params != null) { forwardUrl.append('&').append(params); }
 
       log.debug(forwardUrl);

@@ -27,6 +27,9 @@ import java.util.*;
 import nl.leocms.versioning.PublishManager;
 import nl.leocms.servlets.UrlConverter;
 
+import nl.leocms.servlets.UrlConverter;
+import nl.leocms.servlets.UrlCache;
+
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -207,22 +210,34 @@ public class PaginaHelper {
      */
    public String createPaginaUrl(String paginaNumber, String requestURI, boolean relative) {
       StringBuffer url = new StringBuffer();
-      if(UrlConverter.URLCONVERSION) {
-         url.append(getPaginaUrlPathToRootString(paginaNumber, requestURI, relative));
-         url.append(UrlConverter.PAGE_EXTENSION);
-      } else { // in this case, only relative path is supported
-         Node paginaTemplate = getPaginaTemplate(paginaNumber);
-         if(paginaTemplate!=null) {
-            url.append(paginaTemplate.getStringValue("url"));   
-         } else {
-            url.append(UrlConverter.ROOT_TEMPLATE);
-         }
-         url.append('?');
-         url.append(UrlConverter.PAGE_PARAM);
-         url.append('=');
-         url.append(paginaNumber);
+      Node paginaTemplate = getPaginaTemplate(paginaNumber);
+      if(paginaTemplate!=null) {
+         url.append(paginaTemplate.getStringValue("url"));   
+      } else {
+         url.append(UrlConverter.ROOT_TEMPLATE);
       }
-      log.debug("createPaginaUrl " + url.toString());
+      url.append('?');
+      url.append(UrlConverter.PAGE_PARAM);
+      url.append('=');
+      url.append(paginaNumber);
+
+      if(UrlConverter.URLCONVERSION) {
+   
+         UrlCache cache = UrlConverter.getCache();
+         String jspURL = url.toString();
+         String userURL = cache.getURLEntry(jspURL);
+         if (userURL!=null) {
+            log.debug("processed from url cache: " + userURL);
+            url = new StringBuffer(userURL);
+         } else {
+            url = new StringBuffer();
+            url.append(getPaginaUrlPathToRootString(paginaNumber, requestURI, relative));
+            url.append(UrlConverter.PAGE_EXTENSION);
+            cache.putInCache(jspURL, url.toString());
+         }
+      }
+
+      log.debug("createItemUrl " + url.toString());
       return url.toString();
    }
 
@@ -233,47 +248,62 @@ public class PaginaHelper {
      * @param itemNumber
      * @return
      */
- 
-
    public String createItemUrl(String itemNumber, String pageNumber, String params, String requestURI) {
       StringBuffer url = new StringBuffer();
-      if(UrlConverter.URLCONVERSION) {
-         url.append(getUrlPathToRootString(itemNumber, requestURI, false));
-         Node itemNode = cloud.getNode(itemNumber);
-         url.append('/');
-         Calendar cal = Calendar.getInstance();
-         cal.setTimeInMillis(itemNode.getLongValue("datumlaatstewijziging")*1000); // add lastmodifieddate
-         
-         if(cal.get(Calendar.YEAR)%100<10) { url.append('0'); }
-         url.append(cal.get(Calendar.YEAR)%100);
-         if(cal.get(Calendar.MONTH)+1<10) { url.append('0'); }
-         url.append(cal.get(Calendar.MONTH)+1);
-         if(cal.get(Calendar.DAY_OF_MONTH)<10) { url.append('0'); }
-         url.append(cal.get(Calendar.DAY_OF_MONTH));
-    
-         url.append(HtmlCleaner.forURL(HtmlCleaner.stripText(itemNode.getStringValue("titel"))));
-         url.append(UrlConverter.PAGE_EXTENSION);
-         if (params != null && !params.equals("")) { url.append('?').append(params); }
+      Node itemNode = cloud.getNode(itemNumber); 
+      Node paginaNode = null;
+      if(pageNumber!=null && !pageNumber.equals("-1")) {
+         paginaNode = cloud.getNode(pageNumber); 
       } else {
-         Node itemNode = cloud.getNode(itemNumber); 
-         Node paginaNode = null;
-         if(pageNumber!=null && !pageNumber.equals("-1")) {
-            paginaNode = cloud.getNode(pageNumber); 
-         } else {
-            paginaNode = getPaginaNode(itemNode);
-         }
-         Node paginaTemplate = getPaginaTemplate(paginaNode.getStringValue("number"));
-         if(paginaTemplate!=null) {
-            url.append(paginaTemplate.getStringValue("url"));
-         } else {
-            url.append(UrlConverter.ROOT_TEMPLATE);
-         }
-         url.append('?');
-         if (params != null && !params.equals("")) { url.append(params).append('&'); }
+         paginaNode = getPaginaNode(itemNode);
+      }
+      Node paginaTemplate = getPaginaTemplate(paginaNode.getStringValue("number"));
+      if(paginaTemplate!=null) {
+         url.append(paginaTemplate.getStringValue("url"));
+      } else {
+         url.append(UrlConverter.ROOT_TEMPLATE);
+      }
+      url.append('?');
+
+      url.append(UrlConverter.ITEM_PARAM);
+      url.append('=');
+      url.append(itemNumber);  
+     
+      if(UrlConverter.URLCONVERSION) {
    
-         url.append(UrlConverter.ITEM_PARAM);
-         url.append('=');
-         url.append(itemNumber);  
+         UrlCache cache = UrlConverter.getCache();
+         String jspURL = url.toString();
+         String userURL = cache.getURLEntry(jspURL);
+         if (userURL!=null) {
+            log.debug("processed from url cache: " + userURL);
+            url = new StringBuffer(userURL);
+         } else {
+            url = new StringBuffer();
+            url.append(getUrlPathToRootString(itemNumber, requestURI, false));
+            url.append('/');
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(itemNode.getLongValue("datumlaatstewijziging")*1000); // add lastmodifieddate
+            
+            if(cal.get(Calendar.YEAR)%100<10) { url.append('0'); }
+            url.append(cal.get(Calendar.YEAR)%100);
+            if(cal.get(Calendar.MONTH)+1<10) { url.append('0'); }
+            url.append(cal.get(Calendar.MONTH)+1);
+            if(cal.get(Calendar.DAY_OF_MONTH)<10) { url.append('0'); }
+            url.append(cal.get(Calendar.DAY_OF_MONTH));
+       
+            url.append(HtmlCleaner.forURL(HtmlCleaner.stripText(itemNode.getStringValue("titel"))));
+            url.append(UrlConverter.PAGE_EXTENSION);
+            cache.putInCache(jspURL, url.toString());
+         }
+      }
+
+      if (params != null && !params.equals("")) {
+         if(UrlConverter.URLCONVERSION) {
+            url.append('?');
+         } else {
+            url.append('&');
+         }
+         url.append(params);
       }
       log.debug("createItemUrl " + url.toString());
       return url.toString();

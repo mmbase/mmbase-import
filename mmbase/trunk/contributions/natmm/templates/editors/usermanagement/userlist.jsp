@@ -1,5 +1,6 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="/taglibs.jsp" %>
+<%@page import="nl.leocms.authorization.forms.UserForm" %>
 <html>
 <head>
 <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
@@ -24,9 +25,10 @@
    <td style="vertical-align:top;"><a href="UserInitAction.eb?id=<mm:field name='number'/>"><mm:field name="account"/></a></td>
    <td style="vertical-align:top;"><nobr><mm:field name="voornaam"/> <mm:field name="tussenvoegsel"/> <mm:field name="achternaam"/></nobr></td>
    <td style="vertical-align:top;"><nobr><mm:field name="rank">
-         <mm:compare value="basic user">Gebruiker</mm:compare>
-         <mm:compare value="administrator">Admin</mm:compare>
-         <mm:compare value="chiefeditor">Rubrieken beheerder</mm:compare>
+         <mm:compare value="anonymous"><%= UserForm.ANONYMOUS %></mm:compare>
+         <mm:compare value="basic user"><%= UserForm.BASIC_USER %></mm:compare>
+         <mm:compare value="chiefeditor"><%= UserForm.CHIEFEDITOR %></mm:compare>
+         <mm:compare value="administrator"><%= UserForm.ADMINISTRATOR %></mm:compare>
        </mm:field></nobr>
    </td>
    <td>
