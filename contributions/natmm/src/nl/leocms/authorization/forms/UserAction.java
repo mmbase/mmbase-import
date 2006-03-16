@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-03-16 22:17:17 $
  *
  * @struts:action name="UserForm"
  *                path="/editors/usermanagement/UserAction"
@@ -76,7 +76,9 @@ public class UserAction extends Action {
          if (id == -1) {
             userNode = cloud.getNodeManager("users").createNode();
             userNode.setStringValue("account", userForm.getUsername());
-           } else {
+            userNode.setIntValue("gracelogins", 3);
+            userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + ChangePasswordAction.PASSWORD_LIFETIME );
+         } else {
             userNode = cloud.getNode(id);
          }
          userNode.setStringValue("voornaam", userForm.getVoornaam());
@@ -87,15 +89,14 @@ public class UserAction extends Action {
          userNode.setStringValue("emailadres", userForm.getEmail() );
          if (!"".equals(userForm.getPassword())) {
             userNode.setStringValue("password", userForm.getPassword());
+            userNode.setIntValue("gracelogins", 3);
+            userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + ChangePasswordAction.PASSWORD_LIFETIME );
+            // only change admin password by real admins
             if ("admin".equals(userNode.getStringValue("account"))) {
                Util.updateAdminPassword(userForm.getPassword());
             }
          }
          userNode.setStringValue("notitie", userForm.getNotitie());
-         if (!"admin".equals(userNode.getStringValue("account"))) {
-            userNode.setStringValue("rank",userForm.getRank());
-         }
-
          userNode.commit();
 
          Map rollen = Util.buildRolesFromRequest(request);
@@ -108,6 +109,9 @@ public class UserAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/03/08 22:23:51  henk
+ * Changed log4j into MMBase logging
+ *
  * Revision 1.1  2006/03/05 21:43:58  henk
  * First version of the NatMM contribution.
  *

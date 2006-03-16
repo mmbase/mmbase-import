@@ -4,32 +4,41 @@ import java.util.*;
 
 public class UrlCache {
 
-  private Map cache;
+  private Map cacheJSPToURL;
+  private Map cacheURLToJSP;
 
   public UrlCache() {
-    cache = new HashMap();
+    cacheJSPToURL = new HashMap();
+    cacheURLToJSP = new HashMap();
   }
 
-
   public void flushAll() {
-    for (Iterator it=cache.keySet().iterator();it.hasNext();) {
-      cache.remove(it.next());
+    for (Iterator it=cacheJSPToURL.keySet().iterator();it.hasNext();) {
+      cacheJSPToURL.remove(it.next());
+    }
+    for (Iterator it=cacheURLToJSP.keySet().iterator();it.hasNext();) {
+      cacheURLToJSP.remove(it.next());
     }
   }
 
-  public String getCacheEntry(String requestedURL) {
-    return (String)cache.get(requestedURL);
+  public String getJSPEntry(String requestedURL) {
+    return (String)cacheURLToJSP.get(requestedURL);
   }
 
-  public void putInCache(String requestedURL, String processedURL) {
-    cache.put(requestedURL, processedURL);
+  public String getURLEntry(String requestedURL) {
+    return (String)cacheJSPToURL.get(requestedURL);
+  }
+
+  public void putInCache(String jspURL, String processedURL) {
+    cacheJSPToURL.put(jspURL, processedURL);
+    cacheURLToJSP.put(processedURL, jspURL);
   }
 
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    for (Iterator it=cache.keySet().iterator();it.hasNext();) {
+    for (Iterator it=cacheJSPToURL.keySet().iterator();it.hasNext();) {
       String key = (String)it.next();
-      String value = (String)cache.get(key);
+      String value = (String)cacheJSPToURL.get(key);
       sb.append(key).append(" - ").append(value).append("\n");
     }
     return sb.toString();

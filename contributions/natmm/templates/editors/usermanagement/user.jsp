@@ -48,14 +48,9 @@
     <tr><td class="fieldname" nowrap>Bevestig wachtwoord </td><td><html:password property="password2" size='15' maxlength='15'/><span class="notvalid"><html:errors bundle="LEOCMS" property="password2"/></span></td></tr>
     <tr><td class="fieldname" nowrap>Email signalering</td><td class="field"><html:checkbox property="emailSignalering" style="width: auto;"/></td></tr>
     <tr><td class="fieldname">Rank</td><td>
-    <logic:equal name="UserForm" property="username" value="admin">
-        administrator
-    </logic:equal>
-    <logic:notEqual property="username" name="UserForm" value="admin">
         <html:select property="rank" size="1">
            <html:optionsCollection label="description" value="value" property="ranks" name="UserForm"/>
         </html:select>
-    </logic:notEqual>
     </td></tr>
 </table>
 </div> 

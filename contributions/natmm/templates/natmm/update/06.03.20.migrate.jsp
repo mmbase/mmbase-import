@@ -20,7 +20,16 @@
    2. Optimized OptionedStats by adding the inschrijvingen.users field:<br/>  
    ALTER TABLE `v1_inschrijvingen` ADD `users` BLOB;<br/>
    UPDATE `v1_inschrijvingen` SET `users` = '-1';<br/>
-   and run /evenementen/util/update_inschrijvingen.jsp
+   and run /evenementen/util/update_inschrijvingen.jsp<br/>
+   3. Added expiredate functionality to passwords:<br/>
+   ALTER TABLE v1_users ADD expiredate BIGINT(20);<br/>
+   ALTER TABLE v1_users ADD gracelogins TINYINT(1);<br/>
+   ALTER TABLE v1_users ADD originalrank VARCHAR(40);<br/>
+   <% long currentDate = System.currentTimeMillis() / 1000; %>
+   <mm:listnodes type="users">
+     <mm:setfield name="expiredate"><%=currentDate + 90*24*60*60 %></mm:setfield>
+     <mm:setfield name="gracelogins">3</mm:setfield>
+   </mm:listnodes>
    Done.
 	</body>
   </html>
