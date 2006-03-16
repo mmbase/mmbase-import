@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.132 2006-03-14 20:05:51 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.133 2006-03-16 14:36:59 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -509,12 +509,22 @@ public class MMAdmin extends ProcessorModule {
         return -1;
     }
 
+    // determine xmlpath to a builder, provided it is loaded by MMBase.
+    private String getXMLPath(String builderName) {
+        MMObjectBuilder bul = mmb.getBuilder(builderName);
+        if (bul==null) {
+            return "";
+        } else {
+            return bul.getXMLPath();
+        }
+    }
+
     /**
      * @javadoc
      */
-    int getBuilderVersion(String bulname) {
+    int getBuilderVersion(String builderName) {
         int version = -1;
-        BuilderReader bul = mmb.getBuilderReader(bulname);
+        BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
             version = bul.getVersion();
         }
@@ -524,9 +534,9 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    String getBuilderClass(String bulname) {
+    String getBuilderClass(String builderName) {
         String className = "";
-        BuilderReader bul = mmb.getBuilderReader(bulname);
+        BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
             className = bul.getClassName();
         }
@@ -596,9 +606,9 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    String getBuilderDescription(String bulname) {
+    String getBuilderDescription(String builderName) {
         String description = "";
-        BuilderReader bul = mmb.getBuilderReader(bulname);
+        BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
             Hashtable desc = bul.getDescriptions();
             String english = (String)desc.get("en");
@@ -746,7 +756,7 @@ public class MMAdmin extends ProcessorModule {
         while (builders.hasNext()) {
             String builderResource = (String) builders.next();
             String builderName = ResourceLoader.getName(builderResource);
-            BuilderReader reader = mmb.getBuilderReader(builderName);
+            BuilderReader reader = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
             if (reader == null) {
                 log.error("Did not find reader for " + builderResource);
                 continue;
@@ -792,9 +802,9 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    Vector getFields(String buildername) {
+    Vector getFields(String builderName) {
         Vector results = new Vector();
-        BuilderReader bul = mmb.getBuilderReader(buildername);
+        BuilderReader bul = mmb.getBuilderReader(getXMLPath(builderName) + builderName);
         if (bul != null) {
             List defs = bul.getFields();
             for (Iterator h = defs.iterator(); h.hasNext();) {
