@@ -28,6 +28,7 @@
    <optionlist include="config/option_list/metadatatypes.xml" />
    <optionlist include="config/option_list/boolean.xml" />
    <optionlist include="config/option_list/metahandlers_type.xml" />
+   <optionlist include="config/option_list/constraint_type.xml" />
   </lists>
 
   <steps>
