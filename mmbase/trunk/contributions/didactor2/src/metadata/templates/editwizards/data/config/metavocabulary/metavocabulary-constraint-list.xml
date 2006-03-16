@@ -43,8 +43,5 @@
       <search-fields>value</search-fields>
     </search-filter>
   </command>
-    <!--
-    This command is being misused; we will not allow teachers to add providers
-    <command name="insert" />
-    -->
+
 </list>

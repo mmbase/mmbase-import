@@ -6,7 +6,7 @@
   <action type="load">
     <field name="value" />
     <relation destinationtype="metavocabulary" role="related" />
-    <relation destinationtype="metavocabulary" role="posrel" />
+    <relation destinationtype="metavocabulary" role="constraint" />
     <relation destinationtype="metadefinition" role="related" />
   </action>
 
