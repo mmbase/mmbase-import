@@ -12,7 +12,6 @@
   <mm:url write="false" id="wizardjsp" referids="kupu_back" page="/mmbase/kupu/mmbase/"><mm:param name="tools" value="related" /><mm:param name="link_nodetypes" value="urls,attachments,products,news" /></mm:url>
   <mm:content type="application/xml">
     <mm:cloud rank="basic user">      
-      <h1>Lists</h1>
       <ul>
         <mm:context>
           <mm:stringlist id="list" referid="richtypes">

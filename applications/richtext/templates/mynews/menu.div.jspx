@@ -1,7 +1,7 @@
 <div id="menu"
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
      xmlns:jsp="http://java.sun.com/JSP/Page">
-  <script type="text/javascript" src="${param.dir}menu.js"><jsp:text> </jsp:text></script>
+  <script type="text/javascript" src="menu.js"><jsp:text> </jsp:text></script>
   <script type="text/JavaScript">        
     addEvent(window, 'load',  function () {
        initMenu("menu", "vertical");
@@ -11,6 +11,7 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="vars.jspx" />
   <mm:import externid="cat" />
+  <mm:import externid="supercat" />
   <mm:content type="application/xml">
     <mm:cloud>
       <mm:time id="now" time="now" precision="minutes" write="false" />
@@ -22,7 +23,7 @@
             <mm:size>
               <mm:isgreaterthan value="0">
                 <mm:link referids="$vars,menucat@cat">
-                  <a id="a${menucat}" href="${_}" class="${menucat == cat ? 'selected' : ''}">
+                  <a id="a${menucat}" href="${_}" class="${menucat == cat || menucat == supercat ? 'selected' : ''}">
                     <mm:field name="title" />  
                   </a>
                 </mm:link>
