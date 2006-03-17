@@ -62,12 +62,10 @@
          <%
       }
       %>
-      <html>
-         <frameset rows="80,*" framespacing="2" frameborder="1">
-            <frame src="topmenu.jsp" name="toppane" frameborder="0" scrolling="auto">
-            <frame src="empty.html" name="bottompane" frameborder="0" scrolling="yes">
-         </frameset>
-      </html>
+      <frameset rows="80,*" framespacing="2" frameborder="1">
+         <frame src="topmenu.jsp" name="toppane" frameborder="0" scrolling="auto">
+         <frame src="empty.html" name="bottompane" frameborder="0" scrolling="yes">
+      </frameset>
       <%
    }
 %>
