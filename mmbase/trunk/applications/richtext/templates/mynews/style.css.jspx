@@ -7,6 +7,9 @@ xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
 @import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
 @import url(<mm:url page="/mmbase/style/css/mmxf.css" />);
 
+<mm:import id="A">#4cb</mm:import>
+<mm:import id="B">#046</mm:import>
+
 img {
   border: none;
 }
@@ -15,8 +18,8 @@ img {
   height: 18px;
   margin: 0px 0px 0px 0px;
   padding: 0px 0px 0px 22px;
-  background-color: #aaf;
-  color: white;
+  background-color: ${A};
+  color: ${B};
   font-weight: bold;
 }
 
@@ -24,10 +27,10 @@ img {
   padding-left: 1ex;
   padding-right: 1ex;  
   margin-bottom: 10px;
-  color: black;
+  color: ${B};
 }
 #menu div {
-  background-color: #aaf
+  background-color: ${A};
 }
 #menu a:hover, #menu a.selected {
   background-color: white;
@@ -41,6 +44,14 @@ img {
 
 #menu a:hover { 
   text-decoration : none;  
+}
+
+
+a, a:visited, a:link {
+  color: ${A};
+}
+a:hover {
+  color: ${B};
 }
 
 #end-of-page {
