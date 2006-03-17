@@ -482,7 +482,7 @@
         </mm:treeinclude>
       </div>
     </mm:islessthan>
-  </mm:node> 
+  </mm:node>
 </mm:compare>
 
 <mm:compare referid="mode" value="tests">
@@ -680,6 +680,7 @@
          %>
 
          <mm:isgreaterthan referid="number_of_educations" value="0">
+            <%// -------------------------------------------- The Education starts from here -------------------------------------------- %>
             <mm:node number="<%= sEducationID %>">
                <%@include file="whichimage.jsp"%>
                <table border="0" cellpadding="0" cellspacing="0">
@@ -696,7 +697,7 @@
                            <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
                          </mm:present>
                          <mm:node number="component.metadata" notfound="skip">
-                           <a href="metaedit.jsp?number=<%=sEducationID%>" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
+                           <a href="metaedit.jsp?number=<%=sEducationID%>" target="text"><img id="img_<%= sEducationID %>" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
                          </mm:node>
                          <mm:node number="component.drm" notfound="skip">
                            <a target="text" href="<mm:write referid="wizardjsp"/>&wizard=educationslicense&objectnumber=<%= sEducationID %>" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">&copy;</a>
@@ -752,7 +753,7 @@
                      int iLearnblockCounter = 0;
                   %>
                   <mm:related path="posrel,learnobjects" orderby="posrel.pos" directions="up" searchdir="destination">
-                     <mm:node element="learnobjects">
+                     <mm:node element="learnobjects" jspvar="nodeLearnObject">
                         <%@include file="whichimage.jsp"%>
                         <mm:nodeinfo type="type" id="this_node_type">
                            <mm:import id="mark_error" reset="true"></mm:import>
@@ -800,7 +801,7 @@
                                      </mm:present>
                                      <mm:field name="number" id="node_number" write="false" />
                                      <mm:node number="component.metadata" notfound="skip">
-                                       <a href="metaedit.jsp?number=<mm:write referid="node_number" />" target="text"><img id="img_<mm:field name="number"/>" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
+                                       <a href="metaedit.jsp?number=<mm:write referid="node_number" />" target="text"><img id="img_<%= nodeLearnObject.getNumber() %>" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
                                      </mm:node>
                                      <mm:node number="component.versioning" notfound="skip">
                                        <a href="versioning.jsp?nodeid=<mm:write referid="node_number" />" target="text"><img src="gfx/versions.gif" border="0"></a>
