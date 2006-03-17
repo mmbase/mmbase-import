@@ -19,20 +19,20 @@
             <div id="menu">
               <mm:link page=".">
                 <mm:param name="tab" value="contents" />
-                <a class="${tab == 'contents' ? 'active' : ''}" href="${_}">Contents</a>
+                <a class="${tab == 'contents' ? 'selected' : ''}" href="${_}">Contents</a>
               </mm:link>
               <mm:link page=".">
                 <mm:param name="tab" value="lists" />
-                <a class="${tab == 'lists' ? 'active' : ''}" href="${_}">Lists</a>
+                <a class="${tab == 'lists' ? 'selected' : ''}" href="${_}">Lists</a>
               </mm:link>
               <mm:link page=".">
                 <mm:param name="tab" value="structure" />
-                <a class="${tab == 'structure' ? 'active' : ''}" href="${_}">Structure</a>
+                <a class="${tab == 'structure' ? 'selected' : ''}" href="${_}">Structure</a>
               </mm:link>
               <mm:haspage page="/mmbase/security">
                 <mm:link page=".">
                   <mm:param name="tab" value="security" />
-                  <a class="${tab == 'security' ? 'active' : ''}" href="${_}">Security</a>
+                  <a class="${tab == 'security' ? 'selected' : ''}" href="${_}">Security</a>
                 </mm:link>
               </mm:haspage>
             </div>

@@ -12,7 +12,6 @@
 
     <mm:cloud rank="basic user" jspvar="cloud">
       <mm:import externid="home">my.rich.magazine</mm:import>
-      <h1>Structure</h1>
       <mm:notpresent referid="nodenumber">
         <mm:node number="$home">
           <p> 
