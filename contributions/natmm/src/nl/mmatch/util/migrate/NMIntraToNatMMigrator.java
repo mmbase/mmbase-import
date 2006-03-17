@@ -5,8 +5,7 @@ import java.util.*;
 import nl.mmatch.NatMMConfig;
 import org.mmbase.util.logging.*;
 
-
-/* 
+/*
 
 Converts the NMIntra XML to XML that fits the NatMM objectmodel.
 This script is called from RelationMigrator.run()
@@ -27,6 +26,19 @@ public class NMIntraToNatMMigrator {
       log.info("NMIntraToNatMMigrator.run()");
       TreeMap tmAllData = new TreeMap();
 
+      log.info("deleting relation between postings and postthreads from insrel.xml");
+
+      String sPostingsContent = readingFile(sFolder + "postings.xml");
+      ArrayList alPostings = getNodes(sPostingsContent);
+
+      String sPostthreadsContent  = readingFile(sFolder + "postthreads.xml");
+      ArrayList alPostthreads = getNodes(sPostthreadsContent);
+
+      String sInsrelContent = readingFile(sFolder + "insrel.xml");
+      sInsrelContent = deletingRelation(alPostthreads,alPostings,sInsrelContent);
+
+      tmAllData.put("insrel",sInsrelContent);
+
       log.info("deleting data that we do not want to migrate");
 
       ArrayList alDeletingFiles = new ArrayList();
@@ -38,6 +50,7 @@ public class NMIntraToNatMMigrator {
       alDeletingFiles.add("message.xml");
       alDeletingFiles.add("people.xml");
       alDeletingFiles.add("poll.xml");
+      alDeletingFiles.add("postings.xml"); //we have to delete them because of installing problems
       alDeletingFiles.add("urls.xml"); // doesn't contain any info
 
       Iterator itDeletingFiles = alDeletingFiles.iterator();
@@ -61,7 +74,6 @@ public class NMIntraToNatMMigrator {
       tmAllData.put("page",sContent);
       ArrayList alPages = getNodes(sContent);
       ArrayList alPageRelatedTemplate = new ArrayList();
-      String sInsrelContent = readingFile(sFolder + "insrel.xml");
       int iDNIndex = sInsrelContent.indexOf("dnumber=\"" + sTemplateNumber + "\"");
       while (iDNIndex>-1){
         iBegNodeNumberIndex = sInsrelContent.indexOf("snumber=\"",iDNIndex - 25) + 9;
@@ -173,6 +185,8 @@ public class NMIntraToNatMMigrator {
       }
       sPosrelContent = sPosrelContent.replaceAll("dposrel","posrel");
       sPosrelContent = sPosrelContent.replaceAll("unidirectional","bidirectional");
+
+      tmAllData.put("posrel",sPosrelContent );
 
       String sPageContent = readingFile(sFolder + "page.xml");
       String sRubriekContent = "";
@@ -402,7 +416,7 @@ public class NMIntraToNatMMigrator {
 
       sEditwizardsContent = sEditwizardsContent.replaceAll("cleanartikels","cleanarticles");
       sEditwizardsContent = sEditwizardsContent.replaceAll("medewerkers.jsp","employees.jsp");
-      sEditwizardsContent = sEditwizardsContent.replaceAll("shopshorty","items");	
+      sEditwizardsContent = sEditwizardsContent.replaceAll("shopshorty","items");
       sEditwizardsContent = sEditwizardsContent.replaceAll("shop_shorty","shop_items");
       sEditwizardsContent = sEditwizardsContent.replaceAll("paginalength","pagelength");
       sEditwizardsContent = sEditwizardsContent.replaceAll("maxpaginacount","maxpagecount");
@@ -653,7 +667,7 @@ public class NMIntraToNatMMigrator {
          String sRelNode = sContent.substring(iDNIndex + 9, iQuotIndex);
          if (alTo.contains(sRelNode)){
            int iBegNodeIndex = sContent.indexOf("<node number=",iSNumberIndex - 60) - 1;
-           int iEndNodeIndex = sContent.indexOf("</node>",iSNumberIndex + 9) ;
+           int iEndNodeIndex = sContent.indexOf("</node>",iSNumberIndex) + 9;
            sContent = sContent.substring(0,iBegNodeIndex) + sContent.substring(iEndNodeIndex);
          }
          iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode,iSNumberIndex + 1);
