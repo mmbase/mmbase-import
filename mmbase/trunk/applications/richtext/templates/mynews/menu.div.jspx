@@ -1,9 +1,16 @@
 <div id="menu"
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
      xmlns:jsp="http://java.sun.com/JSP/Page">
+  <script type="text/javascript" src="${param.dir}menu.js"><jsp:text> </jsp:text></script>
+  <script type="text/JavaScript">        
+    addEvent(window, 'load',  function () {
+       initMenu("menu", "vertical");
+    });
+  </script>
   <jsp:directive.page session="false" />
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="vars.jspx" />
+  <mm:import externid="cat" />
   <mm:content type="application/xml">
     <mm:cloud>
       <mm:time id="now" time="now" precision="minutes" write="false" />
@@ -14,13 +21,15 @@
             <mm:constraint field="end"   operator="GREATER"    value="$now" />
             <mm:size>
               <mm:isgreaterthan value="0">
-                <a id="a${menucat}" href="javascript:void(0);">
-                  <mm:field name="title" />  
-                </a>
+                <mm:link referids="$vars,menucat@cat">
+                  <a id="a${menucat}" href="${_}" class="${menucat == cat ? 'selected' : ''}">
+                    <mm:field name="title" />  
+                  </a>
+                </mm:link>
                 <div id="sub_a${menucat}">
                   <mm:relatednodes id="subcat">
                     <mm:link referids="$vars,menucat@supercat,subcat@cat">
-                      <a id="a${subcat}" href="${_}">
+                      <a id="a${subcat}" href="${_}" class="${subcat == cat ? 'selected' : ''}">
                         <mm:field name="title" />  
                       </a>
                     </mm:link>
