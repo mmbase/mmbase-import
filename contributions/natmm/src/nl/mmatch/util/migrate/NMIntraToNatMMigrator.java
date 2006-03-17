@@ -5,6 +5,7 @@ import java.util.*;
 import nl.mmatch.NatMMConfig;
 import org.mmbase.util.logging.*;
 
+
 /* 
 
 Converts the NMIntra XML to XML that fits the NatMM objectmodel.
