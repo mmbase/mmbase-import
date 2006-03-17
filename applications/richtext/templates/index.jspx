@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.2 2006-03-15 12:51:38 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.3 2006-03-17 21:35:14 michiel Exp $ --&gt;</jsp:text>
   <mm:content type="text/html" expires="0">
     <head>
       <title>MMBase Richtext Application</title>
@@ -122,6 +122,13 @@
           <td>MyNews FrontEnd with edit links</td>
           <td>The MMBase edit tag is utilized to make links to editors directly from the pages</td>
           <td><a href="mynews/?edit=true" class="navigate"><img src="${next}" alt="mynews" /></a></td>
+        </tr>
+        <tr>
+          <td>JavaScript</td>
+          <td>MyNews contains interesting javascript for the Menu. Which is demonstrated here.</td>
+          <td>
+            <a href="mynews/testmenu.jspx" class="navigate"><img src="${next}" alt="mynews"  /></a>
+          </td>
         </tr>
       </table>
     </body>
