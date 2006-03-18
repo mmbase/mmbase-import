@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.50 2006-02-01 14:00:31 nklasens Exp $
+ * @version $Id: ContentTag.java,v 1.51 2006-03-18 08:00:01 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -51,9 +51,9 @@ public class ContentTag extends LocaleTag  {
     public static final String ESCAPER_KEY = "org.mmbase.bridge.jsp.taglib.escaper";
 
     static final ContentTag DEFAULT = new ContentTag() {
-            public CharTransformer getWriteEscaper() { return COPY; } 
-            public String  getType()    { return "text/html"; } 
-            public String  getEncoding(){ return "ISO-8859-1"; } 
+            public CharTransformer getWriteEscaper() { return COPY; }
+            public String  getType()    { return "text/html"; }
+            public String  getEncoding(){ return "ISO-8859-1"; }
         };
 
     private static final Map defaultEscapers       = new HashMap(); // contenttype id -> chartransformer id
@@ -117,8 +117,8 @@ public class ContentTag extends LocaleTag  {
     private static ParameterizedTransformerFactory readTransformerFactory(final DocumentReader reader, final Element parentElement, final String id) {
         Iterator e = reader.getChildElements(parentElement, "class");
         Element element = (Element) e.next();
-        final String claz = reader.getElementValue(element);   
-     
+        final String claz = reader.getElementValue(element);
+
         e = reader.getChildElements(parentElement, "param");
         final Map configuredParams = new HashMap();
         while (e.hasNext()) {
@@ -127,14 +127,14 @@ public class ContentTag extends LocaleTag  {
             String value = param.getAttribute("value");
             if (! value.equals("")) {
                 configuredParams.put(name, value);
-            }            
+            }
         }
-        if (configuredParams.size() == 0) { 
+        if (configuredParams.size() == 0) {
             return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
         } else {
             return new ParameterizedTransformerFactory() {
                     ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
-                    
+
                     public Transformer createTransformer(Parameters parameters) {
                         return wrapped.createTransformer(parameters);
                     }
@@ -143,7 +143,7 @@ public class ContentTag extends LocaleTag  {
                         params.setAll(configuredParams);
                         return params;
                     }
-                    
+
                 };
         }
     }
@@ -174,12 +174,12 @@ public class ContentTag extends LocaleTag  {
             } catch (Exception e) {
                 log.error(e);
             }
-        }       
-        
+        }
+
     }
 
     protected static void readXML(InputSource escapersSource) {
-        
+
         DocumentReader reader  = new DocumentReader(escapersSource, ContentTag.class);
         Element root = reader.getElementByPath("taglibcontent");
 
@@ -266,13 +266,15 @@ public class ContentTag extends LocaleTag  {
 
 
     }
-    
+
 
     private Attribute type           = Attribute.NULL;
     private Attribute encoding       = Attribute.NULL;
     private Attribute escaper        = Attribute.NULL;
     private Attribute postprocessor  = Attribute.NULL;
     private Attribute expires        = Attribute.NULL;
+    private Attribute status         = Attribute.NULL;
+    private Attribute refresh        = Attribute.NULL;
 
 
     public void setType(String ct) throws JspTagException {
@@ -307,6 +309,13 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
+    public void setStatus(String s) throws JspTagException {
+        status = getAttribute(s);
+    }
+    public void setRefresh(String r) throws JspTagException {
+        refresh = getAttribute(r);
+    }
+
 
 
     /*
@@ -314,7 +323,7 @@ public class ContentTag extends LocaleTag  {
         return 1;
     }
     */
-    
+
 
     /**
      * @return A CharTransformer or null if no postprocessing needed
@@ -360,7 +369,7 @@ public class ContentTag extends LocaleTag  {
             if (paramsPos > 0 && id.charAt(id.length() - 1) == ')') { // inline parameterized
                                                                            // like substring(2,3)
                 String parameterized = id.substring(0, paramsPos);
-                ParameterizedTransformerFactory factory = getTransformerFactory(parameterized);                
+                ParameterizedTransformerFactory factory = getTransformerFactory(parameterized);
                 Parameters parameters = factory.createParameters();
                 parameters.setAutoCasting(true);
                 if (tag != null) {
@@ -370,7 +379,7 @@ public class ContentTag extends LocaleTag  {
                 c = (CharTransformer) factory.createTransformer(parameters);
             } else {
                 // try if there is a factory with this name, which would work with only 'standard' parameters.
-                ParameterizedTransformerFactory factory = getTransformerFactory(id); 
+                ParameterizedTransformerFactory factory = getTransformerFactory(id);
                 log.info("Found factory for " + id + " " + factory);
                 if (factory != null) {
                     Parameters parameters = factory.createParameters();
@@ -378,7 +387,7 @@ public class ContentTag extends LocaleTag  {
                     if (tag != null) {
                         tag.fillStandardParameters(parameters);
                     }
-                    c = (CharTransformer) factory.createTransformer(parameters);                
+                    c = (CharTransformer) factory.createTransformer(parameters);
                 }
             }
         }
@@ -396,7 +405,7 @@ public class ContentTag extends LocaleTag  {
     public static CharTransformer getCharTransformer(String id,  ContextReferrerTag tag) throws JspTagException {
 
         List transs = org.mmbase.util.StringSplitter.splitFunctions(id);
-        
+
         if (transs.size() > 1) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
             // Iterator ids = StringSplitter.split(id).iterator();
@@ -428,8 +437,8 @@ public class ContentTag extends LocaleTag  {
         if (fact == null) throw new JspTagException("The chartransformerfactory " + id + " is unknown");
         return fact;
     }
-    
-    /** 
+
+    /**
      * Called by children
      * @return A CharTransformer (not null)
      */
@@ -442,11 +451,11 @@ public class ContentTag extends LocaleTag  {
     protected void setWriteEscaper() throws JspTagException {
         prevEscaper = getWriteEscaper();
         CharTransformer esc;
-        if (! escaper.getString(this).equals("")) { 
+        if (! escaper.getString(this).equals("")) {
             esc =  getCharTransformer(escaper.getString(this), this);
         }  else {
             String defaultEscaper = (String) defaultEscapers.get(getType());
-            if (defaultEscaper != null) {                
+            if (defaultEscaper != null) {
                 esc = getCharTransformer(defaultEscaper, this);
             } else {
                 esc = COPY;
@@ -503,7 +512,7 @@ public class ContentTag extends LocaleTag  {
         }
         if (getPostProcessor() == null) {
             log.debug("no postprocessor");
-            return EVAL_BODY; 
+            return EVAL_BODY;
         } else {
             return EVAL_BODY_BUFFERED;
         }
@@ -519,9 +528,9 @@ public class ContentTag extends LocaleTag  {
      * of HTTP replaces this header with a more specific Cache-Control
      * header, but recommends including the Pragma header as well for
      * backward compatibility.
-     * 
+     *
      * @param response - http response
-     * @param expire - seconds before content should expire 
+     * @param expire - seconds before content should expire
      */
     public static void addNoCacheHeaders(HttpServletResponse response, long expire) {
          if (expire <= 0) {
@@ -533,12 +542,12 @@ public class ContentTag extends LocaleTag  {
              // Set standard HTTP/1.0 no-cache header.
              response.setHeader("Pragma", "no-cache");
              response.setDateHeader ("Expires", -1);
-             
-             // long now = System.currentTimeMillis();                        
+
+             // long now = System.currentTimeMillis();
              // according to  rfc2616 sec14 'already expires' means that date-header is expires header
              // sadly, this does not work:
              // perhaps because tomcat overrides the date header later, so a difference of a second can occur
-             // response.setDateHeader("Date",     now);                         
+             // response.setDateHeader("Date",     now);
          }
          else {
              // calc the string in GMT not localtime and add the offset
@@ -546,22 +555,22 @@ public class ContentTag extends LocaleTag  {
              response.setHeader("Cache-Control", "public");
          }
     }
-    
+
     public int doEndTag() throws JspTagException {
         unsetWriteEscaper();
         return super.doEndTag();
     }
 
 
-    /** 
-     * Sets a user. This is used by cloud-tag. 
+    /**
+     * Sets a user. This is used by cloud-tag.
      */
 
     void setUser(UserContext newUser) throws JspTagException {
         //user = newUser;
         if (newUser != null) {
             long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
-            if (exp > 0) { 
+            if (exp > 0) {
                 HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
                 // This page is using the non-anonymous cloud. Cache control must be private.
                 response.setHeader("Cache-Control", "private");
@@ -569,7 +578,7 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-    public int doAfterBody() throws JspTagException { 
+    public int doAfterBody() throws JspTagException {
         if (bodyContent != null) {
             CharTransformer post = getPostProcessor();
             if (post != null) {
@@ -577,9 +586,9 @@ public class ContentTag extends LocaleTag  {
                     log.debug("A postprocessor was defined " + post);
                     // log.trace("processing  " + bodyContent.getString());
                 }
-                
+
                 post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
-                
+
             } else {
                 if (EVAL_BODY == EVAL_BODY_BUFFERED) {
                     // only needed for lousy app-servers
@@ -589,7 +598,7 @@ public class ContentTag extends LocaleTag  {
                         }
                     } catch (java.io.IOException ioe){
                         throw new TaglibException(ioe);
-                    }                     
+                    }
                 }
             }
         }
