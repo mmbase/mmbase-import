@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.62 2006-02-17 21:17:52 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.63 2006-03-18 08:00:31 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -50,12 +50,12 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
 
     protected Attribute xslt    = Attribute.NULL;
-    protected Attribute format  = Attribute.NULL; 
+    protected Attribute format  = Attribute.NULL;
     protected Attribute options = Attribute.NULL;
-    protected Attribute wants   = Attribute.NULL; 
+    protected Attribute wants   = Attribute.NULL;
 
-    protected Attribute namespaceAware   = Attribute.NULL; 
-    protected Attribute referids   = Attribute.NULL; 
+    protected Attribute namespaceAware   = Attribute.NULL;
+    protected Attribute referids   = Attribute.NULL;
 
     protected List       extraParameters      = new ArrayList();
 
@@ -109,7 +109,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     {
         log.debug("Init of FormatterTag.");
 
-        try {            
+        try {
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
             dfactory.setNamespaceAware(false);
             documentBuilder = dfactory.newDocumentBuilder();
@@ -118,7 +118,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             org.xml.sax.ErrorHandler handler = new org.mmbase.util.XMLErrorHandler();
             org.xml.sax.EntityResolver resolver = new org.mmbase.util.XMLEntityResolver();
             documentBuilder.setErrorHandler(handler);
-            documentBuilder.setEntityResolver(resolver); 
+            documentBuilder.setEntityResolver(resolver);
             documentBuilderNS.setErrorHandler(handler);
             documentBuilderNS.setEntityResolver(resolver);
         }  catch (Exception e) {
@@ -192,14 +192,14 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         if (wants == Attribute.NULL) return WANTS_DEFAULT;
         String ww = wants.getString(this).toLowerCase();
         if ("default".equals(ww)) {
-            return WANTS_DEFAULT;            
+            return WANTS_DEFAULT;
         } else if ("DOM".equals(ww)) {
-            return  WANTS_DOM;            
+            return  WANTS_DOM;
         } else if ( "string".equals(ww)) {
             return WANTS_STRING;
         } else {
             throw new JspTagException("Unknown value '" + ww + "' for wants attribute.");
-        }         
+        }
     }
 
     public void setNamespaceaware(String n) throws JspTagException {
@@ -237,7 +237,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
      * this tag. If wantXML evaluates false, they must simply write to
      * the page, and formatter will pick it up.
      */
-    public final boolean wantXML() {   
+    public final boolean wantXML() {
         return xmlGenerator != null;
     }
 
@@ -263,7 +263,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             log.debug("counter not found");
             counter = new Counter();
             pageContext.setAttribute(PAGECONTEXT_COUNTER, counter);
-        } 
+        }
         counter.inc();
 
         if (log.isDebugEnabled()) log.debug("startag of formatter tag " + counter);
@@ -313,16 +313,16 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         String body = bodyContent.getString().trim();
         bodyContent.clearBody(); // should not be shown itself.
 
-        if(getFormat() < FORMAT_LIMIT_WANTXML) { // determin the Document 
+        if(getFormat() < FORMAT_LIMIT_WANTXML) { // determin the Document
             if (xmlGenerator != null && xmlGenerator.getDocument().getDocumentElement().getFirstChild() != null) {
                 if (body.length() > 0) {
                     throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body. Perhaps you want to use the attribute wants='string'?");
                 } else {
                     doc = xmlGenerator.getDocument();
-                }                
+                }
             } else {
                 if (body == null || body.equals("")) body = "<mmxf />"; // something random that will at least parse.
-                if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");                               
+                if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
@@ -337,12 +337,12 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                 if (log.isDebugEnabled()) {
                     log.debug("created an element: " + doc.getDocumentElement().getTagName());
                 }
-            }      
-            
+            }
+
         } else {
             doc = null;
         }
-        
+
 
         if (log.isDebugEnabled()) {
             if (doc != null) {
@@ -368,7 +368,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             }
             switch(getFormat()) {
             case FORMAT_NONE:
-                helper.useEscaper(true); 
+                helper.useEscaper(true);
                 helper.setValue(body);
                 break;
             case FORMAT_XHTML:
@@ -383,7 +383,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                 helper.setValue(xslTransform(doc, "xslt/code2xml.xslt"));
                 break;
             case FORMAT_TEXTONLY:
-                helper.useEscaper(true); 
+                helper.useEscaper(true);
                 helper.setValue(xslTransform(doc, "xslt/2ascii.xslt"));
                 break;
             case FORMAT_RICH:
@@ -419,7 +419,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             }
         } else {
 
-            if (xslt != Attribute.NULL) {                
+            if (xslt != Attribute.NULL) {
                 if (xsltSource != null) {
                     throw new JspTagException("Cannot use  'xslt' subtag and the 'xslt' attribute");
                 }
@@ -436,9 +436,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
         if (log.isDebugEnabled()) {
             log.trace("found result " + helper.getValue());
-            
+
         }
-        
+
 
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
@@ -493,7 +493,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
 
         if (cachedXslt == null) {
-            // according to javadoc of TransformerFactory, this cannot happen, but 
+            // according to javadoc of TransformerFactory, this cannot happen, but
             // I say it occur any way!
             throw new JspTagException("Could not create Templates object from " + xsl);
         }
@@ -502,7 +502,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         Map params = new HashMap();
         String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
-        //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context)); 
+        //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         // use node function
         LocaleTag localeTag = (LocaleTag) findParentTag(org.mmbase.bridge.jsp.taglib.LocaleTag.class, null, false);
         Locale locale;
@@ -568,7 +568,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
     private String prettyXML(Document doc) throws JspTagException  {
         if ( log.isDebugEnabled() ) {
-            log.trace("pretty XML " + doc);   
+            log.trace("pretty XML " + doc);
         }
         return xslTransform(doc, "xslt/indentxml.xslt");
     }
