@@ -1,7 +1,7 @@
 <%@page import = "nl.didactor.metadata.util.MetaDataHelper" %>
 <mm:field name="number" jspvar="sCurrentNode" vartype="String" write="false">
 <%
-   if(MetaDataHelper.hasTheObjectValidMetadata(cloud.getNode(sCurrentNode), session) == null) {
+   if(MetaDataHelper.hasTheObjectValidMetadata(cloud.getNode(sCurrentNode), application).size() == 0) {
 
       imageName = "gfx/metavalid.gif";
       sAltText = "metadata_correct";

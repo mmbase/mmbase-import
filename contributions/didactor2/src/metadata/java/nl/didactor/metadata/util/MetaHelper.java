@@ -82,7 +82,7 @@ public abstract class MetaHelper {
     * @param nodeMetaData Node
     * @return Error
     */
-   public abstract Error check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData);
+   public abstract ArrayList check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData);
 
    public abstract void copy(Cloud cloud, Node metaDataNode, Node defaultNode);
 
