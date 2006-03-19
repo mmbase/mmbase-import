@@ -26,25 +26,66 @@ public class MetaDurationHelper extends MetaHelper {
 
 
 
-   public Error check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData){
-       return null;
+
+   public ArrayList check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData){
+       ArrayList arliResult = new ArrayList();
+       if(constraint.getType() == constraint.FORBIDDEN){
+           if(isTheDateCorrect(nodeMetaData)){
+               //The Date is ok, but it is forbidden
+               arliResult.add(new Error(nodeMetaDefinition, Error.FORBIDDEN, constraint));
+           }
+       }
+       if((constraint.getType() == constraint.LIMITED) || (constraint.getType() == constraint.MANDATORY)){
+           if(!isTheDateCorrect(nodeMetaData)){
+               //The Date is required, but it is not ok
+               arliResult.add(new Error(nodeMetaDefinition, Error.MANDATORY, constraint));
+           }
+       }
+       return arliResult;
    }
 
 
    public ArrayList check(Node nodeMetaDefinition, Constraint constraint, String[] arrstrParameters){
        ArrayList arliResult = new ArrayList();
 
+       if(constraint.getType() == constraint.FORBIDDEN){
+           if(isTheDateCorrect(arrstrParameters)){
+               //The Date is ok, but it is forbidden
+               Error error = new Error(nodeMetaDefinition, Error.FORBIDDEN, constraint);
+               arliResult.add(error);
+           }
+       }
+       if((constraint.getType() == constraint.LIMITED) || (constraint.getType() == constraint.MANDATORY)){
+           if(!isTheDateCorrect(arrstrParameters)){
+               //The Date is required, but it is not ok
+               Error error = new Error(nodeMetaDefinition, Error.MANDATORY, constraint);
+               arliResult.add(error);
+           }
+       }
+       return arliResult;
+   }
+
+
+   /**
+    * Check the corectness of the duration
+    * If the date is empty we suppose it is wrong
+    * @param arrstrParameters String[]
+    * @return boolean
+    */
+   private boolean isTheDateCorrect(String[] arrstrParameters){
        try{
            String sDateBegin = arrstrParameters[0] + "-" + arrstrParameters[1] + "-" + arrstrParameters[2] + "|" + arrstrParameters[3] + ":" + arrstrParameters[4];
            String sDateEnd   = arrstrParameters[5] + "-" + arrstrParameters[6] + "-" + arrstrParameters[7] + "|" + arrstrParameters[8] + ":" + arrstrParameters[9];
-           Date date = parseDate(sDateBegin);
-           date = parseDate(sDateEnd);
+           parseDate(sDateBegin);
+           parseDate(sDateEnd);
+           return true;
        }
        catch(Exception e){
-           Error error = new Error(nodeMetaDefinition, Error.MANDATORY, constraint);
-           arliResult.add(error);
+           return false;
        }
-       return arliResult;
+   }
+   private boolean isTheDateCorrect(Node nodeMetaData){
+       return nodeMetaData.countRelatedNodes("metadate") > 1;
    }
 
 

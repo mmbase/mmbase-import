@@ -2,8 +2,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
-<%@page import = "java.util.Date" %>
-<%@page import = "java.util.HashSet" %>
+<%@page import = "java.util.*" %>
 <%@page import = "org.mmbase.bridge.*" %>
 <%@page import = "org.mmbase.bridge.util.*" %>
 
@@ -141,11 +140,11 @@
 
                           <mm:field name="description"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
                           <%
-                              nl.didactor.component.metadata.constraints.Error error = MetaDataHelper.hasTheMetaDefinitionValidMetadata(thisMetadefinition, cloud.getNode(sNode), session);
-                              if(error != null) {
+                              ArrayList arliErrors = MetaDataHelper.hasTheMetaDefinitionValidMetadata(thisMetadefinition, cloud.getNode(sNode), application);
+                              for(Iterator it = arliErrors.iterator(); it.hasNext();){
                                 %>
                                   <br/>
-                                  <font style="color:#FF0000;font-size:90%"><%= error.getErrorReport() %>.</font>
+                                  <font style="color:#FF0000;font-size:90%"><%= ((nl.didactor.component.metadata.constraints.Error) it.next()).getErrorReport() %>.</font>
                                 <%
                               }
                           %>
