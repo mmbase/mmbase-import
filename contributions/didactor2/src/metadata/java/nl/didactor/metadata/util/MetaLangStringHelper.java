@@ -21,8 +21,8 @@ public class MetaLangStringHelper extends MetaHelper {
    }
 
 
-   public Error check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData){
-       return null;
+   public ArrayList check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData){
+       return new ArrayList();
    }
 
    public ArrayList check(Node nodeMetaDefinition, Constraint constraint, String[] arrstrParameters){

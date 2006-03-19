@@ -77,30 +77,36 @@ public class Error {
         }
 
         String sBundleKey = "metadata.form_error";
-        switch(nodeMetaDefinition.getIntValue("type")){
-            case MetaDataHelper.DATE_TYPE:{
-                sBundleKey += "_date";
-                break;
-            }
-            case MetaDataHelper.DURATION_TYPE:{
-                sBundleKey += "_duration";
-                break;
-            }
-            case MetaDataHelper.LANGSTRING_TYPE:{
-                sBundleKey += "_langstring";
-                break;
-            }
-            case MetaDataHelper.VOCABULARY_TYPE:{
-                sBundleKey += "_vocabulary";
-                break;
-            }
-            default:{
-                new Exception("wrong metadefinition type in node ID=" + this.nodeMetaDefinition.getNumber());
-            }
-        }
 
-        if(constraint.getEvent() == Constraint.EVENT_VOCABULARY_CONSTRAINT_RELATION){
-            sBundleKey += "_event_vocabulary";
+        if(constraint.getEvent() == Constraint.EVENT_VOCABULARY_TO_VOCABULARY_RELATION){
+            sBundleKey += "_vocabulary_to_vocabulary";
+        }
+        else{
+            switch(nodeMetaDefinition.getIntValue("type")){
+                case MetaDataHelper.DATE_TYPE:{
+                    sBundleKey += "_date";
+                    break;
+                }
+                case MetaDataHelper.DURATION_TYPE:{
+                    sBundleKey += "_duration";
+                    break;
+                }
+                case MetaDataHelper.LANGSTRING_TYPE:{
+                    sBundleKey += "_langstring";
+                    break;
+                }
+                case MetaDataHelper.VOCABULARY_TYPE:{
+                    sBundleKey += "_vocabulary";
+                    break;
+                }
+                default:{
+                    new Exception("wrong metadefinition type in node ID=" + this.nodeMetaDefinition.getNumber());
+                }
+            }
+
+            if(constraint.getEvent() == Constraint.EVENT_VOCABULARY_CONSTRAINT_RELATION){
+                sBundleKey += "_event_vocabulary";
+            }
         }
 
         if(this.type == Error.FORBIDDEN){
@@ -126,6 +132,13 @@ public class Error {
             Node[] eventObject = (Node[]) constraint.getEventObject();
             sErrorReport = sErrorReport.replaceFirst("\\{\\*\\*\\*\\}", eventObject[0].getStringValue("name"));
             sErrorReport = sErrorReport.replaceFirst("\\{\\*\\*\\*\\}", eventObject[1].getStringValue("value"));
+        }
+
+        if(constraint.getEvent() == Constraint.EVENT_VOCABULARY_TO_VOCABULARY_RELATION){
+            Node[] eventObject = (Node[]) constraint.getEventObject();
+            sErrorReport = sErrorReport.replaceFirst("\\{\\*\\*\\*\\}", eventObject[1].getStringValue("name"));
+            sErrorReport = sErrorReport.replaceFirst("\\{\\*\\*\\*\\}", eventObject[2].getStringValue("value"));
+            sErrorReport = sErrorReport.replaceFirst("\\{###\\}", eventObject[0].getStringValue("value"));
         }
 
 //        System.out.println(sErrorReport);

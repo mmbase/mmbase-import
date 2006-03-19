@@ -26,21 +26,21 @@ public class MetaDateHelper extends MetaHelper {
 
 
 
-   public Error check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData){
-       Error error = null;
+   public ArrayList check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData){
+       ArrayList arliResult = new ArrayList();
        if(constraint.getType() == constraint.FORBIDDEN){
            if(isTheDateCorrect(nodeMetaData)){
                //The Date is ok, but it is forbidden
-               error = new Error(nodeMetaDefinition, Error.FORBIDDEN, constraint);
+               arliResult.add(new Error(nodeMetaDefinition, Error.FORBIDDEN, constraint));
            }
        }
        if((constraint.getType() == constraint.LIMITED) || (constraint.getType() == constraint.MANDATORY)){
            if(!isTheDateCorrect(nodeMetaData)){
                //The Date is required, but it is not ok
-               error = new Error(nodeMetaDefinition, Error.MANDATORY, constraint);
+               arliResult.add(new Error(nodeMetaDefinition, Error.MANDATORY, constraint));
            }
        }
-       return error;
+       return arliResult;
    }
 
    public ArrayList check(Node nodeMetaDefinition, Constraint constraint, String[] arrstrParameters){

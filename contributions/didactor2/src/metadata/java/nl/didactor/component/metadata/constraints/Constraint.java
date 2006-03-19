@@ -1,5 +1,7 @@
 package nl.didactor.component.metadata.constraints;
 
+import java.util.*;
+
 /**
  * Unificated constrain for all constraint-modes of the metaeditor
  *
@@ -35,6 +37,8 @@ public class Constraint {
     public final static int EVENT_METADEFINITION_ITSELF = 0;
     public final static int EVENT_METASTANDART_CONSTRAINT_RELATION = 1;
     public final static int EVENT_VOCABULARY_CONSTRAINT_RELATION = 2;
+    public final static int EVENT_VOCABULARY_TO_VOCABULARY_RELATION = 3;
+
 
     private int min = 0;
     private int max = 9999;
@@ -42,6 +46,16 @@ public class Constraint {
     private int position;
     private int event;
     private Object eventObject;
+
+
+
+    /**
+     * Contains link to other constraints, so they can compose a chain
+     */
+    private ArrayList constraintsChain = null;
+
+
+
 
     public Constraint(int type, int event){
         this.type = type;
@@ -93,6 +107,17 @@ public class Constraint {
     public Object getEventObject(){
         return eventObject;
     }
+
+
+
+    public void setConstraintsChain(ArrayList constraintsChain){
+        this.constraintsChain = constraintsChain;
+    }
+    public ArrayList getConstraintsChain(){
+        return constraintsChain;
+    }
+
+
 }
 
 

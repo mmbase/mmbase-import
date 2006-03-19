@@ -16,7 +16,6 @@
    </head>
    <body style="padding-left:10px">
    <%
-
       // MetaDataHelper.log(request,"metaedit.jsp");
 
       String sNode = request.getParameter("number");
@@ -46,7 +45,7 @@
          //Submit has been pressed
 
          //Remove cached constraints
-         session.removeAttribute("metadata_timestamp");
+         application.removeAttribute("metaedit_constraints:" + sNode);
 
          //------------------------------- Save form -------------------------------
          %>
@@ -59,7 +58,7 @@
 
                   HashSet nlPassedNodes = new HashSet();
 
-               
+
                   //---------------- Process parameters and store values ---------------
                   if(sRequest_Submitted.equals("add")) {
 
@@ -139,13 +138,11 @@
                   }
 
 
-                  
+
                   //------------------------------- Check form -------------------------------
-                  
+
                   //List of metadefinitions that must be checked
-                  HashMap hashmapConstraints = MetaDataHelper.getConstraints(cloud);
-
-
+                  HashMap hashmapConstraints = MetaDataHelper.getApplicationConstraints(application, cloud.getNode(sNode));
 
 
 
@@ -162,8 +159,15 @@
                      for(Iterator it = hashmapConstraints.keySet().iterator(); it.hasNext();){
                          Node nodeMetaDefinition = (Node) it.next();
 
-                         System.out.println("-------------" + ((Constraint) hashmapConstraints.get(nodeMetaDefinition)).getType());
-                         System.out.println(nodeMetaDefinition.getNumber());
+/*
+                         System.out.println(nodeMetaDefinition.getNumber() + "-------------" + ((Constraint) hashmapConstraints.get(nodeMetaDefinition)).getType());
+                         if(((Constraint) hashmapConstraints.get(nodeMetaDefinition)).getConstraintsChain() != null){
+                            System.out.println(nodeMetaDefinition.getNumber() + "-size--------" + ((Constraint) hashmapConstraints.get(nodeMetaDefinition)).getConstraintsChain().size());
+                         }
+                         else{
+                            System.out.println(nodeMetaDefinition.getNumber() + "-size--------null");
+                         }
+*/
 
                          String[] arrstrParameters = request.getParameterValues("m" + nodeMetaDefinition.getNumber());
                          if(arrstrParameters == null){
@@ -203,7 +207,7 @@
                             %> <%= error.getErrorReport() %> <br/> <%
                         }
                         %>
-                           <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none"><di:translate key="metadata.back_to_metaeditform" /></font></a>
+                           <a href="metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime() %>"><font style="color:red; font-weight:bold; text-decoration:none"><di:translate key="metadata.back_to_metaeditform" /></font></a>
                            <script>
                               try
                               {
@@ -215,7 +219,7 @@
                            </script>
                         <%
                      }
-                     else {
+                     else{
 
                         if(session.getAttribute("show_metadata_in_list") == null) {
                            //We use metaeditor from content_metadata or not?
@@ -232,7 +236,7 @@
                               window.setInterval("document.location.href='metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime()%>;'", 3000);
                            </script>
                            <br/><br/>
-                           <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none"><di:translate key="metadata.back_to_metaeditform" /></font></a>
+                           <a href="metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime() %>"><font style="color:red; font-weight:bold; text-decoration:none"><di:translate key="metadata.back_to_metaeditform" /></font></a>
                            <%
 
                         } else {
@@ -262,7 +266,7 @@
                            window.setInterval("document.location.href='metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime()%>&set_defaults=true;'", 3000);
                         </script>
                         <br/><br/>
-                        <a href="javascript:history.go(-1)"><font style="color:red; font-weight:bold; text-decoration:none"><di:translate key="metadata.back_to_metaeditform" /></font></a>
+                        <a href="metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime() %>"><font style="color:red; font-weight:bold; text-decoration:none"><di:translate key="metadata.back_to_metaeditform" /></font></a>
                         <%
                   }
                   if((sRequest_Submitted.equals("add")) || (sRequest_Submitted.equals("remove"))) {

@@ -3,7 +3,6 @@ package nl.didactor.metadata.util;
 import java.util.*;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
@@ -61,16 +60,25 @@ public class MetaDataHelper {
     * 2. MetaStandart - constraints - metadefinition
     * 3. Old type
     *
+    *
+    * Vocabulary-constraint-vocabulary is an extra constraint that can work together with any of above
+    *
+    * NOTE2:
+    * At this moment only "vocabulary-constraint-vocabulary" uses ArrayList "ConstraintChain"
+    * (So some checks in MetaVocabularyHelper are ommited)
+    * But in the future it can be extended.
+    *
     * @param cloud Cloud
     * @return HashMap
     */
-   public static HashMap getConstraints(Cloud cloud){
+   public static HashMap getConstraints(Node nodeObject) throws Exception{
+       Cloud cloud = nodeObject.getCloud();
        HashMap hashmapResult = new HashMap();
 
        String sActiveMetaStandarts = getActiveMetastandards(cloud, null, null);
 
 
-       //Old style
+       //Old style, fields from MetaDefinition node
        NodeList nl = cloud.getList(sActiveMetaStandarts,
                                    "metastandard,metadefinition",
                                    "metadefinition.number",
@@ -81,24 +89,33 @@ public class MetaDataHelper {
            String sNodeID = nl.getNode(n).getStringValue("metadefinition.number");
            Node node = cloud.getNode(sNodeID);
 
-           if((node.getIntValue("minvalues") >= 0) && (node.getIntValue("maxvalues") >= 0)){
-               Constraint constraint = new Constraint(Constraint.LIMITED, Constraint.EVENT_METADEFINITION_ITSELF);
-               constraint.setMax(node.getIntValue("maxvalues"));
-               constraint.setMin(node.getIntValue("minvalues"));
-               hashmapResult.put(node, constraint);
-               continue;
-           }
-           if((node.getIntValue("minvalues") == 0) && (node.getIntValue("maxvalues") == 0)){
-               Constraint constraint = new Constraint(Constraint.FORBIDDEN, Constraint.EVENT_METADEFINITION_ITSELF);
-               hashmapResult.put(node, constraint);
-               continue;
-           }
-           if(node.getIntValue("minvalues") > 0){
-               Constraint constraint = new Constraint(Constraint.MANDATORY, Constraint.EVENT_METADEFINITION_ITSELF);
-               hashmapResult.put(node, constraint);
-               continue;
-           }
+           switch (node.getIntValue("type")){
+               case DATE_TYPE:
+               case DURATION_TYPE:{
+                   Constraint constraint = new Constraint(Constraint.FORBIDDEN, Constraint.EVENT_METADEFINITION_ITSELF);
+                   hashmapResult.put(node, constraint);
+                   break;
+               }
 
+               case VOCABULARY_TYPE:
+               case LANGSTRING_TYPE:{
+                   if(node.getIntValue("minvalues") > 0){
+                       Constraint constraint = new Constraint(Constraint.MANDATORY, Constraint.EVENT_METADEFINITION_ITSELF);
+                       hashmapResult.put(node, constraint);
+                   }
+                   if((node.getIntValue("minvalues") >= 0) && (node.getIntValue("maxvalues") >= 0)){
+                       Constraint constraint = new Constraint(Constraint.LIMITED, Constraint.EVENT_METADEFINITION_ITSELF);
+                       constraint.setMax(node.getIntValue("maxvalues"));
+                       constraint.setMin(node.getIntValue("minvalues"));
+                       hashmapResult.put(node, constraint);
+                   }
+                   if((node.getIntValue("minvalues") == 0) && (node.getIntValue("maxvalues") == 0)){
+                       Constraint constraint = new Constraint(Constraint.FORBIDDEN, Constraint.EVENT_METADEFINITION_ITSELF);
+                       hashmapResult.put(node, constraint);
+                   }
+                   break;
+               }
+           }
        }
 
 
@@ -125,30 +142,102 @@ public class MetaDataHelper {
 
        //vocabulary - constraints - metadefinition
        nl = cloud.getList(sActiveMetaStandarts,
-                          "metastandard,posrel,metadefinition1,constraints,metavocabulary,posrel,metadata,metadefinition2",
+                          "metastandard,posrel,metadefinition1,constraints,metavocabulary,metadefinition2",
                           "metadefinition1.number,constraints.number,metavocabulary.number,metadefinition2.number",
                           "metadefinition1.number != metadefinition2.number",
                           null, null, null, true);
 
        for (int n = 0; n < nl.size(); n++) {
-           Node nodeMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition1.number"));
-           Node nodeConstraintRelation = cloud.getNode(nl.getNode(n).getStringValue("constraints.number"));
+
            Node nodeControllerVocabulary = cloud.getNode(nl.getNode(n).getStringValue("metavocabulary.number"));
-           Node nodeControllerMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition2.number"));
+           NodeList nl2 = cloud.getList("" + nodeObject.getNumber(),
+                             "object,metadata,metavocabulary",
+                             "metavocabulary.number",
+                             "metavocabulary.number=" + nodeControllerVocabulary.getNumber(),
+                             null, null, null, true);
 
-//           System.out.println("0000000000000=" + nodeMetaDefinition.getNumber());
-//           System.out.println("1111111111111=" + nodeControllerMetaDefinition.getNumber());
+           if(nl2.size() > 0){
 
-           Constraint constraint = new Constraint(nodeConstraintRelation.getIntValue("type"), Constraint.EVENT_VOCABULARY_CONSTRAINT_RELATION);
-           constraint.setMax(nodeConstraintRelation.getIntValue("maxvalues"));
-           constraint.setMin(nodeConstraintRelation.getIntValue("minvalues"));
-           constraint.setPosition(nodeConstraintRelation.getIntValue("pos"));
-           Node[] value = new Node[2];
-           value[0] = nodeControllerMetaDefinition;
-           value[1] = nodeControllerVocabulary;
-           constraint.setEventObject(value);
+               Node nodeMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition1.number"));
+               Node nodeConstraintRelation = cloud.getNode(nl.getNode(n).getStringValue("constraints.number"));
+               Node nodeControllerMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition2.number"));
 
-           hashmapResult.put(nodeMetaDefinition, constraint);
+               Constraint constraint = new Constraint(nodeConstraintRelation.getIntValue("type"), Constraint.EVENT_VOCABULARY_CONSTRAINT_RELATION);
+               constraint.setMax(nodeConstraintRelation.getIntValue("maxvalues"));
+               constraint.setMin(nodeConstraintRelation.getIntValue("minvalues"));
+               constraint.setPosition(nodeConstraintRelation.getIntValue("pos"));
+               Node[] value = new Node[2];
+               value[0] = nodeControllerMetaDefinition;
+               value[1] = nodeControllerVocabulary;
+               constraint.setEventObject(value);
+
+               hashmapResult.put(nodeMetaDefinition, constraint);
+           }
+       }
+
+
+
+       //vocabulary - constraints - vocabulary
+       nl = cloud.getList(sActiveMetaStandarts,
+                          "metastandard,posrel,metadefinition,related,metavocabulary1,constraints,metavocabulary2",
+                          "metadefinition.number,constraints.number,metavocabulary1.number,metavocabulary2.number",
+                          null,
+                          null, null, "destination", true);
+
+       for (int n = 0; n < nl.size(); n++) {
+           Node nodeControllerMetaVocabulary = cloud.getNode(nl.getNode(n).getStringValue("metavocabulary1.number"));
+
+           NodeList nl2 = cloud.getList("" + nodeObject.getNumber(),
+                                        "object,metadata,metavocabulary",
+                                        "metavocabulary.number",
+                                        "metavocabulary.number=" + nodeControllerMetaVocabulary.getNumber(),
+                                        null, null, null, true);
+
+
+           if(nl2.size() > 0){
+               Node nodeControllerMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition.number"));
+               Node nodeConstraintRelation = cloud.getNode(nl.getNode(n).getStringValue("constraints.number"));
+               Node nodeMetaVocabulary = cloud.getNode(nl.getNode(n).getStringValue("metavocabulary2.number"));
+
+               Node nodeMetaDefinition = null;
+               try{
+                   nodeMetaDefinition = nodeMetaVocabulary.getRelatedNodes("metadefinition").getNode(0);
+               }
+               catch(Exception e){
+                   throw new Exception("Metavocabulary node(" + nodeMetaVocabulary.getNumber() + ") has got NO METADEFINITION");
+               }
+
+               /*
+                              System.out.println("metadefinition=" + nodeMetaDefinition.getNumber());
+                              System.out.println("metavocabulary=" + nodeMetaVocabulary.getNumber());
+                              System.out.println("constraints=" + nodeConstraintRelation.getNumber());
+                              System.out.println("metavocabulary_cont=" + nodeControllerMetaVocabulary.getNumber());
+                              System.out.println("metadefinition_cont=" + nodeControllerMetaDefinition.getNumber());
+                */
+
+               Constraint constraint = new Constraint(nodeConstraintRelation.getIntValue("type"), Constraint.EVENT_VOCABULARY_TO_VOCABULARY_RELATION);
+               if(hashmapResult.containsKey(nodeMetaDefinition)){
+                   //There is an additional constraint for this metadefinition
+                   Constraint mainConstraint = ((Constraint) hashmapResult.get(nodeMetaDefinition));
+                   ArrayList arliConstraintsChain = mainConstraint.getConstraintsChain();
+                   if(arliConstraintsChain == null){
+                       arliConstraintsChain = new ArrayList();
+                   }
+                   arliConstraintsChain.add(constraint);
+                   mainConstraint.setConstraintsChain(arliConstraintsChain);
+               }
+               else{
+                   //This is a first constraint for this MetaDefinition
+                   hashmapResult.put(nodeMetaDefinition, constraint);
+               }
+
+               Node[] value = new Node[3];
+               value[0] = nodeMetaVocabulary;
+               value[1] = nodeControllerMetaDefinition;
+               value[2] = nodeControllerMetaVocabulary;
+               constraint.setEventObject(value);
+           }
+
        }
 
 
@@ -210,19 +299,17 @@ public class MetaDataHelper {
     * @param nodeObject Node
     * @return Error
     */
-   public static Error hasTheObjectValidMetadata(Node nodeObject, HttpSession session) {
+   public static ArrayList hasTheObjectValidMetadata(Node nodeObject, ServletContext application) throws Exception{
 
-       HashMap hashmapConstraints = getSessionConstraints(nodeObject.getCloud(), session);
+       HashMap hashmapConstraints = getApplicationConstraints(application, nodeObject);
+       ArrayList arliResult = new ArrayList();
 
        for(Iterator it = hashmapConstraints.keySet().iterator(); it.hasNext(); ){
            Node nodeMetaDefinition = (Node) it.next();
 
-           Error error = hasTheObjectValidMetadata(nodeMetaDefinition, nodeObject, hashmapConstraints);
-           if(error != null){
-               return error;
-           }
+           arliResult.addAll(hasTheObjectValidMetadata(nodeMetaDefinition, nodeObject, hashmapConstraints));
        }
-       return null;
+       return arliResult;
    }
 
 
@@ -233,24 +320,22 @@ public class MetaDataHelper {
     * @param session HttpSession
     * @return Error
     */
-   public static Error hasTheMetaDefinitionValidMetadata(Node nodeMetaDefinition, Node nodeObject, HttpSession session) {
-       HashMap hashmapConstraints = getSessionConstraints(nodeMetaDefinition.getCloud(), session);
+   public static ArrayList hasTheMetaDefinitionValidMetadata(Node nodeMetaDefinition, Node nodeObject, ServletContext application) throws Exception{
+       HashMap hashmapConstraints = getApplicationConstraints(application, nodeObject);
        return hasTheObjectValidMetadata(nodeMetaDefinition, nodeObject, hashmapConstraints);
    }
 
-   public static Error hasTheObjectValidMetadata(Node nodeMetaDefinition, Node nodeObject, HashMap hashmapConstraints){
+   public static ArrayList hasTheObjectValidMetadata(Node nodeMetaDefinition, Node nodeObject, HashMap hashmapConstraints){
        Constraint constraint = (Constraint) hashmapConstraints.get(nodeMetaDefinition);
+
        if(constraint != null){
            //We start this checking only for MetaDefinition nodes that have got constraints
            int iType = getIType(nodeMetaDefinition);
            Node nodeMetaData = getMetadataNode(nodeObject.getCloud(), "" + nodeObject.getNumber(), "" + nodeMetaDefinition.getNumber(), false);
-           Error error = metaHelpers[iType].check(nodeMetaDefinition, (Constraint) hashmapConstraints.get(nodeMetaDefinition), nodeMetaData);
-           if(error != null){
-               return error;
-           }
+           return metaHelpers[iType].check(nodeMetaDefinition, (Constraint) hashmapConstraints.get(nodeMetaDefinition), nodeMetaData);
        }
 
-       return null;
+       return new ArrayList();
    }
 
 
@@ -266,38 +351,22 @@ public class MetaDataHelper {
     * @param session HttpSession
     * @return HashMap
     */
-   private static HashMap getSessionConstraints(Cloud cloud, HttpSession session){
-
+   public static HashMap getApplicationConstraints(ServletContext application, Node nodeObject) throws Exception{
+       String sKey = "metaedit_constraints:" + nodeObject.getNumber();
        HashMap hashmapConstraints;
 
-       if(session.getAttribute("metadata_timestamp") != null){
-           long lTime = ((Long)  session.getAttribute("metadata_timestamp")).longValue();
-           if(lTime > System.currentTimeMillis() - 5000){
-               hashmapConstraints = getConstraints(cloud);
-               saveConstraintsToSession(hashmapConstraints, session);
-           }
-           else{
-               hashmapConstraints = (HashMap) session.getAttribute("metadata_constraints");
-           }
+       if(application.getAttribute(sKey) != null){
+          hashmapConstraints = (HashMap) application.getAttribute(sKey);
        }
        else{
-           hashmapConstraints = getConstraints(cloud);
-           saveConstraintsToSession(hashmapConstraints, session);
+          hashmapConstraints = MetaDataHelper.getConstraints(nodeObject);
+          application.setAttribute(sKey, hashmapConstraints);
        }
 
        return hashmapConstraints;
    }
 
 
-   /**
-    * Stores current constraints
-    * @param hashmapConstraints HashMap
-    * @param session HttpSession
-    */
-   private static void saveConstraintsToSession(HashMap hashmapConstraints, HttpSession session){
-       session.setAttribute("metadata_timestamp", new Long(System.currentTimeMillis()));
-       session.setAttribute("metadata_constraints", hashmapConstraints);
-   }
 
 
 
