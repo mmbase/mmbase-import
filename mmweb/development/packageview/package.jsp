@@ -34,7 +34,7 @@
       <mm:import id="is_shown" reset="true" /> 
     </mm:related> 
     <mm:related path="rolerel,persons" 
-   	  fields="rolerel.role,persons.firstname,persons.suffix,persons.lastname,persons.email"
+      fields="rolerel.role,persons.firstname,persons.suffix,persons.lastname,persons.email"
       constraints="rolerel.role='maintainer'" >
       <mm:present referid="is_shown">, </mm:present>
       <mm:remove referid="is_shown" />
@@ -98,7 +98,7 @@
     constraints="rolerel.role='initiator'" >
     <mm:present referid="is_shown"><br /></mm:present><mm:remove referid="is_shown" />
     <mm:node element="persons">
-    Name: <mm:field name="firstname" /> <mm:field name="lastname" />
+    Name: <mm:field name="firstname" /> <mm:field name="suffix" /> <mm:field name="lastname" />
     <mm:related path="rolerel,organisation">
       <br />Company: <mm:field name="organisation.name" />
     </mm:related>
@@ -190,13 +190,13 @@
       <mm:present referid="is_shown"><br /></mm:present>
       <mm:remove referid="is_shown" /> 
       <mm:field name="persons.firstname" /> <mm:field name="persons.suffix" /> <mm:field name="persons.lastname" />
-	  <mm:node element="persons">      
-	    <mm:related path="rolerel,organisation"
-		  fields="organisation.name">
-		  from <mm:field name="organisation.name" />
-		</mm:related>
-	  </mm:node>
-	  <mm:last inverse="true"><br /></mm:last>                        
+      <mm:node element="persons">      
+        <mm:related path="rolerel,organisation"
+          fields="organisation.name">
+          from <mm:field name="organisation.name" />
+        </mm:related>
+      </mm:node>
+      <mm:last inverse="true"><br /></mm:last>                        
   </mm:related> 
   </p>
   </td>
