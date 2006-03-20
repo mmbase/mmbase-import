@@ -5,7 +5,7 @@
   <option id="developer">developer</option>
   <option id="supporter">supporter</option>
   <option id="initiator">initiator</option>
-  <option id="questions">questions</option>
-  <option id="bugs">bugs</option>
-  <option id="support">support</option>
+  <option id="questions">Questions</option>
+  <option id="bugs">Bugreports</option>
+  <option id="support">Sponsor/Support questions</option>
 </optionlist>
