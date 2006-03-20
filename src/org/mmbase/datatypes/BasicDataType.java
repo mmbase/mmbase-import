@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.42 2006-03-13 14:30:44 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.43 2006-03-20 18:37:15 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -43,6 +43,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      */
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
     private static final Logger log = Logging.getLoggerInstance(BasicDataType.class);
+
+    private static int anonymousSequence = 1;
 
     protected RequiredRestriction requiredRestriction        = new RequiredRestriction(false);
     protected UniqueRestriction   uniqueRestriction          = new UniqueRestriction(false);
@@ -416,11 +418,8 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * This method is final, override {@link #clone(String)} in stead.
      */
     public final Object clone() {
-        // return clone(getName() + "_clone");
-        return clone(getName());
+        return clone(null);
     }
-
-
 
     /**
      * {@inheritDoc}
