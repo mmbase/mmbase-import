@@ -25,8 +25,9 @@
   </td>
 </tr>
 </table>
-<mm:compare referid="main" value="bundles"><%@ include file="bundles.jsp" %></mm:compare>
-<mm:compare referid="main" value="bundle"><%@ include file="bundle.jsp" %></mm:compare>
+<%-- <mm:compare referid="main" value="bundles"><%@ include file="bundles.jsp" %></mm:compare>
+<mm:compare referid="main" value="bundle"><%@ include file="bundle.jsp" %></mm:compare> --%>
+<%@ include file="packages.jsp" %>
 </div>
 <%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>
