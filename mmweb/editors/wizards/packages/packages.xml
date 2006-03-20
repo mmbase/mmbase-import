@@ -61,9 +61,7 @@
 		<list include="wizards/packagetypes/add_packagetypes.xml" />
 		<list include="wizards/organisation/add_organisation_rolerel.xml" />
 		<list include="wizards/persons/add_persons_rolerel.xml" />
-		<!-- 
-		<list include="wizards/urls/add_urls.xml" />
+		<list include="wizards/urls/add_urls_related.xml" />
 		<list include="wizards/attachments/add_attachments.xml" />
-		 -->
 	</form-schema>
 </wizard-schema> 
