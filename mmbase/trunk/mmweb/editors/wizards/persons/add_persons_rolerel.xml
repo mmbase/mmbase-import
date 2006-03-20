@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="rolerel" destination="persons"
-		minoccurs="0" maxoccurs="*">
+<list role="rolerel" destination="persons" minoccurs="0" maxoccurs="*">
 
 	<title>People</title>
 	<item>
 		<title>Persons and their role</title>
 		<description></description>
-		<field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
 		<field name="firstname" ftype="data">
 			<prompt>Firstname</prompt>
 		</field>
