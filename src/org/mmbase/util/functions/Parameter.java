@@ -27,7 +27,7 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.28 2006-01-02 16:18:08 michiel Exp $
+ * @version $Id: Parameter.java,v 1.29 2006-03-20 13:02:03 pierre Exp $
  * @see Parameters
  */
 
@@ -190,13 +190,6 @@ public class Parameter extends AbstractDescriptor implements java.io.Serializabl
      */
     public Class getTypeAsClass() {
         return dataType.getTypeAsClass();
-    }
-
-    /**
-     * @deprecated-now use getTypeAsClass
-     */
-    public Class getType() {
-        return getTypeAsClass();
     }
 
     /**
