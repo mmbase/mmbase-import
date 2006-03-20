@@ -112,7 +112,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
                 Map.Entry entry = (Map.Entry) i.next();
                 Object value = entry.getValue();
                 if (value != null) {
-                    if (value instanceof String) {
+                    if (value instanceof String && cmds.size() == 0) {
                         cmds.put(getName(), value);
                     }
                     vars.put(entry.getKey(), value);
@@ -138,7 +138,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
             tagger = new StringTagger("");
             if (params != null) {
                 for (Iterator entries = params.entrySet().iterator(); entries.hasNext(); ) {
-                    Map.Entry entry = (Map.Entry) entries.next(); 
+                    Map.Entry entry = (Map.Entry) entries.next();
                     String key=(String) entry.getKey();
                     Object o = entry.getValue();
                     if (o instanceof Vector) {
