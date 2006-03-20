@@ -45,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.186 2006-03-09 14:09:22 pierre Exp $
+ * @version $Id: MMBase.java,v 1.187 2006-03-20 13:02:03 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1089,8 +1089,8 @@ public class MMBase extends ProcessorModule {
                 builder.setDescription(desc);
                 builder.setSingularNames(parser.getSingularNames());
                 builder.setPluralNames(parser.getPluralNames());
-                builder.setVersion(parser.getBuilderVersion());
-                builder.setMaintainer(parser.getBuilderMaintainer());
+                builder.setVersion(parser.getVersion());
+                builder.setMaintainer(parser.getMaintainer());
                 builder.setSearchAge("" + parser.getSearchAge());
                 builder.setInitParameters(parser.getProperties());
                 parser.getDataTypes(builder.getDataTypeCollector());
@@ -1304,8 +1304,8 @@ public class MMBase extends ProcessorModule {
         }
 
         if (bapp != null) {
-            int version = bapp.getBuilderVersion();
-            String maintainer = bapp.getBuilderMaintainer();
+            int version = bapp.getVersion();
+            String maintainer = bapp.getMaintainer();
 
             try {
                 int installedversion = ver.getInstalledVersion(builderName, "builder");
