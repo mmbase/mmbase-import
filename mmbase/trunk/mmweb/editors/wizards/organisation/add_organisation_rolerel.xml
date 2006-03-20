@@ -26,7 +26,6 @@
 		</relation>
 	</action>
 	
-	<command name="insert" />
 
 	<command name="search" nodepath="organisation" fields="name" orderby="name" age="-1">
     	<prompt></prompt>
@@ -35,5 +34,6 @@
 			<search-fields>name</search-fields>
 		</search-filter>
 	</command>
+	<command name="startwizard" inline="true" wizardname="wizards/organisation/organisation" objectnumber="new" />
 </list>	
 
