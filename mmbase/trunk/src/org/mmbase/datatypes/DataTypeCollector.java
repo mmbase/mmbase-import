@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.8 2005-10-27 13:05:01 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.9 2006-03-20 18:37:15 pierre Exp $
  */
 
 public final class DataTypeCollector {
@@ -109,14 +109,24 @@ public final class DataTypeCollector {
 
     /**
      * Adds a datatype to this collector.
+     * The datatype should have a unique id. If it has no id (i.e. getName() returns an empty string), it is not added.
+     * If the datatype overrides an existing datatype, a warning is logged.
      * @param dataType the datatype to add
+     * @return if applicable, the old (original) datatype with the same id as the dattype that was being added, <code>null</code>
+     *    if it is not applicable.
      */
     public BasicDataType addDataType(BasicDataType dataType) {
-        BasicDataType old = (BasicDataType) dataTypes.put(dataType.getName(), dataType);
-        if (old != null && old != dataType) {
-            log.warn("Replaced " + dataType.getName() + " " + old  + " with " + dataType);
+        String name = dataType.getName();
+        if (name == null || "".equals(name)) {
+            // not a proper id, so do not add
+            return null;
+        } else {
+            BasicDataType old = (BasicDataType) dataTypes.put(name, dataType);
+            if (old != null && old != dataType) {
+                log.warn("Replaced " + name + " " + old  + " with " + dataType);
+            }
+            return old;
         }
-        return old;
     }
 
     /**
