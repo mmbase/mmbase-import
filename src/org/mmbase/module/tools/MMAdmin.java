@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.133 2006-03-16 14:36:59 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.134 2006-03-20 12:59:25 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -67,6 +67,7 @@ public class MMAdmin extends ProcessorModule {
     private static final Parameter PARAM_MODULE = new Parameter("module", String.class);
     private static final Parameter PARAM_FIELD = new Parameter("field", String.class);
     private static final Parameter PARAM_KEY = new Parameter("key", String.class);
+    private static final Parameter PARAM_PATH = new Parameter("path", String.class);
     private static final Parameter[] PARAMS_BUILDER = new Parameter[] { PARAM_BUILDER, PARAM_PAGEINFO};
     private static final Parameter[] PARAMS_APPLICATION = new Parameter[] { PARAM_APPLICATION, PARAM_PAGEINFO};
 
@@ -113,6 +114,7 @@ public class MMAdmin extends ProcessorModule {
         addFunction(new ReplaceFunction("RELATIONCACHEPERFORMANCE", PARAMS_PAGEINFO));
 
         addFunction(new ProcessFunction("LOAD", new Parameter[] {PARAM_APPLICATION, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
+        addFunction(new ProcessFunction("BUILDERSAVE", new Parameter[] {PARAM_BUILDER, PARAM_PATH, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
     }
 
 
@@ -270,7 +272,6 @@ public class MMAdmin extends ProcessorModule {
      */
     public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
         String cmdline, token;
-
         for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
             cmdline = (String)h.nextElement();
             if (!checkAdmin(sp, cmdline)) {
@@ -350,9 +351,10 @@ public class MMAdmin extends ProcessorModule {
                     log.warn("MMAdmin> refused to write builder, am in kiosk mode");
                 } else {
                     String buildername = (String)cmds.get(cmdline);
-                    String savepath = (String)vars.get("PATH");
+                    String savepath = (String)vars.get("path");
                     MMObjectBuilder bul = getMMObject(buildername);
                     if (bul != null) {
+                        boolean result = false;
                         try {
                             boolean includeComments = false;
                             if (tok.hasMoreTokens()) {
@@ -362,6 +364,13 @@ public class MMAdmin extends ProcessorModule {
                             builderOut.setIncludeComments(includeComments);
                             builderOut.setExpandBuilder(false);
                             builderOut.writeToFile(savepath);
+                            lastmsg =
+                                "Writing finished, no problems.\n\n"
+                                    + "A clean copy of "
+                                    + buildername
+                                    + ".xml can be found at : "
+                                    + savepath
+                                    + "\n\n";
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
                             lastmsg =
@@ -369,15 +378,10 @@ public class MMAdmin extends ProcessorModule {
                                     + "Error encountered="
                                     + e.getMessage()
                                     + "\n\n";
-                            return false;
                         }
-                        lastmsg =
-                            "Writing finished, no problems.\n\n"
-                                + "A clean copy of "
-                                + buildername
-                                + ".xml can be found at : "
-                                + savepath
-                                + "\n\n";
+                        if (vars != null) {
+                            vars.put("RESULT", lastmsg);
+                        }
                     }
                 }
             }
