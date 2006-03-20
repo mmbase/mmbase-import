@@ -30,7 +30,7 @@ public class DynamicDate extends Date {
      * Parses a format string and returns Date instance, possibly a 'dynamic one'. Not necessary a new one, which
      * does not matter, because these objects are unmodifiable anyway.
      *
-     * If the request date is not dynamic, but absolutely defined, a normal Date object is returned. 
+     * If the request date is not dynamic, but absolutely defined, a normal Date object is returned.
      */
     public static Date getInstance(final String format) throws ParseException {
         if (format.equals("null")) return null;
@@ -64,6 +64,10 @@ public class DynamicDate extends Date {
 
     protected DynamicDate(String d) {
         date = d;
+    }
+
+    public String getFormat() {
+        return date;
     }
 
     /**
