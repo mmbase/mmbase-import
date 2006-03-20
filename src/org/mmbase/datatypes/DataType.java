@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.48 2006-03-13 14:30:44 pierre Exp $
+ * @version $Id: DataType.java,v 1.49 2006-03-20 18:37:15 pierre Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -47,7 +47,6 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
     static final int PROCESS_GET    = 1;
     static final int PROCESS_SET    = 2;
 
-
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value
      * must be enforced always, and furthermore, that extensions (based on clone) cannot loosen
@@ -55,7 +54,6 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * Integer.MAX_VALUE, there is no way you can even store a bigger value in this, so this restriction is 'absolute'.
      */
     static final int ENFORCE_ABSOLUTE  = Integer.MAX_VALUE;
-
 
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced always.
@@ -123,12 +121,6 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
     public Object cast(Object value, Node node, Field field);
 
     /**
-     * If datatypes outside 'fields' are imaginable, which still need cloud, then the following may need addition
-     */
-    // public Object cast(Object value, Cloud cloud);
-
-
-    /**
      * Before actually 'cast' an object to the right type, it may undergo some conversion by the
      * datatype, e.g. enumerations may get resolved (enumerations have the feature that they can
      * e.g. resolve java-constants to their values).
@@ -142,28 +134,26 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
     public Object preCast(Object value, Node node, Field field);
 
     /**
-     * If datatypes outside 'fields' are imaginable, which still need cloud, then the following may need addition (implemented already as a util in BasicDataType)
-     */
-    // public Object preCast(Object value, Cloud cloud);
-
-
-
-    /**
      * Returns the default value of this data type.
      * @return the default value
      */
     public Object getDefaultValue();
 
+    /**
+     * @javadoc
+     */
     public void setDefaultValue(Object def);
 
     /**
      * @javadoc
      */
     public DataType rewrite(Object owner);
+
     /**
      * @javadoc
      */
     public boolean isFinished();
+
     /**
      * @javadoc
      */
@@ -251,7 +241,6 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      */
     public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
 
-
     /**
      * Returns a (gui) value from a list of retsricted enumerated values, or
      * <code>null</code> if no enumeration restrictions apply or teh value cannot be found.
@@ -275,11 +264,13 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      */
     public DataType.Restriction getEnumerationRestriction();
 
-
-
+    /**
+     * @javadoc
+     */
     public CommitProcessor getCommitProcessor();
 
     /**
+     * @javadoc
      */
     public void setCommitProcessor(CommitProcessor cp);
 
@@ -289,12 +280,14 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * XXX What exactly would be against getGetProcesor(), getSetProcessor() ?
      */
     public Processor getProcessor(int action);
+
     /**
      * Returns the processor for this action and processing type
      * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
      * @param processingType the MMBase type defining the type of value to process
      */
     public Processor getProcessor(int action, int processingType);
+
     /**
      * Sets the processor for this action
      * @param action either {@link #PROCESS_GET}, or {@link #PROCESS_SET}
@@ -308,13 +301,13 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      */
     public void setProcessor(int action, Processor processor, int processingType);
 
-
     /**
      * Returns a cloned instance of this datatype, inheriting all validation rules.
      * Unlike the original datatype though, the cloned copy is declared unfinished even if the original
      * was finished. This means that the cloned datatype can be changed.
      */
     public Object clone();
+
     /**
      * Returns a cloned instance of this datatype, inheriting all validation rules.
      * Similar to calling clone(), but changes the data type name if one is provided.
@@ -322,25 +315,37 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      */
     public Object clone(String name);
 
-
     /**
      * A restriction controls the acceptable values of a DataType.
      */
     public interface Restriction extends Serializable {
 
+        /**
+         * @javadoc
+         */
         public String getName();
+
         /**
          * A Value describing the restriction, so depending on the semantics of this restriction, it
          * can have virtually every type (as long as it is Serializable)
          */
         public Serializable getValue();
+
+        /**
+         * @javadoc
+         */
         public void setValue(Serializable value);
+
         /**
          * If the restriction does not hold, the following error description can be used. On default
          * these descriptions are searched in a resource bundle based on the name of this
          * restriction.
          */
         public LocalizedString getErrorDescription();
+
+        /**
+         * @javadoc
+         */
         public void setErrorDescription(LocalizedString errorDescription);
 
         /**
@@ -363,6 +368,10 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
          * See {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
          */
         public int getEnforceStrength();
+
+        /**
+         * @javadoc
+         */
         public void setEnforceStrength(int v);
 
     }

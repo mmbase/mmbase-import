@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.17 2005-12-13 13:50:07 pierre Exp $
+ * @version $Id: DataTypeReader.java,v 1.18 2006-03-20 18:37:15 pierre Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -84,7 +84,7 @@ public class DataTypeReader {
                         BasicDataType old = collector.addDataType(dataType);
                         if (log.isDebugEnabled()) {
                             log.debug((old == null ? "Created "  : "Configured ") + dataType + (baseDataType != null ? " based on " + baseDataType : ""));
-                            if (log.isDebugEnabled()) {
+                            if (log.isTraceEnabled()) {
                                 log.trace("Now " + collector);
                             }
                         }

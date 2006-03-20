@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.62 2006-02-24 15:06:43 andre Exp $
+ * @version $Id: BuilderReader.java,v 1.63 2006-03-20 18:37:15 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -612,13 +612,6 @@ public class BuilderReader extends DocumentReader {
                 } else {
                     if (log.isDebugEnabled()) log.debug("Found data type for " + baseDataType + " / " + guiType + " " + dataType);
                 }
-                if (! baseDataType.getClass().isAssignableFrom(dataType.getClass())) {
-                    // the thus configured datatype is not compatible with the database type.
-                    // Fix that as good as possible:
-                    BasicDataType newDataType = (BasicDataType) baseDataType.clone();
-                    newDataType.inherit(dataType);
-                    dataType = newDataType;
-                }
             }
         }
 
@@ -639,23 +632,14 @@ public class BuilderReader extends DocumentReader {
                 if (requestedBaseDataType == null) {
                     log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + builder.getTableName() + "'");
                     requestedBaseDataType = baseDataType;
-                } else {
-                    if (! baseDataType.getClass().isAssignableFrom(requestedBaseDataType.getClass())) {
-                        // the thus configured datatype is not compatible with the database type.
-                        // Fix that as good as possible:
-                        BasicDataType newDataType = (BasicDataType) baseDataType.clone();
-                        newDataType.inherit(requestedBaseDataType);
-                        log.info("" + requestedBaseDataType + " in '" + getSystemId() + "' is not compatible with " + baseDataType + ". Repaired to " + newDataType);
-                        requestedBaseDataType = newDataType;
-                    }
                 }
             }
             // i'm not sure why it must be cloned here.
-            dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType.clone();
+            dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
         }
 
         if (dataType == null && forceInstance) {
-            dataType = (BasicDataType) baseDataType.clone();
+            dataType = (BasicDataType) baseDataType.clone(""); // clone with empty id
         }
 
         return dataType;
@@ -852,35 +836,6 @@ public class BuilderReader extends DocumentReader {
             }
         }
         return maintainer;
-    }
-
-
-    /**
-     * Get the name of the builder that this builder extends
-     * @deprecated-now use getMaintainer()
-     * @since MMBase-1.6
-     * @return the name of the parent builder
-     */
-    public String getBuilderExtends() {
-        return getExtends();
-    }
-
-    /**
-     * Retrieve the (major) version number of this builder
-     * @deprecated-now use getMaintainer()
-     * @return the version as an integer.
-     */
-    public int getBuilderVersion() {
-        return getVersion();
-    }
-
-    /**
-     * Retrieve the name of the maintainer of this builder
-     * @deprecated-now use getMaintainer()
-     * @return the name fo the maintainer as a String
-     */
-    public String getBuilderMaintainer() {
-        return getMaintainer();
     }
 
     /**

@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.52 2006-01-06 14:25:49 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.53 2006-03-20 18:37:15 pierre Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -63,20 +63,6 @@ public class DataTypeDefinition {
         this.collector = collector;
     }
 
-
-    private static int anonymousSequence = 1;
-
-    private String getId(String id) {
-        if (id.equals("")) {
-            if (baseDataType == null) {
-                return "ANONYMOUS" + anonymousSequence++;
-            } else {
-                return  baseDataType.getName() + anonymousSequence++;
-            }
-        } else {
-            return id;
-        }
-    }
     /**
      * If id was empty string, then this can still be equal to baseDataType, and nothing changed. Never <code>null</code>
      * @param   dataTypeElement piece of XML used to configure. Only the 'class' subelements are explored in this method.
@@ -106,7 +92,7 @@ public class DataTypeDefinition {
                             Class claz = Class.forName(className);
                             log.debug("Instantiating " + claz + " for " + dataType);
                             java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
-                            dt = (BasicDataType) constructor.newInstance(new Object[] { getId(id) });
+                            dt = (BasicDataType) constructor.newInstance(new Object[] { id });
                             if (baseDataType != null) {
                                 // should check class here, perhaps
                                 dt.inherit((BasicDataType) baseDataType);
@@ -126,13 +112,7 @@ public class DataTypeDefinition {
                 log.warn("No base datatype available and no class specified for datatype '" + id + "', using 'unknown' for know.\n" + XMLWriter.write(dataTypeElement, true, true));
                 baseDataType = Constants.DATATYPE_UNKNOWN;
             }
-            if (id.equals("")) {
-                log.debug("No id given, for the time being this datatype will be equal to its base type " + baseDataType);
-                dataType = baseDataType;
-            } else {
-                log.debug("Id given, cloning " + baseDataType);
-                dataType = (BasicDataType) baseDataType.clone(id);
-            }
+            dataType = (BasicDataType) baseDataType.clone(id);
         } else { // means that it existed it already
             log.debug("Existing datatype " + dt + " with base " + baseDataType);
             dataType = dt;
@@ -163,7 +143,7 @@ public class DataTypeDefinition {
                 if (requestBaseDataType != definedBaseDataType) {
                     if ("".equals(id)) {
                         // in builder you often 'anonymously' override or define datatype.
-                        // don't pollute log with warning if e.g. using datetime datatype on integer. That is supported. Though some features may perish.                        
+                        // don't pollute log with warning if e.g. using datetime datatype on integer. That is supported. Though some features may perish.
                         log.debug("Inheriting a " + definedBaseDataType + " from " + requestBaseDataType + ", functionality may get lost");
                     } else {
                         log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + definedBaseDataType + "' in " + XMLWriter.write(dataTypeElement, true, true) + " of " + XMLWriter.write(dataTypeElement.getParentNode(), true, true));
@@ -203,10 +183,6 @@ public class DataTypeDefinition {
                 }
                 if (nonConditions.matcher(childElement.getLocalName()).matches()) {
                     continue;
-                }
-                if (dataType == baseDataType) {
-                    log.debug("About to add/change conditions, need clone first!");
-                    dataType = (BasicDataType) baseDataType.clone(getId(id));
                 }
                 log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
                 if (!addCondition(childElement)) {

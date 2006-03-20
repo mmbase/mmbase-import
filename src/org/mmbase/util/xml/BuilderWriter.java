@@ -14,7 +14,10 @@ import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.DynamicDate;
+import org.mmbase.util.logging.*;
 
 import org.w3c.dom.*;
 
@@ -24,15 +27,18 @@ import org.w3c.dom.*;
  * The document can then be used internally or serialized using a number of
  * utility methods.
  * This writer takes extension of builders (inheritance) into account.
- * 
+ *
  * XXX This class actually transforms nice builder XML's to stupid automatic XML's in deprecated format, forgetting all comments, alls datatype extensions.
  * TODO: This is broken!
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.21 2006-01-06 17:36:03 michiel Exp $
+ * @version $Id: BuilderWriter.java,v 1.22 2006-03-20 18:37:15 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(BuilderWriter.class.getName());
 
     /**
      * If true, the builder will expand when writing.
@@ -168,79 +174,105 @@ public class BuilderWriter extends DocumentWriter  {
                 parentField = parent.getField(fieldname);
             }
             // check guidata
-            Element descelm=null;
+            Element descriptionsElm = null;
             datamap = fielddef.getLocalizedDescription().asMap();
             for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
                 Map.Entry em= (Map.Entry)i.next();
                 Locale locale = (Locale)em.getKey();
                 String description=(String)em.getValue();
                 if ((parentField==null) || !(description.equals(parentField.getDescription(locale)))) {
-                    if (descelm==null) descelm=document.createElement("descriptions");
-                    Element elm=addContentElement("description",description,descelm);
+                    if (descriptionsElm == null) descriptionsElm = document.createElement("descriptions");
+                    Element elm=addContentElement("description", description, descriptionsElm);
                     elm.setAttribute("xml:lang", locale.toString());
                 }
             }
-            Element guielm=null;
+            Element guiElm = null;
             datamap = fielddef.getLocalizedGUIName().asMap();
             for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
                 Map.Entry em= (Map.Entry)i.next();
                 Locale locale = (Locale)em.getKey();
                 String name=(String)em.getValue();
                 if ((parentField==null) || !(name.equals(parentField.getGUIName(locale)))) {
-                    if (guielm==null) guielm=document.createElement("gui");
-                    Element elm=addContentElement("guiname",name,guielm);
+                    if (guiElm == null) guiElm = document.createElement("gui");
+                    Element elm=addContentElement("guiname", name, guiElm);
                     elm.setAttribute("xml:lang", locale.toString());
                 }
             }
-            String guitype=fielddef.getGUIType();
-            if ((parentField==null) || !(guitype.equals(parentField.getGUIType()))) {
-                if (guielm==null) guielm=document.createElement("gui");
-                addContentElement("guitype",guitype,guielm);
-            }
-            Element poselm=null;
+            Element positionsElm = null;
 
             // positions
             // input
             int pos=fielddef.getEditPosition();
             if ((parentField==null) || (pos!=parentField.getEditPosition())) {
-                if (poselm==null) poselm=document.createElement("positions");
-                addComment("builder.field.editor.pos.input",poselm);
-                addContentElement("input",""+pos,poselm);
+                if (positionsElm == null) positionsElm = document.createElement("positions");
+                addComment("builder.field.editor.positions.input", positionsElm);
+                addContentElement("input", "" + pos, positionsElm);
             }
             // list
             pos=fielddef.getListPosition();
             if ((parentField==null) || (pos!=parentField.getListPosition())) {
-                if (poselm==null) poselm=document.createElement("positions");
-                addComment("builder.field.editor.pos.list",poselm);
-                addContentElement("list",""+pos,poselm);
+                if (positionsElm == null) positionsElm = document.createElement("positions");
+                addComment("builder.field.editor.positions.list", positionsElm);
+                addContentElement("list", "" + pos, positionsElm);
             }
             // search
             pos=fielddef.getSearchPosition();
             if ((parentField==null) || (pos!=parentField.getSearchPosition())) {
-                if (poselm==null) poselm=document.createElement("positions");
-                addComment("builder.field.editor.pos.search",poselm);
-                addContentElement("search",""+pos,poselm);
+                if (positionsElm == null) positionsElm = document.createElement("positions");
+                addComment("builder.field.editor.positions.search", positionsElm);
+                addContentElement("search", "" + pos, positionsElm);
             }
 
-            if ((parentField==null) || (descelm!=null) || (guielm!=null) ||  (poselm!=null)) {
+            Element dataTypeElm = null;
+            DataType dataType = fielddef.getDataType();
+            if ((parentField == null) || !dataType.equals(parentField.getDataType())) {
+                dataTypeElm = document.createElement("datatype");
+                dataTypeElm.setAttribute("xmlns", "http://www.mmbase.org/xmlns/datatypes");
+                // TODO: may produce id even if originally not given
+                String id = dataType.getName();
+                String base = dataType.getBaseTypeIdentifier();
+                // TODO: may produce a basic 'base' name (not the original)
+                DataType origin = dataType.getOrigin();
+                if (origin != null) {
+                    base = origin.getName();
+                }
+                dataTypeElm.setAttribute("base", base);
+                if (!"".equals(id)) {
+                    dataTypeElm.setAttribute("id", id);
+                }
+                Object defaultValue = dataType.getDefaultValue();
+                if (defaultValue instanceof DynamicDate) {
+                    defaultValue = ((DynamicDate)defaultValue).getFormat();
+                }
+                if (defaultValue != null) { // && origin != null && !defaultValue.equals(origin.getDefaultValue())) {
+                    addContentElement("default", defaultValue.toString(), dataTypeElm);
+                }
+                /* add default, enumerations, and constraints */
+            }
+
+            if ((parentField == null) || (dataTypeElm != null) || (descriptionsElm != null) || (guiElm != null) ||  (positionsElm != null)) {
                 addComment("builder.field", fieldname, ""+fielddef.getStoragePosition(), fieldlist);
                 Element field=document.createElement("field");
                 fieldlist.appendChild(field);
-                if (descelm!=null) {
+                if (descriptionsElm != null) {
                     addComment("builder.field.descriptions",field);
-                    field.appendChild(descelm);
+                    field.appendChild(descriptionsElm);
                 }
-                if (guielm!=null) {
+                if (guiElm != null) {
                     addComment("builder.field.gui",field);
-                    field.appendChild(guielm);
+                    field.appendChild(guiElm);
                 }
-                if (poselm!=null) {
+                if (positionsElm != null) {
                     addComment("builder.field.editor",field);
                     Element editor=document.createElement("editor");
-                    editor.appendChild(poselm);
+                    editor.appendChild(positionsElm);
                     field.appendChild(editor);
                 }
-                Element db=document.createElement("db");
+                if (dataTypeElm != null) {
+                    addComment("builder.field.datatype",field);
+                    field.appendChild(dataTypeElm);
+                }
+                Element db = document.createElement("db");
                 addComment("builder.field.db",field);
                 field.appendChild(db);
                 addComment("builder.field.db.name",db);
