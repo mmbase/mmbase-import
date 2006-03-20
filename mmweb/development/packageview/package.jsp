@@ -46,7 +46,7 @@
     <th>Creation-Date</th>
     <td>
     <mm:field name="creationdate" id="package_creationdate">
-        <mm:time referid="package_creationdate" format="dd-MM-yyyy"/>
+        <mm:time referid="package_creationdate" format="d MMMM yyyy"/>
     </mm:field>
     </td>
   </tr>
@@ -89,7 +89,7 @@
   <mm:related path="rolerel,organisation"
     fields="rolerel.role,organisation.name"
     constraints="rolerel.role='initiator'">
-    <mm:field name="organisation.name" />
+    Company: <mm:field name="organisation.name" />
     <mm:last inverse="true"><br /></mm:last>
     <mm:import id="is_shown" reset="true" /> 
   </mm:related>                       
@@ -148,24 +148,24 @@
   <p><strong>Contact info</strong></p>
   <p>
   <mm:related path="rolerel,persons"
-    constraints="rolerel.role='questions'"
-    fields="rolerel.role,persons.firstname,persons.suffix,persons.lastname,persons.email">
+    fields="rolerel.role,persons.firstname,persons.suffix,persons.lastname,persons.email"
+    constraints="rolerel.role='questions'">
     <mm:first>Questions:</mm:first>
     <mm:field name="persons.firstname" /> <mm:field name="persons.suffix" /> <mm:field name="persons.lastname" />
     <mm:field name="persons.email"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field>
     <mm:last inverse="true">,</mm:last><mm:last><br /></mm:last>
   </mm:related>
   <mm:related path="rolerel,persons"
-    constraints="rolerel.role='bugs'"
-    fields="rolerel.role,persons.firstname,persons.suffix,persons.lastname,persons.email">
+    fields="rolerel.role,persons.firstname,persons.suffix,persons.lastname,persons.email"
+    constraints="rolerel.role='bugs'">
     <mm:first>Bugreports:</mm:first>
     <mm:field name="persons.firstname" /> <mm:field name="persons.suffix" /> <mm:field name="persons.lastname" />
     <mm:field name="persons.email"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field>
     <mm:last inverse="true">,</mm:last><mm:last><br /></mm:last>
   </mm:related>
   <mm:related path="rolerel,persons"
-    constraints="rolerel.role='support'"
-    fields="rolerel.role,persons.firstname,persons.suffix,persons.lastname,persons.email">
+    fields="rolerel.role,persons.firstname,persons.suffix,persons.lastname,persons.email"
+    constraints="rolerel.role='support'">
     <mm:first>Sponsor/Support questions:</mm:first>
     <mm:field name="persons.firstname" /> <mm:field name="persons.suffix" /> <mm:field name="persons.lastname" />
     <mm:field name="persons.email"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field>
