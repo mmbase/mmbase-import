@@ -51,6 +51,7 @@ public class NMIntraToNatMMigrator {
       alDeletingFiles.add("people.xml");
       alDeletingFiles.add("poll.xml");
       alDeletingFiles.add("postings.xml"); //we have to delete them because of installing problems
+      alDeletingFiles.add("typedef.xml"); //is system data
       alDeletingFiles.add("urls.xml"); // doesn't contain any info
 
       Iterator itDeletingFiles = alDeletingFiles.iterator();
@@ -162,6 +163,9 @@ public class NMIntraToNatMMigrator {
           }
         }
 
+        if (sBuilderName.equals("readmore")){
+           sContent = sContent.replaceAll("&","&amp;");
+        }
         tmAllData.put(sBuilderName, sContent);
       }
 
@@ -214,6 +218,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("employees","location:account;birthday:dayofbirth;description:importstatus");
       tmRenamingFields.put("formulier","copyright:titel_de;subtitle:titel_fra;title:titel;" +
       "editors_note:emailadressen;introduction:omschrijving");
+      tmRenamingFields.put("items","name:titel;description:omschrijving");
       tmRenamingFields.put("locations","name:naam;address:bezoekadres;postalcode:bezoekadres_postcode;" +
       "city:plaatsnaam;country:land;address2:postbus;postalcode2:postbus_postcode;" +
       "phone:telefoonnummer;fax:faxnummer;description:omschrijving");
@@ -581,7 +586,7 @@ public class NMIntraToNatMMigrator {
       byte[] b = new byte[in.available ()];
       in.readFully (b);
       in.close ();
-      String sResult = new String (b, 0, b.length, "Cp850");
+      String sResult = new String (b, 0, b.length, "UTF-8");
 
       return sResult;
    }
