@@ -16,7 +16,7 @@
         initMenu("my_menu");
         });
         addEvent(window, 'load',  function () {
-           initMenu("my_menu2", "horizontal");
+           initMenu("my_menu2", "left");
         });
       </script>
       <style>
@@ -29,6 +29,12 @@
         div.menu a:hover {
         background-color: #ccc;
         }
+        div#my_menu2 {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        }
+
       </style>
     </head>
     <body>
@@ -68,7 +74,7 @@
       <div id="my_menu2" class="menu">
         <p>Menu made with DIV-structure. </p>
         <a id="item21">Item 1</a>
-        <div id="sub_item21">
+        <div id="sub_item21" class="sub">
           <a href="javascript:void(0)">item 1.1</a>
           <a id="sub_item211" href="javascript:void(0)">item 1.2</a>
           <div id="sub_sub_item211">
@@ -78,14 +84,14 @@
           <a href="javascript:void(0)">item 1.4</a>
         </div>
         <a id="item22">Item 2</a>
-        <div id="sub_item22">
+        <div id="sub_item22" class="sub">
           <a href="javascript:void(0)">item 2.1</a>
           <a href="javascript:void(0)">item 2.2</a>
           <a href="javascript:void(0)">item 2.3</a>
           <a href="javascript:void(0)">item 2.4</a>
         </div>
         <a id="item23">Item 3</a>
-        <div id="sub_item23">
+        <div id="sub_item23" class="sub">
           <a href="javascript:void(0)">item 3.1</a>
           <a href="javascript:void(0)">item 3.2</a>
           <a href="javascript:void(0)">item 3.3</a>
