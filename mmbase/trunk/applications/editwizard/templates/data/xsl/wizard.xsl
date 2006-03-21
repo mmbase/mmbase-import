@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.145 2005-05-13 14:03:40 pierre Exp $
+    @version $Id: wizard.xsl,v 1.146 2006-03-21 15:03:03 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -540,6 +540,9 @@
         <xsl:call-template name="ftype-line"/>
       </xsl:when>
       <xsl:when test="@ftype=&apos;text&apos;">
+        <xsl:call-template name="ftype-text"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;mmxf&apos;">
         <xsl:call-template name="ftype-text"/>
       </xsl:when>
       <xsl:when test="@ftype=&apos;html&apos;">
@@ -1324,8 +1327,8 @@
         <xsl:call-template name="itembuttons"/>
       </td>
     </tr>
-    <tr style="vartical-align: top;">
-      <td style="vartical-align: top; width: 1%;">
+    <tr style="vertical-align: top;">
+      <td style="vertical-align: top; width: 1%;">
         <!-- the image -->
         <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
       </td>
