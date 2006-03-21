@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.43 2005-06-28 14:20:32 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.44 2006-03-21 15:02:37 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -41,9 +41,9 @@ if (sessionKey == null) sessionKey = "editwizard";
 
 boolean proceed = "true".equals(request.getParameter("proceed")) || (request.getRequestURI().endsWith("debug.jsp"));
 
-
 // Look if there is already a configuration in the session.
 Object configObject = session.getAttribute(sessionKey);
+
 if (proceed && configObject == null) {
     throw new WizardException("Your data cannot be found anymore, you waited too long (more than an hour), or the server was restarted");
 }
@@ -195,5 +195,5 @@ if (!done) {
 }
 %></mm:log><%
     if (done) return;
-%><mm:import externid="loginmethod" from="parameters">loginpage</mm:import>
+%><mm:import externid="loginmethod" from="parameters"></mm:import>
 
