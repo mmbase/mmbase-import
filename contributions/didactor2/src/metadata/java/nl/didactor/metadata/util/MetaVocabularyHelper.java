@@ -9,8 +9,6 @@ import org.mmbase.util.logging.Logging;
 import nl.didactor.component.metadata.constraints.Constraint;
 import nl.didactor.component.metadata.constraints.Error;
 
-
-
 public class MetaVocabularyHelper extends MetaHelper {
 
    private static Logger log = Logging.getLoggerInstance(MetaVocabularyHelper.class);
@@ -77,7 +75,6 @@ public class MetaVocabularyHelper extends MetaHelper {
    public ArrayList check(Node nodeMetaDefinition, Constraint constraint, String[] arrstrParameters){
        ArrayList arliResult = new ArrayList();
 
-       System.out.println();
        if(constraint.getEvent() == constraint.EVENT_VOCABULARY_TO_VOCABULARY_RELATION){
            arliResult.addAll(vocabularyToVocabulary_ConstraintProcessor(nodeMetaDefinition, constraint, arrstrParameters));
        }
