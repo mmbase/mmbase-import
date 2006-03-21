@@ -4,7 +4,7 @@
   <script type="text/javascript" src="menu.js"><jsp:text> </jsp:text></script>
   <script type="text/JavaScript">        
     addEvent(window, 'load',  function () {
-       initMenu("menu", "vertical");
+       initMenu("menu", "bottom");
     });
   </script>
   <jsp:directive.page session="false" />
