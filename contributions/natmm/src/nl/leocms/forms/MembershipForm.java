@@ -58,9 +58,6 @@ public class MembershipForm extends ActionForm {
    public static int MINIMUM_PER_MONTH = 154;
    public static int MINIMUM_PER_YEAR = 1850;
 
-   private static String fromEmailAddress = "AanmeldingLidmaatschap@Natuurmonumenten.nl";
-   private static String infoEmailAddress = "info@ledenservice.nl";
-
    private String action = initAction;
    private int validateCounter = 0;
    private String node;
@@ -297,10 +294,13 @@ public class MembershipForm extends ActionForm {
       } 
       return iAmount; 
    }
+
+   public String convertToString(int iAmount) {
+      return "" + iAmount/100 + "," + (iAmount%100<10 ? "0" : "" ) + (iAmount%100);
+   }
+
    public String getSamount() {
-      int iAmount = getIamount();
-      String sAmount = "" + iAmount/100 + "," + (iAmount%100<10 ? "0" : "" ) + (iAmount%100);
-      return sAmount;
+      return convertToString(getIamount());
    }
 
    public String getPeriod() {
@@ -621,84 +621,140 @@ public class MembershipForm extends ActionForm {
      thisMember.commit();
 
      this.setNode(thisMember.getStringValue("number"));
+     
+     if(!getCountry_code().equals(DEFAULT_COUNTRY)) {
+        sendSubscription(cloud, thisMember);
+     }
 
      return thisMember;
   }
 
-  public void sendConfirmEmail(Cloud cloud, Node thisParticipant){
+  public void sendSubscription(Cloud cloud, Node thisMember) {
+      
+      String fromEmailAddress = NatMMConfig.fromEmailAddress;
+      
+      Node emailNode = cloud.getNodeManager("email").createNode();
+      emailNode.setValue("from", fromEmailAddress);
+      emailNode.setValue("subject", "Lid worden");
+      emailNode.setValue("replyto", fromEmailAddress);
+      emailNode.setValue("to",  NatMMConfig.toSubscribeAddress);
+      emailNode.setValue("body",
+                      "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
+                         + getSubscribeMessage(thisMember, "plain")
+                      + "</multipart>"
+                      + "<multipart id=\"htmltext\" alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">"
+                      + "<html>"
+                        + getSubscribeMessage(thisMember, "html") + "</html>"
+                      + "</multipart>");
+      emailNode.commit();
+      emailNode.getValue("mail(oneshotkeep)");
+  }
+
+  public String getSubscribeMessage(Node thisMember, String type) {
+     OptionedStats stats = new OptionedStats();
+     String newline = "<br/>";
+     if(type.equals("plain")) { newline = "\n"; }
+     String message = "E-mail verstuurd vanaf www.natuurmonumenten.nl / pagina: Lid worden" + newline + newline + 
+               "JA, IK WORD LID (alleen buitenlandse aanmeldingen worden per email verstuurd)" + newline +
+               "--------------------------------------------------------------------------" + newline; 
+     message += "Dhr/Mw: " + thisMember.getStringValue("gender") + newline;
+     message += "Voorletters: " + thisMember.getStringValue("initials") + newline;
+     message += "Tussenvoegsel: " + thisMember.getStringValue("suffix") + newline;
+     message += "Achternaam: " + thisMember.getStringValue("lastname") + newline;
+     message += "Straat: " + thisMember.getStringValue("street") + newline;
+     message += "Huisnummer: " + thisMember.getStringValue("housenumber") + newline;
+     message += "Huisnummer toevoeging: " + thisMember.getStringValue("housenumber_extension") + newline;
+     message += "Postcode: " + thisMember.getStringValue("zipcode") + newline;
+     message += "Woonplaats: " + thisMember.getStringValue("city") + newline;
+     message += "Land: " + thisMember.getStringValue("country_code") + newline;
+     message += "Telefoon: " + thisMember.getStringValue("phone") + newline;
+     message += "Geboortedatum: " + stats.dateString(thisMember.getLongValue("dayofbirth")) + newline;
+     message += "Bank-/ gironummer: " + thisMember.getStringValue("bankaccount") + newline;
+     message += "Bedrag: " + convertToString(thisMember.getIntValue("amount")) + newline;
+     message += "Betalingswijze: " + thisMember.getStringValue("payment_type") + newline;
+     message += "Inschrijvings datum: " + stats.dateString(thisMember.getLongValue("subscribe_date")) + newline; 
+     message += "E-mail: " + thisMember.getStringValue("email") + newline;
+     message += "Maandelijkse digitale nieuwsbrief :" + thisMember.getStringValue("digital_newsletter") + newline;
+     return message;
+  }
+
+  public void sendConfirmEmail(Cloud cloud, Node thisMember){
 
      String emailSubject = "Bevestiging aanmelding als Natuurmonumenten lid";
-     String toEmailAddress = thisParticipant.getStringValue("email");
+     String toEmailAddress = thisMember.getStringValue("email");
      Node emailNode = cloud.getNodeManager("email").createNode();
      emailNode.setValue("to", toEmailAddress);
-     emailNode.setValue("from", fromEmailAddress);
+     emailNode.setValue("from", NatMMConfig.toSubscribeAddress);
      emailNode.setValue("subject", emailSubject);
-     emailNode.setValue("replyto", fromEmailAddress);
+     emailNode.setValue("replyto", NatMMConfig.toSubscribeAddress);
      emailNode.setValue("body", "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
-        + getMessage(thisParticipant,"plain") + "</multipart>"
+        + getMessage(thisMember,"plain") + "</multipart>"
         + "<multipart id=\"htmltext\" alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">"
-        + "<html>" + getMessage(thisParticipant,"html") + "</html>" + "</multipart>");
+        + "<html>" + getMessage(thisMember,"html") + "</html>" + "</multipart>");
      emailNode.commit();
      emailNode.getValue("mail(oneshotkeep)");
   }
 
-  public static String getMessage(Node thisParticipant, String type) {
+  public static String getMessage(Node thisMember, String type) {
      String newline = "<br/>";
      if(type.equals("plain")) { newline = "\n"; }
      String message = "Beste";
-     if (thisParticipant.getStringValue("gender").equals("M")){
+     if (thisMember.getStringValue("gender").equals("M")){
         message += " heer";
      } else {
         message += " mevrouw";
      }
-     if(!thisParticipant.getStringValue("suffix").equals("")) {
-         message += " " + thisParticipant.getStringValue("suffix");
+     if(!thisMember.getStringValue("suffix").equals("")) {
+         message += " " + thisMember.getStringValue("suffix");
      }
-     message += " " + thisParticipant.getStringValue("lastname");
-     message += newline + newline;
+     message += " " + thisMember.getStringValue("lastname") + "," + newline + newline;
      message += "Welkom als nieuw lid bij Natuurmonumenten.  " +
         "Fijn dat u de natuur in Nederland wilt steunen want de natuur kan niet zonder uw steun. " +
         "Om u zo snel mogelijk van dienst te zijn, geven wij u nu een tijdelijk lidmaatschapsnummer, " +
-        "waarmee u direct onze site kunt bezoeken." + newline + newline;
+        "waarmee u direct gratis bijzondere fiets- en wandelroutes van onze <a href='http://www.natuurmonumenten.nl/routes'>website</a> kunt dowloaden." + newline + newline;
      message += "Uw voorlopig lidnummer: 9002162" + newline + newline;
      message += "Binnen enkele weken ontvangt u het welkomstpakket met daarin de Natuurwijzer, " +
         "het prachtige boek, boordevol informatie over natuur in Nederland, " +
         "het kwartaalmagazine Natuurbehoud en uw lidmaatschapspas met daarop uw persoonlijke lidmaatschapsnummer." + newline + 
         "Vanaf dat moment kunt u inloggen op de site met uw eigen lidmaatschapsnummer." + newline + newline;
-     if (thisParticipant.getStringValue("payment_type").equals("A")) {
+     if (thisMember.getStringValue("payment_type").equals("A")) {
         message += "U heeft aangegeven per acceptgiro te willen betalen, " +
             " deze sturen we u binnen enkele weken toe. ";
      } else {
-        int iAmount = thisParticipant.getIntValue("amount");
-        String payment_type = thisParticipant.getStringValue("payment_type");
-        message += "U heeft ons voor minimaal een jaar tot wederopzegging gemachtigd " +
-           "voor een bedrag van " + SubscribeAction.price(iAmount) + " per " + (payment_type.equals(YEAR) ? "jaar" : "maand") + ". ";
+        int iAmount = thisMember.getIntValue("amount");
+        String payment_type = thisMember.getStringValue("payment_type");
+        message += "U heeft aangegeven dat u voor minimaal een jaar lid wordt van Natuurmonumenten en dat u ons wilt machtigen om tot wederopzegging " +
+           "het bedrag van " + SubscribeAction.price(iAmount) + " per " + (payment_type.equals(YEAR) ? "jaar" : "maand") +
+           " van rekeningnummer " + thisMember.getStringValue("bankaccount") + " af te schrijven. ";
         if(iAmount<200&&payment_type.equals(MONTH)) {
            message += "Omdat dit bedrag kleiner is dan &euro; 2,- zal het totale bedrag " +
               "( " + SubscribeAction.price(iAmount) + " x 12 = ) " + SubscribeAction.price(iAmount*12) + 
               " eenmaal per jaar worden ge&iuml;ncasseerd." + newline + newline;
         }
      }
-     message += "Heeft u zich bedacht? Stuur dan binnen 3 dagen een mailtje naar ";
+     message += "Heeft u vragen, bel dan 035-6559911 of mail ";
      if(type.equals("html")) {
-         message += "<a href='mailto:" + fromEmailAddress + "'>" + fromEmailAddress + "</a>";
+         message += "<a href='mailto:" + NatMMConfig.infoEmailAddress + "'>" + NatMMConfig.infoEmailAddress + "</a>";
      } else {
-         message += fromEmailAddress;
-     }
-     message += ". ";
-     message += "Wij maken uw aanmelding dan ongedaan. Heeft u vragen, " +
-        "bel dan 035-6559911 of mail ";
-     if(type.equals("html")) {
-         message += "<a href='mailto:" + infoEmailAddress + "'>" + infoEmailAddress + "</a>";
-     } else {
-         message +=  infoEmailAddress;
+         message +=  NatMMConfig.infoEmailAddress;
      }
      message += ". " + newline + newline;
      message += 
         "Met vriendelijke groet," + newline + newline +
         "Jan Jaap de Graeff" + newline +
         "algemeen directeur" + newline + newline;
+     message += "P.s. Heeft u zich bedacht? Stuur dan binnen 3 dagen een mailtje naar ";
+     if(type.equals("html")) {
+         message += "<a href='mailto:" + NatMMConfig.toSubscribeAddress + "'>" + NatMMConfig.toSubscribeAddress + "</a>";
+     } else {
+         message += NatMMConfig.toSubscribeAddress;
+     }
+     message += ". Wij maken uw aanmelding dan ongedaan.";
      return message;
+  }
+
+  public NodeList notDownloadedMembersList(Cloud cloud) {
+    return cloud.getNodeManager("members").getList("members.status = 'N' AND country_code='" +  DEFAULT_COUNTRY + "'","subscribe_date","UP");
   }
 
   public void generateAsciiFile(Cloud cloud, String sPresentUserName){
@@ -749,7 +805,7 @@ public class MembershipForm extends ActionForm {
     Iterator it = set.iterator();
     Map.Entry me = null;
 
-    NodeList nl = cloud.getNodeManager("members").getList("members.status = 'N'","subscribe_date","UP");
+    NodeList nl = notDownloadedMembersList(cloud);
     if (nl.size()!=0){
        OptionedStats stats = new OptionedStats();
        String title = stats.dateString(cal.getTime().getTime() / 1000)

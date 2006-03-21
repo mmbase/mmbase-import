@@ -8,13 +8,9 @@
       <list include="config/natuurgebieden/zoek_dossier_related_natuurgebieden.xml" />
    </item>
    <command name="search" nodepath="evenement,related,natuurgebieden" age="-1" 
-         fields="evenement.number,evenement.titel,evenement.metatags,natuurgebieden.naam"
+         fields="evenement.titel,evenement.metatags,natuurgebieden.naam,evenement.number"
          constraints="evenement.soort='parent'" orderby="evenement.titel">
       <prompt>zoek evenement</prompt>
-      <search-filter>
-         <name>nummer bevat</name>
-         <search-fields>[evenement.number]</search-fields>
-      </search-filter>
       <search-filter>
          <name>titel bevat</name>
          <search-fields>[evenement.titel]</search-fields>
@@ -26,6 +22,10 @@
       <search-filter>
          <name>natuurgebied</name>
          <search-fields>[natuurgebieden.naam]</search-fields>
+      </search-filter>
+      <search-filter>
+         <name>nummer bevat</name>
+         <search-fields>[evenement.number]</search-fields>
       </search-filter>
    </command>
    <action type="create">

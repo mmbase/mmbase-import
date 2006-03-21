@@ -148,7 +148,7 @@
          </editor>
          <db>
             <name xml:lang="nl">description</name>
-            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="4096" state="persistent">STRING</type>
          </db>
       </field>
       <field>

@@ -1,6 +1,14 @@
-<%@page import="com.finalist.tree.*,nl.leocms.authorization.forms.*,nl.leocms.util.*, java.util.*, org.mmbase.bridge.*" %>
+<%@page import="com.finalist.tree.*,
+   nl.leocms.authorization.forms.*,
+   nl.leocms.util.*, java.util.*,
+   org.mmbase.bridge.*,
+   nl.leocms.servlets.UrlConverter" %>
 <%@include file="/taglibs.jsp" %>
 <cache:flush scope="application"/>
+<%
+// names of rubrieken might get changed
+UrlConverter.getCache().flushAll(); 
+%>
 <mm:cloud jspvar="cloud" rank="basic user">
 <%
    // todo: change this hardcode implementation to one based on the styles object.
@@ -123,7 +131,6 @@ Rubriek:<b>
          </html:select>
       </td>
    </tr>
-   <tr><td class="fieldname">Subdir (only for developers)</td><td><html:text property="url_live" maxlength='100' /></td></tr>
    <tr><td class="fieldname">Rubriek is zichtbaar</td>
        <td>
         <html:select property="url">
@@ -132,6 +139,7 @@ Rubriek:<b>
         </html:select>
        </td>
     </tr>
+   <tr><td class="fieldname">Template subdir (only for developers)</td><td><html:text property="url_live" maxlength='100' /></td></tr>
 </table>
 <table class="formcontent">
 

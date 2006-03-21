@@ -6,7 +6,7 @@ PaginaHelper pHelper = new PaginaHelper(cloud);
 int locCnt = 1;
 int listSize =0; 
 %>
-<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,provincies,posrel,natuurgebieden" 
+<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,provincies,pos4rel,natuurgebieden" 
    fields="natuurgebieden.naam,natuurgebieden.number,natuurgebieden.bron,provincies.afkorting,provincies.number"
    orderby="natuurgebieden.bron" constraints="natuurgebieden.bron!=''">
 	<mm:first>

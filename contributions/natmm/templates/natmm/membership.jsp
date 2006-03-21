@@ -1,3 +1,4 @@
+<%@page import="nl.leocms.forms.MembershipForm" %>
 <%@include file="includes/top0.jsp" %>
 <%
 // *** use paginaID from session to return to the last visited membership page (in case of redirect from Struts form) ***
@@ -35,11 +36,28 @@ if(referer!=null) { session.setAttribute("form_referer",referer); }
       </jsp:include>
 	</td>
 	<td style="vertical-align:top;padding-left:10px;padding-right:10px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
-      <jsp:include page="includes/navright.jsp">
-         <jsp:param name="s" value="<%= paginaID %>" />
-         <jsp:param name="r" value="<%= rubriekID %>" />
-         <jsp:param name="lnr" value="<%= lnRubriekID %>" />
-      </jsp:include>
+		<bean:define id="actionId" property="action" name="MembershipForm" scope="session" type="java.lang.String"/> 
+      <% 
+      if ((actionId.equals(MembershipForm.initAction)) || (actionId.equals(MembershipForm.correctAction))) { 
+         %>
+         <jsp:include page="includes/navright.jsp">
+            <jsp:param name="s" value="<%= paginaID %>" />
+            <jsp:param name="r" value="<%= rubriekID %>" />
+            <jsp:param name="lnr" value="<%= lnRubriekID %>" />
+         </jsp:include>
+         <jsp:include page="includes/rightcolumn_image.jsp">
+            <jsp:param name="a" value="<%= artikelID %>" />
+            <jsp:param name="r" value="<%= rubriekID %>" />
+            <jsp:param name="rs" value="<%= styleSheet %>" />
+         </jsp:include>
+         <jsp:include page="includes/shorty.jsp">
+   	      <jsp:param name="s" value="<%= paginaID %>" />
+   	      <jsp:param name="r" value="<%= rubriekID %>" />
+            <jsp:param name="rs" value="<%= styleSheet %>" />
+   	      <jsp:param name="sr" value="2" />
+   	   </jsp:include>
+         <% 
+      } %>
       <img src="media/trans.gif" height="1px" width="165px;" />
 	</td>
 </tr>

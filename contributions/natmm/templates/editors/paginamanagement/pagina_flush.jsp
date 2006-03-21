@@ -16,22 +16,22 @@ String refresh = request.getParameter("refresh");
 if ((refresh != null) && (refresh.equals("yes"))) {
 
    // flush cache
-   String referer = request.getParameter("referer");
-   if(referer!=null&&referer.indexOf("&preview=on")>-1) {
-      referer = referer.substring(0,referer.indexOf("&preview=on"));
+   String referrer = request.getParameter("referrer");
+   if(referrer!=null&&referrer.indexOf("&preview=on")>-1) {
+      referrer = referrer.substring(0,referrer.indexOf("&preview=on"));
    } else {
-      referer = request.getHeader("referer");
+      referrer = request.getHeader("referer"); // html specs are wrong
    }
    session.setAttribute("preview","off"); 
    %>
    <cache:flush scope="application" group="<%= number %>" />
    <h2>
-      <a href="<%= referer %>"><img src="../img/left.gif" title="Terug naar de preview"/></a>
+      <a href="<%= referrer %>"><img src="../img/left.gif" title="Terug naar de preview"/></a>
       Pagina "<mm:node number="<%= number %>"><mm:field name="titel" /></mm:node>" is gepubliceerd.
    </h2>
    <%
 } else {
-   String referer = request.getHeader("referer");
+   String referrer = request.getHeader("referer"); // html-specs are wrong
    %>
    <body>   
    <h2>
@@ -41,7 +41,7 @@ if ((refresh != null) && (refresh.equals("yes"))) {
    Weet u het zeker dat u deze pagina wilt publiceren?
    <form action="pagina_flush.jsp">
       <input type="hidden" name="number" value="<%= number %>">
-      <input type="hidden" name="referer" value="<%= referer %>">
+      <input type="hidden" name="referrer" value="<%= referrer %>">
       <input type="hidden" name="refresh" value="yes">
       <input type="submit" value="Publiceer pagina"/>
    </form>

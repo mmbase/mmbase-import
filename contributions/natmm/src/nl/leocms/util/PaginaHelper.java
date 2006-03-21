@@ -95,7 +95,8 @@ public class PaginaHelper {
    
    public static String getRootRubriek(Cloud cloud, String paginaNumber) {
       Vector breadcrumbs = getBreadCrumbs(cloud, paginaNumber);
-      return (breadcrumbs.size()>2 ? (String) breadcrumbs.get(breadcrumbs.size()-2) : null);
+      log.debug(paginaNumber + "->" + breadcrumbs);
+      return (breadcrumbs.size()>=2 ? (String) breadcrumbs.get(breadcrumbs.size()-2) : null);
    }
 
   /**
@@ -353,7 +354,7 @@ public class PaginaHelper {
                        //  + "&searchvalue=" + editwizardNode.getStringValue("searchvalue")
                          + "&search=" + editwizardNode.getStringValue("search")
                          + "&origin=" + pageNumber
-                         + "&referer=/editors/empty.html";
+                         + "&referrer=/editors/empty.html";
                      if(editwizardNode.getStringValue("m_distinct").equals("1")) { ewUrl += "&distinct=true"; }
                      Node rubriek = getRubriek(pageNumber);
                      if(rubriek!=null) {
