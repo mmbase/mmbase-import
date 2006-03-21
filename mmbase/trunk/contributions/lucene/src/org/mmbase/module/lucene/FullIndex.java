@@ -17,7 +17,7 @@ import org.mmbase.util.functions.Parameters;
  * Can be scheduled in MMBase crontab.
 
  * @author Michiel Meeuwissen
- * @version $Id: FullIndex.java,v 1.2 2005-12-28 10:11:38 michiel Exp $
+ * @version $Id: FullIndex.java,v 1.3 2006-03-21 19:02:22 michiel Exp $
  **/
 public class FullIndex implements CronJob {
 
@@ -25,7 +25,7 @@ public class FullIndex implements CronJob {
     public void init(CronEntry entry) {
         index = entry.getConfiguration();
     }
-    
+
     public void run() {
         Lucene lucene = (Lucene) Module.getModule("lucene");
         if (lucene != null) {

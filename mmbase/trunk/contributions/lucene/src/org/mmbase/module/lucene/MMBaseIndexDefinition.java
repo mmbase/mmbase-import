@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.7 2006-02-01 15:40:57 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.8 2006-03-21 19:02:22 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -119,9 +119,8 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     }
 
     /**
-     * Runs a query for the given cursor, an returns a NodeIterator to run over the nodes.
-     * This implementation uses a HugeNodeListIterator.
-     * @param cursor the cursor with query and offset information
+     * Creates an (Huge)NodeListIterator for this index definition
+     * @param id A node number. If used, the query will be limited. This is used to update the index on change of that node.
      * @return the query result as a NodeIterator object
      */
     protected NodeIterator getNodeIterator(String id) {
@@ -132,12 +131,27 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 elementNumberFieldName = elementManager.getName() + ".number";
             }
             if (id != null) {
-                String numberFieldName = isMultiLevel ? ((Step) q.getSteps().get(0)).getAlias() + ".number" : elementNumberFieldName;
-                Constraint constraint = Queries.createConstraint(q, numberFieldName, FieldCompareConstraint.EQUAL, new Integer(id));
-                Queries.addConstraint(q, constraint);
+                Integer number = new Integer(id);
+                Node node = query.getCloud().getNode(number.intValue());
+                NodeManager nm = node.getNodeManager();
+                Iterator i = q.getSteps().iterator();
+                Constraint comp = null;
+                while(i.hasNext()) {
+                    Step step = (Step) i.next();
+                    NodeManager stepManager = query.getCloud().getNodeManager(step.getTableName());
+                    if (stepManager.equals(nm) || stepManager.getDescendants().contains(nm)) {
+                        StepField numberField = q.createStepField(step, "number");
+                        Constraint constraint = q.createConstraint(numberField, number);
+                        comp = q.createConstraint(comp, CompositeConstraint.LOGICAL_OR, constraint);
+                    }
+                }
+                if (comp == null) return BridgeCollections.EMPTY_NODELIST.nodeIterator();
+                Queries.addConstraint(q, comp);
+                
             }
             StepField elementNumberField = q.createStepField(elementNumberFieldName);
             q.addSortOrder(elementNumberField, SortOrder.ORDER_DESCENDING); // this sort order makes it possible to filter out duplicates.
+            log.debug("Query for node '" + id + "': " + q.toSql());
             return new HugeNodeListIterator(q, maxNodesInQuery);
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
