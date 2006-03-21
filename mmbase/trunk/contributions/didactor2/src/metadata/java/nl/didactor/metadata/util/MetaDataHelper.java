@@ -16,8 +16,6 @@ import nl.didactor.component.metadata.constraints.Error;
 import nl.didactor.metadata.tree.MetadataTreeModel;
 
 
-
-
 public class MetaDataHelper {
 
    private static Logger log = Logging.getLoggerInstance(MetaDataHelper.class);
@@ -206,14 +204,11 @@ public class MetaDataHelper {
                catch(Exception e){
                    throw new Exception("Metavocabulary node(" + nodeMetaVocabulary.getNumber() + ") has got NO METADEFINITION");
                }
-
-               /*
-                              System.out.println("metadefinition=" + nodeMetaDefinition.getNumber());
-                              System.out.println("metavocabulary=" + nodeMetaVocabulary.getNumber());
-                              System.out.println("constraints=" + nodeConstraintRelation.getNumber());
-                              System.out.println("metavocabulary_cont=" + nodeControllerMetaVocabulary.getNumber());
-                              System.out.println("metadefinition_cont=" + nodeControllerMetaDefinition.getNumber());
-                */
+               log.debug("metadefinition=" + nodeMetaDefinition.getNumber());
+               log.debug("metavocabulary=" + nodeMetaVocabulary.getNumber());
+               log.debug("constraints=" + nodeConstraintRelation.getNumber());
+               log.debug("metavocabulary_cont=" + nodeControllerMetaVocabulary.getNumber());
+               log.debug("metadefinition_cont=" + nodeControllerMetaDefinition.getNumber());
 
                Constraint constraint = new Constraint(nodeConstraintRelation.getIntValue("type"), Constraint.EVENT_VOCABULARY_TO_VOCABULARY_RELATION);
                if(hashmapResult.containsKey(nodeMetaDefinition)){
@@ -525,14 +520,14 @@ public class MetaDataHelper {
 
       for(int f = 0; f < nlTopLevelMetaStandarts.size(); f++){
          Node nodeMetaStandart = cloud.getNode(nlTopLevelMetaStandarts.getNode(f).getStringValue("metastandard2.number"));
-//         System.out.println("+++" + nodeMetaStandart.getNumber());
+         log.debug("+++" + nodeMetaStandart.getNumber());
 
          GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(nodeMetaStandart), 30, nodeMetaStandart.getNodeManager(), "posrel", "destination");
          TreeIterator it = tree.treeIterator();
 
          while(it.hasNext()){
             Node nodeChildMetaStandart = it.nextNode();
-//            System.out.println(nodeChildMetaStandart.getNumber() + " " + nodeChildMetaStandart.getStringValue("name"));
+            log.debug(nodeChildMetaStandart.getNumber() + " " + nodeChildMetaStandart.getStringValue("name"));
             if(sResultSet.length() > 0){
                sResultSet += ",";
             }
@@ -590,6 +585,7 @@ public class MetaDataHelper {
          //(in case users enter wrong value we do nothing)
          String sHandler = nodeMetaDefinition.getStringValue("handler");
          if ((sHandler != null) && (!"".equals(sHandler))){
+             log.debug("Autofiller(" + sHandler + "), object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber() + " trying to execute...");
             try{
                Class classMetaDataHandler = Class.forName("nl.didactor.component.metadata.autofill.handlers." + sHandler);
                Object[] arrobjParams = {servletContext};
@@ -598,10 +594,11 @@ public class MetaDataHelper {
                if (!handler.checkMetaData(nodeMetaDefinition, nodeObject)){
                    handler.addMetaData(nodeMetaDefinition, nodeObject);
                }
+               log.debug("Autofiller(" + sHandler + ") PASSED, object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber());
             }
             catch(Exception e){
+               log.debug("Autofiller(" + sHandler + ") ERROR, object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber() + " REASON=" + e.toString());
             }
-            System.out.println("=" + nodeMetaDefinition.getNumber() + " " + sHandler);
          }
       }
    }
