@@ -46,7 +46,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
      * @param nodeObject Node
      */
     public void addMetaData(Node nodeMetaDefinition, Node nodeObject){
-        log.info("addMetaData()");
+        log.info("StreamingHandler:addMetaData()");
 
         NodeList nlMetaDataNodes = nodeObject.getCloud().getList("" + nodeMetaDefinition.getNumber(),
            "metadefinition,metadata,object",
@@ -68,15 +68,15 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
         try{
             String fileName = "didactor_temp_media_file_" + nodeMetaData.getNumber() + "_";
             String fileExtension =  "." + nodeObject.getStringValue("filename");
-            log.info("Writing file to filename=" + fileName + "  extension=" + fileExtension);
+            log.debug("StreamingHandler:Writing file to filename=" + fileName + "  extension=" + fileExtension);
             File fileTemp = File.createTempFile(fileName, fileExtension);
             RandomAccessFile raTemp = new RandomAccessFile(fileTemp, "rw");
             raTemp.write(nodeObject.getByteValue("handle"));
             raTemp.close();
             raTemp = null;
-            
+
             String tempFile = "file:///" + fileTemp.getAbsolutePath().replaceAll("\\\\", "/");
-            log.info("Creating processor from " + tempFile);
+            log.debug("Creating processor from " + tempFile);
             p = this.createProcessor(new URL(tempFile));
             fileTemp = null;
 
@@ -94,6 +94,13 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
             try{
                 nodeResultLangString.setValue("value", this.getDuration(p));
                 nodeResultLangString.commit();
+            }
+            catch(Exception e){
+                log.error(e);
+            }
+
+            try{
+                p.deallocate();
             }
             catch(Exception e){
                 log.error(e);
@@ -184,8 +191,9 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
     private boolean waitForState(int state) {
         synchronized (waitSync) {
             try {
-                while (p.getState() != state && stateTransitionOK)
-                    waitSync.wait();
+                while (p.getState() != state){
+                    this.waitSync.wait(100);
+                }
             }
             catch (Exception e) {
             }
@@ -201,7 +209,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
      * @return ArrayList
      */
     private ArrayList getMediaFormats(Processor p) throws Exception{
-        log.info("getMediaFormats()"); 
+        log.info("getMediaFormats()");
         ArrayList arliResult = new ArrayList();
 
         // Obtain the track controls.
@@ -250,7 +258,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
      * @return String
      */
     private String getDuration(Processor p) throws Exception{
-        log.info("getDuration()"); 
+        log.info("getDuration()");
         String sResult;
         p.start();
         if(p.getDuration() == p.DURATION_UNKNOWN){
