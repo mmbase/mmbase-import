@@ -64,7 +64,7 @@
    		<% 
    		boolean foundRoute = false;
    		String searchConVar = "";
-   		String searchPath = "provincies,posrel,natuurgebieden,rolerel,artikel";
+   		String searchPath = "provincies,pos4rel,natuurgebieden,rolerel,artikel";
       	if(actie.equals("zoek")){
       		// *** first take care that no choice produces no result, than construct the query
       		// *** metatag contains the length of the route

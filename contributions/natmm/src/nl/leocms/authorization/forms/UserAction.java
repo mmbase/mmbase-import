@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.3 $, $Date: 2006-03-16 22:17:17 $
+ * @version $Revision: 1.4 $, $Date: 2006-03-21 22:05:30 $
  *
  * @struts:action name="UserForm"
  *                path="/editors/usermanagement/UserAction"
@@ -73,35 +73,48 @@ public class UserAction extends Action {
          Cloud cloud = CloudFactory.getCloud();
          Node userNode;
          int id = userForm.getNodeNumber();
-         if (id == -1) {
-            userNode = cloud.getNodeManager("users").createNode();
-            userNode.setStringValue("account", userForm.getUsername());
-            userNode.setIntValue("gracelogins", 3);
-            userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + ChangePasswordAction.PASSWORD_LIFETIME );
-         } else {
-            userNode = cloud.getNode(id);
-         }
-         userNode.setStringValue("voornaam", userForm.getVoornaam());
-         userNode.setStringValue("tussenvoegsel", userForm.getTussen());
-         userNode.setStringValue("achternaam", userForm.getAchternaam());
-         userNode.setStringValue("afdeling", userForm.getAfdeling());
-         userNode.setBooleanValue("emailsignalering", userForm.isEmailSignalering());
-         userNode.setStringValue("emailadres", userForm.getEmail() );
-         if (!"".equals(userForm.getPassword())) {
-            userNode.setStringValue("password", userForm.getPassword());
-            userNode.setIntValue("gracelogins", 3);
-            userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + ChangePasswordAction.PASSWORD_LIFETIME );
-            // only change admin password by real admins
-            if ("admin".equals(userNode.getStringValue("account"))) {
-               Util.updateAdminPassword(userForm.getPassword());
+         String action = userForm.getAction();
+         if(action.equals(UserForm.ACTIVATE_ACTION)) {
+            if (id != -1) {
+               userNode = cloud.getNode(id);
+               userNode.setIntValue("gracelogins", 3);
+               userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + ChangePasswordAction.PASSWORD_LIFETIME );
+               userNode.setStringValue("rank",userNode.getStringValue("originalrank"));
+               userNode.setStringValue("originalrank","");
+               userNode.commit();
             }
          }
-         userNode.setStringValue("notitie", userForm.getNotitie());
-         userNode.commit();
+         if(action.equals(UserForm.SAVE_ACTION)) {
+            if (id == -1) {
+               userNode = cloud.getNodeManager("users").createNode();
+               userNode.setStringValue("account", userForm.getUsername());
+               userNode.setIntValue("gracelogins", 3);
+               userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + ChangePasswordAction.PASSWORD_LIFETIME );
+            } else {
+               userNode = cloud.getNode(id);
+            }
+            userNode.setStringValue("voornaam", userForm.getVoornaam());
+            userNode.setStringValue("tussenvoegsel", userForm.getTussen());
+            userNode.setStringValue("achternaam", userForm.getAchternaam());
+            userNode.setStringValue("afdeling", userForm.getAfdeling());
+            userNode.setBooleanValue("emailsignalering", userForm.isEmailSignalering());
+            userNode.setStringValue("emailadres", userForm.getEmail() );
+            if (!"".equals(userForm.getPassword())) {
+               userNode.setStringValue("password", userForm.getPassword());
+               userNode.setIntValue("gracelogins", 3);
+               userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + ChangePasswordAction.PASSWORD_LIFETIME );
+               // only change admin password by real admins
+               if ("admin".equals(userNode.getStringValue("account"))) {
+                  Util.updateAdminPassword(userForm.getPassword());
+               }
+            }
+            userNode.setStringValue("notitie", userForm.getNotitie());
+            userNode.commit();
 
-         Map rollen = Util.buildRolesFromRequest(request);
-         new AuthorizationHelper(cloud).setUserRights(userNode, rollen);
-         new CheckBoxTree().setRelations(cloud,request);
+            Map rollen = Util.buildRolesFromRequest(request);
+            new AuthorizationHelper(cloud).setUserRights(userNode, rollen);
+            new CheckBoxTree().setRelations(cloud,request);
+         }
       }
       return mapping.findForward("success");
    }
@@ -109,6 +122,9 @@ public class UserAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/03/16 22:17:17  henk
+ * Added expiredate on passwords and switched on UrlConversion again
+ *
  * Revision 1.2  2006/03/08 22:23:51  henk
  * Changed log4j into MMBase logging
  *

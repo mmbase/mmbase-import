@@ -129,7 +129,7 @@ public class SubscribeAction extends Action {
    private static String addText(String text, String newline) {
       String message = "";
       if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")){
-         message = text + newline;
+         message = text;
       }
       return message;
    }
@@ -273,7 +273,7 @@ public class SubscribeAction extends Action {
       return message;
    }
 
-   private static String yourGroupExcursion(Node thisParent, Node thisEvent, Node thisSubscription, String newline) {
+   private static String yourGroupExcursion(Node thisParent, Node thisEvent, Node thisSubscription, String newline, String type) {
 
       DoubleDateNode ddn = new DoubleDateNode();
       ddn.setBegin(new Date(thisEvent.getLongValue("begindatum")*1000));
@@ -300,13 +300,19 @@ public class SubscribeAction extends Action {
       int costs = Evenement.getCategoryCosts(thisSubscription,GROUP_EXCURSION);
       message += "Bij deze brief is een overzicht ingesloten met praktische informatie, zoals een routebeschrijving naar de plaats van afvaart, en tips over wat mee te nemen." + newline + newline;
       message += "De prijs van de vaarexcursie bedraagt " + price(costs) + newline + newline;
-      message += "U wordt vriendelijk verzocht dit bedrag over te maken naar rekeningnummer 32391, ten name van Natuurmonumenten 's-Graveland, onder vermelding van \"";
+      message += "U wordt vriendelijk verzocht dit bedrag over te maken naar rekeningnummer ";
+      if(type.equals("html")) {
+         message += "<b><u>32391</u></b>";
+      } else {
+         message += "32391";
+      }
+      message += ", ten name van Natuurmonumenten 's-Graveland, onder vermelding van \"";
       nl = thisParent.getRelatedNodes("natuurgebieden","related",null);
       if(nl.size()!=0) {
          message += nl.getNode(0).getStringValue("titel_de");
       }
-      message += "\", en de datum van uw excursie." + newline;
-      message += "Wij zien uw betaling graag uiterlijk veertien dagen voor de afvaart tegemoet. (Als u kort van te voren heeft geboekt, dan uiteraard graag zo spoedig mogelijk)." + newline + newline;
+      message += "\", en de datum van uw excursie.";
+      message += "Wij zien uw betaling graag uiterlijk veertien dagen voor de afvaart tegemoet. Bij annulering binnen acht dagen voor vertrek zijn wij genoodzaakt 100% annuleringskosten te berekenen." + newline + newline;
       message += "We wensen u een mooie excursie!";
       return message;
    }      
@@ -391,7 +397,7 @@ public class SubscribeAction extends Action {
       if(isGroupExcursion) {
          message += withThisLetter(thisParent, thisEvent, confirmUrl, isGroupExcursion, newline) + newline;
          message += youSubscribedAs(thisParticipant, thisSubscription, thisParticipantName, isGroupExcursion, newline);
-         message += yourGroupExcursion(thisParent, thisEvent, thisSubscription, newline) + newline + newline;
+         message += yourGroupExcursion(thisParent, thisEvent, thisSubscription, newline, type) + newline + newline;
          message += withKindRegards(thisParticipant, phoneAndEmail[1], newline);
 
       } else {
