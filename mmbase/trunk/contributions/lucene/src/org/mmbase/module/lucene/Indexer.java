@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.22 2006-02-17 14:38:21 michiel Exp $
+ * @version $Id: Indexer.java,v 1.23 2006-03-21 19:01:47 michiel Exp $
  **/
 public class Indexer {
 
@@ -146,6 +146,7 @@ public class Indexer {
      * @param number the number of the node whose index to update
      */
     public void updateIndex(String number) {
+        
         deleteIndex(number);
         IndexWriter writer = null;
         try {
@@ -154,6 +155,7 @@ public class Indexer {
             for (Iterator i = queries.iterator(); i.hasNext();) {
                 IndexDefinition indexDefinition = (IndexDefinition)i.next();
                 Iterator j = indexDefinition.getSubCursor(number);
+                log.debug("Updating index " + indexDefinition + " for " + number);
                 index(j, writer);
             }
         } catch (Exception e) {
@@ -208,15 +210,19 @@ public class Indexer {
     protected void index(Iterator i, IndexWriter writer) throws IOException {
         Document document = null;
         String   lastIdentifier = null;
+        if (! i.hasNext()) {
+            log.debug("Empty iterator given to update " + writer);
+        }
         while(i.hasNext()) {
             IndexEntry entry = (IndexEntry) i.next();
             String newIdentifier = entry.getIdentifier();
+            log.debug("Indexing for " + newIdentifier);
             // This code depends on the fact that if the same nodes appear multipible times, they are at least queried like so, that they appear next to each other
             if (! newIdentifier.equals(lastIdentifier)) {
                 if (document != null) writer.addDocument(document);
                 document = new Document();
             }
-            index(entry, document);            
+            index(entry, document);
             lastIdentifier = newIdentifier;
         }
         if (document != null) writer.addDocument(document);
