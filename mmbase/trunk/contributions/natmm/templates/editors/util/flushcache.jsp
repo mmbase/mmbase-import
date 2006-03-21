@@ -1,3 +1,4 @@
+<%@page import="nl.leocms.servlets.UrlConverter" %>
 <%@include file="/taglibs.jsp" %>
 <html>
 <head>
@@ -6,7 +7,8 @@
 </head>
 <body style="overflow:auto;">
    <cache:flush scope="application"/>
-   <h3>Verversen van alle pagina's</h3>
-   <b>Alle pagina zijn ververst.</b><br>
+   <% UrlConverter.getCache().flushAll(); %>
+   <h3>Publiceren van alle pagina's</h3>
+   <b>Alle pagina zijn gepubliceerd.</b><br>
 </body>
 </html>

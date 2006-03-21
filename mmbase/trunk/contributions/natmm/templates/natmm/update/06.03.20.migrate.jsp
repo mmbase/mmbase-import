@@ -30,7 +30,11 @@
      <mm:setfield name="expiredate"><%=currentDate + 90*24*60*60 %></mm:setfield>
      <mm:setfield name="gracelogins">3</mm:setfield>
    </mm:listnodes>
-   Done.
+   4. Remove old relation between provincies and natuurgebieden.<br/>
+   <mm:list path="provincies,posrel,natuurgebieden">
+	   <mm:deletenode element="posrel" />
+   </mm:list>
+	Done.
 	</body>
   </html>
 </mm:log>

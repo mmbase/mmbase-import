@@ -8,7 +8,7 @@
   String zipFile =  "tmpzip.zip";
   Node sourceNode = null;
   RelationManager rm = null;
-  String referer = "";
+  String referrer = "";
 
   if(FileUpload.isMultipartContent(request))
   {
@@ -36,8 +36,8 @@
             rm = cloud.getRelationManager(relName);
           }
         }
-        if (fieldName.equals("referer")) {
-          referer = item.getString();
+        if (fieldName.equals("referrer")) {
+          referrer = item.getString();
         }
 
       } else {
@@ -124,9 +124,9 @@
     i++;
   }
   log.info("Imported " + k + " images from " + tempDir);
-  if (!referer.equals("")) {
+  if (!referrer.equals("")) {
    %>
-   <mm:redirect page="<%=referer %>" />
+   <mm:redirect page="<%=referrer %>" />
    <%
   }
 %>

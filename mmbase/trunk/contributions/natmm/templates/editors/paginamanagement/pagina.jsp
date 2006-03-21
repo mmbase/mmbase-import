@@ -1,6 +1,15 @@
-<%@page import="nl.leocms.authorization.*,nl.leocms.workflow.*,nl.leocms.util.*, java.util.*, org.mmbase.bridge.*" %>
+<%@page import="nl.leocms.authorization.*,
+   nl.leocms.workflow.*,
+   nl.leocms.util.*,
+   java.util.*,
+   org.mmbase.bridge.*,
+   nl.leocms.servlets.UrlConverter" %>
 <%@include file="/taglibs.jsp" %>
 <cache:flush scope="application"/>
+<% 
+// names of pages might get changed
+UrlConverter.getCache().flushAll(); 
+%>
 <html>
 <head>
 <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>

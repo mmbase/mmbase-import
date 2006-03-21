@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * Form bean for the UserForm page.
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.4 $, $Date: 2006-03-16 22:17:17 $
+ * @version $Revision: 1.5 $, $Date: 2006-03-21 22:05:30 $
  *
  * @struts:form name="UserForm"
  */
@@ -56,6 +56,10 @@ public class UserForm extends ActionForm {
    public static String CHIEFEDITOR = "Hoofdgebruiker";
    public static String ADMINISTRATOR = "Admin";
 
+   public static String ACTIVATE_ACTION = "Activeer account";
+   public static String SAVE_ACTION = "Opslaan";
+
+   private String action = "";
    private String username;
    private String password;
    private String password2;
@@ -132,6 +136,22 @@ public class UserForm extends ActionForm {
 
       //
       return errors;
+   }
+
+   /**
+    * Getter for property action.
+    * @return property action
+    */
+   public String getAction() {
+      return action;
+   }
+
+   /**
+    * Setter for property action.
+    * @param username property action
+    */
+   public void setAction(String action) {
+      this.action = action;
    }
 
    /**

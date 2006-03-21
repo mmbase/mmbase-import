@@ -3,13 +3,12 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:locale language="nl">
+<jsp:useBean id="form" scope="session" class="nl.leocms.forms.MembershipForm"/>
 <%
 String actionId = request.getParameter("action");
 if(actionId==null) { actionId =""; }
 if (actionId.equals("generatenew")){
-   %>
-	<jsp:useBean id="ascii" scope="session" class="nl.leocms.forms.MembershipForm"/>
-	<% ascii.generateAsciiFile(cloud,cloud.getUser().getIdentifier());
+   form.generateAsciiFile(cloud,cloud.getUser().getIdentifier());
 }
 %>
 <html>
@@ -56,15 +55,7 @@ if (actionId.equals("generatenew")){
          	<td style="width:33%;"><strong>Datum uitgelezen</strong></td>
          	<td style="width:33%;"><strong>Uitgelezen door</strong></td>		
          </tr>
-         <% int iSizeNotExported = 0; %>
-         <mm:listnodes type="members" constraints="members.status='N'">
-         	<mm:first>
-         		<mm:size jspvar="dummy" vartype="Integer" write="false">
-         			<% iSizeNotExported = dummy.intValue(); %>
-         		</mm:size>
-         	</mm:first>	
-         </mm:listnodes>
-         <% 
+         <% int iSizeNotExported = form.notDownloadedMembersList(cloud).size();
          int rowCount = 1; 
       	if (iSizeNotExported!=0){
             %>

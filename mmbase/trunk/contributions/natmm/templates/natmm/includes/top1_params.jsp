@@ -87,7 +87,7 @@ if(paginaID.equals("-1")) {
    // *** use natuurgebiedID to set paginaID
    // *** include path because both page natuurgebieden and page routes link to natuurgebieden
    if(paginaID.equals("-1")&&!natuurgebiedID.equals("-1")){  %>
-      <mm:listcontainer path="natuurgebieden,posrel,provincies,contentrel,pagina,gebruikt,template">
+      <mm:listcontainer path="natuurgebieden,pos4rel,provincies,contentrel,pagina,gebruikt,template">
          <mm:constraint field="template.url" operator="EQUAL" value="<%= path %>" />
    	   <mm:list nodes="<%=natuurgebiedID%>" fields="pagina.number" max="1">
       		<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">

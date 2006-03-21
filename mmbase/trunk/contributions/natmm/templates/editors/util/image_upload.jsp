@@ -7,8 +7,8 @@ role=....   : the relation by which the images will be attached to the source no
 referer=... : the page to which the user is redirected after uploading is done
 -->
 <% 
-String referer =  request.getHeader("referer"); 
-if(referer==null) { referer = ""; }
+String referrer =  request.getHeader("referer"); // html-specs are wrong
+if(referrer==null) { referrer = ""; }
 %>
 <script>
    var clickedButton = '';
@@ -26,13 +26,13 @@ if(referer==null) { referer = ""; }
 <mm:cloud name="mmbase" method="http" rank="basic user" jspvar="cloud">
   <mm:import externid="source"/>
   <mm:import externid="role"/>
-  <mm:import externid="referer"><%= referer %></mm:import>
+  <mm:import externid="referrer"><%= referrer %></mm:import>
   <div style="color:red;font-weight:bold;" id="message"></div>
   <form method="post" enctype="multipart/form-data" action="image_upload2.jsp" onsubmit="clickedButton.disabled=true;">
     <input type="hidden" name="source" value="<mm:write referid="source"/>"/>
     <input type="hidden" name="role" value="<mm:write referid="role"/>"/>
-    <mm:present referid="referer">
-      <input type="hidden" name="referer" value="<mm:write referid="referer"/>"/>
+    <mm:present referid="referrer">
+      <input type="hidden" name="referrer" value="<mm:write referid="referrer"/>"/>
     </mm:present>
     <input type="file" name="filename" />
     <input type="submit" value="upload" onclick="javascript:showMessage(this,'De zip-file met afbeeldingen wordt geimporteerd.<br>Een moment geduld a.u.b.');" />

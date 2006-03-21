@@ -51,6 +51,9 @@
         <html:select property="rank" size="1">
            <html:optionsCollection label="description" value="value" property="ranks" name="UserForm"/>
         </html:select>
+        <logic:equal property="rank" name="UserForm" value="anonymous">
+           <html:submit property="action" value='<%= UserForm.ACTIVATE_ACTION %>' style="width:120"/>
+        </logic:equal>
     </td></tr>
 </table>
 </div> 

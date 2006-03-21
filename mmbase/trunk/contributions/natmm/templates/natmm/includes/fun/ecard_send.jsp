@@ -28,7 +28,7 @@ String hostName = HttpUtils.getRequestURL(request).toString();
 hostName = hostName.substring(0,hostName.lastIndexOf("/"));
             
 try {
-	String msg_subject = "Kijk eens om je heen";
+	String msg_subject = "Er ligt een ecard klaar van een natuurvriend(in)";
 	String msg_body = "Beste " + toname + ",\n\n";
 	msg_body += fromname + " heeft je een Natuurmonumenten e-card gestuurd. Klik op de link om je e-card op te halen.\n\n";
 	msg_body += hostName+"/ecard.jsp?id="+imgID+"&card="+account+"\n\n";
