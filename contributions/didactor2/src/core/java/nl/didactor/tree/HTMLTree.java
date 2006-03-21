@@ -5,7 +5,7 @@ import java.io.Writer;
 
 import javax.swing.tree.TreeModel;
 
-/** 
+/**
  * Class reponsible for rendering the HTML tree (+/-, lines, scripts etc.)
  * The HTML uses a number of gif's that are located using the ImgBaseUrl.
  * Gifs needed:<UL>
@@ -18,7 +18,7 @@ import javax.swing.tree.TreeModel;
  * <LI>vertline.gif</LI>
  * <LI>spacer.gif</LI>
  * </UL>
- * 
+ *
  */
 public class HTMLTree {
    private TreeCellRenderer cellRenderer = new DefaultCellRenderer();
@@ -36,7 +36,7 @@ public class HTMLTree {
    public HTMLTree(TreeModel model) {
       this.model = model;
    }
-   
+
    public HTMLTree(TreeModel model, String treeId) {
       this.model = model;
       this.treeId = treeId;
@@ -156,6 +156,7 @@ public class HTMLTree {
    }
 
    private void renderNode(Object node, int level, PrintWriter out, String base, String preHtml, String myImg, boolean isLast) {
+      out.print("<nobr>");
       String nodeName = base + "_" + level;
       if (!model.isLeaf(node)) {
          out.print("<a href='javascript:clickNavNode(\"" + nodeName + "\")'>");
@@ -179,7 +180,8 @@ public class HTMLTree {
          out.print("/>");
       }
       getCellRenderer().render(node, level, imgBaseUrl, out);
-      out.println("<br>");
+      out.print("</nobr>");
+      out.print("<br/>");
       if (!model.isLeaf(node)) {
          String style = expandAll ? "block" : "none";
          out.println("<div id='" + nodeName + "' style='display: " + style + "'>");
@@ -206,6 +208,7 @@ public class HTMLTree {
 
    private void renderCreateNew(Object node, int level, PrintWriter out, String preHtml, int createNewNumber, boolean isLast) {
       out.print(preHtml);
+      out.print("<nobr>");
       out.print("<img src='" + getImage(true,isLast) + "' border='0' align='center' valign='middle'/>&nbsp;");
       String icon = getCellRenderer().getCreateNewIcon(node, level, createNewNumber);
       if (icon != null) {
@@ -218,6 +221,7 @@ public class HTMLTree {
          out.print("<img src='"+buildImgUrl(imgName)+"' border='0' align='center' valign='middle' alt='" + altText + "'/>");
       }
       getCellRenderer().renderCreateNew(node, level, imgBaseUrl, createNewNumber, out);
+      out.print("</nobr>");
       out.println("<br>");
    }
    public void setCellRenderer(TreeCellRenderer cellRenderer) {
