@@ -49,7 +49,7 @@
 	    	<prompt>Creationdate</prompt>
 			<description>Date the package was created</description>
 	    </field>
-	    <field name="versionnumber">
+	    <field name="versionnumber" dtrequired="false">
 	    	<prompt>Version</prompt>
 			<description>Versionnumber of the package</description>
 	    </field>
