@@ -16,13 +16,13 @@
     <th colspan="2" width="225">Bundle Information</th>
   </tr><tr>
     <th>Name</th>
-    <td><mm:field name="name" /></td>
+    <td><mm:field name="name" /> &nbsp;</td>
   </tr><tr>
     <th>Type</th>
-    <td><mm:related path="related,packagetypes"><mm:field name="packagetypes.name" /></mm:related></td>
+    <td><mm:related path="related,packagetypes"><mm:field name="packagetypes.name" /></mm:related> &nbsp;</td>
   </tr><tr>
     <th>Version</th>
-    <td><mm:field name="versionnumber" /></td>
+    <td><mm:field name="versionnumber" /> &nbsp;</td>
   </tr><tr>
     <th>Maintainer</th>
     <td>
@@ -40,7 +40,7 @@
       <mm:remove referid="is_shown" />
       <mm:first inverse="true">, </mm:first> 
       <mm:field name="persons.firstname" /> <mm:field name="persons.suffix" /> <mm:field name="persons.lastname" /> 
-    </mm:related> 
+    </mm:related> &nbsp;
     </td>
   </tr><tr>
     <th>Creation-Date</th>
