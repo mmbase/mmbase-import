@@ -18,6 +18,7 @@ import javax.sql.DataSource;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
@@ -41,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.53 2006-02-17 12:59:08 michiel Exp $
+ * @version $Id: Lucene.java,v 1.54 2006-03-21 19:02:22 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -402,9 +403,9 @@ public class Lucene extends Module implements MMBaseObserver {
                     if (time != null) {
                         try {
                             waitTime = Long.parseLong(time);
-                            log.debug("Set initial wait time to " + time + " milliseconds");
+                            log.debug("Set wait time to " + time + " milliseconds");
                         } catch (NumberFormatException nfe) {
-                            log.warn("Invalid value '" + time +" ' for property 'initialwaittime'");
+                            log.warn("Invalid value '" + time +" ' for property 'iwaittime'");
                         }
                     }
                     while(! mmbase.getState()) {
@@ -484,16 +485,24 @@ public class Lucene extends Module implements MMBaseObserver {
             queryDefinition.setAnalyzer(analyzer);
             // do not cache these queries
             queryDefinition.query.setCachePolicy(CachePolicy.NEVER);
-
-            String elementName = queryDefinition.elementManager.getName();
+            
+            // MM: I think the follwing functionality should be present on MMBaseIndexDefinition itself. and not on Lucene.
+            // And of course, the new event-mechanism must be used.
             if (!readOnly) {
                 // register. Unfortunately this can currently only be done through the core
-                MMObjectBuilder builder = mmbase.getBuilder(elementName);
-                log.service("Observering for " + builder);
-                builder.addLocalObserver(this);
-                builder.addRemoteObserver(this);
+                Iterator i = queryDefinition.query.getSteps().iterator();
+                while(i.hasNext()) {
+                    Step step = (Step) i.next();
+                    MMObjectBuilder builder = mmbase.getBuilder(step.getTableName());
+                    log.service("Observing for builder " + builder.getTableName() + " for index " + queryElement.getAttribute("name"));
+                    builder.addLocalObserver(this);
+                    builder.addRemoteObserver(this);
+                }
             }
 
+
+
+            String elementName = queryDefinition.elementManager.getName();
             NodeList childNodes = queryElement.getChildNodes();
             for (int k = 0; k < childNodes.getLength(); k++) {
                 if (childNodes.item(k) instanceof Element) {
@@ -625,7 +634,9 @@ public class Lucene extends Module implements MMBaseObserver {
     }
 
     public boolean nodeChanged(String machine, String number, String builder, String ctype) {
-        log.debug("Received " + number);
+        if (log.isDebugEnabled()) {
+            log.debug("Received for node " + number + " of builder " + builder + " a change " + ctype);
+        }
         if (!readOnly) {
             // if this concerns a change or new node, update the index with that node
             if (ctype.equals("c") || ctype.equals("n")) {
@@ -694,7 +705,7 @@ public class Lucene extends Module implements MMBaseObserver {
         public void updateIndex(final String number) {
             Runnable assignment = new Runnable() {
                     public void run() {
-                        log.service("update index");
+                        log.service("Update index");
                         status = BUSY_INDEX;
                         for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                             Indexer indexer = (Indexer) i.next();
