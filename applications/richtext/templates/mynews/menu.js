@@ -32,7 +32,7 @@
  *   </ul>
  *
  * @author Michiel Meeuwissen
- * $Id: menu.js,v 1.3 2006-03-21 22:16:13 michiel Exp $
+ * $Id: menu.js,v 1.4 2006-03-21 22:24:49 michiel Exp $
  */
 var usedMenus = new Object(); // currently can contain only one, but when deeper nesting is implemented can contain more.
 var timeOut = 1000;
@@ -166,24 +166,29 @@ function openMenu(event) {
     for (var sibl in  target.siblings) {
         if (sibl != target.id) {
             debug("Collapsing other sibling of " + target.id + ": " + sibl);
-            collapseMenu(getSubMenu(document.getElementById(sibl)).id);
+            var siblMen = getSubMenu(document.getElementById(sibl)); 
+            if (siblMen) {
+                collapseMenu(siblMen.id);
+            }
         }
     }
     var elm = getSubMenu(target);
     if (elm) {
         debug("opening because because of " + target.tagName + "/" + target.id);
         elm.style.display = "block";
+        usedMenus[elm.id] = elm;
+        debug("marked used " + elm.id);
     } else {
     }
-    usedMenus[elm.id] = elm;
-    debug("marked used " + elm.id);
 }
 
 function closeMenu(event) {
     var target = getSubMenu(getTarget(event));
-    debug("collapings because because of " + target.tagName + "/" + target.id);
-    usedMenus["" + target.id] = undefined;
-    setTimeout('collapseMenu("' + target.id + '")', timeOut);
+    if (target) {
+        debug("collapings because because of " + target.tagName + "/" + target.id);
+        usedMenus["" + target.id] = undefined;
+        setTimeout('collapseMenu("' + target.id + '")', timeOut);
+    }
 }
 
 function collapseMenu(id) {
