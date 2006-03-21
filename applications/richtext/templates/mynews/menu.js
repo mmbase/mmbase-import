@@ -32,7 +32,7 @@
  *   </ul>
  *
  * @author Michiel Meeuwissen
- * $Id: menu.js,v 1.2 2006-03-17 21:35:14 michiel Exp $
+ * $Id: menu.js,v 1.3 2006-03-21 22:16:13 michiel Exp $
  */
 var usedMenus = new Object(); // currently can contain only one, but when deeper nesting is implemented can contain more.
 var timeOut = 1000;
@@ -79,15 +79,15 @@ function initMenu(menuId, reposition) {
             ) {
             siblings[subelm.id] = subelm;
             subelm.siblings = siblings;
-            subelm.onmouseover = openMenu;
-            subelm.onmouseout  = scheduleCollapse;
-            var subMenu = document.getElementById("sub_" + subelm.id);
+            addEvent(subelm, "mouseover", openMenu);
+            addEvent(subelm, "mouseout",  closeMenu);
+            var subMenu = getSubMenu(subelm);
             if (subMenu) {
                 debug("found " + subMenu.id);
                 subMenu.parent_a = subelm;
                 subMenu.left       = (subelm.left ? subelm.left : subelm.offsetLeft);
                 subMenu.top        = (subelm.top  ? subelm.top  : subelm.offsetTop);
-                if (reposition == "vertical") {
+                if (reposition == "bottom") {
                     subMenu.style.position = 'absolute';
                     subMenu.style.left = subMenu.left + "px";
                     subMenu.top        = (subelm.top ? subelm.top : subelm.offsetTop) + subelm.offsetHeight;
@@ -97,24 +97,28 @@ function initMenu(menuId, reposition) {
                         subMenu.style.width = elm.offsetWidth + "px";
                     }
 
-                }
-                if (reposition == "horizontal") {
+                } else if (reposition == "right") {
                     subMenu.style.position = 'absolute';
                     subMenu.left       = (subelm.left ? subelm.left: subelm.offsetLeft) + subelm.offsetWidth;
                     subMenu.style.left = subMenu.left + "px";
                     subMenu.style.top  = subMenu.top + "px";
+                } else if (reposition == "left") {
+                    subMenu.style.position = 'absolute';
+                    subMenu.left       = (subelm.left ? subelm.left: subelm.offsetLeft) - subMenu.offsetWidth;
+                    subMenu.style.left = subMenu.left + "px";
+                    subMenu.style.top  = subMenu.top + "px";
                 }
                 subMenu.style.display = "none";
-                subMenu.onmouseover = useMenu;
-                subMenu.onmouseout  = unuseMenu;
+                debug("usemenu on " + subMenu.tagName);
+                addEvent(subMenu, "mouseover", useMenu);
+                addEvent(subMenu, "mouseout",  unuseMenu);
                 initMenu(subMenu.id, reposition);
             }
         }
         elm = elm.nextSibling;
     }
 }
-
-function getDiv(elm) {
+function getMenu(elm) {
     while (true) {
         var tagName = elm.tagName;
         if (tagName) {
@@ -124,53 +128,70 @@ function getDiv(elm) {
             }
         }
         elm = elm.parentNode;
+    }    
+}
+
+function getSubMenu(elm) {
+    var tagName = elm.tagName;
+    if (tagName && (tagName == "a" || tagName == "A")) {
+        return document.getElementById("sub_" + elm.id);
+    } else {
+        return elm;
     }
 }
 
 function useMenu(event) {
-    var target = getDiv(getTarget(event));
-    usedMenus[target.id] = target;
-    debug("Marking menu " + target.id + " / " + target.left + " in use");
+    debug(event);
+    var elm = getMenu(getTarget(event));
+    if (elm) {
+        usedMenus[elm.id] = elm;
+        debug("Marking menu " + elm.id + " / " + elm.left + " in use");
+    }
 }
 function unuseMenu(event) {
-    var target = getDiv(getTarget(event));
-    usedMenus[target.id] = undefined;
-    debug("Unmarking menu " + target.id + " in use");
-    if (target.parent_a) {
-        setTimeout('collapseMenu("' + target.parent_a.id + '")', timeOut);
+    var target = getMenu(getTarget(event));
+    if (target) {
+        usedMenus[target.id] = undefined;
+        debug("Unmarking menu " + target.id + "/" + target.parent_a.id + "  in use");
+        if (target.parent_a) {
+            setTimeout('collapseMenu("' + target.id + '")', timeOut);
+        }
     }
 }
 
 
 function openMenu(event) {
     var target = getTarget(event);
-    usedMenus = new Object();
     // collapse siblings
     for (var sibl in  target.siblings) {
         if (sibl != target.id) {
-            debug("Collapsing other sibling of " + target.id + " " + sibl.id);
-            collapseMenu(sibl);
+            debug("Collapsing other sibling of " + target.id + ": " + sibl);
+            collapseMenu(getSubMenu(document.getElementById(sibl)).id);
         }
     }
-    var elm = document.getElementById("sub_" + target.id);
+    var elm = getSubMenu(target);
     if (elm) {
         debug("opening because because of " + target.tagName + "/" + target.id);
         elm.style.display = "block";
     } else {
     }
-    usedMenus["" + target.id] = target;
+    usedMenus[elm.id] = elm;
+    debug("marked used " + elm.id);
 }
 
-function scheduleCollapse(event) {
-    var target = getTarget(event);
+function closeMenu(event) {
+    var target = getSubMenu(getTarget(event));
     debug("collapings because because of " + target.tagName + "/" + target.id);
     usedMenus["" + target.id] = undefined;
     setTimeout('collapseMenu("' + target.id + '")', timeOut);
 }
 
 function collapseMenu(id) {
-    var elm = document.getElementById("sub_" + id);
-    if (elm && ! usedMenus[elm.id]) {
+    var elm = document.getElementById(id);
+    if (elm && ! usedMenus[id]) {
+        debug("Collapsed " + elm.id);
         elm.style.display = "none";
+    } else {
+        debug("Cancelled collapse of " + id);
     }
 }
