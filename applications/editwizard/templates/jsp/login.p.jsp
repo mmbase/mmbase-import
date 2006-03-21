@@ -45,7 +45,7 @@
     <% Parameter[] params = authentication.createParameters(currentType).getDefinition();
        for (int j = 0; j < params.length ; j++) {
          Parameter param = params[j];
-         Class type = param.getType();
+         Class type = param.getTypeAsClass();
          if (type.isAssignableFrom(String.class) && param.isRequired()) {         
     %>       
     <tr>
