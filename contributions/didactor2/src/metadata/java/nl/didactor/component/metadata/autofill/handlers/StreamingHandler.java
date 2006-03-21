@@ -14,6 +14,9 @@ import java.io.*;
 
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 
 import nl.didactor.component.metadata.autofill.HandlerInterface;
 import nl.didactor.metadata.util.MetaHelper;
@@ -21,6 +24,8 @@ import nl.didactor.metadata.util.MetaLangStringHelper;
 
 
 public class StreamingHandler implements HandlerInterface, ControllerListener{
+
+    private static Logger log = Logging.getLoggerInstance(StreamingHandler.class);
 
     private Processor p;
     private Object waitSync = new Object();
@@ -41,6 +46,8 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
      * @param nodeObject Node
      */
     public void addMetaData(Node nodeMetaDefinition, Node nodeObject){
+        log.info("addMetaData()");
+
         NodeList nlMetaDataNodes = nodeObject.getCloud().getList("" + nodeMetaDefinition.getNumber(),
            "metadefinition,metadata,object",
            "metadata.number",
@@ -59,13 +66,18 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
 
 
         try{
-            File fileTemp = File.createTempFile("didactor_temp_media_file_" + nodeMetaData.getNumber() + "_", "." + nodeObject.getStringValue("filename"));
+            String fileName = "didactor_temp_media_file_" + nodeMetaData.getNumber() + "_";
+            String fileExtension =  "." + nodeObject.getStringValue("filename");
+            log.info("Writing file to filename=" + fileName + "  extension=" + fileExtension);
+            File fileTemp = File.createTempFile(fileName, fileExtension);
             RandomAccessFile raTemp = new RandomAccessFile(fileTemp, "rw");
             raTemp.write(nodeObject.getByteValue("handle"));
             raTemp.close();
             raTemp = null;
-
-            p = this.createProcessor(new URL("file:///" + fileTemp.getAbsolutePath().replaceAll("\\\\", "/")));
+            
+            String tempFile = "file:///" + fileTemp.getAbsolutePath().replaceAll("\\\\", "/");
+            log.info("Creating processor from " + tempFile);
+            p = this.createProcessor(new URL(tempFile));
             fileTemp = null;
 
             Node nodeResultLangString = MetaLangStringHelper.doOneLangString(nodeMetaData);
@@ -76,7 +88,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
                 }
             }
             catch(Exception e){
-                System.out.println(e);
+                log.error(e);
             }
 
             try{
@@ -84,11 +96,11 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
                 nodeResultLangString.commit();
             }
             catch(Exception e){
-                System.out.println(e);
+                log.error(e);
             }
         }
         catch(Exception e){
-            System.out.println(e);
+            log.error(e);
         }
     }
 
@@ -189,7 +201,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
      * @return ArrayList
      */
     private ArrayList getMediaFormats(Processor p) throws Exception{
-
+        log.info("getMediaFormats()"); 
         ArrayList arliResult = new ArrayList();
 
         // Obtain the track controls.
@@ -208,7 +220,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
                videoTrack = tc[i];
                VideoFormat vf = (VideoFormat) videoTrack.getFormat();
 
-                //System.out.println("VideoTrack Format: " + videoTrack.getFormat() );
+                log.info("VideoTrack Format: " + videoTrack.getFormat() );
                 arliResult.add("codec=" + vf.getEncoding());
                 arliResult.add("dimension=" + new Double(vf.getSize().getWidth()).intValue() +
                     "x" + new Double(vf.getSize().getHeight()).intValue());
@@ -216,7 +228,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
             }
             if (tc[i].getFormat() instanceof AudioFormat) {
                 audioTrack = tc[i];
-                //System.out.println("AudioTrack Format: " + audioTrack.getFormat() );
+                log.info("AudioTrack Format: " + audioTrack.getFormat() );
                 AudioFormat af = (AudioFormat) audioTrack.getFormat();
                 if(af.getChannels() > 1){
                     arliResult.add("stereo/mono=stereo(" + af.getChannels() + " channels)");
@@ -238,6 +250,7 @@ public class StreamingHandler implements HandlerInterface, ControllerListener{
      * @return String
      */
     private String getDuration(Processor p) throws Exception{
+        log.info("getDuration()"); 
         String sResult;
         p.start();
         if(p.getDuration() == p.DURATION_UNKNOWN){

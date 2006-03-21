@@ -1,13 +1,23 @@
 package nl.didactor.component.metadata.autofill;
 
-
 import org.mmbase.bridge.*;
+
+
+import javax.servlet.ServletContext;
 
 import nl.didactor.component.metadata.autofill.HandlerInterface;
 import nl.didactor.metadata.util.MetaHelper;
 import nl.didactor.metadata.util.MetaLangStringHelper;
 
+
 public abstract class Handler implements HandlerInterface{
+
+    private ServletContext servletContext;
+
+
+    public Handler(ServletContext servletContext){
+        this.servletContext = servletContext;
+    }
 
     /**
      * Sets the correct values. It overwrites old values if there any.
