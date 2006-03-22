@@ -94,7 +94,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     /**
      * Function implementation around {@link #process(PageInfo, Hashtable, Hashtable)}. See in
      * MMAdmin for an example on how to use.  It does not support multipible commands, so the first
-     * Hashtable always contains precesely one entry. The value of the entry is the value of the
+     * Hashtable always contains precisely one entry. The value of the entry is the value of the
      * first string parameter or the empty string. All parameters are added to the second Hashtable
      * parameter ('vars'), and this is also returned (because sometimes also results are put in it).
      * @since MMBase-1.8
@@ -107,16 +107,14 @@ public class ProcessorModule extends Module implements ProcessorInterface {
         public Object getFunctionValue(Parameters arguments) {
             Hashtable cmds = new Hashtable();
             Hashtable vars = new Hashtable();
-            Iterator i = arguments.toMap().entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                Object value = entry.getValue();
-                if (value != null) {
-                    if (value instanceof String && cmds.size() == 0) {
-                        cmds.put(getName(), value);
-                    }
-                    vars.put(entry.getKey(), value);
+            Parameter[] def = arguments.getDefinition();
+            for (int i = 0; i < def.length; i++) {
+                Parameter param = def[i];
+                Object value = arguments.get(param);
+                if (String.class.isAssignableFrom(param.getTypeAsClass()) && cmds.size() == 0) {
+                    cmds.put(getName(), value);
                 }
+                vars.put(param.getName(), value);
             }
             if (cmds.size() == 0) cmds.put(getName(), "");
             boolean ok = process(getPageInfo(arguments), cmds, vars);
