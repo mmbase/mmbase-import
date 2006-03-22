@@ -4,15 +4,10 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
-  <!---
-  TODO: Needs simplicication.
-  -->
+
   <mm:url id="kupu_back" write="false" absolute="server" page="" />
-  <mm:url write="false" id="wizardjsp" referids="kupu_back" page="/mmbase/kupu/mmbase/">
-    <mm:param name="tools" value="related" />
-    <mm:param name="link_nodetypes" value="urls,attachments,xmlnews" />
-  </mm:url>
-  <mm:related path="editor,typedef" orderby="editor.pos" fields="typedef.name,editor.size,editor.name,editor.wizard">
+
+  <mm:related path="editor,typedef" orderby="editor.pos" fields="typedef.name,editor.size,editor.name,editor.wizard,editor.wizardjsp">
 
     <mm:field name="editor.name">
       <mm:isnotempty>
@@ -20,58 +15,56 @@
       </mm:isnotempty>
     </mm:field>
     &amp;nbsp;
-    <mm:field id="wiz" name="editor.wizard" write="false" />
-    SIZE: ${_node.editor.size} . ${_node.editor.wizard}
+    <mm:field name="editor.wizardjsp">
+      <mm:isnotempty>
+        <mm:link  id="wizardjsp" referids="kupu_back" page="${_}" write="false">
+          <mm:param name="tools" value="related" />
+          <mm:param name="link_nodetypes" value="urls,attachments,xmlnews" />
+        </mm:link>
+      </mm:isnotempty>
+    </mm:field>
 
+
+    <mm:field name="editor.wizard">
+      <mm:isempty>
+        <mm:import id="wizard"><jsp:text>tasks/<mm:field name="typedef.name" />/<mm:field name="typedef.name" /></jsp:text></mm:import>
+      </mm:isempty>
+      <mm:isnotempty>
+        <mm:write id="wizard" write="false" />
+      </mm:isnotempty>
+    </mm:field>
+    
     <c:choose>
-      <!-- link to customized editor (richtext?) -->
-      <c:when test="${fn:endsWith(wiz, '.jsp') || fn:endsWith(wiz, '.jspx')}">
-      <mm:link page="$wiz">
-        <mm:param name="size"><mm:field  name="editor.size" /></mm:param>
-        <mm:param name="nodetype"><mm:field  name="typedef.name" /></mm:param>
-        <mm:param name="objectnumber">${cat.number}</mm:param>
-        <a href="${_}">
-          <mm:field  name="editor.name"><mm:write /><mm:isempty><mm:nodeinfo type="gui" /></mm:isempty></mm:field>
-        </a>
-      </mm:link>
-    </c:when>
-    <!-- link to editwizard -->
-    <c:otherwise>
-      <c:choose>
-        <c:when test="${_node.editor.size lt -1}">
-          <!--
-              call a list with objects unrelated to this category. (Template shows all)
-          -->
-          <!-- mm:import id="wizard">tasks/<mm:field name="typedef.name" />/<mm:field name="typedef.name" /></mm:import-->
-          <mm:link referids="referrer,language,wizardjsp" page="${jsps}list.jsp">
-            <mm:param name="wizard"><mm:field name="editor.wizard" /></mm:param>
-            <mm:param name="nodepath">categories,related,${_node.typedef.name}</mm:param>
-            <mm:param name="orderby">${_node.typedef.name}.number</mm:param>
-            <mm:param name="searchdir">destination</mm:param>
-            <mm:param name="directions">down</mm:param>
-            <mm:param name="search">yes</mm:param>
-            <mm:param name="title"><mm:compare referid="supercat" referid2="cat" inverse="true">${supercat.title} /</mm:compare>${cat.title}</mm:param>
-            <a href="${_}">
-              <mm:nodeinfo nodetype="${_node.typedef.name}" type="plural_guitype" />
-            </a>
-          </mm:link>
-        </c:when>
-        <c:when test="${_node.editor.size lt 0}">
-          <!--
-              call a list with objects related to this category.
-          -->
-          <!-- mm:import id="wizard">tasks/<mm:field name="typedef.name" />/<mm:field name="typedef.name" /></mm:import-->
-          <mm:link referids="referrer,language,wizardjsp" page="${jsps}list.jsp">
-            <mm:param name="wizard"><mm:field name="editor.wizard" /></mm:param>
-            <mm:param name="nodepath">categories,related,${_node.typedef.name}</mm:param>
-            <mm:param name="orderby">${_node.typedef.name}.number</mm:param>
-            <mm:param name="startnodes">${cat}</mm:param>
-            <mm:param name="origin">${cat}</mm:param>
-            <mm:param name="searchdir">destination</mm:param>
-            <mm:param name="directions">down</mm:param>
-            <mm:param name="search">yes</mm:param>
-            <mm:param name="title"><mm:compare referid="supercat" referid2="cat" inverse="true">${supercat.title} /</mm:compare>${cat.title}</mm:param>
-            <a href="${_}">
+      <c:when test="${_node.editor.size lt -1}">
+        <!--
+            call a list with objects unrelated to this category. (Template shows all)
+        -->
+        <mm:link referids="referrer,language,wizard,wizardjsp?" page="${jsps}list.jsp">
+          <mm:param name="nodepath">categories,related,${_node.typedef.name}</mm:param>
+          <mm:param name="orderby">${_node.typedef.name}.number</mm:param>
+          <mm:param name="searchdir">destination</mm:param>
+          <mm:param name="directions">down</mm:param>
+          <mm:param name="search">yes</mm:param>
+          <mm:param name="title"><mm:compare referid="supercat" referid2="cat" inverse="true">${supercat.title} /</mm:compare>${cat.title}</mm:param>
+          <a href="${_}">
+            <mm:nodeinfo nodetype="${_node.typedef.name}" type="plural_guitype" />
+          </a>
+        </mm:link>
+      </c:when>
+      <c:when test="${_node.editor.size lt 0}">
+        <!--
+            call a list with objects related to this category.
+        -->
+        <mm:link referids="referrer,language,wizard,wizardjsp?" page="${jsps}list.jsp">
+          <mm:param name="nodepath">categories,related,${_node.typedef.name}</mm:param>
+          <mm:param name="orderby">${_node.typedef.name}.number</mm:param>
+          <mm:param name="startnodes">${cat}</mm:param>
+          <mm:param name="origin">${cat}</mm:param>
+          <mm:param name="searchdir">destination</mm:param>
+          <mm:param name="directions">down</mm:param>
+          <mm:param name="search">yes</mm:param>
+          <mm:param name="title"><mm:compare referid="supercat" referid2="cat" inverse="true">${supercat.title} /</mm:compare>${cat.title}</mm:param>
+          <a href="${_}">
               <mm:nodeinfo nodetype="${_node.typedef.name}" type="plural_guitype" />
             </a>
           </mm:link>
@@ -83,8 +76,7 @@
           <!--
               call a list with objects related to this category.
           -->
-          <mm:link referids="referrer,language" page="${jsps}wizard.jsp">
-            <mm:param name="wizard">yes</mm:param>
+          <mm:link referids="referrer,language,wizard" page="${jsps}wizard.jsp">
             <a href="${_}">
               <mm:field  name="editor.name"><mm:write /><mm:isempty><mm:nodeinfo element="typedef" type="gui" /></mm:isempty></mm:field>
             </a>
@@ -94,15 +86,10 @@
           <!--
                call a list with limited number of objects related to this category.
           -->
-          <mm:field name="editor.wizard">
-            <mm:isempty>
-              <mm:import id="wizard">tasks/${_node.typedef.name}/${_node.typedef.name}_origin</mm:import>
-            </mm:isempty>
-            <mm:isnotempty>
-              <mm:write id="wizard" write="false" />
-            </mm:isnotempty>
-          </mm:field>
-          <mm:link referids="referrer,language" page="${jsps}wizard.jsp">
+          <mm:notpresent referid="wizardjsp">
+            <mm:url id="wizardjsp" page="${jsps}wizard.jsp" write="false" />
+          </mm:notpresent>
+          <mm:link referid="wizardjsp" referids="referrer,language,cat@root">
             <mm:param name="wizard"><mm:write referid="wizard" /></mm:param>
             <mm:param name="objectnumber">${cat.number}</mm:param>
             <a href="${_}">
@@ -111,8 +98,6 @@
           </mm:link>
         </c:otherwise>
       </c:choose>
-    </c:otherwise>
-  </c:choose>
   <mm:last inverse="true">, </mm:last>
 </mm:related>
 </mm:node>

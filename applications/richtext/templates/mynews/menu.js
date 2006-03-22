@@ -42,7 +42,7 @@
  * The essential bits are the id's with the corresponding classes for the subitems.
  *
  * @author Michiel Meeuwissen <jsmenu@meeuw.org>
- * $Id: menu.js,v 1.5 2006-03-22 19:03:22 michiel Exp $
+ * $Id: menu.js,v 1.6 2006-03-22 22:59:20 michiel Exp $
  */
 
 //
@@ -116,9 +116,9 @@ function initMenu(menuId, reposition) {
                 subMenu.style.left = subMenu.left + "px";
                 subMenu.top        = (subelm.top ? subelm.top : subelm.offsetTop) + subelm.offsetHeight;
                 subMenu.style.top  = subMenu.top + "px";
-                if (subMenu.offsetWidth < elm.offsetWidth) {
+                if (subMenu.offsetWidth < subelm.offsetWidth) {
                     // if submenu is smaller, then at least make it same width.
-                    subMenu.style.width = elm.offsetWidth + "px";
+                    subMenu.style.width = subelm.offsetWidth + "px";
                 }
 
             } else if (reposition == "right") {

@@ -9,6 +9,11 @@
       <head>
         <title>Editors</title>
         <jsp:include page="../head.links.jspx?dir=../" />
+        <mm:haspage page="/mmbase/security">
+          <mm:link page="/mmbase/security/style/rights.css">
+            <link href="${_}" rel="stylesheet" title="normal" type="text/css" media="screen" /> 
+          </mm:link>
+        </mm:haspage>
       </head>
       <mm:cloud rank="basic user" jspvar="cloud">
         <body >
