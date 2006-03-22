@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title>Metavocabulary Editor</title>
+  <title xml:lang="en">Metavocabulary Editor</title>
+  <title xml:lang="nl">Metadatawaarde editor</title>
 
   <action type="load">
     <field name="value" />
@@ -25,7 +26,8 @@
   </steps>
 
   <form-schema id="step1">
-    <title>Metavocabulary Invoeren</title>
+    <title xml:lang="en">Edit Metavocabulary</title>
+    <title xml:lang="nl">Metadatawaarde invoeren</title>
     <field name="value" />
     <list extends="config/metavocabulary/metavocabulary-related-list.xml"/>
     <list extends="config/metadefinition/metadefinition-inmetavocabulary.xml"/>

@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title>Metavocabulary Editor</title>
+  <title xml:lang="en">Metavocabulary Editor</title>
+  <title xml:lang="nl">Metadata waarden Editor</title>
 
   <action type="load">
     <field name="value" />
@@ -23,10 +24,12 @@
     <list extends="config/metadefinition/metadefinition-inmetavocabulary.xml"/>
 
     <list destination="metavocabulary" role="posrel" minoccurs="0" maxoccurs="*">
-      <title>Bijbehorende Metavocabulary</title>
+      <title xml:lang="nl">Bijbehorende metadatawaarden</title>
+      <title xml:lang="en">Related Metavocabulary</title>
       <item>
         <field name="value" ftype="data">
-          <prompt>Waarde</prompt>
+          <prompt xml:lang="nl">Waarde</prompt>
+          <prompt xml:lang="en">Value</prompt>
         </field>
       </item>
 
@@ -35,9 +38,11 @@
       </action>
 
       <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down" >
-        <prompt>Zoeken naar metavocabulary</prompt>
+        <prompt xml:lang="nl">Zoeken naar metadatawaarden</prompt>
+        <prompt xml:lang="en">Search on metavocabulary</prompt>
         <search-filter>
-          <name>Waarde bevat</name>
+          <name xml:lang="nl">Waarde bevat</name>
+          <name xml:lang="en">Value contains</name>
           <search-fields>value</search-fields>
         </search-filter>
       </command>
@@ -45,10 +50,12 @@
     </list>
 
     <list destination="metadefinition" role="constraints" minoccurs="0" maxoccurs="*">
-      <title>Beperking voor metadefinitie</title>
+      <title xml:lang="nl">Beperking voor metadefinitie</title>
+      <title xml:lang="en">Constraint for metadefinition</title>
       <item>
         <field name="name" ftype="data">
-          <prompt>Naam</prompt>
+          <prompt xml:lang="nl">Naam</prompt>
+          <prompt xml:lang="en">Name</prompt>
         </field>
       </item>
 
@@ -57,9 +64,11 @@
       </action>
 
       <command name="search" nodepath="metadefinition" fields="name" age="-1" orderby="number" directions="down" >
-        <prompt>Zoeken naar metadefinition</prompt>
+        <prompt xml:lang="nl">Zoeken naar metadefinitie</prompt>
+        <prompt xml:lang="en">Search on metadefinition</prompt>
         <search-filter>
-          <name>Naam bevat</name>
+          <name xml:lang="nl">Naam bevat</name>
+          <name xml:lang="en">Name contains</name>
           <search-fields>name</search-fields>
         </search-filter>
       </command>
