@@ -2,20 +2,28 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="metadefinition" role="posrel" ordertype="number" orderby="field[@name='pos']"
    minoccurs="0" maxoccurs="*">
-  <title>Metadata definities die behoren tot deze metadatastandard</title>
+  <title xml:lang="nl">Metadata definities die behoren tot deze metadatastandard</title>
+  <title xml:lang="en">Metadata definitions which belong to these metadatastandard</title>
   <item>
     <field name="name" ftype="data">
-      <prompt>Naam</prompt>
+      <prompt xml:lang="nl">Naam</prompt>
+      <prompt xml:lang="en">Name</prompt>
     </field>
-    <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
+    <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line">
+      <prompt xml:lang="nl">Positie</prompt>
+      <prompt xml:lang="en">Position</prompt>
+    </field>
     <field name="type" ftype="data">
-     <prompt>Type</prompt>
+      <prompt xml:lang="nl">Type</prompt>
+      <prompt xml:lang="en">Type</prompt>
     </field>
     <field name="maxvalues" ftype="data">
-      <prompt>Maxvalues</prompt>
+      <prompt xml:lang="nl">Maxvalues</prompt>
+      <prompt xml:lang="en">Maxvalues</prompt>
     </field>
     <field name="handler" ftype="data">
-      <prompt>Handler</prompt>
+      <prompt xml:lang="nl">Handler</prompt>
+      <prompt xml:lang="en">Handler</prompt>
     </field>
     <field ftype="startwizard" wizardname="config/metadefinition/metadefinition" />
   </item>
@@ -27,18 +35,22 @@
   <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition" objectnumber="new" />
 
   <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
-    <prompt>Zoeken naar metadata definities</prompt>
+    <prompt xml:lang="nl">Zoeken naar metadata definities</prompt>
+    <prompt xml:lang="en">Search for metadata definitions</prompt>
     <search-filter>
-      <name>Naam bevat</name>
-      <search-fields>name</search-fields>
+        <name xml:lang="nl">Naam bevat</name>
+        <name xml:lang="en">Name contains</name>
+        <search-fields>name</search-fields>
     </search-filter>
     <search-filter>
-      <name>Type bevat</name>
-      <search-fields>type</search-fields>
+        <name xml:lang="nl">Type bevat</name>
+        <name xml:lang="en">Type contains</name>
+        <search-fields>type</search-fields>
     </search-filter>
     <search-filter>
-      <name>Handler</name>
-      <search-fields>handler</search-fields>
+        <name xml:lang="nl">Handler</name>
+        <name xml:lang="en">Handler</name>
+        <search-fields>handler</search-fields>
     </search-filter>
   </command>
 </list>
