@@ -1,7 +1,7 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list fdatapath="relation[@role='related']/object[@type='metadata']/relation[@role='posrel']/object[@type='metavocabulary']/../.."   minoccurs="0" maxoccurs="*">
     <title xml:lang="en">Bijbehorende Metadata (Vocabulaire) </title>
-    <title xml:lang="en">Associated Metadata (MetaVocabularies)</title>
+    <title xml:lang="en">Related Metadata (MetaVocabularies)</title>
     <item>
        <field fdatapath="relation[@role='posrel']/object[@type='metavocabulary']/../../relation[@role='related']/object[@type='metadefinition']/field[@name='name']" ftype="data">
           <prompt xml:lang="nl">Naam</prompt>
