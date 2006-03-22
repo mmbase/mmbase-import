@@ -19,15 +19,8 @@
       </item> 
 
      <action type="create">
-       <relation destinationtype="metadefinition" role="constraints">
-         <object type="metadefinition"></object>
-       </relation>
+       <relation destinationtype="metadefinition" role="constraints" />
      </action>
-
-     <action type="load">
-        <relation destinationtype="metadefinition" role="constraints"/>
-     </action>
-
    
     <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
       <prompt>Zoeken naar metadata definities</prompt>

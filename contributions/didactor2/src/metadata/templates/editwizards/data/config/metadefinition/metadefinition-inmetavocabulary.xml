@@ -17,36 +17,13 @@
   </item>
 
   <action type="create">
-    <relation destinationtype="metadata" role="related">
-      <object type="metadata">
-        <relation destinationtype="metadefinition" role="related"/>
-        <relation destinationtype="metavalue" role="posrel"/>
+    <relation role="related">
+      <object type="metadefinition">
       </object>
     </relation>
   </action>
-
-
-  <action type="add">
-    <relation destinationtype="metadata" role="related">
-      <object type="metadata">
-        <relation destinationtype="metadefinition" role="related"/>
-      </object>
-    </relation>
-  </action>
-
-  <action type="load">
-
-    <relation destinationtype="metadefinition" role="related">
-      <object type="metadefinition"/>
-    </relation>
-
-      <relation destinationtype="metavocabulary" role="posrel">
-        <object type="metavalue"/>
-      </relation>
-
-  </action>
-
-    <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
+   
+   <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
       <prompt>Zoeken naar metadata definities</prompt>
       <search-filter>
         <name>Naam bevat</name>
@@ -60,5 +37,5 @@
         <name>Handler</name>
         <search-fields>handler</search-fields>
       </search-filter>
-    </command>
+   </command>
 </list>

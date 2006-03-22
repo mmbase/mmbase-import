@@ -6,7 +6,7 @@
   <action type="load">
     <field name="value" />
     <relation destinationtype="metavocabulary" role="related" />
-    <relation destinationtype="metavocabulary" role="constraint" />
+    <relation destinationtype="metavocabulary" role="constraints" />
     <relation destinationtype="metadefinition" role="related" />
   </action>
 
@@ -29,8 +29,8 @@
     <field name="value" />
     <list extends="config/metavocabulary/metavocabulary-related-list.xml"/>
     <list extends="config/metadefinition/metadefinition-inmetavocabulary.xml"/>
-    <list extends="config/metavocabulary/metavocabulary-posrel-list-source.xml"/>
-    <list extends="config/metavocabulary/metavocabulary-posrel-list-destination.xml"/>
+    <list extends="config/metavocabulary/metavocabulary-constraint-list-source.xml"/>
+    <list extends="config/metavocabulary/metavocabulary-constraint-list-destination.xml"/>
   </form-schema>
 
 </wizard-schema>

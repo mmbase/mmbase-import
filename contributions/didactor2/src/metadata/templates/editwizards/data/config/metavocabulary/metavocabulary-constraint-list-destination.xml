@@ -13,14 +13,8 @@
         <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
       </item> 
 
-     <action type="add">
-       <relation destinationtype="metavocabulary" role="constraints">
-         <object type="metavocabulary"></object>
-       </relation>
-     </action>
-
-     <action type="load">
-      <relation destinationtype="metavocabulary" role="constraints"/>
+     <action type="create">
+       <relation destinationtype="metavocabulary" role="constraints" />
      </action>
 
     <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
