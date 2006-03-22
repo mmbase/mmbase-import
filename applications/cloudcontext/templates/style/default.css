@@ -1,4 +1,5 @@
 @import url(../../style/css/mmbase.css);
+@import url(rights.css);
 
 body { 
   background: white;
@@ -103,16 +104,3 @@ tr.active td {
   background-color: #ffb;
 }
 
-table.rights  { 
-}
-table.rights  td { 
-  text-align: center;
-}
-
-table.rights  td.text { 
-  text-align: left;
-}
-
-table.rights td.parent { 
-  background-color: #bfb;
-}
