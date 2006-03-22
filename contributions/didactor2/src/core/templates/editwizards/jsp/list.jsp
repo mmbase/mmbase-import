@@ -13,7 +13,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.7 2006-02-03 11:03:15 azemskov Exp $
+     * @version  $Id: list.jsp,v 1.8 2006-03-22 08:31:10 hhangyi Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -210,7 +210,7 @@ if (mainManager.charAt(mainManager.length()-1)<='9') mainManager=mainManager.sub
 NodeManager manager=cloud.getNodeManager(mainManager);
 if (!manager.mayCreateNode()) creatable=false;
 
-
+session.setAttribute("show_metadata_in_list", "false");
 String imageName = "";
 String sAltText = "";
 String sPathPrefix = "../../education/wizards/";
@@ -270,7 +270,8 @@ for (int i=0; i < results.size(); i++)
         }
         addField(obj, field.getGUIName(), value , field.getGUIType());
     }
-    if(session.getAttribute("show_metadata_in_list") != null)
+    if(session.getAttribute("show_metadata_in_list") != null 
+         && session.getAttribute("show_metadata_in_list").equals("true"))
     {  //If we are showing the metadata also, we have to add the column with the (i)-icon
       %>
       <mm:node number="<%= "" + item.getNumber()%>">
