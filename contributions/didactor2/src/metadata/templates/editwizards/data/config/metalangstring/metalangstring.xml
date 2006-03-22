@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title>Metadata Editor</title>
+  <title xml:lang="nl">Metadata Editor</title>
+  <title xml:lang="en">Metadata Editor</title>
   <action type="load">
   </action>
-  
+
   <action type="create">
     <object type="metalangstring"/>
   </action>
@@ -14,12 +15,15 @@
   </steps>
 
   <form-schema id="step1">
-    <title>Metadata Invoeren</title>
+    <title xml:lang="nl">Metadata Invoeren</title>
+    <title xml:lang="en">Metadata</title>
     <field name="value" ftype="line">
-      <prompt>Waarde</prompt>
+      <prompt xml:lang="nl">Waarde</prompt>
+      <prompt xml:lang="en">Value</prompt>
     </field>
     <field name="language" ftype="line">
-      <prompt>Taal van de bovenstaande waarde</prompt>
+      <prompt xml:lang="nl">Taal van de bovenstaande waarde</prompt>
+      <prompt xml:lang="en">Language of the value</prompt>
     </field>
 
     </form-schema>
