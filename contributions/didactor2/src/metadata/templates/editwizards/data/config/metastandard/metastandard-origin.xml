@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title xml:lang="nl">Metadata-standaard Editor</title>
-  <title xml:lang="en">Metadata-standaard Editor</title>
+  <title xml:lang="nl">Metadatastandaard Editor</title>
+  <title xml:lang="en">Metadata standard Editor</title>
 
   <action type="create">
     <object type="metastandard">
@@ -34,22 +34,22 @@
   </steps>
 
   <form-schema id="step1">
-    <title xml:lang="nl">Metastandaard invoeren</title>
-    <title xml:lang="en">Metastandards</title>
+    <title xml:lang="nl">Metadatastandaard invoeren</title>
+    <title xml:lang="en">Edit metadata standard</title>
 
     <field name="name" dtminlength="1">
-      <prompt xml:lang="nl">Metadata standaard naam</prompt>
+      <prompt xml:lang="nl">Metadatastandaard naam</prompt>
       <prompt xml:lang="en">Metadata standard name</prompt>
     </field>
 
     <field name="description" dtminlength="0" dttype="text">
-      <prompt xml:lang="nl">Omschrijving van de metadata standaard</prompt>
+      <prompt xml:lang="nl">Omschrijving van de metadatastandaard</prompt>
       <prompt xml:lang="en">Description of the metadata standard</prompt>
     </field>
 
     <field name="isused" ftype="enum">
       <prompt xml:lang="nl">Wordt gebruikt in metadataeditor?</prompt>
-      <prompt xml:lang="en">Is in use for metadateform</prompt>
+      <prompt xml:lang="en">Is in use for metadata form?</prompt>
       <optionlist select="boolean"></optionlist>
     </field>
 

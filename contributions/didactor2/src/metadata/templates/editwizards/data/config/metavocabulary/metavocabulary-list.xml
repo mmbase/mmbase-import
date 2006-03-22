@@ -2,10 +2,12 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="related" destination="metavocabulary" minoccurs="0" maxoccurs="*"
    orderby="value" hidecommand="move-up|move-down">
-  <title>Metavocabulary die horen bij deze metadatadefinitie</title>
+  <title xml:lang="nl">Metadata waarden die horen bij deze metadatadefinitie</title>
+  <title xml:lang="en">Metavocabulary that are related to this metadefinition</title>
   <item>
     <field name="value" ftype="data">
-      <prompt>Waarde</prompt>
+      <prompt xml:lang="nl">Waarde</prompt>
+      <prompt xml:lang="en">Value</prompt>
     </field>
     <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
   </item>
@@ -19,9 +21,11 @@
   <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
 
   <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down" >
-    <prompt>Zoeken naar metavocabularies</prompt>
+    <prompt xml:lang="nl">Zoeken naar metadatawaarden</prompt>
+    <prompt xml:lang="en">Search on metavocabularies</prompt>
     <search-filter>
-      <name>Waarde bevat</name>
+      <name xml:lang="nl">Waarde bevat</name>
+      <name xml:lang="en">Value contains</name>
       <search-fields>value</search-fields>
     </search-filter>
   </command>

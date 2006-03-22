@@ -32,7 +32,7 @@
     <command name="startwizard" inline="true" wizardname="config/synonym/synonym" objectnumber="new" />
 
     <command name="search" nodepath="synonym" fields="name" age="-1" orderby="number" directions="down" >
-        <prompt xml:lang="nl">Zoeken naar studenten</prompt>
+        <prompt xml:lang="nl">Zoeken naar synoniemen</prompt>
         <prompt xml:lang="en">Search for synonyms</prompt>
         <search-filter>
             <name xml:lang="nl">Naam</name>
