@@ -1,6 +1,7 @@
         <!-- we need a new list to make an extra search command -->
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
-            <title>Zoeken op metadata</title>
+            <title xml:lang="nl">Zoeken op metadata</title>
+            <title xml:lang="en">Search on metadata</title>
             <item displaytype="none"></item>
 
             <action type="create">
@@ -11,7 +12,8 @@
 
 
              <command name="search" nodepath="metadata,questions" fields="questions.title,metadata.value" age="-1" orderby="questions.number" directions="down" >
-                <prompt>Zoeken naar vragen op metadata</prompt>
+                <prompt xml:lang="nl">Zoeken naar vragen op metadata</prompt>
+                <prompt xml:lang="en">Search on questions by metadata</prompt>
                 <search-filter>
                     <name>Metadata bevat</name>
                     <search-fields>metadata.value</search-fields>

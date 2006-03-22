@@ -37,7 +37,7 @@
 
   <form-schema id="step1">
     <title xml:lang="nl">Metadefinition invoeren</title>
-    <title xml:lang="en">Metadefinition invoeren</title>
+    <title xml:lang="en">Insert metadefinition</title>
 
     <field name="name" dtminlength="1">
       <prompt xml:lang="nl">Metadata naam</prompt>

@@ -24,8 +24,8 @@
   </steps>
 
   <form-schema id="step1">
-    <title xml:lang="nl">Synonym invoeren</title>
-    <title xml:lang="en">Synonyms</title>
+    <title xml:lang="nl">Synoniem invoeren</title>
+    <title xml:lang="en">Insert synonyms</title>
 
     <field name="name" dtminlength="1">
       <prompt xml:lang="nl">Metadata synonym naam</prompt>
@@ -33,7 +33,7 @@
     </field>
 
     <field name="description" dtminlength="0" dttype="text">
-      <prompt xml:lang="nl">Omschrijving van de metadata synonym</prompt>
+      <prompt xml:lang="nl">Omschrijving van de metadata synoniem</prompt>
       <prompt xml:lang="en">Description for the synonym</prompt>
     </field>
 

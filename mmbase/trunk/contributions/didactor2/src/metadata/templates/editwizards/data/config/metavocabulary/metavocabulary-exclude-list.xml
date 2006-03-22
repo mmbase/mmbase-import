@@ -2,10 +2,11 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="metavocabulary" role="exclude" orderby="value">
   <title xml:lang="en">Exclude metadatavocabulary from this metastandard</title>
-  <title xml:lang="nl">Deze metadatavocabulary uitsluiten van deze metadata standaard</title>
+  <title xml:lang="nl">Deze metadata waarden uitsluiten van deze metadatastandaard</title>
   <item>
     <field name="value" ftype="data">
-      <prompt>Waarde</prompt>
+      <prompt xml:lang="nl">Waarde</prompt>
+      <prompt xml:lang="en">Value</prompt>
     </field>
     <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
   </item>
@@ -17,7 +18,8 @@
   <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
 
   <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down" >
-    <prompt>Zoeken naar Waarden</prompt>
+    <prompt xml:lang="nl">Zoeken naar waarden</prompt>
+    <prompt xml:lang="en">Search on values</prompt>
     <search-filter>
       <name>Waarde bevat</name>
       <search-fields>value</search-fields>

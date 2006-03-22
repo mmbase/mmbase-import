@@ -3,7 +3,7 @@
 <list destination="metastandard" role="constraints" minoccurs="0" maxoccurs="*" orderby="metastandard.name">
 
   <title xml:lang="en">Constrained by metadata standard</title>
-  <title xml:lang="nl">Beperkt door metadata standaard</title>
+  <title xml:lang="nl">Beperkt door metadatastandaard</title>
   <item>
     <field name="name" ftype="data">
       <prompt xml:lang="nl">Naam</prompt>
