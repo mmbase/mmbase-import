@@ -11,21 +11,7 @@
   </item>
 
   <action type="create">
-    <relation destinationtype="metavocabulary" role="exclude">
-      <object type="metavocabulary"></object>
-    </relation>
-  </action>
-
-  <action type="add">
-    <relation destinationtype="metavocabulary" role="exclude">
-      <object type="metavocabulary"></object>
-    </relation>
-  </action>
-
-  <action type="load">
-    <relation destinationtype="metavocabulary" role="exclude">
-      <object type="providers"></object>
-    </relation>
+    <relation destinationtype="metavocabulary" role="exclude" />
   </action>
 
   <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
@@ -37,8 +23,5 @@
       <search-fields>value</search-fields>
     </search-filter>
   </command>
-    <!--
-    This command is being misused; we will not allow teachers to add providers
-    <command name="insert" />
-    -->
+
 </list>

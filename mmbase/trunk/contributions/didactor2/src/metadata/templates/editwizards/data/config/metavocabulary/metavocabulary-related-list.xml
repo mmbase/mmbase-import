@@ -7,7 +7,7 @@
      <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
    </item> 
      
-   <action type="add">
+   <action type="create">
       <relation destinationtype="metavocabulary" role="related" />
    </action>
 
