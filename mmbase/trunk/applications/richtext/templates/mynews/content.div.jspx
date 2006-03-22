@@ -28,7 +28,7 @@
                   </a>
                 </mm:relatednodes>
               </mm:relatednodescontainer>
-              <h2>aaaa<mm:field name="title" /></h2>
+              <h2><mm:field name="title" /></h2>
               <p>
                 <mm:field name="intro" escape="p-ommit-surrounding" />
                 <a class="navigate" href="${url}">read more &gt;</a>

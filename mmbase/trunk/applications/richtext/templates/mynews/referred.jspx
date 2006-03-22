@@ -1,0 +1,13 @@
+<mm:listrelationscontainer 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"     
+    type="texts" role="idrel" searchdir="source">
+  <mm:listrelations>
+    <mm:first>&lt;p&gt;<strong>Referred by </strong></mm:first>
+    <mm:field name="id" id="anchor" write="false" />
+    <mm:relatednode>
+      <mm:function name="url"><a href="${_}#${anchor}"><mm:field name="title" /></a></mm:function>
+    </mm:relatednode>
+    <mm:last inverse="true">, </mm:last>    
+    <mm:last>&lt;/p&gt;</mm:last>
+  </mm:listrelations>
+</mm:listrelationscontainer>
