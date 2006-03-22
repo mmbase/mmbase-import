@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title>Metadefinition Editor</title>
+  <title xml:lang="nl">Metadefinition Editor</title>
+  <title xml:lang="en">Metadefinition Editor</title>
 
   <action type="create">
     <object type="metadefinition">
@@ -37,32 +38,39 @@
   </steps>
 
   <form-schema id="step1">
-    <title>Metadefinition invoeren</title>
+    <title xml:lang="nl">Metadefinition invoeren</title>
+    <title xml:lang="en">Metadefinition invoeren</title>
 
     <field name="name" dtminlength="1">
-      <prompt>Metadata naam</prompt>
+      <prompt xml:lang="nl">Metadata naam</prompt>
+      <prompt xml:lang="en">Metadata name</prompt>
     </field>
 
     <field name="description" dtminlength="0" dttype="text">
-      <prompt>Metadata omschrijving</prompt>
+      <prompt xml:lang="nl">Metadata omschrijving</prompt>
+      <prompt xml:lang="en">Metadata description</prompt>
     </field>
 
     <field name="type" ftype="enum">
-      <prompt>Type</prompt>
+      <prompt xml:lang="nl">Type</prompt>
+      <prompt xml:lang="en">Type</prompt>
       <optionlist select="metadatatypes" />
     </field>
 
     <field name="required" ftype="enum">
-       <prompt>Verplicht</prompt>
+       <prompt xml:lang="nl">Verplicht</prompt>
+       <prompt xml:lang="en">Required</prompt>
        <optionlist select="boolean" />
     </field>
 
     <field name="minvalues" ftype="int" dtrequired="false">
-      <prompt>Minimaal aantal waarden</prompt>
+      <prompt xml:lang="nl">Minimaal aantal waarden</prompt>
+      <prompt xml:lang="en">Minimal values</prompt>
     </field>
 
     <field name="maxvalues" ftype="int" dtrequired="false">
-      <prompt>Maximaal aantal waarden</prompt>
+      <prompt xml:lang="nl">Maximaal aantal waarden</prompt>
+      <prompt xml:lang="en">Maximal values</prompt>
     </field>
 
     <field name="handler" ftype="enum">
