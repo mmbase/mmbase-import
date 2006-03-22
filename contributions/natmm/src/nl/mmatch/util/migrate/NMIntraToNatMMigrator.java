@@ -431,6 +431,11 @@ public class NMIntraToNatMMigrator {
 
       tmAllData.put("editwizards",sEditwizardsContent);
 
+      log.info("treating educations.xml");
+      sContent = readingFile(sFolder + "educations.xml");
+      sContent = buildingUrlsTitels(sContent);
+      tmAllData.put("educations",sContent);
+
       log.info("treating exturls.xml");
       sContent = readingFile(sFolder + "exturls.xml");
       sContent = buildingUrlsTitels(sContent);
