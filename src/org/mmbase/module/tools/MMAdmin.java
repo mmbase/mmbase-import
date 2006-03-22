@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.134 2006-03-20 12:59:25 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.135 2006-03-22 22:12:31 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -286,6 +286,9 @@ public class MMAdmin extends ProcessorModule {
             } else if (token.equals("LOAD") && !kioskmode) {
                 ApplicationResult result = new ApplicationResult();
                 String appname = (String)cmds.get(cmdline);
+                if ("".equals(appname)) {
+                    log.warn("Found empty app-name in " + cmds + " (used key " + cmdline + ")");
+                }
                 try {
                     if (new ApplicationInstaller(mmb).installApplication(appname, -1, null, result, new HashSet(), false)) {
                         lastmsg = result.getMessage();
@@ -330,20 +333,10 @@ public class MMAdmin extends ProcessorModule {
                             moduleOut.writeToFile(savepath);
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
-                            lastmsg =
-                                "Writing finished, problems occurred\n\n"
-                                    + "Error encountered="
-                                    + e.getMessage()
-                                    + "\n\n";
+                            lastmsg = "Writing finished, problems occurred\n\nError encountered=" + e.getMessage() + "\n\n";
                             return false;
                         }
-                        lastmsg =
-                            "Writing finished, no problems.\n\n"
-                                + "A clean copy of "
-                                + modulename
-                                + ".xml can be found at : "
-                                + savepath
-                                + "\n\n";
+                        lastmsg = "Writing finished, no problems.\n\nA clean copy of " + modulename + ".xml can be found at : " + savepath + "\n\n";
                     }
                 }
             } else if (token.equals("BUILDERSAVE")) {
@@ -365,19 +358,10 @@ public class MMAdmin extends ProcessorModule {
                             builderOut.setExpandBuilder(false);
                             builderOut.writeToFile(savepath);
                             lastmsg =
-                                "Writing finished, no problems.\n\n"
-                                    + "A clean copy of "
-                                    + buildername
-                                    + ".xml can be found at : "
-                                    + savepath
-                                    + "\n\n";
+                                "Writing finished, no problems.\n\nA clean copy of " + buildername + ".xml can be found at : " + savepath + "\n\n";
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
-                            lastmsg =
-                                "Writing finished, problems occurred\n\n"
-                                    + "Error encountered="
-                                    + e.getMessage()
-                                    + "\n\n";
+                            lastmsg = "Writing finished, problems occurred\n\n" + "Error encountered=" + e.getMessage() + "\n\n";
                         }
                         if (vars != null) {
                             vars.put("RESULT", lastmsg);
