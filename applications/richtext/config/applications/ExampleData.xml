@@ -71,6 +71,7 @@
     <relationsource builder="editorrel"   path="ExampleData/editorrel.xml" />
     <relationsource builder="posrel"      path="ExampleData/posrel.xml" />
     <relationsource builder="blockrel"      path="ExampleData/blockrel.xml" />
+    <relationsource builder="insrel"      path="ExampleData/posrel.xml" />
   </relationsourcelist>
 
   <contextsourcelist>
