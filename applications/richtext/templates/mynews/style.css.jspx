@@ -7,19 +7,27 @@ xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
 @import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
 @import url(<mm:url page="/mmbase/style/css/mmxf.css" />);
 
+<!--
 <mm:import id="A">#4cb</mm:import>
 <mm:import id="B">#046</mm:import>
+-->
+<mm:import id="A">#ddd</mm:import>
+<mm:import id="B">#555</mm:import>
+
+body { 
+  margin: 0px;
+}
 
 img {
   border: none;
 }
 #menu {
   position: relative;
-  height: 18px;
   margin: 0px 0px 0px 0px;
-  padding: 0px 0px 0px 22px;
+  padding: 0px 0px 0px 0px;
   background-color: ${A};
   color: ${B};
+  border-bottom: solid 1px ${B};
   font-weight: bold;
 }
 
@@ -31,6 +39,8 @@ img {
 }
 #menu div {
   background-color: ${A};
+  border-bottom: solid 1px ${B};
+  display: none;
 }
 #menu a:hover, #menu a.selected {
   background-color: white;
@@ -47,17 +57,63 @@ img {
 }
 
 
-a, a:visited, a:link {
+#content { 
+  margin-left: 1ex;
+  margin-right: 4ex;
+}
+
+.path { 
+  margin-top: 1ex;
+  background-color: ${B};
+}
+.path a:visited, .path a:link, .path a:hover { 
   color: ${A};
 }
-a:hover {
+
+a, a:visited, a:link, a:hover {
   color: ${B};
+}
+a:hover {
+  text-decoration: underline;
+}
+.mmxf div.note {
+ background-color: #eee;
+ border: black 1px solid;
+}
+.mmxf div.note.left {
+ border-right: black 2px solid;
+}
+.mmxf div.note.right {
+ border-left: black 2px solid;
 }
 
 #end-of-page {
  float: left;
  height: 1px; 
  width: 100%;
+}
+
+.w3 { 
+  margin: 10px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+/* for editors */
+
+/* security editors */
+div#security div#you {
+  background-color: ${A};
+  border-bottom: black 1px solid;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+div#security div#navigate p {
+  display: inline;
+  margin: 0;
+  margin-right: 3ex;
 }
 
 </mm:content>
