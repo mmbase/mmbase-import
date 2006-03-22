@@ -69,7 +69,10 @@ public class FileParser {
     if (line.trim().indexOf("#")==0) return; // scip comments
     log.info("Parsing line " + line);
     String[] result = line.split(conf.getDelimiter());
-    if ((result==null)||(result.length<2)) return; // wrong line format
+    if ((result==null)||(result.length<2)) {
+      log.error("This log line has a wrong format") ;
+      return;
+    }
     Map pMap = new HashMap();
     LineInfo li = new LineInfo();
     //int pType = 0;
@@ -78,7 +81,6 @@ public class FileParser {
     String ipStr = null;
     String sessionStr = null;
     Date date = null;*/
-
     for (int i=0; i<result.length; i++) {
       String p[] = result[i].split("=");
       /*if (p[0].equals(IParams.USER_PARAM)) pType += IParams.USER_CT;
@@ -97,14 +99,12 @@ public class FileParser {
       }
     }
     if (!li.validate()) return;
-
     //  works on events first
     // because, perhaps, we need to create user and session first before register page inside it
 
     if ( ((String)pMap.get(conf.getSessionStartTag())).equals(conf.getSessionStartValue()) ) {
       builder.indexEvent(li);
     }
-
     // check if the line contains a usetag and the value of it is equal to the subtrace
     for(Iterator it=conf.getTagsForSubtraceIterator();it.hasNext();) {
       String subtrace = (String)it.next();
@@ -112,10 +112,9 @@ public class FileParser {
       List values = conf.getSubtracesFor(subtrace);
       String value = ((String)pMap.get(usetag));
       if ((value!=null) && (values!=null) && values.contains(value)) {
-        builder.testEvent(li, subtrace, value);
+        builder.subtraceEvent(li, subtrace, value);
       }
     }
-
     // and for finishing every line must update activity!
     builder.updateActivity(li);
 

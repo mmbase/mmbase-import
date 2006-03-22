@@ -85,11 +85,24 @@ public class ModelBuilder {
   // must call it for EVERY log line AFTER any another handlers
   public void updateActivity(LineInfo li) {
     String name = li.getUser();
-    Date date = li.getDate();
-    FUser user = (FUser)userMap.get(name); // here we can get null dont worry about it
-    FSession session = tryToGetSession(li, user);
-    if (session!=null) session.updateActivity(date);
-    if (user!=null) user.updateActivity(date);
+    if(name!=null) {
+       FUser user = (FUser)userMap.get(name);
+       if (user!=null) {
+          Date date = li.getDate();
+          if(date!=null) {
+            user.updateActivity(date);
+            FSession session = tryToGetSession(li, user);
+            if (session!=null) session.updateActivity(date);
+          } else {
+            log.error("No date found in " + li);
+          }
+       } else {
+         log.error("Could not get user for name " + name + " in " + li);
+         log.error("This probably means that this user's session did not start with an indexEvent()");
+       }
+    } else {
+      log.error("No name found in " + li);
+    }
   }
 
 
@@ -177,8 +190,8 @@ public class ModelBuilder {
     }
   }
 
-  public void testEvent(LineInfo li, String subtrace, String value) {
-    log.info("testEvent for LineInfo " + li + " with subtrace="+subtrace+" and value="+value);
+  public void subtraceEvent(LineInfo li, String subtrace, String value) {
+    log.info("subtraceEvent for LineInfo " + li + " with subtrace="+subtrace+" and value="+value);
     String name = li.getUser();
     Date date = li.getDate();
     // lets try start test
