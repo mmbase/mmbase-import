@@ -1,23 +1,28 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list fdatapath="relation[@role='related']/object[@type='metadata']/relation[@role='posrel']/object[@type='metalangstring']/../.." fparentdatapath="../object" role="related" minoccurs="0" maxoccurs="*">
-  <title>Bijbehorende Metadata (Tekenreeks)</title>
+  <title xml:lang="nl">Bijbehorende Metadata (Tekenreeks)</title>
+  <title xml:lang="en">Associated Metadata (Language strings)</title>
   <item>
     <field fdatapath="relation[@role='posrel']/object[@type='metalangstring']/../../relation[@role='related']/object[@type='metadefinition']/field[@name='name']" ftype="data">
-      <prompt>Naam</prompt>
+          <prompt xml:lang="nl">Naam</prompt>
+          <prompt xml:lang="en">Name</prompt>
     </field>
     <field fdatapath="relation[@role='posrel']/object[@type='metalangstring']/../../relation[@role='related']/object[@type='metadefinition']/field[@name='type']" ftype="data">
-      <prompt>Type</prompt>
+          <prompt xml:lang="nl">Type</prompt>
+          <prompt xml:lang="en">Type</prompt>
     </field>
     <field fdatapath="relation[@role='posrel']/object[@type='metalangstring']/../../relation[@role='related']/object[@type='metadefinition']/field[@name='maxvalues']" ftype="data">
-      <prompt>Maxvalues</prompt>
+          <prompt xml:lang="nl">Maxvalues</prompt>
+          <prompt xml:lang="en">Maxvalues</prompt>
     </field>
     <field fdatapath="relation[@role='posrel']/object[@type='metalangstring']/../../relation[@role='related']/object[@type='metadefinition']/field[@name='handler']" ftype="data">
-      <prompt>Handler</prompt>
+          <prompt xml:lang="nl">Handler</prompt>
+          <prompt xml:lang="en">Handler</prompt>
     </field>
 
     <list extends="config/metalangstring/metalangstring-list.xml"><action type="delete"/></list>
   </item>
- 
+
 
  <action type="delete"/>
  <!-- <action type="create">
@@ -29,7 +34,7 @@
     </relation>
   </action>-->
 
-  <action type="add">   
+  <action type="add">
     <relation destinationtype="metadata" role="related">
       <object type="metadata">
         <relation destinationtype="metadefinition" role="related"/>
@@ -48,7 +53,8 @@
   </action>
 
   <command name="startwizard" inline="true" wizardname="config/metalangstring/metalangstringwithdefinition" objectnumber="new">
-    <prompt>Nieuwe tekenreeks toevoegen</prompt>
+    <prompt xml:lang="nl">Nieuwe tekenreeks toevoegen</prompt>
+    <prompt xml:lang="en">Add new language string</prompt>
   </command>
 
 </list>
