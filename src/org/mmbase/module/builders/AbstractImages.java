@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.44 2006-02-10 15:18:14 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.45 2006-03-22 22:14:21 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -220,6 +220,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         if (storesDimension()) {
             node.setValue(FIELD_WIDTH,  dim.getWidth());
             node.setValue(FIELD_HEIGHT, dim.getHeight());
+            if (!node.isNew()) {
+                node.commit();
+            }
         } else {
             log.warn("Requested dimension on image object without height / width fields, this may be heavy on resources!");
         }
@@ -239,6 +242,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         if (data == null) return -1;
         if (storesFileSize()) {
             node.setValue(FIELD_FILESIZE, data.length);
+            if (!node.isNew()) {
+                node.commit();
+            }
         } else {
             log.warn("Requested filesize on image object without filesize fields, this may be heavy on resources!");
         }
