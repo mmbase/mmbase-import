@@ -30,6 +30,7 @@
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>name</name>
         <type key="false" notnull="true" size="32" state="persistent">STRING</type>
