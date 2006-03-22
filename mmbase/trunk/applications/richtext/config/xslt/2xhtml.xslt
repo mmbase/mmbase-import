@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.8 2006-03-15 14:17:44 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.9 2006-03-22 23:01:44 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -140,8 +140,8 @@
         <xsl:choose>
           <xsl:when test="$popupwidth = ''">
             <!-- original image -->
-            <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string(./@id ), 'width')" /></xsl:variable>
-            <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string(./@id ), 'height')" /></xsl:variable>
+            <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string(@id ), 'width')" /></xsl:variable>
+            <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string(@id ), 'height')" /></xsl:variable>
             <a onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
               <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
               <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
@@ -157,9 +157,8 @@
             <xsl:variable name="href"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'servletpath')" /></xsl:variable>
             <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'width')" /></xsl:variable>
             <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string($icache/@id ), 'height')" /></xsl:variable>
-            <a onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;"
-               >
-              <xsl:attribute name="href"><xsl:value-of select="$href" /></xsl:attribute>
+            <a href="{$href}"
+               onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
 
               <xsl:attribute name="title"><xsl:value-of select="./o:field[@name = 'title']" /></xsl:attribute>
               <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
