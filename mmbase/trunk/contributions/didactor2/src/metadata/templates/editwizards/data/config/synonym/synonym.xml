@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title>Synoniemen Editor</title>
+  <title xml:lang="nl">Synoniemen Editor</title>
+  <title xml:lang="en">Synonyms Editor</title>
 
   <action type="create">
     <object type="synonym"/>
@@ -23,28 +24,31 @@
   </steps>
 
   <form-schema id="step1">
-    <title>Synonym invoeren</title>
+    <title xml:lang="nl">Synonym invoeren</title>
+    <title xml:lang="en">Synonyms</title>
 
     <field name="name" dtminlength="1">
-      <prompt>Metadata synonym naam</prompt>
+      <prompt xml:lang="nl">Metadata synonym naam</prompt>
+      <prompt xml:lang="en">Metadata synonym name</prompt>
     </field>
 
     <field name="description" dtminlength="0" dttype="text">
-      <prompt>Omschrijving van de metadata synonym</prompt>
+      <prompt xml:lang="nl">Omschrijving van de metadata synonym</prompt>
+      <prompt xml:lang="en">Description for the synonym</prompt>
     </field>
 
     <!--
     <list destination="metadefinition" role="related" extends="config/metadefinition/metadefinition-list.xml" />
-    
+
     <list destination="metadefinition" role="posrel" extends="config/metadefinition/metadefinition-posrel-list.xml" />
-    
+
     <list destination="metastandard" role="posrel" extends="config/metastandard/metastandard-posrel-list.xml" />
     <list destination="metavocabulary" role="include" extends="config/metavocabulary/metavocabularydefinition-include-list.xml" />
     <list destination="metavocabulary" role="exclude" extends="config/metavocabulary/metavocabularydefinition-exclude-list.xml" />
    -->
 
     <list destination="workgroups" role="related" extends="config/workgroup/workgroups-list.xml" />
-         
+
   </form-schema>
 
 </wizard-schema>
