@@ -1,7 +1,7 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list fdatapath="relation[@role='related']/object[@type='metadata']/relation[@role='posrel']/object[@type='metalangstring']/../.." fparentdatapath="../object" role="related" minoccurs="0" maxoccurs="*">
   <title xml:lang="nl">Bijbehorende Metadata (Tekenreeks)</title>
-  <title xml:lang="en">Associated Metadata (Language strings)</title>
+  <title xml:lang="en">Related Metadata (Language strings)</title>
   <item>
     <field fdatapath="relation[@role='posrel']/object[@type='metalangstring']/../../relation[@role='related']/object[@type='metadefinition']/field[@name='name']" ftype="data">
           <prompt xml:lang="nl">Naam</prompt>
