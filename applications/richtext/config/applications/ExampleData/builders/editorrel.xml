@@ -32,9 +32,22 @@
         <guiname xml:lang="en">Size</guiname>
         <guiname xml:lang="nl">Grootte</guiname>
       </gui>
+      <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry value="-2" xml:lang="nl" display="Ongerelateerde objecten" />
+          <entry value="-1" xml:lang="nl" display="Ongelimiteerd aantal objecten" />
+          <entry value="1"  xml:lang="nl" display="Eén gerelateerd object" />
+          <entry value="10" xml:lang="nl" display="Een paar gerelateerde en gesorteerde objecten" />
+
+          <entry value="-2" xml:lang="en" display="Unrelated objects" />
+          <entry value="-1" xml:lang="en" display="Unlimited number of related objects" />
+          <entry value="1"  xml:lang="en" display="One related object" />
+          <entry value="10" xml:lang="en" display="A few related and sorted objects" />
+        </enumeration>
+      </datatype>
       <db>
         <name>size</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
+        <type key="false" notnull="true" state="persistent">INTEGER</type>
       </db>
     </field>
     <field>
@@ -44,6 +57,7 @@
         <guiname xml:lang="en">Name</guiname>
       </gui>
       <editor><positions><list>1</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>name</name>
         <type state="persistent" size="32" notnull="false" key="false">STRING</type>
@@ -59,6 +73,7 @@
         <guiname xml:lang="nl">Wizard</guiname>
         <guiname xml:lang="en">Wizard</guiname>
       </gui>
+      <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>wizard</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -74,6 +89,15 @@
         <guiname xml:lang="nl">Wizard-JSP</guiname>
         <guiname xml:lang="en">Wizard JSP</guiname>
       </gui>
+      <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration enforce="never">
+          <entry value="" xml:lang="nl" display="Normale editwizard" />
+          <entry value="/mmbase/kupu/mmbase/" xml:lang="nl" display="Kupu rijke tekst" />
+
+          <entry value="" xml:lang="en" display="Normal editwizard" />
+          <entry value="/mmbase/kupu/mmbase/" xml:lang="en" display="Kupu rich text" />
+        </enumeration>
+      </datatype>
       <db>
         <name>wizardjsp</name>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
