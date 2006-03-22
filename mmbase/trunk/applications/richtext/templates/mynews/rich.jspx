@@ -29,7 +29,7 @@
         <mm:param name="home" value="home=${home}&amp;" />
       </mm:present>
       <mm:field name="body" />
-      <mm:listrelations type="content" role="idrel" searchdir="destination">
+      <mm:listrelations type="object" role="idrel" searchdir="destination">
         <mm:relatednode>
           <mm:nodeinfo type="nodemanager">
             <mm:compare value="blocks">

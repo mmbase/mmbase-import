@@ -1,7 +1,7 @@
 <!--
    Displays one full segment, plus a crumb-path, and overview of sub-segments.
    dynamic include
-   $Id: tree.div.jspx,v 1.2 2006-03-15 12:21:12 michiel Exp $
+   $Id: tree.div.jspx,v 1.3 2006-03-22 19:03:22 michiel Exp $
 -->
 <div class="segment ${param.class}"
      xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -46,7 +46,7 @@
           </mm:tree>
         </div>
 
-        <!-- display of the segment itself -->
+        <!-- display of the category itself -->
         <jsp:directive.include file="rich.jspx" />
 
 

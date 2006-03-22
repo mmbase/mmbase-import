@@ -2,7 +2,7 @@
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
      xmlns:jsp="http://java.sun.com/JSP/Page">
   <script type="text/javascript" src="menu.js"><jsp:text> </jsp:text></script>
-  <script type="text/JavaScript">        
+  <script type="text/JavaScript">
     addEvent(window, 'load',  function () {
        initMenu("menu", "bottom");
     });
@@ -16,35 +16,27 @@
     <mm:cloud>
       <mm:time id="now" time="now" precision="minutes" write="false" />
       <mm:node number="$h">
-        <mm:relatednodes  id="menucat" type="categories" role="posrel" orderby="posrel.pos">          
+        <mm:relatednodes  id="menucat" type="categories" role="posrel" orderby="posrel.pos">
           <mm:relatednodescontainer  type="categories" searchdirs="destination" role="posrel">
             <mm:constraint field="begin" operator="LESS" value="$now" />
             <mm:constraint field="end"   operator="GREATER"    value="$now" />
+            <mm:link referids="$vars,menucat@cat">
+              <a id="a${menucat}" href="${_}" class="mmenu ${menucat == cat || menucat == supercat ? 'selected' : ''}">
+                <mm:field name="title" />
+              </a>
+            </mm:link>
             <mm:size>
               <mm:isgreaterthan value="0">
-                <mm:link referids="$vars,menucat@cat">
-                  <a id="a${menucat}" href="${_}" class="${menucat == cat || menucat == supercat ? 'selected' : ''}">
-                    <mm:field name="title" />  
-                  </a>
-                </mm:link>
-                <div id="sub_a${menucat}">
+                <div class="a${menucat}">
                   <mm:relatednodes id="subcat">
                     <mm:link referids="$vars,menucat@supercat,subcat@cat">
                       <a id="a${subcat}" href="${_}" class="${subcat == cat ? 'selected' : ''}">
-                        <mm:field name="title" />  
+                        <mm:field name="title" />
                       </a>
                     </mm:link>
                   </mm:relatednodes>
                 </div>
               </mm:isgreaterthan>
-              <mm:compare value="0">
-                <mm:link referids="$vars">
-                  <mm:first inverse="true"><mm:param name="cat" referid="menucat" /></mm:first>
-                  <a id="a${menucat}" href="${_}">
-                    <mm:field name="title" />  
-                  </a>
-                </mm:link>
-              </mm:compare>
             </mm:size>
           </mm:relatednodescontainer>
         </mm:relatednodes>
