@@ -2,7 +2,7 @@
 <templates exportsource="mmbase://www.mmbase.org/richtext" timestamp="20050921221010">
   <node number="2001" owner="admin">
     <description></description>
-    <url>texts.div.jspx</url>
+    <url>content.div.jspx</url>
     <expires></expires>
     <name>News</name>
     <mimetype>text/html</mimetype>
