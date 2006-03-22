@@ -21,6 +21,8 @@
     </mm:field>
     &amp;nbsp;
     <mm:field id="wiz" name="editor.wizard" write="false" />
+    SIZE: ${_node.editor.size} . ${_node.editor.wizard}
+
     <c:choose>
       <!-- link to customized editor (richtext?) -->
       <c:when test="${fn:endsWith(wiz, '.jsp') || fn:endsWith(wiz, '.jspx')}">

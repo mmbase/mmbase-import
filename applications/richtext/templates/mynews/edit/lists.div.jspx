@@ -9,7 +9,7 @@
   <jsp:directive.include file="wizard.imports.jspx" />
   <mm:import externid="tab" />
   <mm:import id="kupu_back"><mm:url referids="tab" absolute="server" page="" /></mm:import>
-  <mm:url write="false" id="wizardjsp" referids="kupu_back" page="/mmbase/kupu/mmbase/"><mm:param name="tools" value="related" /><mm:param name="link_nodetypes" value="urls,attachments,products,news" /></mm:url>
+  <mm:url write="false" id="wizardjsp" referids="kupu_back" page="/mmbase/kupu/mmbase/"><mm:param name="tools" value="related" /><mm:param name="link_nodetypes" value="urls,attachments,xmlnews,content" /></mm:url>
   <mm:content type="application/xml">
     <mm:cloud rank="basic user">      
       <ul>

@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.4 2006-03-17 21:35:14 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.5 2006-03-22 19:03:22 michiel Exp $ --&gt;</jsp:text>
   <jsp:directive.page session="false" />
   <jsp:directive.include file="vars.jspx" />
   <mm:content type="text/html" language="en" expires="${edit == 'true' ? -1 : 60}">
@@ -96,7 +96,7 @@
               <mm:listrelations id="blockrel" type="templates" role="block" orderby="block.pos" >
                 ${blockrel.class}
                 <mm:relatednode>
-                  <mm:include debug="html" referids="subcat@cat,blockrel.class@class" page="${_node.url}" escape="replace" />
+                  <mm:include debug="html" referids="cat,blockrel.class@class" page="${_node.url}" escape="replace" />
                 </mm:relatednode>
               </mm:listrelations>
             </mm:node>

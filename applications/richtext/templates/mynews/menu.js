@@ -1,15 +1,15 @@
 /**
  * Simple JavaScript to make XHTML compliant menus.
  *
- * Requires either:
+ * Requires something like:
  *   <div id="[menuId]">
- *     <a id="[entryid1]" />
- *     <div id="sub_[entryid1]">
- *       <a id="[entryid2]" /
- *       <div id="sub_[entryid2]">
+ *     <a class="mmenu" id="[entryid1]" />
+ *     <div class="[entryid1]">
+ *       <a class="mmenu" id="[entryid2]" /
+ *       <div class="[entryid2]">
  *          ... unsupported as yet...
  *       </div>
- *       <a id="[entryid3]" />
+ *       <a class="mmenu" id="[entryid3]" />
  *       ....
  *     </div>
  *   </div>
@@ -17,11 +17,11 @@
  * Or:
  *   <ul id="[menuId]">
  *    <li>
- *      <a id="[entryid1]" />
- *      <ul id="sub_[entryid1]">
+ *      <a class="mmenu" id="[entryid1]" />
+ *      <ul class="[entryid1]">
  *        <li>
- *          <a id="[entryid2]" />
- *          <ul id="..>
+ *          <a class="mmenu" id="[entryid2]" />
+ *          <ul class="..>
  *            ....
  *          </ul>
  *        </li>
@@ -31,12 +31,23 @@
  *     .....
  *   </ul>
  *
- * @author Michiel Meeuwissen
- * $Id: menu.js,v 1.4 2006-03-21 22:24:49 michiel Exp $
+ *   <script type="text/JavaScript" src="menu.js"> </script>
+ *
+ *   <script type="text/JavaScript">
+ *       addEvent(window, 'load',  function () {
+ *          initMenu("[menuId]" [, "left"|"right"|"bottom"]);
+ *       });
+ *   </script>
+ *
+ * The essential bits are the id's with the corresponding classes for the subitems.
+ *
+ * @author Michiel Meeuwissen <jsmenu@meeuw.org>
+ * $Id: menu.js,v 1.5 2006-03-22 19:03:22 michiel Exp $
  */
-var usedMenus = new Object(); // currently can contain only one, but when deeper nesting is implemented can contain more.
-var timeOut = 1000;
 
+//
+var TIMEOUT = 1000;
+var MENU_CLASS = "mmenu";
 var debugarea;
 
 function debug(mesg) {
@@ -63,139 +74,170 @@ function addEvent(obj, evType, fn){
     }
 }
 
-function initMenu(menuId, reposition) {
-    debugarea = document.getElementById("menu_debug");
-    var elm = document.getElementById(menuId).firstChild;
-    var siblings = new Object();
-    while (elm) {
-        var subelm = elm;
-        if (subelm.tagName && subelm.tagName.toLowerCase() == 'li') {
-            subelm = subelm.firstChild;
-            while (subelm && !(subelm.tagName && subelm.tagName.toLowerCase() == 'a')) {
-                subelm = subelm.nextSibling;
-            }
-        }
-        if (subelm && subelm.id && subelm.tagName && (subelm.tagName.toLowerCase() == 'a')
-            ) {
-            siblings[subelm.id] = subelm;
-            subelm.siblings = siblings;
-            addEvent(subelm, "mouseover", openMenu);
-            addEvent(subelm, "mouseout",  closeMenu);
-            var subMenu = getSubMenu(subelm);
-            if (subMenu) {
-                debug("found " + subMenu.id);
-                subMenu.parent_a = subelm;
-                subMenu.left       = (subelm.left ? subelm.left : subelm.offsetLeft);
-                subMenu.top        = (subelm.top  ? subelm.top  : subelm.offsetTop);
-                if (reposition == "bottom") {
-                    subMenu.style.position = 'absolute';
-                    subMenu.style.left = subMenu.left + "px";
-                    subMenu.top        = (subelm.top ? subelm.top : subelm.offsetTop) + subelm.offsetHeight;
-                    subMenu.style.top  = subMenu.top + "px";
-                    if (subMenu.offsetWidth < elm.offsetWidth) {
-                        // if submenu is smaller, then at least make it same width.
-                        subMenu.style.width = elm.offsetWidth + "px";
-                    }
+function getElementsByClass(node, searchClass, tag) {
+  var classElements = new Array();
+  var els = node.getElementsByTagName(tag);
+  var elsLen = els.length;
+  var pattern = new RegExp("\\b" + searchClass + "\\b");
+  for (i = 0, j = 0; i < elsLen; i++) {
+    if ( pattern.test(els[i].className) ) {
+        classElements[j] = els[i];
+        j++;
+    } else {
+    }
+  }
+  return classElements;
+}
 
-                } else if (reposition == "right") {
-                    subMenu.style.position = 'absolute';
-                    subMenu.left       = (subelm.left ? subelm.left: subelm.offsetLeft) + subelm.offsetWidth;
-                    subMenu.style.left = subMenu.left + "px";
-                    subMenu.style.top  = subMenu.top + "px";
-                } else if (reposition == "left") {
-                    subMenu.style.position = 'absolute';
-                    subMenu.left       = (subelm.left ? subelm.left: subelm.offsetLeft) - subMenu.offsetWidth;
-                    subMenu.style.left = subMenu.left + "px";
-                    subMenu.style.top  = subMenu.top + "px";
+function getSubMenus(elm, id) {
+    return getElementsByClass(elm, id, "*");
+}
+
+function initMenu(menuId, reposition) {
+    if (!debugarea) debugarea = document.getElementById("menu_debug");
+    var menu = document.getElementById(menuId);
+    var siblings = getElementsByClass(menu, MENU_CLASS, "a");
+    debug("Found " + siblings.length + " subitems for " + menu.id);
+    for (var i = 0; i < siblings.length; i++) {
+        var subelm = siblings[i];
+        subelm.parent   = menu;
+        subelm.siblings = siblings;
+        addEvent(subelm, "mouseover", openMenu);
+        addEvent(subelm, "mouseout",  closeMenu);
+        var subMenus = getSubMenus(menu, subelm.id);
+        debug("found " + subMenus.length + " subitems for " + subelm.id);
+        for (var j = 0; j < subMenus.length; j++) {
+            var subMenu = subMenus[j];
+            subMenu.parent     = subelm;
+            subMenu.left       = (subelm.left ? subelm.left : subelm.offsetLeft);
+            subMenu.top        = (subelm.top  ? subelm.top  : subelm.offsetTop);
+            if (reposition == "bottom") {
+                subMenu.style.position = 'absolute';
+                subMenu.style.left = subMenu.left + "px";
+                subMenu.top        = (subelm.top ? subelm.top : subelm.offsetTop) + subelm.offsetHeight;
+                subMenu.style.top  = subMenu.top + "px";
+                if (subMenu.offsetWidth < elm.offsetWidth) {
+                    // if submenu is smaller, then at least make it same width.
+                    subMenu.style.width = elm.offsetWidth + "px";
                 }
-                subMenu.style.display = "none";
-                debug("usemenu on " + subMenu.tagName);
-                addEvent(subMenu, "mouseover", useMenu);
-                addEvent(subMenu, "mouseout",  unuseMenu);
+
+            } else if (reposition == "right") {
+                subMenu.style.position = 'absolute';
+                subMenu.left       = (subelm.left ? subelm.left: subelm.offsetLeft) + subelm.offsetWidth;
+                subMenu.style.left = subMenu.left + "px";
+                subMenu.style.top  = subMenu.top + "px";
+            } else if (reposition == "left") {
+                subMenu.style.position = 'absolute';
+                subMenu.left       = (subelm.left ? subelm.left: subelm.offsetLeft) - subMenu.offsetWidth;
+                subMenu.style.left = subMenu.left + "px";
+                subMenu.style.top  = subMenu.top + "px";
+            }
+            subMenu.style.display = "none";
+            addEvent(subMenu, "mouseover", useMenu);
+            addEvent(subMenu, "mouseout",  unuseMenu);
+            if (subMenu.id) {
                 initMenu(subMenu.id, reposition);
             }
         }
-        elm = elm.nextSibling;
     }
 }
-function getMenu(elm) {
-    while (true) {
-        var tagName = elm.tagName;
-        if (tagName) {
-            if (tagName.toLowerCase() == "div"
-                || tagName.toLowerCase() == "ul") {
-                return elm;
-            }
-        }
+
+/**
+ * Return the elements which need to have an onmouse over event to switch on a menu.
+ * @param elm In which element to search
+ */
+function getMenuByClass(elm) {
+    var pattern = new RegExp("\\b" + MENU_CLASS + "\\b");
+    while (elm != null) {
+        if (pattern.test(elm.className)) return elm;
         elm = elm.parentNode;
-    }    
-}
-
-function getSubMenu(elm) {
-    var tagName = elm.tagName;
-    if (tagName && (tagName == "a" || tagName == "A")) {
-        return document.getElementById("sub_" + elm.id);
-    } else {
-        return elm;
     }
 }
 
+/**
+ * Given a certain element, this returns the first parent that is a menu. Used by the events to get
+ * the actual element of interest.
+ */
+function getMenuByParent(elm) {
+    while (elm != null) {
+        if (elm.parent) return elm.parent;
+        debug(elm.tagName + " has no parent " );
+        elm = elm.parentNode;
+    }
+}
+
+/**
+ * The mouse over event of a menu. It marks the menu so that it cannot collapse now.
+ */
 function useMenu(event) {
-    debug(event);
-    var elm = getMenu(getTarget(event));
-    if (elm) {
-        usedMenus[elm.id] = elm;
-        debug("Marking menu " + elm.id + " / " + elm.left + " in use");
+    var menu = getMenuByParent(getTarget(event));
+    if (menu) {
+        menu.inuse = true;
+        debug("Marking menu " + menu.id + " / " + menu.left + " in use");
     }
 }
+/**
+ * The mouse out event of a menu. It marks the menu so that it collapse now, and schedules that.
+ * If the menu gets in used in a short period, this collaps is canceled.
+ */
 function unuseMenu(event) {
-    var target = getMenu(getTarget(event));
-    if (target) {
-        usedMenus[target.id] = undefined;
-        debug("Unmarking menu " + target.id + "/" + target.parent_a.id + "  in use");
-        if (target.parent_a) {
-            setTimeout('collapseMenu("' + target.id + '")', timeOut);
-        }
+    var menu = getMenuByParent(getTarget(event));
+    if (menu) {
+        menu.inuse = false;
+        debug("Unmarking menu " + menu.id + "/" + "  in use");
+        setTimeout('collapseMenu("' + menu.id + '")', TIMEOUT);
     }
 }
 
 
+/**
+ * The mouse over event of an menu-opener
+ */
 function openMenu(event) {
-    var target = getTarget(event);
+    var menu = getMenuByClass(getTarget(event));
+    debug("opening " + menu.id + " ? " + menu.tagName);
     // collapse siblings
-    for (var sibl in  target.siblings) {
-        if (sibl != target.id) {
-            debug("Collapsing other sibling of " + target.id + ": " + sibl);
-            var siblMen = getSubMenu(document.getElementById(sibl)); 
-            if (siblMen) {
-                collapseMenu(siblMen.id);
-            }
+    for (var i = 0 ; i < menu.siblings.length ; i++) {
+        debug("FOUND" + menu.siblings[i].id);
+        var sibl = menu.siblings[i];
+        if (sibl != menu) {
+            debug("Collapsing other sibling of " + menu.id + ": " + sibl);
+            collapseMenu(sibl.id);
         }
     }
-    var elm = getSubMenu(target);
-    if (elm) {
-        debug("opening because because of " + target.tagName + "/" + target.id);
-        elm.style.display = "block";
-        usedMenus[elm.id] = elm;
-        debug("marked used " + elm.id);
-    } else {
+    menu.inuse = true;
+    debug("marked used " + menu.id);
+    var subMenus = getSubMenus(menu.parent, menu.id);
+    for (var i = 0 ; i < subMenus.length; i++) {
+        debug("opening because because of " + menu.tagName + "/" + menu.id);
+        subMenus[i].style.display = "block";
     }
 }
 
+/**
+ * The mouse out event of an menu-opener
+ */
 function closeMenu(event) {
-    var target = getSubMenu(getTarget(event));
-    if (target) {
-        debug("collapings because because of " + target.tagName + "/" + target.id);
-        usedMenus["" + target.id] = undefined;
-        setTimeout('collapseMenu("' + target.id + '")', timeOut);
+    var menu = getMenuByClass(getTarget(event));
+    var subMenus = getSubMenus(menu.parent, menu.id);
+    menu.inuse = false;
+    for (var i = 0 ; i < subMenus.length; i++) {
+        debug("collapings because because of " + menu.tagName + "/" + menu.id);
+        setTimeout('collapseMenu("' + menu.id + '")', TIMEOUT);
     }
 }
 
+/**
+ * This method actually closes a menu.
+ */
 function collapseMenu(id) {
-    var elm = document.getElementById(id);
-    if (elm && ! usedMenus[id]) {
-        debug("Collapsed " + elm.id);
-        elm.style.display = "none";
+    var menu = document.getElementById(id);
+    if (menu && ! menu.inuse) {
+        var subMenus = getSubMenus(menu.parent, menu.id);
+        for (var i = 0 ; i < subMenus.length; i++) {
+            debug("Collapsed " + menu.id);
+            subMenus[i].style.display = "none";
+        }
     } else {
         debug("Cancelled collapse of " + id);
     }
