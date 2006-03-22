@@ -17,11 +17,6 @@
      </relation>
   </action>
 
-  <!--
-  <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition" objectnumber="new" >
-  </command>
-  -->
-
   <command name="search" nodepath="metastandard" fields="name" age="-1" orderby="number" directions="down" >
     <prompt>Zoeken naar metastandard</prompt>
     <search-filter>

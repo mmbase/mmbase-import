@@ -1,6 +1,7 @@
 <!-- used in config/metadefinition/metadefinition.xml -->
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="related" destination="metavocabulary" minoccurs="0" maxoccurs="*" orderby="value" hidecommand="move-up|move-down">
+<list role="related" destination="metavocabulary" minoccurs="0" maxoccurs="*"
+   orderby="value" hidecommand="move-up|move-down">
   <title>Metavocabulary die horen bij deze metadatadefinitie</title>
   <item>
     <field name="value" ftype="data">
@@ -10,7 +11,7 @@
   </item>
   
   <action type="create">
-    <relation destinationtype="metavocabulary" role="related">
+    <relation role="related">
       <object type="metavocabulary" />
     </relation>
   </action>
@@ -18,10 +19,11 @@
   <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
 
   <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="number" directions="down" >
-    <prompt>Zoeken naar tekenreeksen</prompt>
+    <prompt>Zoeken naar metavocabularies</prompt>
     <search-filter>
       <name>Waarde bevat</name>
       <search-fields>value</search-fields>
     </search-filter>
   </command>
+
 </list>
