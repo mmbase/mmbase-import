@@ -21,17 +21,26 @@
 </body>
 <title>This is a test article.</title>
 <subtitle>And Jiři Šimek is a czech name.</subtitle>
-<intro>&lt;mmxf xmlns="http://www.mmbase.org/xmlns/mmxf"&gt;
-&lt;p&gt;nederlands: Café tweeëntwintig&lt;/p&gt;
-&lt;p&gt;hebreews: דשךצ&lt;/p&gt;
-&lt;p&gt;russisch: перестоыка&lt;/p&gt;
-&lt;p&gt;esperanto: Eĥoŝanĝo ĉiuĵaŭde&lt;/p&gt;
-&lt;p&gt;tsjechisch: Jiři Šimek&lt;/p&gt;
-&lt;p&gt;japans: 寛治 カタカナ grieks: παντα ρει&lt;/p&gt;
-&lt;p&gt;koreaans: ㅐ먈갬 &lt;/p&gt;
-&lt;p&gt;ipa: hʉ xaːt ɚt met ɨ? &lt;/p&gt;
-&lt;p&gt;euro: € 2,50 &lt;/p&gt;
-&lt;/mmxf&gt;
+<intro>
+nederlands: Café tweeëntwintig
+
+hebreews: דשךצ
+
+russisch: перестоыка
+
+esperanto: Eĥoŝanĝo ĉiuĵaŭde
+
+tsjechisch: Jiři Šimek
+
+japans: 寛治 カタカナ 
+
+grieks: παντα ρει
+
+koreaans: ㅐ먈갬
+
+ipa: hʉ xaːt ɚt met ɨ?
+
+euro: € 2,50
 </intro>
    <begin>2002-12-31T23:00:07Z</begin>
    <end>2099-12-31T23:00:00Z</end>
