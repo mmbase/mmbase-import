@@ -195,7 +195,7 @@
 
   <xsd:element name="entry">
     <xsd:complexType>
-      <xsd:attribute name="value" type="xsd:string" />
+      <xsd:attribute name="value" type="xsd:string" default="NOTSPECIFIED" />
       <xsd:attribute name="display" type="xsd:string" />
       <xsd:attribute ref="xml:lang" />
       <xsd:attribute name="basename"      type="xsd:string" />
