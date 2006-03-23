@@ -55,6 +55,62 @@
       }
    }
 
+   function switchMetaVocabularyTreeVisibility(item){
+      var imgControlImage = document.getElementById('img_layer_controller_' + item);
+      var sVisibility;
+      var sControlMask;
+
+      var sCurrentState = "closed";
+      var i = 0
+      while(document.all[i] != null)
+      {
+         if (document.all[i].id.match("^checkbox_layer_" + item + "_\\d*$"))
+         {
+            if (document.all[i].style.display != "none")
+            {
+               sCurrentState = "opened";
+            }
+            break;
+         }
+         i++;
+      }
+
+      
+      if(sCurrentState == 'opened')
+      {
+         imgControlImage.src = "gfx/show.gif"
+         
+         i = 0
+         while(document.all[i] != null)
+         {
+            if (document.all[i].id.match("^checkbox_layer_" + item + "_\\d*"))
+            {
+               document.all[i].style.display = "none";
+            }
+            if (document.all[i].id.match("^img_layer_controller_" + item + "_\\d*"))
+            {
+               document.all[i].src = imgControlImage.src;
+            }
+            i++;
+         }
+      }
+      else
+      {
+         imgControlImage.src = "gfx/hide.gif"
+         
+         i = 0
+         while(document.all[i] != null)
+         {
+            if (document.all[i].id.match("^checkbox_layer_" + item + "_\\d*$"))
+            {
+               document.all[i].style.display = "";
+            }
+            i++;
+         }
+      }
+   }
+
+
 </script>
 <mm:content postprocessor="reducespace">
     <mm:cloud method="delegate" jspvar="cloud" username="admin" password="admin2k">

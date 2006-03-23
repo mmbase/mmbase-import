@@ -95,7 +95,6 @@ else
                      <%= MetaDataHelper.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
                   </mm:node>
                </mm:field>
-               <br/>
             </mm:field>
 
             <%
