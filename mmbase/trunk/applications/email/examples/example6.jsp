@@ -23,7 +23,7 @@
 
 		<!-- send the email node -->	
 		<mm:node referid="mail1">
-			<mm:field name="mail(oneshot)" />
+			<mm:function name="mail" />
 		</mm:node>
 
 	
