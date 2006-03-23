@@ -92,20 +92,18 @@
       </db>
     </field>
 
-
-
     <!-- isused  -->
     <field>
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl"></description>
-        <description xml:lang="en">Is this metastandart used?</description>
+        <description xml:lang="nl">Wordt deze metadata standard gebruikt?</description>
+        <description xml:lang="en">Is this metastandard used?</description>
       </descriptions>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Is the metastnadart used</guiname>
-        <guiname xml:lang="en">Is the metastnadart used</guiname>
-        <guitype>field</guitype>
+        <guiname xml:lang="nl">Wordt de metadata standard gebruikt</guiname>
+        <guiname xml:lang="en">Is the metastandard used</guiname>
+        <guitype>integer</guitype>
       </gui>
       <!-- editor related  -->
       <editor>
