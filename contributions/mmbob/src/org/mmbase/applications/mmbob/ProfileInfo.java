@@ -59,7 +59,7 @@ public class ProfileInfo {
    public ProfileInfo(Poster parent) {
 	this.parent  = parent;
 	this.forum = parent.getParent();
-	// temp removed daniel, syncExternals();
+	//syncExternals();
    }
 
    public ProfileInfo(Poster parent,int id,String xml,String external,int synced) {
@@ -71,7 +71,7 @@ public class ProfileInfo {
 	this.parent=parent;
 	decodeXML();
 	this.forum = parent.getParent();
-	// temp removed daniel, syncExternals();
+	//syncExternals();
    }
  
 
@@ -83,11 +83,13 @@ public class ProfileInfo {
 	if (id!=-1) {
         	org.mmbase.bridge.Node node = ForumManager.getCloud().getNode(id);
         	node.setValue("xml",encodeXML());
+		node.setIntValue("synced",synced);
 		node.commit();
 	} else {
                 NodeManager man = ForumManager.getCloud().getNodeManager("profileinfo");
                 org.mmbase.bridge.Node node = man.createNode();
         	node.setValue("xml",encodeXML());
+		node.setIntValue("synced",synced);
 		node.commit();
 
                 RelationManager rm = ForumManager.getCloud().getRelationManager("posters", "profileinfo", "related");
@@ -161,23 +163,16 @@ public class ProfileInfo {
 	String oldvalue = getValue(name).getValue();
 	if (oldvalue==null || !oldvalue.equals(value)) {
 		pe.setValue(value);	
+		pe.setSynced(false);
+		setSynced(false);
 		save();
 		ProfileEntryDef pd=forum.getProfileDef(name);
 		if (pd!=null) {
 			String external = pd.getExternal();
 			String externalname = pd.getExternalName();
-			// temp hardcoded
-			String key="org.mmbase.applications.profilesconnector.ProfilesConnectorDummy";
-			if (external.equals(key)) {
-				/* should be dynamic loaded, removed to compile for now
-				ExternalProfileInterface ci = (ExternalProfileInterface)(new org.mmbase.applications.profilesconnector.ProfilesConnectorDummy());	
-				String account = parent.getAccount();
-				if (externalname!=null && !externalname.equals("")) {
-					boolean result = ci.setValue(account,externalname,value);
-				} else {
-					boolean result = ci.setValue(account,name,value);
-				}
-				*/
+
+			if (external!=null && !external.equals("")) {
+				ExternalProfilesManager.addToSyncQueue(this);
 			}
 		}
 	}
@@ -200,17 +195,14 @@ public class ProfileInfo {
 
   private void syncExternals() {
 	Iterator pdi=forum.getProfileDefs();
+	if (pdi!=null) {
         while (pdi.hasNext()) {
 		ProfileEntryDef pd = (ProfileEntryDef)pdi.next();
 		String external = pd.getExternal();
 		String externalname = pd.getExternalName();
-		if (external!=null) {
-			// temp hardcoded
-			String key="org.mmbase.applications.profilesconnector.ProfilesConnectorDummy";
-			if (external.equals(key)) {
-				// should be dynamic, removed now so we can compile
-				/*
-				ExternalProfileInterface ci = (ExternalProfileInterface)(new org.mmbase.applications.profilesconnector.ProfilesConnectorDummy());	
+		if (external!=null && !external.equals("")) {
+			ExternalProfileInterface ci = ExternalProfilesManager.getHandler(external);
+			if (ci!=null) {
 				String name = pd.getName();
 				String account = parent.getAccount();
 				if (externalname!=null && !externalname.equals("")) {
@@ -220,26 +212,30 @@ public class ProfileInfo {
 					String rvalue = ci.getValue(account,name);
 					if (rvalue!=null) setValue(name,rvalue);
 				}
-				*/
-			}
-			key="org.mmbase.applications.profilesconnector.ProfilesConnector";
-			if (external.equals(key)) {
-				/*
-				ExternalProfileInterface ci = (ExternalProfileInterface)(new org.mmbase.applications.profilesconnector.ProfilesConnector());	
-				String name = pd.getName();
-				String account = parent.getAccount();
-				if (externalname!=null && !externalname.equals("")) {
-					String rvalue = ci.getValue(account,externalname);
-					if (rvalue!=null) setValue(name,rvalue);
-				} else {
-					String rvalue = ci.getValue(account,name);
-					if (rvalue!=null) setValue(name,rvalue);
-				}
-				*/
 			}
 		}
 	}
-	
+	}
   }
-	
+
+  public ProfileEntryDef getProfileDef(String name) {
+	return forum.getProfileDef(name);
+  }
+
+  public String getAccount() {
+	return parent.getAccount();
+  }
+
+  public void loginTrigger() {
+	ExternalProfilesManager.addToCheckQueue(this);
+  }
+
+  public void setSynced(boolean value) {
+	if (value) {
+		synced = 1;
+	} else {
+		synced = -1;
+	}
+  }
+
 }

@@ -263,7 +263,7 @@ public class ForumConfig {
 						pe.setGuiPos(guipos);
 						pe.setSize(size);
 						pe.setEdit(edit);
-						if (external!=null) pe.setExternal(external);
+						if (external!=null && !external.equals("")) pe.setExternal(external);
 						if (externalname!=null) pe.setExternalName(externalname);
 						if (type!=null) pe.setType(type);
 						if (guiname!=null) pe.setGuiName(guiname);
@@ -646,8 +646,8 @@ public class ForumConfig {
            pe.setGuiPos(cm.getGuiPos());
            pe.setSize(cm.getSize());
            pe.setEdit(cm.getEdit());
-           if (cm.getExternal()!=null) pe.setExternal(cm.getExternal());
-           if (cm.getExternalName()!=null) pe.setExternalName(cm.getExternalName());
+           if (cm.getExternal()!=null && !cm.getExternal().equals("")) pe.setExternal(cm.getExternal());
+           if (cm.getExternalName()!=null && !cm.getExternalName().equals("")) pe.setExternalName(cm.getExternalName());
            if (cm.getType()!=null) pe.setType(cm.getType());
            if (cm.getGuiName()!=null) pe.setGuiName(cm.getGuiName());
            profiledefs.put(cm.getName(),pe);

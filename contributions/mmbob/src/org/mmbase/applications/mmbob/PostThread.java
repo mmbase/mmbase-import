@@ -146,7 +146,9 @@ public class PostThread {
    public void setState(String staten) {
 	String oldstate=state;
 	if (oldstate.equals("pinned") && !staten.equals("pinned")) parent.decPinnedCount();
+	if (oldstate.equals("pinnedclosed") && !staten.equals("pinnedclosed")) parent.decPinnedCount();
 	if (!oldstate.equals("pinned") && staten.equals("pinned")) parent.incPinnedCount();
+	if (!oldstate.equals("pinnedclosed") && staten.equals("pinnedclosed")) parent.incPinnedCount();
 	state=staten;
    }
 
@@ -189,7 +191,11 @@ public class PostThread {
    }
 
    public int getLastPosterNumber() {
-	return lastposternumber;
+        if (parent.getParent().hasPoster(lastposternumber)) {
+                return lastposternumber;
+        } else {
+                return -1;
+        }
    }
 
    public int getLastPostNumber() {
@@ -216,7 +222,12 @@ public class PostThread {
 	if (end>postcount) {
 		end=postings.size();
 	}
-	List result=postings.subList(start,end);
+	List result;
+	if (start<end) {
+		result=postings.subList(start,end);
+	} else {
+		result=postings;
+	}
 
 	viewcount++;
 	syncNode(ForumManager.SLOWSYNC);
