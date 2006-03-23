@@ -5,7 +5,7 @@ import java.util.*;
 import nl.mmatch.NatMMConfig;
 import org.mmbase.util.logging.*;
 
-/* 
+/*
 
 Converts the NMIntra XML to XML that fits the NatMM objectmodel.
 Can be called from jsp by: <% (new nl.mmatch.util.migrate.RelationsMigrator()).run(); %>
@@ -30,6 +30,10 @@ public class RelationsMigrator {
       mmm.run();
 
       TreeMap tmAllRelations = new TreeMap();
+
+      log.info("in phaserel.xml replacing & to &amp;");
+      String sPhaserelContent = mmm.readingFile(sFolder + "phaserel.xml");
+      sPhaserelContent = sPhaserelContent.replaceAll("&","&amp;");
 
       log.info("deleting authrel relation");
       String sInsrelContent = mmm.readingFile(sFolder + "insrel.xml");
@@ -224,6 +228,7 @@ public class RelationsMigrator {
       tmAllRelations.put("childrel", sParentContent);
       tmAllRelations.put("contentrel", sContentrelContent);
       tmAllRelations.put("insrel", sInsrelContent);
+      tmAllRelations.put("phaserel", sPhaserelContent);
       tmAllRelations.put("posrel", sPosrelContent);
       tmAllRelations.put("readmore", sReadmoreContent);
       tmAllRelations.put("rolerel", sRolerelContent);
