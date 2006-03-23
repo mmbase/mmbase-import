@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.182 2006-03-07 18:18:59 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.183 2006-03-23 19:30:01 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -1173,7 +1173,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if changes have been made, <code>false</code> otherwise
      */
     public boolean isChanged() {
-        return changed.size() > 0;
+        return newContext != null || changed.size() > 0;
     }
 
     /**
