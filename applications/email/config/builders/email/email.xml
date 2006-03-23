@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.4 2005-11-16 15:46:36 pierre Exp $ -->
+  <!-- @version $Id: email.xml,v 1.5 2006-03-23 16:12:54 daniel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -28,8 +28,8 @@
     'email-lists' are implemetned by relateing a group of users to the email node before sending it.
     You can configure which builders are used for that here
     -->
-    <property name="groups-builder">groups</property>
-    <property name="users-builder">users</property> <!-- you might want to use 'people' -->
+    <property name="groups-builder">pools</property> <!-- you might want to use 'groups' -->
+    <property name="users-builder">people</property> <!-- you might want to use 'users' -->
     <property name="users-email-field">email</property>
   </properties>
 
