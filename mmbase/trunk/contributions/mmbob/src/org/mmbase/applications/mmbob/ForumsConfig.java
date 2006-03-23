@@ -682,7 +682,7 @@ public class ForumsConfig {
 	     if (pi!=null) {
 	     while (pi.hasNext()) {
 		   ProfileEntryDef pd = (ProfileEntryDef)pi.next();
-	     	   body += "\t\t\t<profileentry name=\""+pd.getName()+"\" guiname=\""+pd.getGuiName()+"\" guipos=\""+pd.getGuiPos()+"\" edit=\""+pd.getEdit()+"\" type=\""+pd.getType()+"\" size=\""+pd.getSize()+"\" external=\""+pd.getExternal()+"\" externalname=\""+pd.getExternalName()+"\" />\n";
+	     	   body += "\t\t\t<profileentry name=\""+pd.getName()+"\" guiname=\""+pd.getGuiName()+"\" guipos=\""+pd.getGuiPos()+"\" edit=\""+pd.getEdit()+"\" type=\""+pd.getType()+"\" size=\""+pd.getSize()+"\" external=\""+pd.getExternalString()+"\" externalname=\""+pd.getExternalNameString()+"\" />\n";
 	     }
 	     }
 	     body += "\t\t\t<avatars>\n\n";

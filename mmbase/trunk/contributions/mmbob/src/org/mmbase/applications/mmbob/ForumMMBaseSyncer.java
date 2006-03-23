@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * 
  * @author Daniel Ockeloen
  * @author Gerard van Enk
- * @version $Id: ForumMMBaseSyncer.java,v 1.6 2006-01-09 09:01:22 daniel Exp $
+ * @version $Id: ForumMMBaseSyncer.java,v 1.7 2006-03-23 09:56:35 daniel Exp $
  */
 public class ForumMMBaseSyncer implements Runnable {
 
@@ -125,7 +125,11 @@ public class ForumMMBaseSyncer implements Runnable {
                     Node node = (Node) dirtyNodes.elementAt(0);
                     dirtyNodes.removeElementAt(0);
 
+		    try {
                     node.commit();
+		    } catch(Exception e) {
+			log.info("NODE PROBLEM WITH : "+node.getNumber());
+		    }
                     removeFromBrothers(node);
                     if (kicker.isInterrupted()) throw new InterruptedException();
                     Thread.sleep(delaytime);

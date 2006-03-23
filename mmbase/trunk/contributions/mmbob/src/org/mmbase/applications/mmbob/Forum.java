@@ -59,7 +59,7 @@ public class Forum {
 
     private Hashtable posters = new Hashtable();
     private Hashtable posternames = new Hashtable();
-    private Hashtable posternicknames = new Hashtable();
+    //private Hashtable posternicknames = new Hashtable();
     private Vector onlineposters = new Vector();
     private Vector newposters = new Vector();
     private HashMap threadobservers=new HashMap();
@@ -92,7 +92,7 @@ public class Forum {
 
 	// get out config node
 	config = ForumManager.getForumConfig(name);
-
+	ExternalProfilesManager.loadExternalHandlers(this);
         // read postareas
         preCachePosters();
         readSignatures();
@@ -718,6 +718,7 @@ public class Forum {
     }
 
 
+
     public Poster getPosterNick(String nick) {
         Iterator i = posters.values().iterator();
         while (i.hasNext()) {
@@ -752,6 +753,13 @@ public class Forum {
             */
         }
         return null;
+    }
+
+    public boolean hasPoster(int posterid) {
+	if (posters.containsKey(new Integer(posterid))) {
+		return true;
+	}
+	return false;
     }
 
     /**
@@ -1052,7 +1060,12 @@ public class Forum {
      * @param p poster
      */
     public void childRemoved(Poster p) {
-        posters.remove(p);
+        posters.remove(new Integer(p.getId()));
+	posternames.remove(""+p.getAccount());
+	log.info("REM="+posters);
+	log.info("REM="+posternames);
+	onlineposters.remove(p);
+	newposters.remove(p);
         syncNode(ForumManager.SLOWSYNC);
     }
 
