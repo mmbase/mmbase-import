@@ -31,9 +31,28 @@ public class RelationsMigrator {
 
       TreeMap tmAllRelations = new TreeMap();
 
-      log.info("in phaserel.xml replacing & to &amp;");
-      String sPhaserelContent = mmm.readingFile(sFolder + "phaserel.xml");
-      sPhaserelContent = sPhaserelContent.replaceAll("&","&amp;");
+      log.info("treating discountrel.xml");
+      String sDiscountrelContent = mmm.readingFile(sFolder + "discountrel.xml");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<dnumber>"," dnumber=\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("</dnumber>","\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<rnumber>"," rnumber=\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("</rnumber>","\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<enddate>"," enddate=\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("</enddate>","\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<snumber>"," snumber=\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("</snumber>","\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<dir>"," dir=\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("</dir>","\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<startdate>"," startdate=\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("</startdate>","\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<type></type>","");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<body></body>","");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<title></title>","");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<threshold>-1</threshold>","");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<amount>-1</amount>","");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("admin\">","admin\"");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t</node>","/>");
+      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\n","\n");
 
       log.info("deleting authrel relation");
       String sInsrelContent = mmm.readingFile(sFolder + "insrel.xml");
@@ -227,8 +246,8 @@ public class RelationsMigrator {
 
       tmAllRelations.put("childrel", sParentContent);
       tmAllRelations.put("contentrel", sContentrelContent);
+      tmAllRelations.put("discountrel", sDiscountrelContent);
       tmAllRelations.put("insrel", sInsrelContent);
-      tmAllRelations.put("phaserel", sPhaserelContent);
       tmAllRelations.put("posrel", sPosrelContent);
       tmAllRelations.put("readmore", sReadmoreContent);
       tmAllRelations.put("rolerel", sRolerelContent);
