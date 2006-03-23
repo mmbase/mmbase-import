@@ -517,7 +517,8 @@
          </table>
 
          <mm:listnodes type="tests" orderby="tests.name">
-
+            <%@include file="whichimage.jsp"%>
+            <mm:field name="number" id="tnumber" write="false" />
             <table border="0" cellpadding="0" cellspacing="0">
                <tr>
                   <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
@@ -531,7 +532,13 @@
                      </mm:last>
 
                   <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_<mm:field name="number"/>'/></td>
-                  <td><nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treattest" />' target="text"><mm:field name="name" /></a></nobr></td>
+                 <td><nobr>
+                     <a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treattest" />' target="text"><mm:field name="name" /></a>
+                     
+                     <mm:node number="component.metadata" notfound="skip">
+                        <a href="metaedit.jsp?number=<mm:write referid="tnumber" />" target="text"><img id="img_<mm:write referid="tnumber" />" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
+                     </mm:node>
+                     </nobr></td>
                </tr>
             </table>
 
