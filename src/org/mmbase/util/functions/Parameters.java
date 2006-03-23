@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.22 2006-01-13 15:37:24 pierre Exp $
+ * @version $Id: Parameters.java,v 1.23 2006-03-23 19:55:06 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -288,10 +288,12 @@ public class Parameters extends AbstractList implements java.io.Serializable {
      * Copies all values of a map to the corresponding values of this Parameters Object.
      */
     public Parameters setAll(Map map) {
-        Iterator i = map.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
-            set((String) entry.getKey(), entry.getValue());
+        if (map != null) {
+            Iterator i = map.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                set((String) entry.getKey(), entry.getValue());
+            }
         }
         return this;
     }
