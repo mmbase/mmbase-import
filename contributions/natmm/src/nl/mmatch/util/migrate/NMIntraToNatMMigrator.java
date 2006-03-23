@@ -26,18 +26,20 @@ public class NMIntraToNatMMigrator {
       log.info("NMIntraToNatMMigrator.run()");
       TreeMap tmAllData = new TreeMap();
 
-      log.info("deleting relation between postings and postthreads from insrel.xml");
+      log.info("deleting relations between phaserel and contentblocks");
+      String sPhaserelContent = readingFile(sFolder + "phaserel.xml");
+      ArrayList alPhaserel = getNodes(sPhaserelContent);
 
-      String sPostingsContent = readingFile(sFolder + "postings.xml");
-      ArrayList alPostings = getNodes(sPostingsContent);
+      String sContentBlocksContent = readingFile(sFolder + "contentblocks.xml");
+      ArrayList alContentBlocks = getNodes(sContentBlocksContent);
 
-      String sPostthreadsContent  = readingFile(sFolder + "postthreads.xml");
-      ArrayList alPostthreads = getNodes(sPostthreadsContent);
+      String sEmployeesContent = readingFile(sFolder + "employees.xml");
+      ArrayList alEmployees = getNodes(sEmployeesContent);
 
-      String sInsrelContent = readingFile(sFolder + "insrel.xml");
-      sInsrelContent = deletingRelation(alPostthreads,alPostings,sInsrelContent);
-
-      tmAllData.put("insrel",sInsrelContent);
+      String sReadmoreContent = readingFile(sFolder + "readmore.xml");
+      sReadmoreContent = deletingRelation(alPhaserel,alContentBlocks,sReadmoreContent);
+      sReadmoreContent = deletingRelation(alPhaserel,alEmployees,sReadmoreContent);
+      tmAllData.put("readmore",sReadmoreContent);
 
       log.info("deleting data that we do not want to migrate");
 
@@ -49,8 +51,8 @@ public class NMIntraToNatMMigrator {
       alDeletingFiles.add("media.xml");
       alDeletingFiles.add("message.xml");
       alDeletingFiles.add("people.xml");
+      alDeletingFiles.add("phaserel.xml"); //we have to delete them because of installing problems
       alDeletingFiles.add("poll.xml");
-      alDeletingFiles.add("postings.xml"); //we have to delete them because of installing problems
       alDeletingFiles.add("typedef.xml"); //is system data
       alDeletingFiles.add("urls.xml"); // doesn't contain any info
 
@@ -75,6 +77,7 @@ public class NMIntraToNatMMigrator {
       tmAllData.put("page",sContent);
       ArrayList alPages = getNodes(sContent);
       ArrayList alPageRelatedTemplate = new ArrayList();
+      String sInsrelContent = readingFile(sFolder + "insrel.xml");
       int iDNIndex = sInsrelContent.indexOf("dnumber=\"" + sTemplateNumber + "\"");
       while (iDNIndex>-1){
         iBegNodeNumberIndex = sInsrelContent.indexOf("snumber=\"",iDNIndex - 25) + 9;
