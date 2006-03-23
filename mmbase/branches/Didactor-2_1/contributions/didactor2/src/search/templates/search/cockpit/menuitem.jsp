@@ -3,14 +3,16 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
-  <div class="menuItemSearch">
-    <form name="searchform" method="post" action="<mm:treefile page="/search/index.jsp" objectlist="$includePath" referids="$referids" />">
+  
+   <form name="searchform" method="post" action="<mm:treefile page="/search/index.jsp" objectlist="$includePath" referids="$referids" />">
+     <div class="menuItemSearch">
       <input type="hidden" name="search_type" value="AND"/>
       <input type="hidden" name="search_component" value=""/>
       <di:translate key="search.search" />:&nbsp; <input class="search" type="text" name="search_query" />
       <input type="image" src="<mm:treefile write="true" page="/gfx/icon_search.gif" objectlist="$includePath" />" title="<di:translate key="search.sendsearchrequest" />" alt="<di:translate key="search.sendsearchrequest" />" value="<di:translate key="search.sendsearchrequest" />" name="searchbutton" />
-    </form>
-  </div>
+	</div>
+  </form>
+  
   <div class="spacer"> </div>
 </mm:cloud>
 </mm:content>
