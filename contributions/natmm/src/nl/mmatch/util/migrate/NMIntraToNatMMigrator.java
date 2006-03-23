@@ -122,7 +122,8 @@ public class NMIntraToNatMMigrator {
       log.info("deleting not necessary fields in files");
       TreeMap tmDeletingFields = new TreeMap();
       tmDeletingFields.put("answer","layout;total_answers");
-      tmDeletingFields.put("formulier","layout;total_answers");
+      tmDeletingFields.put("formulier","source;quote;creditline;quote_title;" +
+      "transmissiondate;expiredate");
       tmDeletingFields.put("article","creditline;quote;quote_title;copyright");
       tmDeletingFields.put("employees","position;intro;deptdescr;progdescr;showinfo");
       tmDeletingFields.put("locations","city2;country2;mobile");
@@ -164,6 +165,7 @@ public class NMIntraToNatMMigrator {
         }
 
         if (sBuilderName.equals("readmore")){
+           log.info("in readmore.xml replacing & to &amp;");
            sContent = sContent.replaceAll("&","&amp;");
         }
         tmAllData.put(sBuilderName, sContent);
@@ -218,6 +220,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("employees","location:account;birthday:dayofbirth;description:importstatus");
       tmRenamingFields.put("formulier","copyright:titel_de;subtitle:titel_fra;title:titel;" +
       "editors_note:emailadressen;introduction:omschrijving");
+      tmRenamingFields.put("images","title:titel;description:omschrijving");
       tmRenamingFields.put("items","name:titel;description:omschrijving");
       tmRenamingFields.put("locations","name:naam;address:bezoekadres;postalcode:bezoekadres_postcode;" +
       "city:plaatsnaam;country:land;address2:postbus;postalcode2:postbus_postcode;" +
@@ -670,7 +673,7 @@ public class NMIntraToNatMMigrator {
      Iterator it = alFrom.iterator();
      while (it.hasNext()){
        String sNextNode = (String)it.next();
-       int iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode);
+       int iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode + "\"");
        while (iSNumberIndex != -1) {
          int iDNIndex = sContent.indexOf("dnumber", iSNumberIndex);
          int iQuotIndex = sContent.indexOf("\"", iDNIndex + 9);
@@ -679,8 +682,11 @@ public class NMIntraToNatMMigrator {
            int iBegNodeIndex = sContent.indexOf("<node number=",iSNumberIndex - 60) - 1;
            int iEndNodeIndex = sContent.indexOf("</node>",iSNumberIndex) + 9;
            sContent = sContent.substring(0,iBegNodeIndex) + sContent.substring(iEndNodeIndex);
+           iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode + "\"", iBegNodeIndex);
+         } else {
+            iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode + "\"",
+                                             iSNumberIndex + 1);
          }
-         iSNumberIndex = sContent.indexOf("snumber=\"" + sNextNode,iSNumberIndex + 1);
        }
      }
 
