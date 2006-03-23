@@ -28,6 +28,10 @@ public abstract class NodeTest extends BridgeTest {
         super(name);
     }
 
+    protected String getNodeManager() {
+        return "aa";
+    }
+
     abstract public void testGetValue();
 
     public void testGetValueCache() {

@@ -56,6 +56,9 @@ public class FilledNodeTest extends NodeTest {
         node.setValue("stringfield", "Bridge testing!");
         node.setValue("xmlfield", getEmptyDocument());
         node.setValue("nodefield", typedefNode);
+        org.mmbase.datatypes.DataType dt = node.getNodeManager().getField("datetimefield").getDataType();
+        assertTrue("Not a datetime-datatype but " + dt.getClass(), dt.getClass().equals(org.mmbase.datatypes.DateTimeDataType.class)); // would give error in Node#setValue otherwise
+
         node.setValue("datetimefield", TEST_DATE);
         node.setValue("booleanfield", Boolean.TRUE);
         List list = new ArrayList();
