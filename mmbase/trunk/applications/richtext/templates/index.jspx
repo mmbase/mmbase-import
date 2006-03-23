@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.3 2006-03-17 21:35:14 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.4 2006-03-23 00:59:07 michiel Exp $ --&gt;</jsp:text>
   <mm:content type="text/html" expires="0">
     <head>
       <title>MMBase Richtext Application</title>
@@ -71,23 +71,34 @@
           <td>
             <mm:haspage page="/mmbase/edit/wizard">
               <img src="${ok}" alt="[ok]"  />
-              Those seem to be installed.
+              Editwizards seem to be installed.
             </mm:haspage>
             <mm:haspage page="/mmbase/edit/wizard" inverse="true">
-              Those seem <em>not</em> to be installed.
+              Editwizards seem <em>not</em> to be installed.
             </mm:haspage>
           </td>
         </tr>
         <tr>
           <td>Also the generic JSPs for RichText (kupu) need to be installed in /mmbase/kupu</td>
-          <td></td>
           <td>
-            <mm:haspage page="/mmbase/kupu">
+            <p>
+              <a href="http://kupu.oscom.org/">Kupu</a> is used to achieve rich editing in
+              MMBase. Besides basic enrichments of text like adding emphasis, paragraphs and
+              sections, tables and lists, this includes inline cross linking of any MMBase object
+              (as long as they have an 'url' function), and specialized functionality for inline
+              linking of images, attachments, urls and 'blocks'.
+            </p>
+            <p>
+              This is <em>not</em> meant as a WYSIWYG editor.
+            </p>
+          </td>
+          <td>
+            <mm:haspage page="/mmbase/kupu/mmbase/index.jspx">
               <img src="${ok}" alt="[ok]"  />
-              Those seem to be installed.
+              The kupu editor seems to be installed.
             </mm:haspage>
             <mm:haspage page="/mmbase/kupu" inverse="true">
-              Those seem <em>not</em> to be installed.
+              The kupu editor (compiled for MMBase) seems <em>not</em> to be installed.
             </mm:haspage>
           </td>
         </tr>
@@ -108,14 +119,23 @@
         <tr>
           <td>MyNews FrondEnd</td>
           <td>
-            For every site you make, will need a front-end. In this case it is just a bunch of jsps
-            which present the site.
+            Every site has a front-end. In this case it is just a bunch of jsps which present the
+            site. The site is XHTML strict compliant, and uses only JSPX, MMBase taglib 2.0, JSTL, CSS, and
+            JavaScript.
           </td>
           <td><a href="mynews" class="navigate"><img src="${next}" alt="mynews" /></a></td>
         </tr>
         <tr>
           <td>MyNews BackEnd</td>
-          <td>Normally every site also needs some kind of back-end for editors.</td>
+          <td>
+            <p>
+              Normally every site also needs some kind of back-end for editors. This is a bunch of
+              JSP's creating links to Editwizard and Kupu editor pages.
+            </p>
+            <p>
+              If you use Cloud Context security, also the security editor is integrated.
+            </p>
+          </td>
           <td><a href="mynews/edit" class="navigate"><img src="${next}" alt="mynews" /></a></td>
         </tr>
         <tr>
@@ -125,7 +145,12 @@
         </tr>
         <tr>
           <td>JavaScript</td>
-          <td>MyNews contains interesting javascript for the Menu. Which is demonstrated here.</td>
+          <td>
+            <p>
+              MyNews contains interesting javascript for the Menu. Which is demonstrated and tested
+              where. 
+            </p>
+          </td>
           <td>
             <a href="mynews/testmenu.jspx" class="navigate"><img src="${next}" alt="mynews"  /></a>
           </td>
