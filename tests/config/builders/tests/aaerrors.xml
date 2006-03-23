@@ -4,7 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"                        
-    name="datatypes" maintainer="mmbase.org" version="0" extends="object">
+    name="aaerrors" maintainer="mmbase.org" version="0" extends="object">
+  <!--
+      TODO:
+      - Needing more errors here.
+      - Somehow need to arrange discrepancy between db-tags and actual db types.
+  -->
   <names>
     <singular xml:lang="nl">aa</singular>
     <singular xml:lang="fr">aa</singular>
@@ -21,6 +26,7 @@
 
   <fieldlist>
     <field>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>name</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
@@ -28,6 +34,9 @@
     </field>
 
     <field>
+      <gui>
+        <guitype>string</guitype>
+      </gui>
       <db>
         <name>description</name>
         <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
@@ -47,6 +56,7 @@
     </field>
 
     <field>
+      <datatype base="float" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>doublefield</name>
         <type key="false" notnull="false" state="persistent">DOUBLE</type>
@@ -54,6 +64,9 @@
     </field>
 
     <field>
+      <gui>
+        <guitype>string</guitype>
+      </gui>
       <db>
         <name>floatfield</name>
         <type key="false" notnull="false" state="persistent">FLOAT</type>
@@ -61,6 +74,7 @@
     </field>
 
     <field>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>intfield</name>
         <type key="false" notnull="false" state="persistent">INTEGER</type>
@@ -97,6 +111,7 @@
     </field>
 
     <field>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>datetimefield</name>
         <type key="false" notnull="false" state="persistent">DATETIME</type>
