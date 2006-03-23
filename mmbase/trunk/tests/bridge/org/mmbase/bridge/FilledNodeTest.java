@@ -315,7 +315,7 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(fieldTypes[i] + "field queried as string did not return " + Boolean.TRUE + " but " + string,
                            String.valueOf(Boolean.TRUE).equals(string));
             } else if (fieldTypes[i].equals("datetime")) {
-                assertTrue(fieldTypes[i] + "field queried as string did not return " + TEST_DATE + " but " + string,
+                assertTrue(fieldTypes[i] + "field queried as string did not return " + Casting.toString(TEST_DATE) + " but " + string,
                            Casting.toString(TEST_DATE).equals(string));
             } else if (fieldTypes[i].equals("list")) {
                 assertTrue(fieldTypes[i] + "field queried as string did not return \"true,true\" but " + string,
