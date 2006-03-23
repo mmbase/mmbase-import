@@ -17,9 +17,9 @@
 		<!-- create a relation to the group -->
 		<mm:createrelation source="mail1" destination="group1" role="related" />
 
-		<!-- start the mailer and wait for it to finish -->	
+		<!-- start the mailer and wait for it to finish, default type is oneshot -->	
 		<mm:node referid="mail1">
-			<mm:field name="mail(oneshot)" />
+			<mm:function name="mail" />
 		</mm:node>
 
 
