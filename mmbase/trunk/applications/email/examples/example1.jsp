@@ -14,12 +14,11 @@
                 </mm:createnode>
 
 
-		<!-- send the email node -->	
+		<!-- send the email node  (default type is oneshot) -->	
 		<mm:node referid="mail1">
-			<mm:field name="mail(oneshot)" />
+			<mm:function name="mail" />
 		</mm:node>
 
-	
 </mm:cloud>
 </body>
 </html>

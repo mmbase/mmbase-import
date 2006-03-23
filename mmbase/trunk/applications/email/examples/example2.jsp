@@ -13,21 +13,25 @@
                 </mm:createnode>
 
 
-		<!-- send the email node -->	
-		<mm:node referid="mail1">
-			<mm:field name="mail(oneshot)" />
-		</mm:node>
-
-		<mm:node referid="mail1">
-			<mm:field name="mailstatus">
-				<mm:compare value="1">
-				Mail was delivered
-				</mm:compare>
-				<mm:compare value="2">
-				Mail failed
-				</mm:compare>
-			</mm:field>
-		</mm:node>
+                <!-- mail the email node -->
+                <mm:node referid="mail1">
+                     <mm:functioncontainer>
+                       <mm:param name="type" value="oneshot" />
+                       <mm:function name="mail" />
+                     </mm:functioncontainer>
+                 </mm:node>
+ 
+                 <!--check if mmbase could mail the message -->
+                 <mm:node referid="mail1">
+                    <mm:field name="mailstatus">
+                      <mm:compare value="1">
+                         Mail was delivered at <mm:field name="mailedtime"><mm:time format=":LONG.LONG" /></mm:field>
+                      </mm:compare>
+                      <mm:compare value="2">
+                         Mail failed
+                      </mm:compare>
+                    </mm:field>
+                 </mm:node>
 	
 </mm:cloud>
 </body>
