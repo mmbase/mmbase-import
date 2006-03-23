@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.16 2006-01-30 11:03:17 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.17 2006-03-23 16:42:09 daniel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -138,7 +138,7 @@ public class EmailHandler {
     private static Set getTo(MMObjectNode node) {
         Set toUsers = new LinkedHashSet();
         String to = node.getStringValue("to");
-        if (to != null) {
+        if (to != null && !to.equals("")) {
             toUsers.add(new NodeRecipient(-1, to));
         }
         return toUsers;
