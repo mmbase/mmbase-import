@@ -41,6 +41,7 @@ public class ForumManager {
     private static Hashtable forumnamecache=new Hashtable();
     private static ForumMMBaseSyncer syncfast,syncslow;
     private static ForumSwapManager swapmanager;
+    private static ExternalProfilesManager externalprofilesmanager;
     private static ForumEmailSender emailsender;
     private static ForumsConfig config;
 
@@ -82,6 +83,8 @@ public class ForumManager {
             if (forumnodemanager == null) {
                 log.error("Can't load forums nodemanager from mmbase");
             }
+
+	    externalprofilesmanager =  new ExternalProfilesManager(1 * 60 * 1000);
 
             readForums();
 

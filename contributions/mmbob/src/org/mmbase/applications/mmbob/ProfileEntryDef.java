@@ -92,10 +92,16 @@ public class ProfileEntryDef {
 
 
    public void setExternal(String external) {
+	log.info("SET EXTERNQAL="+external+" PD="+this);
 	this.external = external;
    }
 
    public String getExternal() {
+	return external;
+   }
+
+   public String getExternalString() {
+	if (external==null) return "";
 	return external;
    }
 
@@ -112,6 +118,11 @@ public class ProfileEntryDef {
    }
 
    public String getExternalName() {
+	return externalname;
+   }
+
+   public String getExternalNameString() {
+	if (externalname==null) return "";
 	return externalname;
    }
 

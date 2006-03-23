@@ -42,6 +42,7 @@ public class Poster {
     private int lastposttime;
     private int lastseen = 0;
     private int firstlogin = -1;
+    private boolean seen = false;
     private String lasthost = "unknown";
     private String account,firstname, lastname, email, level, location, gender, password;
     private String a_account,a_firstname, a_lastname, a_email, a_location, a_gender, a_password;
@@ -321,7 +322,7 @@ public class Poster {
     public String getLevelImage() {
 	// temp for testing
         String themeid = ThemeManager.getAssign("MMBob."+parent.getId());
-        if (themeid==null) ThemeManager.getAssign("MMBob");
+        if (themeid==null) themeid=ThemeManager.getAssign("MMBob");
 	Theme th=ThemeManager.getTheme(themeid);
 	String result="";
 	if (th!=null) {
@@ -454,6 +455,14 @@ public class Poster {
         lastseen =  (int) ((System.currentTimeMillis() / 1000));
         node.setIntValue("lastseen", lastseen);
         ForumManager.syncNode(node, ForumManager.SLOWSYNC);
+	if (!seen) {
+		seen =  true;
+		if (profileinfo==null) {
+			profileinfo = new ProfileInfo(this);
+			log.info("NEW PROFILE FORCED");
+		}
+		profileinfo.loginTrigger();
+	}
     }
 
     /**
@@ -960,4 +969,5 @@ public class Poster {
   public Forum getParent() {
 	return parent;
   }
+
 }

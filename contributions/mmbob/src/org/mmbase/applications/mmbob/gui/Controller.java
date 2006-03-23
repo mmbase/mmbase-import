@@ -476,6 +476,7 @@ public class Controller {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
                     Posting p = t.getPosting(Integer.parseInt(postingid));
+		    if (p!=null) {
                     String subject = p.getSubject();
                     map.put("subject", subject);
                     if (subject.length()>60) subject = subject.substring(0,57)+"...";
@@ -522,6 +523,7 @@ public class Controller {
                             map.put("maychange", "false");
 			}
                     }
+		}
                 }
             }
         }
@@ -1056,6 +1058,12 @@ public class Controller {
         if (f != null) {
             if (posterid != null) {
                 Poster po = f.getPoster(posterid);
+		if (po==null) {
+		try {
+			int tmpi = Integer.parseInt(posterid);
+                	po = f.getPoster(tmpi);
+		} catch(Exception e) {}
+		}
                 addPosterInfo(map, po);
             }
         }
@@ -1175,7 +1183,7 @@ public class Controller {
      */
     public String editPoster(String forumid, int posterid, String firstname, String lastname, String email, String gender, String location, String newpassword, String newconfirmpassword) {
         if (newpassword.equals("")) {
-            log.debug("newpassword is empty");
+            log.info("newpassword is empty");
             Forum f = ForumManager.getForum(forumid);
             if (f != null) {
                 Poster p = f.getPoster(posterid);
@@ -1193,7 +1201,7 @@ public class Controller {
             return "true";
         } else {
             if (newpassword.equals(newconfirmpassword)) {
-            log.debug("newpassword equals newconfirmpassword");
+            log.info("newpassword equals newconfirmpassword");
                 Forum f = ForumManager.getForum(forumid);
                 if (f != null) {
                     Poster p = f.getPoster(posterid);
@@ -1209,9 +1217,9 @@ public class Controller {
                         return "false";
                     }
                 }
-                return "passwordchanged";
+                return "profilechanged";
             } else {
-                log.debug("newpassword and confirmpassword are not equal");
+                log.info("newpassword and confirmpassword are not equal");
                 return "newpasswordnotequal";
             }
         }
@@ -1549,7 +1557,7 @@ public class Controller {
                 if (t != null) {
                     // nobody may post in closed thread, unless you're a moderator
 		    Poster p=f.getPosterNick(poster);
-                    if ((!t.getState().equals("closed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
+                    if ((!t.getState().equals("closed")|| !t.getState().equals("pinnedclosed") || a.isModerator(poster)) && (p==null || !p.isBlocked())) {
 			if (body.equals("")) {
                 		map.put("error", "no_body");
 			} else if (p!=null && p.checkDuplicatePost("",body)) {
@@ -1562,7 +1570,8 @@ public class Controller {
 			} else {
 				body = a.filterContent(body);
 				subject = filterHTML(subject);
-				//body = BBCode.decode(body);
+				// temp fix for [ ] quotes.
+				body = BBCode.encode(body);
 				try {
                        	        	t.postReply(subject, p, body,false);
                 			map.put("error", "none");
@@ -1613,6 +1622,8 @@ public class Controller {
                 	map.put("error", "illegal_html");
 		} else if (p!=null && p.checkDuplicatePost(subject,body)) {
                 	map.put("error", "duplicate_post");
+		} else if (checkMaxPostSize(subject,body)) {
+                	map.put("error", "maxpostsize");
 		} else if (p!=null && checkSpeedPosting(a,p)) {
                 	map.put("error", "speed_posting");
                 	map.put("speedposttime", ""+a.getSpeedPostTime());
@@ -2478,6 +2489,16 @@ public class Controller {
 		return false;
 	}
 
+
+        private boolean checkMaxPostSize(String subject,String body) {
+		if (subject.length()>128) {
+			return true;
+		} else if (body.length()>(32*1024)) {
+			return true;
+		}
+		return false;
+	}
+
         private boolean checkSpeedPosting(PostArea a,Poster p) {
 		if (p.getLastPostTime()!=-1) {
 			if ((System.currentTimeMillis()/1000)-a.getSpeedPostTime()<p.getLastPostTime()) {
@@ -2689,6 +2710,13 @@ public class Controller {
 					ProfileEntry pe = po.getProfileValue(pd.getName());
 					if (pe!=null) {
 						map.put("value",pe.getValue());
+						if (pd.getExternal()!=null) {
+							map.put("synced",""+pe.getSynced());
+						} else {
+							map.put("synced","internal");
+						}
+					} else {
+						map.put("synced","not set");
 					}
 					list.add(map);
 				}

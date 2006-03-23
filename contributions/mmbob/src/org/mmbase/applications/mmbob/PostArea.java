@@ -256,7 +256,11 @@ public class PostArea {
      * @return last poster
      */
    public int getLastPosterNumber() {
-        return lastposternumber;
+	if (parent.hasPoster(lastposternumber)) {
+	        return lastposternumber;
+	} else {
+		return -1;
+	}
    }
 
 
@@ -544,7 +548,7 @@ public class PostArea {
                 PostThread postthread = new PostThread(this, n2,true);
 		newcount += postthread.getPostCount();
 		newthreadcount++;
-                if (postthread.getState().equals("pinned")) {
+                if (postthread.getState().equals("pinned") || postthread.getState().equals("pinnedclosed")) {
                     postthreads.add(numberofpinned, postthread);
                     numberofpinned++;
                 } else {
@@ -631,7 +635,7 @@ public class PostArea {
 
                 // now add the first 'reply' (wrong name since its not a reply)
                 postthread.postReply(subject, poster, body,parsed);
-                if (postthread.getState().equals("pinned")) {
+                if (postthread.getState().equals("pinned") || postthread.getState().equals("pinnedclosed")) {
                     postthreads.add(0, postthread);
                 } else {
                     postthreads.add(numberofpinned, postthread);
@@ -698,7 +702,7 @@ public class PostArea {
     public void resort(PostThread child) {
         // move to the top of the queue
         if (postthreads.remove(child)) {
-            if (child.getState().equals("pinned")) {
+            if (child.getState().equals("pinned") || child.getState().equals("pinnedclosed")) {
                 postthreads.add(0, child);
             } else {
                 postthreads.add(numberofpinned, child);
@@ -721,8 +725,11 @@ public class PostArea {
 				   if (body.indexOf("<posting>")==0) {
 				   	body = "<posting> "+MultiLanguageGui.getConversion("mmbob.movedfrom",parent.getLanguage())+" : "+getName()+" "+MultiLanguageGui.getConversion("mmbob.by",parent.getLanguage())+" "+poster.getNick()+"<br />----<br /><br />"+body.substring(9);
 				   }
-				   Poster nposter=parent.getPoster(p.getPoster());
+				   log.info("P1="+p.getPoster());
+				   log.info("P2="+parent.getPosterNick(p.getPoster()));
+				   Poster nposter=parent.getPosterNick(p.getPoster());
 				   int np=ta.newPost(p.getSubject(),nposter,body,p.getParent().getMood(),true);
+				   log.info("NPOSRER="+nposter);
 				   nposter.decPostCount(); // compensate counter
 				   npt=ta.getPostThread(""+np);
 				   if (npt!=null) {
@@ -784,6 +791,14 @@ public class PostArea {
      * @return
      */
     public boolean save() {
+	// this can still give a problem since its not direct !
+	// so forced direct
+        Node node = ForumManager.getCloud().getNode(id);
+        node.setStringValue("name", name);
+        node.setStringValue("description", description);
+	node.commit();
+
+	// need to work in this, daniel
         syncNode(ForumManager.FASTSYNC);
         return true;
     }
