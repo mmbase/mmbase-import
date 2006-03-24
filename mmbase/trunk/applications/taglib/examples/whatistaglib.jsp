@@ -9,17 +9,7 @@
 <body>
   <mm:timer>
   <mm:import externid="color">green</mm:import><%-- stupid example for xsl arguments --%>
-  <mm:formatter options="color=$color" escape="none">
-    <mm:xslt>
-      <%-- based on normal xslt, but a little changed --%>
-      <xsl:import href="mm:xslt/mmxf2xhtml.xslt" />
-      <xsl:param name="color">green</xsl:param>
 
-      <xsl:template match="h" mode="h1"><xsl:if test="string(.)"><h1 style="color:{$color};"><xsl:apply-templates select="node()" /></h1></xsl:if></xsl:template>
-      <xsl:template match="h" mode="h2"><h2 style="color:red;"><strong><xsl:apply-templates select="node()" /></strong></h2></xsl:template>
-
-    </mm:xslt>
-    <mmxf>
       <section>
         <h>What is MMBase Taglib?</h>
         <p>
@@ -53,8 +43,6 @@
           </p>
         </section>
       </section>
-    </mmxf>
-  </mm:formatter>
 </mm:timer>
 <hr />
 <a href="<mm:url page="showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
