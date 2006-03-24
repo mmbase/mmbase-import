@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.198 2006-03-11 16:46:42 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.199 2006-03-24 13:36:59 johannes Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -786,7 +786,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         } else if (isNew()) {
             throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
-            if (!getNode().getBuilder().createAlias(getNumber(), aliasName)) {
+            String owner = cloud.getUser().getOwnerField();
+            if (!getNode().getBuilder().createAlias(getNumber(), aliasName, owner)) {
                 Node otherNode = cloud.getNode(aliasName);
                 if (otherNode != null) {
                     throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");

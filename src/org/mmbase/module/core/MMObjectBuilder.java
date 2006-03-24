@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.373 2006-03-24 13:08:30 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.374 2006-03-24 13:36:59 johannes Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -667,18 +667,30 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *  Creates an alias for a node, provided the OAlias builder is loaded.
      *  @param number the to-be-aliased node's unique number
      *  @param alias the aliasname to associate with the object
+     *  @param owner the owner of the alias
+     *  @since MMBase-1.8
      *  @return if the alias could be created
      */
-    public boolean createAlias(int number, String alias) {
+    public boolean createAlias(int number, String alias, String owner) {
         if (mmb.getOAlias() != null) {
             if (getNode(alias) != null ) {  // this alias already exists! Don't add a new one!
                 return false;
             }
-            mmb.getOAlias().createAlias(alias, number);
+            mmb.getOAlias().createAlias(alias, number, owner);
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     *  Creates an alias for a node, provided the OAlias builder is loaded.
+     *  @param number the to-be-aliased node's unique number
+     *  @param alias the aliasname to associate with the object
+     *  @return if the alias could be created
+     */
+    public boolean createAlias(int number, String alias) {
+        return createAlias(number, alias, "system");
     }
 
     /**
