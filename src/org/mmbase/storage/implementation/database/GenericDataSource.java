@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.10 2005-12-23 14:57:32 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.11 2006-03-24 12:10:42 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -72,7 +72,9 @@ public final class GenericDataSource implements DataSource {
     // see javax.sql.DataSource
     public Connection getConnection() throws SQLException {
         String url = makeUrl();
-        log.debug("Getting " + (meta ? "META " : "") + "connection for " + url);
+        if (log.isTraceEnabled()) {
+            log.trace("Getting " + (meta ? "META " : "") + "connection for " + url);
+        }
         if (meta) {
             String name     = jdbc.getInitParameter("user");
             String password = jdbc.getInitParameter("password");
