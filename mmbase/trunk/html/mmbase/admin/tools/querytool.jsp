@@ -70,7 +70,7 @@
       </table>
     </mm:present>
     <%} else {%>
-    <h1>Disabled, change JSP to switch this feature on</h1>
+	This is a direct sql tool, we prefer you don't use this so it is disabled by default. Use your own database tools instead. If for some reason you are not able to use the database supplied tools you can turn this tool on in : mmbase/admin/tools/querytool.jsp. Change if (false) into if (true). 
     <% } %>
   </body>
 </html>
