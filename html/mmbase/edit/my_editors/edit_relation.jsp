@@ -31,7 +31,7 @@ String node_man = "";		// Nodemanager?
 	<!-- table with back button -->
 	<table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">	
 	<tr>
-	  <td width="24" align="right"><a href="edit_object.jsp?nr=<%= ref %>"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+	  <td width="24" class="right"><a href="edit_object.jsp?nr=<%= ref %>"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
 	  <td><a href="edit_object.jsp?nr=<%= ref %>">Back</a> to editing <b><mm:node number="<%= ref %>"><mm:nodeinfo type="type" /></mm:node></b> node</td>
 	</tr><tr valign="top">
 	  <td bgcolor="#FFFFFF">&nbsp;</td>
@@ -75,21 +75,21 @@ String node_man = "";		// Nodemanager?
 
 <mm:notpresent referid="delete">
 	<tr valign="top">
-	  <td align="right"><span class="name">Source</span><br />parent</td>
+	  <td class="right"><span class="name">Source</span><br />parent</td>
 	  <td>
 		<mm:field name="snumber" jspvar="s_node" vartype="String" write="false">
 			<mm:node number="<%= s_node %>"><b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" /></mm:node>
 		</mm:field>
 	  </td>
 	</tr><tr valign="top">
-	  <td align="right"><span class="name">Destination</span><br />child</td>
+	  <td class="right"><span class="name">Destination</span><br />child</td>
 	  <td>
 		<mm:field name="dnumber" jspvar="d_node" vartype="String" write="false">
 			<mm:node number="<%= d_node %>"><b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" /></mm:node>
 		</mm:field>
 	  </td>
 	</tr><tr valign="top">
-	  <td class="name" align="right">Relation kind</td>
+	  <td class="name">Relation kind</td>
 	  <td>
 		<mm:field name="rnumber" jspvar="r_node" vartype="String" write="false">
 			<mm:node number="<%= r_node %>"><mm:field name="gui()" /></mm:node>
@@ -103,13 +103,13 @@ String node_man = "";		// Nodemanager?
 	<mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
 	<mm:fieldlist type="edit" fields="owner">
 	<tr valign="top">
-	  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+	  <td class="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
 	  <td><mm:fieldinfo type="$formtype" /> </td>
 	</tr>
     </mm:fieldlist>
 	<mm:maywrite>
 	<tr>
-	  <td align="right"><input type="submit" name="change" value="Change" /></td>
+	  <td class="right"><input type="submit" name="change" value="Change" /></td>
 	  <td>Change relation  &nbsp;&nbsp;&nbsp;&nbsp; 
 	    <mm:maydelete><input type="submit" name="delete" value="Delete" /> Remove relation</mm:maydelete>
 	  </td>
@@ -118,12 +118,12 @@ String node_man = "";		// Nodemanager?
 	<mm:maywrite inverse="true">
 	<mm:fieldlist type="edit">
 		<tr valign="top">
-		  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+		  <td class="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
 		  <td><mm:fieldinfo type="guivalue" />&nbsp;</td>
 		</tr>
 	</mm:fieldlist>
 	<tr>
-	  <td align="right">&nbsp;</td>
+	  <td>&nbsp;</td>
 	  <td><p class="message">You are not allowed to change or delete this relation.</p></td>
 	</tr>
 	</mm:maywrite>

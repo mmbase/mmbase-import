@@ -20,12 +20,12 @@ String node_type = "";
   <td valign="top" width="20%">
 	<table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">	
 	<tr>
-	  <td width="24" align="right"><a href="index.jsp?ntype=<mm:nodeinfo type="type" />"><img src="img/mmbase-left.gif" alt="overview" width="21" height="20" border="0" /></a></td>
+	  <td width="24" class="right"><a href="index.jsp?ntype=<mm:nodeinfo type="type" />"><img src="img/mmbase-left.gif" alt="overview" width="21" height="20" border="0" /></a></td>
 	  <td>Overview <mm:nodeinfo type="type" /></td>
 	</tr>
 	<mm:notpresent referid="delete">
 	<tr>
-	  <td width="24" align="right"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit object" width="21" height="20" border="0" /></a></mm:maywrite></td>
+	  <td width="24" class="right"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit object" width="21" height="20" border="0" /></a></mm:maywrite></td>
 	  <td>Edit the node</td>
 	</tr>
 	</mm:notpresent>
@@ -41,12 +41,12 @@ String node_type = "";
 		</tr>
 		<mm:fieldlist type="list">
 			<tr valign="top">
-			  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+			  <td class="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
 			  <td><mm:fieldinfo type="guivalue" /> &nbsp;</td>
 			</tr>
 		</mm:fieldlist>
     	<tr valign="top">
-    	  <td align="right" class="name">Alias</td>
+    	  <td class="name">Alias</td>
     	  <td><mm:aliaslist node="the_node" id="aliasses"><mm:write /></mm:aliaslist></td>
     	</tr><tr>
 		  <td colspan="2">
@@ -73,7 +73,7 @@ String node_type = "";
 		<mm:node number="$nr"><mm:maydelete><mm:deletenode number="$nr" deleterelations="true" /></mm:maydelete></mm:node>
 		<table border="0" cellspacing="0" cellpadding="4" class="table-form">
 		<tr>
-		  <td bgcolor="#CCCCCC" align="right" nowrap>
+		  <td bgcolor="#CCCCCC" class="right" wrap="nowrap">
 		    <a href="new_object.jsp?ntype=<%= node_type %>" title="a new node of this type"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a>
 		  </td>
 		  <td bgcolor="#CCCCCC" class="title-s">Node deleted!</td>

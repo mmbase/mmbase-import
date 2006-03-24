@@ -49,23 +49,23 @@ title = "Edit " + ntype + " node";
     <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
     <td colspan="3"><!- table in table --><table width="100%" border="0" cellspacing="0" cellpadding="4">
 		<tr>
-		  <td align="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
+		  <td width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
 		  <td colspan="2" nowrap="nowrap"> Search node to relate to </td>
 		</tr>
 		<tr>
-		  <td align="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
+		  <td width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
 		  <td colspan="2" nowrap="nowrap"> Create new node and relate </td>
 		</tr>
 		<tr>
-		  <td align="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="21" height="20" border="0" /></a></td>
+		  <td width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="21" height="20" border="0" /></a></td>
 		  <td colspan="2" nowrap="nowrap"> Edit relation </td>
 		</tr>
 		<tr>
-		  <td align="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+		  <td width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
 		  <td colspan="2" nowrap="nowrap"> Edit node </td>
 		</tr>
 		<tr>
-		  <td align="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
+		  <td width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
 		  <td colspan="2" nowrap="nowrap"> Delete node </td>
 		</tr>
 	  </table><!- end table in table --></td>
@@ -87,7 +87,7 @@ title = "Edit " + ntype + " node";
 		<table border="0" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 		  <td class="title-s">Edit node of type <b><mm:nodeinfo type="guinodemanager" /></b> (<mm:nodeinfo type="type" />)</td>
-		  <td align="right">
+		  <td class="right">
 			<mm:maydelete><a href="delete_object.jsp?nr=<%= nr %>&amp;ntype=<%= ntype %>" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
 		  </td>
 		</tr>
@@ -113,7 +113,7 @@ title = "Edit " + ntype + " node";
 	<mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
 	<mm:fieldlist type="edit" fields="owner">
 	<tr valign="top">
-	  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+	  <td class="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
 	  <td><mm:fieldinfo type="$formtype" /> </td>
 	</tr>
 	</mm:fieldlist>
@@ -132,7 +132,7 @@ title = "Edit " + ntype + " node";
 	
 	<%-- Aliases --%>
 	<tr bgcolor="#CCCCCC" valign="top">
-	  <td align="right" class="title-s">Aliases</td>
+	  <td class="right" class="title-s">Aliases</td>
 	  <td class="title-s">
 		<% String my_constr = ""; %>
 		<mm:aliaslist id="alias">
@@ -144,7 +144,7 @@ title = "Edit " + ntype + " node";
 		</mm:aliaslist>
 	  </td>
 	</tr><tr valign="top">
-	  <td align="right" class="name">New alias</td>
+	  <td class="right" class="name">New alias</td>
 	  <td><input type="text" name="alias_name" size="80" maxlength="255" class="small" /><br />An alias is an optional identifier for a node</td>
 	</tr>
 	</table>
@@ -182,7 +182,7 @@ title = "Node not found";
 	  logged on as:  <%= wolk.getUser().getIdentifier() %> (rank: <%= wolk.getUser().getRank() %>) - 
 	  <a href="logout.jsp">log out</a> </div>
 	</td>
-	<td align="right">
+	<td class="right">
 	<form action="edit_object.jsp" method="post">
 	  <div class="top-left">edit node #<br /><input type="text" name="nr" size="8" maxlength="255" /></div>
 	</form>
