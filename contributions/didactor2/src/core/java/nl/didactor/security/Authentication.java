@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.mmbase.bridge.LocalContext;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicCloudContext;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.Rank;
@@ -19,14 +19,14 @@ import nl.didactor.security.UserContext;
 /**
  * Didactor authentication routines. This class authenticates users against the
  * cloud, and returns their rank based on the builder they belong to.
- * 
+ *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class Authentication extends org.mmbase.security.Authentication {
     private static Logger log = Logging.getLoggerInstance(Authentication.class.getName());
 
     Vector securityComponents = new Vector();
-    
+
     private static final String KEY_REQUEST = "request";
 
     private static final String KEY_RESPONSE = "response";
@@ -49,7 +49,7 @@ public class Authentication extends org.mmbase.security.Authentication {
             } catch (Exception e) {
                 log.warn("Cannot initialize security class [" + securityClasses[i] + "]");
             }
-        } 
+        }
     }
 
     static {
@@ -70,12 +70,12 @@ public class Authentication extends org.mmbase.security.Authentication {
             }
         }
     }
-    
+
     /**
      * Login method: it tests the given credentials against MMBase.
      * The flow is as following:
-     * - test to see if any of the 
-     * 
+     * - test to see if any of the
+     *
      * @param application
      *            The application identifier
      * @param loginInfo
@@ -100,13 +100,13 @@ public class Authentication extends org.mmbase.security.Authentication {
             log.debug("Anonymous application: returning anonymous cloud");
             return new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous"));
         }
-        
+
         // Always allow system access instantly
         if ((request == null) || (response == null)) {
             log.debug("No request/response; returning system login");
             return this.doSystemLogin();
         }
-        
+
         // If the action is logging-out, try to find the component on which the
         // user logged in, and let that component process the logout.
         if ("didactor-logout".equals(application)) {
@@ -124,7 +124,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                     }
                 }
             }
-           
+
             return null;
         }
 
@@ -137,7 +137,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                 return uc;
             }
         }
-        
+
         // Apparently not, so we ask the components if they can process the login,
         // maybe there was a post to the current page?
         for (int i=0; i<securityComponents.size(); i++) {
@@ -149,7 +149,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                 return uc;
             }
         }
-     
+
         // "Asis" means that we want a cloud as previously authenticated, or a new anonymous
         // one if there is no authenticated cloud. If we were authenticated we would not
         // have reached this point, so return an anonymous cloud here.
@@ -157,9 +157,9 @@ public class Authentication extends org.mmbase.security.Authentication {
             log.debug("Asis application and not logged in: returning anonymous cloud");
             return new UserContext("anonymous", "anonymous", Rank.getRank("didactor-anonymous"));
         }
-        
+
         // Still nothing, that means that we have to redirect to the loginpage
-        // We iterate the components to see if there is one that knows where to 
+        // We iterate the components to see if there is one that knows where to
         // go to.
         // TODO: maybe this should be configurable, so that you can specify which
         // security component should be used first by default. It will now automatically
@@ -185,7 +185,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                 return null;
             }
         }
-     
+
         // Nothing left to do
         return null;
     }
@@ -196,7 +196,7 @@ public class Authentication extends org.mmbase.security.Authentication {
 
     /**
      * Admin's backdoor for Cron & etc Doesn't require password for login
-     * 
+     *
      * @return UserContext
      */
     private org.mmbase.security.UserContext doSystemLogin() {
@@ -207,5 +207,23 @@ public class Authentication extends org.mmbase.security.Authentication {
         }
 
         return (org.mmbase.security.UserContext) (new UserContext(user));
+    }
+
+    public static Node getCurrentUserNode(Cloud cloud){
+       try{
+              NodeList nlUsers = cloud.getList("",
+                  "people",
+                  "people.number",
+                  "people.username='" + cloud.getUser().getIdentifier() + "'",
+                  null, null, null, false);
+
+              if(nlUsers.size() == 1){
+                 Node nodeUser = cloud.getNode(nlUsers.getNode(0).getStringValue("people.number"));
+                 return nodeUser;
+              }
+       }
+       catch(Exception e){
+       }
+       return null;
     }
 }
