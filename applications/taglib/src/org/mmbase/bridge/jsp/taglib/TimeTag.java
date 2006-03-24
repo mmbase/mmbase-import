@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.51 2006-02-14 22:29:17 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.52 2006-03-24 15:38:50 johannes Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -112,7 +112,11 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         if (log.isDebugEnabled()) {
             log.debug("format: '" + dateFormat + "'");
         }
-        return  org.mmbase.util.DateFormats.getInstance(dateFormat.getString(this), timezone.getString(this), getLocale());
+        String tz = timezone.getString(this);
+        if (tz != null && !"".equals(tz)) {
+            tz = tz.toUpperCase();
+        }
+        return  org.mmbase.util.DateFormats.getInstance(dateFormat.getString(this), tz, getLocale());
     }
 
 
@@ -222,6 +226,11 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
             }
         } else {
             useTime = time.getString(this);
+        }
+
+        String tzone = timezone.getString(this);
+        if (tzone != null && !"".equals(tzone)) {
+            useTime += " TZ" + tzone.toUpperCase();
         }
 
         String iformat = inputFormat.getString(this);
