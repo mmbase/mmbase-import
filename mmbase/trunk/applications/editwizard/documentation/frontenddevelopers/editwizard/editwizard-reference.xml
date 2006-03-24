@@ -19,7 +19,7 @@
   <articleinfo>
     <title>MMBase Editwizard Reference Manual</title>
     <date>2002-09-02</date>
-    <edition>$Id: editwizard-reference.xml,v 1.4 2005-08-22 13:31:28 michiel Exp $</edition>
+    <edition>$Id: editwizard-reference.xml,v 1.5 2006-03-24 14:17:20 andre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Kars</firstname>
@@ -1084,14 +1084,21 @@
         <varlistentry>
           <term>Example</term>
           <listitem>
+          First define an optionlist... (outside 'form-schema' see 'optionlist')
+            <programlisting format="linespecific"><![CDATA[
+<lists>
+  <optionlist name="articletypes">
+	<option id="1">News</option>
+	<option id="2">Interview</option>
+	<option id="3">Information</option>
+  </optionlist>
+</lists>
+            ]]></programlisting>
+			...and then use it like this.
             <programlisting format="linespecific"><![CDATA[
 <field name="type" ftype="enum">
   <prompt>Articletype</prompt>
-  <optionlist name="articletypes">
-    <option id="1">News</option>
-    <option id="2">Interview</option>
-    <option id="3">Information</option>
-  </optionlist>
+  <optionlist select="articletypes"/>
 </field>
             ]]></programlisting>
           </listitem>
