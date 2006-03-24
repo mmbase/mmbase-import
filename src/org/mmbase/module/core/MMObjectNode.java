@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.183 2006-03-23 19:30:01 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.184 2006-03-24 12:41:40 marcel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -158,6 +158,20 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
 
     private String newContext = null;
+
+   /**
+    * Default Main constructor.
+    * @param parent the node's parent, an instance of the node's builder.
+    * @throws IllegalArgumentException If parent is <code>null</code>
+    */
+    public MMObjectNode(MMObjectBuilder parent) {
+        isNew = true;
+        if (parent != null) {
+            this.parent = parent;
+        } else {
+            throw new IllegalArgumentException("Constructor called with parent=null");
+        }
+    }
 
     /**
      * Main constructor.
