@@ -19,7 +19,10 @@
 	<p class="message">You failed to log in. Try again.</p>
 	<p>&nbsp;</p>
 </mm:compare>
-<form method="post" action="<mm:write referid="referrer" jspvar="r" vartype="string"><%=response.encodeURL(r)%></mm:write>" >
+<form method="post" action="<mm:url page="$referrer" />">
+<input type="hidden" name="command" value="login">
+<input type="hidden" name="cloud" value="mmbase"><!-- also default -->
+<input type="hidden" name="authenticate" value="name/password">
 <table border="0" cellspacing="0" cellpadding="4" class="table-left">
   <tr>
 	<td width="50"><img src="img/mmbase-edit-40.gif" alt="my_editors" width="41" height="40" border="0" hspace="4" vspace="4" /></td>
@@ -31,7 +34,7 @@
   <tr><td>&nbsp;</td><td><b>Please login</b></td></tr>
   <tr><td class="name">Name</td><td><input type="text" name="username" /></td></tr>
   <tr><td class="name">Password</td><td><input type="password" name="password" /></td></tr>
-  <tr><td>&nbsp;</td><td><input type="submit" name="command" value="login" /></td></tr>
+  <tr><td>&nbsp;</td><td><input type="submit" name="Login" value="login" /></td></tr>
 </table>
 </form>
 </div>
