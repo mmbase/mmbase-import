@@ -6,8 +6,8 @@
 <% String path1 = ntype; %>
 <%@ include file="inc_head.jsp" %>
 
-<mm:import externid="max_items"><mm:write referid="conf_max" /></mm:import>
-<mm:import externid="max_days"><mm:write referid="conf_days" /></mm:import>
+<mm:import externid="max_items" vartype="Integer"><mm:write referid="conf_max" /></mm:import>
+<mm:import externid="max_days" vartype="Integer"><mm:write referid="conf_days" /></mm:import>
 <mm:import externid="type_list"><mm:write referid="conf_list" /></mm:import>
 <mm:import externid="search_box"><mm:write referid="searchbox" /></mm:import>
 <mm:present referid="savethis">
