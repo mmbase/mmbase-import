@@ -17,12 +17,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.OutputKeys;
+import java.util.Properties;
 
 /**
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.21 2006-02-17 21:18:13 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.22 2006-03-24 18:00:30 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -94,9 +96,12 @@ public class XsltTag extends ContextReferrerTag  {
                     " exclude-result-prefixes=\"node mmxf o mm taglib node\"" +
                     " version=\"1.0\"" + 
                     " >" +
-                    " <xsl:output method=\"xml\" omit-xml-declaration=\"yes\" />" +
                     xsltString +
                     "</xsl:stylesheet>";
+                /* set output property method=xml omit-xml-declaration=yes */
+                Properties props = new Properties();
+                props.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                formatter.setOutputProperties(props);
             }
             StreamSource src = new StreamSource(new java.io.StringReader(totalString));
             String systemId = ((HttpServletRequest)pageContext.getRequest()).getRequestURL().append('/').append(((long) xsltString.hashCode() & 0xffff)).toString();
