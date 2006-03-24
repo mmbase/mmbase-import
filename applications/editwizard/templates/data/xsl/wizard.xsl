@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.146 2006-03-21 15:03:03 michiel Exp $
+    @version $Id: wizard.xsl,v 1.147 2006-03-24 15:15:59 henk Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -226,7 +226,7 @@
           message_listtooshort="{$message_listtooshort}"
           invalidlist="{/wizard/form[@invalidlist]/@invalidlist}" filter_required="{$filter_required}">
           <xsl:choose>
-            <xsl:when test="/*/step[@valid='false'][not(@form-schema=/wizard/curform)]">
+            <xsl:when test="/*/*/step[@valid='false'][not(@form-schema=/wizard/curform)]">
               <xsl:attribute name="otherforms">invalid</xsl:attribute>
             </xsl:when>
             <xsl:otherwise>
