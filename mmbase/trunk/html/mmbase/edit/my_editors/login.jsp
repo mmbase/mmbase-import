@@ -28,9 +28,9 @@
 	  <div class="top-links">Generic JSP editors for MMBase</div>
 	</td>
   </tr>
-  <tr><td>&nbsp;</td><td class="name"><b>Please login</b></td></tr>
-  <tr><td class="name" align="right">Name</td><td><input type="text" name="username" /></td></tr>
-  <tr><td class="name" align="right">Password</td><td><input type="password" name="password" /></td></tr>
+  <tr><td>&nbsp;</td><td><b>Please login</b></td></tr>
+  <tr><td class="name">Name</td><td><input type="text" name="username" /></td></tr>
+  <tr><td class="name">Password</td><td><input type="password" name="password" /></td></tr>
   <tr><td>&nbsp;</td><td><input type="submit" name="command" value="login" /></td></tr>
 </table>
 </form>

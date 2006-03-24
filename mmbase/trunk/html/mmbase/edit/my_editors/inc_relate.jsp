@@ -10,14 +10,14 @@
 
 	<mm:compare referid="dir" value="nwparent">
 		<tr valign="top">
-		  <td class="name" align="right">Source</td>
+		  <td class="name">Source</td>
 		  <td>
 			<mm:node number="$rnr" id="source_node">
 				<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
 			</mm:node> 
 		  </td>
 		</tr><tr valign="top">
-		  <td class="name" align="right">Destination</td>
+		  <td class="name">Destination</td>
 		  <td>
 			<mm:node referid="nr" id="dest_node">
 				<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
@@ -27,14 +27,14 @@
 	</mm:compare>
 	<mm:compare referid="dir" value="nwchild">
 		<tr valign="top">
-		  <td class="name" align="right">Source</td>
+		  <td class="name">Source</td>
 		  <td>
 			<mm:node referid="nr" id="source_node">
 				<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
 			</mm:node> 
 		  </td>
 		</tr><tr valign="top">
-		  <td class="name" align="right">Destination</td>
+		  <td class="name">Destination</td>
 		  <td>
 			<mm:node number="$rnr" id="dest_node">
 				<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
@@ -44,7 +44,7 @@
 	</mm:compare>
 
 	<tr valign="top">
-	  <td class="name" align="right">Relation kind</td>
+	  <td class="name">Relation kind</td>
 	  <td><b><mm:write referid="rkind" /></b></td>
 	</tr>
 	
@@ -67,7 +67,7 @@
 			</mm:url>">
 			<mm:fieldlist type="edit">
 			<tr>
-			  <td class="name" align="right"><mm:fieldinfo type="guiname" /></td>
+			  <td class="name"><mm:fieldinfo type="guiname" /></td>
 			  <td><mm:fieldinfo type="input" /></td>
 			</tr>
 			</mm:fieldlist>
@@ -87,7 +87,7 @@
 				<mm:first><tr bgcolor="#CCCCCC"><td>&nbsp;</td><td class="title-s">Value of the relation</td></tr></mm:first>
 				<mm:context>
 				<tr valign="top">
-				  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+				  <td class="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
 				  <td><mm:fieldinfo type="guivalue" /></td>
 				</tr>
 				</mm:context>
@@ -99,7 +99,7 @@
 		<%-- No relation: we were not allowed to do that! --%>
 		<tr bgcolor="#CCCCCC"><td>&nbsp;</td><td class="title-s">No relation</td></tr>
 		<tr>
-		  <td class="name" align="right">Sorry!</td>
+		  <td class="name">Sorry!</td>
 		  <td>You were not allowed to create that relation.</td>
 		</tr>
 	</mm:notpresent>

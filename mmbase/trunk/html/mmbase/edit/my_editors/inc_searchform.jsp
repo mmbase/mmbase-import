@@ -8,16 +8,16 @@
 	</mm:notpresent>
 <table width="100%" border="0" cellspacing="0" cellpadding="4" class="table-search">
 	<tr>
-	  <td bgcolor="#CCCCCC" align="center"><img src="img/mmbase-search.gif" alt="Search" width="21" height="20" border="0" /></td>
+	  <td bgcolor="#CCCCCC" class="right"><img src="img/mmbase-search.gif" alt="Search" width="21" height="20" border="0" /></td>
 	  <td bgcolor="#CCCCCC" class="title-s">Search node of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)</td>
 	</tr>
 	<tr valign="top">
-	  <td align="right" class="name">Days old</td>
+	  <td class="name">Days old</td>
 	  <td><input class="small" type="text" name="conf_days" value="<mm:write referid="conf_days" />" size="9" maxlength="9" /></td>
 	</tr>
 	<mm:fieldlist nodetype="$ntype" type="search">
 		<tr valign="top">
-		  <td align="right" class="name"><mm:fieldinfo type="guiname" /></td>
+		  <td class="name"><mm:fieldinfo type="guiname" /></td>
 		  <td><mm:fieldinfo type="searchinput" /></td>
 		</tr>
 	</mm:fieldlist>

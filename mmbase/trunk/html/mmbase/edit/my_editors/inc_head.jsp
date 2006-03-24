@@ -25,7 +25,7 @@
 	  logged on as:  <%= wolk.getUser().getIdentifier() %> (rank: <%= wolk.getUser().getRank() %>) - 
 	  <a href="logout.jsp">log out</a> </div>
 	</td>
-	<td align="right">
+	<td>
 	<form action="edit_object.jsp" method="post">
 	  <div class="top-left">edit node #<br /><input type="text" name="nr" size="8" maxlength="255" /></div>
 	</form>

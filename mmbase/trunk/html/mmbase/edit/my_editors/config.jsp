@@ -34,13 +34,13 @@
   <td>&nbsp;</td>
   <td class="title-s">Configure my_editors</td>
 </tr><tr>
-  <td align="right" class="name">Max days old</td>
+  <td class="name">Max days old</td>
   <td><input type="text" name="max_days" value="<mm:write referid="max_days" />" size="9" maxlength="9" /></td>
 </tr><tr>
-  <td align="right" class="name">Max items per page</td>
+  <td class="name">Max items per page</td>
   <td><input type="text" name="max_items" value="<mm:write referid="max_items" />" size="9" maxlength="9" /></td>
 </tr><tr>
-  <td align="right" class="name">Show me</td>
+  <td class="name">Show me</td>
   <td>
     <select name="type_list">
     <option label="all the node types" value="all"<mm:compare referid="type_list" value="all"> selected="selected"</mm:compare>>all the node types</option>
@@ -48,7 +48,7 @@
     </select> in the list
   </td>
 </tr><tr>
-  <td align="right" class="name">Show the searchbox</td>
+  <td class="name">Show the searchbox</td>
   <td>
     <select name="search_box">
     <option label="after" value="after"<mm:compare referid="search_box" value="after"> selected="selected"</mm:compare>>after</option>
