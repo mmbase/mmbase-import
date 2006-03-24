@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.63 2006-03-18 08:00:31 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.64 2006-03-24 17:37:30 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -105,6 +105,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     private static final int WANTS_STRING          = 2;
 
     private static final String PAGECONTEXT_COUNTER = "formatter__counter";
+    
+    /* transformer properties */
+    Properties props = new Properties();
 
     {
         log.debug("Init of FormatterTag.");
@@ -448,6 +451,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false)).haltTimer(timerHandle);
         }
         xsltSource = null;
+        props = null;
         helper.doEndTag();
         return super.doEndTag();
     } // doEndTag
@@ -546,8 +550,11 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             params.put(entry.getKey(), entry.getValue());
         }
 
-        return ResultCache.getCache().get(cachedXslt, xsl,  params, null, doc);
+        return ResultCache.getCache().get(cachedXslt, xsl,  params, props, doc);
 
+    }
+    public void setOutputProperties(Properties properties) {
+    	this.props = properties;
     }
     /**
      * @see   xslTransform
