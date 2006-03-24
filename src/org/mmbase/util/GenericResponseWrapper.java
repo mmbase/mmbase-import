@@ -12,8 +12,9 @@ import java.io.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
+
+import java.util.Locale;
 import java.util.regex.*;
-import java.util.regex.Matcher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.16 2006-03-07 17:37:58 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.17 2006-03-24 16:51:27 nklasens Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -103,6 +104,81 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
 
     public void setHeader(String header, String value) {
         getHttpServletResponse().setHeader(header,value);
+    }
+    
+    
+
+    /**
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
+    public void addDateHeader(String arg0, long arg1) {
+        getHttpServletResponse().addDateHeader(arg0, arg1);
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     */
+    public void addHeader(String arg0, String arg1) {
+        getHttpServletResponse().addHeader(arg0, arg1);
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     */
+    public void addIntHeader(String arg0, int arg1) {
+        getHttpServletResponse().addIntHeader(arg0, arg1);
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
+     */
+    public boolean containsHeader(String arg0) {
+        return getHttpServletResponse().containsHeader(arg0);
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
+     */
+    public String encodeRedirectURL(String arg0) {
+        return getHttpServletResponse().encodeRedirectURL(arg0);
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
+     */
+    public String encodeURL(String arg0) {
+        return getHttpServletResponse().encodeURL(arg0);
+    }
+    /**
+     * @see javax.servlet.ServletResponse#getLocale()
+     */
+    public Locale getLocale() {
+        return getHttpServletResponse().getLocale();
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+     */
+    public void sendError(int arg0, String arg1) throws IOException {
+        getHttpServletResponse().sendError(arg0, arg1);
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#sendError(int)
+     */
+    public void sendError(int arg0) throws IOException {
+        getHttpServletResponse().sendError(arg0);
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
+    public void setDateHeader(String arg0, long arg1) {
+        getHttpServletResponse().setDateHeader(arg0, arg1);
+    }
+    /**
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */
+    public void setIntHeader(String arg0, int arg1) {
+        getHttpServletResponse().setIntHeader(arg0, arg1);
+    }
+    /**
+     * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
+     */
+    public void setLocale(Locale arg0) {
+        getHttpServletResponse().setLocale(arg0);
     }
 
     /**
