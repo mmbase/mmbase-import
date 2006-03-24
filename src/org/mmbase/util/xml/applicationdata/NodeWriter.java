@@ -26,7 +26,7 @@ import org.mmbase.util.Encode;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.2 2005-10-07 18:42:49 michiel Exp $
+ * @version $Id: NodeWriter.java,v 1.3 2006-03-24 13:08:30 nklasens Exp $
  */
 public class NodeWriter {
 
@@ -144,14 +144,14 @@ public class NodeWriter {
                     if (!key.equals("number") && !key.equals("owner")
                             && !key.equals("otype")
                             && !key.equals("snumber") && !key.equals("dnumber")
-                            && !key.equals("rnumber") && !key.equals("dir") && !key.startsWith("_")) {
+                            && !key.equals("rnumber") && !key.equals("dir") && !def.isTemporary()) {
                         write("\t\t<" + key + ">" + node.getValue(key) + "</" + key + ">\n");
                     }
                 } else {
                     //due to current tcp implementation sometimes nodeField are created
                     //those fiels always start with an underscore. If a node starts with
                     //we skip it
-                    if (!key.startsWith("_")) {
+                    if (!def.isTemporary()) {
                         write(writeXMLField(key, node, directory, mmb));
                     }
                 }

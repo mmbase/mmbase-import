@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.7 2005-12-09 09:53:34 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.8 2006-03-24 13:08:30 nklasens Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -167,6 +167,11 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
        return getState() == STATE_VIRTUAL || getState() == STATE_SYSTEM_VIRTUAL;
     }
 
+    public boolean isTemporary() {
+        String fieldName = getName();
+        return fieldName != null ? fieldName.startsWith("_") : false;
+    }
+    
     /**
      * @see org.mmbase.bridge.Field#isVirtual()
      */
