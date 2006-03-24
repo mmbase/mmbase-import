@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.29 2006-03-14 23:55:18 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.30 2006-03-24 17:32:47 johannes Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -122,6 +122,26 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             local.entries.addAll(bundles);
             local.unusedKeys.addAll(fallBack);
             localized.put(locale, local);
+        }
+        
+        // If this locale with variant is added but the parent locale was not yet in the map, then
+        // we first add the parent locale.
+        if (locale.getVariant() != null && !"".equals(locale.getVariant())) {
+            String language = locale.getLanguage() + "_" + locale.getCountry();
+            Locale l = new Locale(language);
+            if (!localized.containsKey(l)) {
+                add(l, entry);
+            }
+        }
+        
+        // If this locale with country is added, but the parent locale (only language) was not yet in
+        // the map, we first add the parent language locale.
+        if (locale.getCountry() != null && !"".equals(locale.getCountry())) {
+            String language = locale.getLanguage();
+            Locale l = new Locale(language);
+            if (!localized.containsKey(l)) {
+                add(l, entry);
+            }
         }
         local.entries.add(entry);
         return local.unusedKeys;
