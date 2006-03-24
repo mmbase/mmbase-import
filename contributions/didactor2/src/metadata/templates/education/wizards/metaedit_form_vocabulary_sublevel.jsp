@@ -78,9 +78,15 @@
       <%
 
 
+
       it = tree.treeIterator();
 
       int depth = -1;
+
+      //I can't get a copy of the treeIterator,but do have to get one.
+      //So we have to count steps.
+      //Stupid slution, but I hasn't find a better one
+      int iCounter = 0;
       while(it.hasNext()){
          Node nodeMetaVocabulary = it.nextNode();
 
@@ -165,21 +171,50 @@
 
                      String sSubMetaVocabulariesControllerImage = null;
                      String sState = null;
+
                      if(iPreviousDepth < it.currentDepth()){
-                        if(iBlockedLevel - 1 < depth){
-                           sSubMetaVocabulariesControllerImage = "gfx/show.gif";
-                           sState = "closed";
+                        //We don't know it is the last leaf for this branch or not
+                        //So we have to check
+                        boolean bIsItTheLastLevel = true;
+
+                        TreeIterator it2 = tree.treeIterator();
+                        int iLocalCounter = 0;
+                        while(iLocalCounter <= iCounter + 1 ){
+                            it2.next();
+                            iLocalCounter++;
                         }
-                        else{
-                           sSubMetaVocabulariesControllerImage = "gfx/hide.gif";
-                           sState = "opened";
+
+                        while((it.hasNext())  && (depth == it.currentDepth())){
+                            it.next();
                         }
-                        %><img id="img_layer_controller_<%= sCheckBoxUniqueID %>" onClick="switchMetaVocabularyTreeVisibility('<%= sCheckBoxUniqueID %>')" src="<%= sSubMetaVocabulariesControllerImage %>"/><%
+
+                        //we have right the node which has got different deep
+                        if(depth < it.currentDepth()){
+                           //This node is deepper, so it wasn't the last level
+                           bIsItTheLastLevel = false;
+                        }
+
+                        //Rol the pointer back
+                        it = it2;
+
+
+                        if(!bIsItTheLastLevel){
+                           if(iBlockedLevel - 1 < depth){
+                              sSubMetaVocabulariesControllerImage = "gfx/show.gif";
+                              sState = "closed";
+                           }
+                           else{
+                              sSubMetaVocabulariesControllerImage = "gfx/hide.gif";
+                              sState = "opened";
+                           }
+                           %><img id="img_layer_controller_<%= sCheckBoxUniqueID %>" onClick="switchMetaVocabularyTreeVisibility('<%= sCheckBoxUniqueID %>')" src="<%= sSubMetaVocabulariesControllerImage %>"/><%
+                        }
                      }
                   %>
                </mm:node>
             </div>
          <%
+         iCounter ++;
       }
       %>
          </div>
