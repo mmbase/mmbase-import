@@ -23,10 +23,10 @@
     <attribute name="storage-identifier-case">upper</attribute>
 
     <!-- This option can easily be removed -->
-    <option name="database-stores-binary-as-file" />
+    <!-- option name="database-stores-binary-as-file" -->
 
     <!-- Not sure about this option, so turned it off -->
-    <option name="database-supports-blob" value="false" />
+    <option name="database-supports-blob" value="true" />
 
     <!-- Does not support changing of fields -->
     <scheme name="change-field-scheme" />
