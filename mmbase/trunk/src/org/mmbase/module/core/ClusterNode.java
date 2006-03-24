@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.25 2005-10-12 00:31:35 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.26 2006-03-24 16:23:28 johannes Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -231,6 +231,8 @@ public class ClusterNode extends VirtualNode {
                 MMObjectBuilder bul = parent.mmb.getMMObject(builderName);
                 if (bul != null) {
                     o = bul.getValue(this, fieldName);
+                } else {
+                    throw new RuntimeException("Builder with name '" + builderName + "' does not exist");
                 }
             }
         }
