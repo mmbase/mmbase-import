@@ -25,7 +25,8 @@
          <ul>
            <li>Shipped documentation - the readme, releasenotes and installation docs. These documents are in the root of the binary distro.</li>
            <li>The MMBase website - <a href="http://www.mmbase.org" target="_ext">http://www.mmbase.org</a>.</li>
-           <li>The mailinglists - <a href="http://www.mmbase.org/communication" target="_ext">http://www.mmbase.org/communication</a>.</li>
+           <li>Contact information - <a href="http://www.mmbase.org/communication" target="_ext">http://www.mmbase.org/communication</a>.</li>
+           <li>The mailinglists - <a href="http://lists.mmbase.org" target="_ext">http://lists.mmbase.org</a>.</li>
            <li>The developers irc channel - see <a href="http://www.mmbase.org/irc" target="_ext">irc page for mmbase</a>.</li>
            <li>The MMBase bugtracker - <a href="http://www.mmbase.org/bug" target="_ext">http://www.mmbase.org/bug</a>.</li>
          </ul>
