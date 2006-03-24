@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.47 2006-03-22 09:13:38 andre Exp $
+  version: $Id: taglibcontent.xml,v 1.48 2006-03-24 12:15:08 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -358,23 +358,31 @@
   <parameterizedescaper id="codesample">
     <class>org.mmbase.util.transformers.CodeSampleFactory</class>
     <info>
-      Escapes the code between the tags you define.<br />
-      This escaper enables the use of two different escapers in one piece of text. 
-	  It was started to simplify the inclusion of a code snippet in html but can be 
-	  used for other purposes as well.<br />
-	  You can specify the tags between which you wish to escape your text, the 
-	  escaper to use and you can set an escaper for the rest of the text. It needs 
-	  to be rewritten to support all escapers/transformers. It only supports the
-	  escapers p, pp, p-ommit-surrounding, pp-ommit-surrounding, inline, text/html 
-	  and text/xml for now.
-	  All parameters may be ommitted then it defaults to &lt;pre&gt; and 'text/html'.
-	  Use it like f.e.:<br />
-	  &lt;mm:import id="texttext"&gt;
-	  This is an example:
-	  &lt;% String foo = "bar"; %&gt;
-	  &lt;/mm:import&gt;
-	  &lt;mm:escaper type="codesample" id="testsample" /&gt;
-  	  &lt;mm:write referid="testtext" escape="testsample" /&gt;
+      <p>
+        Escapes the code between the tags you define.
+      </p>
+      <p>
+        This escaper enables the use of two different escapers in one piece of text. 
+        It was started to simplify the inclusion of a code snippet in html but can be 
+        used for other purposes as well.
+      </p>
+      <p>
+        You can specify the tags between which you wish to escape your text, the 
+        escaper to use and you can set an escaper for the rest of the text. It needs 
+        to be rewritten to support all escapers/transformers. It only supports the
+        escapers p, pp, p-ommit-surrounding, pp-ommit-surrounding, inline, text/html 
+        and text/xml for now.
+        All parameters may be ommitted then it defaults to &lt;pre&gt; and 'text/html'.
+        Use it like f.e.:
+      </p>
+      <p>
+        &lt;mm:import id="texttext"&gt;
+        This is an example:
+        &lt;% String foo = "bar"; %&gt;
+        &lt;/mm:import&gt;
+        &lt;mm:escaper type="codesample" id="testsample" /&gt;
+        &lt;mm:write referid="testtext" escape="testsample" /&gt;
+      </p>
     </info>
     <param name="starttag">
       <info>
