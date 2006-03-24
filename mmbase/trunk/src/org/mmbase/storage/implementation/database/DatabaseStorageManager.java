@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.150 2006-03-13 09:25:13 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.151 2006-03-24 15:00:32 daniel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2685,8 +2685,10 @@ public class DatabaseStorageManager implements StorageManager {
                 Iterator builders = factory.getMMBase().getBuilders().iterator();
                 while (builders.hasNext()) {
                     MMObjectBuilder builder = (MMObjectBuilder)builders.next();
-                    Iterator fields = builder.getFields().iterator();
-                    while (fields.hasNext()) {
+		    // remove clusternodes from the convert
+		    if (!builder.getSingularName().equals("clusternodes")) {
+                     Iterator fields = builder.getFields().iterator();
+                     while (fields.hasNext()) {
                         CoreField field = (CoreField)fields.next();
                         String fieldName = field.getName();
                         if (field.getType() == Field.TYPE_BINARY) { // check all binaries
@@ -2750,7 +2752,8 @@ public class DatabaseStorageManager implements StorageManager {
                                 }
                             } // nodes
                         } // if type = byte
-                    } // fields
+                     } // fields
+		    }
                 } // builders
                 if (result > 0) {
                     log.info("Converted " + result + " fields " + ((fromDatabase > 0 && fromDatabase < result) ? " of wich  " + fromDatabase + " from database" : ""));
