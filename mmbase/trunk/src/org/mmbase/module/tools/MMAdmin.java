@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.135 2006-03-22 22:12:31 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.136 2006-03-24 12:21:57 daniel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -337,7 +337,10 @@ public class MMAdmin extends ProcessorModule {
                             return false;
                         }
                         lastmsg = "Writing finished, no problems.\n\nA clean copy of " + modulename + ".xml can be found at : " + savepath + "\n\n";
-                    }
+                    } else {
+                        lastmsg = "Writing failed, module : " + modulename + ".xml because module is not loaded\n\n";
+			return false;
+		    }
                 }
             } else if (token.equals("BUILDERSAVE")) {
                 if (kioskmode) {
