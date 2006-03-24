@@ -49,7 +49,7 @@
 <tr>
   <td class="data">Name</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbname",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_name" />" target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_name" />" target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbname&name=Name"%>" />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
