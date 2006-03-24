@@ -38,7 +38,7 @@ while(relIterator.hasNext()) {
 	  <td nowrap="nowrap"><b><%= otherManager.getGUIName()%></b> <%= otherManagerName %><br />
   	    <%= role %> <!-- <%= relationManager.getForwardGUIName() %>/<%= relationManager.getReciprocalGUIName() %> -->
   	  </td>
-	  <td nowrap="nowrap" align="right">
+	  <td nowrap="nowrap" class="right">
 		<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwparent" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
 		<% if (otherManager.mayCreateNode()) { %><a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwparent" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a><% } %>
 	  </td>
@@ -50,9 +50,9 @@ while(relIterator.hasNext()) {
 		<mm:nodeinfo type="type" id="my_type" write="false" />
 		<mm:compare referid="my_type" value="<%= otherManagerName %>">
 		<tr valign="bottom" bgcolor="#FFFFFF">
-		  <td align="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
+		  <td class="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
 		  <td nowrap="nowrap"> <mm:function name="gui" /> </td>
-		  <td nowrap="nowrap" align="right">
+		  <td nowrap="nowrap" class="right">
 		    <a href="<mm:url page="edit_relation.jsp">
 		  	<mm:param name="nr"><mm:write referid="rel_nr" /></mm:param>
 		  	<mm:param name="ref"><%= nr %></mm:param>
@@ -99,7 +99,7 @@ while(relIterator.hasNext()) {
   	    <b><%= otherManager.getGUIName()%></b> <%= otherManagerName %><br /> 
   	    <%= role %> <!-- <%= relationManager.getReciprocalGUIName() %>/<%= relationManager.getForwardGUIName() %> -->
 	  </td>
-	  <td nowrap="nowrap" align="right">
+	  <td nowrap="nowrap" class="right">
 		<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwchild" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
 		<% if (otherManager.mayCreateNode()) { %><a href="new_object.jsp?nr=<%= nr %>&amp;ntype=<%= otherManagerName %>&amp;rkind=<%= role %>&amp;dir=nwchild" title="create new node and relate"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a><% } %>
 	  </td>
@@ -110,9 +110,9 @@ while(relIterator.hasNext()) {
 		<mm:relatednode><mm:nodeinfo type="type" id="my_type" write="false" />
 		<mm:compare referid="my_type" value="<%= otherManagerName %>">
 		<tr valign="bottom" bgcolor="#FFFFFF">
-		  <td align="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
+		  <td class="right" width="24"><mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit node"><img src="img/mmbase-edit.gif" alt="edit node" width="21" height="20" border="0" /></a></mm:maywrite></td>
 		  <td nowrap="nowrap"> <mm:function name="gui" /> </td>
-		  <td nowrap="nowrap" align="right"><a href="<mm:url page="edit_relation.jsp">
+		  <td nowrap="nowrap" class="right"><a href="<mm:url page="edit_relation.jsp">
 		  	<mm:param name="nr"><mm:write referid="rel_nr" /></mm:param>
 		  	<mm:param name="ref"><%= nr %></mm:param>
 		  	<mm:param name="ntype"><%= nodeNM.getName() %></mm:param>

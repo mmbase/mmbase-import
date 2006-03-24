@@ -23,18 +23,18 @@
 	<!-- table with back button -->
 	<table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">	
 	<tr>
-	  <td width="24" align="right"><a href="index.jsp?ntype=<%= ntype %>"><img src="img/mmbase-left.gif" alt="go back" width="21" height="20" border="0" /></a></td>
+	  <td width="24" class="right"><a href="index.jsp?ntype=<%= ntype %>"><img src="img/mmbase-left.gif" alt="go back" width="21" height="20" border="0" /></a></td>
 	  <td>To <b><%= ntype %></b> overview</td>
 	</tr>
 	<mm:present referid="nr">
 		<tr>
-		  <td width="24" align="right">
+		  <td width="24" class="right">
 			<a href="relate_object.jsp?nr=<%= nr %>&amp;ntype=<%= ntype %>&amp;rkind=<%= rkind %>&amp;dir=<mm:write referid="dir" />" title="search node for new relation"><img src="img/mmbase-search.gif" alt="search node" width="21" height="20" border="0" /></a>
 		  </td>
 		  <td>Search node of type <b><%= ntype %></b> </td>
 		</tr>
 		<tr>
-		  <td width="24" align="right"><a href="edit_object.jsp?nr=<%= nr %>"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+		  <td width="24" class="right"><a href="edit_object.jsp?nr=<%= nr %>"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
 		  <td><a href="edit_object.jsp?nr=<%= nr %>">Back</a> to editing <mm:node number="<%= nr %>"><mm:nodeinfo type="type" /></mm:node> object</td>
 		</tr>
 		<tr valign="top">
@@ -60,12 +60,12 @@
 		
 		<table border="0" cellspacing="0" cellpadding="3" class="table-form">
 		<tr bgcolor="#CCCCCC">
-		  <td align="center">&nbsp;</td>
+		  <td>&nbsp;</td>
 		  <td class="title-m">New node of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)</td>
 		</tr>
 		<mm:fieldlist nodetype="$ntype" type="edit" id="edit_newnode">
 			<tr valign="top">
-				<td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+				<td class="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
 				<td><mm:fieldinfo type="input" /></td>
 			</tr>
 		</mm:fieldlist>
@@ -74,7 +74,7 @@
 		  <td class="title-m"> <input type="submit" name="save_it" value="Save" /> </td>
 		</tr>
 		<tr valign="top">
-		  <td align="right" class="name">Alias</td>
+		  <td class="name">Alias</td>
 		  <td><input class="small" type="text" name="alias_name" size="32" maxlength="255" /><br />An alias is an optional identifier for a node</td>
 		</tr>
 		</table>
@@ -122,12 +122,12 @@
 <mm:node number="$rnr">
 	<table border="0" cellspacing="0" cellpadding="3" class="table-form">
 	<tr bgcolor="#CCCCCC">
-	  <td align="right" class="title-s">New node</td>
+	  <td class="title-s">New node</td>
 	  <td>
 		<table border="0" width="100%" cellspacing="0" cellpadding="3">
 		<tr>
 		  <td class="title-s"><b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)</td>
-		  <td align="right">
+		  <td class="right">
 			<a href="new_object.jsp?ntype=<%= ntype %>" title="another new node"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a>
 			<mm:maywrite><a href="edit_object.jsp?nr=<mm:field name="number" />" title="edit this node"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></mm:maywrite>
 			<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete this node"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
@@ -138,13 +138,13 @@
 	</tr>
 	<mm:fieldlist type="list">
 		<tr valign="top">
-		  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+		  <td class="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
 		  <td><mm:fieldinfo type="guivalue" />&nbsp;</td>
 		</tr>
 	</mm:fieldlist>
 	<mm:present referid="alias_name">
 		<tr valign="top">
-		  <td align="right" class="name">Alias</td>
+		  <td class="name">Alias</td>
 		  <td><mm:aliaslist id="aliassess"><mm:write /></mm:aliaslist></td>
 		</tr>
 	</mm:present>

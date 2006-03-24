@@ -21,7 +21,7 @@
 	<!-- table with back button -->
 	<table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">	
 	<tr bgcolor="#EFEFEF">
-	  <td width="24" align="right"><a href="<mm:url page="edit_object.jsp" referids="nr" />"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+	  <td width="24" class="right"><a href="<mm:url page="edit_object.jsp" referids="nr" />"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
 	  <td><a href="<mm:url page="edit_object.jsp" referids="nr" />">Back</a> to editing <b><mm:node referid="nr"><mm:nodeinfo type="type" /></mm:node></b> object</td>
 	</tr>
 	<tr valign="top">
@@ -73,23 +73,23 @@
 		<!- table in table -->
 		  <table width="100%" border="0" cellspacing="0" cellpadding="4">
 			<tr>
-			  <td align="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Search object to relate to </td>
 			</tr>
 			<tr>
-			  <td align="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Create new object (and relate) </td>
 			</tr>
 			<tr>
-			  <td align="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="22" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="22" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Create relation </td>
 			</tr>
 			<tr>
-			  <td align="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Edit node </td>
 			</tr>
 			<tr>
-			  <td align="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Delete node </td>
 			</tr>
 		  </table>

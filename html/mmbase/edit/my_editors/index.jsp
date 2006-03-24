@@ -25,7 +25,7 @@ for (int i = 0; i < l.size(); i++) {
  	j++;
  	%>
 	<tr<%if (j % 2 == 0) { %> bgcolor="#FFFFFF"<% } %>>
-	  <td align="right"><b><%= nm.getName() %></b> </td>
+	  <td class="right"><b><%= nm.getName() %></b> </td>
 	  <td><a href="index.jsp?ntype=<%= nm.getName() %>" title="show nodes"><%= guiName %></a></td>
 	  <td nowrap="nowrap"> 
 	  	<a href="index.jsp?ntype=<%= nm.getName() %>" title="show recent nodes"><img src="img/mmbase-search.gif" alt="show recent nodes" width="21" height="20" border="0" /></a>
@@ -59,19 +59,19 @@ for (int i = 0; i < l.size(); i++) {
 <!- table in table -->
   <table width="100%" border="0" cellspacing="0" cellpadding="4">
 	<tr>
-	  <td align="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
+	  <td class="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
 	  <td nowrap="nowrap"> Search node </td>
 	</tr>
 	<tr>
-	  <td align="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
+	  <td class="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
 	  <td nowrap="nowrap"> Create new node </td>
 	</tr>
 	<tr>
-	  <td align="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+	  <td class="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
 	  <td nowrap="nowrap"> Edit node </td>
 	</tr>
 	<tr>
-	  <td align="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
+	  <td class="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
 	  <td nowrap="nowrap"> Delete node </td>
 	</tr>
   </table>
