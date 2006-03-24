@@ -21,7 +21,7 @@ import org.mmbase.util.*;
 
 /**
  * @todo This look a remarkable lot like {@link org.mmbase.util.NodeWriter}. One of them has to go!
- * @version $Id: NodeWriter.java,v 1.5 2005-10-06 14:22:04 michiel Exp $
+ * @version $Id: NodeWriter.java,v 1.6 2006-03-24 13:08:30 nklasens Exp $
  */
 public class NodeWriter{
 
@@ -137,14 +137,14 @@ public class NodeWriter{
                     if (!key.equals("number") && !key.equals("owner")
                             && !key.equals("otype")
                             && !key.equals("snumber") && !key.equals("dnumber")
-                            && !key.equals("rnumber") && !key.equals("dir") && !key.startsWith("_")) {
+                            && !key.equals("rnumber") && !key.equals("dir") && !def.isTemporary()) {
                         write("\t\t<field name=\""+key+"\">"+node.getValue(key)+"</field>\n");
                     }
                 } else {
                     //due to current tcp implementation sometimes nodeField are created
                     //those fiels always start with an underscore. If a node starts with
                     //we skip it
-                    if (!key.startsWith("_")) {
+                    if (!def.isTemporary()) {
                             write(writeXMLField(key, node, directory, mmb));
                     }
                 }

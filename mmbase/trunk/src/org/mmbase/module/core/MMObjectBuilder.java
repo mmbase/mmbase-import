@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.372 2006-03-13 14:30:44 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.373 2006-03-24 13:08:30 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1152,7 +1152,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public boolean checkAddTmpField(String field) {
         if (getDBState(field) == Field.STATE_UNKNOWN) { // means that field is not yet defined.
             CoreField fd = Fields.createField(field, Field.TYPE_STRING, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
-            if (! field.startsWith("_")) {
+            if (! fd.isTemporary()) {
                 fd.setStoragePosition(1000);
                 log.service("Added a virtual field '" + field + "' to builder '" + getTableName() + "' because it was not defined in the builder's XML, but the implementation requires it to exist.");
             } else {
@@ -1498,6 +1498,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             orderedFields = new ArrayList();
             for (Iterator i = fields.values().iterator(); i.hasNext();) {
                 CoreField field = (CoreField)i.next();
+                if (field.isTemporary()) {
+                    continue;
+                }
+                
                 // include only fields which have been assigned a valid position, and are
                 if ((sortOrder == NodeManager.ORDER_NONE) ||
                     ((sortOrder == NodeManager.ORDER_CREATE) && (field.getStoragePosition()>-1)) ||
