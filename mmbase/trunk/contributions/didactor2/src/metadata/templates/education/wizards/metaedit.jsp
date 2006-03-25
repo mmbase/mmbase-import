@@ -187,7 +187,7 @@
                      <%
                      //Header, if error
                      //arliErrors contains all errors
-                     System.out.println("errors=" + arliErrors.size());
+                     //System.out.println("errors=" + arliErrors.size());
                      if(arliErrors.size() > 0)
                      {
                         %>
