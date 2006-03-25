@@ -45,6 +45,9 @@ public class MetaDataHelper {
    }
 
 
+
+
+
    /**
     * Return a HashMap of Constraint objects for all active metadefinitions
     * Pair(MetaDefinition, Constrint);
@@ -66,11 +69,13 @@ public class MetaDataHelper {
     * @param cloud Cloud
     * @return HashMap
     */
-   public static HashMap getConstraints(Node nodeObject) throws Exception{
+   public static HashMap getConstraints(Node nodeObject, Node nodeUser) throws Exception{
+       log.debug("getConstraints() for user(" + nodeUser.getNumber() + ")");
+
        Cloud cloud = nodeObject.getCloud();
        HashMap hashmapResult = new HashMap();
 
-       String sActiveMetaStandarts = getActiveMetastandards(cloud, null, null);
+       String sActiveMetaStandarts = getActiveMetastandards(cloud, null, "" + nodeUser.getNumber());
 
 
        //Old style, fields from MetaDefinition node
@@ -291,9 +296,9 @@ public class MetaDataHelper {
     * @param nodeObject Node
     * @return Error
     */
-   public static ArrayList hasTheObjectValidMetadata(Node nodeObject, ServletContext application) throws Exception{
-
-       HashMap hashmapConstraints = getApplicationConstraints(application, nodeObject);
+   public static ArrayList hasTheObjectValidMetadata(Node nodeObject, ServletContext application, Node nodeUser) throws Exception{
+       log.debug("hasTheObjectValidMetadata() for user(" + nodeUser.getNumber() + ")");
+       HashMap hashmapConstraints = getApplicationConstraints(application, nodeObject, nodeUser);
        ArrayList arliResult = new ArrayList();
 
        for(Iterator it = hashmapConstraints.keySet().iterator(); it.hasNext(); ){
@@ -312,8 +317,10 @@ public class MetaDataHelper {
     * @param session HttpSession
     * @return Error
     */
-   public static ArrayList hasTheMetaDefinitionValidMetadata(Node nodeMetaDefinition, Node nodeObject, ServletContext application) throws Exception{
-       HashMap hashmapConstraints = getApplicationConstraints(application, nodeObject);
+   public static ArrayList hasTheMetaDefinitionValidMetadata(Node nodeMetaDefinition, Node nodeObject, ServletContext application, Node nodeUser) throws Exception{
+       log.debug("---");
+       log.debug("hasTheMetaDefinitionValidMetadata(" + nodeMetaDefinition.getNumber() + ") for user(" + nodeUser.getNumber() + ")");
+       HashMap hashmapConstraints = getApplicationConstraints(application, nodeObject, nodeUser);
        return hasTheObjectValidMetadata(nodeMetaDefinition, nodeObject, hashmapConstraints);
    }
 
@@ -343,7 +350,9 @@ public class MetaDataHelper {
     * @param session HttpSession
     * @return HashMap
     */
-   public static HashMap getApplicationConstraints(ServletContext application, Node nodeObject) throws Exception{
+   public static HashMap getApplicationConstraints(ServletContext application, Node nodeObject, Node nodeUser) throws Exception{
+       log.debug("getApplicationConstraints() for user(" + nodeUser.getNumber() + ")");
+
        String sKey = "metaedit_constraints:" + nodeObject.getNumber();
        HashMap hashmapConstraints;
 
@@ -351,7 +360,7 @@ public class MetaDataHelper {
           hashmapConstraints = (HashMap) application.getAttribute(sKey);
        }
        else{
-          hashmapConstraints = MetaDataHelper.getConstraints(nodeObject);
+          hashmapConstraints = MetaDataHelper.getConstraints(nodeObject, nodeUser);
           application.setAttribute(sKey, hashmapConstraints);
        }
 
@@ -504,36 +513,73 @@ public class MetaDataHelper {
     * @return String Comma separated node list
     */
    public static String getActiveMetastandards(Cloud cloud, String sNode, String sUserID){
-      String sResultSet = new String();
-      MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
-      Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
+       log.debug("getActiveMetastandards() for user(" + sUserID + ")");
+       String sResultSet = new String();
 
-      NodeList nlTopLevelMetaStandarts = cloud.getList("" + nodeRootMetaStandart.getNumber(),
-          "metastandard1,metastandard2",
-          "metastandard2.number",
-          "metastandard2.isused='1'",
-          null,null,null,false);
+       try{
+           NodeList nlWorkgroupMetaStandards = cloud.getList(sUserID,
+               "people,workgroups,metastandard",
+               "workgroups.number,metastandard.number",
+               null,
+               null, null, null, false);
 
+           if(nlWorkgroupMetaStandards.size() > 0){
+               //We have to get user-workgroup-metastandart list instead of "old algorithm"
+               log.debug("getActiveMetastandards(): User(" + sUserID + ") has got group related metastandarts:");
 
-      for(int f = 0; f < nlTopLevelMetaStandarts.size(); f++){
-         Node nodeMetaStandart = cloud.getNode(nlTopLevelMetaStandarts.getNode(f).getStringValue("metastandard2.number"));
-         log.debug("+++" + nodeMetaStandart.getNumber());
+               for(int f = 0; f < nlWorkgroupMetaStandards.size(); f++){
+                   Node nodeGroup = cloud.getNode(nlWorkgroupMetaStandards.getNode(f).getStringValue("workgroups.number"));
+                   Node nodeMetaStandart = cloud.getNode(nlWorkgroupMetaStandards.getNode(f).getStringValue("metastandard.number"));
 
-         GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(nodeMetaStandart), 30, nodeMetaStandart.getNodeManager(), "posrel", "destination");
-         TreeIterator it = tree.treeIterator();
+                   log.debug("group(" + nodeGroup.getNumber() + ") -> " + nodeMetaStandart.getNumber());
 
-         while(it.hasNext()){
-            Node nodeChildMetaStandart = it.nextNode();
-            log.debug(nodeChildMetaStandart.getNumber() + " " + nodeChildMetaStandart.getStringValue("name"));
-            if(sResultSet.length() > 0){
-               sResultSet += ",";
-            }
-            sResultSet += nodeChildMetaStandart.getNumber();
-         }
-      }
-      return sResultSet;
+                   if(sResultSet.length() > 0){
+                       sResultSet += ",";
+                   }
+                   sResultSet += nodeMetaStandart.getNumber();
+               }
+
+               return sResultSet;
+           }
+           else{
+               log.debug("getActiveMetastandards(): workgroups -> metastandard for user(" + sUserID + ") are not found. Old algorithm will be used.");
+           }
+       }
+       catch(NotFoundException e){
+           log.debug("getActiveMetastandards():ERROR! workgroups -> metastandard for user(" + sUserID + ") is:" + e.toString());
+       }
+
+       //The User isn't a member of any workgroups
+       //or workroups have got no related MetaStandards.
+
+       MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
+       Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
+
+       NodeList nlTopLevelMetaStandarts = cloud.getList("" + nodeRootMetaStandart.getNumber(),
+           "metastandard1,metastandard2",
+           "metastandard2.number",
+           "metastandard2.isused='1'",
+           null, null, null, false);
+
+       for(int f = 0; f < nlTopLevelMetaStandarts.size(); f++){
+           Node nodeMetaStandart = cloud.getNode(nlTopLevelMetaStandarts.getNode(f).getStringValue("metastandard2.number"));
+
+           GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(nodeMetaStandart), 30, nodeMetaStandart.getNodeManager(), "posrel", "destination");
+           TreeIterator it = tree.treeIterator();
+
+           while(it.hasNext()){
+               Node nodeChildMetaStandart = it.nextNode();
+               if(sResultSet.length() > 0){
+                   sResultSet += ",";
+               }
+               sResultSet += nodeChildMetaStandart.getNumber();
+           }
+       }
+       return sResultSet;
    }
 
+
+/*
    public static NodeList getActiveMetastandardsNodeList(Cloud cloud, String sNode, String sUserID){
       MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
       Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
@@ -560,45 +606,48 @@ public class MetaDataHelper {
 
       return (NodeList) hsetResult;
    }
-
+*/
 
 
    /**
     * Fills autovalues for any supported object
     * @param nodeObject Node
     */
-   public static void fillAutoValues(Node nodeObject, ServletContext servletContext){
+   public static void fillAutoValues(Node nodeObject, ServletContext servletContext, Node nodeUser){
+       log.debug("--------------fillAutoValues() for user(" + nodeUser.getNumber() + ")--------------");
        // <mm:field name="age()" />
 
-      NodeList nlMetaDefinitions = nodeObject.getCloud().getList(getActiveMetastandards(nodeObject.getCloud(), null, null),
-         "metastandard,metadefinition",
-         "metadefinition.number",
-         null,null,null,null,false);
+       NodeList nlMetaDefinitions = nodeObject.getCloud().getList(getActiveMetastandards(nodeObject.getCloud(), null, "" + nodeUser.getNumber()),
+           "metastandard,metadefinition",
+           "metadefinition.number",
+           null, null, null, null, false);
 
-      for(int f = 0; f < nlMetaDefinitions.size(); f++){
-         Node nodeMetaDefinition = nodeObject.getCloud().getNode(nlMetaDefinitions.getNode(f).getStringValue("metadefinition.number"));
+       for(int f = 0; f < nlMetaDefinitions.size(); f++){
+           Node nodeMetaDefinition = nodeObject.getCloud().getNode(nlMetaDefinitions.getNode(f).getStringValue("metadefinition.number"));
 
-         //Start handler, all exceptions to /dev/null
-         //(in case users enter wrong value we do nothing)
-         String sHandler = nodeMetaDefinition.getStringValue("handler");
-         if ((sHandler != null) && (!"".equals(sHandler))){
-             log.debug("Autofiller(" + sHandler + "), object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber() + " trying to execute...");
-            try{
-               Class classMetaDataHandler = Class.forName("nl.didactor.component.metadata.autofill.handlers." + sHandler);
-               Object[] arrobjParams = {servletContext};
-               HandlerInterface handler = (HandlerInterface) classMetaDataHandler.getConstructors()[0].newInstance(arrobjParams);
+           //Start handler, all exceptions to /dev/null
+           //(in case users enter wrong value we do nothing)
+           String sHandler = nodeMetaDefinition.getStringValue("handler");
+           if((sHandler != null) && (!"".equals(sHandler))){
+               log.debug("Autofiller(" + sHandler + "), object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber() + " trying to execute...");
+               try{
+                   Class classMetaDataHandler = Class.forName("nl.didactor.component.metadata.autofill.handlers." + sHandler);
+                   Object[] arrobjParams = {servletContext};
+                   HandlerInterface handler = (HandlerInterface) classMetaDataHandler.getConstructors()[0].newInstance(arrobjParams);
 
-               if (!handler.checkMetaData(nodeMetaDefinition, nodeObject)){
-                   handler.addMetaData(nodeMetaDefinition, nodeObject);
+                   if(!handler.checkMetaData(nodeMetaDefinition, nodeObject)){
+                       handler.addMetaData(nodeMetaDefinition, nodeObject);
+                   }
+                   log.debug("Autofiller(" + sHandler + ") PASSED, object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber());
                }
-               log.debug("Autofiller(" + sHandler + ") PASSED, object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber());
-            }
-            catch(Exception e){
-               log.debug("Autofiller(" + sHandler + ") ERROR, object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber() + " REASON=" + e.toString());
-            }
-         }
-      }
+               catch(Exception e){
+                   log.debug("Autofiller(" + sHandler + ") ERROR, object=" + nodeObject.getNumber() + "  metadefinition=" + nodeMetaDefinition.getNumber() + " REASON=" + e.toString());
+               }
+           }
+       }
+       log.debug("fillAutoValues() ------------END-----------");
    }
+
 }
 
 
