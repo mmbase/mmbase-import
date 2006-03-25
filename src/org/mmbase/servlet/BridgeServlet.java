@@ -36,12 +36,12 @@ import org.mmbase.util.logging.*;
  * but /img.db). Normally this is no problem, because the alias is resolved by the image-tag. But if
  * for some reason you need aliases to be working on the URL, you must map to URL's with a question mark.
  *
- * @version $Id: BridgeServlet.java,v 1.25 2005-10-17 12:33:59 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.26 2006-03-25 02:32:00 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public abstract class BridgeServlet extends  MMBaseServlet {
-
+    public static final String MESSAGE_ATTRIBUTE = "org.mmbase.servlet.error_message";
 
     /**
      * Pattern used for the 'filename' part of the request. The a node-identifying string may be
@@ -281,6 +281,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
                 HttpServletResponse res = query.getResponse();
                 if (res != null) {
                     res.sendError(HttpServletResponse.SC_NOT_FOUND, "Node '" + nodeNumber + "' does not exist");
+                    query.getRequest().setAttribute(MESSAGE_ATTRIBUTE, "Node '" + nodeNumber + "' does not exist");
                 }
                 return null;
             }
