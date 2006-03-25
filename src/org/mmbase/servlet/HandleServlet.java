@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.25 2006-01-27 18:30:04 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.26 2006-03-25 02:32:00 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -200,6 +200,7 @@ public class HandleServlet extends BridgeServlet {
         NodeManager manager = node.getNodeManager();
         if (! manager.hasField("handle")) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
+            req.setAttribute(MESSAGE_ATTRIBUTE, "No handle found in node " + node.getNumber());
             return;
         }
 
