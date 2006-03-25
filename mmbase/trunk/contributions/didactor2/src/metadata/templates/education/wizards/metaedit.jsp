@@ -142,7 +142,7 @@
                   //------------------------------- Check form -------------------------------
 
                   //List of metadefinitions that must be checked
-                  HashMap hashmapConstraints = MetaDataHelper.getApplicationConstraints(application, cloud.getNode(sNode));
+                  HashMap hashmapConstraints = MetaDataHelper.getApplicationConstraints(application, cloud.getNode(sNode), nl.didactor.security.Authentication.getCurrentUserNode(cloud));
 
 
 
