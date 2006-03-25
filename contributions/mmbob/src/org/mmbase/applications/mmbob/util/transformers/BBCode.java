@@ -167,4 +167,8 @@ public class BBCode {
 	return body;
     }
 
+    public static String encode(String body) {
+        throw new UnsupportedOperationException();
+    }
+
 }
