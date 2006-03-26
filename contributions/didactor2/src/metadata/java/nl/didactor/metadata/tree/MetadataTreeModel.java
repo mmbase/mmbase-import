@@ -56,7 +56,7 @@ public class MetadataTreeModel extends TreeModelAdapter implements TreeModel {
          nl = cloud.getList(p.getStringValue("number"),"metastandard,posrel,metadefinition","metadefinition.number", null, "posrel.pos", "UP", "DESTINATION", true);   
          iChildCount += nl.size();
       } else if(sTypeDef.equals("metadefinition")||sTypeDef.equals("metavocabulary")) {
-         nl = cloud.getList(p.getStringValue("number"),sTypeDef + ",related,metavocabulary1","metavocabulary1.number", null, "metavocabulary1.value", "UP", "DESTINATION", true);
+         nl = cloud.getList(p.getStringValue("number"),sTypeDef + ",posrel,metavocabulary1","metavocabulary1.number", null, "posrel.pos", "UP", "DESTINATION", true);
          iChildCount += nl.size();
       } else {
          log.error("unsupported nodetype in getChildCount for " + sTypeDef + " " + p.getNumber());
@@ -90,7 +90,7 @@ public class MetadataTreeModel extends TreeModelAdapter implements TreeModel {
             }
          }
       } else if(sTypeDef.equals("metadefinition") || sTypeDef.equals("metavocabulary")) {
-         nl = cloud.getList(p.getStringValue("number"),sTypeDef + ",related,metavocabulary1","metavocabulary1.number", null, "metavocabulary1.value", "UP", "DESTINATION", true);
+         nl = cloud.getList(p.getStringValue("number"),sTypeDef + ",posrel,metavocabulary1","metavocabulary1.number", null, "posrel.pos", "UP", "DESTINATION", true);
          if(index<nl.size()) {
             childNode = cloud.getNode(nl.getNode(index).getStringValue("metavocabulary1.number"));
          }
