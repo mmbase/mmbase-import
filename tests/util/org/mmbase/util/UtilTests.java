@@ -32,6 +32,7 @@ public class UtilTests {
         suite.addTestSuite(ResourceLoaderTest.class);
         suite.addTestSuite(EncodeTest.class);
         suite.addTestSuite(DateParserTest.class);
+        suite.addTestSuite(XmlFieldTest.class);
         return suite;
     }
 }
