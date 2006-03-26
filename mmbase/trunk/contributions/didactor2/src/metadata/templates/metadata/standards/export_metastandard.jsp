@@ -92,7 +92,7 @@ String [] metadef_fields = { "name", "description", "type", "required", "maxvalu
 </mm:listnodes>
 <mm:listnodes type="metavocabulary">
    <mm:remove referid="contains_metavocs" />
-   <mm:related path="related,metavocabulary" orderby="metavocabulary.value" directions="UP" searchdir="destination">
+   <mm:related path="posrel,metavocabulary" orderby="posrel.pos" directions="UP" searchdir="destination">
       <mm:import id="contains_metavocs" />
    </mm:related>
    <mm:present referid="contains_metavocs">
@@ -104,7 +104,7 @@ String [] metadef_fields = { "name", "description", "type", "required", "maxvalu
             &lt;%<br/>
             if(true) {<br/>
                String [] metavalues = { 
-               <mm:related path="related,metavocabulary" orderby="metavocabulary.value" directions="UP" searchdir="destination"
+               <mm:related path="posrel,metavocabulary" orderby="posrel.pos" directions="UP" searchdir="destination"
                   > "<mm:field name="metavocabulary.value" />"<mm:last inverse="true">, </mm:last></mm:related>
                };<br/>
                for(int i=0; i&lt;metavalues.length; i++) {<br/>
@@ -113,7 +113,9 @@ String [] metadef_fields = { "name", "description", "type", "required", "maxvalu
                   &lt;mm:createnode type="metavocabulary" id="&lt;%= "n<mm:field name="number" />_" + i %&gt;" &gt;<br/>
                      &lt;mm:setfield name="value"&gt&lt;%=  metavalues[i] %&gt;&lt;/mm:setfield&gt;<br/>
                   &lt;/mm:createnode&gt;<br/>
-                  &lt;mm:createrelation source="n<mm:field name="number" />" destination="&lt;%= "n<mm:field name="number" />_" + i %&gt;" role="related" /&gt;<br/>
+                  &lt;mm:createrelation source="n<mm:field name="number" />" destination="&lt;%= "n<mm:field name="number" />_" + i %&gt;" role="posrel" &gt;<br/>
+                     &lt;mm:setfield name="pos"&gt;&lt;%= i+1 %&gt;&lt;/mm:setfield&gt;<br/>
+                  &lt;/mm:createrelation&gt;<br/>
                &lt;%<br/>
                }<br/>
             }<br/>
