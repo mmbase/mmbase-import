@@ -6,9 +6,9 @@
 
   <action type="load">
     <field name="value" />
-    <relation destinationtype="metavocabulary" role="related" />
+    <relation destinationtype="metavocabulary" role="posrel" />
     <relation destinationtype="metavocabulary" role="constraints" />
-    <relation destinationtype="metadefinition" role="related" />
+    <relation destinationtype="metadefinition" role="posrel" />
   </action>
 
   <action type="create">
@@ -29,7 +29,7 @@
     <title xml:lang="en">Edit Metavocabulary</title>
     <title xml:lang="nl">Metadatawaarde invoeren</title>
     <field name="value" />
-    <list extends="config/metavocabulary/metavocabulary-related-list.xml"/>
+    <list extends="config/metavocabulary/metavocabulary-posrel-list.xml"/>
     <list extends="config/metadefinition/metadefinition-inmetavocabulary.xml"/>
     <list extends="config/metavocabulary/metavocabulary-constraint-list-source.xml"/>
     <list extends="config/metavocabulary/metavocabulary-constraint-list-destination.xml"/>
