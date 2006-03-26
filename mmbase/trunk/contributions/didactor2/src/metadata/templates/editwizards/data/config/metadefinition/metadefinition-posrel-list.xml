@@ -29,7 +29,10 @@
   </item>
 
   <action type="create">
-    <relation destinationtype="metadefinition" role="posrel" />
+      <relation role="posrel">
+         <object type="metadefinition" /> 
+         <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+      </relation>
   </action>
 
   <command name="startwizard" inline="true" wizardname="config/metadefinition/metadefinition" objectnumber="new" />

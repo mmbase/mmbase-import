@@ -6,14 +6,14 @@
 
   <action type="load">
     <field name="value" />
-    <relation destinationtype="metavocabulary" role="related" />
+    <relation destinationtype="metavocabulary" role="posrel" />
     <relation destinationtype="metavocabulary" role="constraints" />
-    <relation destinationtype="metadefinition" role="related" />
+    <relation destinationtype="metadefinition" role="posrel" />
   </action>
 
   <action type="create">
     <object type="metavocabulary">
-      <relation destination="{$origin}" role="related" createdir="source" />
+      <relation destination="{$origin}" role="posrel" createdir="source" />
     </object>
   </action>
 
@@ -31,10 +31,10 @@
     <title xml:lang="nl">Metadatawaarde Invoeren</title>
     <title xml:lang="en">Edit Metavocabulary</title>
     <field name="value" />
-    <list extends="config/metavocabulary/metavocabulary-related-list.xml"/>
+    <list extends="config/metavocabulary/metavocabulary-posrel-list.xml"/>
     <list extends="config/metadefinition/metadefinition-inmetavocabulary.xml"/>
-    <list extends="config/metavocabulary/metavocabulary-constraints-list-source.xml"/>
-    <list extends="config/metavocabulary/metavocabulary-constraints-list-destination.xml"/>
+    <list extends="config/metavocabulary/metavocabulary-constraint-list-source.xml"/>
+    <list extends="config/metavocabulary/metavocabulary-constraint-list-destination.xml"/>
   </form-schema>
 
 </wizard-schema>
