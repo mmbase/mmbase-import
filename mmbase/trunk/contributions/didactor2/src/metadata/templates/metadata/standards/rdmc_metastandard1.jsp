@@ -15,7 +15,7 @@ String [] metadef_type = { "1", "3", "1", "1", "1", "1", "3", "2", "3", "3", "3"
 String [] metadef_required = { "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
 String [] metadef_maxvalues = { "1", "1", "9999", "9999", "9999", "9999", "1", "1", "1", "1", "9999", "1", "1", "1", "10", "3", "1", "1", "1", "1", "1", "1", "9999" };
 String [] metadef_minvalues = { "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
-String [] metadef_handler = { "", "", "", "", "", "", "CreationDate", "", "MimeType", "FileSize", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+String [] metadef_handler = { "", "", "", "", "", "", "CreationDate", "", "MimeType", "FileSize", "StreamingHandler", "", "", "", "", "", "", "", "", "", "", "", "" };
 for(int i=0; i<metadef_name.length; i++) {
 %>
 <mm:createnode type="metadefinition" id="<%= "n1692_" + i %>" >
