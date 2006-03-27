@@ -1,7 +1,7 @@
 ===================================================================
                      MMBase 1.8.0 - Installation
 ===================================================================  
-  
+ 
 MMBase is distributed as a webapplication, it's not packaged as a .war
 file, but the structure is the same. In order to install and get
 MMBase running, you must do the following:
@@ -61,10 +61,11 @@ MMBase running, you must do the following:
     irc: #mmbase at slashnet
 
 
-Some final notes:
-=================
+===================================================================
+                    Additional Installation Notes
+===================================================================  
 
-SECURITY ISSUES:
+MMBASE SECURITY
 ----------------------------------------------------------------------------------
 Check out the <mmbase-webapp/WEB-INF/config/security> dir, to
 customize the security settings. You _SHOULD CHANGE THE ADMIN
@@ -85,10 +86,33 @@ other jsp's. Generally, for a production site, it is best to remove
 all jsp's which are shipped with this distro, besides the ones you are
 planning to actually use. 
 
+
+WEB-APPLICATION POLICY ISSUES
+----------------------------------------------------------------------------------
+Some application servers, such as the Sun Java System Application Server, put restrictions on 
+what web-applications can do. 
+To run MMBase in such web-application servers, you need to give the
+application a number of permisions, including the use of
+Classloaders for the MMBase web-applications, or they won't run.
+In the Sun Java System Application Server you configure this in the
+server.policy configuration file. Add:
+
+// permissions needed for MMBase
+grant {
+        permission java.lang.RuntimePermission  "createClassLoader";
+        permission java.lang.RuntimePermission  "createSecurityManager";
+        permission java.lang.RuntimePermission  "setIO";
+        permission java.net.NetPermission       "specifyStreamHandler";
+        permission java.util.PropertyPermission "java.rmi.server.hostname", "write";
+};
+
+You may want to limit this permission to specific applications.
+Consult your server documentation and the java documentation for the various
+Permission classes for more information.
+
+
+IMAGE MAGICK:
 -----------------------------------------------------------------------------------
-
-
-ImageMagick:
 Imagemagick does work with Windows 98/ME, but MMBase is not able to
 use it. You have to use Jai (Java Advanced Imaging API). You can do
 this by changing the properties in
