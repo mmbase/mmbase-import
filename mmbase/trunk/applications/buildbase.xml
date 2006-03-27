@@ -472,7 +472,8 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
   </target>
 
-  <target name="install" depends="jar,install.templates,install.examples,install.config,install.documentation">
+  <target name="install.dependencies" depends="jar,install.templates,install.examples,install.config,install.documentation" />
+  <target name="install" depends="install.dependencies">
     <copy todir="${release.lib.dir}" preservelastmodified="true" flatten="true">
       <fileset dir="${project.jar.dir}">
         <include name="**/*.jar" />
