@@ -31,6 +31,10 @@ public class RelationsMigrator {
 
       TreeMap tmAllRelations = new TreeMap();
 
+      log.info("treating phaserel.xml");
+      String sPhaserelContent = mmm.readingFile(sFolder + "phaserel.xml");
+      sPhaserelContent = sPhaserelContent.replaceAll("&","&amp;");
+
       log.info("treating discountrel.xml");
       String sDiscountrelContent = mmm.readingFile(sFolder + "discountrel.xml");
       sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<dnumber>"," dnumber=\"");
@@ -249,6 +253,7 @@ public class RelationsMigrator {
       tmAllRelations.put("discountrel", sDiscountrelContent);
       tmAllRelations.put("insrel", sInsrelContent);
       tmAllRelations.put("posrel", sPosrelContent);
+      tmAllRelations.put("phaserel", sPhaserelContent);
       tmAllRelations.put("readmore", sReadmoreContent);
       tmAllRelations.put("rolerel", sRolerelContent);
 
