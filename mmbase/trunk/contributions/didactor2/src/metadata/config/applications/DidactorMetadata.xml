@@ -41,7 +41,7 @@
 
         <relation from="metadata" to="metadefinition" type="related" />
         <relation from="metadata" to="metavalue" type="posrel" />
-
+        <relation from="metastandard" to="metadata" type="related" />
         <relation from="metastandard" to="metastandard" type="posrel" />
         <relation from="metastandard" to="metadefinition" type="posrel" />
         <relation from="metadefinition" to="metadefinition" type="posrel" />
