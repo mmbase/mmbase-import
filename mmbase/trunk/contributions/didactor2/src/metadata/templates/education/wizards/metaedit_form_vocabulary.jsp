@@ -23,25 +23,26 @@ if(sMaxValues.equals("1"))
       </mm:relatednodes>
       <select name="m<mm:field name="number"/>">
           <option><%= MetaDataHelper.EMPTY_VALUE %></option>
-          <mm:relatednodes type="metavocabulary" searchdir="destination" orderby="value">
-             <mm:field name="number" jspvar="sID" vartype="String" write="false">
-                <option name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
-                   <%
-                      if(sSelected.equals(sID))
-                      {
-                         %> selected="selected" <%
-                      }
-                   %>
-                >
-                <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
-                   <mm:node number="$user" jspvar="nodeUser">
-                      <%= MetaDataHelper.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
-                   </mm:node>
+          <mm:related path="posrel,metavocabulary" searchdir="destination" orderby="posrel.pos">
+             <mm:node element="metavocabulary">
+                <mm:field name="number" jspvar="sID" vartype="String" write="false">
+                   <option name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
+                      <%
+                         if(sSelected.equals(sID))
+                         {
+                            %> selected="selected" <%
+                         }
+                      %>
+                   >
+                   <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
+                      <mm:node number="$user" jspvar="nodeUser">
+                         <%= MetaDataHelper.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
+                      </mm:node>
+                   </mm:field>
+                   </option>
                 </mm:field>
-                </option>
-             </mm:field>
-
-          </mm:relatednodes>
+             </mm:node>
+          </mm:related>
       </select>
 
       <%
@@ -75,7 +76,7 @@ else
             }
          %>
       </mm:relatednodes>
-      <mm:related path="metavocabulary" searchdir="destination" orderby="metavocabulary.value">
+      <mm:related path="posrel,metavocabulary" searchdir="destination" orderby="posrel.pos">
          <mm:node element="metavocabulary" jspvar="nodeMetavocabulary">
             <mm:field name="number" jspvar="sID" vartype="String" write="false">
                <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>" checkbox_id="<%= nodeMetavocabulary.getNumber() %>" onClick="switchMetaVocabularyTree(this)"

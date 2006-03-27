@@ -31,7 +31,7 @@
 
    NodeQuery nodeQuery = Queries.createNodeQuery(nodeTemporalRootMetaVocabulary);
 
-   GrowingTreeList tree = new GrowingTreeList(nodeQuery, 30, nodeTemporalRootMetaVocabulary.getNodeManager(), "related", "destination");
+   GrowingTreeList tree = new GrowingTreeList(nodeQuery, 30, nodeTemporalRootMetaVocabulary.getNodeManager(), "posrel", "destination");
    Query query = tree.getTemplate();
 //   query.addSortOrder(new BasicStepField(Step step, new FieldDefs()) , Queries.getSortOrder("UP"));
 
