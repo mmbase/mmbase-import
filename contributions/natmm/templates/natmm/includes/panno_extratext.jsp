@@ -13,7 +13,7 @@ String pannoConstraint = "(panno.embargo < '" + nowSec + "') AND (panno.reageer=
       <tr>
       	<td>
             <mm:field name="titel_fra" jspvar="titel" vartype="String" write="false">
-      	      <mm:isnotempty><span class="boldtitle"><%= titel.toUpperCase() %></span><br></mm:isnotempty>
+      	      <mm:isnotempty><span class="colortitle"><%= titel.toUpperCase() %></span><br></mm:isnotempty>
       		</mm:field>
       		<mm:field name="omschrijving_fra" jspvar="omschrijving" vartype="String" write="false">
                <% if(omschrijving!=null&&!HtmlCleaner.cleanText(omschrijving,"<",">","").trim().equals("")) { 

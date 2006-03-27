@@ -74,7 +74,7 @@
 					<td colspan="2">
                   <%@include file="../page_intro.jsp" %>
       				<logic:equal name="MembershipForm" property="action" value="<%= MembershipForm.correctAction %>">
-      			      <span class="boldtitle">De door u ingevoerde gegevens kunnen niet worden verwerkt:
+      			      <span class="colortitle">De door u ingevoerde gegevens kunnen niet worden verwerkt:
       				      <span style="color:red;"><html:errors bundle="LEOCMS" property="warning"/></span>
       			      </span><br/><br/>
       				</logic:equal>

@@ -23,6 +23,8 @@ int PARENT_LAYOUT = -1;
 int DEFAULT_LAYOUT = 0;
 int SUBSITE1_LAYOUT = 1;
 int SUBSITE2_LAYOUT = 2;
+int SUBSITE3_LAYOUT = 3;
+
 
 // *** default style should be set in top1_params.jsp and new layouts should be added to /editors/rubriek/rubriek.jsp ***
 int PARENT_STYLE = -1;

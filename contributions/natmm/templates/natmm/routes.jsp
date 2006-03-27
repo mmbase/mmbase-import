@@ -128,12 +128,12 @@
       <form action="routes.jsp" method="post" name="route" id="route">
          <input type="hidden" name="p" value="<%=paginaID%>">
          <input type="hidden" name="actie" value="zoek">
-         <span class="boldtitle">Soort route</span><br>
+         <span class="colortitle">Soort route</span><br>
          	&nbsp;<input type="checkbox" name="rt_Wandelroute" value="Wandelroute" <% if((!actie.equals("zoek")) || (rt_w != null)){%>checked<% } %>> Wandelen <br>
          	&nbsp;<input type="checkbox" name="rt_Fietsroute" value="Fietsroute" <% if((!actie.equals("zoek")) || (rt_f != null)){%>checked<% } %>> Fietsen <br>
          	&nbsp;<input type="checkbox" name="rt_Kanoroute" value="Kanoroute" <% if((!actie.equals("zoek")) || (rt_k != null)){%>checked<% } %>> Kanoeen <br>
          <br>
-         <span class="boldtitle">Afstand in kilometers</span><br>
+         <span class="colortitle">Afstand in kilometers</span><br>
          	&nbsp;<input type="checkbox" name="rl_1" value="1" <% if((!actie.equals("zoek")) || (rl_1 != null)){%>checked<% } %>> 0-5 <br>
          	&nbsp;<input type="checkbox" name="rl_2" value="2" <% if(rl_2 != null){%>checked<% } %>> 5-10 <br>
          	&nbsp;<input type="checkbox" name="rl_3" value="3" <% if(rl_3 != null){%>checked<% } %>> 10-15 <br>
@@ -144,7 +144,7 @@
          <table border="0" cellspacing="0" cellpadding="0">
          <tr>
          	<td align="center" valign="top">
-         		<span class="boldtitle">Klik op een provincie:</span><BR>
+         		<span class="colortitle">Klik op een provincie:</span><BR>
          		<table border="0" cellspacing="3" cellpadding="0">
          			<tr><td height="3" colspan="3" background="media/dotline.gif"></td></tr>
          			<tr>
@@ -163,7 +163,7 @@
          </tr>
          </table>
          <br>
-         <span class="boldtitle">Kies een provincie</span><br>
+         <span class="colortitle">Kies een provincie</span><br>
          &nbsp;<select name="prov" style="width:130px" onchange="selectLayer(this.value)">
             <option value="-1">Alle provincies</option>
             <option <%if(provID.equals("prov_gr")){%>selected<% } %> value="prov_gr">Groningen</option>
