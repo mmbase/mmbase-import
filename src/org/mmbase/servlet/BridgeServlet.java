@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * but /img.db). Normally this is no problem, because the alias is resolved by the image-tag. But if
  * for some reason you need aliases to be working on the URL, you must map to URL's with a question mark.
  *
- * @version $Id: BridgeServlet.java,v 1.26 2006-03-25 02:32:00 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.27 2006-03-27 17:46:07 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -50,7 +50,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      */
 
     public static final Pattern FILE_PATTERN = Pattern.compile(".*?\\D((?:session=.*?\\+)?\\d+(?:\\+.+?)?)(/.*)?");
-    // some example captured by this regexp:
+    // some examples captured by this regexp:
     //   /mmbase/images/session=mmbasesession+1234+s(100)/image.jpg
     //   /mmbase/images/1234+s(100)/image.jpg
     //   /mmbase/images/1234/image.jpg
@@ -94,7 +94,9 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             }
             return qp;
         }
-        log.trace("parsing query");
+        if (log.isTraceEnabled()) {
+            log.trace("parsing query ");
+        }
 
         String q = req.getQueryString();
 
@@ -106,15 +108,27 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             }
             String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
 
+            if(log.isDebugEnabled()) {
+                log.debug("using servlet URI " + reqString + " to find node number");
+            }
+
             qp = readServletPath(reqString);
             if (qp == null) {
+                log.debug("Did not match");
                 if(res != null) {
                     res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
                 } else {
                     log.error("Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
                 }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("found " + qp);
+                }
             }
         } else {
+            if(log.isDebugEnabled()) {
+                log.debug("using query " + q + " to find node number");
+            }
             // attachment.db?[session=abc+]number
             qp = readQuery(q);
             if (qp == null && res != null) {
