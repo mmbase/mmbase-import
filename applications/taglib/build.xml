@@ -15,13 +15,13 @@
 
   <target name="dependent.jar"           depends="jar1,jar2" />
   <target name="dependent.package"       depends="dependent.jar,taglib.doc,package" />
-  <target name="dependent.install"       depends="install,dependent.jar,dependent.install.documentation,install.taglib2.tld">
+  <target name="dependent.install"       depends="install.dependencies,dependent.jar,dependent.install.documentation,install.taglib2.tld">    
     <copy file="${taglib2.jar}"          todir="${release.lib.dir}" />
     <!-- web-app 2.3 compatibility
     <copy file="${project.jar}"          todir="${release.lib.dir}" />
     -->
   </target>
-  <target name="dependent.documentation" depends="taglib.doc,documentation" />
+  <target name="dependent.documentation"         depends="taglib.doc,documentation" />
   <target name="dependent.install.documentation" depends="dependent.documentation,install.documentation" />
 
 
