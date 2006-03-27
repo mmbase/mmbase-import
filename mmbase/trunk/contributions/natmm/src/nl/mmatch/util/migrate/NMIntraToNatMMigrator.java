@@ -26,21 +26,6 @@ public class NMIntraToNatMMigrator {
       log.info("NMIntraToNatMMigrator.run()");
       TreeMap tmAllData = new TreeMap();
 
-      log.info("deleting relations between phaserel and contentblocks");
-      String sPhaserelContent = readingFile(sFolder + "phaserel.xml");
-      ArrayList alPhaserel = getNodes(sPhaserelContent);
-
-      String sContentBlocksContent = readingFile(sFolder + "contentblocks.xml");
-      ArrayList alContentBlocks = getNodes(sContentBlocksContent);
-
-      String sEmployeesContent = readingFile(sFolder + "employees.xml");
-      ArrayList alEmployees = getNodes(sEmployeesContent);
-
-      String sReadmoreContent = readingFile(sFolder + "readmore.xml");
-      sReadmoreContent = deletingRelation(alPhaserel,alContentBlocks,sReadmoreContent);
-      sReadmoreContent = deletingRelation(alPhaserel,alEmployees,sReadmoreContent);
-      tmAllData.put("readmore",sReadmoreContent);
-
       log.info("deleting data that we do not want to migrate");
 
       ArrayList alDeletingFiles = new ArrayList();
@@ -51,7 +36,6 @@ public class NMIntraToNatMMigrator {
       alDeletingFiles.add("media.xml");
       alDeletingFiles.add("message.xml");
       alDeletingFiles.add("people.xml");
-      alDeletingFiles.add("phaserel.xml"); //we have to delete them because of installing problems
       alDeletingFiles.add("poll.xml");
       alDeletingFiles.add("typedef.xml"); //is system data
       alDeletingFiles.add("urls.xml"); // doesn't contain any info
@@ -216,6 +200,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("answer","answer:waarde;description:tekst");
       tmRenamingFields.put("article","editors_note:metatags;expiredate:verloopdatum;" +
       "introduction:intro;source:bron;subtitle:titel_fra;title:titel;transmissiondate:embargo");
+      tmRenamingFields.put("attachments","title:titel;description:omschrijving");
       tmRenamingFields.put("companies","name:naam;description:omschrijving");
       tmRenamingFields.put("departments","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizardgroups","name:naam;description:omschrijving");
@@ -237,6 +222,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("rubriek","title:naam;subtitle:naam_eng");
       tmRenamingFields.put("questions","title:label;body:omschrijving_fra;required:verplicht");
       tmRenamingFields.put("site","title:naam");
+      tmRenamingFields.put("style","title:titel;description:omschrijving");
       tmRenamingFields.put("teasers","title:titel;body:omschrijving;expiredate:verloopdatum;" +
       "transmissiondate:embargo");
       tmRenamingFields.put("templates","linktext:naam;description:omschrijving");
