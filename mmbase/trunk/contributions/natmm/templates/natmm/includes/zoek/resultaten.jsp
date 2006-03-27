@@ -144,7 +144,7 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                %></mm:field>
             </mm:relatednodes>
             <a name="<mm:field name="number" />" />
-            <span class="boldtitle"><mm:field name="naam"/></span>
+            <span class="colortitle"><mm:field name="naam"/></span>
             <br/><%
             
             bFirst = true;

@@ -83,7 +83,7 @@ if(!artikelID.equals("-1")) {
             <tr></tr> <!-- do not delete this <tr></tr>, it will ruin the layout -->
             <tr>
                 <td>
-                   <span class="boldtitle"><mm:field name="titel" jspvar="title" vartype="String" write="false"><%= title.replace('.','|') %></mm:field></span>
+                   <span class="colortitle"><mm:field name="titel" jspvar="title" vartype="String" write="false"><%= title.replace('.','|') %></mm:field></span>
                    | <mm:field name="type" />
                 </td>
                 <td align="right" valign="bottom">
@@ -133,7 +133,7 @@ if(!artikelID.equals("-1")) {
                   <mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos">
                      <mm:node element="paragraaf">
                   		<mm:first>
-                  	   	<span class="boldtitle">Inhoud</span> | 
+                  	   	<span class="colortitle">Inhoud</span> | 
                   		</mm:first>
                   		<mm:field name="titel_zichtbaar">
                            <mm:compare value="0" inverse="true">
@@ -156,7 +156,7 @@ if(!artikelID.equals("-1")) {
             			<mm:field name="titel_zichtbaar">
                         <mm:compare value="0" inverse="true">
                   			<mm:field name="titel">
-                  				<mm:isnotempty><span class="boldtitle"><mm:write /></span><br></mm:isnotempty>
+                  				<mm:isnotempty><span class="colortitle"><mm:write /></span><br></mm:isnotempty>
                   			</mm:field>
                   		</mm:compare>
                   	</mm:field>

@@ -9,7 +9,7 @@ localPath = localPath.substring(0,localPath.lastIndexOf("/"));
       <tr>
          <td>
             <table class="dotline"><tr><td height="3"></td></tr></table>
-            <span class="boldtitle">Bedankt voor uw aanmelding.</span><br/><br/>
+            <span class="colortitle">Bedankt voor uw aanmelding.</span><br/><br/>
             U ontvangt een email waarmee u uw aanmelding kunt bevestigen.<br/><br/>
          </td>
       </tr>

@@ -103,7 +103,7 @@
 		<tr>
 			<td width="300">
 			<a href="javascript:showLayerNumber(1)" class="subnav">Omdraaien</a> 
-         <span class="boldtitle">|</span>
+         <span class="colortitle">|</span>
 			<a href="ecard.jsp?p=<%=paginaID%>&d=<%=dossierID%>" class="subnav">Terug naar kaartoverzicht</a></td>
 			<td align="right" width="218"></td>
 		</tr>

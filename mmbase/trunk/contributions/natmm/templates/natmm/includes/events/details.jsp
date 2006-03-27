@@ -70,7 +70,7 @@ String parentID = Evenement.findParentNumber(evenementID);
    %>
    <mm:related path="posrel,deelnemers_categorie" orderby="deelnemers_categorie.naam" orderby="deelnemers_categorie.naam">
       <mm:first>
-         <div style="margin:0px 0px 5px 0px"><span class="boldtitle">Kosten</span>
+         <div style="margin:0px 0px 5px 0px"><span class="colortitle">Kosten</span>
          <table width="100%" border="0" cellpadding="0" cellspacing="0">
       </mm:first>
       <mm:odd>
@@ -113,7 +113,7 @@ String parentID = Evenement.findParentNumber(evenementID);
       </mm:last>
    </mm:related> 
    <mm:related path="posrel,vertrekpunten" fields="vertrekpunten.titel" max="1">
-		<div style="margin:0px 0px 5px 0px"><span class="boldtitle">Vertrekpunt |</span>
+		<div style="margin:0px 0px 5px 0px"><span class="colortitle">Vertrekpunt |</span>
 		<mm:field name="vertrekpunten.titel" />
 		<mm:field name="vertrekpunten.tekst" />
 		</div>
@@ -122,7 +122,7 @@ String parentID = Evenement.findParentNumber(evenementID);
 	</div>
 	<mm:remove referid="afdfound" />
    <mm:related path="readmore,afdelingen" constraints="readmore.readmore='2'">
-      <mm:first><div style="margin:0px 0px 5px 0px"><span class="boldtitle">Aanmelden | </span></mm:first>
+      <mm:first><div style="margin:0px 0px 5px 0px"><span class="colortitle">Aanmelden | </span></mm:first>
       <mm:first inverse="true"><br/><br/></mm:first>
       <mm:field name="afdelingen.naam" 
          /><mm:field name="afdelingen.telefoonnummer"><mm:isnotempty>, <nobr><mm:write /></nobr></mm:isnotempty></mm:field>
@@ -138,7 +138,7 @@ String parentID = Evenement.findParentNumber(evenementID);
          && !nl.leocms.evenementen.Evenement.isFullyBooked(parentEvent,thisEvent)
          && !nl.leocms.evenementen.Evenement.subscriptionClosed(parentEvent,thisEvent);
       if(isBookableEvent) { %>
-         <div style="margin:0px 0px 5px 0px"><span class="boldtitle">Aanmelden via internet | </span><a href="SubscribeInitAction.eb?number=<%= evenementID %>&p=<mm:write referid="p"/>">klik hier</a></div>
+         <div style="margin:0px 0px 5px 0px"><span class="colortitle">Aanmelden via internet | </span><a href="SubscribeInitAction.eb?number=<%= evenementID %>&p=<mm:write referid="p"/>">klik hier</a></div>
       <% } %>
    </mm:node>
    <br/>
@@ -152,7 +152,7 @@ String parentID = Evenement.findParentNumber(evenementID);
       <mm:constraint field="isoninternet" value="true" />
       <mm:relatednodes jspvar="childEvent" orderby="begindatum">
       <mm:first>
-         <div style="margin:0px 0px 5px 0px"><span class="boldtitle">Alle data</span>
+         <div style="margin:0px 0px 5px 0px"><span class="colortitle">Alle data</span>
       	<br/>
          <table width="auto" border="0" cellpadding="0" cellspacing="0">
       </mm:first>

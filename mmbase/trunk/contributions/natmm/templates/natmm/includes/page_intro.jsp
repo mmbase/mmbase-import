@@ -7,9 +7,9 @@
       if(false&&title_choice.equals("0")) { // this option is switched off 09.09.2005
          // no title
       } else if(title_choice.equals("2")) {
-         %><span class="boldtitle"><%= thispage.getStringValue("kortetitel").toUpperCase() %></span><br/><%
+         %><span class="colortitle"><%= thispage.getStringValue("kortetitel").toUpperCase() %></span><br/><%
       } else {
-         %><span class="boldtitle"><%= thispage.getStringValue("titel").toUpperCase() %></span><br/><%
+         %><span class="colortitle"><%= thispage.getStringValue("titel").toUpperCase() %></span><br/><%
       }
    %>
    <mm:notpresent referid="nopage_description">

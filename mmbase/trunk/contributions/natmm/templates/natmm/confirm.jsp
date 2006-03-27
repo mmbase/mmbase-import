@@ -86,7 +86,7 @@ if(request.getParameter("memberid")!=null) {
             </mm:notpresent>
          	<td style="vertical-align:top;width:374px;padding:10px;padding-top:0px;">
                <mm:relatednodes type="formulier" max="1" jspvar="thisForm">
-                  <span class="boldtitle"><mm:field name="titel_fra" /></span><br/>
+                  <span class="colortitle"><mm:field name="titel_fra" /></span><br/>
                   <div style="margin:9px 0px 0px 0px"><mm:field name="omschrijving_fra" /></div>
                   <br/>
                </mm:relatednodes>

@@ -36,7 +36,10 @@ if(shortyCnt!=1) {
 // tX, tY, bX, bY
 String panoTemplate = "s(744)+part(0,0,744,138)";  // only part(..) gives problem with lots of small images
 int pHeight = 138;
-if(iRubriekLayout!=DEFAULT_LAYOUT) {
+if(iRubriekLayout!=SUBSITE3_LAYOUT) {
+   panoTemplate = "part(0,0,744,398)"; 
+   pHeight = 398;
+} else if(iRubriekLayout!=DEFAULT_LAYOUT) {
    panoTemplate = "s(744)+part(0,0,744,75)";
    pHeight = 75;
 } else if(path.equals("index.jsp")) {

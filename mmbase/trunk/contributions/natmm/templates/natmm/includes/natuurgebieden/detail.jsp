@@ -15,7 +15,7 @@ if(artikelID != null) {
 	<td style="vertical-align:top;padding-right:10px;width:374px;">
    	<% if(!natuurgebiedID.equals("-1")){%>
    		<mm:node number="<%=natuurgebiedID%>">
-   			<span class="boldtitle"><mm:field name="naam" /></span><br>
+   			<span class="colortitle"><mm:field name="naam" /></span><br>
    			<jsp:include page="../includes/panno_extratext.jsp">
                <jsp:param name="o" value="<%= natuurgebiedID %>" />
             </jsp:include>
@@ -41,7 +41,7 @@ if(artikelID != null) {
 		<mm:list nodes="<%=natuurgebiedID%>" fields="natuurgebieden.naam,artikel.titel,artikel.number" orderby="posrel.pos">
 				<mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
 				<mm:first>
-					<span class="boldtitle">Meer over <mm:field name="natuurgebieden.naam" /></span><br>
+					<span class="colortitle">Meer over <mm:field name="natuurgebieden.naam" /></span><br>
 					<table width="100%" cellspacing="0" cellpadding="0">
 					<tr>
 						<td height="1" class="leftnavline"><img src="media/trans.gif" width="185" height="1" vspace="0" border="0" alt=""></td>
@@ -81,7 +81,7 @@ if(artikelID != null) {
          %><mm:list nodes="<%= thisEvents.substring(1,thisEvents.length()-1) %>" path="evenement,related,evenement_type" 
             fields="evenement_type.number" distinct="true" orderby="evenement_type.naam">
 				<mm:first>
-					<span class="boldtitle">Activiteiten</span><br>
+					<span class="colortitle">Activiteiten</span><br>
 					<ul>
 				</mm:first>
 				<mm:node element="evenement_type">
@@ -98,7 +98,7 @@ if(artikelID != null) {
 		<mm:list nodes="<%=natuurgebiedID%>" path="natuurgebieden,rolerel,artikel"
 		          fields="artikel.number" distinct="true" orderby="artikel.titel">
 				<mm:first>
-					<span class="boldtitle">Routes</span><br>
+					<span class="colortitle">Routes</span><br>
 					<ul>
 				</mm:first>
 						<li><a href="routes.jsp?natuurgebied=<%=natuurgebiedID%>">
@@ -119,7 +119,7 @@ if(artikelID != null) {
       <mm:listcontainer path="natuurgebieden,readmore,teaser">
    		<mm:list nodes="<%=natuurgebiedID%>" fields="teaser.number,teaser.titel"  max="<%=String.valueOf(maxShorties)%>" orderby="readmore.pos">
    			<mm:first>
-   			<span class="boldtitle">In de buurt</span><br>
+   			<span class="colortitle">In de buurt</span><br>
    			</mm:first>
    			<mm:field name="teaser.number" write="false" jspvar="teaser_number" vartype="String">
    			<%  shortyID[shortyCnt] = teaser_number;
@@ -155,7 +155,7 @@ if(artikelID != null) {
       <mm:list nodes="<%=natuurgebiedID%>" path="natuurgebieden,readmore,paragraaf" fields="paragraaf.titel,paragraaf.tekst,readmore.readmore"
          constraints="readmore.readmore='OppLig'">
 			<mm:first>
-				<span class="boldtitle">In het kort</span><br>
+				<span class="colortitle">In het kort</span><br>
 				<table width="100%" cellspacing="0" cellpadding="0">
             <% parFound = true; %>
 			</mm:first>
@@ -166,7 +166,7 @@ if(artikelID != null) {
          orderby="readmore.pos,readmore.readmore" constraints="readmore.readmore!='OppLig'">
 			<mm:first>
 		      <% if(!parFound) { %>
-				   <span class="boldtitle">In het kort</span><br>
+				   <span class="colortitle">In het kort</span><br>
 				   <table width="100%" cellspacing="0" cellpadding="0">
             <% parFound = true;
             } %>

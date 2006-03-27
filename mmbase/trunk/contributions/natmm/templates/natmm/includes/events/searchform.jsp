@@ -4,7 +4,7 @@
 <%@include file="../../includes/calendar.jsp" %>
 <%@include file="../../includes/time.jsp" %>
 <%@include file="selecteddateandtype.jsp" %>
-<span class="boldtitle">Selecteer een periode</span>
+<span class="colortitle">Selecteer een periode</span>
 <form name="eventForm" action="events.jsp" method="post">
    <input type="hidden" name="p" value="<%=paginaID%>"/>
    <input type="hidden" name="offset" value="0"/>
@@ -55,7 +55,7 @@
    </nobr>
    <br/><br/>
    <!-- Show list of all activity types -->
-   <span class="boldtitle">Soort activiteit</span>
+   <span class="colortitle">Soort activiteit</span>
    <br/>
 
    <script>
@@ -89,7 +89,7 @@
 <% 
    // ** Show list of provinces
    if(selectedNatuurgebieden.equals("")) { // ** don't show the provincie dropdown if a natuurgebied is selected
-      %><span class="boldtitle">Kies een provincie</span>
+      %><span class="colortitle">Kies een provincie</span>
       <br/>
       <select name="prov" style="width:100%" onchange="javascript:setOptionsN(document.eventForm.prov.options[document.eventForm.prov.selectedIndex].value);">
          <option value="-1"<% 
@@ -121,7 +121,7 @@
          </mm:list>
          <% 
       } %>
-      <span class="boldtitle">Kies een natuurgebied</span>
+      <span class="colortitle">Kies een natuurgebied</span>
       <br/>
       <select name="n" style="width:100%"  onchange="javascript:setSelectedProv(document.eventForm.n.options[document.eventForm.n.selectedIndex].value);">
          <option value="-1"<% 

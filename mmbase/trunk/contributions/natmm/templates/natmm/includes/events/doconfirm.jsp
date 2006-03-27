@@ -31,7 +31,7 @@ if(confirmID!=null){
 %>
 
 <body style="overflow:auto;">
-   <span class="boldtitle">Bevestiging van uw aanmelding.</span><br/><br/>
+   <span class="colortitle">Bevestiging van uw aanmelding.</span><br/><br/>
    <% if(subscriptionConfirmed) { %>
       Uw aanmelding is bevestigd. U ontvangt hiervan een afschrift per email.
    <% } else { %>

@@ -10,7 +10,7 @@ String objectID = request.getParameter("o");
 	<mm:field name="dossier.number" jspvar="dossier_number" vartype="String" write="false">
 	<mm:field name="dossier.naam" jspvar="dossier_naam" vartype="String" write="false">
 	<mm:first inverse="true"><br/></mm:first>
-	<span class="boldtitle">
+	<span class="colortitle">
    	<% readmoreURL = ""; %>
    	<mm:list nodes="<%=dossier_number%>" path="dossier,readmore,pagina,gebruikt,paginatemplate"
    	      fields="paginatemplate.url,pagina.number"  max="1">

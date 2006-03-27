@@ -6,7 +6,7 @@
    <mm:field name="firstname">
       <mm:import id="pers_first_name" reset="true"><mm:write/></mm:import>
    </mm:field>
-   <span class="boldtitle">
+   <span class="colortitle">
    <mm:field name="titel_fra">
       <mm:isnotempty>
          <mm:write/>

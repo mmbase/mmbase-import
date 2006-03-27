@@ -20,7 +20,7 @@
    <mm:field name="titel_zichtbaar">
       <mm:compare value="0" inverse="true">
 	      <mm:field name="titel">
-			   <mm:isnotempty><span class="boldtitle"><mm:write /></span><br></mm:isnotempty>
+			   <mm:isnotempty><span class="colortitle"><mm:write /></span><br></mm:isnotempty>
 		   </mm:field>
 	   </mm:compare>
 	</mm:field> 

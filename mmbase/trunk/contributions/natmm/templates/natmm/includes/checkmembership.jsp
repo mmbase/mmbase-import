@@ -45,13 +45,13 @@ if(isMember) {
                            thisForm.getStringValue("emailonderwerp") : submitButton);
       %></mm:relatednodes>
       
-      <span class="boldtitle"><%= messageTitle %></span><br/>
+      <span class="colortitle"><%= messageTitle %></span><br/>
       <div style="margin:9px 0px 0px 0px">
          <%= messageText %><br/>
          Vul uw postcode en lidmaatschapsnummer in. Van het lidmaatschapsnummer 
          hoeft u alleen de cijfers in te vullen. Klik vervolgens op "<%= submitButton.substring(0,1).toUpperCase() + submitButton.substring(1).toLowerCase() %>".
          <% if(!memberID.equals("") || !zipCode.equals("")) { %>
-      	   <span class="boldtitle" style="color:red;">
+      	   <span class="colortitle" style="color:red;">
                <%
       	      if(!zipCodeMessage.equals("")) { 
       	         %><bean:message bundle="LEOCMS" key="<%= zipCodeMessage %>" /><% 
