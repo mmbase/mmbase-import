@@ -91,7 +91,7 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
          	   %><mm:node number="<%= paginaID %>" jspvar="thispage">
                   <mm:field name="kortetitel">
                      <mm:isnotempty>
-                        <span class="boldtitle"><%= thispage.getStringValue("kortetitel").toUpperCase() %></span><br/>
+                        <span class="colortitle"><%= thispage.getStringValue("kortetitel").toUpperCase() %></span><br/>
                      </mm:isnotempty>
                   </mm:field>
                   <mm:field name="omschrijving">

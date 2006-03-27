@@ -34,7 +34,7 @@ int ti = 1;
 <mm:node number="<%= parent_number %>" jspvar="parentEvent">
    <table style="width:559px;margin-bottom:10px;" border="0">
       <tr>
-         <td colspan="2" style="width:80%;"><span class="boldtitle">Aanmelden voor: <mm:field name="titel" /></span></td>
+         <td colspan="2" style="width:80%;"><span class="colortitle">Aanmelden voor: <mm:field name="titel" /></span></td>
          <td style="text-align:right;padding-right:19px;"><html:submit property="action" value="<%= SubscribeForm.TO_AGENDA_ACTION %>" styleClass="submit_image" style="width:150px;" /></td>
       </tr>
       <tr>
@@ -155,7 +155,7 @@ int ti = 1;
    <br/>
    <bean:define id="actionid" property="action" name="SubscribeForm" scope="session" type="java.lang.String"/>
    <% if(!actionid.equals("startsubscription")) { %> 
-       <span class="boldtitle">De door u ingevoerde gegevens kunnen niet worden verwerkt:
+       <span class="colortitle">De door u ingevoerde gegevens kunnen niet worden verwerkt:
        <html:errors bundle="LEOCMS" property="warning"/>
        </span><br/><br/>
    <% } %>

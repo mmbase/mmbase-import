@@ -26,7 +26,7 @@ boolean showNextDotLine = false;
 		<mm:field name="titel_zichtbaar"
          ><mm:compare value="0" inverse="true"
             ><mm:field name="titel" jspvar="titel" vartype="String" write="false"
-               ><mm:isnotempty><span class="boldtitle"><%= titel.toUpperCase() %></span><br></mm:isnotempty
+               ><mm:isnotempty><span class="colortitle"><%= titel.toUpperCase() %></span><br></mm:isnotempty
             ></mm:field
          ></mm:compare
       ></mm:field><%

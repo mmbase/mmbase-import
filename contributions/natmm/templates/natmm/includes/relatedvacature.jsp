@@ -21,7 +21,7 @@ al.add("omschrijving_eng");
 <%@include file="../includes/calendar.jsp" %>
 <mm:cloud>
 <mm:node number="<%= vacatureID %>">
-<span class="boldtitle"><mm:field name="titel"/></span><br/>
+<span class="colortitle"><mm:field name="titel"/></span><br/>
 <table class="dotline"><tr><td height="3"></td></tr></table>
 <mm:field name="verloopdatum" jspvar="verloopdatum" vartype="Long" write="false">
 <% 
@@ -43,7 +43,7 @@ if(verloopdatum.longValue()<nowSec) {
                      %>
    						<mm:fieldlist fields="<%= sElem %>">
    							<td valign="top">
-   								<span class="boldtitle">
+   								<span class="colortitle">
                               <% if(sElem.equals("embargo")) { %>
                                  Gepubliceerd&nbsp;op
                               <% } else if(sElem.equals("verloopdatum")) { %>
@@ -81,7 +81,7 @@ if(verloopdatum.longValue()<nowSec) {
          <mm:first>
             <tr>
          		<td valign="top">
-         			<span class="boldtitle">Functieprofiel</span>
+         			<span class="colortitle">Functieprofiel</span>
          		</td>
          		<td valign="top">	
          			&nbsp;&nbsp;|&nbsp;&nbsp;

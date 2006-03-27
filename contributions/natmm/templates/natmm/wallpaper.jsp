@@ -53,7 +53,7 @@ if(imgID.equals("-1")){
 					<tr>
 						<td width="7"></td>
 						<td align="left" style="font-family:Arial;font-size:70%;">
-							<span class="boldtitle">Wallpaper</span>
+							<span class="colortitle">Wallpaper</span>
 						</td>
 						<td width="105" align="right"><a href="javascript:window.close()"><img src="media/close_fun.gif" border="0"></a>
 						</td>

@@ -31,7 +31,7 @@ localPath = localPath.substring(0,localPath.lastIndexOf("/"));
    <table cellspacing="0" cellpadding="0" border="0" style="width:100%;">
 		<tr>
 			<td colspan="2">
-				<span class="boldtitle"><bean:message bundle="LEOCMS" key="membershipform.confirm.header" /></span>
+				<span class="colortitle"><bean:message bundle="LEOCMS" key="membershipform.confirm.header" /></span>
 			</td>
 		</tr>
 		<tr><td colspan="2" style="height:5px;"></td></tr>

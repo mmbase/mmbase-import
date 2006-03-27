@@ -86,7 +86,7 @@
          	<table width="100%" border="0" cellspacing="0" cellpadding="0">
          	<tr>
          		<td align="center" valign="top">
-         			<span class="boldtitle">Klik op een provincie:</span><br><br>
+         			<span class="colortitle">Klik op een provincie:</span><br><br>
          			<table border="0" cellspacing="3" cellpadding="0">
          				<tr><td height="3" colspan="3" background="media/dotline.gif"></td></tr>
          				<tr>
