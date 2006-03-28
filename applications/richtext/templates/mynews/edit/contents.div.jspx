@@ -9,6 +9,7 @@
 
   <mm:content type="application/xml">
     <mm:cloud rank="basic user" jspvar="cloud">
+      <h1>Contents</h1>
       <mm:import externid="home">my.rich.magazine</mm:import>
       <mm:node number="$home" >
         <mm:relatednodes  id="supercat" type="categories" role="posrel" orderby="posrel.pos">
