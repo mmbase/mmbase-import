@@ -87,7 +87,7 @@ if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNo
 hsetArtDossierNodes = addPages(cloud, log, cf, luceneQuery, 0, "artikel,posrel,dossier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>artByDossierHits:<br/><%= hsetArtDossierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetNatuurgebiedenNodes = addPages(cloud, log, cf, luceneQuery, 1, "natuurgebieden,posrel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetNatuurgebiedenNodes = addPages(cloud, log, cf, luceneQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
 
 hsetFormulierNodes = addPages(cloud, log, cf, luceneQuery, 2, "formulier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
