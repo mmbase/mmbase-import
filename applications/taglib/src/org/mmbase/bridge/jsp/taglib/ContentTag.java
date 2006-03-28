@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.51 2006-03-18 08:00:01 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.52 2006-03-28 22:50:33 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -487,6 +487,7 @@ public class ContentTag extends LocaleTag  {
         setWriteEscaper();
         String type = getType();
 
+        addedCacheHeaders = false;
         if (! type.equals("")) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -517,6 +518,7 @@ public class ContentTag extends LocaleTag  {
             return EVAL_BODY_BUFFERED;
         }
     }
+    private boolean addedCacheHeaders = false;
 
     /**
      * The code first sets the Expires header to a date in the
@@ -532,28 +534,33 @@ public class ContentTag extends LocaleTag  {
      * @param response - http response
      * @param expire - seconds before content should expire
      */
-    public static void addNoCacheHeaders(HttpServletResponse response, long expire) {
-         if (expire <= 0) {
-             // Add some header to make sure these pages are not cached anywhere.
-             // Set standard HTTP/1.1 no-cache headers.
-             response.setHeader("Cache-Control","no-cache, no-store, must-revalidate, proxy-revalidate");
-             // Set IE extended HTTP/1.1 no-cache headers
-             response.addHeader("Cache-Control", "post-check=0, pre-check=0");
-             // Set standard HTTP/1.0 no-cache header.
-             response.setHeader("Pragma", "no-cache");
-             response.setDateHeader ("Expires", -1);
+    protected void addNoCacheHeaders(HttpServletResponse response, long expire) {
+        if (! response.containsHeader("Cache-Control")) {
+            if (expire <= 0) {
+                // Add some header to make sure these pages are not cached anywhere.
+                // Set standard HTTP/1.1 no-cache headers.
+                response.setHeader("Cache-Control","no-cache, no-store, must-revalidate, proxy-revalidate");
+                // Set IE extended HTTP/1.1 no-cache headers
+                response.addHeader("Cache-Control", "post-check=0, pre-check=0");
+                // Set standard HTTP/1.0 no-cache header.
+                response.setHeader("Pragma", "no-cache");
+                response.setDateHeader ("Expires", -1);
 
-             // long now = System.currentTimeMillis();
-             // according to  rfc2616 sec14 'already expires' means that date-header is expires header
-             // sadly, this does not work:
-             // perhaps because tomcat overrides the date header later, so a difference of a second can occur
-             // response.setDateHeader("Date",     now);
-         }
-         else {
-             // calc the string in GMT not localtime and add the offset
-             response.setDateHeader ("Expires", System.currentTimeMillis() + (expire * 1000));
-             response.setHeader("Cache-Control", "public");
-         }
+                // long now = System.currentTimeMillis();
+                // according to  rfc2616 sec14 'already expires' means that date-header is expires header
+                // sadly, this does not work:
+                // perhaps because tomcat overrides the date header later, so a difference of a second can occur
+                // response.setDateHeader("Date",     now);
+            }
+            else {
+                // calc the string in GMT not localtime and add the offset
+                response.setDateHeader ("Expires", System.currentTimeMillis() + (expire * 1000));
+                response.setHeader("Cache-Control", "public");
+            }
+            addedCacheHeaders = true;
+        } else {
+            addedCacheHeaders = false;
+        }
     }
 
     public int doEndTag() throws JspTagException {
@@ -567,13 +574,16 @@ public class ContentTag extends LocaleTag  {
      */
 
     void setUser(UserContext newUser) throws JspTagException {
-        //user = newUser;
-        if (newUser != null) {
-            long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
-            if (exp > 0) {
-                HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-                // This page is using the non-anonymous cloud. Cache control must be private.
-                response.setHeader("Cache-Control", "private");
+        if (addedCacheHeaders) {
+            if (newUser != null) {
+                long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
+                if (exp > 0) {
+                    HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+                    if (! response.containsHeader("Cache-Control")) {
+                        // This page is using the non-anonymous cloud. Cache control must be private.
+                        response.setHeader("Cache-Control", "private");
+                    }
+                }
             }
         }
     }
