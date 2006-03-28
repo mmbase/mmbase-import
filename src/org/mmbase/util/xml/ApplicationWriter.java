@@ -16,6 +16,7 @@ import org.w3c.dom.*;
 import javax.xml.transform.TransformerException;
 
 import org.mmbase.module.core.*;
+import org.mmbase.model.*;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +28,7 @@ import org.mmbase.util.*;
  * @javadoc
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
  * @author DAniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.3 2005-10-05 10:09:05 michiel Exp $
+ * @version $Id: ApplicationWriter.java,v 1.4 2006-03-28 17:49:36 daniel Exp $
  */
 public class ApplicationWriter extends DocumentWriter  {
 
@@ -43,7 +44,7 @@ public class ApplicationWriter extends DocumentWriter  {
      * @param mmbase the mmbase instance to get the application data from
      */
     public ApplicationWriter(ApplicationReader reader, MMBase mmbase) throws DOMException {
-        super("module", ApplicationReader.PUBLIC_ID_APPLICATION,
+        super("application", ApplicationReader.PUBLIC_ID_APPLICATION,
                         XMLEntityResolver.DOMAIN + XMLEntityResolver.DTD_SUBPATH + ApplicationReader.DTD_APPLICATION);
         this.reader = reader;
         this.mmbase = mmbase;
@@ -197,7 +198,11 @@ public class ApplicationWriter extends DocumentWriter  {
      * @throws SearchQueryException if data could not be obtained from the database
      */
     public void writeToPath(String targetPath, Logger logger) throws IOException, TransformerException, SearchQueryException {
-        writeToFile(targetPath + "/" + reader.getName() + ".xml");
+        //writeToFile(targetPath + "/" + reader.getName() + ".xml");
+	CloudModel cm = ModelsManager.getModel(reader.getName());
+	log.info("CMW="+cm);
+        if (cm!=null) cm.writeToFile(targetPath + "/" + reader.getName() + ".xml");
+
         // now the tricky part starts figure out what nodes to write
         writeDateSources(targetPath, logger);
         // now write the context files itself
@@ -245,6 +250,9 @@ public class ApplicationWriter extends DocumentWriter  {
         // create the dir for the Data & resource files
         File file = new File(targetPath + "/" + reader.getName() + "/builders");
         file.mkdirs();
+	// get the default model.
+	CloudModel cm = ModelsManager.getModel("default");
+	log.info("CM="+cm);
         List builders = reader.getNeededBuilders();
         for (Iterator i = builders.iterator(); i.hasNext();) {
             Map bset = (Map)i.next();
@@ -252,10 +260,15 @@ public class ApplicationWriter extends DocumentWriter  {
             MMObjectBuilder builder = mmbase.getBuilder(name);
             if (builder != null) {
                 logger.info("save builder : " + name);
+		CloudModelBuilder cmb = cm.getModelBuilder(name);
+		cmb.writeToFile(targetPath + "/" + reader.getName() + "/builders/" + name + ".xml");
+		
+		/*
                 BuilderWriter builderOut = new BuilderWriter(builder);
                 builderOut.setIncludeComments(includeComments());
                 builderOut.setExpandBuilder(false);
                 builderOut.writeToFile(targetPath + "/" + reader.getName() + "/builders/" + name + ".xml");
+		*/
             }
         }
     }

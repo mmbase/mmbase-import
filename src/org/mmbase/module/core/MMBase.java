@@ -22,6 +22,7 @@ import org.mmbase.module.builders.Versions;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.*;
+import org.mmbase.model.*;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.util.ResourceLoader;
@@ -45,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.188 2006-03-24 15:50:29 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.189 2006-03-28 17:51:24 daniel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -136,6 +137,8 @@ public class MMBase extends ProcessorModule {
      * A collection of builders from this map can be accessed by calling {@link #getBuilders}
      */
     private Map mmobjs = new ConcurrentHashMap();
+
+    private CloudModel cm;
 
     /**
      * Name of the machine used in the mmbase cluster.
@@ -329,7 +332,10 @@ public class MMBase extends ProcessorModule {
 
         mmbaseState = STATE_LOAD;
 
+
         log.debug("Loading builders:");
+
+	cm = ModelsManager.addModel("default","default.xml");
 
         loadBuilders();
 
@@ -811,9 +817,6 @@ public class MMBase extends ProcessorModule {
         typeRel = (TypeRel) loadCoreBuilder("typerel");
 
 
-
-
-
         try {
             oAlias = (OAlias)loadBuilder("oalias");
         } catch (BuilderConfigurationException e) {
@@ -832,6 +835,7 @@ public class MMBase extends ProcessorModule {
             }
             String builderXml  = (String) i.next();
             loadBuilderFromXML(ResourceLoader.getName(builderXml), ResourceLoader.getDirectory(builderXml) + "/");
+	    if (cm!=null) cm.addBuilder(ResourceLoader.getName(builderXml),"builders/"+ResourceLoader.getDirectory(builderXml) + "/" + ResourceLoader.getName(builderXml) + ".xml");
         }
 
         log.debug("Starting Cluster Builder");
@@ -1018,6 +1022,7 @@ public class MMBase extends ProcessorModule {
         }
         String path = getBuilderPath(builderName, ipath);
         if (path != null) {
+	    if (cm!=null) cm.addBuilder(builderName,path+builderName+".xml");
             return loadBuilderFromXML(builderName, path);
         } else {
             log.error("Cannot find specified builder " + builderName);
