@@ -26,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.16 2005-06-22 19:24:40 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.17 2006-03-28 20:32:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
     private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
-    
+
     private Set parentCheckedKeys = new HashSet();
 
     public ContextCollector(ContextProvider p) throws JspTagException {
@@ -57,13 +57,13 @@ public class  ContextCollector extends StandaloneContextContainer {
     public void unRegister(String key) throws JspTagException {
         super.unRegister(key);
         parent.unRegister(key);
-        
+
     }
     protected void register(String newid, Object n, boolean check, boolean checkParent) throws JspTagException {
         if (! check) {
             parent.unRegister(newid);
         }
-        super.register(newid, n, check, checkParent);        
+        super.register(newid, n, check, checkParent);
 
     }
 
@@ -76,7 +76,7 @@ public class  ContextCollector extends StandaloneContextContainer {
 
 
 
-    public void doAfterBody() throws JspTagException { 
+    public void doAfterBody() throws JspTagException {
         clear();
     }
 
