@@ -47,11 +47,11 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.14 2006-03-15 02:21:04 michiel Exp $
+ * @version $Id: EditTag.java,v 1.15 2006-03-28 22:33:06 michiel Exp $
  * @see Editor, BasicEditor, YAMMEditor
  * @since MMBase-1.8
  */
-public class EditTag extends ContextReferrerTag implements ParamHandler {
+public class EditTag extends CloudReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
     private static final Map edittagTypes = new HashMap();      // edittagtype -> editordefinition
@@ -203,8 +203,6 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
      *
      */
     public int doEndTag() throws JspTagException {
-        // I don't see the point of the arguments.
-        editor.registerFields(editor.queryList, editor.nodenrList, editor.fieldList);
 
         fillStandardParameters(editor.parameters);
         editor.parameters.checkRequiredParameters();
@@ -265,10 +263,6 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
                         String className = DocumentReader.getNodeTextValue(childElement);
                         c = Class.forName(className);
                     }  else if (childElement.getLocalName().equals("param")) {
-                        if (c  == null) {
-                            log.error("Parameters used before class in " + XMLWriter.write(element, true));
-                            continue;
-                        }
                         String name = childElement.getAttribute("name");
                         String value = DocumentReader.getNodeTextValue(childElement);
                         if (params.put(name, value) != null) {
@@ -291,8 +285,10 @@ public class EditTag extends ContextReferrerTag implements ParamHandler {
             } catch (IllegalAccessException iae) {
                 log.error("IllegalAccessException instantiating class " + clazz+ "': " + iae);
             }
-            Parameters editorParams = res.getParameters();
-            editorParams.setAll(params);
+            if (res != null && params.size() > 0) {
+                Parameters editorParams = res.getParameters();
+                editorParams.setAll(params);
+            }
             return res;
         }
     }
