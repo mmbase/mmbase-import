@@ -30,7 +30,7 @@ if(rubriekExists&&pageExists) {
      %>
      <table cellspacing="0" cellpadding="0" width="744" align="center" border="0" valign="top">
        <tr>
-         <td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:10px">
+         <td style="padding:10px 0px 10px 10px;vertical-align:top">
            <table class="dotline"><tr><td height="3"></td></tr></table>
            <table cellspacing="0" cellpadding="0" border="0" valign="top">
                <tr>
@@ -53,17 +53,17 @@ if(rubriekExists&&pageExists) {
              </tr>
            </table>
          </td>
-      	<td style="vertical-align:top;width:100%;padding-left:10px;padding-right:10px;text-align:right;">
+      	 <td style="vertical-align:top;width:100%;padding:10px 10px 10px 10px;text-align:right;">
       	   <jsp:include page="includes/artikel_12_column.jsp">
-               <jsp:param name="r" value="<%= rubriekID %>" />
-               <jsp:param name="rs" value="<%= styleSheet %>" />
-               <jsp:param name="lnr" value="<%= lnRubriekID %>" />
-               <jsp:param name="rnimageid" value="<%= rnImageID %>" />
-               <jsp:param name="p" value="<%= paginaID %>" />
-               <jsp:param name="a" value="<%= artikelID %>" />
-               <jsp:param name="showpageintro" value="true" />
-            </jsp:include>
-      	</td>
+             <jsp:param name="r" value="<%= rubriekID %>" />
+             <jsp:param name="rs" value="<%= styleSheet %>" />
+             <jsp:param name="lnr" value="<%= lnRubriekID %>" />
+             <jsp:param name="rnimageid" value="<%= rnImageID %>" />
+             <jsp:param name="p" value="<%= paginaID %>" />
+             <jsp:param name="a" value="<%= artikelID %>" />
+             <jsp:param name="showpageintro" value="true" />
+           </jsp:include>
+      	 </td>
        </tr>
      </table>
    </mm:node>
