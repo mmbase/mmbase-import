@@ -3,6 +3,7 @@
 <action type="load">
    <field name="naam"/>
    <field name="aantal_per_deelnemer"/>
+   <field name="groepsactiviteit"/>
    <!-- relation destination="deelnemers" role="related"/ -->
    <!-- relation destination="evenement" role="posrel"/ -->
    <relation destination="evenement_type" role="posrel"/>

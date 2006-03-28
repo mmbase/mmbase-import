@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:58 $
+ * @version $Revision: 1.2 $, $Date: 2006-03-28 07:55:54 $
  *
  */
 
@@ -123,11 +123,33 @@ public class Evenement extends DoubleDateNode {
       return costs;
    }
 
+   public static Node getGroupExcursion(Node parentEvent) {
+      Node dc = null;
+      NodeList dcl = parentEvent.getRelatedNodes("deelnemers_categorie");
+      for(int i=0; i<dcl.size(); i++) {
+         if(dcl.getNode(i).getIntValue("groepsactiviteit")==1) {
+            dc = dcl.getNode(i);
+         }
+      }
+      return dc;
+   }
+
+   public static boolean isGroupExcursion(Node parentEvent) {
+      boolean isGroupExcursion = false;
+      NodeList dcl = parentEvent.getRelatedNodes("deelnemers_categorie");
+      for(int i=0; i<dcl.size(); i++) {
+         if(dcl.getNode(i).getIntValue("groepsactiviteit")==1) {
+            isGroupExcursion = true;
+         }
+      }
+      return isGroupExcursion;
+   }
+
    public static boolean isGroupExcursion(Cloud cloud, String sParent) {
       NodeList dcl = cloud.getList( sParent
                                     ,"evenement,posrel,deelnemers_categorie"
                                     ,"posrel.pos"
-                                    ,"deelnemers_categorie.number='"+ groupExcursion(cloud) + "'",null,null,null,false);
+                                    ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);
       return (dcl.size()>0);
    }
 
@@ -135,12 +157,8 @@ public class Evenement extends DoubleDateNode {
       NodeList nl = cloud.getList(sParticipant
                   ,"deelnemers,related,deelnemers_categorie"
                   ,"deelnemers_categorie.number"
-                  ,"deelnemers_categorie.number='"+ groupExcursion(cloud) + "'",null,null,null,false);
+                  ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);
       return (nl.size()>0);
-   }
-
-   public static String groupExcursion(Cloud cloud) {
-      return cloud.getNode("group_excursion").getStringValue("number");
    }
 
    public static int getGroupExcursionCosts(Cloud cloud, String sParent, String sSubscription) {
@@ -156,7 +174,7 @@ public class Evenement extends DoubleDateNode {
          nl = cloud.getList( sParent
                            ,"evenement,posrel,deelnemers_categorie"
                            ,"posrel.pos"
-                           ,"deelnemers_categorie.number='"+ Evenement.groupExcursion(cloud) + "'",null,null,null,false);        
+                           ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);        
          if(nl.size()>0) {
             costs = nl.getNode(0).getIntValue("posrel.pos");
          }

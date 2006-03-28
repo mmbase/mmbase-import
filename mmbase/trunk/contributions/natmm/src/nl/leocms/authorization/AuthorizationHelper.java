@@ -38,12 +38,17 @@ import org.mmbase.bridge.RelationIterator;
 import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.RelationManager;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * @author Edwin van der Elst
  * Date :Oct 7, 2003
  * 
  */
 public class AuthorizationHelper {
+
+   private static final Logger log = Logging.getLoggerInstance(AuthorizationHelper.class);
 
    // utility, node.equals() werkt niet goed bij remotecloud 
    private static void addToList(List l, Node user) {
@@ -265,7 +270,7 @@ public class AuthorizationHelper {
       while (keys.hasNext()) {
          Integer rubriekNumber = (Integer) keys.next();
          Relation relation = rolemanager.createRelation( cloud.getNode( rubriekNumber.intValue()), user);
-         UserRole role = (UserRole) rights.get(rubriekNumber); 
+         UserRole role = (UserRole) rights.get(rubriekNumber);
          relation.setIntValue("rol", role.getRol());
          relation.commit();
       }

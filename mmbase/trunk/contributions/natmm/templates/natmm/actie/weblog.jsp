@@ -1,0 +1,189 @@
+<%@include file="../includes/top0.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="../includes/top1_params.jsp" %>
+<%
+PaginaHelper ph = new PaginaHelper(cloud);
+if(rubriekExists&&pageExists) { 
+   %>
+   <%@include file="../includes/top2_cacheparams.jsp" %>
+   <!-- cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" -->
+   <mm:import id="subdir" />
+   <% if(!offsetID.equals("0")){
+      %><mm:import id="onload_statement">window.location='#bottom';</mm:import><%
+   }
+   %>
+   <%@include file="../includes/top4_head.jsp" %>
+   <table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" valign="top">
+      <%@include file="../includes/top5b_pano.jsp" %>
+   </table>
+   <% 
+   Calendar cal = Calendar.getInstance();
+   cal.setTime(now);
+   cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),0,0);
+   long nowDay = cal.getTime().getTime()/1000; // the begin of today
+   long selectedDay = nowDay;
+   long oneDay = 24*60*60;
+   %>
+   <mm:node number="<%= paginaID %>">
+     <% 
+     if(artikelID.equals("-1")) { 
+       String artikelConstraint = "artikel.begindatum < '" + (nowDay+oneDay) + "'";  %>
+       <mm:relatednodes type="artikel" path="contentrel,artikel" orderby="begindatum" directions="DOWN" max="1"
+         constraints="<%= artikelConstraint %>">
+          <mm:field name="number" jspvar="artikel_number" vartype="String" write="false">
+             <% artikelID = artikel_number;%>
+          </mm:field>
+          <mm:field name="begindatum" jspvar="artikel_begindatum" vartype="Long" write="false">
+             <% selectedDay = artikel_begindatum.longValue(); %>
+          </mm:field>
+       </mm:relatednodes>
+       <%   
+     } 
+     %>
+     <table cellspacing="0" cellpadding="0" width="744" align="center" border="0" valign="top">
+       <tr>
+         <td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:10px">
+           <table class="dotline"><tr><td height="3"></td></tr></table>
+           <table cellspacing="0" cellpadding="0" border="0" valign="top">
+               <tr>
+                  <td style="padding-top:2px;padding-right:7px;"><a href="a6-a9"><img src="../media/arrowleft_default.gif" border="0"></a></td>
+                  <td><a href="a6-a9" class="hover" style="font-size:95%;">TERUG NAAR HOME</a></td>
+               </tr>
+           </table>
+           <table class="dotline" style="margin-top:0px;"><tr><td height="3"></td></tr></table>
+           <% String artikelConstraint = "artikel.begindatum < '" + selectedDay + "'"; %>
+           <mm:relatednodes type="artikel" path="contentrel,artikel" max="1" orderby="begindatum" directions="DOWN"
+               constraints="<%= artikelConstraint %>">
+             <div style="padding-bottom:10px">
+               <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
+                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" max="1">
+                   <tr>
+                     <td><img src='<mm:image template="s(170)+part(0,0,170,50)" />'></td>
+                   </tr>
+                 </mm:relatednodes>
+                 <tr>
+                   <td style="padding:5px 10px 10px 10px">
+                     <mm:field name="begindatum" jspvar="dummy" vartype="Long">
+                       <% if (dummy.longValue() < nowDay - oneDay) { %><b>Vorige gast</b><% } else { %><b>Gisteren</b><% } %><br>
+                     </mm:field>
+                     was <span style="font:bold 110%;color:red">></span> 
+                     <span class="colortitle"><mm:field name="titel"/></span> op De Flark<br>
+                     <a href="weblog.jsp?p=<%= paginaID%>&a=<mm:field name="number"/>" class="maincolor_link">Lees over zijn ervaringen</a>
+                     <span class="colortxt">></span>
+                   </td>
+                 </tr>
+               </table>
+             </div>
+           </mm:relatednodes>
+           <% artikelConstraint = "artikel.begindatum > '" + selectedDay + "'"; %>
+           <mm:relatednodes type="artikel" path="contentrel,artikel" max="1" orderby="begindatum" directions="UP"
+               constraints="<%= artikelConstraint %>">
+             <div style="padding-bottom:10px">
+               <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
+                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" max="1">
+                   <tr>
+                     <td><img src='<mm:image template="s(170)+part(0,0,170,50)" />'></td>
+                   </tr>
+                 </mm:relatednodes>
+                 <tr>
+                   <td style="padding:5px 10px 10px 10px">
+                     <mm:field name="begindatum" jspvar="dummy" vartype="Long">
+                       <% if (dummy.longValue() > nowDay + 2*oneDay) { %><b>Volgende gast</b><% } else { %><b>Morgen</b><% } %><br>
+                     </mm:field>
+                     is <span style="font:bold 110%;color:red">></span> 
+                     <span class="colortitle"><mm:field name="titel"/></span> op De Flark
+                   </td>
+                 </tr>
+               </table>
+             </div>
+           </mm:relatednodes>
+           <table cellSpacing="0" cellPadding="0" border="0" style="padding-left:10px;width:170px;">
+             <tr>
+               <td><a href="mailto:"><img src="../media/email.gif" border="0"></a></td>
+               <td style="padding-left:10px"><a href="mailto:" class="maincolor_link">Stuur deze pagina naar een vriend</a>
+                 <span class="colortxt">></span></td>
+             </tr>
+           </table>
+         </td>
+
+         <td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:10px">
+            <mm:node number="<%= artikelID%>" notfound="skip">
+            <table cellspacing="0" cellpadding="0" style="vertical-align:top;width:350px">
+            <tr align="left" valign="top">
+               <td style="width:170px;">
+                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos"  max="1">
+                   <img src="<mm:image template="s(170)+part(0,0,170,98)" />"><br>
+                 </mm:relatednodes>
+                 <div style="padding-left:6px;padding-top:8px;">
+                   <mm:node number="<%= paginaID %>">
+                     <div class="colortitle" style="font:bold 110%;"><mm:field name="titel"/></div>
+                     <div style="padding-bottom:5px;"><b><mm:field name="kortetitel"/></b></div>
+                   </mm:node>
+                   <span style="font:bold 110%;color:red">></span>
+                   <span class="colortitle"><mm:field name="titel"/></span>
+                 </div>
+               </td>
+               <td style="padding-left:10px;padding-top:7px;">
+                 <mm:field name="intro" jspvar="text" vartype="String" write="false">
+                 <% if(text!=null) { 
+                       text = HtmlCleaner.cleanText(text,"<",">","");
+                       if(!text.trim().equals("")) { %><b><%= text %></b><% }
+                     }
+                 %>
+                 </mm:field>
+               </td>
+             </tr>
+             <tr align="left" valign="top">
+               <td colspan="2" style="padding:10px 0px 10px 10px">
+                  <mm:field name="tekst"/>
+                  <table class="dotline"><tr><td height="3"></td></tr></table>
+                  <mm:relatednodes type="attachments" path="related,attachments" orderby="attachments.title">
+                     <%
+                      String imgName = ""; 
+                      String docType = "";
+                     %>
+                     <mm:field name="filename" jspvar="dummy" vartype="String" write="false">
+                        <%@include file="includes/attachmentsicon.jsp"%>
+                     </mm:field>
+                     <% if (!imgName.equals("")) { %>
+                        <span style="padding-left:5px; padding-right:5px"><a href="<mm:attachment />"><img src="../<%= imgName 
+                          %>" alt="download <%= docType %>: <mm:field name="title"
+                          />" border="0" style="vertical-align:text-bottom" /></a></span>
+                     <% } %>
+                  </mm:relatednodes>
+                  <% 
+                  int iParCntr = 1;
+                  boolean showNextDotLine = false;
+                  boolean floatingText = true;
+                  %>
+                  <mm:field name="reageer" jspvar="showdotline" vartype="String" write="false"
+                     ><mm:related path="posrel,paragraaf" fields="paragraaf.number" orderby="posrel.pos"
+                        ><%@include file="../includes/relatedparagraph.jsp" 
+                     %></mm:related
+                     ><mm:related path="readmore,paragraaf" fields="paragraaf.number" orderby="readmore.pos"
+                        ><%@include file="../includes/relatedparagraph.jsp" 
+                     %></mm:related
+                  ></mm:field>
+               </td>
+            </tr>
+            </table>
+            </mm:node>
+         </td>
+         <td style="padding-right:10px;padding-left:10px;padding-bottom:10px;padding-top:10px;vertical-align:top;width:190px;">
+            <jsp:include page="includes/nav.jsp">
+               <jsp:param name="a" value="<%= artikelID %>" />
+               <jsp:param name="p" value="<%= paginaID %>" />
+            </jsp:include>
+         </td>
+       </tr>
+     </table>
+   </mm:node>
+   <a name="bottom"></a>
+   <%@include file="includes/footer.jsp" %>
+   </body>
+   <%@include file="../includes/sitestatscript.jsp" %>
+   </html>
+   <!-- /cache:cache -->
+   <% 
+} %>
+</mm:cloud>

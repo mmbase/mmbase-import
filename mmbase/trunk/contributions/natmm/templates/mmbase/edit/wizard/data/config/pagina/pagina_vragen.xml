@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>pagina van het genre veelgestelde vragen</title>
+   <title>veelgestelde vragen pagina</title>
    <description>
       <![CDATA[
-	<h1>Pagina van het genre veelgestelde vragen</h1>
+	<h1>Veelgestelde vragen pagina</h1>
 	Deze editwizard kan worden gebruikt voor het koppelen van vragen, panos, shorties en teasers aan de pagina.<br/>
 	<ul>
 	   <li>De shorties kunnen in de linker-, de midden- en de rechterkolom worden geplaatst.</li>

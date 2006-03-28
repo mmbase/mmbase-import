@@ -79,7 +79,7 @@ if(rubriekID.equals("naardermeer")) {
    <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
    <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
    <% 
-} else {
+} else if(!rubriekID.equals("")) {
    %>
    <%--
    <td class="fieldname"><a href="signalering/takenlijst.jsp" target="bottompane" class='menu'>Takenlijst</a></td>
@@ -92,6 +92,15 @@ if(rubriekID.equals("naardermeer")) {
    <td class="fieldname"><a href="rubrieken/frames.jsp" target="bottompane" class="menu">Rubriekeneditor</a></td>
    <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
    <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
+   <%
+} else {
+   %>
+   <td class="fieldname"><a href="/index.jsp" target="_blank" class='menu'>Website</a></td>
+   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
+   <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
+   <td class="menu" style="color:red;">
+         Er is geen rubriek voor u geselecteerd. Neem contact op met de webmasters om u een rol op één van de rubrieken te geven.
+   </td>
    <%
 }
 %>
