@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.65 2006-03-28 21:47:49 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66 2006-03-28 22:35:22 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -230,12 +230,12 @@ public class IncludeTag extends UrlTag {
                 page = "";
                 break;
             case Notfound.THROW:
-                if ("".equals(result)) result = "The request resource '" + url + "' is not available";
+                if ("".equals(result)) result = "The requested resource '" + url + "' is not available";
                 throw new JspTagException(result);
             default:
             case Notfound.DEFAULT:
             case Notfound.MESSAGE:
-                if ("".equals(result)) result = "The request resource '" + url + "' is not available";
+                if ("".equals(result)) result = "The requested resource '" + url + "' is not available";
                 page = result;
             }
             break;
