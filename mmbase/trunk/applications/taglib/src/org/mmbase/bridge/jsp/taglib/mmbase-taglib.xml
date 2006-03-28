@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.346 2006-03-14 22:12:57 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.347 2006-03-28 21:47:49 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2159,11 +2159,15 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-  What to do if the node is not found. The default is to throw an exception.
+        What to do if the node is not found. The default is to throw an exception.
       </info>
       <possiblevalue>
         <value>skip|skipbody</value>
         <info>Simply skip the body if the node is not found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>message</value>
+        <info>Just say in the page that the node was not found</info>
       </possiblevalue>
       <possiblevalue>
         <value>throw|throwexception</value>
@@ -2299,6 +2303,10 @@ access the value of title:
       <possiblevalue>
         <value>skip|skipbody</value>
         <info>Simply skip the body if the field is not available</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>message</value>
+        <info>Simply write to the page that the fiels it not available</info>
       </possiblevalue>
       <possiblevalue>
         <value>throw|throwexception</value>
@@ -4472,6 +4480,10 @@ like the parameter list or the session (where ever it is available) --&gt;
       <possiblevalue>
         <value>skip</value>
         <info>Do not generate any error if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>message</value>
+        <info>Just write a message to the page if the resource could not be found</info>
       </possiblevalue>
       <possiblevalue>
         <value>exception</value>
