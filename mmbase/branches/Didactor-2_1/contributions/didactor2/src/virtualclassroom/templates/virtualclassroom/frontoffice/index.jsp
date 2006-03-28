@@ -7,6 +7,7 @@
     <mm:param name="extraheader">
       <title><di:translate key="virtualclassroom.virtualclassroom"/></title>
       <link rel="stylesheet" type="text/css" href="<mm:treefile page="/virtualclassroom/css/base.css" objectlist="$includePath" referids="$referids" />" />      
+      <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
     </mm:param>
   </mm:treeinclude>  
   <div class="rows">
