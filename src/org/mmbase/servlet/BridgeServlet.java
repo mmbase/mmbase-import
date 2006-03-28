@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * but /img.db). Normally this is no problem, because the alias is resolved by the image-tag. But if
  * for some reason you need aliases to be working on the URL, you must map to URL's with a question mark.
  *
- * @version $Id: BridgeServlet.java,v 1.28 2006-03-28 17:37:37 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.29 2006-03-28 19:29:30 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -116,7 +116,8 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             if (qp == null) {
                 log.debug("Did not match");
                 if(res != null) {
-                    res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+                    res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+                    req.setAttribute(MESSAGE_ATTRIBUTE, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
                 } else {
                     log.error("Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
                 }
@@ -132,7 +133,8 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             // attachment.db?[session=abc+]number
             qp = readQuery(q);
             if (qp == null && res != null) {
-                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL: No node number found after session.");
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed URL: No node number found after session.");
+                req.setAttribute(MESSAGE_ATTRIBUTE, "Malformed URL: No node number found after session.");
             }
 
         }
