@@ -7,6 +7,7 @@
 <html>
 <head>   
   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/virtualclassroom/css/base.css" objectlist="$includePath" referids="$referids" />" /> 
+  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
 </head>
 <body>
   <mm:import jspvar="theReferids"><mm:write referid="referids"/></mm:import>

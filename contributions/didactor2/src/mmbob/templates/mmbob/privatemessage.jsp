@@ -9,6 +9,7 @@
 <head>
    <title><di:translate key="mmbob.mmbaseforum" /></title>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
 </head>
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />

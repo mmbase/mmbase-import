@@ -4,6 +4,7 @@
 <mm:cloud method="delegate" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>  
   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/virtualclassroom/css/base.css" objectlist="$includePath" referids="$referids" />" />  
+  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
   <mm:node number="$user" notfound="skipbody">
     <!-- b>&nbsp;<di:translate key="virtualclassroom.sessionfiles"/></b><br/><br/-->
     <%//first we try direct relation with education  %>
