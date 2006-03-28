@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.48 2006-01-25 10:17:27 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.49 2006-03-28 18:49:15 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -421,7 +421,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                      (seconds > 0 || minutes > 0 ? " " + (seconds == 1 ? "1 second" : "" + seconds + " seconds") : ""));
 
         } else if ("server".equals(q)) {
-            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") + " @" + java.net.InetAddress.getLocalHost().getHostName());
+            String appserver = System.getProperty("catalina.base"); // to do: similar arrangment for other ap-servers.
+            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") + " " + (appserver == null ? "" : appserver) + "@" + java.net.InetAddress.getLocalHost().getHostName() + " " + System.getProperty("os.name"));
         }
         pw.close();
     }
