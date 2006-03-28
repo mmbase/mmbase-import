@@ -37,13 +37,13 @@
 		 <%-- Save the answer if type_of_score=1 --%> 
 			<mm:relatednodes type="openanswers" id="openanswers">
 				<mm:field name="text" id="text">
-					<mm:compare referid="givenanswer" referid2="openanswers">
+					<mm:compare referid="givenanswer" referid2="text">
 						<mm:createnode type="givenanswers" id="my_givenanswers">
     						<mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
     						<mm:setfield name="score"><mm:write referid="TESTSCORE_COR"/></mm:setfield>
   						</mm:createnode>
 					</mm:compare>
-					<mm:compare referid="givenanswer" referid2="openanswers" inverse="true">
+					<mm:compare referid="givenanswer" referid2="text" inverse="true">
 					<mm:createnode type="givenanswers" id="my_givenanswers">
     						<mm:setfield name="text"><mm:write referid="givenanswer"/></mm:setfield>
     						<mm:setfield name="score"><mm:write referid="TESTSCORE_WR"/></mm:setfield>
