@@ -5,7 +5,7 @@
 
   Web-app 2.4 gives the possibility to  of use EL (Expression Language)
 
-  $Id: web.xml,v 1.30 2006-02-15 10:13:58 nklasens Exp $
+  $Id: web.xml,v 1.31 2006-03-28 19:27:38 michiel Exp $
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -27,7 +27,6 @@
     <param-value>WEB-INF/config</param-value>
   </context-param>
   -->
-
   <!--
     MMBase Taglib settings
     -->
@@ -185,6 +184,14 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
+  <error-page>
+    <error-code>400</error-code>
+    <location>/mmbase/errorpages/400.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/mmbase/errorpages/403.jsp</location>
+  </error-page>
   <error-page>
     <error-code>404</error-code>
     <location>/mmbase/errorpages/404.jsp</location>
