@@ -1,7 +1,6 @@
 <%@include file="includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
-<% if(rubriekExists&&pageExists) { %>
 <mm:import jspvar="card" externid="card" id="card"></mm:import>
 <mm:import jspvar="actie" externid="actie" id="actie"></mm:import>
 <mm:import jspvar="toname" externid="toname">-</mm:import>
@@ -163,5 +162,4 @@ String cardID = "-1";
 </table>
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
-<% } %>
 </mm:cloud>

@@ -4,7 +4,6 @@
 } --%>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
-<% if(rubriekExists&&pageExists) { %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/top3_nav.jsp" %>
@@ -45,5 +44,4 @@
 </table>
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
-<% } %>
 </mm:cloud>
