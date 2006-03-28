@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.17 2005-10-07 19:03:06 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.18 2006-03-28 20:32:40 michiel Exp $
  **/
 
 public class MultiPart {
@@ -80,7 +80,7 @@ public class MultiPart {
                         try {
                             value = fi.getString("ISO-8859-1");
                         } catch(java.io.UnsupportedEncodingException uee) {
-                            log.error("could not happen, ISO-8859-1 is supported");                            
+                            log.error("could not happen, ISO-8859-1 is supported");
                             value = fi.getString();
                         }
                         Object oldValue = parametersMap.get(fi.getFieldName());
@@ -196,7 +196,7 @@ public class MultiPart {
             // this method will return null, if the parameter is not set...
             Object value = parametersMap.get(param);
             //log.debug("Got param " + param + " " + (value == null ? "NULL" : value.getClass().getName()) + " " + value);
-                    
+
             if (value instanceof FileItem) {
                 try {
                     return encodeBytesAsString(((FileItem)value).get());

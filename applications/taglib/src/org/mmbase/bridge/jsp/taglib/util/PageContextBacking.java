@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.8 2005-06-22 19:24:40 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.9 2006-03-28 20:30:26 michiel Exp $
  */
 
 public  class PageContextBacking extends AbstractMap implements Backing {
@@ -49,7 +49,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     }
 
     public void pushPageContext(PageContext pc) {
-        
+
     }
 
     public void pullPageContext(PageContext pc) {
@@ -73,7 +73,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     }
 
     public Set entrySet() {
-        return new AbstractSet() {                            
+        return new AbstractSet() {
                 Collection names = unwrapped.keySet();
                 public Iterator iterator() {
                     return new Iterator() {
@@ -91,8 +91,8 @@ public  class PageContextBacking extends AbstractMap implements Backing {
                                             return name;
                                         }
                                         public Object getValue() {
-                                            if (nul == null) {                                                
-                                                return pageContext.getAttribute(name, SCOPE); 
+                                            if (nul == null) {
+                                                return pageContext.getAttribute(name, SCOPE);
                                             } else {
                                                 return null;
                                             }
@@ -101,7 +101,7 @@ public  class PageContextBacking extends AbstractMap implements Backing {
                                             Object was = pageContext.getAttribute(name, SCOPE);
                                             if (value != null) {
                                                 pageContext.setAttribute(name, jspvars.contains(name) ? value : Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
-                                            } else { 
+                                            } else {
                                                 pageContext.removeAttribute(name, SCOPE);
                                                 nulls.add(name);
                                             }
@@ -126,8 +126,8 @@ public  class PageContextBacking extends AbstractMap implements Backing {
                 }
             };
     }
-    
-    
+
+
     public Object put(Object key, Object value) {
         if (value == null) {
             nulls.add(key);
@@ -163,5 +163,5 @@ public  class PageContextBacking extends AbstractMap implements Backing {
     public String toString() {
         return "PAGECONTEXT BACKING " + super.toString();
     }
-        
-} 
+
+}
