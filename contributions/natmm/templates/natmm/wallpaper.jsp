@@ -1,7 +1,7 @@
 <%@include file="includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
-<% if(rubriekExists&&pageExists) { %><%
+<%
 if(imgID.equals("-1")){
    %>
    <%@include file="includes/top2_cacheparams.jsp" %>
@@ -125,5 +125,4 @@ if(imgID.equals("-1")){
    </mm:node><%
    }
 } %>
-<% } %>
 </mm:cloud>

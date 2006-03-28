@@ -2,7 +2,6 @@
 <%@include file="includes/top0.jsp" %>
 <mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
-<% if(rubriekExists&&pageExists) { %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <!-- cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" -->
 <%@include file="includes/top3_nav.jsp" %>
@@ -112,7 +111,6 @@ if(request.getParameter("memberid")!=null) {
    </table>
 <%@include file="includes/footer.jsp" %>
 <!-- /cache:cache --> 
-<% } %>
 </mm:cloud>
 
 

@@ -187,7 +187,7 @@ int iRubriekLayout = PARENT_LAYOUT;
 String lnLogoID = "-1";
 String rnImageID = "-1";
 
-if(!rubriekExists||!pageExists) { 
+if(!rubriekExists||!pageExists) { // *** makes if(rubriekExists&&pageExists) { in template unnecessary ***
 
    response.sendRedirect("/404/index.html"); 
 
@@ -241,6 +241,7 @@ if(!rubriekExists||!pageExists) {
             } 
       %></mm:node><%
    }
+
    if(iRubriekLayout==PARENT_LAYOUT) { iRubriekLayout = DEFAULT_LAYOUT; }
    if(iRubriekStyle==PARENT_STYLE) { iRubriekStyle = DEFAULT_STYLE; }
 } 
