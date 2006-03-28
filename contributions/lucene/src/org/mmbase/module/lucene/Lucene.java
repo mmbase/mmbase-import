@@ -42,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.54 2006-03-21 19:02:22 michiel Exp $
+ * @version $Id: Lucene.java,v 1.55 2006-03-28 08:33:22 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -98,7 +98,7 @@ public class Lucene extends Module implements MMBaseObserver {
     private long initialWaitTime = INITIAL_WAIT_TIME;
     private long waitTime = WAIT_TIME;
     private String indexPath = null;
-    private Scheduler scheduler;
+    private Scheduler scheduler = null;
     private String defaultIndex = null;
     private Map indexerMap = new HashMap();
     private Map searcherMap = new HashMap();
@@ -141,6 +141,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                                                 new Parameter[] {INDEX},
                                                                 ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
+            if (scheduler == null) throw new RuntimeException("Read only");
             String index = (String) arguments.get("index");
             if (index == null || "".equals(index)) {
                 scheduler.fullIndex();
@@ -169,6 +170,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                                                 new Parameter[] {INDEX, new Parameter("identifier", String.class)},
                                                                 ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
+            if (scheduler == null) throw new RuntimeException("Read only");
             String index = (String) arguments.get("index");
             String identifier = (String) arguments.get("identifier");
             if(!readOnly){
@@ -200,6 +202,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                                                   new Parameter[] {new Parameter("identifier", String.class, true)},
                                                                   ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
+            if (scheduler == null) throw new RuntimeException("Read only");
             scheduler.updateIndex(arguments.getString("identifier"));
             return null;
         }
@@ -219,11 +222,23 @@ public class Lucene extends Module implements MMBaseObserver {
      */
     protected Function statusFunction = new AbstractFunction("status", Parameter.EMPTY, ReturnType.INTEGER) {
         public Object getFunctionValue(Parameters arguments) {
-            return new Integer(scheduler.getStatus());
+            return new Integer(scheduler == null ? Scheduler.READONLY : scheduler.getStatus());
         }
     };
     {
         addFunction(statusFunction);
+    }
+    protected Function statusDescriptionFunction = new AbstractFunction("statusdescription", new Parameter[] {Parameter.LOCALE}, ReturnType.STRING) {
+        public Object getFunctionValue(Parameters arguments) {
+            Locale locale = (Locale) arguments.get(Parameter.LOCALE);
+            SortedMap map = SortedBundle.getResource("org.mmbase.module.lucene.resources.status",  locale,
+                                                     getClass().getClassLoader(), 
+                                                     SortedBundle.getConstantsProvider(Scheduler.class), Integer.class, null);
+            return map.get(new Integer(scheduler == null ? Scheduler.READONLY : scheduler.getStatus()));
+        }
+    };
+    {
+        addFunction(statusDescriptionFunction);
     }
 
     protected Function readOnlyFunction = new AbstractFunction("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
@@ -637,7 +652,7 @@ public class Lucene extends Module implements MMBaseObserver {
         if (log.isDebugEnabled()) {
             log.debug("Received for node " + number + " of builder " + builder + " a change " + ctype);
         }
-        if (!readOnly) {
+        if (scheduler != null) {
             // if this concerns a change or new node, update the index with that node
             if (ctype.equals("c") || ctype.equals("n")) {
                 scheduler.updateIndex(number);
@@ -652,12 +667,13 @@ public class Lucene extends Module implements MMBaseObserver {
     /**
      * Queue for index operations.
      */
-    class Scheduler extends Thread {
+    public class Scheduler extends Thread {
 
-        static final int IDLE = 0;
-        static final int IDLE_AFTER_ERROR = -1;
-        static final int BUSY_INDEX = 1;
-        static final int BUSY_FULL_INDEX = 2;
+        public static final int READONLY = -100;
+        public static final int IDLE = 0;
+        public static final int IDLE_AFTER_ERROR = -1;
+        public static final int BUSY_INDEX = 1;
+        public static final int BUSY_FULL_INDEX = 2;
 
         // status of the scheduler
         private int status = IDLE;
@@ -705,11 +721,14 @@ public class Lucene extends Module implements MMBaseObserver {
         public void updateIndex(final String number) {
             Runnable assignment = new Runnable() {
                     public void run() {
-                        log.service("Update index");
+                        log.service("Update index for " + number);
                         status = BUSY_INDEX;
                         for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                             Indexer indexer = (Indexer) i.next();
-                            indexer.updateIndex(number);
+                            int updated = indexer.updateIndex(number);
+                            if (updated > 0) {
+                                log.service("updated " + updated + " index entries for index " + indexer.getName());
+                            }
                         }
                     }
 
@@ -721,7 +740,7 @@ public class Lucene extends Module implements MMBaseObserver {
         public void deleteIndex(final String number) {
             Runnable assignment = new Runnable() {
                     public void run() {
-                        log.service("delete index");
+                        log.service("delete index for " + number);
                         status = BUSY_INDEX;
                         for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                             Indexer indexer = (Indexer) i.next();
@@ -735,7 +754,7 @@ public class Lucene extends Module implements MMBaseObserver {
         public void deleteIndex(final String number, final String indexName) {
             Runnable assignment = new Runnable() {
                     public void run() {
-                        log.service("delete index");
+                        log.service("delete index for " + number);
                         status = BUSY_INDEX;
                         Indexer indexer = (Indexer)indexerMap.get(indexName);
                         if (indexer == null) {
