@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.59 2006-01-25 14:58:17 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.60 2006-03-28 20:33:56 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -90,6 +90,17 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 log.debug("Looking up Node with " + referString + " in context");
             }
             switch(Notfound.get(notfound, this)) {
+            case Notfound.MESSAGE:
+                node = getNodeOrNull(referString);
+                if (node == null) {
+                    try {
+                        getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
+                    } catch (java.io.IOException ioe) {
+                        log.warn(ioe);
+                    }
+                    return SKIP_BODY;
+                }
+                break;
             case Notfound.SKIP:         {
                 node = getNodeOrNull(referString);
                 if (node == null) return SKIP_BODY;
@@ -122,6 +133,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 Cloud c = getCloudVar();
                 if (! c.hasNode(n) || ! c.mayRead(n)) {
                     switch(Notfound.get(notfound, this)) {
+                    case Notfound.MESSAGE:
+                        try {
+                            getPageContext().getOut().write("Node '" + n + "' does not exist or may not be read");
+                        } catch (java.io.IOException ioe) {
+                            log.warn(ioe);
+                        }
                     case Notfound.SKIP:
                         return SKIP_BODY;
                     case Notfound.PROVIDENULL:
@@ -140,12 +157,18 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 // get the node from a parent element.
                 NodeProvider nodeProvider = findNodeProvider(false);
                 if (nodeProvider == null) {
-                    throw new JspTagException("Could not find parent of type org.mmbase.bridge.jsp.taglib.NodeProvider, and no 'number' or 'referid' attribute specified.");
+                    throw new JspTagException("Could not find parent of type " + NodeProvider.class +  ", and no 'number' or 'referid' attribute specified.");
                 }
                 if (element != Attribute.NULL) {
                     node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
                     if (node == null) {
                         switch(Notfound.get(notfound, this)) {
+                        case Notfound.MESSAGE:
+                            try {
+                                getPageContext().getOut().write("Could not find node element '" + element.getString(this) + "'");
+                            } catch (java.io.IOException ioe) {
+                                log.warn(ioe);
+                            }
                         case Notfound.SKIP:
                             return SKIP_BODY;
                         case Notfound.PROVIDENULL:
