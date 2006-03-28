@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.4 $, $Date: 2006-03-21 22:05:30 $
+ * @version $Revision: 1.5 $, $Date: 2006-03-28 07:55:54 $
  *
  * @struts:action name="UserForm"
  *                path="/editors/usermanagement/UserAction"
@@ -67,7 +67,7 @@ public class UserAction extends Action {
     * @throws Exception
     */
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-      log.debug("UserAction - doPerform()");
+      log.info("UserAction - doPerform()");
       if (!isCancelled(request)) {
          UserForm userForm = (UserForm) form;
          Cloud cloud = CloudFactory.getCloud();
@@ -122,6 +122,9 @@ public class UserAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2006/03/21 22:05:30  henk
+ * expire date for passwords + several changes and  bugfixes
+ *
  * Revision 1.3  2006/03/16 22:17:17  henk
  * Added expiredate on passwords and switched on UrlConversion again
  *

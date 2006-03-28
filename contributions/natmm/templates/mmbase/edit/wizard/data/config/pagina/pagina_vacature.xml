@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>pagina van het genre vacatures</title>
+   <title>vacature pagina</title>
    <description>
       <![CDATA[
-	<h1>Pagina van het genre vacatures</h1>
+	<h1>Vacature pagina</h1>
 	Deze editwizard kan worden gebruikt voor het koppelen van vacatures, panos, shorties en teasers aan de pagina.<br/>
 	<ul>
 	   <li>De shorties kunnen in de linker- en de rechterkolom worden geplaatst.</li>

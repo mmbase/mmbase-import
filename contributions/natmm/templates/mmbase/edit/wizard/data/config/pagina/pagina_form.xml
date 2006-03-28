@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>pagina van het genre formulier</title>
+   <title>formulier pagina</title>
     <description>
       <![CDATA[
-	<h1>Pagina van het genre formulier</h1>
+	<h1>Formulier pagina</h1>
 	Deze editwizard kan worden gebruikt voor het koppelen van een artikel, een formulier, panos, shorties en teasers aan de pagina.<br/>
 	<ul>
 	   <li>Het artikel wordt getoond voor het formulier.</li>

@@ -88,7 +88,11 @@
 <br>
 </div>
 <br>
-<table><tr><td><html:submit value='Opslaan' style="width:90"/></td><td><html:cancel value='Annuleren' style="width:90"/></td></tr>
+<table>
+   <tr>
+      <td><html:submit property="action" value="<%= UserForm.SAVE_ACTION %>" style="width:100"/></td>
+      <td><html:cancel value="<%= UserForm.CANCEL_ACTION %>" style="width:100"/></td>
+   </tr>
 </table>
 </html:form>
 </mm:cloud>

@@ -6,6 +6,7 @@
    <action include="config/deelnemers_categorie/delete_deelnemers_categorie.xml"/>
    <action include="config/deelnemers_categorie/load_deelnemers_categorie.xml"/>
    <lists>
+      <optionlist include="config/option_lists/ja_nee.xml" />
    </lists>
    <steps>
       <step form-schema="edit_deelnemers_categorie"/>

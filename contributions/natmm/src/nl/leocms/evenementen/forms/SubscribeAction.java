@@ -50,7 +50,6 @@ public class SubscribeAction extends Action {
    private static final Logger log = Logging.getLoggerInstance(EvenementAction.class);
    private static final String BACKOFFICE_SUBSCRIPTION = "70594";
    private static final String SITE_SUBSCRIPTION = "86035";
-   private static final String GROUP_EXCURSION = "321316";
    public static int NO_COSTS = 0;
    public static int UNKNOWN_COSTS = -1;
    public static int GROUP_EXCURSION_COSTS = -2;
@@ -297,7 +296,7 @@ public class SubscribeAction extends Action {
          message += addText(confirmationText.getStringValue("body"),newline);
       }
 
-      int costs = Evenement.getCategoryCosts(thisSubscription,GROUP_EXCURSION);
+      int costs = Evenement.getCategoryCosts(thisSubscription,Evenement.getGroupExcursion(thisParent).getStringValue("number"));
       message += "Bij deze brief is een overzicht ingesloten met praktische informatie, zoals een routebeschrijving naar de plaats van afvaart, en tips over wat mee te nemen." + newline + newline;
       message += "De prijs van de vaarexcursie bedraagt " + price(costs) + newline + newline;
       message += "U wordt vriendelijk verzocht dit bedrag over te maken naar rekeningnummer ";
@@ -381,7 +380,7 @@ public class SubscribeAction extends Action {
 
    public static String getMessage(Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl, String type) {
 
-      boolean isGroupExcursion = Evenement.isOfCategory(thisParent,GROUP_EXCURSION);
+      boolean isGroupExcursion = Evenement.isGroupExcursion(thisParent);
       
       String newline = "<br/>";
       if(type.equals("plain")) { newline = "\n"; }
@@ -679,13 +678,21 @@ public class SubscribeAction extends Action {
                   // for a group excursion the first participant should be of the category "group excursion"
                   NodeList dcl = cloud.getList( thisSubscription.getStringValue("number")
                               ,"inschrijvingen,posrel,deelnemers,related,deelnemers_categorie"
-                              ,"deelnemers_categorie.number","deelnemers_categorie.number='" + Evenement.groupExcursion(cloud) + "'"
+                              ,"deelnemers_categorie.number","deelnemers_categorie.groepsactiviteit='1'"
                               ,null,null,null,true);
                   if(dcl.size()==0) {
-                     thisParticipant =
-                        subscribeForm.createParticipant(cloud,"Meld aan",thisEvent,thisSubscription,Evenement.groupExcursion(cloud),"1");
-                     if(subscribeForm.getParticipantsCategory().equals("-1")) {
-                        onlyGroupExcursion = true;
+                     // find the "group excursion" related to this event
+                     dcl = cloud.getList( thisEvent.getStringValue("number")
+                              ,"evenement,posrel,deelnemers_categorie"
+                              ,"deelnemers_categorie.number","deelnemers_categorie.groepsactiviteit='1'"
+                              ,null,null,null,true);
+                     if(dcl.size()>0) {
+                        String thisGroupEvent = dcl.getNode(0).getStringValue("deelnemers_categorie.number");
+                        thisParticipant =
+                           subscribeForm.createParticipant(cloud,"Meld aan",thisEvent,thisSubscription,thisGroupEvent,"1");
+                        if(subscribeForm.getParticipantsCategory().equals("-1")) {
+                           onlyGroupExcursion = true;
+                        }
                      }
                   }
                }

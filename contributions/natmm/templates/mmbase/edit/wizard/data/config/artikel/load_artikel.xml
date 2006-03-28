@@ -22,6 +22,7 @@
    <field name="sms"/>
    <relation destination="artikel" role="related"/>
    <relation destination="images" role="posrel"/>
+   <relation destination="attachments" role="related"/>
    <relation destination="evenement" role="related"/>
    <relation destination="formulier" role="related"/>
    <relation destination="paragraaf" role="posrel" >
