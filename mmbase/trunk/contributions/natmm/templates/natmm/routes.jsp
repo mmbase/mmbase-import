@@ -2,7 +2,6 @@
 <%@include file="includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
-<% if(rubriekExists&&pageExists) { %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <mm:import jspvar="actie" externid="actie">show</mm:import>
 <% if(actie.equals("zoek")){ expireTime = 0; } %>
@@ -187,7 +186,6 @@
 </table>
 <%@include file="includes/footer.jsp" %>
 <!-- /cache:cache --> 
-<% } %>
 </mm:cloud>
 
 

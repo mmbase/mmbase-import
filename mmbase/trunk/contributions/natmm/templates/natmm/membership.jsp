@@ -11,7 +11,6 @@ if(paginaID.equals("-1") && session.getAttribute("pagina")!=null) {
 String referer =  request.getHeader("referer");
 if(referer!=null) { session.setAttribute("form_referer",referer); }
 %>
-<% if(rubriekExists&&pageExists) { %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <%--cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application"--%>
 <%@include file="includes/top3_nav.jsp" %>
@@ -64,5 +63,4 @@ if(referer!=null) { session.setAttribute("form_referer",referer); }
 </table>
 <%@include file="includes/footer.jsp" %>
 <%--</cache:cache>--%>
-<% } %>
 </mm:cloud>

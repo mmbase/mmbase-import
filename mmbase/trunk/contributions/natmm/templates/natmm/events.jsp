@@ -14,7 +14,6 @@ if(paginaID.equals("-1") && session.getAttribute("pagina")!=null) {
 } %>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
-<% if(rubriekExists&&pageExists) { %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <mm:import jspvar="searchID" externid="search">show</mm:import>
 <!-- cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" -->
@@ -124,5 +123,4 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
 </table>
 <a name="bottom"></a>
 <%@include file="includes/footer.jsp" %>
-<% } %>
 </mm:cloud>

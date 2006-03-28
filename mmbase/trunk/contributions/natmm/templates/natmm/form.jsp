@@ -5,7 +5,6 @@
 String referer =  request.getHeader("referer");
 if(referer!=null) { session.setAttribute("form_referer",referer); }
 %>
-<% if(rubriekExists&&pageExists) { %>
 <%@include file="includes/top2_cacheparams.jsp" %>
 <% String postingStr = request.getParameter("pst");
 if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
@@ -100,5 +99,4 @@ if(postingStr!=null&&!postingStr.equals("")) { expireTime = 0; } %>
 </table>
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
-<% } %>
 </mm:cloud>
