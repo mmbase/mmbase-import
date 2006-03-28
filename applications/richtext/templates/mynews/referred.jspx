@@ -1,6 +1,6 @@
 <mm:listrelationscontainer 
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"     
-    type="texts" role="idrel" searchdir="source">
+    type="object" role="idrel" searchdir="source">
   <mm:listrelations>
     <mm:first>&lt;p&gt;<strong>Referred by </strong></mm:first>
     <mm:field name="id" id="anchor" write="false" />

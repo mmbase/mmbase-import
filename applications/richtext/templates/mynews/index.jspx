@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.6 2006-03-22 22:59:20 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.7 2006-03-28 22:34:02 michiel Exp $ --&gt;</jsp:text>
   <jsp:directive.page session="false" />
   <jsp:directive.include file="vars.jspx" />
   <mm:content type="text/html" language="en" expires="${edit == 'true' ? -1 : 60}">
@@ -87,7 +87,7 @@
           </mm:notpresent>
 
           <mm:present referid="template">
-            <mm:include  notfound="exception" referids="subcat@cat" page="${template}.div.jspx" escape="replace" />
+            <mm:include  notfound="message" referids="subcat@cat" page="${template}.div.jspx" escape="replace" />
           </mm:present>
 
           <mm:notpresent referid="template">
@@ -95,12 +95,12 @@
             <mm:node referid="cat">
               <mm:listrelations id="blockrel" type="templates" role="block" orderby="block.pos" >
                 <mm:relatednode>
-                  <mm:include  notfound="exception" debug="html" referids="subcat@cat,blockrel.class@class" page="${_node.url}" escape="replace" />
+                  <mm:include  notfound="message" debug="html" referids="subcat@cat,blockrel.class@class" page="${_node.url}" escape="replace" />
                 </mm:relatednode>
               </mm:listrelations>
               <!-- if no related template, then simply show the category only -->
               <mm:countrelations type="templates" role="block" >
-                <mm:compare value="0">                 
+                <mm:compare value="0">
                   <jsp:directive.include file="rich.jspx" />
                 </mm:compare>
               </mm:countrelations>
@@ -117,7 +117,7 @@
           <img src="http://www.w3.org/Icons/valid-xhtml10"
                alt="Valid XHTML 1.0 Strict" height="31" width="88" />
         </a>
-      </p>          
+      </p>
     </body>
     </mm:cloud>
   </mm:content>
