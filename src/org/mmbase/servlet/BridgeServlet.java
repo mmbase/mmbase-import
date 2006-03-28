@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * but /img.db). Normally this is no problem, because the alias is resolved by the image-tag. But if
  * for some reason you need aliases to be working on the URL, you must map to URL's with a question mark.
  *
- * @version $Id: BridgeServlet.java,v 1.27 2006-03-27 17:46:07 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.28 2006-03-28 17:37:37 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -101,7 +101,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         String q = req.getQueryString();
 
         String fileNamePart;
-        if (q == null) {
+        if (q == null || "".equals(q)) {
             // also possible to use /attachments/[session=abc+]<number>/filename.pdf
             if (contextPathLength == -1) {
                 contextPathLength = req.getContextPath().length();
