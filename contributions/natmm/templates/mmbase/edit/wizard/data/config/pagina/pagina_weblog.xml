@@ -32,7 +32,7 @@
       <field name="reageer"/>
       <field name="status"/>
       <relation destination="panno" role="posrel"/>
-      <relation destination="artikel" role="contentrel"/>
+      <relation destination="contentelement" role="contentrel"/>
    </action>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />

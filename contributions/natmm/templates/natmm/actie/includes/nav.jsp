@@ -17,34 +17,13 @@ try{
    }
 } catch(Exception e) {} 
 
-int TITLE = 1;
-int DATE = 2;
-int QUOTE = 3;
-int menuType = TITLE;
-int articlePerPage = 5;
-
 %>
 <mm:node number="<%= paginaID %>">
-   <mm:relatednodes type="menutemplate" path="related,menutemplate">
-      <mm:field name="url" jspvar="url" vartype="String" write="false">
-         <% 
-         if(url.indexOf("quote")>-1) { menuType = QUOTE; } 
-         if(url.indexOf("date")>-1) { menuType = DATE; } 
-         %>
-      </mm:field>
-   </mm:relatednodes>
-<table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
+ <%@include file="navsettings.jsp" %>
+ <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
  <tr>
    <td style="padding:7px 10px 10px 0px">
      <% 
-     String artikelConstraint = "";
-     String artikelOrderby = "titel";
-     String artikelDirections = "UP";
-     if(menuType!=TITLE) {
-         artikelConstraint = "artikel.begindatum < '" + nowSec + "'"; 
-         artikelOrderby = "begindatum";
-         artikelDirections = "DOWN";
-     }
      int artikelNum = 0; 
      int pagesNum = 0;
      %>
@@ -76,7 +55,7 @@ int articlePerPage = 5;
            <td valign="top" style="width:5px; padding-left:7px; padding-right:3px"><span style="font:bold 110%;color:red">></span></td>
            <td>
              <mm:field name="number" jspvar="aNumber" vartype="String" write="false">
-               <a href="../<%= ph.createItemUrl(aNumber, paginaID,"offset="+thisOffset,request.getRequestURI()) %>" class="maincolor_link"><b><mm:field name="titel"/></b></a>
+               <a href="<%= ph.createItemUrl(aNumber, paginaID,"offset="+thisOffset,request.getRequestURI()) %>" class="maincolor_link"><b><mm:field name="titel"/></b></a>
              </mm:field>
              <% 
              if(menuType!=TITLE) {
@@ -113,19 +92,19 @@ int articlePerPage = 5;
                <% if (thisOffset == 1) { %>
                     <img src="../media/arrowleft_<%= style1[iRubriekStyle] %>.gif" border="0">
                <% } else { %>
-                    <a href="../<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset-1),request.getRequestURI()) %>"
+                    <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset-1),request.getRequestURI()) %>"
                       ><img src="../media/arrowleft_<%= style1[iRubriekStyle] %>.gif" border="0"></a>
-                    <a href="../<%= ph.createItemUrl(artikelID, paginaID,"offset=1",request.getRequestURI()) %>">1</a>
+                    <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset=1",request.getRequestURI()) %>">1</a>
                <% } 
                   if (thisOffset > 3) { %>
                     &hellip;                     
                <% } 
                   if (thisOffset > 2) { %>
-                    <a href="../<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset-1),request.getRequestURI()) %>"><%= thisOffset-1 %></a>
+                    <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset-1),request.getRequestURI()) %>"><%= thisOffset-1 %></a>
                <% } %>
                   [<%= thisOffset %>]
                <% if (thisOffset+1 < pagesNum) { %>
-                    <a href="../<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset+1),request.getRequestURI()) %>"><%= thisOffset+1 %></a>
+                    <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset+1),request.getRequestURI()) %>"><%= thisOffset+1 %></a>
                <% } 
                   if (pagesNum - thisOffset > 2) { %>
                     &hellip;                     
@@ -133,13 +112,13 @@ int articlePerPage = 5;
                   if (thisOffset == pagesNum) { %>
                     <img src="../media/arrowright_<%= style1[iRubriekStyle] %>.gif" border="0">
                <% } else { %>
-                    <a href="../<%= ph.createItemUrl(artikelID, paginaID,"offset="+pagesNum,request.getRequestURI()) %>"><%= pagesNum %></a>
-                    <a href="../<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset+1),request.getRequestURI()) %>"
+                    <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+pagesNum,request.getRequestURI()) %>"><%= pagesNum %></a>
+                    <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset+1),request.getRequestURI()) %>"
                       ><img src="../media/arrowright_<%= style1[iRubriekStyle] %>.gif" border="0"></a>
                <% } %>
              </div>
              <% if (pagesNum > 5) { %>
-               <form name="myform" action="../<%= ph.createItemUrl(artikelID, paginaID,null,request.getRequestURI()) %>" method="post">
+               <form name="myform" action="<%= ph.createItemUrl(artikelID, paginaID,null,request.getRequestURI()) %>" method="post">
                  Ga naar pgn: <input name="offset" style="width:23px;height:17px;font-size:12px;">
                  <a href="#bottom" onclick="myform.submit(); return false;" class="colortxt">Zoek</a>
                  <span class="colortxt" style="font:bold 110%;">></span>

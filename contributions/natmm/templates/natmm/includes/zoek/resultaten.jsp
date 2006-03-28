@@ -180,7 +180,7 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                      }
                      %></mm:field>
                   </mm:related>
-                  <mm:related path="contentrel,provincies,posrel,natuurgebieden" fields="natuurgebieden.number">
+                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden" fields="natuurgebieden.number">
                      <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetNatuurgebiedenNodes.contains(sID)){
                         %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%

@@ -1,10 +1,5 @@
 <tr>
-	<td style="width:48%" class="maincolor" style="<%= (iRubriekLayout!=DEFAULT_LAYOUT ? "background-color: #FFFFFF;" : "" ) %>"><% 
-   if(isPreview) {
-      %><a href="<%= request.getContextPath() %>/editors/paginamanagement/pagina_flush.jsp?number=<%=paginaID %>" title="Publiceer deze pagina"><img src="<%= request.getContextPath() %>/editors/img/colors.gif" border="0" style="margin-left:3px;"></a>
-      <%
-   } 
-   %></td>
+	<td style="width:48%" class="maincolor" style="<%= (iRubriekLayout!=DEFAULT_LAYOUT ? "background-color: #FFFFFF;" : "" ) %>"><%@include file="../includes/flushlink.jsp" %></td>
 	<td style="width:744px;height:21px:" class="maincolor" style="<%= (iRubriekLayout==SUBSITE2_LAYOUT ? "background-color: #10086B;" : "" ) %>"><img src="media/trans.gif" width="744px" height="21" border="0" alt=""></td>
 	<td style="width:48%;text-align:center;" class="maincolor" style="<%= (iRubriekLayout!=DEFAULT_LAYOUT ? "background-color: #FFFFFF;" : "" ) %>"></td>
 </tr>
