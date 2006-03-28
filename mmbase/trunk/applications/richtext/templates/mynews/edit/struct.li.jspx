@@ -4,7 +4,7 @@
   <mm:node id="cate">
     <li>
       <mm:field name="title" />:
-      
+
       <span class="editlinks">
         <mm:maywrite>
           <mm:import id="wizard">tasks/structure/categories</mm:import>
@@ -22,21 +22,22 @@
 
             <mm:import id="submitted" externid="submit${cate.number}" />
             <mm:present referid="submitted">
-              <mm:field name="owner">
+              <mm:fieldlist fields="owner" id="input${cate.number}">
                 <mm:fieldinfo  type="useinput" />
-              </mm:field>
+              </mm:fieldlist>
+              <mm:remove referid="input${cate.number}" />
               <!-- also give away all relations -->
               <mm:listrelations>
                 <mm:maychangecontext>
                   <mm:setcontext><mm:field node="cate" name="owner"  /></mm:setcontext>
                 </mm:maychangecontext>
-              </mm:listrelations>              
+              </mm:listrelations>
             </mm:present>
 
-            | (<a id="a${cate.number}" href="javascript:document.forms['form${cate.number}'].submit()">Change context</a>: 
+            | (<a id="a${cate.number}" href="javascript:document.forms['form${cate.number}'].submit()">Change context</a>:
             <mm:fieldlist fields="owner" id="input${cate.number}">
               <!-- show form plus a small trick to inform user that he should submit this form now too -->
-              <mm:fieldinfo options="extra:onchange='document.getElementById(&quot;a${cate.number}&quot;).style.backgroundColor=&quot;yellow&quot;'" 
+              <mm:fieldinfo options="extra:onchange='document.getElementById(&quot;a${cate.number}&quot;).style.backgroundColor=&quot;yellow&quot;'"
                             type="input" />
             </mm:fieldlist>
           </form>
