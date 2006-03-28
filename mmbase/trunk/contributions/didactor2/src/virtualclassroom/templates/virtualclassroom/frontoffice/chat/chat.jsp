@@ -5,6 +5,7 @@
   <%@include file="/shared/setImports.jsp" %>
   <%@include file="userList.jsp" %>  
   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/virtualclassroom/css/base.css" objectlist="$includePath" referids="$referids" />" />  
+  <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
   <!-- Set applet parameters -->
   <mm:import id="jabchaturl"><%=request.getContextPath()%>/virtualclassroom/frontoffice/chat/jabApplet.jar</mm:import>
   <mm:import id="jabchatcode">nl.stivoro.jabchat.JabberApplet</mm:import>

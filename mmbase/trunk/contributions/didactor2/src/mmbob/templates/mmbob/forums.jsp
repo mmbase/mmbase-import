@@ -9,6 +9,7 @@
 <HTML>
 <HEAD>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/base.css" objectlist="$includePath" referids="$referids" />" />
    <title>MMBob</title>
 </head>
 
