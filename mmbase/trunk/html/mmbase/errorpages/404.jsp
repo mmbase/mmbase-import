@@ -10,10 +10,10 @@
     <h1>404 The requested resource is unavailable</h1>
     <h2><%=org.mmbase.Version.get()%></h2>
     <p>
-      <% String mesg = (String) request.getAttribute("org.mmbase.servlet.error_message");
+      <% String mesg = (String) request.getAttribute("org.mmbase.servlet.error.message");
          if (mesg == null) {
        %>
-      The current URL (<%=request.getAttribute("javax.servlet.forward.request_uri")%>) does not
+      The current URL (<%=request.getAttribute("javax.servlet.error.message")%>) does not
       point to an existing resource in this web-application.
       <% } else { %>
       <%=mesg%>
