@@ -12,8 +12,8 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 import java.util.*;
 
 import org.mmbase.module.core.MMBaseObserver;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.ThreadPools;
 
 /**
  * Invalidates the security caches if somethings changes in the
@@ -23,7 +23,7 @@ import org.mmbase.util.ThreadPools;
  * @todo undoubtly, this is too crude.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheInvalidator.java,v 1.7 2006-01-17 21:29:43 michiel Exp $
+ * @version $Id: CacheInvalidator.java,v 1.8 2006-03-28 23:06:58 michiel Exp $
  * @since MMBase-1.7
  */
 class CacheInvalidator implements MMBaseObserver {
@@ -60,36 +60,20 @@ class CacheInvalidator implements MMBaseObserver {
         return nodeChanged(machine, number, builder, ctype);
     }
 
-    protected StringBuffer invalidationScheduled = null;
-
     /**
      * What happens if something changes: clear the caches
      */
     synchronized protected boolean nodeChanged(String machine, String number, String builder, String ctype) {
-        StringBuffer sb = invalidationScheduled;
-        if (sb == null) {
-            invalidationScheduled = new StringBuffer("" + number + " (" + builder + ")");
-            ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        try {
-                            Thread.sleep(5000);
-                            log.service("Security objects " + invalidationScheduled + " have been changed changed, invalidating all security caches");
-                            Iterator i = securityCaches.iterator();
-                            while (i.hasNext()) {
-                                Map c = (Map) i.next();
-                                c.clear();
-                            }
-                        } catch (Exception e) {
-                            log.warn(e.getMessage());
-                        }
-                        invalidationScheduled = null;
-                    }
-                    
-                });
-        } else {
-            sb.append(", " + number + " (" + builder + ")");
+        if (((int) (System.currentTimeMillis() / 1000) - MMBase.startTime) > 300) {
+            log.service("A security object " + number + " (" + builder + ") has changed, invalidating all security caches");
+        } else if (log.isDebugEnabled()) {
+            log.debug("A security object " + number + " (" + builder + ") has changed, invalidating all security caches");
         }
-
+        Iterator i = securityCaches.iterator();
+        while (i.hasNext()) {
+            Map c = (Map) i.next();
+            c.clear();
+        }
         return true;
     }
 
