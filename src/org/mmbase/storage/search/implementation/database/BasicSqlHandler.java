@@ -22,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.57 2006-02-27 23:51:18 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.58 2006-03-28 23:43:08 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -95,7 +95,8 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     protected void appendDateValue(StringBuffer sb, Date value) {
-        dateFormat.format(value, sb, dontcareFieldPosition);
+        int timeZoneOffset = MMBase.getMMBase().getStorageManagerFactory().getTimeZoneOffset(value.getTime());
+        dateFormat.format(new Date(value.getTime() - timeZoneOffset), sb, dontcareFieldPosition);
     }
 
     /**
