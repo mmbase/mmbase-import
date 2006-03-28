@@ -36,6 +36,5 @@
    <relation destination="rubriek" role="posrel"/>
    <relation destination="shorty" role="rolerel"/>
    <relation destination="teaser" role="rolerel"/>
-  
    <relation destination="pagina" role="related"/>
 </action>

@@ -1,9 +1,9 @@
-   <link rel="stylesheet" type="text/css" href="<mm:present referid="subdir">../</mm:present>hoofdsite/themas/main.css"  title="default" />
+   <link rel="stylesheet" type="text/css" href="<%= (!subDir.equals("")? "../" : "" ) %>hoofdsite/themas/main.css"  title="default" />
    <%-- link rel="stylesheet" type="text/css" href="hoofdsite/themas/fontsize1.0.css"  / --%>
    <%-- link rel="alternate stylesheet" type="text/css" href="hoofdsite/themas/fontsize1.2.css" title="groot" / --%>
    <%-- link rel="alternate stylesheet" type="text/css" href="hoofdsite/themas/fontsize1.4.css" title="groter" / --%>
-   <script type="text/javascript" language="javaScript" src="scripts/launchcenter.js"></script>
-   <link rel="stylesheet" type="text/css" href="<mm:present referid="subdir">../</mm:present><%= styleSheet %>" />
+   <script type="text/javascript" language="javaScript" src="<%= (!subDir.equals("")? "../" : "" ) %>scripts/launchcenter.js"></script>
+   <link rel="stylesheet" type="text/css" href="<%= (!subDir.equals("")? "../" : "" ) %><%= styleSheet %>" />
 	<title>Natuurmonumenten: <mm:node number="<%= rubriekID %>"><mm:field name="naam" id="rubriek_naam" /></mm:node
 	   ><mm:node number="<%= paginaID %>"
 	      ><mm:field name="titel_zichtbaar"

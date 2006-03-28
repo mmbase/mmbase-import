@@ -68,12 +68,11 @@ if(isShortyOrTeaserImage || fitToThirdColumn || imagePartOfColumn) {
    } 
    boolean resetLink = false;
    %><mm:node number="<%= images_number %>"><%
+                  
          if(readmoreURL.equals("")) { 
             %><mm:field name="reageer" jspvar="showpopup" vartype="String" write="false"><%
                if(showpopup.equals("1")) {
-                  String requestURI = request.getRequestURI();
-                  requestURI = requestURI.substring(0,requestURI.lastIndexOf("/"));
-                  readmoreURL = "javascript:launchCenter('" + requestURI + "/includes/fotopopup.jsp?i="+ images_number + "&rs=" + styleSheet + "','foto',600,600,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');setTimeout('newwin.focus();',250);";
+                  readmoreURL = "javascript:launchCenter('" + subDir + "includes/fotopopup.jsp?i="+ images_number + "&rs=" + styleSheet + "','foto',600,600,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');setTimeout('newwin.focus();',250);";
                   validLink = true;
                   resetLink = true;
                } else {
