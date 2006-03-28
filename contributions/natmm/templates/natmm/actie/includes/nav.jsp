@@ -21,6 +21,7 @@ int TITLE = 1;
 int DATE = 2;
 int QUOTE = 3;
 int menuType = TITLE;
+int articlePerPage = 5;
 
 %>
 <mm:node number="<%= paginaID %>">
@@ -50,8 +51,8 @@ int menuType = TITLE;
      <mm:relatednodes type="artikel" path="contentrel,artikel" constraints="<%= artikelConstraint %>">
        <mm:first><mm:size jspvar="dummy" vartype="String" write="false">
          <% artikelNum = Integer.parseInt(dummy); 
-            pagesNum = artikelNum/5;
-            if (pagesNum*5 < artikelNum) { pagesNum++; }
+            pagesNum = artikelNum/articlePerPage;
+            if (pagesNum*articlePerPage < artikelNum) { pagesNum++; }
          %>
        </mm:size></mm:first>
      </mm:relatednodes>
@@ -69,7 +70,7 @@ int menuType = TITLE;
           </tr>
        </mm:isnotempty>
        </mm:field>
-       <mm:relatednodes type="artikel" path="contentrel,artikel" max="5" offset="<%= "" + (thisOffset-1)*5 %>" 
+       <mm:relatednodes type="artikel" path="contentrel,artikel" max="<%= ""+ articlePerPage %>" offset="<%= "" + (thisOffset-1)*articlePerPage %>" 
           constraints="<%= artikelConstraint %>" orderby="<%= artikelOrderby %>" directions="<%= artikelDirections %>">
          <tr style="padding-bottom:10px;">
            <td valign="top" style="width:5px; padding-left:7px; padding-right:3px"><span style="font:bold 110%;color:red">></span></td>
