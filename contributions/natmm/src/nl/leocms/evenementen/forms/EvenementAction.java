@@ -136,7 +136,7 @@ public class EvenementAction extends Action {
                   thisEventNode.setIntValue("min_aantal_deelnemers",0);
                   thisEventNode.setIntValue("max_aantal_deelnemers",9999);
                   thisEventNode.setIntValue("cur_aantal_deelnemers",0);
-                  thisEventNode.setStringValue("groepsexcursie","0");
+                  thisEventNode.setStringValue("groepsexcursie","0"); // not used, see deelnemerscategorie.groepsactiviteit
                   thisEventNode.setStringValue("adres_verplicht","0");
                   thisEventNode.setStringValue("aanmelden_vooraf","1");
                   thisEventNode.setStringValue("achteraf_bevestigen","1");

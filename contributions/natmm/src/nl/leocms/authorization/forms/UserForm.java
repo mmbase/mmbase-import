@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * Form bean for the UserForm page.
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.5 $, $Date: 2006-03-21 22:05:30 $
+ * @version $Revision: 1.6 $, $Date: 2006-03-28 07:55:54 $
  *
  * @struts:form name="UserForm"
  */
@@ -58,6 +58,7 @@ public class UserForm extends ActionForm {
 
    public static String ACTIVATE_ACTION = "Activeer account";
    public static String SAVE_ACTION = "Opslaan";
+   public static String CANCEL_ACTION = "Annuleer";
 
    private String action = "";
    private String username;
@@ -131,9 +132,8 @@ public class UserForm extends ActionForm {
          errors.add("email", new ActionError("error_code_11"));
       }
 
-      // rebuild Map omdat na validatie de rollen weg zijn uit de form-instantie
+      // rebuild Map because after validation the roles are removed from the form-instance
       this.rollen = Util.buildRolesFromRequest(request);
-
       //
       return errors;
    }

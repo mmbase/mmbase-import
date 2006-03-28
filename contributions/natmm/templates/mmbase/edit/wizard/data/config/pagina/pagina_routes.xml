@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>pagina van het genre routes</title>
+   <title>route pagina</title>
    <description>
       <![CDATA[
-	<h1>Pagina van het genre routes</h1>
+	<h1>Route pagina</h1>
 	Deze editwizard kan worden gebruikt voor het koppelen van provincies, panos, shorties en teasers aan de pagina.<br/>
 	<ul>
 	   <li>Aan de provincies, zijn natuurgebieden gekoppeld en aan de natuurgebieden routes. Deze routes worden in de pagina getoond.</li>

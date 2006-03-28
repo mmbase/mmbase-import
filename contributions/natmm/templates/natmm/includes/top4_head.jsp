@@ -4,12 +4,16 @@
    <%-- link rel="alternate stylesheet" type="text/css" href="hoofdsite/themas/fontsize1.4.css" title="groter" / --%>
    <script type="text/javascript" language="javaScript" src="scripts/launchcenter.js"></script>
    <link rel="stylesheet" type="text/css" href="<mm:present referid="subdir">../</mm:present><%= styleSheet %>" />
-	<title>Natuurmonumenten: <mm:node number="<%= rubriekID %>"><mm:field name="naam" /></mm:node
+	<title>Natuurmonumenten: <mm:node number="<%= rubriekID %>"><mm:field name="naam" id="rubriek_naam" /></mm:node
 	   ><mm:node number="<%= paginaID %>"
 	      ><mm:field name="titel_zichtbaar"
 	         ><mm:compare value="0" inverse="true"
-	            > - <mm:field name="titel"
-	         /></mm:compare
+               ><mm:field name="titel"
+	               ><mm:compare referid2="rubriek_naam" inverse="true"
+	                  >- <mm:write 
+                  /></mm:compare
+               ></mm:field
+            ></mm:compare
 	      ></mm:field
 	   ></mm:node></title>
 </head>

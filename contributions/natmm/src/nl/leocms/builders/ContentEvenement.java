@@ -33,7 +33,7 @@ import nl.leocms.evenementen.*;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ContentEvenement extends ContentElementBuilder {
    private static final Logger log = Logging.getLoggerInstance(ContentEvenement.class);
@@ -93,12 +93,11 @@ public class ContentEvenement extends ContentElementBuilder {
       int iCurPart = 0;
       iNodes= cloud.getList(node.getStringValue("number")
                , "evenement,posrel,inschrijvingen,posrel,deelnemers,related,deelnemers_categorie"
-               , "deelnemers.bron,deelnemers_categorie.aantal_per_deelnemer,deelnemers_categorie.number"
-               , null, null, null, null, false).nodeIterator();
+               , "deelnemers.bron,deelnemers_categorie.aantal_per_deelnemer"
+               , "deelnemers_categorie.groepsactiviteit=='0'", null, null, null, false).nodeIterator();
       while(iNodes.hasNext()) {
          Node nextNode = iNodes.nextNode();
-         String thisCategory = nextNode.getStringValue("deelnemers_categorie.number");
-         if(!isGroupExcursion || thisCategory.equals(Evenement.groupExcursion(cloud))) {
+         if(!isGroupExcursion) {
             iCurPart += nextNode.getIntValue("deelnemers.bron")*nextNode.getIntValue("deelnemers_categorie.aantal_per_deelnemer");
          }
       }

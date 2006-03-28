@@ -559,8 +559,6 @@ public class SubscribeForm extends ActionForm {
 
       if(this.getAction().equals(SUBSCRIBE_ACTION)||this.getAction().equals(CHANGE_ACTION)) {                       // *** Meld aan / Wijzig ***
          
-         validateCounter++;
-      
          if(this.getLastName().equals("")) {
             errors.add("warning",new ActionError("evenementen.required.lastname"));
          }
@@ -651,6 +649,9 @@ public class SubscribeForm extends ActionForm {
             } catch(Exception e) {
                errors.add("warning",new ActionError("evenementen.numberofparticipants.nan"));
             }
+         }
+         if(errors.size()>0) {
+            validateCounter++;
          }
       }
       return errors;

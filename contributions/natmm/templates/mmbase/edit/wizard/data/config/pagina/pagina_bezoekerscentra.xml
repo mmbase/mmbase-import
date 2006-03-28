@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>pagina van het genre bezoekerscentra</title>
+   <title>bezoekerscentra pagina</title>
    <description>
       <![CDATA[
-	<h1>Pagina van het genre bezoekerscentra</h1>
+	<h1>Bezoekerscentra pagina</h1>
 	Deze editwizard kan worden gebruikt voor het koppelen van artikelen, panos, shorties en teasers aan de pagina.<br/>
 	<ul>
 	   <li>Het eerste artikel wordt in de midden kolom getoond. De overige artikelen staan in de rechterkolom.</li>

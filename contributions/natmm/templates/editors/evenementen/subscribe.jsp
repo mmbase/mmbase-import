@@ -347,8 +347,9 @@ DoubleDateNode ddn = new DoubleDateNode();
       <mm:field name="posrel.pos" jspvar="costs" vartype="String" write="false">
       <mm:node element="deelnemers_categorie">
          <mm:field name="number" jspvar="thisCategory" vartype="String" write="false">
+         <mm:field name="groepsactiviteit" jspvar="isGroupEvent" vartype="String" write="false">
          <% 
-         if(!isGroupExcursion||thisCategory.equals(Evenement.groupExcursion(cloud))) {
+         if(!isGroupExcursion||isGroupEvent.equals("1")) {
             int iNumberPerParticipant = 1;
             int iParticipantsInCat = 0; 
             %>
@@ -378,6 +379,7 @@ DoubleDateNode ddn = new DoubleDateNode();
             </tr>
             <%
          } %>
+         </mm:field>
          </mm:field>
       </mm:node>
       </mm:field>
@@ -507,11 +509,10 @@ DoubleDateNode ddn = new DoubleDateNode();
          <td><html:text property="numberInCategory" style="width:20px;" tabindex="5"/></td>
          <td colspan="2"><html:select property="participantsCategory">
                <html:option value="-1">Selecteer</html:option>
-               <mm:list nodes="<%= parent_number %>" path="evenement,posrel,deelnemers_categorie" orderby="deelnemers_categorie.naam">
-                  <mm:field name="deelnemers_categorie.number" jspvar="thisCategorie" vartype="String" write="false">
-                     <% if(!thisCategorie.equals(Evenement.groupExcursion(cloud))) { %>
-                        <html:option value="<%= thisCategorie %>"><mm:field name="deelnemers_categorie.naam" /></html:option>
-                     <% } %>
+               <mm:list nodes="<%= parent_number %>" path="evenement,posrel,deelnemers_categorie" orderby="deelnemers_categorie.naam"
+                  constraints="deelnemers_categorie.groepsactiviteit=='0'">
+                  <mm:field name="deelnemers_categorie.number" jspvar="dc_number" vartype="String" write="false">
+                     <html:option value="<%= dc_number %>"><mm:field name="deelnemers_categorie.naam" /></html:option>
                   </mm:field>
                </mm:list>
             </html:select>

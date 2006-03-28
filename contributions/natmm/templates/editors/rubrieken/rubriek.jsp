@@ -20,6 +20,8 @@ UrlConverter.getCache().flushAll();
    int DEFAULT_LAYOUT = 0;
    int SUBSITE1_LAYOUT = 1;
    int SUBSITE2_LAYOUT = 2;
+   int SUBSITE3_LAYOUT = 3;
+
    
    // *** default style should be set in top1_params.jsp and new layouts should be added to /editors/rubriek/rubriek.jsp ***
    int PARENT_STYLE = -1;
@@ -111,6 +113,7 @@ Rubriek:<b>
              <html:option value="<%= "" + DEFAULT_LAYOUT %>">Natuurmonumenten</html:option>
              <html:option value="<%= "" + SUBSITE1_LAYOUT %>">Naardermeer</html:option>
              <html:option value="<%= "" + SUBSITE2_LAYOUT %>">ING-Perspectief</html:option>
+             <html:option value="<%= "" + SUBSITE3_LAYOUT %>">Actiesite</html:option>
          </html:select>
       </td>
    </tr>
