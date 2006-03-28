@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.25 2006-02-14 22:26:27 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.26 2006-03-28 23:43:08 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -633,6 +633,17 @@ public abstract class StorageManagerFactory {
         return setSurrogator;
     }
 
+
+    /**
+     * Returns the offset which must be used in the database. Currently this is based on the system's
+     * default time zone. It is imaginable that can have configuration or database specific details later.
+     * @param time The time at which it is evaluated (summer time issues)
+     * @since MMBase-1.8
+     * @todo experimental
+     */
+    public int getTimeZoneOffset(long time) {
+        return TimeZone.getDefault().getOffset(time);
+    }
 
 
 }
