@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.21 2005-10-30 19:09:10 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.22 2006-03-28 23:43:08 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -64,8 +64,9 @@ public class BasicStepField implements StepField {
             break;
 
             // String types.
-        case Field.TYPE_STRING:
         case Field.TYPE_XML:
+            
+        case Field.TYPE_STRING:
             ok = value instanceof String;
             break;
         case Field.TYPE_BOOLEAN:

@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.151 2006-03-24 15:00:32 daniel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.152 2006-03-28 23:43:08 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -452,15 +452,6 @@ public class DatabaseStorageManager implements StorageManager {
          return getStringValue(result, index, field, mayShorten);
      }
 
-    /**
-     * Returns the offset which must be used in the database. Currently this is based on te system's
-     * default time zone. It is imaginable that can have configuration or database specific details later.
-     * @param time The time at which it is evaluated (summer time issues)
-     * @since MMBase-1.8
-     */
-    protected int getTimeZoneOffset(long time) {
-        return TimeZone.getDefault().getOffset(time);
-    }
 
     /**
      * Retrieve a date for a specified object field.
@@ -491,7 +482,7 @@ public class DatabaseStorageManager implements StorageManager {
             return null;
         } else {
             long time = ts.getTime();
-            java.util.Date d = new java.util.Date(time + getTimeZoneOffset(time));
+            java.util.Date d = new java.util.Date(time + factory.getTimeZoneOffset(time));
             return d;
         }
     }
@@ -1282,7 +1273,7 @@ public class DatabaseStorageManager implements StorageManager {
             long time = date.getTime();
             // The driver will interpret the date object and convert it to the default timezone when storing.
             // undo that..
-            statement.setTimestamp(index, new Timestamp(time - getTimeZoneOffset(time)));
+            statement.setTimestamp(index, new Timestamp(time - factory.getTimeZoneOffset(time)));
             node.storeValue(field.getName(), date);
         }
     }
