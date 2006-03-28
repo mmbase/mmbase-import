@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.74 2006-01-27 17:16:25 michiel Exp $
+ * @version $Id: Module.java,v 1.75 2006-03-28 17:38:56 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -450,7 +450,7 @@ public abstract class Module extends FunctionProvider {
                 } catch (ClassNotFoundException cnfe) {
                     log.error("Could not load class with name '" + className + "', " +
                               "which was specified in the module:'" + file + " '(" + cnfe + ")" );
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     log.error("Error while loading module class" + Logging.stackTrace(e));
                 }
             }
