@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
+import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.NotFoundException;
@@ -33,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.64 2006-01-17 00:13:14 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.65 2006-03-28 21:47:49 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -61,6 +62,7 @@ public class IncludeTag extends UrlTag {
     protected Attribute notFound        = Attribute.NULL;
 
     protected Attribute resource        = Attribute.NULL;
+
 
     /**
      * Test whether or not the 'cite' parameter is set
@@ -116,25 +118,6 @@ public class IncludeTag extends UrlTag {
 
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 
-            /*
-            if (connection instanceof HttpsURLConnection) {
-                ((HttpsURLConnection) connection).setHostnameVerifier(new HostnameVerifier() {
-                        public boolean verify(String hostname, SSLSession session) {
-                            return true;
-                        }
-                    }); 
-            }
-            */
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode >= 300) {
-                if (responseCode >= 500) {
-                    log.warn("Server error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage());
-                } else if (responseCode >= 400) {
-                    log.warn("Client error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage());
-                } 
-                log.warn("Redirect " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage() + " " + connection.getInstanceFollowRedirects());
-            }
             if (request != null) {
                 // Also propagate the cookies (like the jsession...)
                 // Then these, and the session,  also can be used in the include-d page
@@ -151,43 +134,66 @@ public class IncludeTag extends UrlTag {
                 }
             }
 
-            String encoding = encodingAttribute.getString(this);
-            if (encoding.equals("")) {            
-                encoding = connection.getContentEncoding();
-            }
-            log.debug("Found content encoding " + encoding);
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            InputStream inputStream = connection.getInputStream();
-            int c = inputStream.read();
-            while (c != -1) {
-                bytes.write(c);
-                c = inputStream.read();
-            }
-            byte[] allBytes = bytes.toByteArray();
-            if (encoding == null || encoding.equals("")) {
-                String contentType = connection.getContentType();
-                if (contentType != null) {
-                    // according to http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/, 'higher level' charset indication should prevail
-                    encoding = GenericResponseWrapper.getEncoding(contentType);
-                }
+            String result;
+            int responseCode;
+            try {
+                responseCode = connection.getResponseCode();
+                // how about responsecodes < 200?
+                if (responseCode < 300) {
 
-                if (encoding == null && contentType != null) { // take a default based on the content type
-                    encoding = GenericResponseWrapper.getDefaultEncoding(contentType);
-                }
-                if (encoding.equals(GenericResponseWrapper.TEXT_XML_DEFAULT_CHARSET)) { // if content-type is text/xml the body should be US-ASCII, which we will ignore and evalute the body. See comments in GenericResponseWrapper#getDefaultEncoding. 
-                    encoding = GenericResponseWrapper.getXMLEncoding(allBytes); // Will detect if body is XML, and set encoding to something if it is, otherwise, remains null.
-                }
+                    String encoding = encodingAttribute.getString(this);
+                    if (encoding.equals("")) {
+                        encoding = connection.getContentEncoding();
+                    }
+                    log.debug("Found content encoding " + encoding);
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    InputStream inputStream = connection.getInputStream();
+                    int c = inputStream.read();
+                    while (c != -1) {
+                        bytes.write(c);
+                        c = inputStream.read();
+                    }
+                    byte[] allBytes = bytes.toByteArray();
+                    if (encoding == null || encoding.equals("")) {
+                        String contentType = connection.getContentType();
+                        if (contentType != null) {
+                            // according to http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/, 'higher level' charset indication should prevail
+                            encoding = GenericResponseWrapper.getEncoding(contentType);
+                        }
 
+                        if (encoding == null && contentType != null) { // take a default based on the content type
+                            encoding = GenericResponseWrapper.getDefaultEncoding(contentType);
+                        }
+                        if (encoding.equals(GenericResponseWrapper.TEXT_XML_DEFAULT_CHARSET)) { // if content-type is text/xml the body should be US-ASCII, which we will ignore and evalute the body. See comments in GenericResponseWrapper#getDefaultEncoding.
+                            encoding = GenericResponseWrapper.getXMLEncoding(allBytes); // Will detect if body is XML, and set encoding to something if it is, otherwise, remains null.
+                        }
+
+                    }
+                    log.debug("Using " + encoding);
+                    result = new String(allBytes, encoding) + debugEnd(absoluteUrl);
+
+                } else {
+                    if (responseCode >= 500) {
+                        result = "Server error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage();
+                    } else if (responseCode >= 400) {
+                        result = "Client error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage();
+                    } else { // >= 300 < 400
+                        result = "Redirect " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage() + " " + connection.getInstanceFollowRedirects();
+                    }
+                }
+            } catch (java.net.ConnectException ce) {
+                result = "For " + includeURL + ": " + ce.getMessage();
+                responseCode = -1;
             }
-            log.debug("Using " + encoding);
-            helper.setValue(debugStart(absoluteUrl) + new String(allBytes, encoding) + debugEnd(absoluteUrl));
+
+            handleResponse(responseCode, result, absoluteUrl);
 
             if (log.isDebugEnabled()) {
                 log.debug("found string: " + helper.getValue());
             }
 
         } catch (IOException e) {
-            throw new TaglibException (e);
+            throw new TaglibException (e.getMessage(), e);
         }
     }
 
@@ -204,6 +210,37 @@ public class IncludeTag extends UrlTag {
 
     protected boolean addContext() {
         return false;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    protected void handleResponse(int code, String result, String url) throws JspTagException {
+
+        String page;
+        switch(code) {
+        case 200:
+            page = result;
+            break;
+        default:
+        case 404:
+            switch(Notfound.get(notFound, this)) {
+            case Notfound.SKIP:
+            case Notfound.PROVIDENULL:
+                page = "";
+                break;
+            case Notfound.THROW:
+                if ("".equals(result)) result = "The request resource '" + url + "' is not available";
+                throw new JspTagException(result);
+            default:
+            case Notfound.DEFAULT:
+            case Notfound.MESSAGE:
+                if ("".equals(result)) result = "The request resource '" + url + "' is not available";
+                page = result;
+            }
+            break;
+        }
+        helper.setValue(debugStart(url) + page + debugEnd(url));
     }
     /**
      * Use the RequestDispatcher to include a page without doing a request.
@@ -225,9 +262,9 @@ public class IncludeTag extends UrlTag {
                     log.debug("key '" + e.getKey() + "' value '" + Arrays.asList((String[]) o) + "'");
                 } else {
                     log.debug("key '" + e.getKey() + "' value '" + o.toString() + "'");
-                }                
+                }
             }
-        } 
+        }
 
         req.removeAttribute(ContextTag.CONTEXTTAG_KEY);
 
@@ -237,7 +274,7 @@ public class IncludeTag extends UrlTag {
                 Map.Entry entry = (Map.Entry) i.next();
                 req.setAttribute((String) entry.getKey(), entry.getValue());
             }
-            
+
         }
         // Orion bug fix.
         req.getParameterMap();
@@ -252,17 +289,16 @@ public class IncludeTag extends UrlTag {
                 throw new NotFoundException("Page \"" + relativeUrl + "\" does not exist (No request-dispatcher could be created)");
             }
 
-            GenericResponseWrapper responseWrapper;
+            IncludeWrapper responseWrapper;
             String encoding = encodingAttribute.getString(this);
-            if (encoding.equals("")) { 
-                responseWrapper = new GenericResponseWrapper(resp);
+            if (encoding.equals("")) {
+                responseWrapper = new IncludeWrapper(resp);
             } else {
-                responseWrapper = new GenericResponseWrapper(resp, encoding);
+                responseWrapper = new IncludeWrapper(resp, encoding);
             }
+            requestDispatcher.include(requestWrapper, responseWrapper);
 
-            requestDispatcher.include(requestWrapper, responseWrapper);                
-            String page = responseWrapper.toString();
-            helper.setValue(debugStart(relativeUrl) + page + debugEnd(relativeUrl));                
+            handleResponse(responseWrapper.getStatus(), responseWrapper.toString(), relativeUrl);
 
 
         } catch (Throwable e) {
@@ -308,26 +344,27 @@ public class IncludeTag extends UrlTag {
                 if (j != -1) {
                     relativeUrl = relativeUrl.substring(0, j);
                 }
-                
+
             }
 
 
             String resource = relativeUrl;
             if (log.isDebugEnabled()) log.debug("Citing " + resource);
-            
-            
+
+
             Reader reader = ResourceLoader.getWebRoot().getReader(resource);
-            StringWriter writer = new StringWriter();
             if (reader == null) {
-                writer.write("No such resource " + resource);
+                handleResponse(404, "No such resource " + resource, resource);
             } else {
+                StringWriter writer = new StringWriter();
                 while (true) {
                     int c = reader.read();
                     if (c == -1) break;
                     writer.write(c);
                 }
+                handleResponse(200, writer.toString(), resource);
             }
-            helper.setValue(debugStart(resource) + writer.toString() + debugEnd(resource));
+
         } catch (IOException e) {
             throw new TaglibException (e);
         }
@@ -395,16 +432,10 @@ public class IncludeTag extends UrlTag {
                     // Using url-objects only because they know how to resolve relativity
                     URL u = new URL("http", "localhost", includingServlet);
                     URL dir = new URL(u, "."); // directory
-                   
-                    File currentDir = new File(includingServlet + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)                    
+
+                    File currentDir = new File(includingServlet + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)
                     nudeUrl = new URL(dir, nudeUrl).getFile();
                     includedServlet = nudeUrl + params;
-                }
-
-                if (notFound.getString(this).equals("exception")) {
-                    if (ResourceLoader.getWebRoot().getResource(nudeUrl).openConnection().getDoInput() == false) {
-                        throw new JspTagException("File '" + nudeUrl + "' does not exist");
-                    }
                 }
 
                 // Increase level and put it together with the new URI in the Attributes of the request
@@ -486,7 +517,7 @@ public class IncludeTag extends UrlTag {
     private String debugStart(String url) throws JspTagException {
         switch(getDebug()) {
         case DEBUG_NONE: return "";
-        case DEBUG_HTML: 
+        case DEBUG_HTML:
             return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
         case DEBUG_XML:
             return "<!-- " + getThisName() + " page = '" + url + "' -->";
@@ -501,12 +532,36 @@ public class IncludeTag extends UrlTag {
     private String debugEnd(String url) throws JspTagException {
         switch(getDebug()) {
         case DEBUG_NONE: return "";
-        case DEBUG_HTML: 
+        case DEBUG_HTML:
             return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
         case DEBUG_XML:
             return "<!-- END " + getThisName() + " page = '" + url + "' -->";
         case DEBUG_CSS:  return "\n/* END " + getThisName() + " page = '" + url + "' */\n";
         default: return "";
         }
+    }
+    private static class IncludeWrapper extends GenericResponseWrapper {
+        int includeStatus = 200;
+        public IncludeWrapper(HttpServletResponse resp) {
+            super(resp);
+        }
+        public IncludeWrapper(HttpServletResponse resp, String encoding) {
+            super(resp, encoding);
+        }
+
+        // don't wrap status to including request.
+        public void setStatus(int status) {
+            includeStatus = status;
+        }
+        public void sendError(int sc, String mes) {
+            includeStatus = sc;
+        }
+        public void sendError(int sc) {
+            includeStatus = sc;
+        }
+        public int getStatus() {
+            return includeStatus;
+        }
+
     }
 }
