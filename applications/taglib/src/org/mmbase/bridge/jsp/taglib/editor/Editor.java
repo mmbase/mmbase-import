@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.10 2006-03-15 02:21:04 michiel Exp $
+ * @version $Id: Editor.java,v 1.11 2006-03-28 22:33:06 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -66,16 +66,6 @@ abstract public class Editor {
     protected  Parameter[] getParameterDefinition() {
         return Parameter.EMPTY;
     }
-    /**
-     * Here is were the EditTag registerss the lists containing the queries,
-     * nodenumbers and fieldnames it received from the FieldTags with the
-     * implementing editor class.
-     *
-     * @param queryList     List with SearchQuery's that delivered the field
-     * @param nodenrList    List with nodenumbers of the node the field belongs to
-     * @param fieldList     List with the fieldnames
-     */
-    public abstract void registerFields(List queryList, List nodenrList, List fieldList);
 
     /**
      * Should create a link to an editor or some other way to edit the data displayed.
