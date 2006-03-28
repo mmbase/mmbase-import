@@ -673,8 +673,9 @@ public class SubscribeAction extends Action {
             // *** add participant to subscription
             if(subscribeForm.getTicketOffice().equals("backoffice")) {
                Node thisParticipant = null;
+               String thisParent = subscribeForm.getParent();
                boolean onlyGroupExcursion = false;
-               if(Evenement.isGroupExcursion(cloud,subscribeForm.getParent())) {
+               if(Evenement.isGroupExcursion(cloud,thisParent)) {
                   // for a group excursion the first participant should be of the category "group excursion"
                   NodeList dcl = cloud.getList( thisSubscription.getStringValue("number")
                               ,"inschrijvingen,posrel,deelnemers,related,deelnemers_categorie"
@@ -682,7 +683,7 @@ public class SubscribeAction extends Action {
                               ,null,null,null,true);
                   if(dcl.size()==0) {
                      // find the "group excursion" related to this event
-                     dcl = cloud.getList( thisEvent.getStringValue("number")
+                     dcl = cloud.getList( thisParent
                               ,"evenement,posrel,deelnemers_categorie"
                               ,"deelnemers_categorie.number","deelnemers_categorie.groepsactiviteit='1'"
                               ,null,null,null,true);
