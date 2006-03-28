@@ -13,6 +13,7 @@ public class UrlCache {
   }
 
   public void flushAll() {
+    // this can lead to a: java.util.ConcurrentModificationException
     for (Iterator it=cacheJSPToURL.keySet().iterator();it.hasNext();) {
       cacheJSPToURL.remove(it.next());
     }

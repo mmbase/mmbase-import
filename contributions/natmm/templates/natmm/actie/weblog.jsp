@@ -5,13 +5,13 @@
 PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <%@include file="../includes/top2_cacheparams.jsp" %>
-<!-- cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" -->
-<mm:import id="subdir" />
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <% if(!offsetID.equals("0")){
    %><mm:import id="onload_statement">window.location='#bottom';</mm:import><%
 }
 %>
 <%@include file="../includes/top4_head.jsp" %>
+<div style="position:absolute"><%@include file="../includes/flushlink.jsp" %></div>
 <table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" valign="top">
    <%@include file="../includes/top5b_pano.jsp" %>
 </table>
@@ -24,9 +24,10 @@ long selectedDay = nowDay;
 long oneDay = 24*60*60;
 %>
 <mm:node number="<%= paginaID %>">
+  <%@include file="includes/navsettings.jsp" %>
   <% 
   if(artikelID.equals("-1")) { 
-    String artikelConstraint = "artikel.begindatum < '" + (nowDay+oneDay) + "'";  %>
+    artikelConstraint = "artikel.begindatum < '" + (nowDay+oneDay) + "'";  %>
     <mm:relatednodes type="artikel" path="contentrel,artikel" orderby="begindatum" directions="DOWN" max="1"
       constraints="<%= artikelConstraint %>">
        <mm:field name="number" jspvar="artikel_number" vartype="String" write="false">
@@ -42,60 +43,59 @@ long oneDay = 24*60*60;
   <table cellspacing="0" cellpadding="0" width="744" align="center" border="0" valign="top">
     <tr>
       <td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:10px">
-        <table class="dotline"><tr><td height="3"></td></tr></table>
-        <table cellspacing="0" cellpadding="0" border="0" valign="top">
-            <tr>
-               <td style="padding-top:2px;padding-right:7px;"><a href="a6-a9"><img src="../media/arrowleft_default.gif" border="0"></a></td>
-               <td><a href="/a6-a9" class="hover" style="font-size:95%;">TERUG NAAR HOME</a></td>
-            </tr>
-        </table>
-        <table class="dotline" style="margin-top:0px;"><tr><td height="3"></td></tr></table>
-        <% String artikelConstraint = "artikel.begindatum < '" + selectedDay + "'"; %>
-        <mm:relatednodes type="artikel" path="contentrel,artikel" max="1" orderby="begindatum" directions="DOWN"
-            constraints="<%= artikelConstraint %>">
-          <div style="padding-bottom:10px">
-            <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
-              <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" max="1">
-                <tr>
-                  <td><img src='<mm:image template="s(170)+part(0,0,170,50)" />'></td>
-                </tr>
-              </mm:relatednodes>
-              <tr>
-                <td style="padding:5px 10px 10px 10px">
-                  <mm:field name="begindatum" jspvar="dummy" vartype="Long">
-                    <% if (dummy.longValue() < nowDay - oneDay) { %><b>Vorige gast</b><% } else { %><b>Gisteren</b><% } %><br>
-                  </mm:field>
-                  was <span style="font:bold 110%;color:red">></span> 
-                  <span class="colortitle"><mm:field name="titel"/></span> op De Flark<br>
-                  <a href="weblog.jsp?p=<%= paginaID%>&a=<mm:field name="number"/>" class="maincolor_link">Lees over zijn ervaringen</a>
-                  <span class="colortxt">></span>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </mm:relatednodes>
-        <% artikelConstraint = "artikel.begindatum > '" + selectedDay + "'"; %>
-        <mm:relatednodes type="artikel" path="contentrel,artikel" max="1" orderby="begindatum" directions="UP"
-            constraints="<%= artikelConstraint %>">
-          <div style="padding-bottom:10px">
-            <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
-              <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" max="1">
-                <tr>
-                  <td><img src='<mm:image template="s(170)+part(0,0,170,50)" />'></td>
-                </tr>
-              </mm:relatednodes>
-              <tr>
-                <td style="padding:5px 10px 10px 10px">
-                  <mm:field name="begindatum" jspvar="dummy" vartype="Long">
-                    <% if (dummy.longValue() > nowDay + 2*oneDay) { %><b>Volgende gast</b><% } else { %><b>Morgen</b><% } %><br>
-                  </mm:field>
-                  is <span style="font:bold 110%;color:red">></span> 
-                  <span class="colortitle"><mm:field name="titel"/></span> op De Flark
-                </td>
-              </tr>
-            </table>
-          </div>
-        </mm:relatednodes>
+        <%@include file="includes/homelink.jsp" %>
+        <% 
+        if(menuType==QUOTE) {
+
+           artikelConstraint = "artikel.begindatum < '" + selectedDay + "'"; %>
+           <mm:relatednodes type="artikel" path="contentrel,artikel" max="1" orderby="begindatum" directions="DOWN"
+               constraints="<%= artikelConstraint %>">
+             <div style="padding-bottom:10px">
+               <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
+                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" max="1">
+                   <tr>
+                     <td><img src='<mm:image template="s(170)+part(0,0,170,50)" />'></td>
+                   </tr>
+                 </mm:relatednodes>
+                 <tr>
+                   <td style="padding:5px 10px 10px 10px">
+                     <mm:field name="begindatum" jspvar="dummy" vartype="Long">
+                       <% if (dummy.longValue() < nowDay - oneDay) { %><b>Vorige gast</b><% } else { %><b>Gisteren</b><% } %><br>
+                     </mm:field>
+                     was <span style="font:bold 110%;color:red">></span> 
+                     <span class="colortitle"><mm:field name="titel"/></span> op De Flark<br>
+                     <a href="weblog.jsp?p=<%= paginaID%>&a=<mm:field name="number"/>" class="maincolor_link">Lees over zijn ervaringen</a>
+                     <span class="colortxt">></span>
+                   </td>
+                 </tr>
+               </table>
+             </div>
+           </mm:relatednodes>
+           <% artikelConstraint = "artikel.begindatum > '" + selectedDay + "'"; %>
+           <mm:relatednodes type="artikel" path="contentrel,artikel" max="1" orderby="begindatum" directions="UP"
+               constraints="<%= artikelConstraint %>">
+             <div style="padding-bottom:10px">
+               <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
+                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" max="1">
+                   <tr>
+                     <td><img src='<mm:image template="s(170)+part(0,0,170,50)" />'></td>
+                   </tr>
+                 </mm:relatednodes>
+                 <tr>
+                   <td style="padding:5px 10px 10px 10px">
+                     <mm:field name="begindatum" jspvar="dummy" vartype="Long">
+                       <% if (dummy.longValue() > nowDay + 2*oneDay) { %><b>Volgende gast</b><% } else { %><b>Morgen</b><% } %><br>
+                     </mm:field>
+                     is <span style="font:bold 110%;color:red">></span> 
+                     <span class="colortitle"><mm:field name="titel"/></span> op De Flark
+                   </td>
+                 </tr>
+               </table>
+             </div>
+           </mm:relatednodes>
+           <%
+        } %>
+
         <table cellSpacing="0" cellPadding="0" border="0" style="padding-left:10px;width:170px;">
           <tr>
             <td><a href="mailto:"><img src="../media/email.gif" border="0"></a></td>
@@ -120,6 +120,12 @@ long oneDay = 24*60*60;
                 </mm:node>
                 <span style="font:bold 110%;color:red">></span>
                 <span class="colortitle"><mm:field name="titel"/></span>
+                <% if(menuType==DATE) {
+                  %>             
+                  <span class="colortxt"><mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false"
+                  ><mm:time time="<%=artikel_begindatum%>" format="d MMM yyyy"/></mm:field></span>
+                  <% 
+                } %>
               </div>
             </td>
             <td style="padding-left:10px;padding-top:7px;">
@@ -182,5 +188,5 @@ long oneDay = 24*60*60;
 </body>
 <%@include file="../includes/sitestatscript.jsp" %>
 </html>
-<!-- /cache:cache -->
+</cache:cache>
 </mm:cloud>
