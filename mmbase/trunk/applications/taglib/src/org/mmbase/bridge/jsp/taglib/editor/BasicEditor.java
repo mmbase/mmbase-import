@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.editor;
 import java.io.*;
 import java.util.*;
 
+import org.mmbase.bridge.*;
 import javax.servlet.jsp.PageContext;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.4 2006-03-15 02:21:04 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.5 2006-03-28 22:33:06 michiel Exp $
  * @see EditTag
  * @see Editor
  * @since MMBase-1.8
@@ -35,10 +36,15 @@ public class BasicEditor extends Editor {
 
     private static final Logger log = Logging.getLoggerInstance(BasicEditor.class);
 
+    private static final FunctionProvider patterns = PatternNodeFunctionProvider.getInstance();
+
     private static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("url", String.class, "/mmbase/edit/basic"),
+        new Parameter("url", String.class, "/mmbase/edit/basic/"),
+        new Parameter("urlparams", Map.class, null),
         new Parameter("icon", String.class, ""),
-        new Parameter("when", String.class, "always")
+        new Parameter("iconparams", Map.class, null),
+        new Parameter("when", String.class, "always"),
+        Parameter.CLOUD
     };
 
 
@@ -62,22 +68,21 @@ public class BasicEditor extends Editor {
         makeHTML(nodenr, context);
 
     }
-
     /**
-     * Values passed by the EditTag from the FieldTags.
-     *
-     * @param queryList     List with SearchQuery objects from fields
-     * @param nodenrList    List with nodenumbers
-     * @param fieldList     List with fieldnames
+     * Fills parameters of the parameters to be interpreted as PatternNodeFunctions
      */
-    public void registerFields(List queryList, List nodenrList, List fieldList) {
-        // log.debug("processing fields");
-
-        // do something with the lists
-
-        // and maybe you should clear the lists in case of caching or something
+    protected String getValue(String param, Cloud cloud, String nodenr, PageContext context) {
+           Function urlFunction = patterns.getFunction(parameters.getString(param));
+           Parameters urlParameters = urlFunction.createParameters();
+           if (cloud != null) {
+               Node node = cloud.getNode(nodenr);
+               urlParameters.set(Parameter.NODE, node);
+           }
+           urlParameters.setAll((Map) parameters.get(param + "params"));
+           urlParameters.setIfDefined(Parameter.REQUEST, context.getRequest());
+           urlParameters.setIfDefined(Parameter.RESPONSE, context.getResponse());
+           return (String) urlFunction.getFunctionValue(urlParameters);
     }
-
     /**
     * Creates a string with the link (and icon) to the editor
     *
@@ -91,17 +96,14 @@ public class BasicEditor extends Editor {
         String when =  parameters.getString("when");
 
         if ("always".equals(when) || "true".equals(context.getRequest().getParameter("edit"))) {
+            Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
 
-            String url = parameters.getString("url");
-            String icon = parameters.getString("icon");
+            String url = getValue("url", cloud, nodenr, context);
+            String icon = getValue("icon", cloud, nodenr, context);
             url = makeRelative(url, context);
             Writer html = context.getOut();
             html.write("<div class=\"et\"><a title=\"click to edit\" href=\"");
             html.write(url);
-            // want to use something with replace here.
-            // support for context.
-
-            html.write(nodenr);
             html.write("\" onclick=\"window.open(this.href); return false;\">");
             if (! icon.equals("")) {
                 icon = makeRelative(icon, context);
