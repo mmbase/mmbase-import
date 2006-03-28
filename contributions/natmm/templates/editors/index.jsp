@@ -10,6 +10,9 @@
   String url = "/editors/usermanagement/changepassword.jsp" ;
   String status = "valid";
 
+  String passwordChecked = (String) session.getAttribute("password_checked");
+  if (passwordChecked == null) { passwordChecked = "false"; }
+
   String username = cloud.getUser().getIdentifier();
   AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud);
   int number = authorizationHelper.getUserNode(username).getNumber();
@@ -20,16 +23,18 @@
 
   long currentDate = System.currentTimeMillis() / 1000;
 
-  if (expireDate-10*24*60*60 < currentDate) {
-    status = "warning";
-    if (expireDate < currentDate) { // password expired, checks gracelogins
-       if (iGracelogins > 0) {
-         status = "gracelogin"; // expired, gracelogin present.
-         userNode.setIntValue("gracelogins", iGracelogins-1);
-         userNode.commit();
-       } else { // expired
-        status = "expired";
-       }
+  if (passwordChecked.equals("false")) {
+    if (expireDate-10*24*60*60 < currentDate) {
+      status = "warning";
+      if (expireDate < currentDate) { // password expired, checks gracelogins
+        if (iGracelogins > 0) {
+          status = "gracelogin"; // expired, gracelogin present.
+          userNode.setIntValue("gracelogins", iGracelogins-1);
+          userNode.commit();
+        } else { // expired
+          status = "expired";
+        }
+      }
     }
   }
 %>
@@ -53,21 +58,24 @@
       </body>
       <%
    } else {
-      if (!"valid".equals(status)) {
+     if (passwordChecked.equals("false")) {
+       if (!"valid".equals(status)) {
          url += "?status=" + status;
+         session.setAttribute("password_checked", "true");
          %>
          <script type="text/javascript">
            window.open("<%= url %>", "ha_dialog","toolbar=no,menubar=no,personalbar=no,width=400,height=250,scrollbars=no,resizable=no");
          </script>
          <%
-      }
-      %>
-      <frameset rows="80,*" framespacing="2" frameborder="1">
-         <frame src="topmenu.jsp" name="toppane" frameborder="0" scrolling="auto">
-         <frame src="empty.html" name="bottompane" frameborder="0" scrolling="yes">
-      </frameset>
-      <%
-   }
+       }
+     }
+     %>
+     <frameset rows="80,*" framespacing="2" frameborder="1">
+        <frame src="topmenu.jsp" name="toppane" frameborder="0" scrolling="auto">
+        <frame src="empty.html" name="bottompane" frameborder="0" scrolling="yes">
+     </frameset>
+     <%
+  }
 %>
 </html>
 </mm:cloud>
