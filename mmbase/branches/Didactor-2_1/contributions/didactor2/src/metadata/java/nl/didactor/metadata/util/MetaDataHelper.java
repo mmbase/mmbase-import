@@ -29,7 +29,7 @@ public class MetaDataHelper {
    public NodeList getLangCodes(Cloud cloud) {
 
       NodeList nl = cloud.getList(null,
-         "metastandard,metadefinition,metavocabulary",
+         "metadefinition,metavocabulary",
          "metavocabulary.value",
          "metadefinition.handler='taal'",
          "metavocabulary.value","UP",null,true);
