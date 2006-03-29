@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.347 2006-03-28 21:47:49 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.348 2006-03-29 00:43:29 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3920,6 +3920,15 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <info>
         If you specify this attribute, then the referid must refer to a Collection, and only this value is removed from the collection.
+      </info>
+      <since>MMBase-1.8</since>
+    </attribute>
+    <attribute>
+      <name>from</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Using this, you can also remove variables from session, request, page, application.
       </info>
       <since>MMBase-1.8</since>
     </attribute>
