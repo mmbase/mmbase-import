@@ -55,8 +55,8 @@ public class MetaDataHelper {
     * NOTE:
     * Priorities:
     * 1. metavocabulary - constraints - metadefinition
-    * 2. MetaStandart - constraints - metadefinition
-    * 3. Old type
+    * 2. metaStandard - constraints - metadefinition
+    * 3. metadefinition fields
     *
     *
     * Vocabulary-constraint-vocabulary is an extra constraint that can work together with any of above
@@ -78,7 +78,7 @@ public class MetaDataHelper {
        String sActiveMetaStandarts = getActiveMetastandards(cloud, null, "" + nodeUser.getNumber());
 
 
-       //Old style, fields from MetaDefinition node
+       //Fields from MetaDefinition node
        NodeList nl = cloud.getList(sActiveMetaStandarts,
                                    "metastandard,metadefinition",
                                    "metadefinition.number",
@@ -139,7 +139,6 @@ public class MetaDataHelper {
        }
 
 
-
        //vocabulary - constraints - metadefinition
        nl = cloud.getList(sActiveMetaStandarts,
                           "metastandard,posrel,metadefinition1,constraints,metavocabulary,metadefinition2",
@@ -176,14 +175,14 @@ public class MetaDataHelper {
        }
 
 
-
        //vocabulary - constraints - vocabulary
+       log.debug("Trying to find vocabulary - constraints - vocabulary");
        nl = cloud.getList(sActiveMetaStandarts,
-                          "metastandard,posrel,metadefinition,related,metavocabulary1,constraints,metavocabulary2",
+                          "metastandard,posrel,metadefinition,posrel,metavocabulary1,constraints,metavocabulary2",
                           "metadefinition.number,constraints.number,metavocabulary1.number,metavocabulary2.number",
                           null,
                           null, null, "destination", true);
-
+       log.debug("found " + nl.size() + " constraints for the active metastandards " + sActiveMetaStandarts);
        for (int n = 0; n < nl.size(); n++) {
            Node nodeControllerMetaVocabulary = cloud.getNode(nl.getNode(n).getStringValue("metavocabulary1.number"));
 
@@ -193,7 +192,8 @@ public class MetaDataHelper {
                                         "metavocabulary.number=" + nodeControllerMetaVocabulary.getNumber(),
                                         null, null, null, true);
 
-
+           log.debug("found " + nl2.size() + " metadata object that relate this object with metavocabulary  " 
+               + nodeControllerMetaVocabulary.getStringValue("value"));
            if(nl2.size() > 0){
                Node nodeControllerMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition.number"));
                Node nodeConstraintRelation = cloud.getNode(nl.getNode(n).getStringValue("constraints.number"));
@@ -206,6 +206,7 @@ public class MetaDataHelper {
                catch(Exception e){
                    throw new Exception("Metavocabulary node(" + nodeMetaVocabulary.getNumber() + ") has got NO METADEFINITION");
                }
+               log.debug("Found metavocabulary-constraint-metavocabulary");
                log.debug("metadefinition=" + nodeMetaDefinition.getNumber());
                log.debug("metavocabulary=" + nodeMetaVocabulary.getNumber());
                log.debug("constraints=" + nodeConstraintRelation.getNumber());
@@ -241,25 +242,15 @@ public class MetaDataHelper {
        return hashmapResult;
    }
 
-
-
-
-
-
-
-
-
-
-
    public static void log(HttpServletRequest request, String sPage) {
-      log.info("Calling " + sPage + " with the following parameters");
-      log.info("number:       " + request.getParameter("number"));
-      log.info("set_default:  " + request.getParameter("set_default"));
-      log.info("submitted:    " + request.getParameter("submitted"));
-      log.info("add:          " + request.getParameter("add"));
-      log.info("remove:       " + request.getParameter("remove"));
-      log.info("close:        " + request.getParameter("close"));
-      log.info("query string: " + request.getQueryString());
+      log.debug("Calling " + sPage + " with the following parameters");
+      log.debug("number:       " + request.getParameter("number"));
+      log.debug("set_default:  " + request.getParameter("set_default"));
+      log.debug("submitted:    " + request.getParameter("submitted"));
+      log.debug("add:          " + request.getParameter("add"));
+      log.debug("remove:       " + request.getParameter("remove"));
+      log.debug("close:        " + request.getParameter("close"));
+      log.debug("query string: " + request.getQueryString());
    }
 
    private static String parametersToString(String[] arrstrParameters) {
@@ -539,7 +530,6 @@ public class MetaDataHelper {
                    sResultSet += nodeMetaStandart.getNumber();
                }
 
-               return sResultSet;
            }
            else{
                log.debug("getActiveMetastandards(): workgroups -> metastandard for user(" + sUserID + ") are not found. Old algorithm will be used.");
@@ -551,11 +541,13 @@ public class MetaDataHelper {
 
        //The User isn't a member of any workgroups
        //or workroups have got no related MetaStandards.
+       if(sResultSet.length() == 0) {
+         MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
+         Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
+         sResultSet = "" + nodeRootMetaStandart.getNumber();
+       }
 
-       MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
-       Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
-
-       NodeList nlTopLevelMetaStandarts = cloud.getList("" + nodeRootMetaStandart.getNumber(),
+       NodeList nlTopLevelMetaStandarts = cloud.getList(sResultSet,
            "metastandard1,metastandard2",
            "metastandard2.number",
            "metastandard2.isused='1'",
