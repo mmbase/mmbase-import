@@ -11,7 +11,7 @@
         <jsp:directive.include file="vars.jspx" />
         <jsp:directive.include file="rich.jspx" />
 
-        <mm:relatednodescontainer type="content" searchdirs="destination">
+        <mm:relatednodescontainer type="content" role="related" searchdirs="destination">
           <mm:sortorder  field="created" direction="down" />
           <mm:constraint field="begin" operator="LESS"       value="$now" />
           <mm:constraint field="end"   operator="GREATER"    value="$now" />
