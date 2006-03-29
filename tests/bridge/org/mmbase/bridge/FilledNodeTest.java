@@ -11,6 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 import org.w3c.dom.Document;
 import org.mmbase.util.Casting;
+import org.mmbase.datatypes.*;
+import java.text.*;
 import java.util.*;
 
 /**
@@ -47,6 +49,7 @@ public class FilledNodeTest extends NodeTest {
     public void setUp() {
         // Create a test node.
         Cloud cloud = getCloud();
+        cloud.setLocale(Locale.US);
         node = cloud.getNodeManager(getNodeManager()).createNode();
         Node typedefNode = cloud.getNodeManager("bb");
         assertTrue(typedefNode != null);
@@ -318,8 +321,17 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(fieldTypes[i] + "field queried as string did not return " + Boolean.TRUE + " but " + string,
                            String.valueOf(Boolean.TRUE).equals(string));
             } else if (fieldTypes[i].equals("datetime")) {
-                assertTrue(fieldTypes[i] + "field of '" + getNodeManager() + "' queried as string did not return " + Casting.toString(TEST_DATE) + " but " + string,
-                           Casting.toString(TEST_DATE).equals(string));
+                Field field = node.getNodeManager().getField(fieldTypes[i] + "field");
+                String formatted;
+                if (field.getDataType() instanceof DateTimeDataType) {
+                    DateTimePattern pattern = ((DateTimeDataType)field.getDataType()).getPattern();
+                    DateFormat dateFormat = pattern.getDateFormat(Locale.US);
+                    formatted = dateFormat.format(TEST_DATE);
+                } else {
+                    formatted = Casting.toString(TEST_DATE);
+                }
+                assertTrue(fieldTypes[i] + "field of '" + getNodeManager() + "' queried as string did not return " + formatted + " but " + string,
+                           formatted.equals(string));
             } else if (fieldTypes[i].equals("list")) {
                 assertTrue(fieldTypes[i] + "field queried as string did not return \"true,true\" but " + string,
                     "true,true".equals(string));
