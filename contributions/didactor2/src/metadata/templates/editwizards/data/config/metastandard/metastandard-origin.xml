@@ -55,7 +55,7 @@
 
 
     <list destination="metadefinition" role="posrel"        extends="config/metadefinition/metadefinition-posrel-list.xml" />
-    <list destination="metastandard"   role="posrel"        extends="config/metastandard/metastandard-posrel-list.xml" />
+    <list destination="metastandard"   role="posrel"        extends="config/metastandard/metastandard-posrel-destination-list.xml" />
     <list destination="metadefinition" role="constraints"   extends="config/metadefinition/metadefinition-specify-list.xml" />
 
     <list destination="metavocabulary" role="include"       extends="config/metavocabulary/metavocabulary-include-list.xml" />

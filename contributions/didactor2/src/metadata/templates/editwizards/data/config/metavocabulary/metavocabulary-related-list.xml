@@ -1,4 +1,4 @@
-<list destination="metavocabulary" role="related" minoccurs="0" maxoccurs="*" orderby="value" hidecommand="move-up|move-down" searchdir="destination">
+<list destination="metavocabulary" role="related" minoccurs="0" maxoccurs="*" orderby="value" hidecommand="move-up|move-down">
    <title xml:lang="nl">Bijbehorende metadatawaarde</title>
    <title xml:lang="en">Related Metavocabulary</title>
    <item> 
