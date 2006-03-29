@@ -59,9 +59,9 @@
       <br>
 
       <mm:field id="mayview" name="mayview" write="false" />
-      <mm:field id="feedback" name="showfeedback" write="false" />
+      <%-- <mm:field id="feedback" name="showfeedback" write="false" /> --%>
 
-      <mm:compare referid="showfeedback" value="1">
+      <mm:compare referid="showfeedback" value="true">
         <mm:treeinclude page="/education/tests/feedback.jsp"
           objectlist="$includePath" referids="$referids">
           <mm:param name="madetes">
