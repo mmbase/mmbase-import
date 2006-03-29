@@ -11,10 +11,10 @@
   <action type="load">
     <field name="name"/>
     <field name="description"/>
-    <relation destinationtype="metadefinition" role="related" />
-    <relation destinationtype="metastandard" role="related" />
-    <relation destinationtype="metavocabulary" role="related" />
     <relation destinationtype="workgroups" role="related" />
+    <relation destinationtype="metastandard" role="related" />
+    <relation destinationtype="metadefinition" role="related" />
+    <relation destinationtype="metavocabulary" role="related" />
   </action>
 
   <action type="delete" />
@@ -37,17 +37,10 @@
       <prompt xml:lang="en">Description for the synonym</prompt>
     </field>
 
-    <!--
-    <list destination="metadefinition" role="related" extends="config/metadefinition/metadefinition-list.xml" />
-
-    <list destination="metadefinition" role="posrel" extends="config/metadefinition/metadefinition-posrel-list.xml" />
-
-    <list destination="metastandard" role="posrel" extends="config/metastandard/metastandard-posrel-list.xml" />
-    <list destination="metavocabulary" role="include" extends="config/metavocabulary/metavocabularydefinition-include-list.xml" />
-    <list destination="metavocabulary" role="exclude" extends="config/metavocabulary/metavocabularydefinition-exclude-list.xml" />
-   -->
-
     <list destination="workgroups" role="related" extends="config/workgroup/workgroups-list.xml" />
+    <list destination="metastandard" role="related" extends="config/metastandard/metastandard-related-list.xml" />
+    <list destination="metadefinition" role="related" extends="config/metadefinition/metadefinition-related-list.xml" />
+    <list destination="metavocabulary" role="related" extends="config/metavocabulary/metavocabulary-related-list.xml" />
 
   </form-schema>
 
