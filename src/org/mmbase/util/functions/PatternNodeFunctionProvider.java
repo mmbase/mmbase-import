@@ -32,13 +32,13 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.7 2005-12-06 22:27:14 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.8 2006-03-29 14:53:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
 
     private static final Logger log = Logging.getLoggerInstance(PatternNodeFunctionProvider.class);
-    
+
     public PatternNodeFunctionProvider() {
     }
 
@@ -117,7 +117,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                             request.appendReplacement(sb, r.substring(0, r.length() - 1));
                             continue;
                         }
-                        
+
                         if (req == null) {
                             log.error("Did't find the request among the parameters");
                             continue;
@@ -150,7 +150,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                         while(requestParam.find()) {
                             String paramName = requestParam.group(1);
                             String value = req.getParameter(paramName);
-                            if (value == null) value = "";                    
+                            if (value == null) value = "";
                             requestParam.appendReplacement(sb, value);
                         }
                         requestParam.appendTail(sb);
@@ -187,7 +187,7 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 }
             }
             {
-                
+
                 Matcher initParams = initParamPattern.matcher(sb.toString());
                 if (initParams.find()) {
                     initParams.reset();
@@ -201,10 +201,10 @@ public class PatternNodeFunctionProvider extends FunctionProvider {
                 }
             }
             return sb.toString();
-            
+
         }
 
 
-        
+
     }
 }
