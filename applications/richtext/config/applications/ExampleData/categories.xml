@@ -48,6 +48,20 @@
     <body>&lt;p/&gt;</body>
     <lastmodified></lastmodified>
   </node>
+
+  <node number="1010" owner="admin">
+    <title>Submenu</title>
+    <lastmodifiedby></lastmodifiedby>
+    <intro></intro>
+    <begin>2002-12-31T23:00:07Z</begin>
+    <end>2099-12-31T23:00:00Z</end>
+    <subtitle></subtitle>
+    <body>
+      Just an example of a submenu. It has no specified template. The default is simply showing this text.
+    </body>
+    <lastmodified></lastmodified>
+  </node>
+
   
 
 </categories>

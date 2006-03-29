@@ -11,4 +11,10 @@
     <pos>3</pos>
   </node>
 
+  <!-- submenu -->
+	<node number="100003" owner="admin" snumber="1001" dnumber="1010" rtype="posrel" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+
+
 </posrel>
