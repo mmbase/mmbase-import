@@ -1,7 +1,7 @@
 <!-- 
      Presents tree of segments of surrounding segment
      static include.
-     $Id: index-segments.ul.jspx,v 1.2 2006-03-15 12:21:12 michiel Exp $
+     $Id: index-segments.ul.jspx,v 1.3 2006-03-29 12:45:48 michiel Exp $
 -->
 <mm:context
     xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -16,8 +16,8 @@
           <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
         </mm:grow>
         <![CDATA[<li>]]><mm:onshrink><![CDATA[</li>]]></mm:onshrink>
-        <mm:link referids="$vars,maintopic,segment,path?,segments?,thumbwidth?">
-          <mm:param name="template"  value="segment.div.jspx" />
+        <mm:link referids="$catvars,segment,path?,segments?,thumbwidth?">
+          <mm:param name="template"  value="segment" />
           <span class="index"><mm:function name="index" /></span>
           <a href="${_}" title="${segment.subtitle}">
             <mm:field name="title" />
