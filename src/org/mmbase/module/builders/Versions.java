@@ -14,13 +14,11 @@ import java.util.*;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
 
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.16 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: Versions.java,v 1.17 2006-03-29 14:30:23 nklasens Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -28,12 +26,45 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
     private Hashtable cacheVersionHandlers = new Hashtable();
 
+    private Map versionsCache = new Hashtable();
+    
+    private boolean initialized = false;
+    
     /**
      * @javadoc
      */
     public boolean init() {
-        super.init();
-        startCacheTypes();
+        if (!initialized) {
+            super.init();
+            startCacheTypes();
+            List versionNodes = getNodes();
+            for (Iterator iter = versionNodes.iterator(); iter.hasNext();) {
+                MMObjectNode versionNode = (MMObjectNode) iter.next();
+                String name = versionNode.getStringValue("name");
+                String type = versionNode.getStringValue("type");
+                Integer number = new Integer(versionNode.getNumber());
+                
+                String key = type + "_" + name;
+                if (versionsCache.containsKey(key)) {
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("versions node[number,version,maintainer]:");
+                    sb.append("[");
+                    sb.append(versionNode.getNumber());
+                    sb.append(",");
+                    sb.append(versionNode.getIntValue("version"));
+                    sb.append(",");
+                    sb.append(versionNode.getStringValue("maintainer"));
+                    sb.append("]");
+                    log.warn("more than one version was found for " + type + " with name " + name + " ." + sb.toString());
+                }
+                else {
+                    versionsCache.put(key, number);
+                }
+            }
+            
+            initialized = true;
+        }
+
         return true;
     }
 
@@ -45,48 +76,21 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
      * @throws SearchQueryException
      * @since MMBase-1.7
      */
-    public MMObjectNode getVersionNode(String name, String type) throws SearchQueryException {
+    public MMObjectNode getVersionNode(String name, String type) {
         MMObjectNode retval = null;
-        NodeSearchQuery query = new NodeSearchQuery(this);
-        BasicCompositeConstraint constraints = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-        constraints.addChild(new BasicFieldValueConstraint(query.getField(getField("name")), name));
-        constraints.addChild(new BasicFieldValueConstraint(query.getField(getField("type")), type));
-        query.setConstraint(constraints);
 
-        Iterator i = getNodes(query).iterator();
-
-        if (i.hasNext()) {
-            retval = (MMObjectNode) i.next();
-        }
-        //should not happend
-        if (i.hasNext()) {
-            StringBuffer sb = new StringBuffer();
-            MMObjectNode curent = retval;
-            sb.append("versions node[number,version,maintainer]:");
-            while (curent != null) {
-                sb.append("[");
-                sb.append(curent.getNumber());
-                sb.append(",");
-                sb.append(curent.getIntValue("version"));
-                sb.append(",");
-                sb.append(curent.getStringValue("maintainer"));
-                sb.append("]");
-                if (i.hasNext()) {
-                    curent = (MMObjectNode) i.next();
-                } else {
-                    curent = null;
-                }
-            }
-            log.warn("more than one version was found for " + type + " with name " + name + " ." + sb.toString());
+        String key = type + "_" + name;
+        if (versionsCache.containsKey(key)) {
+            Integer number = (Integer) versionsCache.get(key);
+            retval = getNode(number.intValue());
         }
         return retval;
-
     }
 
     /**
      * @javadoc
      */
-    public int getInstalledVersion(String name, String type) throws SearchQueryException {
+    public int getInstalledVersion(String name, String type) {
         MMObjectNode node = getVersionNode(name, type);
         if (node == null) { return -1; }
         return node.getIntValue("version");
@@ -95,8 +99,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public void setInstalledVersion(String name, String type, String maintainer, int version)
-        throws SearchQueryException {
+    public void setInstalledVersion(String name, String type, String maintainer, int version) {
 
         MMObjectNode node = getVersionNode(name, type);
         if (node == null) {
@@ -105,7 +108,10 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             node.setValue("type", type);
             node.setValue("maintainer", maintainer);
             node.setValue("version", version);
-            insert("system", node);
+            int number = insert("system", node);
+            
+            String key = type + "_" + name;
+            versionsCache.put(key, new Integer(number));
         } else {
             node.setValue("maintainer", maintainer);
             node.setValue("version", version);
@@ -116,8 +122,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public void updateInstalledVersion(String name, String type, String maintainer, int version)
-        throws SearchQueryException {
+    public void updateInstalledVersion(String name, String type, String maintainer, int version) {
         setInstalledVersion(name, type, maintainer, version);
     }
 
