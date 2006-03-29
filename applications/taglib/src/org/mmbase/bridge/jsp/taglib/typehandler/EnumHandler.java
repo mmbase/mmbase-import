@@ -14,7 +14,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.Constraint;
-import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.util.Casting;
 
 import java.util.*;
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.33 2006-01-19 11:13:32 andre Exp $
+ * @version $Id: EnumHandler.java,v 1.34 2006-03-29 01:22:15 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -83,7 +83,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                         // I wonder if enums for the following types could make any sense, but well:
                     case Field.TYPE_FLOAT:   type = Float.class; break;
                     case Field.TYPE_DOUBLE:  type = Double.class; break;
-                    case Field.TYPE_BYTE:    type = byte[].class; break;
+                    case Field.TYPE_BINARY:    type = byte[].class; break;
                     case Field.TYPE_XML:     type = String.class; break; // Document.class ?
                     case Field.TYPE_NODE:    type = Node.class; break;
                         /*
@@ -129,7 +129,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         Object value  = getFieldValue(node, field, true);
         if (! field.getDataType().isRequired()) {
             buffer.append("<option value=\"\" ");
-            if (value == null) buffer.append("select=\"selected\" ");
+            if (value == null) buffer.append("selected=\"selected\" ");
             buffer.append(">--</option>");
         }
         if (iterator == null) {
@@ -150,7 +150,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                 buffer.append(" selected=\"selected\"");
             } else if (search) {
                 String searchs = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
-                if (key.equals(searchs)) {
+                if (Casting.toString(key).equals(searchs)) {
                     buffer.append(" selected=\"selected\"");
                 }
             }
@@ -171,6 +171,16 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             buffer.append(" />");
         }
         return buffer.toString();
+    }
+
+
+    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+        String name = prefix(field.getName() + "_search");
+        String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
+        if (searchi != null) {
+            handler.addParameter(name, "yes");
+        }
+        super.paramHtmlInput(handler, field);
     }
 
 
