@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.39 2006-02-09 13:53:00 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.40 2006-03-29 01:22:15 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -275,6 +275,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
 
 
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+        eh = getEnumHandler(null, field);
+        if (eh != null) {
+            eh.paramHtmlInput(handler, field);
+            return;
+        }
         handler.addParameter(prefix(field.getName()), findString(field));
     }
 
