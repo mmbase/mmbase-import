@@ -40,11 +40,14 @@ public class FilledNodeTest extends NodeTest {
             throw new RuntimeException(e);
         }
     }
+    protected String getNodeManager() {
+        return "aa";
+    }
 
     public void setUp() {
         // Create a test node.
         Cloud cloud = getCloud();
-        node = cloud.getNodeManager("aa").createNode();
+        node = cloud.getNodeManager(getNodeManager()).createNode();
         Node typedefNode = cloud.getNodeManager("bb");
         assertTrue(typedefNode != null);
         byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 };
@@ -315,7 +318,7 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(fieldTypes[i] + "field queried as string did not return " + Boolean.TRUE + " but " + string,
                            String.valueOf(Boolean.TRUE).equals(string));
             } else if (fieldTypes[i].equals("datetime")) {
-                assertTrue(fieldTypes[i] + "field queried as string did not return " + Casting.toString(TEST_DATE) + " but " + string,
+                assertTrue(fieldTypes[i] + "field of '" + getNodeManager() + "' queried as string did not return " + Casting.toString(TEST_DATE) + " but " + string,
                            Casting.toString(TEST_DATE).equals(string));
             } else if (fieldTypes[i].equals("list")) {
                 assertTrue(fieldTypes[i] + "field queried as string did not return \"true,true\" but " + string,
