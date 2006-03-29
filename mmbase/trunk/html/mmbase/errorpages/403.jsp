@@ -7,7 +7,7 @@
     <%@include file="meta.jsp" %>
   </head>
   <body class="basic">
-    <h1>404 Forbidden</h1>
+    <h1>403 Forbidden</h1>
     <h2><%=org.mmbase.Version.get()%></h2>
     <p>
       <% String mesg = (String) request.getAttribute("org.mmbase.servlet.error.message");
