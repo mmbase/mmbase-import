@@ -3,14 +3,12 @@
      xmlns:jsp="http://java.sun.com/JSP/Page">
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page session="false" />
-  <mm:import externid="cat" />
   <mm:content type="application/xml">
     <mm:cloud>
+      <jsp:directive.include file="vars.jspx" />
       <mm:node referid="cat">
         <mm:time id="now" time="now" precision="minutes" write="false" />
-        <jsp:directive.include file="vars.jspx" />
         <jsp:directive.include file="rich.jspx" />
-
         <mm:relatednodescontainer type="content" role="related" searchdirs="destination">
           <mm:sortorder  field="created" direction="down" />
           <mm:constraint field="begin" operator="LESS"       value="$now" />

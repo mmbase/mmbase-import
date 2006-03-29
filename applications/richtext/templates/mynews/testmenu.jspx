@@ -40,7 +40,7 @@
     <body>
       <h1>Only a test-page</h1>
       <p>
-        Menu made with URL-structure.
+        Menu made with UL-structure.
       </p>
       <ul id="my_menu" class="menu">
         <li>
