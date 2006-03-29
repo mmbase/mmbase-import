@@ -23,7 +23,6 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.*;
 import org.mmbase.model.*;
-import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
@@ -46,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.189 2006-03-28 17:51:24 daniel Exp $
+ * @version $Id: MMBase.java,v 1.190 2006-03-29 14:30:23 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1311,15 +1310,10 @@ public class MMBase extends ProcessorModule {
             int version = tmp.getVersion();
             String maintainer = tmp.getMaintainer();
 
-            try {
-                int installedversion = ver.getInstalledVersion(builderName, "builder");
-                if (installedversion == -1 || version > installedversion) {
-                    ver.setInstalledVersion(builderName, "builder", maintainer, version);
-                }
-            } catch (SearchQueryException e) {
-                log.warn(Logging.stackTrace(e));
+            int installedversion = ver.getInstalledVersion(builderName, "builder");
+            if (installedversion == -1 || version > installedversion) {
+                ver.setInstalledVersion(builderName, "builder", maintainer, version);
             }
-
         }
         return true;
     }
