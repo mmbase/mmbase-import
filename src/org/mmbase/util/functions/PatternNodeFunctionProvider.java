@@ -32,14 +32,19 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.8 2006-03-29 14:53:31 michiel Exp $
+ * @version $Id: PatternNodeFunctionProvider.java,v 1.9 2006-03-29 15:05:51 michiel Exp $
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {
 
     private static final Logger log = Logging.getLoggerInstance(PatternNodeFunctionProvider.class);
+    private static final PatternNodeFunctionProvider instance = new PatternNodeFunctionProvider();
 
     public PatternNodeFunctionProvider() {
+    }
+
+    public static PatternNodeFunctionProvider getInstance() {
+        return instance;
     }
 
     public Function getFunction(String name) {
