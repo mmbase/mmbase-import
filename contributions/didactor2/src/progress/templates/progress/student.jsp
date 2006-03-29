@@ -14,9 +14,7 @@
   <%@include file="/education/wizards/roles_chk.jsp"%>
 
   <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="extraheader">
-      <title><di:translate key="progress.progresstitle" /></title>
-    </mm:param>
+    <mm:param name="extraheader"><title><di:translate key="progress.progresstitle" /></title></mm:param>
   </mm:treeinclude>
 
 
@@ -64,26 +62,16 @@
       <mm:compare referid="showfeedback" value="true">
         <mm:treeinclude page="/education/tests/feedback.jsp"
           objectlist="$includePath" referids="$referids">
-          <mm:param name="madetes">
-            <mm:write referid="madetest" />
-          </mm:param>
-          <mm:param name="tests">
-            <mm:write referid="tests" />
-          </mm:param>
+          <mm:param name="madetes"><mm:write referid="madetest" /></mm:param>
+          <mm:param name="tests"><mm:write referid="tests" /></mm:param>
         </mm:treeinclude>
       </mm:compare>
       <mm:compare referid="mayview" value="1">
         <mm:treeinclude page="/education/tests/viewanswers.jsp"
           objectlist="$includePath" referids="$referids">
-          <mm:param name="testNo">
-            <mm:write referid="tests" />
-          </mm:param>
-          <mm:param name="madetestNo">
-            <mm:write referid="madetest" />
-          </mm:param>
-          <mm:param name="userNo">
-            <mm:write referid="student" />
-          </mm:param>
+          <mm:param name="testNo"><mm:write referid="tests" /></mm:param>
+          <mm:param name="madetestNo"><mm:write referid="madetest" /></mm:param>
+          <mm:param name="userNo"><mm:write referid="student" /></mm:param>
         </mm:treeinclude>
       </mm:compare>
     </mm:node>
