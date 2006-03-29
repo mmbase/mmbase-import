@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.147 2006-03-24 15:15:59 henk Exp $
+    @version $Id: wizard.xsl,v 1.148 2006-03-29 12:50:58 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1494,7 +1494,7 @@
 
   <!-- what must appear on the position of of a pos-item-button, if it should not appear itself -->
   <xsl:template name="emptypositembutton">
-    <img src="{$mediadir}nix.gif" border="0" width="20" />
+    <img src="{$mediadir}nix.gif" class="placeholder" border="0" width="20" />
   </xsl:template>
 
   <xsl:template name="positembuttons">
