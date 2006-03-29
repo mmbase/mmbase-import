@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.136 2006-03-24 12:21:57 daniel Exp $
+ * @version $Id: MMAdmin.java,v 1.137 2006-03-29 14:30:23 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -400,16 +400,12 @@ public class MMAdmin extends ProcessorModule {
             if (cmd.equals("VERSION")) {
                 return "" + getVersion(tok.nextToken());
             } else if (cmd.equals("INSTALLEDVERSION")) {
-                try {
-                    Versions ver = (Versions) mmb.getBuilder("versions");
-                    if (ver == null) {
-                        log.warn("Versions builder not installed, Can't get to apps");
-                        return null;
-                    }
-                    return "" + ver.getInstalledVersion(tok.nextToken(), "application");
-                } catch (SearchQueryException sqe) {
-                    return sqe.getMessage();
+                Versions ver = (Versions) mmb.getBuilder("versions");
+                if (ver == null) {
+                    log.warn("Versions builder not installed, Can't get to apps");
+                    return null;
                 }
+                return "" + ver.getInstalledVersion(tok.nextToken(), "application");
             } else if (cmd.equals("DESCRIPTION")) {
                 return escape(getDescription(tok.nextToken()));
             } else if (cmd.equals("LASTMSG")) {
@@ -756,11 +752,7 @@ public class MMAdmin extends ProcessorModule {
             results.add("" + reader.getVersion());
             int installedversion = -1;
             if (ver != null) {
-                try {
-                    installedversion = ver.getInstalledVersion(builderName, "builder");
-                } catch (SearchQueryException e) {
-                    log.warn(Logging.stackTrace(e));
-                }
+                installedversion = ver.getInstalledVersion(builderName, "builder");
             }
             if (installedversion == -1) {
                 results.add("no");
