@@ -37,10 +37,20 @@ img {
   margin-bottom: 10px;
   color: ${B};
 }
-#menu div {
+#menu ul {
+  padding: 0px;
+  margin: 0px;
   background-color: ${A};
   border-bottom: solid 1px ${B};
   display: none;
+}
+#menu ul li {
+  margin-left: 0px;
+  padding-left: 0px;
+  display: inline;
+}
+#menu ul li a {
+  display: block;
 }
 #menu a:hover, #menu a.selected {
   background-color: white;
@@ -60,6 +70,10 @@ img {
 #content { 
   margin-left: 1ex;
   margin-right: 4ex;
+}
+
+#content .index {
+  margin-right: 1ex;
 }
 
 .path { 

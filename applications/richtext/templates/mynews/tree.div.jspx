@@ -1,7 +1,7 @@
 <!--
    Displays one full segment, plus a crumb-path, and overview of sub-segments.
    dynamic include
-   $Id: tree.div.jspx,v 1.4 2006-03-22 22:59:20 michiel Exp $
+   $Id: tree.div.jspx,v 1.5 2006-03-29 12:45:48 michiel Exp $
 -->
 <div class="segment ${param.class}"
      xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -18,7 +18,6 @@
       <mm:url id="previous" write="false" page="/mmbase/style/images/previous.gif" />
 
       <mm:import externid="segments" vartype="list" />
-      <mm:import externid="cat" required="true" />
       <mm:node referid="cat">
 
         <!-- crumb path -->

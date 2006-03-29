@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.7 2006-03-28 22:34:02 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.8 2006-03-29 12:45:48 michiel Exp $ --&gt;</jsp:text>
   <jsp:directive.page session="false" />
   <jsp:directive.include file="vars.jspx" />
   <mm:content type="text/html" language="en" expires="${edit == 'true' ? -1 : 60}">
@@ -12,7 +12,6 @@
                 doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
     <mm:cloud>
-      <mm:import externid="cat" />
       <mm:notpresent referid="cat">
         <!-- no cat given (home page?), autodetermin -->
         <mm:present referid="article">
@@ -36,9 +35,9 @@
           </mm:node>
         </mm:notpresent>
       </mm:notpresent>
-
+      
       <!-- subcategory ? -->
-      <mm:import externid="subcat"><mm:write referid="cat" /></mm:import>
+      <mm:import externid="subcat" from="this,parameters"><mm:write referid="cat" /></mm:import>
 
     <head>
       <title>

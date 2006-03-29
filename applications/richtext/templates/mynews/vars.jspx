@@ -4,7 +4,10 @@
     xmlns:jsp="http://java.sun.com/JSP/Page">
   <mm:import externid="edit" />
   <mm:import externid="home" />
+  <mm:import externid="cat" />
+  <mm:import externid="subcat" />
   <mm:import id="h" externid="home" from="this">my.rich.magazine</mm:import>
   <mm:import externid="vars">home?,edit?</mm:import>
+  <mm:import externid="catvars">${vars},cat?,subcat?</mm:import>
 
 </jsp:root>

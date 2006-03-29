@@ -10,9 +10,7 @@
   <jsp:directive.page session="false" />
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="vars.jspx" />
-  <mm:import externid="cat" />
-  <mm:import externid="supercat" />
-  <mm:content type="application/xml">
+   <mm:content type="application/xml">
     <mm:cloud>
       <mm:time id="now" time="now" precision="minutes" write="false" />
       <mm:node number="$h">
@@ -28,15 +26,17 @@
             </mm:link>
             <mm:size>
               <mm:isgreaterthan value="0">
-                <div class="a${menucat}_${index}">
-                  <mm:relatednodes id="subcat">
-                    <mm:link referids="$vars,menucat@supercat,subcat@cat">
-                      <a id="a${subcat}" href="${_}" class="${subcat == cat ? 'selected' : ''}">
-                        <mm:field name="title" />
-                      </a>
-                    </mm:link>
+                <ul class="a${menucat}_${index}">
+                  <mm:relatednodes id="menusubcat">
+                    <li>
+                      <mm:link referids="$vars,menucat@supercat,menusubcat@cat">
+                        <a id="a${subcat}" href="${_}" class="${subcat == cat ? 'selected' : ''}">
+                          <mm:field name="title" />
+                        </a>
+                      </mm:link>
+                    </li>
                   </mm:relatednodes>
-                </div>
+                </ul>
               </mm:isgreaterthan>
             </mm:size>
           </mm:relatednodescontainer>
