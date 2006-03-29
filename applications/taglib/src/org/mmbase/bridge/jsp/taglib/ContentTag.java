@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.52 2006-03-28 22:50:33 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.53 2006-03-29 11:13:11 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -503,12 +503,12 @@ public class ContentTag extends LocaleTag  {
             }
 
             if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
-                addNoCacheHeaders(response, DEFAULT_EXPIRE_TIME);
+                addNoCacheHeaders(request, response, DEFAULT_EXPIRE_TIME);
             } else {
                 // there is a session, or 'expires' was set explicitely
                 // perhaps default cache behaviour should be no-cache if there is a session?
                 long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
-                addNoCacheHeaders(response, exp);
+                addNoCacheHeaders(request, response, exp);
             }
         }
         if (getPostProcessor() == null) {
@@ -534,8 +534,8 @@ public class ContentTag extends LocaleTag  {
      * @param response - http response
      * @param expire - seconds before content should expire
      */
-    protected void addNoCacheHeaders(HttpServletResponse response, long expire) {
-        if (! response.containsHeader("Cache-Control")) {
+    protected void addNoCacheHeaders(HttpServletRequest request, HttpServletResponse response, long expire) {
+        if (request.getAttribute(org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag.INCLUDE_PATH_KEY) == null) {
             if (expire <= 0) {
                 // Add some header to make sure these pages are not cached anywhere.
                 // Set standard HTTP/1.1 no-cache headers.
