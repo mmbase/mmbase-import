@@ -30,16 +30,16 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.19 2006-02-03 15:15:11 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.20 2006-03-30 11:23:53 pierre Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
-    /** 
-     * Number of processed messages 
+    /**
+     * Number of processed messages
      */
-    protected int spawncount = 0;
+    protected long spawncount = 0;
 
     /** Queue with messages to send to other MMBase instances */
     protected Queue nodesToSend = new Queue(64);
@@ -122,7 +122,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                 }
             }
             bytes.write(',');
-            bytes.write(0);            
+            bytes.write(0);
             ObjectOutputStream out = new ObjectOutputStream(bytes);
             out.writeObject(event);
             return bytes.toByteArray();
@@ -133,9 +133,9 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     }
 
-
     /** Followup number of message */
     protected int follownr = 1;
+
     /**
      * Creates MMBase 1.7 parseable message. This is simple String, which is prefixed before the actual 1.8 message.
      *
@@ -208,8 +208,16 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                             if (!ctype.equals("s")) {
                                 MMBase mmbase = MMBase.getMMBase();
                                 MMObjectBuilder builder = mmbase.getBuilder(tb);
-                                MMObjectNode    node    = builder.getNode(id);
-                                return new NodeEvent(machine, tb, node.getNumber(), node.getOldValues(), node.getValues(), NodeEvent.oldTypeToNewType(ctype));
+                                MMObjectNode node = builder.getNode(id);
+                                if (node != null) {
+                                    return new NodeEvent(machine, tb, node.getNumber(), node.getOldValues(), node.getValues(), NodeEvent.oldTypeToNewType(ctype));
+                                } else {
+                                    try {
+                                        return new NodeEvent(machine, tb, Integer.valueOf(id).intValue(), null, null, NodeEvent.oldTypeToNewType(ctype));
+                                    } catch (NumberFormatException nfe) {
+                                        log.error(message + ": colud not parse " + id + " to a node number.");
+                                    }
+                                }
                             } else {
                                 /// XXXX should we?
                                 log.error("XML messages not suppported any more");
@@ -261,16 +269,16 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             log.debug("Ignoring event " + event + ", mmbase is not up " + mmbase);
             return;
         }
-        if(mmbase.getMachineName().equals(event.getMachine())) {
+        if (mmbase.getMachineName().equals(event.getMachine())) {
             // ignore changes of ourselves
             log.debug("Ignoring event " + event + " it is from this mmbase");
             return;
         }
         MessageProbe probe = new MessageProbe(event);
         if (spawnThreads) {
-            probe.run();
-        } else{
             org.mmbase.util.ThreadPools.jobsExecutor.execute(probe);
+        } else{
+            probe.run();
         }
     }
 

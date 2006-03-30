@@ -19,31 +19,28 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * ChangesReceiver is a thread object that builds a MultiCast Thread 
+ * ChangesReceiver is a thread object that builds a MultiCast Thread
  * to receive changes from other MMBase Servers.
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.7 2006-02-10 13:42:24 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.8 2006-03-30 11:23:53 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
     /** MMbase logging system */
     private static final Logger log = Logging.getLoggerInstance(ChangesReceiver.class);
 
-    /** counter of incoming messages */
-    private int incount = 0;
-
     /** Thread which sends the messages */
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
     private Queue nodesToSpawn;
-    
+
     /** address to send the messages to */
     private InetAddress ia;
-    
+
     /** Socket to send the multicast packets */
     private MulticastSocket ms;
 
@@ -72,7 +69,7 @@ public class ChangesReceiver implements Runnable {
         }
         this.start();
     }
-    
+
     /**
      * Start thread
      */
@@ -120,20 +117,22 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
-    
     /**
      * Let the thread do his work
-     * 
+     *
      * @todo determine what encoding to use on receiving packages
      */
     public void doWork() {
+        // create a datapackage to receive all messages
+        DatagramPacket dp = new DatagramPacket(new byte[dpsize], dpsize);
         while (kicker != null) {
-            DatagramPacket dp = new DatagramPacket(new byte[dpsize], dpsize);
             try {
+                // reset datapackage buffer size for re-use
+                dp.setLength(dpsize);
                 ms.receive(dp);
                 byte[] message = new byte[dp.getLength()];
 
-                // the dp.getData array always has dpsize length. 
+                // the dp.getData array always has dpsize length.
                 // That's not what we want. Especially when falling back to legacy, this is translated to a String.
                 // which otherwise gets dpsize length (64k!)
                 System.arraycopy(dp.getData(), 0, message, 0, dp.getLength());
@@ -147,7 +146,6 @@ public class ChangesReceiver implements Runnable {
             } catch (Exception f) {
                 log.error(Logging.stackTrace(f));
             }
-            incount++;
         }
     }
 
