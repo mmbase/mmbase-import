@@ -36,7 +36,7 @@ import org.mmbase.util.Casting;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.11 2005-10-19 18:36:53 michiel Exp $
+ * @version $Id: Functions.java,v 1.12 2006-03-30 17:29:07 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -79,7 +79,6 @@ public class Functions {
     /**
      * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
      * 
-     * @since MMBase-1.8
      */
     public static String escape(String escaper, String string) {
         try {
@@ -87,6 +86,11 @@ public class Functions {
         } catch (Exception e) {
             return "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
         }
+    }
+
+    public static String directory(String file) {
+        if (file.endsWith("/")) return file;
+        return org.mmbase.util.ResourceLoader.getDirectory(file);
     }
 
     /*
