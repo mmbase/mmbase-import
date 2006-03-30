@@ -22,11 +22,11 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * ChangesReceiver is a thread object that builds a Unicast Thread 
+ * ChangesReceiver is a thread object that builds a Unicast Thread
  * to receive changes from other MMBase Servers.
- * 
+ *
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.3 2006-03-30 11:23:53 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -41,10 +41,10 @@ public class ChangesReceiver implements Runnable {
 
     /** Queue with messages received from other MMBase instances */
     private Queue nodesToSpawn;
-    
+
     /** Port on which the talking between nodes take place.*/
     private int unicastPort = 4243;
-    
+
     /**
      * Construct UniCast Receiver
      * @param unicastPort port of the unicast connections
@@ -55,7 +55,7 @@ public class ChangesReceiver implements Runnable {
         this.unicastPort = unicastPort;
         this.start();
     }
-    
+
     /**
      * Start Thread
      */
@@ -91,7 +91,7 @@ public class ChangesReceiver implements Runnable {
 
     /**
      * Let the thread do his work
-     * 
+     *
      * @todo determine what encoding to use on receiving packages
      */
     public void doWork() {
@@ -108,7 +108,7 @@ public class ChangesReceiver implements Runnable {
                     int size = 0;
                     //this buffer has nothing to do with the OS buffer
                     byte[] buffer = new byte[1024];
-                    
+
                     while ((size = reader.read(buffer)) != -1) {
                         if (writer != null) {
                           writer.write(buffer, 0, size);
@@ -123,20 +123,17 @@ public class ChangesReceiver implements Runnable {
                     nodesToSpawn.append(message);
                 } catch (Exception e) {
                     log.error(Logging.stackTrace(e));
-                }
-                finally {
+                } finally {
                     if (reader != null) {
                         try {
                             reader.close();
-                        }
-                        catch (IOException e) {
+                        } catch (IOException e) {
                         }
                     }
                     if (socket != null) {
                         try {
                             socket.close();
-                        }
-                        catch (IOException e) {
+                        } catch (IOException e) {
                         }
                     }
                 }
@@ -144,13 +141,11 @@ public class ChangesReceiver implements Runnable {
             }
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
-        }
-        finally {
+        } finally {
             if (serverSocket != null) {
                 try {
                     serverSocket.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                 }
             }
         }

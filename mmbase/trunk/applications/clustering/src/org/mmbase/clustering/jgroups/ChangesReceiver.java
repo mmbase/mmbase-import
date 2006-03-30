@@ -28,20 +28,20 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * ChangesReceiver is a thread object that builds a MultiCast Thread 
+ * ChangesReceiver is a thread object that builds a MultiCast Thread
  * to receive changes from other MMBase Servers.
  *
  * This is the JGroups variant.
  *
  * @see org.mmbase.clustering.jgroups.Multicast
  * @see org.mmbase.clustering.jgroups.ChangesSender
- * 
+ *
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: ChangesReceiver.java,v 1.2 2005-09-20 19:31:27 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.3 2006-03-30 11:23:53 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -53,7 +53,7 @@ public class ChangesReceiver implements Runnable {
 
     /** Queue with messages received from other MMBase instances */
     private Queue nodesToSpawn;
-    
+
     /** JChannel: the multicast communication channel */
     JChannel channel;
 
@@ -67,7 +67,7 @@ public class ChangesReceiver implements Runnable {
         this.nodesToSpawn=nodesToSpawn;
         this.start();
     }
-    
+
     /**
      * Start thread
      */
@@ -101,10 +101,10 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
-    
+
     /**
      * Let the thread do his work
-     * 
+     *
      * @todo determine what encoding to use on receiving packages
      */
     public void doWork() {
@@ -117,7 +117,7 @@ public class ChangesReceiver implements Runnable {
             receivedObject = channel.receive(0); /* wait forever */
          }
          catch (ChannelNotConnectedException e) {
-            /* This channel is not connected to a group. 
+            /* This channel is not connected to a group.
              * This should never happen, since we never call disconnect on the channel. */
             log.error("Channel disconnected. This should never happen.");
             log.error(Logging.stackTrace(e));
@@ -139,36 +139,31 @@ public class ChangesReceiver implements Runnable {
                log.debug("Message content:");
                Set headerKeySet = message.getHeaders().keySet();
                final Iterator headers = headerKeySet.iterator();
-               while(headers.hasNext())
-               {
+               while(headers.hasNext()) {
                    log.debug(new String(" " +  message.getHeaders().get(headers.next())));
                }
-               
+
                log.debug("      " + new String(message.getBuffer()));
                try {
                   nodesToSpawn.append(message.getBuffer());
-               }
-               catch (Exception ex) {
+               } catch (Exception ex) {
                   log.error(Logging.stackTrace(ex));
                }
-            }
-            else if (receivedObject instanceof View) {
+            } else if (receivedObject instanceof View) {
                View view = (View) receivedObject;
                log.info("Received View from: " + view.getCreator());
                log.info("Current members of group:");
 
                Vector members = view.getMembers() ;
-               
+
                for ( int i = 0 ; i < members.size() ; i++ ) {
-                  log.info("       " + members.elementAt(i) ) ; 
+                  log.info("       " + members.elementAt(i) ) ;
                }
-            }
-            else if (receivedObject instanceof SuspectEvent) {
+            } else if (receivedObject instanceof SuspectEvent) {
                log.warn("Received SuspectEvent for member: " + ((SuspectEvent) receivedObject).getMember());
-            }
-            else if (receivedObject instanceof ExitEvent) {
-               /* If an ExitEvent occurs, this means the channel is no longer open. 
-                * Continuing to call JChannel.receive(0) inside this 
+            } else if (receivedObject instanceof ExitEvent) {
+               /* If an ExitEvent occurs, this means the channel is no longer open.
+                * Continuing to call JChannel.receive(0) inside this
                 * loop will result in throwing an enormous amount of
                 * ChannelClosedException's. Therefore, we wait until the channel is open again. */
                log.warn("Received an ExitEvent. Going to wait until we automatically reconnect to the channel.");
@@ -177,8 +172,7 @@ public class ChangesReceiver implements Runnable {
                while (!(channel.isOpen() && channel.isConnected())) {
                   try {
                      Thread.sleep(10);
-                  }
-                  catch (InterruptedException e) {
+                  } catch (InterruptedException e) {
                      if (log.isServiceEnabled()) {
                         log.service("Thread " + Thread.currentThread() + " ");
                      }
@@ -190,10 +184,9 @@ public class ChangesReceiver implements Runnable {
                View view = channel.getView() ;
                Vector members = view.getMembers() ;
                for ( int i = 0 ; i < members.size() ; i++ ) {
-                  log.info("       " + members.elementAt(i) ) ; 
+                  log.info("       " + members.elementAt(i) ) ;
                }
-            }
-            else {
+            } else {
                log.warn("Unkown object recieved: " + receivedObject.toString());
             }
          }
