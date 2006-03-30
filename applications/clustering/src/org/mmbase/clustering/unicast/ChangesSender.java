@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.4 2006-01-02 14:33:37 nklasens Exp $
+ * @version $Id: ChangesSender.java,v 1.5 2006-03-30 11:23:53 pierre Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -137,20 +137,17 @@ public class ChangesSender implements Runnable {
                         } catch (IOException e) {
                             log.error("can't send message" + message);
                             log.error(Logging.stackTrace(e));
-                        }
-                        finally {
+                        } finally {
                             if (os != null) {
                                 try {
                                     os.close();
-                                }
-                                catch (IOException e1) {
+                                } catch (IOException e1) {
                                 }
                             }
                             if (socket != null) {
                                 try {
                                     socket.close();
-                                }
-                                catch (IOException e1) {
+                                } catch (IOException e1) {
                                 }
                             }
                         }
@@ -178,8 +175,7 @@ public class ChangesSender implements Runnable {
             if (log.isDebugEnabled()) {
                 log.debug("active servers: " + activeServers);
             }
-        }
-        else {
+        } else {
             if (lastServerChecked + serverInterval < System.currentTimeMillis()) {
                 MMServers mmservers = (MMServers) mmbase.getMMObject("mmservers");
                 activeServers = mmservers.getActiveServers();
@@ -189,7 +185,6 @@ public class ChangesSender implements Runnable {
                 }
             }
         }
-
         return activeServers;
     }
 

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MessageProbe.java,v 1.6 2006-01-02 12:41:08 michiel Exp $
+ * @version $Id: MessageProbe.java,v 1.7 2006-03-30 11:23:53 pierre Exp $
  */
 public class MessageProbe implements Runnable {
 
@@ -49,7 +49,7 @@ public class MessageProbe implements Runnable {
         //no longer handeled by the clustering system.
         try {
             MMBase mmbase = MMBase.getMMBase();
-            if(! event.getMachine().equals(mmbase.getMachineName())){
+            if(!event.getMachine().equals(mmbase.getMachineName())) {
                 EventManager.getInstance().propagateEvent(event);
             }
         } catch(Throwable t) {
