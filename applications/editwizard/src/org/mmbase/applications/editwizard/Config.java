@@ -29,10 +29,12 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.59 2005-05-19 09:04:23 pierre Exp $
+ * @version $Id: Config.java,v 1.60 2006-03-30 16:40:57 michiel Exp $
  */
 
-public class Config {
+public class Config implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     /**
      * Default maximum upload size for files (4 MB).
@@ -65,13 +67,13 @@ public class Config {
 
     //   public String context; (contained in attributes now)
 
-    static public class SubConfig {
+    static public class SubConfig implements java.io.Serializable {
         public boolean debug = false;
         public String wizard;
         public String page;
-        public Map popups = new HashMap(); // all popups now in use below this (key -> Config)
+        public HashMap popups = new HashMap(); // all popups now in use below this (key -> Config)
 
-        public Map attributes = new HashMap();
+        public HashMap attributes = new HashMap();
 
         /**
          * Basic configuration. The configuration object passed is updated with information retrieved
@@ -431,10 +433,16 @@ public class Config {
                 if (fields == null) {
                     if (cloud != null) {
                         StringBuffer fieldsBuffer = new StringBuffer();
-                        FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).
-                            getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
+                        FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {
-                            fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(i.nextField().getName());
+                            Field field = i.nextField();
+                            if (multilevel && field.isVirtual()) {
+                                // cannot be queried any way. 
+                                // these fields are directly added the query. You could perhaps deterin virtual fields afterwards.
+                                // should perhaps also be valid for monolevels.
+                                continue;
+                            }
+                            fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(field.getName());
                             if (i.hasNext()) fieldsBuffer.append(',');
                         }
                         fields = fieldsBuffer.toString();
