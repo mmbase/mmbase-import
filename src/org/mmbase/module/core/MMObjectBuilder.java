@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.374 2006-03-24 13:36:59 johannes Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.375 2006-03-30 11:36:12 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -910,7 +910,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             while (syncs.hasNext()) {
                 MMObjectNode syncnode = (MMObjectNode) syncs.next();
                 syncnode.parent.removeNode(syncnode);
-                log.service("Removed syncnode " + syncnode);
+                if (log.isDebugEnabled()) {
+                    log.debug("Removed syncnode " + syncnode);
+                }
             }
         } catch (SearchQueryException e) {
             throw new RuntimeException(e);
@@ -1019,7 +1021,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // determine valid username
             if ((userName == null) || (userName.length() <= 1 )) { // may not have owner of 1 char??
                 userName = node.getStringValue(FIELD_OWNER);
-                log.service("Found username " + (userName == null ? "NULL" : userName));
+                if (log.isDebugEnabled()) {
+                    log.debug("Found username " + (userName == null ? "NULL" : userName));
+                }
             }
             res = node.insert(userName);
             if (res > -1) {
@@ -2947,8 +2951,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
         if(type == NodeEvent.EVENT_TYPE_DELETE ||
            ((! localEvent) && type == NodeEvent.EVENT_TYPE_CHANGED)){
-            if (nodeCache.remove(changedNodeNumber) != null) {
-                log.service("Removed node " + changedNodeNumber + " from node cache");
+            if (nodeCache.remove(changedNodeNumber) != null && log.isDebugEnabled()) {
+                log.debug("Removed node " + changedNodeNumber + " from node cache");
             }
         }
 
