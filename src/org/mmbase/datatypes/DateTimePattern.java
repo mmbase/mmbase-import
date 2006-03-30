@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.8 2006-01-06 22:45:41 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.9 2006-03-30 14:02:04 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -153,6 +153,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             public String toString(int value, Locale locale, int length) {
                 SimpleDateFormat format = new SimpleDateFormat("EEEEEEEEEEEEE".substring(0, length), locale);
                 Calendar help = Calendar.getInstance();
+                help.clear();
                 help.set(field, value);
                 return format.format(help.getTime());
             }
@@ -175,6 +176,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             public String toString(int value, Locale locale, int length) {
                 SimpleDateFormat format = new SimpleDateFormat("GGGGGGGGGGGG".substring(0, length), locale);
                 Calendar help = Calendar.getInstance();
+                help.clear();
                 help.set(field, value);
                 return format.format(help.getTime());
             }
@@ -186,6 +188,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             public String toString(int value, Locale locale, int length) {
                 SimpleDateFormat format = new SimpleDateFormat("aaaaaaaaaaaaaa".substring(0, length), locale);
                 Calendar help = Calendar.getInstance();
+                help.clear();
                 help.set(field, value);
                 return format.format(help.getTime());
             }
@@ -229,6 +232,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                     public String toString(int value, Locale locale, int length) {
                         SimpleDateFormat format = new SimpleDateFormat("MMMMMMMMMMMMMMMMMM".substring(0, length), locale);
                         Calendar help = Calendar.getInstance();
+                        help.clear();
                         help.set(field, value);
                         return format.format(help.getTime());
                     }
