@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.348 2006-03-29 00:43:29 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.349 2006-03-30 17:29:07 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -96,6 +96,17 @@ version: $Id: mmbase-taglib.xml,v 1.348 2006-03-29 00:43:29 michiel Exp $
     <function-signature>java.lang.String escape(java.lang.String, java.lang.String)</function-signature>
     <example>
       &lt;a href="${node.url}" title="${mm:escape('text/html/attribute', node.title)}" .../&gt;
+    </example>
+  </function>
+  <function>
+    <description>
+      Calculates the directory part of a certain string. If string ends with / the string itself.
+    </description>
+    <name>directory</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.String directory(java.lang.String)</function-signature>
+    <example>
+      &lt;mm:xslt page="${mm:directory(referrer)}/bla.xml" /&gt;
     </example>
   </function>
 
@@ -4761,6 +4772,12 @@ like the parameter list or the session (where ever it is available) --&gt;
     <info>
     Check if node may be changed.
     </info>
+    <attribute>
+      <name>number</name>
+      <required>false</required>
+      <info>
+      </info>
+    </attribute>
     <example>
 &lt;mm:listnodes type="list" max="1"&gt;
     &lt;mm:maywrite&gt;
