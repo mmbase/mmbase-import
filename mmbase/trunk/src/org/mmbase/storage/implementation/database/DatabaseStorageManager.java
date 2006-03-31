@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.152 2006-03-28 23:43:08 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.153 2006-03-31 13:16:48 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2307,19 +2307,6 @@ public class DatabaseStorageManager implements StorageManager {
                                       + " (" + colInfo.get("TYPE_NAME") + "). Storage type will be used.");
                             // set the new type (keep the old datatype)
                             field.setType(type);
-/*
-                            DataType originalDataType = field.getDataType();
-                            DataType newDataType      = (DataType) DataTypes.getDataType(type).clone(originalDataType.getName());
-                            field.setType(Fields.classToType(newDataType.getTypeAsClass()));
-                            if (originalDataType instanceof BasicDataType) {
-                                newDataType.inherit((BasicDataType) originalDataType); // takes as much possible...
-                            } else {
-                                // cannot happen, I think
-                                log.warn("original data type is no BasicDataType, but a " + originalDataType.getClass());
-                            }
-                            field.setDataType(newDataType);
-                            log.info("" + originalDataType + " -> " + field.getDataType());
-*/
                         }
                         boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
                         if (nullable == field.isNotNull()) {
@@ -2662,12 +2649,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
     /**
      * Convert legacy file
      * @return Number of converted fields. Or -1 if not storing binaries as files
      */
-
     public int convertLegacyBinaryFiles() throws org.mmbase.storage.search.SearchQueryException, SQLException {
         if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
             synchronized(factory) { // there is only on factory. This makes sure that there is only one conversion running
@@ -2676,17 +2661,15 @@ public class DatabaseStorageManager implements StorageManager {
                 Iterator builders = factory.getMMBase().getBuilders().iterator();
                 while (builders.hasNext()) {
                     MMObjectBuilder builder = (MMObjectBuilder)builders.next();
-		    // remove clusternodes from the convert
-		    if (!builder.getSingularName().equals("clusternodes")) {
-                     Iterator fields = builder.getFields().iterator();
-                     while (fields.hasNext()) {
-                        CoreField field = (CoreField)fields.next();
-                        String fieldName = field.getName();
-                        if (field.getType() == Field.TYPE_BINARY) { // check all binaries
-
-                            // check whether it might be in a column
-                            boolean foundColumn = false;
-                            {
+                    // remove clusternodes from the convert
+                    if (!builder.getSingularName().equals("clusternodes")) {
+                        Iterator fields = builder.getFields().iterator();
+                        while (fields.hasNext()) {
+                            CoreField field = (CoreField)fields.next();
+                            String fieldName = field.getName();
+                            if (field.getType() == Field.TYPE_BINARY) { // check all binaries
+                                // check whether it might be in a column
+                                boolean foundColumn = false;
                                 try {
                                     getActiveConnection();
                                     String tableName = (String)factory.getStorageIdentifier(builder);
@@ -2707,51 +2690,48 @@ public class DatabaseStorageManager implements StorageManager {
                                 } finally {
                                     releaseActiveConnection();
                                 }
-                            }
-
-                            List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
-                            log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
-                            Iterator i = nodes.iterator();
-                            while (i.hasNext()) {
-                                MMObjectNode node = (MMObjectNode)i.next();
-                                File storeFile = getBinaryFile(node, fieldName);
-                                if (!storeFile.exists()) { // not found!
-                                    File legacyFile = getLegacyBinaryFile(node, fieldName);
-                                    if (legacyFile != null) {
-                                        storeFile.getParentFile().mkdirs();
-                                        if (legacyFile.renameTo(storeFile)) {
-                                            log.service("Renamed " + legacyFile + " to " + storeFile);
-                                            result++;
+                                List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
+                                log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
+                                Iterator i = nodes.iterator();
+                                while (i.hasNext()) {
+                                    MMObjectNode node = (MMObjectNode)i.next();
+                                    File storeFile = getBinaryFile(node, fieldName);
+                                    if (!storeFile.exists()) { // not found!
+                                        File legacyFile = getLegacyBinaryFile(node, fieldName);
+                                        if (legacyFile != null) {
+                                            storeFile.getParentFile().mkdirs();
+                                            if (legacyFile.renameTo(storeFile)) {
+                                                log.service("Renamed " + legacyFile + " to " + storeFile);
+                                                result++;
+                                            } else {
+                                                log.warn("Could not rename " + legacyFile + " to " + storeFile);
+                                            }
                                         } else {
-                                            log.warn("Could not rename " + legacyFile + " to " + storeFile);
-                                        }
-                                    } else {
-                                        if (foundColumn) {
+                                            if (foundColumn) {
 
-                                            Blob b = getBlobFromDatabase(node, field, false);
-                                            byte[] bytes = b.getBytes(0L, (int) b.length());
-                                            node.setValue(fieldName, bytes);
-                                            storeBinaryAsFile(node, field);
+                                                Blob b = getBlobFromDatabase(node, field, false);
+                                                byte[] bytes = b.getBytes(0L, (int) b.length());
+                                                node.setValue(fieldName, bytes);
+                                                storeBinaryAsFile(node, field);
 
-                                            node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
-                                            // node.commit(); no need, because we only changed blob (so no database updates are done)
-                                            result++;
-                                            fromDatabase++;
-                                            log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
+                                                node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
+                                                // node.commit(); no need, because we only changed blob (so no database updates are done)
+                                                result++;
+                                                fromDatabase++;
+                                                log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
+                                            }
                                         }
                                     }
-                                }
-                            } // nodes
-                        } // if type = byte
-                     } // fields
-		    }
+                                } // nodes
+                            } // if type = byte
+                        } // fields
+                    }
                 } // builders
                 if (result > 0) {
                     log.info("Converted " + result + " fields " + ((fromDatabase > 0 && fromDatabase < result) ? " of wich  " + fromDatabase + " from database" : ""));
                     if (fromDatabase > 0) {
                         log.info("You may drop byte array columns from the database now. See the the VERIFY warning during initialisation.");
                     }
-
                 } else {
                     log.service("Converted no fields");
                 }
@@ -2767,6 +2747,7 @@ public class DatabaseStorageManager implements StorageManager {
         private InputStream inputStream;
         private byte[] bytes = null;
         private long size;
+
         public InputStreamBlob(InputStream is, long s) {
             inputStream = is;
             size = s;
@@ -2783,6 +2764,7 @@ public class DatabaseStorageManager implements StorageManager {
                 return inputStream;
             }
         }
+
         public byte[] getBytes(long pos, int length) {
             if (pos == 1 && size == length && bytes != null) return bytes;
 
@@ -2837,9 +2819,11 @@ public class DatabaseStorageManager implements StorageManager {
         public OutputStream setBinaryStream(long pos) {
             throw new UnsupportedOperationException("");
         }
+
         public int setBytes(long pos, byte[] bytes) {
             throw new UnsupportedOperationException("");
         }
+
         public int setBytes(long pos, byte[] bytes, int offset, int len) {
             throw new UnsupportedOperationException("");
         }
