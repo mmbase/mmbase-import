@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.30 2006-03-24 17:32:47 johannes Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.31 2006-03-31 19:15:29 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -115,7 +115,9 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      */
 
     protected List add(Locale locale, Object entry) {
-        if (locale == null) locale = LocalizedString.getDefault();
+        if (locale == null) {
+            locale = LocalizedString.getDefault();
+        }
         LocalizedEntry local = (LocalizedEntry) localized.get(locale);
         if (local == null) {
             local = new LocalizedEntry();
@@ -123,22 +125,20 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             local.unusedKeys.addAll(fallBack);
             localized.put(locale, local);
         }
-        
+
         // If this locale with variant is added but the parent locale was not yet in the map, then
         // we first add the parent locale.
         if (locale.getVariant() != null && !"".equals(locale.getVariant())) {
-            String language = locale.getLanguage() + "_" + locale.getCountry();
-            Locale l = new Locale(language);
+            Locale l = new Locale(locale.getLanguage(), locale.getCountry());
             if (!localized.containsKey(l)) {
                 add(l, entry);
             }
         }
-        
+
         // If this locale with country is added, but the parent locale (only language) was not yet in
         // the map, we first add the parent language locale.
         if (locale.getCountry() != null && !"".equals(locale.getCountry())) {
-            String language = locale.getLanguage();
-            Locale l = new Locale(language);
+            Locale l = new Locale(locale.getLanguage());
             if (!localized.containsKey(l)) {
                 add(l, entry);
             }
@@ -217,115 +217,116 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      */
     public Collection /* <Map.Entry> */ get(final Locale locale, final Cloud cloud) {
         return new AbstractCollection() {
-                public int size() {
-                    return LocalizedEntryListFactory.this.size(cloud);
-                }
-                public Iterator iterator() {
-                    return new Iterator() {
-                            Locale useLocale = locale;
-                            Cloud useCloud = cloud;
-                            {
-                                if (useLocale == null) {
-                                    useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
-                                }
-                            }
-                            private ChainedIterator iterator = new ChainedIterator();
-                            private Iterator subIterator = null;
-                            private Map.Entry next = null;
+            public int size() {
+                return LocalizedEntryListFactory.this.size(cloud);
+            }
+            public Iterator iterator() {
+                return new Iterator() {
+                    Locale useLocale = locale;
+                    Cloud useCloud = cloud;
+                    {
+                        if (useLocale == null) {
+                            useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
+                        }
+                        log.debug("using locale " + useLocale);
+                    }
+                    private ChainedIterator iterator = new ChainedIterator();
+                    private Iterator subIterator = null;
+                    private Map.Entry next = null;
 
-                            {
-                                LocalizedEntry loc = (LocalizedEntry) localized.get(useLocale);
-                                if (loc == null) {
-                                    loc = (LocalizedEntry) localized.get(LocalizedString.getDefault());
-                                }
+                    {
+                        LocalizedEntry loc = (LocalizedEntry) localized.get(useLocale);
+                        if (loc == null) {
+                            loc = (LocalizedEntry) localized.get(LocalizedString.getDefault());
+                        }
 
-                                if (loc == null) {
-                                    iterator.addIterator(bundles.iterator());
-                                    iterator.addIterator(fallBack.iterator());
+                        if (loc == null) {
+                            iterator.addIterator(bundles.iterator());
+                            iterator.addIterator(fallBack.iterator());
+                        } else {
+                            iterator.addIterator(loc.entries.iterator());
+                            iterator.addIterator(loc.unusedKeys.iterator());
+                        }
+
+                        findNext();
+                    }
+                    protected void findNext() {
+                        next = null;
+                        while(next == null && iterator.hasNext()) {
+                            Object candidate = iterator.next();
+                            if (candidate instanceof Map.Entry) {
+                                next = (Map.Entry) candidate;
+                            } else if (candidate instanceof Bundle) {
+                                subIterator = ((Bundle) candidate).get(useLocale).iterator();
+                                if (subIterator.hasNext()) {
+                                    break;
                                 } else {
-                                    iterator.addIterator(loc.entries.iterator());
-                                    iterator.addIterator(loc.unusedKeys.iterator());
+                                    subIterator = null;
                                 }
+                            } else if (candidate instanceof DocumentSerializable) {
+                                Element element = ((DocumentSerializable) candidate).getDocument().getDocumentElement();
+                                try {
+                                    if (useCloud == null) {
+                                        useCloud = getCloud(useLocale);
+                                        if (useCloud == null) {
+                                            if (log.isDebugEnabled()) {
+                                                log.debug("Defined query for " + this + " but no cloud provided. Skipping results.");
+                                            }
+                                            continue;
+                                        }
+                                    }
+                                    Query query = QueryReader.parseQuery(element, useCloud, null).query;
+                                    final org.mmbase.bridge.NodeList list = query.getList();
+                                    subIterator = new Iterator() {
+                                            final NodeIterator nodeIterator = list.nodeIterator();
+                                            public boolean hasNext() {
+                                                return nodeIterator.hasNext();
+                                            }
+                                            public Object next() {
+                                                org.mmbase.bridge.Node next = nodeIterator.nextNode();
+                                                return new Entry(next, next.getFunctionValue("gui", null));
+                                            }
+                                            public void remove() {
+                                                throw new UnsupportedOperationException();
+                                            }
+                                        };
+                                    if (subIterator.hasNext()) {
+                                        break;
+                                    } else {
+                                        subIterator = null;
+                                    }
+                                } catch (Exception e) {
+                                    log.error(e.getMessage(), e);
+                                }
+                            } else {
+                                next = new Entry(candidate, candidate);
+                            }
+                        }
+                    }
 
+                    public boolean hasNext() {
+                        return next != null || subIterator != null;
+                    }
+                    public Object next() {
+                        Map.Entry res;
+                        if (subIterator != null) {
+                            res = (Map.Entry) subIterator.next();
+                            if (!subIterator.hasNext()) {
+                                subIterator = null;
                                 findNext();
                             }
-                            protected void findNext() {
-                                next = null;
-                                while(next == null && iterator.hasNext()) {
-                                    Object candidate = iterator.next();
-                                    if (candidate instanceof Map.Entry) {
-                                        next = (Map.Entry) candidate;
-                                    } else if (candidate instanceof Bundle) {
-                                        subIterator = ((Bundle) candidate).get(useLocale).iterator();
-                                        if (subIterator.hasNext()) {
-                                            break;
-                                        } else {
-                                            subIterator = null;
-                                        }
-                                    } else if (candidate instanceof DocumentSerializable) {
-                                        Element element = ((DocumentSerializable) candidate).getDocument().getDocumentElement();
-                                        try {
-                                            if (useCloud == null) {
-                                                useCloud = getCloud(useLocale);
-                                                if (useCloud == null) {
-                                                    if (log.isDebugEnabled()) {
-                                                        log.debug("Defined query for " + this + " but no cloud provided. Skipping results.");
-                                                    }
-                                                    continue;
-                                                }
-                                            }
-                                            final Query query = QueryReader.parseQuery(element, useCloud, null).query;
-                                            log.debug("Executing query " + query);
-                                            subIterator = new Iterator() {
-                                                    final NodeIterator nodeIterator = query.getList().nodeIterator();
-                                                    public boolean hasNext() {
-                                                        return nodeIterator.hasNext();
-                                                    }
-                                                    public Object next() {
-                                                        org.mmbase.bridge.Node next = nodeIterator.nextNode();
-                                                        return new Entry(next, next.getFunctionValue("gui", null));
-                                                    }
-                                                    public void remove() {
-                                                        throw new UnsupportedOperationException();
-                                                    }
-                                                };
-                                            if (subIterator.hasNext()) {
-                                                break;
-                                            } else {
-                                                subIterator = null;
-                                            }
-                                        } catch (Exception e) {
-                                            log.error(e.getMessage(), e);
-                                        }
-                                    } else {
-                                        next = new Entry(candidate, candidate);
-                                    }
-                                }
-                            }
-
-                            public boolean hasNext() {
-                                return next != null || subIterator != null;
-                            }
-                            public Object next() {
-                                Map.Entry res;
-                                if (subIterator != null) {
-                                    res = (Map.Entry) subIterator.next();
-                                    if (!subIterator.hasNext()) {
-                                        subIterator = null;
-                                        findNext();
-                                    }
-                                } else {
-                                    res = next;
-                                    findNext();
-                                }
-                                return res;
-                            }
-                            public void remove() {
-                                throw new UnsupportedOperationException();
-                            }
-                        };
-                }
-            };
+                        } else {
+                            res = next;
+                            findNext();
+                        }
+                        return res;
+                    }
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
     }
     /**
      * The size of the collections returned by {@link #get}
