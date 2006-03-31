@@ -91,10 +91,9 @@
             <mm:node element="learnobjects">
               <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
             </mm:node>
-            <a target="content" href="<mm:treefile page="$page" objectlist="$includePath" referids="$referids">
-                                        <mm:param name="learnobject"><mm:field name="learnobjects.number" /></mm:param>
-                                        <mm:param name="fb_madetest"><mm:write referid="madetest" /></mm:param>
-                                      </mm:treefile>"><mm:write referid="description"/></a><br/>
+            <a target="content" href="<mm:treefile page="$page" objectlist="$includePath" referids="$referids"><mm:param name="learnobject"><mm:field name="learnobjects.number" /></mm:param><mm:param name="fb_madetest"><mm:write referid="madetest" /></mm:param></mm:treefile>"><mm:write referid="description"/>
+            </a>
+            <br/>
           </mm:list>
         </mm:field>
       </mm:relatednodes>
@@ -106,7 +105,6 @@
 <mm:node number="$user">
   <mm:relatedcontainer path="workgroups,classes" fields="workgroups.number,classes.number">
     <mm:constraint field="classes.number" value="$class"/>
-
     <mm:related>
       <mm:remove referid="workgroup"/>
       <mm:import id="workgroup"><mm:field name="workgroups.number"/></mm:import>
