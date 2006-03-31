@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.148 2006-03-29 12:50:58 pierre Exp $
+    @version $Id: wizard.xsl,v 1.149 2006-03-31 08:45:43 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1207,6 +1207,17 @@
                 <xsl:for-each select="@*">
                   <xsl:copy/>
                 </xsl:for-each>
+                <xsl:attribute name="relationOriginNode"><xsl:value-of select="../@number" /></xsl:attribute>
+                <xsl:choose>
+                  <xsl:when test="../action[@type=&apos;add&apos;]/relation/@role">
+                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type=&apos;add&apos;]/relation/@role" /></xsl:attribute>
+                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type=&apos;add&apos;]/relation/@createdir" /></xsl:attribute>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type=&apos;create&apos;]/relation/@role" /></xsl:attribute>
+                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type=&apos;create&apos;]/relation/@createdir" /></xsl:attribute>
+                  </xsl:otherwise>
+                </xsl:choose>
                 <xsl:call-template name="prompt_search"/>
               </span>
             </td>

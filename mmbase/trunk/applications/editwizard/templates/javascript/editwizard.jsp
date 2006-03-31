@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.58 2005-04-11 07:28:50 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.59 2006-03-31 08:45:43 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -218,6 +218,11 @@ function doSearch(el, cmd, sessionkey) {
     url += setParam("distinct", distinct);
     url += setParam("age", searchage+"");
     url += setParam("type", el.getAttribute("type"));
+
+    url += setParam("relationOriginNode", el.getAttribute("relationOriginNode"));
+    url += setParam("relationRole", el.getAttribute("relationRole"));
+    url += setParam("relationCreateDir", el.getAttribute("relationCreateDir"));
+
     url += "&cmd=" + cmd;
 
     showSearchScreen(cmd, url);

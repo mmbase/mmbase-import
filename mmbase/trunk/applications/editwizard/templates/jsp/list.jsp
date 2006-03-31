@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.63 2005-12-21 10:40:59 michiel Exp $
+     * @version  $Id: list.jsp,v 1.64 2006-03-31 08:45:43 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -191,6 +191,28 @@ if (mainManager.charAt(mainManager.length()-1)<='9') mainManager=mainManager.sub
 NodeManager manager=cloud.getNodeManager(mainManager);
 if (!manager.mayCreateNode()) creatable=false;
 
+// relationmanager test for searchlists
+String roleStr = request.getParameter("relationRole");
+String originNodeNr = request.getParameter("relationOriginNode");
+boolean checkRelationRights = originNodeNr != null && !"".equals(originNodeNr) && roleStr != null && !"".equals(roleStr);
+Node originNode = null;
+RelationManager relationManager = null;
+boolean checkDestination = true;
+boolean checkSource = true;
+if (checkRelationRights) {
+    try {
+        originNode = cloud.getNode(originNodeNr);
+        relationManager = cloud.getRelationManager(roleStr);
+        String createDir  = request.getParameter("relationCreateDir");
+        if (createDir != null) {
+            checkDestination = !createDir.equals("source"); // destination or both
+            checkSource = !createDir.equals("destination"); // source or both
+        }
+    } catch (NotFoundException nfe) {
+        log.error("error:" + nfe);
+        checkRelationRights = false;
+    }
+}
 
 for (int i=0; i < results.size(); i++) {
     Node item = results.getNode(i);
@@ -201,6 +223,7 @@ for (int i=0; i < results.size(); i++) {
     } else {
         obj = addObject(docel, item.getNumber(), i+1 + start, mainManager, manager.getGUIName(2));
     }
+
     for (int j=0; j < listConfig.fieldList.size(); j++) {
         String fieldName = (String)listConfig.fieldList.get(j);
 
@@ -220,7 +243,7 @@ for (int i=0; i < results.size(); i++) {
            if (value.equals("-1")) {
              value = "";
            }
-        } else {    
+        } else {
             Locale locale = new Locale(ewconfig.language);
             Parameters args = item.createParameters("gui");
             args.set("field",    fieldName);
@@ -234,9 +257,21 @@ for (int i=0; i < results.size(); i++) {
         addField(obj, field.getGUIName(), fieldName, value, field.getGUIType());
     }
     if (listConfig.multilevel) {
-        item=item.getNodeValue(listConfig.mainObjectName);
+        item = item.getNodeValue(listConfig.mainObjectName);
     }
-    Utils.setAttribute(obj, "mayedit",   "" + item.mayWrite());
+    if (checkRelationRights) {
+        boolean toDestination = checkDestination &&
+                                cloud.hasRelationManager(originNode.getNodeManager(), item.getNodeManager(), roleStr) &&
+                                relationManager.mayCreateRelation(originNode, item);
+        boolean toSource = checkSource &&
+                           cloud.hasRelationManager(item.getNodeManager(), originNode.getNodeManager(), roleStr) &&
+                           relationManager.mayCreateRelation(item, originNode);
+        Utils.setAttribute(obj, "maylink", "" + (toSource || toDestination));
+    } else {
+        Utils.setAttribute(obj, "maylink", "true");
+    }
+
+    Utils.setAttribute(obj, "mayedit", "" + item.mayWrite());
     Utils.setAttribute(obj, "maydelete", "" + item.mayDelete());
 }
 
