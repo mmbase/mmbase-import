@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.11 2006-03-31 13:18:20 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.12 2006-03-31 16:45:21 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -134,13 +134,12 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     /**
      * Sets the datatype of a field.
      * It is possible that the datatype of a field is different from the actual field type.
-     * In that case, this class logs a warning, but continues on.
      * @see #getType
      */
     public void setDataType(DataType dataType) throws IllegalArgumentException {
         int dataTypeType = dataType.getBaseType();
         if (dataTypeType != type) {
-            log.warn("DataType (" + dataType.getBaseTypeIdentifier() + ") is different from db type (" + Fields.getTypeDescription(type) + ").");
+            log.debug("DataType (" + dataType.getBaseTypeIdentifier() + ") is different from db type (" + Fields.getTypeDescription(type) + ").");
         }
         this.dataType = dataType;
     }
@@ -163,8 +162,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     public boolean isUnique() {
         return dataType.isUnique();
     }
-    abstract public int getMaxLength();
 
+    abstract public int getMaxLength();
 
     /**
      * @see org.mmbase.bridge.Field#isRequired()
