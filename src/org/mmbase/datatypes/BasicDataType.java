@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.43 2006-03-20 18:37:15 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.44 2006-03-31 13:18:20 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -132,7 +132,11 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     public String getBaseTypeIdentifier() {
-        return Fields.getTypeDescription(Fields.classToType(classType)).toLowerCase();
+        return Fields.getTypeDescription(getBaseType()).toLowerCase();
+    }
+
+    public int getBaseType() {
+        return Fields.classToType(classType);
     }
 
     /**
@@ -263,7 +267,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
     }
 
     /**
-     * Utility to avoid repitive calling of getCloud
+     * Utility to avoid repetitive calling of getCloud
      */
     protected Object cast(Object value, Cloud cloud, Node node, Field field) {
         Object preCast = preCast(value, cloud, node, field);

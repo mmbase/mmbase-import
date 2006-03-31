@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.core;
 
 import org.mmbase.bridge.*;
+import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.util.logging.*;
 
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.10 2006-03-31 10:14:15 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.11 2006-03-31 13:18:20 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -58,9 +59,9 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
         readOnly = field.isReadOnly();
         listItemType = field.getListItemType();
         if (copyDataTypeForRewrite) {
-            dataType = (DataType)field.getDataType().clone();
+            setDataType((DataType)field.getDataType().clone());
         } else {
-            dataType = field.getDataType();
+            setDataType(dataType = field.getDataType());
         }
     }
 
@@ -74,7 +75,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
         this.type = type;
         this.listItemType = listItemType;
         setState(state);
-        this.dataType = dataType;
+        setDataType(dataType);
     }
 
     abstract public NodeManager getNodeManager();
@@ -118,7 +119,6 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
         this.state = state;
     }
 
-
     public int getType() {
         return type;
     }
@@ -129,6 +129,20 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
 
     public DataType getDataType() {
         return dataType;
+    }
+
+    /**
+     * Sets the datatype of a field.
+     * It is possible that the datatype of a field is different from the actual field type.
+     * In that case, this class logs a warning, but continues on.
+     * @see #getType
+     */
+    public void setDataType(DataType dataType) throws IllegalArgumentException {
+        int dataTypeType = dataType.getBaseType();
+        if (dataTypeType != type) {
+            log.warn("DataType (" + dataType.getBaseTypeIdentifier() + ") is different from db type (" + Fields.getTypeDescription(type) + ").");
+        }
+        this.dataType = dataType;
     }
 
     public boolean hasIndex() {
@@ -142,7 +156,6 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     abstract public int getEditPosition();
 
     abstract public int getStoragePosition();
-
 
     /**
      * Retrieve whether the field is a key and thus need be unique.
@@ -181,7 +194,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
         String fieldName = getName();
         return fieldName != null ? fieldName.startsWith("_") : false;
     }
-    
+
     /**
      * @see org.mmbase.bridge.Field#isVirtual()
      */
@@ -196,8 +209,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
      */
     public String toString() {
         return getName() + ":" +
-            org.mmbase.core.util.Fields.getTypeDescription(getType()) + " / " +
-            org.mmbase.core.util.Fields.getStateDescription(getState())+ "/" +
+            Fields.getTypeDescription(getType()) + " / " +
+            Fields.getStateDescription(getState())+ "/" +
             getDataType();
     }
 
