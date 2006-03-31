@@ -205,7 +205,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("departments","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizardgroups","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizards","title:naam");
-      tmRenamingFields.put("employees","location:account;birthday:dayofbirth;description:importstatus");
+      tmRenamingFields.put("employees","location:account;birthday:dayofbirth;description:omschrijving");
       tmRenamingFields.put("formulier","copyright:titel_de;subtitle:titel_fra;title:titel;" +
       "editors_note:emailadressen;introduction:omschrijving");
       tmRenamingFields.put("images","title:titel;description:omschrijving");
@@ -467,10 +467,10 @@ public class NMIntraToNatMMigrator {
       while ((iBegEnrolldateIndex>-1)&&(iEndEnrolldateIndex>-1)){
         String sEnrolldateValue = sContent.substring(iBegEnrolldateIndex + 12,iEndEnrolldateIndex);
         if (sEnrolldateValue.equals("2114377200")) {
-          sContent = sContent.substring(0,iBegEnrolldateIndex) + "<status>inactive</status>" +
+          sContent = sContent.substring(0,iBegEnrolldateIndex) + "<importstatus>inactive</importstatus>" +
               sContent.substring(iEndEnrolldateIndex + 13);
         } else if (sEnrolldateValue.equals("0")) {
-          sContent = sContent.substring(0,iBegEnrolldateIndex) + "<status>active</status>" +
+          sContent = sContent.substring(0,iBegEnrolldateIndex) + "<importstatus>active</importstatus>" +
               sContent.substring(iEndEnrolldateIndex + 13);
         } else {
           sContent = sContent.substring(0,iBegEnrolldateIndex) +
