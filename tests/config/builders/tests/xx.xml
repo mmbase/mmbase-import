@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="object" maintainer="mmbase.org" name="xx" version="0">
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="xx" maintainer="mmbase.org" version="0" extends="object">
   <names>
     <singular xml:lang="nl">xx</singular>
     <singular xml:lang="fr">xx</singular>
@@ -21,7 +25,6 @@
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="fr">Nom</guiname>
         <guiname xml:lang="en">Name</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -39,7 +42,6 @@
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="fr">Description</guiname>
         <guiname xml:lang="en">Description</guiname>
-        <guitype>field</guitype>
       </gui>
       <db>
         <name>description</name>
@@ -50,7 +52,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">ByteField</guiname>
-        <guitype>byte</guitype>
       </gui>
       <editor>
         <positions>
@@ -66,7 +67,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">DoubleField</guiname>
-        <guitype>double</guitype>
       </gui>
       <db>
         <name>doublefield</name>
@@ -77,7 +77,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">FloatField</guiname>
-        <guitype>float</guitype>
       </gui>
       <db>
         <name>floatfield</name>
@@ -88,7 +87,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">IntField</guiname>
-        <guitype>integer</guitype>
       </gui>
       <db>
         <name>intfield</name>
@@ -99,7 +97,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">LongField</guiname>
-        <guitype>long</guitype>
       </gui>
       <db>
         <name>longfield</name>
@@ -110,7 +107,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">StringField</guiname>
-        <guitype>string</guitype>
       </gui>
       <db>
         <name>stringfield</name>
@@ -131,7 +127,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">NodeField</guiname>
-        <guitype>typedef</guitype>
       </gui>
       <db>
         <name>nodefield</name>
@@ -153,7 +148,6 @@
     <field>
       <gui>
         <guiname xml:lang="en">BooleanField</guiname>
-        <guitype>string</guitype>
       </gui>
       <db>
         <name>booleanfield</name>
@@ -161,11 +155,10 @@
       </db>
     </field>
 
-    <!--
+<!--
     <field>
       <gui>
         <guiname xml:lang="en">ListField</guiname>
-        <guitype>string</guitype>
       </gui>
       <db>
         <name>listfield</name>
