@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.34 2005-12-09 09:53:34 pierre Exp $
+ * @version $Id: Field.java,v 1.35 2006-03-31 13:18:20 pierre Exp $
  */
 public interface Field extends Descriptor {
 
@@ -123,6 +123,12 @@ public interface Field extends Descriptor {
     /**
      * Returns the identifier for the MMBase base type for this field.
      * This represents one of field type constants. This basic type determines how data is stored in MMBase.
+     * Note that it is possible that the datatype for a field (used for validation and in/out put) can be of a different
+     * basic type than how it is stored in the database. This shoudl not occur often, but is possible in some cases, such
+     * as when you use older clod models (which used INTEGER fields for dates).
+     * In general this should not prove a [problem - however you shoudl not assumeto know the classtype iof data of a
+     * field based on this method.
+     * To acquire the datatype's type, use <code>getDataType.getBaseType()</code> instead.
      * @return  an <code>int</code> which identifies the base type
      */
     public int getType();

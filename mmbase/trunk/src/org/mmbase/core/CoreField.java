@@ -290,11 +290,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     }
 
     public void setDataType(DataType dataType) throws IllegalArgumentException {
-        int dataTypeType = Fields.classToType(dataType.getTypeAsClass());
-        if (dataTypeType != type) {
-            throw new IllegalArgumentException("DataType (" + Fields.getTypeDescription(dataTypeType) + ") is differnent from db type (" + Fields.getTypeDescription(type) + "). Cannot set DataType " + dataType);
-        }
-        this.dataType = dataType;
+        super.setDataType(dataType);
         // datatype can be influenced by size
         setMaxLength(maxLength);
     }
