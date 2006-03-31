@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.375 2006-03-30 11:36:12 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.376 2006-03-31 19:13:52 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -658,6 +658,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Actual broadcasting (and cache emptying) is initiated in the storage layer, when
      * changes are commited.
      * By default, all builders broadcast their changes, with the exception of the TypeDef builder.
+     * 
+     * MM: Can somebody please explain _why_ typedef node changes, like e.g. creating a new node type are _not_ broadcasted.
+     * @since MMBase-1.8
      */
     public boolean broadcastChanges() {
         return broadCastChanges;
