@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.11 2006-02-14 22:50:21 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.12 2006-03-31 16:45:37 pierre Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {
@@ -65,7 +65,6 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
      * {@inheritDoc}
      */
     public abstract long getLength(Object value);
-
 
     /**
      * {@inheritDoc}
@@ -118,7 +117,6 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
         return errors;
     }
 
-
     protected StringBuffer toStringBuffer() {
         StringBuffer buf = super.toStringBuffer();
         if (getMinLength() > 0) {
@@ -134,22 +132,27 @@ abstract public class AbstractLengthDataType extends BasicDataType implements Le
         MinRestriction(BasicDataType dt, MinRestriction source) {
             super(dt, source);
         }
+
         MinRestriction(BasicDataType dt, long min) {
             super(dt, "minLength", new Long(min));
         }
+
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (v == null) return true; // depends on 'required'
             long min = Casting.toLong(getValue());
             return ((LengthDataType) parent).getLength(v) >= min;
         }
     }
+
     static class MaxRestriction extends StaticAbstractRestriction {
         MaxRestriction(BasicDataType dt, MaxRestriction source) {
             super(dt, source);
         }
+
         MaxRestriction(BasicDataType dt, long max) {
             super(dt, "maxLength", new Long(max));
         }
+
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (v == null) return true; // depends on 'required'
             long max = Casting.toLong(getValue());

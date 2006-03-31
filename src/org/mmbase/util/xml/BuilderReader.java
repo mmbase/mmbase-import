@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.64 2006-03-31 13:18:20 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.65 2006-03-31 16:45:37 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -665,10 +665,13 @@ public class BuilderReader extends DocumentReader {
         int state = Fields.getState(getElementAttributeValue(dbtype, "state"));
 
         DataType dataType = decodeDataType(builder, collector, fieldName, field, type, listItemType, true);
-        CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
-        def.setParent(builder);
 
+        CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
+
+        def.setParent(builder);
         String size = getElementAttributeValue(dbtype, "size");
+
+
         if (size != null && !size.equals("")) {
             try {
                 def.setMaxLength(Integer.parseInt(size));
