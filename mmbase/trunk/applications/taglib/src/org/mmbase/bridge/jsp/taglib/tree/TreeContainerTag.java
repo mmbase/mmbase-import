@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.6 2006-03-14 17:57:04 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.7 2006-03-31 09:32:31 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -65,21 +65,24 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
      */
     static NodeQuery  getStartQuery(ContextReferrerTag thisTag, Attribute containerAttribute, Attribute nodeAttribute) throws JspTagException {
         NodeQuery query = null;
-        String container = (String) containerAttribute.getValue(thisTag);
+        String container = containerAttribute.getString(thisTag);
         String node      = nodeAttribute.getString(thisTag);
-        if (container == null && node.equals("")) {
+        if ("".equals(container) && "".equals(node)) {
+            log.debug("no node attribute, no container attribute, trying container first");
             NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, null, false);
             if (c != null) {
                 query = c.getNodeQuery();
             }
         } else if (! "".equals(container)) {
-            NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, container, false);
+            log.debug("container attribute, trying container");
+            NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, container, true);
             if (c != null) {
                 query = c.getNodeQuery();
             }
         }
         if (query == null) { // try to work as node-referrer
-            NodeProvider np =  (NodeProvider) thisTag.findParentTag(NodeProvider.class, (String) nodeAttribute.getValue(thisTag), false);
+            log.debug("working as node-referrer");
+            NodeProvider np =  (NodeProvider) thisTag.findParentTag(NodeProvider.class, node, ! "".equals(node));
             if (np == null) {
                 throw new TaglibException("No NodeQueryContainer nor a NodeProvider found in tree-tag");
             } else {
