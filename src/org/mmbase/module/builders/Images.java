@@ -31,7 +31,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.110 2005-12-18 23:13:33 michiel Exp $
+ * @version $Id: Images.java,v 1.111 2006-03-31 19:17:28 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -207,7 +207,7 @@ public class Images extends AbstractImages {
                 }
             }
             int icacheNumber = icacheNode.insert("imagesmodule");
-            log.info("Inserted " + icacheNode);
+            log.debug("Inserted " + icacheNode);
             if (icacheNumber < 0) {
                 throw new RuntimeException("Can't insert cache entry id=" + node.getNumber() + " key=" + template);
             }
