@@ -25,7 +25,7 @@ public class NodeEventBroker extends AbstractEventBroker {
     private static Logger log = Logging.getLoggerInstance(NodeEventBroker.class);
 
     /**
-     * use this property to make shure your listener only gets the node events
+     * use this property to make sure your listener only gets the node events
      * where the node number matches the given value.
      */
     public static final String PROPERTY_NODETYPE = "nodetype";
