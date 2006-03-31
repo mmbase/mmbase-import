@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.5 $, $Date: 2006-03-28 07:55:54 $
+ * @version $Revision: 1.6 $, $Date: 2006-03-31 12:04:38 $
  *
  * @struts:action name="UserForm"
  *                path="/editors/usermanagement/UserAction"
@@ -113,7 +113,7 @@ public class UserAction extends Action {
 
             Map rollen = Util.buildRolesFromRequest(request);
             new AuthorizationHelper(cloud).setUserRights(userNode, rollen);
-            new CheckBoxTree().setRelations(cloud,request);
+            new CheckBoxTree().setRelations(cloud,userNode,request);
          }
       }
       return mapping.findForward("success");
@@ -122,6 +122,9 @@ public class UserAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2006/03/28 07:55:54  henk
+ * Changes for a6-a9 site
+ *
  * Revision 1.4  2006/03/21 22:05:30  henk
  * expire date for passwords + several changes and  bugfixes
  *

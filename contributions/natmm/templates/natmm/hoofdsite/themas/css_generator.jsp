@@ -2,6 +2,17 @@
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <%@include file="/taglibs.jsp" %>
 <%@include file="../../includes/request_parameters.jsp" %>
+<%= new Date() %>
+<table>
+<% for(int i=0; i< style1.length; i++ ) { %>
+      <tr>
+         <td><%= style1[i] %></td>
+         <td style="background-color:<%= color1[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= color1[i] %></td>
+         <td style="background-color:<%= color2[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= color2[i] %></td>
+         <td style="background-color:<%= color3[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= color3[i] %></td>
+      </tr>
+<% } %>
+</table>
 <%@page import="java.util.*,java.io.*,java.text.*"%>
 <%
 String root =  application.getRealPath("natmm/hoofdsite/themas/");

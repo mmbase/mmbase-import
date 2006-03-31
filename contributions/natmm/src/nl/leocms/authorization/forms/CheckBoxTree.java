@@ -68,8 +68,8 @@ public class CheckBoxTree{
 
   }
 
-  public void setRelations(Cloud cloud, HttpServletRequest request){
-    String nodeNumber = request.getParameter("nodeNumber");
+  public void setRelations(Cloud cloud, Node user, HttpServletRequest request){
+
     //Map menus = new HashMap();
     //Map editwizards = new HashMap();
     ArrayList alMenus = new ArrayList();
@@ -90,8 +90,6 @@ public class CheckBoxTree{
         }
       }
     }
-
-    Node user = cloud.getNode(nodeNumber);
 
     RelationManager rmMenu = cloud.getRelationManager("menu","users","gebruikt");
     RelationList list = user.getRelations("gebruikt","menu");

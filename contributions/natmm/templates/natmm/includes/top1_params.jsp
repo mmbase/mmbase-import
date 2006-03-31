@@ -13,6 +13,7 @@ if(!ID.equals("-1")){
 		if(nType.equals("provincies")){ provID=ID; }
 		if(nType.equals("images")){ imgID=ID; }
 		if(nType.equals("persoon")){ personID=ID; }
+		if(nType.equals("ads")){ adID=ID; }
       %></mm:nodeinfo>
    </mm:node>
 <% 
@@ -29,6 +30,7 @@ if(ID.equals("-1")){
    } else if(!provID.equals("-1")){ ID = provID;
    } else if(!imgID.equals("-1")){ ID = imgID;
    } else if(!personID.equals("-1")){ ID = personID;
+   } else if(!adID.equals("-1")){ ID = adID;
    }
 }
 
@@ -141,6 +143,17 @@ if(paginaID.equals("-1")) {
    		</mm:field>
    	</mm:list><%
    }    
+
+   // *** use adID to set paginaID, direct path
+   if(paginaID.equals("-1")&&!adID.equals("-1")){  %>
+   	<mm:list nodes="<%=adID%>" path="ads,contentrel,pagina" fields="pagina.number" max="1">
+   		<mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
+   			<% paginaID = pagina_number; %>
+   		</mm:field>
+   	</mm:list><%
+   } 
+
+
 }
 // *** check wheter paginaID points to a pagina
 boolean pageExists = false;
