@@ -12,12 +12,8 @@
         <jsp:text> </jsp:text>
       </script>
       <script type="text/JavaScript">        
-        addEvent(window, 'load',  function () {
-        initMenu("my_menu");
-        });
-        addEvent(window, 'load',  function () {
-           initMenu("my_menu2", "left");
-        });
+        //addEvent(window, 'load',  function () { initMenu("my_menu"); });
+        addEvent(window, 'load',  function () { initMenu("my_menu2", "left"); });
       </script>
       <style>
         div.menu a {
@@ -42,6 +38,7 @@
       <p>
         Menu made with UL-structure.
       </p>
+      <!--
       <ul id="my_menu" class="menu">
         <li>
           <a class="mmenu" id="item1">Item 1</a>
@@ -71,31 +68,15 @@
           </ul>
         </li>
       </ul>
+      -->
       <div id="my_menu2" class="menu">
         <p>Menu made with DIV-structure. </p>
-        <a class="mmenu" id="item21">Item 1</a>
-        <div class="item21 sub">
-          <a href="javascript:void(0)">item 1.1</a>
-          <a class="mmenu" id="sub_item211" href="javascript:void(0)">item 1.2</a>
-          <div class="sub_item211">
-            akadsjflkjaslkfjlkasdf
+        <a class="mmenu" id="i" href="item">Item</a>
+        <div class="i sub" id="submenu2">
+          <a class="submmenu" id="subi" href="subitem">sub</a>
+          <div class="subi sub">
+            <a href="subsubitem">subsub</a>
           </div>
-          <a href="javascript:void(0)">item 1.3</a>
-          <a href="javascript:void(0)">item 1.4</a>
-        </div>
-        <a class="mmenu" id="item22">Item 2</a>
-        <div class="item22 sub">
-          <a href="javascript:void(0)">item 2.1</a>
-          <a href="javascript:void(0)">item 2.2</a>
-          <a href="javascript:void(0)">item 2.3</a>
-          <a href="javascript:void(0)">item 2.4</a>
-        </div>
-        <a class="mmenu" id="item23">Item 3</a>
-        <div class="item23 sub">
-          <a href="javascript:void(0)">item 3.1</a>
-          <a href="javascript:void(0)">item 3.2</a>
-          <a href="javascript:void(0)">item 3.3</a>
-          <a href="javascript:void(0)">item 3.4</a>
         </div>
       </div>
       <mm:import externid="debug" />
