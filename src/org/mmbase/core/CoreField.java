@@ -36,7 +36,6 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
     private int listPosition = NO_POSITION;
     private int editPosition = NO_POSITION;
 
-
     private int maxLength = -1;
 
     private MMObjectBuilder parent = null;
@@ -281,7 +280,7 @@ public class CoreField extends AbstractField implements Field, Storable, Cloneab
 
     public void setMaxLength(int size) {
         this.maxLength = size;
-        if (dataType instanceof LengthDataType  && size < ((LengthDataType)dataType).getMaxLength()) {
+        if (size > 0 && (dataType instanceof LengthDataType) && size < ((LengthDataType)dataType).getMaxLength()) {
             if (dataType.isFinished()) {
                 dataType = (DataType) dataType.clone();
             }
