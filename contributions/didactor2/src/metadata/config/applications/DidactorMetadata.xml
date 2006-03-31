@@ -17,6 +17,7 @@
         <builder maintainer="didactor.nl" version="2">metavocabulary</builder>
         <builder maintainer="didactor.nl" version="2">metadate</builder>
 	     <builder maintainer="didactor.nl" version="2">constraints</builder>
+	     <builder maintainer="didactor.nl" version="2">group_constraints</builder>
         <builder maintainer="didactor.nl" version="2">synonym</builder>
         <builder maintainer="didactor.nl" version="2">workgroups</builder>
     </neededbuilderlist>
@@ -48,7 +49,7 @@
         <relation from="metastandard" to="complex_constraints" type="related" />
 
         <relation from="metadefinition" to="metadefinition" type="posrel" />
-        <relation from="metadefinition" to="complex_constraints" type="posrel" />
+        <relation from="metadefinition" to="group_constraints" type="posrel" />
         <relation from="metadefinition" to="metavocabulary" type="posrel" />
         <relation from="metavocabulary" to="metavocabulary" type="posrel" />
 
