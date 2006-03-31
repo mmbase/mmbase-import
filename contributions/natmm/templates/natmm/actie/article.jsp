@@ -37,15 +37,9 @@ PaginaHelper ph = new PaginaHelper(cloud);
             <jsp:param name="rs" value="<%= styleSheet %>" />
             <jsp:param name="sr" value="0" />
         </jsp:include>
-        <table cellSpacing="0" cellPadding="0" border="0" style="padding-left:10px;width:170px;">
-          <tr>
-            <td><a href="mailto:"><img src="../media/email.gif" border="0"></a></td>
-            <td style="padding-left:10px"><a href="mailto:" class="maincolor_link">Stuur deze pagina naar een vriend</a>
-              <span class="colortxt">></span></td>
-          </tr>
-        </table>
+        <%@include file="includes/mailtoafriend.jsp" %>
       </td>
-   	 <td style="vertical-align:top;width:100%;padding:10px 10px 10px 10px;text-align:right;">
+   	 <td style="vertical-align:top;width:100%;padding:16px 10px 10px 10px;text-align:right;">
    	   <jsp:include page="includes/artikel_12_column.jsp">
           <jsp:param name="r" value="<%= rubriekID %>" />
           <jsp:param name="rs" value="<%= styleSheet %>" />
@@ -59,7 +53,6 @@ PaginaHelper ph = new PaginaHelper(cloud);
     </tr>
   </table>
 </mm:node>
-<a name="bottom"></a>
 <%@include file="includes/footer.jsp" %>
 </body>
 <%@include file="../includes/sitestatscript.jsp" %>

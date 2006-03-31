@@ -9,6 +9,7 @@ String cacheKey = rubriekID + "~"
    + vacatureID + "~"
    + imgID + "~"
    + personID + "~"
+   + adID + "~"
    + offsetID;
 String cacheKey_IE = cacheKey + "~IE";
 String cacheKey_NS = cacheKey + "~NS";

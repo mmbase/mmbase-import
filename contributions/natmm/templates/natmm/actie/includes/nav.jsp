@@ -19,25 +19,27 @@ try{
 
 %>
 <mm:node number="<%= paginaID %>">
- <%@include file="navsettings.jsp" %>
- <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
- <tr>
+   <%@include file="navsettings.jsp" %>
+   <% 
+   int objectCount = 0; 
+   int pagesCount = 0;
+   %>
+   <mm:relatednodes type="<%= objecttype %>" path="<%= "contentrel," + objecttype %>" constraints="<%= objectConstraint %>">
+    <mm:first><mm:size jspvar="dummy" vartype="String" write="false">
+      <% objectCount = Integer.parseInt(dummy); 
+         pagesCount = objectCount/objectPerPage;
+         if (pagesCount*objectPerPage < objectCount) { pagesCount++; }
+      %>
+    </mm:size></mm:first>
+   </mm:relatednodes>
+   <%
+   if(thisOffset > pagesCount) { thisOffset = pagesCount; }
+   if(thisOffset < 1) { thisOffset = 1; }
+   if(objectCount>1) {
+   %>
+   <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
+   <tr>
    <td style="padding:7px 10px 10px 0px">
-     <% 
-     int artikelNum = 0; 
-     int pagesNum = 0;
-     %>
-     <mm:relatednodes type="artikel" path="contentrel,artikel" constraints="<%= artikelConstraint %>">
-       <mm:first><mm:size jspvar="dummy" vartype="String" write="false">
-         <% artikelNum = Integer.parseInt(dummy); 
-            pagesNum = artikelNum/articlePerPage;
-            if (pagesNum*articlePerPage < artikelNum) { pagesNum++; }
-         %>
-       </mm:size></mm:first>
-     </mm:relatednodes>
-     <% if (thisOffset > pagesNum) { thisOffset = pagesNum; }
-        if (thisOffset < 1) { thisOffset = 1; }
-     %>
      <table cellSpacing="0" cellPadding="0" border="0">
        <mm:field name="titel_eng">
        <mm:isnotempty>
@@ -49,24 +51,25 @@ try{
           </tr>
        </mm:isnotempty>
        </mm:field>
-       <mm:relatednodes type="artikel" path="contentrel,artikel" max="<%= ""+ articlePerPage %>" offset="<%= "" + (thisOffset-1)*articlePerPage %>" 
-          constraints="<%= artikelConstraint %>" orderby="<%= artikelOrderby %>" directions="<%= artikelDirections %>">
+       <mm:relatednodes type="<%= objecttype %>" path="<%= "contentrel," + objecttype %>"
+          offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= ""+ objectPerPage %>" 
+          constraints="<%= objectConstraint %>" orderby="<%= objectOrderby %>" directions="<%= objectDirections %>">
          <tr style="padding-bottom:10px;">
            <td valign="top" style="width:5px; padding-left:7px; padding-right:3px"><span style="font:bold 110%;color:red">></span></td>
            <td>
-             <mm:field name="number" jspvar="aNumber" vartype="String" write="false">
-               <a href="<%= ph.createItemUrl(aNumber, paginaID,"offset="+thisOffset,request.getRequestURI()) %>" class="maincolor_link"><b><mm:field name="titel"/></b></a>
+             <mm:field name="number" jspvar="oNumber" vartype="String" write="false">
+               <a href="<%= ph.createItemUrl(oNumber, paginaID,"offset="+thisOffset,request.getRequestURI()) %>" class="maincolor_link"><b><mm:field name="<%= objecttitle %>"/></b></a>
              </mm:field>
              <% 
              if(menuType!=TITLE) {
                %>             
-               <span class="colortxt"><mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false"
-               ><mm:time time="<%=artikel_begindatum%>" format="d MMM yyyy"/></mm:field></span>
+               <span class="colortxt" style="font-size:90%"><mm:field name="<%= objectdate %>" jspvar="object_begindatum" vartype="String" write="false"
+               ><mm:time time="<%=object_begindatum%>" format="d MMM yyyy"/></mm:field></span>
                <% 
              }
              if(menuType==QUOTE) {
                %>
-               <mm:field name="intro" jspvar="text" vartype="String" write="false">
+               <mm:field name="<%= objectintro %>" jspvar="text" vartype="String" write="false">
                   <% 
                   if(text!=null) { 
                      text = HtmlCleaner.cleanText(text,"<",">","");
@@ -79,7 +82,7 @@ try{
            </td>
          </tr>
        </mm:relatednodes>
-       <% if(pagesNum > 1) { %>
+       <% if(pagesCount > 1) { %>
          <tr style="padding-bottom:10px">
            <td colspan="2" style="padding-left:10px">
              <table class="dotline"><tr><td height="3"></td></tr></table></span>
@@ -87,7 +90,7 @@ try{
          </tr>
          <tr>
            <td colspan="2" style="padding-left:15px">
-              In archief: <%= artikelNum %> <mm:field name="titel.fr"/> [<%= pagesNum %> pgn]
+              In archief: <%= objectCount %> <mm:field name="titel.fr"/> [<%= pagesCount %> pgn]
              <div style="padding-top:10px;">
                <% if (thisOffset == 1) { %>
                     <img src="../media/arrowleft_<%= style1[iRubriekStyle] %>.gif" border="0">
@@ -103,21 +106,21 @@ try{
                     <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset-1),request.getRequestURI()) %>"><%= thisOffset-1 %></a>
                <% } %>
                   [<%= thisOffset %>]
-               <% if (thisOffset+1 < pagesNum) { %>
+               <% if (thisOffset+1 < pagesCount) { %>
                     <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset+1),request.getRequestURI()) %>"><%= thisOffset+1 %></a>
                <% } 
-                  if (pagesNum - thisOffset > 2) { %>
+                  if (pagesCount - thisOffset > 2) { %>
                     &hellip;                     
                <% } 
-                  if (thisOffset == pagesNum) { %>
+                  if (thisOffset == pagesCount) { %>
                     <img src="../media/arrowright_<%= style1[iRubriekStyle] %>.gif" border="0">
                <% } else { %>
-                    <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+pagesNum,request.getRequestURI()) %>"><%= pagesNum %></a>
+                    <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+pagesCount,request.getRequestURI()) %>"><%= pagesCount %></a>
                     <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset+1),request.getRequestURI()) %>"
                       ><img src="../media/arrowright_<%= style1[iRubriekStyle] %>.gif" border="0"></a>
                <% } %>
              </div>
-             <% if (pagesNum > 5) { %>
+             <% if (pagesCount > 5) { %>
                <form name="myform" action="<%= ph.createItemUrl(artikelID, paginaID,null,request.getRequestURI()) %>" method="post">
                  Ga naar pgn: <input name="offset" style="width:23px;height:17px;font-size:12px;">
                  <a href="#bottom" onclick="myform.submit(); return false;" class="colortxt">Zoek</a>
@@ -129,8 +132,11 @@ try{
        <% } %>
      </table>
    </td>
- </tr>
-</table>
+   </tr>
+   </table>
+   <a name="bottom"></a>
+   <%
+} %>
 </mm:node>
 </mm:locale>
 </mm:cloud>

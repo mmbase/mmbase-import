@@ -8,7 +8,7 @@
 <cache:flush scope="application"/>
 <% 
 // names of pages might get changed
-UrlConverter.getCache().flushAll(); 
+// UrlConverter.getCache().flushAll(); 
 %>
 <html>
 <head>
