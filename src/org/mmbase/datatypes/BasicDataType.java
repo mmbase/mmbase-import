@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.44 2006-03-31 13:18:20 pierre Exp $
+ * @version $Id: BasicDataType.java,v 1.45 2006-03-31 16:45:37 pierre Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -655,7 +655,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
      * When you override this class, take care of cloning of outer class!
      * This class itself is not cloneable. Cloning is hard when you have inner classes.
      *
-     * All resctrictions extend from this.
+     * All restrictions extend from this.
      *
      * See <a href="http://www.adtmag.com/java/articleold.asp?id=364">article about inner classes,
      * cloning in java</a>
@@ -666,7 +666,7 @@ public class BasicDataType extends AbstractDescriptor implements DataType, Clone
         protected LocalizedString errorDescription;
         protected Serializable value;
         protected boolean fixed = false;
-        protected int    enforceStrength = DataType.ENFORCE_ALWAYS;
+        protected int enforceStrength = DataType.ENFORCE_ALWAYS;
 
         /**
          * If a restriction has an 'absolute' parent restriction, then also that restriction must be
