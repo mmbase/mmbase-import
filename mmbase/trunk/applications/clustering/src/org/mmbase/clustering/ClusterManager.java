@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.20 2006-03-30 11:23:53 pierre Exp $
+ * @version $Id: ClusterManager.java,v 1.21 2006-03-31 19:11:12 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -273,6 +273,13 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             // ignore changes of ourselves
             log.debug("Ignoring event " + event + " it is from this mmbase");
             return;
+        }
+        if (event instanceof NodeEvent) {
+            MMObjectBuilder builder = mmbase.getBuilder(((NodeEvent) event).getBuilderName());
+            if (! builder.broadcastChanges()) {
+                log.debug("Ignoring node-event for node type +" + builder + " because broad cast changes is false");
+                return;
+            }
         }
         MessageProbe probe = new MessageProbe(event);
         if (spawnThreads) {
