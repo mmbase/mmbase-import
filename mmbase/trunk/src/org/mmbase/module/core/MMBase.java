@@ -45,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.190 2006-03-29 14:30:23 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.191 2006-03-31 19:16:46 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -244,8 +244,6 @@ public class MMBase extends ProcessorModule {
 
         mmbaseState = STATE_STARTED_INIT;
 
-        DataTypes.initialize();
-
         // Set the mmbaseroot singleton var
         // This prevents recursion if MMBase.getMMBase() is called while
         // this method is run
@@ -291,6 +289,9 @@ public class MMBase extends ProcessorModule {
         if (tmp != null && !tmp.equals("")) {
             dtdbase = tmp;
         }
+
+        // default locale has to be known before initializing datatypes:
+        DataTypes.initialize();
 
         // default machine name is the local host name plus context-path.
         // We suppose that that is sufficiently unique in most cases
