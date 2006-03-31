@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.45 2006-03-22 22:14:21 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.46 2006-03-31 11:19:35 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -218,10 +218,14 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             return dim;
         }
         if (storesDimension()) {
-            node.setValue(FIELD_WIDTH,  dim.getWidth());
-            node.setValue(FIELD_HEIGHT, dim.getHeight());
-            if (!node.isNew()) {
-                node.commit();
+            int width  = node.getIntValue(FIELD_WIDTH);
+            int height = node.getIntValue(FIELD_HEIGHT);
+            if (width != dim.getWidth() || height != dim.getHeight()) { // avoid recursive call on fail
+                node.setValue(FIELD_WIDTH,  dim.getWidth());
+                node.setValue(FIELD_HEIGHT, dim.getHeight());
+                if (!node.isNew()) {
+                    node.commit();
+                }
             }
         } else {
             log.warn("Requested dimension on image object without height / width fields, this may be heavy on resources!");
