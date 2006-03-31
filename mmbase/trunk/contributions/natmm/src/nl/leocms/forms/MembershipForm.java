@@ -732,13 +732,13 @@ public class MembershipForm extends ActionForm {
               " eenmaal per jaar worden ge&iuml;ncasseerd." + newline + newline;
         }
      }
-     message += "Heeft u vragen, bel dan 035-6559911 of mail ";
+     message += "Heeft u vragen, mail dan ";
      if(type.equals("html")) {
          message += "<a href='mailto:" + NatMMConfig.infoEmailAddress + "'>" + NatMMConfig.infoEmailAddress + "</a>";
      } else {
          message +=  NatMMConfig.infoEmailAddress;
      }
-     message += ". " + newline + newline;
+     message += " of bel 035-6559911. " + newline + newline;
      message += 
         "Met vriendelijke groet," + newline + newline +
         "Jan Jaap de Graeff" + newline +

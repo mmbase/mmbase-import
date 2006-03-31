@@ -1,7 +1,7 @@
 <table cellspacing="0" cellpadding="0" width="744" align="center" border="0" valign="top">
-   <tr><td style="text-align:center;color:828282;">
+   <tr><td style="text-align:center;color:828282;font-size:70%;">
       <table class="dotline"><tr><td height="3"></td></tr></table>
-      &copy <%= Calendar.getInstance().get(Calendar.YEAR) %> Natuurmonumenten 
+      &copy <%= Calendar.getInstance().get(Calendar.YEAR) %> Natuurmonumenten
       <mm:node number="<%= rootID %>">
          <mm:field name="naam_eng"><mm:isnotempty>&nbsp;&nbsp;|&nbsp;&nbsp;<mm:write/></mm:isnotempty></mm:field>
          <mm:field name="naam_de"><mm:isnotempty>&nbsp;&nbsp;|&nbsp;&nbsp;<mm:write/></mm:isnotempty></mm:field>

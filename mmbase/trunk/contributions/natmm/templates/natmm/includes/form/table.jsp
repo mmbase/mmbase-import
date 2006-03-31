@@ -188,7 +188,7 @@ String p = request.getParameter("p");
                              <td style="width:177px;">
                                 <table border="0" cellpadding="0" cellspacing="0" class="maincolor" style="width:177px;">
                                    <tr>
-                                      <td class="submitbutton" ><a href="javascript:postIt('');" class="submitbutton">&nbsp;<%= thisForm.getStringValue("emailonderwerp").toUpperCase() %>&nbsp;</a></td>
+                                      <td class="submitbutton" >&nbsp;<a href="javascript:postIt('');" class="submitbutton"><%= thisForm.getStringValue("emailonderwerp").toUpperCase() %></a>&nbsp;</td>
                                       <td class="submit_image" onClick="javascript:postIt('');"></td>
                                    </tr>
                                 </table>

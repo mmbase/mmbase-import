@@ -1,31 +1,31 @@
 .colortitle{
-	color: #BAC42B; 
+	color: #82A118; 
 	font-weight: bold;
 }
 .colortxt{
-	color: #BAC42B; 
+	color: #82A118; 
 }
 .maincolor{
-	background-color: #BAC42B; 
+	background-color: #82A118; 
 }
 .leftnavrubriek{
 	text-transform:uppercase;
-	background-color: #BAC42B;
+	background-color: #82A118;
 	color: #FFFFFF; 
 	font-weight: bold;
 }
 .leftnavpage{
 	background-color: #FFFFFF;
-	color: #BAC42B; 
+	color: #82A118; 
 	font-weight: normal;
 }
 .leftnavpage_high{
 	background-color: #EEF584;
-	color: #BAC42B; 
+	color: #82A118; 
 	font-weight: normal;
 }
 .leftnavline{
-	background-color: #BAC42B;
+	background-color: #82A118;
 }
 .rule {
    border-top-width: 1px;
@@ -35,7 +35,7 @@
 }
 .submit_image{
    background-image: url(../../media/submit_natuurgebieden.gif);
-   background-color: #BAC42B;
+   background-color: #82A118;
 }
 .pano_shorty-header{
 	background-color: #1D1E94; 
@@ -56,16 +56,16 @@ ul {
    margin:0px;
 }
 .submitbutton {
-	background-color: #BAC42B;
+	background-color: #82A118;
 	color: #FFFFFF;
 	font-weight: bold;
 	border : none;
 }
 span.navbutton {
-   background-color: #BAC42B;
+   background-color: #82A118;
 }
 A.navbutton {
-   background-color: #BAC42B;
+   background-color: #82A118;
    text-decoration: none;
 }
 A.navbutton:visited {
@@ -81,47 +81,47 @@ A.subnavbutton {
    display: block;
    width: 165px;
    height: 18px;
-   color: #BAC42B;
+   color: #82A118;
    text-decoration: none;
 }
 A.subnavbutton:hover {
    background-color: #EEF584;
-   color: #BAC42B;
+   color: #82A118;
    text-decoration: none;
 }
 A.subnavbutton:visited {
-   color: #BAC42B;
+   color: #82A118;
    text-decoration: none;
 }
 A.subnavbutton-high {
 	background-color: #EEF584;
 }
 A.subnavbutton-high:visited {
-	color: #BAC42B;
+	color: #82A118;
 }
 A.maincolor_link{
    text-decoration:underline;
-   color: #BAC42B;
+   color: #82A118;
 }
 A.maincolor_link:visited{
    text-decoration:underline;
-   color: #BAC42B;
+   color: #82A118;
 }
 A.maincolor_link:hover{
    text-decoration:underline;
-   color: #BAC42B;
+   color: #82A118;
 }
 A.maincolor_link_shorty {
    text-decoration:none;
-   color: #BAC42B;
+   color: #82A118;
 }
 A.maincolor_link_shorty:visited {
    text-decoration:none;
-   color: #BAC42B;
+   color: #82A118;
 }
 A.maincolor_link_shorty:hover {
    text-decoration:underline;
-   color: #BAC42B;
+   color: #82A118;
 }
 .footer {
  	background-color: #EEF584;
