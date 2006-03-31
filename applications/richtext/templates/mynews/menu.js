@@ -42,7 +42,7 @@
  * The essential bits are the id's with the corresponding classes for the subitems.
  *
  * @author Michiel Meeuwissen <jsmenu@meeuw.org>
- * $Id: menu.js,v 1.7 2006-03-29 12:05:15 michiel Exp $
+ * $Id: menu.js,v 1.8 2006-03-31 17:11:23 michiel Exp $
  */
 
 //
@@ -74,6 +74,7 @@ function addEvent(obj, evType, fn){
     }
 }
 
+// missing in DOM
 function getElementsByClass(node, searchClass, tag) {
   var classElements = new Array();
   var els = node.getElementsByTagName(tag);
@@ -89,51 +90,35 @@ function getElementsByClass(node, searchClass, tag) {
   return classElements;
 }
 
-function getSubMenus(elm, id) {
-    return getElementsByClass(elm, id, "*");
+function getSubMenus(elm, searchClass) {
+    return getElementsByClass(elm, searchClass, "*");
 }
 
 function initMenu(menuId, reposition) {
     if (!debugarea) debugarea = document.getElementById("menu_debug");
     var menu = document.getElementById(menuId);
-    var siblings = getElementsByClass(menu, MENU_CLASS, "a");
+    initMenuElement(menu, reposition, '');
+}
+function initMenuElement(menu, reposition, depth) {
+    var siblings = getElementsByClass(menu, depth + MENU_CLASS, "a");
     debug("Found " + siblings.length + " subitems for " + menu.id);
     for (var i = 0; i < siblings.length; i++) {
-        var subelm = siblings[i];
-        subelm.parent   = menu;
-        subelm.siblings = siblings;
-        addEvent(subelm, "mouseover", openMenu);
-        addEvent(subelm, "mouseout",  closeMenu);
-        var subMenus = getSubMenus(menu, subelm.id);
-        debug("found " + subMenus.length + " subitems for " + subelm.id);
+        var subElm = siblings[i];
+        subElm._parent   = menu;
+        subElm.siblings = siblings;
+        addEvent(subElm, "mouseover", openMenu);
+        addEvent(subElm, "mouseout",  closeMenu);
+        var subMenus = getSubMenus(menu, subElm.id);
+        debug("found " + subMenus.length + " subitems for " + subElm.id);
         for (var j = 0; j < subMenus.length; j++) {
             var subMenu = subMenus[j];
-            subMenu.parent     = subelm;
-            subMenu.left       = (subelm.left ? subelm.left : subelm.offsetLeft);
-            subMenu.top        = (subelm.top  ? subelm.top  : subelm.offsetTop);
-            if (reposition == "bottom") {
-                subMenu.style.position = 'absolute';
-                subMenu.style.left = subMenu.left + "px";
-                subMenu.top        = (subelm.top ? subelm.top : subelm.offsetTop) + subelm.offsetHeight;
-                subMenu.style.top  = subMenu.top + "px";
-
-            } else if (reposition == "right") {
-                subMenu.style.position = 'absolute';
-                subMenu.left       = (subelm.left ? subelm.left: subelm.offsetLeft) + subelm.offsetWidth;
-                subMenu.style.left = subMenu.left + "px";
-                subMenu.style.top  = subMenu.top + "px";
-            } else if (reposition == "left") {
-                subMenu.style.position = 'absolute';
-                subMenu.left       = (subelm.left ? subelm.left: subelm.offsetLeft) - subMenu.offsetWidth;
-                subMenu.style.left = subMenu.left + "px";
-                subMenu.style.top  = subMenu.top + "px";
-            }
+            subMenu._parent     = subElm;
+            subMenu.reposition = reposition;
             subMenu.style.display = "none";
             addEvent(subMenu, "mouseover", useMenu);
             addEvent(subMenu, "mouseout",  unuseMenu);
-            if (subMenu.id) {
-                initMenu(subMenu.id, reposition);
-            }
+            
+            initMenuElement(subMenu, reposition, depth + 'sub');
         }
     }
 }
@@ -156,7 +141,7 @@ function getMenuByClass(elm) {
  */
 function getMenuByParent(elm) {
     while (elm != null) {
-        if (elm.parent) return elm.parent;
+        if (elm._parent) return elm._parent;
         debug(elm.tagName + " has no parent " );
         elm = elm.parentNode;
     }
@@ -168,8 +153,8 @@ function getMenuByParent(elm) {
 function useMenu(event) {
     var menu = getMenuByParent(getTarget(event));
     if (menu) {
-        menu.inuse = true;
-        debug("Marking menu " + menu.id + " / " + menu.left + " in use");
+        menu._inuse = true;
+        debug("Marking menu " + menu.id + " in use on event on " + getTarget(event));
     }
 }
 /**
@@ -179,8 +164,8 @@ function useMenu(event) {
 function unuseMenu(event) {
     var menu = getMenuByParent(getTarget(event));
     if (menu) {
-        menu.inuse = false;
-        debug("Unmarking menu " + menu.id + "/" + "  in use");
+        menu._inuse = false;
+        debug("Unusing menu " + menu.id + " on " + getTarget(event));
         setTimeout('collapseMenu("' + menu.id + '")', TIMEOUT);
     }
 }
@@ -193,6 +178,7 @@ function openMenu(event) {
     var menu = getMenuByClass(getTarget(event));
     debug("opening " + menu.id + " ? " + menu.tagName);
     // collapse siblings
+    /*
     for (var i = 0 ; i < menu.siblings.length ; i++) {
         debug("FOUND" + menu.siblings[i].id);
         var sibl = menu.siblings[i];
@@ -201,18 +187,41 @@ function openMenu(event) {
             collapseMenu(sibl.id);
         }
     }
-    menu.inuse = true;
+    */
+    menu._inuse = true;
     debug("marked used " + menu.id);
-    var subMenus = getSubMenus(menu.parent, menu.id);
+    var subMenus = getSubMenus(menu._parent, menu.id);
     for (var i = 0 ; i < subMenus.length; i++) {
         debug("opening because because of " + menu.tagName + "/" + menu.id);
         var subMenu = subMenus[i];
         subMenu.style.display = "block";
         subMenu.style.visibility = "visible";
-        if (subMenu.offsetWidth > 0 && subMenu.offsetWidth < subMenu.parent.offsetWidth) {
-            // if submenu is smaller, then at least make it same width.
-            subMenu.style.width = subMenu.parent.offsetWidth + "px";
-        }
+        positionMenu(subMenu);
+    }
+}
+
+function positionMenu(subMenu) {
+    subMenu._left       = (subMenu._parent._left ? subMenu._parent._left : subMenu._parent.offsetLeft);
+    subMenu._top        = (subMenu._parent._top  ? subMenu._parent._top  : subMenu._parent.offsetTop);
+    if (subMenu.reposition == "bottom") {
+        subMenu.style.position = 'absolute';
+        subMenu.style.left = subMenu._left + "px";
+        subMenu._top        += subMenu._parent.offsetHeight;
+        subMenu.style.top  = subMenu._top + "px";
+    } else if (subMenu.reposition == "right") {
+        subMenu.style.position = 'absolute';
+        subMenu._left       +=  subMenu._parent.offsetWidth;
+        subMenu.style.left = subMenu._left + "px";
+        subMenu.style.top  = subMenu._top + "px";
+    } else if (subMenu.reposition == "left") {
+        subMenu.style.position = 'absolute';
+        subMenu._left           -= subMenu.offsetWidth;
+        subMenu.style.left = subMenu._left + "px";
+        subMenu.style.top  = subMenu._top + "px";
+    }
+    if (subMenu.offsetWidth > 0 && subMenu.offsetWidth < subMenu._parent.offsetWidth) {
+        // if submenu is smaller, then at least make it same width.
+        subMenu.style.width = subMenu._parent.offsetWidth + "px";
     }
 }
 
@@ -221,10 +230,10 @@ function openMenu(event) {
  */
 function closeMenu(event) {
     var menu = getMenuByClass(getTarget(event));
-    var subMenus = getSubMenus(menu.parent, menu.id);
-    menu.inuse = false;
+    var subMenus = getSubMenus(menu._parent, menu.id);
+    menu._inuse = false;
     for (var i = 0 ; i < subMenus.length; i++) {
-        debug("collapings because because of " + menu.tagName + "/" + menu.id);
+        debug("collapsing because because of " + menu.tagName + "/" + menu.id + " on mouse out of " + getTarget(event));
         setTimeout('collapseMenu("' + menu.id + '")', TIMEOUT);
     }
 }
@@ -234,8 +243,8 @@ function closeMenu(event) {
  */
 function collapseMenu(id) {
     var menu = document.getElementById(id);
-    if (menu && ! menu.inuse) {
-        var subMenus = getSubMenus(menu.parent, menu.id);
+    if (menu && ! menu._inuse) {
+        var subMenus = getSubMenus(menu._parent, menu.id);
         for (var i = 0 ; i < subMenus.length; i++) {
             debug("Collapsed " + menu.id);
             subMenus[i].style.display = "none";
