@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.153 2006-03-31 13:16:48 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.154 2006-03-31 16:44:47 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2323,7 +2323,7 @@ public class DatabaseStorageManager implements StorageManager {
                         int cursize = field.getMaxLength();
                         // ignore the size difference for large fields (generally blobs or memo texts)
                         // since most databases do not return accurate sizes for these fields
-                        if (cursize != -1 && size != -1 && size != cursize && cursize <= 255) {
+                        if (cursize != -1 && size > 0 && size != cursize && cursize <= 255) {
                             if (size < cursize) {
                                 // only correct if storage is more restrictive
                                 field.setMaxLength(size);
