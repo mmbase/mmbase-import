@@ -32,7 +32,7 @@
 
       <mm:compare referid="questiontype" value="hotspotquestions">
         <mm:node referid="questionNo">
-	  <div style="position: relative">
+      	  <div style="position: relative">
             <mm:relatednodes type="images" max="1">
               <img src="<mm:image />" border="0" /><br/>
             </mm:relatednodes>
@@ -192,11 +192,12 @@
           <mm:constraint field="maximalscore" referid="questionscore" operator=">="/>
           <mm:constraint field="minimalscore" referid="questionscore" operator="<="/>
           <mm:relatednodes>
-	    <b><di:translate key="education.feedback" />: <mm:field name="name"/></b><br/>
-	    <mm:relatednodes type="images">
-	      <img src="<mm:image template="s(150x150)"/>" title="<mm:field name="title"/>" alt="<mm:field name="title"/>">
-              <mm:last><br/></mm:last>
-	    </mm:relatednodes>
+      	    <b><di:translate key="education.feedback" />: <mm:field name="name"/></b><br/>
+            <mm:relatednodes type="images">
+    	        <img src="<mm:image template="s(150x150)"/>" title="<mm:field name="title"/>" alt="<mm:field name="title"/>">
+                <mm:last><br/></mm:last>
+  	        </mm:relatednodes>
+         
             <mm:field name="text" escape="none"/>
             <mm:field name="number" id="number" write="false">
               <mm:list nodes="$number" path="feedback,descriptionrel,learnobjects" searchdir="both">
