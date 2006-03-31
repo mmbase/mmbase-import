@@ -6,42 +6,52 @@
   Search-lists are those things that pop-up if you want to search for a node to make a relation to.
   Here you can customize how they must look like.
 
-  @version  $Id: searchlist.css,v 1.1 2003-12-19 11:09:35 nico Exp $
-  
-*/ 
+  @version  $Id: searchlist.css,v 1.2 2006-03-31 08:45:43 pierre Exp $
+
+*/
 
 @import url("base.css");
 
-body {         
-        color: #000000;
-        background-color: #FFFFFF;
-} 
+body {
+        color: black;
+        background-color: white;
+}
 
-table.searchresult tr.even td  {         
-        color: #000000;
-        background-color: #DDD; 
-} 
+table.searchresult tr.even td  {
+        color: black;
+        background-color: #DDDDDD;
+}
 
-table.searchresult tr.odd td  {         
-        color: #000000;
-        background-color: #EEE;
-} 
+table.searchresult tr.odd td  {
+        color: black;
+        background-color: #EEEEEE;
+}
 
-table.searchresult tr.selected-even td  {         
-        color: #fff;
-        background-color: #000; 
-} 
+table.searchresult tr.even-disabled td  {
+        color: gray;
+        background-color: #DDDDDD;
+}
 
-table.searchresult tr.selected-odd td  {         
-        color: #fff;
-        background-color: #777 
-} 
+table.searchresult tr.odd-disabled td  {
+        color: gray;
+        background-color: #EEEEEE;
+}
+
+table.searchresult tr.selected-even td  {
+        color: white;
+        background-color: black;
+}
+
+table.searchresult tr.selected-odd td  {
+        color: white;
+        background-color: #777777;
+}
 
 input.button  {
-        color: #000000;
+        color: black;
         background-color: buttonface;
-        border-top-color: #FFFFFF;
-        border-right-color: #000000;
-        border-bottom-color: #000000;
-        border-left-color: #FFFFFF;
+        border-top-color: white;
+        border-right-color: black;
+        border-bottom-color: black;
+        border-left-color: white;
 }
