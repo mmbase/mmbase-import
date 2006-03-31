@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.9 2006-03-31 10:12:58 pierre Exp $
+ * @version $Id: AbstractField.java,v 1.10 2006-03-31 10:14:15 pierre Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
@@ -170,14 +170,14 @@ abstract public class AbstractField extends AbstractDescriptor implements Field,
     /**
      * Returns whether a field is a temporary field.
      * Temporary fields hold data needed by a builder to facilitate certain functionality,
-     * such as hooolsding ndoe refernces in a tranbsaction.
+     * such as holding node references in a transaction.
      * Temporary fields are never persistent and should normally be ignored.
      * @since MMBase-1.8
      */
     public boolean isTemporary() {
         // this way of determining if a field is temporary is a bit odd,
         // but it is how it worked in the past - should be changed in the future
-        // with posisbly a setTemporary() method.
+        // with possibly a setTemporary() method.
         String fieldName = getName();
         return fieldName != null ? fieldName.startsWith("_") : false;
     }
