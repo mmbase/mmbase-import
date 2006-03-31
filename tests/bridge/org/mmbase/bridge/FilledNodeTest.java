@@ -9,11 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import org.w3c.dom.Document;
-import org.mmbase.util.Casting;
-import org.mmbase.datatypes.*;
+
 import java.text.*;
 import java.util.*;
+import org.w3c.dom.Document;
+
+import org.mmbase.util.Casting;
+import org.mmbase.datatypes.*;
 
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
