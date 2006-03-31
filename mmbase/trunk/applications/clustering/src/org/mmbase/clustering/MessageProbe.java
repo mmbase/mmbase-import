@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MessageProbe.java,v 1.7 2006-03-30 11:23:53 pierre Exp $
+ * @version $Id: MessageProbe.java,v 1.8 2006-03-31 19:11:40 michiel Exp $
  */
 public class MessageProbe implements Runnable {
 
@@ -53,7 +53,7 @@ public class MessageProbe implements Runnable {
                 EventManager.getInstance().propagateEvent(event);
             }
         } catch(Throwable t) {
-            log.error(Logging.stackTrace(t));
+            log.error("Exception during propegation of event: " + event + ": " + t.getMessage(), t);
         }
 
     }
