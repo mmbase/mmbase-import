@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.63 2006-03-20 18:37:15 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.64 2006-03-31 13:18:20 pierre Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -634,7 +634,6 @@ public class BuilderReader extends DocumentReader {
                     requestedBaseDataType = baseDataType;
                 }
             }
-            // i'm not sure why it must be cloned here.
             dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
         }
 
@@ -666,10 +665,8 @@ public class BuilderReader extends DocumentReader {
         int state = Fields.getState(getElementAttributeValue(dbtype, "state"));
 
         DataType dataType = decodeDataType(builder, collector, fieldName, field, type, listItemType, true);
-
         CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
         def.setParent(builder);
-
 
         String size = getElementAttributeValue(dbtype, "size");
         if (size != null && !size.equals("")) {

@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.49 2006-03-20 18:37:15 pierre Exp $
+ * @version $Id: DataType.java,v 1.50 2006-03-31 13:18:20 pierre Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -90,12 +90,21 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * Return the DataType from which this one inherited, or <code>null</code>
      */
     public DataType getOrigin();
+
     /**
      * Return an identifier for the basic type (i.e., 'string', 'int', 'datetime') supported by this datatype.
      */
     public String getBaseTypeIdentifier();
 
     /**
+     * Return the datatype's basic (MMBase) type (i.e., STRING, INTEGER, DATETIME) as definied in the Field interface
+     * Note that in some cases (i.e. with older clouds) this may differ from the basic type of the datatype's field,
+     * which defines in what format the data is stored.
+     * @see Field.#getType
+     */
+    public int getBaseType();
+
+        /**
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
      */

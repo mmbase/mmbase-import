@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.8 2006-03-24 13:21:53 pierre Exp $
+ * @version $Id: AbstractNode.java,v 1.9 2006-03-31 13:18:20 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -86,7 +86,7 @@ public abstract class AbstractNode implements Node {
             setValueWithoutProcess(fieldName, value);
         } else {
             value = field.getDataType().cast(value, this, field);
-            switch(field.getType()) {
+            switch(field.getDataType().getBaseType()) {
             case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
             case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
             case Field.TYPE_BINARY:    {
@@ -274,9 +274,9 @@ public abstract class AbstractNode implements Node {
                 case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
                 case Field.TYPE_XML:     return getXMLValue(fieldName);
                 case Field.TYPE_NODE:   {
-                    // number is a NODE field, but should be returned as 
+                    // number is a NODE field, but should be returned as
                     // a number (in this case, a long)
-                    // in the future, we may change the basic MMBase type for the number field to ID                     
+                    // in the future, we may change the basic MMBase type for the number field to ID
                     if ("number".equals(fieldName)) {
                         return new Long(getLongValue(fieldName));
                     } else {
