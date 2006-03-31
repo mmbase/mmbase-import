@@ -28,114 +28,83 @@
     <field>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>name</name>
+        <name>stringinteger</name>
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
     <field>
-      <gui>
-        <guitype>string</guitype>
-      </gui>
+      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>description</name>
-        <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
-      </db>
-    </field>
-
-    <field>
-      <editor>
-        <positions>
-          <list>2</list>
-        </positions>
-      </editor>
-      <db>
-        <name>bytefield</name>
-        <type key="false" notnull="false" state="persistent">BINARY</type>
-      </db>
-    </field>
-
-    <field>
-      <datatype base="float" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>doublefield</name>
-        <type key="false" notnull="false" state="persistent">DOUBLE</type>
-      </db>
-    </field>
-
-    <field>
-      <gui>
-        <guitype>string</guitype>
-      </gui>
-      <db>
-        <name>floatfield</name>
-        <type key="false" notnull="false" state="persistent">FLOAT</type>
+        <name>integerstring</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
 
     <field>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>intfield</name>
+        <name>stringdatetime</name>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>datetimestring</name>
+        <type key="false" notnull="false" state="persistent">DATETIME</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integerstring</name>
         <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
 
     <field>
+      <datatype base="float" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>longfield</name> 
-        <type key="false" notnull="false" state="persistent">LONG</type>
+        <name>doublefloat</name>
+        <type key="false" notnull="false" state="persistent">DOUBLE</type>
       </db>
     </field>
-
     <field>
+      <datatype base="double" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>stringfield</name>
-        <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
-      </db>
-    </field>
-
-    <field>
-      <db>
-        <name>xmlfield</name>
-        <type key="false" notnull="false" size="2048" state="persistent">XML</type>
-      </db>
-    </field>
-
-    <field>
-      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>nodefield</name>
-        <type key="false" notnull="false" state="persistent">NODE</type>
+        <name>floatdouble</name>
+        <type key="false" notnull="false" state="persistent">FLOAT</type>
       </db>
     </field>
 
     <field>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>datetimefield</name>
-        <type key="false" notnull="false" state="persistent">DATETIME</type>
+        <name>doubleinteger</name>
+        <type key="false" notnull="false" state="persistent">DOUBLE</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="double" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integerdouble</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
 
+
     <field>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>booleanfield</name>
-        <type key="false" notnull="false" state="persistent">BOOLEAN</type>
+        <name>integertypedef</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
-    <!--
-    <field>
-      <gui>
-        <guiname xml:lang="en">ListField</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <db>
-        <name>listfield</name>
-        <type key="false" notnull="false" state="persistent">LIST[BOOLEAN]</type>
-      </db>
-    </field>
-    -->
+
+
   </fieldlist>
 
 </builder>
