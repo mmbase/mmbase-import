@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.184 2006-03-24 12:41:40 marcel Exp $
+ * @version $Id: MMObjectNode.java,v 1.185 2006-03-31 10:05:10 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -140,7 +140,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     private MMObjectBuilder builder = null;
 
-
+    /**
+     * If <code>true</code>, the node is a new node, which is not (yet) stored in storage.
+     */
     protected boolean isNew = false;
 
     /**
@@ -160,26 +162,22 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     private String newContext = null;
 
    /**
-    * Default Main constructor.
+    * Default Main constructor, creates a node that is new and not (yet) in storage.
     * @param parent the node's parent, an instance of the node's builder.
     * @throws IllegalArgumentException If parent is <code>null</code>
     */
     public MMObjectNode(MMObjectBuilder parent) {
-        isNew = true;
-        if (parent != null) {
-            this.parent = parent;
-        } else {
-            throw new IllegalArgumentException("Constructor called with parent=null");
-        }
+        this(parent, true);
     }
 
     /**
      * Main constructor.
      * @param parent the node's parent, an instance of the node's builder.
+     * @param isNew if the node is a newly created node
      * @throws IllegalArgumentException If parent is <code>null</code>
      */
-    public MMObjectNode(MMObjectBuilder parent, boolean n) {
-        isNew = n;
+    public MMObjectNode(MMObjectBuilder parent, boolean isNew) {
+        this.isNew = isNew;
         if (parent != null) {
             this.parent = parent;
         } else {
@@ -540,7 +538,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
 
     /**
-     * If a node is still 'new' you must presistify it wit {@link #insert}, and otherwise with {@link #commit}.
+     * If a node is still 'new' you must persistify it with {@link #insert}, and otherwise with {@link #commit}.
      * @since MMBase-1.8
      */
     public boolean isNew() {
