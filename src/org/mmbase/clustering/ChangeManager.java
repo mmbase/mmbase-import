@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.11 2005-12-22 10:13:22 ernst Exp $
+ * @version $Id: ChangeManager.java,v 1.12 2006-03-31 19:09:04 michiel Exp $
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
@@ -51,26 +51,23 @@ public final class ChangeManager {
      */
     public void commit(MMObjectNode node, String change) {
         MMObjectBuilder builder = node.getBuilder();
-        if (builder.broadcastChanges()) {
-            //create a new local node event
-            NodeEvent event = NodeEventHelper.createNodeEventInstance(node, NodeEvent.oldTypeToNewType(change), null);
+        //create a new local node event
+        NodeEvent event = NodeEventHelper.createNodeEventInstance(node, NodeEvent.oldTypeToNewType(change), null);
 
-            //regardless of wether this is a relatione event we fire a node event first
-            EventManager.getInstance().propagateEvent(event);
+        //regardless of wether this is a relatione event we fire a node event first
+        EventManager.getInstance().propagateEvent(event);
 
-           
-            //if the changed node is a relation, we fire a relation event as well
-            if(builder instanceof InsRel) {
-                RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(node, NodeEvent.oldTypeToNewType(change), null);
+        //if the changed node is a relation, we fire a relation event as well
+        if(builder instanceof InsRel) {
+            RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(node, NodeEvent.oldTypeToNewType(change), null);
 
-                //the relation event broker will make shure that listeners
-                //for node-relation changes to a specific builder, will be
-                //notified if this builder is either source or destination type
-                //in the relation event
-                EventManager.getInstance().propagateEvent(relEvent);
-            }
-
+            //the relation event broker will make shure that listeners
+            //for node-relation changes to a specific builder, will be
+            //notified if this builder is either source or destination type
+            //in the relation event
+            EventManager.getInstance().propagateEvent(relEvent);
         }
+
         node.clearChanged();
     }
 }
