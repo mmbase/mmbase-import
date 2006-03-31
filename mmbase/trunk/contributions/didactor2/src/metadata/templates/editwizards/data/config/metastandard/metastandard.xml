@@ -14,7 +14,7 @@
     <field name="isused"/>
     <relation destinationtype="metadefinition" role="posrel" />
     <relation destinationtype="metastandard" role="posrel" />
-    <relation destinationtype="complex_constraints" role="related" />
+    <relation destinationtype="group_constraints" role="related" />
     <relation destinationtype="metadefinition" role="constraints" />
     <relation destinationtype="metavocabulary" role="include" />
     <relation destinationtype="metavocabulary" role="exclude" />
@@ -53,14 +53,14 @@
     </field>
 
 
-    <list destination="metadefinition"      role="posrel"        extends="config/metadefinition/metadefinition-posrel-list.xml" />
-    <list destination="metastandard"        role="posrel"        extends="config/metastandard/metastandard-posrel-destination-list.xml" />
-    <list destination="metadefinition"      role="constraints"   extends="config/metadefinition/metadefinition-specify-list.xml" />
-    <list destination="complex_constraints" role="related"       extends="config/complex_constraints/complex_constraints-list.xml" />
+    <list destination="metadefinition"    role="posrel"        extends="config/metadefinition/metadefinition-posrel-list.xml" />
+    <list destination="metastandard"      role="posrel"        extends="config/metastandard/metastandard-posrel-destination-list.xml" />
+    <list destination="metadefinition"    role="constraints"   extends="config/metadefinition/metadefinition-specify-list.xml" />
+    <list destination="group_constraints" role="related"       extends="config/group_constraints/group_constraints-list.xml" />
 
-    <list destination="metavocabulary"      role="include"       extends="config/metavocabulary/metavocabulary-include-list.xml" />
-    <list destination="metavocabulary"      role="exclude"       extends="config/metavocabulary/metavocabulary-exclude-list.xml" />
-    <list destination="synonym"             role="related"       extends="config/synonym/synonym-list.xml" />
+    <list destination="metavocabulary"    role="include"       extends="config/metavocabulary/metavocabulary-include-list.xml" />
+    <list destination="metavocabulary"    role="exclude"       extends="config/metavocabulary/metavocabulary-exclude-list.xml" />
+    <list destination="synonym"           role="related"       extends="config/synonym/synonym-list.xml" />
 
 
   </form-schema>

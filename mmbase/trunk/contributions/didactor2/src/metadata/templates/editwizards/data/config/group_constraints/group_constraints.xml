@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="empty">
-  <title xml:lang="nl">Complex Constraint Editor</title>
-  <title xml:lang="en">Complex Constraint Editor</title>
+  <title xml:lang="nl">Groep Constraint Editor</title>
+  <title xml:lang="en">Group Constraint Editor</title>
 
   <action type="create">
-    <object type="complex_constraints">
+    <object type="group_constraints">
     </object>
   </action>
 
@@ -22,7 +22,7 @@
 
   <lists>
    <optionlist include="config/option_list/boolean.xml" />
-   <optionlist include="config/option_list/complex_constraints_type.xml" />
+   <optionlist include="config/option_list/group_constraints_type.xml" />
   </lists>
 
   <steps>
@@ -30,8 +30,8 @@
   </steps>
 
   <form-schema id="step1">
-    <title xml:lang="nl">Complex constraint invoeren</title>
-    <title xml:lang="en">Edit complex constraint</title>
+    <title xml:lang="nl">Groep constraint invoeren</title>
+    <title xml:lang="en">Edit group constraint</title>
 
     <field name="name" dtminlength="1">
       <prompt xml:lang="nl">Constraint naam</prompt>
@@ -56,7 +56,7 @@
     <field name="handler" ftype="enum">
       <prompt xml:lang="nl">Classname van een handler om de constraint uit te voeren _____________________________________</prompt>
       <prompt xml:lang="en">Classname for handler that implements the constraint _____________________________________</prompt>
-      <optionlist select="complex_constraints_type" />
+      <optionlist select="group_constraints_type" />
     </field>
 
     <list destination="metadefinition" role="posrel" extends="config/metadefinition/metadefinition-posrel-list.xml" />

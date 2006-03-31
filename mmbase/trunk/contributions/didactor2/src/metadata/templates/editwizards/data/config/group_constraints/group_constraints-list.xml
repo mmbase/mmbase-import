@@ -1,5 +1,5 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list destination="complex_constraints" role="related" minoccurs="0" maxoccurs="*" orderby="name">
+<list destination="group_constraints" role="related" minoccurs="0" maxoccurs="*" orderby="name">
   <title xml:lang="nl">Extra constraints die betrekking hebben op 2 of meer metadata definities</title>
   <title xml:lang="en">Extra constraints that contain two or more metadata definitions</title>
   <item>
@@ -7,15 +7,15 @@
       <prompt xml:lang="nl">Naam</prompt>
       <prompt xml:lang="en">Name</prompt>
     </field>
-    <field ftype="startwizard" wizardname="config/complex_constraints/complex_constraints" />
+    <field ftype="startwizard" wizardname="config/group_constraints/group_constraints" />
   </item>
   <action type="create">
-    <relation destinationtype="complex_constraints" role="related">
+    <relation destinationtype="group_constraints" role="related">
      </relation>
   </action>
-  <command name="startwizard" inline="true" wizardname="config/complex_constraints/complex_constraints" objectnumber="new" >
+  <command name="startwizard" inline="true" wizardname="config/group_constraints/group_constraints" objectnumber="new" >
   </command>
-  <command name="search" nodepath="complex_constraints" fields="name" age="-1" orderby="number" directions="down" >
+  <command name="search" nodepath="group_constraints" fields="name" age="-1" orderby="number" directions="down" >
     <prompt xml:lang="nl">Zoeken naar complexe constraints</prompt>
     <prompt xml:lang="en">Search for complexe constraints</prompt>
     <search-filter>
