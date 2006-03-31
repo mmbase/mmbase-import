@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.349 2006-03-30 17:29:07 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.350 2006-03-31 09:34:55 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -7271,6 +7271,10 @@ The 0 is just counter, which starts at 0 on every page.
         does not succeed then it will start looking for any surrounding node-provider (such as
         relatednodes, listnodes and node) and will use the provided node as a base for the starting
         query of the tree.
+      </p>
+      <p>
+        If you want to define the surrounding node-provider with a container, then you can use the
+        'node' attribute to enforce it to use the node-provider and not it's container.
       </p>
     </info>
 
