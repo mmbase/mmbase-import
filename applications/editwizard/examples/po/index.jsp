@@ -10,14 +10,14 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.1 2006-03-29 15:08:35 pierre Exp $
+    @version  $Id: index.jsp,v 1.2 2006-03-31 09:47:00 pierre Exp $
     -->
 
    <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
   <mm:cloud rank="basic user">
-   <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
+   <!-- We are going to set the referrer explicitely, because we don't want to depend on the 'Referer' header (which is not mandatory) -->
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%></mm:import>
   <mm:import id="jsps">/mmbase/edit/wizard/jsp</mm:import>
   <mm:import id="pagelength">10</mm:import>
