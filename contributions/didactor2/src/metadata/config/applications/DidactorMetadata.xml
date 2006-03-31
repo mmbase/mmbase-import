@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorMetadata" maintainer="didactor.nl" version="25" auto-deploy="true">
+<application name="DidactorMetadata" maintainer="didactor.nl" version="26" auto-deploy="true">
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="19" />
         <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
@@ -41,10 +41,14 @@
 
         <relation from="metadata" to="metadefinition" type="related" />
         <relation from="metadata" to="metavalue" type="posrel" />
+
         <relation from="metastandard" to="metadata" type="related" />
         <relation from="metastandard" to="metastandard" type="posrel" />
         <relation from="metastandard" to="metadefinition" type="posrel" />
+        <relation from="metastandard" to="complex_constraints" type="related" />
+
         <relation from="metadefinition" to="metadefinition" type="posrel" />
+        <relation from="metadefinition" to="complex_constraints" type="posrel" />
         <relation from="metadefinition" to="metavocabulary" type="posrel" />
         <relation from="metavocabulary" to="metavocabulary" type="posrel" />
 
