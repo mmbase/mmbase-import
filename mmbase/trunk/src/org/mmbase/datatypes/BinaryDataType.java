@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.7 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: BinaryDataType.java,v 1.8 2006-03-31 16:45:37 pierre Exp $
  * @since MMBase-1.8
  */
 public class BinaryDataType extends AbstractLengthDataType {
@@ -24,7 +24,6 @@ public class BinaryDataType extends AbstractLengthDataType {
     private static final Logger log = Logging.getLoggerInstance(BinaryDataType.class);
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
-
 
     protected Pattern validMimeTypes = Pattern.compile(".*");
     /**
@@ -35,7 +34,6 @@ public class BinaryDataType extends AbstractLengthDataType {
         super(name, byte[].class);
     }
 
-
     protected void inheritProperties(BasicDataType origin) {
         super.inheritProperties(origin);
         if (origin instanceof BinaryDataType) {
@@ -43,8 +41,7 @@ public class BinaryDataType extends AbstractLengthDataType {
         }
     }
 
-
-    // 
+    //
     public long getLength(Object value) {
         if (! (value instanceof byte[])) {
             throw new RuntimeException("Value " + value + " of " + getName() + " is not a byte array but" + (value == null ? "null" : value.getClass().getName()));
@@ -63,6 +60,7 @@ public class BinaryDataType extends AbstractLengthDataType {
         }
         return bytes.length;
     }
+
     /**
      * Returns a regular expression which describes wich mime-types are valid for blobs with this
      * DataType. This is not yet available as a Restriction, only as a property.
@@ -70,7 +68,7 @@ public class BinaryDataType extends AbstractLengthDataType {
     public Pattern getValidMimeTypes() {
         return validMimeTypes;
     }
-    
+
     public void setValidMimeTypes(Pattern pattern) {
         validMimeTypes = pattern;
     }
