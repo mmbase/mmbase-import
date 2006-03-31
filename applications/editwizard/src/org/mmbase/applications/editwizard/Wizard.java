@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.143 2006-03-06 13:08:46 pierre Exp $
+ * @version $Id: Wizard.java,v 1.144 2006-03-31 08:45:42 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1431,6 +1431,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         newlist = form.getOwnerDocument().importNode(newlist, false);
         Utils.copyAllAttributes(fieldlist, newlist);
 
+        // place parent object number as attribute number
+        if (parentdatanode != null) {
+            Utils.setAttribute(newlist, "number", Utils.getAttribute(parentdatanode, "number"));
+        }
+
         // Add the title, description.
         NodeList props = Utils.selectNodeList(fieldlist,
                                               "title|description|action|command");
@@ -1681,15 +1686,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // place newfield in pre-html form
         form.appendChild(newField);
 
-        {
-            List exceptAttrs = new ArrayList(); // what is this?
-            exceptAttrs.add("fid");
+        List exceptAttrs = new ArrayList(); // what is this?
+        exceptAttrs.add("fid");
 
-            // copy all attributes from data to new pre-html field def
-            if ((dataNode != null) &&
-                (dataNode.getNodeType() != Node.ATTRIBUTE_NODE)) {
-                Utils.copyAllAttributes(dataNode, newField, exceptAttrs);
-            }
+        // copy all attributes from data to new pre-html field def
+        if ((dataNode != null) && (dataNode.getNodeType() != Node.ATTRIBUTE_NODE)) {
+            Utils.copyAllAttributes(dataNode, newField, exceptAttrs);
         }
 
         String ftype  = Utils.getAttribute(newField, "ftype");
@@ -1700,8 +1702,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         Utils.setAttribute(newField, "fieldname", htmlFieldName);
 
         // place objectNumber as attribute number, if not already was placed there by the copyAllAttributes method.
-        if ((dataNode != null) &&
-            (Utils.getAttribute(dataNode, "number", null) == null)) {
+        if ((dataNode != null) && (Utils.getAttribute(dataNode, "number", null) == null)) {
             Utils.setAttribute(newField, "number", Utils.getAttribute(dataNode.getParentNode(), "number"));
         }
 
