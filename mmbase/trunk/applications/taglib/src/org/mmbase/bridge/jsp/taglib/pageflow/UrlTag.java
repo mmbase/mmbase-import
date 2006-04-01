@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.75 2006-02-10 18:05:44 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.76 2006-04-01 14:59:51 nklasens Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -47,9 +47,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     private   Attribute  referids             = Attribute.NULL;
     protected List       extraParameters      = null;
     protected Attribute  page                 = Attribute.NULL;
-    private   Attribute  escapeAmps           = Attribute.NULL;
+    protected   Attribute  escapeAmps           = Attribute.NULL;
     private   Attribute  absolute             = Attribute.NULL;
-
+    protected Attribute encode                = Attribute.NULL;
 
     public void setReferids(String r) throws JspTagException {
         referids = getAttribute(r);
@@ -63,6 +63,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         escapeAmps = getAttribute(e);
     }
 
+    public void setEncode(String e) throws JspTagException {
+       encode = getAttribute(e);
+    }
+    
     /**
      * @since MMBase-1.8
      */
@@ -141,7 +145,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     /**
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
-    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
+    protected String getUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
         StringWriter w = new StringWriter();
         StringBuffer show = w.getBuffer();
 
@@ -232,7 +236,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             paramEscaper.transform(new StringReader(Casting.toString(param.getValue())), w);
             connector = amp;
         }
-        if (encode) {
+        if (encodeUrl) {
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
             return response.encodeURL(show.toString());
         } else {
@@ -245,7 +249,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     protected String getUrl(boolean e) throws JspTagException {
-        return getUrl(e, true);
+        return getUrl(e, encode.getBoolean(this, true));
     }
 
     protected void doAfterBodySetValue() throws JspTagException {

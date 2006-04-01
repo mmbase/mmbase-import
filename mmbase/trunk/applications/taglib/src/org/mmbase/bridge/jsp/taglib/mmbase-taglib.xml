@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.350 2006-03-31 09:34:55 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.351 2006-04-01 14:59:51 nklasens Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4052,6 +4052,18 @@ like the parameter list or the session (where ever it is available) --&gt;
           Whether or not to escape &amp;'s in the query
           string. According to XHTML is must. But perhaps you don't
           want XHTML but something else. Default it is true.
+    </info>
+    </attribute>
+    <attribute>
+      <name>encode</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+          Whether or not to encode the url. According to the servlet
+          specification all urls should be encoded, but this also adds
+          a session id to the url when cookies are not supported. Many
+          webservers can not handle them and prevent caching of static
+          resources. Default it is true.
     </info>
     </attribute>
     <attribute>
