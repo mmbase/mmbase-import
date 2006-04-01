@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.51 2006-02-13 08:39:46 pierre Exp $
+ * @version $Id: MMBaseContext.java,v 1.52 2006-04-01 09:14:19 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -131,7 +131,7 @@ public class MMBaseContext {
      * Returns the MMBase thread group.
      * @since MMBase-1.8
      */
-    public static ThreadGroup getThreadGroup() {
+    public synchronized static ThreadGroup getThreadGroup() {
         if (threadGroup == null) {
             String groupName = org.mmbase.Version.get();
             log.service("Creating threadGroup: " + groupName);
@@ -142,18 +142,24 @@ public class MMBaseContext {
 
     /**
      * Starts a daemon thread using the MMBase thread group.
-     * @param task the taslk to run as a thread - either a Runnable or a DaemonTask object
+     * @param task the task to run as a thread
      * @param name the thread's name
      * @since MMBase-1.8
      */
-    public static Thread startThread(Object task, String name) {
-        DaemonThread kicker;
-        if (task instanceof DaemonTask) {
-            kicker = new DaemonThread(name);
-            kicker.setTask((DaemonTask)task);
-        } else {
-            kicker = new DaemonThread((Runnable)task, name);
-        }
+    public static Thread startThread(Runnable task, String name) {
+        DaemonThread kicker = new DaemonThread(task, name);
+        kicker.start();
+        return kicker;
+    }
+    /**
+     * Starts a daemon thread using the MMBase thread group.
+     * @param task the task to run as a thread
+     * @param name the thread's name
+     * @since MMBase-1.8
+     */
+    public static Thread startThread(DaemonTask task, String name) {
+        DaemonThread kicker = new DaemonThread(name);
+        kicker.setTask(task);
         kicker.start();
         return kicker;
     }
