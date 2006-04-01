@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.21 2006-03-31 19:11:12 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.22 2006-04-01 10:51:16 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -85,7 +85,14 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = MMBaseContext.startThread(this, "ClusterManager");
-            kicker.setPriority(Thread.NORM_PRIORITY + 1);
+            try {
+                kicker.setPriority(Thread.NORM_PRIORITY + 1);
+            } catch (NullPointerException npe) {
+                // MM:a NPE is thrown here sometimes if ThreadGroup of kicker is null.
+                // which I saw happening on my jvm (ThreadGroep set to null by Thread.start).
+                // I don't understand it, but it's not worth failing ClusterManager completely.
+                log.warn("Could not set thread priority of Cluster Manager");
+            }
             startCommunicationThreads();
         }
     }
