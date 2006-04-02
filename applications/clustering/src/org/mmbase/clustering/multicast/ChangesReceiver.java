@@ -14,6 +14,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 import org.mmbase.util.Queue;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.8 2006-03-30 11:23:53 pierre Exp $
+ * @version $Id: ChangesReceiver.java,v 1.9 2006-04-02 11:59:38 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -83,9 +84,7 @@ public class ChangesReceiver implements Runnable {
                 log.error(Logging.stackTrace(e));
             }
             if (ms != null) {
-                kicker = new Thread(this, "MulticastReceiver");
-                kicker.setDaemon(true);
-                kicker.start();
+                kicker = MMBaseContext.startThread(this, "MulticastReceiver");
                 log.debug("MulticastReceiver started");
             }
         }
@@ -102,6 +101,7 @@ public class ChangesReceiver implements Runnable {
         } catch (Exception e) {
             // nothing
         }
+        ms = null;
         kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
     }
@@ -124,8 +124,9 @@ public class ChangesReceiver implements Runnable {
      */
     public void doWork() {
         // create a datapackage to receive all messages
-        DatagramPacket dp = new DatagramPacket(new byte[dpsize], dpsize);
-        while (kicker != null) {
+        byte[] buffer = new byte[dpsize];
+        DatagramPacket dp = new DatagramPacket(buffer, dpsize);
+        while (ms != null) {
             try {
                 // reset datapackage buffer size for re-use
                 dp.setLength(dpsize);

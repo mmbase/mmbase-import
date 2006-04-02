@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.6 2006-04-02 11:35:31 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.7 2006-04-02 11:59:38 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -95,6 +95,7 @@ public class ChangesSender implements Runnable {
         } catch (Exception e) {
             // nothing
         }
+        ms = null;
         kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
     }
@@ -117,7 +118,7 @@ public class ChangesSender implements Runnable {
      */
     private void doWork() {
         log.debug("Started sending");
-        while(true) {
+        while(ms != null) {
             try {
                 byte[] data = (byte[]) nodesToSend.get();
                 DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
