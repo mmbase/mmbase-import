@@ -18,11 +18,14 @@ import org.mmbase.util.logging.Logging;
  * put into a 'waiting for a change' mode we don't block on the object
  * itself because we need to check its number before we nofity it again.
  *
+ * TODO: Missing javadoc on methods, odd methods name ('do-..'), used nowhere. Where it this class
+ * good for?  Should it perhaps simply be dropped?
+ * @version $Id: WaitNode.java,v 1.3 2006-04-02 11:45:26 michiel Exp $
  */
 public class WaitNode {
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(WaitNode.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(WaitNode.class;
 
     /**
      * @javadoc
@@ -37,8 +40,8 @@ public class WaitNode {
      * @javadoc
      */
     public WaitNode(MMObjectNode node) {
-        this.node=node;
-        this.number=node.getNumber();
+        this.node = node;
+        this.number = node.getNumber();
     }
 
     /**
