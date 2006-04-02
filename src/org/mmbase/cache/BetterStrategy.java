@@ -24,9 +24,11 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
+ * Better than what?
+ *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.17 2006-02-27 23:49:22 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.18 2006-04-02 12:38:33 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -41,7 +43,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.mmbase.cache.QueryResultCacheReleaseStrategy#getDescription()
      */
     public String getDescription() {
@@ -60,7 +62,7 @@ public class BetterStrategy extends ReleaseStrategy {
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.core.event.NodeEvent,
 
      * org.mmbase.storage.search.SearchQuery, java.util.List)
-     * 
+     *
      * @return true if query should be released
      */
     protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
@@ -81,13 +83,13 @@ public class BetterStrategy extends ReleaseStrategy {
          * Here are all the preconditions that must be met to proceed. Basic checks to determin
          * if this event has to be evaluated on this query at all
          */
-        
+
         //check if this event matches the path of the query
         if(getStepsForType(query, MMBase.getMMBase().getBuilder(event.getBuilderName()) ).size() == 0 ){
             logResult("no flush: type of event is not found in query path", query, event);
             return false;
         }
-        
+
         //check if the step(s) matching this event's node type have 'nodes' set, and if so, check
         //if changed node is included
         if(checkNodesSet(event, query)){
@@ -101,49 +103,49 @@ public class BetterStrategy extends ReleaseStrategy {
             /*
              * Put all the rules that apply for new node events
              */
-            
+
             // query has more than one step, all 'new node' events can be ignored, becouse this
             // node has no relations yet.
             if (query.getSteps().size() > 1){
                 logResult("no flush: 'new node' event in multistep query", query, event);
                 return false; // don't release
             }
-            
+
             break;
-            
+
         case NodeEvent.EVENT_TYPE_DELETE:
             log.debug(">> node event type delete");
             /*
              * Put all rules here that apply to removed node events
              */
-            
+
             break;
-            
+
         case NodeEvent.EVENT_TYPE_CHANGED:
             log.debug(">> node event type changed");
             /*
              * Put all rules here that apply to changede nodes
              */
-            
+
             //if the changed field(s) do not occur in the fields or constraint section
             //of the query, it dous not have to be flushed
             if(! checkChangedFieldsMatch(event, query)){
                 logResult("no flush: the fields that have changed are not used in the query", query, event);
                 return false;
             }
-            
-            //if the query is aggregating, and of type count, and the changed fields(s) do 
+
+            //if the query is aggregating, and of type count, and the changed fields(s) do
             //not occur in the constraint: don't flush the query
             if(checkAggregationCount(event, query)){
                 logResult("query is aggregating and fields are of type count, changed fields do not affect the query result", query, event);
                 return false;
             }
-            
+
         }
         logResult("flush: no reason not to", query, event);
         return true;
     }
-    
+
     /**
      * check all the rules that concern relation events. if no rules match we return
      * <code>true</code>.
@@ -163,7 +165,7 @@ public class BetterStrategy extends ReleaseStrategy {
              logResult("no flush: query has one step and event is relation event", query, event);
              return false ;//don't release
          }
-         
+
          // if a query has more steps that one and the event is a relation event
          // we check if the role of the relation is allso in the query.
          if (! checkPathMatches(event, query)){
@@ -171,37 +173,37 @@ public class BetterStrategy extends ReleaseStrategy {
              return false;
          }
 
-             
+
          switch (event.getType()) {
          case NodeEvent.EVENT_TYPE_NEW:
              log.debug(">> relation event type new");
              /*
               * Put all rules here that apply to new relation events
               */
-             
+
              break;
-             
+
          case NodeEvent.EVENT_TYPE_DELETE:
              log.debug(">> relation event type delete");
              /*
               * Put all rules here that apply to removed relation events
               */
-             
+
              break;
-             
+
          case NodeEvent.EVENT_TYPE_CHANGED:
              log.debug(">> relation event type changed");
              /*
               * Put all rules here that apply to changed relation events
               */
-             
+
              //if the changed field(s) do not occur in the fields or constraint section
              //of the query, it dous not have to be flushed
              if(! checkChangedFieldsMatch(event.getNodeEvent(), query)) {
                  logResult("no flush: the changed relation fields do not match the fields or constraints of the query", query, event);
                  return false;
              }
-             
+
              break;
 
          }
@@ -212,7 +214,7 @@ public class BetterStrategy extends ReleaseStrategy {
     /**
      * @param event
      * @param query
-     * @return true if query is aggragating, of type count, and the changed fields do 
+     * @return true if query is aggragating, of type count, and the changed fields do
      * not occur in the constraint (no flush)
      */
     private boolean checkAggregationCount(NodeEvent event, SearchQuery query) {
@@ -246,7 +248,7 @@ public class BetterStrategy extends ReleaseStrategy {
         //all tests survived, query should not be flused
         return true;
     }
-    
+
     /**
      * @param event
      * @param query
@@ -255,7 +257,7 @@ public class BetterStrategy extends ReleaseStrategy {
     private boolean checkPathMatches(RelationEvent event, SearchQuery query){
         // check if the path in the query maches the relation event:
         // - the source and destination objects should be there
-        // - the role either matches or is not specified 
+        // - the role either matches or is not specified
         if (log.isDebugEnabled()) {
             log.debug("method: checkPathMatches()");
             log.debug(event.toString());
@@ -264,24 +266,24 @@ public class BetterStrategy extends ReleaseStrategy {
         boolean match = false;
         for (Iterator i = getRelationSteps(query).iterator(); i.hasNext();) {
             RelationStep step = (RelationStep) i.next();
-            
+
             //check this relation step
             String stepSource = step.getPrevious().getTableName();
             String stepDestination = step.getNext().getTableName();
             if (( stepSource.equals(event.getRelationSourceType()) && stepDestination.equals(event.getRelationDestinationType()) ) ||
                 ( stepDestination.equals(event.getRelationSourceType()) && stepSource.equals(event.getRelationDestinationType()) )) {
-                if (step.getRole() == null || step.getRole().intValue() == event.getRole()) 
+                if (step.getRole() == null || step.getRole().intValue() == event.getRole())
                     match = true;
             }
         }
         return match;
     }
-    
- 
-    
-    
-    
-    
+
+
+
+
+
+
     /**
      * Checks if a query object contains reference to (one of) the changed field(s).
      * Matches are looked for in the stepfields and in the constraints.
@@ -299,13 +301,13 @@ public class BetterStrategy extends ReleaseStrategy {
         for (Iterator i = event.getChangedFields().iterator(); i.hasNext();) {
             String fieldName = (String) i.next();
             //first test the constraints
-            List constraintsForFieldList = getConstraintsForField(fieldName, event.getBuilderName(), query.getConstraint(), query); 
+            List constraintsForFieldList = getConstraintsForField(fieldName, event.getBuilderName(), query.getConstraint(), query);
             if(constraintsForFieldList.size() > 0){
                 constraintsFound = true;
                 log.debug("matching constraint found: " + constraintsForFieldList.size());
                 break search;
             }
-            
+
             // then test the fields (only if no constraint match was found)
             for (Iterator fieldIterator = query.getFields().iterator(); fieldIterator.hasNext();) {
                 StepField field = (StepField) fieldIterator.next();
@@ -326,14 +328,14 @@ public class BetterStrategy extends ReleaseStrategy {
         //now test the result
         return (fieldsFound || constraintsFound);
     }
-    
+
     /**
-     * This method investigates all the steps of a query that correspond to the nodetype of the 
-     * node event. for each step a check is made if this step has 'nodes' set, and so, if the changed 
+     * This method investigates all the steps of a query that correspond to the nodetype of the
+     * node event. for each step a check is made if this step has 'nodes' set, and so, if the changed
      * node is one of them.
      * @param event a NodeEvent
      * @param query
-     * @return true if (all) the step(s) matching this event have nodes set, and non of these 
+     * @return true if (all) the step(s) matching this event have nodes set, and non of these
      * match the number of the changed node (in which case the query should not be flused)
      */
     private boolean checkNodesSet(NodeEvent event, SearchQuery query){
@@ -347,9 +349,9 @@ public class BetterStrategy extends ReleaseStrategy {
                 return false;
             }
         }
-        return true; 
+        return true;
     }
-    
+
     private void logResult(String comment, SearchQuery query, Event event){
         if(log.isDebugEnabled()){
             String role="";
@@ -358,7 +360,7 @@ public class BetterStrategy extends ReleaseStrategy {
                 //get the role name
                 RelationEvent revent = (RelationEvent) event;
                 MMObjectNode relDef = MMBase.getMMBase().getBuilder("reldef").getNode(revent.getRole());
-                role = " role: " + relDef.getStringValue("sname") + "/" + relDef.getStringValue("dname"); 
+                role = " role: " + relDef.getStringValue("sname") + "/" + relDef.getStringValue("dname");
                 //filter the 'object' events
                 if (revent.getRelationSourceType().equals("object")
                         || revent.getRelationDestinationType().equals("object"))
