@@ -20,17 +20,12 @@ import org.mmbase.util.logging.Logging;
  *
  * TODO: Missing javadoc on methods, odd methods name ('do-..'), used nowhere. Where it this class
  * good for?  Should it perhaps simply be dropped?
- * @version $Id: WaitNode.java,v 1.3 2006-04-02 11:45:26 michiel Exp $
+ * @version $Id: WaitNode.java,v 1.4 2006-04-02 11:49:07 michiel Exp $
  */
 public class WaitNode {
 
-    /** MMbase logging system */
-    private static final Logger log = Logging.getLoggerInstance(WaitNode.class;
+    private static final Logger log = Logging.getLoggerInstance(WaitNode.class);
 
-    /**
-     * @javadoc
-     */
-    private MMObjectNode node;
     /**
      * @javadoc
      */
@@ -40,7 +35,6 @@ public class WaitNode {
      * @javadoc
      */
     public WaitNode(MMObjectNode node) {
-        this.node = node;
         this.number = node.getNumber();
     }
 
@@ -59,7 +53,7 @@ public class WaitNode {
      * @javadoc
      */
     public boolean doNotifyCheck(int wantednumber) {
-        if (number==wantednumber) {
+        if (number == wantednumber) {
             doNotify();
             return true;
         } else {
