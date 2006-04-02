@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.22 2006-04-01 10:51:16 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.23 2006-04-02 11:39:48 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -74,7 +74,10 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         //we only want to propagate the local events into the cluster
         if(event.getMachine().equals(MMBase.getMMBase().getMachineName())){
             byte[] message = createMessage(event);
+            log.debug("Sending an event to the cluster");
             nodesToSend.append(message);
+        } else {
+            log.debug("Ignoring remote event from " + event.getMachine());
         }
     }
 
@@ -265,11 +268,10 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     }
 
     /**
-     * Handle message
-     *
-     * @param event NodeEvent
+
+     * @param event
      */
-    protected void handleEvent(Event event) {
+    protected void handleEvent(final Event event) {
         // check if MMBase is 100% up and running, if not eat event
         MMBase mmbase = MMBase.getMMBase();
         if (mmbase == null || !mmbase.getState()) {
@@ -284,15 +286,26 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         if (event instanceof NodeEvent) {
             MMObjectBuilder builder = mmbase.getBuilder(((NodeEvent) event).getBuilderName());
             if (! builder.broadcastChanges()) {
-                log.debug("Ignoring node-event for node type +" + builder + " because broad cast changes is false");
+                log.info("Ignoring node-event for node type " + builder + " because broad cast changes is false");
                 return;
             }
         }
-        MessageProbe probe = new MessageProbe(event);
+
+        log.debug("Handling event " + event + " for " + event.getMachine());
+
         if (spawnThreads) {
-            org.mmbase.util.ThreadPools.jobsExecutor.execute(probe);
-        } else{
-            probe.run();
+            Runnable job = new Runnable () {
+                    public void run() {
+                        EventManager.getInstance().propagateEvent(event);
+                    }
+                };
+            org.mmbase.util.ThreadPools.jobsExecutor.execute(job);
+        } else {
+            try {
+                EventManager.getInstance().propagateEvent(event);
+            } catch (Throwable t) {
+                log.error("Exception during propegation of event: " + event + ": " + t.getMessage(), t);
+            }
         }
     }
 
