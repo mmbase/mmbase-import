@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.5 2005-11-30 15:58:03 pierre Exp $
+ * @version $Id: ChangesSender.java,v 1.6 2006-04-02 11:35:31 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -62,9 +62,8 @@ public class ChangesSender implements Runnable {
         this.nodesToSend = nodesToSend;
         try {
             this.ia = InetAddress.getByName(multicastHost);
-        }
-        catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         this.start();
     }
@@ -117,7 +116,8 @@ public class ChangesSender implements Runnable {
      * @todo check what encoding to sue for getBytes()
      */
     private void doWork() {
-        while(kicker != null) {
+        log.debug("Started sending");
+        while(true) {
             try {
                 byte[] data = (byte[]) nodesToSend.get();
                 DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
@@ -136,5 +136,6 @@ public class ChangesSender implements Runnable {
                 break;
             }
         }
+        log.debug("Finished sending");
     }
 }
