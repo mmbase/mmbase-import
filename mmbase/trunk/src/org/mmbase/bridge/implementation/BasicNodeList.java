@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.44 2006-02-14 22:30:42 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.45 2006-04-02 11:36:35 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -81,7 +81,11 @@ public class BasicNodeList extends BasicList implements NodeList {
             if (coreBuilder instanceof TypeDef) {
                 String builderName = coreNode.getStringValue("name");
                 if (cloud.hasNodeManager(builderName)) {
-                    node = cloud.getNodeManager(builderName);
+                    try {
+                        node = cloud.getNodeManager(builderName);
+                    } catch (Throwable t) {
+                        node = cloud.getNode(coreNode.getNumber());
+                    }
                 } else {
                     node = cloud.getNode(coreNode.getNumber());
                 }
