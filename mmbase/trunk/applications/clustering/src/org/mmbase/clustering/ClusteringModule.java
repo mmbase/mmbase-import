@@ -16,12 +16,13 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * This module bootstraps and configures MMBase clustering. 
+ * This module bootstraps and configures MMBase clustering.
  *
  * @since MMBase-1.8
+ * @version $Id: ClusteringModule.java,v 1.4 2006-04-02 11:38:46 michiel Exp $
  */
 public class ClusteringModule extends WatchedReloadableModule {
-    
+
     private ClusterManager clusterManager = null;
     private static final  Logger log = Logging.getLoggerInstance(ClusteringModule.class);
 
@@ -36,7 +37,7 @@ public class ClusteringModule extends WatchedReloadableModule {
         }else{
             log.error("Parameter 'ClusterManagerImplementation' is missing from config file. can not load clustering");
         }
-        
+
         if(clusterManager == null){
             log.error("ClusterManager loading failed.");
         }else{
@@ -54,7 +55,7 @@ public class ClusteringModule extends WatchedReloadableModule {
         try {
             Class aClass = Class.forName(className);
             ClusterManager newInstance = (ClusterManager) aClass.newInstance();
-            return newInstance;            
+            return newInstance;
         } catch (ClassNotFoundException e) {
             log.error("could not find class with name " + className, e);
         } catch (InstantiationException e) {
