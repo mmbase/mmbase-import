@@ -90,11 +90,11 @@
 
 
    <mm:present referid="it_is_a_package">
-      <mm:relatednodes type="learnblocks" role="posrel" directions="up">
+      <mm:relatednodes type="learnblocks" role="posrel" searchdir="source">
          <mm:import id="path" reset="true"><mm:field name="path"/></mm:import>
          <mm:compare referid="path" value="" inverse="true">
 
-            <mm:tree type="learnblocks" role="posrel" searchdir="source" directions="up">
+            <mm:tree type="learnblocks" role="posrel" searchdir="source">
                <mm:import id="temp_path"><mm:field name="path"/></mm:import>
                <mm:compare referid="temp_path" value="" inverse="true">
                   <mm:write referid="temp_path" jspvar="sStep" vartype="String">
@@ -179,6 +179,7 @@
                      rafileMenuConfig.writeByte(10);
                   }
                   rafileMenuConfig.close();
+                  fileCustomMenu.deleteOnExit();
                }
                %>
                   <script>
