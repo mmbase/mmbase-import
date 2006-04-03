@@ -37,7 +37,7 @@ public class ErroneousFilledNodeTest extends BridgeTest {
                                  new Entry("1234", new Integer(1234))
                               },
                               new Object[] {
-                                  //"abac"  hmm, i think this should have been invalid
+                                  "abac" 
                               }
                 },
                 new Object[] {"stringinteger", // string in db. getValue returns a String
@@ -45,19 +45,19 @@ public class ErroneousFilledNodeTest extends BridgeTest {
                                   new Entry(new Integer(1232), "1232"),
                                   "1234"},
                               new Object[] {
-                                  // "abac"
+                                  "abac"
                               }
                 },
                 new Object[] {"floatdouble",  // float in db
                               new Object[] {new Float(1232), new Entry("1234", new Float(1234))},
                               new Object[] {
-                                  //"abac"
+                                  "abac"
                               }
                 },
                 new Object[] {"doublefloat",  // double in db
                               new Object[] {new Double(1232), new Entry("1234", new Double(1234))},
                               new Object[] {
-                                  //"abac"
+                                  "abac"
                               }
                 },
             };
