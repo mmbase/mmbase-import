@@ -11,7 +11,15 @@ See http://www.MMBase.org/license
 package org.mmbase.model;
 
 import org.mmbase.util.logging.*;
+import org.mmbase.core.*;
+import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+import javax.xml.parsers.*;
+
 import java.util.*;
 import java.io.*;
 
@@ -51,5 +59,52 @@ public class CloudModelBuilder {
 		}
 	return true;
     }
+
+    public boolean addField(int pos,String name,String type,String guitype,String state,String required,String unique,String size) {
+	try {
+	
+       	     Document doc = ResourceLoader.getConfigurationRoot().getDocument(path);
+
+             BuilderReader reader = new BuilderReader(doc,MMBase.getMMBase());
+
+	    // add the extra field
+            Element fe = reader.getElementByPath(doc.getDocumentElement(),"builder.fieldlist");
+            if (fe!=null) {
+		String newpart ="    <field>\r";
+		newpart +="      <positions>\r";
+		newpart +="        <input>"+pos+"</input>\r";
+		newpart +="        <list>"+pos+"</list>\r";
+		newpart +="        <search>"+pos+"</search>\r";
+		newpart +="      </positions>\r";
+
+		// convert to the new format, have to check this some more
+		String ntype=guitype;
+	        if (guitype.equals("string")) ntype="line";	
+	        if (guitype.equals("field")) ntype="field";	
+
+		newpart +="      <datatype base=\""+ntype+"\" xmlns=\"http://www.mmbase.org/xmlns/datatypes\"/>\r";
+		newpart +="      <db>\r";
+		newpart +="        <name>"+name+"</name>\r";
+		newpart +="        <type key=\""+unique+"\" notnull=\""+required+"\" size=\""+size+"\" state=\""+state+"\">"+type+"</type>\r";
+		newpart +="      </db>\r";
+		newpart +="    </field>\r";
+		Element nf = (reader.getDocumentBuilder(false,null,null).parse(new InputSource(new StringReader(newpart)))).getDocumentElement();
+		fe.appendChild(doc.importNode(nf,true));
+            }
+
+	    // save the file back using the ResourceLoader
+            try {                
+                  ResourceLoader.getConfigurationRoot().storeDocument(path,doc);
+            } catch(Exception e) {
+                    e.printStackTrace();
+            }
+
+	    } catch (Exception e) {
+                log.error("missing builderfile file ");
+		e.printStackTrace();
+	    }
+	return true;
+    }
+
 
 }
