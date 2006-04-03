@@ -19,16 +19,16 @@ import org.mmbase.util.Entry;
  * are matched on all 'words'. It ignores existing XML markup, and also avoids trailing dots and
  * comments and surrounding quotes and parentheses.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
 
 public class LinkFinder extends RegexpReplacer {
 
     protected static Collection urlPatterns = new ArrayList();
-    
-    static {        
-        new LinkFinder().readPatterns(urlPatterns);   
+
+    static {
+        new LinkFinder().readPatterns(urlPatterns);
     }
 
     public LinkFinder() {
@@ -40,7 +40,7 @@ public class LinkFinder extends RegexpReplacer {
         return "linkfinder.xml";
     }
 
-    protected Collection getPatterns() {        
+    protected Collection getPatterns() {
         return urlPatterns;
     }
 
@@ -48,9 +48,9 @@ public class LinkFinder extends RegexpReplacer {
     protected void readDefaultPatterns(Collection patterns) {
 
         patterns.add(new Entry(Pattern.compile(".+@.+"),      "<a href=\"mailto:$0\">$0</a>"));
-        patterns.add(new Entry(Pattern.compile("http://.+"),  "<a href=\"$0\">$0</a>")); 
-        patterns.add(new Entry(Pattern.compile("https://.+"), "<a href=\"$0\">$0</a>")); 
-        patterns.add(new Entry(Pattern.compile("ftp://.+"),   "<a href=\"$0\">$0</a>")); 
+        patterns.add(new Entry(Pattern.compile("http://.+"),  "<a href=\"$0\">$0</a>"));
+        patterns.add(new Entry(Pattern.compile("https://.+"), "<a href=\"$0\">$0</a>"));
+        patterns.add(new Entry(Pattern.compile("ftp://.+"),   "<a href=\"$0\">$0</a>"));
         patterns.add(new Entry(Pattern.compile("www\\..+"),   "<a href=\"http://$0\">$0</a>"));
         return;
     }
