@@ -66,7 +66,7 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	  onClick="javascript:launchCenter('<mm:url page="includes/slideshow.jsp">
 	    <mm:param name="image"><mm:field name="number" /></mm:param>
 	  </mm:url>', 'center', 550, 740)" title="Click to enlarge image"
-	  ><img src="<mm:image template="s(100x100)+part(5,5,42,42)" />" alt="<mm:field name="alt" />" width="42" align="right" vspace="2" border="1" /></a></mm:relatednodes>
+	  ><img src="<mm:image template="s(100x100)+part(5,5,42,42)" />" alt="<mm:field name="title" />" width="42" align="right" vspace="2" border="1" /></a></mm:relatednodes>
 	<b><mm:write referid="date"><mm:time format=":MEDIUM" /></mm:write> :</b>
 	<a href="<mm:url referids="page,portal"><mm:param name="newsnr"><mm:field name="number" /></mm:param><mm:param name="o"><%= offset %></mm:param></mm:url>"><mm:field name="title" /></a>
 	<mm:field name="subtitle"><mm:isnotempty><br /><i><mm:write /></i></mm:isnotempty></mm:field>
