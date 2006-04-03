@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.24 2006-04-03 07:34:48 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.25 2006-04-03 08:42:29 michiel Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -218,6 +218,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                             if (!ctype.equals("s")) {
                                 MMBase mmbase = MMBase.getMMBase();
                                 MMObjectBuilder builder = mmbase.getBuilder(tb);
+                                if (builder == null) builder = mmbase.getBuilder("object");
                                 MMObjectNode node = builder.getNode(id);
                                 if (node != null) {
                                     return new NodeEvent(machine, tb, node.getNumber(), node.getOldValues(), node.getValues(), NodeEvent.oldTypeToNewType(ctype));
