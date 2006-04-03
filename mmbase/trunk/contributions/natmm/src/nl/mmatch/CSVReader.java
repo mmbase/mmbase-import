@@ -279,7 +279,7 @@ public class CSVReader implements Runnable {
                 }
             }
         }
-        // *** write the results in the description field of the departments ***
+        // *** write the results in the importstatus field of the departments ***
         for(int d=0; d<departmentList.size(); d++) {
             Node departmentNode = departmentList.getNode(d);
             String departments_number = "" + departmentNode.getNumber();
@@ -963,7 +963,8 @@ public class CSVReader implements Runnable {
                String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
                String [] employeeFields = {"importstatus","inactive"};
                String [] departmentRelations = {"posrel","afdelingen"};
-               String [] departmentFields = {"importstatus","inactive"};  
+               // the importstatus field of afdelingen can be 'inactive' or comma seperated list of descendants
+               String [] departmentFields = {"importstatus","inactive"}; 
                int nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
                nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
                

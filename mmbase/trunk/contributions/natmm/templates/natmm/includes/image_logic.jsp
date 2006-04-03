@@ -92,7 +92,7 @@ if(isShortyOrTeaserImage || fitToThirdColumn || imagePartOfColumn) {
 		            if(validLink){
                      if(readmoreURL.indexOf("javascript:")>-1) { 
                         %>
-                        <div style="position:relative;left:-17px;top:7px;"><div style="visibility:visible;position:absolute;top:0px;left:0px;"><a href="javascript:void(0);" onClick="<%= readmoreURL %>"><img src="media/zoom.gif" border="0" alt="klik voor vergroting" /></a></div></div>
+                        <div style="position:relative;left:-17px;top:7px;"><div style="visibility:visible;position:absolute;top:0px;left:0px;"><a href="javascript:void(0);" onClick="<%= readmoreURL %>"><img src="<%= (isSubDir? "../" : "" ) %>media/zoom.gif" border="0" alt="klik voor vergroting" /></a></div></div>
                         <a href="javascript:void(0);" onClick="<%= readmoreURL %>">
                         <%
                      } else {

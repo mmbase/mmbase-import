@@ -51,9 +51,10 @@ String userConstraint = "";
                                  <mm:param name="wizard"><mm:field name="wizard"/></mm:param>
                                  <mm:param name="nodepath"><mm:field name="nodepath"/></mm:param>
                                  <mm:param name="fields"><mm:field name="fields"/></mm:param>
-                                 <mm:param name="pagelength">100</mm:param>
-                                 <mm:param name="maxpagecount">50</mm:param>
+                                 <mm:param name="pagelength"><mm:field name="pagelength"/></mm:param>
+                                 <mm:param name="maxpagecount"><mm:field name="maxpagecount"/></mm:param>
                                  <mm:param name="orderby"><mm:field name="orderby"/></mm:param>
+                                 <mm:param name="maxsize"><%= 2*1024*1024 %></mm:param>
                                  <mm:param name="search">yes</mm:param>   
                               </mm:url>"
                               title='<mm:field name="description"/>'>

@@ -7,7 +7,7 @@ PaginaHelper ph = new PaginaHelper(cloud);
 <%@include file="../includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <% if(!offsetID.equals("0")){
-   %><mm:import id="onload_statement">window.location='#bottom';</mm:import><%
+   %><mm:import id="onload_statement">window.location='weblog.jsp?<%= request.getQueryString() %>#bottom';</mm:import><%
 }
 %>
 <%@include file="../includes/top4_head.jsp" %>
@@ -42,7 +42,7 @@ long oneDay = 24*60*60;
   %>
   <table cellspacing="0" cellpadding="0" width="744" align="center" border="0" valign="top">
     <tr>
-      <td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:10px">
+      <td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:4px">
         <%@include file="includes/homelink.jsp" %>
         <% 
         if(menuType==QUOTE) {
@@ -118,9 +118,14 @@ long oneDay = 24*60*60;
                      <div class="colortitle" style="font:bold 110%;"><mm:field name="titel"/></div>
                      <div style="padding-bottom:5px;"><b><mm:field name="kortetitel"/></b></div>
                    </mm:node>
-                   <span style="font:bold 110%;color:red">></span>
-                   <span class="colortitle"><mm:field name="titel"/></span>
-                   <% if(menuType==DATE) {
+                   <% 
+                   if(text.equals("")) {
+                     %> 
+                     <span style="font:bold 110%;color:red">></span>
+                     <span class="colortitle"><mm:field name="titel"/></span>
+                     <%
+                   }
+                   if(menuType==DATE) {
                      %>             
                      <span class="colortxt"><mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false"
                      ><mm:time time="<%=artikel_begindatum%>" format="d MMM yyyy"/></mm:field></span>
@@ -132,6 +137,8 @@ long oneDay = 24*60*60;
                if(!text.equals("")) {
                   %> 
                   <td style="padding-left:10px;padding-top:7px;">
+                     <span style="font:bold 110%;color:red">></span>
+                     <span class="colortitle"><mm:field name="titel"/></span><br/>
                      <b><%= text %></b>
                   </td>
                   <%
@@ -140,7 +147,6 @@ long oneDay = 24*60*60;
              <tr align="left" valign="top">
                <td colspan="2" style="padding:10px 0px 10px 10px">
                   <mm:field name="tekst"/>
-                  <table class="dotline"><tr><td height="3"></td></tr></table>
                   <mm:relatednodes type="attachments" path="related,attachments" orderby="attachments.title">
                      <%
                       String imgName = ""; 
@@ -149,11 +155,12 @@ long oneDay = 24*60*60;
                      <mm:field name="filename" jspvar="dummy" vartype="String" write="false">
                         <%@include file="includes/attachmentsicon.jsp"%>
                      </mm:field>
-                     <% if (!imgName.equals("")) { %>
-                        <span style="padding-left:5px; padding-right:5px"><a href="<mm:attachment />"><img src="../<%= imgName 
-                          %>" alt="download <%= docType %>: <mm:field name="title"
-                          />" border="0" style="vertical-align:text-bottom" /></a></span>
-                     <% } %>
+                     <mm:first>
+                        <table class="dotline"><tr><td height="3"></td></tr></table>
+                     </mm:first>
+                     <span style="padding-left:5px; padding-right:5px"><a href="<mm:attachment />"><img src="../<%= imgName 
+                       %>" alt="download <%= docType %>: <mm:field name="title"
+                       />" border="0" style="vertical-align:text-bottom" /></a></span>
                   </mm:relatednodes>
                   <% 
                   int iParCntr = 1;

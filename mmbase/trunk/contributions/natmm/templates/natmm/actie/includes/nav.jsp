@@ -123,7 +123,7 @@ try{
              <% if (pagesCount > 5) { %>
                <form name="myform" action="<%= ph.createItemUrl(artikelID, paginaID,null,request.getRequestURI()) %>" method="post">
                  Ga naar pgn: <input name="offset" style="width:23px;height:17px;font-size:12px;">
-                 <a href="#bottom" onclick="myform.submit(); return false;" class="colortxt">Zoek</a>
+                 <a onclick="myform.submit(); return false;" class="colortxt">Zoek</a>
                  <span class="colortxt" style="font:bold 110%;">></span>
                </form>
              <% } %>

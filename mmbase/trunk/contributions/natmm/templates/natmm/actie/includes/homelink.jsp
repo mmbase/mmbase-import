@@ -6,4 +6,4 @@
       <td><a href="/<mm:node number="<%= rootID %>"><mm:field name="naam" /></mm:node>" class="hover" style="font-size:85%;line-height:90%;">TERUG NAAR HOME</a></td>
    </tr>
 </table>
-<table class="dotline" style="margin-top:0px;"><tr><td height="3"></td></tr></table>
+<table class="dotline" style="margin-top:0px;margin-bottom:10px;"><tr><td height="3"></td></tr></table>

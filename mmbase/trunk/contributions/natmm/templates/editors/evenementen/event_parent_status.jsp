@@ -19,5 +19,10 @@ if(thisNode.getLongValue("verloopdatum") * 1000 < (new Date()).getTime()) {
    ticketIcon = "../img/ticket_act.gif";
    altText = "Aanmelden voor deze activiteit kan alleen telefonisch";
    
+} else if(thisNode.getStringValue("aanmelden_vooraf").equals("4")) {
+  
+   ticketIcon = "../img/ticket_sponsoractivity.gif";
+   altText = "Sponsoractiviteit, aanmelden bij het desbetreffende bezoekerscentra";
+   
 }
 %>
