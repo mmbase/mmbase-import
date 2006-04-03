@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.7 2006-04-03 14:52:02 pierre Exp $
+// $Id: htmlarea.js,v 1.8 2006-04-03 14:53:39 pierre Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
@@ -2036,15 +2036,18 @@ HTMLArea.getHTML = function(root, outputRoot, editor) {
                 }
                 break;
             case 3: // Node.TEXT_NODE
-                // If a text node is alone in an element and all spaces, replace it with an non breaking one
+                // If a text node is alone in an element and all spaces (and at least one space), replace it with an non breaking one
                 // This partially undoes the damage done by moz, which translates '&nbsp;'s into spaces in the data element
-                if ( !root.previousSibling && !root.nextSibling && root.data.match(/^\s*$/i) ) html = '&nbsp;';
+                if ( !root.previousSibling && !root.nextSibling && root.data.match(/^\s+$/i) ) html = '&nbsp;';
                 else html = HTMLArea.htmlEncode(root.data);
                 break;
             case 8: // Node.COMMENT_NODE
                 html = "<!--" + root.data + "-->";
                 break;		// skip comments, for now.
         }
+        // if the ONLY html code generated is a break or a
+        // non-breaking-space, then declare the text-area empty.
+        if (html=='&nbsp;' || html=='<br />') html = '';
         return html;
 };
 
