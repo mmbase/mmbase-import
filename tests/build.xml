@@ -62,17 +62,17 @@
   <target name="init" depends="expand.junit">
     <mkdir dir="${tests.work.dir}"/>
 
-    <copy file="${junit.jar}" todir="${tests.lib}" />
-    <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" />
-    <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}" />
-    <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci.jar" todir="${tests.lib}" />
-    <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}" />
-    <copy todir="${tests.lib}">
+    <copy todir="${tests.lib}" preservelastmodified="true" >
       <fileset dir="${build.dir}/lib">
         <include name="*.jar"/>
         <include name="*.zip"/>
       </fileset>
     </copy>
+    <copy file="${junit.jar}" todir="${tests.lib}"  preservelastmodified="true" />
+    <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" preservelastmodified="true" />
+    <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}"  preservelastmodified="true" />
+    <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci.jar" todir="${tests.lib}"  preservelastmodified="true" />
+    <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${hsqldb.jar}" todir="${tests.lib}" />
 
 
@@ -320,6 +320,21 @@ Build-compiler: ${build.compiler}
         classpathref="run.classpath"
         >
       <arg value="org.mmbase.bridge.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+    </java>
+  </target>
+
+  <target name="run.bridge.util" depends="init">
+    <!--
+    <antcall target="clean.database" />
+    -->
+    <java
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
+      <arg value="org.mmbase.bridge.util.AllTests" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
     </java>
