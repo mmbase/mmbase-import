@@ -1,31 +1,31 @@
 .colortitle{
-	color: #00AEEF; 
+	color: #00A0DC; 
 	font-weight: bold;
 }
 .colortxt{
-	color: #00AEEF; 
+	color: #00A0DC; 
 }
 .maincolor{
-	background-color: #00AEEF; 
+	background-color: #00A0DC; 
 }
 .leftnavrubriek{
 	text-transform:uppercase;
-	background-color: #00AEEF;
+	background-color: #00A0DC;
 	color: #FFFFFF; 
 	font-weight: bold;
 }
 .leftnavpage{
 	background-color: #FFFFFF;
-	color: #00AEEF; 
+	color: #00A0DC; 
 	font-weight: normal;
 }
 .leftnavpage_high{
 	background-color: #B2E7FA;
-	color: #00AEEF; 
+	color: #00A0DC; 
 	font-weight: normal;
 }
 .leftnavline{
-	background-color: #00AEEF;
+	background-color: #00A0DC;
 }
 .rule {
    border-top-width: 1px;
@@ -35,7 +35,7 @@
 }
 .submit_image{
    background-image: url(../../media/submit_zoeken.gif);
-   background-color: #00AEEF;
+   background-color: #00A0DC;
 }
 .pano_shorty-header{
 	background-color: #1D1E94; 
@@ -56,16 +56,16 @@ ul {
    margin:0px;
 }
 .submitbutton {
-	background-color: #00AEEF;
+	background-color: #00A0DC;
 	color: #FFFFFF;
 	font-weight: bold;
 	border : none;
 }
 span.navbutton {
-   background-color: #00AEEF;
+   background-color: #00A0DC;
 }
 A.navbutton {
-   background-color: #00AEEF;
+   background-color: #00A0DC;
    text-decoration: none;
 }
 A.navbutton:visited {
@@ -81,47 +81,47 @@ A.subnavbutton {
    display: block;
    width: 165px;
    height: 18px;
-   color: #00AEEF;
+   color: #00A0DC;
    text-decoration: none;
 }
 A.subnavbutton:hover {
    background-color: #B2E7FA;
-   color: #00AEEF;
+   color: #00A0DC;
    text-decoration: none;
 }
 A.subnavbutton:visited {
-   color: #00AEEF;
+   color: #00A0DC;
    text-decoration: none;
 }
 A.subnavbutton-high {
 	background-color: #B2E7FA;
 }
 A.subnavbutton-high:visited {
-	color: #00AEEF;
+	color: #00A0DC;
 }
 A.maincolor_link{
    text-decoration:underline;
-   color: #00AEEF;
+   color: #00A0DC;
 }
 A.maincolor_link:visited{
    text-decoration:underline;
-   color: #00AEEF;
+   color: #00A0DC;
 }
 A.maincolor_link:hover{
    text-decoration:underline;
-   color: #00AEEF;
+   color: #00A0DC;
 }
 A.maincolor_link_shorty {
    text-decoration:none;
-   color: #00AEEF;
+   color: #00A0DC;
 }
 A.maincolor_link_shorty:visited {
    text-decoration:none;
-   color: #00AEEF;
+   color: #00A0DC;
 }
 A.maincolor_link_shorty:hover {
    text-decoration:underline;
-   color: #00AEEF;
+   color: #00A0DC;
 }
 .footer {
  	background-color: #B2E7FA;

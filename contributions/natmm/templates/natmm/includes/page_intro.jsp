@@ -7,9 +7,9 @@
       if(false&&title_choice.equals("0")) { // this option is switched off 09.09.2005
          // no title
       } else if(title_choice.equals("2")) {
-         %><span class="colortitle" <%= (!subDir.equals("")? "style='font:bold 110%;'" : "" ) %>><%= thispage.getStringValue("kortetitel").toUpperCase() %></span><br/><%
+         %><span class="colortitle" <%= (isSubDir? "style='font:bold 110%;'" : "" ) %>><%= thispage.getStringValue("kortetitel").toUpperCase() %></span><br/><%
       } else {
-         %><span class="colortitle" <%= (!subDir.equals("")? "style='font:bold 110%;'" : "" ) %>><%= thispage.getStringValue("titel").toUpperCase() %></span><br/><%
+         %><span class="colortitle" <%= (isSubDir? "style='font:bold 110%;'" : "" ) %>><%= thispage.getStringValue("titel").toUpperCase() %></span><br/><%
       }
    %>
    <mm:notpresent referid="nopage_description">

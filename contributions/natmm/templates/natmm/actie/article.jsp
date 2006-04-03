@@ -29,7 +29,7 @@ PaginaHelper ph = new PaginaHelper(cloud);
   %>
   <table cellspacing="0" cellpadding="0" width="744" align="center" border="0" valign="top">
     <tr>
-      <td style="padding:10px 0px 10px 10px;vertical-align:top">
+      <td style="padding:10px 0px 10px 4px;vertical-align:top">
         <%@include file="includes/homelink.jsp" %>
         <jsp:include page="../includes/teaser.jsp">
             <jsp:param name="s" value="<%= paginaID %>" />
