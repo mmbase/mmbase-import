@@ -140,7 +140,7 @@ if(adID.equals("-1")) {
 %>
   <table cellspacing="0" cellpadding="0" width="744" align="center" border="0" valign="top">
     <tr>
-      <td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:10px">
+      <td style="padding-right:0px;padding-left:10px;padding-bottom:10px;vertical-align:top;padding-top:4px">
         <%@include file="includes/homelink.jsp" %>
         <table cellspacing="0" cellpadding="0" border="0" style="width:173px;margin-bottom:10px;margin-top:3px;">
           <form name="emailform" method="post" target="" action="bulletinboard.jsp?p=<%= paginaID %>">

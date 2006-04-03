@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="artikel">
-   <title>weblog artikel</title>
+   <title>Weblog Artikel</title>
    <description>
      <![CDATA[
       <h1>Artikel</h1>
@@ -53,8 +53,8 @@
       <!-- field name="sms" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field-->
       <!-- field name="status"><prompt>status</prompt></field -->
       <!-- is in use for routes: field name="type" ftype="line"><prompt>type</prompt></field -->
-      <field name="intro" ftype="html" rows="14"><prompt>intro (vette tekst)</prompt></field>
-      <field name="tekst" ftype="html" rows="20"><prompt>tekst (alleen voor kleine berichten)</prompt></field>
+      <field name="intro" ftype="html" rows="14"><prompt>quote (vette tekst)</prompt></field>
+      <field name="tekst" ftype="html" rows="20"><prompt>introductietekst (alleen voor kleine berichten)</prompt></field>
       <!-- list include="config/artikel/zoek_artikel_unidirectionalrelated_artikel.xml" / -->
       <list include="config/images/zoek_contentelement_posrel_images.xml" />
       <list include="config/attachments/zoek_contentelement_related_attachments.xml" />

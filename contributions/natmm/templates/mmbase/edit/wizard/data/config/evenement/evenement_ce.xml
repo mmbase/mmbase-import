@@ -32,7 +32,7 @@
           <field name="omschrijving" ftype="html" rows="14"><prompt>interne notitie</prompt></field>
           <list include="config/extra_info/zoek_evenement_readmore_extra_info.xml" />  
           <list include="config/evenement_type/zoek_evenement_related_evenement_type_bu.xml" />
-          <field name="groepsexcursie" ftype="enum"><prompt>activiteit op aanvraag</prompt><optionlist select="ja_nee"/> </field>
+          <!-- <field name="groepsexcursie" ftype="enum"><prompt>activiteit op aanvraag</prompt><optionlist select="ja_nee"/></field> -->
           <field name="min_aantal_deelnemers"><prompt>minimum aantal deelnemers</prompt></field>
           <field name="max_aantal_deelnemers"><prompt>maximum aantal deelnemers</prompt></field>
           <list include="config/deelnemers_categorie/zoek_evenement_posrel_deelnemers_categorie_bu.xml" />
@@ -50,7 +50,7 @@
           <!-- field name="begininschrijving"><prompt>aanvang aanmelden</prompt></field -->
           <!-- field name="eindinschrijving"><prompt>sluiting aanmelden</prompt></field -->
           <list include="config/evenement/zoek_evenement_altrel_evenement.xml" />
-          <field name="achteraf_bevestigen" ftype="enum"><prompt>bevestigen via email</prompt><optionlist select="ja_nee"/></field>
+          <!-- field name="achteraf_bevestigen" ftype="enum"><prompt>bevestigen via email</prompt><optionlist select="ja_nee"/></field -->
           <list include="config/bevestigings_teksten/zoek_evenement_posrel_bevestigings_teksten.xml" />
       </form-schema>
       <form-schema id="organisatie">

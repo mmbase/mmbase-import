@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.6 $, $Date: 2006-03-31 12:04:38 $
+ * @version $Revision: 1.7 $, $Date: 2006-04-03 19:23:11 $
  *
  * @struts:action name="UserForm"
  *                path="/editors/usermanagement/UserAction"
@@ -108,6 +108,7 @@ public class UserAction extends Action {
                   Util.updateAdminPassword(userForm.getPassword());
                }
             }
+            userNode.setStringValue("rank",userForm.getRank());
             userNode.setStringValue("notitie", userForm.getNotitie());
             userNode.commit();
 
@@ -122,6 +123,9 @@ public class UserAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2006/03/31 12:04:38  henk
+ * New version of A6-A9 site
+ *
  * Revision 1.5  2006/03/28 07:55:54  henk
  * Changes for a6-a9 site
  *

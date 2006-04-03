@@ -47,12 +47,12 @@ PaginaHelper ph = new PaginaHelper(cloud);
             </mm:notpresent>
             </a>
             <div style="padding:3px 5px 10px 5px">  
-               <div style="font:bold 115%;color:#<%=color1[iRubriekStyle]%>;"><mm:field name="titel"/></div>
+               <a href="<%= ph.createPaginaUrl(pageNumber, request.getRequestURI()) %>" class="hover" style="font:bold 115%;color:#<%=color1[iRubriekStyle]%>;"><mm:field name="titel"/></a>
                <div style="line-height:110%;padding-bottom:9px;font:bold;"><mm:field name="kortetitel"/></div>
                <mm:field name="omschrijving"/>
                <mm:relatednodes type="artikel" path="contentrel,artikel" max="1"
                   constraints="<%= objectConstraint %>" orderby="<%= objectOrderby %>" directions="<%= objectDirections %>">
-                  <span style="font:bold 110%;color:<%= (rubriekNum == 1 ? "red" : color2[iRubriekStyle] )%>">></span> 
+                  <span style="font:bold 110%;color:red">></span> 
                   <a href="<%= ph.createPaginaUrl(pageNumber, request.getRequestURI()) 
                      %>" class="hover" style="font-weight:bold;color:#<%=color1[iRubriekStyle]%>" title="<mm:field name="titel"/>"><mm:field name="titel"/></a><%
                   %><mm:field name="intro" jspvar="text" vartype="String" write="false"><% 

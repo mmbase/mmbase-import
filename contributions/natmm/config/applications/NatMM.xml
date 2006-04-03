@@ -61,6 +61,7 @@
         <builder maintainer="mmbase.org" version="0">workflowitem</builder>
 
         <!-- NatMM -->
+        <builder maintainer="mmbase.org" version="0">ads</builder>
         <builder maintainer="mmbase.org" version="0">afdelingen</builder>
         <builder maintainer="mmbase.org" version="0">answers</builder>
         <builder maintainer="mmbase.org" version="0">bevestigings_teksten</builder>
@@ -221,6 +222,7 @@
         <relation from="natuurgebieden" to="evenement" type="related" />
         <relation from="natuurgebieden" to="extra_info" type="posrel" />
         <relation from="natuurgebieden" to="paragraaf" type="readmore" />
+        <relation from="pagina" to="ads" type="contentrel" />
         <relation from="pagina" to="artikel" type="readmore" />
         <relation from="pagina" to="afdelingen" type="posrel" />
         <relation from="pagina" to="evenement_type" type="posrel" />
@@ -291,6 +293,7 @@
         <datasource builder="workflowitem" path="NatMM/workflowitem.xml" />
 
         <!-- NatMM -->
+        <datasource builder="ads" path="NatMM/ads.xml" />
         <datasource builder="afdelingen" path="NatMM/afdelingen.xml" />
         <datasource builder="answers" path="NatMM/answers.xml" />
         <datasource builder="bevestigings_teksten" path="NatMM/bevestigings_teksten.xml" />

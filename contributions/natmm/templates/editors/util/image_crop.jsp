@@ -319,16 +319,18 @@ String imgID = request.getParameter("img");	if (imgID == null || imgID.equals(""
       <input type="hidden" name="actie" value="make">
       <input type="hidden" name="img" value="<%= imgID %>">
       
-      Verhouding: <select name="cropsize" id="cropsize" size="1" onchange="setCropSize(this.value)" style="width:160px;" >
+      Verhouding: <select name="cropsize" id="cropsize" size="1" onchange="setCropSize(this.value)" style="width:250px;" >
          <option value="0" SELECTED>vrij</option>
          <option value="1">vierkant</option>
          <option value="0.2110">homepage pano (744:157)</option>
          <option value="0.1008">naardermeer pano (744:75)</option>
          <option value="0.1854">overige panos(744:138)</option>
+         <option value="0.5765">actie site foto op homepage (170:98)</option>
+         <option value="0.2941">actie site foto in weblog linker marge (170:50)</option>
       </select>
-      <input type="button" value="uitsnijden" onclick="cropMe()" style="width:130px;" />
-      <input type="button" value="reset" onclick="resetMe()" style="width:130px;" />
-      <input type="submit" value="opslaan" style="width:130px;" />
+      <input type="button" value="uitsnijden" onclick="cropMe()" style="width:100px;" />
+      <input type="button" value="reset" onclick="resetMe()" style="width:100px;" />
+      <input type="submit" value="opslaan" style="width:100px;" />
    </form>
    <div style="position:absolute;left:5px;bottom:5px;height:100px;width:100%;overflow:auto;z-index:100">
    <ol>
@@ -343,6 +345,7 @@ String imgID = request.getParameter("img");	if (imgID == null || imgID.equals(""
 <mm:present referid="actie">
    <mm:compare referid="actie" value="make">
       <%
+      String toTitle = "";
       String imgParams="part("+tX+","+tY+","+bX+","+bY+")";
       String cacheParams= "cache("+imgParams+")";
       %>
@@ -391,7 +394,8 @@ String imgID = request.getParameter("img");	if (imgID == null || imgID.equals(""
       		instream.read(thedata);
       		NodeManager imageItemManager = cloud.getNodeManager("images");
       		Node imgNode = imageItemManager.createNode();
-      		imgNode.setValue("titel",orgImage.getStringValue("titel") +" (uitsnede: "+vwidth+"x"+vheight+")");
+            toTitle = orgImage.getStringValue("titel") +" (uitsnede: "+vwidth+"x"+vheight+")";
+      		imgNode.setValue("titel",toTitle);
       		imgNode.setValue("handle",thedata);
       		imgNode.setValue("creatiedatum",String.valueOf(dateTime));
       		imgNode.setValue("omschrijving",orgImage.getStringValue("omschrijving"));
@@ -411,9 +415,10 @@ String imgID = request.getParameter("img");	if (imgID == null || imgID.equals(""
       
       <body>
       
-      <br><br>
-      <br>
-      <a href="/mmbase/edit/wizard/jsp/list.jsp?wizard=config/images/images&nodepath=images&fields=handle,title,metatags,titel_fra,alt_tekst,bron,datumlaatstewijziging&orderby=number&directions=down&pagelength=100&maxpagecount=50&search=yes&searchfields=title,metatags,titel_fra,alt_tekst,bron&maxsize=1048576">terug naar overzicht</a>
+      <br/><br/>
+      Nieuwe afbeelding is opgeslagen met titel: <%= toTitle %>
+      <br/><br/>
+      <a href="/mmbase/edit/wizard/jsp/list.jsp?wizard=config/images/images&nodepath=images&fields=handle,title,metatags,titel_fra,alt_tekst,bron,datumlaatstewijziging&orderby=number&directions=down&pagelength=25&maxpagecount=50&search=yes&searchfields=title,metatags,titel_fra,alt_tekst,bron&maxsize=1048576">terug naar overzicht</a>
    </mm:compare>
 </mm:present>
 </div>
