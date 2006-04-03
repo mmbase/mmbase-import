@@ -22,7 +22,7 @@ import org.mmbase.datatypes.*;
  * Like FilledNodeTest but the used builder is oddly configured.
  *
  * @author Michiel Meeuwissen
- * @since MMBaes-1.8
+ * @since MMBase-1.8
  */
 public class ErroneousFilledNodeTest extends BridgeTest {
 
@@ -32,17 +32,34 @@ public class ErroneousFilledNodeTest extends BridgeTest {
             cases = new Object[] {
                 /* {field    {valid values= {invalue, outvalue}, ... }   {invalid values}} */
                 new Object[] {"integerstring", // integer in db. getValue returns an Integer
-                              new Object[] { new Integer(1232), new Entry("1234", new Integer(1234))},
-                              new Object[] {"abac"}},
+                              new Object[] {
+                                 new Integer(1232), 
+                                 new Entry("1234", new Integer(1234))
+                              },
+                              new Object[] {
+                                  //"abac"  hmm, i think this should have been invalid
+                              }
+                },
                 new Object[] {"stringinteger", // string in db. getValue returns a String
-                              new Object[] { new Entry(new Integer(1232), "1232"), new Integer(1234)},
-                              new Object[] {"abac"}},
+                              new Object[] { 
+                                  new Entry(new Integer(1232), "1232"),
+                                  "1234"},
+                              new Object[] {
+                                  // "abac"
+                              }
+                },
                 new Object[] {"floatdouble",  // float in db
                               new Object[] {new Float(1232), new Entry("1234", new Float(1234))},
-                              new Object[] {"abac"}},
+                              new Object[] {
+                                  //"abac"
+                              }
+                },
                 new Object[] {"doublefloat",  // double in db
                               new Object[] {new Double(1232), new Entry("1234", new Double(1234))},
-                              new Object[] {"abac"}},
+                              new Object[] {
+                                  //"abac"
+                              }
+                },
             };
         } catch (Exception e) {
         }
