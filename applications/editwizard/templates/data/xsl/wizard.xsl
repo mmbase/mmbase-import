@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.149 2006-03-31 08:45:43 pierre Exp $
+    @version $Id: wizard.xsl,v 1.150 2006-04-03 14:52:02 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -89,16 +89,18 @@
   </xsl:template>
 
   <xsl:template name="javascript-html">
+    <script type="text/javascript">
+      _editor_url = '<xsl:value-of select="$htmlareadir"/>';
+      _editor_lang = '<xsl:value-of select="$language" />';
+    </script>
     <script type="text/javascript" src="{$htmlareadir}htmlarea.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$htmlareadir}lang/{$language}.js">
-      <xsl:comment>help IE</xsl:comment>
-    </script>
-    <script type="text/javascript" src="{$htmlareadir}dialog.js">
-      <xsl:comment>help IE</xsl:comment>
-    </script>
     <script type="text/javascript" src="{$htmlareadir}my-htmlarea.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+
+    <script type="text/javascript" src="{$htmlareadir}my-lang/{$language}.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
 

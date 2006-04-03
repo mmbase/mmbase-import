@@ -4,20 +4,17 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+<!-- Configure the path to the editor.  We make it relative now, so that the
+    example ZIP file will work anywhere, but please NOTE THAT it's better to
+    have it an absolute path, such as '/htmlarea/'. -->
+<script type="text/javascript">
+  _editor_lang = "en";
+  _editor_url = "../";
+</script>
 <!-- load the main HTMLArea files -->
-<script type="text/javascript" src="htmlarea.js"></script>
-<script type="text/javascript" src="lang/en.js"></script>
-<script type="text/javascript" src="dialog.js"></script>
-<!-- <script type="text/javascript" src="popupdiv.js"></script> -->
-<script type="text/javascript" src="popupwin.js"></script>
-
-<!-- load the TableOperations plugin files -->
-<script type="text/javascript" src="plugins/TableOperations/table-operations.js"></script>
-<script type="text/javascript" src="plugins/TableOperations/lang/en.js"></script>
+<script type="text/javascript" src="../htmlarea.js"></script>
 
 <style type="text/css">
-@import url(htmlarea.css);
-
 html, body {
   font-family: Verdana,sans-serif;
   background-color: #fea;
@@ -31,13 +28,16 @@ textarea { background-color: #fff; border: 1px solid 00f; }
 </style>
 
 <script type="text/javascript">
+// load the plugin files
+HTMLArea.loadPlugin("TableOperations");
+
 var editor = null;
 function initEditor() {
   // create an editor for the "ta" textbox
   editor = new HTMLArea("ta");
 
   // register the TableOperations plugin with our editor
-  editor.registerPlugin("TableOperations");
+  editor.registerPlugin(TableOperations);
 
   editor.generate();
   return false;
@@ -63,7 +63,7 @@ function highlight() {
 <h1>HTMLArea 3.0</h1>
 
 <p>A replacement for <code>TEXTAREA</code> elements.  &copy; <a
-href="http://interactivetools.com">InteractiveTools.com</a>, 2003.</p>
+href="http://interactivetools.com">InteractiveTools.com</a>, 2003-2004.</p>
 
 <p>Page that demonstrates the additional features of the
 <tt>TableOperations</tt> plugin (sponsored by <a
