@@ -1,12 +1,13 @@
 package nl.didactor.component.scorm.player;
 
 import java.io.File;
-
 import java.util.Vector;
 import java.util.Iterator;
 
+
 import org.jdom.Element;
 import org.jdom.Namespace;
+
 
 import uk.ac.reload.diva.util.GeneralUtils;
 import uk.ac.reload.moonunit.contentpackaging.CP_Core;
@@ -18,10 +19,15 @@ import uk.ac.reload.scormplayer.client.generic.contentpackaging.SCORM12_Document
 
 import nl.didactor.utils.debug.LogController;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 
 public class MenuCreator extends XMLDocument implements nl.didactor.component.scorm.player.InterfaceMenuCreator
 {
+
+   private static Logger log = Logging.getLoggerInstance(MenuCreator.class);
+
 
    /**
     * A count of organizations (should really only be one for the tree widget)
@@ -60,8 +66,11 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
    public String[] parse(boolean useRelativePaths, String sPackageName, String sSubPath)
    {
+      log.debug("SCORM: MenuCreator.parse(" + sPackageName + ") with offset=" + sSubPath);
+
+
       // New Vector
-      if(bDebugMode) System.out.println(sDebugIndo + "--------------------- Start of JS Parser ---------------------");
+      if(log.isDebugEnabled()) log.debug("--------------------- Start of JS Parser ---------------------");
 
       Vector v = new Vector();
       writePackageSettings(v, "packageName", 0);
@@ -73,7 +82,7 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
       _defaultorg = scormCore. getDefaultOrganization(orgs);
 
       //Selecting the submanifest element
-      if(bDebugMode) System.out.println(sDebugIndo + "Selecting the submanifest element");
+//      if(bDebugMode) System.out.println(sDebugIndo + "Selecting the submanifest element");
       try
       {
          Element elemCurrent = _defaultorg;
@@ -93,7 +102,7 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
 
       // now call createNavLinks() which should interrogate the org/item structure
-      if(bDebugMode) System.out.println(sDebugIndo + "Creating Links");
+//      if(bDebugMode) System.out.println(sDebugIndo + "Creating Links");
 
 //      createNavLinks(v, ((Element)((Element) _defaultorg.getChildren().get(1)).getChildren().get(1)), "menu", useRelativePaths);
 //      createNavLinks(v, _defaultorg, "menu", useRelativePaths);
@@ -101,9 +110,15 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
 
       // Convert Vector to String array
       String[] javascriptStrings = new String[v.size()];
-
-      if(bDebugMode) System.out.println(sDebugIndo + "--------------------- End of JS Parser ---------------------");
       v.copyInto(javascriptStrings);
+
+      if(log.isDebugEnabled()){
+         log.debug("-----------------SCORM menu for offset=" + sSubPath + ":----------------");
+         for(int f = 0; f < javascriptStrings.length; f++){
+            log.debug("|" + javascriptStrings[f]);
+         }
+         log.debug("--------------------- End of JS Parser ---------------------");
+      }
       return javascriptStrings;
   }
 
@@ -119,9 +134,9 @@ public class MenuCreator extends XMLDocument implements nl.didactor.component.sc
   protected void createNavLinks(Vector javascriptStrings, Element element, String menuParent, boolean useRelativePaths)
   {
     String name = element.getName();
-    if(bDebugMode) System.out.println(sDebugIndo + "*** name:" + name);
-    if(bDebugMode) System.out.println(sDebugIndo + "*** menu:" + menuParent);
-    if(bDebugMode) System.out.println(sDebugIndo + "*** value:" + element.getText());
+    log.debug("*** name:" + name);
+    log.debug("*** menu:" + menuParent);
+    log.debug("*** value:" + element.getText());
 
     // ORGANIZATION
     if(name.equals(CP_Core.ORGANIZATION) && this.isDocumentNamespace(element))
@@ -244,7 +259,7 @@ Unknown
        {
            hyperLink = "javascript:void(0)";
        }
-       if(bDebugMode) System.out.println(sDebugIndo + "adding to sequencer:"+ itemId + " " + hyperLink+ " " + _itemCount+ " " + scoType+ " " +title+ " " + prerequisites);
+       log.debug("adding to sequencer:"+ itemId + " " + hyperLink+ " " + _itemCount+ " " + scoType+ " " +title+ " " + prerequisites);
 //        _sequence.addNewItem(itemId, hyperLink, _itemCount, scoType, title, prerequisites);
 
 
