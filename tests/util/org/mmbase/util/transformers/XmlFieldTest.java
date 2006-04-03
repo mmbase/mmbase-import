@@ -6,29 +6,29 @@
  * @author Simon Groenewolt (simon@submarine.nl)
  */
 
-package org.mmbase.util;
-
+package org.mmbase.util.transformers;
+import org.mmbase.util.*;
 import junit.framework.TestCase;
-import org.mmbase.util.transformers.XmlField;
+
 
 /**
  *
  * @author Administrator
  */
 public class XmlFieldTest  extends TestCase {
-    
+
     private String result;
     private XmlField xmlField;
-    
+
     /** Creates a new instance of XmlFieldTest */
     public XmlFieldTest() {
         xmlField = new XmlField();
     }
-    
+
     public void testStripNewLines() {
         assertEquals("", stripNewlinesAndReturns("\n\n\n\r\r\n\r\n"));
     }
-    
+
     /**
      *
      */
@@ -37,29 +37,29 @@ public class XmlFieldTest  extends TestCase {
         result = xmlField.wikiToXML("hallo");
         assertEquals("<p>hallo</p>", result);
     }
-    
+
     /**
      * test HTML_BLOCK_BR - richToHTMLBlock(r, true, true)
      * an empty string schould return an empty p element
      */
     public void testRichToHTMLBlock1() {
-        
+
         result = xmlField.richToHTMLBlock("");
         assertEquals("<p></p>", result);
     }
-    
-    
+
+
     public void testRichToHTMLBlock1a() {
-        
+
         result = xmlField.richToHTMLBlock("hallo");
         assertEquals("<p>hallo</p>", result);
     }
-    
+
     public void testRichToHTMLBlock2() {
         result = xmlField.richToHTMLBlock("hallo\n\nhallo");
         assertEquals("<p>hallo</p><p>hallo</p>", result);
     }
-    
+
     public void testRichToHTMLBlock3() {
         // input:
         // hallo
@@ -72,7 +72,7 @@ public class XmlFieldTest  extends TestCase {
 //        System.out.println("\ngewenst  : " + "<p>hallo</p><ul><li>eending</li><li>nogeending</li></ul><p>hallo</p>");
         assertEquals("<p>hallo</p><ul><li>eending</li><li>nogeending</li></ul><p>hallo</p>", result);
     }
-    
+
     private String stripNewlinesAndReturns(String s) {
         StringBuffer buf;
         buf = new StringBuffer(s);
@@ -94,7 +94,7 @@ public class XmlFieldTest  extends TestCase {
         }
         return buf.toString();
     }
-    
+
     public void testRichToHTMLBlock4() {
         // input:
         // hallo
@@ -121,5 +121,20 @@ public class XmlFieldTest  extends TestCase {
         // System.out.println(result);
         assertEquals("<p>hallo</p><ol><li>eending</li><li>nogeending</li></ol><p>hallo</p>", result);
     }
-    
+
+    /**
+     * Tests handling lists only
+     */
+    public void testHandleList() {
+        StringObject in = new StringObject("-a\n-b\n-c");
+        XmlField.handleList(in);
+        assertEquals("\n<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n</ul>\n", in.toString().replaceAll("\r", "\n"));
+    }
+    public void testHandleList2() {
+        StringObject in = new StringObject("Hallo\n-a\n-b\n-c\nhallo");
+        XmlField.handleList(in);
+        assertEquals("Hallo\n<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n</ul>\nhallo", in.toString().replaceAll("\r", "\n"));
+    }
+
+
 }
