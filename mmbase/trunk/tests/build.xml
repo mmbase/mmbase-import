@@ -69,7 +69,7 @@
       </fileset>
     </copy>
     <copy file="${junit.jar}" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" preservelastmodified="true" />
+    <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" preservelastmodified="true" overwrite="true" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}"  preservelastmodified="true" />
@@ -81,6 +81,7 @@
         <fileset dir="${tests.lib}">
           <include name="*.jar"/>
           <include name="*.zip"/>
+          <exclude name="mmbase-rmmci.jar"/>
         </fileset>
       </classpath>
 
