@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.43 2006-01-02 16:56:05 michiel Exp $
+ * @version $Id: XmlField.java,v 1.44 2006-04-03 14:13:12 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -53,14 +53,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     private static String listTag(char c) {
         return c == '-' ? "ul" : "ol";
     }
+
     /**
      * Takes a string object, finds list structures and changes those to XML
      */
-
-    private static void handleList(StringObject obj) {
+    static void handleList(StringObject obj) {
         // handle lists
         // make <ul> possible (not yet nested), with -'s on the first char of line.
-        int inList = 0; // if we want nesting possible, then an integer (rather then boolean) will be handy // or even a Stack !
+        int inList = 0; // 
         int pos = 0;
         if (obj.length() < 3) {
             return;
@@ -158,7 +158,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     // test cases:
     // I cite _m_pos_! -> <mmxf><p>I cite <em>m_pos</em>!</p></mmxf>
 
-    private static void handleEmph(StringObject obj, char ch, String tag) {
+    static void handleEmph(StringObject obj, char ch, String tag) {
 
         obj.replace("" + ch + ch, "&#95;"); // makes it possible to escape underscores (or what you choose)
 
@@ -235,7 +235,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      *
      */
 
-    private static void handleHeaders(StringObject obj) {
+    static void handleHeaders(StringObject obj) {
         // handle headers
         int requested_level;
         char ch;
@@ -320,7 +320,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @param leaveExtraNewLines (defaults to false) if false, 2 or more newlines starts a new p. If true, every 2 newlines starts new p, and every extra new line simply stays (inside the p).
      * @param surroundingP (defaults to true) wether the surrounding &lt;p&gt; should be included too.
      */
-    private static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines, boolean surroundingP) {
+    static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines, boolean surroundingP) {
         // handle paragraphs:
         boolean inParagraph = true;
         while (obj.length() > 0 && obj.charAt(0) == '\n') {
@@ -406,7 +406,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * </pre>
      *@since MMBase 1.8
      */
-    private static void handleTables(StringObject obj) {
+    static void handleTables(StringObject obj) {
         int tables = 0;
         int pos = 0;
         while (pos != -1) {
@@ -533,7 +533,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     /**
      * Removes all new lines and space which are too much.
      */
-    private static void cleanupText(StringObject obj) {
+    static void cleanupText(StringObject obj) {
         // remaining new lines have no meaning.
         obj.replace(">\n", ">"); // don't replace by space if it is just after a tag, it could have a meaning then.
         obj.replace("\n", " "); // replace by space, because people could use it as word boundary.
@@ -583,7 +583,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         handleEmph(obj, '*', "strong");
     }
 
-    private static void handleNewlines(StringObject obj) {
+    static void handleNewlines(StringObject obj) {
         obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br />" the \n was necessary for </ul></p>
         obj.replace("\n", "<br />\r");  // handle new remaining newlines.
     }
