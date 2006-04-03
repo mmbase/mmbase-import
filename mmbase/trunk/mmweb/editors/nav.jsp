@@ -1,4 +1,5 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page   contentType="text/html;charset=utf-8"
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="includes/settings.jsp" %>
 <mm:cloud name="mmbase" method="http" rank="basic user" jspvar="cloud">
 
@@ -10,7 +11,7 @@
 </head>
 <body bgcolor="#EFEFEF">
 <%	session.setAttribute("editor", cloud.getUser().getIdentifier());
-	String userconstraint="mmbaseusers.username='"+cloud.getUser().getIdentifier()+"'";
+	String userconstraint="mmbaseusers.username='"+ cloud.getUser().getIdentifier()+"'";
 %>
 
 <table cellpadding=0 cellspacing=0>
