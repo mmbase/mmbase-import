@@ -32,7 +32,7 @@ public class UtilTests {
         suite.addTestSuite(ResourceLoaderTest.class);
         suite.addTestSuite(EncodeTest.class);
         suite.addTestSuite(DateParserTest.class);
-        suite.addTestSuite(XmlFieldTest.class);
+        suite.addTestSuite(org.mmbase.util.transformers.XmlFieldTest.class);
         return suite;
     }
 }
