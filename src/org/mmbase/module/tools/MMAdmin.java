@@ -24,6 +24,7 @@ import org.mmbase.module.Module;
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
+import org.mmbase.model.*;
 import org.mmbase.security.Rank;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.SearchQueryException;
@@ -39,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.137 2006-03-29 14:30:23 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.138 2006-04-03 19:46:00 daniel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -305,7 +306,6 @@ public class MMAdmin extends ProcessorModule {
                 String appname = (String)cmds.get(cmdline);
                 String savepath = (String)vars.get("PATH");
                 String goal = (String)vars.get("GOAL");
-                log.info("APP=" + appname + " P=" + savepath + " G=" + goal);
                 boolean includeComments = false;
                 if (tok.hasMoreTokens()) {
                     includeComments = "true".equals(tok.nextToken());
@@ -703,7 +703,7 @@ public class MMAdmin extends ProcessorModule {
         Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
         while (i.hasNext()) {
             String appResource = (String) i.next();
-            log.debug("module " + appResource);
+            log.debug("application " + appResource);
             ApplicationReader reader;
             try {
                 reader = new ApplicationReader(applicationLoader.getInputSource(appResource));
@@ -1407,7 +1407,12 @@ public class MMAdmin extends ProcessorModule {
             mmb.getStorageManager().create(def);
             // only then add to builder
             bul.addField(def);
-            syncBuilderXML(bul, builder);
+            //syncBuilderXML(bul, builder);
+	    CloudModel cm = ModelsManager.getModel("default");
+	    if (cm != null) {
+		CloudModelBuilder cmb = cm.getModelBuilder(builder);
+		if (cmb!=null) cmb.addField(pos,fieldName,(String)vars.get("mmbasetype"),(String)vars.get("guitype"),(String)vars.get("dbstate"),(String)vars.get("dbnotnull"),(String)vars.get("dbkey"),(String)vars.get("dbsize")); 
+	    }
             def.finish();
         } else {
             log.service("Cannot add field to builder " + builder + " because it could not be found");
