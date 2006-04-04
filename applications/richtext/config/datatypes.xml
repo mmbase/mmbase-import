@@ -6,8 +6,12 @@
 
 
   <datatype id="xml">
-
     <specialization id="mmxf">
+      <description>
+        The MMXF field is an XML field for which the XML is 'MMXF', which is a subset of
+        XHTML2. Setting it as a String is onderstood in verious ways. E.g. input from the 'kupu'
+        editor is understood and converted to MMXF.
+      </description>
       <default value="&lt;p/&gt;" />
       <setprocessor type="string">
         <class name="org.mmbase.richtext.processors.xml.MmxfSetString" />
@@ -38,6 +42,14 @@
 
   <datatype id="string">
     <specialization id="index">
+      <description>
+        If the field is empty, then getString returns a field based on 'indexrel' related objects to
+        the current node.  If e.g. the node related to the same parent but with a position one less,
+        does have a filled 'index' field, it returns that value, but increased by one (so, if it is
+        'a' then 'b' is returned, if it is '1' then '2' is returned).  This results into a situation
+        in which you have fully automatic index numbers on your objects, if there are present in
+        tree-structure by 'indexrel'.
+      </description>
       <getprocessor>
         <class name="org.mmbase.richtext.processors.GetIndex" />
       </getprocessor>
