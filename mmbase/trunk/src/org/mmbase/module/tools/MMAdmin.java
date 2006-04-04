@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.142 2006-04-04 17:48:08 daniel Exp $
+ * @version $Id: MMAdmin.java,v 1.143 2006-04-04 18:37:49 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1359,7 +1359,7 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    public void addBuilderField(Hashtable vars) {
+    public void addBuilderField(Map vars) {
         if (kioskmode) {
             log.warn("Refused add builder field, am in kiosk mode");
             return;
@@ -1386,6 +1386,7 @@ public class MMAdmin extends ProcessorModule {
             } else {
                 dataType = DataTypes.getDataTypeInstance(guiType, type);
             }
+            log.debug("Found datatype " + dataType);
 
             CoreField def = Fields.createField(fieldName, type, itemListType, state, dataType);
             def.setListPosition(pos);
@@ -1409,16 +1410,25 @@ public class MMAdmin extends ProcessorModule {
                 log.debug("dbsize had invalid value, not setting size");
             }
 
+            log.debug("Found field definition " + def);
+
+            log.trace("Adding to storage");
             // make change in storage
             mmb.getStorageManager().create(def);
+            log.trace("Adding to builder");
             // only then add to builder
             bul.addField(def);
 
 	    CloudModel cloudmodel = ModelsManager.getModel("default");
 	    if (cloudmodel != null) {
+                log.debug("Calling cloud module builder");
 		CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-		if (cloudmodelbuilder != null) cloudmodelbuilder.addField(pos,fieldName,(String)vars.get("mmbasetype"),(String)vars.get("guitype"),(String)vars.get("dbstate"),(String)vars.get("dbnotnull"),(String)vars.get("dbkey"),(String)vars.get("dbsize")); 
-	    }
+		if (cloudmodelbuilder != null) {
+                    cloudmodelbuilder.addField(pos,fieldName, (String)vars.get("mmbasetype"), (String)vars.get("guitype"), (String)vars.get("dbstate"), (String)vars.get("dbnotnull"), (String)vars.get("dbkey"), (String)vars.get("dbsize")); 
+                }
+	    } else {
+                log.warn("No cloud model 'default' found");
+            }
             def.finish();
         } else {
             log.service("Cannot add field to builder " + builder + " because it could not be found");
