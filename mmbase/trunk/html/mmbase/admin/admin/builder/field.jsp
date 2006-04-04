@@ -1,5 +1,6 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
+<%@page   contentType="text/html;charset=utf-8"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
 <%@include file="../../settings.jsp" %>
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
@@ -60,7 +61,16 @@
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbmmbasetype",request,response)%>&nbsp;</td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbmmbasetype&name=Type"%>" />"
+    <a href="<mm:url page="<%="changetype.jsp?builder="+builder+"&field="+field%>" />"
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
+  </td>
+</tr>
+<tr>
+  <td class="data">Data Type</td>
+  <td class="data"><%=cloud.getNodeManager(builder).getField(field).getDataType().getName()%></td>
+  <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#data_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+  <td class="navigate">
+    <a href="<mm:url page="<%="changetype.jsp?builder="+builder+"&field="+field%>" />"
     ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
@@ -146,15 +156,6 @@
   <th class="navigate">explain</th>
   <th class="navigate">Change</th>
 </tr>
-<tr>
-  <td class="data">GUI&nbsp;Type</td>
-  <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-guitype",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
-  <td class="navigate">
-    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=guitype&name=GUI&nbsp;Type"%>" />"
-    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
-  </td>
-</tr>
 
 <%
    java.util.Map params = new java.util.Hashtable();
@@ -188,7 +189,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-  <th class="header">GUI Property</th>
+  <th class="header">GUI Descriptions</th>
   <th class="header">Value</th>
   <th class="navigate">explain</th>
   <th class="navigate">Change</th>

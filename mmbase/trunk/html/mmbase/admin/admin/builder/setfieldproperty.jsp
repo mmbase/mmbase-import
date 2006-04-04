@@ -1,5 +1,6 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
+<%@page   contentType="text/html;charset=utf-8"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
 <%@include file="../../settings.jsp" %>
 <mm:content expires="0">
@@ -43,11 +44,11 @@
   <td class="data"><%=name%></td>
  <td class="data">
   <% if (cmd.equals("dbmmbasetype")) {%>
-<%@include file="properties/dbmmbasetype.jsp" %>
+
   <% } else if (cmd.startsWith("editor")) {%>
 <%@include file="properties/editorpos.jsp" %>
   <% } else if (cmd.equals("guitype")) {%>
-<%@include file="properties/guitype.jsp" %>
+
   <% } else if (cmd.equals("dbstate")) {%>
 <%@include file="properties/dbstate.jsp" %>
   <% } else if (cmd.equals("dbkey") || cmd.equals("dbnotnull")) {%>
