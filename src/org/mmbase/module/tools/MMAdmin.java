@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.143 2006-04-04 18:37:49 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.144 2006-04-04 21:13:14 daniel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1207,7 +1207,11 @@ public class MMAdmin extends ProcessorModule {
                         def.setMaxLength(newSize);
                         // make change in storage
                         mmb.getStorageManager().change(def);
-                        // need to be rerouted syncBuilderXML(bul, builder);
+	                CloudModel cloudmodel = ModelsManager.getModel("default");
+	                if (cloudmodel != null) {
+                           CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
+                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBSize(fieldname,value); 
+	                }
                     } catch (StorageException se) {
                         def.setMaxLength(oldSize);
                         throw se;
@@ -1263,6 +1267,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set DBState field, am in kiosk mode");
             return;
         }
+	log.info("SET DBDSTATE");
         String builder = (String)vars.get("BUILDER");
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
@@ -1291,6 +1296,11 @@ public class MMAdmin extends ProcessorModule {
                 } finally {
                     def.finish();
                 }
+	                CloudModel cloudmodel = ModelsManager.getModel("default");
+	                if (cloudmodel != null) {
+                           CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
+                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBState(fieldname,value); 
+	                }
             }
         }
     }
@@ -1303,6 +1313,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Refused set dbkey field, am in kiosk mode");
             return;
         }
+	log.info("SET DBKEY");
         String builder = (String)vars.get("BUILDER");
         String fieldname = (String)vars.get("FIELDNAME");
         String value = (String)vars.get("VALUE");
@@ -1316,6 +1327,11 @@ public class MMAdmin extends ProcessorModule {
             } else {
                 def.setUnique(false);
             }
+	    CloudModel cloudmodel = ModelsManager.getModel("default");
+	    if (cloudmodel != null) {
+                CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
+                if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBKey(fieldname,value); 
+	    }
             def.finish();
         }
         // TODO: when changing key, should call CHANGE
@@ -1345,6 +1361,11 @@ public class MMAdmin extends ProcessorModule {
                 try {
                     // make change in storage
                     mmb.getStorageManager().change(def);
+	            CloudModel cloudmodel = ModelsManager.getModel("default");
+	            if (cloudmodel != null) {
+                        CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
+                        if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBNotNull(fieldname,value); 
+	            }
                     // need to be rerouted syncBuilderXML(bul, builder);
                 } catch (StorageException se) {
                     def.getDataType().setRequired(oldNotNull);
