@@ -19,6 +19,7 @@
 
    <%//education-people connector
       EducationPeopleConnector educationPeopleConnector = new EducationPeopleConnector(cloud);
+      Node nodeUser = nl.didactor.security.Authentication.getCurrentUserNode(cloud);
    %>
    <mm:import id="wizardlang">en</mm:import>
    <mm:compare referid="language" value="nl">
@@ -534,7 +535,7 @@
                   <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_<mm:field name="number"/>'/></td>
                  <td><nobr>
                      <a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treattest" />' target="text"><mm:field name="name" /></a>
-                     
+
                      <mm:node number="component.metadata" notfound="skip">
                         <a href="metaedit.jsp?number=<mm:write referid="tnumber" />" target="text"><img id="img_<mm:write referid="tnumber" />" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
                      </mm:node>
