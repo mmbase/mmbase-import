@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.7 2006-03-31 09:32:31 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.8 2006-04-04 23:51:20 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -82,7 +82,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         }
         if (query == null) { // try to work as node-referrer
             log.debug("working as node-referrer");
-            NodeProvider np =  (NodeProvider) thisTag.findParentTag(NodeProvider.class, node, ! "".equals(node));
+            NodeProvider np =  (NodeProvider) thisTag.findParentTag(NodeProvider.class, "".equals(node) ? null : node, ! "".equals(node));
             if (np == null) {
                 throw new TaglibException("No NodeQueryContainer nor a NodeProvider found in tree-tag");
             } else {
