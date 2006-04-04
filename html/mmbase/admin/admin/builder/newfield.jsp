@@ -99,16 +99,6 @@
 </tr>
 
 <% String property; // strange implemetnation%> 
-<!--
-<tr>
-    <td class="data">GUI Type</td>
-    <td class="data">
-    <% property="guitype"; %>
-    <%@include file="properties/guitype.jsp" %>
-    </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
-</tr>
--->
 
 <tr>
   <td class="data">Data Type</td>
