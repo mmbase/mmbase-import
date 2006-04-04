@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.9 2006-03-20 18:37:15 pierre Exp $
+ * @version $Id: DataTypeCollector.java,v 1.10 2006-04-04 20:03:33 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -33,7 +33,9 @@ public final class DataTypeCollector {
     private static final Logger log = Logging.getLoggerInstance(DataTypeCollector.class);
 
     // Map of datatypes local to this collector
-    private Map dataTypes = new HashMap();
+    private Map dataTypes       = new HashMap(); // String -> BasicDataType
+    private Map specializations = new HashMap(); // String -> Set
+    private Set roots           = new HashSet(); // All datatypes which did't inherit from another datatype (this should normally be (a subset of) the 'database types' of mmbase)
 
     // the object to finish datatypes with
     private Object signature = null;
@@ -121,12 +123,81 @@ public final class DataTypeCollector {
             // not a proper id, so do not add
             return null;
         } else {
+            DataType origin = dataType.getOrigin();
+            if (origin != null) {
+                if (origin.equals(getDataType(origin.getName()))) { // origin is also in this collector
+                    Set spec = (Set) specializations.get(origin.getName());
+                    // TODO, not sure that this stuff with specializations goes ok when using 'parent' collectors.
+                    // Does not matter very much, because you problably want to use this functionlaity mainly on the System Collector
+                    if (spec == null) {
+                        spec = new HashSet();
+                        specializations.put(origin.getName(), spec);
+                    }
+                    spec.add(dataType);
+                } else {
+                    roots.add(dataType);
+                }
+            } else {
+                roots.add(dataType);
+            }
             BasicDataType old = (BasicDataType) dataTypes.put(name, dataType);
             if (old != null && old != dataType) {
                 log.warn("Replaced " + name + " " + old  + " with " + dataType);
             }
             return old;
         }
+    }
+
+    /**
+     * Returns a set of all DataTypes in this collector which are directly inherited from the one with given name
+     */
+    public Collection getSpecializations(String name) {
+        // TODO: see in addDataType
+        Set set = (Set) specializations.get(name);
+        return set == null ? Collections.EMPTY_SET : Collections.unmodifiableSet(set);
+    }
+
+    /**
+     * Recursively calls {@link #getSpecializations(String)} so that you can easily iterate also all indirectly specializaed versions of a certain DataType in this collector
+     */
+    public Iterator getAllSpecializations(String name) {
+        final Iterator i = getSpecializations(name).iterator();
+        return new Iterator() {
+            DataType next = i.hasNext() ? (DataType) i.next() : null;
+            Iterator subIterator = null;
+            public boolean hasNext() {
+                return next != null || subIterator != null;
+            }
+            public Object next() {
+                if (subIterator != null) {
+                    Object n = subIterator.next();
+                    if (! subIterator.hasNext()) subIterator = null;
+                    return n;
+                }
+                if (next != null) {
+                    subIterator = getAllSpecializations(next.getName());
+                    if (! subIterator.hasNext()) subIterator = null;
+                    Object n = next;
+                    if (i.hasNext()) {
+                        next = (DataType) i.next();
+                    } else {
+                        next = null;
+                    }
+                    return n;
+                }
+                return new NoSuchElementException();
+            }
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+    /**
+     * Returns all DataTypes in this Collector which did not have an origina DataType (in this Collector).
+     */
+    public Set getRoots() {
+        // TODO: see in addDataType
+        return Collections.unmodifiableSet(roots);
     }
 
     /**
