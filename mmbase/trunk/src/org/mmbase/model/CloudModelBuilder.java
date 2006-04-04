@@ -71,11 +71,13 @@ public class CloudModelBuilder {
             Element fe = reader.getElementByPath(doc.getDocumentElement(),"builder.fieldlist");
             if (fe!=null) {
 		String newpart ="    <field>\r";
-		newpart +="      <positions>\r";
-		newpart +="        <input>"+pos+"</input>\r";
-		newpart +="        <list>"+pos+"</list>\r";
-		newpart +="        <search>"+pos+"</search>\r";
-		newpart +="      </positions>\r";
+		newpart +="      <editor>\r";
+		newpart +="        <positions>\r";
+		newpart +="          <input>"+pos+"</input>\r";
+		newpart +="          <list>"+pos+"</list>\r";
+		newpart +="          <search>"+pos+"</search>\r";
+		newpart +="        </positions>\r";
+		newpart +="      </editor>\r";
 
 		// convert to the new format, have to check this some more
 		String ntype=guitype;
