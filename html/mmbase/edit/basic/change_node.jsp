@@ -72,7 +72,7 @@
    </th></tr>
    <mm:fieldlist id="my_form" type="edit" fields="owner">
      <tr>
-       <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
+       <td class="data" title="<mm:fieldinfo type="description" /> (<mm:fieldinfo type="datatype" />: <mm:fieldinfo type="datatypedescription" />)"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
        <td class="listdata" colspan="2">
          <mm:fieldinfo type="$showtype" />
          <mm:fieldinfo type="errors">
