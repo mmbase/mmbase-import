@@ -31,7 +31,7 @@
         } else if (cmd.equals("BUILDER-ADDFIELD")) {
             params.put("dbname",request.getParameter("dbname"));
             params.put("mmbasetype",request.getParameter("mmbasetype"));
-            params.put("guitype",request.getParameter("guitype"));
+            params.put("guitype",request.getParameter("datatype"));
             params.put("dbstate",request.getParameter("dbstate"));
             params.put("dbnotnull",request.getParameter("dbnotnull"));
             params.put("dbkey",request.getParameter("dbkey"));
