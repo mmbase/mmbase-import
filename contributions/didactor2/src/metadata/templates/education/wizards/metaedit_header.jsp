@@ -11,7 +11,7 @@
             <mm:import id="header_name"><%= MetaDataHelper.getAliasForObject(cloud, nodeHeader.getNumber(), nodeUser.getNumber()) %></mm:import>
 
             <mm:compare referid="header_name" value="null" inverse="true">
-               <mm:write />
+               <mm:write referid="header_name" />
             </mm:compare>
             <mm:compare referid="header_name" value="null">
                <mm:field name="title" />
