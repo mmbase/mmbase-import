@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.140 2006-04-04 13:02:57 daniel Exp $
+ * @version $Id: MMAdmin.java,v 1.141 2006-04-04 14:05:51 daniel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1408,11 +1408,11 @@ public class MMAdmin extends ProcessorModule {
             mmb.getStorageManager().create(def);
             // only then add to builder
             bul.addField(def);
-            //syncBuilderXML(bul, builder);
-	    CloudModel cm = ModelsManager.getModel("default");
-	    if (cm != null) {
-		CloudModelBuilder cmb = cm.getModelBuilder(builder);
-		if (cmb!=null) cmb.addField(pos,fieldName,(String)vars.get("mmbasetype"),(String)vars.get("guitype"),(String)vars.get("dbstate"),(String)vars.get("dbnotnull"),(String)vars.get("dbkey"),(String)vars.get("dbsize")); 
+
+	    CloudModel cloudmodel = ModelsManager.getModel("default");
+	    if (cloudmodel != null) {
+		CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
+		if (cloudmodelbuilder != null) cloudmodelbuilder.addField(pos,fieldName,(String)vars.get("mmbasetype"),(String)vars.get("guitype"),(String)vars.get("dbstate"),(String)vars.get("dbnotnull"),(String)vars.get("dbkey"),(String)vars.get("dbsize")); 
 	    }
             def.finish();
         } else {
@@ -1440,12 +1440,12 @@ public class MMAdmin extends ProcessorModule {
             mmb.getStorageManager().delete(def);
             // only then delete in builder
             bul.removeField(fieldname);
-            // need to be rerouted syncBuilderXML(bul, builder);
-	    CloudModel cm = ModelsManager.getModel("default");
-	    if (cm != null) {
-		CloudModelBuilder cmb = cm.getModelBuilder(builder);
-		if (cmb!=null) cmb.removeField(fieldname); 
-	    }
+
+           CloudModel cloudmodel = ModelsManager.getModel("default");
+           if (cloudmodel != null) {
+                CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
+                if (cloudmodelbuilder != null) cloudmodelbuilder.removeField(fieldname); 
+            }
             def.finish();
         }
     }
