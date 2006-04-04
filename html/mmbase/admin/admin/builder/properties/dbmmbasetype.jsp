@@ -18,7 +18,7 @@
           <%
           if (root instanceof LengthDataType) {
           %>
-          <span id="haslength_<%=root.getName()%>" style="display: none;" />
+          <span id="haslength_<%=root.getName()%>" style="display: none;"> </span>
           <%
           }
           }%>
