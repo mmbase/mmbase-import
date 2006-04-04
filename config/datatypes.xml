@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.32 2006-04-04 20:41:00 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.33 2006-04-04 21:50:13 michiel Exp $ -->
 
   <datatype id="xml">
     <description>
@@ -202,8 +202,10 @@
 
     <specialization id="checksum">
       <description>
-        The default 'checksum' datatype checksums the 'handle' field, but you can of course define your own (anonymously in the builder xml e.g.) for other fields.
-        The effect of this is that fields which a handle field which alreayd is present in the database, cannot be saved.
+        The default 'checksum' datatype checksums the 'handle' field, but you can of course define
+        your own (anonymously in the builder xml e.g.) for other fields. This is a read-only field
+        which is automaticly filled on commit of the node.  If you define this field as unique, then
+        the effect is that a handle field which already is present in the database, cannot be saved.
       </description>
       <commitprocessor>
         <class name="org.mmbase.datatypes.processors.ChecksumProcessorFactory">
