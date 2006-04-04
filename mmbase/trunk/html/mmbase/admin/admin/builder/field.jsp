@@ -228,7 +228,7 @@
 <form action="<mm:url page="actions.jsp" />" method="POST">
 <tr>
   <th class="header">Remove Field</th>
-  <th class="header">Check</th>
+  <th class="header">Are you sure?</th>
   <th class="navigate" colspan="2">Confirm</th>
 </tr>
 <tr>
