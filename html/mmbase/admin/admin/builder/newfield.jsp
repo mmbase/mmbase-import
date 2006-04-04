@@ -49,25 +49,40 @@
     <td class="data">Type</td>
     <td class="data">
     <% String property="mmbasetype"; %>
-<%@include file="properties/dbmmbasetype.jsp" %>
+    <%@include file="properties/dbmmbasetype.jsp" %>
     </td>
     <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
+<!--
 <tr>
     <td class="data">GUI Type</td>
     <td class="data">
     <% property="guitype"; %>
-<%@include file="properties/guitype.jsp" %>
+    <%@include file="properties/guitype.jsp" %>
     </td>
     <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
-
+-->
+<tr>
+  <td class="data">Data Type</td>
+    <td class="data">
+      <select name="datatype" >
+        <% java.util.Iterator i = org.mmbase.datatypes.DataTypes.getSystemCollector().getDataTypes().entrySet().iterator();
+          while (i.hasNext()) {
+          java.util.Map.Entry entry = (java.util.Map.Entry) i.next();
+          %>
+          <option value="<%=entry.getKey()%>"><%=entry.getKey()%></option>
+          <%}%>
+        </select>
+    </td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+</tr>
 <tr>
     <td class="data">State</td>
     <td class="data">
     <% property="dbstate"; %>
-<%@include file="properties/dbstate.jsp" %>
+    <%@include file="properties/dbstate.jsp" %>
     </td>
     <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
