@@ -86,6 +86,48 @@ public class CloudModelBuilder {
     }
 
 
+    public boolean setGuiName(String fieldname,String country,String value) {
+        Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
+        if (fe != null) {
+            Iterator fields = reader.getChildElements(fe,"field");
+            while (fields.hasNext()) {
+                Element field = (Element)fields.next();
+                Element namenode = reader.getElementByPath(field,"field.db.name");
+                if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
+                       // that we have found the correct field find
+                       // find the gui names
+                       Element guinode = reader.getElementByPath(field,"field.gui");
+                       if (guinode != null) {
+            	       Iterator  guinames= reader.getChildElements(guinode,"guiname");
+                       boolean found =  false;
+                       while (guinames.hasNext()) {
+                           Element guiname = (Element)guinames.next();
+			   String oldcountry = guiname.getAttribute("xml:lang");
+			   if (oldcountry!=null && oldcountry.equals(country)) {
+				guiname.getFirstChild().setNodeValue(value);
+                           	save();
+				found =  true;
+			   }
+                       }
+                       if (!found) {
+			   String newpart ="      <guiname xml:lang=\""+country+"\">"+value+"</guiname>\r";
+	                   mergePart(guinode,newpart);
+                           save();
+                       }
+                       } else {
+                           String newpart ="    <gui>\r";
+			   newpart +="      <guiname xml:lang=\""+country+"\">"+value+"</guiname>\r";
+                           newpart +="    </gui>\r";
+	                   mergePart(field,newpart);
+                           save();
+		       }        
+                }
+            }
+        }
+        return true;
+    }
+
+
     public boolean addField(int pos,String name,String type,String guitype,String state,String required,String unique,String size) {
          Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe!=null) {
@@ -104,15 +146,19 @@ public class CloudModelBuilder {
             newpart +="        <type key=\""+unique+"\" notnull=\""+required+"\" size=\""+size+"\" state=\""+state+"\">"+type+"</type>\r";
             newpart +="      </db>\r";
             newpart +="    </field>\r";
+	    mergePart(fe,newpart);
+        }
+        save();
+        return true;
+    }
+
+    private void mergePart(Element fe,String newpart) {
             try {
                 Element nf = (reader.getDocumentBuilder(false,null,null).parse(new InputSource(new StringReader(newpart)))).getDocumentElement();
                 fe.appendChild(document.importNode(nf,true));
             } catch(Exception e) {
                 log.error("Can't merge new xml code");
             }
-        }
-        save();
-        return true;
     }
 
     public boolean save() {
