@@ -2,6 +2,7 @@ package nl.didactor.metadata.util;
 
 import java.util.*;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
@@ -19,6 +20,9 @@ import nl.didactor.metadata.tree.MetadataTreeModel;
 public class MetaDataHelper {
 
    private static Logger log = Logging.getLoggerInstance(MetaDataHelper.class);
+
+   public static final String APPLICATION_USER_TO_METASTANDARTS_KEY = "metaedit_user_to_metastandarts_key";
+   public static final String APPLICATION_METASTANDARTS_TO_CONSTRAINTS_KEY = "metaedit_metastandarts_to_constraints_key";
 
    public static final int VOCABULARY_TYPE = 1;
    public static final int DATE_TYPE = 2;
@@ -69,13 +73,9 @@ public class MetaDataHelper {
     * @param cloud Cloud
     * @return HashMap
     */
-   public static HashMap getConstraints(Node nodeObject, Node nodeUser) throws Exception{
-       log.debug("getConstraints() for user(" + nodeUser.getNumber() + ")");
+   public static HashMap getConstraints(Cloud cloud, String sActiveMetaStandarts) throws Exception{
 
-       Cloud cloud = nodeObject.getCloud();
        HashMap hashmapResult = new HashMap();
-
-       String sActiveMetaStandarts = getActiveMetastandards(cloud, null, "" + nodeUser.getNumber());
 
 
        //Fields from MetaDefinition node
@@ -92,26 +92,30 @@ public class MetaDataHelper {
            switch (node.getIntValue("type")){
                case DATE_TYPE:
                case DURATION_TYPE:{
-                   Constraint constraint = new Constraint(Constraint.FORBIDDEN, Constraint.EVENT_METADEFINITION_ITSELF);
+                   Constraint constraint = new Constraint(Constraint.MANDATORY, Constraint.EVENT_METADEFINITION_ITSELF);
                    hashmapResult.put(node, constraint);
+                   log.debug("Constraints: Metadefinition(" + node.getNumber() + ") is mandatory by its fields");
                    break;
                }
 
                case VOCABULARY_TYPE:
                case LANGSTRING_TYPE:{
-                   if(node.getIntValue("minvalues") > 0){
-                       Constraint constraint = new Constraint(Constraint.MANDATORY, Constraint.EVENT_METADEFINITION_ITSELF);
+                   if((node.getIntValue("minvalues") == 0) && (node.getIntValue("maxvalues") == 0)){
+                       Constraint constraint = new Constraint(Constraint.FORBIDDEN, Constraint.EVENT_METADEFINITION_ITSELF);
                        hashmapResult.put(node, constraint);
+                       log.debug("Constraints: Metadefinition(" + node.getNumber() + ") is forbidden by its fields");
                    }
-                   if((node.getIntValue("minvalues") >= 0) && (node.getIntValue("maxvalues") >= 0)){
+                   else if((node.getIntValue("minvalues") > 0) && (node.getIntValue("maxvalues") > 0)){
                        Constraint constraint = new Constraint(Constraint.LIMITED, Constraint.EVENT_METADEFINITION_ITSELF);
                        constraint.setMax(node.getIntValue("maxvalues"));
                        constraint.setMin(node.getIntValue("minvalues"));
                        hashmapResult.put(node, constraint);
+                       log.debug("Constraints: Metadefinition(" + node.getNumber() + ") is limited by its fields");
                    }
-                   if((node.getIntValue("minvalues") == 0) && (node.getIntValue("maxvalues") == 0)){
-                       Constraint constraint = new Constraint(Constraint.FORBIDDEN, Constraint.EVENT_METADEFINITION_ITSELF);
+                   else if(node.getIntValue("minvalues") > 0){
+                       Constraint constraint = new Constraint(Constraint.MANDATORY, Constraint.EVENT_METADEFINITION_ITSELF);
                        hashmapResult.put(node, constraint);
+                       log.debug("Constraints: Metadefinition(" + node.getNumber() + ") is mandatory by its fields");
                    }
                    break;
                }
@@ -129,13 +133,19 @@ public class MetaDataHelper {
        for (int n = 0; n < nl.size(); n++) {
            Node nodeMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition.number"));
            Node nodeConstraintRelation = cloud.getNode(nl.getNode(n).getStringValue("constraints.number"));
+           int iConstraintType = nodeConstraintRelation.getIntValue("type");
 
-           Constraint constraint = new Constraint(nodeConstraintRelation.getIntValue("type"), Constraint.EVENT_METASTANDART_CONSTRAINT_RELATION);
-           constraint.setMax(nodeConstraintRelation.getIntValue("maxvalues"));
-           constraint.setMin(nodeConstraintRelation.getIntValue("minvalues"));
-           constraint.setPosition(nodeConstraintRelation.getIntValue("pos"));
+           if(iConstraintType != Constraint.NOT_USED){
+               //NOT_USED means that metastandart-constraint-metadefinition constraint is turned off
+               Constraint constraint = new Constraint(iConstraintType, Constraint.EVENT_METASTANDART_CONSTRAINT_RELATION);
+               constraint.setMax(nodeConstraintRelation.getIntValue("maxvalues"));
+               constraint.setMin(nodeConstraintRelation.getIntValue("minvalues"));
+               constraint.setPosition(nodeConstraintRelation.getIntValue("pos"));
 
-           hashmapResult.put(nodeMetaDefinition, constraint);
+               log.debug("Metadefinition(" + nodeMetaDefinition.getNumber() + ") is controlled by MetaStandart-Constraint relation(" + nodeConstraintRelation.getNumber() + ")");
+
+               hashmapResult.put(nodeMetaDefinition, constraint);
+           }
        }
 
 
@@ -147,9 +157,8 @@ public class MetaDataHelper {
                           null, null, null, true);
 
        for (int n = 0; n < nl.size(); n++) {
-
            Node nodeControllerVocabulary = cloud.getNode(nl.getNode(n).getStringValue("metavocabulary.number"));
-           NodeList nl2 = cloud.getList("" + nodeObject.getNumber(),
+           NodeList nl2 = cloud.getList(null,
                              "object,metadata,metavocabulary",
                              "metavocabulary.number",
                              "metavocabulary.number=" + nodeControllerVocabulary.getNumber(),
@@ -160,6 +169,8 @@ public class MetaDataHelper {
                Node nodeMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition1.number"));
                Node nodeConstraintRelation = cloud.getNode(nl.getNode(n).getStringValue("constraints.number"));
                Node nodeControllerMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition2.number"));
+
+               log.debug("Metadefinition(" + nodeMetaDefinition.getNumber() + ") is controlled by MetaVocabulary(" + nodeControllerVocabulary.getNumber() + ")");
 
                Constraint constraint = new Constraint(nodeConstraintRelation.getIntValue("type"), Constraint.EVENT_VOCABULARY_CONSTRAINT_RELATION);
                constraint.setMax(nodeConstraintRelation.getIntValue("maxvalues"));
@@ -186,14 +197,14 @@ public class MetaDataHelper {
        for (int n = 0; n < nl.size(); n++) {
            Node nodeControllerMetaVocabulary = cloud.getNode(nl.getNode(n).getStringValue("metavocabulary1.number"));
 
-           NodeList nl2 = cloud.getList("" + nodeObject.getNumber(),
+           NodeList nl2 = cloud.getList(null,
                                         "object,metadata,metavocabulary",
                                         "metavocabulary.number",
                                         "metavocabulary.number=" + nodeControllerMetaVocabulary.getNumber(),
                                         null, null, null, true);
 
-           log.debug("found " + nl2.size() + " metadata object that relate this object with metavocabulary  " 
-               + nodeControllerMetaVocabulary.getStringValue("value"));
+//           log.debug("found " + nl2.size() + " metadata object that relate this object with metavocabulary  "
+//               + nodeControllerMetaVocabulary.getStringValue("value"));
            if(nl2.size() > 0){
                Node nodeControllerMetaDefinition = cloud.getNode(nl.getNode(n).getStringValue("metadefinition.number"));
                Node nodeConstraintRelation = cloud.getNode(nl.getNode(n).getStringValue("constraints.number"));
@@ -206,12 +217,17 @@ public class MetaDataHelper {
                catch(Exception e){
                    throw new Exception("Metavocabulary node(" + nodeMetaVocabulary.getNumber() + ") has got NO METADEFINITION");
                }
+/*
                log.debug("Found metavocabulary-constraint-metavocabulary");
                log.debug("metadefinition=" + nodeMetaDefinition.getNumber());
                log.debug("metavocabulary=" + nodeMetaVocabulary.getNumber());
                log.debug("constraints=" + nodeConstraintRelation.getNumber());
                log.debug("metavocabulary_cont=" + nodeControllerMetaVocabulary.getNumber());
                log.debug("metadefinition_cont=" + nodeControllerMetaDefinition.getNumber());
+*/
+
+               log.debug("MetaVocabulary(" + nodeMetaVocabulary.getNumber() + ") is controlled by MetaVocabulary(" + nodeControllerMetaVocabulary.getNumber() + ")");
+
 
                Constraint constraint = new Constraint(nodeConstraintRelation.getIntValue("type"), Constraint.EVENT_VOCABULARY_TO_VOCABULARY_RELATION);
                if(hashmapResult.containsKey(nodeMetaDefinition)){
@@ -288,8 +304,15 @@ public class MetaDataHelper {
     * @return Error
     */
    public static ArrayList hasTheObjectValidMetadata(Node nodeObject, ServletContext application, Node nodeUser) throws Exception{
-       log.debug("hasTheObjectValidMetadata() for user(" + nodeUser.getNumber() + ")");
-       HashMap hashmapConstraints = getApplicationConstraints(application, nodeObject, nodeUser);
+       log.debug("---");
+       log.debug("hasTheObjectValidMetadata(" + nodeObject.getNumber() + ") for user(" + nodeUser.getNumber() + ")");
+
+
+
+
+       HashMap hashmapConstraints = getCachedConstraints(nodeUser, application);
+
+
        ArrayList arliResult = new ArrayList();
 
        for(Iterator it = hashmapConstraints.keySet().iterator(); it.hasNext(); ){
@@ -311,7 +334,7 @@ public class MetaDataHelper {
    public static ArrayList hasTheMetaDefinitionValidMetadata(Node nodeMetaDefinition, Node nodeObject, ServletContext application, Node nodeUser) throws Exception{
        log.debug("---");
        log.debug("hasTheMetaDefinitionValidMetadata(" + nodeMetaDefinition.getNumber() + ") for user(" + nodeUser.getNumber() + ")");
-       HashMap hashmapConstraints = getApplicationConstraints(application, nodeObject, nodeUser);
+       HashMap hashmapConstraints = getCachedConstraints(nodeUser, application);
        return hasTheObjectValidMetadata(nodeMetaDefinition, nodeObject, hashmapConstraints);
    }
 
@@ -330,31 +353,50 @@ public class MetaDataHelper {
 
 
 
-
-
-
    /**
-    * Check the metadata constrints in session
-    * If there is a timeout or session is null
-    * it calculates thm again(a heavy task)
+    * We keep all constraints in application
+    * Therefore any user can invalidate the structure
+    *
+    * We store constraints by key "activemetastandarts"
+    * The reason: 10 people in a workgroup have got the same active metastandarts
+    * and we have to store only one "constraint array" for them
     *
     * @param session HttpSession
     * @return HashMap
     */
-   public static HashMap getApplicationConstraints(ServletContext application, Node nodeObject, Node nodeUser) throws Exception{
-       log.debug("getApplicationConstraints() for user(" + nodeUser.getNumber() + ")");
-
-       String sKey = "metaedit_constraints:" + nodeObject.getNumber();
+   public static HashMap getCachedConstraints(Node nodeUser, ServletContext application) throws Exception{
        HashMap hashmapConstraints;
+       Cloud cloud = nodeUser.getCloud();
 
-       if(application.getAttribute(sKey) != null){
-          hashmapConstraints = (HashMap) application.getAttribute(sKey);
+       String sActiveMetaStandartsForThisUser = getCachedActiveMetastandards(nodeUser.getCloud(), application, null, nodeUser);
+
+
+       if(application.getAttribute(APPLICATION_METASTANDARTS_TO_CONSTRAINTS_KEY) != null){
+
+           HashMap hmapMetaStandartstoConstraints = (HashMap) application.getAttribute(APPLICATION_METASTANDARTS_TO_CONSTRAINTS_KEY);
+
+           if(hmapMetaStandartstoConstraints.get(sActiveMetaStandartsForThisUser) != null){
+               //this user has got already calculated constraints
+               hashmapConstraints = (HashMap) hmapMetaStandartstoConstraints.get(sActiveMetaStandartsForThisUser);
+           }
+           else{
+               //New user, let's calculate
+               hashmapConstraints = MetaDataHelper.getConstraints(cloud, sActiveMetaStandartsForThisUser);
+               hmapMetaStandartstoConstraints.put(sActiveMetaStandartsForThisUser, hashmapConstraints);
+           }
+
+
        }
        else{
-          hashmapConstraints = MetaDataHelper.getConstraints(nodeObject, nodeUser);
-          application.setAttribute(sKey, hashmapConstraints);
-       }
 
+          HashMap hmapMetaStandartstoConstraints = new HashMap();
+          hashmapConstraints = MetaDataHelper.getConstraints(cloud, sActiveMetaStandartsForThisUser);
+
+          //We have assigned these constraints to this uniqe metastandart number
+          hmapMetaStandartstoConstraints.put(sActiveMetaStandartsForThisUser, hashmapConstraints);
+
+          application.setAttribute(APPLICATION_METASTANDARTS_TO_CONSTRAINTS_KEY, hmapMetaStandartstoConstraints);
+       }
        return hashmapConstraints;
    }
 
@@ -571,34 +613,105 @@ public class MetaDataHelper {
    }
 
 
-/*
-   public static NodeList getActiveMetastandardsNodeList(Cloud cloud, String sNode, String sUserID){
-      MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
-      Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
 
-      NodeList nlTopLevelMetaStandarts = cloud.getList("" + nodeRootMetaStandart.getNumber(),
-         "metastandard1,metastandard2",
-         "metastandard2.number",
-         "metastandard2.isused='1'",
-         null,null,null,false);
 
-      HashSet hsetResult = new HashSet();
+   /**
+    * Caches active metastandarts in apllication
+    * @param cloud Cloud
+    * @param application ServletContext
+    * @param unusedNode Node
+    * @param nodeUser Node
+    * @return String
+    */
 
-      for(int f = 0; f < nlTopLevelMetaStandarts.size(); f++){
-         Node nodeMetaStandart = cloud.getNode(nlTopLevelMetaStandarts.getNode(f).getStringValue("metastandard2.number"));
+   public static String getCachedActiveMetastandards(Cloud cloud, ServletContext application, Node unusedNode, Node nodeUser){
+       String sActiveMetaStandartsForThisUser;
 
-         GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(nodeMetaStandart), 30, nodeMetaStandart.getNodeManager(), "posrel", "destination");
-         TreeIterator it = tree.treeIterator();
 
-         while (it.hasNext()) {
-             Node nodeChildMetaStandart = it.nextNode();
-             hsetResult.add(nodeChildMetaStandart);
-         }
-      }
+       if(application.getAttribute(APPLICATION_USER_TO_METASTANDARTS_KEY) != null){
 
-      return (NodeList) hsetResult;
+           HashMap hmapUserToMetaStandarts = (HashMap) application.getAttribute(APPLICATION_USER_TO_METASTANDARTS_KEY);
+
+           if(hmapUserToMetaStandarts.get(nodeUser) != null){
+               //this user has got already calculated active metastandarts
+               sActiveMetaStandartsForThisUser = (String) hmapUserToMetaStandarts.get(nodeUser);
+           }
+           else{
+               //New user, let's register
+               sActiveMetaStandartsForThisUser = getActiveMetastandards(cloud, null, "" + nodeUser.getNumber());
+               hmapUserToMetaStandarts.put(nodeUser, sActiveMetaStandartsForThisUser);
+           }
+       }
+       else{
+           HashMap hmapUserToMetaStandarts = new HashMap();
+           sActiveMetaStandartsForThisUser = getActiveMetastandards(cloud, null, "" + nodeUser.getNumber());
+
+           //We have assigned these MetaStandarts to User
+           hmapUserToMetaStandarts.put(nodeUser, sActiveMetaStandartsForThisUser);
+           application.setAttribute(APPLICATION_USER_TO_METASTANDARTS_KEY, hmapUserToMetaStandarts);
+       }
+
+       return sActiveMetaStandartsForThisUser;
    }
-*/
+
+
+
+
+   /**
+    * Checks exlude /include relations
+    * @param nodeMetaDefinition Node
+    * @return boolean
+    */
+   public static boolean isTheMetaVocabularyActive(Node nodeMetaVocabulary, String sActiveMetaStandarts){
+       Cloud cloud = nodeMetaVocabulary.getCloud();
+
+       //----------------------- Include -------------------------
+       if(nodeMetaVocabulary.countRelations("include") > 0){
+           NodeList nlIncludes = cloud.getList(sActiveMetaStandarts,
+               "metastandard,include,metavocabulary",
+               "include.number",
+               null,
+               null, null, null, false);
+
+           if(nlIncludes.size() > 0){
+               Node nodeInclude = cloud.getNode(nlIncludes.getNode(0).getStringValue("include.number"));
+               log.debug("MetaVocabulary(" + nodeMetaVocabulary.getNumber() + ") has got \"include\" relations. At least one of them(" + nodeInclude.getNumber() + ") is connected to active MetaStandards.");
+           }
+           else{
+               log.debug("MetaVocabulary(" + nodeMetaVocabulary.getNumber() + ") has got \"include\" relations but nan of them is connected to active metastandards. The MetaVocabulary will be disabled.");
+               return false;
+           }
+       }
+       else{
+           log.debug("MetaVocabulary(" + nodeMetaVocabulary.getNumber() + ") has got no \"include\" relations.");
+       }
+
+       //----------------------- Exclude -------------------------
+       if(nodeMetaVocabulary.countRelations("exclude") > 0){
+           NodeList nlExcludes = cloud.getList(sActiveMetaStandarts,
+               "metastandard,exclude,metavocabulary",
+               "exclude.number",
+               null,
+               null, null, null, false);
+
+           if(nlExcludes.size() > 0){
+               Node nodeInclude = cloud.getNode(nlExcludes.getNode(0).getStringValue("exclude.number"));
+               log.debug("MetaVocabulary(" + nodeMetaVocabulary.getNumber() + ") has got \"exclude\" relations. At least one of them(" + nodeInclude.getNumber() + ") is connected to active MetaStandards. The MetaVocabulary will be disabled.");
+               return false;
+           }
+           else{
+               log.debug("MetaVocabulary(" + nodeMetaVocabulary.getNumber() + ") has got \"exclude\" relations but nan of them is connected to active metastandards.");
+           }
+       }
+       else{
+           log.debug("MetaVocabulary(" + nodeMetaVocabulary.getNumber() + ") has got no \"exclude\" relations.");
+       }
+
+
+       return true;
+   }
+
+
 
 
    /**
@@ -606,7 +719,7 @@ public class MetaDataHelper {
     * @param nodeObject Node
     */
    public static void fillAutoValues(Node nodeObject, ServletContext servletContext, Node nodeUser){
-       log.debug("--------------fillAutoValues() for user(" + nodeUser.getNumber() + ")--------------");
+       log.debug("--------------fillAutoValues() for user(" + nodeUser.getNumber() + ") for object(" + nodeObject.getNumber() + "--------------");
        // <mm:field name="age()" />
 
        NodeList nlMetaDefinitions = nodeObject.getCloud().getList(getActiveMetastandards(nodeObject.getCloud(), null, "" + nodeUser.getNumber()),
