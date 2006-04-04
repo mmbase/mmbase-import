@@ -14,12 +14,15 @@
 </head>
 <body class="basic" >
 <table summary="builder actions">
+  <mm:log jspvar="log">
+
 <%
-   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+
+   Module mmAdmin = ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
    String cmd = request.getParameter("cmd");
    String msg="";
-   if (cmd!=null) {
+   if (cmd != null) {
     try {
         Map params=new Hashtable();
         params.put("BUILDER",builder);
@@ -38,9 +41,16 @@
             params.put("dbsize",request.getParameter("dbsize"));
         }
         mmAdmin.process(cmd,builder,params,request,response);
-//        msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
+        msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
     } catch (Exception e ) {
-        msg="<p> Error: "+e.getMessage()+"</p>";
+       Throwable ec = e;
+       String message = ec.getMessage();
+       while (message == null && ec.getCause() != null) {
+        ec = ec.getCause();
+        message = ec.getMessage();
+       }
+        msg="<p> Error: "+ message + "</p>";
+        log.error(message, ec);
     }
    }
 %>
@@ -124,6 +134,7 @@
 <td class="navigate"><a href="../builders.jsp"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="4">Return to Builder Overview</td>
 </tr>
+</mm:log>
 </table>
 </body></html>
 </mm:cloud>
