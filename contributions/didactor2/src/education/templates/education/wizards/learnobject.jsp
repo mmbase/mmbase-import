@@ -1,15 +1,21 @@
 <%@ page import = "java.util.HashSet" %>
+<%@ page import = "org.mmbase.bridge.*" %>
+
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+
+
 <mm:content postprocessor="reducespace">
 <mm:import externid="wizardjsp" required="true" jspvar="wizardjsp" />
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
 
 <%
+ Node nodeUser = nl.didactor.security.Authentication.getCurrentUserNode(cloud);
  String imageName = "";
  String sAltText = "";
  String startnode = request.getParameterValues("startnode")[0];
+
 
  int [] offset = new int[10];
  for(int d=0; d<offset.length; d++) offset[d]= 0;
