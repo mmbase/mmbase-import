@@ -12,8 +12,12 @@
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
 <%
+   Node nodeUser = nl.didactor.security.Authentication.getCurrentUserNode(cloud);
+
    String sVocabularyID = (String) request.getParameter("vocabulary");
    String sMetaDefinitionID = (String) request.getParameter("metadefinition");
+   String sMetastandartNodes = (String) request.getParameter("metastandarts");
+
    NodeList nlRelatedNodes = (NodeList) session.getAttribute("metaeditor_multilevel_metavocabulary_all_metadata");
 
    Node nodeTemporalRootMetaVocabulary = cloud.getNode(sVocabularyID);
@@ -133,82 +137,87 @@
          %>
             <div id="checkbox_layer_<%= sCheckBoxUniqueID %>" style="display:<%= sElemVisibility %>;">
                <mm:node number="<%= "" + nodeMetaVocabulary.getNumber() %>">
-                  <mm:field name="number" jspvar="sID" vartype="String" write="false">
-                     <span style="padding-left:<%= (depth - 1) * 30 %>px;">&nbsp;</span>
-                     <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>" checkbox_id="<%= sCheckBoxUniqueID %>" onClick="switchMetaVocabularyTree(this)"
-                        <%
-                           if(iBlockedLevel < depth){
-                              %> disabled="disabled" <%
-                           }
-
-                           if(iBlockedLevel > depth){
-                              iBlockedLevel = depth;
-                           }
-                        %>
-
-                        <mm:relatednodes type="metadata" jspvar="mNode">
-                           <%
-                              if(nlRelatedNodes.contains(mNode))
-                              {
-                                 %> checked="checked" <%
-                                  if(iBlockedLevel >= depth){
-                                     iBlockedLevel = depth + 1;
-                                  }
-                              }
-                           %>
-                        </mm:relatednodes>
-
-                     />
-                     <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
-                        <mm:node number="$user" jspvar="nodeUser">
-                           <span onClick="switchMetaVocabularyTreeVisibility('<%= sCheckBoxUniqueID %>')">
-                              <%= MetaDataHelper.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
-                           </span>
-                        </mm:node>
-                     </mm:field>
-                  </mm:field>
                   <%
+                     if(MetaDataHelper.isTheMetaVocabularyActive(nodeMetaVocabulary, sMetastandartNodes)){
+                        %>
+                           <mm:field name="number" jspvar="sID" vartype="String" write="false">
+                              <span style="padding-left:<%= (depth - 1) * 30 %>px;">&nbsp;</span>
+                              <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>" checkbox_id="<%= sCheckBoxUniqueID %>" onClick="switchMetaVocabularyTree(this)"
+                                 <%
+                                    if(iBlockedLevel < depth){
+                                       %> disabled="disabled" <%
+                                    }
 
-                     String sSubMetaVocabulariesControllerImage = null;
-                     String sState = null;
+                                    if(iBlockedLevel > depth){
+                                       iBlockedLevel = depth;
+                                    }
+                                 %>
 
-                     if(iPreviousDepth < it.currentDepth()){
-                        //We don't know it is the last leaf for this branch or not
-                        //So we have to check
-                        boolean bIsItTheLastLevel = true;
+                                 <mm:relatednodes type="metadata" jspvar="mNode">
+                                    <%
+                                       if(nlRelatedNodes.contains(mNode))
+                                       {
+                                          %> checked="checked" <%
+                                           if(iBlockedLevel >= depth){
+                                              iBlockedLevel = depth + 1;
+                                           }
+                                       }
+                                    %>
+                                 </mm:relatednodes>
 
-                        TreeIterator it2 = tree.treeIterator();
-                        int iLocalCounter = 0;
-                        while(iLocalCounter <= iCounter + 1 ){
-                            it2.next();
-                            iLocalCounter++;
-                        }
+                              />
+                              <mm:field name="number" jspvar="sMetavocabularyID" vartype="String">
+                                 <span onClick="switchMetaVocabularyTreeVisibility('<%= sCheckBoxUniqueID %>')">
+                                    <%= MetaDataHelper.getAliasForObject(cloud, sMetavocabularyID, nodeUser.getNumber()) %>
+                                 </span>
+                              </mm:field>
+                           </mm:field>
 
-                        while((it.hasNext())  && (depth == it.currentDepth())){
-                            it.next();
-                        }
+                        <%
+                        String sSubMetaVocabulariesControllerImage = null;
+                        String sState = null;
 
-                        //we have right the node which has got different deep
-                        if(depth < it.currentDepth()){
-                           //This node is deepper, so it wasn't the last level
-                           bIsItTheLastLevel = false;
-                        }
+                        if(iPreviousDepth < it.currentDepth()){
+                           //We don't know it is the last leaf for this branch or not
+                           //So we have to check
+                           boolean bIsItTheLastLevel = true;
 
-                        //Rol the pointer back
-                        it = it2;
-
-
-                        if(!bIsItTheLastLevel){
-                           if(iBlockedLevel - 1 < depth){
-                              sSubMetaVocabulariesControllerImage = "gfx/show.gif";
-                              sState = "closed";
+                           TreeIterator it2 = tree.treeIterator();
+                           int iLocalCounter = 0;
+                           while(iLocalCounter <= iCounter + 1 ){
+                               it2.next();
+                               iLocalCounter++;
                            }
-                           else{
-                              sSubMetaVocabulariesControllerImage = "gfx/hide.gif";
-                              sState = "opened";
+
+                           while((it.hasNext())  && (depth == it.currentDepth())){
+                               it.next();
                            }
-                           %><img id="img_layer_controller_<%= sCheckBoxUniqueID %>" onClick="switchMetaVocabularyTreeVisibility('<%= sCheckBoxUniqueID %>')" src="<%= sSubMetaVocabulariesControllerImage %>"/><%
+
+                           //we have right the node which has got different deep
+                           if(depth < it.currentDepth()){
+                              //This node is deepper, so it wasn't the last level
+                              bIsItTheLastLevel = false;
+                           }
+
+                           //Rol the pointer back
+                           it = it2;
+
+
+                           if(!bIsItTheLastLevel){
+                              if(iBlockedLevel - 1 < depth){
+                                 sSubMetaVocabulariesControllerImage = "gfx/show.gif";
+                                 sState = "closed";
+                              }
+                              else{
+                                 sSubMetaVocabulariesControllerImage = "gfx/hide.gif";
+                                 sState = "opened";
+                              }
+                              %><img id="img_layer_controller_<%= sCheckBoxUniqueID %>" onClick="switchMetaVocabularyTreeVisibility('<%= sCheckBoxUniqueID %>')" src="<%= sSubMetaVocabulariesControllerImage %>"/><%
+                           }
                         }
+                     }
+                     else{
+                         iBlockedLevel = it.currentDepth();
                      }
                   %>
                </mm:node>

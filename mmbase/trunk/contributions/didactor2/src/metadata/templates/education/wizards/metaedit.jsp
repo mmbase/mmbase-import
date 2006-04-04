@@ -45,13 +45,14 @@
          //Submit has been pressed
 
          //Remove cached constraints
-         application.removeAttribute("metaedit_constraints:" + sNode);
+         application.removeAttribute(MetaDataHelper.APPLICATION_METASTANDARTS_TO_CONSTRAINTS_KEY);
 
          //------------------------------- Save form -------------------------------
          %>
             <mm:cloud method="delegate" jspvar="cloud">
                <%@include file="/shared/setImports.jsp" %>
                <%
+                  Node nodeUser = nl.didactor.security.Authentication.getCurrentUserNode(cloud);
 
                   //All parameters from the form
                   Enumeration enumParamNames = request.getParameterNames();
@@ -142,7 +143,7 @@
                   //------------------------------- Check form -------------------------------
 
                   //List of metadefinitions that must be checked
-                  HashMap hashmapConstraints = MetaDataHelper.getApplicationConstraints(application, cloud.getNode(sNode), nl.didactor.security.Authentication.getCurrentUserNode(cloud));
+                  HashMap hashmapConstraints = MetaDataHelper.getCachedConstraints(nodeUser, application);
 
 
 
