@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.138 2006-04-03 19:46:00 daniel Exp $
+ * @version $Id: MMAdmin.java,v 1.139 2006-04-04 12:13:30 daniel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1056,7 +1056,7 @@ public class MMAdmin extends ProcessorModule {
         if (def != null) {
             def.setGUIName(value, new Locale(country, ""));
         }
-        syncBuilderXML(bul, builder);
+        // need to be rerouted syncBuilderXML(bul, builder);
     }
 
     /**
@@ -1078,7 +1078,7 @@ public class MMAdmin extends ProcessorModule {
         if (def != null) {
             def.setDescription(value, new Locale(country, ""));
         }
-        syncBuilderXML(bul, builder);
+        // need to be rerouted syncBuilderXML(bul, builder);
     }
 
     /**
@@ -1106,7 +1106,7 @@ public class MMAdmin extends ProcessorModule {
             def.setDataType(dataType);
             def.finish();
         }
-        syncBuilderXML(bul, builder);
+        // need to be rerouted syncBuilderXML(bul, builder);
     }
 
     /**
@@ -1129,7 +1129,7 @@ public class MMAdmin extends ProcessorModule {
                 def.setEditPosition(i);
             } catch (Exception e) {}
         }
-        syncBuilderXML(bul, builder);
+        // need to be rerouted syncBuilderXML(bul, builder);
     }
 
     /**
@@ -1152,7 +1152,7 @@ public class MMAdmin extends ProcessorModule {
                 def.setListPosition(i);
             } catch (Exception e) {}
         }
-        syncBuilderXML(bul, builder);
+        // need to be rerouted syncBuilderXML(bul, builder);
     }
 
     /**
@@ -1175,7 +1175,7 @@ public class MMAdmin extends ProcessorModule {
                 def.setSearchPosition(i);
             } catch (Exception e) {}
         }
-        syncBuilderXML(bul, builder);
+        // need to be rerouted syncBuilderXML(bul, builder);
     }
 
     /**
@@ -1202,7 +1202,7 @@ public class MMAdmin extends ProcessorModule {
                         def.setMaxLength(newSize);
                         // make change in storage
                         mmb.getStorageManager().change(def);
-                        syncBuilderXML(bul, builder);
+                        // need to be rerouted syncBuilderXML(bul, builder);
                     } catch (StorageException se) {
                         def.setMaxLength(oldSize);
                         throw se;
@@ -1239,7 +1239,7 @@ public class MMAdmin extends ProcessorModule {
                 try {
                     // make change in storage
                     mmb.getStorageManager().change(def);
-                    syncBuilderXML(bul, builder);
+                    // need to be rerouted syncBuilderXML(bul, builder);
                 } catch (StorageException se) {
                     def.setType(oldType);
                     throw se;
@@ -1278,7 +1278,7 @@ public class MMAdmin extends ProcessorModule {
                         mmb.getStorageManager().create(def);
                         // only then add to builder
                         bul.addField(def);
-                        syncBuilderXML(bul, builder);
+                        // need to be rerouted syncBuilderXML(bul, builder);
                     }
                 } catch (StorageException se) {
                     def.setState(oldState);
@@ -1314,7 +1314,7 @@ public class MMAdmin extends ProcessorModule {
             def.finish();
         }
         // TODO: when changing key, should call CHANGE
-        syncBuilderXML(bul, builder);
+        // need to be rerouted syncBuilderXML(bul, builder);
     }
 
     /**
@@ -1340,7 +1340,7 @@ public class MMAdmin extends ProcessorModule {
                 try {
                     // make change in storage
                     mmb.getStorageManager().change(def);
-                    syncBuilderXML(bul, builder);
+                    // need to be rerouted syncBuilderXML(bul, builder);
                 } catch (StorageException se) {
                     def.getDataType().setRequired(oldNotNull);
                     throw se;
@@ -1375,12 +1375,14 @@ public class MMAdmin extends ProcessorModule {
             int state = Fields.getState((String)vars.get("dbstate"));
 
             log.service("Adding field " + fieldName);
+            log.info("A1=");
             DataType dataType;
             if (type ==  Field.TYPE_LIST) {
                 dataType = DataTypes.getListDataTypeInstance(guiType, itemListType);
             } else {
                 dataType = DataTypes.getDataTypeInstance(guiType, type);
             }
+            log.info("A2="+guiType+" "+dataType);
 
             CoreField def = Fields.createField(fieldName, type, itemListType, state, dataType);
             def.setListPosition(pos);
@@ -1395,6 +1397,8 @@ public class MMAdmin extends ProcessorModule {
             value = (String)vars.get("dbkey");
             def.setUnique(value.equals("true"));
 
+            log.info("A3=");
+
             value = (String)vars.get("dbsize");
             try {
                 int i = Integer.parseInt(value);
@@ -1402,12 +1406,14 @@ public class MMAdmin extends ProcessorModule {
             } catch (Exception e) {
                 log.debug("dbsize had invalid value, not setting size");
             }
+            log.info("A4=");
 
             // make change in storage
             mmb.getStorageManager().create(def);
             // only then add to builder
             bul.addField(def);
             //syncBuilderXML(bul, builder);
+            log.info("A5=");
 	    CloudModel cm = ModelsManager.getModel("default");
 	    if (cm != null) {
 		CloudModelBuilder cmb = cm.getModelBuilder(builder);
