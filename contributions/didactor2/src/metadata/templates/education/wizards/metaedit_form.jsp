@@ -118,9 +118,10 @@
 
 
         <%
+           Node nodeUser = nl.didactor.security.Authentication.getCurrentUserNode(cloud);
            NodeList nlLangCodes = MetaDataHelper.getLangCodes(cloud);              // *** Get languages list
            NodeList nlRelatedNodes = MetaDataHelper.getRelatedMetaData(cloud,sNode); // *** Get all related metadata to this node
-           MetaDataHelper.fillAutoValues(cloud.getNode(sNode), getServletContext(), nl.didactor.security.Authentication.getCurrentUserNode(cloud));
+           MetaDataHelper.fillAutoValues(cloud.getNode(sNode), getServletContext(), nodeUser);
         %>
         <form name="meta_form">
 
@@ -148,10 +149,8 @@
                     if(request.getParameter("set_defaults") != null) {
                         sMetastandartNodes = sNode;
                     } else {
-                        sMetastandartNodes = MetaDataHelper.getActiveMetastandards(cloud, null, "" + (nl.didactor.security.Authentication.getCurrentUserNode(cloud)).getNumber());
+                        sMetastandartNodes = MetaDataHelper.getCachedActiveMetastandards(cloud, application, null, nodeUser);
                     }
-
-                    //System.out.println("result=" + MetaDataHelper.getActiveMetastandards(cloud, null, null));
 
                 %>
                 <mm:list nodes="<%= sMetastandartNodes %>" path="metastandard" orderby="metastandard.name">
@@ -196,7 +195,7 @@
 
                           <mm:field name="description"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
                           <%
-                              ArrayList arliErrors = MetaDataHelper.hasTheMetaDefinitionValidMetadata(thisMetadefinition, cloud.getNode(sNode), application, nl.didactor.security.Authentication.getCurrentUserNode(cloud));
+                              ArrayList arliErrors = MetaDataHelper.hasTheMetaDefinitionValidMetadata(thisMetadefinition, cloud.getNode(sNode), application, nodeUser);
                               for(Iterator it = arliErrors.iterator(); it.hasNext();){
                                 %>
                                   <br/>
