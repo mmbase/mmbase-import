@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
+<%@page import="org.mmbase.bridge.*,java.util.*,java.io.*,org.mmbase.util.*,java.net.*,org.mmbase.datatypes.*" %>
 <%@include file="../../settings.jsp" %>
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <% String builder = request.getParameter("builder"); %>
@@ -11,7 +11,35 @@
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
-<body class="basic" >
+<script type="text/javascript">
+  function getDataTypes() { 
+    var datatypes = document.getElementsByTagName("select");
+    for (var i = 0; i < datatypes.length; i++) {
+    if (datatypes[i].className == "datatype") {
+      datatypes[i].name = "datatype_off";
+      datatypes[i].style.display = "none";
+      }
+    }
+    var descriptions = document.getElementsByTagName("span");
+    for (var i = 0; i < descriptions.length; i++) {
+    if (descriptions[i].className == "description") {
+      descriptions[i].style.display = "none";
+      }
+    }
+    var selectedDataTypeId = document.getElementById("mmbasetype").value;
+    document.getElementById("description_" + selectedDataTypeId).style.display = "block";
+    var selectedDataType = document.getElementById("datatype_" + selectedDataTypeId);
+    selectedDataType.name = "datatype";
+    selectedDataType.style.display = "block";
+    selectedSpec = selectedDataType.value;
+    if (selectedSpec != "") {
+      document.getElementById("description_" + selectedSpec).style.display = "block";
+    }
+
+
+}
+</script>
+<body class="basic" onLoad="getDataTypes()">
 
 <% String value=null;
    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
@@ -48,12 +76,29 @@
 <tr>
     <td class="data">Type</td>
     <td class="data">
-    <% String property="mmbasetype"; %>
-    <%@include file="properties/dbmmbasetype.jsp" %>
+      <select name="mmbasetype" id="mmbasetype" onChange="getDataTypes()">
+        <%
+        Iterator i = org.mmbase.datatypes.DataTypes.getSystemCollector().getRoots().iterator();
+        while (i.hasNext()) {
+          DataType root = (DataType) i.next();
+          %>
+          <option value="<%=root.getName()%>"><%=root.getLocalizedGUIName().get(Locale.US)%></option>
+          <%}%>
+      </select>
+        <%
+         i = org.mmbase.datatypes.DataTypes.getSystemCollector().getRoots().iterator();
+        while (i.hasNext()) {
+          DataType root = (DataType) i.next();
+          %>
+          <span style="display: none;" class="description" id="description_<%=root.getName()%>">
+            <%=root.getLocalizedDescription().get(Locale.US)%>
+           </span>
+          <%}%>
     </td>
     <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
+<% String property; // strange implemetnation%> 
 <!--
 <tr>
     <td class="data">GUI Type</td>
@@ -64,17 +109,32 @@
     <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 -->
+
 <tr>
   <td class="data">Data Type</td>
     <td class="data">
-      <select name="datatype" >
-        <% java.util.Iterator i = org.mmbase.datatypes.DataTypes.getSystemCollector().getDataTypes().entrySet().iterator();
-          while (i.hasNext()) {
-          java.util.Map.Entry entry = (java.util.Map.Entry) i.next();
-          %>
-          <option value="<%=entry.getKey()%>"><%=entry.getKey()%></option>
-          <%}%>
-        </select>
+      <% Iterator rootIterator = org.mmbase.datatypes.DataTypes.getSystemCollector().getRoots().iterator();
+         while(rootIterator.hasNext()) {
+           DataType rootType = (DataType) rootIterator.next();
+           %>      
+           <select onChange="getDataTypes()" class="datatype" style="display: none;" name="datatype_off" id="datatype_<%=rootType.getName()%>">
+           <option value="">--</option>
+           <% Iterator j = org.mmbase.datatypes.DataTypes.getSystemCollector().getAllSpecializations(rootType.getName());
+           while (j.hasNext()) {
+              DataType dataType = (DataType) j.next();
+              %>
+              <option value="<%=dataType.getName()%>"><%=dataType.getLocalizedGUIName().get(Locale.US)%></option>
+              <%}%>
+          </select>
+           <%  j = org.mmbase.datatypes.DataTypes.getSystemCollector().getAllSpecializations(rootType.getName());
+           while (j.hasNext()) {
+              DataType dataType = (DataType) j.next();
+              %>
+              <span class="description" style="display: none;" id="description_<%=dataType.getName()%>">
+                <%=dataType.getLocalizedDescription().get(Locale.US)%>
+              </span>
+          <%}
+          }%>
     </td>
     <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
