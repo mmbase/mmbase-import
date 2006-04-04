@@ -128,6 +128,102 @@ public class CloudModelBuilder {
     }
 
 
+    public boolean setBuilderDBState(String fieldname,String value) {
+        Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
+        if (fe != null) {
+            Iterator fields = reader.getChildElements(fe,"field");
+            while (fields.hasNext()) {
+                Element field = (Element)fields.next();
+                Element namenode = reader.getElementByPath(field,"field.db.name");
+                if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
+                       // that we have found the correct field find
+                       // find the type node
+                       Element typenode = reader.getElementByPath(field,"field.db.type");
+		       NamedNodeMap nnm = typenode.getAttributes();
+		       if (nnm != null) {
+				Node dbstate = nnm.getNamedItem("state");
+				dbstate.getFirstChild().setNodeValue(value);
+                           	save();
+		       }
+                }
+            }
+        }
+        return true;
+    }
+
+
+    public boolean setBuilderDBKey(String fieldname,String value) {
+        Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
+        if (fe != null) {
+            Iterator fields = reader.getChildElements(fe,"field");
+            while (fields.hasNext()) {
+                Element field = (Element)fields.next();
+                Element namenode = reader.getElementByPath(field,"field.db.name");
+                if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
+                       // that we have found the correct field find
+                       // find the type node
+                       Element typenode = reader.getElementByPath(field,"field.db.type");
+		       NamedNodeMap nnm = typenode.getAttributes();
+		       if (nnm != null) {
+				Node key = nnm.getNamedItem("key");
+				key.getFirstChild().setNodeValue(value);
+                           	save();
+		       }
+                }
+            }
+        }
+        return true;
+    }
+
+
+    public boolean setBuilderDBNotNull(String fieldname,String value) {
+        Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
+        if (fe != null) {
+            Iterator fields = reader.getChildElements(fe,"field");
+            while (fields.hasNext()) {
+                Element field = (Element)fields.next();
+                Element namenode = reader.getElementByPath(field,"field.db.name");
+                if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
+                       // that we have found the correct field find
+                       // find the type node
+                       Element typenode = reader.getElementByPath(field,"field.db.type");
+		       NamedNodeMap nnm = typenode.getAttributes();
+		       if (nnm != null) {
+				Node notnull = nnm.getNamedItem("notnull");
+				notnull.getFirstChild().setNodeValue(value);
+                           	save();
+		       }
+                }
+            }
+        }
+        return true;
+    }
+
+
+    public boolean setBuilderDBSize(String fieldname,String value) {
+        Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
+        if (fe != null) {
+            Iterator fields = reader.getChildElements(fe,"field");
+            while (fields.hasNext()) {
+                Element field = (Element)fields.next();
+                Element namenode = reader.getElementByPath(field,"field.db.name");
+                if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(fieldname)) {
+                       // that we have found the correct field find
+                       // find the type node
+                       Element typenode = reader.getElementByPath(field,"field.db.type");
+		       NamedNodeMap nnm = typenode.getAttributes();
+		       if (nnm != null) {
+				Node dbsize = nnm.getNamedItem("size");
+				dbsize.getFirstChild().setNodeValue(value);
+                           	save();
+		       }
+                }
+            }
+        }
+        return true;
+    }
+
+
     public boolean addField(int pos,String name,String type,String guitype,String state,String required,String unique,String size) {
          Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe!=null) {
