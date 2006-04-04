@@ -28,6 +28,8 @@ public class CloudModelBuilder {
     private static Logger log = Logging.getLoggerInstance(CloudModelBuilder.class); 
     private String name;
     private String path;
+    private Document doc;
+    private BuilderReader reader;
 
     public CloudModelBuilder(String name) {
 	this.name =  name;
@@ -35,6 +37,13 @@ public class CloudModelBuilder {
 
    public void setPath(String path) {
        this.path = path;
+       try {
+           doc = ResourceLoader.getConfigurationRoot().getDocument(path);
+           reader = new BuilderReader(doc,MMBase.getMMBase());
+       } catch (Exception e) {
+          log.error("missing builderfile file : "+path);
+          e.printStackTrace();
+       }
    }
 
     public boolean writeToFile(String filepath) {
@@ -60,13 +69,24 @@ public class CloudModelBuilder {
 	return true;
     }
 
+    public boolean removeField(String name) {
+            Element fe = reader.getElementByPath(doc.getDocumentElement(),"builder.fieldlist");
+            if (fe!=null) {
+		Iterator fields = reader.getChildElements(fe,"field");
+		while (fields.hasNext()) {
+			Element field = (Element)fields.next();
+            		Element namenode = reader.getElementByPath(field,"field.db.name");
+			if (namenode!=null && namenode.getFirstChild().getNodeValue().equals(name)) {
+				fe.removeChild(field);
+				save();
+			}
+		}
+	    }
+	return true;
+    }
+
+
     public boolean addField(int pos,String name,String type,String guitype,String state,String required,String unique,String size) {
-	try {
-	
-       	     Document doc = ResourceLoader.getConfigurationRoot().getDocument(path);
-
-             BuilderReader reader = new BuilderReader(doc,MMBase.getMMBase());
-
 	    // add the extra field
             Element fe = reader.getElementByPath(doc.getDocumentElement(),"builder.fieldlist");
             if (fe!=null) {
@@ -90,22 +110,27 @@ public class CloudModelBuilder {
 		newpart +="        <type key=\""+unique+"\" notnull=\""+required+"\" size=\""+size+"\" state=\""+state+"\">"+type+"</type>\r";
 		newpart +="      </db>\r";
 		newpart +="    </field>\r";
-		Element nf = (reader.getDocumentBuilder(false,null,null).parse(new InputSource(new StringReader(newpart)))).getDocumentElement();
-		fe.appendChild(doc.importNode(nf,true));
+		try {
+			Element nf = (reader.getDocumentBuilder(false,null,null).parse(new InputSource(new StringReader(newpart)))).getDocumentElement();
+		        fe.appendChild(doc.importNode(nf,true));
+		} catch(Exception e) {
+			log.error("Can't merge new xml code");
+		}
             }
 
+	    save();
+	return true;
+    }
+
+    public boolean save() {
 	    // save the file back using the ResourceLoader
             try {                
                   ResourceLoader.getConfigurationRoot().storeDocument(path,doc);
             } catch(Exception e) {
                     e.printStackTrace();
+		    return false;
             }
-
-	    } catch (Exception e) {
-                log.error("missing builderfile file ");
-		e.printStackTrace();
-	    }
-	return true;
+	    return true;
     }
 
 

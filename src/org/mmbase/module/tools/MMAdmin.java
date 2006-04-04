@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.139 2006-04-04 12:13:30 daniel Exp $
+ * @version $Id: MMAdmin.java,v 1.140 2006-04-04 13:02:57 daniel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1375,14 +1375,12 @@ public class MMAdmin extends ProcessorModule {
             int state = Fields.getState((String)vars.get("dbstate"));
 
             log.service("Adding field " + fieldName);
-            log.info("A1=");
             DataType dataType;
             if (type ==  Field.TYPE_LIST) {
                 dataType = DataTypes.getListDataTypeInstance(guiType, itemListType);
             } else {
                 dataType = DataTypes.getDataTypeInstance(guiType, type);
             }
-            log.info("A2="+guiType+" "+dataType);
 
             CoreField def = Fields.createField(fieldName, type, itemListType, state, dataType);
             def.setListPosition(pos);
@@ -1397,7 +1395,6 @@ public class MMAdmin extends ProcessorModule {
             value = (String)vars.get("dbkey");
             def.setUnique(value.equals("true"));
 
-            log.info("A3=");
 
             value = (String)vars.get("dbsize");
             try {
@@ -1406,14 +1403,12 @@ public class MMAdmin extends ProcessorModule {
             } catch (Exception e) {
                 log.debug("dbsize had invalid value, not setting size");
             }
-            log.info("A4=");
 
             // make change in storage
             mmb.getStorageManager().create(def);
             // only then add to builder
             bul.addField(def);
             //syncBuilderXML(bul, builder);
-            log.info("A5=");
 	    CloudModel cm = ModelsManager.getModel("default");
 	    if (cm != null) {
 		CloudModelBuilder cmb = cm.getModelBuilder(builder);
@@ -1439,12 +1434,19 @@ public class MMAdmin extends ProcessorModule {
 
         MMObjectBuilder bul = getMMObject(builder);
         if (bul != null && value != null && value.equals("Yes")) {
+	    
             CoreField def = bul.getField(fieldname);
             // make change in storage
             mmb.getStorageManager().delete(def);
             // only then delete in builder
             bul.removeField(fieldname);
-            syncBuilderXML(bul, builder);
+            // need to be rerouted syncBuilderXML(bul, builder);
+	    CloudModel cm = ModelsManager.getModel("default");
+	    if (cm != null) {
+		CloudModelBuilder cmb = cm.getModelBuilder(builder);
+		if (cmb!=null) cmb.removeField(fieldname); 
+	    }
+            def.finish();
         }
     }
 
