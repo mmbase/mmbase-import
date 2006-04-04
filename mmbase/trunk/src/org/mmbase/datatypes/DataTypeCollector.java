@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.10 2006-04-04 20:03:33 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.11 2006-04-04 22:54:16 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -185,7 +185,7 @@ public final class DataTypeCollector {
                     }
                     return n;
                 }
-                return new NoSuchElementException();
+                throw new NoSuchElementException();
             }
             public void remove() {
                 throw new UnsupportedOperationException();
