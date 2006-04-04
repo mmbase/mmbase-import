@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.141 2006-04-04 14:05:51 daniel Exp $
+ * @version $Id: MMAdmin.java,v 1.142 2006-04-04 17:48:08 daniel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1056,7 +1056,12 @@ public class MMAdmin extends ProcessorModule {
         if (def != null) {
             def.setGUIName(value, new Locale(country, ""));
         }
-        // need to be rerouted syncBuilderXML(bul, builder);
+
+	CloudModel cloudmodel = ModelsManager.getModel("default");
+	if (cloudmodel != null) {
+            CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
+            if (cloudmodelbuilder != null) cloudmodelbuilder.setGuiName(fieldname,country,value); 
+	}
     }
 
     /**
