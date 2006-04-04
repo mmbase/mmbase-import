@@ -14,12 +14,18 @@ package org.mmbase.datatypes;
  * empty, but of course we forsee the possibility for  restrictions on doc-type.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlDataType.java,v 1.4 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: XmlDataType.java,v 1.5 2006-04-04 21:35:28 michiel Exp $
  * @since MMBase-1.8
  */
-public class XmlDataType extends BasicDataType {
+public class XmlDataType extends AbstractLengthDataType {
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+
+
+    public long getLength(Object value) {
+        // this is how Storage would serialize it:
+        return org.mmbase.util.xml.XMLWriter.write((org.w3c.dom.Document) value, false, true).length();
+    }
 
     /**
      * Constructor for xml data type.
