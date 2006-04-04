@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.93 2005-12-20 23:00:47 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.94 2006-04-04 22:15:46 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -65,8 +65,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected static final int TYPE_TYPE      = 4;
     protected static final int TYPE_GUITYPE   = 5;
     protected static final int TYPE_DESCRIPTION = 6;
-
     protected static final int TYPE_TYPEDESCRIPTION = 7;
+    protected static final int TYPE_DATATYPE    = 8;
+    protected static final int TYPE_DATATYPEDESCRIPTION = 9;
 
     protected static final int TYPE_UNSET     = 100;
 
@@ -118,6 +119,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             return TYPE_GUITYPE;
        } else if ("description".equals(t)) {
             return TYPE_DESCRIPTION;
+       } else if ("datatype".equals(t)) {
+            return TYPE_DATATYPE;
+       } else if ("datatypedescription".equals(t)) {
+            return TYPE_DATATYPEDESCRIPTION;
         } else if ("input".equals(t)) {
             return TYPE_INPUT;
         } else if ("check".equals(t)) {
@@ -377,6 +382,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_DESCRIPTION:
             show = field.getDescription(locale);
             break;
+        case TYPE_DATATYPE:
+            show = field.getDataType().getName();
+            break;
+        case TYPE_DATATYPEDESCRIPTION:
+            show = field.getDataType().getLocalizedDescription().get(locale);
+            break;
         default:
             log.debug("Unknown info type " + infoType);
             break;
@@ -409,7 +420,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     value = node.getStringValue(field.getName());
                 }
             }
-            log.debug("field " + field.getName() + " gui type: " + field.getGUIType() + "  value: " + value);
+            log.debug("field " + field.getName() + " data type: " + field.getDataType() + "  value: " + value);
         }
         return getTypeHandler(field).htmlInput(node, field, search);
     }

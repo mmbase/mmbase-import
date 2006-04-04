@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.351 2006-04-01 14:59:51 nklasens Exp $
+version: $Id: mmbase-taglib.xml,v 1.352 2006-04-04 22:15:47 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3325,6 +3325,16 @@ transaction was commited, following should result anything:
         <info>The description of the field (can be in other language)</info>
       </possiblevalue>
       <possiblevalue>
+        <value>datatype</value>
+        <info>A String identifying the datatype of the field</info>
+        <since>MMBase-1.8</since>
+      </possiblevalue>
+      <possiblevalue>
+        <value>datatypedescription</value>
+        <info>A description for the datatype of the field</info>
+        <since>MMBase-1.8</since>
+      </possiblevalue>
+      <possiblevalue>
         <value>input</value>
         <info>
           A form entry for the field.  If the surrounding FieldList has an id, the names of the form
@@ -4059,12 +4069,13 @@ like the parameter list or the session (where ever it is available) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-          Whether or not to encode the url. According to the servlet
-          specification all urls should be encoded, but this also adds
-          a session id to the url when cookies are not supported. Many
-          webservers can not handle them and prevent caching of static
-          resources. Default it is true.
-    </info>
+        Whether or not to encode the url. According to the servlet
+        specification all urls should be encoded, but this also adds
+        a session id to the url when cookies are not supported. Many
+        webservers can not handle them and prevent caching of static
+        resources. Default it is true.
+      </info>
+      <since>MMBase-1.8</since>
     </attribute>
     <attribute>
       <name>absolute</name>
