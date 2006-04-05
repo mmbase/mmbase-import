@@ -1,0 +1,24 @@
+Number: 0
+Version: $Id: ASSUME_WEBAPP,v 1.1 2006-04-05 12:03:55 michiel Exp $
+Architectural theme: Technical
+Principle: Assume that you are in a servlet environment
+Qualification:
+Explanation:
+      Your Java code is not just java code, it is java code running in a servlet environment, so it
+      may be subject to certain resctrictions while running.
+Argumentation:
+      Code is not optimally portable if no consideration is given to this principle
+
+Consequence:
+      Make no assumptions on the OS
+      Make no assumptions on location or writeability of resources. To open resources (like
+      configuration) you should use the MMBase ResourceLoader. Do not use java.io.File. The webapp
+      may be installed as a 'war' and it's contents not available as File at all.
+
+      If a file-system is needed for some reason, the mmbase 'data dir' can be used, or use
+      File.getTempFile.
+
+Allowed Implementations:
+Source:
+
+
