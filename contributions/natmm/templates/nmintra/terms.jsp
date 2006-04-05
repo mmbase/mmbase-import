@@ -60,7 +60,7 @@
                                     </mm:list>
                                     <mm:notpresent referid="target_rubriek">
                                        <mm:list nodes="" path="rubriek1,parent1,rubriek2,parent2,rubriek3,posrel,pagina"
-                                          constraints="pagina.number=$target_page">
+                                          constraints="(pagina.number=$target_page) AND (rubriek1.number != rubriek3.number">
                                           <mm:field name="rubriek2.number" id="target_rubriek" write="false" />
                                           <mm:field name="rubriek1.number" id="target_site" write="false" />
                                        </mm:list>
