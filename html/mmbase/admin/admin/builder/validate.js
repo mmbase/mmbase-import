@@ -7,7 +7,7 @@ function validate() {
         if ( pattern.test(els[i].className) && els[i].style.display != "none") {
             var validateinfo = document.getElementById("validate_" + els[i].id);
             if (/\bregexp\b/.test(validateinfo.className)) {
-                var regexp = new RegExp(validateinfo.textContent);
+                var regexp = new RegExp(validateinfo.innerHTML);
                 if (/\binverse\b/.test(validateinfo.className)) {
                     if (regexp.test(els[i].value)) {
                         valid = false;
@@ -23,6 +23,5 @@ function validate() {
         }
     }
     document.getElementById("submit").style.visibility = valid ? "visible" : "hidden";
-    
 }
 
