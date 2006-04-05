@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="MMBase" default="download_mmbase" basedir=".">
   <property name="mmbase.version" value="1.8.0-SNAPSHOT"/>
-  <property name="mmbase.webapp.dir" value="${user.home}/dev/mmbase/mmbase-head/build/mmbase/mmbase-webapp"/>
+  <property name="mmbase.webapp.dir" value="${user.home}/dev/mmbase/mmbase_head/build/mmbase/mmbase-webapp"/>
 
   <target name="download_mmbase">
 	 <!-- get the servelt api and store it in the compiletime dir -->
