@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*,java.util.*,java.io.*,org.mmbase.util.*,java.net.*,org.mmbase.datatypes.*" %>
 <%@include file="../../settings.jsp" %>
-<mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <% String builder = request.getParameter("builder"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
@@ -14,7 +14,9 @@
 <script type="text/javascript" src="datatypes.js">
 
 </script>
-<body class="basic" onLoad="getDataTypes()">
+<script type="text/javascript" src="validate.js">
+</script>
+<body class="basic" onLoad="getDataTypes(); validate();">
 
 <% String value=null;
    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
@@ -44,7 +46,17 @@
 <form action="<mm:url page="actions.jsp"/>" method="POST">
 <tr>
     <td class="data">Name</td>
-    <td class="data"><input type="text" name="dbname" value="" /></td>
+    <td class="data">
+      <input class="validateable" onKeyUp="validate()" id="dbname" type="text" name="dbname" value="" />
+      <span id="validate_dbname" class="inverse regexp" style="display: none;">^(<% 
+      FieldIterator fi = cloud.getNodeManager(builder).getFields().fieldIterator(); 
+      while (fi.hasNext()) {
+         Field f = fi.nextField();
+         out.print(f.getName());
+         out.print("|");
+      }
+      %>)$</span>
+    </td>
     <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
@@ -94,17 +106,20 @@
 
 <tr>
     <td class="data">Size</td>
-    <td class="data"><input id="dbsize" type="text" name="dbsize" value="" /></td>
+    <td class="data">
+      <input class="validateable" id="dbsize" type="text" onKeyUp="validate();" name="dbsize" value="255" />
+      <span id="validate_dbsize" style="display: none;" class="regexp">^[0-9]+$</span>
+    </td>
     <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
     <td class="data" colspan="2">
         <p>Make sure all the settings are valid and what you want before updating the object</p>
-    <input type="hidden" name="builder" value="<%=builder%>" />
-    <input type="hidden" name="cmd" value="BUILDER-ADDFIELD" />
+        <input type="hidden" name="builder" value="<%=builder%>" />
+        <input type="hidden" name="cmd" value="BUILDER-ADDFIELD" />
     </td>
-    <td class="linkdata"><input type="submit" value="Add Field" /></td>
+    <td class="linkdata"><input id="submit" type="submit" value="Add Field" /></td>
 </tr>
 
 </form>
