@@ -1,0 +1,29 @@
+Number: 0
+Version: $Id: DATABASE_INDEPENDENCY,v 1.1 2006-04-05 12:03:55 michiel Exp $
+Architectural theme: Technical
+Principle: Database independency
+Qualification:
+Explanation:
+      All code is implemented in a database independent way.
+Argumentation:
+     MMBase is principally indepent of the chosen database. So all code in MMBase should not depent
+     on features of a specific database (unless of course the code _is_ the specific database layer).
+    
+     Therefore this is also a principable for applications built on MMBase, otherwise they are not
+     portable to other MMBase installations.
+
+Consequence:
+      You should use the search-query frame-work to build queries, without falling back to 'legacy'
+      constraints.
+
+      If should not need JDBC-connections yourself, but if you do, use ((DatabaseStorageManager)
+      MMBase.getStorageManager()).getConnection()
+      You should also issue an issue to the mmbase bugtracker to report the issue you are working
+      around here...
+	
+Allowed Implementations:
+
+Source:
+      http://www.mmbase.org/api/org/mmbase/storage/search/package-summary.html
+      http://www.mmbase.org/api/org/mmbase/bridge/Query.html
+
