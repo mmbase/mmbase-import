@@ -46,7 +46,7 @@
         <relation from="metastandard" to="metadata" type="related" />
         <relation from="metastandard" to="metastandard" type="posrel" />
         <relation from="metastandard" to="metadefinition" type="posrel" />
-        <relation from="metastandard" to="complex_constraints" type="related" />
+        <relation from="metastandard" to="group_constraints" type="related" />
 
         <relation from="metadefinition" to="metadefinition" type="posrel" />
         <relation from="metadefinition" to="group_constraints" type="posrel" />
