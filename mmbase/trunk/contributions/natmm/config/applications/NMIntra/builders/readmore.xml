@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!-- readmore -->
+<builder version="0" name="readmore" maintainer="mmbase.org" extends="posrel">
+    <searchage>9999</searchage>
+    <names>
+        <singular xml:lang="nl">readmore</singular>
+        <singular xml:lang="us">readmore</singular>
+        <plural xml:lang="nl">readmores</plural>
+        <plural xml:lang="us">readmores</plural>
+    </names>
+    <descriptions>
+        <description xml:lang="nl">Relatie om van een list naar een pagina door te verwijzen.</description>
+        <description xml:lang="us">Relation to point from a list to a page</description>
+    </descriptions>
+    <properties/>
+    <fieldlist>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">ReadMore</guiname>
+                <guiname xml:lang="en">ReadMore</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <db>
+                <name>readmore</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">ReadMore1</guiname>
+                <guiname xml:lang="en">ReadMore1</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>2</input>
+                    <list>5</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <db>
+                <name>readmore1</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">ReadMore2</guiname>
+                <guiname xml:lang="en">ReadMore2</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>2</input>
+                    <list>6</list>
+                    <search>6</search>
+                </positions>
+            </editor>
+            <db>
+                <name>readmore2</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+    </fieldlist>
+</builder>
