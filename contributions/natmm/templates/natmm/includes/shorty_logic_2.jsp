@@ -80,15 +80,7 @@ if(!readmoreID.equals("")){
             <%
          }
          if(!targetPage.equals("")) {
-            %>
-    	      <mm:list nodes="<%= targetPage %>" path="pagina,gebruikt,paginatemplate" fields="paginatemplate.url"  max="1">
-   	      <mm:field name="paginatemplate.url" write="false" jspvar="template_url" vartype="String">
-   	      <% 
-   	         readmoreURL = template_url + "?p=" + targetPage + "&a="+readmoreID;
-   	      %>
-   	      </mm:field>
-   	      </mm:list>
-	         <%
+            readmoreURL = ph.createItemUrl(readmoreID, targetPage,null,request.getRequestURI());
         } else { 
             // artikel is not linked to a page show it in the present page (but with artikel template)
             readmoreURL = "artikel.jsp?p=" + paginaID + "&a="+readmoreID;
@@ -100,15 +92,7 @@ if(!readmoreID.equals("")){
 		} else if(nType.equals("provincies")){ 
 		      readmoreURL = "natuurgebieden.jsp?prov="+readmoreID;
 		} else if(nType.equals("pagina")){ 
-		   %>
-		   <mm:related path="gebruikt,paginatemplate" fields="paginatemplate.url"  max="1">
-	      <mm:field name="paginatemplate.url" write="false" jspvar="template_url" vartype="String">
-	      <% 
-	         readmoreURL = template_url + "?p=" + readmoreID;
-	      %>
-	      </mm:field>
-	      </mm:related>
-	      <%
+            readmoreURL =  ph.createPaginaUrl(readmoreID, request.getRequestURI());
 	   }						
 		validLink = true;
 		%>

@@ -1,11 +1,11 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@include file="/taglibs.jsp" %>
 <%@include file="../includes/image_vars.jsp" %>
+<mm:cloud jspvar="cloud">
 <% 
 String paginaID = request.getParameter("p"); 
 String sID = paginaID;
-%>
-<mm:cloud jspvar="cloud">
-<% 
+PaginaHelper ph = new PaginaHelper(cloud);
+
 // *** max 20 faq's (vgv'en) per page. 
 // *** first determine whether there are vgv's related to the page
 boolean vgvFound = false;
