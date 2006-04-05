@@ -1,0 +1,328 @@
+<?xml version="1.0"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!-- locations -->
+<builder version="0" name="locations" maintainer="mmbase.org" extends="object">
+    <searchage>9999</searchage>
+    <names>
+        <singular xml:lang="nl">lokatie</singular>
+        <singular xml:lang="en">location</singular>
+        <singular xml:lang="us">location</singular>
+        <plural xml:lang="nl">lokaties</plural>
+        <plural xml:lang="en">locations</plural>
+        <plural xml:lang="us">locations</plural>
+    </names>
+    <descriptions>
+        <description xml:lang="nl">verschillende locaties</description>
+        <description xml:lang="en">different types of locations</description>
+        <description xml:lang="us">different types of locations</description>
+    </descriptions>
+    <properties/>
+    <fieldlist>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Naam</guiname>
+                <guiname xml:lang="fr">Nom</guiname>
+                <guiname xml:lang="en">Name</guiname>
+                <guiname xml:lang="us">Name</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>name</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Adres</guiname>
+                <guiname xml:lang="us">Address</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>2</input>
+                    <list>-1</list>
+                    <search>2</search>
+                </positions>
+            </editor>
+            <db>
+                <name>address</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Postcode</guiname>
+                <guiname xml:lang="us">Postal Code</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>3</input>
+                    <list>-1</list>
+                    <search>3</search>
+                </positions>
+            </editor>
+            <db>
+                <name>postalcode</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Woonplaats</guiname>
+                <guiname xml:lang="us">City</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>-1</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <db>
+                <name>city</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Land</guiname>
+                <guiname xml:lang="us">Country</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                    <list>-1</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <db>
+                <name>country</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Adres2</guiname>
+                <guiname xml:lang="us">Address2</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                    <list>-1</list>
+                    <search>6</search>
+                </positions>
+            </editor>
+            <db>
+                <name>address2</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Postcode2</guiname>
+                <guiname xml:lang="us">Postal Code2</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                    <list>-1</list>
+                    <search>7</search>
+                </positions>
+            </editor>
+            <db>
+                <name>postalcode2</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Woonplaats2</guiname>
+                <guiname xml:lang="us">City2</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                    <list>-1</list>
+                    <search>8</search>
+                </positions>
+            </editor>
+            <db>
+                <name>city2</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Land2</guiname>
+                <guiname xml:lang="us">Country2</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                    <list>-1</list>
+                    <search>9</search>
+                </positions>
+            </editor>
+            <db>
+                <name>country2</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Telefoon</guiname>
+                <guiname xml:lang="us">Phone</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                    <list>-1</list>
+                    <search>10</search>
+                </positions>
+            </editor>
+            <db>
+                <name>phone</name>
+                <type size="32" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Mobiel</guiname>
+                <guiname xml:lang="us">Mobile</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>11</input>
+                    <list>-1</list>
+                    <search>11</search>
+                </positions>
+            </editor>
+            <db>
+                <name>mobile</name>
+                <type size="32" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Fax</guiname>
+                <guiname xml:lang="us">Fax</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>12</input>
+                    <list>-1</list>
+                    <search>12</search>
+                </positions>
+            </editor>
+            <db>
+                <name>fax</name>
+                <type size="32" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">E-mail</guiname>
+                <guiname xml:lang="us">E-mail</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>13</input>
+                    <list>3</list>
+                    <search>13</search>
+                </positions>
+            </editor>
+            <db>
+                <name>email</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Website</guiname>
+                <guiname xml:lang="us">Website</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>14</input>
+                    <list>-1</list>
+                    <search>14</search>
+                </positions>
+            </editor>
+            <db>
+                <name>website</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Beschrijving</guiname>
+                <guiname xml:lang="us">Description</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>15</input>
+                    <list>-1</list>
+                    <search>15</search>
+                </positions>
+            </editor>
+            <db>
+                <name>description</name>
+                <type size="1024" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Externe ID</guiname>
+                <guiname xml:lang="us">External ID</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>23</input>
+                    <list>-1</list>
+                    <search>23</search>
+                </positions>
+            </editor>
+            <db>
+                <name>externid</name>
+                <type size="32" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+    </fieldlist>
+</builder>

@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!-- postthreads -->
+<builder version="0" name="postthreads" maintainer="submarine.nl" extends="object">
+    <searchage>14</searchage>
+    <names>
+        <singular xml:lang="en">PostThread</singular>
+        <plural xml:lang="en">PostThreads</plural>
+    </names>
+    <descriptions>
+        <description xml:lang="en">PostThread, one thread the main subject</description>
+    </descriptions>
+    <properties/>
+    <fieldlist>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">Subject</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>subject</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">creator</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>2</input>
+                    <list>-1</list>
+                    <search>2</search>
+                </positions>
+            </editor>
+            <db>
+                <name>creator</name>
+                <type size="64" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">Mood</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>mood</name>
+                <type size="32" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">State</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>state</name>
+                <type size="32" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">Type</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>ttype</name>
+                <type size="32" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">createtime</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                    <list>-1</list>
+                    <search>7</search>
+                </positions>
+            </editor>
+            <db>
+                <name>createtime</name>
+                <type key="false" state="persistent" notnull="false">INTEGER</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">updatetime</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                    <list>-1</list>
+                    <search>8</search>
+                </positions>
+            </editor>
+            <db>
+                <name>updatetime</name>
+                <type key="false" state="persistent" notnull="false">INTEGER</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">edittime</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                    <list>-1</list>
+                    <search>9</search>
+                </positions>
+            </editor>
+            <db>
+                <name>edittime</name>
+                <type key="false" state="persistent" notnull="false">INTEGER</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">viewcount</guiname>
+                <guitype>integer</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                    <list>-1</list>
+                    <search>10</search>
+                </positions>
+            </editor>
+            <db>
+                <name>viewcount</name>
+                <type key="false" state="persistent" notnull="false">INTEGER</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">postcount</guiname>
+                <guitype>integer</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>11</input>
+                    <list>-1</list>
+                    <search>11</search>
+                </positions>
+            </editor>
+            <db>
+                <name>postcount</name>
+                <type key="false" state="persistent" notnull="false">INTEGER</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">postthtreadcount</guiname>
+                <guitype>integer</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>12</input>
+                    <list>-1</list>
+                    <search>12</search>
+                </positions>
+            </editor>
+            <db>
+                <name>postthtreadcount</name>
+                <type key="false" state="persistent" notnull="false">INTEGER</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">lastposter</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>13</input>
+                    <list>-1</list>
+                    <search>13</search>
+                </positions>
+            </editor>
+            <db>
+                <name>lastposter</name>
+                <type size="64" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">lastpostsubject</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>14</input>
+                    <list>-1</list>
+                    <search>14</search>
+                </positions>
+            </editor>
+            <db>
+                <name>lastpostsubject</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">lastposttime</guiname>
+                <guitype>integer</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>15</input>
+                    <list>-1</list>
+                    <search>15</search>
+                </positions>
+            </editor>
+            <db>
+                <name>lastposttime</name>
+                <type key="false" state="persistent" notnull="false">INTEGER</type>
+            </db>
+        </field>
+    </fieldlist>
+</builder>
