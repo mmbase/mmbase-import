@@ -5,9 +5,13 @@
 ><mm:field name="pagina.titel" jspvar="page_title" vartype="String" write="false"
 ><mm:field name="pagina.number" jspvar="page_number" vartype="String" write="false"><%
     rubriekId = rubriek_number;
-    websiteId = site_number;
-    nodeUrl = "search.jsp?p=" + page_number;
-    if(thisPath.equals("producttypes")) { nodeUrl += "&pool=" + node_number; }
+    websiteId = site_number; %>
+	 <mm:list nodes="<%= page_number %>" path="pagina,gebruikt,paginatemplate">
+	 	<mm:field name="paginatemplate.url" jspvar="url" vartype="String" write="false">	
+		    <%  nodeUrl = url + "?p=" + page_number; %>
+		</mm:field>
+	</mm:list>
+    <% if(thisPath.equals("producttypes")) { nodeUrl += "&pool=" + node_number; }
     if(thisPath.equals("artikel")) { nodeUrl += "&article=" + node_number; }
     nodeHref += "<a href=\"" + nodeUrl  +  "\">" 
         + site_title + "-" + rubriek_title;
