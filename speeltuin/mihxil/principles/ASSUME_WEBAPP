@@ -1,5 +1,5 @@
 Number: 0
-Version: $Id: ASSUME_WEBAPP,v 1.1 2006-04-05 12:03:55 michiel Exp $
+Version: $Id: ASSUME_WEBAPP,v 1.2 2006-04-05 13:39:36 michiel Exp $
 Architectural theme: Technical
 Principle: Assume that you are in a servlet environment
 Qualification:
@@ -17,6 +17,11 @@ Consequence:
 
       If a file-system is needed for some reason, the mmbase 'data dir' can be used, or use
       File.getTempFile.
+
+	  Do not write anything to stdout, use the MMBase logging system. This can be configured to go
+	  to stdout if desired.
+
+
 
 Allowed Implementations:
 Source:
