@@ -154,6 +154,8 @@ public class NMIntraToNatMMigrator {
         if (sBuilderName.equals("readmore")){
            log.info("in readmore.xml replacing & to &amp;");
            sContent = sContent.replaceAll("&","&amp;");
+           log.info("in readmore.xml replacing \"inactive\" value readmore2 field to empty");
+           sContent = sContent.replaceAll("<readmore2>inactive</readmore2>","<readmore2></readmore2>");
         }
         tmAllData.put(sBuilderName, sContent);
       }
