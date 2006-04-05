@@ -637,16 +637,18 @@ public class MetaDataHelper {
 
        //The User isn't a member of any workgroups
        //or workroups have got no related MetaStandards.
+       String sResultConstraint = "";
        if(sResultSet.length() == 0){
            MetadataTreeModel metadataTreeModel = new MetadataTreeModel(cloud);
            Node nodeRootMetaStandart = (Node) metadataTreeModel.getRoot();
            sResultSet = "" + nodeRootMetaStandart.getNumber();
+           sResultConstraint = "metastandard2.isused='1'";
        }
 
        NodeList nlTopLevelMetaStandarts = cloud.getList(sResultSet,
            "metastandard1,metastandard2",
            "metastandard2.number",
-           "metastandard2.isused='1'",
+           sResultConstraint,
            null, null, null, false);
 
        for(int f = 0; f < nlTopLevelMetaStandarts.size(); f++){
