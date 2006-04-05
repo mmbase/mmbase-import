@@ -1,4 +1,4 @@
-      <select name="mmbasetype" id="mmbasetype" onChange="getDataTypes()">
+      <select name="mmbasetype" id="mmbasetype" onChange="getDataTypes(); validate();">
         <%
         Iterator i = org.mmbase.datatypes.DataTypes.getSystemCollector().getRoots().iterator();
         while (i.hasNext()) {
