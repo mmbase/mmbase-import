@@ -75,6 +75,7 @@ public abstract class MetaHelper {
    public abstract ArrayList check(Node nodeMetaDefinition, Constraint constraint, String[] arrstrParameters);
 
 
+
    /**
     * Checks only one concrete metadata
     * @param nodeMetaDefinition Node
@@ -83,6 +84,21 @@ public abstract class MetaHelper {
     * @return Error
     */
    public abstract ArrayList check(Node nodeMetaDefinition, Constraint constraint, Node nodeMetaData);
+
+
+
+   /**
+    * Are there any filled-in values?
+    *
+    * It doesn't pay attention to any constraints
+    * @param nodeMetaDefinition Node
+    * @param nodeObject Node
+    * @return boolean
+    */
+
+   public abstract boolean isEmpty(Node nodeMetaDefinition, Node nodeObject);
+
+
 
    public abstract void copy(Cloud cloud, Node metaDataNode, Node defaultNode);
 

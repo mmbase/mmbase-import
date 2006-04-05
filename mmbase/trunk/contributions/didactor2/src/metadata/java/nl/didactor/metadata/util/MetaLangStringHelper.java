@@ -143,4 +143,9 @@ public class MetaLangStringHelper extends MetaHelper {
        return nodeResultLangString;
    }
 
+
+   public boolean isEmpty(Node nodeMetaDefinition, Node nodeOBject){
+       return false;
+   }
+
 }

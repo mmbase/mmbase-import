@@ -233,4 +233,30 @@ public class MetaVocabularyHelper extends MetaHelper {
          }
       }
    }
+
+
+
+
+   /**
+    * Return false if there are any selected metavocabularies
+    *
+    * Don't pay attention to any other constraints
+    * @param nodeMetaDefinition Node
+    * @param nodeObject Node
+    * @return boolean
+    */
+
+   public boolean isEmpty(Node nodeMetaDefinition, Node nodeObject){
+       log.debug("isEmpty() for MetaDefinition=" + nodeMetaDefinition.getNumber() + ", Object=" + nodeObject.getNumber());
+       Cloud cloud = nodeMetaDefinition.getCloud();
+
+       NodeList nl = cloud.getList("" + nodeMetaDefinition.getNumber(),
+                          "metadefinition,metavocabulary,metadata,object",
+                          "metadefinition.number",
+                          "object.number=" + nodeObject.getNumber(),
+                          null, null, null, true);
+
+
+       return !(nl.size() > 0);
+   }
 }
