@@ -37,13 +37,6 @@ public class CloudModelBuilder {
 
     public void setPath(String path) {
        this.path = path;
-       try {
-           document = ResourceLoader.getConfigurationRoot().getDocument(path);
-           reader = new BuilderReader(document,MMBase.getMMBase());
-       } catch (Exception e) {
-          log.error("missing builderfile file : "+path);
-          e.printStackTrace();
-       }
     }
 
     public boolean writeToFile(String filepath) {
@@ -70,6 +63,7 @@ public class CloudModelBuilder {
     }
 
     public boolean removeField(String name) {
+	if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
             Iterator fields = reader.getChildElements(fe,"field");
@@ -87,6 +81,7 @@ public class CloudModelBuilder {
 
 
     public boolean setGuiName(String fieldname,String country,String value) {
+	if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
             Iterator fields = reader.getChildElements(fe,"field");
@@ -129,6 +124,7 @@ public class CloudModelBuilder {
 
 
     public boolean setBuilderDBState(String fieldname,String value) {
+	if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
             Iterator fields = reader.getChildElements(fe,"field");
@@ -153,6 +149,7 @@ public class CloudModelBuilder {
 
 
     public boolean setBuilderDBKey(String fieldname,String value) {
+	if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
             Iterator fields = reader.getChildElements(fe,"field");
@@ -177,6 +174,7 @@ public class CloudModelBuilder {
 
 
     public boolean setBuilderDBNotNull(String fieldname,String value) {
+	if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
             Iterator fields = reader.getChildElements(fe,"field");
@@ -201,6 +199,7 @@ public class CloudModelBuilder {
 
 
     public boolean setBuilderDBSize(String fieldname,String value) {
+	if (document == null) openDocument();
         Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe != null) {
             Iterator fields = reader.getChildElements(fe,"field");
@@ -225,6 +224,7 @@ public class CloudModelBuilder {
 
 
     public boolean addField(int pos,String name,String type,String guitype,String state,String required,String unique,String size) {
+	if (document == null) openDocument();
          Element fe = reader.getElementByPath(document.getDocumentElement(),"builder.fieldlist");
         if (fe!=null) {
             String newpart ="    <field>\r";
@@ -268,5 +268,14 @@ public class CloudModelBuilder {
         return true;
     }
 
+    private void openDocument() {
+       try {
+           document = ResourceLoader.getConfigurationRoot().getDocument(path);
+           reader = new BuilderReader(document,MMBase.getMMBase());
+       } catch (Exception e) {
+          log.error("missing builderfile file : "+path);
+          e.printStackTrace();
+       }
+   }
 
 }
