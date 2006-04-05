@@ -16,6 +16,11 @@
 
    String sVocabularyID = (String) request.getParameter("vocabulary");
    String sMetaDefinitionID = (String) request.getParameter("metadefinition");
+   String sNodeObjectID = (String) request.getParameter("object");
+
+   Node thisMetaDefinition = cloud.getNode(sMetaDefinitionID);
+   Node nodeObject = cloud.getNode(sNodeObjectID);
+
    String sMetastandartNodes = (String) request.getParameter("metastandarts");
 
    NodeList nlRelatedNodes = (NodeList) session.getAttribute("metaeditor_multilevel_metavocabulary_all_metadata");
@@ -138,7 +143,7 @@
             <div id="checkbox_layer_<%= sCheckBoxUniqueID %>" style="display:<%= sElemVisibility %>;">
                <mm:node number="<%= "" + nodeMetaVocabulary.getNumber() %>">
                   <%
-                     if(MetaDataHelper.isTheMetaVocabularyActive(nodeMetaVocabulary, sMetastandartNodes)){
+                     if(MetaDataHelper.isTheMetaVocabularyActive(nodeMetaVocabulary, nodeObject, thisMetaDefinition, sMetastandartNodes, application)){
                         %>
                            <mm:field name="number" jspvar="sID" vartype="String" write="false">
                               <span style="padding-left:<%= (depth - 1) * 30 %>px;">&nbsp;</span>

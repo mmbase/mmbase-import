@@ -26,7 +26,7 @@ if(sMaxValues.equals("1"))
           <mm:related path="posrel,metavocabulary" searchdir="destination" orderby="posrel.pos">
              <mm:node element="metavocabulary" jspvar="nodeMetaVocabulary">
                 <%
-                   if(MetaDataHelper.isTheMetaVocabularyActive(nodeMetaVocabulary, sMetastandartNodes)){
+                   if(MetaDataHelper.isTheMetaVocabularyActive(nodeMetaVocabulary, nodeObject, thisMetadefinition, sMetastandartNodes, application)){
                       %>
                          <mm:field name="number" jspvar="sID" vartype="String" write="false">
                             <option name="m<%= sMetaDefinitionID %>" value="<%= sID %>"
@@ -57,6 +57,7 @@ if(sMaxValues.equals("1"))
                <jsp:param name="vocabulary" value="<%= sSelected %>" />
                <jsp:param name="metadefinition" value="<%= thisMetadefinition.getNumber() %>" />
                <jsp:param name="metastandarts" value="<%= sMetastandartNodes %>" />
+               <jsp:param name="object" value="<%= sNode %>" />
             </jsp:include>
          <%
       }
@@ -84,7 +85,7 @@ else
       <mm:related path="posrel,metavocabulary" searchdir="destination" orderby="posrel.pos">
          <mm:node element="metavocabulary" jspvar="nodeMetaVocabulary">
             <%
-               if(MetaDataHelper.isTheMetaVocabularyActive(nodeMetaVocabulary, sMetastandartNodes)){
+               if(MetaDataHelper.isTheMetaVocabularyActive(nodeMetaVocabulary, nodeObject, thisMetadefinition, sMetastandartNodes, application)){
                   %>
                      <mm:field name="number" jspvar="sID" vartype="String" write="false">
                         <input type="checkbox" name="m<%= sMetaDefinitionID %>" value="<%= sID %>" checkbox_id="<%= nodeMetaVocabulary.getNumber() %>" onClick="switchMetaVocabularyTree(this)"
@@ -104,15 +105,20 @@ else
                         </mm:field>
                      </mm:field>
                   <%
+
+                  session.setAttribute("metaeditor_multilevel_metavocabulary_all_metadata", nlRelatedNodes);
+
+                  %>
+                     <jsp:include page="metaedit_form_vocabulary_sublevel.jsp" flush="true">
+                        <jsp:param name="vocabulary" value="<%= nodeMetaVocabulary.getStringValue("number") %>" />
+                        <jsp:param name="metadefinition" value="<%= thisMetadefinition.getNumber() %>" />
+                        <jsp:param name="blocked" value="<%= bBlocked %>" />
+                        <jsp:param name="metastandarts" value="<%= sMetastandartNodes %>" />
+                        <jsp:param name="object" value="<%= sNode %>" />
+                     </jsp:include>
+                  <%
                }
-               session.setAttribute("metaeditor_multilevel_metavocabulary_all_metadata", nlRelatedNodes);
             %>
-            <jsp:include page="metaedit_form_vocabulary_sublevel.jsp" flush="true">
-               <jsp:param name="vocabulary" value="<%= nodeMetaVocabulary.getStringValue("number") %>" />
-               <jsp:param name="metadefinition" value="<%= thisMetadefinition.getNumber() %>" />
-               <jsp:param name="blocked" value="<%= bBlocked %>" />
-               <jsp:param name="metastandarts" value="<%= sMetastandartNodes %>" />
-            </jsp:include>
          </mm:node>
       </mm:related>
    <%

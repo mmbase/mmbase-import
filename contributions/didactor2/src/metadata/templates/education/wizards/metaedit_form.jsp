@@ -119,6 +119,7 @@
 
         <%
            Node nodeUser = nl.didactor.security.Authentication.getCurrentUserNode(cloud);
+           Node nodeObject = cloud.getNode(sNode);
            NodeList nlLangCodes = MetaDataHelper.getLangCodes(cloud);              // *** Get languages list
            NodeList nlRelatedNodes = MetaDataHelper.getRelatedMetaData(cloud,sNode); // *** Get all related metadata to this node
            MetaDataHelper.fillAutoValues(cloud.getNode(sNode), getServletContext(), nodeUser);
