@@ -1,0 +1,356 @@
+<?xml version="1.0" ?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application auto-deploy="false" version="1" name="NMIntra" maintainer="mmbase.org">
+    <neededbuilderlist>
+        <builder version="1" maintainer="ilse.nl">ads</builder>
+        <builder version="0" maintainer="mmbase.org">afdelingen</builder>
+        <builder version="0" maintainer="mmbase.org">artikel</builder>
+        <builder version="0" maintainer="mmbase.org">attachments</builder>
+        <builder version="0" maintainer="mmbase.org">avatarsets</builder>
+	<builder maintainer="mmbase.org" version="0">childrel</builder>
+        <builder version="0" maintainer="mmbase.org">community</builder>
+        <builder version="0" maintainer="mmbase.org">companies</builder>
+        <builder version="1" maintainer="didactor.nl">competencetypes</builder>
+        <builder version="2" maintainer="didactor.nl">competencies</builder>
+        <builder version="0" maintainer="mmbase.org">contentblocks</builder>
+        <builder version="0" maintainer="leeuwnet">contentelement</builder>
+	<builder version="0" maintainer="mmbase.org">contentrel</builder>
+	<builder version="1" maintainer="ilse.nl">ctexts</builder>
+        <builder version="0" maintainer="mmbase.org">daymarks</builder>
+        <builder version="0" maintainer="mmbase.org">deelnemers_age</builder>
+	<builder version="0" maintainer="mmbase.org">deelnemers_categorie</builder>
+        <builder version="0" maintainer="mmbase.org">discountrel</builder>
+        <builder version="0" maintainer="mmbase.org">discounts</builder>
+        <builder version="0" maintainer="mmbase.org">divisions</builder>
+        <builder version="0" maintainer="mmbase.org">documents</builder>
+        <builder version="0" maintainer="mmbase.org">editwizards</builder>
+	<builder version="1" maintainer="mmbase.org">education_keywords</builder>
+        <builder version="0" maintainer="mmbase.org">education_pools</builder>
+        <builder version="1" maintainer="mmbase.org">educations</builder>
+        <builder version="0" maintainer="mmbase.org">email</builder>
+        <builder version="1" maintainer="ilse.nl">empupdates</builder>
+	<builder version="1" maintainer="mmbase.org">evenement_blueprint</builder>
+	<builder version="1" maintainer="mmbase.org">evenement_distance</builder>
+	<builder version="1" maintainer="mmbase.org">evenement_duration</builder>
+	<builder version="0" maintainer="mmbase.org">evenement_type</builder>
+        <builder version="1" maintainer="mmbase.org">feedback</builder>
+	<builder version="0" maintainer="mmbase.org">formulier</builder>
+        <builder version="1" maintainer="leeuwnet">formulierveld</builder>
+        <builder version="0" maintainer="mmbase.org">formulierveldantwoord</builder>
+        <builder version="0" maintainer="mmbase.org">forummessagebox</builder>
+        <builder version="0" maintainer="mmbase.org">forumprivatemessage</builder>
+        <builder version="0" maintainer="submarine.nl">forums</builder>
+	<builder version="0" maintainer="mmbase.org">groups</builder>
+        <builder version="0" maintainer="mmbase.org">icaches</builder>
+        <builder version="0" maintainer="mmbase.org">images</builder>
+        <builder version="0" maintainer="mmbase.org">imagesets</builder>
+        <builder version="0" maintainer="mmbase.org">insrel</builder>
+        <builder version="0" maintainer="mmbase.org">items</builder>
+        <builder version="1" maintainer="ernst.bunders">kb_answer</builder>
+        <builder version="1" maintainer="ernst.bunders">kb_category</builder>
+        <builder version="1" maintainer="ernst.bunders">kb_displayable</builder>
+        <builder version="1" maintainer="ernst.bunders">kb_identifiable</builder>
+        <builder version="1" maintainer="ernst.bunders">kb_question</builder>
+        <builder version="1" maintainer="mmbase.org">keywords</builder>
+        <builder version="0" maintainer="mmbase.org">link</builder>
+        <builder version="0" maintainer="mmbase.org">locations</builder>
+        <builder version="0" maintainer="mmbase.org">medewerkers</builder>
+        <builder version="0" maintainer="mmbase.org">menu</builder>
+        <builder version="0" maintainer="mmbase.org">mmevents</builder>
+        <builder version="0" maintainer="mmbase.org">mmservers</builder>
+	<builder version="1" maintainer="mmbase.org">natuurgebieden_type</builder>
+        <builder version="0" maintainer="mmbase.org">oalias</builder>
+        <builder version="0" maintainer="mmbase.org">object</builder>
+        <builder version="1" maintainer="mmbase.org">pagina</builder>
+        <builder version="0" maintainer="mmbase.org">paginatemplate</builder>
+        <builder version="0" maintainer="mmbase.org">paragraaf</builder>
+        <builder version="0" maintainer="mmbase.org">phaserel</builder>
+        <builder version="0" maintainer="mmbase.org">phases</builder>
+        <builder version="0" maintainer="mmbase.org">pools</builder>
+        <builder version="0" maintainer="mmbase.org">pos4rel</builder>
+        <builder version="0" maintainer="mmbase.org">posrel</builder>
+        <builder version="0" maintainer="mmbase.org">postareas</builder>
+        <builder version="0" maintainer="mmbase.org">posters</builder>
+	<builder version="0" maintainer="mmbase.org">postings</builder>
+        <builder version="0" maintainer="submarine.nl">postthreads</builder>
+        <builder version="0" maintainer="mmbase.org">products</builder>
+        <builder version="1" maintainer="mmatch.nl">producttypes</builder>
+        <builder version="1" maintainer="ilse.nl">programs</builder>
+        <builder version="0" maintainer="mmbase.org">projects</builder>
+        <builder version="0" maintainer="mmbase.org">projecttypes</builder>
+        <builder version="1" maintainer="mmbase.org">providers</builder>
+        <builder version="0" maintainer="mmbase.org">readmore</builder>
+        <builder version="0" maintainer="mmbase.org">reldef</builder>
+        <builder version="1" maintainer="mmatch.nl">responses</builder>
+        <builder version="0" maintainer="mmbase.org">rolerel</builder>
+        <builder version="0" maintainer="mmbase.org">rubriek</builder>
+        <builder version="0" maintainer="mmbase.org">shorty</builder>
+        <builder version="1" maintainer="ilse.nl">style</builder>
+        <builder version="0" maintainer="mmbase.org">syncnodes</builder>
+        <builder version="0" maintainer="mmbase.org">teaser</builder>
+        <builder version="0" maintainer="mmbase.org">terms</builder>
+        <builder version="0" maintainer="mmbase.org">topics</builder>
+        <builder version="0" maintainer="mmbase.org">typerel</builder>
+        <builder version="0" maintainer="leeuwnet">vacature</builder>
+        <builder version="0" maintainer="mmbase.org">versions</builder>
+        <builder version="0" maintainer="mmbase.org">users</builder>
+    </neededbuilderlist>
+    <neededreldeflist>
+	<reldef source="contentrel" target="contentrel" direction="bidirectional" guisourcename="contentrel" guitargetname="contentrel" builder="contentrel" />
+        <reldef source="discountrel" target="discountrel" direction="unidirectional" guisourcename="DiscountRel" guitargetname="DiscountRel" builder="discountrel" />
+	<reldef source="gebruikt" target="gebruikt" direction="bidirectional" guisourcename="gebruikt" guitargetname="gebruikt" builder="insrel" />
+	<reldef source="parent" target="parent" direction="bidirectional" guisourcename="parentrel" guitargetname="parentrel" builder="childrel" />
+	<reldef source="phaserel" target="phaserel" direction="bidirectional" guisourcename="phaserel" guitargetname="phaserel" builder="phaserel" />
+	<reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel" />
+	<reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
+	<reldef source="readmore" target="readmore" direction="bidirectional" guisourcename="ReadMore" guitargetname="ReadMore" builder="readmore" />
+        <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+        <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="RoleRel" guitargetname="RoleRel" builder="rolerel" />
+        <reldef source="synonymrel" target="synonymrel" direction="bidirectional" guisourcename="Synonymrel" guitargetname="Synonymrel" builder="insrel" />
+    </neededreldeflist>
+    <allowedrelationlist>
+        <relation type="posrel" to="ads" from="pagina"/>
+        <relation type="readmore" to="afdelingen" from="afdelingen"/>
+	<relation type="posrel" to="afdelingen" from="divisions"/>
+        <relation type="rolerel" to="afdelingen" from="educations"/>
+        <relation type="readmore" to="afdelingen" from="medewerkers"/>
+        <relation type="readmore" to="afdelingen" from="phaserel"/>
+        <relation type="readmore" to="afdelingen" from="projects"/>
+        <relation type="pos4rel" to="artikel" from="images"/>
+        <relation type="posrel" to="artikel" from="items"/>
+        <relation type="readmore" to="artikel" from="pagina"/>
+        <relation type="contentrel" to="artikel" from="pagina"/>
+        <relation type="posrel" to="artikel" from="pools"/>
+        <relation type="posrel" to="attachments" from="artikel"/>
+        <relation type="readmore" to="attachments" from="contentblocks"/>
+        <relation type="posrel" to="attachments" from="educations"/>
+        <relation type="posrel" to="attachments" from="items"/>
+        <relation type="posrel" to="attachments" from="pagina"/> 
+        <relation type="posrel" to="attachments" from="paragraaf"/> 
+        <relation type="posrel" to="attachments" from="shorty"/> 
+        <relation type="posrel" to="attachments" from="vacature"/>
+        <relation type="related" to="avatarsets" from="posters"/> 
+        <relation type="related" to="community" from="pools"/> 
+        <relation type="posrel" to="companies" from="shorty"/> 
+        <relation type="posrel" to="competencetypes" from="competencies"/>
+        <relation type="posrel" to="competencies" from="educations"/>
+        <relation type="readmore" to="contentblocks" from="pagina"/> 
+        <relation type="readmore" to="contentblocks" from="phaserel"/>
+        <relation type="readmore" to="contentblocks" from="projects"/>
+        <relation type="posrel" to="ctexts" from="vacature"/>
+        <relation type="posrel" to="discounts" from="items"/>
+        <relation type="posrel" to="discounts" from="pagina"/>
+        <relation type="posrel" to="documents" from="documents"/>
+        <relation type="posrel" to="documents" from="pagina"/>
+        <relation type="posrel" to="editwizards" from="menu"/>
+        <relation type="related" to="editwizards" from="paginatemplate"/> 
+        <relation type="posrel" to="education_pools" from="educations"/>
+        <relation type="related" to="feedback" from="educations"/>
+	<relation type="posrel" to="formulier" from="pagina"/>
+	<relation type="posrel" to="formulierveld" from="formulier"/>
+	<relation type="posrel" to="formulierveld" from="pools"/>
+	<relation type="posrel" to="formulierveldantwoord" from="formulierveld"/>
+        <relation type="posrel" to="forummessagebox" from="posters"/>
+        <relation type="related" to="forumprivatemessage" from="forummessagebox"/>
+        <relation type="posrel" to="forums" from="pagina"/>
+        <relation type="posrel" to="images" from="artikel"/> 
+        <relation type="posrel" to="images" from="avatarsets"/>
+        <relation type="posrel" to="images" from="items"/>
+        <relation type="posrel" to="images" from="medewerkers"/>
+        <relation type="posrel" to="images" from="pagina"/> 
+        <relation type="posrel" to="images" from="paragraaf"/> 
+	<relation type="contentrel" to="images" from="rubriek"/>
+        <relation type="posrel" to="images" from="shorty"/> 
+        <relation type="posrel" to="images" from="teaser"/> 
+        <relation type="readmore" to="items" from="artikel"/>
+        <relation type="posrel" to="items" from="pagina"/>
+        <relation type="related" to="kb_answer" from="kb_question"/>
+        <relation type="related" to="kb_category" from="kb_category"/>
+        <relation type="related" to="kb_question" from="kb_category"/>
+        <relation type="related" to="keywords" from="educations"/>
+        <relation type="posrel" to="link" from="contentblocks"/>
+        <relation type="posrel" to="link" from="items"/>
+        <relation type="posrel" to="link" from="pagina"/> 
+        <relation type="posrel" to="link" from="paragraaf"/> 
+        <relation type="posrel" to="link" from="shorty"/> 
+        <relation type="posrel" to="link" from="teaser"/> 
+        <relation type="posrel" to="locations" from="afdelingen"/> 
+	<relation type="posrel" to="locations" from="divisions"/>
+        <relation type="readmore" to="locations" from="medewerkers"/>
+        <relation type="readmore" to="locations" from="products"/>
+        <relation type="posrel" to="locations" from="programs"/>
+        <relation type="rolerel" to="medewerkers" from="educations"/>
+        <relation type="posrel" to="medewerkers" from="items"/>
+        <relation type="readmore" to="medewerkers" from="phaserel"/> 
+        <relation type="readmore" to="medewerkers" from="projects"/> 
+        <relation type="related" to="medewerkers" from="users"/> 
+	<relation type="gebruikt" to="menu" from="users"/>
+        <relation type="related" to="mmevents" from="images"/>
+        <relation type="posrel" to="mmevents" from="pagina"/>
+        <relation type="posrel" to="mmevents" from="shorty"/>
+        <relation type="posrel" to="pagina" from="contentblocks"/>
+        <relation type="readmore" to="pagina" from="contentblocks"/>
+        <relation type="pos4rel" to="pagina" from="images"/> 
+        <relation type="contentrel" to="pagina" from="medewerkers"/> 
+        <relation type="discountrel" to="pagina" from="pagina"/> 
+	<relation type="readmore" to="pagina" from="pagina"/>
+        <relation type="related" to="pagina" from="pagina"/>
+        <relation type="readmore" to="pagina" from="paragraaf"/> 
+        <relation type="posrel" to="pagina" from="rubriek"/>
+        <relation type="readmore" to="pagina" from="teaser"/> 
+        <relation type="readmore" to="pagina" from="terms"/>
+        <relation type="gebruikt" to="paginatemplate" from="pagina"/>
+        <relation type="posrel" to="paragraaf" from="artikel"/>
+        <relation type="posrel" to="paragraaf" from="projects"/>
+        <relation type="phaserel" to="phases" from="projects"/>
+        <relation type="posrel" to="phases" from="terms"/>
+        <relation type="posrel" to="pools" from="artikel"/>
+        <relation type="posrel" to="pools" from="items"/>
+        <relation type="discountrel" to="pools" from="items"/>
+        <relation type="posrel" to="pools" from="pagina"/>
+        <relation type="related" to="postareas" from="forums"/>
+        <relation type="related" to="posters" from="forums"/>
+        <relation type="rolerel" to="posters" from="forums"/>
+        <relation type="rolerel" to="posters" from="images"/>
+        <relation type="rolerel" to="posters" from="postareas"/>
+	<relation type="related" to="postings" from="postthreads"/>
+        <relation type="related" to="postthreads" from="postareas"/>
+        <relation type="posrel" to="producttypes" from="pagina"/>
+        <relation type="posrel" to="producttypes" from="products"/>
+        <relation type="posrel" to="producttypes" from="teaser"/>
+        <relation type="posrel" to="products" from="items"/>
+        <relation type="posrel" to="programs" from="afdelingen"/>
+        <relation type="readmore" to="programs" from="medewerkers"/>
+        <relation type="posrel" to="programs" from="pagina"/>
+        <relation type="posrel" to="programs" from="products"/>
+        <relation type="posrel" to="programs" from="shorty"/>
+        <relation type="posrel" to="projects" from="contentblocks"/>
+        <relation type="posrel" to="projects" from="terms"/>
+        <relation type="posrel" to="projecttypes" from="projects"/>
+        <relation type="related" to="providers" from="educations"/>
+        <relation type="parent" to="rubriek" from="rubriek"/>
+        <relation type="contentrel" to="shorty" from="pagina"/>
+        <relation type="related" to="style" from="rubriek"/>
+        <relation type="readmore" to="style" from="rubriek"/>
+        <relation type="related" to="style" from="shorty"/>
+        <relation type="contentrel" to="teaser" from="pagina"/>
+        <relation type="rolerel" to="terms" from="terms"/>
+        <relation type="synonymrel" to="terms" from="terms"/>
+        <relation type="rolerel" to="users" from="pagina"/>
+	<relation type="rolerel" to="users" from="rubriek"/>
+        <relation type="contentrel" to="vacature" from="pagina"/> 
+
+	<!-- new -->
+	<relation from="evenement_blueprint" to="deelnemers_age" type="posrel" />
+	<relation from="evenement_blueprint" to="deelnemers_categorie"  type="posrel" />
+	<relation from="evenement_blueprint" to="afdelingen" type="readmore" />
+	<relation from="evenement_blueprint" to="evenement_type" type="related" />
+	<relation from="evenement_blueprint" to="evenement_distance" type="related" />
+	<relation from="evenement_blueprint" to="evenement_duration" type="related" />
+	<relation from="evenement_blueprint" to="natuurgebieden_type" type="related" />
+	<relation from="evenement_blueprint" to="medewerkers" type="readmore" />
+	<relation from="evenement_blueprint" to="feedback" type="related" />
+	<relation from="evenement_blueprint" to="paragraaf" type="posrel" />
+
+    </allowedrelationlist>
+    <datasourcelist>
+        <datasource builder="ads" path="NMIntra/ads.xml"/>
+        <datasource builder="afdelingen" path="NMIntra/afdelingen.xml"/>
+        <datasource builder="artikel" path="NMIntra/artikel.xml"/>
+        <datasource builder="attachments" path="NMIntra/attachments.xml"/>
+        <datasource builder="avatarsets" path="NMIntra/avatarsets.xml"/>
+        <datasource builder="community" path="NMIntra/community.xml"/>
+        <datasource builder="companies" path="NMIntra/companies.xml"/>
+        <datasource builder="competencetypes" path="NMIntra/competencetypes.xml"/>
+        <datasource builder="competencies" path="NMIntra/competencies.xml"/>
+        <datasource builder="contentblocks" path="NMIntra/contentblocks.xml"/>
+        <datasource builder="contentelement" path="NMIntra/contentelement.xml"/>
+        <datasource builder="ctexts" path="NMIntra/ctexts.xml"/>
+        <datasource builder="daymarks" path="NMIntra/daymarks.xml"/>
+        <datasource builder="deelnemers_age" path="NMIntra/deelnemers_age.xml"/>
+	<datasource builder="deelnemers_categorie" path="NMIntra/deelnemers_categorie.xml"/>
+        <datasource builder="discounts" path="NMIntra/discounts.xml"/>
+        <datasource builder="divisions" path="NMIntra/divisions.xml"/>
+        <datasource builder="documents" path="NMIntra/documents.xml"/>
+        <datasource builder="editwizards" path="NMIntra/editwizards.xml"/>
+	<datasource builder="education_keywords" path="NMIntra/education_keywords.xml"/>
+        <datasource builder="education_pools" path="NMIntra/education_pools.xml"/>
+        <datasource builder="educations" path="NMIntra/educations.xml"/>
+        <datasource builder="email" path="NMIntra/email.xml"/>
+        <datasource builder="empupdates" path="NMIntra/empupdates.xml"/>
+	<datasource builder="evenement_blueprint" path="NMIntra/evenement_blueprint.xml" />
+	<datasource builder="evenement_distance" path="NMIntra/evenement_distance.xml" />
+	<datasource builder="evenement_duration" path="NMIntra/evenement_duration.xml" />
+	<datasource builder="evenement_type" path="NMIntra/evenement_type.xml" />
+        <datasource builder="feedback" path="NMIntra/feedback.xml"/>
+        <datasource builder="formulier" path="NMIntra/formulier.xml"/>
+        <datasource builder="formulierveld" path="NMIntra/formulierveld.xml"/>
+        <datasource builder="formulierveldantwoord" path="NMIntra/formulierveldantwoord.xml"/>
+        <datasource builder="forummessagebox" path="NMIntra/forummessagebox.xml"/>
+        <datasource builder="forumprivatemessage" path="NMIntra/forumprivatemessage.xml"/>
+        <datasource builder="forums" path="NMIntra/forums.xml"/>
+        <datasource builder="groups" path="NMIntra/groups.xml"/>
+        <datasource builder="icaches" path="NMIntra/icaches.xml"/>
+        <datasource builder="images" path="NMIntra/images.xml"/>
+        <datasource builder="imagesets" path="NMIntra/imagesets.xml"/>
+        <datasource builder="items" path="NMIntra/items.xml"/>
+        <datasource builder="kb_answer" path="NMIntra/kb_answer.xml"/>
+        <datasource builder="kb_category" path="NMIntra/kb_category.xml"/>
+        <datasource builder="kb_displayable" path="NMIntra/kb_displayable.xml"/>
+        <datasource builder="kb_identifiable" path="NMIntra/kb_identifiable.xml"/>
+        <datasource builder="kb_question" path="NMIntra/kb_question.xml"/>
+        <datasource builder="keywords" path="NMIntra/keywords.xml"/>
+        <datasource builder="link" path="NMIntra/link.xml"/>
+        <datasource builder="locations" path="NMIntra/locations.xml"/>
+        <datasource builder="medewerkers" path="NMIntra/medewerkers.xml"/>
+        <datasource builder="menu" path="NMIntra/menu.xml"/>
+        <datasource builder="mmevents" path="NMIntra/mmevents.xml"/>
+        <datasource builder="mmservers" path="NMIntra/mmservers.xml"/>
+	<datasource builder="natuurgebieden_type" path="NMIntra/natuurgebieden_type.xml"/>
+        <datasource builder="oalias" path="NMIntra/oalias.xml"/>
+        <datasource builder="object" path="NMIntra/object.xml"/>
+        <datasource builder="pagina" path="NMIntra/pagina.xml"/>
+        <datasource builder="paginatemplate" path="NMIntra/paginatemplate.xml"/>
+        <datasource builder="paragraaf" path="NMIntra/paragraaf.xml"/>
+        <!--<datasource builder="phaserel" path="NMIntra/phaserel.xml"/>-->
+        <datasource builder="phases" path="NMIntra/phases.xml"/>
+        <datasource builder="pools" path="NMIntra/pools.xml"/>
+        <datasource builder="postareas" path="NMIntra/postareas.xml"/>
+        <datasource builder="posters" path="NMIntra/posters.xml"/>
+	<datasource builder="postings" path="NMIntra/postings.xml" />
+        <datasource builder="postthreads" path="NMIntra/postthreads.xml"/>
+        <datasource builder="products" path="NMIntra/products.xml"/>
+        <datasource builder="producttypes" path="NMIntra/producttypes.xml"/>
+        <datasource builder="programs" path="NMIntra/programs.xml"/>
+        <datasource builder="projects" path="NMIntra/projects.xml"/>
+        <datasource builder="projecttypes" path="NMIntra/projecttypes.xml"/>
+        <datasource builder="providers" path="NMIntra/providers.xml"/>
+        <datasource builder="responses" path="NMIntra/responses.xml"/>
+        <datasource builder="rubriek" path="NMIntra/rubriek.xml"/>
+        <datasource builder="shorty" path="NMIntra/shorty.xml"/>
+        <datasource builder="style" path="NMIntra/style.xml"/>
+        <datasource builder="syncnodes" path="NMIntra/syncnodes.xml"/>
+        <datasource builder="teaser" path="NMIntra/teaser.xml"/>
+        <datasource builder="terms" path="NMIntra/terms.xml"/>
+        <datasource builder="topics" path="NMIntra/topics.xml"/>
+        <datasource builder="vacature" path="NMIntra/vacature.xml"/>
+        <datasource builder="versions" path="NMIntra/versions.xml"/>
+        <datasource builder="users" path="NMIntra/users.xml"/>
+    </datasourcelist>
+    <relationsourcelist>
+	<relationsource builder="childrel" path="NMIntra/childrel.xml"/>
+	<relationsource builder="contentrel" path="NMIntra/contentrel.xml"/>
+	<relationsource builder="discountrel" path="NMIntra/discountrel.xml"/>
+        <relationsource builder="insrel" path="NMIntra/insrel.xml"/>
+	<relationsource builder="phaserel" path="NMIntra/phaserel.xml"/>
+	<relationsource builder="posrel" path="NMIntra/posrel.xml"/>
+        <relationsource builder="pos4rel" path="NMIntra/pos4rel.xml"/>
+	<relationsource builder="readmore" path="NMIntra/readmore.xml"/>
+        <relationsource builder="rolerel" path="NMIntra/rolerel.xml"/>
+    </relationsourcelist>
+    <contextsourcelist>
+        <contextsource type="full" goal="backup" path=""/>
+    </contextsourcelist>
+    <description>desc</description>
+    <install-notice>installed</install-notice>
+</application>
