@@ -22,7 +22,7 @@ function validate() {
             }
         }
     }
-    document.getElementById("submit").type = valid ? "submit" : "hidden";
+    document.getElementById("submit").style.visibility = valid ? "visible" : "hidden";
     
 }
 
