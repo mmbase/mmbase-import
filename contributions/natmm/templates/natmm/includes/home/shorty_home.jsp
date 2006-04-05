@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@include file="/taglibs.jsp" %>
 <%@include file="../../includes/image_vars.jsp" %>
 <mm:cloud jspvar="cloud">
 <%
@@ -9,6 +9,7 @@
    String shortyRol = request.getParameter("sr");
    int maxShorties = 20;
    imgFormat = "shorty";
+   PaginaHelper ph = new PaginaHelper(cloud);
 
 %>
 <%@include file="../../includes/shorty_logic_1.jsp" %>

@@ -158,7 +158,7 @@ if(adID.equals("-1")) {
             </td>
           </tr>
           <tr><td colspan="2" style="height:7px;"></td></tr>
-          <tr><td class="maincolor" style="width:1737px;padding:5px;line-height:0.85em;">Onderwerp *</td></tr>
+          <tr><td class="maincolor" style="width:1737px;padding:5px;line-height:0.85em;">Quote *</td></tr>
           <tr>
             <td class="maincolor" style="width:173px;padding:0px;padding-left:1px;padding-right:1px;vertical-align:top;<% if(!isIE) { %>padding-top:1px;<% } %>">
               <input type="text" name="title" value="<%= titleID %>" style="width:171px;border:0;" onkeypress="return handleEnter(this, event)">
@@ -242,8 +242,8 @@ if(adID.equals("-1")) {
                     ><mm:time time="<%=ads_postdate%>" format="d MMM yyyy"/></mm:field></span>
                  </div>
                </td>
-               <td style="padding-left:10px;padding-top:7px;">
-                 <mm:field name="title" />
+               <td style="padding-left:10px;padding-top:7px;font:bold;">
+                 "<mm:field name="title" />"
                </td>
              </tr>
              <tr align="left" valign="top">
