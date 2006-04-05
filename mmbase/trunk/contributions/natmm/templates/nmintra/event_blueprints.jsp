@@ -31,7 +31,6 @@
       if(request.getRequestURI().indexOf("/editors/")!=-1) {
          localPath = "/dev/";
       }
-		System.out.println("blue: pageId = " + pageId);
       String searchUrl = localPath + "event_blueprints.jsp?p=" + pageId
                    + "&evt=" + eTypeId
                    + "&pc=" + pCategorieId

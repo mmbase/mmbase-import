@@ -5,6 +5,7 @@
 %><%@include file="includes/searchfunctions.jsp" %><%
 
 boolean debug = false;
+//boolean debug = true;
 
 String defaultSearchId = "ik zoek op ...";
 searchId = HtmlCleaner.filterUTFChars(searchId);
@@ -17,21 +18,33 @@ TreeMap nodePaths = new TreeMap();
     %></mm:field
 ></mm:node><%
 
-String allCategoryIds = categoryId; // *** categoryId is a rubriek or a site
+//String allCategoryIds = categoryId; // *** categoryId is a rubriek or a site
 
 String searchedPages = ""; // *** look for those pages that belong to one of the nodes in allCategoryIds ***
-// *** regular pages ***
-%><mm:list nodes="<%= allCategoryIds %>" path="rubriek1,parent,rubriek2,posrel,pagina"
+String sConstraints = ""; %>
+<mm:node number="<%= categoryId %>">
+	<mm:aliaslist>
+		<mm:write jspvar="alias" vartype="String" write="false">
+			<% if (!alias.equals("home")) {
+				sConstraints = "rubriek2.number = '" + categoryId + "'";
+				}%>
+		</mm:write>
+	</mm:aliaslist>
+</mm:node>
+<% // *** normal page *** %>
+<mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2,posrel,pagina" constraints="<%= sConstraints %>"
     ><mm:field name="pagina.number" jspvar="page1_number" vartype="String" write="false"
         ><% searchedPages += "," + page1_number; 
     %></mm:field
 ></mm:list><%
 // *** subpages ***
-%><mm:list nodes="<%= allCategoryIds %>" path="rubriek1,parent1,rubriek2,parent2,rubriek3,posrel,pagina"
+if (!sConstraints.equals("")){ sConstraints += " AND ";}
+sConstraints += "rubriek1.number != rubriek3.number";
+%><mm:list nodes="<%= websiteId %>" path="rubriek1,parent1,rubriek2,parent2,rubriek3,posrel,pagina" constraints="<%= sConstraints %>"
     ><mm:field name="pagina.number" jspvar="page1_number" vartype="String" write="false"
         ><% searchedPages += "," + page1_number; 
     %></mm:field
-></mm:list><%
+></mm:list><% 
 
 if(!searchedPages.equals("")) { searchedPages = searchedPages.substring(1); }
 
@@ -54,9 +67,8 @@ if(!searchedPages.equals("")) { searchedPages = searchedPages.substring(1); }
    constraints="<%= "rubriek.number='"+ categoryId + "'" %>">
    <p><strong>Dit systeem zoekt niet in de <mm:field name="pagina.titel" />.<br/><br/>
    Wil je in de <mm:field name="pagina.titel" /> zoeken, klik dan eerst op "<mm:field name="pagina.titel" />" (linkerzijde van de pagina).</strong></p>
-</mm:list><%
+</mm:list><% 
 if(!searchId.equals(defaultSearchId)&&!searchId.equals("")) {
-
     %><p>Je hebt gezocht op "<%= searchId %>" <mm:node number="<%= categoryId %>" notfound="skipbody">in "<mm:field name="naam" />" </mm:node>.</p><%
 
     int listSize = searchResultMap.size();

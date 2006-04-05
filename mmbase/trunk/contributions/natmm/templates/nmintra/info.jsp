@@ -144,7 +144,7 @@ if(!articleId.equals("")) {
                            ><%@include file="includes/summaryrow.jsp" 
                        %></mm:field
                      ></mm:list><%
-               } else { System.out.println("pageId = " + pageId + " articlePath = " + articlePath);
+               } else { 
                   %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" max="1">
 								Er zijn geen artikelen gevonden, die voldoen aan uw selectie criteria.
 								<mm:import id="pagehasarticles" />
