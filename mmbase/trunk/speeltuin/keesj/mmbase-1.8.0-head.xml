@@ -11,7 +11,7 @@
 
 	 <mkdir dir="repository/mmbase/jars"/>
 	 <copy file="mmbase/WEB-INF/lib/mmbase.jar" tofile="repository/mmbase/jars/mmbase-core-${mmbase.version}.jar"/>
-	 <copy file="mmbase/WEB-INF/lib/mmbase-taglib.jar" tofile="repository/mmbase/jars/mmbase-taglib-${mmbase.version}.jar"/>
+	 <copy file="mmbase/WEB-INF/lib/mmbase-taglib-2.jar" tofile="repository/mmbase/jars/mmbase-taglib-${mmbase.version}.jar"/>
 	 <delete dir="mmbaseWEB-INF/lib"/>
 	 <delete dir="mmbase/mmdocs"/>
 	 <delete dir="mmbase/mmexamples"/>
