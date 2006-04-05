@@ -2,6 +2,7 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud">
    <%@include file="../calendar.jsp" %>
+   <%@include file="../image_vars.jsp" %>
    <%@include file="countryNames.jsp" %>
    <%
    

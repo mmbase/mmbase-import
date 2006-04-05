@@ -12,6 +12,7 @@
    if(request.getParameter("sp")!=null && request.getParameter("sp").equals("natuurgebieden,posrel")) { 
       padding = 0;
    } 
+   PaginaHelper ph = new PaginaHelper(cloud);
 %><%@include file="../includes/shorty_logic_1.jsp" %>
 <% for (int i =0; i<shortyCnt;i++){ %>
 	<%@include file="../includes/shorty_logic_2.jsp" %>

@@ -27,6 +27,7 @@ long oneDay = 24*60*60;
   <%@include file="includes/navsettings.jsp" %>
   <% 
   if(artikelID.equals("-1")) { 
+    // last article before tomorrow
     objectConstraint = "artikel.begindatum < '" + (nowDay+oneDay) + "'";  %>
     <mm:relatednodes type="artikel" path="contentrel,artikel" orderby="begindatum" directions="DOWN" max="1"
        constraints="<%= objectConstraint %>">
@@ -47,6 +48,7 @@ long oneDay = 24*60*60;
         <% 
         if(menuType==QUOTE) {
            // *** Flark specific code ***
+           // last article before selected article
            objectConstraint = "artikel.begindatum < '" + selectedDay + "'"; %>
            <mm:relatednodes type="artikel" path="contentrel,artikel" max="1" orderby="begindatum" directions="DOWN"
                constraints="<%= objectConstraint %>">
@@ -71,7 +73,10 @@ long oneDay = 24*60*60;
                </table>
              </div>
            </mm:relatednodes>
-           <% objectConstraint = "artikel.begindatum > '" + selectedDay + "'"; %>
+           <% 
+           // first article after selected article
+           objectConstraint = "artikel.begindatum > '" + selectedDay + "'"; 
+           %>
            <mm:relatednodes type="artikel" path="contentrel,artikel" max="1" orderby="begindatum" directions="UP"
                constraints="<%= objectConstraint %>">
              <div style="padding-bottom:10px">

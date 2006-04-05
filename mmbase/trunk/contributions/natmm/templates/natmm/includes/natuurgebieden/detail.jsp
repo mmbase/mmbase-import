@@ -7,6 +7,7 @@
 <%
 
 String shortyRol = "";
+PaginaHelper ph = new PaginaHelper(cloud);
 
 if(artikelID != null) { 
 %><mm:node number="<%=artikelID%>" notfound="skipbody">

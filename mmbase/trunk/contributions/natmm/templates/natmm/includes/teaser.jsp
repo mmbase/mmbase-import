@@ -9,6 +9,7 @@
    String shortyRol = request.getParameter("sr");
    int maxShorties = 20;
    imgFormat = "shorty";
+   PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <%@include file="../includes/getstyle.jsp" %>
 <mm:import id="showteaser"/>
