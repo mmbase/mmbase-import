@@ -187,10 +187,14 @@
                      <%@include file="metaedit_header.jsp" %>
                      <br/>
                      <%
+
+                     ArrayList arliGroupConstraintsErrors = MetaDataHelper.checkGroupConstraints(nodeObject, application, "nl");
+
+
                      //Header, if error
                      //arliErrors contains all errors
                      //System.out.println("errors=" + arliErrors.size());
-                     if(arliErrors.size() > 0)
+                     if((arliErrors.size() > 0) || (arliGroupConstraintsErrors.size() > 0))
                      {
                         %>
                         <style type="text/css">
@@ -207,6 +211,11 @@
                         for(Iterator it = arliErrors.iterator(); it.hasNext();){
                             Error error = (Error) it.next();
                             %> <%= error.getErrorReport() %> <br/> <%
+                        }
+
+                        for(Iterator it = arliGroupConstraintsErrors.iterator(); it.hasNext();){
+                            String sError = (String) it.next();
+                            %> <%= sError %> <br/> <%
                         }
                         %>
                            <a href="metaedit.jsp?number=<%= sNode %>&random=<%= (new Date()).getTime() %>"><font style="color:red; font-weight:bold; text-decoration:none"><di:translate key="metadata.back_to_metaeditform" /></font></a>

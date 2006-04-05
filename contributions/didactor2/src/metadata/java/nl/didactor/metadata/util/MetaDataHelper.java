@@ -847,7 +847,7 @@ public class MetaDataHelper {
                try{
                    Class classMetaDataHandler = Class.forName("nl.didactor.component.metadata.autofill.handlers." + sHandler);
                    Object[] arrobjParams = {servletContext};
-                   HandlerInterface handler = (HandlerInterface) classMetaDataHandler.getConstructors()[0].newInstance(arrobjParams);
+                   nl.didactor.component.metadata.autofill.HandlerInterface handler = (nl.didactor.component.metadata.autofill.HandlerInterface) classMetaDataHandler.getConstructors()[0].newInstance(arrobjParams);
 
                    if(!handler.checkMetaData(nodeMetaDefinition, nodeObject)){
                        handler.addMetaData(nodeMetaDefinition, nodeObject);
@@ -862,8 +862,64 @@ public class MetaDataHelper {
        log.debug("fillAutoValues() ------------END-----------");
    }
 
-}
 
+
+
+
+   /**
+    * Checks all group constraints for this object
+    *
+    * @param nodeObject Node
+    * @param application ServletContext
+    * @return ArrayList
+    */
+   public static ArrayList checkGroupConstraints(Node nodeObject, ServletContext application, String sLocale){
+       Cloud cloud = nodeObject.getCloud();
+
+       ArrayList arliResult = new ArrayList();
+
+       String sActiveMetaStandarts = getCachedActiveMetastandards(cloud, application, null, null);
+
+       NodeList nlGroupConstraints = cloud.getList(sActiveMetaStandarts,
+           "metastandard,metadefinition,group_constraints",
+           "group_constraints.number",
+           null,
+           null, null, null, true);
+
+       log.debug("There are " + nlGroupConstraints.size() + " active group constraints for object=" + nodeObject.getNumber() + ".");
+
+       for(int f = 0; f < nlGroupConstraints.size(); f++){
+           Node nodeGroupConstraint = cloud.getNode(nlGroupConstraints.getNode(f).getStringValue("group_constraints"));
+
+           String sHandler = nodeGroupConstraint.getStringValue("handler");
+           if("".equals(sHandler)){
+               log.debug("Group constraint(" + nodeGroupConstraint.getNumber() + ") has got no handler. Skip it.");
+           }
+           else{
+               log.debug("Group constraint(" + nodeGroupConstraint.getNumber() + "): trying to start handler: nl.didactor.component.metadata.constraints.group.handlers." + sHandler);
+
+               try{
+                   Class classHandler = Class.forName("nl.didactor.component.metadata.constraints.group.handlers." + sHandler);
+                   nl.didactor.component.metadata.constraints.group.HandlerInterface handler = (nl.didactor.component.metadata.constraints.group.HandlerInterface) classHandler.newInstance();
+
+                   arliResult.addAll(handler.check(nodeGroupConstraint, nodeObject, sLocale));
+
+
+                   log.debug("GroupHandler(" + sHandler + "), object=" + nodeObject.getNumber() + " PASSED");
+               }
+               catch(Exception e){
+                   log.debug("GroupHandler(" + sHandler + "), object=" + nodeObject.getNumber() + "   ERROR:" + e.toString());
+               }
+
+           }
+       }
+
+       return arliResult;
+   }
+
+
+
+}
 
 
 
