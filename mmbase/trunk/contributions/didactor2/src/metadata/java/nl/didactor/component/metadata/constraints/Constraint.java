@@ -33,8 +33,9 @@ public class Constraint {
     public final static int MANDATORY = 1;
     public final static int LIMITED = 2;
     public final static int FORBIDDEN = 3;
+    public final static int HIDDEN = 3;
     public final static String [] typeString = { "NOT_USED", "FORBIDDEN", "MANDATORY", "LIMITED" };
-    
+
     public final static int EVENT_METADEFINITION_ITSELF = 0;
     public final static int EVENT_METASTANDART_CONSTRAINT_RELATION = 1;
     public final static int EVENT_VOCABULARY_CONSTRAINT_RELATION = 2;
@@ -55,17 +56,25 @@ public class Constraint {
      */
     private ArrayList constraintsChain = null;
 
+
+
+
     public Constraint(int type, int event){
+/*
         log.debug("creating constraint " + typeString[type] + " for event " +  eventString[event]);
-        if(type<MANDATORY || type>FORBIDDEN) { 
+        if(type<MANDATORY || type>FORBIDDEN) {
           log.error("Not supported type " + type);
         }
         if(event<EVENT_METADEFINITION_ITSELF || event>EVENT_VOCABULARY_TO_VOCABULARY_RELATION) {
           log.error("Not supported event " + event);
-        }  
+        }
+*/
         this.type = type;
         this.event = event;
     }
+
+
+
 
     public void setMax(int max) {
         this.max = max;
@@ -74,12 +83,16 @@ public class Constraint {
         return max;
     }
 
+
+
     public void setMin(int min) {
         this.min = min;
     }
     public int getMin() {
         return min;
     }
+
+
 
     public void setPosition(int position) {
         this.position = position;
@@ -88,13 +101,16 @@ public class Constraint {
         return position;
     }
 
+
+
+
     public int getType() {
         return type;
     }
-
     public int getEvent(){
         return event;
     }
+
 
     public void setEventObject(Object eventObject){
         this.eventObject = eventObject;
@@ -102,6 +118,8 @@ public class Constraint {
     public Object getEventObject(){
         return eventObject;
     }
+
+
 
     public void setConstraintsChain(ArrayList constraintsChain){
         this.constraintsChain = constraintsChain;
