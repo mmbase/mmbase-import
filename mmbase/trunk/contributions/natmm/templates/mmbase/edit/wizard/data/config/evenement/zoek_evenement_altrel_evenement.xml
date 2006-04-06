@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="altrel" destination="evenement" minoccurs="0" maxoccurs="*" orderby="begindatum" ordertype="number">
-   <title>alternatief</title>
+   <title>alternatief (data die valt in uur voor tot en met uur na deze activiteit wordt getoond in aanmeldscherm)</title>
    <item>
       <field ftype="data" name="titel"><prompt>titel</prompt></field>
       <!-- field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field -->

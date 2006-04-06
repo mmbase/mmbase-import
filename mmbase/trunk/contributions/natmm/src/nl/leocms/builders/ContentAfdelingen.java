@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ContentAfdelingen extends ContentOrganisatie {
 
@@ -45,7 +45,7 @@ public class ContentAfdelingen extends ContentOrganisatie {
       NodeIterator iNodes= cloud.getList(node.getStringValue("number")
                , "afdelingen,posrel,natuurgebieden"
                , "natuurgebieden.number", null, null, null, null, false).nodeIterator();
-      if(iNodes.hasNext()) {
+      while(iNodes.hasNext()) {
           Node nextNode = iNodes.nextNode();
           cloud.getNode(nextNode.getIntValue("natuurgebieden.number")).commit();
       }

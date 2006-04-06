@@ -79,26 +79,28 @@ if(commandId.equals("Wis")) { // *** reset to default values ***
    endMnthId = beginMnthId;
    endYrId = "" + (cal.get(Calendar.YEAR) +1);
 }
-%><%--
-command: <%= commandId %>
-delete: <%= deleteId %>
-docopy: <%= docopyId %>
-provincie: <%= provincieId %>
-afdeling: <%= afdelingId %>
-orderby: <%= orderbyId %>
-direction: <%= directionId %>
-soort: <%= soortId %>
-titel: <%= titelId %>
-natuurgebieden:<%= natuurgebiedenId %>
-beginDy: <%= beginDyId %>
-beginMnth: <%= beginMnthId %>
-beginYr: <%= beginYrId %>
-endDy: <%= endDyId %>
-endMnth: <%= endMnthId %>
-endYr: <%= endYrId %>
-offset: <%= offsetId %>
-action: <%= actionId %>
---%><%
+%>
+<%--
+command: <%= commandId %><br/>
+delete: <%= deleteId %><br/>
+docopy: <%= docopyId %><br/>
+provincie: <%= provincieId %><br/>
+afdeling: <%= afdelingId %><br/>
+orderby: <%= orderbyId %><br/>
+direction: <%= directionId %><br/>
+soort: <%= soortId %><br/>
+titel: <%= titelId %><br/>
+natuurgebieden:<%= natuurgebiedenId %><br/>
+beginDy: <%= beginDyId %><br/>
+beginMnth: <%= beginMnthId %><br/>
+beginYr: <%= beginYrId %><br/>
+endDy: <%= endDyId %><br/>
+endMnth: <%= endMnthId %><br/>
+endYr: <%= endYrId %><br/>
+offset: <%= offsetId %><br/>
+action: <%= actionId %><br/>
+--%>
+<%
 Cookie thisCookie = null;
 thisCookie = new Cookie("provincieIdFC", provincieId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
 thisCookie = new Cookie("afdelingIdFC", afdelingId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
@@ -386,7 +388,7 @@ if(!provincieId.equals("")) {
          %><nobr><a href="<%= "evenementen.jsp?action=print&orderby=" + orderbyId + "&direction=" + directionId + "&soort=" +  soortId + "&offset=" +  offsetId + searchSetting 
              %>" target="_blank"><img src='../img/print.gif' align='absmiddle' border='0' alt='Print het overzicht'></a>
          <% if (soortId.equals("activiteiten")) { %>	
-			 	    <a href="#" onClick="javascript:launchCenter('download_popup.jsp?type=ad', 'center', 300, 400);setTimeout('newwin.focus();',250);">
+			 	    <a href="#" onClick="javascript:launchCenter('download_popup.jsp?type=ad', 'center', 300, 400, 'resizable=1');setTimeout('newwin.focus();',250);">
 					 	 <img src='../img/icexcel.gif' align='absmiddle' border='0' alt='Download alle geselecteerde activiteiten'>
 				    </a>
 			 <% } %>	
@@ -630,7 +632,7 @@ while(events.size()>0&&iEventCtr<pageSize) {
                   %><a href="evenementen.jsp?orderby=begindatum&direction=up&soort=<%= soortId %>&docopy=<mm:field name="number" /><%= searchSetting %>">
                      <img onclick="return doDelete('Weet u zeker dat u <%= titel.replace('"',' ').replace('\'',' ') + ", " + ddn.getReadableDate() + ", " + ddn.getReadableTime() %> wilt kopieren? Wijzig na kopieren de datum van de copy.');"  onmousedown="cancelClick=true;"
                         src="../img/copy.gif" border='0' align='absmiddle' alt='Deze activiteit kopieren'/></a>
-			 	        <a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= parent_number %>&type=as', 'center', 300, 400);setTimeout('newwin.focus();',250);">
+			 	        <a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= parent_number %>&type=as', 'center', 300, 400, 'resizable=1');setTimeout('newwin.focus();',250);">
 						 	 <img src='../img/icexcel.gif' align='absmiddle' border='0' alt='Download alle data met aanmeldingen voor deze activiteit'></a><% 
                }
                %>

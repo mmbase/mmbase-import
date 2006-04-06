@@ -3,12 +3,14 @@
 <mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon" jspvar="cloud">
 <%@include file="../includes/top1_params.jsp" %>
 <%@include file="../includes/top2_cacheparams.jsp" %>
-<mm:import externid="name" jspvar="nameID"></mm:import> 
-<mm:import externid="email" jspvar="emailID"></mm:import> 
-<mm:import externid="title" jspvar="titleID"></mm:import> 
-<mm:import externid="text" jspvar="textID"></mm:import>
-<mm:import externid="ed" jspvar="expiredateID"></mm:import>
 <% 
+// try this with mm:import and the non-ascii input will not be dealt with correctly
+String nameID = request.getParameter("name"); if(nameID==null) { nameID = ""; }
+String emailID = request.getParameter("email"); if(emailID==null) { emailID = ""; }
+String titleID = request.getParameter("title"); if(titleID==null) { titleID = ""; }
+String textID = request.getParameter("text"); if(textID==null) { textID = ""; }
+String expiredateID = request.getParameter("ed"); if(expiredateID==null) { expiredateID = ""; }
+
 PaginaHelper ph = new PaginaHelper(cloud);
 
 if(nameID==null) { nameID = ""; }
@@ -20,6 +22,8 @@ if(expiredateID==null) { expiredateID = ""; }
 String warningMessage = "";
 int rI = 70000;
 String confirmConstraint = "ads.expiredate > '" + rI + "'";
+
+boolean showOne = false;
 
 boolean isPosting = !(nameID+emailID+titleID+textID).equals("");
 if(isPosting) {
@@ -130,13 +134,15 @@ function handleEnter (field, event) {
 <%
 if(adID.equals("-1")) { 
   %>
-  <mm:relatednodes type="ads" path="contentrel,ads" max="1" orderby="postdate" directions="DOWN">
+  <mm:relatednodes type="ads" path="contentrel,ads" max="1" orderby="postdate" directions="DOWN" constraints="<%= confirmConstraint %>">
      <mm:field name="number" jspvar="artikel_number" vartype="String" write="false">
-        <% adID = artikel_number;%>
+        <% 
+        adID = artikel_number;
+        %>
      </mm:field>
   </mm:relatednodes>
   <%
-}
+} 
 %>
   <table cellspacing="0" cellpadding="0" width="744" align="center" border="0" valign="top">
     <tr>
@@ -158,7 +164,11 @@ if(adID.equals("-1")) {
             </td>
           </tr>
           <tr><td colspan="2" style="height:7px;"></td></tr>
-          <tr><td class="maincolor" style="width:1737px;padding:5px;line-height:0.85em;">Quote *</td></tr>
+          <tr>
+               <td class="maincolor" style="width:1737px;padding:5px;line-height:0.85em;">
+                  <a href="#" title="De tekst die u hier invult komt boven uw bericht te staan." style="color:#FFFFFF;text-decoration: none;">Quote *</a>
+               </td>
+          </tr>
           <tr>
             <td class="maincolor" style="width:173px;padding:0px;padding-left:1px;padding-right:1px;vertical-align:top;<% if(!isIE) { %>padding-top:1px;<% } %>">
               <input type="text" name="title" value="<%= titleID %>" style="width:171px;border:0;" onkeypress="return handleEnter(this, event)">
@@ -226,34 +236,60 @@ if(adID.equals("-1")) {
                <%
              }
           } else {
+
+            String sNodes = paginaID;
+            String sPath = "pagina,contentrel,ads";
+            String sConstraints = confirmConstraint;
+            int objectPerPage = 5; // should correspond to menuType Quote
+            int thisOffset = 1;
+            try{
+               if(!offsetID.equals("0")){
+                  thisOffset = Integer.parseInt(offsetID);
+                  offsetID ="";
+               }
+            } catch(Exception e) {} 
+
+            if(showOne) {
+               sNodes = adID;
+               sPath = "ads";
+               sConstraints = "";
+               objectPerPage = 1;
+               thisOffset = 1;
+            }
             %>
-            <mm:node number="<%= adID %>" notfound="skip">
-            <table cellspacing="0" cellpadding="0" style="vertical-align:top;width:350px">
-            <tr align="left" valign="top">
-               <td style="width:170px;">
-                 <div style="padding-left:6px;padding-top:8px;">
-                   <mm:node number="<%= paginaID %>">
-                     <div class="colortitle" style="font:bold 110%;"><mm:field name="titel"/></div>
-                     <div style="padding-bottom:5px;"><b><mm:field name="kortetitel"/></b></div>
-                   </mm:node>
-                   <span style="font:bold 110%;color:red">></span>
-                   <span class="colortitle"><mm:field name="name"/></span>
-                   <span class="colortxt"><mm:field name="postdate" jspvar="ads_postdate" vartype="String" write="false"
-                    ><mm:time time="<%=ads_postdate%>" format="d MMM yyyy"/></mm:field></span>
-                 </div>
-               </td>
-               <td style="padding-left:10px;padding-top:7px;font:bold;">
-                 "<mm:field name="title" />"
-               </td>
-             </tr>
-             <tr align="left" valign="top">
-               <td colspan="2" style="padding:10px 0px 10px 10px">
-                  <mm:field name="text"/>
-                  <table class="dotline"><tr><td height="3"></td></tr></table>
-               </td>
-            </tr>
-            </table>
-            </mm:node>
+            <mm:list nodes="<%= sNodes %>" path="<%= sPath %>" constraints="<%= sConstraints %>"
+               offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= "" +  objectPerPage %>" 
+               orderby="ads.postdate" directions="DOWN">
+               <mm:first><table cellspacing="0" cellpadding="0" style="vertical-align:top;width:350px"></mm:first>
+               <mm:node element="ads">
+               <tr align="left" valign="top">
+                  <td style="width:170px;">
+                    <div style="padding-left:6px;padding-top:8px;">
+                      <mm:first>
+                         <mm:node number="<%= paginaID %>">
+                           <div class="colortitle" style="font:bold 110%;"><mm:field name="titel"/></div>
+                           <div style="padding-bottom:5px;"><b><mm:field name="kortetitel"/></b></div>
+                         </mm:node>
+                      </mm:first>
+                      <span style="font:bold 110%;color:red">></span>
+                      <span class="colortitle"><mm:field name="name"/></span>
+                      <span class="colortxt"><mm:field name="postdate" jspvar="ads_postdate" vartype="String" write="false"
+                       ><mm:time time="<%=ads_postdate%>" format="d MMM yyyy"/></mm:field></span>
+                    </div>
+                  </td>
+                  <td style="padding-left:10px;padding-top:7px;font:bold;">
+                    "<mm:field name="title" />"
+                  </td>
+                </tr>
+                <tr align="left" valign="top">
+                  <td colspan="2" style="padding:10px 0px 10px 10px">
+                     <mm:field name="text"/>
+                     <table class="dotline"><tr><td height="3"></td></tr></table>
+                  </td>
+               </tr>
+               </mm:node>
+               <mm:last></table></mm:last>
+            </mm:list>
             <%
           } %>
       </td>
@@ -266,6 +302,7 @@ if(adID.equals("-1")) {
             <jsp:param name="object_intro" value="title" />
             <jsp:param name="object_date" value="postdate" />
             <jsp:param name="extra_constraint" value="<%= confirmConstraint %>" />
+            <jsp:param name="show_links" value="<%= "" + showOne %>" />
          </jsp:include>
    		<jsp:include page="../includes/shorty.jsp">
    	      <jsp:param name="s" value="<%= paginaID %>" />

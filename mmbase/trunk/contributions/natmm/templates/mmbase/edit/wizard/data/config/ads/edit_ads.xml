@@ -3,7 +3,7 @@
 <form-schema id="edit_ads">
 	<title>Bericht</title>
 	<field name="title"><prompt>titel</prompt></field>
-	<field name="text" rows="4"><prompt>tekst</prompt></field>
+	<field name="text" rows="16"><prompt>tekst</prompt></field>
 	<field name="name"><prompt>naam</prompt></field>
 	<field name="email"><prompt>email</prompt></field>
 	<field name="postdate"><prompt>plaatsingsdatum</prompt></field>

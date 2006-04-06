@@ -58,7 +58,10 @@ String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSe
    <mm:list nodes="agenda" path="pagina"
       ><channel>
          <mm:node element="pagina" jspvar="thisPage"
-            ><title><mm:field name="titel"/></title>
+            ><title><mm:field name="titel" jspvar="naam" vartype="String" write="false"
+                      ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                   %></mm:field
+            ></title>
             <link><%
                %><mm:related path="gebruikt,paginatemplate"
                   ><mm:field name="paginatemplate.url" jspvar="sTmp" vartype="String"
@@ -73,7 +76,10 @@ String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSe
             %></description>
             <mm:listnodes type="evenement" constraints="<%=sChildConstraints%>" jspvar="thisEvent" orderby="begindatum"
                ><item>
-                  <title><mm:field name="titel"/></title>
+                  <title><mm:field name="titel" jspvar="naam" vartype="String" write="false"
+                            ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                         %></mm:field
+                  ></title>
                   <link>http://<%= request.getServerName() %>/<%=sPageTemplateURL%>?p=<%= thisPage.getStringValue("number") %>&amp;e=<mm:field name="number"/></link>
                   <% String parent_number = Evenement.findParentNumber(thisEvent.getStringValue("number")); 
                   %><mm:node number="<%= parent_number %>"
@@ -88,22 +94,33 @@ String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSe
                   <mm:node number="<%= parent_number %>"
                      ><activiteitstypen><%
                         %><mm:related path="related,evenement_type"
-                           ><activiteitstype><mm:field name="evenement_type.naam"/></activiteitstype><%
+                           ><activiteitstype><mm:field name="evenement_type.naam" jspvar="naam" vartype="String" write="false"
+                              ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                           %></mm:field
+                           ></activiteitstype><%
                         %></mm:related
                      ></activiteitstypen>
                      <natuurgebieden><%
                         %><mm:related path="related,natuurgebieden"
-                           ><natuurgebied><mm:field name="natuurgebieden.naam"/></natuurgebied><%
+                           ><natuurgebied><mm:field name="natuurgebieden.naam" jspvar="naam" vartype="String" write="false"
+                              ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                           %></mm:field
+                           ></natuurgebied><%
                         %></mm:related
                      ></natuurgebieden>
                      <provincie><%
                         %><mm:related path="related,natuurgebieden,posrel,provincies"
-                           ><mm:first inverse="true">, </mm:first><mm:field name="provincies.naam"
-                        /></mm:related
+                           ><mm:first inverse="true">, </mm:first><mm:field name="provincies.naam" jspvar="naam" vartype="String" write="false"
+                              ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                           %></mm:field
+                           ></mm:related
                      ></provincie>
                      <kosten><%
                         %><mm:related path="posrel,deelnemers_categorie" orderby="deelnemers_categorie.naam"
-                           ><mm:field name="deelnemers_categorie.naam"/> &#8364; <mm:field name="posrel.pos" jspvar="price" vartype="String" write="false"><%=priceFormating(price)%></mm:field
+                           ><mm:field name="deelnemers_categorie.naam" jspvar="naam" vartype="String" write="false"
+                              ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                           %></mm:field
+                           > &#8364; <mm:field name="posrel.pos" jspvar="price" vartype="String" write="false"><%=priceFormating(price)%></mm:field
                          >; </mm:related
                      ></kosten>
                      <aantaldeelnemers><%
@@ -113,25 +130,31 @@ String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSe
                      ></aantaldeelnemers>
                      <vertrekpunt><%
                         %><mm:related path="posrel,vertrekpunten"
-                           ><mm:first inverse="true">, </mm:first><mm:field name="vertrekpunten.titel"
-                        /></mm:related
+                           ><mm:first inverse="true">, </mm:first><mm:field name="vertrekpunten.titel" jspvar="naam" vartype="String" write="false"
+                              ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                           %></mm:field
+                        ></mm:related
                      ></vertrekpunt>
                      <bezoekerscentrum><%
                         %><mm:related path="readmore,afdelingen" constraints="afdelingen.naam LIKE '%Bezoekerscentrum%'"
-                           ><mm:first inverse="true">, </mm:first><mm:field name="afdelingen.naam"
-                        /></mm:related
+                           ><mm:first inverse="true">, </mm:first><mm:field name="afdelingen.naam" jspvar="naam" vartype="String" write="false"
+                              ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                           %></mm:field
+                        ></mm:related
                      ></bezoekerscentrum>
                      <districtscommissie><%--
                          disctricscommissie is a page not directly related to the evenement, natuurgebied or provincie 
                      --%></districtscommissie>
                      <routebeschrijving><%
                          %><mm:related path="posrel,vertrekpunten"
-                           ><mm:first inverse="true">;</mm:first
-                           ><mm:size jspvar="size" vartype="Integer"
+                           ><mm:first inverse="true">; </mm:first
+                           ><mm:size jspvar="size" vartype="Integer" write="false"
                            ><%
                               if(size.intValue() > 1)
                               {
-                                 %><mm:field name="vertrekpunten.titel"/> : <%
+                                 %><mm:field name="vertrekpunten.titel" jspvar="naam" vartype="String" write="false"
+                                       ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
+                                 %></mm:field> : <%
                               }
                            %></mm:size
                            ><mm:field name="vertrekpunten.tekst" jspvar="tekst" vartype="String" write="false"
@@ -141,8 +164,10 @@ String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSe
                      ></routebeschrijving>
                      <aanmelding><%
                         %><mm:related path="readmore,paragraaf" constraints="readmore.readmore='2'"
-                           ><mm:field name="paragraaf.tekst"
-                        /></mm:related
+                           ><mm:field name="paragraaf.tekst" jspvar="tekst" vartype="String" write="false"
+                              ><%= (tekst==null ? "" : HtmlCleaner.filterAmps(HtmlCleaner.cleanText(tekst,"<",">","")).trim()) 
+                           %></mm:field
+                        ></mm:related
                      ></aanmelding>
                   </mm:node
                   ><activiteitdata>
