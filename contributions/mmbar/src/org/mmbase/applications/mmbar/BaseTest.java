@@ -130,6 +130,9 @@ public class BaseTest implements Runnable {
      * @return   description of the test
      */
     public String getDescription() {
+	if (description==null || description.equals("null")) {
+		return "";
+	}
         return description;
     }
 
@@ -367,6 +370,24 @@ public class BaseTest implements Runnable {
 	Object o = properties.get(name);
 	if (o != null) return (String)o;
 	return null;
+    }
+
+    public boolean savebenchmark() {
+	Benchmark bm = getNewBenchmark();
+	bm.setResult(getResult());
+	bm.setOS(MMBarManager.getOS());
+	bm.setCPU(MMBarManager.getCPU());
+	bm.setServer(MMBarManager.getServer());
+	bm.setDatabase(MMBarManager.getDatabase());
+	bm.setDriver(MMBarManager.getDriver());
+	bm.setJava(MMBarManager.getJava());
+	return true;
+    }
+
+
+    public boolean deletebenchmark(int pos) {
+	benchmarks.remove(pos-1);
+	return true;
     }
 
 }
