@@ -29,7 +29,6 @@
 
 <%@ include file="headers/main.jsp" %>
 <mm:compare referid="help" value="on">
-	<%@ include file="help/main.jsp" %>
 </mm:compare>
 <mm:write referid="main">
  <mm:compare value="loading"><%@ include file="loading/index.jsp" %></mm:compare>
