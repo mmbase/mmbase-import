@@ -3,6 +3,7 @@
 <mm:import externid="object_intro" jspvar="objectintro">intro</mm:import>
 <mm:import externid="object_date" jspvar="objectdate">begindatum</mm:import>
 <mm:import externid="extra_constraint" jspvar="extra_constraint"></mm:import>
+<mm:import externid="show_links" jspvar="show_links">false</mm:import>
 <%
 int TITLE = 1;
 int DATE = 2;

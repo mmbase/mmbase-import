@@ -325,8 +325,7 @@ String imgID = request.getParameter("img");	if (imgID == null || imgID.equals(""
          <option value="0.2110">homepage pano (744:157)</option>
          <option value="0.1008">naardermeer pano (744:75)</option>
          <option value="0.1854">overige panos(744:138)</option>
-         <option value="0.5765">actie site foto op homepage (170:98)</option>
-         <option value="0.2941">actie site foto in weblog linker marge (170:50)</option>
+         <option value="0.5765">weblog foto (170:98)</option>
       </select>
       <input type="button" value="uitsnijden" onclick="cropMe()" style="width:100px;" />
       <input type="button" value="reset" onclick="resetMe()" style="width:100px;" />

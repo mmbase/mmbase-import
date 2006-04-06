@@ -3,6 +3,8 @@
 <action type="load">
    <field name="titel"/>
    <field name="kortetitel"/>
+   <field name="titel_eng"/>
+   <field name="titel_de"/>
    <field name="titel_zichtbaar"/>
    <field name="omschrijving"/>
    <field name="bron"/>

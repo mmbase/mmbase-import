@@ -188,7 +188,7 @@ DoubleDateNode ddn = new DoubleDateNode();
          <img src='../img/print_subscriptions.gif' align='absmiddle' border='0' alt='Print de aanmeldingen voor deze activiteit'></a>
       <a href="#" onClick="javascript:launchCenter('mailsubscriptions.jsp?event=<%= nodenr %>', 'mail', 300, 400);setTimeout('newwin.focus();',250);">
          <img src='../img/mail_subscriptions.gif' align='absmiddle' border='0' alt='Verstuur de aanmeldingen voor deze activiteit per email'></a>
-   	<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=s', 'center', 300, 400);setTimeout('newwin.focus();',250);">
+   	<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=s', 'center', 300, 400,'resizable=1');setTimeout('newwin.focus();',250);">
 			<img src='../img/excel_subscriptions.gif' align='absmiddle' border='0' alt='Download de aanmeldingen voor deze activiteit'></a><%
    } %>
    <h1 style="margin-top:0px;"><% 
@@ -869,7 +869,7 @@ if(actionId.indexOf("printsubscriptions")==-1) {
             </logic:equal>
             <a href="SubscribeInitAction.eb?number=<%= nodenr %>&action=printdates&showpastdates=<%= bShowPastDates %>" target="_blank">
                <img src='../img/print_dates.gif' align='absmiddle' border='0' alt='Print het overzicht van data voor deze activiteit'></a>
-				<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=d', 'center', 300, 400);setTimeout('newwin.focus();',250);">
+				<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=d', 'center', 300, 400, 'resizable=1');setTimeout('newwin.focus();',250);">
 					<img src='../img/excel_dates.gif' align='absmiddle' border='0' alt='Download alle data voor deze activiteit'></a><%
          } else {
             if(showpastdatesId.equals("false")) {
