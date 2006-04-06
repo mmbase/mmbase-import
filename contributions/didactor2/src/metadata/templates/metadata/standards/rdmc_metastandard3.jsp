@@ -431,7 +431,40 @@ if(true) {
 </mm:node>
 </mm:listnodes>
 </mm:listnodescontainer>
-
+11. Creating group constraint for: Beoogde eindgebruiker, Schooltype and Vakleergebied<br/>
+<%
+if(true) {
+   %>
+   <mm:createnode type="group_constraints" id="group_constraint">
+      <mm:setfield name="name">Beoogde eindgebruiker, Schooltype and Vakleergebied dependency</mm:setfield>
+      <mm:setfield name="description">This constraint takes care that at least one of these metadefinitions is answered</mm:setfield>
+      <mm:setfield name="maxvalues">9999</mm:setfield>
+      <mm:setfield name="minvalues">1</mm:setfield>
+      <mm:setfield name="handler">NOutOfM</mm:setfield>
+   </mm:createnode>
+   <mm:listnodescontainer type="metadefinition">
+      <mm:composite operator="OR">
+         <mm:constraint field="name" value="Beoogde eindgebruiker" />
+         <mm:constraint field="name" value="Schooltype" />
+         <mm:constraint field="name" value="Vakleergebied" />
+      </mm:composite>
+      <mm:listnodes>
+         <mm:node id="destination">
+            <mm:createrelation source="group_constraint" destination="destination" role="posrel" />
+         </mm:node>
+      </mm:listnodes>
+   </mm:listnodescontainer>
+   <mm:listnodescontainer type="metastandard" >
+      <mm:constraint field="name" value="RdMC" />
+      <mm:listnodes>
+         <mm:node id="rdmc">
+            <mm:createrelation source="rdmc" destination="group_constraint" role="related" />
+         </mm:node>
+      </mm:listnodes>
+   </mm:listnodescontainer>
+   <%
+}
+%>
 </mm:cloud>
 </mm:content>
 Done. 
