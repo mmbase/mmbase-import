@@ -23,6 +23,7 @@ String [] metadef_fields = { "name", "description", "type", "required", "maxvalu
    <!-- print metastandard -->
    &lt;mm:createnode type="metastandard" id="n<mm:field name="number" />" &gt;<br/>
       &lt;mm:setfield name="name"&gt;<mm:field name="name"/>&lt;/mm:setfield&gt;<br/>
+      &lt;mm:setfield name="isused"&gt;<mm:field name="isused"/>&lt;/mm:setfield&gt;<br/>
    &lt;/mm:createnode&gt;<br/>
    &lt;%<br/>
    if(true) {<br/>   
