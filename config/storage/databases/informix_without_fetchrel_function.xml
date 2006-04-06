@@ -26,6 +26,11 @@
     <!-- remove empty parenthesis in table definitions -->
     <option name="database-remove-empty-definitions" />
 
+    <!-- Does not properly support adding, removing, or changing of fields -->
+    <scheme name="create-field-scheme" />
+    <scheme name="change-field-scheme" />
+    <scheme name="delete-field-scheme" />
+
     <!-- Unique index declaration (is this correct ???) -->
     <scheme name="create-unique-index-scheme">ALTER TABLE {1} ADD UNIQUE ({2}) CONSTRAINT {3}</scheme>
 

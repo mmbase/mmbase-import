@@ -15,6 +15,9 @@
     <!-- Postgresql is a hell when is comes to blobs, so store as file instead of in the database-->
     <option name="database-stores-binary-as-file" />
 
+    <!-- Postgresql change field scheme -->
+    <scheme name="change-field-scheme" >ALTER TABLE {1} ALTER COLUMN {2} TYPE {3}</scheme>
+
     <!-- Foreignkeys don't work well under postgresql -->
     <scheme name="create-foreign-key-scheme" />
 
