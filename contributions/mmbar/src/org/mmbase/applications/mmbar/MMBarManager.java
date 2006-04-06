@@ -8,6 +8,7 @@ package org.mmbase.applications.mmbar;
 
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.*;
@@ -22,6 +23,7 @@ import java.net.*;
 import java.util.*;
 
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 
 /**
  * @author     Daniel Ockeloen
@@ -92,13 +94,14 @@ public class MMBarManager {
      * and load all the tests.
      */
     public static void init() {
+        state = true;
 	// read the config that starts the tests
         boolean result = readConfig();
         if (!result) {
             log.error("MMBarManager initialized failed");
+	    state = false;
         } else {
             log.info("MMBarManager initialized");
-            state = true;
         }
     }
 
@@ -285,6 +288,91 @@ public class MMBarManager {
     }
 
 
+    public static boolean saveReadTestBenchmark(String name) {
+        ReadTest rt = getReadTest(name);
+        if (rt != null) {
+            rt.savebenchmark();
+	    saveSettings();
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean saveWriteTestBenchmark(String name) {
+        WriteTest wt = getWriteTest(name);
+        if (wt != null) {
+            wt.savebenchmark();
+	    saveSettings();
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean saveMixedTestBenchmark(String name) {
+        MixedTest mt = getMixedTest(name);
+        if (mt != null) {
+            mt.savebenchmark();
+	    saveSettings();
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean saveEnduranceTestBenchmark(String name) {
+        EnduranceTest et = getEnduranceTest(name);
+        if (et != null) {
+            et.savebenchmark();
+	    saveSettings();
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean deleteReadTestBenchmark(String name,int pos) {
+        ReadTest rt = getReadTest(name);
+        if (rt != null) {
+            rt.deletebenchmark(pos);
+	    saveSettings();
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean deleteWriteTestBenchmark(String name,int pos) {
+        WriteTest wt = getWriteTest(name);
+        if (wt != null) {
+            wt.deletebenchmark(pos);
+	    saveSettings();
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean deleteMixedTestBenchmark(String name,int pos) {
+        MixedTest mt = getMixedTest(name);
+        if (mt != null) {
+            mt.deletebenchmark(pos);
+	    saveSettings();
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean deleteEnduranceTestBenchmark(String name,int pos) {
+        EnduranceTest et = getEnduranceTest(name);
+        if (et != null) {
+            et.deletebenchmark(pos);
+	    saveSettings();
+            return true;
+        }
+        return false;
+    }
+
     /**
      * read the config files, at the moment overdone in that it uses almost
      * the same code for things that now are almost the same this is done by
@@ -293,13 +381,12 @@ public class MMBarManager {
      * @return      true if config was loaded, false if it failed to load
      */
     public static boolean readConfig() {
-        String filename = MMBaseContext.getConfigPath() + File.separator + "performancetests" + File.separator + "config.xml";
+        try {
+            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("mmbar/config.xml");
 
-        File file = new File(filename);
-        if (file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename, MMBarManager.class);
+            DocumentReader reader = new DocumentReader(is,MMBarManager.class);
             if (reader != null) {
-                org.w3c.dom.Node n = reader.getElementByPath("performancetestsconfig.machinespecs");
+                org.w3c.dom.Node n = reader.getElementByPath("mmbarconfig.machinespecs");
                 if (n != null) {
                     NamedNodeMap nm = n.getAttributes();
                     if (nm != null) {
@@ -330,13 +417,13 @@ public class MMBarManager {
                     }
                 }
 
-                n = reader.getElementByPath("performancetestsconfig.basetesturl");
+                n = reader.getElementByPath("mmbarconfig.basetesturl");
                 if (n != null) {
 		    basetesturl = n.getFirstChild().getNodeValue();
 		}
 
 
-                Iterator e = reader.getChildElements("performancetestsconfig", "writetests");
+                Iterator e = reader.getChildElements("mmbarconfig", "writetests");
                 while (e.hasNext()) {
                     WriteTest wt = null;
                     org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
@@ -388,7 +475,10 @@ public class MMBarManager {
                         while (n4 != null) {
                             String name = n4.getNodeName();
                             if (name.equals("description")) {
-                                wt.setDescription(n4.getFirstChild().getNodeValue());
+                                String des = n4.getFirstChild().getNodeValue();
+				if (des.equals("null")) {
+                                	wt.setDescription(des);
+				}
                             } else if (name.equals("benchmark")) {
                                 nm = n4.getAttributes();
                                 if (nm != null) {
@@ -433,7 +523,7 @@ public class MMBarManager {
                     }
                 }
 
-                e = reader.getChildElements("performancetestsconfig", "readtests");
+                e = reader.getChildElements("mmbarconfig", "readtests");
                 while (e.hasNext()) {
                     ReadTest rt = null;
                     org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
@@ -542,7 +632,7 @@ public class MMBarManager {
                     }
                 }
 
-                e = reader.getChildElements("performancetestsconfig", "mixedtests");
+                e = reader.getChildElements("mmbarconfig", "mixedtests");
                 while (e.hasNext()) {
                     MixedTest mt = null;
                     org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
@@ -639,7 +729,7 @@ public class MMBarManager {
                     }
                 }
 
-                e = reader.getChildElements("performancetestsconfig", "endurancetests");
+                e = reader.getChildElements("mmbarconfig", "endurancetests");
                 while (e.hasNext()) {
                     EnduranceTest et = null;
                     org.w3c.dom.Element n2 = (org.w3c.dom.Element) e.next();
@@ -736,8 +826,8 @@ public class MMBarManager {
                     }
                 }
             }
-        } else {
-            log.error("missing config file : " + filename);
+        } catch(Exception e) {
+            log.error("missing config resource : mmbar/config.xml");
             return false;
         }
         return true;
@@ -889,6 +979,9 @@ public class MMBarManager {
         return os;
     }
 
+    public static void setOS(String newos) {
+	os = newos;
+    }
 
     /**
      * get the cpu of the machine we are on (or what is defined)
@@ -899,6 +992,9 @@ public class MMBarManager {
         return cpu;
     }
 
+    public static void setCPU(String newcpu) {
+	cpu = newcpu;
+    }
 
     /**
      * get the app server of the machine we are on (or what is defined)
@@ -909,6 +1005,9 @@ public class MMBarManager {
         return server;
     }
 
+    public static void setServer(String newserver) {
+	server = newserver;
+    }
 
     /**
      * get the database server of the machine we are on (or what is defined)
@@ -918,6 +1017,11 @@ public class MMBarManager {
     public static String getDatabase() {
         return database;
     }
+
+    public static void setDatabase(String newdatabase) {
+	database = newdatabase;
+    }
+
 
 
     /**
@@ -929,6 +1033,9 @@ public class MMBarManager {
         return driver;
     }
 
+    public static void setDriver(String newdriver) {
+	driver = newdriver;
+    }
 
     /**
      * get the java version of the machine we are on (or what is defined)
@@ -939,8 +1046,169 @@ public class MMBarManager {
         return java;
     }
 
+    public static void setJava(String newjava) {
+	java = newjava;
+    }
+
     public static String getBaseTestUrl() {
 	return basetesturl;
     }
+
+    public static void setBaseTestUrl(String newbasetesturl) {
+	basetesturl = newbasetesturl;
+    }
+
+    public static Iterator getOSList() {
+	// temp until from config
+	ArrayList result = new ArrayList();
+	result.add("osx");	
+	result.add("xp");	
+	result.add("linux");	
+	result.add("unknown");	
+        return result.iterator();
+    }
+
+
+    public static Iterator getCPUList() {
+	// temp until from config
+	ArrayList result = new ArrayList();
+	result.add("G4/768Mhz");	
+	result.add("P4/3.2Ghz");	
+	result.add("P3/1.26Ghz");	
+	result.add("unknown");	
+        return result.iterator();
+    }
+
+
+    public static Iterator getServerList() {
+	// temp until from config
+	ArrayList result = new ArrayList();
+	result.add("Tomcat 5.0.x");	
+	result.add("Tomcat 5.5.x");	
+	result.add("Orion");	
+	result.add("Webphere");	
+	result.add("Resin");	
+	result.add("unknown");	
+        return result.iterator();
+    }
+
+
+    public static Iterator getDatabaseList() {
+	// temp until from config
+	ArrayList result = new ArrayList();
+	result.add("MySQL");	
+	result.add("Hypersonic");	
+	result.add("Postgress");	
+	result.add("Oracle");	
+	result.add("unknown");	
+        return result.iterator();
+    }
+
+
+    public static Iterator getDriverList() {
+	// temp until from config
+	ArrayList result = new ArrayList();
+	result.add("mysqlconnector 3.x");	
+	result.add("Hypersonic jdbc");	
+	result.add("pg7xjdbc3");	
+	result.add("pg8xjdbc3");	
+	result.add("unknown");	
+        return result.iterator();
+    }
+
+
+    public static Iterator getJavaList() {
+	// temp until from config
+	ArrayList result = new ArrayList();
+	result.add("1.3");	
+	result.add("1.4");	
+	result.add("1.5");	
+	result.add("unknown");	
+        return result.iterator();
+    }
+
+    public static void saveSettings() {
+	String body="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	body+="<!DOCTYPE mmbarconfig PUBLIC \"-//MMBase/DTD mmbar 1.0//EN\" \"http://www.mmbase.org/dtd/mmbarconfig_1_0.dtd\">\n";
+	body+="<mmbarconfig>\n";
+	body+="\t<basetesturl>"+getBaseTestUrl()+"</basetesturl>\n";
+	body+="\t<machinespecs os=\""+getOS()+"\" cpu=\""+getCPU()+"\" server=\""+getServer()+"\" database=\""+getDatabase()+"\" driver=\""+getDriver()+"\" java=\""+getJava()+"\" />\n";
+	body+="\t<readtests>\n";
+        for (Iterator i = getReadTests(); i.hasNext(); ) {
+            ReadTest rt = (ReadTest) i.next();
+	    body+="\t\t<readtest name=\""+rt.getName()+"\" action=\""+rt.getAction()+"\" class=\""+rt.getClass().getName()+"\" count=\""+rt.getCount()+"\" threads=\""+rt.getThreads()+"\">\n";
+	   if (rt.getDescription()!=null && !rt.getDescription().equals("null")) {
+	   	body+="\t\t\t<description>"+rt.getDescription()+"</description>\n";
+	   }
+           for (Iterator i2 = rt.getBenchmarks(); i2.hasNext(); ) {
+            	Benchmark bm = (Benchmark) i2.next();
+		body+="\t\t\t<benchmark result=\""+bm.getResult()+"\" os=\""+bm.getOS()+"\" cpu=\""+bm.getCPU()+"\" server=\""+bm.getServer()+"\" database=\""+bm.getDatabase()+"\" driver=\""+bm.getDriver()+"\" java=\""+bm.getJava()+"\" />\n";
+	   }
+	   body+="\t\t</readtest>\n";
+	}
+	body+="\t</readtests>\n";
+	body+="\t<writetests>\n";
+        for (Iterator i = getWriteTests(); i.hasNext(); ) {
+            WriteTest wt = (WriteTest) i.next();
+	    body+="\t\t<writetest name=\""+wt.getName()+"\" action=\""+wt.getAction()+"\" class=\""+wt.getClass().getName()+"\" count=\""+wt.getCount()+"\" threads=\""+wt.getThreads()+"\">\n";
+	   if (wt.getDescription()!=null && !wt.getDescription().equals("null")) {
+	   	body+="\t\t\t<description>"+wt.getDescription()+"</description>\n";
+	   }
+           for (Iterator i2 = wt.getBenchmarks(); i2.hasNext(); ) {
+            	Benchmark bm = (Benchmark) i2.next();
+		body+="\t\t\t<benchmark result=\""+bm.getResult()+"\" os=\""+bm.getOS()+"\" cpu=\""+bm.getCPU()+"\" server=\""+bm.getServer()+"\" database=\""+bm.getDatabase()+"\" driver=\""+bm.getDriver()+"\" java=\""+bm.getJava()+"\" />\n";
+	   }
+	   body+="\t\t</writetest>\n";
+	}
+	body+="\t</writetests>\n";
+	body+="\t<mixedtests>\n";
+        for (Iterator i = getMixedTests(); i.hasNext(); ) {
+            MixedTest mt = (MixedTest) i.next();
+	    body+="\t\t<mixedtest name=\""+mt.getName()+"\" action=\""+mt.getAction()+"\" class=\""+mt.getClass().getName()+"\" count=\""+mt.getCount()+"\" threads=\""+mt.getThreads()+"\">\n";
+	   if (mt.getDescription()!=null && !mt.getDescription().equals("null")) {
+	   	body+="\t\t\t<description>"+mt.getDescription()+"</description>\n";
+	   }
+           for (Iterator i2 = mt.getBenchmarks(); i2.hasNext(); ) {
+            	Benchmark bm = (Benchmark) i2.next();
+		body+="\t\t\t<benchmark result=\""+bm.getResult()+"\" os=\""+bm.getOS()+"\" cpu=\""+bm.getCPU()+"\" server=\""+bm.getServer()+"\" database=\""+bm.getDatabase()+"\" driver=\""+bm.getDriver()+"\" java=\""+bm.getJava()+"\" />\n";
+	   }
+	   body+="\t\t</mixedtest>\n";
+	}
+	body+="\t</mixedtests>\n";
+
+	body+="\t<endurancetests>\n";
+        for (Iterator i = getEnduranceTests(); i.hasNext(); ) {
+            EnduranceTest et = (EnduranceTest) i.next();
+	    body+="\t\t<endurancetest name=\""+et.getName()+"\" action=\""+et.getAction()+"\" class=\""+et.getClass().getName()+"\" count=\""+et.getCount()+"\" threads=\""+et.getThreads()+"\">\n";
+	   if (et.getDescription()!=null && !et.getDescription().equals("null")) {
+	   	body+="\t\t\t<description>"+et.getDescription()+"</description>\n";
+	   }
+           for (Iterator i2 = et.getBenchmarks(); i2.hasNext(); ) {
+            	Benchmark bm = (Benchmark) i2.next();
+		body+="\t\t\t<benchmark result=\""+bm.getResult()+"\" os=\""+bm.getOS()+"\" cpu=\""+bm.getCPU()+"\" server=\""+bm.getServer()+"\" database=\""+bm.getDatabase()+"\" driver=\""+bm.getDriver()+"\" java=\""+bm.getJava()+"\" />\n";
+	   }
+	   body+="\t\t</endurancetest>\n";
+	}
+	body+="\t</endurancetests>\n";
+	body+="</mmbarconfig>\n";
+	/* need fix daniel
+        String filename = MMBaseContext.getConfigPath() + File.separator + "mmbar" + File.separator + "config.xml";
+	saveFile(filename,body);
+	*/
+    }
+
+    static boolean saveFile(String filename,String value) {
+        File sfile = new File(filename);
+        try {
+            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+            scan.writeBytes(value);
+            scan.flush();
+            scan.close();
+        } catch(Exception e) {
+            log.error(Logging.stackTrace(e));
+        }
+        return true;
+    }
+
 }
 
