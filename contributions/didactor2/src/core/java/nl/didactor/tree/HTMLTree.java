@@ -156,7 +156,6 @@ public class HTMLTree {
    }
 
    private void renderNode(Object node, int level, PrintWriter out, String base, String preHtml, String myImg, boolean isLast) {
-      out.print("<nobr>");
       String nodeName = base + "_" + level;
       if (!model.isLeaf(node)) {
          out.print("<a href='javascript:clickNavNode(\"" + nodeName + "\")'>");
@@ -180,11 +179,13 @@ public class HTMLTree {
          out.print("/>");
       }
       getCellRenderer().render(node, level, imgBaseUrl, out);
-      out.print("</nobr>");
-      out.print("<br/>");
+      out.print("</nobr><br/>");
       if (!model.isLeaf(node)) {
          String style = expandAll ? "block" : "none";
          out.println("<div id='" + nodeName + "' style='display: " + style + "'>");
+         if(level==0) { // will be closed before <br/> (in the above statement)
+            preHtml += "<nobr>";
+         }
          // Render childs .....
          if (isLast) {
             preHtml += "<img src='" + buildImgUrl("tree_spacer.gif") + "' align='center' valign='middle' border='0'/>";
@@ -208,7 +209,6 @@ public class HTMLTree {
 
    private void renderCreateNew(Object node, int level, PrintWriter out, String preHtml, int createNewNumber, boolean isLast) {
       out.print(preHtml);
-      out.print("<nobr>");
       out.print("<img src='" + getImage(true,isLast) + "' border='0' align='center' valign='middle'/>&nbsp;");
       String icon = getCellRenderer().getCreateNewIcon(node, level, createNewNumber);
       if (icon != null) {
@@ -221,8 +221,7 @@ public class HTMLTree {
          out.print("<img src='"+buildImgUrl(imgName)+"' border='0' align='center' valign='middle' alt='" + altText + "'/>");
       }
       getCellRenderer().renderCreateNew(node, level, imgBaseUrl, createNewNumber, out);
-      out.print("</nobr>");
-      out.println("<br>");
+      out.println("</nobr><br/>");
    }
    public void setCellRenderer(TreeCellRenderer cellRenderer) {
       this.cellRenderer = cellRenderer;
