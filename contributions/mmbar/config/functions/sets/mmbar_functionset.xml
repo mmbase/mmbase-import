@@ -54,11 +54,53 @@
 		</return> 
 	</function>
 
+
+	<function name="getMixedTests">
+		<description>list all the mixed tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getMixedTests</method>
+		<return type="String"> 
+		</return> 
+	</function>
+
+
+	<function name="getEnduranceTests">
+		<description>list all the endurance  tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getEnduranceTests</method>
+		<return type="String"> 
+		</return> 
+	</function>
+
 	<function name="getReadTestBenchmarks">
 		<description>list benchmarks of a readtest</description>
 		<type>class</type>
 		<class>org.mmbase.applications.mmbar.gui.Controller</class>
 		<method>getReadTestBenchmarks</method>
+                <param name="name" type="String" description="" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+
+	<function name="getMixedTestBenchmarks">
+		<description>list benchmarks of a mixedtest</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getMixedTestBenchmarks</method>
+                <param name="name" type="String" description="" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+
+	<function name="getEnduranceTestBenchmarks">
+		<description>list benchmarks of a endurancetest</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getEnduranceTestBenchmarks</method>
                 <param name="name" type="String" description="" />
 		<return type="String"> 
 		</return> 
@@ -74,11 +116,54 @@
 		</return> 
 	</function>
 
+
+	<function name="getMixedTest">
+		<description>get info on a mixed test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getMixedTest</method>
+                <param name="name" type="String" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+	<function name="getEnduranceTest">
+		<description>get info on a endurance test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getEnduranceTest</method>
+                <param name="name" type="String" description="" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
 	<function name="performReadTest">
 		<description>perform a read test</description>
 		<type>class</type>
 		<class>org.mmbase.applications.mmbar.gui.Controller</class>
 		<method>performReadTest</method>
+                <param name="name" type="String" description="" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+
+	<function name="performMixedTest">
+		<description>perform a mixed test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>performMixedTest</method>
+                <param name="name" type="String" description="" />
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="performEnduranceTest">
+		<description>perform a endurance test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>performEnduranceTest</method>
                 <param name="name" type="String" description="" />
 		<return type="String"> 
 		</return> 
