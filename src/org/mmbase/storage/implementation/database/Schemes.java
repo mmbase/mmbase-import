@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.20 2005-10-04 13:20:28 johannes Exp $
+ * @version $Id: Schemes.java,v 1.21 2006-04-06 17:40:20 pierre Exp $
  */
 public final class Schemes {
 
@@ -461,7 +461,8 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder of the field</li>
-     *    <li>{2} the field definition (excluding simple index definitions)</li>
+     *    <li>{2} the field name</li>
+     *    <li>{3} the field definition (excluding simple index definitions)</li>
      *  </ul>
      */
     public static final String CREATE_FIELD = "create-field-scheme";
@@ -469,7 +470,7 @@ public final class Schemes {
     /**
      *  The default scheme for creating (adding) a field.
      */
-    public static final String CREATE_FIELD_DEFAULT = "ALTER TABLE {1} ADD COLUMN {2}";
+     public static final String CREATE_FIELD_DEFAULT = "ALTER TABLE {1} ADD COLUMN {2} {3}";
 
     /**
      *  Name of the scheme for changing a field.
@@ -477,7 +478,8 @@ public final class Schemes {
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the builder of the field</li>
-     *    <li>{2} the field definition (excluding simple index definitions)</li>
+     *    <li>{2} the field name</li>
+     *    <li>{3} the field definition (excluding simple index definitions)</li>
      *  </ul>
      */
     public static final String CHANGE_FIELD = "change-field-scheme";
@@ -485,7 +487,7 @@ public final class Schemes {
     /**
      *  The default scheme for changing a field.
      */
-    public static final String CHANGE_FIELD_DEFAULT = "ALTER TABLE {1} MODIFY COLUMN {2}";
+     public static final String CHANGE_FIELD_DEFAULT = "ALTER TABLE {1} MODIFY COLUMN {2} {3}";
 
     /**
      *  Name of the scheme for deleting a field.

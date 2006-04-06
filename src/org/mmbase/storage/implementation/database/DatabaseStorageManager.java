@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.154 2006-03-31 16:44:47 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.155 2006-04-06 17:40:20 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1814,7 +1814,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (createFields.length() > 0) {
                     createFields.append(", ");
                 }
-                createFields.append(fieldDef);
+                createFields.append(factory.getStorageIdentifier(field)).append(" ").append(fieldDef);
                 // test on other indices
                 String constraintDef = getConstraintDefinition(field);
                 if (constraintDef != null) {
@@ -1889,14 +1889,15 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Creates a fielddefinition, of the format '[fieldname] [fieldtype] NULL' or
-     * '[fieldname] [fieldtype] NOT NULL' (depending on whether the field is nullable).
+     * Creates a field type definition, of the format '[fieldtype] NULL' or
+     * '[fieldtype] NOT NULL' (depending on whether the field is nullable).
      * The fieldtype is taken from the type mapping in the factory.
+     * @since MMBase-1.8
      * @param field the field
      * @return the typedefiniton as a String
      * @throws StorageException if the field type cannot be mapped
      */
-    protected String getFieldDefinition(CoreField field) throws StorageException {
+    protected String getFieldTypeDefinition(CoreField field) throws StorageException {
         // create the type mapping to search for
         String typeName = Fields.getTypeDescription(field.getType());
         int size = field.getMaxLength();
@@ -1907,7 +1908,7 @@ public class DatabaseStorageManager implements StorageManager {
         List typeMappings = factory.getTypeMappings();
         int found = typeMappings.indexOf(mapping);
         if (found > -1) {
-            String fieldDef = factory.getStorageIdentifier(field) + " " + ((TypeMapping)typeMappings.get(found)).getType(size);
+            String fieldDef = ((TypeMapping)typeMappings.get(found)).getType(size);
             if (field.isNotNull()) {
                 fieldDef += " NOT NULL";
             }
@@ -1915,6 +1916,18 @@ public class DatabaseStorageManager implements StorageManager {
         } else {
             throw new StorageException("Type for field " + field.getName() + ": " + typeName + " (" + size + ") undefined.");
         }
+    }
+
+    /**
+     * Creates a fielddefinition, of the format '[fieldname] [fieldtype] NULL' or
+     * '[fieldname] [fieldtype] NOT NULL' (depending on whether the field is nullable).
+     * The fieldtype is taken from the type mapping in the factory.
+     * @param field the field
+     * @return the typedefiniton as a String
+     * @throws StorageException if the field type cannot be mapped
+     */
+    protected String getFieldDefinition(CoreField field) throws StorageException {
+        return factory.getStorageIdentifier(field) + " " + getFieldTypeDefinition(field);
     }
 
     /**
@@ -2541,8 +2554,8 @@ public class DatabaseStorageManager implements StorageManager {
                 try {
                     getActiveConnection();
                     // add field
-                    String fieldDef = getFieldDefinition(field);
-                    String query = scheme.format(new Object[] { this, field.getParent(), fieldDef });
+                    String fieldTypeDef = getFieldTypeDefinition(field);
+                    String query = scheme.format(new Object[] { this, field.getParent(), field, fieldTypeDef });
                     Statement s = activeConnection.createStatement();
                     long startTime = getLogStartTime();
                     s.executeUpdate(query);
@@ -2587,8 +2600,8 @@ public class DatabaseStorageManager implements StorageManager {
                 try {
                     getActiveConnection();
                     deleteIndices(field);
-                    String fieldDef = getFieldDefinition(field);
-                    String query = scheme.format(new Object[] { this, field.getParent(), fieldDef });
+                    String fieldTypeDef = getFieldTypeDefinition(field);
+                    String query = scheme.format(new Object[] { this, field.getParent(), field, fieldTypeDef });
                     Statement s = activeConnection.createStatement();
                     long startTime = getLogStartTime();
                     s.executeUpdate(query);
