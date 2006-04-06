@@ -167,11 +167,10 @@ public class EventNotifier implements Runnable {
          // - and the minimum number of participants is not reached
          long now = (new Date().getTime())/1000;
          long one_day = 24*60*60;
-         long one_week = 7*one_day;
          
          NodeIterator eNodes = cloud.getNodeManager("evenement").getList(
                                     "begindatum > '" + now + "'"
-                                    + " AND begindatum < '" + (now + one_week) + "'"
+                                    + " AND begindatum < '" + (now + 2*one_day) + "'"
                                     + " AND cur_aantal_deelnemers < min_aantal_deelnemers",
                                     "begindatum", 
                                     "UP").nodeIterator();
@@ -183,7 +182,7 @@ public class EventNotifier implements Runnable {
                    , "email.subject LIKE '" + LESSTHANMIN_EVENT + "%'"
                    , null, null, null, false).isEmpty()) {
                nEmailSend += sendEventNotification(cloud, childEvent, LESSTHANMIN_EVENT, 
-                  " valt binnen een week, maar heeft minder dan het minimum aantal deelnemers.");
+                  " vindt over twee dagen plaats, maar heeft minder dan het minimum aantal deelnemers.");
             }
          }
       } catch(Exception e) {

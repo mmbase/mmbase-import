@@ -27,6 +27,7 @@
            <field name="type">0</field>
            <field name="titel_zichtbaar">1</field>
            <field name="sms">1</field> <!-- use verloopdatum -->
+           <relation destination="$origin" role="contentrel"/>
       </object>
    </action>
    <action include="config/artikel/delete_artikel.xml"/>

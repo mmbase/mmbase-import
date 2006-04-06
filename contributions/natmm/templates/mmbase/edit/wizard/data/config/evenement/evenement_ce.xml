@@ -27,7 +27,7 @@
       <form-schema id="omschrijving">
           <title>omschrijving</title>
           <field name="titel" ftype="data"><prompt>naam</prompt></field>
-          <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
+          <list include="config/natuurgebieden/zoek_evenement_related_natuurgebieden_ce.xml" />
           <field name="tekst" ftype="html" rows="20"><prompt>intro</prompt></field>
           <field name="omschrijving" ftype="html" rows="14"><prompt>interne notitie</prompt></field>
           <list include="config/extra_info/zoek_evenement_readmore_extra_info.xml" />  
@@ -37,8 +37,8 @@
           <field name="max_aantal_deelnemers"><prompt>maximum aantal deelnemers</prompt></field>
           <list include="config/deelnemers_categorie/zoek_evenement_posrel_deelnemers_categorie_bu.xml" />
           <list include="config/vertrekpunten/zoek_evenement_posrel_vertrekpunten.xml" />
-          <list include="config/natuurgebieden/zoek_evenement_related_natuurgebieden_ce.xml" />
           <list include="config/images/zoek_contentelement_posrel_images.xml" />
+          <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
       </form-schema>
       <form-schema id="inschrijving">
           <title>aanmelden</title>

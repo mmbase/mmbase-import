@@ -33,6 +33,7 @@ try{
     </mm:size></mm:first>
    </mm:relatednodes>
    <%
+   boolean isFirst = true;
    if(thisOffset > pagesCount) { thisOffset = pagesCount; }
    if(thisOffset < 1) { thisOffset = 1; }
    if(objectCount>1) {
@@ -40,7 +41,7 @@ try{
    <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
    <tr>
    <td style="padding:7px 10px 10px 0px">
-     <table cellSpacing="0" cellPadding="0" border="0">
+     <table cellSpacing="0" cellPadding="0" border="0" style="width:100%;">
        <mm:field name="titel_eng">
        <mm:isnotempty>
           <tr style="padding-bottom:10px;">
@@ -49,45 +50,54 @@ try{
               <mm:field name="titel_de"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
             </td>
           </tr>
+          <% isFirst = false; %>
        </mm:isnotempty>
        </mm:field>
-       <mm:relatednodes type="<%= objecttype %>" path="<%= "contentrel," + objecttype %>"
-          offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= ""+ objectPerPage %>" 
-          constraints="<%= objectConstraint %>" orderby="<%= objectOrderby %>" directions="<%= objectDirections %>">
-         <tr style="padding-bottom:10px;">
-           <td valign="top" style="width:5px; padding-left:7px; padding-right:3px"><span style="font:bold 110%;color:red">></span></td>
-           <td>
-             <mm:field name="number" jspvar="oNumber" vartype="String" write="false">
-               <a href="<%= ph.createItemUrl(oNumber, paginaID,"offset="+thisOffset,request.getRequestURI()) %>" class="maincolor_link"><b><mm:field name="<%= objecttitle %>"/></b></a>
-             </mm:field>
-             <% 
-             if(menuType!=TITLE) {
-               %>             
-               <span class="colortxt" style="font-size:90%"><mm:field name="<%= objectdate %>" jspvar="object_begindatum" vartype="String" write="false"
-               ><mm:time time="<%=object_begindatum%>" format="d MMM yyyy"/></mm:field></span>
-               <% 
-             }
-             if(menuType==QUOTE) {
-               %>
-               <mm:field name="<%= objectintro %>" jspvar="text" vartype="String" write="false">
+       <mm:compare referid="show_links" value="true">
+          <mm:relatednodes type="<%= objecttype %>" path="<%= "contentrel," + objecttype %>"
+             offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= ""+ objectPerPage %>" 
+             constraints="<%= objectConstraint %>" orderby="<%= objectOrderby %>" directions="<%= objectDirections %>">
+            <tr style="padding-bottom:10px;">
+              <td valign="top" style="width:5px; padding-left:7px; padding-right:3px"><span style="font:bold 110%;color:red">></span></td>
+              <td>
+                <mm:field name="number" jspvar="oNumber" vartype="String" write="false">
+                  <a href="<%= ph.createItemUrl(oNumber, paginaID,"offset="+thisOffset,request.getRequestURI()) %>" class="maincolor_link"><b><mm:field name="<%= objecttitle %>"/></b></a>
+                </mm:field>
+                <% 
+                if(menuType!=TITLE) {
+                  %>             
+                  <span class="colortxt" style="font-size:90%"><mm:field name="<%= objectdate %>" jspvar="object_begindatum" vartype="String" write="false"
+                  ><mm:time time="<%=object_begindatum%>" format="d MMM yyyy"/></mm:field></span>
                   <% 
-                  if(text!=null) { 
-                     text = HtmlCleaner.cleanText(text,"<",">","");
-                     if(!text.trim().equals("")) { %>"<%= text %>"<% }
-                  }
+                }
+                if(menuType==QUOTE) {
                   %>
-               </mm:field>
-               <%
-             } %>
-           </td>
-         </tr>
-       </mm:relatednodes>
-       <% if(pagesCount > 1) { %>
-         <tr style="padding-bottom:10px">
-           <td colspan="2" style="padding-left:10px">
-             <table class="dotline"><tr><td height="3"></td></tr></table></span>
-           </td>
-         </tr>
+                  <mm:field name="<%= objectintro %>" jspvar="text" vartype="String" write="false">
+                     <% 
+                     if(text!=null) { 
+                        text = HtmlCleaner.cleanText(text,"<",">","");
+                        if(!text.trim().equals("")) { %>"<%= text %>"<% }
+                     }
+                     %>
+                  </mm:field>
+                  <%
+                } %>
+              </td>
+            </tr>
+            <% isFirst = false; %>
+          </mm:relatednodes>
+       </mm:compare>
+       <%
+       if(pagesCount > 1) { 
+         if(!isFirst) {
+            %>
+            <tr style="padding-bottom:10px">
+              <td colspan="2" style="padding-left:10px">
+                <table class="dotline"><tr><td height="3"></td></tr></table></span>
+              </td>
+            </tr>
+            <%
+         } %>
          <tr>
            <td colspan="2" style="padding-left:15px">
               In archief: <%= objectCount %> <mm:field name="titel.fr"/> [<%= pagesCount %> pgn]
