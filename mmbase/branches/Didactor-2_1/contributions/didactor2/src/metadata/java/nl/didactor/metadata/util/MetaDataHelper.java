@@ -32,7 +32,7 @@ public class MetaDataHelper {
          "metadefinition,metavocabulary",
          "metavocabulary.value",
          "metadefinition.handler='taal'",
-         "metavocabulary.value","UP",null,true);
+         "metavocabulary.value","UP",null,false);
       return nl;
    }
 
