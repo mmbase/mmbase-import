@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.79 2006-02-15 01:04:08 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.80 2006-04-06 11:05:53 michiel Exp $
  */
 
 public class WriterHelper {
@@ -127,6 +127,7 @@ public class WriterHelper {
      * @since MMBase_1.8
      */
     private   Stack _Stack;
+    // whether this tag pushed something on the stack already.
     private   boolean pushed = false;
 
     private   boolean hasBody          = false;
@@ -525,12 +526,10 @@ public class WriterHelper {
     }
 
     /**
-     * Sets the bodycontent (to be used in doEndTag)
+     * Sets the bodycontent (to be used in doAfterBody)
      * @since MMBase-1.7
      */
     public int doAfterBody() throws JspTagException {
-        pop_Stack();
-        pushed = false;
         bodyContent = thisTag.getBodyContent();
         return javax.servlet.jsp.tagext.Tag.SKIP_BODY;
     }
@@ -538,7 +537,8 @@ public class WriterHelper {
     /**
      * A basic doEndTag for Writers.
      *
-     * It decides if to write or not.
+     * It decides if to write or not, and then does that or not.
+     * It also pops the _-stack, and releases the members for gc.
      */
     public int doEndTag() throws JspTagException {
         log.debug("doEndTag of WriterHelper");
