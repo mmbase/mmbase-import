@@ -202,10 +202,13 @@ public class HTMLTree {
          out.print("<img src='"+buildImgUrl(icon)+"' border='0' align='center' valign='middle'/> ");
       }
       getCellRenderer().render(node, out);
-      out.println("<br>");
+      out.println("</nobr><br/>");
       if (!model.isLeaf(node)) {
          String style = expandAll ? "block" : "none";
          out.println("<div id='" + nodeName + "' style='display: " + style + "'>");
+         if(level==0) { // will be closed before <br/> (in the above statement)
+            preHtml += "<nobr>";
+         }
          // Render childs .....
          if (isLast) {
             preHtml += "<img src='" + buildImgUrl("spacer.gif") + "' align='center' valign='middle' border='0'/>";
