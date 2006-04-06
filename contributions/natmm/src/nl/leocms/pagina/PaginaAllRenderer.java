@@ -34,6 +34,9 @@ import org.mmbase.bridge.*;
 import com.finalist.tree.TreeCellRenderer;
 import com.finalist.tree.TreeCellRendererAdapter;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Renderer voor de pagina editor. Kijkt naar de rechten van de gebruiker of
  * wijzigen/ordenen mogelijk is.
@@ -42,6 +45,8 @@ import com.finalist.tree.TreeCellRendererAdapter;
  *  
  */
 public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCellRenderer {
+
+   private static Logger log = Logging.getLoggerInstance(PaginaAllRenderer.class.getName());
 
    private static final String RUBRIEK_NODE_MANAGER = "rubriek";
    private Map roles;
@@ -92,8 +97,8 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
             // ** hh: String url = paginaHelper.createPaginaUrl("" + n.getNumber(), contextPath);
             TreeMap ewUrls = paginaHelper.createEditwizardUrls("" + n.getNumber(), contextPath);
             while(!ewUrls.isEmpty()) {
-               String nextEw = (String) ewUrls.firstKey();
-               String nextUrl =  (String) ewUrls.get(nextEw);
+               String nextUrl = (String) ewUrls.firstKey();
+               String nextEw =  (String) ewUrls.get(nextUrl);
                out.println("<a href='" + nextUrl + "' target='" + targetFrame + "'");
                if(nextUrl.indexOf("list.jsp")>-1) {
                   out.println("><img src='../img/edit_l.gif");
@@ -103,7 +108,7 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
                   out.println("><img src='../img/edit.gif");
                }
                out.println("' border='0' align='top' title='" + nextEw + "'/></a>");
-               ewUrls.remove(nextEw);
+               ewUrls.remove(nextUrl);
             }
             NodeList ptNodeList = n.getRelatedNodes("paginatemplate");
             if(ptNodeList.size()>0) {
