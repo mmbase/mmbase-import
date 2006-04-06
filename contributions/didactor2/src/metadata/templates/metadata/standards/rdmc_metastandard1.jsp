@@ -6,6 +6,7 @@
 <%@include file="/shared/setImports.jsp" %>
 <mm:createnode type="metastandard" id="n1692" >
 <mm:setfield name="name">RdMC</mm:setfield>
+<mm:setfield name="isused">1</mm:setfield>
 </mm:createnode>
 <%
 if(true) {
@@ -14,8 +15,8 @@ String [] metadef_description = { "", "", "Type van het product (in de technisch
 String [] metadef_type = { "1", "3", "1", "1", "1", "1", "3", "2", "3", "3", "3", "3", "3", "3", "1", "1", "3", "3", "3", "3", "3", "3", "1" };
 String [] metadef_required = { "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
 String [] metadef_maxvalues = { "1", "1", "9999", "9999", "9999", "9999", "1", "1", "1", "1", "9999", "1", "1", "1", "10", "3", "1", "1", "1", "1", "1", "1", "9999" };
-String [] metadef_minvalues = { "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
-String [] metadef_handler = { "", "", "", "", "", "", "CreationDate", "", "MimeType", "FileSize", "StreamingHandler", "", "", "", "", "", "", "", "", "", "", "", "" };
+String [] metadef_minvalues = { "1", "1", "1", "0", "0", "0", "1", "1", "1", "1", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
+String [] metadef_handler = {   "",  "",  "",  "",  "",  "",  "CreationDate", "", "MimeType", "FileSize", "StreamingHandler", "", "", "", "", "", "", "", "", "", "", "", "" };
 for(int i=0; i<metadef_name.length; i++) {
 %>
 <mm:createnode type="metadefinition" id="<%= "n1692_" + i %>" >
@@ -34,8 +35,13 @@ for(int i=0; i<metadef_name.length; i++) {
 }
 }
 %>
+<%-- 
+
+Repeating metastandards is not supported at this time
+
 <mm:createnode type="metastandard" id="n1687" >
 <mm:setfield name="name">Stakeholder</mm:setfield>
+<mm:setfield name="isused">0</mm:setfield>
 </mm:createnode>
 <%
 if(true) {
@@ -64,8 +70,62 @@ for(int i=0; i<metadef_name.length; i++) {
 }
 }
 %>
+<mm:listnodescontainer type="metadefinition" >
+<mm:constraint field="name" value="Rol" />
+<mm:listnodes>
+<mm:node id="n1688" >
+<%
+if(true) {
+String [] metavalues = { "Auteur", "Co-auteur", "Eindverantwoordelijke", "Overig" };
+for(int i=0; i<metavalues.length; i++) {
+%>
+<mm:createnode type="metavocabulary" id="<%= "n1688_" + i %>" >
+<mm:setfield name="value"><%= metavalues[i] %></mm:setfield>
+</mm:createnode>
+<mm:createrelation source="n1688" destination="<%= "n1688_" + i %>" role="posrel">
+   <mm:setfield name="pos"><%= i %></mm:setfield>
+</mm:createrelation>
+<%
+}
+}
+%>
+</mm:node>
+</mm:listnodes>
+</mm:listnodescontainer>
+
+--%>
+<%
+if(true) {
+String [] metadef_name = { "Stakeholder" };
+String [] metadef_description = { "Vul in: 'naam (rol)'. Voor rol kunt u kiezen uit: Auteur, Co-auteur, Eindverantwoordelijke of Overig." };
+String [] metadef_type = { "3" };
+String [] metadef_required = { "1" };
+String [] metadef_maxvalues = { "-1" };
+String [] metadef_minvalues = { "-1" };
+String [] metadef_handler = { "" };
+for(int i=0; i<metadef_name.length; i++) {
+%>
+<mm:createnode type="metadefinition" id="stakeholder" >
+<mm:setfield name="name"><%= metadef_name[i] %></mm:setfield>
+<mm:setfield name="description"><%= metadef_description[i] %></mm:setfield>
+<mm:setfield name="type"><%= metadef_type[i] %></mm:setfield>
+<mm:setfield name="required"><%= metadef_required[i] %></mm:setfield>
+<mm:setfield name="maxvalues"><%= metadef_maxvalues[i] %></mm:setfield>
+<mm:setfield name="minvalues"><%= metadef_minvalues[i] %></mm:setfield>
+<mm:setfield name="handler"><%= metadef_handler[i] %></mm:setfield>
+</mm:createnode>
+<mm:createrelation source="n1692" destination="stakeholder" role="posrel" >
+<mm:setfield name="pos">99</mm:setfield>
+</mm:createrelation>
+<%
+}
+}
+%>
+
+
 <mm:createnode type="metastandard" id="n1684" >
 <mm:setfield name="name">Taal</mm:setfield>
+<mm:setfield name="isused">0</mm:setfield>
 </mm:createnode>
 <%
 if(true) {
@@ -205,34 +265,12 @@ for(int i=0; i<metavalues.length; i++) {
 </mm:listnodes>
 </mm:listnodescontainer>
 <mm:listnodescontainer type="metadefinition" >
-<mm:constraint field="name" value="Rol" />
-<mm:listnodes>
-<mm:node id="n1688" >
-<%
-if(true) {
-String [] metavalues = { "Auteur", "Co-auteur", "Eindverantwoordelijke", "Overig" };
-for(int i=0; i<metavalues.length; i++) {
-%>
-<mm:createnode type="metavocabulary" id="<%= "n1688_" + i %>" >
-<mm:setfield name="value"><%= metavalues[i] %></mm:setfield>
-</mm:createnode>
-<mm:createrelation source="n1688" destination="<%= "n1688_" + i %>" role="posrel">
-   <mm:setfield name="pos"><%= i %></mm:setfield>
-</mm:createrelation>
-<%
-}
-}
-%>
-</mm:node>
-</mm:listnodes>
-</mm:listnodescontainer>
-<mm:listnodescontainer type="metadefinition" >
 <mm:constraint field="name" value="Taal" />
 <mm:listnodes>
 <mm:node id="n1685" >
 <%
 if(true) {
-String [] metavalues = { "de", "en", "fr", "nl" };
+String [] metavalues = { "nl", "en", "de", "fr" };
 for(int i=0; i<metavalues.length; i++) {
 %>
 <mm:createnode type="metavocabulary" id="<%= "n1685_" + i %>" >
