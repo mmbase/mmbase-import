@@ -323,13 +323,13 @@ public class PaginaHelper {
       Node templateNode = getPaginaTemplate(pageNumber);
       if(templateNode!=null) {
          NodeList editwizardNodes = templateNode.getRelatedNodes("editwizards", "related", "DESTINATION");
-         for(int e = 0; e < editwizardNodes.size(); e++) {         
+         for(int e = 0; e < editwizardNodes.size(); e++) {    
             Node editwizardNode = editwizardNodes.getNode(e);
             String ewTitle = editwizardNode.getStringValue("description");
             String ewUrl = contextPath;
-            if(editwizardNode!=null) { // ** check whether the path is used at least once ***
+            if(editwizardNode!=null) {
                String ewType = editwizardNode.getStringValue("type");
-               if(ewType.equals("list")) {
+               if(ewType.equals("list")) {  // ** check whether the path is used at least once ***
                   NodeList nl = cloud.getList(pageNumber, editwizardNode.getStringValue("nodepath"), "pagina.number", null, null, null, null, false);
                   if(nl.size()>0) {
                      ewUrl += "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + editwizardNode.getStringValue("wizard");
@@ -370,7 +370,8 @@ public class PaginaHelper {
                }
             }
             if(!ewUrl.equals(contextPath)) {
-               ewUrls.put(ewTitle,ewUrl);
+               // ewUrls for a page will be unique
+               ewUrls.put(ewUrl,ewTitle);
             }
          }
       }
