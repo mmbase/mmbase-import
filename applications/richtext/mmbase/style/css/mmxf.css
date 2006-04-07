@@ -64,3 +64,32 @@
   background-color: black;
   color: white;
 }
+
+.mmxf table.grid { 
+  background-color: #eee;
+  color: #000 !important;
+}
+.mmxf table.grid tr td { 
+
+  color: #000 !important;
+}
+.mmxf table.plain td {  
+  border: none;
+}
+.mmxf table.grid td {  
+  border: 1px solid;
+}
+.mmxf table.listing td {  
+  border: 1px solid;
+}
+.mmxf table.data td {  
+  border: none;
+}
+.mmxf table.data tr.odd  td{ 
+  background-color: #ccc !important;
+  color: #000 !important;
+}
+.mmxf table.data tr.even td { 
+  background-color: #fff !important;
+  color: #000 !important
+}
