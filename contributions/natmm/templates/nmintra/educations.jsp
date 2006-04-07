@@ -190,7 +190,7 @@ public String searchResults(TreeSet searchResultList) {
 		if (actionId.equals("feedback")){
          %><jsp:include page="includes/feedbackform.jsp">
             <jsp:param name="object" value="<%= educationId %>" />
-            <jsp:param name="field" value="name" />
+            <jsp:param name="field" value="titel" />
             <jsp:param name="ntype" value="opleiding" />
             <jsp:param name="by" value="de cursusleid(st)er" />
             <jsp:param name="param" value="e" />

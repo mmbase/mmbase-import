@@ -35,7 +35,7 @@ if(!pageId.equals("")) {
     ></mm:list><%
     
     if(!template_url.equals("")) { 
-            %><jsp:include page="<%= template_url + "p=" + pageId + "&category=" + categoryId %>" 
+            %><jsp:include page="<%= template_url + "?p=" + pageId + "&category=" + categoryId %>" 
             ></jsp:include><% 
             
     } else {

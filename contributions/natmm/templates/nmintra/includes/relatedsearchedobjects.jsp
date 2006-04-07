@@ -10,9 +10,20 @@ int passedOnSubTest = 0;
     // *** use the subSearchTerms to narrow down the search results ***
     String textStr = "";
     for(int f = 1; f<searchFields.size(); f++) { 
-        %><mm:field name="<%= (String) searchFields.elementAt(f) %>" jspvar="dummy" vartype="String" write="false"><%
-            if(dummy!=null&&dummy.indexOf("#NZ")==-1) { textStr += " " + dummy;  } 
-        %></mm:field><%
+	 		String sFieldName = (String) searchFields.elementAt(f);
+        %><mm:field name="<%= sFieldName %>" jspvar="dummy" vartype="String" write="false"><%
+            if(dummy!=null) {
+					int iDotIndex = sFieldName.indexOf(".");
+					String sFieldShortName = sFieldName.substring(iDotIndex + 1);
+					if (sFieldShortName.equals("titel")){ %>
+						<mm:field name="<%= sFieldName + "_zichtbaar" %>" jspvar="titel_zichtbaar" vartype="String" write="false">
+							<% if ((titel_zichtbaar==null||!titel_zichtbaar.equals("0"))) { textStr += " " + dummy;  }%>
+						</mm:field>
+				<%	} else {
+						textStr += " " + dummy;
+					}
+				}	
+        %></mm:field><% 
     }
     textStr = subSearchString(textStr);
     // *** check whether the fields in searchFields really contain the searchTerms

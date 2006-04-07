@@ -67,11 +67,11 @@ int period = -31;
 </tr>
 <tr>
 <td class="transperant">
-<div class="<%= infopageClass %>"><%
-    if(!emailId.equals("")&&postingStr.equals("")) {
+<div class="<%= infopageClass %>"><% 
+    if(!emailId.equals("")&&postingStr.equals("")) { 
         String messageTitle = "Bevestigen plaatsing advertentie";
         String messageBody = "Je ontvangt een mail in je mailbox waarmee je het plaatsen van de juist verstuurde advertentie kunt bevestigen.";
-        String messageHref = "prikbord.jsp";
+        String messageHref = "index.jsp";
         String messageLinktext = "naar de homepage";
         String messageLinkParam = "target=\"_top\"";  
         %><%@include file="includes/showmessage.jsp" %><%

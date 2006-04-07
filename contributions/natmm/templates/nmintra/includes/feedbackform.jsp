@@ -3,12 +3,12 @@
 <%@include file="../includes/feedbackformscript.jsp" %>
 <%@include file="../includes/getresponse.jsp" %>
 <mm:import externid="object" jspvar="objectId">-1</mm:import>
-<mm:import externid="field" jspvar="fieldId">name</mm:import>
+<mm:import externid="field" jspvar="fieldId">titel</mm:import>
 <mm:import externid="param" jspvar="paramId">o</mm:import>
 <mm:import externid="ntype" jspvar="ntypeId">object</mm:import>
 <mm:import externid="by" jspvar="byId">de organisator</mm:import>
 <% String sUrl = "";
-	if (ntype.equals("opleiding")) { 
+	if (ntypeId.equals("opleiding")) { 
 		sUrl = "educations.jsp"; 
 	} else {
 		sUrl = "event_blueprints.jsp";
@@ -79,7 +79,7 @@ if(!postingStr.equals("")){
    	<tr>
    		<td style="padding-bottom:10px;">
             <b>
-               Feedback op:&nbsp;
+               Feedback op:&nbsp;<%= fieldId %>
    		      <mm:node number="<%= objectId %>"><mm:field name="<%= fieldId %>"/></mm:node>
    			</b>
    		</td>

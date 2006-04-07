@@ -10,9 +10,8 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><td style="padding:10px;padding-top:18px;"><%
 // like templateQueryString from templatesettings.jsp, but w/o articleId
-templateQueryString = "?website=" + websiteId; 
-if(!rubriekId.equals("")){ templateQueryString += "&r=" +  rubriekId; }
-if(!pageId.equals("")){ templateQueryString += "&p=" + pageId; } 
+templateQueryString = ""; 
+if(!pageId.equals("")){ templateQueryString += "?p=" + pageId; } 
 if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
    
 if(!articleId.equals("")) { 

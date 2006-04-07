@@ -1,13 +1,18 @@
-<% String employeeId = request.getParameter("e");
-	String thisPrograms = request.getParameter("tp");
-   String imageTemplate = request.getParameter("it");
-   String pageId = request.getParameter("p");
-   String postingStr = request.getParameter("ps");
-   String templateQueryString = request.getParameter("tqs");
-   String departmentId = request.getParameter("d");
-   String programId = request.getParameter("pr");
-	String firstnameId = request.getParameter("f");
-	String lastnameId = request.getParameter("l"); %>
+<%@page language="java" contentType="text/html; charset=utf-8"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache" 
+%>
+<mm:import externid="e" jspvar="employeeId"/>
+<mm:import externid="tp" jspvar="thisPrograms"/>
+<mm:import externid="it" jspvar="imageTemplate"/>
+<mm:import externid="p" jspvar="pageId"/>
+<mm:import externid="ps" jspvar="postingStr"/>
+<mm:import externid="tqs" jspvar="templateQueryString"/>
+<mm:import externid="d" jspvar="departmentId"/>
+<mm:import externid="pr" jspvar="programId"/>
+<mm:import externid="f" jspvar="firstnameId"/>
+<mm:import externid="l" jspvar="lastnameId"/>
+<mm:cloud>
 <table border="0" cellpadding="0" cellspacing="0"> 
 <tr>
     <td><img src="media/spacer.gif" width="114" height="2"></td>
@@ -17,7 +22,7 @@
         ><table border="0" cellpadding="0" cellspacing="0">
             <tr><td colspan="2" style="padding-bottom:3px;"><mm:field name="gender"><mm:compare value="0">mw. </mm:compare></mm:field
                 ><mm:field name="firstname" jspvar="firstname" vartype="String" write="true">
-                    <mm:field name="initials"jspvar="initials" vartype="String" write="false">
+                    <mm:field name="initials" jspvar="initials" vartype="String" write="false">
                         <mm:isnotempty><% 
                             if(firstname.substring(0,1).equals(initials.substring(0,1))){
                                 initials = initials.substring(initials.indexOf(".")+1);
@@ -94,3 +99,4 @@
     <td class="black"><img src="media/spacer.gif" width="1" height="465"></td>
 </tr>
 </table>
+</mm:cloud>

@@ -21,7 +21,7 @@
    <table cellpadding="5" cellspacing="0" style="border:solid #000000 1px;border-collapse:collapse;width:100%;">
    	<tr>
    		<td class="solid" style="width:150px;">opleiding</td>
-   		<td class="solid"><mm:field name="name" /></td>
+   		<td class="solid"><mm:field name="titel"/></td>
    	</tr>
 		<mm:related path="afdelingen">
 			<tr>
@@ -51,7 +51,7 @@
 			<mm:first>
 				<tr><td class="solid" style="width:150px;">competenties</td><td class="solid">
 			</mm:first>
-			<a href="educations.jsp?p=competenties#c<mm:field name="number"/>"
+			<a href="article.jsp?p=competenties#c<mm:field name="number"/>"
             title="<mm:field name="description" jspvar="sDescr" vartype="String" write="false"><%= HtmlCleaner.cleanText(sDescr.replaceAll("'",""),"<",">","") %></mm:field>"><mm:field name="name"/></a>
 			<mm:last inverse="true">
 				<br/>
