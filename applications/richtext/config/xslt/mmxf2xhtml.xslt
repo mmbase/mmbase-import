@@ -4,7 +4,7 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.1 2005-10-25 21:16:45 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.2 2006-04-07 07:59:33 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
@@ -25,11 +25,25 @@
   </xsl:template>
   
   
-  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:ol|mmxf:a|mmxf:table|mmxf:tr|mmxf:th|mmxf:td|mmxf:caption|mmxf:br" >
+  <xsl:template match="mmxf:p|mmxf:li|mmxf:ul|mmxf:ol|mmxf:a|mmxf:table|mmxf:th|mmxf:td|mmxf:caption|mmxf:br" >
     <xsl:element name="{name()}">
       <xsl:copy-of select="@*" />
       <xsl:apply-templates select="node()" />
     </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="mmxf:tr">
+    <xsl:param name="pos"><xsl:number count="mmxf:tr" /></xsl:param>
+    <xsl:element name="{name()}">
+      <xsl:if test="$pos mod 2 = 0">
+        <xsl:attribute name="class">even</xsl:attribute>
+      </xsl:if>
+      <xsl:if test="$pos mod 2 = 1">
+        <xsl:attribute name="class">odd</xsl:attribute>
+      </xsl:if>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates select="node()" />
+    </xsl:element>    
   </xsl:template>
 
   <xsl:template match="mmxf:em|mmxf:strong|mmxf:caption|mmxf:sub|mmxf:sup">
