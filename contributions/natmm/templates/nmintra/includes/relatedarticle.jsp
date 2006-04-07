@@ -20,7 +20,7 @@
         %></mm:field
         ></mm:field
     ></mm:list
-    ><mm:field name="introd"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field></p>
+    ><mm:field name="intro"><mm:isnotempty><span class="black"><mm:write /></span></mm:isnotempty></mm:field></p>
     <mm:related path="posrel,paragraaf" orderby="posrel.pos" directions="UP">
       <%@include file="../includes/relatedparagraph.jsp" %>
     </mm:related>

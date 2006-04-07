@@ -32,7 +32,7 @@ if(lastPage>listSize) { lastPage = listSize; }
          </mm:field>
          <mm:field name="providers.funding" jspvar="providers_funding" vartype="String" write="false">
           <% if (providers_funding.equals("1")) {
-                sSubsidie = "/&nbsp;<a href=\"educations.jsp?p=subsidie\">Subsidie</a>&nbsp;"; 
+                sSubsidie = "/&nbsp;<a href=\"article.jsp?p=subsidie\">Subsidie</a>&nbsp;"; 
          	 }%>
          </mm:field>
          </mm:related>

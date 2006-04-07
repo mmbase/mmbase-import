@@ -1,8 +1,8 @@
    <%@include file="../includes/getids.jsp" 
    %><%@include file="../includes/pagecounter.jsp"    
    %><%@include file="../includes/getresponse.jsp" 
-	%><%@include file="../includes/shoppingcartupdate.jsp" 
-   %><% templateTitle = "indexsite"; 
+	%><%--@include file="../includes/shoppingcartupdate.jsp" 
+   --%><% templateTitle = "indexsite"; 
    %><mm:list nodes="<%= pageId %>" path="pagina,gebruikt,paginatemplate"
          ><mm:field name="paginatemplate.naam" jspvar="dummy" vartype="String" write="false"><%
                templateTitle = dummy; 

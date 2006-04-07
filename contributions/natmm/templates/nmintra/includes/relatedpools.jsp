@@ -17,7 +17,7 @@ if(hasPools||isArchive) {
       <%
    }
 }
-String lastpool=""; 
+String lastpool="";
 %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel,posrel,pools" orderby="pools.name" directions="UP"
      ><mm:first
          ><tr><td>
@@ -101,8 +101,8 @@ if(hasPools||isArchive) { %>
    <%= "<!--" %>
    function postIt() {
        var href = document.infoform.action;
-		 //var pool = document.infoform.elements["pool"].value;
-       //if(pool != '') href += "&pool=" + pool;
+		 var pool = document.infoform.elements["pool"].value;
+       if(pool != '') href += "&pool=" + pool;
    <% if(isArchive) { %>
        var termsearch = document.infoform.elements["termsearch"].value;
        if(termsearch != '') href += "&termsearch=" + termsearch;
