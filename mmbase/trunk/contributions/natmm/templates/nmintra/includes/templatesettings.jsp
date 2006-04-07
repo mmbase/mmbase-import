@@ -1,6 +1,6 @@
 <%
-String templateQueryString = "?website=home";
-if(!pageId.equals("")){ templateQueryString += "&p=" + pageId; } 
+String templateQueryString = "";
+if(!pageId.equals("")){ templateQueryString += "?p=" + pageId; } 
 if(!articleId.equals("")){ templateQueryString += "&article=" + articleId; }
 if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
 if(!projectId.equals("")){ templateQueryString += "&project=" + projectId; }

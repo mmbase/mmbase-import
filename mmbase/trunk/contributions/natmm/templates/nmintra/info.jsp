@@ -10,7 +10,8 @@ if(!articleId.equals("")) {
    <mm:present referid="newsletter_layout">
       <% articleTemplate = "news.jsp" + templateQueryString; %>
    </mm:present>
-   <jsp:include page="<%= articleTemplate %>" />
+	<% response.sendRedirect(articleTemplate); %>
+   <%--jsp:include page="<%= articleTemplate %>" /--%>
    <%
 
 } else {  

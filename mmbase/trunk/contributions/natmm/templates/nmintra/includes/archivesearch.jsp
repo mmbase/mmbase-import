@@ -115,8 +115,8 @@
        if(projectname != '') href += "&projectname=" + projectname;
        var type = document.infoform.elements["type"].value;
        if(type != '') href += "&type=" + type;
-       var group = document.infoform.elements["group"].value;
-       if(group != '') href += "&group=" + group;
+       //var group = document.infoform.elements["group"].value;
+       //if(group != '') href += "&group=" + group;
        var medewerker = document.infoform.elements["medewerker"].value;
        if(medewerker != '') href += "&medewerker=" + medewerker;
        <mm:present referid="departmentfound">

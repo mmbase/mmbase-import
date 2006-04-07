@@ -10,7 +10,8 @@ String readmoreUrl = "vacature_info.jsp";
 if(!articleId.equals("")) { 
 
    String articleTemplate = "article.jsp" + templateQueryString;
-   %><jsp:include page="<%= articleTemplate %>" /><%
+	response.sendRedirect(articleTemplate);
+   %><%--jsp:include page="<%= articleTemplate %>" /--%><%
 
 } else if(!projectId.equals("")) { 
 
@@ -119,7 +120,6 @@ if(!articleId.equals("")) {
        <mm:list nodes="<%= pageId %>" path="pagina,posrel,vacature" fields="vacature.number"
                 orderby="vacature.embargo" directions="DOWN" constraints="<%= "vacature.embargo <= '" + nowSec + "'" %>"
             ><mm:node element="vacature"><%
-               String readmoreUrl = "vacature_info.jsp";
                if(isIPage) { readmoreUrl = "ipage.jsp"; }
                %><mm:field name="number" jspvar="vacature_number" vartype="String" write="false"><%
                   readmoreUrl += "?p=" + pageId + "&project=" + vacature_number; 

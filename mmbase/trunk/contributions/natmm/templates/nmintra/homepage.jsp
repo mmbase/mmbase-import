@@ -6,7 +6,7 @@ String sTemplateUrl = "homepage.jsp";
 if(!articleId.equals("")) { 
     String articleTemplate = "article.jsp" + templateQueryString;
 
-    %><jsp:include page="<%= articleTemplate %>" /><%
+    %><% response.sendRedirect(articleTemplate); %><%--jsp:include page="<%= articleTemplate %>" /--%><%
 
 } else {  
    int thisOffset = 0;
