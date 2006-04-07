@@ -25,23 +25,18 @@ public class XmlFieldTest  extends TestCase {
         xmlField = new XmlField();
     }
 
-    public void testStripNewLines() {
-        assertEquals("", stripNewlinesAndReturns("\n\n\n\r\r\n\r\n"));
+    protected String ignoreNL(StringObject in) {
+        return in.toString().replaceAll("\r", "").replaceAll("\n", "");
     }
 
-    /**
-     *
-     */
+
     public void testWikiToXML() {
         XmlField xmlField = new XmlField();
         result = xmlField.wikiToXML("hallo");
         assertEquals("<p>hallo</p>", result);
     }
 
-    /**
-     * test HTML_BLOCK_BR - richToHTMLBlock(r, true, true)
-     * an empty string schould return an empty p element
-     */
+
     public void testRichToHTMLBlock1() {
 
         result = xmlField.richToHTMLBlock("");
@@ -73,27 +68,6 @@ public class XmlFieldTest  extends TestCase {
         assertEquals("<p>hallo</p><ul><li>eending</li><li>nogeending</li></ul><p>hallo</p>", result);
     }
 
-    private String stripNewlinesAndReturns(String s) {
-        StringBuffer buf;
-        buf = new StringBuffer(s);
-        while (true) {
-            int i = buf.indexOf("\n");
-            if (i > -1 ) {
-               buf.deleteCharAt(i);
-            } else {
-                break;
-            }
-        }
-        while (true) {
-            int i = buf.indexOf("\r");
-            if (i > -1 ) {
-               buf.deleteCharAt(i);
-            } else {
-                break;
-            }
-        }
-        return buf.toString();
-    }
 
     public void testRichToHTMLBlock4() {
         // input:
@@ -122,19 +96,28 @@ public class XmlFieldTest  extends TestCase {
         assertEquals("<p>hallo</p><ol><li>eending</li><li>nogeending</li></ol><p>hallo</p>", result);
     }
 
+
     /**
      * Tests handling lists only
      */
     public void testHandleList() {
         StringObject in = new StringObject("-a\n-b\n-c");
         XmlField.handleList(in);
-        assertEquals("\n<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n</ul>\n", in.toString().replaceAll("\r", "\n"));
-    }
-    public void testHandleList2() {
-        StringObject in = new StringObject("Hallo\n-a\n-b\n-c\nhallo");
-        XmlField.handleList(in);
-        assertEquals("Hallo\n<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n</ul>\nhallo", in.toString().replaceAll("\r", "\n"));
+        assertTrue("" + in, "<ul><li>a</li><li>b</li><li>c</li></ul>".equals(ignoreNL(in)));
+        XmlField.handleParagraphs(in, true, true);
+        assertTrue("" + in, "<p><ul><li>a</li><li>b</li><li>c</li></ul></p>".equals(ignoreNL(in)));
+        //XmlField.placeListsOutParagraphs(in);
+        // assertTrue("" + in, "<ul><li>a</li><li>b</li><li>c</li></ul>".equals(ignoreNL(in)));
     }
 
+    public void testHandleList2() {
+        StringObject in = new StringObject("Hallo\n-x\n-y\n-z\nhallo");
+        XmlField.handleList(in);
+        assertEquals("Hallo<ul><li>x</li><li>y</li><li>z</li></ul>hallo", ignoreNL(in));
+        XmlField.handleParagraphs(in, true, true);
+        assertTrue("" + in, "<p>Hallo<ul><li>x</li><li>y</li><li>z</li></ul>hallo</p>".equals(ignoreNL(in)));
+        //XmlField.placeListsOutParagraphs(in);
+        //assertTrue("" + in, "<p>Hallo</p><ul><li>x</li><li>y</li><li>z</li></ul><p>hallo</p>".equals(ignoreNL(in)));
+    }
 
 }
