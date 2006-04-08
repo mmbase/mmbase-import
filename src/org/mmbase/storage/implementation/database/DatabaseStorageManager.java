@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.155 2006-04-06 17:40:20 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.156 2006-04-08 14:20:20 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1814,7 +1814,9 @@ public class DatabaseStorageManager implements StorageManager {
                 if (createFields.length() > 0) {
                     createFields.append(", ");
                 }
-                createFields.append(factory.getStorageIdentifier(field)).append(" ").append(fieldDef);
+                // MM: don't know why this was changed but it breaks everything:
+                //createFields.append(factory.getStorageIdentifier(field)).append(" ").append(fieldDef);
+                createFields.append(fieldDef);
                 // test on other indices
                 String constraintDef = getConstraintDefinition(field);
                 if (constraintDef != null) {
@@ -2540,12 +2542,14 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void create(CoreField field) throws StorageException {
+        if (field == null) throw new IllegalArgumentException("No field given");
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
             throw new StorageException("Data definiton statements (create new field) are not supported.");
         }
         if (factory.getScheme(Schemes.CREATE_OBJECT_ROW_TYPE) != null) {
             throw new StorageException("Can not use data definiton statements (create new field) on row types.");
         }
+        log.debug("Creating new field " + field);
         if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
             Scheme scheme = factory.getScheme(Schemes.CREATE_FIELD, Schemes.CREATE_FIELD_DEFAULT);
             if (scheme == null) {
