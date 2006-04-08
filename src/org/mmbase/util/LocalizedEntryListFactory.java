@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.32 2006-04-08 13:34:24 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.33 2006-04-08 14:04:13 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -182,7 +182,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     /**
      * Defaulting version of {@link #get(Locale, Cloud)}. Using default anonymous cloud.
      */
-    public Collection get(final Locale locale) {
+    public List get(final Locale locale) {
         return get(locale, getCloud(locale));
     }
 
@@ -218,41 +218,15 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * @param cloud  The cloud to use. Can be <code>null</code> if no queries added (see {@link #addQuery}).
      *               If Locale is <code>null</code>, but cloud isn't, the locale of the cloud is used.
      */
-    public Collection /* <Map.Entry> */ get(final Locale locale, final Cloud cloud) {
-        return new AbstractCollection () {
-            // hashCode according to List interface
-            public int hashCode() {
-                int hashCode = 1;
-                Iterator i = iterator();
-                while (i.hasNext()) {
-                    Object obj = i.next();
-                    hashCode = 31 * hashCode + (obj == null ? 0 : obj.hashCode());
-                }
-                return hashCode;
-            }
-            // equals according to List interface
-            public boolean equals(Object o) {
-                if (o instanceof Collection) {
-                    Collection col = (Collection) o;
-                    if (col.size() != size()) return false;
-                    Iterator i = iterator(); Iterator j = col.iterator();
-                    while (i.hasNext()) {
-                        Object e1 = i.next();
-                        Object e2 = j.next();
-                        if (! (e1 == null ? e2 == null : e1.equals(e2))) return false;
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
+    public List /* <Map.Entry> */ get(final Locale locale, final Cloud cloud) {
+        return new AbstractSequentialList () {
 
             public int size() {
                 return LocalizedEntryListFactory.this.size(cloud);
             }
-            public Iterator iterator() {
-                return new Iterator() {
+            public ListIterator listIterator(final int index) {
+                return new ListIterator() {
+                    int   i = -1;
                     Locale useLocale = locale;
                     Cloud useCloud = cloud;
                     {
@@ -280,9 +254,11 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                         }
 
                         findNext();
+                        while (i < index) next();
                     }
                     protected void findNext() {
                         next = null;
+                        i++;
                         while(next == null && iterator.hasNext()) {
                             Object candidate = iterator.next();
                             if (candidate instanceof Map.Entry) {
@@ -352,7 +328,33 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                         }
                         return res;
                     }
+                    public int nextIndex() {
+                        return i;
+                    }
+                    public int previousIndex() {
+                        return i - 1;
+                    }
+                    public boolean hasPrevious() {
+                        // TODO
+                        throw new UnsupportedOperationException();
+                    }
+                    public Object previous() {
+                        // TODO
+                        throw new UnsupportedOperationException();
+                    }
+                    // this is why we hate java:
+
+
                     public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                    public void remove(int index) {
+                        throw new UnsupportedOperationException();
+                    }
+                    public void add(Object o) {
+                        throw new UnsupportedOperationException();
+                    }
+                    public void set(Object o) {
                         throw new UnsupportedOperationException();
                     }
                 };
