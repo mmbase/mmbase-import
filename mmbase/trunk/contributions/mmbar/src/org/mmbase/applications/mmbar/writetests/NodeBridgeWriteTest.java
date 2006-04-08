@@ -39,10 +39,11 @@ public class NodeBridgeWriteTest extends WriteTest {
         if (nm == null) {
             log.error("Can't load nodemanager : " + nm + " from mmbase");
         } else {
-            long starttime = System.currentTimeMillis();
+ 	    int realcount =  getCount() / getThreads();
             try {
-                for (currentpos = 0; currentpos < getCount(); currentpos++) {
+                for (int i = 0; i < realcount; i++) {
                     org.mmbase.bridge.Node node = nm.createNode();
+		    currentpos++;
                     node.setStringValue("name", "name" + currentpos);
                     node.setStringValue("description", "description" + currentpos);
                     node.commit();
@@ -50,8 +51,6 @@ public class NodeBridgeWriteTest extends WriteTest {
             } catch (Exception e) {
                 log.error("Error inside NodeBridgeWriteTest");
             }
-            long endtime = System.currentTimeMillis();
-            setResult(getCount(), endtime - starttime);
         }
     }
 
