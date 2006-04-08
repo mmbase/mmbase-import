@@ -30,7 +30,24 @@ public class NodeHttpReadTest extends ReadTest {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(NodeHttpReadTest.class);
+    private ArrayList validlist;
+    private int validcount;
 
+    public void initTest() {
+        Cloud cloud = MMBarManager.getCloud();
+        String buildername =  getProperty("builder");
+        if (buildername==null) buildername = "mmpo_basicobject";
+        NodeManager nm = cloud.getNodeManager(buildername);
+        if (nm == null) {
+            log.error("Can't load nodemanager : " + buildername + " from mmbase");
+        } else {
+	    if (validlist==null) {
+                validcount = getCount() / getThreads();
+                validlist = readValidNodes(nm, validcount);
+	        validcount = validlist.size();
+	    }
+	}
+    }
 
     /**
      * 
@@ -43,9 +60,6 @@ public class NodeHttpReadTest extends ReadTest {
         if (nm == null) {
             log.error("Can't load nodemanager : " + buildername + " from mmbase");
         } else {
-            int count = getCount();
-            ArrayList validlist = readValidNodes(nm, count);
-            count = validlist.size();
 
             // so we want cache on or not ?
             String cachemode =  getProperty("cache");
@@ -54,13 +68,14 @@ public class NodeHttpReadTest extends ReadTest {
                 cache.clear();
             }
 
-            long starttime = System.currentTimeMillis();
             int count2 = 0;
             try {
-                for (currentpos = 0; currentpos < getCount(); currentpos++) {
+	        int realcount = getCount() / getThreads();
+                for (int i = 0; i < realcount; i++) {
 		    URL url = new URL(MMBarManager.getBaseTestUrl()+"/reading/NodeHttpReadTest.jsp?nodeid="+validlist.get(count2++));
 		    getURLBytes(url);
-                    if (count2 >= count) {
+		    currentpos++;
+                    if (count2 >= validcount) {
                         count2 = 0;
                         if (cachemode!=null && cachemode.equals("off")) {
                                 Cache cache = NodeCache.getCache();
@@ -68,8 +83,6 @@ public class NodeHttpReadTest extends ReadTest {
                         }
                     }
                 }
-            	long endtime = System.currentTimeMillis();
-            	setResult(getCount(), endtime - starttime);
             } catch (Exception e) {
                 log.error("Error inside NodeHttpReadTest");
 		e.printStackTrace();
