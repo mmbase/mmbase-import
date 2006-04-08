@@ -8,16 +8,17 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
+import java.util.Map;
 
 /**
  * Represents a pair of values ('key' and a 'value'). It is a straight-forward implementation of
  * {@link java.util.Map.Entry}, and can be used as a utility for Map implementations. 
  *
  * @since MMBase-1.8
- * @version $Id: Entry.java,v 1.3 2005-12-20 18:26:59 michiel Exp $
+ * @version $Id: Entry.java,v 1.4 2006-04-08 13:03:38 michiel Exp $
  * @author Michiel Meeuwissen
  */
-public class Entry implements java.util.Map.Entry, PublicCloneable, java.io.Serializable {
+public class Entry implements Map.Entry, PublicCloneable, java.io.Serializable {
 
     private Object key; // cannot be final because of cloneable/serializable, but logically, it could.
     private Object value;
@@ -34,7 +35,7 @@ public class Entry implements java.util.Map.Entry, PublicCloneable, java.io.Seri
         key = k ;
         value = v;
     }
-    public Entry(java.util.Map.Entry e) {
+    public Entry(Map.Entry e) {
         key = e.getKey();
         value = e.getValue();
     }
@@ -58,6 +59,20 @@ public class Entry implements java.util.Map.Entry, PublicCloneable, java.io.Seri
 
     public Object clone() {
         return new Entry(key, value);
+    }
+
+    public int hashCode() {
+        return (key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode());
+    }
+    public boolean equals(Object o) {
+        if (o instanceof Map.Entry) {
+            Map.Entry entry = (Map.Entry) o;
+            return
+                (key == null ? entry.getKey() == null : key.equals(entry.getKey())) &&
+                (value == null ? entry.getValue() == null : value.equals(entry.getValue()));
+        } else {
+            return false;
+        }
     }
     /**
      * A sensible toString, for debugging purposes ('&lt;key&gt;=&lt;value&gt;').
