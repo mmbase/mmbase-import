@@ -15,7 +15,8 @@
     var selectedDataTypeId = document.getElementById("mmbasetype").value;
     document.getElementById("description_" + selectedDataTypeId).style.display = "block";
     var length = document.getElementById("haslength_" + selectedDataTypeId);
-    document.getElementById("dbsize").style.visibility = length ? "visible" : "hidden";
+    var sizeEl = document.getElementById("dbsize");
+    if (sizeEl) sizeEl.style.visibility = length ? "visible" : "hidden";
     var selectedDataType = document.getElementById("datatype_" + selectedDataTypeId);
     selectedDataType.name = "datatype";
     selectedDataType.style.display = "block";

@@ -58,7 +58,7 @@
       }
       %>)$</span>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_name" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -66,7 +66,7 @@
     <td class="data">
       <jsp:directive.include file="properties/dbmmbasetype.jsp" />      
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <% String property; // strange implemetnation%> 
@@ -76,7 +76,7 @@
     <td class="data">
       <jsp:directive.include file="properties/datatype.jsp" />      
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 <tr>
     <td class="data">State</td>
@@ -84,7 +84,7 @@
     <% property="dbstate"; %>
     <%@include file="properties/dbstate.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_state" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -93,7 +93,7 @@
     <% property="dbnotnull"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_notnull" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_notnull" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -102,7 +102,7 @@
     <% property="dbkey"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_key" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_key" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -111,7 +111,7 @@
       <input class="validateable" id="dbsize" type="text" onKeyUp="validate();" name="dbsize" value="255" />
       <span id="validate_dbsize" style="display: none;" class="regexp">^0*[1-9][0-9]*$</span>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/informationanalysts/builders.html#field_size" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
