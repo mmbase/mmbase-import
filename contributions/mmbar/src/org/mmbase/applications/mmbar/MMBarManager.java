@@ -976,7 +976,11 @@ public class MMBarManager {
      * @return    os ident
      */
     public static String getOS() {
-        return os;
+	if (os!=null) {
+            return os;
+	} else {
+	    return System.getProperty("os.name") + "/" + System.getProperty("os.version");
+	}
     }
 
     public static void setOS(String newos) {
@@ -1043,7 +1047,11 @@ public class MMBarManager {
      * @return    java ident
      */
     public static String getJava() {
-        return java;
+	if (java!=null) {
+        	return java;
+	} else {
+		return System.getProperty("java.version");
+	}
     }
 
     public static void setJava(String newjava) {

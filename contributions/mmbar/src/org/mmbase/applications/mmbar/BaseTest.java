@@ -59,8 +59,11 @@ public class BaseTest implements Runnable {
     // number of threads we want this test run in
     private int threads = 1;
 
-    // Basic Thread of the test
-    private Thread kicker = null;
+    private int runcounter = 0;
+
+    private long starttime = 0;
+
+    private long endtime = 0;
 
     // benchmarks defined for the test
     private ArrayList benchmarks = new ArrayList();
@@ -196,7 +199,6 @@ public class BaseTest implements Runnable {
         return threads;
     }
 
-
     /**
      *  Sets the threads attribute of the BaseTest object
      *
@@ -299,10 +301,22 @@ public class BaseTest implements Runnable {
 	// set the action button to 'stop' (gui)
         setAction("stop");
 
-	// start the performance thread
-        kicker = new Thread(this, "performance : " + this);
-        kicker.setDaemon(true);
-        kicker.start();
+	// start the performance threads
+
+	// set the run counter to zero
+	runcounter = 0;
+
+	// first init the test
+	initTest();
+
+	for (int i=0;i<threads;i++) {
+        	Thread kicker = new Thread(this, "mmbar thread ("+i+") : " + this);
+        	kicker.setDaemon(true);
+        	kicker.start();
+		runcounter = runcounter + 1;
+		starttime = System.currentTimeMillis();
+	}
+
         return true;
     }
 
@@ -316,17 +330,26 @@ public class BaseTest implements Runnable {
 	    // call the test method itself, this will mostly be overridden
             testRun();
 
-	    // return the action to old state (gui)
-            setAction(oldaction);
+	    runcounter = runcounter - 1;
 
-	    // set out own state to finished (gui)
-            setState("finished");
+	    // if we are the last one running the rest is over
+	    if (runcounter == 0) { 
+		endtime = System.currentTimeMillis();
+                long endtime = System.currentTimeMillis();
+                setResult(getCount(), endtime - starttime);
 
-	    // clear the running test in the manager
-            MMBarManager.cleanRunningTest();
+	        // return the action to old state (gui)
+                setAction(oldaction);
 
-	    // reset the current position count to 0;
-            currentpos = 0;
+	        // set out own state to finished (gui)
+                setState("finished");
+
+	        // clear the running test in the manager
+                MMBarManager.cleanRunningTest();
+
+	        // reset the current position count to 0;
+		currentpos = 0;
+            }
         } catch (Exception e) {
             log.info("Error inside the test run : " + this);
             e.printStackTrace();
@@ -388,7 +411,10 @@ public class BaseTest implements Runnable {
     public boolean deletebenchmark(int pos) {
 	benchmarks.remove(pos-1);
 	return true;
-    }
+     }
+
+     public void initTest() {
+     }
 
 }
 

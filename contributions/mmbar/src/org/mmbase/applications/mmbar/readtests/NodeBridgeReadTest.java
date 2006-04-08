@@ -30,7 +30,24 @@ public class NodeBridgeReadTest extends ReadTest {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(NodeBridgeReadTest.class);
+    private ArrayList validlist;
+    private int validcount;
 
+    public void initTest() {
+        Cloud cloud = MMBarManager.getCloud();
+        String buildername =  getProperty("builder");
+        if (buildername==null) buildername = "mmpo_basicobject";
+        NodeManager nm = cloud.getNodeManager(buildername);
+        if (nm == null) {
+            log.error("Can't load nodemanager : " + buildername + " from mmbase");
+        } else {
+	    if (validlist==null) {
+                validcount = getCount() / getThreads();
+                validlist = readValidNodes(nm, validcount);
+	        validcount = validlist.size();
+	    }
+	}
+    }
 
     /**
      *  A unit test for JUnit
@@ -44,9 +61,6 @@ public class NodeBridgeReadTest extends ReadTest {
         if (nm == null) {
             log.error("Can't load nodemanager : " + buildername + " from mmbase");
         } else {
-            int validcount = getCount();
-            ArrayList validlist = readValidNodes(nm, validcount);
-	    validcount = validlist.size();
 
 	    // so we want cache on or not ?
 	    String cachemode =  getProperty("cache");
@@ -55,11 +69,12 @@ public class NodeBridgeReadTest extends ReadTest {
                 cache.clear();
 	    }
 	
-            long starttime = System.currentTimeMillis();
             int count2 = 0;
+	    int readcount = getCount() / getThreads();
             try {
-                for (currentpos = 0; currentpos < getCount(); currentpos++) {
+                for (int i = 0; i < readcount; i++) {
                     Object o = cloud.getNode(((Integer) validlist.get(count2++)).intValue());
+		    currentpos++;
                     if (count2 >= validcount) {
                         count2 = 0;
 	    		if (cachemode!=null && cachemode.equals("off")) {
@@ -68,8 +83,6 @@ public class NodeBridgeReadTest extends ReadTest {
 			}
                     }
                 }
-            	long endtime = System.currentTimeMillis();
-            	setResult(getCount(), endtime - starttime);
             } catch (Exception e) {
                 log.error("Error inside NodeBridgeReadTest");
 		e.printStackTrace();
