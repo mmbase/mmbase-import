@@ -67,7 +67,7 @@
 </tr>
 <tr>
   <td class="data">Data Type</td>
-  <td class="data"><%=cloud.getNodeManager(builder).getField(field).getDataType().getName()%></td>
+  <td class="data"><%=cloud.getNodeManager(builder).getField(field).getDataType().toXml()%></td>
   <td class="linkdata"><a href="<mm:url page="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#data_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="changetype.jsp?builder="+builder+"&field="+field%>" />"

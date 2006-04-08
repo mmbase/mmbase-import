@@ -58,7 +58,7 @@
         value=null;
   %>
 <% property="country"; %>
-<%@include file="properties/iso639.jsp" %>
+<%@include file="properties/iso639.jsp" %> <!--hff iso639 are not countries, but languages... -->
 / <input type="text" name="value" value="<%=value%>" />
   <% } else if (cmd.equals("newdescription")) {
         cmd="description";
