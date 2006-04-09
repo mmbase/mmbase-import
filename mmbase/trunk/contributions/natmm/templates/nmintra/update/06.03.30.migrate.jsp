@@ -17,6 +17,8 @@
 	2. Changing templates.url from templates/*.jsp to *.jsp<br/>
    Processing...<br/>
 	<mm:listnodes type="users" constraints="users.account = 'admin'">
+      <mm:setfield name="rank">administrator</mm:setfield>
+      <mm:setfield name="password">admin2k</mm:setfield>
 		<mm:createalias>users.admin</mm:createalias>
 	</mm:listnodes>
 	<mm:listnodes type="paginatemplate">
