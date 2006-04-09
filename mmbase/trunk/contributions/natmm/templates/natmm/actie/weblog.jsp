@@ -6,10 +6,6 @@ PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <%@include file="../includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<% if(!offsetID.equals("0")){
-   %><mm:import id="onload_statement">window.location='weblog.jsp?<%= request.getQueryString() %>#bottom';</mm:import><%
-}
-%>
 <%@include file="../includes/top4_head.jsp" %>
 <div style="position:absolute"><%@include file="../includes/flushlink.jsp" %></div>
 <table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" valign="top">
@@ -148,14 +144,11 @@ long oneDay = 24*60*60;
                      %> 
                      <span style="font:bold 110%;color:red">></span>
                      <span class="colortitle"><mm:field name="titel"/></span>
-                     <%
-                   }
-                   if(menuType==DATE) {
-                     %>             
                      <span class="colortxt"><mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false"
                      ><mm:time time="<%=artikel_begindatum%>" format="d MMM yyyy"/></mm:field></span>
-                     <% 
-                   } %>
+                     <%
+                   }
+                   %>
                  </div>
                </td>
                <% 
@@ -164,6 +157,8 @@ long oneDay = 24*60*60;
                   <td style="padding-left:10px;padding-top:7px;">
                      <span style="font:bold 110%;color:red">></span>
                      <span class="colortitle"><mm:field name="titel"/></span><br/>
+                     <span class="colortxt"><mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false"
+                     ><mm:time time="<%=artikel_begindatum%>" format="d MMM yyyy"/></mm:field></span><br/>
                      <b><%= text %></b>
                   </td>
                   <%
