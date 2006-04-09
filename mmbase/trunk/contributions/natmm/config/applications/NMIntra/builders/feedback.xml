@@ -37,7 +37,7 @@
       </editor>
       <db>
         <name>namesender</name>
-        <type state="persistent" size="255" key="false" notnull="true">STRING</type>
+        <type state="persistent" size="255" key="false" notnull="false">STRING</type>
       </db>
     </field>
     <field>
@@ -59,7 +59,7 @@
       </editor>
       <db>
         <name>emailsender</name>
-        <type state="persistent" size="255" key="false" notnull="true">STRING</type>
+        <type state="persistent" size="255" key="false" notnull="false">STRING</type>
       </db>
     </field>
     <field>
@@ -81,7 +81,7 @@
       </editor>
       <db>
         <name>namereceiver</name>
-        <type state="persistent" size="255" key="false" notnull="true">STRING</type>
+        <type state="persistent" size="255" key="false" notnull="false">STRING</type>
       </db>
     </field>
     <field>
@@ -103,7 +103,7 @@
       </editor>
       <db>
         <name>emailreceiver</name>
-        <type state="persistent" size="255" key="false" notnull="true">STRING</type>
+        <type state="persistent" size="255" key="false" notnull="false">STRING</type>
       </db>
     </field>
     <field>
@@ -125,7 +125,7 @@
       </editor>
       <db>
         <name>topic</name>
-        <type state="persistent" size="2555" key="false" notnull="true">STRING</type>
+        <type state="persistent" size="2048" key="false" notnull="false">STRING</type>
       </db>
     </field>
     <field>
@@ -147,7 +147,7 @@
       </editor>
       <db>
         <name>text</name>
-        <type state="persistent" size="65535" key="false" notnull="true">STRING</type>
+        <type state="persistent" size="65535" key="false" notnull="false">STRING</type>
       </db>
     </field>
     <field>
@@ -169,7 +169,7 @@
          </editor>
          <db>
             <name xml:lang="nl">begindate</name>
-            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+            <type state="persistent" size="1" key="false" notnull="false">INTEGER</type>
          </db>
       </field>
       <field>
@@ -191,7 +191,7 @@
          </editor>
          <db>
             <name xml:lang="nl">enddate</name>
-            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+            <type state="persistent" size="1" key="false" notnull="false">INTEGER</type>
          </db>
     </field>
     <field>
@@ -213,7 +213,7 @@
       </editor>
       <db>
         <name>score</name>
-        <type state="persistent" notnull="true">INTEGER</type>
+        <type state="persistent" key="false" notnull="false">INTEGER</type>
       </db>
     </field>
   </fieldlist>
