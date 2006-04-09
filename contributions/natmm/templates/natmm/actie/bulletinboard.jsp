@@ -284,7 +284,7 @@ if(adID.equals("-1")) {
                 <tr align="left" valign="top">
                   <td colspan="2" style="padding:10px 0px 10px 10px">
                      <mm:field name="text"/>
-                     <table class="dotline"><tr><td height="3"></td></tr></table>
+                     <mm:last inverse="true"><table class="dotline"><tr><td height="3"></td></tr></table></mm:last>
                   </td>
                </tr>
                </mm:node>
