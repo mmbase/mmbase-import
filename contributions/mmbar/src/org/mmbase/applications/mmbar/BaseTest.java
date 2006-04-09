@@ -13,6 +13,7 @@ import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -64,6 +65,10 @@ public class BaseTest implements Runnable {
     private long starttime = 0;
 
     private long endtime = 0;
+
+    Cache cache = null;
+
+    boolean oldcachemode = true;
 
     // benchmarks defined for the test
     private ArrayList benchmarks = new ArrayList();
@@ -309,6 +314,14 @@ public class BaseTest implements Runnable {
 	// first init the test
 	initTest();
 
+	 // so we want cache on or not ?
+	 String cachemode =  getProperty("cache");
+	 if (cachemode!=null && cachemode.equals("off")) {
+             cache = NodeCache.getCache();
+	     oldcachemode = cache.isActive();
+             cache.setActive(false);
+	 }
+
 	for (int i=0;i<threads;i++) {
         	Thread kicker = new Thread(this, "mmbar thread ("+i+") : " + this);
         	kicker.setDaemon(true);
@@ -343,6 +356,9 @@ public class BaseTest implements Runnable {
 
 	        // set out own state to finished (gui)
                 setState("finished");
+
+
+	        if (cache!=null) cache.setActive(oldcachemode);
 
 	        // clear the running test in the manager
                 MMBarManager.cleanRunningTest();

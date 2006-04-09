@@ -14,7 +14,6 @@ import java.io.*;
 import org.mmbase.applications.mmbar.*;
 
 import org.mmbase.util.*;
-import org.mmbase.cache.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -61,13 +60,6 @@ public class NodeHttpReadTest extends ReadTest {
             log.error("Can't load nodemanager : " + buildername + " from mmbase");
         } else {
 
-            // so we want cache on or not ?
-            String cachemode =  getProperty("cache");
-            if (cachemode!=null && cachemode.equals("off")) {
-                Cache cache = NodeCache.getCache();
-                cache.clear();
-            }
-
             int count2 = 0;
             try {
 	        int realcount = getCount() / getThreads();
@@ -77,10 +69,6 @@ public class NodeHttpReadTest extends ReadTest {
 		    currentpos++;
                     if (count2 >= validcount) {
                         count2 = 0;
-                        if (cachemode!=null && cachemode.equals("off")) {
-                                Cache cache = NodeCache.getCache();
-                                cache.clear();
-                        }
                     }
                 }
             } catch (Exception e) {
