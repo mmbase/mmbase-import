@@ -20,7 +20,9 @@
         <description xml:lang="us">Styles</description>
     </descriptions>
     <properties>
-        <property name="ImageConvert.ConverterRoot">E:/apps/imagemagick/</property>
+       <!-- <property name="ImageConvert.ConverterRoot">c:/apps/imagemagick/</property> -->
+       <!-- <property name="ImageConvert.ConverterRoot">e:/apps/imagemagick/</property> -->
+       <property name="ImageConvert.ConverterRoot">d:/win32app/imagemagick/</property>
     </properties>
     <fieldlist>
         <field>
