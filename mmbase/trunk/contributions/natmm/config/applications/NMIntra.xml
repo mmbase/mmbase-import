@@ -95,159 +95,159 @@
       <builder version="0" maintainer="mmbase.org">users</builder>
    </neededbuilderlist>
    <neededreldeflist>
-      <reldef source="contentrel" target="contentrel" direction="bidirectional" guisourcename="contentrel" guitargetname="contentrel" builder="contentrel" />
-      <reldef source="discountrel" target="discountrel" direction="unidirectional" guisourcename="DiscountRel" guitargetname="DiscountRel" builder="discountrel" />
-      <reldef source="gebruikt" target="gebruikt" direction="bidirectional" guisourcename="gebruikt" guitargetname="gebruikt" builder="insrel" />
-      <reldef source="parent" target="parent" direction="bidirectional" guisourcename="parentrel" guitargetname="parentrel" builder="childrel" />
-      <reldef source="phaserel" target="phaserel" direction="bidirectional" guisourcename="phaserel" guitargetname="phaserel" builder="phaserel" />
-      <reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel" />
-      <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
-      <reldef source="readmore" target="readmore" direction="bidirectional" guisourcename="ReadMore" guitargetname="ReadMore" builder="readmore" />
-      <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
-      <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="RoleRel" guitargetname="RoleRel" builder="rolerel" />
-      <reldef source="synonymrel" target="synonymrel" direction="bidirectional" guisourcename="Synonymrel" guitargetname="Synonymrel" builder="insrel" />
+      <reldef source="contentrel" target="contentrel" direction="bidirectional" guisourcename="contentrel" guitargetname="contentrel" builder="contentrel"/>
+      <reldef source="discountrel" target="discountrel" direction="unidirectional" guisourcename="DiscountRel" guitargetname="DiscountRel" builder="discountrel"/>
+      <reldef source="gebruikt" target="gebruikt" direction="bidirectional" guisourcename="gebruikt" guitargetname="gebruikt" builder="insrel"/>
+      <reldef source="parent" target="parent" direction="bidirectional" guisourcename="parentrel" guitargetname="parentrel" builder="childrel"/>
+      <reldef source="phaserel" target="phaserel" direction="bidirectional" guisourcename="phaserel" guitargetname="phaserel" builder="phaserel"/>
+      <reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel"/>
+      <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel"/>
+      <reldef source="readmore" target="readmore" direction="bidirectional" guisourcename="ReadMore" guitargetname="ReadMore" builder="readmore"/>
+      <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel"/>
+      <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="RoleRel" guitargetname="RoleRel" builder="rolerel"/>
+      <reldef source="synonymrel" target="synonymrel" direction="bidirectional" guisourcename="Synonymrel" guitargetname="Synonymrel" builder="insrel"/>
    </neededreldeflist>
    <allowedrelationlist>
-      <relation from="evenement_blueprint" to="afdelingen" type="readmore" />
-      <relation from="evenement_blueprint" to="deelnemers_age" type="posrel" />
-      <relation from="evenement_blueprint" to="deelnemers_categorie"  type="posrel" />
-      <relation from="evenement_blueprint" to="evenement_distance" type="related" />
-      <relation from="evenement_blueprint" to="evenement_duration" type="related" />
-      <relation from="evenement_blueprint" to="evenement_type" type="related" />
-      <relation from="evenement_blueprint" to="feedback" type="related" />
-      <relation from="evenement_blueprint" to="medewerkers" type="readmore" />
-      <relation from="evenement_blueprint" to="natuurgebieden_type" type="related" />
-      <relation from="evenement_blueprint" to="paragraaf" type="posrel" />
-      <relation type="contentrel" to="artikel" from="pagina"/>
-      <relation type="contentrel" to="images" from="rubriek"/>
-      <relation type="contentrel" to="pagina" from="medewerkers"/> 
-      <relation type="contentrel" to="shorty" from="pagina"/>
-      <relation type="contentrel" to="teaser" from="pagina"/>
-      <relation type="contentrel" to="vacature" from="pagina"/> 
-      <relation type="discountrel" to="pagina" from="pagina"/> 
-      <relation type="discountrel" to="pools" from="items"/>
-      <relation type="gebruikt" to="menu" from="users"/>
-      <relation type="gebruikt" to="paginatemplate" from="pagina"/>
-      <relation type="parent" to="rubriek" from="rubriek"/>
-      <relation type="phaserel" to="phases" from="projects"/>
-      <relation type="pos4rel" to="artikel" from="images"/>
-      <relation type="pos4rel" to="pagina" from="images"/> 
-      <relation type="posrel" to="ads" from="pagina"/>
-      <relation type="posrel" to="afdelingen" from="divisions"/>
-      <relation type="posrel" to="artikel" from="items"/>
-      <relation type="posrel" to="artikel" from="pools"/>
-      <relation type="posrel" to="attachments" from="artikel"/>
-      <relation type="posrel" to="attachments" from="educations"/>
-      <relation type="posrel" to="attachments" from="items"/>
-      <relation type="posrel" to="attachments" from="pagina"/> 
-      <relation type="posrel" to="attachments" from="paragraaf"/> 
-      <relation type="posrel" to="attachments" from="shorty"/> 
-      <relation type="posrel" to="attachments" from="vacature"/>
-      <relation type="posrel" to="companies" from="shorty"/> 
-      <relation type="posrel" to="competencetypes" from="competencies"/>
-      <relation type="posrel" to="competencies" from="educations"/>
-      <relation type="posrel" to="ctexts" from="vacature"/>
-      <relation type="posrel" to="discounts" from="items"/>
-      <relation type="posrel" to="discounts" from="pagina"/>
-      <relation type="posrel" to="documents" from="documents"/>
-      <relation type="posrel" to="documents" from="pagina"/>
-      <relation type="posrel" to="editwizards" from="menu"/>
-      <relation type="posrel" to="education_pools" from="educations"/>
-      <relation type="posrel" to="formulier" from="pagina"/>
-      <relation type="posrel" to="formulierveld" from="formulier"/>
-      <relation type="posrel" to="formulierveld" from="pools"/>
-      <relation type="posrel" to="formulierveldantwoord" from="formulierveld"/>
-      <relation type="posrel" to="forummessagebox" from="posters"/>
-      <relation type="posrel" to="forums" from="pagina"/>
-      <relation type="posrel" to="images" from="artikel"/> 
-      <relation type="posrel" to="images" from="avatarsets"/>
-      <relation type="posrel" to="images" from="items"/>
-      <relation type="posrel" to="images" from="medewerkers"/>
-      <relation type="posrel" to="images" from="pagina"/> 
-      <relation type="posrel" to="images" from="paragraaf"/> 
-      <relation type="posrel" to="images" from="shorty"/> 
-      <relation type="posrel" to="images" from="teaser"/> 
-      <relation type="posrel" to="items" from="pagina"/>
-      <relation type="posrel" to="link" from="contentblocks"/>
-      <relation type="posrel" to="link" from="items"/>
-      <relation type="posrel" to="link" from="pagina"/> 
-      <relation type="posrel" to="link" from="paragraaf"/> 
-      <relation type="posrel" to="link" from="shorty"/> 
-      <relation type="posrel" to="link" from="teaser"/> 
-      <relation type="posrel" to="locations" from="afdelingen"/> 
-      <relation type="posrel" to="locations" from="divisions"/>
-      <relation type="posrel" to="locations" from="programs"/>
-      <relation type="posrel" to="medewerkers" from="items"/>
-      <relation type="posrel" to="mmevents" from="pagina"/>
-      <relation type="posrel" to="mmevents" from="shorty"/>
-      <relation type="posrel" to="pagina" from="contentblocks"/>
-      <relation type="posrel" to="pagina" from="rubriek"/>
-      <relation type="posrel" to="paragraaf" from="artikel"/>
-      <relation type="posrel" to="paragraaf" from="projects"/>
-      <relation type="posrel" to="phases" from="terms"/>
-      <relation type="posrel" to="pools" from="artikel"/>
-      <relation type="posrel" to="pools" from="items"/>
-      <relation type="posrel" to="pools" from="pagina"/>
-      <relation type="posrel" to="products" from="items"/>
-      <relation type="posrel" to="producttypes" from="pagina"/>
-      <relation type="posrel" to="producttypes" from="products"/>
-      <relation type="posrel" to="producttypes" from="teaser"/>
-      <relation type="posrel" to="programs" from="afdelingen"/>
-      <relation type="posrel" to="programs" from="pagina"/>
-      <relation type="posrel" to="programs" from="products"/>
-      <relation type="posrel" to="programs" from="shorty"/>
-      <relation type="posrel" to="projects" from="contentblocks"/>
-      <relation type="posrel" to="projects" from="terms"/>
-      <relation type="posrel" to="projecttypes" from="projects"/>
-      <relation type="readmore" to="afdelingen" from="afdelingen"/>
-      <relation type="readmore" to="afdelingen" from="medewerkers"/>
-      <relation type="readmore" to="afdelingen" from="phaserel"/>
-      <relation type="readmore" to="afdelingen" from="projects"/>
-      <relation type="readmore" to="artikel" from="pagina"/>
-      <relation type="readmore" to="attachments" from="contentblocks"/>
-      <relation type="readmore" to="contentblocks" from="pagina"/> 
-      <relation type="readmore" to="contentblocks" from="phaserel"/>
-      <relation type="readmore" to="contentblocks" from="projects"/>
-      <relation type="readmore" to="items" from="artikel"/>
-      <relation type="readmore" to="locations" from="medewerkers"/>
-      <relation type="readmore" to="locations" from="products"/>
-      <relation type="readmore" to="medewerkers" from="phaserel"/> 
-      <relation type="readmore" to="medewerkers" from="projects"/> 
-      <relation type="readmore" to="pagina" from="contentblocks"/>
-      <relation type="readmore" to="pagina" from="pagina"/>
-      <relation type="readmore" to="pagina" from="paragraaf"/> 
-      <relation type="readmore" to="pagina" from="teaser"/> 
-      <relation type="readmore" to="pagina" from="terms"/>
-      <relation type="readmore" to="programs" from="medewerkers"/>
-      <relation type="readmore" to="style" from="rubriek"/>
-      <relation type="related" to="avatarsets" from="posters"/> 
-      <relation type="related" to="community" from="pools"/> 
-      <relation type="related" to="editwizards" from="paginatemplate"/> 
-      <relation type="related" to="feedback" from="educations"/>
-      <relation type="related" to="forumprivatemessage" from="forummessagebox"/>
-      <relation type="related" to="kb_answer" from="kb_question"/>
-      <relation type="related" to="kb_category" from="kb_category"/>
-      <relation type="related" to="kb_question" from="kb_category"/>
-      <relation type="related" to="keywords" from="educations"/>
-      <relation type="related" to="medewerkers" from="users"/> 
-      <relation type="related" to="mmevents" from="images"/>
-      <relation type="related" to="pagina" from="pagina"/>
-      <relation type="related" to="postareas" from="forums"/>
-      <relation type="related" to="posters" from="forums"/>
-      <relation type="related" to="postings" from="postthreads"/>
-      <relation type="related" to="postthreads" from="postareas"/>
-      <relation type="related" to="providers" from="educations"/>
-      <relation type="related" to="style" from="rubriek"/>
-      <relation type="related" to="style" from="shorty"/>
-      <relation type="rolerel" to="afdelingen" from="educations"/>
-      <relation type="rolerel" to="medewerkers" from="educations"/>
-      <relation type="rolerel" to="posters" from="forums"/>
-      <relation type="rolerel" to="posters" from="images"/>
-      <relation type="rolerel" to="posters" from="postareas"/>
-      <relation type="rolerel" to="terms" from="terms"/>
-      <relation type="rolerel" to="users" from="pagina"/>
-      <relation type="rolerel" to="users" from="rubriek"/>
-      <relation type="synonymrel" to="terms" from="terms"/>
+      <relation from="afdelingen" to="afdelingen" type="readmore"/>
+      <relation from="afdelingen" to="locations" type="posrel"/> 
+      <relation from="afdelingen" to="medewerkers" type="readmore"/>
+      <relation from="afdelingen" to="programs" type="posrel"/>
+      <relation from="artikel" to="attachments" type="posrel"/>
+      <relation from="artikel" to="images" type="posrel"/> 
+      <relation from="artikel" to="items" type="readmore"/>
+      <relation from="artikel" to="paragraaf" type="posrel"/>
+      <relation from="artikel" to="pools" type="posrel"/>
+      <relation from="avatarsets" to="images" type="posrel"/>
+      <relation from="competencies" to="competencetypes" type="posrel"/>
+      <relation from="contentblocks" to="attachments" type="readmore"/>
+      <relation from="contentblocks" to="link" type="posrel"/>
+      <relation from="contentblocks" to="pagina" type="posrel"/>
+      <relation from="contentblocks" to="pagina" type="readmore"/>
+      <relation from="contentblocks" to="projects" type="posrel"/>
+      <relation from="divisions" to="afdelingen" type="posrel"/>
+      <relation from="divisions" to="locations" type="posrel"/>
+      <relation from="documents" to="documents" type="posrel"/>
+      <relation from="educations" to="afdelingen" type="rolerel"/>
+      <relation from="educations" to="attachments" type="posrel"/>
+      <relation from="educations" to="competencies" type="posrel"/>
+      <relation from="educations" to="education_pools" type="posrel"/>
+      <relation from="educations" to="feedback" type="related"/>
+      <relation from="educations" to="keywords" type="related"/>
+      <relation from="educations" to="medewerkers" type="rolerel"/>
+      <relation from="educations" to="providers" type="related"/>
+      <relation from="evenement_blueprint" to="afdelingen" type="readmore"/>
+      <relation from="evenement_blueprint" to="deelnemers_age" type="posrel"/>
+      <relation from="evenement_blueprint" to="deelnemers_categorie" type="posrel"/>
+      <relation from="evenement_blueprint" to="evenement_distance" type="related"/>
+      <relation from="evenement_blueprint" to="evenement_duration" type="related"/>
+      <relation from="evenement_blueprint" to="evenement_type" type="related"/>
+      <relation from="evenement_blueprint" to="feedback" type="related"/>
+      <relation from="evenement_blueprint" to="medewerkers" type="readmore"/>
+      <relation from="evenement_blueprint" to="natuurgebieden_type" type="related"/>
+      <relation from="evenement_blueprint" to="paragraaf" type="posrel"/>
+      <relation from="formulier" to="formulierveld" type="posrel"/>
+      <relation from="formulierveld" to="formulierveldantwoord" type="posrel"/>
+      <relation from="forummessagebox" to="forumprivatemessage" type="related"/>
+      <relation from="forums" to="postareas" type="related"/>
+      <relation from="forums" to="posters" type="related"/>
+      <relation from="forums" to="posters" type="rolerel"/>
+      <relation from="images" to="artikel" type="pos4rel"/>
+      <relation from="images" to="mmevents" type="related"/>
+      <relation from="images" to="pagina" type="pos4rel"/> 
+      <relation from="images" to="posters" type="rolerel"/>
+      <relation from="items" to="artikel" type="posrel"/>
+      <relation from="items" to="attachments" type="posrel"/>
+      <relation from="items" to="discounts" type="posrel"/>
+      <relation from="items" to="images" type="posrel"/>
+      <relation from="items" to="link" type="posrel"/>
+      <relation from="items" to="medewerkers" type="posrel"/>
+      <relation from="items" to="pools" type="discountrel"/>
+      <relation from="items" to="pools" type="posrel"/>
+      <relation from="items" to="products" type="posrel"/>
+      <relation from="kb_category" to="kb_category" type="related"/>
+      <relation from="kb_category" to="kb_question" type="related"/>
+      <relation from="kb_question" to="kb_answer" type="related"/>
+      <relation from="medewerkers" to="images" type="posrel"/>
+      <relation from="medewerkers" to="locations" type="readmore"/>
+      <relation from="medewerkers" to="programs" type="readmore"/>
+      <relation from="menu" to="editwizards" type="posrel"/>
+      <relation from="pagina" to="ads" type="posrel"/>
+      <relation from="pagina" to="artikel" type="contentrel"/>
+      <relation from="pagina" to="artikel" type="readmore"/>
+      <relation from="pagina" to="attachments" type="posrel"/> 
+      <relation from="pagina" to="contentblocks" type="readmore"/> 
+      <relation from="pagina" to="discounts" type="posrel"/>
+      <relation from="pagina" to="documents" type="posrel"/>
+      <relation from="pagina" to="formulier" type="posrel"/>
+      <relation from="pagina" to="forums" type="posrel"/>
+      <relation from="pagina" to="images" type="posrel"/> 
+      <relation from="pagina" to="items" type="posrel"/>
+      <relation from="pagina" to="link" type="posrel"/> 
+      <relation from="pagina" to="medewerkers" type="contentrel"/> 
+      <relation from="pagina" to="mmevents" type="posrel"/>
+      <relation from="pagina" to="pagina" type="discountrel"/> 
+      <relation from="pagina" to="pagina" type="readmore"/>
+      <relation from="pagina" to="pagina" type="related"/>
+      <relation from="pagina" to="paginatemplate" type="gebruikt"/>
+      <relation from="pagina" to="pools" type="posrel"/>
+      <relation from="pagina" to="producttypes" type="posrel"/>
+      <relation from="pagina" to="programs" type="posrel"/>
+      <relation from="pagina" to="shorty" type="contentrel"/>
+      <relation from="pagina" to="teaser" type="contentrel"/>
+      <relation from="pagina" to="users" type="rolerel"/>
+      <relation from="pagina" to="vacature" type="contentrel"/> 
+      <relation from="paginatemplate" to="editwizards" type="related"/> 
+      <relation from="paragraaf" to="attachments" type="posrel"/> 
+      <relation from="paragraaf" to="images" type="posrel"/> 
+      <relation from="paragraaf" to="link" type="posrel"/> 
+      <relation from="paragraaf" to="pagina" type="readmore"/> 
+      <relation from="phaserel" to="afdelingen" type="readmore"/>
+      <relation from="phaserel" to="contentblocks" type="readmore"/>
+      <relation from="phaserel" to="medewerkers" type="readmore"/> 
+      <relation from="pools" to="artikel" type="posrel"/>
+      <relation from="pools" to="community" type="related"/> 
+      <relation from="pools" to="formulierveld" type="posrel"/>
+      <relation from="postareas" to="posters" type="rolerel"/>
+      <relation from="postareas" to="postthreads" type="related"/>
+      <relation from="posters" to="avatarsets" type="related"/> 
+      <relation from="posters" to="forummessagebox" type="posrel"/>
+      <relation from="postthreads" to="postings" type="related"/>
+      <relation from="products" to="locations" type="readmore"/>
+      <relation from="products" to="producttypes" type="posrel"/>
+      <relation from="products" to="programs" type="posrel"/>
+      <relation from="programs" to="locations" type="posrel"/>
+      <relation from="projects" to="afdelingen" type="readmore"/>
+      <relation from="projects" to="contentblocks" type="readmore"/>
+      <relation from="projects" to="medewerkers" type="readmore"/> 
+      <relation from="projects" to="paragraaf" type="posrel"/>
+      <relation from="projects" to="phases" type="phaserel"/>
+      <relation from="projects" to="projecttypes" type="posrel"/>
+      <relation from="rubriek" to="images" type="contentrel"/>
+      <relation from="rubriek" to="pagina" type="posrel"/>
+      <relation from="rubriek" to="rubriek" type="parent"/>
+      <relation from="rubriek" to="style" type="readmore"/>
+      <relation from="rubriek" to="style" type="related"/>
+      <relation from="rubriek" to="users" type="rolerel"  />
+      <relation from="shorty" to="attachments" type="posrel"/> 
+      <relation from="shorty" to="companies" type="posrel"/> 
+      <relation from="shorty" to="images" type="posrel"/> 
+      <relation from="shorty" to="link" type="posrel"/> 
+      <relation from="shorty" to="mmevents" type="posrel"/>
+      <relation from="shorty" to="programs" type="posrel"/>
+      <relation from="shorty" to="style" type="related"/>
+      <relation from="teaser" to="images" type="posrel"/> 
+      <relation from="teaser" to="link" type="posrel"/> 
+      <relation from="teaser" to="pagina" type="readmore"/> 
+      <relation from="teaser" to="producttypes" type="posrel"/>
+      <relation from="terms" to="pagina" type="readmore"/>
+      <relation from="terms" to="phases" type="posrel"/>
+      <relation from="terms" to="projects" type="posrel"/>
+      <relation from="terms" to="terms" type="rolerel"/>
+      <relation from="terms" to="terms" type="synonymrel"/>
+      <relation from="users" to="medewerkers" type="related"/> 
+      <relation from="users" to="menu" type="gebruikt"/>
+      <relation from="vacature" to="attachments" type="posrel"/>
+      <relation from="vacature" to="ctexts" type="posrel"/>
    </allowedrelationlist>
    <datasourcelist>
 
@@ -293,10 +293,10 @@
       <datasource builder="education_pools" path="NMIntra/education_pools.xml"/>
       <datasource builder="educations" path="NMIntra/educations.xml"/>
       <datasource builder="empupdates" path="NMIntra/empupdates.xml"/>
-      <datasource builder="evenement_blueprint" path="NMIntra/evenement_blueprint.xml" />
-      <datasource builder="evenement_distance" path="NMIntra/evenement_distance.xml" />
-      <datasource builder="evenement_duration" path="NMIntra/evenement_duration.xml" />
-      <datasource builder="evenement_type" path="NMIntra/evenement_type.xml" />
+      <datasource builder="evenement_blueprint" path="NMIntra/evenement_blueprint.xml"/>
+      <datasource builder="evenement_distance" path="NMIntra/evenement_distance.xml"/>
+      <datasource builder="evenement_duration" path="NMIntra/evenement_duration.xml"/>
+      <datasource builder="evenement_type" path="NMIntra/evenement_type.xml"/>
       <datasource builder="feedback" path="NMIntra/feedback.xml"/>
       <datasource builder="forummessagebox" path="NMIntra/forummessagebox.xml"/>
       <datasource builder="forumprivatemessage" path="NMIntra/forumprivatemessage.xml"/>
@@ -319,7 +319,7 @@
       <datasource builder="pools" path="NMIntra/pools.xml"/>
       <datasource builder="postareas" path="NMIntra/postareas.xml"/>
       <datasource builder="posters" path="NMIntra/posters.xml"/>
-      <datasource builder="postings" path="NMIntra/postings.xml" />
+      <datasource builder="postings" path="NMIntra/postings.xml"/>
       <datasource builder="postthreads" path="NMIntra/postthreads.xml"/>
       <datasource builder="products" path="NMIntra/products.xml"/>
       <datasource builder="producttypes" path="NMIntra/producttypes.xml"/>
