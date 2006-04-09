@@ -8,10 +8,10 @@
    <link rel="stylesheet" type="text/css" href="css/default.css" />
    <TITLE>MMBar</TITLE>
 </HEAD>
-<mm:import externid="main" >loading</mm:import>
+<mm:import externid="main" >help</mm:import>
 <mm:import externid="sub" >none</mm:import>
 <mm:import externid="id" >none</mm:import>
-<mm:import externid="help" >on</mm:import>
+<mm:import externid="help" >off</mm:import>
 
 
 <body onload="doLoad()">
@@ -22,7 +22,7 @@
 <tr>
 
 		<th COLSPAN="8">
-		 MMBase Barometer for Applications and Resources - version 0.2
+		 MMBase Barometer for Applications and Resources - version 0.3
 		</th>
 </tr>
 </table>
@@ -34,6 +34,7 @@
  <mm:compare value="loading"><%@ include file="loading/index.jsp" %></mm:compare>
  <mm:compare value="reading"><%@ include file="reading/index.jsp" %></mm:compare>
  <mm:compare value="writing"><%@ include file="writing/index.jsp" %></mm:compare>
+ <mm:compare value="help"><%@ include file="help/index.jsp" %></mm:compare>
  <mm:compare value="mixed"><%@ include file="mixed/index.jsp" %></mm:compare>
  <mm:compare value="endurance"><%@ include file="endurance/index.jsp" %></mm:compare>
 </mm:write>
