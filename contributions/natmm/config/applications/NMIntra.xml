@@ -23,9 +23,11 @@
       <builder version="0" maintainer="mmbase.org">deelnemers_categorie</builder>
       <builder version="0" maintainer="mmbase.org">editwizards</builder>
       <builder version="0" maintainer="mmbase.org">email</builder>
+      <builder version="0" maintainer="mmbase.org">evenement_type</builder>
       <builder version="0" maintainer="mmbase.org">formulier</builder>
       <builder version="0" maintainer="mmbase.org">formulierveld</builder>
       <builder version="0" maintainer="mmbase.org">formulierveldantwoord</builder>
+      <builder version="0" maintainer="mmbase.org">groups</builder>
       <builder version="0" maintainer="mmbase.org">icaches</builder>
       <builder version="0" maintainer="mmbase.org">images</builder>
       <builder version="0" maintainer="mmbase.org">link</builder>
@@ -60,12 +62,10 @@
       <builder version="0" maintainer="mmbase.org">evenement_blueprint</builder>
       <builder version="0" maintainer="mmbase.org">evenement_distance</builder>
       <builder version="0" maintainer="mmbase.org">evenement_duration</builder>
-      <builder version="0" maintainer="mmbase.org">evenement_type</builder>
       <builder version="0" maintainer="mmbase.org">feedback</builder>
       <builder version="0" maintainer="mmbase.org">forummessagebox</builder>
       <builder version="0" maintainer="mmbase.org">forumprivatemessage</builder>
       <builder version="0" maintainer="mmbase.org">forums</builder>
-      <builder version="0" maintainer="mmbase.org">groups</builder>
       <builder version="0" maintainer="mmbase.org">imagesets</builder>
       <builder version="0" maintainer="mmbase.org">items</builder>
       <builder version="0" maintainer="mmbase.org">kb_answer</builder>
