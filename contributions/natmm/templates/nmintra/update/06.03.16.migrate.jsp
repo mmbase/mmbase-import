@@ -15,7 +15,7 @@
    <body style="width:100%;padding:5px;">
    Changes made in this update:<br/>
    1. Running script preparing data imported from NMIntra to be exported to NatMM<br/>
-	Processing...<br/>
+	Note: RelationsMigrator will call NMIntraToNatMM migrator<br/>
 	<% (new nl.mmatch.util.migrate.RelationsMigrator()).run(); %>
    Done.
 	</body>
