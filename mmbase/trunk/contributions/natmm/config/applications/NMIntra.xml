@@ -26,6 +26,7 @@
       <builder version="0" maintainer="mmbase.org">formulier</builder>
       <builder version="0" maintainer="mmbase.org">formulierveld</builder>
       <builder version="0" maintainer="mmbase.org">formulierveldantwoord</builder>
+      <builder version="0" maintainer="mmbase.org">icaches</builder>
       <builder version="0" maintainer="mmbase.org">images</builder>
       <builder version="0" maintainer="mmbase.org">link</builder>
       <builder version="0" maintainer="mmbase.org">locations</builder>
