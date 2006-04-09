@@ -1,132 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="NatMM" maintainer="mmbase.org" version="6" auto-deploy="true">
+<application name="NatMM" maintainer="mmbase.org" version="6" auto-deploy="false">
    <requirements>
-      <!-- <requires type="application" name="LeoCMS" maintainer="LeoCMS.nl" version="1" />  -->
      <requires type="application" name="Resources" maintainer="mmbase.org" version="1" />
    </requirements>
    <neededbuilderlist>
-        <!-- LeoCMS Rels -->
-        <builder maintainer="mmbase.org" version="0">childrel</builder>
-        <builder maintainer="mmbase.org" version="0">contentrel</builder>
-        <builder maintainer="mmbase.org" version="0">insrel</builder>
-        <builder maintainer="mmbase.org" version="0">lijstcontentrel</builder>
-        <builder maintainer="mmbase.org" version="0">posrel</builder>
-        <builder maintainer="mmbase.org" version="0">rolerel</builder>
-        <builder maintainer="mmbase.org" version="0">sitemenurel</builder>
-        
-        <!-- NatMM Rels -->
-        <builder maintainer="mmbase.org" version="0">altrel</builder>
-        <builder maintainer="mmbase.org" version="0">daterel</builder>
-        <builder maintainer="mmbase.org" version="0">partrel</builder>
-        <builder maintainer="mmbase.org" version="0">readmore</builder>
-		  <builder maintainer="mmbase.org" version="0">pos4rel</builder>
-        
-        <!-- LeoCMS -->
-        <builder maintainer="mmbase.org" version="0">archief</builder>
-        <builder maintainer="mmbase.org" version="0">artikel</builder>
-        <builder maintainer="mmbase.org" version="0">attachments</builder>
-        <builder maintainer="mmbase.org" version="0">contentelement</builder>
-        <builder maintainer="mmbase.org" version="0">dossier</builder>
-        <builder maintainer="mmbase.org" version="0">editwizards</builder>
-        <builder maintainer="mmbase.org" version="0">emailtemplate</builder>
-        <builder maintainer="mmbase.org" version="0">evenement</builder>
-        <builder maintainer="mmbase.org" version="0">flash</builder>
-        <builder maintainer="mmbase.org" version="0">formulier</builder>
-        <builder maintainer="mmbase.org" version="0">formulierveld</builder>
-        <builder maintainer="mmbase.org" version="0">formulierveldantwoord</builder>
-        <builder maintainer="mmbase.org" version="0">help</builder>
-        <builder maintainer="mmbase.org" version="0">images</builder>
-        <builder maintainer="mmbase.org" version="0">link</builder>
-        <builder maintainer="mmbase.org" version="0">linklijst</builder>
-        <builder maintainer="mmbase.org" version="0">linklijsttemplate</builder>
-        <builder maintainer="mmbase.org" version="0">menu</builder>
-        <builder maintainer="mmbase.org" version="0">menutemplate</builder>
-        <builder maintainer="mmbase.org" version="0">objecttemplate</builder>
-        <builder maintainer="mmbase.org" version="0">organisatie</builder>
-        <builder maintainer="mmbase.org" version="0">pagina</builder>
-        <builder maintainer="mmbase.org" version="0">paginatemplate</builder>
-        <builder maintainer="mmbase.org" version="0">persoon</builder>
-        <builder maintainer="mmbase.org" version="0">poll</builder>
-        <builder maintainer="mmbase.org" version="0">properties</builder>
-        <builder maintainer="mmbase.org" version="0">reactie</builder>
-        <builder maintainer="mmbase.org" version="0">rubriek</builder>
-        <builder maintainer="mmbase.org" version="0">signalering</builder>
-        <builder maintainer="mmbase.org" version="0">sitemenu</builder>
-        <builder maintainer="mmbase.org" version="0">template</builder>
-        <builder maintainer="mmbase.org" version="0">thema</builder>
-        <builder maintainer="mmbase.org" version="0">users</builder>
-        <builder maintainer="mmbase.org" version="0">vacature</builder>
-        <builder maintainer="mmbase.org" version="0">vgv</builder>
-        <builder maintainer="mmbase.org" version="0">workflowitem</builder>
+        <!-- LeoCMS relations -->
+        <builder version="0" maintainer="mmbase.org">childrel</builder>
+        <builder version="0" maintainer="mmbase.org">contentrel</builder>
+        <builder version="0" maintainer="mmbase.org">insrel</builder>
+        <builder version="0" maintainer="mmbase.org">lijstcontentrel</builder>
+        <builder version="0" maintainer="mmbase.org">posrel</builder>
+        <builder version="0" maintainer="mmbase.org">readmore</builder>
+        <builder version="0" maintainer="mmbase.org">rolerel</builder>
+        <builder version="0" maintainer="mmbase.org">sitemenurel</builder>
 
-        <!-- NatMM -->
-        <builder maintainer="mmbase.org" version="0">ads</builder>
-        <builder maintainer="mmbase.org" version="0">afdelingen</builder>
-        <builder maintainer="mmbase.org" version="0">answers</builder>
-        <builder maintainer="mmbase.org" version="0">bevestigings_teksten</builder>
-        <builder maintainer="mmbase.org" version="0">deelnemers</builder>
-        <builder maintainer="mmbase.org" version="0">deelnemers_categorie</builder>
-        <builder maintainer="mmbase.org" version="0">ecard</builder>
-        <builder maintainer="mmbase.org" version="0">email</builder>
-        <builder maintainer="mmbase.org" version="0">evenement_type</builder>
-        <builder maintainer="mmbase.org" version="0">events_attachments</builder>
-        <builder maintainer="mmbase.org" version="0">extra_info</builder>
-        <builder maintainer="mmbase.org" version="0">groups</builder>
-        <builder maintainer="mmbase.org" version="0">inschrijvingen</builder>
-        <builder maintainer="mmbase.org" version="0">inschrijvings_categorie</builder>
-        <builder maintainer="mmbase.org" version="0">inschrijvings_status</builder>
-        <builder maintainer="mmbase.org" version="0">jumpers</builder>
-        <builder maintainer="mmbase.org" version="0">leden</builder>
-        <builder maintainer="mmbase.org" version="0">locations</builder>
-        <builder maintainer="mmbase.org" version="0">medewerkers</builder>
-        <builder maintainer="mmbase.org" version="0">media</builder>
-        <builder maintainer="mmbase.org" version="0">members</builder>
-        <builder maintainer="mmbase.org" version="0">natuurgebieden</builder>
-        <builder maintainer="mmbase.org" version="0">panno</builder>
-        <builder maintainer="mmbase.org" version="0">paragraaf</builder>
-        <builder maintainer="mmbase.org" version="0">provincies</builder>
-        <builder maintainer="mmbase.org" version="0">questions</builder>
-        <builder maintainer="mmbase.org" version="0">routebeschrijvingen</builder>
-        <builder maintainer="mmbase.org" version="0">shorty</builder>
-        <builder maintainer="mmbase.org" version="0">teaser</builder>
-        <builder maintainer="mmbase.org" version="0">vertrekpunten</builder>
+        <!-- NatMM relations -->
+        <builder version="0" maintainer="mmbase.org">altrel</builder>
+        <builder version="0" maintainer="mmbase.org">daterel</builder>
+        <builder version="0" maintainer="mmbase.org">partrel</builder>
+		  <builder version="0" maintainer="mmbase.org">pos4rel</builder>
+        
+        <!-- LeoCMS objects -->
+        <builder version="0" maintainer="mmbase.org">archief</builder>
+        <builder version="0" maintainer="mmbase.org">artikel</builder>
+        <builder version="0" maintainer="mmbase.org">attachments</builder>
+        <builder version="0" maintainer="mmbase.org">contentelement</builder>
+        <builder version="0" maintainer="mmbase.org">dossier</builder>
+        <builder version="0" maintainer="mmbase.org">emailtemplate</builder>
+        <builder version="0" maintainer="mmbase.org">editwizards</builder>
+        <builder version="0" maintainer="mmbase.org">flash</builder>
+        <builder version="0" maintainer="mmbase.org">formulier</builder>
+        <builder version="0" maintainer="mmbase.org">formulierveld</builder>
+        <builder version="0" maintainer="mmbase.org">formulierveldantwoord</builder>
+        <builder version="0" maintainer="mmbase.org">groups</builder>
+        <builder version="0" maintainer="mmbase.org">help</builder>
+        <builder version="0" maintainer="mmbase.org">images</builder>
+        <builder version="0" maintainer="mmbase.org">link</builder>
+        <builder version="0" maintainer="mmbase.org">linklijst</builder>
+        <builder version="0" maintainer="mmbase.org">linklijsttemplate</builder>
+        <builder version="0" maintainer="mmbase.org">menu</builder>
+        <builder version="0" maintainer="mmbase.org">menutemplate</builder>
+        <builder version="0" maintainer="mmbase.org">objecttemplate</builder>
+        <builder version="0" maintainer="mmbase.org">organisatie</builder>
+        <builder version="0" maintainer="mmbase.org">pagina</builder>
+        <builder version="0" maintainer="mmbase.org">paginatemplate</builder>
+        <builder version="0" maintainer="mmbase.org">persoon</builder>
+        <builder version="0" maintainer="mmbase.org">poll</builder>
+        <builder version="0" maintainer="mmbase.org">properties</builder>
+        <builder version="0" maintainer="mmbase.org">reactie</builder>
+        <builder version="0" maintainer="mmbase.org">rubriek</builder>
+        <builder version="0" maintainer="mmbase.org">signalering</builder>
+        <builder version="0" maintainer="mmbase.org">sitemenu</builder>
+        <builder version="0" maintainer="mmbase.org">template</builder>
+        <builder version="0" maintainer="mmbase.org">thema</builder>
+        <builder version="0" maintainer="mmbase.org">users</builder>
+        <builder version="0" maintainer="mmbase.org">vacature</builder>
+        <builder version="0" maintainer="mmbase.org">vgv</builder>
+        <builder version="0" maintainer="mmbase.org">workflowitem</builder>
+
+        <!-- NatMM objects -->
+        <builder version="0" maintainer="mmbase.org">ads</builder>
+        <builder version="0" maintainer="mmbase.org">afdelingen</builder>
+        <builder version="0" maintainer="mmbase.org">answers</builder>
+        <builder version="0" maintainer="mmbase.org">bevestigings_teksten</builder>
+        <builder version="0" maintainer="mmbase.org">deelnemers</builder>
+        <builder version="0" maintainer="mmbase.org">deelnemers_categorie</builder>
+        <builder version="0" maintainer="mmbase.org">ecard</builder>
+        <builder version="0" maintainer="mmbase.org">email</builder>
+        <builder version="0" maintainer="mmbase.org">evenement</builder>
+        <builder version="0" maintainer="mmbase.org">evenement_type</builder>
+        <builder version="0" maintainer="mmbase.org">events_attachments</builder>
+        <builder version="0" maintainer="mmbase.org">extra_info</builder>
+        <builder version="0" maintainer="mmbase.org">inschrijvingen</builder>
+        <builder version="0" maintainer="mmbase.org">inschrijvings_categorie</builder>
+        <builder version="0" maintainer="mmbase.org">inschrijvings_status</builder>
+        <builder version="0" maintainer="mmbase.org">jumpers</builder>
+        <builder version="0" maintainer="mmbase.org">leden</builder>
+        <builder version="0" maintainer="mmbase.org">locations</builder>
+        <builder version="0" maintainer="mmbase.org">medewerkers</builder>
+        <builder version="0" maintainer="mmbase.org">media</builder>
+        <builder version="0" maintainer="mmbase.org">members</builder>
+        <builder version="0" maintainer="mmbase.org">natuurgebieden</builder>
+        <builder version="0" maintainer="mmbase.org">panno</builder>
+        <builder version="0" maintainer="mmbase.org">paragraaf</builder>
+        <builder version="0" maintainer="mmbase.org">payment_type</builder>
+        <builder version="0" maintainer="mmbase.org">provincies</builder>
+        <builder version="0" maintainer="mmbase.org">questions</builder>
+        <builder version="0" maintainer="mmbase.org">routebeschrijvingen</builder>
+        <builder version="0" maintainer="mmbase.org">shorty</builder>
+        <builder version="0" maintainer="mmbase.org">teaser</builder>
+        <builder version="0" maintainer="mmbase.org">vertrekpunten</builder>
     </neededbuilderlist>
     <neededreldeflist>
-        <!-- LeoCMS -->
         <reldef source="aan" target="aan" direction="bidirectional" guisourcename="aan" guitargetname="aan" builder="insrel" />
         <reldef source="afzender" target="afzender" direction="bidirectional" guisourcename="afzender" guitargetname="afzender" builder="insrel" />
+        <reldef source="altrel" target="altrel" direction="bidirectional" guisourcename="altrel" guitargetname="altrel" builder="altrel" />
         <reldef source="betreft" target="betreft" direction="bidirectional" guisourcename="betreft" guitargetname="betreft" builder="insrel" />
         <reldef source="contentrel" target="contentrel" direction="bidirectional" guisourcename="contentrel" guitargetname="contentrel" builder="contentrel" />
         <reldef source="creatierubriek" target="creatierubriek" direction="bidirectional" guisourcename="creatierubriek" guitargetname="creatierubriek" builder="insrel" />
+        <reldef source="daterel" target="daterel" direction="bidirectional" guisourcename="daterel" guitargetname="daterel" builder="daterel" />
         <reldef source="gebruikt" target="gebruikt" direction="bidirectional" guisourcename="gebruikt" guitargetname="gebruikt" builder="insrel" />
         <reldef source="hoofdrubriek" target="hoofdrubriek" direction="bidirectional" guisourcename="hoofdrubriek" guitargetname="hoofdrubriek" builder="insrel" />
         <reldef source="lijstcontentrel" target="lijstcontentrel" direction="bidirectional" guisourcename="lijstcontentrel" guitargetname="lijstcontentrel" builder="lijstcontentrel" />
         <reldef source="maillijst" target="maillijst" direction="bidirectional" guisourcename="maillijst" guitargetname="maillijst" builder="insrel" />
         <reldef source="parent" target="parent" direction="bidirectional" guisourcename="parentrel" guitargetname="parentrel" builder="childrel" />
+        <reldef source="partrel" target="partrel" direction="bidirectional" guisourcename="partrel" guitargetname="partrel" builder="partrel" />
+		  <reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel" />
         <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
         <reldef source="reactieop" target="reactieop" direction="bidirectional" guisourcename="reactieop" guitargetname="reactieop" builder="insrel" />
+        <reldef source="readmore" target="readmore" direction="bidirectional" guisourcename="readmore" guitargetname="readmore" builder="readmore" />
         <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
         <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="rolerel" guitargetname="rolerel" builder="rolerel" />
         <reldef source="schrijver" target="schrijver" direction="bidirectional" guisourcename="schrijver" guitargetname="schrijver" builder="insrel" />
         <reldef source="sitemenurel" target="sitemenurel" direction="bidirectional" guisourcename="sitemenurel" guitargetname="sitemenurel" builder="sitemenurel" />
         <reldef source="subsite" target="subsite" direction="bidirectional" guisourcename="subsite" guitargetname="subsite" builder="posrel" />
-
-        <!-- NatMM -->
-        <reldef source="altrel" target="altrel" direction="bidirectional" guisourcename="altrel" guitargetname="altrel" builder="altrel" />
-        <reldef source="daterel" target="daterel" direction="bidirectional" guisourcename="daterel" guitargetname="daterel" builder="daterel" />
-        <reldef source="partrel" target="partrel" direction="bidirectional" guisourcename="partrel" guitargetname="partrel" builder="partrel" />
-        <reldef source="readmore" target="readmore" direction="bidirectional" guisourcename="readmore" guitargetname="readmore" builder="readmore" />
-		  <reldef source="pos4rel" target="pos4rel" direction="bidirectional" guisourcename="pos4rel" guitargetname="pos4rel" builder="pos4rel" />
    </neededreldeflist>
    <allowedrelationlist>
-        <!-- LeoCMS -->
-        <!-- relation from="artikel" to="forums" type="related" / -->
-        <!-- relation from="evenement" to="forums" type="related" / -->
+		  <relation from="provincies" to="natuurgebieden" type="pos4rel" />
+		  <relation from="users" to="menu" type="gebruikt" />
+        <relation from="afdelingen" to="afdelingen" type="readmore" />
+        <relation from="afdelingen" to="artikel" type="posrel" />
+        <relation from="afdelingen" to="medewerkers" type="readmore" />
         <relation from="artikel" to="artikel" type="related" />
         <relation from="artikel" to="evenement" type="related" />
         <relation from="artikel" to="flash" type="related" />
         <relation from="artikel" to="formulier" type="posrel" />
+        <relation from="artikel" to="paragraaf" type="posrel" />
+        <relation from="artikel" to="paragraaf" type="readmore" />
         <relation from="artikel" to="thema" type="maillijst" />
         <relation from="artikel" to="thema" type="related" />
         <relation from="artikel" to="vacature" type="related" />
@@ -141,50 +142,13 @@
         <relation from="contentelement" to="users" type="rolerel" />
         <relation from="contentelement" to="users" type="schrijver" />
         <relation from="contentrel" to="objecttemplate" type="related" />
+        <relation from="deelnemers" to="leden" type="related" />
+        <relation from="deelnemers_categorie" to="deelnemers" type="related" />
         <relation from="dossier" to="artikel" type="posrel" />
-        <relation from="dossier" to="images" type="posrel" />
-        <relation from="evenement" to="formulier" type="posrel" />
-        <relation from="formulier" to="formulierveld" type="posrel" />
-        <relation from="formulierveld" to="formulierveldantwoord" type="posrel" />
-        <relation from="help" to="images" type="posrel" />
-        <relation from="lijstcontentrel" to="linklijsttemplate" type="related" />
-        <relation from="linklijst" to="contentelement" type="lijstcontentrel" />
-        <relation from="linklijst" to="rubriek" type="lijstcontentrel" />
-        <relation from="menu" to="editwizards" type="posrel" />
-        <relation from="menu" to="help" type="related" /> 
-        <relation from="menu" to="menu" type="posrel" />
-        <relation from="pagina" to="contentelement" type="contentrel" />
-        <relation from="pagina" to="dossier" type="posrel" />
-        <relation from="pagina" to="formulier" type="posrel" />
-        <relation from="pagina" to="linklijst" type="posrel" />
-        <relation from="pagina" to="menutemplate" type="related" />
-        <relation from="pagina" to="pagina" type="related" />
-        <relation from="pagina" to="paginatemplate" type="gebruikt" />
-        <relation from="rubriek" to="pagina" type="posrel" />
-        <relation from="rubriek" to="images" type="contentrel" />
-        <relation from="rubriek" to="rubriek" type="parent" />
-        <relation from="rubriek" to="sitemenu" type="sitemenurel" />
-        <relation from="rubriek" to="users" type="rolerel" />
-        <relation from="signalering" to="contentelement" type="betreft" />
-        <relation from="signalering" to="users" type="aan" />
-        <relation from="signalering" to="users" type="afzender" />
-        <relation from="sitemenu" to="pagina" type="related" />
-        <relation from="sitemenu" to="rubriek" type="related" />
-        <relation from="vacature" to="formulier" type="posrel" />
-        <relation from="vacature" to="organisatie" type="related" />
-        <relation from="workflowitem" to="contentelement" type="betreft" />
-        <relation from="workflowitem" to="users" type="aan" />
-
-        <!-- NatMM -->
-        <relation from="afdelingen" to="afdelingen" type="readmore" />
-        <relation from="afdelingen" to="artikel" type="posrel" />
-        <relation from="afdelingen" to="medewerkers" type="readmore" />
-        <relation from="artikel" to="paragraaf" type="posrel" />
-        <relation from="artikel" to="paragraaf" type="readmore" />
         <relation from="dossier" to="artikel" type="readmore" />
         <relation from="dossier" to="evenement" type="posrel" />
+        <relation from="dossier" to="images" type="posrel" />
         <relation from="dossier" to="pagina" type="readmore" />
-        <relation from="deelnemers_categorie" to="deelnemers" type="related" />
         <relation from="ecard" to="images" type="related" />
         <relation from="evenement" to="afdelingen" type="readmore" />
         <relation from="evenement" to="bevestigings_teksten" type="posrel" />
@@ -194,79 +158,107 @@
         <relation from="evenement" to="evenement" type="partrel" />
         <relation from="evenement" to="evenement_type" type="related" />
         <relation from="evenement" to="extra_info" type="readmore" />
+        <relation from="evenement" to="formulier" type="posrel" />
         <relation from="evenement" to="inschrijvingen" type="posrel" />
         <relation from="evenement" to="medewerkers" type="readmore" />
-        <relation from="evenement" to="paragraaf" type="readmore" />
         <relation from="evenement" to="paragraaf" type="posrel" />
+        <relation from="evenement" to="paragraaf" type="readmore" />
         <relation from="evenement" to="questions" type="readmore" />
         <relation from="evenement" to="vertrekpunten" type="posrel" />
         <relation from="evenement_type" to="deelnemers_categorie" type="posrel" />
         <relation from="evenement_type" to="images" type="posrel" />
+        <relation from="formulier" to="formulierveld" type="posrel" />
+        <relation from="formulierveld" to="formulierveldantwoord" type="posrel" />
         <relation from="groups" to="email" type="related" />
+        <relation from="help" to="images" type="posrel" />
         <relation from="inschrijvingen" to="answers" type="posrel" />
         <relation from="inschrijvingen" to="bevestigings_teksten" type="daterel" />
         <relation from="inschrijvingen" to="deelnemers" type="posrel" />
         <relation from="inschrijvingen" to="email" type="related" />
+        <relation from="inschrijvingen" to="inschrijvings_categorie" type="related" />
         <relation from="inschrijvingen" to="inschrijvings_status" type="related" />
         <relation from="inschrijvingen" to="users" type="schrijver" />
-        <relation from="inschrijvingen" to="inschrijvings_categorie" type="related" />
-        <relation from="deelnemers" to="leden" type="related" />
+        <relation from="lijstcontentrel" to="linklijsttemplate" type="related" />
+        <relation from="linklijst" to="contentelement" type="lijstcontentrel" />
+        <relation from="linklijst" to="rubriek" type="lijstcontentrel" />
         <relation from="medewerkers" to="locations" type="readmore" />
         <relation from="media" to="artikel" type="posrel" />
         <relation from="members" to="events_attachments" type="related" />
+        <relation from="menu" to="editwizards" type="posrel" />
+        <relation from="menu" to="help" type="related" /> 
+        <relation from="menu" to="menu" type="posrel" />
         <relation from="natuurgebieden" to="afdelingen" type="posrel" />
         <relation from="natuurgebieden" to="artikel" type="posrel" />
         <relation from="natuurgebieden" to="artikel" type="rolerel" />
-        <relation from="natuurgebieden" to="shorty" type="posrel" />
-        <relation from="natuurgebieden" to="panno" type="posrel" />
         <relation from="natuurgebieden" to="evenement" type="related" />
         <relation from="natuurgebieden" to="extra_info" type="posrel" />
+        <relation from="natuurgebieden" to="panno" type="posrel" />
         <relation from="natuurgebieden" to="paragraaf" type="readmore" />
+        <relation from="natuurgebieden" to="shorty" type="posrel" />
         <relation from="pagina" to="ads" type="contentrel" />
-        <relation from="pagina" to="artikel" type="readmore" />
         <relation from="pagina" to="afdelingen" type="posrel" />
+        <relation from="pagina" to="artikel" type="readmore" />
+        <relation from="pagina" to="contentelement" type="contentrel" />
+        <relation from="pagina" to="dossier" type="posrel" />
+        <relation from="pagina" to="email" type="related" />
         <relation from="pagina" to="evenement_type" type="posrel" />
+        <relation from="pagina" to="formulier" type="posrel" />
+        <relation from="pagina" to="linklijst" type="posrel" />
+        <relation from="pagina" to="menutemplate" type="related" />
         <relation from="pagina" to="pagina" type="readmore" />
-        <relation from="pagina" to="payment_type" type="posrel" />
+        <relation from="pagina" to="pagina" type="related" />
+        <relation from="pagina" to="paginatemplate" type="gebruikt" />
         <relation from="pagina" to="panno" type="posrel" />
+        <relation from="pagina" to="payment_type" type="posrel" />
         <relation from="pagina" to="provincies" type="posrel" />
         <relation from="pagina" to="shorty" type="rolerel" />
         <relation from="pagina" to="teaser" type="rolerel" />
-        <relation from="pagina" to="email" type="related" />
         <relation from="panno" to="contentelement" type="readmore" />
         <relation from="provincies" to="natuurgebieden" type="posrel" />
-		  <relation from="provincies" to="natuurgebieden" type="pos4rel" />
         <relation from="questions" to="answers" type="posrel" />
         <relation from="routebeschrijvingen" to="extra_info" type="posrel" />
+        <relation from="rubriek" to="images" type="contentrel" />
+        <relation from="rubriek" to="pagina" type="posrel" />
         <relation from="rubriek" to="panno" type="posrel" />
+        <relation from="rubriek" to="rubriek" type="parent" />
         <relation from="rubriek" to="shorty" type="rolerel" />
+        <relation from="rubriek" to="sitemenu" type="sitemenurel" />
         <relation from="rubriek" to="teaser" type="rolerel" />
-        <relation from="vgv" to="contentelement" type="readmore" />
+        <relation from="rubriek" to="users" type="rolerel" />
         <relation from="shorty" to="contentelement" type="readmore" />
+        <relation from="signalering" to="contentelement" type="betreft" />
+        <relation from="signalering" to="users" type="aan" />
+        <relation from="signalering" to="users" type="afzender" />
+        <relation from="sitemenu" to="pagina" type="related" />
+        <relation from="sitemenu" to="rubriek" type="related" />
         <relation from="teaser" to="contentelement" type="readmore" />
         <relation from="template" to="editwizards" type="related" />
-        <relation from="users" to="events_attachments" type="gebruikt" />
         <relation from="users" to="editwizards" type="gebruikt" />
         <relation from="users" to="email" type="related" />
-		  <relation from="users" to="menu" type="gebruikt" />
+        <relation from="users" to="events_attachments" type="gebruikt" />
+        <relation from="vacature" to="formulier" type="posrel" />
+        <relation from="vacature" to="organisatie" type="related" />
         <relation from="vertrekpunten" to="natuurgebieden" type="posrel" />
         <relation from="vertrekpunten" to="routebeschrijvingen" type="posrel" />      
+        <relation from="vgv" to="contentelement" type="readmore" />
+        <relation from="workflowitem" to="contentelement" type="betreft" />
+        <relation from="workflowitem" to="users" type="aan" />
    </allowedrelationlist>
 
    <datasourcelist>
-        <!-- LeoCMS -->
+        <!-- LeoCMS objects -->
         <datasource builder="archief" path="NatMM/archief.xml"/>
         <datasource builder="artikel" path="NatMM/artikel.xml"/>
         <datasource builder="attachments" path="NatMM/attachments.xml"/>
         <datasource builder="contentelement" path="NatMM/contentelement.xml" />
         <datasource builder="dossier" path="NatMM/dossier.xml" />
-        <datasource builder="editwizards" path="NatMM/editwizards.xml"/>
         <datasource builder="emailtemplate" path="NatMM/emailtemplate.xml"/>
-        <datasource builder="evenement" path="NatMM/evenement.xml"/>
+        <datasource builder="editwizards" path="NatMM/editwizards.xml"/>
         <datasource builder="flash" path="NatMM/flash.xml"/>
         <datasource builder="formulier" path="NatMM/formulier.xml"/>
         <datasource builder="formulierveld" path="NatMM/formulierveld.xml"/>
         <datasource builder="formulierveldantwoord" path="NatMM/formulierveldantwoord.xml"/>
+        <datasource builder="groups" path="NatMM/groups.xml" />
         <datasource builder="help" path="NatMM/help.xml"/>
         <datasource builder="images" path="NatMM/images.xml"/>
         <datasource builder="link" path="NatMM/link.xml"/>
@@ -275,7 +267,7 @@
         <datasource builder="menu" path="NatMM/menu.xml"/>
         <datasource builder="menutemplate" path="NatMM/menutemplate.xml"/>
         <datasource builder="objecttemplate" path="NatMM/objecttemplate.xml"/>
-        <datasource builder="organisatie" path="NatMM/organisatie.xml"/>
+        <datasource builder="organisatie" path="NatMM/organisatie.xml" />
         <datasource builder="pagina" path="NatMM/pagina.xml"/>
         <datasource builder="paginatemplate" path="NatMM/paginatemplate.xml"/>
         <datasource builder="persoon" path="NatMM/persoon.xml"/>
@@ -291,8 +283,8 @@
         <datasource builder="vacature" path="NatMM/vacature.xml"/>
         <datasource builder="vgv" path="NatMM/vgv.xml"/>
         <datasource builder="workflowitem" path="NatMM/workflowitem.xml" />
-
-        <!-- NatMM -->
+        
+        <!-- NatMM objects -->
         <datasource builder="ads" path="NatMM/ads.xml" />
         <datasource builder="afdelingen" path="NatMM/afdelingen.xml" />
         <datasource builder="answers" path="NatMM/answers.xml" />
@@ -301,10 +293,10 @@
         <datasource builder="deelnemers_categorie" path="NatMM/deelnemers_categorie.xml" />
         <datasource builder="ecard" path="NatMM/ecard.xml" />
         <datasource builder="email" path="NatMM/email.xml"/>
-        <datasource builder="events_attachments" path="NatMM/events_attachments.xml" />
+        <datasource builder="evenement" path="NatMM/evenement.xml"/>
         <datasource builder="evenement_type" path="NatMM/evenement_type.xml" />
+        <datasource builder="events_attachments" path="NatMM/events_attachments.xml" />
         <datasource builder="extra_info" path="NatMM/extra_info.xml" />
-        <datasource builder="groups" path="NatMM/groups.xml" />
         <datasource builder="inschrijvingen" path="NatMM/inschrijvingen.xml" />
         <datasource builder="inschrijvings_categorie" path="NatMM/inschrijvings_categorie.xml" />
         <datasource builder="inschrijvings_status" path="NatMM/inschrijvings_status.xml" />
@@ -315,7 +307,6 @@
         <datasource builder="media" path="NatMM/media.xml" />
         <datasource builder="members" path="NatMM/members.xml" />
         <datasource builder="natuurgebieden" path="NatMM/natuurgebieden.xml" />
-        <datasource builder="organisatie" path="NatMM/organisatie.xml" />
         <datasource builder="panno" path="NatMM/panno.xml" />
         <datasource builder="paragraaf" path="NatMM/paragraaf.xml" />
         <datasource builder="provincies" path="NatMM/provincies.xml" />
@@ -327,20 +318,20 @@
     </datasourcelist>
 
    <relationsourcelist>
-      <!-- LeoCMS -->
+      <!-- LeoCMS relations -->
       <relationsource builder="childrel" path="NatMM/childrel.xml"/>
       <relationsource builder="contentrel" path="NatMM/contentrel.xml"/>
       <relationsource builder="insrel" path="NatMM/insrel.xml"/>
       <relationsource builder="lijstcontentrel" path="NatMM/lijstcontentrel.xml"/>
       <relationsource builder="posrel" path="NatMM/posrel.xml"/>
+      <relationsource builder="readmore" path="NatMM/readmore.xml"/>
       <relationsource builder="rolerel" path="NatMM/rolerel.xml"/>
       <relationsource builder="sitemenurel" path="NatMM/sitemenurel.xml"/>
 
-      <!-- NatMM -->
+      <!-- NatMM relations -->
       <relationsource builder="altrel" path="NatMM/altrel.xml"/>
       <relationsource builder="daterel" path="NatMM/daterel.xml"/>
       <relationsource builder="partrel" path="NatMM/partrel.xml"/>
-      <relationsource builder="readmore" path="NatMM/readmore.xml"/>
 	   <relationsource builder="pos4rel" path="NatMM/pos4rel.xml"/>
    </relationsourcelist>
 
