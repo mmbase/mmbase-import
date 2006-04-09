@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<!-- competencies -->
 <builder version="2" name="competencies" maintainer="didactor.nl" extends="object">
-    <classfile>nl.didactor.component.competence.builders.CompetencesBuilder</classfile>
+    <classfile>Dummy</classfile>
     <searchage>31</searchage>
     <names>
         <singular xml:lang="nl">Competentie</singular>

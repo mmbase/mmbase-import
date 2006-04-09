@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="NatMM" maintainer="mmbase.org" version="6" auto-deploy="false">
-   <requirements>
-     <requires type="application" name="Resources" maintainer="mmbase.org" version="1" />
-   </requirements>
    <neededbuilderlist>
         <!-- LeoCMS relations -->
         <builder version="0" maintainer="mmbase.org">childrel</builder>
@@ -72,6 +69,7 @@
         <builder version="0" maintainer="mmbase.org">evenement_type</builder>
         <builder version="0" maintainer="mmbase.org">events_attachments</builder>
         <builder version="0" maintainer="mmbase.org">extra_info</builder>
+        <builder version="0" maintainer="mmbase.org">icaches</builder>
         <builder version="0" maintainer="mmbase.org">inschrijvingen</builder>
         <builder version="0" maintainer="mmbase.org">inschrijvings_categorie</builder>
         <builder version="0" maintainer="mmbase.org">inschrijvings_status</builder>
