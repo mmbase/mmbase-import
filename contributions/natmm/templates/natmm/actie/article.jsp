@@ -6,10 +6,6 @@ PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <%@include file="../includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<% if(!offsetID.equals("0")){
-   %><mm:import id="onload_statement">window.location='#bottom';</mm:import><%
-}
-%>
 <%@include file="../includes/top4_head.jsp" %>
 <div style="position:absolute"><%@include file="../includes/flushlink.jsp" %></div>
 <table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" valign="top">
