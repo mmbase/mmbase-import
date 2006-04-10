@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.44 2006-01-20 19:50:51 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.45 2006-04-10 14:59:01 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -30,6 +30,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * Return value for setObjectField
      */
     public static final String UNKNOWN = "unknown";
+    /**
+     * @since MMBase-1.8
+     */
+    public static final String INVALID_VALUE = "invalid value";
 
     private MMBase mmbase;
 
@@ -154,6 +158,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
     /**
      * @javadoc
      * @return An empty string if succesfull, the string {@link #UNKNOWN} if the field was not found in the node.
+     *         The string {@link INVALID_VALUE} if the value was not valid for the field's type.
      */
     public String setObjectField(String owner, String key, String field, Object value) {
         String stringValue;
@@ -176,6 +181,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             node.setValue(field, i);
                         } catch (NumberFormatException x) {
                             log.error("Value for field " + field + " is not a number '" + stringValue + "'");
+                            return INVALID_VALUE;
                         }
                         break;
                     case Field.TYPE_BINARY:
@@ -188,6 +194,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             node.setValue(field,f);
                         } catch (NumberFormatException x) {
                             log.error("Value for field " + field + " is not a number " + stringValue);
+                            return INVALID_VALUE;
                         }
                         break;
                     case Field.TYPE_DOUBLE:
@@ -197,6 +204,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             node.setValue(field,d);
                         } catch (NumberFormatException x) {
                             log.error("Value for field " + field + " is not a number " + stringValue);
+                            return INVALID_VALUE;
                         }
                         break;
                     case Field.TYPE_LONG:
@@ -206,10 +214,15 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             node.setValue(field,l);
                         } catch (NumberFormatException x) {
                             log.error("Value for field "+field+" is not a number "+stringValue);
+                            return INVALID_VALUE;
                         }
                         break;
                     case Field.TYPE_DATETIME:
-                        node.setValue(field, Casting.toDate(value));
+                        try {
+                            node.setValue(field, Casting.toDate(value));
+                        } catch (Exception e) {
+                            return INVALID_VALUE;
+                        }
                         break;
                     case Field.TYPE_BOOLEAN:
                         // test if this is numeric
@@ -222,6 +235,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             }
                         } catch (NumberFormatException x) {
                             node.setValue(field, Casting.toBoolean(value));
+                            return INVALID_VALUE;
                         }
                         break;
                     default:
