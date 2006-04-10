@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.23 2006-01-24 17:28:27 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.24 2006-04-10 15:35:30 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -325,6 +325,23 @@ public class DocumentReader  {
         return document;
     }
 
+    static public void appendChild(Element parent, Element newChild, String path) {
+        String[] p = path.split(",");
+        int i = 0;
+        Node refChild = null;
+        NodeList childs = parent.getElementsByTagName("*");
+        int j = 0;
+        while (j < childs.getLength() && i < p.length) {
+            Element child = (Element) childs.item(j);
+            if (child.getTagName().equals(p[i])) {
+                j++;
+            } else {
+                i++;
+            }
+        }
+        parent.insertBefore(newChild, refChild);
+    }
+
     /**
      * Returns the systemID of the InputSource used to read the document.
      * This is generally the document's file path.
@@ -377,6 +394,7 @@ public class DocumentReader  {
     /**
      * Determine the root element of the contained document
      * @return root element
+     * @deprecated
      */
     public Element getRootElement() {
         if (document == null) {
