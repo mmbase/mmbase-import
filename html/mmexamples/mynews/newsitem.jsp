@@ -1,4 +1,5 @@
-<%@page session="false" errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1-strict.dtd">
+<%@page session="false"  language="java" contentType="text/html; charset=UTF-8" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content language="en" type="text/html" escaper="inline">
 <mm:cloud>
@@ -20,13 +21,13 @@ for the MMBase node --%>
   <h1><mm:field  name="title"/></h1>
   <mm:field name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
   <div class="intro">
-    <mm:field  name="intro" escape="p" />
+    <mm:field  name="intro" escape="p,links" />
   </div>
   <%--
     The default escape behaviour can be changed on tags producing output.
     escape="p"  generates p-tags, to escape newlines.
  --%>
-  <mm:field  escape="p" name="body"/>
+  <mm:field  escape="p,links" name="body"/>
 
   <table>
   <mm:relatednodes type="images" role="posrel"  orderby="posrel.pos" max="3">
