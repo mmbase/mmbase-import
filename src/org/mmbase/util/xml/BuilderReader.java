@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.65 2006-03-31 16:45:37 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.66 2006-04-10 15:19:51 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -616,12 +616,13 @@ public class BuilderReader extends DocumentReader {
         }
 
         Element dataTypeElement = getElementByPath(field, "field.datatype");
+
         if (dataTypeElement != null) {
             if (dataType != null) {
                 log.warn("Using both deprecated 'gui/guitime' and 'datatype' subelements in field tag for field '" + fieldName + "', ignoring the first one.");
             }
+            BasicDataType requestedBaseDataType; // pointer to the actual database which will be used as a base.
             String base = dataTypeElement.getAttribute("base");
-            BasicDataType requestedBaseDataType;
             if (base.equals("")) {
                 if (log.isDebugEnabled()) {
                     log.debug("No base defined, using '" + baseDataType + "'");
@@ -632,12 +633,27 @@ public class BuilderReader extends DocumentReader {
                 if (requestedBaseDataType == null) {
                     log.error("Could not find base datatype for '" + base + "' falling back to " + baseDataType + " in builder '" + builder.getTableName() + "'");
                     requestedBaseDataType = baseDataType;
+                } else {
+                    // Furthermore, I think it is just common sense that a DataType cannot be based on a incompatible base.
+                    if (! baseDataType.getClass().isAssignableFrom(requestedBaseDataType.getClass())) {
+                        // the thus configured datatype is not compatible with the database type.
+                        // Fix that as good as possible:
+                        BasicDataType newDataType = (BasicDataType) requestedBaseDataType.clone();
+                        newDataType.inherit(baseDataType);
+                        log.debug("" + requestedBaseDataType + " in '" + getSystemId() + "' field " + fieldName + " is not compatible with " + baseDataType + ". Cloning and inheriting to support gracefull fall backs -> " + newDataType);
+                        requestedBaseDataType = newDataType;
+                    }
                 }
             }
+
             dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
+            log.debug("Found datatype " + dataType + " for field " + fieldName);
         }
+        
 
         if (dataType == null && forceInstance) {
+            // DataType is null if no data type element was found
+            // I'm not sure if also  if DataTypeReadreadDataType failed somehow (it not so, this could be in the 'else' of the above 'if' and be easier to see.)            
             dataType = (BasicDataType) baseDataType.clone(""); // clone with empty id
         }
 
