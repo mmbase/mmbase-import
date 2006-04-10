@@ -46,6 +46,9 @@
       </db>
     </field>
     <field>
+      <descriptions>
+        <description>Example of String pattern.</description>
+      </descriptions>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="a" />
         <pattern value="(?i)[ab]{1,5}" />
@@ -56,6 +59,9 @@
       </db>
     </field>
     <field>
+      <descriptions>
+        <description>Example of String range</description>
+      </descriptions>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="b" />
         <minInclusive value="a" />
@@ -66,6 +72,18 @@
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
+
+    <field>
+      <descriptions>
+        <description>Example of String enumeration</description>
+      </descriptions>
+      <datatype base="iso639" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>languages</name>
+        <type  size="2" state="persistent">STRING</type>
+      </db>
+    </field>
+
     <field>
       <db>
         <name>integer</name>
@@ -158,6 +176,29 @@
       </db>
     </field>
 
+
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="ERROR" />
+        <enumeration >
+          <entry basename="org.mmbase.datatypes.resources.states"
+                 javaconstants="org.mmbase.module.builders.MMServers" 
+                 />
+        </enumeration>
+      </datatype>
+      <db>
+        <name>mmbase_state_enumeration</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+
+    <field>
+      <db>
+        <name>float</name>
+        <type  state="persistent">FLOAT</type>
+      </db>
+    </field>
 
     <field>
       <db>
