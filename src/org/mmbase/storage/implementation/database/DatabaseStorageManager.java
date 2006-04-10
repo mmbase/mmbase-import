@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.156 2006-04-08 14:20:20 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.157 2006-04-10 09:03:06 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1814,8 +1814,6 @@ public class DatabaseStorageManager implements StorageManager {
                 if (createFields.length() > 0) {
                     createFields.append(", ");
                 }
-                // MM: don't know why this was changed but it breaks everything:
-                //createFields.append(factory.getStorageIdentifier(field)).append(" ").append(fieldDef);
                 createFields.append(fieldDef);
                 // test on other indices
                 String constraintDef = getConstraintDefinition(field);
