@@ -20,12 +20,14 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.14 2006-04-10 15:23:55 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.15 2006-04-10 17:31:18 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
 
     private static final Logger log = Logging.getLoggerInstance(ComparableDataType.class);
+
+    private static final long serialVersionUID = 1L; 
 
     protected MinRestriction minRestriction  = new MinRestriction(true);
     protected MaxRestriction maxRestriction  = new MaxRestriction(true);
