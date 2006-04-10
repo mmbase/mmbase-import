@@ -16,6 +16,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.xml.DocumentSerializable;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 
 /**
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.33 2006-04-08 14:04:13 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.34 2006-04-10 15:14:38 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -74,6 +75,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     private ArrayList bundles  = new ArrayList(); // contains all Bundles
     private ArrayList fallBack = new ArrayList(); // List of known keys, used as fallback, if nothing defined for a certain locale
 
+    private DocumentSerializable xml = null;
 
     public LocalizedEntryListFactory() {
         localized.put(LocalizedString.getDefault(), new LocalizedEntry());
@@ -475,6 +477,97 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         fallBack.clear();
     }
 
+
+    /**
+     * Given a certain DOM parent element, it configures this LocalizedEntryListFactory with 
+     * sub tags of type 'entry' and 'query'
+     */
+
+    public void fillFromXml(final Element enumerationElement, Class wrapperDefault) {
+        xml = new DocumentSerializable(DocumentReader.toDocument(enumerationElement));
+        org.w3c.dom.NodeList childNodes = enumerationElement.getElementsByTagName("query");
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Element queryElement = (Element) childNodes.item(i);
+            Locale locale = LocalizedString.getLocale(queryElement);
+            addQuery(locale, DocumentReader.toDocument(queryElement));
+        }
+
+
+        childNodes = enumerationElement.getElementsByTagName("entry");
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Element entryElement = (Element) childNodes.item(i);
+            if (entryElement.hasAttribute("value")) {
+                String value = entryElement.getAttribute("value");
+                Locale locale = LocalizedString.getLocale(entryElement);
+                String display = entryElement.getAttribute("display");
+                if (display.equals("")) display = value;
+                Object key = wrapperDefault != null ? Casting.toType(wrapperDefault, null, value) : value;
+                if (key instanceof java.io.Serializable) {
+                    log.debug("Added " + key + "/" + display + " for " + locale);
+                    add(locale, (java.io.Serializable) key, display);
+                } else {
+                    log.error("key " + key + " for " + wrapperDefault + " is not serializable, cannot be added to entrylist factory.");
+                }
+            } else {
+                String resource = entryElement.getAttribute("basename");
+                if (! resource.equals("")) {
+                    Comparator comparator = null;
+                    Class wrapper    = wrapperDefault;
+                    if (wrapper != null && (! Comparable.class.isAssignableFrom(wrapper))) {
+                        wrapper = null;
+                    }
+
+                    {
+                        String sorterClass = entryElement.getAttribute("sorterclass");
+                        if (!sorterClass.equals("")) {
+                            try {
+                                Class sorter = Class.forName(sorterClass);
+                                if (Comparator.class.isAssignableFrom(sorter)) {
+                                    comparator = (Comparator) sorter.newInstance();
+                                } else {
+                                    wrapper = sorter;
+                                }
+                            } catch (Exception e) {
+                                log.error(e);
+                            }
+                        }
+                    }
+                    Class constantsClass = null;
+                    {
+                        String javaConstants = entryElement.getAttribute("javaconstants");
+                        if (!javaConstants.equals("")) {
+                            try {
+                                constantsClass = Class.forName(javaConstants);
+                            } catch (Exception e) {
+                                log.error(e);
+                            }
+                        }
+                    }
+                    try {
+                        addBundle(resource, getClass().getClassLoader(), constantsClass,
+                                  wrapper, comparator);
+                    } catch (MissingResourceException mre) {
+                        log.error(mre);
+                    }
+                } else {
+                    throw new IllegalArgumentException("no 'value' or 'basename' attribute on enumeration entry element");
+                }
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Found enumeration values now " + this);
+            }
+        }
+
+    }
+    public Element toXml() {
+        if (xml == null) {
+            // TODO: generate xml.
+            return null;
+        } else {
+            return xml.getDocument().getDocumentElement();
+        }
+    }
+
     public String toString() {
         return "(localized: " + localized  + "bundles: " + bundles + "fallBack: " + fallBack + ")-->" + get(null, null);
     }
@@ -525,6 +618,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                 return Collections.EMPTY_LIST;
             }
         }
+
 
         public String toString() {
             return resource + " " + constantsProvider + " " + wrapper + " " + comparator;

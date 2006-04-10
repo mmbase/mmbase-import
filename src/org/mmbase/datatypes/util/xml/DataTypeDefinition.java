@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.54 2006-03-22 22:38:43 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.55 2006-04-10 15:15:01 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -127,12 +127,8 @@ public class DataTypeDefinition {
 
         String id = DataTypeXml.getAttribute(dataTypeElement, "id");
 
-        if ("byte".equals(id)) {
-            log.warn("Found for datatype id 'byte', supposing that 'binary' is meant");
-            id = "binary"; // hmmmmm
-        }
-
         String base = DataTypeXml.getAttribute(dataTypeElement, "base");
+
         if (log.isDebugEnabled()) {
             log.debug("Reading element id='" + id + "' base='" + base + "' req datatype " + requestBaseDataType);
         }
@@ -148,8 +144,10 @@ public class DataTypeDefinition {
                     } else {
                         log.warn("Attribute 'base' ('" + base+ "') not allowed with datatype '" + id + "', because it has already an baseDataType '" + definedBaseDataType + "' in " + XMLWriter.write(dataTypeElement, true, true) + " of " + XMLWriter.write(dataTypeElement.getParentNode(), true, true));
                     }
+                    definedBaseDataType = requestBaseDataType; // requestedBaseDataType takes precedence!
                 }
             }
+
             if (definedBaseDataType == null) {
                 log.warn("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype.");
             } else {
@@ -253,18 +251,24 @@ public class DataTypeDefinition {
         Processor newProcessor = DataTypeXml.createProcessor(processorElement);
         if (newProcessor != null) {
             String type = processorElement.getAttribute("type");
-            if (!type.equals("") && !type.equals("*")) { // "" was not equal to "*" !
+            if (type.equals("")) {
+                addProcessor(action, Field.TYPE_UNKNOWN, newProcessor);
+            } else if (type.equals("*")) {
+                for (int i = Fields.TYPE_MINVALUE; i <= Fields.TYPE_MAXVALUE; i++) {
+                    BasicDataType basicDataType = DataTypes.getDataType(i);
+                    int processingType = Fields.classToType(basicDataType.getTypeAsClass());
+                    addProcessor(action, processingType, newProcessor);
+                }
+            } else {
                 int processingType = Field.TYPE_UNKNOWN;
-                BasicDataType basicDataType = DataTypes.getDataType(type); // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
+                BasicDataType basicDataType = DataTypes.getDataType(type);
+                // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
                 if (basicDataType != null) {
                     processingType = Fields.classToType(basicDataType.getTypeAsClass());
                 } else {
                     log.warn("Datatype " + type + " is unknown, create processor as a default processor");
                 }
                 addProcessor(action, processingType, newProcessor);
-            } else {
-                // todo: iterate through all types?
-                addProcessor(action, Field.TYPE_UNKNOWN, newProcessor);
             }
         }
     }
@@ -306,78 +310,7 @@ public class DataTypeDefinition {
         LocalizedEntryListFactory fact = dataType.getEnumerationFactory();
         setRestrictionData(dataType.getEnumerationRestriction(), enumerationElement);
         fact.clear();
-        NodeList childNodes = enumerationElement.getElementsByTagName("query");
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Element queryElement = (Element) childNodes.item(i);
-            Locale locale = LocalizedString.getLocale(queryElement);
-            fact.addQuery(locale, DocumentReader.toDocument(queryElement));
-        }
-
-
-        childNodes = enumerationElement.getElementsByTagName("entry");
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Element entryElement = (Element) childNodes.item(i);
-            String value = entryElement.getAttribute("value");
-            if (!value.equals("NOTSPECIFIED")) {
-                Locale locale = LocalizedString.getLocale(entryElement);
-                String display = entryElement.getAttribute("display");
-                if (display.equals("")) display = value;
-                Object key = Casting.toType(dataType.getTypeAsClass(), null, value);
-                if (key instanceof java.io.Serializable) {
-                    log.debug("Added " + key + "/" + display + " for " + locale);
-                    fact.add(locale, (java.io.Serializable) key, display);
-                } else {
-                    log.error("key " + key + " for " + dataType + " is not serializable, cannot be added to entrylist factory.");
-                }
-            } else {
-                String resource = entryElement.getAttribute("basename");
-                if (! resource.equals("")) {
-                    Comparator comparator = null;
-                    Class wrapper    = dataType.getTypeAsClass();
-                    if (! Comparable.class.isAssignableFrom(wrapper)) {
-                        wrapper = null;
-                    }
-
-                    {
-                        String sorterClass = entryElement.getAttribute("sorterclass");
-                        if (!sorterClass.equals("")) {
-                            try {
-                                Class sorter = Class.forName(sorterClass);
-                                if (Comparator.class.isAssignableFrom(sorter)) {
-                                    comparator = (Comparator) sorter.newInstance();
-                                } else {
-                                    wrapper = sorter;
-                                }
-                            } catch (Exception e) {
-                            log.error(e);
-                            }
-                        }
-                    }
-                    Class constantsClass = null;
-                    {
-                        String javaConstants = entryElement.getAttribute("javaconstants");
-                        if (!javaConstants.equals("")) {
-                            try {
-                                constantsClass = Class.forName(javaConstants);
-                            } catch (Exception e) {
-                                log.error(e);
-                            }
-                        }
-                    }
-                    try {
-                        fact.addBundle(resource, getClass().getClassLoader(), constantsClass,
-                                       wrapper, comparator);
-                    } catch (MissingResourceException mre) {
-                        log.error(mre);
-                    }
-                } else {
-                    throw new IllegalArgumentException("no 'value' or 'basename' attribute on enumeration entry element");
-                }
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Found enumeration values now " + fact);
-            }
-        }
+        fact.fillFromXml(enumerationElement, dataType.getTypeAsClass());
     }
 
     protected boolean setProperty(Element element) {
