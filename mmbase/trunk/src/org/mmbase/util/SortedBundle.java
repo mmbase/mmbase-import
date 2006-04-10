@@ -28,7 +28,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.20 2006-04-10 15:24:35 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.21 2006-04-10 16:51:35 michiel Exp $
  */
 public class SortedBundle {
 
@@ -100,6 +100,7 @@ public class SortedBundle {
         }
     }
 
+
     /**
      * @param baseName A string identifying the resource. See {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale, java.lang.ClassLoader)} for an explanation of this string.
      *
@@ -116,7 +117,7 @@ public class SortedBundle {
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
      * @throws IllegalArgumentExcpetion  if wrapper is not Comparable.
      */
-    public static SortedMap getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map constantsProvider, final Class wrapper, final Comparator comparator) {
+    public static SortedMap getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map constantsProvider, final Class wrapper, Comparator comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
         SortedMap m = (SortedMap) knownResources.get(resourceKey);
         if (locale == null) locale = LocalizedString.getDefault();
@@ -129,7 +130,22 @@ public class SortedBundle {
                 bundle = ResourceBundle.getBundle(baseName, locale, loader);
             }
             if (comparator == null && wrapper != null && ! Comparable.class.isAssignableFrom(wrapper)) {
-                throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
+                if (wrapper.equals(Boolean.class)) { 
+                    // happens in Java < 1.5, because Boolean is no Comparable then.
+                    comparator = new Comparator() {
+                            public int compare(Object o1, Object o2) {
+                                if (o1 instanceof Boolean && o2 instanceof Boolean) {
+                                    return 
+                                        o1.equals(Boolean.FALSE) ?
+                                        (o2.equals(Boolean.FALSE) ? 0 : -1) :
+                                        (o2.equals(Boolean.TRUE) ?  1 : 0);
+                                }
+                                return o1.hashCode() - o2.hashCode();
+                            }
+                        };
+                } else {
+                    throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
+                }
             }
             m = new TreeMap(comparator);
 
