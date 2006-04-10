@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 
 /**
  * Test cases for the Encoder
- * 
+ *
  * @author keesj
  */
 public class EncodeTest extends TestCase {
@@ -72,7 +72,7 @@ public class EncodeTest extends TestCase {
     }
 
     /**
-     * test if encode and decode methods are symetric string is encoded and the decoded the same result  
+     * test if encode and decode methods are symetric string is encoded and the decoded the same result
      */
     public void testCharEncoders(){
         Iterator iter = getSymmetricEncodings().iterator();
@@ -86,9 +86,9 @@ public class EncodeTest extends TestCase {
                     assertTrue("char encoder["+ name +"] failed symetric test with input value["+ TESTS[x]+ "]",TESTS[x].equals(decoded));
                 }
             }
-        }        
+        }
     }
-    
+
     public Set getSymmetricEncodings() {
         SortedSet symmetricEncodings = new TreeSet();
         symmetricEncodings.add("BASE64");
@@ -108,7 +108,7 @@ public class EncodeTest extends TestCase {
         return symmetricEncodings;
     }
     /**
-     * 
+     *
      * @return a new set containing the names of the encoders that are
      *         documented in the Encode
      */
@@ -133,6 +133,10 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("MMXF_HTML_BLOCK_BR");
         documentedEncodings.add("MMXF_HTML_BLOCK_BR_NOSURROUNDINGP");
         documentedEncodings.add("MMXF_HTML_BLOCK_NOSURROUNDINGP");
+        documentedEncodings.add("MMXF_HTML_BLOCK_LIST");
+        documentedEncodings.add("MMXF_HTML_BLOCK_LIST_BR");
+        documentedEncodings.add("MMXF_HTML_BLOCK_LIST_BR_NOSURROUNDINGP");
+        documentedEncodings.add("MMXF_HTML_BLOCK_LIST_NOSURROUNDINGP");
         documentedEncodings.add("MMXF_HTML_INLINE");
         documentedEncodings.add("MMXF_XHTML");
         documentedEncodings.add("REGEXPS_ENTIRE");
@@ -144,7 +148,5 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("ROT-5");
        return documentedEncodings;
     }
-    
-    
-    
+
 }
