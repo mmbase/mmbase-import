@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "xhtml1-strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
-<mm:cloud username="admin" password="admin2k">
+<mm:cloud method="delegate" authenticate="class">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="selectedavatar"/>
 <mm:import externid="pathtype">poster_index</mm:import>

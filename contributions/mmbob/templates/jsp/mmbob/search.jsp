@@ -171,11 +171,13 @@
 
 <mm:present referid="searchkey">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
-	<tr><th><mm:write referid="mlg.Area" /></th><th><mm:write referid="mlg.Topic" /></th><th>Poster</th></tr>
 	<mm:import id="page">1</mm:import>
 	<mm:import id="pagesize">10</mm:import>
 	<mm:nodelistfunction set="mmbob" name="searchPostings" referids="forumid,searchareaid,postthreadid@searchpostthreadid,searchkey,page,pagesize">
-           <mm:first><mm:import id="resultfound">true</mm:import></mm:first>
+           <mm:first>
+		<tr><th><mm:write referid="mlg.Area" /></th><th><mm:write referid="mlg.Topic" /></th><th>Poster</th></tr>
+		<mm:import id="resultfound">true</mm:import>
+	   </mm:first>
 	    <tr>
  	      <td>
 		<mm:field name="postareaname" />
@@ -193,6 +195,7 @@
             </tr>
 	</mm:nodelistfunction>
 	   <mm:notpresent referid="resultfound">
+	   <th><mm:write referid="mlg.warning" /></th>
 	   <tr><td colspan="3"><b><mm:write referid="mlg.NoResultsFound" /></b></td></tr>
 	   </mm:notpresent>
 </table>

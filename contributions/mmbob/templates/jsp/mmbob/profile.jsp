@@ -170,8 +170,8 @@
         <mm:compare referid="feedback" value="false">
           <font color="red"><b>** <mm:write referid="mlg.ProfileUpdateFailed"/> **</b></font>
         </mm:compare>
-        <mm:compare referid="feedback" value="passwordchanged">
-          <font color="red"><b>** <mm:write referid="mlg.PasswordChanged"/> **</b></font>
+        <mm:compare referid="feedback" value="profilechanged">
+          <font color="red"><b>** <mm:write referid="mlg.ProfileUpdated"/> **</b></font>
 <mm:import id="accounttocookie"><mm:field name="account" /></mm:import>
           <mm:write referid="accounttocookie" cookie="caf$forumid"/>
         </mm:compare>
@@ -380,7 +380,7 @@
     </div>
     </mm:compare>
     <mm:compare value="signatures" referid="profile">
-		<table>
+		<table class="layout" border="2">
 		<mm:import id="maxsig">1</mm:import>
         	<mm:import externid="feedback_message" from="session" id="feedback"/>
 		<mm:present referid="feedback">
@@ -398,12 +398,11 @@
 		<input type="hidden" name="action" value="setsinglesignature" />
 		<tr>
 		<td>
-			<textarea name="newbody" rows="5" cols="65"><mm:field name="body" /></textarea>
+			<textarea name="newbody" rows="5" style="width: 100%"><mm:field name="body" /></textarea>
 		</td>
 		</tr>
 		<tr>
-		<td align="left">
-		<input type="submit" value="<mm:write referid="mlg.Save"/>" />
+		<td align="middle"><center><input type="submit" value="<mm:write referid="mlg.Save"/>" /></center>
 		</td>
 		</tr>
 		</form>
@@ -451,7 +450,7 @@
     </mm:compare>
 
     <mm:compare value="avatar" referid="profile">
-      <form enctype="multipart/form-data" action="<mm:url page="actions_avatar.jsp">
+      <form name="uploadform" enctype="multipart/form-data" action="<mm:url page="actions_avatar.jsp">
         <mm:param name="forumid" value="$forumid" />
         <mm:present referid="postareaid">
         <mm:param name="postareaid" value="$postareaid" />
@@ -500,10 +499,10 @@
         <div class="row">
           <span class="label"><mm:write referid="mlg.Upload_avatar"/></span>
           <span class="formw">
-            <mm:fieldlist nodetype="images" fields="handle">
-            <mm:fieldinfo type="input"/>
+            <mm:fieldlist nodetype="images" node="" fields="handle">
             </mm:fieldlist>
-            <input type="submit" name="addavatar" value="<mm:write referid="mlg.Upload"/>" />
+	    <input type="file" name="_handle" id="mm_handle" onChange="document.uploadform.addavatar.disabled=false" />
+            <input disabled="true" type="submit" name="addavatar" value="<mm:write referid="mlg.Upload"/>" />
           </span>
         </div>
           </mm:compare>

@@ -139,6 +139,9 @@
 	<mm:compare referid="postresult" value="duplicate_post">
 	<font color="red"><mm:write referid="mlg.problem_already_posted" /></font>
 	</mm:compare>
+	<mm:compare referid="postresult" value="maxpostsize">
+	<font color="red"><mm:write referid="mlg.problem_maxpostsize" /></font>
+	</mm:compare>
 	<mm:compare referid="postresult" value="illegal_html">
 	<font color="red"><mm:write referid="mlg.problem_illegal_html" /></font>
 	</mm:compare>

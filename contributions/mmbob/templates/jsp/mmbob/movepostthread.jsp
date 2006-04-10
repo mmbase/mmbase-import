@@ -60,7 +60,11 @@
 	<tr><th width="200"><mm:write referid="mlg.Areas" /></th><td colspan="2" align="middle">
 		<select name="newpostareaid">
  		<mm:nodelistfunction set="mmbob" name="getPostAreas" referids="forumid,posterid">
+		<mm:field name="id">
+		<mm:compare referid2="postareaid" inverse="true">
 		<option value="<mm:field name="id" />"><mm:field name="name" />
+		</mm:compare>
+		</mm:field>
 		</mm:nodelistfunction>
 		</select>
 	</td></th>

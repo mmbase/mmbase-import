@@ -62,11 +62,16 @@
 	<mm:node element="postareas">
 		<tr><th><mm:field name="name" /></th><th></th><th></th></tr>
 		<mm:related path="rolerel,posters" constraints="rolerel.role like '%moderator%'">
+		<mm:first><mm:import id="foundresult" /></mm:first>
 		<mm:node element="posters">
 
-	<tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="nick" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
-	</mm:node>
-	</mm:related>
+	<tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=moderatorteam_poster"><mm:field name="firstname" /> <mm:field name="lastname" /></a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="d MMMM, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		</mm:node>
+	        </mm:related>
+		<mm:notpresent referid="foundresult">
+		<tr><td colspan="3">Geen <mm:write referid="mlg.Moderators" /></tr></td>
+		</mm:notpresent>	
+		<mm:remove referid="foundresult" />
 	</mm:node>
 	</mm:related>
 </table>
