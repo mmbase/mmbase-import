@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.34 2006-04-10 15:14:38 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.35 2006-04-10 17:02:05 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -513,7 +513,10 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
                 if (! resource.equals("")) {
                     Comparator comparator = null;
                     Class wrapper    = wrapperDefault;
-                    if (wrapper != null && (! Comparable.class.isAssignableFrom(wrapper))) {
+                    if (wrapper != null && 
+                        (! Comparable.class.isAssignableFrom(wrapper)) &&
+                        (! Boolean.class.equals(wrapper)) // in java < 1.5 Boolean is not comparable
+                        ) {
                         wrapper = null;
                     }
 
