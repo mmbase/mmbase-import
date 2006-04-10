@@ -54,6 +54,11 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=editors&subcategory=basic" />" target="_top"
     ><span class="currentmenuitem">BASIC</span></a>
+    <mm:haspage page="/mmbase/security">
+      &nbsp;&nbsp;
+      <a href="<mm:url page="default.jsp?category=editors&subcategory=security" />" target="_top"
+      ><span class="currentmenuitem">SECURITY</span></a>
+    </mm:haspage>
         <% } else if("examples".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=examples" />" target="_top"
