@@ -265,13 +265,11 @@ public class MultiLanguageGui {
         		HashMap map = new HashMap();
 			String keyword=(String)e.nextElement();
 			Hashtable keywordset=(Hashtable)set.get(keyword);
-			log.info("K="+keyword);
 			if (keywordset != null) {
 				Enumeration e2=keywordset.keys();
 				while (e2.hasMoreElements()) {
 					String lang=(String)e2.nextElement();
 					if (!ll.contains(lang)) ll.add(lang);
-					log.info("L="+lang+" "+ll);
 				}
 			}
 		}
