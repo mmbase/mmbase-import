@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import org.mmbase.datatypes.*;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.tests.*;
@@ -44,10 +45,14 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"70823b", "xx 7081 EA",  "xx\n7081 EA"}},
                 new Object[] {"pattern",
                               new Object[] {"ababa", "aBB", null},
-                              new Object[] {"c", "ababab", ""}},
+                              new Object[] {"c", "abaxbab", ""}},
+                new Object[] {"languages", 
+                              new Object[] {"nl", "en", null},
+                              new Object[] {"c", "ababab"}},
                 new Object[] {"integer",
-                              new Object[] {new Integer(-100), null},
-                              new Object[] {new Long(Long.MAX_VALUE)}, "asdfe"},
+                              new Object[] {new Integer(-100), null, "1234", "1234.4"},
+                              new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe" 
+                              }},
                 new Object[] {"range",
                               new Object[] {new Integer(5), null},
                               new Object[] {new Integer(0), new Integer(10)}},
@@ -62,13 +67,17 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"now - 4 day", "today + 101 year"}},
                 new Object[] {"mmbase_state_enumeration",
                               new Object[] {"ACTIVE", "inactive", "unknown", new Integer(1), "1"},
-                              new Object[] {"-2", new Long(71221111112L)}},
+                              new Object[] {"-2", new Long(71221111112L), "bla bla"}},
                 new Object[] {"enumeration",
                               new Object[] {"2", "4", new Integer(6), null},
                               new Object[] {"-1", "xxx"}},
                 new Object[] {"restricted_ordinals",
                               new Object[] {"2", "4", new Integer(6), null},
                               new Object[] {"1", "21", new Integer(10)}},
+                new Object[] {"float",
+                              new Object[] {"2", "4", new Integer(6), null, new Double(1.0), "1.0", "1e20"},
+                              new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
+                              }},
                 new Object[] {"boolean",
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
                               new Object[] {"asjdlkf", "21", "yes", new Integer(10)}},
@@ -78,12 +87,13 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"integer_boolean",
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
-                new Object[] {"string_boolean", /* string db, boolean datatype */
+
+                new Object[] {"string_boolean", 
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
-                new Object[] {"boolean_string",/* boolean db, string datatype */
-                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
-                              new Object[] {} // "asjdlkf", "21", new Integer(10)}
+                new Object[] {"boolean_string",
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false"},
+                              new Object[] { "asjdlkf", "21", new Integer(10)}
                 }
 
             };
@@ -96,9 +106,7 @@ public class DataTypesTest extends BridgeTest {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         return  nodeManager.createNode();
-        
     }
-
 
     public void testCheckValid() {
         Cloud cloud = getCloud();
@@ -117,7 +125,7 @@ public class DataTypesTest extends BridgeTest {
             }
             for (int j = 0; j < invalidValues.length; j++) {
                 if (field.getDataType().validate(invalidValues[j]).size() == 0) {
-                    err.append("Field " + field + " value '" + invalidValues[j] + "' was expected to be invalid\n");
+                    err.append("Field " + field + " value '" + invalidValues[j] + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
                 }
 
 
@@ -126,6 +134,20 @@ public class DataTypesTest extends BridgeTest {
         assertTrue(err.toString(), err.length() == 0);
 
     }
+
+    public void testEnumeration() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        Field field = nodeManager.getField("boolean_string");
+        DataType dt = field.getDataType();
+        LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        assertTrue(dt instanceof StringDataType);
+        assertEquals("" + fact, "bla",  fact.castKey("bla"));
+        assertEquals("true", fact.castKey("true"));
+        assertEquals("21",   fact.castKey("21"));
+    }
+
+
 
     protected Object getDefaultValue(Field field) {
        Object defaultValue = field.getDataType().getDefaultValue();
