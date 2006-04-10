@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.45 2006-04-10 14:59:01 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.46 2006-04-10 17:32:11 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -180,40 +180,40 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                             if (!stringValue.equals("")) i = Integer.parseInt(stringValue);
                             node.setValue(field, i);
                         } catch (NumberFormatException x) {
-                            log.error("Value for field " + field + " is not a number '" + stringValue + "'");
+                            log.debug("Value for field " + field + " is not a number '" + stringValue + "'");
                             return INVALID_VALUE;
                         }
                         break;
                     case Field.TYPE_BINARY:
-                        log.error("We don't support casts from String to Byte");
-                        break;
+                        log.error("We don't support casts from String to Binary");
+                        return INVALID_VALUE; // so, a String value is invalid for binaries.
                     case Field.TYPE_FLOAT:
                         try {
-                            float f=-1;
-                            if (!stringValue.equals("")) f=Float.parseFloat(stringValue);
+                            float f = -1;
+                            if (!stringValue.equals("")) f = Float.parseFloat(stringValue);
                             node.setValue(field,f);
                         } catch (NumberFormatException x) {
-                            log.error("Value for field " + field + " is not a number " + stringValue);
+                            log.debug("Value for field " + field + " is not a number " + stringValue);
                             return INVALID_VALUE;
                         }
                         break;
                     case Field.TYPE_DOUBLE:
                         try {
-                            double d=-1;
-                            if (!stringValue.equals("")) d=Double.parseDouble(stringValue);
+                            double d = -1;
+                            if (!stringValue.equals("")) d = Double.parseDouble(stringValue);
                             node.setValue(field,d);
                         } catch (NumberFormatException x) {
-                            log.error("Value for field " + field + " is not a number " + stringValue);
+                            log.debug("Value for field " + field + " is not a number " + stringValue);
                             return INVALID_VALUE;
                         }
                         break;
                     case Field.TYPE_LONG:
                         try {
-                            long l=-1;
-                            if (!stringValue.equals("")) l=Long.parseLong(stringValue);
+                            long l = -1;
+                            if (!stringValue.equals("")) l = Long.parseLong(stringValue);
                             node.setValue(field,l);
                         } catch (NumberFormatException x) {
-                            log.error("Value for field "+field+" is not a number "+stringValue);
+                            log.debug("Value for field " + field + " is not a number " + stringValue);
                             return INVALID_VALUE;
                         }
                         break;
@@ -225,16 +225,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                         }
                         break;
                     case Field.TYPE_BOOLEAN:
-                        // test if this is numeric
-                        try {
-                            if (!stringValue.equals("")) {
-                                Long l = Long.getLong(stringValue);
-                                node.setValue(field, Casting.toBoolean(l));
-                            } else {
-                                node.setValue(field, false);
-                            }
-                        } catch (NumberFormatException x) {
+                        if (org.mmbase.datatypes.StringDataType.BOOLEAN_PATTERN.matcher(stringValue).matches()) {
                             node.setValue(field, Casting.toBoolean(value));
+                        } else {
                             return INVALID_VALUE;
                         }
                         break;
