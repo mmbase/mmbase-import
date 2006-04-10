@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.9 2006-03-31 13:18:20 pierre Exp $
+ * @version $Id: AbstractNode.java,v 1.10 2006-04-10 15:25:05 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -248,7 +248,7 @@ public abstract class AbstractNode implements Node {
 
     public final void setStringValue(final String fieldName, final String value) {
         Field field = getNodeManager().getField(fieldName);
-        Object setValue = field.getDataType().preCast(value, this, field);
+        Object setValue = field.getDataType().preCast(value, this, field); // to resolve enumerations
         Object v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_STRING).process(this, field, setValue);
         setValueWithoutProcess(fieldName, v);
     }
