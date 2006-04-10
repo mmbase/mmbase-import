@@ -1,6 +1,5 @@
 function validate() {
     var valid = true;
-    var validateables = new Array();
     var els = document.getElementsByTagName("input");
     var pattern = /\bvalidateable\b/;
     for (i = 0; i < els.length; i++) {
