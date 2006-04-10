@@ -33,12 +33,11 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.22 2006-03-20 18:37:15 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.23 2006-04-10 15:29:43 michiel Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(BuilderWriter.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(BuilderWriter.class);
 
     /**
      * If true, the builder will expand when writing.
@@ -226,28 +225,7 @@ public class BuilderWriter extends DocumentWriter  {
             Element dataTypeElm = null;
             DataType dataType = fielddef.getDataType();
             if ((parentField == null) || !dataType.equals(parentField.getDataType())) {
-                dataTypeElm = document.createElement("datatype");
-                dataTypeElm.setAttribute("xmlns", "http://www.mmbase.org/xmlns/datatypes");
-                // TODO: may produce id even if originally not given
-                String id = dataType.getName();
-                String base = dataType.getBaseTypeIdentifier();
-                // TODO: may produce a basic 'base' name (not the original)
-                DataType origin = dataType.getOrigin();
-                if (origin != null) {
-                    base = origin.getName();
-                }
-                dataTypeElm.setAttribute("base", base);
-                if (!"".equals(id)) {
-                    dataTypeElm.setAttribute("id", id);
-                }
-                Object defaultValue = dataType.getDefaultValue();
-                if (defaultValue instanceof DynamicDate) {
-                    defaultValue = ((DynamicDate)defaultValue).getFormat();
-                }
-                if (defaultValue != null) { // && origin != null && !defaultValue.equals(origin.getDefaultValue())) {
-                    addContentElement("default", defaultValue.toString(), dataTypeElm);
-                }
-                /* add default, enumerations, and constraints */
+                dataTypeElm = (Element) document.importNode(dataType.toXml(), true);
             }
 
             if ((parentField == null) || (dataTypeElm != null) || (descriptionsElm != null) || (guiElm != null) ||  (positionsElm != null)) {
