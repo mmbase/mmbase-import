@@ -17,7 +17,7 @@ if(hasPools||isArchive) {
       <%
    }
 }
-String lastpool="";
+String lastpool=""; 
 %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel,posrel,pools" orderby="pools.name" directions="UP"
      ><mm:first
          ><tr><td>

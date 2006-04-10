@@ -158,7 +158,7 @@
 	      ><mm:field name="name" jspvar="articles_intro" vartype="String" write="false" 
 	      ><mm:field name="number" id="products_number" write="false" 
 	      /><mm:related path="posrel1,producttypes,posrel1,pagina" max="1"
-	         ><li><a href="shop_items.jsp?p=<mm:field name="pagina.number" 
+	         ><li><a href="producttypes.jsp?p=<mm:field name="pagina.number" 
 		         />&pool=<mm:field name="producttypes.number" />&product=<mm:write referid="products_number" 
 		            />"><%@include file="../includes/cleanarticlesintro.jsp" %></a><br>
 		   </mm:related

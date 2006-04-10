@@ -14,8 +14,8 @@
     <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
     <tr>
         <td width="100%"><mm:list nodes="<%= pageId %>" path="pagina,posrel,images" 
-            constraints="posrel.pos='1'"
-            ><% imageTemplate = "s(300)"; 
+            constraints="posrel.pos='1'"> <%--default image is related to this page with 1 pos--%>
+            <% imageTemplate = "s(300)"; 
             %><div align="center"><img src=<%@include file="includes/imagessource.jsp" %> alt="" border="0" ></div>
         </mm:list
         ></td>
@@ -23,7 +23,7 @@
     <tr>
         <td width="100%"><%@include file="includes/relatedteaser.jsp" %><br><br></td>
     </tr>
-    </table><%
+    </table><% 
 
 if(departmentId.equals("default")&&programId.equals("default")) { // *** select a random department ***
     Vector departments = new Vector();
@@ -31,7 +31,7 @@ if(departmentId.equals("default")&&programId.equals("default")) { // *** select 
         ><mm:field name="afdelingen.number" jspvar="departments_number" vartype="String" write="false"><%
             departments.add(departments_number);
         %></mm:field
-    ></mm:list><%
+    ></mm:list><% 
     int selectedDepartment = (int) Math.floor(departments.size()*Math.random());
     if(selectedDepartment>departments.size()-1) { selectedDepartment = departments.size()-1; }
     departmentId = (String) departments.get(selectedDepartment);
@@ -43,7 +43,7 @@ if(departmentId.equals("default")&&programId.equals("default")) { // *** select 
 // *************  listing of employees  ********************
 
 String employeeConstraint = "( medewerkers.importstatus != 'inactive' ) OR ( medewerkers.externid LIKE 'wieiswie' )";
-String departmentNodes = "";
+String departmentNodes = ""; 
 String employeePath = "medewerkers";
 if(!departmentId.equals("default")) {
     %><mm:node number="<%= departmentId %>"
@@ -66,7 +66,7 @@ String defaultThumb = "";
 // = employeeConstraint 
 %><% boolean employeeFound = false;
     int numberInRow = 0;
-    int maxInRow = 3;
+    int maxInRow = 3; 
 %><mm:list nodes="<%= departmentNodes %>" path="<%= employeePath %>"
     orderby="medewerkers.firstname,medewerkers.lastname" directions="UP,UP" constraints="<%= employeeConstraint %>"
     ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%

@@ -16,8 +16,8 @@
 <% } %>
 <% if(!forumId.equals("")) { %>
     <mm:node number="<%= forumId %>">
-        <iframe src="/mmbob/index.jsp?forumid=<mm:field name="number" />" title="<mm:field name="title"/>" width="100%" height="527px" frameborder="0">
-            <a href="/mmbob/index.jsp?forumid=<mm:field name="number"/>" target="_blank"><mm:field name="title"/></a>
+        <iframe src="/nmintra/mmbob/index.jsp?forumid=<mm:field name="number" />" title="<mm:field name="title"/>" width="100%" height="527px" frameborder="0">
+            <a href="/nmintra/mmbob/index.jsp?forumid=<mm:field name="number"/>" target="_blank"><mm:field name="title"/></a>
         </iframe>
     </mm:node>        
 <% } %>

@@ -2,7 +2,13 @@
    %><%@include file="../includes/pagecounter.jsp"    
    %><%@include file="../includes/getresponse.jsp" 
 	%><%--@include file="../includes/shoppingcartupdate.jsp" 
-   --%><% templateTitle = "indexsite"; 
+   --%><% 
+	String sPageRef = (String) session.getAttribute("pageref");
+	if(sPageRef!=null&&!sPageRef.equals(pageId)) { // set pagerefminone to sPagRef, set pageref to pageId
+   	session.setAttribute("pagerefminone",sPageRef);
+	}
+	session.setAttribute("pageref",pageId);
+	templateTitle = "indexsite"; 
    %><mm:list nodes="<%= pageId %>" path="pagina,gebruikt,paginatemplate"
          ><mm:field name="paginatemplate.naam" jspvar="dummy" vartype="String" write="false"><%
                templateTitle = dummy; 

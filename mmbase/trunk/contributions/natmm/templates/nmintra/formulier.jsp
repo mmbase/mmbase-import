@@ -29,7 +29,13 @@
          String sDefaultName = "";
          String sDefaultEmail = "";
          String sDefaultText = "";
-         if(pageId.equals("1713")) {
+			String sWvjePageId = ""; %>
+			<mm:list path="rubriek,posrel,pagina" constraints="rubriek.naam = 'Wat vind je ervan?' AND pagina.titel = 'Wat vind je ervan?'">
+				<mm:field name="pagina.number" jspvar="number" vartype="String" write="false">
+					<% sWvjePageId = number; %>
+				</mm:field>
+			</mm:list>
+      <% if(pageId.equals(sWvjePageId)) {
             sDefaultText = "Het volgende wil ik melden over de rubriek ";
             %><%@include file="includes/authenticate.jsp" %><% 
             if(!username.equals("")) { %>
@@ -50,7 +56,7 @@
                      <% sDefaultText += lastRubriek.getStringValue("naam") + " - "; %>
                   </mm:node>
                </mm:related>
-               <%  sDefaultText += lastPage.getStringValue("naam") + ": "; %>
+               <%  sDefaultText += lastPage.getStringValue("titel") + ": "; %>
             </mm:node>
             <%
          }  

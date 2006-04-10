@@ -20,21 +20,21 @@ int thisImageNumber = 1;
 	><mm:node number="<%= shop_itemId %>" notfound="skipbody"> -	<mm:field name="title" /></mm:node
 	><mm:node number="<%= thisImage %>"> -	<mm:field name="title" /></mm:node>
 </title>
-<link rel="stylesheet" type="text/css" href="../css/website.css">
+<link rel="stylesheet" type="text/css" href="../nmintra/css/website.css">
 <meta http-equiv="imagetoolbar" content="no">
 </head>
 <body class="popup">
 <table width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="titlebar" style="padding:3px;height:79px;">
-	<img style="float:right;margin-top:2px;margin-right:5px;" src="../media/oranje_helmgras_logo.gif" border="0">
+	<img style="float:right;margin-top:2px;margin-right:5px;" src="../nmintra/media/oranje_helmgras_logo.gif" border="0">
 	<table cellspacing="0" cellpadding="0">
 		<tr>
-			<td class="titlebar" width="0%" style="padding-left:1px;padding-top:2px;" ><a  href="#" onClick="window.close()"><img src="../media/kruis_wit_op_oranje.gif" border="0" alt=""></a></td>
+			<td class="titlebar" width="0%" style="padding-left:1px;padding-top:2px;" ><a  href="#" onClick="window.close()"><img src="../nmintra/media/kruis_wit_op_oranje.gif" border="0" alt=""></a></td>
 			<td class="titlebar" style="padding-left:8px;padding-top:2px;"><a href="#" onClick="window.close()" class="white">Sluit dit venster</a></td>
 		</tr>
 		<tr>
-			<td><img src="../media/spacer.gif" width="1" height="57" border="0" alt=""></td>
+			<td><img src="../nmintra/media/spacer.gif" width="1" height="57" border="0" alt=""></td>
 			<td class="titlebar" style="vertical-align:bottom;padding-left:8px;padding-top:2px;">
 			<%= (new String("Kijk dichterbij")).toUpperCase() 
 			%></td>
@@ -55,7 +55,7 @@ int thisImageNumber = 1;
 			<td style="padding-top:150px;padding-left:25px;padding-right:5px;"><% 
 				if(!previousImage.equals("-1")&&!nextImage.equals("-1")) { 
 					%><table cellspacing="0" cellpadding="0">
-						<tr><td style="text-align:center;"><a href="<%= pageUrl %><%= previousImage %>"><img src="../media/pijl_oranje_op_wit_terug.gif" border="0" alt=""><a></td></tr>
+						<tr><td style="text-align:center;"><a href="<%= pageUrl %><%= previousImage %>"><img src="../nmintra/media/pijl_oranje_op_wit_terug.gif" border="0" alt=""><a></td></tr>
 						<tr><td style="padding-top:5px;"><a class="nav" href="<%= pageUrl %><%= previousImage %>">vorige<a></td></tr>
 					</table><% 
 				} 
@@ -107,15 +107,15 @@ int thisImageNumber = 1;
       			   %>
                   <a href="<mm:attachment />" target="_blank">
                      <% if(attachments_filename.indexOf(".pdf")>-1){ 
-                        %><img src="../media/pdf.gif" alt="<mm:field name="title" />" border="0"><%
+                        %><img src="../nmintra/media/pdf.gif" alt="<mm:field name="title" />" border="0"><%
                      } else if(attachments_filename.indexOf(".doc")>-1){ 
-                        %><img src="../media/word.gif" alt="<mm:field name="title" />" border="0"><%
+                        %><img src="../nmintra/media/word.gif" alt="<mm:field name="title" />" border="0"><%
                      } else if(attachments_filename.indexOf(".xls")>-1){
-                        %><img src="../media/xls.gif" alt="<mm:field name="title" />" border="0"><%
+                        %><img src="../nmintra/media/xls.gif" alt="<mm:field name="title" />" border="0"><%
                      } else if(attachments_filename.indexOf(".ppt")>-1){ 
-                        %><img src="../media/ppt.gif" alt="<mm:field name="title" />" border="0"><%
+                        %><img src="../nmintra/media/ppt.gif" alt="<mm:field name="title" />" border="0"><%
                      } else { 
-                        %><img src="../media/txt.gif" alt="<mm:field name="title" />" border="0"><%
+                        %><img src="../nmintra/media/txt.gif" alt="<mm:field name="title" />" border="0"><%
                      } %><br/>
                      DOWNLOAD <%= attachments_filename.toUpperCase() %>
                   </a>
@@ -127,7 +127,7 @@ int thisImageNumber = 1;
 			<td style="text-align:right;padding-top:150px;padding-right:25px;padding-left:5px;"><% 
 				if(!previousImage.equals("-1")&&!nextImage.equals("-1")) { 
 					%><table cellspacing="0" cellpadding="0">
-						<tr><td style="text-align:center;"><a href="<%= pageUrl %><%= nextImage %>"><img src="../media/pijl_oranje_op_wit.gif" border="0" alt=""><a></td></tr>
+						<tr><td style="text-align:center;"><a href="<%= pageUrl %><%= nextImage %>"><img src="../nmintra/media/pijl_oranje_op_wit.gif" border="0" alt=""><a></td></tr>
 						<tr><td style="padding-top:5px;"><a class="nav" href="<%= pageUrl %><%= nextImage %>">volgende<a></td></tr>
 					</table><% 
 				} 
