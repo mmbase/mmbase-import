@@ -58,7 +58,7 @@ if(!poolId.equals("")) { // *** use mm:list to only show producttypes related to
          	   ><mm:field name="title" id="shopitems_title" write="false" 
          	   /><mm:field name="number" id="shopitems_number" write="false" 
          	      /><mm:related path="posrel,pagina" max="1"
-      	         ><a href="producttypes.jsp?p=<mm:field name="pagina.number" />&u=<mm:write referid="shopitems_number" 
+      	         ><a href="shop_items.jsp?p=<mm:field name="pagina.number" />&u=<mm:write referid="shopitems_number" 
       		            />"><li><mm:write referid="shopitems_title" /></a><br>
       		   </mm:related
          ></mm:relatednodes

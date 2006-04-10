@@ -5,8 +5,8 @@
 function createPosting(el) {
 var href = el.getAttribute("href");
 href += "&pst=";
-<mm:list nodes="<%= pageId %>" path="pagina,contentrel,formulier" 
-    orderby="contentrel.pos" directions="UP"
+<mm:list nodes="<%= pageId %>" path="pagina,posrel,formulier" 
+    orderby="posrel.pos" directions="UP"
     ><% String formulier_number = ""; 
     %><mm:field name="formulier.number" jspvar="dummy" vartype="String" write="false"
             ><% formulier_number= dummy; 

@@ -8,26 +8,19 @@
       <div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a></div>
 		<%@include file="../includes/relatedteaser.jsp" %></td>
 	</tr>		
-	<mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" 
-		fields="artikel.number,artikel.titel,artikel.titel_fra,artikel.intro" 
-		orderby="contentrel.pos" directions="UP">
-	<tr>
-		<td><img src="media/spacer.gif" width="10" height="1"></td>
-		<td colspan=3>
-			<mm:field name="artikel.titel_zichtbaar"
-			   ><mm:compare value="0" inverse="true"
-			      ><div class="pageheader"><mm:field name="artikel.titel" 
-			   /></div><br/></mm:compare
-			></mm:field>
-			<mm:field name="artikel.titel_fra" /><br>
-			<mm:field name="article.intro" /><br><br><br>
-		</td>
-	</tr>
-	</mm:list> 
-	
 	<mm:list nodes="<%= pageId %>" path="pagina,posrel,formulier" 
 		fields="formulier.number,formulier.titel,formulier.titel_fra,formulier.omschrijving" 
 		orderby="posrel.pos" directions="UP">
+	<tr>
+		<td><img src="media/spacer.gif" width="10" height="1"></td>
+		<td colspan=3>
+			<div class="pageheader"><mm:field name="formulier.titel" 
+			   /></div><br/>
+			<mm:field name="formulier.titel_fra"/><br>
+			<mm:field name="formulier.omschrijving"/><br><br><br>
+		</td>
+	</tr>
+
 	<% String formulier_number = ""; %>
 	<mm:field name="formulier.number" jspvar="dummy" vartype="String" write="false">
 			<% formulier_number= dummy; %>
@@ -179,7 +172,7 @@
 	<tr>
 		<td><img src="media/spacer.gif" width="10" height="1"></td>
 		<td colspan="3">
-		(*) vul minimaal deze velden in i.v.m. een correcte afhandeling. 
+		(*) vul minimaal deze velden in i.v.m. een correcte afhandeling.
 		</td>
 	</tr>
 	<tr>

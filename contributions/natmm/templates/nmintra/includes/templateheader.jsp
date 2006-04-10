@@ -62,7 +62,7 @@ String visitorGroup = request.getParameter("vg"); if(visitorGroup==null){ visito
 String imageId = request.getParameter("i"); 
 String shop_itemId = request.getParameter("u"); if((shop_itemId==null) || (shop_itemId.equals(""))) { shop_itemId="-1"; }
 String actionId = request.getParameter("t"); if (actionId==null) {actionId=""; }
-//String pageUrl = "index.jsp?website=" + websiteId;
+String pageUrl = "";
 String totalitemsId = (String) session.getAttribute("totalitems");
 if(totalitemsId==null) totalitemsId = "0";
 String shop_itemHref = "";

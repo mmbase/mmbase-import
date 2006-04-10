@@ -184,12 +184,17 @@
         
         String messageTitle = subjectText;
         String messageBody = "Uw formulier is per email verstuurd naar: " + formulier_editors_note;
-        String messageHref = "formulier.jsp";
+        String messageHref = "";
         String messageLinktext = "naar de homepage";
         if(sPageRefMinOne!=null) {
             %><mm:node number="<%= sPageRefMinOne %>" jspvar="lastPage" notfound="skipbody"><%
-               messageLinktext = "terug naar pagina \"" + lastPage.getStringValue("title") + "\"";
-	            messageHref  += "?p=" + sPageRefMinOne;
+               messageLinktext = "terug naar pagina \"" + lastPage.getStringValue("titel") + "\""; %>
+					<mm:list nodes="<%= sPageRefMinOne %>" path="pagina,gebruikt,paginatemplate">
+						<mm:field name="paginatemplate.url" jspvar="url" vartype="String" write="false">
+							<% messageHref += url; %>
+						</mm:field>	
+					</mm:list>
+            <% messageHref  += "?p=" + sPageRefMinOne;
 	         %></mm:node><%
 	     }
         String messageLinkParam = "target=\"_top\"";
