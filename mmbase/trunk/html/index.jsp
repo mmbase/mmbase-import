@@ -42,7 +42,12 @@
         <li>Evaluate all builder xmls from config/builders (and below). Remove all which you don't
         need (the really essential 'core' builders are also in mmbase.jar, so it is impossible to really remove those). You need to start with empty database then.</li>
         <li>Evaluate all applications from config/applications. Remove all which you don't need.</li>
-        <li>Configure another database (hsql is not really fit for production), e.g. mysql or postgresql</li>
+        <li>
+	  Configure (another) database (hsql is not really fit for production), e.g. mysql or
+          postgresql.
+	  The default MMBase distro runs on <strong>memory only</strong> HSQL, so you loose your
+          data after restart. The key configuration file is WEB-INF/config/modules/jdbc.xml.	  
+	</li>
         <li>Remove /mmexamples (it is a bit dangerous, and superfluous in production)</li>
         <li>Remove /index.jsp (this file), you want to put the index.jsp of your site here of course.</li>
         <li>Remove /mmdocs</li>
