@@ -3,7 +3,7 @@
 <mm:import id="cw2"></mm:import>
 <mm:import id="ca2"></mm:import>
 <mm:import id="pid2">-1</mm:import>
-<mm:write referid="cw2" cookie="cwf$forumid" />
-<mm:write referid="ca2" cookie="caf$forumid" />
+<mm:write referid="ca2" session="caf$forumid" />
+<mm:write referid="cw2" session="cwf$forumid" />
 <mm:write referid="pid2" session="pid$forumid" />
 <%response.sendRedirect("index.jsp?forumid="+forumid);%>

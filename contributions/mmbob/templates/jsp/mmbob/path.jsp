@@ -63,6 +63,23 @@
 	</mm:node>
 </mm:compare>
 
+
+<mm:compare value="postarea2" referid="type">
+	<mm:node number="$forumid">
+	<a href="<mm:url page="../index.jsp">
+		<mm:param name="forumid" value="$forumid" />
+		</mm:url>">
+	<mm:field name="name" /></a>
+	</mm:node> >
+	<mm:node number="$postareaid">
+	<a href="<mm:url page="../postarea.jsp">
+		<mm:param name="forumid" value="$forumid" />
+		<mm:param name="postareaid" value="$postareaid" />
+		</mm:url>">
+	<mm:field name="name" /></a>
+	</mm:node>
+</mm:compare>
+
 <mm:compare value="poster_index" referid="type">
 	<mm:node number="$forumid">
 	<a href="<mm:url page="index.jsp">

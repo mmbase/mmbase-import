@@ -143,12 +143,14 @@
 </table>
 
 <mm:compare referid="pagecount" value="1" inverse="true">
+<mm:compare referid="pagecount" value="0" inverse="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" border="0" width="95%">
 	<tr>
 	<td align="left">
 	<mm:write referid="mlg.Pages"/> : <mm:write referid="navline" />
 	</td></tr>
 </table>
+</mm:compare>
 </mm:compare>
 <table cellpadding="0" cellspacing="0" style="margin-top : 5px;" width="95%">
 	<mm:compare referid="threadstartlevel" value="">

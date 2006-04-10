@@ -63,6 +63,7 @@
 		<option value="normal" <mm:compare value="normal">selected</mm:compare>><mm:write referid="mlg.normal" />
 		<option value="closed" <mm:compare value="closed">selected</mm:compare>><mm:write referid="mlg.closed" />
 		<option value="pinned" <mm:compare value="pinned">selected</mm:compare>><mm:write referid="mlg.pinned" />
+		<option value="pinnedclosed" <mm:compare value="pinnedclosed">selected</mm:compare>><mm:write referid="mlg.pinned" /><mm:write referid="mlg.closed" />
 		</mm:field>
 		</select>
 	</td></th>

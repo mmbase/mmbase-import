@@ -187,7 +187,7 @@
         <mm:write referid="feedback" session="feedback_message"/>
 
         <mm:compare referid="feedback" value="passwordchanged">
-          <mm:write referid="newpassword" cookie="cwf$forumid" />
+          <mm:write referid="newpassword" id="cwf$forumid" session="mmbobe" />
         </mm:compare>
 
          <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid"> 

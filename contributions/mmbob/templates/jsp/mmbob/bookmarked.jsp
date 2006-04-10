@@ -51,18 +51,20 @@
 </mm:nodefunction>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%" >
 
-  <tr>
-    <th>&nbsp;</th>
-    <th>&nbsp;</th>
-    <th><mm:write referid="mlg.topic"/></th>
-    <th><mm:write referid="mlg.area_name"/></th>
-    <th><mm:write referid="mlg.author"/></th>
-    <th><mm:write referid="mlg.replies"/></th>
-    <th><mm:write referid="mlg.views"/></th>
-    <th><mm:write referid="mlg.last_posting"/></th>
-  </tr>
 	<mm:nodelistfunction set="mmbob" name="getBookmarkedThreads" referids="forumid,postareaid,posterid,page,pagesize">
-	<mm:first><mm:import id="resultfound" /></mm:first>
+	<mm:first>
+	<mm:import id="resultfound" />
+  	<tr>
+    	<th>&nbsp;</th>
+    	<th>&nbsp;</th>
+   	 <th><mm:write referid="mlg.topic"/></th>
+   	 <th><mm:write referid="mlg.area_name"/></th>
+   	 <th><mm:write referid="mlg.author"/></th>
+   	 <th><mm:write referid="mlg.replies"/></th>
+   	 <th><mm:write referid="mlg.views"/></th>
+    	<th><mm:write referid="mlg.last_posting"/></th>
+  	</tr>
+	</mm:first>
 	<tr>
 
     		<td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td>
@@ -90,6 +92,7 @@
 	</tr>
 	</mm:nodelistfunction>
 	<mm:notpresent referid="resultfound">
+	<th><mm:write referid="mlg.warning" /></th>
 	<tr><td colspan="8"><b><mm:write referid="mlg.NoBookmarksFound"/></b></td></tr>
 	</mm:notpresent>
 </table>
