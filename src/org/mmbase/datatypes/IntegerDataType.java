@@ -14,7 +14,7 @@ import org.mmbase.util.Casting;
  * A NumberDataType, but provides getMin and getMax as int.
  *
  * @author Pierre van Rooden
- * @version $Id: IntegerDataType.java,v 1.8 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: IntegerDataType.java,v 1.9 2006-04-10 15:23:55 michiel Exp $
  * @since MMBase-1.8
  */
 public class IntegerDataType extends NumberDataType {
@@ -30,6 +30,15 @@ public class IntegerDataType extends NumberDataType {
         setMax(new Integer(Integer.MAX_VALUE), true);
         maxRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
+
+    protected void inheritRestrictions(BasicDataType origin) {
+        super.inheritRestrictions(origin);
+        if (origin instanceof BooleanDataType) {
+            setMin(new Integer(0), true);
+            setMax(new Integer(1), true);
+        }
+    }
+
 
     /**
      * @return the minimum value as an <code>int</code>, or a very very small number if there is no minimum.

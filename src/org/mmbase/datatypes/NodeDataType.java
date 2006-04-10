@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.24 2006-02-03 16:12:26 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.25 2006-04-10 15:23:55 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -55,7 +55,7 @@ public class NodeDataType extends BasicDataType {
     /**
      * Casting to Node can be a expensive, so we cast to integer in stead.
      */
-    protected Object cast(Object value, Cloud cloud, Node node, Field field) {
+    protected Object cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) {
             return null;
@@ -85,8 +85,8 @@ public class NodeDataType extends BasicDataType {
         return mustExistRestriction;
     }
 
-    protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
-        errors = super.validateCastedValue(errors, castedValue, node, field);
+    protected Collection validateCastedValue(Collection errors, Object castedValue, Object value, Node node, Field field) {
+        errors = super.validateCastedValue(errors, castedValue, value, node, field);
         errors = mustExistRestriction.validate(errors, castedValue, node, field);
         return errors;
     }

@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.18 2006-02-10 14:37:01 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.19 2006-04-10 15:23:55 michiel Exp $
  */
 
 public class DataTypes {
@@ -113,7 +113,7 @@ public class DataTypes {
      * specific for that class (with generally means that it only supports basic functionality such as autocast).
      * @param name The name of the datatype to create. If <code>null</code> is passed, the class name is used.
      * @param classType The class of the datatype to create. If <code>null</code> is passed, the
-     *          dataType returned is based on Object.class.
+      *          dataType returned is based on Object.class.
      */
     public static BasicDataType createDataType(String name, Class classType) {
         int type = Fields.classToType(classType);
@@ -281,6 +281,18 @@ public class DataTypes {
 
     public static  DataTypeCollector getSystemCollector() {
         return dataTypeCollector;
+    }
+
+
+    /**
+     * Returns an XML completely describing the given DataType.
+     * This means that the XML will <em>not</em> have a base attribute.
+     * EXPERIMENTAL
+     */
+    public static Element toXml(DataType dataType) {
+        if (dataType.getOrigin() == null) return dataType.toXml();
+        // TODO. Needs implementing.
+        return null;
     }
 
 }
