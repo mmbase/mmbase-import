@@ -14,6 +14,7 @@ import java.util.*;
 import java.lang.reflect.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
+import org.mmbase.datatypes.StringDataType;
 
 /**
  * A bit like {@link java.util.ResourceBundle} (on which it is based), but it creates
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.19 2006-01-25 09:33:21 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.20 2006-04-10 15:24:35 michiel Exp $
  */
 public class SortedBundle {
 
@@ -148,7 +149,7 @@ public class SortedBundle {
 
 
     /**
-     * Casts a key of the bundle to the specified key-type. This type is defined by 
+     * Casts a key of the bundle to the specified key-type. This type is defined by
      * the combination of the arguments. See {@link #getResource}.
      */
     public static Object castKey(final String bundleKey, final Object value, final Map constantsProvider, final Class wrapper) {
@@ -156,7 +157,7 @@ public class SortedBundle {
         Object key;
         // if the key is numeric then it will be sorted by number
         //key Double
-        
+
         Map provider = constantsProvider; // default class (may be null)
         int lastDot = bundleKey.lastIndexOf('.');
         if (lastDot > 0) {
@@ -171,14 +172,14 @@ public class SortedBundle {
                 }
             }
         }
-        
+
         if (provider != null) {
-            key = provider.get(bundleKey);
+            key = provider.get(bundleKey.toUpperCase());
             if (key == null) key = bundleKey;
         } else {
             key = bundleKey;
         }
-        
+
         if (wrapper != null && ! wrapper.isAssignableFrom(key.getClass())) {
             try {
                 if (ValueWrapper.class.isAssignableFrom(wrapper)) {
@@ -186,8 +187,24 @@ public class SortedBundle {
                     Constructor c = wrapper.getConstructor(new Class[] { String.class, Comparable.class });
                     key = c.newInstance(new Object[] { key, (Comparable) value});
                 } else if (Number.class.isAssignableFrom(wrapper)) {
-                    key = Casting.toType(wrapper, key);
-                    log.debug("wrapper is a Number, that can simply be casted " + value + " --> " + key + "(" + wrapper + ")");
+                    if (key instanceof String) {
+                        if (StringDataType.DOUBLE_PATTERN.matcher((String) key).matches()) {
+                            key = Casting.toType(wrapper, key);
+                        }
+                    } else {
+                        key = Casting.toType(wrapper, key);
+                        log.debug("wrapper is a Number, that can simply be casted " + value + " --> " + key + "(" + wrapper + ")");
+                    }
+                } else if (Boolean.class.isAssignableFrom(wrapper)) {
+                    if (key instanceof String) {
+                        if (StringDataType.BOOLEAN_PATTERN.matcher((String) key).matches()) {
+                            key = Casting.toType(wrapper, key);
+                        }
+                    } else {
+                        key = Casting.toType(wrapper, key);
+                        log.debug("wrapper is a Boolean, that can simply be casted " + value + " --> " + key + "(" + wrapper + ")");
+                    }
+
                 } else {
                     log.debug("wrapper is unrecognized, suppose constructor " + key.getClass());
                     Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
@@ -195,20 +212,15 @@ public class SortedBundle {
                 }
             } catch (NoSuchMethodException nsme) {
                 log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + nsme.getMessage());
-                return null;
             } catch (SecurityException se) {
                 log.error(se.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + se.getMessage());
-                return null;
-            } catch (InstantiationException ie) {
+             } catch (InstantiationException ie) {
                 log.error(ie.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ie.getMessage());
-                return null;
-            } catch (InvocationTargetException ite) {
+             } catch (InvocationTargetException ite) {
                 log.debug(ite.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + ite.getMessage());
-                return null;
-            } catch (IllegalAccessException iae) {
+             } catch (IllegalAccessException iae) {
                 log.error(iae.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + iae.getMessage());
-                return null;
-            }
+             }
         }
         return key;
     }
@@ -223,13 +235,13 @@ public class SortedBundle {
         Field[] fields = clazz.getDeclaredFields();
         for (int i = 0 ; i < fields.length; i++) {
             Field constant = fields[i];
-            String key = constant.getName();
+            String key = constant.getName().toUpperCase();
             try {
                 Object value = constant.get(null);
                 map.put(key, value);
             } catch (IllegalAccessException ieae) {
                 log.debug("The java constant with name " + key + " is not accessible");
-            }                
+            }
         }
         return map;
     }
