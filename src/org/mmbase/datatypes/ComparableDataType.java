@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.13 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.14 2006-04-10 15:23:55 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -124,8 +124,8 @@ public abstract class ComparableDataType extends BasicDataType {
     }
 
 
-    protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
-        errors = super.validateCastedValue(errors, castedValue, node, field);
+    protected Collection validateCastedValue(Collection errors, Object castedValue, Object value,  Node node, Field field) {
+        errors = super.validateCastedValue(errors, castedValue, value, node, field);
         errors = minRestriction.validate(errors, castedValue, node, field);
         errors = maxRestriction.validate(errors, castedValue, node, field);
         return errors;
@@ -137,7 +137,7 @@ public abstract class ComparableDataType extends BasicDataType {
     }
 
     protected StringBuffer toStringBuffer() {
-        StringBuffer buf = super.toStringBuffer();        
+        StringBuffer buf = super.toStringBuffer();
         Object minValue = minRestriction.getValue();
         Object maxValue = maxRestriction.getValue();
         if (minValue != null) {
@@ -152,16 +152,14 @@ public abstract class ComparableDataType extends BasicDataType {
                 }
             }
             buf.append(minRestriction.enforceStrength == DataType.ENFORCE_NEVER ? "*" : "");
-            buf.append(" ").append(minRestriction.getEnforceStrength());
         }
         if (minValue != null || maxValue != null) {
             buf.append("...");
-        }        
+        }
         if (maxValue != null) {
             buf.append(maxValue);
             buf.append(maxRestriction.enforceStrength == DataType.ENFORCE_NEVER ? "*" : "");
             buf.append(maxRestriction.isInclusive() ? ']' : '>');
-            buf.append(" ").append(maxRestriction.getEnforceStrength());
         }
         return buf;
     }
@@ -180,7 +178,14 @@ public abstract class ComparableDataType extends BasicDataType {
         protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
-            Comparable minimum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
+            Comparable minimum;
+            try {
+                minimum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
+            } catch (CastException ce) {
+                log.error(ce); // probably config error.
+                // invalid value, but not because of min-restriction
+                return true;
+            }
             if (inclusive && (comparable.equals(minimum))) return true;
             return comparable.compareTo(minimum) > 0;
         }
@@ -201,7 +206,14 @@ public abstract class ComparableDataType extends BasicDataType {
         protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
-            Comparable maximum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
+            Comparable maximum;
+            try {
+                maximum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
+            } catch (CastException ce) {
+                log.error(ce); // probably config error.
+                // invalid value, but not because of max-restriction
+                return true;
+            }
             if (inclusive && (comparable.equals(maximum))) return true;
             boolean res = comparable.compareTo(maximum) < 0;
             return res;

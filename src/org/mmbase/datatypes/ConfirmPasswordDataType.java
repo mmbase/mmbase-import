@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.7 2006-02-14 22:49:50 michiel Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.8 2006-04-10 15:23:55 michiel Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
@@ -53,8 +53,8 @@ public class ConfirmPasswordDataType extends StringDataType {
         }
     }
 
-    protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
-        errors = super.validateCastedValue(errors, castedValue, node, field);
+    protected Collection validateCastedValue(Collection errors, Object castedValue, Object value, Node node, Field field) {
+        errors = super.validateCastedValue(errors, castedValue, value, node, field);
         errors = passwordRestriction.validate(errors, castedValue, node, field);
         return errors;
     }
@@ -69,6 +69,7 @@ public class ConfirmPasswordDataType extends StringDataType {
      * Returns the name of the field which is 'confirmed' by this datatype.
      */
     public String getField() {
+        edit();
         return passwordRestriction.getField();
     }
 

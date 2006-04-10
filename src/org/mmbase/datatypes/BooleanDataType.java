@@ -13,7 +13,7 @@ import org.mmbase.bridge.*;
  * The DataType associated with a boolean values. 
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.7 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: BooleanDataType.java,v 1.8 2006-04-10 15:23:55 michiel Exp $
  * @since MMBase-1.8
  */
 public class BooleanDataType extends BasicDataType {
@@ -36,7 +36,7 @@ public class BooleanDataType extends BasicDataType {
      * Cast a bit more conservativly, because Casting, aggressively casts everthing to boolean,
      * which would make nearly every value valid.
      */
-    protected final Object cast(Object value, Cloud cloud, Node node, Field field) {
+    protected final Object cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;
         if (value instanceof Boolean) return value;
@@ -47,15 +47,15 @@ public class BooleanDataType extends BasicDataType {
             if ("false".equals(s)) return Boolean.FALSE;
             if ("1".equals(s)) return Boolean.TRUE;
             if ("0".equals(s)) return Boolean.FALSE;
-            throw new RuntimeException("'" + value + "' of type " + value.getClass().getName() + "  cannot be casted to boolean");
+            throw new CastException("'" + value + "' of type " + value.getClass().getName() + "  cannot be casted to boolean");
         }
         if (value instanceof Number) {
             double d = ((Number) value).doubleValue();
             if (d == 1.0) return Boolean.TRUE;
             if (d == 0.0) return Boolean.FALSE;
-            throw new RuntimeException("The number '" + value + "' cannot be casted to boolean (boolean is 0 or 1)");
+            throw new CastException("The number '" + value + "' cannot be casted to boolean (boolean is 0 or 1)");
         } 
-        throw new RuntimeException("'" + value + "' cannot be casted to boolean (boolean is 0 or 1)");
+        throw new CastException("'" + value + "' cannot be casted to boolean (boolean is 0 or 1)");
 
     }
 }

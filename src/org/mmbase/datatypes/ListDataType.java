@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.17 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.18 2006-04-10 15:23:55 michiel Exp $
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType {
@@ -77,8 +77,8 @@ public class ListDataType extends AbstractLengthDataType {
         itemRestriction.setValue(value);
     }
 
-    protected Collection validateCastedValue(Collection errors, Object castedValue, Node node, Field field) {
-        errors = super.validateCastedValue(errors, castedValue, node, field);
+    protected Collection validateCastedValue(Collection errors, Object castedValue, Object value, Node node, Field field) {
+        errors = super.validateCastedValue(errors, castedValue, value, node, field);
         errors = itemRestriction.validate(errors, castedValue, node, field);
         return errors;
     }
