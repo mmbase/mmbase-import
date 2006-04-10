@@ -12,8 +12,11 @@
     <mm:import externid="node">test.transparency</mm:import>
     <mm:import externid="size">100</mm:import>
     <mm:cloud>
-      <mm:node number="$node">
-        <h1>Image tag</h1>
+      <h1>Image tag</h1>
+      <mm:hasnode number="$node" inverse="true">
+        <h2>The test-image with alias '${node}' is not available</h2>
+      </mm:hasnode>
+      <mm:node number="$node" notfound="skip">
         <table>
           <tr><th colspan="2">The image tag has several modes</th></tr>
           <tr valign="top">
