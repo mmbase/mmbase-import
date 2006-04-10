@@ -45,7 +45,8 @@
         <relation role="related" destinationtype="news" />
       </action>
     </list>
-        <list role="related" destination="images">
+
+    <list role="related" destination="images">
       <title>imagelist</title>
       <title xml:lang="nl">lijst van plaatjes</title>
       <command name="search" nodepath="images" fields="title" age="-1"  >
@@ -63,12 +64,12 @@
         <field fdatapath=".//object[@type='images']" ftype="image">
           <prompt>Image</prompt>
         </field>
-          </item>
+      </item>
       <action type="create">
-            <relation destinationtype="images" role="related">
+        <relation destinationtype="images" role="related">
         </relation>
       </action>
     </list>
     
-    </form-schema>
+  </form-schema>
 </wizard-schema>
