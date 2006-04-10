@@ -1,5 +1,7 @@
 <mm:import id="taglibdoc">/mmdocs/frontenddevelopers/taglib</mm:import>
-<p>
+<p class="link">
+  <a href="<mm:url page=".." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
+  |
   <a href="<mm:url page="index.jsp" />">home</a>
   |
   <a href="<mm:url page="cloud.jsp" />">cloud</a>
@@ -53,4 +55,5 @@
   <a href="<mm:url page="2.0/" />" >what's newer</a>
   |
   <a href="<mm:url page="$taglibdoc" />" >Taglib documentation</a>
+
 </p>
