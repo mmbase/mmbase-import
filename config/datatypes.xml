@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.34 2006-04-05 07:22:42 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.35 2006-04-10 15:47:53 michiel Exp $ -->
 
   <datatype id="xml">
     <description>
@@ -224,6 +224,15 @@
       </setprocessor>
     </specialization>
 
+    <specialization id="iso639">
+      <description>
+        ISO 639 language codes
+      </description>
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.iso639" />
+      </enumeration>
+    </specialization>
+
 
 
   </datatype>
@@ -255,6 +264,13 @@
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.Readonly" />
       </setprocessor>
+      <getprocessor type="*">
+        <class name="org.mmbase.datatypes.processors.CreationTimeGuesser" />
+      </getprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.CreationTimeGuesser" />
+        <class name="org.mmbase.datatypes.processors.FormatDateTime" />
+      </getprocessor>
     </specialization>
 
     <specialization id="lastmodified">
@@ -427,6 +443,14 @@
       <getprocessor type="string">
         <class name="org.mmbase.datatypes.processors.FormatFileSize" />
       </getprocessor>
+    </specialization>
+
+    <specialization id="byte">
+      <description>
+        The values 0 - 255 are possible.
+      </description>
+      <minInclusive value="0"  />
+      <maxInclusive value="255"  />
     </specialization>
   </datatype>
 
