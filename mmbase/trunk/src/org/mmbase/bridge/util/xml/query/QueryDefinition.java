@@ -18,8 +18,10 @@ import org.mmbase.storage.search.*;
 /**
  * Defines a query and possible options for the fields to index.
  *
+ * XXX What's the difference between a Query and a QueryDefinition?
+ *
  * @author Pierre van Rooden
- * @version $Id: QueryDefinition.java,v 1.6 2005-12-27 15:48:21 michiel Exp $
+ * @version $Id: QueryDefinition.java,v 1.7 2006-04-10 15:25:43 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryDefinition {
@@ -34,7 +36,7 @@ public class QueryDefinition {
      * XXX: how is this different from query instanceof NodeQuery
      */
     public boolean isMultiLevel = false;
-    
+
     /**
      * The NodeManager of the 'main' nodetype in this query (if appropriate).
      * XXX: How is this different from NodeQuery#getNodeManager() ?
@@ -75,8 +77,8 @@ public class QueryDefinition {
 
 
     public String toString() {
-        return 
-            (query == null ? "NULL" : (query.getClass().getName() + " " + query)) + 
+        return
+            (query == null ? "NULL" : (query.getClass().getName() + " " + query.toSql())) +
             " " + (isMultiLevel ? "(MULTILEVEL)" : "") +
             elementStep;
     }
