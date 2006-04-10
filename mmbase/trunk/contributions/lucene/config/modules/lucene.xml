@@ -9,7 +9,7 @@
       -->
     <property name="fullindexatstartup">false</property>
     <!--
-        The 'Scheduler' is started only after this many of ms.
+        The 'Scheduler' is started only after this many of ms. This gives e.g. cloud security time to deploy.
     -->
     <property name="initialwaittime">0</property>
     <!--
