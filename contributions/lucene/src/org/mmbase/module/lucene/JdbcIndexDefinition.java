@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.6 2006-01-26 15:30:13 ernst Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.7 2006-04-10 10:49:47 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -178,7 +178,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                         map.put(meta.getColumnName(i).toLowerCase(), value);
                     }
                 } else {
-                    map = null;    
+                    map = null;
                 }
                 long duration = (System.currentTimeMillis() - start);
                 if (duration > 500) {
@@ -231,8 +231,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
             if (log.isDebugEnabled()) {
                 log.trace("Indexing "+ results + " with " + keyWords);
             }
-            document.add(Field.Keyword("builder", "VIRTUAL BUILDER"));
-            document.add(Field.Keyword("number", getIdentifier()));
+            document.add(new Field("builder", "VIRTUAL BUILDER", Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            document.add(new Field("number",  getIdentifier(),   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
             try {
                 for (int i = 1; i <= meta.getColumnCount(); i++) {
                     String value = org.mmbase.util.Casting.toString(results.getString(i));
@@ -241,10 +241,10 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     }
                     String fieldName = meta.getColumnName(i);
                     if (keyWords.contains(fieldName)) {
-                        document.add(Field.Keyword(fieldName, value));
+                        document.add(new Field(fieldName,  value,   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
                     } else {
-                        document.add(Field.Text(fieldName, value));
-                        document.add(Field.Text("fulltext", value));
+                        document.add(new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED)); 
+                        document.add(new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED)); 
                     }
                 }
             } catch (SQLException sqe) {
@@ -263,6 +263,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 log.error(sqe);
                 return "";
             }
+        }
+        public Set getIdentifiers() {
+            Set ids = new HashSet();
+            ids.add(getIdentifier());
+            return ids;
         }
 
     }

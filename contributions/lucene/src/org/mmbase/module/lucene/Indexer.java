@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.23 2006-03-21 19:01:47 michiel Exp $
+ * @version $Id: Indexer.java,v 1.24 2006-04-10 10:49:47 michiel Exp $
  **/
 public class Indexer {
 
@@ -119,16 +119,18 @@ public class Indexer {
     /**
      * Delete the index for the main element node with the given number.
      * Used in iterative indexing.
-     * @param number the numbe rof teh node whose index to delete
+     * @return The number of deleted lucene documents.
+     * @param number the number of the node whose index to delete
      */
-    public void deleteIndex(String number) {
+    public int deleteIndex(String number) {
         IndexReader reader = null;
         try {
             reader = IndexReader.open(path);
             Term term = new Term("number", number);
-            reader.delete(term);
+            return reader.deleteDocuments(term);
         } catch (Exception e) {
             log.error("Cannot delete Index:" + e.getMessage() + " for index entry '" + number + "'");
+            return 0;
         } finally {
             if (reader != null) {
                 try {
@@ -145,9 +147,10 @@ public class Indexer {
      * Used in iterative indexing.
      * @param number the number of the node whose index to update
      */
-    public void updateIndex(String number) {
-        
-        deleteIndex(number);
+    public int updateIndex(String number) {
+        int updated = 0;
+        int deleted = deleteIndex(number);
+        log.info("Deleted " + deleted + " for '" + number + "'");
         IndexWriter writer = null;
         try {
             writer = new IndexWriter(path, analyzer, false);
@@ -156,7 +159,7 @@ public class Indexer {
                 IndexDefinition indexDefinition = (IndexDefinition)i.next();
                 Iterator j = indexDefinition.getSubCursor(number);
                 log.debug("Updating index " + indexDefinition + " for " + number);
-                index(j, writer);
+                updated += index(j, writer);
             }
         } catch (Exception e) {
             log.error("Cannot update Index:" + e.getMessage());
@@ -169,6 +172,7 @@ public class Indexer {
                 }
             }
         }
+        return updated;
     }
 
     /**
@@ -191,8 +195,7 @@ public class Indexer {
 
             log.service("Full index finished. Total nr documents in index: " + writer.docCount());
         } catch (Exception e) {
-            log.error("Cannot run FullIndex: "+e.getMessage());
-            log.error(Logging.stackTrace(e));
+            log.error("Cannot run FullIndex: " + e.getMessage(), e);
         } finally {
             if (writer != null) {
                 try {
@@ -207,7 +210,8 @@ public class Indexer {
     /**
      * Runs the queries for the given cursor, and indexes all nodes that are returned.
      */
-    protected void index(Iterator i, IndexWriter writer) throws IOException {
+    protected int index(Iterator i, IndexWriter writer) throws IOException {
+        int indexed = 0;
         Document document = null;
         String   lastIdentifier = null;
         if (! i.hasNext()) {
@@ -221,11 +225,13 @@ public class Indexer {
             if (! newIdentifier.equals(lastIdentifier)) {
                 if (document != null) writer.addDocument(document);
                 document = new Document();
+                indexed++;
             }
             index(entry, document);
             lastIdentifier = newIdentifier;
         }
         if (document != null) writer.addDocument(document);
+        return indexed;
     }
 
     /**

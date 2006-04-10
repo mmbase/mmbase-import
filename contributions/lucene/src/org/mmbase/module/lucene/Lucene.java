@@ -42,7 +42,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.55 2006-03-28 08:33:22 michiel Exp $
+ * @version $Id: Lucene.java,v 1.56 2006-04-10 10:49:47 michiel Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -55,6 +55,7 @@ public class Lucene extends Module implements MMBaseObserver {
 
     /**
      * But we use XSD now!
+     * @TODO Support for DTD's can be dropped, it was never released.
      */
     public static final String XSD_LUCENE_1_0 = "luceneindex.xsd";
     public static final String NAMESPACE_LUCENE_1_0 = "http://www.mmbase.org/xmlns/luceneindex";
@@ -69,11 +70,30 @@ public class Lucene extends Module implements MMBaseObserver {
      * Parameter constants for Lucene functions.
      */
     protected final static Parameter VALUE = new Parameter("value", String.class);
+    static {
+        VALUE.setDescription("the search term(s)");
+    }
     protected final static Parameter INDEX = new Parameter("index", String.class);
+    static {
+        INDEX.setDescription("the name of the index to search in");
+    }
     protected final static Parameter SORTFIELDS = new Parameter("sortfields", String.class);
     protected final static Parameter OFFSET = new Parameter("offset", Integer.class);
+    static {
+        OFFSET.setDescription("for creating sublists");
+    }
     protected final static Parameter MAX = new Parameter("max", Integer.class);
+    static {
+        MAX.setDescription("for creating sublists");
+    }
     protected final static Parameter EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
+    static {
+        EXTRACONSTRAINTS.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()");
+    }
+    protected final static Parameter IDENTIFIER = new Parameter("identifier", String.class);
+    static {
+        IDENTIFIER.setDescription("Normally a node number, identifier (a number of) lucene document(s) in an index.");
+    }
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE_2_0, DTD_LUCENE_2_0, Lucene.class);
@@ -142,7 +162,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                                                 ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
             if (scheduler == null) throw new RuntimeException("Read only");
-            String index = (String) arguments.get("index");
+            String index = (String) arguments.get(INDEX);
             if (index == null || "".equals(index)) {
                 scheduler.fullIndex();
             } else {
@@ -157,32 +177,26 @@ public class Lucene extends Module implements MMBaseObserver {
 
     /**
      * This function deletes an indexed entry from an index
-     * if the Parameter 'indexname' has value null, all indexes are iterated over, otherwise
+     * if the Parameter 'index' has value null, all indexes are iterated over, otherwise
      * the right index is addressed.
-     * <p>Parameters:</p>
-     * <ul>
-     * <li> - index     id of the index item to delete
-     * <li> - indexname name of the index, if empty item searched for in all indexes
-     * </ul>
-     * <p>Return: void</p>
      */
     protected Function deleteIndexFunction = new AbstractFunction("deleteIndex",
-                                                                new Parameter[] {INDEX, new Parameter("identifier", String.class)},
-                                                                ReturnType.VOID) {
-        public Object getFunctionValue(Parameters arguments) {
-            if (scheduler == null) throw new RuntimeException("Read only");
-            String index = (String) arguments.get("index");
-            String identifier = (String) arguments.get("identifier");
-            if(!readOnly){
-                if(identifier == null || "".equals(identifier)){
-                    scheduler.deleteIndex(index);
-                }else{
-                    scheduler.deleteIndex(index, identifier);
+                                                                  new Parameter[] {INDEX, IDENTIFIER}, 
+                                                                  ReturnType.VOID) {
+            public Object getFunctionValue(Parameters arguments) {
+                if (scheduler == null) throw new RuntimeException("Read only");
+                String index = (String) arguments.get(INDEX);
+                String identifier = (String) arguments.get(IDENTIFIER);
+                if(!readOnly){
+                    if(identifier == null || "".equals(identifier)){
+                        scheduler.deleteIndex(index);
+                    } else {
+                        scheduler.deleteIndex(index, identifier);
+                    }
                 }
+                return null;
             }
-            return null;
-        }
-    };
+        };
     {
         addFunction(deleteIndexFunction);
     }
@@ -191,22 +205,17 @@ public class Lucene extends Module implements MMBaseObserver {
 
     /**
      * This function can be called through the function framework.
-     * It (re)loads the index for a specific item
-     * <p>Parameters:</p>
-     * <ul>
-     *  <li> - identifier: the id of the indexed item
-     * </ul>
-     * <p>Return: void</p>
+     * It (re)loads the index for a specific item (identified by 'identifier' parameter).
      */
     protected Function updateIndexFunction = new AbstractFunction("updateIndex",
-                                                                  new Parameter[] {new Parameter("identifier", String.class, true)},
+                                                                  new Parameter[] { new Parameter(IDENTIFIER, true)},
                                                                   ReturnType.VOID) {
-        public Object getFunctionValue(Parameters arguments) {
-            if (scheduler == null) throw new RuntimeException("Read only");
-            scheduler.updateIndex(arguments.getString("identifier"));
-            return null;
-        }
-    };
+            public Object getFunctionValue(Parameters arguments) {
+                if (scheduler == null) throw new RuntimeException("Read only");
+                scheduler.updateIndex(arguments.getString(IDENTIFIER));
+                return null;
+            }
+        };
     {
         addFunction(updateIndexFunction);
     }
@@ -214,11 +223,6 @@ public class Lucene extends Module implements MMBaseObserver {
 
     /**
      * This function returns the status of the scheduler. For possible values see: Lucene.Scheduler
-     * <p>Parameters:</p>
-     * <ul>
-     * <li> - none
-     * </ul>
-     * <p>Return: Integer</p>
      */
     protected Function statusFunction = new AbstractFunction("status", Parameter.EMPTY, ReturnType.INTEGER) {
         public Object getFunctionValue(Parameters arguments) {
@@ -232,7 +236,7 @@ public class Lucene extends Module implements MMBaseObserver {
         public Object getFunctionValue(Parameters arguments) {
             Locale locale = (Locale) arguments.get(Parameter.LOCALE);
             SortedMap map = SortedBundle.getResource("org.mmbase.module.lucene.resources.status",  locale,
-                                                     getClass().getClassLoader(), 
+                                                     getClass().getClassLoader(),
                                                      SortedBundle.getConstantsProvider(Scheduler.class), Integer.class, null);
             return map.get(new Integer(scheduler == null ? Scheduler.READONLY : scheduler.getStatus()));
         }
@@ -252,11 +256,6 @@ public class Lucene extends Module implements MMBaseObserver {
 
     /**
      * This function returns Set with the names of all confiured indexes.
-     * <p>Parameters:</p>
-     * <ul>
-     * <li> - none
-     * </ul>
-     * <p>Return: Set</p>
      */
     protected Function listFunction = new AbstractFunction("list", Parameter.EMPTY, ReturnType.SET) {
             public Object getFunctionValue(Parameters arguments) {
@@ -270,12 +269,6 @@ public class Lucene extends Module implements MMBaseObserver {
 
     /**
      *This function returns the description as configured for a specific index and a specific locale.
-     *<p>Parameters:</p>
-     * <ul>
-     * <li>- index: name of the index
-     * <li>- Parameter.LOCALE: parameter for locale
-     * </ul>
-     * <p>Return: String</p>
      */
     protected Function descriptionFunction = new AbstractFunction("description", new Parameter[] {INDEX, Parameter.LOCALE}, ReturnType.STRING ) {
             public Object getFunctionValue(Parameters arguments) {
@@ -293,17 +286,6 @@ public class Lucene extends Module implements MMBaseObserver {
     /**
      * This function starts a search fro a given string.
      * This function can be called through the function framework.
-     * <p>Parameters:</p>
-     * <ul>
-     * <li> - value: the search term(s)
-     * <li> - index: the name of the index to search in
-     * <li> - sortfields
-     * <li> - offset: for creating sublists
-     * <li> - max: for creating sublists
-     * <li> - extraconstraints: @see org.mmbase.module.lucene.Searcher#createQuery()
-     * <li> - Parameter.CLOUD
-     * </ul>
-     * <p>Return: NodeList</p>
      */
     protected Function searchFunction = new AbstractFunction("search",
                                                              new Parameter[] { VALUE, INDEX, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, Parameter.CLOUD },
@@ -341,14 +323,6 @@ public class Lucene extends Module implements MMBaseObserver {
 
     /**
      * This function returns the size of a query on an index.
-     * <p>Parameters:</p>
-     * <ul>
-     * <li> - value: see searchFunction
-     * <li> - index:see searchFunction
-     * <li> - extraconstraints: see searchFunction
-     * <li> - Parameter.CLOUD
-     * </ul>
-     * <p>Return: Integer</p>
      */
     protected Function searchSizeFunction = new AbstractFunction("searchsize",
                               new Parameter[] { VALUE, INDEX, EXTRACONSTRAINTS, Parameter.CLOUD },
@@ -500,7 +474,7 @@ public class Lucene extends Module implements MMBaseObserver {
             queryDefinition.setAnalyzer(analyzer);
             // do not cache these queries
             queryDefinition.query.setCachePolicy(CachePolicy.NEVER);
-            
+
             // MM: I think the follwing functionality should be present on MMBaseIndexDefinition itself. and not on Lucene.
             // And of course, the new event-mechanism must be used.
             if (!readOnly) {
