@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.8 2005-09-16 17:03:53 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.9 2006-04-10 12:51:38 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag implements ParamHandler {
@@ -64,9 +64,8 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
         if (value == Attribute.NULL && referid == Attribute.NULL && entries == null) {
             if (bodyContent != null) {
                 // the value is the body context.      
-                helper.setValue(bodyContent.getString()); // to deal with 'vartype' casting
+                helper.setValueOnly(bodyContent.getString(), WriterHelper.IMPLICITLIST); // to deal with 'vartype' casting
                 paramHandler.addParameter(name.getString(this), helper.getValue());
-                helper.doAfterBody();
                 handled = true;
             }
         }
@@ -77,9 +76,8 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
         if (! handled) {
             if (value != Attribute.NULL) {
                 if (referid != Attribute.NULL || entries != null) throw new JspTagException("Must specify either 'value', 'referid' or sub-param-tags, not both");
-                helper.setValue(value.getString(this)); // to deal with 'vartype' casting
+                helper.setValueOnly(value.getString(this), WriterHelper.IMPLICITLIST); // to deal with 'vartype' casting
                 paramHandler.addParameter(name.getString(this), helper.getValue());
-                helper.doAfterBody();
 
             } else if (referid != Attribute.NULL) {
                 if (entries != null) throw new JspTagException("Must specify either 'value', 'referid' or sub-param-tags, not both");
