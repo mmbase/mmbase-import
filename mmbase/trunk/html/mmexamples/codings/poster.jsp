@@ -66,6 +66,9 @@ latin-3: Eĥoŝanĝo ĉiuĵaŭde
       <a href="<mm:url />">Clean up</a>
     </p>
   <hr />
+  <div class="link">
+    <a href="<mm:url page="." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
+  </div>
 </mm:content>
 <address><a href="mailto:Michiel.Meeuwissen@omroep.nl">miĥil'</a></address>
 </body>
