@@ -89,7 +89,7 @@
               <a href="<mm:url page="remail.jsp" referids="forumid" />"><mm:write referid="mlg.forgot_your_password" /></a>
             </center>
             <p />
-          <mm:write referid="mlg.account" /> : <input size="12" name="account">
+          <mm:write referid="mlg.account" /> : <input size="12" name="account"><br />
           <mm:write referid="mlg.password" /> : <input size="12" type="password" name="password">
           <input type="submit" value="<mm:write referid="mlg.login"/>" />
         </form>
@@ -304,7 +304,10 @@
 		</mm:url>">Remove administrator</a><br />
 	<a href="<mm:url page="admin/newpostarea.jsp">
                   <mm:param name="forumid" value="$forumid" />
-                 </mm:url>"><mm:write referid="mlg.add_new_area" /></a>
+                 </mm:url>"><mm:write referid="mlg.add_new_area" /></a><br />
+	<a href="<mm:url page="admin/profiles.jsp">
+                  <mm:param name="forumid" value="$forumid" />
+                 </mm:url>">Profile managent</a>
 	<p />
 	</td>
 	</tr>

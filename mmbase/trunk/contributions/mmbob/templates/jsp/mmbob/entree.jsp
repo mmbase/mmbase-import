@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
-<mm:import externid="forumid" />
+<mm:import externid="forumid" jspvar="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
 
@@ -45,10 +45,11 @@
 		<mm:field name="failed">
 		<mm:compare value="false">
 			<mm:import id="ep"><mm:field name="password" /></mm:import>
-			<mm:write referid="ea" cookie="caf$forumid" />
-			<mm:write referid="ep" cookie="cwf$forumid" />
+			<mm:write referid="ea" session="caf$forumid" />
+			<mm:write referid="ep" session="cwf$forumid" />
+			<%response.sendRedirect("index.jsp?forumid="+forumid);%>
 			<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  				<tr><td width="25%" align="left"><center>Je bent nu ingelogged op het forum</center></td></tr><tr><th align="left"><form action="/mmbob/index.jsp?forumid=<mm:write referid="forumid" />" method="post"><center><input type="submit" value="ok" /></center></form></th></tr>	
+  				<tr><td width="25%" align="left"><center>Je bent nu ingelogd op het forum</center></td></tr><tr><th align="left"><form action="/mmbob/index.jsp?forumid=<mm:write referid="forumid" />" method="post"><center><input type="submit" value="ok" /></center></form></th></tr>	
         		</table>
 		</mm:compare>
 		<mm:compare value="true">

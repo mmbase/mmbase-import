@@ -148,7 +148,9 @@
                                <a href="<mm:url page="newreportmessage.jsp" referids="forumid,postareaid,postthreadid,postingid" />"><img src="<mm:write referid="image_reportmsg" />"  border="0" /></a>
 			 	</mm:compare>
                                <mm:compare referid="threadstate" value="closed" inverse="true">
+                               <mm:compare referid="threadstate" value="pinnedclosed" inverse="true">
                                     <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,pagesize,page,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
+                               </mm:compare>
                                </mm:compare>
                            </mm:compare>
 		     
@@ -172,6 +174,7 @@
 			</mm:field>
 			&nbsp;
                         <mm:compare referid="threadstate" value="closed" inverse="true">
+                        <mm:compare referid="threadstate" value="pinnedclosed" inverse="true">
 			  <mm:field name="isowner">
 				<mm:compare value="true">
 				<mm:remove referid="postingid" />
@@ -192,6 +195,7 @@
 
 				</mm:compare>
 			</mm:field>
+			</mm:compare>
                         </mm:compare>
 
 			</td>
@@ -265,6 +269,7 @@
 
 <mm:compare referid="showreply" value="true">
 <mm:compare referid="threadstate" value="closed" inverse="true">
+<mm:compare referid="threadstate" value="pinnedclosed" inverse="true">
 
 <mm:compare referid="guestwritemodetype" value="open">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
@@ -311,6 +316,7 @@
   </form>
   <a name="reply">&nbsp;</a>
 </table>
+</mm:compare>
 </mm:compare>
 </mm:compare>
 </mm:compare>

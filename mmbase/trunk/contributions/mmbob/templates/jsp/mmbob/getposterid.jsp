@@ -6,8 +6,8 @@
 <mm:compare referid="entree" value="null">
   <mm:import id="posterid" externid="pid$forumid" from="session">-1</mm:import>
   <mm:compare referid="posterid" value="-1">
-	<mm:import id="password" externid="cwf$forumid" from="cookie" />
-	<mm:import id="account" externid="caf$forumid" from="cookie" />
+	<mm:import id="password" externid="cwf$forumid" from="session"></mm:import>
+	<mm:import id="account" externid="caf$forumid" from="session"></mm:import>
 	<mm:compare referid="account" value="" inverse="true">
 		<mm:nodefunction set="mmbob" name="forumLogin" referids="forumid,account,password">
 			<mm:remove referid="posterid" />
