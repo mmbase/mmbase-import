@@ -18,12 +18,14 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.15 2006-04-10 15:23:55 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.16 2006-04-10 17:31:18 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends ComparableDataType {
 
     private static final Logger log = Logging.getLoggerInstance(NumberDataType.class);
+
+    private static final long serialVersionUID = 1L; 
     /**
      * Constructor for Number field.
      */
