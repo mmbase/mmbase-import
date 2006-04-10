@@ -32,7 +32,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.79 2006-03-09 13:24:31 nklasens Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.80 2006-04-10 21:41:30 michiel Exp $
  * @see ContextTag
  */
 
@@ -100,8 +100,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (pageContextTag == null) {
 
             pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
-            
-            
+
+
             if (pageContextTag == null) { // not yet put
                 log.debug("No pageContextTag found in pagecontext, creating..");
                 if (pageLog.isServiceEnabled()) {
@@ -110,31 +110,31 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                     String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
                     String includedPage = (String) request.getAttribute("javax.servlet.include.servlet_path");
                     thisPage = (includedPage == null ? "" : includedPage + " for ") + request.getRequestURI();
-                    pageLog.service("Parsing JSP page: " + thisPage + 
+                    pageLog.service("Parsing JSP page: " + thisPage +
                                     (queryString != null ? "?" + queryString : ""));
                 }
                 pageContextTag = new ContextTag();
                 pageContextTag.setId(null);
-                
+
                 // page context has no id, this also avoids that it tries
                 // registering itself in the parent (which it is itself)
                 // so don't change this!
-                
+
                 pageContextTag.setPageContextOnly(pageContext);
-                
+
                 // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
                 // register also the tag itself under __context.
                 // _must_ set __context before calling setPageContext otherwise in infinite loop.
                 pageContextTag.createContainer(null);
                 pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
                 pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
-                
+
                 // there is one implicit ContextTag in every page.
                 // its id is null, it is registered in the pageContext as __context.
                 //
                 // it is called pageContext, because it is similar to the pageContext, but not the same.
             }
-        } 
+        }
         return pageContextTag;
     }
 
@@ -542,7 +542,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultTimeZone();
     }
     /**
-     * @since MMBase-1.7.4     
+     * @since MMBase-1.7.4
      */
     protected void fillStandardParameters(Parameters p) throws JspTagException {
         log.debug("Filling standard parameters");
@@ -550,8 +550,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         p.setIfDefined(Parameter.REQUEST, pageContext.getRequest());
         // locale parameters
         java.util.Locale locale = getLocale();
-        p.setIfDefined(Parameter.LANGUAGE, locale.getLanguage());
-        p.setIfDefined(Parameter.LOCALE, locale);
+        if (locale != null) {
+            p.setIfDefined(Parameter.LANGUAGE, locale.getLanguage());
+            p.setIfDefined(Parameter.LOCALE, locale);
+        }
     }
 
 
