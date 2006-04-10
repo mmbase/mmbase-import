@@ -18,7 +18,7 @@ import org.apache.lucene.document.Document;
  * implementations of this interface define how index entries are added to a Lucene document.
  *
  * @author Michiel Meeuwissen.
- * @version $Id: IndexEntry.java,v 1.3 2006-01-16 19:24:20 pierre Exp $
+ * @version $Id: IndexEntry.java,v 1.4 2006-04-10 10:49:47 michiel Exp $
  **/
 public interface IndexEntry {
 
@@ -33,10 +33,12 @@ public interface IndexEntry {
      */
     Collection getSubDefinitions();
 
+
     /**
-     * An identifier which can be used to retriever this IndexEntry, it should uniquely identify it within this index.
+     * The identifier which can be used to retrieve this IndexEntry.
      */
-    String getIdentifier();
+    String  getIdentifier();
+
 }
 
 

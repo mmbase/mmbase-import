@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.5 2006-02-01 15:40:57 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.6 2006-04-10 10:49:47 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -42,7 +42,7 @@ public class MMBaseEntry implements IndexEntry {
 
     private final Collection fields;
     private final Node node;
-    private final boolean multiLevel;
+    private final boolean multiLevel; // it this not the same as node instanceof VirtualNode?
     private final NodeManager elementManager;
 
     private final Collection subQueries;
@@ -61,21 +61,40 @@ public class MMBaseEntry implements IndexEntry {
 
     public String getIdentifier() {
         if (multiLevel) {
-            return node.getStringValue(elementManager.getName() +".number");
+            return node.getStringValue(elementManager.getName());
         } else {
             return "" + node.getNumber();
         }
     }
 
+    protected void addStandardKeys(Document document) {
+        // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
+        String id = getIdentifier();
+        document.add(new Field("number",   id,  Field.Store.YES, Field.Index.UN_TOKENIZED)); 
+        if (multiLevel) {
+            document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            Iterator fields = node.getNodeManager().getFields().iterator();
+            while (fields.hasNext()) {
+                org.mmbase.bridge.Field field = (org.mmbase.bridge.Field) fields.next();
+                if (field.getName().indexOf(".") >=0 ) continue;
+                if (id.equals(field.getName())) continue; // was added already
+                Node subNode = node.getNodeValue(field.getName());
+                document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            }
+        } else {
+            document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+        }
+
+    }
+
+
     public void index(Document document) {
         Map data = new HashMap();
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.trace("Indexing " + getIdentifier() + "(" + node.getNodeManager().getName() + ")");
         }
         storeData(data);
-        document.add(Field.Keyword("builder", node.getNodeManager().getName()));
-        document.add(Field.Keyword("number", getIdentifier()));
-
+        addStandardKeys(document);
         for (Iterator i = fields.iterator(); i.hasNext(); ) {
             IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
             String fieldName = fieldDefinition.alias;
@@ -86,17 +105,17 @@ public class MMBaseEntry implements IndexEntry {
                     if (log.isDebugEnabled()) {
                         log.debug("add " + fieldName + " text, keyword" + value);
                     }
-                    document.add(Field.Keyword(fieldName, value));
+                    document.add(new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED));
                 } else if (fieldDefinition.storeText) {
                     if (log.isDebugEnabled()) {
                         log.trace("add " + fieldName + " text, store");
                     }
-                    document.add(Field.Text(fieldName, value));
+                    document.add(new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED));
                 } else {
                     if (log.isDebugEnabled()) {
                         log.trace("add " + fieldName + " text, no store");
                     }
-                    document.add(Field.UnStored(fieldName, value));
+                    document.add(new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED));
                 }
             }
         }

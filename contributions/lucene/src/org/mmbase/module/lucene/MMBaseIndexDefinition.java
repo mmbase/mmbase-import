@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.8 2006-03-21 19:02:22 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.9 2006-04-10 10:49:47 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -62,7 +62,9 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
 
     public Node getNode(Cloud userCloud, String identifier) {
         if (userCloud.hasNode(identifier)) {
-            log.trace("a node");
+            if (log.isTraceEnabled()) {
+                log.trace("a node (" + identifier + ")");
+            }
             if (userCloud.mayRead(identifier)) {
                 return userCloud.getNode(identifier);
             } else {
@@ -147,11 +149,13 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
                 }
                 if (comp == null) return BridgeCollections.EMPTY_NODELIST.nodeIterator();
                 Queries.addConstraint(q, comp);
-                
+
             }
             StepField elementNumberField = q.createStepField(elementNumberFieldName);
             q.addSortOrder(elementNumberField, SortOrder.ORDER_DESCENDING); // this sort order makes it possible to filter out duplicates.
-            log.debug("Query for node '" + id + "': " + q.toSql());
+            if (log.isDebugEnabled()) {
+                log.debug("Query for node '" + id + "': " + q.toSql());
+            }
             return new HugeNodeListIterator(q, maxNodesInQuery);
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
