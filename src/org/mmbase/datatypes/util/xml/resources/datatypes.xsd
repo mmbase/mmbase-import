@@ -33,7 +33,7 @@
       <xsd:element name="property"  maxOccurs="unbounded" minOccurs="0">
         <xsd:annotation>
           <xsd:documentation>
-            Generic property, calls set-method with givnen name on DataType.
+            Generic property, calls set-method with given name on DataType.
           </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -142,6 +142,7 @@
       <xsd:enumeration value="datetime" />
       <xsd:enumeration value="boolean" />
       <xsd:enumeration value="list" />
+      <xsd:enumeration value="*" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -195,7 +196,7 @@
 
   <xsd:element name="entry">
     <xsd:complexType>
-      <xsd:attribute name="value" type="xsd:string" default="NOTSPECIFIED" />
+      <xsd:attribute name="value" type="xsd:string" />
       <xsd:attribute name="display" type="xsd:string" />
       <xsd:attribute ref="xml:lang" />
       <xsd:attribute name="basename"      type="xsd:string" />
