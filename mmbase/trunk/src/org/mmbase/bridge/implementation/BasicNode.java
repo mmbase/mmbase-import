@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.199 2006-03-24 13:36:59 johannes Exp $
+ * @version $Id: BasicNode.java,v 1.200 2006-04-10 17:28:35 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -293,6 +293,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, fieldName, value);
         if (TemporaryNodeManager.UNKNOWN == result) {
             throw new BridgeException("Can't change unknown field '" + fieldName + "', of node " + getNumber() + " of nodeManager '" + getNodeManager().getName() +"'");
+        } else if (TemporaryNodeManager.INVALID_VALUE == result) {
+            noderef.storeValue(fieldName, value); // commit() will throw that invalid.
         }
         changed = true;
     }
