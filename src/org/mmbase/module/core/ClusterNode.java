@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.26 2006-03-24 16:23:28 johannes Exp $
+ * @version $Id: ClusterNode.java,v 1.27 2006-04-10 15:10:36 daniel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -50,17 +50,11 @@ public class ClusterNode extends VirtualNode {
     private static final Logger log = Logging.getLoggerInstance(ClusterNode.class);
 
     /**
-     * Holds the name - value pairs of related nodes in this virtual node.
-     */
-    protected Hashtable nodes = null; // why is it synchronized?
-
-    /**
      * Main contructor.
      * @param parent the node's parent
      */
     public ClusterNode(ClusterBuilder parent) {
         super(parent);
-        nodes = new Hashtable();
     }
 
     /**
@@ -70,7 +64,6 @@ public class ClusterNode extends VirtualNode {
      */
     public ClusterNode(ClusterBuilder parent, int nrofnodes) {
         super(parent);
-        nodes = new Hashtable(nrofnodes);
     }
 
     /**
@@ -82,9 +75,7 @@ public class ClusterNode extends VirtualNode {
      *      (the references did not point to existing objects)
      */
     public void testValidData() throws InvalidDataException { // why is it public?
-        for (Enumeration r = nodes.elements(); r.hasMoreElements(); ) {
-          ((MMObjectNode)r.nextElement()).testValidData();
-        }
+	throw new UnsupportedOperationException("ClusterNode " + this.getClass().getName() + " removed since 1.8");
     };
 
     /**
@@ -94,14 +85,7 @@ public class ClusterNode extends VirtualNode {
       * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
       */
     public boolean commit() {
-        boolean res = true;
-        for (Enumeration r = nodes.elements(); r.hasMoreElements(); ) {
-            MMObjectNode n = (MMObjectNode)r.nextElement();
-            if(n.isChanged()) {
-                res = res && n.commit();
-            }
-        }
-        return res;
+	throw new UnsupportedOperationException("ClusterNode " + this.getClass().getName() + " removed since 1.8");
     }
 
     /**
@@ -112,13 +96,9 @@ public class ClusterNode extends VirtualNode {
      */
     public MMObjectNode getRealNode(String builderName) {
         if (builderName == null) return null;
-        MMObjectNode node = (MMObjectNode) nodes.get(builderName);
-        if (node != null) return node;
         Integer number = (Integer) retrieveValue(builderName + ".number");
         if (number != null) {
-            node = parent.getNode(number.intValue());
-            if (node != null) nodes.put(builderName, node);
-            return node;
+            return parent.getNode(number.intValue());
         }
         return null;
     }
@@ -131,12 +111,7 @@ public class ClusterNode extends VirtualNode {
      * @param fieldValue the value to assign
      */
     public void storeValue(String fieldName, Object fieldValue) {
-        MMObjectNode node = (MMObjectNode)nodes.get(getBuilderName(fieldName));
-        if (node != null) {
-            node.storeValue(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
-        } else {
             super.storeValue(fieldName, fieldValue);
-        }
     }
 
     /**
@@ -314,10 +289,7 @@ public class ClusterNode extends VirtualNode {
      * @return <code>true</code> if changes have been made, <code>false</code> otherwise
      */
     public boolean isChanged() {
-        for (Enumeration r = nodes.elements(); r.hasMoreElements(); ) {
-            if (((MMObjectNode)r.nextElement()).isChanged()) return true;
-        }
-        return false;
+	throw new UnsupportedOperationException("ClusterNode " + this.getClass().getName() + " removed since 1.8");
     }
 
     /**
