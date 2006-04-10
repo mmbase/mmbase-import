@@ -38,10 +38,16 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.50 2006-03-31 13:18:20 pierre Exp $
+ * @version $Id: DataType.java,v 1.51 2006-04-10 15:04:17 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
+
+
+    /**
+     * The XML Namespace to be used for creating datatype XML
+     */
+    public static final String XMLNS = org.mmbase.datatypes.util.xml.DataTypeReader.NAMESPACE_DATATYPES_1_0;
 
     // XXXX MM: I think 'action' must be gone; it is silly.
     static final int PROCESS_GET    = 1;
@@ -323,6 +329,13 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * @param name the new name of the copied datatype (can be <code>null</code>, in which case the name is not changed).
      */
     public Object clone(String name);
+
+
+    /**
+     * Returns a DOM element describing this DataType.  
+     * @todo EXPERIMENTAL
+     */
+    public org.w3c.dom.Element toXml();
 
     /**
      * A restriction controls the acceptable values of a DataType.
