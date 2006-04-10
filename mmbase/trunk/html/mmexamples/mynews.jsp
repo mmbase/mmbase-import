@@ -80,6 +80,9 @@
     <td><a href="<mm:url page="share/images/mynews_manual.jpg" />" target="img"><img src="share/images/mynews_manual.jpg" width="300" /></a></td>
   </tr>
 </table>
+  <div class="link">
+    <a href="<mm:url page="." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
+  </div>
 </body>
 </html>
 </mm:cloud>
