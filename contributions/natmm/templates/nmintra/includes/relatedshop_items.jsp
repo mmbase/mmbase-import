@@ -8,7 +8,7 @@
 
 while(shop_items.size()>0) {
 	String leftShop_itemNumber = (String) shop_items.removeFirst(); 
-	String leftShop_itemHref = pageUrl + "&p=" + pageId + "&u=" + leftShop_itemNumber; 
+	String leftShop_itemHref = pageUrl + "?p=" + pageId + "&u=" + leftShop_itemNumber; 
 	
 	String rightShop_itemNumber = "";
 	String rightShop_itemHref = "";

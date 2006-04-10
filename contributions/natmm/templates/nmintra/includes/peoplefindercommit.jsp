@@ -7,7 +7,7 @@ String thisPerson = "";
 
 String messageTitle = "";
 String messageBody = "";
-String messageHref = "smoelenboek.jsp";
+String messageHref = "index.jsp";
 String messageLinktext = "naar de homepage";
 String messageLinkParam = "target=\"_top\"";    
 
