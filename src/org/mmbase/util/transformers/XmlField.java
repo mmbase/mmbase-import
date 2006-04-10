@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.45 2006-04-03 14:32:16 michiel Exp $
+ * @version $Id: XmlField.java,v 1.46 2006-04-10 13:34:19 pierre Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -33,11 +33,15 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int RICHBODY = 6;
 
     // cannot yet be encoded even..
-    public final static int HTML_INLINE    = 7;
-    public final static int HTML_BLOCK     = 8;
+    public final static int HTML_INLINE = 7;
+    public final static int HTML_BLOCK = 8;
     public final static int HTML_BLOCK_BR  = 9;
-    public final static int HTML_BLOCK_NOSURROUNDINGP     = 10;
-    public final static int HTML_BLOCK_BR_NOSURROUNDINGP  = 11;
+    public final static int HTML_BLOCK_NOSURROUNDINGP = 10;
+    public final static int HTML_BLOCK_BR_NOSURROUNDINGP = 11;
+    public final static int HTML_BLOCK_LIST = 12;
+    public final static int HTML_BLOCK_LIST_BR = 13;
+    public final static int HTML_BLOCK_LIST_NOSURROUNDINGP = 14;
+    public final static int HTML_BLOCK_LIST_BR_NOSURROUNDINGP = 15;
 
     // cannot be decoded:
     public final static int ASCII = 51;
@@ -60,7 +64,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     static void handleList(StringObject obj) {
         // handle lists
         // make <ul> possible (not yet nested), with -'s on the first char of line.
-        int inList = 0; // 
+        int inList = 0; //
         int pos = 0;
         if (obj.length() < 3) {
             return;
@@ -92,8 +96,12 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 while (pos < obj.length() && obj.charAt(pos) == ' ') {
                     obj.delete(pos, 1);
                 }
-                obj.insert(pos, "\r<" + listTag(listChar) + ">\r<li>"); // insert 10 chars.
-                pos += 10;
+                if (pos > 0) {
+                    obj.insert(pos, "\n");
+                    pos += 1;
+                }
+                obj.insert(pos, "<" + listTag(listChar) + ">\r<li>"); // insert 9 chars.
+                pos += 9;
 
             } else { // already in list
                 if (obj.charAt(pos + 1) != listChar) { // end of list
@@ -234,7 +242,6 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * going to be nested.
      *
      */
-
     static void handleHeaders(StringObject obj) {
         // handle headers
         int requested_level;
@@ -314,6 +321,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     }
 
+    // check if on that position the string object contains a <ul> or <ol>
+    static private boolean containsListTag(StringObject obj, int pos) {
+        return obj.length() > pos + 4 &&
+               obj.charAt(pos) == '<' &&
+               (obj.charAt(pos+1) == 'u' || obj.charAt(pos+1) == 'o') &&
+               obj.charAt(pos+2) == 'l' &&
+               obj.charAt(pos+3) == '>';
+    }
 
     /**
      * Make <p> </p> tags.
@@ -321,19 +336,62 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @param surroundingP (defaults to true) wether the surrounding &lt;p&gt; should be included too.
      */
     static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines, boolean surroundingP) {
+        handleParagraphs(obj, leaveExtraNewLines, surroundingP, false);
+    }
+
+    /**
+     * Make &lt;p> &lt;/p> tags.
+     * Note that if placeListsInsideP is <code>false</code>, the code generated with lists becomes akin to:
+     * &lt;p&gt;...&lt;/p&gt;&lt;ul&gt;...&lt;/ul&gt;&lt;p&gt;...&lt;/p&gt;
+     *
+     * If placeListsInsideP is <code>true</code>, the code becomes:
+     * &lt;p&gt;...&lt;ul&gt;...&lt;/ul&gt;...&lt;/p&gt;
+     *
+     * If there is no content in front of the first list, or after the last list, those paragraphs are empty and may not be
+     * added.
+     *
+     * @param leaveExtraNewLines (defaults to false) if false, 2 or more newlines starts a new p. If true, every 2 newlines starts new p, and every extra new line simply stays (inside the p).
+     * @param surroundingP (defaults to true) wether the surrounding &lt;p&gt; should be included too.
+     * @param placeListsInsideP (defaults to false) wether a list should be placed inside a &lt;p&gt; (as allowed by xhtml2).
+     */
+    static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines, boolean surroundingP, boolean placeListsInsideP) {
         // handle paragraphs:
         boolean inParagraph = true;
-        while (obj.length() > 0 && obj.charAt(0) == '\n') {
-            obj.delete(0, 1); // delete starting newlines
-        }
         int pos = 0;
+        // we should actually test if the first bit is a list, and if so, skip it
         if (surroundingP) {
-            obj.insert(0, "<p>");
-            pos += 4;
+            if (!placeListsInsideP && containsListTag(obj,pos)) {
+                //note: this does not take into account nested lists
+                int posEnd = obj.indexOf("</" + obj.charAt(pos + 1)+ "l>", pos + 1);
+                // only continue this if this is a balanced list
+                if (posEnd != -1) {
+                    pos = posEnd +5;
+                    if (obj.length() > pos && obj.charAt(pos) == '\n') {
+                        obj.delete(pos, 1);
+                    }
+                    if (pos >= obj.length()) {
+                        return;
+                    }
+                }
+            }
+            obj.insert(pos, "<p>");
+            pos += 3;
+        } else {
+            // if the code starts with a list, and it should be placed outside a paragraph,
+            // add a \n to make sure that the list is parsed
+            if (!placeListsInsideP && containsListTag(obj,pos)) {
+                obj.insert(pos, "\n");
+            }
         }
-        while (true) {
+        boolean start = true;
+        while (pos < obj.length()) {
             // one or more empty lines.
-            pos = obj.indexOf("\n", pos + 1);
+            if (start) {
+                start = false;
+                pos = obj.indexOf("\n", pos);
+            } else {
+                pos = obj.indexOf("\n", pos + 1);
+            }
             if (pos == -1) break;
 
             int skip = 1;
@@ -345,9 +403,30 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 skip++;
             }
             if (pos + skip >= l) break;
-            if (obj.charAt(pos + skip) != '\n') continue; // need at least 2!
-            // delete the 2 new lines of the p.
-            obj.delete(pos, skip + 1);
+            // we need at least 2 lines for a paragraph.
+            // however, if we instead have a list now, and we are not placeListsInsideP,
+            // we should still terminate the paragraph, as the ul then falls outside
+            // the paragraph.
+            if (obj.charAt(pos + skip) != '\n') {
+                if (!containsListTag(obj,pos + skip)) {
+                    continue;
+                }
+                obj.delete(pos, skip);
+                if (placeListsInsideP) {
+                    int posEnd = obj.indexOf("</" + obj.charAt(pos + 1)+ "l>", pos + 1);
+                    if (posEnd != -1) {
+                        pos = posEnd +5;
+                        if (obj.length() > pos && obj.charAt(pos) == '\n' &&
+                            (obj.length() == pos + 1 || obj.charAt(pos+1) != '\n')) {
+                            obj.delete(pos, 1);
+                        }
+                    }
+                    continue;
+                }
+            } else {
+                // delete the 2 new lines of the p.
+                obj.delete(pos, skip + 1);
+            }
 
             if (leaveExtraNewLines) {
                 while (obj.length() > pos && Character.isWhitespace(obj.charAt(pos))) {
@@ -358,15 +437,48 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     obj.delete(pos, 1); // delete the extra new lines too
                 }
             }
-
             if (inParagraph) { // close the previous paragraph.
                 obj.insert(pos, "</p>");
                 inParagraph = false;
                 pos += 4;
             }
+            // initialize skip for leading whitespace
+            skip = 0;
+            // if the next code happens to be a list tag (ul/ol), we can do two things:
+            // - place the list outside the paragraph (if we are not placeListsInsideP).
+            //   In that case, we should not start a new
+            //   paragraph until after the list. Moreover, if we are then at the end of the
+            //   text we should not include a paragraph at all unless it is enforced.
+            // - include de ul in the paragraph. In that case, we simply continue as normal
+            if (!placeListsInsideP && obj.length() > pos && containsListTag(obj,pos)) {
+                int posEnd = obj.indexOf("</" + obj.charAt(pos + 1)+ "l>", pos + 1);
+                // only continue this if this is a balanced list
+                if (posEnd != -1) {
+                    pos = posEnd + 5;
+                    // skip all whitespace after a list.
+                    int newlines = 0;
+                    while (obj.length() > (pos + skip) && Character.isWhitespace(obj.charAt(pos + skip))) {
+                        if (obj.charAt(pos + skip ) == '\n') {
+                            newlines++;
+                        }
+                        if (newlines > 1 && leaveExtraNewLines) {
+                            skip++; // count whitespace after the second newline,
+                                    // to include in the next paragraph
+                        } else {
+                            obj.delete(pos, 1); // delete whitespace
+                        }
+                    }
+                    // if no text follows, and we don't need an extra paragraphs, skip
+                    // note that we always add a <p> if we have the 'ommitsurrounding' option
+                    // - because the option expects this.
+                    if (surroundingP && pos == obj.length()) {
+                        break;
+                    }
+                }
+            }
             // next paragraph.
             obj.insert(pos, "\r<p>");
-            pos += 4;
+            pos += skip + 4;
             inParagraph = true;
         }
         if (inParagraph) { // in current impl. this is always true
@@ -570,12 +682,15 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         return new StringObject(prepareDataString(data));
     }
 
-
     protected static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP) {
+        handleRich(obj, sections, leaveExtraNewLines, surroundingP, false);
+    }
+
+    protected static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP, boolean placeListsInsideP) {
         // the order _is_ important!
         handleList(obj);
         handleTables(obj);
-        handleParagraphs(obj, leaveExtraNewLines, surroundingP);
+        handleParagraphs(obj, leaveExtraNewLines, surroundingP, placeListsInsideP);
         if (sections) {
             handleHeaders(obj);
         }
@@ -654,7 +769,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public static String poorToXML(String data, boolean format) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true, false, true);
+        handleRich(obj, true, false,true);
         handleFormat(obj, format);
         return obj.toString();
     }
@@ -662,16 +777,16 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public static String poorToXML(String data) {
         return poorToXML(data, false);
     }
+
     /**
      * So poor, that it actually generates pieces of XHTML 1.1 blocks (so, no use of sections).
      *
      * @see #richToXML
      * @since MMBase-1.7
      */
-
-    public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP) {
+    public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, false, multipibleBrs, surroundingP);   // no <section> tags, leave newlines if multipble br's requested
+        handleRich(obj, false, multipibleBrs, surroundingP, placeListsInsideP);   // no <section> tags, leave newlines if multipble br's requested
         handleNewlines(obj);
         handleFormat(obj, false);
         return obj.toString();
@@ -679,7 +794,11 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
 
     public static String richToHTMLBlock(String data) {
-        return richToHTMLBlock(data, false, true);
+        return richToHTMLBlock(data, false, true, true);
+    }
+
+    public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP) {
+        return richToHTMLBlock(data, multipibleBrs, surroundingP, true);
     }
 
     /**
@@ -827,6 +946,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         h.put("MMXF_HTML_BLOCK_BR", new Config(XmlField.class,  HTML_BLOCK_BR, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>"));
         h.put("MMXF_HTML_BLOCK_NOSURROUNDINGP", new Config(XmlField.class,  HTML_BLOCK_NOSURROUNDINGP, "Decodes only escaping and with <em>, <p>, <br /> (only one) and <ul>"));
         h.put("MMXF_HTML_BLOCK_BR_NOSURROUNDINGP", new Config(XmlField.class,  HTML_BLOCK_BR_NOSURROUNDINGP, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>"));
+        h.put("MMXF_HTML_BLOCK_LIST", new Config(XmlField.class,  HTML_BLOCK_LIST, "Decodes only escaping and with <em>, <p>, <br /> (only one) and <ul>, with <ul> inside the <p>"));
+        h.put("MMXF_HTML_BLOCK_LIST_NOSURROUNDINGP", new Config(XmlField.class,  HTML_BLOCK_LIST_NOSURROUNDINGP, "Decodes only escaping and with <em>, <p>, <br /> (only one) and <ul>, with <ul> inside the <p>"));
+        h.put("MMXF_HTML_BLOCK_LIST_BR", new Config(XmlField.class,  HTML_BLOCK_LIST_BR, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>, with <ul> inside the <p>"));
+        h.put("MMXF_HTML_BLOCK_LIST_BR_NOSURROUNDINGP", new Config(XmlField.class,  HTML_BLOCK_LIST_BR_NOSURROUNDINGP, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>, with <ul> inside the <p>"));
         h.put("MMXF_XHTML", new Config(XmlField.class, XHTML, "Converts to piece of XHTML"));
         return h;
     }
@@ -861,17 +984,31 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             result = poorToXML(r);
             break;
         case HTML_BLOCK:
-            result = richToHTMLBlock(r);
+            result = richToHTMLBlock(r, false, true, true);
             break;
         case HTML_BLOCK_BR:
-            result = richToHTMLBlock(r, true, true);
+            result = richToHTMLBlock(r, true, true, true);
             break;
         case HTML_BLOCK_NOSURROUNDINGP:
-            result = richToHTMLBlock(r, false, false);
+            result = richToHTMLBlock(r, false, false, true);
             break;
         case HTML_BLOCK_BR_NOSURROUNDINGP:
-            result = richToHTMLBlock(r, true, false);
+            result = richToHTMLBlock(r, true, false, true);
             break;
+
+        case HTML_BLOCK_LIST:
+            result = richToHTMLBlock(r, false, true, false);
+            break;
+        case HTML_BLOCK_LIST_BR:
+            result = richToHTMLBlock(r, true, true, false);
+            break;
+        case HTML_BLOCK_LIST_NOSURROUNDINGP:
+            result = richToHTMLBlock(r, false, false, false);
+            break;
+        case HTML_BLOCK_LIST_BR_NOSURROUNDINGP:
+            result = richToHTMLBlock(r, true, false, false);
+            break;
+
         case HTML_INLINE:
             result = poorToHTMLInline(r);
             break;
@@ -897,6 +1034,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             return "MMXF_HTML_BLOCK_NOSURROUNDINGP";
         case HTML_BLOCK_BR_NOSURROUNDINGP :
             return "MMXF_HTML_BLOCK_BR_NOSURROUNDINGP";
+        case HTML_BLOCK_LIST :
+            return "MMXF_HTML_BLOCK_LIST";
+        case HTML_BLOCK_LIST_BR :
+            return "MMXF_HTML_BLOCK_LIST_BR";
+        case HTML_BLOCK_LIST_NOSURROUNDINGP :
+            return "MMXF_HTML_BLOCK_LIST_NOSURROUNDINGP";
+        case HTML_BLOCK_LIST_BR_NOSURROUNDINGP :
+            return "MMXF_HTML_BLOCK_LIST_BR_NOSURROUNDINGP";
         case HTML_INLINE :
             return "MMXF_HTML_INLINE";
         case ASCII :
