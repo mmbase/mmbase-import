@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.80 2006-04-06 11:05:53 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.81 2006-04-10 12:51:38 michiel Exp $
  */
 
 public class WriterHelper {
@@ -277,7 +277,13 @@ public class WriterHelper {
             return null;
         }
     }
-    public void setValue(Object v, boolean noImplicitList) throws JspTagException {
+
+
+    /**
+     * Sets only the value in the helper, withouth setting the _Stack
+     * @since MMBase-1.8
+     */
+    public void setValueOnly(Object v, boolean noImplicitList) throws JspTagException {
         value = null;
         if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
             // Take one element of list if vartype defined not to be a list.
@@ -390,6 +396,10 @@ public class WriterHelper {
             }
             value = v;
         }
+
+    }
+    public void setValue(Object v, boolean noImplicitList) throws JspTagException {
+        setValueOnly(v, noImplicitList);
 
         PageContext pageContext = thisTag.getPageContext();
 
