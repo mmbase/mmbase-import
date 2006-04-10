@@ -242,7 +242,9 @@
          <% { Writer writer = resourceLoader.getWriter(resource); writer.write(text); writer.close(); } %>
        </mm:present>
        <input type="hidden" name="wasxml" value="<mm:write referid="xml" />" />
+       <!--
        <input type="submit" name="xml" value="XML" />
+       -->
        <textarea name="text" style="width: 100%" rows="30"><%
        {
        Reader r = resourceLoader.getReader(resource);
