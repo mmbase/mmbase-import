@@ -74,6 +74,18 @@ public class ErroneousFilledNodeTest extends BridgeTest {
         return "aaerrors";
     }
 
+    public void testClasses() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager(getNodeManager());
+        // MM: it's (very) odd, but DataTypes are not necessary of the database type (any more)
+        // so actuallly I think these tests should be the other way around, but at least it should be defined, which of both must happen.
+        assertTrue(nm.getField("stringinteger").getDataType() instanceof IntegerDataType);
+        assertTrue(nm.getField("integerstring").getDataType() instanceof StringDataType); // ah, we can store strings in integers!
+        assertTrue(nm.getField("floatdouble").getDataType() instanceof DoubleDataType);
+        assertTrue(nm.getField("doublefloat").getDataType() instanceof FloatDataType);
+        
+    }
+
     public void testValues() {
      
         Cloud cloud = getCloud();
@@ -110,9 +122,9 @@ public class ErroneousFilledNodeTest extends BridgeTest {
                 Object invalidValue = invalidValues[k];
                 try {
                     Node newNode = nm.createNode();
-                    newNode.setValue(fieldName, invalidValue);
+                    newNode.setObjectValue(fieldName, invalidValue);
                     newNode.commit();
-                    errors.add("Value " + invalidValue + " for field " + fieldName + " was expected to be invalid, but evaluated to " + newNode.getValue(fieldName));
+                    errors.add("Value " + invalidValue + " for field " + fieldName + " was expected to be invalid, but evaluated to " + newNode.getValue(fieldName) + " " + nm.getField(fieldName).getDataType());
                 } catch (Exception e) {
                     // ok, threw exception
                 }
