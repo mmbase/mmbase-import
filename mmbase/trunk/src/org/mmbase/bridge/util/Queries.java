@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.71 2006-02-10 18:00:47 michiel Exp $
+ * @version $Id: Queries.java,v 1.72 2006-04-10 15:26:54 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1269,7 +1269,7 @@ abstract public class Queries {
      * @param q query to change
      * @return The changed Query
      */
-    public static Query sortUniquely(Query q) {
+    public static Query sortUniquely(final Query q) {
         List steps = null;
 
         // remove the ones which are already sorted
@@ -1292,6 +1292,7 @@ abstract public class Queries {
         i = steps.iterator();
         while (i.hasNext()) {
             Step step = (Step)i.next();
+            assert step != null;
             StepField sf = q.createStepField(step, "number");
             if (sf == null) {
                 throw new RuntimeException("Create stepfield for 'number' field returned null!");
@@ -1327,6 +1328,7 @@ abstract public class Queries {
      */
     public static Object getSortOrderFieldValue(Node node, SortOrder sortOrder) {
         String fieldName = sortOrder.getField().getFieldName();
+        if (node == null) throw new IllegalArgumentException("No node given");
         Object value = node.getValue(fieldName);
         if (value == null) {
             value = node.getValue(sortOrder.getField().getStep().getAlias() + "." + fieldName);
