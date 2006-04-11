@@ -34,7 +34,7 @@
    <action include="config/artikel/load_artikel.xml"/>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
-      <optionlist include="config/option_lists/images_position.xml" />
+      <optionlist include="config/option_lists/images_position_artikel_weblog.xml" />
    </lists>
    <steps>
       <step form-schema="edit_artikel"/>
@@ -57,7 +57,7 @@
       <field name="intro" ftype="html" rows="14"><prompt>quote (vette tekst)</prompt></field>
       <field name="tekst" ftype="html" rows="20"><prompt>introductietekst (alleen voor kleine berichten)</prompt></field>
       <!-- list include="config/artikel/zoek_artikel_unidirectionalrelated_artikel.xml" / -->
-      <list include="config/images/zoek_contentelement_posrel_images.xml" />
+      <list include="config/images/zoek_artikel_weblog_posrel_images.xml" />
       <list include="config/attachments/zoek_contentelement_related_attachments.xml" />
       <field name="reageer" ftype="enum"><prompt>stippellijn tussen paragrafen</prompt><optionlist select="ja_nee"/></field>
       <list include="config/paragraaf/zoek_artikel_posrel_paragraaf.xml" />
