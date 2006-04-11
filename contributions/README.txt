@@ -18,7 +18,7 @@ list. The other commitors will use the following checklist to come to a possitiv
 
 - Is it MMBase related 
 
-- Does it have a valid opensource license (this is not a place to get free cvs space for commercial projects)
+- Does it have the MPL license (this is not a place to get free cvs space for commercial projects)
 
 - Does it have value to others in the community. This can be as a total product or as a source to copy/modify/steal code (this is opensource afterall)
 
