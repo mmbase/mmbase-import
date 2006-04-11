@@ -38,35 +38,35 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"abcdefg", null},
                               new Object[] {"ijklm\nopqrstx"}},
                 new Object[] {"field",
-                              new Object[] {"xyz", "zyz\nkloink"} ,
+                              new Object[] {"xyz", "zyz\nkloink", null} ,
                               new Object[] {}},
                 new Object[] {"zipcode",
                               new Object[] {"7081EA", "7081  ea", null},
                               new Object[] {"70823b", "xx 7081 EA",  "xx\n7081 EA"}},
                 new Object[] {"pattern",
                               new Object[] {"ababa", "aBB", null},
-                              new Object[] {"c", "abaxbab", ""}},
+                              new Object[] {"c", "abaxbab"}},
                 new Object[] {"languages", 
                               new Object[] {"nl", "en", null},
-                              new Object[] {"c", "ababab"}},
+                              new Object[] {"c", "ababab", ""}},
                 new Object[] {"integer",
-                              new Object[] {new Integer(-100), null, "1234", "1234.4"},
+                              new Object[] {new Integer(-100), "1234", "1234.4", null},
                               new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe" 
                               }},
                 new Object[] {"range",
                               new Object[] {new Integer(5), null},
                               new Object[] {new Integer(0), new Integer(10)}},
                 new Object[] {"datetime",
-                              new Object[] {new Date(), "2005-01-01", DynamicDate.getInstance("now - 5 year")},
+                              new Object[] {new Date(), "2005-01-01", DynamicDate.getInstance("now - 5 year"), null},
                               new Object[] {"xxx"}},
                 new Object[] {"period",
-                              new Object[] {new Date(), "2005-01-01", "2006-01-01"},
+                              new Object[] {new Date(), "2005-01-01", "2006-01-01", null},
                               new Object[] {"1973-03-05", "2050-01-01"}},
                 new Object[] {"dynamic_period",
-                              new Object[] {new Date(), "today + 100 year"},
+                              new Object[] {new Date(), "today + 100 year", null},
                               new Object[] {"now - 4 day", "today + 101 year"}},
                 new Object[] {"mmbase_state_enumeration",
-                              new Object[] {"ACTIVE", "inactive", "unknown", new Integer(1), "1"},
+                              new Object[] {"ACTIVE", "inactive", "unknown", new Integer(1), "1", null},
                               new Object[] {"-2", new Long(71221111112L), "bla bla"}},
                 new Object[] {"enumeration",
                               new Object[] {"2", "4", new Integer(6), null},
@@ -75,24 +75,24 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"2", "4", new Integer(6), null},
                               new Object[] {"1", "21", new Integer(10)}},
                 new Object[] {"float",
-                              new Object[] {"2", "4", new Integer(6), null, new Double(1.0), "1.0", "1e20"},
+                              new Object[] {"2", "4", new Integer(6), null, new Double(1.0), "1.0", "1e20", null},
                               new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
                               }},
                 new Object[] {"boolean",
-                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
                               new Object[] {"asjdlkf", "21", "yes", new Integer(10)}},
                 new Object[] {"yesno",
-                              new Object[] {Boolean.TRUE, Boolean.FALSE,"true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {Boolean.TRUE, Boolean.FALSE,"true", "false", new Integer(1), new Integer(0), null},
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
                 new Object[] {"integer_boolean",
-                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
 
                 new Object[] {"string_boolean", 
-                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0)},
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
                 new Object[] {"boolean_string",
-                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false"},
+                              new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", null},
                               new Object[] { "asjdlkf", "21", new Integer(10)}
                 }
 
@@ -142,8 +142,33 @@ public class DataTypesTest extends BridgeTest {
         DataType dt = field.getDataType();
         LocalizedEntryListFactory fact = dt.getEnumerationFactory();
         assertTrue(dt instanceof StringDataType);
+        assertTrue(fact.size() == 2);
         assertEquals("" + fact, "bla",  fact.castKey("bla"));
         assertEquals("true", fact.castKey("true"));
+        assertEquals("21",   fact.castKey("21"));
+    }
+    public void testEnumeration2() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        Field field = nodeManager.getField("integer_boolean");
+        DataType dt = field.getDataType();
+        LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        assertTrue(dt instanceof BooleanDataType);
+        assertTrue(fact.size() == 2);
+        assertEquals("" + fact, "bla",  fact.castKey("bla"));
+        assertEquals(Boolean.TRUE, fact.castKey("true"));
+        assertEquals("21",   fact.castKey("21"));
+    }
+    public void testEnumeration3() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        Field field = nodeManager.getField("string_boolean");
+        DataType dt = field.getDataType();
+        LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        assertTrue(dt instanceof BooleanDataType);
+        assertTrue(fact.size() == 2);
+        assertEquals("" + fact, "bla",  fact.castKey("bla"));
+        assertEquals(Boolean.TRUE, fact.castKey("true"));
         assertEquals("21",   fact.castKey("21"));
     }
 
