@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.377 2006-04-11 20:45:59 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.378 2006-04-11 22:07:49 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1424,6 +1424,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     }
                 }
             }
+            rtn = org.mmbase.util.transformers.Xml.XMLEscape(rtn);
         }
         return rtn;
     }
@@ -1445,7 +1446,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             String fname = ((CoreField) list.get(0)).getName();
             String str = node.getStringValue( fname );
             if (str.length() > 128) {
-                return str.substring(0, 128) + "...";
+                str =  str.substring(0, 128) + "...";
             }
             return org.mmbase.util.transformers.Xml.XMLEscape(str);
         } else {
