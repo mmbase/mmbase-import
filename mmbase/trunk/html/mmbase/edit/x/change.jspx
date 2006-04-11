@@ -1,0 +1,57 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page session="true" />
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <mm:include page="head.jspx" />
+  <jsp:directive.include file="buttons.jspx" />
+
+  <body>
+    <mm:content type="application/xhtml+xml" expires="0">
+      <mm:cloud rank="basic user">
+        <mm:import externid="ok" />
+        <mm:import externid="node" required="true" />
+        <mm:node referid="node">
+          <h1 class="link">          
+            <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
+            <mm:link page="." referids="nodemanager">
+              <a href="${_}"><img alt="back" src="${back}" /></a>
+            </mm:link>
+            <mm:nodeinfo type="gui" />
+          </h1>
+          <div id="edit">
+            <mm:form>
+              <form action="change.jspx" method="post">
+                
+                
+                <input type="hidden" name="node" value="${_node}" />
+                <table>
+                  <mm:fieldlist type="edit">
+                    <mm:index id="index" write="false" />
+                    <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                      <td><mm:fieldinfo type="guiname" /></td>
+                      <td>
+                        <mm:fieldinfo type="input" />
+                        <mm:fieldinfo type="errors" />
+                      </td>
+                    </tr>
+                  </mm:fieldlist>
+                </table>
+                <input type="submit" name="ok" />
+                <mm:present referid="ok">
+                  <mm:valid>
+                    Committed ! <mm:commit />
+                  </mm:valid>
+                </mm:present>
+              </form>
+            </mm:form>
+          </div>
+        </mm:node>
+      </mm:cloud>
+    </mm:content>
+  </body>
+</html>
