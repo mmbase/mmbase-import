@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Function sets</title>
     <date>2006-04-2006</date>
-    <edition>$Id: functionsets.xml,v 1.1 2006-04-11 22:51:49 daniel Exp $</edition>
+    <edition>$Id: functionsets.xml,v 1.2 2006-04-11 23:06:15 daniel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname><surname>Ockeloen</surname>
@@ -65,5 +65,38 @@ You can have multiple return types that are defined by the way you call them :
         your random new password might be : &lt;mm:function name="getPassword" referid="template" /&gt;
 		 </programlisting>
 	  </para>
-  </section>
+  </section>  
+  <section>
+    <title>Using functions from the bridge</title>
+	<para>
+	 TODO
+	</para>
+   </section>
+     <section>
+    <title>Defining functions in Builders for functions on builders and nodes</title>
+	<para>
+	For functions related to one type of nodes you can add functions its builder, they can be executed on either
+	one node of on the builder itself. You can define them in 2 ways. One if in the builder.xml and the other is 
+	in the java file of the builder itself.
+ 
+	From the example in tests/config/builders/tests/datatypes.xml
+     <programlisting>
+		&lt;functionlist&gt;
+		 &lt;function key="integerFunction" name="aaa"&gt;
+            &lt;class&gt;org.mmbase.util.functions.ExampleBean&lt;/class&gt;
+		 &lt;/function&gt;
+        &lt;/functionlist&gt;
+	 </programlisting>
+	</para>
+	<para>
+	Here we defined a function on the datatypes builder with the name 'aaa', When this is called from either the 
+	bridge of tags it calles the integerFunction in the org.mmbas.util.functions.ExampleBean.
+	<programlisting>
+	    public Integer integerFunction() {
+                return new Integer(parameter2.intValue() * 3);
+        }
+	</programlisting>
+	</para>
+   </section>
+   
 </article>
