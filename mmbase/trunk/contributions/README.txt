@@ -25,3 +25,7 @@ list. The other commitors will use the following checklist to come to a possitiv
 Once you pass the vote you can start using the space, but other commitors can ask for a vote to remove it at some stage in the future if the outlined rules are not followed or if there is no effort to keep the contribution valid with newer releases of MMBase.
 
 A good contribution does its best to follow the MMBase build system and work on the head cvs of mmbase or atleast the last released version. If possible it should also follow the normal install methods (See PACKAGE-README.txt) or provide clear instructions in english in its README.txt how to use it. Unlike in applications these are not demands but we prefer it so others have some idea how to use or understand your contribution.
+
+Thank you for sharing your work,
+
+The MMBase Community.
