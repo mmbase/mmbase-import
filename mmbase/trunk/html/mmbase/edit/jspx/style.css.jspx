@@ -27,6 +27,9 @@ img {
   cursor: pointer;
 }
 
+input.small, input.big, textarea { 
+  width: 100%;
+}
 h1 { 
   background-color: #ddd;
   margin-top: 0;
