@@ -15,7 +15,7 @@
 <!-- first, check validity -->
 <mm:notpresent referid="delete">
   <mm:notpresent referid="cancel">
-    <mm:form>  
+    <mm:form mode="validate">  
       <mm:present referid="node_number">    
         <mm:node referid="node_number">
           <mm:context>
