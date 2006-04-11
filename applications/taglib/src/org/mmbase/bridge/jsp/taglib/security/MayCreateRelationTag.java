@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.12 2005-11-07 18:35:18 nklasens Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.13 2006-04-11 22:55:02 michiel Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
@@ -55,7 +55,7 @@ public class MayCreateRelationTag extends MayWriteTag implements Condition {
         
         boolean hasRelationManager = getCloudVar().hasRelationManager(sourceNode.getNodeManager(), 
                                                             destinationNode.getNodeManager(), roleStr);
-        if (hasRelationManager && (rm.mayCreateRelation(sourceNode, destinationNode)) != getInverse()) {
+        if ((hasRelationManager && rm.mayCreateRelation(sourceNode, destinationNode)) != getInverse()) {
             return EVAL_BODY;
         } else {
             return SKIP_BODY;
