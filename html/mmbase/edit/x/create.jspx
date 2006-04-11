@@ -15,11 +15,11 @@
       <mm:cloud rank="basic user">
         <mm:import externid="ok" />
         <mm:import externid="nodemanager" required="true" />
-        <h1 class="link">      
+        <h1>      
           <mm:link page="." referids="nodemanager">
             <a href="${_}"><img alt="back" src="${back}" /></a>
           </mm:link>
-          New
+          <jsp:text>New</jsp:text>
         </h1>
         <div id="edit">
           <mm:form>
@@ -39,7 +39,6 @@
             <input type="submit" name="ok" />
             <mm:present referid="ok">
               <mm:valid>
-                Committed ! 
                 <mm:createnode id="newnode" type="${nodemanager}">
                   <mm:fieldlist type="edit">
                     <mm:fieldinfo type="useinput" />
