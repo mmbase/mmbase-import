@@ -176,7 +176,7 @@
             </tr>
          </table>
          <mm:node number="component.report" notfound="skip">
-            <di:hasrole role="teacher">
+            <%-- <di:hasrole role="teacher"> --%>
                <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
                      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
@@ -186,11 +186,11 @@
                      <td><nobr>&nbsp;<a href='../../report/index.jsp' target="text">Rapport</a></nobr></td>
                   </tr>
                </table>
-            </di:hasrole>
+            <%-- </di:hasrole> --%>
          </mm:node>
 
          <mm:node number="component.isbo" notfound="skip">
-            <di:hasrole role="systemadministrator">
+            <%-- <di:hasrole role="systemadministrator"> --%>
                <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
                      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
@@ -200,7 +200,7 @@
                      <td><nobr>&nbsp;<a href='../../isbo/index.jsp' title='<di:translate key="education.isboimport" />' target="text"><di:translate key="education.isboimport" /></a></nobr></td>
                   </tr>
                </table>
-            </di:hasrole>
+            <%-- </di:hasrole> --%>
          </mm:node>
       </div>
    </mm:islessthan>
