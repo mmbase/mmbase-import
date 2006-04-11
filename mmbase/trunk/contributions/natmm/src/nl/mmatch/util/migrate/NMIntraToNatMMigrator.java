@@ -2,7 +2,7 @@ package nl.mmatch.util.migrate;
 
 import java.io.*;
 import java.util.*;
-import nl.mmatch.NatMMConfig;
+import nl.mmatch.NMIntraConfig;
 import org.mmbase.util.logging.*;
 
 /*
@@ -18,7 +18,7 @@ public class NMIntraToNatMMigrator {
 
   private static final Logger log = Logging.getLoggerInstance(NMIntraToNatMMigrator.class);
 
-  public static String sFolder = NatMMConfig.rootDir + "NMIntraXML/";
+  public static String sFolder = NMIntraConfig.rootDir + "NMIntraXML/";
   // public static String sFolder = "E:/nmm/tmp/";
 
   public static void run() throws Exception{
@@ -48,7 +48,7 @@ public class NMIntraToNatMMigrator {
          file.delete();
       }
 
-      log.info("find artciles that should become formulier");
+      log.info("find articles that should become formulier");
       String sContent = readingFile(sFolder + "templates.xml");
       tmAllData.put("templates",sContent);
       int index = sContent.indexOf("<linktext>formulier</linktext>");
@@ -56,6 +56,7 @@ public class NMIntraToNatMMigrator {
       int iBegNodeNumberIndex = iBegNodeIndex + 14;
       int iEndNodeNumberIndex = sContent.indexOf("\"",iBegNodeNumberIndex + 1);
       String sTemplateNumber = sContent.substring(iBegNodeNumberIndex,iEndNodeNumberIndex);
+      log.info("number of formulier template is " + sTemplateNumber);
 
       sContent = readingFile(sFolder + "page.xml");
       tmAllData.put("page",sContent);
@@ -69,6 +70,7 @@ public class NMIntraToNatMMigrator {
         String sNodeNumber = sInsrelContent.substring(iBegNodeNumberIndex,iEndNodeNumberIndex);
         if (alPages.contains(sNodeNumber)){
           alPageRelatedTemplate.add(sNodeNumber);
+          log.info("found a formulier page " + sNodeNumber);
         }
         iDNIndex = sInsrelContent.indexOf("dnumber=\"" + sTemplateNumber + "\"",iDNIndex + 1);
       }
@@ -86,6 +88,7 @@ public class NMIntraToNatMMigrator {
           iEndNodeNumberIndex = sPosrelContent.indexOf("\"",iBegNodeNumberIndex + 1);
           String sNodeNumber = sPosrelContent.substring(iBegNodeNumberIndex,iEndNodeNumberIndex);
           if (alArticle.contains(sNodeNumber)) {
+            log.info("found a formulier article " + sNodeNumber);
             alFormulier.add(sNodeNumber);
             alArticle.remove(sNodeNumber);
           }
