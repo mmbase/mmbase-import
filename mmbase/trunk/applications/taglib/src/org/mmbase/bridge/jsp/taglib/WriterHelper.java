@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.81 2006-04-10 12:51:38 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.82 2006-04-11 22:55:36 michiel Exp $
  */
 
 public class WriterHelper {
@@ -332,7 +332,7 @@ public class WriterHelper {
                 break;
             case TYPE_INTEGER:
                 if (! (v instanceof Integer)) {
-                        v = Casting.toInteger(v);
+                    v = Casting.toInteger(v);
                 }
                     break;
             case TYPE_DOUBLE:
