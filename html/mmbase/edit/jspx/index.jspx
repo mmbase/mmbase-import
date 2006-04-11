@@ -81,21 +81,24 @@
                 <tr class="paging">
                   <th>${offset} - ${offset + pagesize lt size ? offset + pagesize : size} / ${size}</th>
                   <th colspan="100">
-                    <mm:previousbatches max="10">
-                      <mm:first><mm:isgreaterthan value="0">...</mm:isgreaterthan></mm:first>
-                      <mm:link referids="_@offset" referid="base">
-                        <a href="${_}"><mm:index /></a>
-                      </mm:link>
-                      <jsp:text>, </jsp:text>
-                    </mm:previousbatches>
-                    <span style="font: larger bold;"><mm:index /></span>
-                    <mm:nextbatches max="10">
-                      <jsp:text>, </jsp:text>
-                      <mm:link referids="_@offset" referid="base">
-                        <a href="${_}"><mm:index /></a>
-                      </mm:link>
-                      <mm:last><mm:islessthan value="${size - pagesize}">...</mm:islessthan></mm:last>
-                    </mm:nextbatches>
+                    <mm:import id="paging">
+                      <mm:previousbatches max="10">
+                        <mm:first><mm:isgreaterthan value="0">...</mm:isgreaterthan></mm:first>
+                        <mm:link referids="_@offset" referid="base">
+                          <a href="${_}"><mm:index /></a>
+                        </mm:link>
+                        <jsp:text>, </jsp:text>
+                      </mm:previousbatches>
+                      <span style="font: larger bold;"><mm:index /></span>
+                      <mm:nextbatches max="10">
+                        <jsp:text>, </jsp:text>
+                        <mm:link referids="_@offset" referid="base">
+                          <a href="${_}"><mm:index /></a>
+                        </mm:link>
+                        <mm:last><mm:islessthan value="${size - pagesize}">...</mm:islessthan></mm:last>
+                      </mm:nextbatches>
+                    </mm:import>
+                    <mm:write referid="paging" escape="none" />
                   </th>
                 </tr>
 
@@ -107,6 +110,12 @@
                   </mm:fieldlist>
                 </tr>
               </thead>
+
+              <tfoot>
+                <tr class="paging">
+                  <th /><th colspan="100"><mm:write referid="paging" escape="none" /></th>
+                </tr>
+              </tfoot>
 
               <tbody>
                 <mm:listnodes>
