@@ -183,7 +183,7 @@
     </action>
     <!-- ========== Action Mapping : rubrieken =================================== -->
     <action
-      path="/editors/rubrieken/RubriekInitAction"
+      path="/editors/paginamanagement/RubriekInitAction"
       type="nl.leocms.rubrieken.forms.RubriekInitAction"
       name="RubriekForm"
       scope="request"
@@ -192,36 +192,22 @@
     >
       <forward
         name="success"
-        path="/editors/rubrieken/rubriek.jsp"
+        path="/editors/paginamanagement/rubriek.jsp"
         redirect="false"
       />
     </action>
     <action
-      path="/editors/rubrieken/RubriekAction"
+      path="/editors/paginamanagement/RubriekAction"
       type="nl.leocms.rubrieken.forms.RubriekAction"
       name="RubriekForm"
       scope="request"
-      input="/editors/rubrieken/rubriek.jsp"
+      input="/editors/paginamanagement/rubriek.jsp"
       unknown="false"
       validate="true"
     >
       <forward
         name="success"
-        path="/editors/rubrieken/frames.jsp"
-        redirect="false"
-      />
-    </action>
-    <action
-      path="/editors/rubrieken/ReorderAction"
-      type="nl.leocms.rubrieken.forms.ReorderAction"
-      name="ReorderForm"
-      scope="request"
-      unknown="false"
-      validate="false"
-    >
-      <forward
-        name="success"
-        path="/editors/rubrieken/frames.jsp"
+        path="/editors/paginamanagement/frames.jsp"
         redirect="false"
       />
     </action>

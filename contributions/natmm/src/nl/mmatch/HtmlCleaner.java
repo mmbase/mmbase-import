@@ -550,15 +550,18 @@ public class HtmlCleaner {
        text = cleanParam(text,"style=");
        text = cleanParam(text,"vAlign=");
        text = cleanParam(text,"width=");
-   
+       
+       // this looks strange but is intended to remove the crapp that can come from the html-area
        text = replace(text,"<P >","<P>");
-       text = cleanEmptyTag(text,"<P","<P","<P><P>");
+       text = cleanEmptyTag(text,"<P>","<P>","<P><P>");
        text = replace(text,"<P><P>","<P>");
-       text = cleanEmptyTag(text,"</P","</P","</P></P>");
+       text = cleanEmptyTag(text,"</P>","</P>","</P></P>");
        text = replace(text,"</P></P>","</P>");
    
        text = cleanEmptyTag(text,"<B","</B");
        text = cleanEmptyTag(text,"<P","</P");
+       text = replace(text,"<P/>","<BR/>");
+       text = replace(text,"<P />","<BR/>");
        
        text = fixHrefs(text);
 
@@ -571,7 +574,6 @@ public class HtmlCleaner {
          
        text = setTableHeaders(text);
        text = colorTables(text,"#FFFFFF","#E8F4FF","#C4C6C8");
-       
        return text;
    }
 
