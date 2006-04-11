@@ -17,7 +17,7 @@ import java.util.Date;
  * Get-processor for 'created' field. Using day-markers to fill the field.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreationTimeGuesser.java,v 1.1 2006-04-10 15:07:12 michiel Exp $
+ * @version $Id: CreationTimeGuesser.java,v 1.2 2006-04-11 23:48:55 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -34,7 +34,7 @@ public class CreationTimeGuesser implements Processor {
             int age = node.getFunctionValue("age", null).toInt();
             Date creationTime = new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000 * age);
             // could try to save it here.
-            if (node.mayWrite()) {
+            if (node.mayWrite() && ! field.isVirtual()) {
                 boolean c = node.isChanged();
                 node.setValueWithoutProcess(field.getName(), creationTime);
                 if (! c) {
