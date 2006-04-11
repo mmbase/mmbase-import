@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.32 2006-04-10 15:23:55 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.33 2006-04-11 21:53:10 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -77,16 +77,16 @@ public class DateTimeDataType extends ComparableDataType {
      * @return the minimum value as an <code>Date</code>, or very very long ago if there is no minimum.
      */
     public Date getMin() {
-        Date min = (Date) getMinRestriction().getValue();
-        return min == null ? MIN_VALUE : min;
+        Object min =  getMinRestriction().getValue();
+        return min == null ? MIN_VALUE : Casting.toDate(min);
     }
 
     /**
      * @return the maximum value as an <code>Date</code>, or a very very in the future if there is no maximum.
      */
     public Date getMax() {
-        Date max = (Date) getMaxRestriction().getValue();
-        return max == null ? MAX_VALUE : max;
+        Object max = getMaxRestriction().getValue();
+        return max == null ? MAX_VALUE : Casting.toDate(max);
     }
 
 
