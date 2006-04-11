@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.16 2006-04-10 17:31:18 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.17 2006-04-11 21:53:10 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends ComparableDataType {
@@ -36,7 +36,7 @@ abstract public class NumberDataType extends ComparableDataType {
 
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
-        Object preCast = preCast(value, node, field); // resolve enumerations
+        Object preCast = preCast(value, node, field); // resolves enumerations
         if (preCast instanceof String) {
             if (! StringDataType.DOUBLE_PATTERN.matcher((String) preCast).matches()) {
                 throw new CastException("Not a number: " + preCast);
