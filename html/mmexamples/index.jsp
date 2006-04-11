@@ -6,11 +6,10 @@
 <html>
 <head>
   <title>MMBase Demos</title>
-  <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
-  <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
+  <link rel="stylesheet"    href="<mm:url page="/mmbase/style/css/mmbase.css" />"     type="text/css" />
+  <link rel="icon"          href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
   <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
 </head>
-
 <body >      
   <table>
     <tr>
@@ -77,6 +76,18 @@
       </td>
       <td class="link" >
         <a href="<mm:url page="/mmbase/admin/editors/basic.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Example editors</td>
+      <td>
+        Real generic editors are often a bit pragmaticly ('dirty') implemented though. Here are very simple
+        edit pages, which did no compromises whatsoever. This results in clean and easy-to-understand
+        JSPX-code. On the other hand they do e.g. not work in IE, and lack all kind of features.
+      </td>
+      <td class="link" >
+        <a href="<mm:url page="/mmbase/edit/jspx" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
