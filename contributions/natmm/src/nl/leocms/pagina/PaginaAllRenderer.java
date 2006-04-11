@@ -70,20 +70,29 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
       if (RUBRIEK_NODE_MANAGER.equals(typedef)) {
 
          UserRole role = (UserRole) roles.get(new Integer(n.getNumber()));
-         
-         if (role.getRol() >= Roles.EINDREDACTEUR) {
-            out.print("<a href='RubriekInitAction.eb?number=" + n.getNumber() + "'  target='bottompane'>" + n.getStringValue("naam") + "<a/>");
-         } else if (role.getRol() >= Roles.SCHRIJVER) {
-            out.print(n.getStringValue("naam"));
+         int level = n.getIntValue("level");
+   
+         if(level<1) {       
+
+            out.print(n.getStringValue("naam"));      
+
          } else {
-            out.println("<font class='notactive'>" + n.getStringValue("naam") + "</font>");
-         }
-         
-         if (role.getRol() >= Roles.SCHRIJVER) {
-            String url = "/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/rubriek/rubriek&nodepath=rubriek&referrer=/editors/empty.html&objectnumber=" + n.getNumber();
-            out.println("<a href='" + url + "' target='workpane'><img src='../img/edit_w.gif' border='0' align='top' title='Bewerk rubriek'/></a>");
+
+            if (role.getRol() >= Roles.EINDREDACTEUR) {
+               out.print("<a href='RubriekInitAction.eb?number=" + n.getNumber() + "'  target='bottompane'>" + n.getStringValue("naam") + "<a/>");
+            } else if (role.getRol() >= Roles.SCHRIJVER) {
+               out.print(n.getStringValue("naam"));
+            } else {
+               out.println("<font class='notactive'>" + n.getStringValue("naam") + "</font>");
+            }
             
+            if (role.getRol() >= Roles.SCHRIJVER) {
+               String url = "/mmbase/edit/wizard/jsp/wizard.jsp?wizard=config/rubriek/rubriek&nodepath=rubriek&referrer=/editors/empty.html&objectnumber=" + n.getNumber();
+               out.println("<a href='" + url + "' target='workpane'><img src='../img/edit_w.gif' border='0' align='top' title='Bewerk rubriek'/></a>");
+               
+            }
          }
+
          if (role.getRol() >= Roles.EINDREDACTEUR) {
             
             out.print("<a href=\"RubriekInitAction.eb?parent=" + n.getNumber() + "\"  target='bottompane'>");
@@ -99,7 +108,6 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
                out.println("<img src='../img/reorder.gif' border='0' align='top' title='Volgorde pagina's wijzigen'/>");
                out.print("</a>");
             }
-            int level = n.getIntValue("level");
             if ((model.getChildCount(n) == 0) && (level > 0)) {
                if (role.getRol() >= Roles.EINDREDACTEUR) {
                   out.print("&nbsp;<a href=\"delete_rubriek.jsp?number=" + n.getNumber() + "\" onclick=\"openPopupWindow('delete_rubriek', 500, 300)\""+ " target=\"delete_rubriek\"" +"\">");
