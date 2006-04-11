@@ -1,0 +1,8 @@
+<jsp:root
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="1.2">
+  <mm:url write="false" id="back"   page="/mmbase/style/images/back.gif" />
+  <mm:url write="false" id="create" page="/mmbase/style/images/create.gif" />
+</jsp:root>
