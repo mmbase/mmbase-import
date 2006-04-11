@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.53 2006-02-09 13:53:00 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.54 2006-04-11 22:57:36 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -63,9 +63,9 @@ public class StringHandler extends AbstractTypeHandler {
                 if (dataType.getPattern().matcher("\n").matches()) {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-                        buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\" ");
+                        buffer.append("<textarea class=\"big " + getClasses(field) + "\" wrap=\"soft\" rows=\"10\" cols=\"80\" ");
                     } else {
-                        buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
+                        buffer.append("<textarea class=\"small " + getClasses(field) + "\" wrap=\"soft\" rows=\"5\" cols=\"80\" ");
                     }
                     addExtraAttributes(buffer);
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
@@ -94,7 +94,7 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input type=\"").append(dataType.isPassword() ? "password" : "text").append("\" class=\"small\" size=\"80\" ");
+                    buffer.append("<input class=\"small " + getClasses(field) + "\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"80\" ");
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
                     buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
                     String opt = tag.getOptions();

@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.94 2006-04-04 22:15:46 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.95 2006-04-11 22:57:36 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -68,18 +68,19 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     protected static final int TYPE_TYPEDESCRIPTION = 7;
     protected static final int TYPE_DATATYPE    = 8;
     protected static final int TYPE_DATATYPEDESCRIPTION = 9;
+    protected static final int TYPE_DATATYPEXML   = 10;
 
     protected static final int TYPE_UNSET     = 100;
 
     // input and useinput produces pieces of HTML
     // very handy if you're creating an editor, but well yes, not very elegant.
-    protected static final int TYPE_INPUT            = 10;
+    protected static final int TYPE_INPUT            = 14;
     protected static final int TYPE_CHECK            = 15;
     protected static final int TYPE_ERRORS           = 16;
-    protected static final int TYPE_USEINPUT         = 11;
-    protected static final int TYPE_SEARCHINPUT      = 12;
-    protected static final int TYPE_USESEARCHINPUT   = 13;
-    protected static final int TYPE_REUSESEARCHINPUT = 14;
+    protected static final int TYPE_USEINPUT         = 17;
+    protected static final int TYPE_SEARCHINPUT      = 18;
+    protected static final int TYPE_USESEARCHINPUT   = 19;
+    protected static final int TYPE_REUSESEARCHINPUT = 20;
 
 
     private String sessionName = "cloud_mmbase";
@@ -240,7 +241,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     }
 
 
+
     public int doStartTag() throws JspTagException{
+        findWriter(false); // just to call haveBody;
 
         Node          node = null;
         FieldProvider fieldProvider = findFieldProvider();
@@ -315,7 +318,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = field.getGUIName(locale);
             break;
         case TYPE_VALUE:
-            show = decode(node.getStringValue(fieldName), node);
+            show = org.mmbase.util.transformers.Xml.XMLEscape(decode(node.getStringValue(fieldName), node));
             break;
         case TYPE_GUIVALUE: {
             if (log.isDebugEnabled()) {
@@ -329,7 +332,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
             show = decode(Casting.toString(guiFunction.getFunctionValue(args)), node);
             if (show.trim().equals("")) {
-                show = decode(node.getStringValue(fieldName), node);
+                show = org.mmbase.util.transformers.Xml.XMLEscape(decode(node.getStringValue(fieldName), node));
             }
             break;
         }
@@ -476,7 +479,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * decode and encode can be overriden.
      */
 
-    public String decode (String value, org.mmbase.bridge.Node n) throws JspTagException {
+    public String decode(String value, org.mmbase.bridge.Node n) throws JspTagException {
         return value;
     }
 

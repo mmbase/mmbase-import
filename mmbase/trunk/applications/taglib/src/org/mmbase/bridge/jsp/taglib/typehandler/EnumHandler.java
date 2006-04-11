@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.34 2006-03-29 01:22:15 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.35 2006-04-11 22:57:36 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -122,7 +122,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuffer buffer = new StringBuffer();
         String fieldName = field.getName();
-        buffer.append("<select name=\"").append(prefix(fieldName)).append("\" ");
+        buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
         buffer.append("id=\"").append(prefixID(fieldName)).append("\" ");
         addExtraAttributes(buffer);
         buffer.append(">");
@@ -136,6 +136,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             iterator = getIterator(node, field);
         }
 
+        String valueString = Casting.toString(value);
         while(iterator != null && iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
@@ -143,14 +144,15 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                 log.warn("Found null as enumeration key for " + field.getDataType());
                 continue;
             }
+            String keyString = Casting.toString(key);
             buffer.append("<option value=\"");
-            buffer.append(Casting.toString(key));
+            buffer.append(keyString);
             buffer.append("\"");
-            if (key.equals(value)) {
+            if (keyString.equals(valueString)) {
                 buffer.append(" selected=\"selected\"");
             } else if (search) {
                 String searchs = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
-                if (Casting.toString(key).equals(searchs)) {
+                if (keyString.equals(searchs)) {
                     buffer.append(" selected=\"selected\"");
                 }
             }
