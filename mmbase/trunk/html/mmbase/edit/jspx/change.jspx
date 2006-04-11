@@ -13,36 +13,42 @@
   <body>
     <mm:content type="application/xhtml+xml" expires="0">
       <mm:cloud rank="basic user">
-        <mm:import externid="ok" />
+
         <mm:import externid="node" required="true" />
         <mm:node referid="node">
-          <h1 class="link">          
+
+          <h1>          
             <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
             <mm:link page="." referids="nodemanager">
               <a href="${_}"><img alt="back" src="${back}" /></a>
             </mm:link>
             <mm:nodeinfo type="gui" />
           </h1>
+
           <div id="edit">
             <mm:form>
               <input type="hidden" name="node" value="${_node}" />
               <table>
-                <mm:fieldlist type="edit">
-                  <mm:index id="index" write="false" />
-                  <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
-                    <td><mm:fieldinfo type="guiname" /></td>
-                    <td>
-                      <mm:fieldinfo type="input" />
-                      <mm:fieldinfo type="errors" />
-                    </td>
-                  </tr>
-                </mm:fieldlist>
+                <tbody>
+                  <mm:fieldlist type="edit">
+                    <mm:index id="index" write="false" />
+                    <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                      <td><mm:fieldinfo type="guiname" /></td>
+                      <td>
+                        <mm:fieldinfo type="input" />
+                        <mm:fieldinfo type="errors" />
+                      </td>
+                    </tr>
+                  </mm:fieldlist>
+                </tbody>
               </table>
               <input type="submit" name="ok" />
+              <mm:import externid="ok" />
               <mm:present referid="ok">
                 <mm:valid>
-                  Committed ! <mm:commit />
-                  </mm:valid>
+                  <mm:commit />
+                  <jsp:text>Committed !</jsp:text>                  
+                </mm:valid>
               </mm:present>
             </mm:form>
           </div>
