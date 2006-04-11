@@ -5,7 +5,6 @@ if(editorsName.indexOf(request.getServerName())>-1&&!isPreview) { // *** redirec
     response.sendRedirect("http://" + websiteName + request.getServletPath()+"?"+request.getQueryString());
 } else {
 
-%><%@include file="includes/authenticate.jsp" 
 %><mm:cloud
 ><%@include file="includes/getids.jsp" 
 %><%@include file="includes/getresponse.jsp" %><%

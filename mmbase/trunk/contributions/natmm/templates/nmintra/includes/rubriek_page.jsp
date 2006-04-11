@@ -1,7 +1,7 @@
 	 <mm:list nodes="<%= rubriek_number %>" path="rubriek,posrel,pagina"
                 orderby="posrel.pos" directions="UP" max="1"
         ><mm:field name="pagina.number" jspvar="page_number" vartype="String" write="false"><%
-        if(isPreview||isVisible(cloud,websiteId,rubriek_number,page_number,visitorGroup,out)) {             
+        if(isPreview) {             
             if(pageId.equals("")) { pageId = page_number; }
             String thisRubriekClass = "menuItem"; 
             if(rubriekId.equals(rubriek_number)) { thisRubriekClass = "menuItem"; } 
@@ -33,7 +33,7 @@
     %><mm:list nodes="<%= rubriek_number %>" path="rubriek,posrel,pagina"
             orderby="posrel.pos" directions="UP" constraints="posrel.pos <> '0'"
         ><mm:field name="pagina.number" jspvar="super_page" vartype="String" write="false"><%
-        if(isPreview||isVisible(cloud,websiteId,rubriek_number,super_page,visitorGroup,out)) { 
+        if(isPreview) { 
            if(pageId.equals("")) { pageId = super_page; }
             %><tr>
                 <td style="padding-left:19px;"><table border="0" cellpadding="0" cellspacing="0"><tr><td style="color:white;"><li></td>
