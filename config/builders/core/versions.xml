@@ -50,6 +50,7 @@
           <search>1</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>name</name>
         <type size="64" required="true" state="persistent">STRING</type>
@@ -78,6 +79,7 @@
           <search>2</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>type</name>
         <type required="true" size="64" state="persistent">STRING</type>
@@ -129,6 +131,7 @@
           <search>4</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>maintainer</name>
         <type required="true" size="255" state="persistent">STRING</type>
