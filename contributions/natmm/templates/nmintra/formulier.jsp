@@ -35,21 +35,9 @@
 					<% sWvjePageId = number; %>
 				</mm:field>
 			</mm:list>
-      <% if(pageId.equals(sWvjePageId)) {
+		<% if(pageId.equals(sWvjePageId)) {
             sDefaultText = "Het volgende wil ik melden over de rubriek ";
-            %><%@include file="includes/authenticate.jsp" %><% 
-            if(!username.equals("")) { %>
-            <mm:listnodes type="medewerkers" constraints="<%= "UPPER(account) = '" + username.toUpperCase() + "'" %>" jspvar="thisEmployee" max="1">
-               <%
-               sDefaultName += thisEmployee.getStringValue("firstname");
-               if(!thisEmployee.getStringValue("suffix").equals("")) {
-                  sDefaultName += " " + thisEmployee.getStringValue("suffix");
-               }
-               sDefaultName += " " + thisEmployee.getStringValue("lastname");
-               sDefaultEmail += thisEmployee.getStringValue("email");
-               %>
-            </mm:listnodes>
-            <% } %>
+            %>
             <mm:node number="<%= sPageRefMinOne %>" jspvar="lastPage" notfound="skipbody">
                <mm:related path="posrel,rubriek" constraints="posrel.pos!=0">
                   <mm:node element="rubriek" jspvar="lastRubriek">
@@ -59,8 +47,7 @@
                <%  sDefaultText += lastPage.getStringValue("titel") + ": "; %>
             </mm:node>
             <%
-         }  
-       
+         } 
          %><% templateTitle = "formscript"; 
          %><%@include file="includes/cacheopen.jsp" 
          %><cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application"

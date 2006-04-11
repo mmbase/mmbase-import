@@ -42,7 +42,7 @@ boolean bIsFirst = false;
 PaginaHelper ph = new PaginaHelper(cloud); %>
 <mm:list nodes="<%= websiteId %>" path="rubriek,posrel,pagina" constraints="posrel.pos='1'"
     ><mm:field name="pagina.number" jspvar="page_number" vartype="String" write="false"><%
-    if(isPreview||isVisible(cloud,websiteId,null,page_number,visitorGroup,out)) {
+    if(isPreview) {
         String rubriek_number = "";
         if(pageId.equals("")) { pageId = page_number; }
         %><tr><td style="padding-left:19px;padding-bottom:7px;">

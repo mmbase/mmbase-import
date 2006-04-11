@@ -15,7 +15,7 @@ public String getParameter(String parameterStr, String queryStr) {
     return parameterValue;
 }
 
-public TreeSet grantedGroups(Cloud cloud, String nodeId, TreeSet granted) {
+/*public TreeSet grantedGroups(Cloud cloud, String nodeId, TreeSet granted) {
     // *** return all the granted groups of this node ***
     if(nodeId!=null&&!nodeId.equals("")) {
         NodeList relatedGroup = cloud.getNode(nodeId).getRelatedNodes("groups","authrel",null);
@@ -24,12 +24,12 @@ public TreeSet grantedGroups(Cloud cloud, String nodeId, TreeSet granted) {
         }
     }
     return granted;
-}
+}*/
 
-public boolean isVisible(Cloud cloud, String siteId, String rubriekId, String pageId, String thisGroup, JspWriter out) {
+/*public boolean isVisible(Cloud cloud, String siteId, String rubriekId, String pageId, String thisGroup, JspWriter out) {
    // *** is this site,rubriek,page visible for this group
    boolean isVisible = true;
-   try { 
+   /*try { 
     // out.print("\n<!-- isVisible(cloud," + siteId + ", " + rubriekId + ", " + pageId + ", " + thisGroup + ",out) -->");
     TreeSet granted = new TreeSet();
     granted.addAll(grantedGroups(cloud,pageId,granted));
@@ -48,7 +48,7 @@ public boolean isVisible(Cloud cloud, String siteId, String rubriekId, String pa
     // out.println("-->");
  } catch (Exception e) { }
  return isVisible;
-}
+} */
 %><%@include file="../globals.jsp" 
 %><%
 String websiteId = "home";
@@ -56,7 +56,7 @@ String rubriekId = "";
 String pageId = request.getParameter("p"); if(pageId==null){ pageId = ""; }
 String refererId = request.getParameter("referer"); if(refererId==null){ refererId = ""; }
 String articleId = request.getParameter("article"); if(articleId==null){ articleId = ""; }
-String visitorGroup = request.getParameter("vg"); if(visitorGroup==null){ visitorGroup = ""; }
+//String visitorGroup = request.getParameter("vg"); if(visitorGroup==null){ visitorGroup = ""; }
 
 // IntraShop
 String imageId = request.getParameter("i"); 

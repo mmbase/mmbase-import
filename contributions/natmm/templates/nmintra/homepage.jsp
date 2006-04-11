@@ -34,7 +34,7 @@ if(!articleId.equals("")) {
    boolean checkOnPeriod = false;
    boolean periodExceedsMonth = true;
    
-   boolean hasPools = false;
+   boolean hasPools = false; 
    %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel,posrel,pools"
 		orderby="artikel.embargo" searchdir="destination" max="1"><%
       hasPools = true;

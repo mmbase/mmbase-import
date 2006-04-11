@@ -36,6 +36,9 @@ String lastpool="";
           </td></tr>
      </mm:last
 ></mm:list><% 
+if (lastpool.equals("")){ %>
+<input type="hidden" name="pool" value=""/>
+<% }
 if(isArchive) { 
 %><tr><td>
    <table cellspacing="0" cellpadding="0" border="0">
