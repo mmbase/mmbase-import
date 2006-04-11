@@ -16,15 +16,15 @@
     </steps>
 
     <form-schema id="step1">
-        <title xml:lang="nl">Nieuw drag en drop combinatie invoeren</title>
-        <title xml:lang="en">Enter new drag and drop combination</title>
+        <title xml:lang="nl">Nieuw drag en drop positie combinatie invoeren</title>
+        <title xml:lang="en">Enter new drag and drop position combination</title>
         <field name="dragnumber" >
-            <prompt xml:lang="nl">Sleepafbeelding</prompt>
-            <prompt xml:lang="en">Drag image</prompt>
+            <prompt xml:lang="nl">Sleepafbeelding (positie)</prompt>
+            <prompt xml:lang="en">Drag image (position)</prompt>
         </field>
         <field name="dropnumber">
-            <prompt xml:lang="nl">Doelafbeelding</prompt>
-            <prompt xml:lang="en">Target image</prompt>
+            <prompt xml:lang="nl">Doelafbeelding (positie)</prompt>
+            <prompt xml:lang="en">Target image (position)</prompt>
         </field>
     </form-schema>
 </wizard-schema>
