@@ -2,7 +2,7 @@ package nl.mmatch.util.migrate;
 
 import java.io.*;
 import java.util.*;
-import nl.mmatch.NatMMConfig;
+import nl.mmatch.NMIntraConfig;
 import org.mmbase.util.logging.*;
 
 /*
@@ -19,7 +19,7 @@ public class RelationsMigrator {
 
    private static final Logger log = Logging.getLoggerInstance(RelationsMigrator.class);
 
-   public static String sFolder = NatMMConfig.rootDir + "NMIntraXML/";
+   public static String sFolder = NMIntraConfig.rootDir + "NMIntraXML/";
    // public static String sFolder = "E:/nmm/tmp/";
 
    public static void run() throws Exception{

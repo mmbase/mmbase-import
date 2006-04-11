@@ -1,15 +1,15 @@
 <%@page import="nl.leocms.authorization.*,org.mmbase.bridge.*,nl.leocms.util.*,nl.leocms.workflow.*,nl.leocms.content.*" %>
-<%@include file="/taglibs.jsp" %>
+<%@include file="../../globals.jsp"  %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:locale language="nl">
 <%@ page import="java.util.*" %>
 <%! public Calendar addPeriod(Calendar cal, int period) {
         int offset = 1;
-        if(period<0) offset = -1; 
+        if(period<0) offset = -1;
         if(Math.abs(period)==365) {
-            cal.add(Calendar.YEAR,offset); 
+            cal.add(Calendar.YEAR,offset);
         } else if(Math.abs(period)==31) {
-            cal.add(Calendar.MONTH,offset); 
+            cal.add(Calendar.MONTH,offset);
         } else {
             cal.add(Calendar.DATE,period);
         }
@@ -64,19 +64,19 @@ String selectionId = (String) request.getParameter("selection");
 if(selectionId!=null){ selection = (new Integer(selectionId)).intValue(); }
 
 cal.set(year,month,day,0,0,0);
-if(action.equals("next")) { 
+if(action.equals("next")) {
    cal = addPeriod(cal,period);
    day = cal.get(Calendar.DAY_OF_MONTH);
    month = cal.get(Calendar.MONTH);
    year = cal.get(Calendar.YEAR);
-} else if(action.equals("previous")) {  
+} else if(action.equals("previous")) {
    cal = addPeriod(cal,-period);
    day = cal.get(Calendar.DAY_OF_MONTH);
    month = cal.get(Calendar.MONTH);
    year = cal.get(Calendar.YEAR);
 }
-long fromTime = (cal.getTime().getTime()/1000); 
-cal = addPeriod(cal,period); 
+long fromTime = (cal.getTime().getTime()/1000);
+cal = addPeriod(cal,period);
 long toTime = (cal.getTime().getTime()/1000);
 
 %>
@@ -89,7 +89,7 @@ long toTime = (cal.getTime().getTime()/1000);
     <script>
     function startSearch(obj) {
         showMessage('Uw opdracht wordt uitgevoerd. Een moment geduld a.u.b.');
-        var href = obj.getAttribute("href"); 
+        var href = obj.getAttribute("href");
         var day = document.forms[0].elements["day"].value;
         var month = document.forms[0].elements["month"].value;
         var year = document.forms[0].elements["year"].value;
@@ -97,9 +97,9 @@ long toTime = (cal.getTime().getTime()/1000);
         var selection = document.forms[0].elements["selection"].value;
 		  var listtype = document.forms[0].elements["listtype"].value;
 		  var statstype = document.forms[0].elements["statstype"].value;
-		  href += "&day=" + day + "&month=" + month + "&year=" + year + "&period=" + period + "&selection=" + selection + "&listtype=" + listtype + "&statstype=" + statstype; 
+		  href += "&day=" + day + "&month=" + month + "&year=" + year + "&period=" + period + "&selection=" + selection + "&listtype=" + listtype + "&statstype=" + statstype;
         document.location = href;
-        return false; 
+        return false;
     }
     function showMessage(contentString){
       theTarget = document.getElementById("message");
@@ -193,6 +193,7 @@ long toTime = (cal.getTime().getTime()/1000);
 					 <option value="Activiteitstype" <% if (listtype.equals("Activiteitstype")) {%> selected <% } %>>Activiteitstype</option>
 					 <option value="Provincie / Natuurgebied" <% if (listtype.equals("Provincie / Natuurgebied")) {%> selected <% } %>>Provincie / Natuurgebied</option>
 					 <option value="Bestelwijze" <% if (listtype.equals("Bestelwijze")) {%> selected <% } %>>Bestelwijze</option>
+                                         <option value="Afdelingen (BCs)" <% if (listtype.equals("Afdelingen (BCs)")) {%> selected <% } %>>Afdelingen (BCs)</option>
 				 </select>
 			 </td>
 			 <td>
@@ -203,22 +204,44 @@ long toTime = (cal.getTime().getTime()/1000);
 				 	 <option value="niet leden" <% if (statstype.equals("niet leden")) {%> selected <% } %>>aantal niet leden</option>
 				 	 <option value="opbrengst" <% if (statstype.equals("opbrengst")) {%> selected <% } %>>totale opbrengst</option>
 				 	 <option value="activiteiten" <% if (statstype.equals("activiteiten")) {%> selected <% } %>>aantal activiteiten</option>
-				 	 <option value="geannuleerde activiteiten" <% if (statstype.equals("geannuleerde activiteiten")) {%> selected <% } %>>aantal geannuleerde activiteiten</option>					 					 					 
+				 	 <option value="geannuleerde activiteiten" <% if (statstype.equals("geannuleerde activiteiten")) {%> selected <% } %>>aantal geannuleerde activiteiten</option>
 				 </select>
 			 </td>
 			 <td width="150px"></td>
 		 </tr>
 	</table>
-   <% 
-	if ( (listtype.equals("Betaalwijze") && statstype.indexOf("activiteiten") > -1) || 
+   <%
+	if ( (listtype.equals("Betaalwijze") && statstype.indexOf("activiteiten") > -1) ||
 	     (listtype.equals("Bestelwijze") && statstype.indexOf("activiteiten") > -1)  ) {%>
       <div class="formcontent" style="width:<%= tableWidth %>px;margin-bottom:20px;">
          <font color="red">De keuzes "aantal activiteiten" en "aantal geannuleerde activiteiten" heeft geen zin in het geval u "betaalwijze" of "bestelwijze" heeft gekozen. Maak alstublieft een ander keuze.</font>
       </div>
-      <% 
+
+      <%
+  	} else if ( listtype.equals("Afdelingen (BCs)") ) {
+  	   %>
+
+	   <jsp:useBean id="extrastats" scope="session" class="nl.leocms.evenementen.stats.ExtraStats" />
+	   <table class="formcontent" style="width:<%= tableWidth %>px;margin-bottom:20px;">
+  		   <tr>
+	   	   <td colspan="3">
+	   	      <%= extrastats.getStatsperiod(fromTime,toTime,period) %><br/>
+   		   </td>
+	  	   	<%
+					String attachmentId = extrastats.write(cloud,fromTime,toTime,period);
+	         	%>
+					<td align="right">
+							<mm:node number="<%= attachmentId %>" notfound="skipbody">
+							   <a href="<mm:attachment />"><img src="../img/icexcel.gif"></a>
+							</mm:node>
+					</td>
+   	   </tr>
+		</table>
+
+      <%
   	} else {
   	   %>
-	   <jsp:useBean id="statistics" scope="session" class="nl.leocms.evenementen.stats.OptionedStats" /> 	 
+	   <jsp:useBean id="statistics" scope="session" class="nl.leocms.evenementen.stats.OptionedStats" />
 	   <table class="formcontent" style="width:<%= tableWidth %>px;margin-bottom:20px;">
   		   <tr>
 	   	   <td colspan="3">
@@ -235,7 +258,7 @@ long toTime = (cal.getTime().getTime()/1000);
 							   <a href="<mm:attachment />"><img src="../img/icexcel.gif"></a>
 							</mm:node>
 						<% } %>
-					</td>	
+					</td>
    	   </tr>
 		</table>
    	<table class="formcontent" style="width:<%= tableWidth %>px;margin-bottom:20px;">
@@ -247,8 +270,8 @@ long toTime = (cal.getTime().getTime()/1000);
   			         Totale opbrengst
   			      <% } %></strong></td>
  			   <td>
-				   <%-- <img src="../img/bar-orange.gif" alt="" width="<%= maxWidth %>" height="5" border="0"> --%> 
-				   <% if(statstype.equals("opbrengst")) { 
+				   <%-- <img src="../../media/bar-orange.gif" alt="" width="<%= maxWidth %>" height="5" border="0"> --%>
+				   <% if(statstype.equals("opbrengst")) {
                      %>&euro; <%= (iTotal/100) %><%
                   } else {
 				         %><%= iTotal %><%
@@ -256,26 +279,26 @@ long toTime = (cal.getTime().getTime()/1000);
 			  	</td>
 			   <td></td>
 			</tr>
-		      <% Set set = tmStats.entrySet(); 
+		      <% Set set = tmStats.entrySet();
    			   Iterator i = set.iterator();
-				   while (i.hasNext()){ 
-  					   Map.Entry me = (Map.Entry)i.next(); 
+				   while (i.hasNext()){
+  					   Map.Entry me = (Map.Entry)i.next();
 	   	   		int iCount =  ((Integer) me.getValue()).intValue(); %>
 		   	      <tr <% if(rowCount%2==0) { %> bgcolor="6B98BD" <% } rowCount++; %>>
 		  		   	   <td colspan="2"><%= (String) me.getKey() %>&nbsp;</td>
 							<td>
-    							<img src="../img/bar-orange.gif" alt="" width="<%= ( iTotal!=0 ? (maxWidth*iCount)/iTotal : 0 ) %>" height="5" border=0> 
-    							   (<% if(statstype.equals("opbrengst")) { 
+    							<img src="../../media/bar-orange.gif" alt="" width="<%= ( iTotal!=0 ? (maxWidth*iCount)/iTotal : 0 ) %>" height="5" border=0>
+    							   (<% if(statstype.equals("opbrengst")) {
                                  %>&euro; <%= (iCount/100) %><%
                               } else {
 				                     %><%= iCount %><%
 				                  } %>)
 						  	</td>
-	   	   		  	<td></td>				
+	   	   		  	<td></td>
 	  		   	   </tr>
 				<% } %>
 		</table>
-	   <% 
+	   <%
 	} %>
 </form>
 <br/>

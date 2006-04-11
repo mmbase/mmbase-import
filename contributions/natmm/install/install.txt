@@ -16,6 +16,9 @@ To install NatMM:
 3.b. change settings in WEB-INF/config/log/log4j.xml
 3.c. change settings in WEB-INF/config/builders/images.xml
 
+Note: The NatMM application depends on an admin user with the alias users.admin. After installing you will first have
+to create this user.
+
 Still to do: create application-data files to create a minimalistic website to be loaded into an empty database.
 
 
