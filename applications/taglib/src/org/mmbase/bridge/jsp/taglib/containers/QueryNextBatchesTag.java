@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryNextBatchesTag.java,v 1.6 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.7 2006-04-11 22:58:36 michiel Exp $
  */
 public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
     //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
@@ -95,7 +95,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
         while (offset + maxNumber < totalSize) {
             offset += maxNumber;
-            resultList.add("" + offset);
+            resultList.add(new Integer(offset));
             if (maxSize > 0 && resultList.size() == maxSize) break;
         }
         return resultList;
