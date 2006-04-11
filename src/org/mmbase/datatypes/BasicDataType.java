@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.46 2006-04-10 15:05:21 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.47 2006-04-11 21:53:10 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -189,17 +189,19 @@ s     */
      * If a datatype inherits from another datatype all its restrictions inherit too.
      */
     protected void inheritRestrictions(BasicDataType origin) {
-        enumerationRestriction.inherit(origin.enumerationRestriction);
-        if (enumerationRestriction.value != null) {
-            LocalizedEntryListFactory fact = enumerationRestriction.getEnumerationFactory();
-            if (! origin.getTypeAsClass().equals(getTypeAsClass())) {
-                // Reevaluate XML configuration, because it was done with a 'wrong' suggestion for the wrapper class.
-                Element elm = fact.toXml();
-                if (elm == null) {
-                    log.warn("Did not get XML from Factory " + fact);
-                } else {
-                    fact.clear();
-                    fact.fillFromXml(elm, getTypeAsClass());
+        if (! origin.getEnumerationFactory().isEmpty()) {
+            enumerationRestriction.inherit(origin.enumerationRestriction);
+            if (enumerationRestriction.value != null) {
+                LocalizedEntryListFactory fact = enumerationRestriction.getEnumerationFactory();
+                if (! origin.getTypeAsClass().equals(getTypeAsClass())) {
+                    // Reevaluate XML configuration, because it was done with a 'wrong' suggestion for the wrapper class.
+                    Element elm = fact.toXml();
+                    if (elm == null) {
+                        log.warn("Did not get XML from Factory " + fact);
+                    } else {
+                        fact.clear();
+                        fact.fillFromXml(elm, getTypeAsClass());
+                    }
                 }
             }
         }
@@ -595,10 +597,12 @@ s     */
             // Note that for now it is assumed that the keys are of the same type.
             // I'm not 100% sure that this is always the case.
             Object keyValue = cast(key, node, field);
-            for (Iterator i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) i.next();
-                if (keyValue.equals(entry.getKey()) ) {
-                    value = entry.getValue();
+            if (keyValue != null) {
+                for (Iterator i = new RestrictedEnumerationIterator(locale, cloud, node, field); value == null && i.hasNext(); ) {
+                    Map.Entry entry = (Map.Entry) i.next();
+                    if (keyValue.equals(entry.getKey()) ) {
+                        value = entry.getValue();
+                    }
                 }
             }
         }
@@ -1032,7 +1036,7 @@ s     */
         }
 
         public Collection getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
-            if (value == null) return null;
+            if (value == null) return Collections.EMPTY_LIST;
             LocalizedEntryListFactory ef = (LocalizedEntryListFactory) value;
             if (cloud == null) {
                 if (node != null) {
@@ -1041,7 +1045,6 @@ s     */
                     cloud = field.getNodeManager().getCloud();
                 }
             }
-            if (ef.size(cloud) == 0) return null;
             return ef.get(locale, cloud);
         }
 
@@ -1061,9 +1064,10 @@ s     */
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
+            if (value == null || ((LocalizedEntryListFactory) value).isEmpty()) return true;
             Cloud cloud = BasicDataType.this.getCloud(node, field);
             Collection validValues = getEnumeration(null, cloud, node, field);
-            if (validValues == null) return true;
+            if (validValues.size() == 0) return true;
             Object candidate;
             try {
                 candidate = BasicDataType.this.cast(v, cloud, node, field);
@@ -1094,7 +1098,7 @@ s     */
 
         protected String valueString(Node node, Field field) {
             Collection col = getEnumeration(null, null, node, field);
-            if(col == null) return "";
+            if(col.size() == 0) return "";
             return col.toString();
         }
 
@@ -1119,7 +1123,7 @@ s     */
             if (log.isDebugEnabled()) {
                 log.debug("Restricted iterator on " + col);
             }
-            baseIterator =  col != null ? col.iterator() : Collections.EMPTY_LIST.iterator();
+            baseIterator =  col.iterator();
             this.node = node;
             this.field = field;
             determineNext();
