@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.39 2006-03-06 13:14:12 pierre Exp $
+ * @version $Id: DateHandler.java,v 1.40 2006-04-11 22:57:36 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -116,7 +116,7 @@ public class DateHandler extends AbstractTypeHandler {
         boolean required = field.getDataType().isRequired();
 
         Calendar cal = getCalendarValue(node, field);
-        buffer.append("<span class=\"mm_datetime\">");
+        buffer.append("<span class=\"mm_datetime " + getClasses(field) + "\">");
         buffer.append("<input type=\"hidden\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");

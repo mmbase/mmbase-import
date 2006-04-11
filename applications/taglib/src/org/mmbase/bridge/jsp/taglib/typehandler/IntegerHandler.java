@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.34 2006-02-03 16:02:49 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.35 2006-04-11 22:57:36 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -63,7 +63,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             if (node != null) {
                 value = node.getBooleanValue(field.getName());
             }
-            buffer.append("<input type=\"checkbox\" name=\"").append( prefix(field.getName()) ).append("\" ");
+            buffer.append("<input class=\"" + getClasses(field) + "\" type=\"checkbox\" name=\"").append( prefix(field.getName()) ).append("\" ");
             buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
             if (value) {
                 buffer.append(" checked=\"checked\" ");
@@ -73,7 +73,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             return buffer.toString();
         } else if (guiType.equals("types")) {
             log.warn("Guitype 'types' is deprecated. Use 'typedef' instead.");
-            buffer.append("<select name=\"").append( prefix(field.getName()) ).append("\" ");
+            buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
             buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">\n");
@@ -115,7 +115,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             return buffer.toString();
         } else if (guiType.equals("reldefs")) {
             log.warn("Guitype 'reldefs' is deprecated. Use 'reldef' instead.");
-            buffer.append("<select name=\"").append(prefix(field.getName())).append("\" ");
+            buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append(prefix(field.getName())).append("\" ");
             buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">\n");
@@ -163,8 +163,6 @@ public class IntegerHandler extends AbstractTypeHandler {
                 return e.htmlInput(node, field, search);
             }
         }
-
-        
 
         return super.htmlInput(node, field, search);
     }
