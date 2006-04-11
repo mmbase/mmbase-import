@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Function sets</title>
     <date>2006-04-2006</date>
-    <edition>$Id: functionsets.xml,v 1.2 2006-04-11 23:06:15 daniel Exp $</edition>
+    <edition>$Id: functionsets.xml,v 1.3 2006-04-11 23:26:26 daniel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname><surname>Ockeloen</surname>
@@ -98,5 +98,49 @@ You can have multiple return types that are defined by the way you call them :
 	</programlisting>
 	</para>
    </section>
-   
+     <section>
+    <title>Defining functions in Modules</title>
+	<para>
+	 Its also possible to define functions in MMBase Modules see the MMAdmin module
+and its jsp pages in mmbase/mmadmin/.
+	</para>
+   </section>
+   <section>
+    <title>Defining functions in Sets</title>
+	<para>
+     Unlike Module or NodeManagers related functions the set functions are aimed for a global use and can be implemented 
+     in any java class or . You can for example define a set 'util' or 'statistics' or even map to external application 'lucien'.
+	 Defining sets is done in a 2 xml files. The first defines whats sets you have : 
+	 <programlisting>        
+	 mmbase config xml : config/functions/functionsets.xml
+	 
+	    &lt;functionsets&gt;
+		  &lt;functionset name="util" file="utils.xml" /&gt;
+		 &lt;/functionsets&gt;
+	 </programlisting>
+	 
+	 The set itself (in this case utils.xml) defines the mapping, names, classes and methodes to be called
+
+     <programlisting>
+				&lt;functionset&gt;                 
+				&lt;description&gt;Some util functions from org.mmbase.util, made accessible through the function-framework&lt;/description&gt;
+                 &lt;function name="generatePassword"&gt;
+                  &lt;description&gt;Generates a password. Using a template&lt;/description&gt;
+                  &lt;type&gt;class&lt;/type&gt;
+                  &lt;class&gt;org.mmbase.util.PasswordGenerator&lt;/class&gt;
+                  &lt;method&gt;getPassword&lt;/method&gt;
+                  &lt;param name="template" type="String"&gt;SSSSSS&lt;/param&gt;
+                  &lt;return type="String" /&gt;
+                 &lt;/function&gt;
+                &lt;/functionset&gt;
+	 </programlisting>
+	</para>
+	<para>
+	In this example we only defined one function called generatePassword, its implemented as a class (type) the class 
+	file is (org.mmbase.util.PasswordGenerator) and the method that will be called inside that class is getPassword. 
+	Next we can define one or more parameters in this case one so the end result will be of this function configuration will be that
+	&lt;mm:function set="util" name="getPassword" referid="template" /&gt;  will be mapped to the method String getPassword(String template) 
+	inside the class orf.mmbase.util.PasswordGenerator.
+	</para>
+   </section>
 </article>
