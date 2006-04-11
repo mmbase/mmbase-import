@@ -27,7 +27,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.25 2006-03-03 14:47:12 michiel Exp $
+ * @version $Id: ByteHandler.java,v 1.26 2006-04-11 22:57:36 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -57,7 +57,7 @@ public class ByteHandler extends AbstractTypeHandler {
             args.set(Parameter.LOCALE, tag.getLocale());
             show.append("" + gui.getFunctionValue(args));
         }
-        show.append("<input type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
+        show.append("<input class=\"" + getClasses(field) + "\" type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
         addExtraAttributes(show);
         show.append("/>");
         return show.toString();

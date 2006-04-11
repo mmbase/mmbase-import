@@ -13,8 +13,7 @@ import javax.servlet.jsp.JspTagException;
 import java.util.*;
 
 import org.mmbase.bridge.jsp.taglib.edit.FormTag;
-import org.mmbase.util.Entry;
-import org.mmbase.util.LocalizedString;
+import org.mmbase.util.*;
 import org.mmbase.util.transformers.Xml;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.40 2006-03-29 01:22:15 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.41 2006-04-11 22:57:36 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -129,6 +128,13 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     }
 
     /**
+     * @since MMBase-1.8
+     */
+    protected String getClasses(Field field) {
+        return "mm_validate mm_" + field.getName() + " mm_" + field.getNodeManager().getName();
+    }
+
+    /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
@@ -137,17 +143,13 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.htmlInput(node, field, search);
         }
         // default implementation.
-        StringBuffer show =  new StringBuffer("<input type=\"text\" class=\"small\" size=\"80\" ");
+        StringBuffer show =  new StringBuffer("<input type=\"text\" class=\"small " + getClasses(field) + "\" size=\"80\" ");
         addExtraAttributes(show);
+        Object value = getFieldValue(node, field, ! search);
         show.append("name=\"").append(prefix(field.getName())).append("\" ");
         show.append("id=\"").append(prefixID(field.getName())).append("\" ");
         show.append("value=\"");
-        if (node != null) {
-            show.append(node.getStringValue(field.getName()));
-        } else {
-            Object searchParam = getFieldValue(node, field, ! search);
-            show.append((searchParam == null ? "" : searchParam));
-        }
+        show.append((value == null ? "" : Casting.toString(value)));
         show.append("\" />");
         return show.toString();
     }
@@ -165,12 +167,10 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         Object value = getFieldValue(fieldName);
         if (value == null) {
             if (node != null) {
-                value = node.getValue(fieldName);
+                value = node.isNull(fieldName) ? null : node.getValue(fieldName);
             } else if (useDefault) {
                 value = field.getDataType().getDefaultValue();
             }
-        } else {
-            value = cast(value, node, field);
         }
         return value;
     }
@@ -186,8 +186,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         Collection col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
             // do actually set the field, because some need cross-field checking
-            if (fieldValue != null && node != null && ! fieldValue.equals(node.getValue(fieldName))) {
-                node.setValue(fieldName,  fieldValue);
+            if (fieldValue != null && node != null && ! fieldValue.equals(node.getValue(fieldName))
+                && ! field.isReadOnly()
+                ) {
+                try {
+                    node.setValue(fieldName,  fieldValue);
+                } catch (Throwable t) {
+                    // may throw exception like 'You cannot change the field"
+                }
             }
             return "";
         } else {
