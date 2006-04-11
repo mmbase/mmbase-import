@@ -55,7 +55,7 @@
       </datatype>
       <db>
         <name>pattern</name>
-        <type size="255" notnull="true" state="persistent">STRING</type>
+        <type size="255" notnull="false" state="persistent">STRING</type>
       </db>
     </field>
     <field>
@@ -69,7 +69,7 @@
       </datatype>
       <db>
         <name>stringrange</name>
-        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
 
