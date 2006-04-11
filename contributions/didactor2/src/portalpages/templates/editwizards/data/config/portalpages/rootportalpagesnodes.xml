@@ -83,14 +83,12 @@
 										</field>
 										<field wizardname="config/portalpages/portalpagesnodes" ftype="startwizard" />
 									</item>	
-<!-- Can add niuewe map only using coursemanagment/contentelements
-									<command name="startwizard" inline="true" wizardname="config/portalpages/portalpagesnodes" objectnumber="new" />
+									<command name="startwizard" inline="true" wizardname="config/portalpages/leafportalpagesnodes-origin" objectnumber="new" />
 									<action type="create">
 										<relation destinationtype="portalpagesnodes" role="childppnn" >
 										  <object type="portalpagesnodes"/>
 										</relation>
 									</action>																		
- -->                                    
 				</list>        
     </form-schema>
     

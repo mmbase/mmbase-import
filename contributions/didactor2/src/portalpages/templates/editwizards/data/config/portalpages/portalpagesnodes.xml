@@ -3,10 +3,6 @@
 <wizard-schema id="empty">
     <title>Portal Pagina's Map Editor</title>
 
-    <action type="create">
-		    <object type="portalpagesnodes"/>  
-    </action>
-
     <action type="load">
         <object type="portalpagesnodes"/>
         <relation destinationtype="simplecontents" role="related"/> 
@@ -81,16 +77,14 @@
 											<prompt>Naam</prompt>
 											<description></description>
 										</field>
-										<field wizardname="config/portalpages/portalpagesnodes" ftype="startwizard" />
+										<field wizardname="config/portalpages/leafportalpagesnodes" ftype="startwizard" />
 									</item>	
-<!-- Can add niuewe map only using coursemanagment/contentelements
-									<command name="startwizard" inline="true" wizardname="config/portalpages/portalpagesnodes" objectnumber="new" />
+									<command name="startwizard" inline="true" wizardname="config/portalpages/leafportalpagesnodes-origin" objectnumber="new" />
 									<action type="create">
 										<relation destinationtype="portalpagesnodes" role="childppnn" >
     										<object type="portalpagesnodes"/>
 										</relation>
 									</action>																		
- -->                                    
 				</list>        
     </form-schema>
     <form-schema id="step2">
