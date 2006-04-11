@@ -109,7 +109,7 @@ String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSe
                         %></mm:related
                      ></natuurgebieden>
                      <provincie><%
-                        %><mm:related path="related,natuurgebieden,posrel,provincies"
+                        %><mm:related path="related,natuurgebieden,pos4rel,provincies"
                            ><mm:first inverse="true">, </mm:first><mm:field name="provincies.naam" jspvar="naam" vartype="String" write="false"
                               ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
                            %></mm:field
