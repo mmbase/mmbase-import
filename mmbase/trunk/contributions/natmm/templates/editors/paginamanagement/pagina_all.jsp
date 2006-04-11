@@ -61,7 +61,7 @@ String account = cloud.getUser().getIdentifier();
    </table>
 	<p><b>Legenda:</b><br>
 	<table cellpadding="0" cellspacing="0">
-   	<tr><td><img src='../img/new_rubriek.gif' border='0' align='middle'/></td><td style="font-size:10px;">= nieuwe pagina maken</td></tr>
+   	<tr><td><img src='../img/new.gif' border='0' align='middle'/></td><td style="font-size:10px;">= nieuwe subrubriek of pagina maken</td></tr>
 	   <tr><td><img src='../img/reorder.gif' border='0' align='middle'/></td><td style="font-size:10px;">= volgorde pagina's en rubrieken wijzigen</td></tr>
    	<tr><td><img src='../img/paginalink.gif' border='0' align='middle'/></td><td style="font-size:10px;">= wijzig de titel en het genre van deze pagina</td></tr>
 	   <tr><td><img src='../img/edit.gif' border='0' align='middle'/></td><td style="font-size:10px;">= bewerk deze pagina</td></tr>
