@@ -64,7 +64,6 @@ if(rubriekID.equals("naardermeer")) {
    %>
    <td class="fieldname"><a href="/naardermeer" target="_blank" class='menu'>Website</a></td>
    <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class='menu'>Pagina-editor</a></td>
-   <td class="fieldname"><a href="rubrieken/frames.jsp" target="bottompane" class="menu">Rubriekeneditor</a></td>
    <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
    <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
    <% 
@@ -89,7 +88,6 @@ if(rubriekID.equals("naardermeer")) {
    <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td>
    <td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class='menu'>Activiteiten</a></td>
    <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class='menu'>Pagina-editor</a></td>
-   <td class="fieldname"><a href="rubrieken/frames.jsp" target="bottompane" class="menu">Rubriekeneditor</a></td>
    <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
    <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
    <%

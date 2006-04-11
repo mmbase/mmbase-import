@@ -1,5 +1,5 @@
 <%@page import="nl.leocms.authorization.*,org.mmbase.bridge.*,nl.leocms.util.*,nl.leocms.workflow.*,nl.leocms.content.*" %>
-<%@include file="../../globals.jsp"  %>
+<%@include file="/taglibs.jsp"  %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:locale language="nl">
 <%@ page import="java.util.*" %>

@@ -5,6 +5,7 @@
 PaginaHelper ph = new PaginaHelper(cloud);
 %>
 <%@include file="../includes/top2_cacheparams.jsp" %>
+<% expireTime = 3600; // update every hour, because of changing content in rubrieken %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="../includes/top4_head.jsp" %>
 <div style="position:absolute"><%@include file="../includes/flushlink.jsp" %></div>
@@ -40,7 +41,7 @@ PaginaHelper ph = new PaginaHelper(cloud);
             <mm:notpresent referid="image_found">
                <mm:relatednodes type="artikel" path="contentrel,artikel" max="1"
                   constraints="<%= objectConstraint %>" orderby="<%= objectOrderby %>" directions="<%= objectDirections %>">
-                  <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" max="1">
+                  <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" directions="UP" max="1">
                      <img src="<mm:image template="s(170)+part(0,0,170,98)" />" border="0">
                   </mm:relatednodes>
                </mm:relatednodes>
