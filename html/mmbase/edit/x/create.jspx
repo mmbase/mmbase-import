@@ -15,43 +15,40 @@
       <mm:cloud rank="basic user">
         <mm:import externid="ok" />
         <mm:import externid="nodemanager" required="true" />
-        <h1 class="link">          
+        <h1 class="link">      
           <mm:link page="." referids="nodemanager">
             <a href="${_}"><img alt="back" src="${back}" /></a>
           </mm:link>
+          New
         </h1>
         <div id="edit">
           <mm:form>
-            <form action="create.jspx?nodemanager=${nodemanager}" method="post">
-              
-              
-              <input type="hidden" name="node" value="${_node}" />
-              <table>
-                <mm:fieldlist type="edit" nodetype="$nodemanager">
-                  <mm:index id="index" write="false" />
-                  <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
-                    <td><mm:fieldinfo type="guiname" /></td>
-                    <td>
-                      <mm:fieldinfo type="input" />
-                      <mm:fieldinfo type="errors" />
-                    </td>
-                  </tr>
-                </mm:fieldlist>
-              </table>
-              <input type="submit" name="ok" />
-              <mm:present referid="ok">
-                <mm:valid>
-                  Committed ! 
-                  <mm:createnode id="newnode" type="${nodemanager}">
-                    <mm:fieldlist type="edit">
-                      <mm:fieldinfo type="useinput" />
-                    </mm:fieldlist>
-                  </mm:createnode>
-                  <mm:commit />
-                  <mm:redirect page="change.jspx" referids="newnode@node" />
-                </mm:valid>
-              </mm:present>
-            </form>
+            <input type="hidden" name="nodemager" value="${nodemanager}" />
+            <table>
+              <mm:fieldlist type="edit" nodetype="$nodemanager">
+                <mm:index id="index" write="false" />
+                <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                  <td><mm:fieldinfo type="guiname" /></td>
+                  <td>
+                    <mm:fieldinfo type="input" />
+                    <mm:fieldinfo type="errors" />
+                  </td>
+                </tr>
+              </mm:fieldlist>
+            </table>
+            <input type="submit" name="ok" />
+            <mm:present referid="ok">
+              <mm:valid>
+                Committed ! 
+                <mm:createnode id="newnode" type="${nodemanager}">
+                  <mm:fieldlist type="edit">
+                    <mm:fieldinfo type="useinput" />
+                  </mm:fieldlist>
+                </mm:createnode>
+                <mm:commit />
+                <mm:redirect page="change.jspx" referids="newnode@node" />
+              </mm:valid>
+            </mm:present>
           </mm:form>
         </div>
       </mm:cloud>

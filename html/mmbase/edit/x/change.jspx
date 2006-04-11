@@ -25,29 +25,25 @@
           </h1>
           <div id="edit">
             <mm:form>
-              <form action="change.jspx" method="post">
-                
-                
-                <input type="hidden" name="node" value="${_node}" />
-                <table>
-                  <mm:fieldlist type="edit">
-                    <mm:index id="index" write="false" />
-                    <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
-                      <td><mm:fieldinfo type="guiname" /></td>
-                      <td>
-                        <mm:fieldinfo type="input" />
-                        <mm:fieldinfo type="errors" />
-                      </td>
-                    </tr>
-                  </mm:fieldlist>
-                </table>
-                <input type="submit" name="ok" />
-                <mm:present referid="ok">
-                  <mm:valid>
-                    Committed ! <mm:commit />
+              <input type="hidden" name="node" value="${_node}" />
+              <table>
+                <mm:fieldlist type="edit">
+                  <mm:index id="index" write="false" />
+                  <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                    <td><mm:fieldinfo type="guiname" /></td>
+                    <td>
+                      <mm:fieldinfo type="input" />
+                      <mm:fieldinfo type="errors" />
+                    </td>
+                  </tr>
+                </mm:fieldlist>
+              </table>
+              <input type="submit" name="ok" />
+              <mm:present referid="ok">
+                <mm:valid>
+                  Committed ! <mm:commit />
                   </mm:valid>
-                </mm:present>
-              </form>
+              </mm:present>
             </mm:form>
           </div>
         </mm:node>
