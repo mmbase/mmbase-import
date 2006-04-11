@@ -27,7 +27,7 @@
 
 if(departmentId.equals("default")&&programId.equals("default")) { // *** select a random department ***
     Vector departments = new Vector();
-    %><mm:list path="afdelingen" constraints="afdelingen.importstatus!='-1'  AND afdelingen.importstatus!='inactive'"
+    %><mm:list path="afdelingen" constraints="afdelingen.importstatus!='-1' AND afdelingen.importstatus!='inactive'"
         ><mm:field name="afdelingen.number" jspvar="departments_number" vartype="String" write="false"><%
             departments.add(departments_number);
         %></mm:field
@@ -36,7 +36,7 @@ if(departmentId.equals("default")&&programId.equals("default")) { // *** select 
     if(selectedDepartment>departments.size()-1) { selectedDepartment = departments.size()-1; }
     departmentId = (String) departments.get(selectedDepartment);
 
-}
+}  
 
 
 
@@ -50,12 +50,12 @@ if(!departmentId.equals("default")) {
         ><mm:field name="omschrijving" jspvar="dummy" vartype="String" write="false"><%
             departmentNodes = dummy;
         %></mm:field
-    ></mm:node><%
-    employeePath = "afdelingen," + employeePath;
+    ></mm:node><% 
+    employeePath = "afdelingen,readmore," + employeePath;
 }
 if(!programId.equals("default")) {
     employeeConstraint += " AND locations.number = '" + programId + "'";
-    employeePath += ",locations";
+    employeePath += ",readmore,locations";
 }
 String defaultThumb = "";
 %><mm:list nodes="<%= pageId %>" path="pagina,posrel,images" constraints="posrel.pos='2'" max="1"
@@ -75,7 +75,7 @@ String defaultThumb = "";
         %><table cellpadding="0" cellspacing="0" align="center"><tr><%
     } 
     %><td>
-    <a href="thumbs.jsp?p=wieiswie&employee=<%= employees_number %>&department=<%= departmentId %>&program=<%= programId
+    <a href="smoelenboek.jsp?p=wieiswie&employee=<%= employees_number %>&department=<%= departmentId %>&program=<%= programId
         %>&pst=|action=back"><img width="80px" height="108px" src="<mm:remove referid="imagefound" 
             /><mm:list nodes="<%= employees_number %>" path="medewerkers,posrel,images" max="1"
                 ><mm:node element="images"><mm:image template="s(80x108)" /></mm:node

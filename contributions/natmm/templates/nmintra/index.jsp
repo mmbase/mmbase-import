@@ -11,10 +11,10 @@ if(editorsName.indexOf(request.getServerName())>-1&&!isPreview) { // *** redirec
     response.sendRedirect("http://" + websiteName + request.getServletPath()+"?"+request.getQueryString());
 } else {
 
-   %><%@include file="includes/authenticate.jsp" %><%
+   %><%--
    if(!username.equals("")) { 
     %><%@include file="includes/screensize.jsp" %><% 
-   } %>
+   } --%>
    <mm:cloud jspvar="cloud" method="<%= (isProduction ? "" : "http") %>" rank="<%= (isProduction ? "" : "basic user") %>">
 	<%@include file="includes/getids.jsp" 
    %><%--@include file="includes/header.jsp" --%>
@@ -29,10 +29,8 @@ if(editorsName.indexOf(request.getServerName())>-1&&!isPreview) { // *** redirec
      
      if(!template_url.equals("")) { // include the parameters changed in getids.jsp
          %><jsp:include page="<%= template_url
-               + "?p" + pageId
-               + "&category=" + categoryId
-               + "&vg=" + visitorGroup
-               + "&vid=" + username %>" 
+               + "?page=" + pageId
+               + "&category=" + categoryId %>" 
           /><% 
    
      } else { 

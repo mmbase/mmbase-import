@@ -38,5 +38,4 @@
    </tr>
    <tr>
 
-   <% if(!isPreview&&!isVisible(cloud,websiteId,rubriekId,pageId,visitorGroup,out)) { pageId = ""; } %>
    <td rowspan="2"><%@include file="../includes/nav.jsp" %></td>

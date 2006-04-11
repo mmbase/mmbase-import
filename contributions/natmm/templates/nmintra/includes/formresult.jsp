@@ -7,8 +7,7 @@
     int q = 0;
     Vector questions = new Vector();
     Vector answers = new Vector();
-    String username = request.getParameter("vid");
-    if(username==null) { username = ""; }
+    String username =  ""; 
 %><mm:list nodes="<%= pageId %>" path="pagina,posrel,formulier" 
     fields="formulier.number,formulier.titel,formulier.emailadressen" 
     orderby="posrel.pos" directions="UP"

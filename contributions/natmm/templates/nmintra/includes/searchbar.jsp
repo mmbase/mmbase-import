@@ -61,7 +61,7 @@ function startPhone() {
         <select name="category" class="<%= cssClassName %>">
         <mm:node number="<%= websiteId %>"
             ><mm:field name="naam" jspvar="site_title" vartype="String" write="false"><%
-		if(isPreview||isVisible(cloud,websiteId,null,null,visitorGroup,out)) {
+		if(isPreview) {
 		    %><option value="<%= websiteId %>" <% 
                     if(categoryId.equals("")) { 
                         %>SELECTED<% 
@@ -74,7 +74,7 @@ function startPhone() {
         --%><mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2" orderby="parent.pos" directions="UP"
         ><mm:field name="rubriek2.number" jspvar="rubriek_number" vartype="String" write="false"
             ><mm:field name="rubriek2.naam" jspvar="rubriek_title" vartype="String" write="false"><%
-		    if(isPreview||isVisible(cloud,websiteId,rubriek_number,null,visitorGroup,out)) {
+		    if(isPreview) {
 		    %><option value="<%= rubriek_number %>" <%
                     if(rubriek_number.equals(categoryId)) {
                         %>SELECTED<%
@@ -96,7 +96,7 @@ function startPhone() {
 </td>
 <td style="padding-right:10px;width:251px;">
 <%-- *************************************** phone box ******************************* --%>
-<% if((isPreview||isVisible(cloud,websiteId,"wiw","wieiswie",visitorGroup,out))
+<% if((isPreview)
 	&&templateTitle.indexOf("smoelenboek")==-1
 	&&!cssClassName.equals("bibliotheek")) { 
     %><table border=0 cellspacing="0" cellpadding="0" align="right">

@@ -21,8 +21,7 @@ public TreeSet unify(TreeSet ts1, TreeSet ts2){
    return uSet;
 }
 %><%
-	String username = request.getParameter("vid");
-   if(username==null) { username = ""; }
+	String username = "";
 
    String shopEmailAddress = defaultFromAddress;
 	String emailSubject = "Interne Webwinkel: ordernr. ";
