@@ -1,0 +1,39 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <jsp:directive.page session="true" />
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <mm:include page="head.jspx" />
+
+  <body>
+    <mm:cloud rank="basic user">
+      <mm:import externid="ok" />
+      <mm:import externid="node" required="true" />
+      <div id="edit">
+        <mm:form>
+          <form action="change.jspx" method="post">
+            <mm:node referid="node">
+              <input type="hidden" name="node" value="${_node}" />
+              <mm:fieldlist type="edit">
+                <p>
+                  <mm:fieldinfo type="guiname" />: <mm:fieldinfo type="input" />
+                  <mm:fieldinfo type="errors" />
+                </p>
+              </mm:fieldlist>
+            </mm:node>
+            <input type="submit" name="ok" />
+            <mm:present referid="ok">
+              <mm:valid>
+                Committed ! <mm:commit />
+              </mm:valid>
+            </mm:present>
+          </form>
+        </mm:form>
+      </div>
+    </mm:cloud>
+  </body>
+</html>

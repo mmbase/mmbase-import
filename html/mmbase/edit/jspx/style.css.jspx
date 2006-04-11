@@ -1,0 +1,40 @@
+<jsp:root
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" version="1.2">
+  <mm:content type="text/css">
+@import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
+body { 
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+table { 
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 1px;
+  padding-right: 1px;
+  width: 100%;
+  
+}
+img { 
+  border: none;
+  margin: 0px 0px 0p 0px;
+  padding: 0px 0px 0p 0px;
+}
+
+#searchresult tbody tr:hover { 
+  background-color: yellow;
+  cursor: pointer;
+}
+
+h1 { 
+  background-color: #ddd;
+  margin-top: 0;
+  padding: 0 0 0 0;
+}
+td {
+  vertical-align: top;
+}
+
+  </mm:content>
+</jsp:root>
