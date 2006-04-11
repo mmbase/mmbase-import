@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.352 2006-04-04 22:15:47 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.353 2006-04-11 22:56:02 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3755,11 +3755,13 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        If this object is required to be present. If it has to be
-        present, then the present tag will always evaluate. If nothing
-        can be found by externid and a default value in the
-        body is missing too, then an exception will follow if required
-        is true.
+        Whether the object to be imported is required. If nothing can be found by externid and a
+        default value in the body is missing too, then an exception will follow. It is adviced to
+        use this on pages which do nothing sensible without a value for this. Typically read-more
+        pages and so on, which simply cannot show anything if they are not informed what to
+        show. This also serves to document the implementation of the JSP, because the imported
+        variables marked as 'required' are at once recognizable as essential for the page's
+        functionality.
     </info>
     </attribute>
     <attribute>
@@ -3780,7 +3782,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         </p>
         <p>
           Consider also `scoping' your variables with a mm:context tag
-          (especially useful for includes and list bodies).
+          (especially useful for static includes).
         </p>
       </info>
       <see tag="context" />
