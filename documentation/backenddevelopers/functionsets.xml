@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>The MMBase Function sets</title>
+    <date>2006-04-2006</date>
+    <edition>$Id: functionsets.xml,v 1.1 2006-04-11 22:51:49 daniel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Daniel</firstname><surname>Ockeloen</surname>
+        <affiliation><orgname>MMCoder</orgname></affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink
+      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+  <section>
+    <title>What are functionsets ?</title>
+    <para>
+     MMBase function's allow you to add functions/methods to different layers of mmbase and make them available within the MMBase taglib project or bridge. 
+	 This way it is possible to add you own functionality in a way thats easy to access. These functions can be added to fields, nodes, builders and clouds
+	 each having their own backend implementation but they all share a common way to use them from inside java (bridge) or jsp (taglibs)
+    </para>
+  </section>
+  <section>
+    <title>Using functions from the taglibs</title>
+      <para>
+a simple example of a function on a set (explained later) could be
+
+<programlisting>
+example : &lt;mm:function set="util" name="generatePassword" /&gt;
+</programlisting>
+
+This calls the funcion generatePassword in the set util, and returns it as a String (the default).
+
+You can have multiple return types that are defined by the way you call them :
+<programlisting>
+        &lt;mm:function ...      (default String)
+        &lt;mm:booleanfunction   (boolean)
+        &lt;mm:voidfunction      (no return value)
+        &lt;mm:list              (list)
+        &lt;mm:nodefunction      (one mmbase node or virtual mmbase node)
+        &lt;mm:nodelistfunction  (returns a list of nodes or virtual nodes)
+</programlisting>
+      </para>
+	  <para>
+      Functions can have parameters that you can set in several ways the normal way is to ceate a 
+	  functioncontainer where you can set the parameters and then call one or more functions.
+      <programlisting>
+        &lt;mm:functioncontainer&gt;
+          &lt;mm:param name="template"&gt;AASSHHM&lt;/mm:param&gt;
+           your random new password might be : &lt;mm:function set="util" name="generatePassword" /&gt;
+		&lt;/mm:functioncontainer&gt;
+	  </programlisting>
+      </para>
+	  <para>
+        Each of the defined parameters will be added to every function within the functioncontainer.
+		It is also possible to add parameters using the mmbase referid concept, this is handy when a
+		parameter is already loaded into your page using a &lt;mm:import ...
+		 <programlisting>
+           &lt;mm:import externid="template" /&gt;
+        your random new password might be : &lt;mm:function name="getPassword" referid="template" /&gt;
+		 </programlisting>
+	  </para>
+  </section>
+</article>
