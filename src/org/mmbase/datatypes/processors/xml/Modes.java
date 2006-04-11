@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * datatypes.xml), but some modes could also set/get XMLValue.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Modes.java,v 1.3 2005-12-23 12:28:04 michiel Exp $
+ * @version $Id: Modes.java,v 1.4 2006-04-11 23:46:06 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -76,6 +76,7 @@ public abstract class Modes {
      * Converts a String identifier to one of the constants in this class
      */
     public static int getMode(Object m) {
+        if (m == null) return XML;
         String mode = ("" + m).toLowerCase();
         if ("xml".equals(mode)) {
             return XML;
