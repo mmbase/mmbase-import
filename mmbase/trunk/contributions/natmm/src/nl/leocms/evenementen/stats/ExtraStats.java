@@ -107,36 +107,42 @@ public class ExtraStats {
       return iResult;
    }
 
-   private TreeMap getStatistics(Cloud cloud, long fromTime, long toTime, int period, String afdelingName, String statstype, boolean groupsCategorie){
-      return getStatistics(cloud, fromTime, toTime, period, afdelingName, statstype, groupsCategorie, true);
+   private TreeMap getEvenementenTypes(Cloud cloud, boolean groupsCategorie) {
+     TreeMap tmNames = new TreeMap();
+     iTotal = 0;
+
+     String notGroups = (groupsCategorie) ? "" : "NOT ";
+     String deelnemersCategorieConstraints = "deelnemers_categorie.naam "+notGroups+"LIKE '%groups excursion%'";
+
+     // *** put names on tsNames ***
+     String sStatName = "";
+     String sNumber = "";
+     NodeList nlEvenementType = cloud.getList("","evenement_type,posrel,deelnemers_categorie","evenement_type.naam,evenement_type.number",deelnemersCategorieConstraints,null,null,null,false);
+     for (int j = 0; j < nlEvenementType.size(); j++ ){
+       Node nEvenementType = nlEvenementType.getNode(j);
+       sStatName = nEvenementType.getStringValue("evenement_type.naam");
+       sNumber = nEvenementType.getStringValue("evenement_type.number");
+       if (!tmNames.containsKey(sStatName)) {
+         tmNames.put(sStatName, sNumber);
+       }
+     }
+     return tmNames;
    }
 
-   private TreeMap getStatistics(Cloud cloud, long fromTime, long toTime, int period, String afdelingName, String statstype, boolean groupsCategorie, boolean removeZeros){
-      TreeMap tmStatistics = new TreeMap();
-      TreeMap tmNames = new TreeMap();
-      iTotal = 0;
 
-      String notGroups = (groupsCategorie) ? "" : "NOT ";
-      String deelnemersCategorieConstraints = "deelnemers_categorie.naam "+notGroups+"LIKE '%groups excursion%'";
+   private TreeMap getStatistics(Cloud cloud, long fromTime, long toTime, int period, String afdelingName, String statstype, TreeMap tmNames){
+      return getStatistics(cloud, fromTime, toTime, period, afdelingName, statstype, tmNames, true); // zero's rows not showed
+   }
+
+   private TreeMap getStatistics(Cloud cloud, long fromTime, long toTime, int period, String afdelingName, String statstype, TreeMap tmNames, boolean removeZeros){
+      TreeMap tmStatistics = new TreeMap();
 
       String evenementTimeConstraint =  "evenement.begindatum > " + fromTime;
       if (period>0) evenementTimeConstraint += " AND evenement.einddatum < " + toTime;
 
-      // *** put names on tsNames ***
-      String sStatName = "";
-      String sNumber = "";
-      NodeList nlEvenementType = cloud.getList("","evenement_type,posrel,deelnemers_categorie","evenement_type.naam,evenement_type.number",deelnemersCategorieConstraints,null,null,null,false);
-      for (int j = 0; j < nlEvenementType.size(); j++ ){
-        Node nEvenementType = nlEvenementType.getNode(j);
-        sStatName = nEvenementType.getStringValue("evenement_type.naam");
-        sNumber = nEvenementType.getStringValue("evenement_type.number");
-        if (!tmNames.containsKey(sStatName)) {
-          tmNames.put(sStatName, sNumber);
-        }
-      }
-
       // *** count total for tmNames ***
-      String sRealNumber = "";
+      String sRealNumber = null;
+      String sStatName = null;
       Set set = tmNames.entrySet();
       Iterator i = set.iterator();
       while (i.hasNext()) {
@@ -166,6 +172,12 @@ public class ExtraStats {
       }
 
       return tmStatistics;
+   }
+
+
+   private String nowDate() {
+      SimpleDateFormat formatter = new SimpleDateFormat("EEE d MMM yyyy");
+      return formatter.format(new Date());
    }
 
    public String getStatsperiod(long fromTime, long toTime, int period) {
@@ -210,6 +222,8 @@ public class ExtraStats {
       String dateString = dateString(fromTime) + "_" + dateString(toTime);
       String fileName = listtype.replaceAll("/","_").replaceAll(" ","") + "_" + dateString + "_stats.xls";
 
+      String sDate  = nowDate();
+
       String sAttachmentId = "";
 
       /*NodeList nl = cloud.getList("","events_attachments","events_attachments.number","events_attachments.filename = '" + fileName + "'",null,null,null,false);
@@ -231,156 +245,133 @@ public class ExtraStats {
 
          for (Iterator ait = afdelingenList.iterator();ait.hasNext();) {
 
+           String afdelingName = (String)ait.next();
+           WritableSheet sheet = workbook.createSheet(afdelingName, 0);
+           WritableCellFormat wrappedText = new WritableCellFormat(WritableWorkbook.ARIAL_10_PT);
+           wrappedText.setWrap(true);
 
-         String afdelingName = (String)ait.next();
-         WritableSheet sheet = workbook.createSheet(afdelingName, 0);
-         WritableCellFormat wrappedText = new WritableCellFormat(WritableWorkbook.ARIAL_10_PT);
-         wrappedText.setWrap(true);
+           // set columns width
+           sheet.setColumnView(0,50);
+           sheet.setColumnView(1,20);
+           sheet.setColumnView(2,20);
+           sheet.setColumnView(3,20);
+           sheet.setColumnView(4,20);
+           sheet.setColumnView(5,20);
 
-         // set columns width
-         sheet.setColumnView(0,50);
-         sheet.setColumnView(1,20);
-         sheet.setColumnView(2,20);
-         sheet.setColumnView(3,20);
-         sheet.setColumnView(4,20);
-         sheet.setColumnView(5,20);
+           // add static labels
+           Label staticLabel = new Label(0,0,"BEHEEREENHEID/BEZOEKERSCENTRUM:");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(1,0,afdelingName);
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(0,1,"DATUM:");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(1,1,sDate);
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(0,2,"PERIODE:");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(1,2,getStatsperiod(fromTime,toTime,period));
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(0,3,"");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(0,4,"EXCURSIETYPE");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(1,4,"AANTAL");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(4,4,"BATEN");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(5,4,"Geschat % leden dat deelneemt");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(1,5,"Excursies");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(2,5,"Inschrijvingen");
+           sheet.addCell(staticLabel);
+           staticLabel = new Label(3,5,"Deelnemers");
+           sheet.addCell(staticLabel);
 
-         // add static labels
-         Label staticLabel = new Label(0,0,"BEHEEREENHEID/BEZOEKERSCENTRUM:");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(1,0,afdelingName);
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(0,1,"DATUM:");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(0,2,"PERIODE:");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(1,2,getStatsperiod(fromTime,toTime,period));
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(0,3,"");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(0,4,"EXCURSIETYPE");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(1,4,"AANTAL");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(4,4,"BATEN");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(5,4,"Geschat % leden dat deelneemt");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(1,5,"Excursies");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(2,5,"Inschrijvingen");
-         sheet.addCell(staticLabel);
-         staticLabel = new Label(3,5,"Deelnemers");
-         sheet.addCell(staticLabel);
+           ExtraStats os = new ExtraStats();
 
-         ExtraStats os = new ExtraStats();
+           int currentRow = 6;
 
-         /*
-         Individuele boekingen (= individual subscriptions,
-        do not take into account events that are related to deelnemers_categorie with alias "groups excursion" )
-      */
+           ArrayList boekingenList = new ArrayList();
+           boekingenList.add("Individuele boekingen");
+           boekingenList.add("Groepsboekingen");
 
+           for (Iterator bit = boekingenList.iterator();bit.hasNext();) {
 
-     staticLabel = new Label(0,6,"Individuele boekingen");
-     sheet.addCell(staticLabel);
+             String boekingenName = (String)bit.next();
+             boolean isGroups = boekingenName.equals("Groepsboekingen");
+             staticLabel = new Label(0,currentRow,boekingenName);
+             sheet.addCell(staticLabel);
+             currentRow++;
 
-         int maxRow = 0;
+             TreeMap evTypes = getEvenementenTypes(cloud, isGroups);
 
-         int[] total = new int[] {0,0,0,0,0};
-         jxl.write.Number nValue = null;
+             int maxRow = 0;
+             int[] total = new int[] {0,0,0,0,0};
+             Map deelnemers = new HashMap();
+             jxl.write.Number nValue = null;
 
-         int j = 1; // *** columns ***
-         Iterator i = alStatstypes.iterator();
-         while (i.hasNext()){
-            String sStatsType = (String)i.next();
-            TreeMap tmAllStats = os.getStatistics(cloud,fromTime,toTime,period,afdelingName,sStatsType, false); // not groups
-            Set set = tmAllStats.entrySet();
-            Iterator it = set.iterator();
-            int k = 7; // *** rows ***
-            while (it.hasNext()){
-               Map.Entry me = (Map.Entry)it.next();
-               String sListTypeName = (String) me.getKey();
+             int j = 1; // *** columns ***
+             Iterator i = alStatstypes.iterator();
+             while (i.hasNext()) {
+               String sStatsType = (String)i.next();
+               TreeMap tmAllStats = os.getStatistics(cloud,fromTime,toTime,period,afdelingName,sStatsType,evTypes);
+               Set set = tmAllStats.entrySet();
+               Iterator it = set.iterator();
+               int k = currentRow; // *** rows ***
+               while (it.hasNext()){
+                 Map.Entry me = (Map.Entry)it.next();
+                 String sListTypeName = (String) me.getKey();
 
-               if (j==1) { // print name of event types
-                  Label lListTypeName = new Label(0,k,sListTypeName,wrappedText);
-                  sheet.addCell(lListTypeName);
-               }
+                 if (j==1) { // print name of event types
+                   Label lListTypeName = new Label(0,k,sListTypeName,wrappedText);
+                   sheet.addCell(lListTypeName);
+                 }
 
-               Integer sValue = (Integer) me.getValue();
-               if (sValue.intValue()!=0){
+                 Integer sValue = (Integer) me.getValue();
+                 if (sValue.intValue()!=0) {
                  int value = sValue.intValue();
+
                  if(sStatsType.equals("opbrengst")) {
                    value = value/100;
                  }
-                 total[j-1] += value;
-                 nValue = new jxl.write.Number(j, k, value);
-                 sheet.addCell(nValue);
-               }
 
-               k++;
+                 if(sStatsType.equals("deelnemers")) {
+                   deelnemers.put(sListTypeName, sValue);
+                 }
+
+                 if(sStatsType.equals("leden")) {
+                  int deelnemersValue = ((Integer)deelnemers.get(sListTypeName)).intValue();
+                  if (deelnemersValue!=0)
+                    value = value * 100 / deelnemersValue;
+                  else
+                    value = 0;
+                }
+
+                total[j-1] += value;
+                nValue = new jxl.write.Number(j, k, value);
+                sheet.addCell(nValue);
+              }
+
+              k++;
             }
             // print TOTAL
             if (j==1) {
-              staticLabel = new Label(0,k,"TOTAL");
-              sheet.addCell(staticLabel);
-            }
-            nValue = new jxl.write.Number(j, k, total[j-1]);
-            sheet.addCell(nValue);
-            maxRow = (k>maxRow) ? k : maxRow;
-            j++;
+               staticLabel = new Label(0,k,"TOTAAL");
+               sheet.addCell(staticLabel);
+             }
+             nValue = new jxl.write.Number(j, k, total[j-1]);
+             sheet.addCell(nValue);
+             maxRow = (k>maxRow) ? k : maxRow;
+             j++;
+           }
+           currentRow =  maxRow + 2; //  add an extra empty row between categories
          }
 
-         maxRow += 1; // pass one row
-
-         total = new int[] {0,0,0,0,0};
-
-         staticLabel = new Label(0,maxRow++,"Groepsboekingen");
-         sheet.addCell(staticLabel);
-
-         j = 1; // *** columns ***
-         i = alStatstypes.iterator();
-         while (i.hasNext()){
-          String sStatsType = (String)i.next();
-          TreeMap tmAllStats = os.getStatistics(cloud,fromTime,toTime,period,afdelingName,sStatsType, true); // not groups
-          Set set = tmAllStats.entrySet();
-          Iterator it = set.iterator();
-          int k = maxRow; // *** rows ***
-          while (it.hasNext()){
-             Map.Entry me = (Map.Entry)it.next();
-             String sListTypeName = (String) me.getKey();
-
-             if (j==1) { // print name of event types
-                Label lListTypeName = new Label(0,k,sListTypeName,wrappedText);
-                sheet.addCell(lListTypeName);
-             }
-
-             Integer sValue = (Integer) me.getValue();
-             if (sValue.intValue()!=0){
-               int value = sValue.intValue();
-               if(sStatsType.equals("opbrengst")) {
-                 value = value/100;
-               }
-               total[j-1] += value;
-               nValue = new jxl.write.Number(j, k, value);
-               sheet.addCell(nValue);
-             }
-
-             k++;
-          }
-          // print TOTAL
-          if (j==1) {
-            staticLabel = new Label(0,k,"TOTAL");
-            sheet.addCell(staticLabel);
-          }
-          nValue = new jxl.write.Number(j, k, total[j-1]);
-          sheet.addCell(nValue);
-          j++;
        }
 
-         }
-
-         workbook.write();
-         workbook.close();
+       workbook.write();
+       workbook.close();
 
          String sFile = NatMMConfig.tempDir + fileName;
          File f = new File(sFile);
