@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
@@ -20,22 +21,37 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if node may be changed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayWriteTag.java,v 1.9 2004-07-19 15:25:54 michiel Exp $
+ * @version $Id: MayWriteTag.java,v 1.10 2006-04-11 22:55:09 michiel Exp $
  */
 
 public class MayWriteTag extends NodeReferrerTag implements Condition {
 
     protected Attribute inverse = Attribute.NULL;
+    protected Attribute number = Attribute.NULL;
 
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
+    }
+    public void setNumber(String n) throws JspTagException {
+        number = getAttribute(n);
     }
     protected boolean getInverse() throws JspTagException {
         return inverse.getBoolean(this, false);
     }
 
+    protected Node getNodeToCheck() throws JspTagException {
+        Node node;
+        String n  = number.getString(this);
+        if ("".equals(n)) {
+            node = getNode();
+        } else {
+            node = getCloudVar().getNode(n);
+        }
+        return node;
+    }
+
     public int doStartTag() throws JspTagException {
-        if ((getNode().mayWrite()) != getInverse()) {
+        if ((getNodeToCheck().mayWrite()) != getInverse()) {
             return EVAL_BODY;
         } else {
             return SKIP_BODY;
