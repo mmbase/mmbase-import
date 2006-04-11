@@ -26,6 +26,8 @@ Once you pass the vote you can start using the space, but other commitors can as
 
 A good contribution does its best to follow the MMBase build system and work on the head cvs of mmbase or atleast the last released version. If possible it should also follow the normal install methods (See PACKAGE-README.txt) or provide clear instructions in english in its README.txt how to use it. Unlike in applications these are not demands but we prefer it so others have some idea how to use or understand your contribution.
 
+A more formal reading of these rules is explained in : http://www.mmbase.org/mmdocs18/3rdparty.html
+
 Thank you for sharing your work,
 
 The MMBase Community.
