@@ -35,7 +35,7 @@
 				</mm:node> 				
 						<td><a href='javascript:clickNodePortal("portal_child_<%=nbc%>")'><img src="gfx/adds/tree_plus.gif" border="0" align="middle" id='img_portal_child_<%=nbc%>'/></a></td>
 						<td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_portal_child_<%=nbc%>'/></td>
-						<td><a href='<mm:write referid="wizardjsp"/>&wizard=config/portalpages/portalpagesnodes&objectnumber=<mm:field name="number"/>' title="edit" target="text"><mm:field name="name"/></a></td>				 	
+						<td><a href='<mm:write referid="wizardjsp"/>&wizard=config/portalpages/leafportalpagesnodes&objectnumber=<mm:field name="number"/>' title="edit" target="text"><mm:field name="name"/></a></td>				 	
 		</tr>
 		</table> 
 		<div id='portal_child_<%=nbc%>' style="display:none">		 		

@@ -152,7 +152,10 @@
 														      <%}%>														      
 														      <td><img src="gfx/adds/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>													      
 														      <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-														      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/portalpages/newportalpagesnodes&objectnumber=<mm:write referid="this"/>' title="nieuwe map" target="text">nieuwe map</a></nobr></td>
+                                  <%-- 
+														      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/portalpages/portalpagesnodes&objectnumber=<mm:write referid="this"/>' title="nieuwe map" target="text">nieuwe map</a></nobr></td>
+                                  --%>
+                                  <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/portalpages/leafmapportalpagesnodes-origin&origin=<mm:write referid="this"/>&objectnumber=new' title="nieuwe map" target="text">nieuwe map</a></nobr></td>
 														   </tr>
 														</table> 		
 														<table border="0" cellpadding="0" cellspacing="0">
