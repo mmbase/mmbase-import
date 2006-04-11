@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.353 2006-04-11 22:56:02 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.354 2006-04-11 23:29:31 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -7677,6 +7677,30 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="fieldinfo" />
     <see tag="valid" />
     <since>MMBase-1.8</since>
+    <attribute>
+      <name>mode</name>
+      <required>false</required>
+      <possiblevalue>
+        <value>url</value>
+        <info>An URL is made available in the body (can be write in action of a form-tag</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>form</value>
+        <info>Produces a form-tag with the correct attribute (default)</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>validate</value>
+        <info>Does nothing, besides communicating with mm:fieldinfo's and mm:valid's.</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>page</name>
+      <required>false</required>
+      <info>
+        to use in action attribute of produces mm:form.
+      </info>
+      <see tag="url" attribute="page" />
+    </attribute>
   </tag>
   <tag>
     <name>valid</name>

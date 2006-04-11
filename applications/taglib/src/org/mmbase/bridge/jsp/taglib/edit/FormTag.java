@@ -23,22 +23,69 @@ import javax.servlet.jsp.JspTagException;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.2 2006-02-10 18:05:13 michiel Exp $
+ * @version $Id: FormTag.java,v 1.3 2006-04-11 23:29:31 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class FormTag extends TransactionTag implements Writer {
 
+    private Attribute mode = Attribute.NULL;
+    private int m;
+
+    private Attribute page = Attribute.NULL;
+
+    public static final int MODE_HTML_FORM       = 0;
+    public static final int MODE_URL             = 1;
+    public static final int MODE_VALIDATE        = 2;
+
+
     protected boolean valid = true;
     public void setValid(boolean valid) {
         this.valid = valid;
     }
-
     public boolean isValid() {
         return valid;
     }
 
+    public void setMode(String m) throws JspTagException {
+        mode = getAttribute(m);
+    }
+
+    private int getMode() throws JspTagException {
+        String m = mode.getString(this).toLowerCase();
+        if (m.equals("") || m.equals("form")) {
+            return MODE_HTML_FORM;
+        } else if (m.equals("url")) {
+            return MODE_URL;
+        } else if (m.equals("validate")) {
+            return MODE_VALIDATE;
+        } else {
+            throw new JspTagException("Value '" + m + "' not known for 'mode' attribute");
+        }
+    }
+
+
+    public void setPage(String p) throws JspTagException {
+        page = getAttribute(p);
+    }
+
+
     public int doStartTag() throws JspTagException {
+        m = getMode();
+        switch(m) {
+        case MODE_URL:
+            helper.setValue(page.getString(this));
+            break;
+        case MODE_HTML_FORM:
+            String url = page.getString(this);
+            String id = getId();
+            try {
+                pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") + "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\">");
+            } catch (java.io.IOException ioe) {
+                throw new TaglibException(ioe);
+            }
+            break;
+        }
         valid = true;
         return super.doStartTag();
     }
@@ -49,6 +96,14 @@ public class FormTag extends TransactionTag implements Writer {
                 transaction.commit();
             } else {
                 transaction.cancel();
+            }
+        }
+        switch(m) {
+        case MODE_HTML_FORM:
+            try {
+                pageContext.getOut().write("</form>");
+            } catch (java.io.IOException ioe) {
+                throw new TaglibException(ioe);
             }
         }
         if (getId() != null) {
