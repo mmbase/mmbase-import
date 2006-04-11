@@ -190,6 +190,7 @@ if(adID.equals("-1")) {
           </form>
         </table>
         <%@include file="includes/mailtoafriend.jsp" %>
+        <br/>
         <jsp:include page="../includes/teaser.jsp">
             <jsp:param name="s" value="<%= paginaID %>" />
             <jsp:param name="r" value="<%= rubriekID %>" />
