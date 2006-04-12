@@ -26,9 +26,13 @@ public class DataTypesTest extends BridgeTest {
     public DataTypesTest(String name) {
         super(name);
     }
-    protected static Object[] cases;
-    static  {
-        try {
+    protected static Object[] cases = null;
+    
+    public void setUp() throws Exception {
+        if (cases == null) {
+            Cloud cloud = getCloud();
+            Node node1 = cloud.getNodeManager("datatypes");
+            Node node2 = cloud.getList(cloud.getNodeManager("object").createQuery()).getNode(0);
             cases = new Object[] {
                 /* {field    {valid values}   {invalid values}} */
                 new Object[] {"string",
@@ -93,12 +97,13 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
                 new Object[] {"boolean_string",
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", null},
-                              new Object[] { "asjdlkf", "21", new Integer(10)}
+                              new Object[] { "asjdlkf", "21", new Integer(10)}},
+                new Object[] {"node",
+                              new Object[] {node1, node2, null},
+                              new Object[] {"asjdlkf", new Integer(-1), new Integer(-100), new Float(2.0)}
                 }
 
             };
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
         }
     }
 
@@ -257,8 +262,13 @@ public class DataTypesTest extends BridgeTest {
             Field field = iterator.nextField();
             DataType dt = (BasicDataType) field.getDataType().clone();
             dt.setRequired(true);
-            Collection errors = field.getDataType().validate(null);
-            assertTrue(errors.size() > 0);
+            dt.finish("bla");
+
+            assertTrue(dt.isRequired());
+            assertEquals(dt.getRequiredRestriction().getValue(), Boolean.TRUE);
+            assertFalse(dt.getRequiredRestriction().valid(null, null, null));
+            Collection errors = dt.validate(null);
+            assertTrue("According to " + dt + " null should be invalid, but it was", errors.size() > 0);
         }
     }
 
