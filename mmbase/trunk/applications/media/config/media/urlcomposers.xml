@@ -12,6 +12,8 @@
   <urlcomposer format="*" >org.mmbase.applications.media.urlcomposers.MarkupURLComposer</urlcomposer>
 
   <urlcomposer format="mov" >org.mmbase.applications.media.urlcomposers.URLComposer</urlcomposer>
+  <urlcomposer format="wav" >org.mmbase.applications.media.urlcomposers.URLComposer</urlcomposer>
+  <urlcomposer format="mp3" >org.mmbase.applications.media.urlcomposers.URLComposer</urlcomposer>
 
   <urlcomposer format="ra"  protocol="rtsp">org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
   <urlcomposer format="rm"  protocol="rtsp">org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
@@ -24,6 +26,22 @@
   <urlcomposer format="ra"  protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
   <urlcomposer format="rm"  protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
   <urlcomposer format="asf" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
+  <urlcomposer format="wmv" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
+  <urlcomposer format="wma" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
+  <urlcomposer format="wax" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
+  <urlcomposer format="wmx" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
+  <urlcomposer format="wmd" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
+
+
+  <urlcomposer format="ra"  protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
+  <urlcomposer format="rm"  protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
+  <urlcomposer format="asf" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
+  <urlcomposer format="wmv" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
+  <urlcomposer format="wma" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
+  <urlcomposer format="wax" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
+  <urlcomposer format="wmx" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
+  <urlcomposer format="wmd" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
+
 
 
   <urlcomposer format="ra"  protocol="http">org.mmbase.applications.media.urlcomposers.omroep.RealSbURLComposer</urlcomposer>
