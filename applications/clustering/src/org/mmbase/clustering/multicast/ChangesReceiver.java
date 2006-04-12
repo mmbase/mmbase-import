@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.9 2006-04-02 11:59:38 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.10 2006-04-12 14:47:28 pierre Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -95,13 +95,14 @@ public class ChangesReceiver implements Runnable {
      */
     public void stop() {
         /* Stop thread */
+        MulticastSocket closingMS = ms; // for closing the socket while the thread stops
+        ms = null; // the criteria for stopping thread
         try {
-            ms.leaveGroup(ia);
-            ms.close();
+            closingMS.leaveGroup(ia);
+            closingMS.close();
         } catch (Exception e) {
             // nothing
         }
-        ms = null;
         kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
     }
@@ -142,8 +143,9 @@ public class ChangesReceiver implements Runnable {
                 }
                 nodesToSpawn.append(message);
             } catch (java.net.SocketException se) {
-                // happens on shutdown
-                log.service(se.getMessage());
+                // generally happens on shutdown (ms==null)
+                // if not log it as an error
+                if (ms != null) log.error(se.getMessage());
             } catch (Exception f) {
                 log.error(Logging.stackTrace(f));
             }
