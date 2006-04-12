@@ -46,7 +46,7 @@ long oneDay = 24*60*60;
                constraints="<%= objectConstraint %>">
              <div style="padding-bottom:10px">
                <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
-                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" directions="UP" max="1">
+                 <mm:relatednodes type="images" path="posrel,images" constraints="posrel.pos='1'">
                    <tr>
                      <td><img src='<mm:image template="s(170)+part(0,0,170,98)" />'></td>
                    </tr>
@@ -73,7 +73,7 @@ long oneDay = 24*60*60;
                constraints="<%= objectConstraint %>">
              <div style="padding-bottom:10px">
                <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
-                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" directions="UP" max="1">
+                 <mm:relatednodes type="images" path="posrel,images" constraints="posrel.pos='1'">
                    <tr>
                      <td><img src='<mm:image template="s(170)+part(0,0,170,98)" />'></td>
                    </tr>
@@ -97,7 +97,7 @@ long oneDay = 24*60*60;
                constraints="<%= objectConstraint %>">
              <div style="padding-bottom:10px">
                <table cellSpacing="0" cellPadding="0" style="vertical-align:top;width:170px;border-color:828282;border-width:1px;border-style:solid">
-                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" directions="UP" max="1">
+                 <mm:relatednodes type="images" path="posrel,images" constraints="posrel.pos='1'">
                    <tr>
                      <td><img src='<mm:image template="s(170)+part(0,0,170,98)" />'></td>
                    </tr>
@@ -138,7 +138,7 @@ long oneDay = 24*60*60;
             <table cellspacing="0" cellpadding="0" style="vertical-align:top;width:350px">
             <tr align="left" valign="top">
                <td <% if(!text.equals("")) { %>style="width:170px;"<% } %>>
-                 <mm:relatednodes type="images" path="posrel,images" orderby="posrel.pos" directions="DOWN" max="1">
+                 <mm:relatednodes type="images" path="posrel,images" constraints="posrel.pos='2'">
                    <img src="<mm:image template="s(170)" />"><br>
                  </mm:relatednodes>
                  <div style="padding-left:6px;padding-top:8px;">
