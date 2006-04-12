@@ -3,6 +3,9 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" version="1.2">
   <mm:content type="text/css">
+    <mm:url write="false" id="back"   page="/mmbase/style/images/back.gif" />
+    <mm:url write="false" id="create" page="/mmbase/style/images/create.gif" />
+
 @import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
 body { 
   margin: 0px 0px 0px 0px;
@@ -41,5 +44,18 @@ td {
 span.currentpage { 
   font: larger bold;
 }
+
+a span.navigate {
+ display: none;
+}
+
+a.create::before {
+ content: url(${create});
+}
+
+a.back::before {
+ content: url(${back});
+}
+
   </mm:content>
 </jsp:root>
