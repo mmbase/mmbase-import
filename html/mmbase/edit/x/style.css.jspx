@@ -18,8 +18,8 @@ table {
 }
 img { 
   border: none;
-  margin: 0px 0px 0p 0px;
-  padding: 0px 0px 0p 0px;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
 }
 
 #searchresult tbody tr:hover { 
@@ -38,6 +38,8 @@ h1 {
 td {
   vertical-align: top;
 }
-
+span.currentpage { 
+  font: larger bold;
+}
   </mm:content>
 </jsp:root>

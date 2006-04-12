@@ -5,9 +5,6 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page session="true" />
-  <jsp:output doctype-root-element="html"
-              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
 
   <mm:include page="head.jspx" />
   <jsp:directive.include file="buttons.jspx" />
@@ -89,7 +86,7 @@
                         </mm:link>
                         <jsp:text>, </jsp:text>
                       </mm:previousbatches>
-                      <span style="font: larger bold;"><mm:index /></span>
+                      <span class="currentpage"><mm:index /></span>
                       <mm:nextbatches max="10">
                         <jsp:text>, </jsp:text>
                         <mm:link referids="_@offset" referid="base">
