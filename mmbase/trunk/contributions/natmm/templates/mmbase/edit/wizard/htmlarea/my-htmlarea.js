@@ -49,7 +49,9 @@ myCreateLinkAction = function(editor) {
   /* hh: changed from == into: description != "" */
   if (description != "") {
     var firstParent = true;
-    parentElement = editor.getParentElement();
+    /* hh: changed to more precisely fetch the url, implemented by A. Zemskov */
+//    parentElement = editor.getParentElement();
+    parentElement = editor.getNearestAElement();
     while (parentElement.nodeName.toLowerCase() != "a" && parentElement.nodeName.toLowerCase() != "body") {
       parentElement = parentElement.parentNode;
       firstParent = false;
@@ -163,7 +165,7 @@ function updateValue(editor) {
   value = editor.getHTML()
   // These two lines could cause editors to complain about responsetime
   // when they leave a form with many large htmlarea fields.
-  // this is the case when doCheckHtml() is called by the editwizard.jsp with 
+  // this is the case when doCheckHtml() is called by the editwizard.jsp with
   // doSave, doSaveOnly, gotoForm and doStartWizard
   // hh: value = wizardClean(value);
   // hh: value = clean(value);
@@ -188,7 +190,7 @@ function updateValue(editor) {
 }
 
 function wizardClean(value) {
-// editors in IE will maybe complain that it is very messy with 
+// editors in IE will maybe complain that it is very messy with
 // <strong> and <b> tags mixed when they edit, but without this function
 // they would also do when others would use Gecko browsers.
 // Now we are backwards compatible with the old editwizard wysiwyg and the
@@ -203,7 +205,7 @@ function wizardClean(value) {
   //replace <BR> by <BR/>
   value = value.replace(/<BR>/gi, "<br/>");
   value = value.replace(/<br>/gi, "<br/>");
-  
+
   return value;
 }
 
@@ -223,7 +225,7 @@ function clean(value) {
   value = value.replace(/<\/?\w+:[^>]*>/gi, "");
   // Replace the &nbsp;
   value = value.replace(/&nbsp;/, " " );
-  
+
   return value;
 }
 
