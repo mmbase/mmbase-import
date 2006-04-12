@@ -2,14 +2,11 @@
 <mm:cloud name="mmbase" loginpage="login.jsp" rank="basic user" jspvar="cloud">
 <html>
 <head>
-<title>MMBase editors (ingelogd als <%= cloud.getUser().getIdentifier() %>)</title>
+<title>MMBase editors (ingelogd als <%= "" + cloud.getUser()%>)</title>
 </head>
 <frameset cols="250,*" frameborder="0" border="0">
 	<frame src="nav.jsp" name="nav">
-	<frameset rows="90,*" frameborder="0" border="0" name="page">
-		<frame src="select.jsp" name="search" scrolling="no">
-		<frame src="empty.jsp" name="wizard">
-	</frameset>
+	<frame src="empty.jsp" name="wizard">
 </frameset>
 </html>
 </mm:cloud>
