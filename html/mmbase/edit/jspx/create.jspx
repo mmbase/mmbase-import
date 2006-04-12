@@ -6,7 +6,7 @@
   <jsp:directive.page session="true" />
   <mm:include page="head.jspx" />
   <body>
-    <mm:content type="application/xhtml+xml" language="en" expires="0">
+    <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
       <mm:cloud rank="basic user">
         <mm:import externid="ok" />
         <mm:import externid="nodemanager" required="true" />

@@ -8,7 +8,7 @@
   <mm:include page="head.jspx" />
 
   <body>
-    <mm:content type="application/xhtml+xml" language="en" expires="0">
+    <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
       <mm:cloud rank="basic user">
 
         <mm:import externid="node" required="true" />
@@ -22,7 +22,7 @@
             <mm:nodeinfo type="gui" />
           </h1>
 
-          <mm:form>
+          <mm:form id="changeform">
             <input type="hidden" name="node" value="${_node}" />
             <table>
               <tbody>

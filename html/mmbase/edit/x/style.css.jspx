@@ -3,8 +3,11 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" version="1.2">
   <mm:content type="text/css">
-    <mm:url write="false" id="back"   page="/mmbase/style/images/back.gif" />
-    <mm:url write="false" id="create" page="/mmbase/style/images/create.gif" />
+
+    <mm:url write="false" id="back"   page="/mmbase/style/images/back.png" />
+    <mm:url write="false" id="create" page="/mmbase/style/images/create.png" />
+    <mm:url write="false" id="search" page="/mmbase/style/images/search.png" />
+    <mm:url write="false" id="ok"     page="/mmbase/style/images/ok.png" />
 
 @import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
 body { 
@@ -26,8 +29,17 @@ img {
 }
 
 #searchresult tbody tr:hover { 
-  background-color: yellow;
   cursor: pointer;
+}
+#searchresult tbody tr.odd:hover { 
+  background-color: #e0f0e0;
+}
+#searchresult tbody tr.even:hover { 
+  background-color: #d8e8d8;
+}
+
+.mm_check_error {
+  background-color: #f0e0e0;
 }
 
 input.small, input.big, textarea { 
@@ -55,6 +67,9 @@ a.create::before {
 
 a.back::before {
  content: url(${back});
+}
+a.search::before{
+ content: url(${search});
 }
 
   </mm:content>

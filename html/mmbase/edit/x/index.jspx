@@ -8,7 +8,7 @@
 
   <mm:include page="head.jspx" />
   <body>
-    <mm:content type="application/xhtml+xml" language="en" expires="0">
+    <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
       <mm:cloud rank="basic user">
         <mm:import externid="nodemanager">object</mm:import>
 
@@ -17,7 +17,7 @@
             <thead>
               <tr>
                 <th colspan="2">
-                  <select name="nodemanager" onchange="document.getElementById('searchform').submit();">
+                  <select name="nodemanager" onchange="this.form.submit();">
                     <mm:listnodes type="typedef" comparator="NATURAL">
                       <mm:hasnodemanager name="${_node.name}">
                         <c:choose>
@@ -31,7 +31,7 @@
                       </mm:hasnodemanager>
                     </mm:listnodes>
                   </select>
-                  <input type="submit" name="ok" value="ok" />
+                  <input type="submit"  name="ok" value="ok" />
                   <mm:link referids="nodemanager" page="create.jspx">
                     <a href="${_}" class="create"><span class="navigate">create</span></a>
                   </mm:link>
@@ -58,16 +58,18 @@
             <mm:import externid="sortdirections">down</mm:import>
             <mm:sortorder field="$sortfields" direction="$sortdirections" />
 
+            <mm:link id="base" page="." referids="nodemanager">
+              <mm:fieldlist nodetype="$nodemanager" type="search">
+                <mm:fieldinfo type="reusesearchinput" />
+                <mm:fieldinfo type="usesearchinput" />
+              </mm:fieldlist>
+            </mm:link>
+
             <mm:size id="size" write="false" />
 
             <mm:maxnumber value="$pagesize" />
             <mm:offset    value="$offset" />
 
-            <mm:link id="base" page="." referids="nodemanager">
-              <mm:fieldlist nodetype="$nodemanager" type="search">
-                <mm:fieldinfo type="reusesearchinput" />
-              </mm:fieldlist>
-            </mm:link>
 
             <thead>
               <tr class="paging">
@@ -97,7 +99,6 @@
               <tr class="head">
                 <th>#</th>
                 <mm:fieldlist nodetype="$nodemanager" type="list">
-                  <mm:fieldinfo type="usesearchinput" />
                   <th><mm:fieldinfo type="guiname" /></th>
                 </mm:fieldlist>
               </tr>
