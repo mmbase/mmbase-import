@@ -12,20 +12,22 @@ package org.mmbase.bridge.jsp.taglib.util;
 
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
+import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import javax.servlet.jsp.PageContext;
 import java.util.*;
+import java.text.Collator;
 
 /**
  * A helper class for Lists, to implement an attribute 'comparator'
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListSorter.java,v 1.6 2006-03-28 20:32:40 michiel Exp $
+ * @version $Id: ListSorter.java,v 1.7 2006-04-12 14:51:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ListSorter  {
 
 
-    public static List sort(List list, String comparator, PageContext pageContext) throws JspTagException {
+    public static List sort(List list, String comparator, ContextReferrerTag tag) throws JspTagException {
         if (comparator != null) {
             if (comparator.equals("SHUFFLE")) {
                 Collections.shuffle(list);
@@ -34,9 +36,12 @@ public class  ListSorter  {
             }  else if (comparator.equals("NATURAL")) {
                 Collections.sort(list);
             }  else if (comparator.equals("CASE_INSENSITIVE")) {
-                Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
+                Collator col = Collator.getInstance(tag.getLocale());
+                col.setStrength(Collator.PRIMARY);
+                Collections.sort(list, col);
             } else {
                 try {
+                    PageContext pageContext = tag.getPageContext();
                     Class claz = null;
                     boolean pageClass = false;
                     if (comparator.indexOf(".") == -1) {

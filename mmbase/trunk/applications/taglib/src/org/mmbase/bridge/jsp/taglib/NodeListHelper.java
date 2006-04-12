@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.20 2006-02-15 09:36:50 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.21 2006-04-12 14:51:40 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -217,7 +217,7 @@ public class NodeListHelper implements ListProvider {
                 nodes.remove((Casting.toNode(removeObject, cloud)));
             }
         }
-        ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag.getPageContext());
+        ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag);
 
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
             int currentSize = nodes.size();

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.354 2006-04-11 23:29:31 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.355 2006-04-12 14:51:40 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5984,7 +5984,7 @@ The 0 is just counter, which starts at 0 on every page.
         probably just as well use only an mm:content.
       </p>
       <p>
-	The exceptional value 'client' for the 'language' will set the locale to the preference specified by the client.
+        The exceptional value 'client' for the 'language' will set the locale to the preference specified by the client.
       </p>
     </info>
     <attribute>
