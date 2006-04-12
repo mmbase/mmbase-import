@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Function sets</title>
     <date>2006-04-2006</date>
-    <edition>$Id: functionsets.xml,v 1.3 2006-04-11 23:26:26 daniel Exp $</edition>
+    <edition>$Id: functionsets.xml,v 1.4 2006-04-12 22:22:56 daniel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname><surname>Ockeloen</surname>
@@ -141,6 +141,105 @@ and its jsp pages in mmbase/mmadmin/.
 	Next we can define one or more parameters in this case one so the end result will be of this function configuration will be that
 	&lt;mm:function set="util" name="getPassword" referid="template" /&gt;  will be mapped to the method String getPassword(String template) 
 	inside the class orf.mmbase.util.PasswordGenerator.
+	</para>
+   </section>
+      <section>
+    <title>Working with nodes and and nodelists</title>
+	<para>
+	One of the advantages of the function framework is that you can not only return objects like booleans or strings but also MMBase nodes
+	or lists of nodes. In this way you can make function that work like a &lt;mm:node or &lt;mm:nodelist but have their own selection method. 
+	For example we could make a function like :
+	<programlisting>
+	        &lt;mm:functionnode set="util" name="getRandomNode"&gt;
+                object number : &lt;mm:field name="number" /&gt;
+                object type : &lt;mm:field name="otype" /&gt;
+                object owner : &lt;mm:field name="owner" /&gt;
+        &lt;/mm:functionnode&gt;
+	</programlisting>
+	In the java code you just return a bridge or core node like
+	<programlisting>
+	        public MMObjectNode getRandomNode() {
+                return cloud.getRandomNode(randomnumber); // none working code
+        }
+	</programlisting>	
+	</para>
+	<para>
+	The same is possible with lists :
+	 <programlisting>
+	         &lt;mm:functionnodelist set="util" name="getRandomNodes"&gt;
+                object number : &lt;mm:field name="number" /&gt;
+                object type : &lt;mm:field name="otype" /&gt;
+                object owner : &lt;mm:field name="owner" /&gt;
+             &lt;/mm:functionnodelist&gt;
+	 </programlisting>	
+	 Again in java the method could look like this :
+	 <programlisting>
+	   public List getRandomNodes() {
+                List list =  new ArrayList();
+                list.add(cloud.getRandomNode(randomnumber)); // none working code
+                list.add(cloud.getRandomNode(randomnumber2)); // none working code
+                list.add(cloud.getRandomNode(randomnumber3)); // none working code
+                retun list;
+        }
+     </programlisting>	
+	</para>
+	<para>
+	Its also possible to use virtual nodes in functions, this opens up a interesting uses in that it allows you to return any information in the 
+	form of mmbase objects. The main advantage of this that the frontend programmers can use the tools they already know for handling nodes, fields 
+	and lists for example we could return some information as a mmbase node like this :
+	<programlisting>
+	        public MMObjectNode getOSInfo() {
+                Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase");
+                MMObjectNode virtual = builder.getNewNode("admin");
+                virtual.setValue("hardware", System.getProperty("os.arch");
+                virtual.setValue("os", System.getProperty("os.name");
+                virtual.setValue("version", System.getProperty("os.version");
+                return virtual;
+        }
+    </programlisting>	
+	We can use this from the taglibs like we do with normal nodes
+	<programlisting>
+	        &lt;mm:nodefunction set="mySet" name="getOSInfo"&gt;
+                So you use &lt;mm:field name="hardware" /&gt;
+                &lt;mm:field name="os"&gt;
+                        &lt;mm:compare value="osx"&gt;
+                                and i guess you don't like Bill Gates.
+                        &lt;/mm:compare&gt;
+                        &lt;mm:compare value="windowsxp"&gt;
+                                and i guess you don't like Steve Jobs.
+                        &lt;/mm:compare&gt;
+                &lt;/mm:field&gt;
+        &lt;/mm:nodefunction&gt;
+	 </programlisting>
+	</para>
+	<para>
+	We can also use this for lists for example we could make a list of accounts from a ldap server that acts 
+	like any normal mmbase list (made up code for the ldap parts).
+	<programlisting>
+	        public List getAccounts(String searchkey) {
+                Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase");
+                List list =  new ArrayList();
+                // fill the list from the ldap server, using a while
+                Iterator i = ldap.getAccounts(searchkey);
+                while (i.hasNext()) {
+                        NextLDAP user = (NextLDAP)i.next();
+                        MMObjectNode virtual = builder.getNewNode("admin");
+                        virtual.setValue("account", user.getAccount();
+                        virtual.setValue("firstname", user.getFirstName();
+                        virtual.setValue("surname", user.getSurName();
+                        list.add(virtual);
+                }
+       }
+	</programlisting>
+	From the taglib we can work with this list like we can work with any other nodelist :
+	<programlisting>
+	        &lt;mm:nodelistfunction set="mySet" name="getUsers" referid="searchkey"&gt;
+                &lt;mm:first&gt;The first user found&lt;/mm:first&gt;
+                &lt;mm:last&gt;The last user found&lt;/mm:last&gt;
+                &lt;mm:field name="account" /&gt; (&lt;mm:field name="firstname" /&gt; &lt;mm:field name="surname" /&gt;)&lt;br /&gt;
+        &lt;/mm:nodelistfunction&gt;
+	</programlisting>
+	As you can see all the normal mmbase tags can be applied, The frontend programmer doesn't have to know the content is not coming from mmbase at all.
 	</para>
    </section>
 </article>
