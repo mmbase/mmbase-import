@@ -34,10 +34,9 @@
 		<mm:field name="editwizards.url" jspvar="editwizards_url" vartype="String" write="false">
 		<% 	editwizards_url = editwizards_url.trim();
 			if(editwizards_url.indexOf("list.jsp")==-1) { %>
-			<tr><td><a href="select.jsp" target="search"
-					onClick='parent.wizard.location.href="<mm:url referids="referrer" page="<%= editwizards_url %>" />"'
+			<tr><td><a href="<mm:url referids="referrer" page="<%= editwizards_url %>" />" target="wizard"
 				><mm:field name="editwizards.title" /></a></td></tr>
-		<% } else { 
+		<% } else { // wizard.jsp
 			%><mm:node element="editwizards"
 				><mm:related path="templates"
 					><mm:first><% editwizards_url += "&startnodes="; %></mm:first
@@ -48,8 +47,7 @@
 				></mm:related
 			></mm:node>
 			<tr><td>
-			<a href="select.jsp?editwizard=<mm:field name="editwizards.number" />" target="search"
-					onClick='parent.wizard.location.href="<mm:url referids="referrer" page="<%= editwizards_url %>" />"' 
+			<a href="<mm:url referids="referrer" page="<%= editwizards_url %>" />" target="wizard"
 				><mm:field name="editwizards.title" /></a>&nbsp;&nbsp;&nbsp;
 			</td></tr>
 		<% } %>
