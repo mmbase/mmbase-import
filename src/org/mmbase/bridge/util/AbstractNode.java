@@ -13,6 +13,8 @@ package org.mmbase.bridge.util;
 import java.util.*;
 import java.io.*;
 
+import java.text.Collator;
+
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicFieldValue;
 import org.mmbase.datatypes.DataType;
@@ -29,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.11 2006-04-12 06:51:09 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.12 2006-04-12 12:19:06 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -554,7 +556,9 @@ public abstract class AbstractNode implements Node {
         } else {
             s2 = n.getFunctionValue("gui", null).toString();
         }
-        int res = s1.toLowerCase().compareTo(s2.toLowerCase());
+        Collator col = Collator.getInstance(getCloud().getLocale());
+        col.setStrength(Collator.PRIMARY);
+        int res = col.compare(s1, s2);
         if (res != 0) {
             return res;
         } else {
