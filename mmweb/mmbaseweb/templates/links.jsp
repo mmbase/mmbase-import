@@ -14,7 +14,7 @@
 <%-- related urls --%>
 <mm:node number="$page">
 <mm:relatednodescontainer type="urls" role="posrel">
-  <mm:sortorder field="urls.name" direction="DOWN" />
+  <mm:sortorder field="urls.number" direction="DOWN" />
   <mm:relatednodes>
 	<p><a href="<mm:field name="url" />"><mm:field name="name" /></a>
 	<mm:field name="description"><mm:isnotempty><br /><mm:write /></mm:isnotempty></mm:field></p>
