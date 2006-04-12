@@ -6,7 +6,6 @@
   <jsp:directive.page session="true" />
 
   <mm:include page="head.jspx" />
-  <jsp:directive.include file="buttons.jspx" />
 
   <body>
     <mm:content type="application/xhtml+xml" language="en" expires="0">
@@ -15,10 +14,10 @@
         <mm:import externid="node" required="true" />
         <mm:node referid="node">
 
-          <h1>          
+          <h1>
             <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
             <mm:link page="." referids="nodemanager">
-              <a href="${_}"><img alt="back" src="${back}" /></a>
+              <a href="${_}" class="back"><span class="navigate">back</span></a>
             </mm:link>
             <mm:nodeinfo type="gui" />
           </h1>
@@ -44,7 +43,7 @@
             <mm:present referid="ok">
               <mm:valid>
                 <mm:commit />
-                <jsp:text>Committed !</jsp:text>                  
+                <jsp:text>Committed !</jsp:text>
               </mm:valid>
             </mm:present>
           </mm:form>
