@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.23 2005-11-02 19:15:39 ernst Exp $
+ * @version $Id: Urls.java,v 1.24 2006-04-12 19:47:38 michiel Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Urls.class);
@@ -28,6 +28,7 @@ public class Urls extends MMObjectBuilder {
             if (str.indexOf("http://") == 0) {
                 str = str.substring(7);
             }
+            str = org.mmbase.util.transformers.Xml.XMLEscape(str);
         }
         return str;
     }
@@ -35,7 +36,10 @@ public class Urls extends MMObjectBuilder {
     public String getGUIIndicator(String field,MMObjectNode node) {
         if (field.equals("url")) {
             String url = node.getStringValue("url");
-            if (url != null) return "<a href=\"" + url + "\" target=\"extern\">" + url + "</a>";
+            if (url != null) {
+                url = org.mmbase.util.transformers.Xml.XMLEscape(url);
+                return "<a href=\"" + url + "\" target=\"extern\">" + url + "</a>";
+            }
         }
         return null;
     }
