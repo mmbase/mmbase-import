@@ -269,9 +269,16 @@
       </db>
     </field>
     
-     <field>
+    <field>
       <db>
         <name>node</name>
+        <type state="persistent">NODE</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>typedef</name>
         <type state="persistent">NODE</type>
       </db>
     </field>
@@ -350,6 +357,12 @@
       <db>
         <name>relevant_lastmodified</name>
         <type state="system">DATETIME</type>
+      </db>
+    </field>
+    <field>
+      <db>
+        <name>xml</name>
+        <type state="persistent" size="64000">XML</type>
       </db>
     </field>
   </fieldlist>

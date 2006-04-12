@@ -32,7 +32,12 @@ public class DataTypesTest extends BridgeTest {
         if (cases == null) {
             Cloud cloud = getCloud();
             Node node1 = cloud.getNodeManager("datatypes");
-            Node node2 = cloud.getList(cloud.getNodeManager("object").createQuery()).getNode(0);
+            NodeManager object = cloud.getNodeManager("object");
+            Node node2 = object.getList(object.createQuery()).getNode(0);
+            NodeManager aa = cloud.getNodeManager("aa");
+            Node node3 = aa.createNode();
+            node3.commit();
+
             cases = new Object[] {
                 /* {field    {valid values}   {invalid values}} */
                 new Object[] {"string",
@@ -99,9 +104,20 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", null},
                               new Object[] { "asjdlkf", "21", new Integer(10)}},
                 new Object[] {"node",
-                              new Object[] {node1, node2, null},
+                              new Object[] {node1, node2, new Integer(node1.getNumber()), new Integer(node2.getNumber()),  null},
+                              new Object[] {"asjdlkf", new Integer(-1), new Integer(-100)}}
+                /*,    
+                  not working, why not...
+                new Object[] {"typedef",
+                              new Object[] {node1, new Integer(node1.getNumber()),  null},
+                              new Object[] {"asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-1), new Integer(-100)}}
+
+                  XML not very well supported yet
+                new Object[] {"xml",
+                              new Object[] {"<p />",  null},
                               new Object[] {"asjdlkf", new Integer(-1), new Integer(-100), new Float(2.0)}
                 }
+                */
 
             };
         }
@@ -123,14 +139,16 @@ public class DataTypesTest extends BridgeTest {
             Object[] validValues = (Object[]) kase[1];
             Object[] invalidValues = (Object[]) kase[2];
             for (int j = 0; j < validValues.length; j++) {
-                Collection errors = field.getDataType().validate(validValues[j]);
+                field.getDataType().validate(validValues[j]); // should not give exception
+                Collection errors = field.getDataType().validate(validValues[j], null, field);
                 if(errors.size() != 0) {
-                    err.append("Field " + field + " value '" + validValues[j] + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
+                    err.append("Field " + field.getName() + " value '" + Casting.toString(validValues[j]) + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
                 }
             }
             for (int j = 0; j < invalidValues.length; j++) {
-                if (field.getDataType().validate(invalidValues[j]).size() == 0) {
-                    err.append("Field " + field + " value '" + invalidValues[j] + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
+                field.getDataType().validate(invalidValues[j]); // should not give exception
+                if (field.getDataType().validate(invalidValues[j], null, field).size() == 0) {
+                    err.append("Field " + field.getName() + " value '" + Casting.toString(invalidValues[j]) + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
                 }
 
 
