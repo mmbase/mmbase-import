@@ -4,14 +4,11 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page session="true" />
-  <jsp:output doctype-root-element="html"
-              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <mm:include page="head.jspx" />
   <jsp:directive.include file="buttons.jspx" />
 
   <body>
-    <mm:content type="application/xhtml+xml" expires="0">
+    <mm:content type="application/xhtml+xml" language="en" expires="0">
       <mm:cloud rank="basic user">
         <mm:import externid="ok" />
         <mm:import externid="nodemanager" required="true" />
@@ -21,35 +18,33 @@
           </mm:link>
           <jsp:text>New</jsp:text>
         </h1>
-        <div id="edit">
-          <mm:form>
-            <input type="hidden" name="nodemager" value="${nodemanager}" />
-            <table>
-              <mm:fieldlist type="edit" nodetype="$nodemanager">
-                <mm:index id="index" write="false" />
-                <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
-                  <td><mm:fieldinfo type="guiname" /></td>
-                  <td>
-                    <mm:fieldinfo type="input" />
-                    <mm:fieldinfo type="errors" />
-                  </td>
-                </tr>
-              </mm:fieldlist>
-            </table>
-            <input type="submit" name="ok" />
-            <mm:present referid="ok">
-              <mm:valid>
-                <mm:createnode id="newnode" type="${nodemanager}">
-                  <mm:fieldlist type="edit">
-                    <mm:fieldinfo type="useinput" />
-                  </mm:fieldlist>
-                </mm:createnode>
-                <mm:commit />
-                <mm:redirect page="change.jspx" referids="newnode@node" />
-              </mm:valid>
-            </mm:present>
-          </mm:form>
-        </div>
+        <mm:form>
+          <input type="hidden" name="nodemager" value="${nodemanager}" />
+          <table>
+            <mm:fieldlist type="edit" nodetype="$nodemanager">
+              <mm:index id="index" write="false" />
+              <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                <td><mm:fieldinfo type="guiname" /></td>
+                <td>
+                  <mm:fieldinfo type="input" />
+                  <mm:fieldinfo type="errors" />
+                </td>
+              </tr>
+            </mm:fieldlist>
+          </table>
+          <input type="submit" name="ok" />
+          <mm:present referid="ok">
+            <mm:valid>
+              <mm:createnode id="newnode" type="${nodemanager}">
+                <mm:fieldlist type="edit">
+                  <mm:fieldinfo type="useinput" />
+                </mm:fieldlist>
+              </mm:createnode>
+              <mm:commit />
+              <mm:redirect page="change.jspx" referids="newnode@node" />
+            </mm:valid>
+          </mm:present>
+        </mm:form>
       </mm:cloud>
     </mm:content>
   </body>
