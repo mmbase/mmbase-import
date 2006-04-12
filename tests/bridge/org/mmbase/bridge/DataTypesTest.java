@@ -154,7 +154,7 @@ public class DataTypesTest extends BridgeTest {
         DataType dt = field.getDataType();
         LocalizedEntryListFactory fact = dt.getEnumerationFactory();
         assertTrue(dt instanceof BooleanDataType);
-        assertTrue(fact.size() == 2);
+        assertTrue("" + fact, fact.size() == 2);
         assertEquals("" + fact, "bla",  fact.castKey("bla"));
         assertEquals(Boolean.TRUE, fact.castKey("true"));
         assertEquals("21",   fact.castKey("21"));
@@ -246,6 +246,19 @@ public class DataTypesTest extends BridgeTest {
             newNode2.commit();
             fail("There is unique on the 'checksum' of handle, so setting same value for second time should have thrown exception");
         } catch (Exception e) {
+        }
+    }
+
+    public void testNotNull() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        FieldIterator iterator = nodeManager.getFields(NodeManager.ORDER_EDIT).fieldIterator();
+        while(iterator.hasNext()) {
+            Field field = iterator.nextField();
+            DataType dt = (BasicDataType) field.getDataType().clone();
+            dt.setRequired(true);
+            Collection errors = field.getDataType().validate(null);
+            assertTrue(errors.size() > 0);
         }
     }
 
