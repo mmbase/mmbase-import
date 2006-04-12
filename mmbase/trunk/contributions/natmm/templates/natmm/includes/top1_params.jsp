@@ -268,4 +268,11 @@ if(application.getAttribute("request_url")==null) {
    application.setAttribute("request_url", javax.servlet.http.HttpUtils.getRequestURL(request).toString());
 }
 
+if(!(new java.io.File( nl.mmatch.NatMMConfig.incomingDir )).exists()) {
+   %><div style="position:absolute;color:red;font-weight:bold;padding:30px;">
+         WARNING: The settings in NatMMConfig are incorrect: <%= nl.mmatch.NatMMConfig.incomingDir %> is not a directory on this server.
+         Please change the settings and place a new natmm.jar
+   </div><%
+}
+
 %><%@include file="../includes/image_vars.jsp" %>
