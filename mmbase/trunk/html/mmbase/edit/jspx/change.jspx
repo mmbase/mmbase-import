@@ -4,14 +4,12 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page session="true" />
-  <jsp:output doctype-root-element="html"
-              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+
   <mm:include page="head.jspx" />
   <jsp:directive.include file="buttons.jspx" />
 
   <body>
-    <mm:content type="application/xhtml+xml" expires="0">
+    <mm:content type="application/xhtml+xml" language="en" expires="0">
       <mm:cloud rank="basic user">
 
         <mm:import externid="node" required="true" />
@@ -25,33 +23,31 @@
             <mm:nodeinfo type="gui" />
           </h1>
 
-          <div id="edit">
-            <mm:form>
-              <input type="hidden" name="node" value="${_node}" />
-              <table>
-                <tbody>
-                  <mm:fieldlist type="edit">
-                    <mm:index id="index" write="false" />
-                    <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
-                      <td><mm:fieldinfo type="guiname" /></td>
-                      <td>
-                        <mm:fieldinfo type="input" />
-                        <mm:fieldinfo type="errors" />
-                      </td>
-                    </tr>
-                  </mm:fieldlist>
-                </tbody>
-              </table>
-              <input type="submit" name="ok" />
-              <mm:import externid="ok" />
-              <mm:present referid="ok">
-                <mm:valid>
-                  <mm:commit />
-                  <jsp:text>Committed !</jsp:text>                  
-                </mm:valid>
-              </mm:present>
-            </mm:form>
-          </div>
+          <mm:form>
+            <input type="hidden" name="node" value="${_node}" />
+            <table>
+              <tbody>
+                <mm:fieldlist type="edit">
+                  <mm:index id="index" write="false" />
+                  <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                    <td><mm:fieldinfo type="guiname" /></td>
+                    <td>
+                      <mm:fieldinfo type="input" />
+                      <mm:fieldinfo type="errors" />
+                    </td>
+                  </tr>
+                </mm:fieldlist>
+              </tbody>
+            </table>
+            <input type="submit" name="ok" />
+            <mm:import externid="ok" />
+            <mm:present referid="ok">
+              <mm:valid>
+                <mm:commit />
+                <jsp:text>Committed !</jsp:text>                  
+              </mm:valid>
+            </mm:present>
+          </mm:form>
         </mm:node>
       </mm:cloud>
     </mm:content>

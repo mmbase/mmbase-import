@@ -4,136 +4,131 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
   <jsp:directive.page session="true" />
 
   <mm:include page="head.jspx" />
   <jsp:directive.include file="buttons.jspx" />
+
   <body>
-    <mm:content type="application/xhtml+xml" expires="0">
+    <mm:content type="application/xhtml+xml" language="en" expires="0">
       <mm:cloud rank="basic user">
-        
         <mm:import externid="nodemanager">object</mm:import>
         
-        <div id="search">
-          <form id="searchform" action="." method="post">
-            <table class="search">
-              <thead>
-                <tr>
-                  <th colspan="2">
-                    <select name="nodemanager" onchange="document.getElementById('searchform').submit();">
-                      <mm:listnodes type="typedef" orderby="name">
-                        <mm:hasnodemanager name="${_node.name}">
-                          <c:choose>
-                            <c:when test="${nodemanager eq _node.name}">
-                              <option value="${_node.name}" selected="selected"><mm:nodeinfo type="gui" /></option>
-                            </c:when>
-                            <c:otherwise>
-                              <option value="${_node.name}"><mm:nodeinfo type="gui" /></option>
-                            </c:otherwise>
-                          </c:choose>
-                        </mm:hasnodemanager>
-                      </mm:listnodes>
-                    </select>
-                    <input type="submit" name="ok" value="ok" />
-                    <mm:link referids="nodemanager" page="create.jspx">
-                      <a href="${_}"><img src="${create}" alt="create" /></a>
-                    </mm:link>
-                  </th>                  
-                </tr>
-              </thead>
-              <tbody>
-                <mm:fieldlist nodetype="$nodemanager" type="search">
-                  <tr>
-                    <td><mm:fieldinfo type="guiname" /></td>
-                    <td><mm:fieldinfo type="searchinput" /></td>
-                  </tr>
-                </mm:fieldlist> 
-              </tbody>
-            </table>
-          </form>
-        </div>
-        
-
-        <div id="searchresult">
-          <mm:import id="pagesize">50</mm:import>
-          <mm:import externid="offset">0</mm:import>
-          <table>
-            <mm:listnodescontainer type="$nodemanager">
-              <mm:import externid="sortfields">number</mm:import>
-              <mm:import externid="sortdirections">down</mm:import>
-              <mm:sortorder field="$sortfields" direction="$sortdirections" />
-
-              <mm:size id="size" write="false" />
-
-              <mm:maxnumber value="$pagesize" />
-              <mm:offset    value="$offset" />
-
-              <mm:link id="base" page="." referids="nodemanager">
-                <mm:fieldlist nodetype="$nodemanager" type="search">
-                  <mm:fieldinfo type="reusesearchinput" />
-                </mm:fieldlist>
-              </mm:link>
-              
-              <thead>
-                <tr class="paging">
-                  <th>${offset} - ${offset + pagesize lt size ? offset + pagesize : size} / ${size}</th>
-                  <th colspan="100">
-                    <mm:import id="paging">
-                      <mm:previousbatches max="10">
-                        <mm:first><mm:isgreaterthan value="0">...</mm:isgreaterthan></mm:first>
-                        <mm:link referids="_@offset" referid="base">
-                          <a href="${_}"><mm:index /></a>
-                        </mm:link>
-                        <jsp:text>, </jsp:text>
-                      </mm:previousbatches>
-                      <span class="currentpage"><mm:index /></span>
-                      <mm:nextbatches max="10">
-                        <jsp:text>, </jsp:text>
-                        <mm:link referids="_@offset" referid="base">
-                          <a href="${_}"><mm:index /></a>
-                        </mm:link>
-                        <mm:last><mm:islessthan value="${size - pagesize}">...</mm:islessthan></mm:last>
-                      </mm:nextbatches>
-                    </mm:import>
-                    <mm:write referid="paging" escape="none" />
-                  </th>
-                </tr>
-
-                <tr class="head">
-                  <th>#</th>
-                  <mm:fieldlist nodetype="$nodemanager" type="list">
-                    <mm:fieldinfo type="usesearchinput" />
-                    <th><mm:fieldinfo type="guiname" /></th>
-                  </mm:fieldlist>
-                </tr>
-              </thead>
-
-              <tfoot>
-                <tr class="paging">
-                  <th /><th colspan="100"><mm:write referid="paging" escape="none" /></th>
-                </tr>
-              </tfoot>
-
-              <tbody>
-                <mm:listnodes>
-                  <mm:index id="index" write="false" />
-                  <mm:link referids="_node@node,nodemanager" page="change.jspx">
-                    <tr onclick="document.location.href='${_}';" 
-                        class="${index % 2 == 0 ? 'even' : 'odd'}">
-                      <td><a href="${_}"><mm:field name="number" /></a><jsp:text> </jsp:text><mm:nodeinfo type="gui" /></td>
-                      <mm:fieldlist type="list" nodetype="$nodemanager">
-                        <td><mm:fieldinfo type="guivalue" /></td>
-                      </mm:fieldlist>
-                    </tr>
+        <form id="searchform" action="." method="post">
+          <table class="search">
+            <thead>
+              <tr>
+                <th colspan="2">
+                  <select name="nodemanager" onchange="document.getElementById('searchform').submit();">
+                    <mm:listnodes type="typedef" comparator="NATURAL">
+                      <mm:hasnodemanager name="${_node.name}">
+                        <c:choose>
+                          <c:when test="${nodemanager eq _node.name}">
+                            <option value="${_node.name}" selected="selected"><mm:nodeinfo type="gui" /></option>
+                          </c:when>
+                          <c:otherwise>
+                            <option value="${_node.name}" ><mm:nodeinfo type="gui" /></option>
+                          </c:otherwise>
+                        </c:choose>
+                      </mm:hasnodemanager>
+                    </mm:listnodes>
+                  </select>
+                  <input type="submit" name="ok" value="ok" />
+                  <mm:link referids="nodemanager" page="create.jspx">
+                    <a href="${_}"><img src="${create}" alt="create" /></a>
                   </mm:link>
-                </mm:listnodes>
-              </tbody>
-
-            </mm:listnodescontainer>
+                </th>                  
+              </tr>
+            </thead>
+            <tbody>
+              <mm:fieldlist nodetype="$nodemanager" type="search">
+                <tr>
+                  <td><mm:fieldinfo type="guiname" /></td>
+                  <td><mm:fieldinfo type="searchinput" /></td>
+                </tr>
+              </mm:fieldlist> 
+            </tbody>
           </table>
+        </form>
 
-        </div>
-        
+
+        <mm:import id="pagesize">50</mm:import>
+        <mm:import externid="offset">0</mm:import>
+        <table id="searchresult">
+          <mm:listnodescontainer type="$nodemanager">
+            <mm:import externid="sortfields">number</mm:import>
+            <mm:import externid="sortdirections">down</mm:import>
+            <mm:sortorder field="$sortfields" direction="$sortdirections" />
+            
+            <mm:size id="size" write="false" />
+            
+            <mm:maxnumber value="$pagesize" />
+            <mm:offset    value="$offset" />
+            
+            <mm:link id="base" page="." referids="nodemanager">
+              <mm:fieldlist nodetype="$nodemanager" type="search">
+                <mm:fieldinfo type="reusesearchinput" />
+              </mm:fieldlist>
+            </mm:link>
+            
+            <thead>
+              <tr class="paging">
+                <th>${offset} - ${offset + pagesize lt size ? offset + pagesize : size} / ${size}</th>
+                <th colspan="100">
+                  <mm:import id="paging">
+                    <mm:previousbatches max="10">
+                      <mm:first><mm:isgreaterthan value="0">...</mm:isgreaterthan></mm:first>
+                      <mm:link referids="_@offset" referid="base">
+                        <a href="${_}"><mm:index /></a>
+                      </mm:link>
+                      <jsp:text>, </jsp:text>
+                    </mm:previousbatches>
+                    <span class="currentpage"><mm:index /></span>
+                    <mm:nextbatches max="10">
+                      <jsp:text>, </jsp:text>
+                      <mm:link referids="_@offset" referid="base">
+                        <a href="${_}"><mm:index /></a>
+                      </mm:link>
+                      <mm:last><mm:islessthan value="${size - pagesize}">...</mm:islessthan></mm:last>
+                    </mm:nextbatches>
+                  </mm:import>
+                  <mm:write referid="paging" escape="none" />
+                </th>
+              </tr>
+              
+              <tr class="head">
+                <th>#</th>
+                <mm:fieldlist nodetype="$nodemanager" type="list">
+                  <mm:fieldinfo type="usesearchinput" />
+                  <th><mm:fieldinfo type="guiname" /></th>
+                </mm:fieldlist>
+              </tr>
+            </thead>
+            
+            <tfoot>
+              <tr class="paging">
+                <th /><th colspan="100"><mm:write referid="paging" escape="none" /></th>
+              </tr>
+            </tfoot>
+            
+            <tbody>
+              <mm:listnodes>
+                <mm:index id="index" write="false" />
+                <mm:link referids="_node@node,nodemanager" page="change.jspx">
+                  <tr onclick="document.location.href='${_}';" 
+                      class="${index % 2 == 0 ? 'even' : 'odd'}">
+                    <td><a href="${_}"><mm:field name="number" /></a><jsp:text> </jsp:text><mm:nodeinfo type="gui" /></td>
+                    <mm:fieldlist type="list" nodetype="$nodemanager">
+                      <td><mm:fieldinfo type="guivalue" /></td>
+                    </mm:fieldlist>
+                  </tr>
+                </mm:link>
+              </mm:listnodes>
+            </tbody>
+            
+          </mm:listnodescontainer>
+        </table>
       </mm:cloud>
     </mm:content>
   </body>
