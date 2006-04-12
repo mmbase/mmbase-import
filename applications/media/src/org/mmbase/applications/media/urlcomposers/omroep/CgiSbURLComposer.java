@@ -1,11 +1,11 @@
 /*
-  
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-  
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-  
+
 */
 
 package org.mmbase.applications.media.urlcomposers.omroep;
@@ -20,12 +20,12 @@ import java.util.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiSbURLComposer.java,v 1.3 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: CgiSbURLComposer.java,v 1.4 2006-04-12 00:01:21 michiel Exp $
  * @since MMBase-1.7
  */
 public class CgiSbURLComposer extends RamURLComposer {
 
-    
+
     protected String getBandPrefix() {
         return "sb.";
     }
@@ -44,7 +44,7 @@ public class CgiSbURLComposer extends RamURLComposer {
         Format format = super.getFormat();
         if (format == Format.RM)  return Format.RAM;
         if (format == Format.RA)  return Format.RAM;
-        if (format == Format.ASF) return Format.WMP;                
+        if (format == Format.ASF) return Format.WMP;
         return format;
     }
 
@@ -62,7 +62,7 @@ public class CgiSbURLComposer extends RamURLComposer {
         int lastSlash = RealSbURLComposer.addURL(buff, source.getStringValue("url"));
         buff.insert(lastSlash + 1, getBandPrefix());
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title
-        return buff;            
+        return buff;
     }
 
 }

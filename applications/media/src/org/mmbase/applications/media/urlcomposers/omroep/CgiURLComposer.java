@@ -1,11 +1,11 @@
 /*
-  
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-  
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-  
+
 */
 
 package org.mmbase.applications.media.urlcomposers.omroep;
@@ -19,7 +19,7 @@ import org.mmbase.applications.media.urlcomposers.RealURLComposer;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiURLComposer.java,v 1.9 2005-10-06 11:46:31 michiel Exp $
+ * @version $Id: CgiURLComposer.java,v 1.10 2006-04-12 00:01:21 michiel Exp $
  * @since MMBase-1.7
  */
 public class CgiURLComposer extends RamURLComposer {
@@ -30,7 +30,7 @@ public class CgiURLComposer extends RamURLComposer {
     public Format getFormat() {
         Format format = super.getFormat();
         if (format.isReal())  return Format.RAM;
-        if (format.isWindowsMedia()) return Format.WMP;                
+        if (format.isWindowsMedia()) return Format.WMP;
         return format;
     }
 
@@ -38,7 +38,7 @@ public class CgiURLComposer extends RamURLComposer {
      * Host must be cgi.omroep.nl script.
      */
     public boolean canCompose() {
-        return provider.getStringValue("host").equals("cgi.omroep.nl")  && 
+        return provider.getStringValue("host").equals("cgi.omroep.nl")  &&
             (provider.getStringValue("rootpath").charAt(0) != '%');
     }
 
@@ -52,7 +52,7 @@ public class CgiURLComposer extends RamURLComposer {
             // cgi script does not work without title (for wm)?
             buff.append('?').append("title=geen_beschrijving");
         }
-        return buff;            
+        return buff;
     }
 
 }
