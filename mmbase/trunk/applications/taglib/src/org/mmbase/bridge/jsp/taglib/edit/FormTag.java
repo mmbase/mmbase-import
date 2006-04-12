@@ -19,11 +19,11 @@ import javax.servlet.jsp.JspTagException;
 /**
  * FormTag can be used to generate the 'action' attribute of an HTML Form. But more importantly, it
  * collects 'validation' from mm:fieldinfo type="check" or type="errors".
- * 
+ *
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.3 2006-04-11 23:29:31 michiel Exp $
+ * @version $Id: FormTag.java,v 1.4 2006-04-12 07:16:25 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -80,7 +80,8 @@ public class FormTag extends TransactionTag implements Writer {
             String url = page.getString(this);
             String id = getId();
             try {
-                pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") + "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\">");
+                pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") +
+                                           "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\">");
             } catch (java.io.IOException ioe) {
                 throw new TaglibException(ioe);
             }
@@ -91,11 +92,21 @@ public class FormTag extends TransactionTag implements Writer {
     }
 
     public int doEndTag() throws JspTagException {
-        if (! transaction.isCanceled() && ! transaction.isCommitted()) {
-            if (commit.getBoolean(this, getDefaultCommit())) {
-                transaction.commit();
-            } else {
-                transaction.cancel();
+        try {
+            if (! transaction.isCanceled() && ! transaction.isCommitted()) {
+                if (commit.getBoolean(this, getDefaultCommit())) {
+                    transaction.commit();
+                } else {
+                    transaction.cancel();
+                }
+            }
+        } catch (Throwable t) {
+            try {
+                // should not happen, but if it happens, don't fail the complete page, this probably is
+                // an editor!
+                pageContext.getOut().write(t.getMessage());
+            } catch (java.io.IOException ioe) {
+                throw new TaglibException(ioe);
             }
         }
         switch(m) {
