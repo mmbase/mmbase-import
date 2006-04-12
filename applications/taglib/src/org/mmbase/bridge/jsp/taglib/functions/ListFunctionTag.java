@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.10 2005-12-27 12:34:02 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.11 2006-04-12 14:51:40 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -83,7 +83,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         helper.overrideWrite(false); // default behavior is not to write to page
         currentItemIndex = -1;  // reset index
         if (!comparator.equals(Attribute.NULL)) {
-            ListSorter.sort((List)returnCollection, (String) comparator.getValue(this), pageContext);
+            ListSorter.sort((List)returnCollection, (String) comparator.getValue(this), this);
         }
         iterator = returnCollection.iterator();
         if (iterator.hasNext()) {
