@@ -8,7 +8,7 @@
 // Version 3.0 developed by Mihai Bazon for InteractiveTools.
 //       http://students.infoiasi.ro/~mishoo
 //
-// $Id: htmlarea.js,v 1.1 2006-03-05 21:46:43 henk Exp $
+// $Id: htmlarea.js,v 1.2 2006-04-12 20:09:10 henk Exp $
 
 // Creates a new HTMLArea object.  Tries to replace the textarea with the given
 // ID with it.
@@ -989,6 +989,51 @@ HTMLArea.prototype.getParentElement = function() {
         }
 };
 
+// Tries to fetch nearest <A> tag
+// (looks for unneeded spaces)
+HTMLArea.prototype.getNearestAElement = function() {
+        var sel = this._getSelection();
+        var range = this._createRange(sel);
+
+        var iNumberOfSpaces = 0;
+
+        var string;
+        if (HTMLArea.is_ie) {
+           string = range.text;
+        } else {
+           string = "" + range;
+        }
+
+        iNumberOfStartSpaces = string.search(/\S/);
+        iNumberOfEndSpaces = string.search(/\s*$/);
+
+        if (HTMLArea.is_ie) {
+           range.moveStart("character", iNumberOfStartSpaces);
+           range.moveEnd("character", 0 - (string.length - iNumberOfEndSpaces));
+        } else {
+            end = range.endContainer;
+            start = range.startContainer;
+            iNumberOfEndSpaces = string.length - iNumberOfEndSpaces;
+            if(iNumberOfEndSpaces > 0){
+            range.setEnd(end, range.EndOffset - iNumberOfEndSpaces - 2);
+            }
+
+            if(iNumberOfStartSpaces > 0){
+            range.setStart(start, range.startOffset + iNumberOfStartSpaces);
+            }
+        }
+
+
+        if (HTMLArea.is_ie) {
+                return range.parentElement ? range.parentElement() : this._doc.body;
+        } else {
+                var p = range.commonAncestorContainer;
+                while (p.nodeType == 3) {
+                        p = p.parentNode;
+                }
+                return p;
+        }
+};
 // Returns an array with all the ancestor nodes of the selection.
 HTMLArea.prototype.getAllAncestors = function() {
         var p = this.getParentElement();
