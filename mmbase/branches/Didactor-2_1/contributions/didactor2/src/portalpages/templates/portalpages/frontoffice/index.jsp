@@ -198,141 +198,153 @@
           
 		      <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
 		      <mm:import id="presenttime"><mm:time time="now"/></mm:import>
+          <mm:import id="firstroot">0</mm:import>
           
           <mm:import id="previousDepth" jspvar="jsp_previousDepth" vartype="Integer" >-10</mm:import>
           
         <!-- get all related node to root from portalpages (PP) -->
 		      <mm:relatednodescontainer type="portalpagesnodes" role="related">
           
-          <!-- show only active pages, because this constraint will not work in tree, in below code it will not -->
-          <!-- be possible to use grow and shrink (we will do this by hand) -->
+          <%-- show only active pages, because this constraint will not work in tree, in below code it will not --%>
+          <%-- be possible to use grow and shrink (we will do this by hand) --%>
 		        <mm:constraint field="active" value="0"/>
             <mm:sortorder field="order_number" direction="up" />
             
-  		      <mm:tree type="portalpagesnodes" role="childppnn" orderby="order_number" directions="up" searchdir="destination" maxdepth="3">
+            <div id="div<mm:write referid="previousnumber"/>" class="lbLevel1">
             
-              <mm:import id="currentDepth" jspvar="jsp_currentDepth" vartype="Integer" ><mm:depth /></mm:import>
-              <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>       
-		          <mm:import id="nodenumber"><mm:field name="number"/></mm:import>
+    		      <mm:tree type="portalpagesnodes" role="childppnn" orderby="order_number" directions="up" searchdir="destination" maxdepth="3">
               
-              <mm:node number="$nodenumber">
-                <mm:import id="nodeActive"><mm:field name="active" /></mm:import>       
-              </mm:node>
-
-              <mm:compare referid="nodeActive" value="0">
-              
-                <mm:islessthan referid="currentDepth"  referid2="previousDepth" >
-                  </div>
-                  <% openDivs--; %>
-                </mm:islessthan>
+                <mm:import id="currentDepth" jspvar="jsp_currentDepth" vartype="Integer" ><mm:depth /></mm:import>
+                <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>       
+  		          <mm:import id="nodenumber"><mm:field name="number"/></mm:import>
                 
-                <mm:isgreaterthan referid="currentDepth"  referid2="previousDepth" >
-                  <% openDivs++; %>
-                
-  		            <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
-  			          <script type="text/javascript">
-  			            document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
-  			          </script> 
-                  
-  		            <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
-                  
-  		            <mm:listcontainer path="portalpagesnodes,simplecontents">
-                  
-  	    	          <mm:constraint field="portalpagesnodes.number" value="${previousnumber}"/> 
-  	    	          <mm:constraint value="${presenttime}" field="simplecontents.online_date" operator="LESS" />
-  		    	        <mm:constraint value="${presenttime}" field="simplecontents.offline_date" operator="GREATER" />
-    		    	      <mm:list>
-          						<div style="padding: 0px 0px 0px <%= 6 + (depth.intValue()+1) * 8 %>px;">
-                        <script type="text/javascript">
-                          <!--
-                          addContent('simplecontents','<mm:field name="simplecontents.number"/>');
-                          //-->
-                        </script>
-  <!--  						        <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" -->
-  <!--                           id="img<mm:field name="simplecontents.number"/>" -->
-  <!--                           onclick="openClose('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>')" -->
-  <!--                           style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />-->
-                        <a href="javascript:openContent('simplecontents', '<mm:field name="simplecontents.number"/>' ); openOnly('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>');" 
-                           style="padding-left: 0px"><mm:field name="simplecontents.title"/></a>
-    						      </div>
-  			            </mm:list> 
-    			        </mm:listcontainer> 
-                  
-  		          </mm:isgreaterthan>
-                
-  		          <mm:remove referid="previousnumber"/>
-  		          <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
-  		          <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
-                
-  		          <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;">
-  		            <script type="text/javascript">
-  				          <!--
-  				          addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
-  				          //-->
-  				        </script>
-  				        <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" 
-                       id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" 
-                       style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
-                  <a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" 
-                     style="padding-left: 0px"><mm:field name="name"/></a>       
-  		          </div>
-                
-                <mm:remove referid="haschildnodes"/>
-                
-              <!-- does this portalpage node has a subnodes -->
-                <mm:listcontainer path="portalpagesnodes,childppnn,portalpagesnodes" >
-  		            <mm:constraint field="portalpagesnodes.number" value="${nodenumber}"/>
-  		            <mm:constraint field="portalpagesnodes.active" value="0"/>
-  		            <mm:list>
-       		          <mm:first><mm:import id="haschildnodes" reset="true">true</mm:import></mm:first>
-  	              </mm:list>
-  		          </mm:listcontainer>
-                
-              <!-- if there are no subnodes, there will be no subsequently grow event -->  
-  		          <mm:notpresent referid="haschildnodes">
+                <mm:node number="$nodenumber">
+                  <mm:import id="nodeActive"><mm:field name="active" /></mm:import>       
+                </mm:node>
   
-                <!-- list contents -->              
-  		            <mm:listcontainer path="portalpagesnodes,simplecontents">
-          	        <mm:constraint field="portalpagesnodes.number" value="${previousnumber}"/> 
-           	        <mm:constraint value="${presenttime}" field="simplecontents.online_date" operator="LESS" />
-  	    	          <mm:constraint value="${presenttime}" field="simplecontents.offline_date" operator="GREATER" />
-                    
-  	                <mm:list>
-         			        <mm:first>
-    	                  <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
-    					          <script type="text/javascript">
-    					            document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
-    					          </script> 				        
-    				          </mm:first>
-    				          <div style="padding: 0px 0px 0px <%= 6 + (depth.intValue()+1) * 8 %>px;">
-      						      <script type="text/javascript">
-    	 		  				      <!--
-    		  					      addContent('simplecontents','<mm:field name="simplecontents.number"/>');
-    				  			      //-->
-    					   	      </script>
-  <!--                      <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" -->
-  <!--                           id="img<mm:field name="simplecontents.number"/>" -->
-  <!--                           onclick="openClose('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>')" -->
-  <!--                           style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />-->
-                        <a href="javascript:openContent('simplecontents', '<mm:field name="simplecontents.number"/>' ); openOnly('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>');" 
-                           style="padding-left: 0px"><mm:field name="simplecontents.title"/></a>
-    				          </div>
-                      
-    				          <mm:last></div></mm:last>
-                      
-  		              </mm:list>  
-  		            </mm:listcontainer>         
-  		          </mm:notpresent> 
+                <mm:compare referid="nodeActive" value="0">
                 
-                <mm:remove referid="previousDepth" />
-                <mm:import id="previousDepth" jspvar="jsp_previousDepth" vartype="integer" ><mm:depth /></mm:import>
-              </mm:compare>
-            </mm:tree>
-            
-          <!-- close all not closed divs -->
-            <% while ( openDivs-- > 0 ) { %>
-              </div>
-            <% } %>
+                  <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
+                  
+                  <mm:compare referid="firstroot" value="1">              
+                    <mm:islessthan referid="currentDepth"  referid2="previousDepth" >
+                      </div>
+                      <% openDivs--; %>
+                    </mm:islessthan>
+                    
+                    <mm:isgreaterthan referid="currentDepth"  referid2="previousDepth" >
+                    
+                    <%-- list contents --%>
+                      <% openDivs++; %>
+      		            <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
+                      
+      			          <script type="text/javascript">
+      			            document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
+      			          </script> 
+                   
+      		            <mm:listcontainer path="portalpagesnodes,simplecontents">
+      	    	          <mm:constraint field="portalpagesnodes.number" value="${previousnumber}"/> 
+      	    	          <mm:constraint value="${presenttime}" field="simplecontents.online_date" operator="LESS" />
+      		    	        <mm:constraint value="${presenttime}" field="simplecontents.offline_date" operator="GREATER" />
+        		    	      <mm:list>
+              						<div style="padding: 0px 0px 0px <%= 10 + (jsp_previousDepth.intValue()+1) * 8 %>px;">
+                            <script type="text/javascript">
+                              <!--
+                              addContent('simplecontents','<mm:field name="simplecontents.number"/>');
+                              //-->
+                            </script>
+        						        <img class="imgClosed" src="<mm:write referid="gfx_item_none" />" 
+                                 id="img<mm:field name="simplecontents.number"/>" 
+                                 onclick="openClose('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>')" 
+                                 style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
+                            <a href="javascript:openContent('simplecontents', '<mm:field name="simplecontents.number"/>' ); openOnly('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>');" 
+                               style="padding-left: 0px"><mm:field name="simplecontents.title"/></a>
+        						      </div>
+      			            </mm:list> 
+        			        </mm:listcontainer> 
+      		          </mm:isgreaterthan>
+                  </mm:compare>                    
+  
+                <!-- show portal page -->
+    		          <mm:remove referid="previousnumber"/>
+    		          <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
+    		          <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
+                  
+    		          <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;">
+    		            <script type="text/javascript">
+    				          <!--
+    				          addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
+    				          //-->
+    				        </script>
+    				        <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" 
+                         id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" 
+                         style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
+                    <a href="javascript:openContent('<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" 
+                       style="padding-left: 0px"><mm:field name="name"/></a>       
+    		          </div>
+                  
+                  <mm:import id="firstroot" reset="true">1</mm:import>
+                  <mm:remove referid="haschildnodes"/>
+                  
+                <%-- does this portalpage node has a subnodes --%>
+                  <mm:listcontainer path="portalpagesnodes,childppnn,portalpagesnodes" >
+    		            <mm:constraint field="portalpagesnodes.number" value="${nodenumber}"/>
+    		            <mm:constraint field="portalpagesnodes.active" value="0"/>
+    		            <mm:list>
+         		          <mm:first><mm:import id="haschildnodes" reset="true">true</mm:import></mm:first>
+    	              </mm:list>
+    		          </mm:listcontainer>
+                  
+                <%-- if there are no subnodes, there will be no subsequently grow event, so show context. 
+                     in oposite case, context will be shown in code above
+                 --%>  
+    		          <mm:notpresent referid="haschildnodes">
+    
+                  <%-- list contents --%>
+    		            <mm:listcontainer path="portalpagesnodes,simplecontents">
+            	        <mm:constraint field="portalpagesnodes.number" value="${previousnumber}"/> 
+             	        <mm:constraint value="${presenttime}" field="simplecontents.online_date" operator="LESS" />
+    	    	          <mm:constraint value="${presenttime}" field="simplecontents.offline_date" operator="GREATER" />
+                      
+    	                <mm:list>
+           			        <mm:first>
+      	                  <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
+      					          <script type="text/javascript">
+      					            document.getElementById("img<mm:write referid="previousnumber" />").setAttribute("haschildren", 1);
+      					          </script> 				        
+      				          </mm:first>
+      				          <div style="padding: 0px 0px 0px <%= 10 + (depth.intValue()+1) * 8 %>px;">
+        						      <script type="text/javascript">
+      	 		  				      <!--
+      		  					      addContent('simplecontents','<mm:field name="simplecontents.number"/>');
+      				  			      //-->
+      					   	      </script>
+                          <img class="imgClosed" src="<mm:write referid="gfx_item_none" />" 
+                               id="img<mm:field name="simplecontents.number"/>" 
+                               onclick="openClose('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>')" 
+                               style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
+                          <a href="javascript:openContent('simplecontents', '<mm:field name="simplecontents.number"/>' ); openOnly('div<mm:field name="simplecontents.number"/>','img<mm:field name="simplecontents.number"/>');" 
+                             style="padding-left: 0px"><mm:field name="simplecontents.title"/></a>
+      				          </div>
+                        
+      				          <mm:last>
+                          </div>
+                        </mm:last>
+                        
+    		              </mm:list>  
+    		            </mm:listcontainer>         
+    		          </mm:notpresent> 
+                  
+                  <mm:remove referid="previousDepth" />
+                  <mm:import id="previousDepth" jspvar="jsp_previousDepth" vartype="integer" ><mm:depth /></mm:import>
+                </mm:compare>
+              </mm:tree>
+              
+            <!-- close all not closed divs -->
+              <% while ( openDivs-- > 0 ) { %>
+                </div>
+              <% } %>
+            </div>
           </mm:relatednodescontainer>
       
         </mm:node>
