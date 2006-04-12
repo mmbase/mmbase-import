@@ -32,6 +32,16 @@
           <list>3</list>
         </positions>
       </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry value="read" />
+          <entry value="write" />
+          <entry value="create" />
+          <entry value="change relation" />
+          <entry value="delete" />
+          <entry value="change context" />
+        </enumeration>
+      </datatype>
       <db>
         <name>operation</name>
         <type notnull="true" size="15" state="persistent">STRING</type>
