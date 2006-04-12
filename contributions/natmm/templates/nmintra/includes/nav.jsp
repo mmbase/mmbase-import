@@ -52,20 +52,11 @@ PaginaHelper ph = new PaginaHelper(cloud); %>
     }
     %></mm:field
 ></mm:list
-><% //String rubriek_number = "";
-%><mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2"
+><mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2"
     orderby="parent.pos" directions="UP"
     ><mm:field name="rubriek2.number" jspvar="rubriek_number" vartype="String" write="false"><%
-
 	    // *** list the rubrieks ***
-   	 %><%--mm:list nodes="<%= rubriek_number %>" path="rubriek1,parent,rubriek2" orderby="parent.pos" directions="UP" searchdir="destination">
-	 			<mm:field name="rubriek2.number" jspvar="rubriek_number2" vartype="String" write="false">
-					<% rubriek_number = rubriek_number2; %>
-					<%@include file="../includes/rubriek_page.jsp" %>
-				</mm:field>
-			</mm:list--%>
-			<% //rubriek_number = rubriek_number1; %>
-		   <%@include file="../includes/rubriek_page.jsp" %>
+   	 %><%@include file="../includes/rubriek_page.jsp" %>
 	</mm:field
 ></mm:list></table>
         </td>

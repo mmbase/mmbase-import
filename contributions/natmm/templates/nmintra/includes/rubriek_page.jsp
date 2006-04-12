@@ -32,7 +32,13 @@
     // *** list the pages ***
     %><mm:list nodes="<%= rubriek_number %>" path="rubriek,posrel,pagina"
             orderby="posrel.pos" directions="UP" constraints="posrel.pos <> '0'"
-        ><mm:field name="pagina.number" jspvar="super_page" vartype="String" write="false"><%
+        ><mm:field name="pagina.number" jspvar="super_page" vartype="String" write="false"
+		  		><mm:list nodes="<%= super_page %>" path="pagina,discountrel,pagina1"
+					><mm:field name="pagina1.number" jspvar="pagina1_number" vartype="String" write="false"
+						><% super_page = pagina1_number; 
+					%></mm:field
+				></mm:list>
+		  <%
         if(isPreview) { 
            if(pageId.equals("")) { pageId = super_page; }
             %><tr>
