@@ -14,7 +14,7 @@
     <a href="<mm:url>
         <mm:param name="cache"><%=cache.getName()%></mm:param>
         <mm:param name="active">on</mm:param>
-      </mm:url>" >Trun on</a>
+      </mm:url>" >Turn on</a>
   <% }  %>
   </th>
 </tr>
