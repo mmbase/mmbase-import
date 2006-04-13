@@ -103,25 +103,6 @@
   -->
   <property name="host">127.0.0.1</property>
 
-  <!--
-  name="authtype" defines what authorisation type is used, This is a plugin
-  system at the moment we only support 2 types :
-
-  none (only perform name/password checks based on accounts.properties)
-
-  basic (use the default authorisation system, based on groups and
-  relations see the install/example docs how to enable this DON'T
-  set it before creating the needed tables/objects as defined in these docs).
-  -->
-  <property name="authtype">none</property>
-
-  <!--
-  name="dtdbase" defines the homebase for the DTD's used by the objects
-  (urls, cdtracks, images etc etc). Normally this is set to
-  www.mmbase.org but you can aim it to your own system if you defined
-  extra objects yourself. Its not used at the moment for anything vital.
-  -->
-  <property name="dtdbase">http://www.mmbase.org/dtd/</property>
 
   <!--
   name="basename" You can have multiple mmbase systems inside your database
@@ -133,9 +114,9 @@
   <property name="basename">mm</property>
 
   <!--
-  name="language" defines the language for the gui. The standard gui information for the
-  editors can be found in /config/modules/mmlanguage.xml. The gui information of a builder
-  is provided by the builder itself (e.g. /config/builders/urls.xml).
+  name="language" defines a default language for GUI functionality. Effectively this makes it
+  possible to override the JVM's default Locale.
+
   -->
   <property name="language">en</property>
 
