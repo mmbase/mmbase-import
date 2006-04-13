@@ -1,7 +1,7 @@
 <%! public HashSet addPages(
       Cloud cloud,
       org.mmbase.util.logging.Logger log,
-      SearchConfig cf,
+      net.sf.mmapps.modules.lucenesearch.SearchConfig cf,
       Query luceneQuery,
       int index,
       String path,
@@ -10,13 +10,13 @@
       HashSet hsetPagesNodes) {
 
    HashSet hsetNodes = new HashSet();
-   try {
-      SearchIndex si = cf.getIndex(index);
+   try { 
+      net.sf.mmapps.modules.lucenesearch.SearchIndex si = cf.getIndex(index);
       IndexReader ir = IndexReader.open(si.getIndex());
-      IndexSearcher searcher = new IndexSearcher(ir);      
+      IndexSearcher searcher = new IndexSearcher(ir); 
       Hits hits = searcher.search(luceneQuery);
       TreeSet includedEvents = new TreeSet();
-   
+
       for (int i = 0; i < hits.length(); i++) {
          Document doc = hits.doc(i);
          String docNumber = doc.get("node");
@@ -61,13 +61,13 @@ while(qStr.indexOf(DOUBLESPACE)>-1) {
    qStr = qStr.replaceAll(DOUBLESPACE,SINGLESPACE);
 }
 qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ")+ "*";
-%><!-- searching on <%= qStr %> --><%
+%><!-- searching on <%= qStr %> --><% 
 Analyzer analyzer = new StopAnalyzer();
 String[] fields = {"titel", "omschrijving", "ondertitel", "tekst", "metatags"};
 Query luceneQuery = MultiFieldQueryParser.parse(qStr, fields, analyzer);
 
-LuceneManager lm  = mod.getLuceneManager();
-SearchConfig cf = lm.getConfig();
+net.sf.mmapps.modules.lucenesearch.LuceneManager lm  = mod.getLuceneManager();
+net.sf.mmapps.modules.lucenesearch.SearchConfig cf = lm.getConfig();
 
 // *** all pages that belong to the selected rubriek: hsetAllowedNodes ***
 if((sCategory != null) && (!sCategory.equals(""))) {
@@ -79,7 +79,7 @@ if((sCategory != null) && (!sCategory.equals(""))) {
    </mm:list><%
 }
 
-%><mm:log jspvar="log"><%
+%><mm:log jspvar="log"><% 
 
 hsetArticlesNodes = addPages(cloud, log, cf, luceneQuery, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
