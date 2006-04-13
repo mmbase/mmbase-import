@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.6 2006-04-10 10:49:47 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.7 2006-04-13 11:57:45 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -61,7 +61,7 @@ public class MMBaseEntry implements IndexEntry {
 
     public String getIdentifier() {
         if (multiLevel) {
-            return node.getStringValue(elementManager.getName());
+            return "" + node.getIntValue(elementManager.getName());
         } else {
             return "" + node.getNumber();
         }
