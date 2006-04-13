@@ -6,7 +6,7 @@
       org.mmbase.bridge.NodeList,
       nl.leocms.evenementen.Evenement,
       nl.leocms.util.PaginaHelper,
-      com.finalist.mmplaza.module.search.*,
+		net.sf.mmapps.modules.lucenesearch.LuceneModule,
       org.apache.lucene.index.IndexReader,
       org.apache.lucene.analysis.*,
       org.apache.lucene.search.*,
@@ -42,7 +42,6 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
    HashSet hsetEvenementNodes = new HashSet();
 
    LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule"); 
-
    if(mod!= null&&!sQuery.equals("")) {
       %><%@include file="hashsets.jsp" %><%
    }
