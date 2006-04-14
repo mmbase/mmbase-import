@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Andr&eacute; van Toly
  * @since MMBase 1.8.0
- * @version $Id: CodeSampleFactory.java,v 1.1 2006-03-22 09:13:34 andre Exp $
+ * @version $Id: CodeSampleFactory.java,v 1.2 2006-04-14 11:25:29 andre Exp $
  */
 
 public class CodeSampleFactory implements ParameterizedTransformerFactory {
@@ -134,11 +134,12 @@ public class CodeSampleFactory implements ParameterizedTransformerFactory {
                 result.append(codeStr).append(ctag);
             }
             
-            if (s != 0) { 
-                result.append(str.substring(s, str.length()));	// append the remaining piece of text
-            } else {
+            // use escaperest upond the remaining piece of text and append it
+            //   plus we always use escaperest, even when there is not match
+            String rest = str.substring(s, str.length());
+            result.append( transformPart(rest, escaperest) );
+            if (s == 0) { 
                 if (log.isDebugEnabled()) log.debug("No match with the tags '" + stag + "' and '" + ctag + "'");
-                result.append(str);
             }   
             return result.toString();
         }
