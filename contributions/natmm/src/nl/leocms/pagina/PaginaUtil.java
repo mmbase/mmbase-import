@@ -20,9 +20,7 @@
  */
 package nl.leocms.pagina;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import nl.leocms.util.PublishUtil;
 import nl.leocms.content.ContentUtil;
@@ -42,7 +40,7 @@ import org.mmbase.bridge.RelationIterator;
 /**
  * @author Gerard van de Weerd
  * Date :Oct 20, 2003
- * 
+ *
  */
 public class PaginaUtil {
 
@@ -56,17 +54,17 @@ public class PaginaUtil {
    public PaginaUtil(Cloud cloud) {
       this.cloud = cloud;
    }
-   
+
    public Node createPagina(Node parent, String username) {
       NodeManager manager = cloud.getNodeManager("pagina");
       Node newPagina = manager.createNode();
       newPagina.commit();
       RelationManager relManager = cloud.getRelationManager("rubriek","pagina","posrel");
       Relation relation = relManager.createRelation( parent, newPagina);
-      
+
       ContentUtil contentUtil = new ContentUtil(cloud);
       contentUtil.addSchrijver(newPagina, username);
-      
+
       RelationList existing = parent.getRelations("posrel","pagina");
       int pos = -1;
       for (int i = 0; i < existing.size(); i++) {
@@ -76,14 +74,14 @@ public class PaginaUtil {
       relation.commit();
       return newPagina;
    }
-   
+
    /**
-    * Verander de volgorde van pagina's 
+    * Verander de volgorde van pagina's
     * @param parentNode - Node van de parent
     * @param childs - String with childnodenumbers eg. "170,173,178"
     */
    public void changeOrder(Node parentNode, String childs) {
-     
+
       StringTokenizer tokenizer = new StringTokenizer(childs, ",");
       log.info("childs = " + childs);
       List tokens = new ArrayList();
@@ -123,32 +121,34 @@ public class PaginaUtil {
          }
       }
    }
-   
+
+
+
+
    /**
-    * Checks if the given page object contains content elements or nonempty link lijsten.
-    *
-    * @param page
-    * @return
+    * Returns all elements in the array
+    * @param page Node
+    * @return NodeList[]
     */
-   public boolean doesPageContainContentElements(Node page) {
-      /* nb: assert page!=null;
-      assert "pagina".equals(page.getNodeManager().getName()); */
-        NodeList contentElements = page.getRelatedNodes("contentelement", "contentrel", "DESTINATION");
-        if (contentElements.size() > 0) {
-            return true;
-        }
-        NodeList linkLijsten = cloud.getList(""+page.getNumber(),"pagina,posrel,linklijst,lijstcontentrel,contentelement", "contentelement.number", null, null, null, "DESTINATION", true);
-        if (linkLijsten.size() > 0) {
-            return true;
-        }
-        NodeList dossiers = cloud.getList(""+page.getNumber(),"pagina,related,dossier,posrel,artikel", "artikel.number", null, null, null, "DESTINATION", true);
-        if (dossiers.size() > 0) {
-            return true;
-        }
-        return false;
+
+   public NodeList[] doesPageContainContentElements(Node page) {
+
+      NodeList[] arrNodeList = new NodeList[3];
+      NodeList contentElements = page.getRelatedNodes("contentelement", "contentrel", "DESTINATION");
+      arrNodeList[0] = contentElements;
+
+
+      NodeList linkLijsten = cloud.getList(""+page.getNumber(),"pagina,posrel,linklijst,lijstcontentrel,contentelement", "contentelement.number", null, null, null, "DESTINATION", true);
+      arrNodeList[1] = linkLijsten;
+
+
+      NodeList dossiers = cloud.getList(""+page.getNumber(),"pagina,related,dossier,posrel,artikel", "artikel.number", null, null, null, "DESTINATION", true);
+      arrNodeList[2] = dossiers;
+
+      return arrNodeList;
     }
-    
-    
+
+
     /**
     * Removes the page
     *

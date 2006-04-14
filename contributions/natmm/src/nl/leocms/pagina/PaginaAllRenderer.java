@@ -105,7 +105,7 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
 
             if (model.getSubObjectsCount(n) > 1) {
                out.print("<a href='reorder_pagina.jsp?parent=" + n.getNumber() + "'  target='bottompane'>");
-               out.println("<img src='../img/reorder.gif' border='0' align='top' title='Volgorde rubrieken en pagina's wijzigen'/>");
+               out.println("<img src='../img/reorder.gif' border='0' align='top' title='Volgorde rubrieken en paginas wijzigen'/>");
                out.print("</a>");
             }
             if ((model.getChildCount(n) == 0) && (level > 0)) {

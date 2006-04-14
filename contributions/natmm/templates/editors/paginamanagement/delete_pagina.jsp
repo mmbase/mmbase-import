@@ -1,3 +1,4 @@
+<%@page import="java.util.*" %>
 <%@page import="nl.leocms.pagina.*,nl.leocms.authorization.*, org.mmbase.bridge.*" %>
 <%@include file="/taglibs.jsp" %>
 <html>
@@ -15,51 +16,71 @@ input { width: 100px;}
       }
    </script>
 </head>
-
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
 <%
    PaginaUtil paginaUtil = new PaginaUtil(cloud);
    String number = request.getParameter("number");
    String remove = request.getParameter("remove");
    if ((remove != null) && (remove.equals("ja"))) {
+
       // remove pagina
       paginaUtil.removePagina(number);
-%>
+      %>
       <body onload="refreshParentFrameAndClose()">
-<%
-   }
-   else {
-%>
-      <body>   
-   <%
-      
-      Node pageNode = cloud.getNode(number);
-   %>
+      <%
+
+   } else {
+      %>
+      <body>
+      <%
    
-   <h2>Pagina verwijderen</h2>
-   <h3>Titel: <%= pageNode.getStringValue("titel") %></h3>
-   <%
+         Node pageNode = cloud.getNode(number);
+      %>
+   
+      <h2>Pagina verwijderen</h2>
+      <h3>Titel: <%= pageNode.getStringValue("titel") %></h3>
+      <%
       String account = cloud.getUser().getIdentifier();
-   //   System.out.println("account = " + account);
       AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud);
       UserRole role = authorizationHelper.getRoleForUserWithPagina(authorizationHelper.getUserNode(account), number);
-      if (paginaUtil.doesPageContainContentElements(pageNode)) {
-   %>
-         <p>Deze pagina kan niet verwijderd worden, aangezien er nog steeds verwijzingen zijn naar contentelementen.</p>
-         <input type="button" value="Annuleren" onclick="window.close()"/>
-   <%
-       }
-       else { 
-         if ((role!= null) && (role.getRol() >= nl.leocms.authorization.Roles.EINDREDACTEUR)) {
-   %>
-          Weet u het zeker dat u deze pagina wilt verwijderen?
-          <form action="delete_pagina.jsp"><input type="hidden" name="number" value="<%=number%>"><input type="submit" name="remove" value="ja"/>&nbsp;<input type="button" value="nee" onclick="window.close()"/></form>
-   <%
+
+      NodeList[] arrNodeList = paginaUtil.doesPageContainContentElements(pageNode);
+      if (arrNodeList[0].size() > 0 || arrNodeList[1].size() > 0 || arrNodeList[2].size() > 0){
+         %>
+            <p>Deze pagina kan niet verwijderd worden, aangezien er nog steeds verwijzingen zijn naar contentelementen.</p>
+            <table border="1" cellpadding="5" cellspacing="0">
+         <%
+         for(Iterator it = arrNodeList[0].iterator(); it.hasNext();){
+            Node node = (Node) it.next();
+            %><tr><td>Content element</td><td><%= node.getStringValue("titel") %></td></tr><%
          }
-         else {
-   %>
+         for(Iterator it = arrNodeList[1].iterator(); it.hasNext();){
+            Node node = (Node) it.next();
+            %><tr><td>Content element</td><td><%= node.getStringValue("titel") %></td></tr><%
+         }
+         for(Iterator it = arrNodeList[2].iterator(); it.hasNext();){
+            Node node = (Node) it.next();
+            %><tr><td>artikel</td><td><%= node.getStringValue("titel") %></td></tr><%
+         }
+
+
+
+         %>
+            </table>
+            <input type="button" value="Annuleren" onclick="window.close()"/>
+         <%
+
+      } else {
+
+         if ((role!= null) && (role.getRol() >= nl.leocms.authorization.Roles.EINDREDACTEUR)) {
+            %>
+            Weet u het zeker dat u deze pagina wilt verwijderen?
+            <form action="delete_pagina.jsp"><input type="hidden" name="number" value="<%=number%>"><input type="submit" name="remove" value="ja"/>&nbsp;<input type="button" value="nee" onclick="window.close()"/></form>
+            <%
+         } else {
+            %>
             U heeft geen rechten om deze pagina te verwijderen!
-   <%
+            <%
          }
        }
     }
