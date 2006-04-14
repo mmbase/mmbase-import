@@ -23,6 +23,9 @@ package nl.leocms.builders;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.Cloud;
+import com.finalist.mmbase.util.CloudFactory;
+import nl.leocms.versioning.VersioningController;
 
 /**
  * This builder maintains the create and lastmodified datetime
@@ -30,9 +33,12 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 23-okt-2003
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ContentElementBuilder extends HtmlBuilder {
+
+   /** methods switch */
+   public static boolean ADDVERSION_ON_COMMIT = true;
 
    /** MMbase logging system */
    protected static Logger log = Logging.getLoggerInstance(ContentElementBuilder.class.getName());
@@ -57,6 +63,15 @@ public class ContentElementBuilder extends HtmlBuilder {
     * @see org.mmbase.module.core.MMObjectBuilder#preCommit(org.mmbase.module.core.MMObjectNode)
     */
    public MMObjectNode preCommit(MMObjectNode node) {
+      log.info("preCommit on " + node.getNumber());
+      if (ADDVERSION_ON_COMMIT) {
+         String builderName = node.getBuilder().getTableName();
+      	 if (!builderName.equals("evenement") && !builderName.equals("pagina")) {
+            Cloud cloud = CloudFactory.getCloud();
+            VersioningController versioningController = new VersioningController(cloud);
+            versioningController.addVersion(cloud.getNode(node.getNumber()));
+         }
+      }
       super.preCommit(node);
 
       //mmbase datetime representation is in seconds

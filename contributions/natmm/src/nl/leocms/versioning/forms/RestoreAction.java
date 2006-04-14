@@ -40,7 +40,7 @@ import com.finalist.mmbase.util.CloudFactory;
 
 /**
  * @author Edwin van der Elst
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-04-14 16:07:32 $
  * 
  * @struts:action path="/editors/beheerbibliotheek/RestoreAction" scope="request" validate="false"
  * 
@@ -66,14 +66,15 @@ public class RestoreAction extends Action {
       Node archiveNode = c.getNode( Integer.parseInt(request.getParameter("node")));
       VersioningController versioningController = new VersioningController(c);
       versioningController.restoreVersion( archiveNode );
-      WorkflowController workflowController = new WorkflowController(c);
-      Node contentNode = c.getNode( archiveNode.getIntValue("original_node"));
-      if (workflowController.hasWorkflow(contentNode)) {
-         Node workflow = workflowController.getWorkflowNode(contentNode);
-         workflow.delete(true);
+      if(!nl.leocms.builders.ContentElementBuilder.ADDVERSION_ON_COMMIT) {
+         WorkflowController workflowController = new WorkflowController(c);
+         Node contentNode = c.getNode( archiveNode.getIntValue("original_node"));
+         if (workflowController.hasWorkflow(contentNode)) {
+            Node workflow = workflowController.getWorkflowNode(contentNode);
+            workflow.delete(true);
+         }
+         Node wf = workflowController.createFor(contentNode,"uit archief terug gezet");
       }
-      Node wf = workflowController.createFor(contentNode,"uit archief terug gezet");
-      
       return mapping.findForward("success"); 
    }
 
@@ -81,6 +82,9 @@ public class RestoreAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/03/08 22:23:51  henk
+ * Changed log4j into MMBase logging
+ *
  * Revision 1.1  2006/03/05 21:43:59  henk
  * First version of the NatMM contribution.
  *
