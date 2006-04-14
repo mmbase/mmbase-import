@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.8 2006-04-03 14:53:39 pierre Exp $
+// $Id: htmlarea.js,v 1.9 2006-04-14 13:05:32 nklasens Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
@@ -576,19 +576,21 @@ HTMLArea.prototype._createToolbar = function () {
                 var group = this.config.toolbar[i];
                 for (var j in group) {
                         var code = group[j];
-                        if (/^([IT])\[(.*?)\]/.test(code)) {
-                                // special case, create text label
-                                var l7ed = RegExp.$1 == "I"; // localized?
-                                var label = RegExp.$2;
-                                if (l7ed) {
-                                        label = HTMLArea.I18N.custom[label];
-                                }
-                                var tb_cell = document.createElement("td");
-                                tb_row.appendChild(tb_cell);
-                                tb_cell.className = "label";
-                                tb_cell.innerHTML = label;
-                        } else {
-                                createButton(code);
+                        if (typeof code != "function" && code != undefined ) {
+	                        if (/^([IT])\[(.*?)\]/.test(code)) {
+	                                // special case, create text label
+	                                var l7ed = RegExp.$1 == "I"; // localized?
+	                                var label = RegExp.$2;
+	                                if (l7ed) {
+	                                        label = HTMLArea.I18N.custom[label];
+	                                }
+	                                var tb_cell = document.createElement("td");
+	                                tb_row.appendChild(tb_cell);
+	                                tb_cell.className = "label";
+	                                tb_cell.innerHTML = label;
+	                        } else {
+	                                createButton(code);
+	                        }
                         }
                 }
         }
