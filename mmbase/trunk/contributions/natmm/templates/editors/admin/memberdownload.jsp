@@ -43,7 +43,7 @@ if (actionId.equals("generatenew")){
       <div align="right"><a href="#" onClick="window.close()"><img src='/editors/img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a></div>
       <h2>Download bestand met nieuwe leden</h2>
       <mm:listnodes type="events_attachments" constraints="titel LIKE '%_leden%'" orderby="titel" directions="DOWN" max="1">
-			<a href="<mm:attachment />" target="_blank">klik hier om het bestand te downloaden</a>	
+			<a href="<mm:attachment />">klik hier om het bestand te downloaden (rechter muisklik, opslaan als)</a>	
       </mm:listnodes>
    	<%
    } else {
@@ -79,9 +79,8 @@ if (actionId.equals("generatenew")){
       		</td>
       		<td style="width:33%;">
       			<a onclick="return doDelete('Weet u zeker dat u dit bestand wilt opslaan?');"
-                  title="Klik hier om dit bestand te downloaden."
-      				onmousedown="cancelClick=true;" href="<mm:attachment />"
-                  target="_blank">
+                  title="Klik hier om dit bestand te downloaden (rechter muisklik, opslaan als)."
+      				onmousedown="cancelClick=true;" href="<mm:attachment />">
       				<mm:field name="creatiedatum" jspvar="creatiedatum" vartype="String" write="false">
       					<mm:time time="<%=creatiedatum%>" format="EEE d MMM yyyy HH:mm"/>h
       				</mm:field>
