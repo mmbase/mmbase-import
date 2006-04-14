@@ -2,138 +2,167 @@
 %><mm:cloud jspvar="cloud"
 ><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" 
-%><%@include file="includes/searchfunctions.jsp" %><%
+%><%
+String[] META_TAGS = {"dit", "is", "een", "test"};
+%>
+   <mm:import jspvar="paginaID" externid="p">-1</mm:import>
+   <%
+   String rootID = "home";
+   String sQuery = request.getParameter("search");
+   String sMeta = request.getParameter("trefwoord");
+   String sCategory = request.getParameter("categorie");
+   if(sCategory==null) { sCategory = ""; }
+   boolean categorieExists = false;
+   %><mm:node number="<%=  sCategory %>" notfound="skipbody"
+      ><mm:nodeinfo type="type" write="false" jspvar="nType" vartype="String"><%
+         categorieExists = nType.equals("rubriek");
+      %></mm:nodeinfo
+   ></mm:node><%
+   if(!categorieExists) { sCategory = ""; }
 
-boolean debug = false;
-//boolean debug = true;
+   HashSet hsetAllowedNodes = new HashSet();
+   HashSet hsetPagesNodes = new HashSet();
+   HashSet hsetCategories = new HashSet();
 
-String defaultSearchId = "ik zoek op ...";
-searchId = HtmlCleaner.filterUTFChars(searchId);
-TreeMap nodePaths = new TreeMap();
+   HashSet hsetArticlesNodes = new HashSet();
+   HashSet hsetTeaserNodes = new HashSet();
+   HashSet hsetProducctypesNodes = new HashSet();
+   HashSet hsetProductsNodes = new HashSet();
+	HashSet hsetItemsNodes = new HashSet();
+	HashSet hsetDocumentsNodes = new HashSet();
+	HashSet hsetVacatureNodes = new HashSet();
 
-// page: translate alias back into number 
-%><mm:node number="<%= pageId %>"
-    ><mm:field name="number" jspvar="page_number" vartype="String" write="false"
-        ><% pageId = page_number; 
-    %></mm:field
-></mm:node><%
+   LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule"); 
 
-//String allCategoryIds = categoryId; // *** categoryId is a rubriek or a site
+   if(mod!= null&&!sQuery.equals("")) {
+      %><%@include file="includes/hashsets.jsp" %><%
+   }
+   %>
+	<td><%@include file="includes/pagetitle.jsp" %></td>
+	<td><% String rightBarTitle = "";
+	    %><%@include file="includes/rightbartitle.jsp" 
+	%></td>
+	</tr>
+	<tr>
+	<td class="transperant">
+	<div class="<%= infopageClass %>">
+   <a name="top" />
+   <br/>
+   <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
+   <% if(hsetCategories.size()==0) {
+      %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekcriteria.<%
+   } else { 
+      %> De volgene zoekresultaten zijn gevonden in de categorieën<% 
+   }
+      boolean bFirst = true;
+      for (Iterator it = hsetCategories.iterator(); it.hasNext();)
+      {
+         String sRubriek = (String) it.next();
+         if(!bFirst) { %> | <% }
+         %><mm:node number="<%=sRubriek%>">
+            <a href="zoek.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><b><mm:field name="naam"/></b></a>
+         </mm:node><%
+         bFirst = false;
+      }
+   %>
+   <br/><br/>
+   <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
+   <%
+   // *** Show rubrieken
+   if (hsetCategories.size() > 0) {
 
-String searchedPages = ""; // *** look for those pages that belong to one of the nodes in allCategoryIds ***
-String sConstraints = ""; %>
-<mm:node number="<%= categoryId %>">
-	<mm:aliaslist>
-		<mm:write jspvar="alias" vartype="String" write="false">
-			<% if (!alias.equals("home")) {
-				sConstraints = "rubriek2.number = '" + categoryId + "'";
-				}%>
-		</mm:write>
-	</mm:aliaslist>
-</mm:node>
-<% // *** normal page *** %>
-<mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2,posrel,pagina" constraints="<%= sConstraints %>"
-    ><mm:field name="pagina.number" jspvar="page1_number" vartype="String" write="false"
-        ><% searchedPages += "," + page1_number; 
-    %></mm:field
-></mm:list><%
-// *** subpages ***
-if (!sConstraints.equals("")){ sConstraints += " AND ";}
-sConstraints += "rubriek1.number != rubriek3.number";
-%><mm:list nodes="<%= websiteId %>" path="rubriek1,parent1,rubriek2,parent2,rubriek3,posrel,pagina" constraints="<%= sConstraints %>"
-    ><mm:field name="pagina.number" jspvar="page1_number" vartype="String" write="false"
-        ><% searchedPages += "," + page1_number; 
-    %></mm:field
-></mm:list><% 
+      for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
+         String sRubriek = (String) it.next();
 
-if(!searchedPages.equals("")) { searchedPages = searchedPages.substring(1); }
+         HashSet hsetPagesForThisCategory = new HashSet(); %>
+         <mm:node number="<%=sRubriek%>">
+            <mm:relatednodes type="pagina">
+               <mm:field name="number" jspvar="sID" vartype="String" write="false"><%
+                     hsetPagesForThisCategory.add(sID);
+               %></mm:field>
+            </mm:relatednodes>
+            <a name="<mm:field name="number" />" />
+            <span class="colortitle"><mm:field name="naam"/></span>
+            <br/><%
+            
+            bFirst = true;
+            for (Iterator itp = hsetPagesNodes.iterator(); itp.hasNext(); ) {
+               String sPageID = (String) itp.next();
 
-%><%@include file="includes/searchconfig.jsp" 
-%><%@include file="includes/searchresultsget.jsp" 
+               if(!hsetPagesForThisCategory.contains(sPageID)) {
+                  continue;
+               }
 
-%><td><%@include file="includes/pagetitle.jsp" %></td>
-<td><% String rightBarTitle = "";
-    %><%@include file="includes/rightbartitle.jsp" 
-%></td>
-</tr>
-<tr>
-<td class="transperant">
-<div class="<%= infopageClass %>">
-<table border="0" cellpadding="0" cellspacing="0">
-    <tr><td colspan="3"><img src="media/spacer.gif" width="1" height="8"></td></tr>
-    <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
-        <td>
-<mm:list nodes="iframe_template,popup_template,newwin_template" path="paginatemplate,gebruikt,pagina,posrel,rubriek"
-   constraints="<%= "rubriek.number='"+ categoryId + "'" %>">
-   <p><strong>Dit systeem zoekt niet in de <mm:field name="pagina.titel" />.<br/><br/>
-   Wil je in de <mm:field name="pagina.titel" /> zoeken, klik dan eerst op "<mm:field name="pagina.titel" />" (linkerzijde van de pagina).</strong></p>
-</mm:list><% 
-if(!searchId.equals(defaultSearchId)&&!searchId.equals("")) {
-    %><p>Je hebt gezocht op "<%= searchId %>" <mm:node number="<%= categoryId %>" notfound="skipbody">in "<mm:field name="naam" />" </mm:node>.</p><%
+               String templateUrl = "index.jsp";
 
-    int listSize = searchResultMap.size();
-    if(listSize==0) { 
-        %><p>Je zoekopdracht heeft geen resultaten opgeleverd.</p>
-        <p><a href="search.jsp?p=wieiswie&name=<%= searchId %>">Klik hier om op "<%= searchId %>" te zoeken in de Wie-is-wie applicatie.</a></p><% 
-    } else {  
-        int thisOffset = 0;
-        try{
-            if(!offsetId.equals("")){
-                thisOffset = Integer.parseInt(offsetId);
-                offsetId ="";
+               %><mm:node number="<%=sPageID%>"><%
+                  if (!bFirst) { %><br/><% } %>
+                  <b><mm:field name="titel"/></b>
+                  <ul style="margin:0px;margin-left:16px;">
+                  <mm:related path="gebruikt,template">
+                     <mm:field name="template.url" jspvar="dummy" vartype="String" write="false">
+                        <% templateUrl = dummy; %>
+                     </mm:field>
+                  </mm:related>
+                  <mm:related path="contentrel,artikel" fields="artikel.number">
+                     <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetArticlesNodes.contains(sID)){
+                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>&article=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+                  <mm:related path="contentrel,teaser">
+                     <mm:field name="teaser.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetTeaserNodes.contains(sID)){
+                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>"><mm:field name="teaser.titel"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+						<mm:related path="posrel,producttypes" fields="producttypes.number">
+                     <mm:field name="producttypes.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetProducctypesNodes.contains(sID)){
+                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>&p=<mm:field name="producttypes.number"/>"><mm:field name="producttypes.title"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+						<mm:related path="posrel,producttypes,posrel,products">
+                     <mm:field name="products.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetProductsNodes.contains(sID)){
+                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>"><mm:field name="products.name"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+						<mm:related path="posrel,items">
+                     <mm:field name="items.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetItemsNodes.contains(sID)){
+                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>"><mm:field name="items.titel"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+						<mm:related path="posrel,documents">
+                     <mm:field name="documents.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetDocumentsNodes.contains(sID)){
+                        %><li><a href="<mm:field name="documents.url"/>"><mm:field name="documents.filename"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+						<mm:related path="contentrel,vacature">
+                     <mm:field name="vacature.number" jspvar="sID" vartype="String" write="false"><%
+                     if(hsetVacatureNodes.contains(sID)){
+                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>"><mm:field name="vacature.titel"/></a></li><%
+                     }
+                     %></mm:field>
+                  </mm:related>
+                  </ul>
+               </mm:node><%
+               bFirst = false;
             }
-        } catch(Exception e) {} 
-
-        if(false&&listSize>10) { 
-            int toIndex =  thisOffset*10 + 10;
-            if(toIndex>listSize) { toIndex = listSize; }
-            %><p><strong>Je zoekopdracht heeft <%= listSize %> resultaten opgeleverd. Resultaat <%= thisOffset*10 %> - <%= toIndex %> :</strong></p><%
-        } else {
-            %><p><strong>Je zoek opdracht heeft de volgende resultaten opgeleverd.</strong></p><%
-
-        } %><%@include file="includes/searchresultsshow.jsp" %><%
-
-        if(false&&listSize>10) {  
-            %><div align="center"><%
-                    if(thisOffset>0) { 
-                        %><a target="_top" href="<mm:url page="<%= "search.jsp?p=search&search=" + searchId + "&offset=" + (thisOffset-1)  %>" />"" class="contentreadmore">
-                            [<< previous ]</a>&nbsp;&nbsp;<%
-                    }
-                    for(int i=0; i < (listSize/10 + 1); i++) {  
-                        if(i==thisOffset) {
-                            %><%= i+1 %>&nbsp;&nbsp;<%
-                        } else { 
-                            %><a target="_top" href="<mm:url page="<%= "search.jsp?p=search&search=" + searchId + "&offset=" + i  %>" />"" class="contentreadmore">
-                                <%= i+1 %></a>&nbsp;&nbsp;<%
-                        } 
-                    }
-                    if(thisOffset+1<(listSize/10 + 1)) { 
-                        %><a  target="_top" href="<mm:url page="<%= "search.jsp?p=search&search=" + searchId + "&offset=" + (thisOffset+1)  %>" />"" class="contentreadmore">
-                            [next >>]</a><%
-                    } 
-            %></div><%
-        }
-    }
-} else { 
-
-    // ***  searchId is empty ***
-    %><table border=0 cellspacing="0" cellpadding="0">
-    <tr><td>
-        <div class="pageheader">Je hebt geen woord(en) ingevuld om op te zoeken.</div><br><br>
-        <ul>
-        <li>Vul een woord in in het veld "ik zoek op ...",</li>
-        <li>selecteer de website, rubriek of subwebsite waar je in wilt zoeken,</li>
-        <li>en klik op de zoek knop.</li>
-        </ul>
-        </td>
-    </tr>
-    </table><% 
-
-} 
-%><br><br></td>
-    <td><img src="media/spacer.gif" width="10" height="1"></td>
-</tr>
-</table>
+         %></mm:node>
+         <div align="right"><a href="#top"><img src="media/arrowup_zoek.gif" border="0" /></a></div>
+         <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
+      }
+   }
+%><br/>
 </div>
 </td>
 <td><% 
