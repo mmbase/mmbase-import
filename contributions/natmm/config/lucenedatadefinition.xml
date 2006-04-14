@@ -3,28 +3,28 @@
 
    <index name="natmmIndexArtikel">
       <table name="artikel">
-         <field name="titel">titel</field>
-         <field name="intro">intro</field>
-         <field name="tekst">tekst</field>
+         <field name="titel">indexed.text</field>
+         <field name="intro">indexed.text</field>
+         <field name="tekst">indexed.text</field>
          <related name="paragraaf">
-            <field name="titel">titel</field>
-            <field name="tekst">tekst</field>
+            <field name="titel">indexed.artikel.paragraaf</field>
+            <field name="tekst">indexed.artikel.paragraaf</field>
             <related name="attachments">
-               <field name="titel">titel</field>
-               <field name="description">description</field>
-               <field name="filename">filename</field>
+               <field name="titel">indexed.artikel.paragraaf</field>
+               <field name="description">indexed.artikel.paragraaf</field>
+               <field name="filename">indexed.artikel.paragraaf</field>
             </related>
             <related name="link">
-               <field name="titel">titel</field>
-               <field name="omschrijving">omschrijving</field>
-               <field name="url">url</field>
-               <field name="alt_tekst">alt_tekst</field>
+               <field name="titel">indexed.artikel.paragraaf</field>
+               <field name="omschrijving">indexed.artikel.paragraaf</field>
+               <field name="url">indexed.artikel.paragraaf</field>
+               <field name="alt_tekst">indexed.artikel.paragraaf</field>
             </related>
             <related name="images">
-               <field name="titel">titel</field>
-               <field name="omschrijving">omschrijving</field>
-               <field name="titel_fra">titel_fra</field>
-               <field name="alt_tekst">alt_tekst</field>
+               <field name="titel">indexed.artikel.paragraaf</field>
+               <field name="omschrijving">indexed.artikel.paragraaf</field>
+               <field name="titel_fra">indexed.artikel.paragraaf</field>
+               <field name="alt_tekst">indexed.artikel.paragraaf</field>
             </related>
          </related>
       </table>
@@ -32,57 +32,57 @@
    
    <index name="natmmIndexNatuurgebieden">
       <table name="natuurgebieden">
-         <field name="titel">titel</field>
+         <field name="titel">indexed.text</field>
          <related name="artikel">
-            <field name="titel">titel</field>
-            <field name="intro">intro</field>
-            <field name="tekst">tekst</field>
+            <field name="titel">indexed.natuurgebieden.artikel</field>
+            <field name="intro">indexed.natuurgebieden.artikel</field>
+            <field name="tekst">indexed.natuurgebieden.artikel</field>
             <related name="paragraaf">
-               <field name="titel">titel</field>
-               <field name="tekst">tekst</field>
+               <field name="titel">indexed.natuurgebieden.artikel</field>
+               <field name="tekst">indexed.natuurgebieden.artikel</field>
             </related>
          </related>
          <related name="paragraaf">
-            <field name="titel">titel</field>
-            <field name="tekst">tekst</field>
+            <field name="titel">indexed.text</field>
+            <field name="tekst">indexed.text</field>
          </related>
          <related name="shorty">
-            <field name="titel">titel</field>
-            <field name="omschrijving">omschrijving</field>
+            <field name="titel">indexed.text</field>
+            <field name="omschrijving">indexed.text</field>
          </related>
          <related name="vertrekpunten">
-            <field name="titel">titel</field>
-            <field name="tekst">tekst</field>
+            <field name="titel">indexed.text</field>
+            <field name="tekst">indexed.text</field>
          </related>
          <related name="provincies">
-            <field name="titel">titel</field>
+            <field name="titel">indexed.text</field>
          </related>
       </table>
    </index>
 
    <index name="natmmFormulier">
       <table name="formulier">
-         <field name="titel">titel</field>
+         <field name="titel">indexed.text</field>
          <related name="formulierveld">
-            <field name="label">label</field>
+            <field name="label">indexed.text</field>
          </related>
       </table>
    </index>
 
    <index name="natmmIndexEvenement">
       <table name="evenement">
-         <field name="titel">titel</field>
-         <field name="tekst">tekst</field>
+         <field name="titel">indexed.text</field>
+         <field name="tekst">indexed.text</field>
          <related name="paragraaf">
-            <field name="titel">titel</field>
-            <field name="tekst">tekst</field>
+            <field name="titel">indexed.text</field>
+            <field name="tekst">indexed.text</field>
          </related>
          <related name="natuurgebieden">
-            <field name="titel">titel</field>
+            <field name="titel">indexed.text</field>
          </related>
          <related name="vertrekpunten">
-            <field name="titel">titel</field>
-            <field name="tekst">tekst</field>
+            <field name="titel">indexed.text</field>
+            <field name="tekst">indexed.text</field>
          </related>
       </table>
    </index>
