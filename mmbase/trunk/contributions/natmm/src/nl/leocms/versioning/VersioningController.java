@@ -24,6 +24,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 
+import java.util.ArrayList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -38,6 +40,12 @@ import org.mmbase.bridge.FieldIterator;
 import org.mmbase.bridge.FieldList;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationManager;
+import org.mmbase.bridge.RelationList;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -46,10 +54,12 @@ import org.xml.sax.InputSource;
 /**
  * @author Edwin van der Elst Date :Nov 6, 2003
  * 
- * @version $Revision: 1.1 $, $Date: 2006-03-05 21:43:59 $
+ * @version $Revision: 1.2 $, $Date: 2006-04-14 16:07:32 $
  *  
  */
 public class VersioningController {
+
+   protected static Logger log = Logging.getLoggerInstance(VersioningController.class.getName());
 
    private Cloud cloud;
 
@@ -66,20 +76,36 @@ public class VersioningController {
     * 
     * @param node - Node to create a version from
     */
-   public void addVersion(Node node) {
+   public int addVersion(Node node) {
+      log.info("addVersion for " + node.getNumber());
+      
+      int archiveNumber = -1;
+      String originalNode = "" + node.getNumber();
+      long now = System.currentTimeMillis()/1000 ;
+      String constraints = "archief.original_node = '" + originalNode + "' AND archief.datum > '"
+                           + (now-2) + "' AND archief.datum < '" + (now+2) + "'";
+      
       NodeManager nodeManager = cloud.getNodeManager("archief");
-      try {
-         String data = VersioningController.toXml(node);
-         byte[] bytes = data.getBytes("UTF-8");
 
-         Node archive = nodeManager.createNode();
-         archive.setByteValue("node_data", bytes);
-         archive.setIntValue("original_node",node.getNumber());
-         archive.setIntValue("datum", (int) (System.currentTimeMillis()/1000) );
-         archive.commit();
-      } catch (Exception e) {
-         e.printStackTrace();
+      if (nodeManager.getList(constraints,null,null).size()>0) {
+         //log.info("addVersion: found double archiving");
       }
+      else {
+         try {
+            String data = this.toXml(node);
+            byte[] bytes = data.getBytes("UTF-8");
+
+            Node archive = nodeManager.createNode();
+            archive.setByteValue("node_data", bytes);
+            archive.setIntValue("original_node",node.getNumber());
+            archive.setIntValue("datum", (int) (System.currentTimeMillis()/1000) );
+            archive.commit();
+            archiveNumber = archive.getNumber();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      return archiveNumber;
    }
 
    /**
@@ -88,20 +114,23 @@ public class VersioningController {
     * 
     * @param archive - Node with the archived data
     */
-   public void restoreVersion(Node archive) {
+   public String restoreVersion(Node archive) {
       Node node = cloud.getNode( archive.getIntValue("original_node") );
+      String errorMsg = "";
+      log.info("restoreVersion " + archive.getNumber());
       byte[] bs = archive.getByteValue("node_data");
       String string;
       try {
          string = new String(bs,"UTF-8");
-         setFromXml(node,string);
-         node.commit();
+         errorMsg = setFromXml(node,string);
       } catch (UnsupportedEncodingException e) {
          e.printStackTrace();
       }
+      return errorMsg;
    }
    
-   private static void setFromXml(Node n, String xml) {
+   private String setFromXml(Node n, String xml) {
+      String errorMsg = "";
       try {
          DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          Document document = parser.parse(new InputSource(new StringReader(xml)));
@@ -118,12 +147,15 @@ public class VersioningController {
                n.setStringValue(name, nodeValue);
             }
          }
+         n.commit();
+         errorMsg += restoreRelations(document, n);
       } catch (Exception e) {
          e.printStackTrace();
       }
+      return errorMsg;
    }
    
-   private static String toXml(Node n) throws Exception {
+   private String toXml(Node n) throws Exception {
       StringWriter output;
       try {
          Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -146,6 +178,27 @@ public class VersioningController {
             }
          }
 
+         saveRelations(document, root, n, "related", "attachments");
+         saveRelations(document, root, n, "posrel",  "images");
+         saveRelations(document, root, n, "posrel",  "link");
+
+         String builderName = n.getNodeManager().getName();
+         if (builderName.equals("artikel")) {
+            RelationList relatedParagraphs = n.getRelations("posrel","paragraaf");
+            for (int i=0; i<relatedParagraphs.size(); i++) {
+               Relation relToParagraph = relatedParagraphs.getRelation(i);
+               int destination = addVersion(relToParagraph.getDestination());
+
+               Element relationElement = document.createElement("relation");
+               root.appendChild(relationElement);
+
+               relationElement.setAttribute("destination", "" + destination);
+               relationElement.setAttribute("dtype", "paragraaf");
+               relationElement.setAttribute("role", "posrel");
+               relationElement.setAttribute("pos", relToParagraph.getStringValue("pos"));
+            }
+         }
+
          Transformer transformer = TransformerFactory.newInstance().newTransformer();
          transformer.setOutputProperty(OutputKeys.INDENT, "yes");
          output = new StringWriter();
@@ -157,10 +210,125 @@ public class VersioningController {
       return output.toString();
    }
 
+   private Element saveRelations(Document document, Element root, Node n, 
+                                        String relationManager, String nodeManager) throws Exception {
+
+      RelationList relatedItems = n.getRelations(relationManager,nodeManager);
+      for (int i=0; i<relatedItems.size(); i++) {
+         Relation relTo = relatedItems.getRelation(i);
+
+         Element relationElement = document.createElement("relation");
+         root.appendChild(relationElement);
+         relationElement.setAttribute("destination", "" + relTo.getDestination().getNumber());
+         log.info("saveRelations from " + n.getNumber() + " to " + relTo.getDestination().getNumber());
+         relationElement.setAttribute("dtype", nodeManager);
+         relationElement.setAttribute("role", relationManager);
+         if ("posrel".equals(relationManager)) {
+            relationElement.setAttribute("pos", relTo.getStringValue("pos"));
+         }
+         if ("pos2rel".equals(relationManager)) {
+            relationElement.setAttribute("pos1", relTo.getStringValue("pos1"));
+            relationElement.setAttribute("pos2", relTo.getStringValue("pos2"));
+         }
+      }
+      return root;
+   }
+
+   private void deleteRelations(Node n, String relationManager, String nodeManager) throws Exception {
+      RelationList relatedItems = n.getRelations(relationManager,nodeManager);
+      for (int i=0;i<relatedItems.size();i++) {
+         Relation relation = relatedItems.getRelation(i);
+         relation.delete(true);
+      }
+   }
+
+   private String restoreRelations(Document document, Node n) throws Exception {
+     log.info("restoreRelations " + n.getNumber());
+
+     String errorMsg = "";
+
+      org.w3c.dom.NodeList relations = document.getElementsByTagName("relation");
+      ArrayList paragraphs = new ArrayList();
+
+      for (int i=0;i<relations.getLength();i++) {
+         org.w3c.dom.Node relation = relations.item(i);
+         String dtype = relation.getAttributes().getNamedItem("dtype").getNodeValue();
+         if ("paragraaf".equals(dtype)) {
+            String dest = relation.getAttributes().getNamedItem("destination").getNodeValue();
+            if (cloud.hasNode(dest)) {
+               String originalNode = cloud.getNode(dest).getStringValue("original_node");
+               paragraphs.add(originalNode);
+            }
+         }
+      }
+
+      RelationList relatedItems = n.getRelations("posrel","paragraaf");
+      for (int i=0;i<relatedItems.size();i++) {
+         Relation relation = relatedItems.getRelation(i);
+         Node paragraph = relation.getDestination();
+         //log.info("test "+paragraph.getNumber());
+         if (!paragraphs.contains(""+paragraph.getNumber())) {
+            paragraph.delete(true);
+            //log.info("del par");
+         }
+         else {
+            relation.delete(true);
+            //log.info("del rel");
+         }
+      }
+      deleteRelations(n, "related", "attachments");
+      deleteRelations(n, "posrel",  "images");
+      deleteRelations(n, "posrel",  "link");
+
+      String stype = n.getNodeManager().getName();
+      for (int i=0;i<relations.getLength();i++) {
+         org.w3c.dom.Node relation = relations.item(i);
+         String role = relation.getAttributes().getNamedItem("role").getNodeValue();
+         String dest = relation.getAttributes().getNamedItem("destination").getNodeValue();
+         String dtype = relation.getAttributes().getNamedItem("dtype").getNodeValue();
+         if (!cloud.hasNode(dest)) {
+            errorMsg += "Not found destination node " + dest + "\n";
+         }
+         else {
+            Node destNode = cloud.getNode(dest);
+            if ("archief".equals(destNode.getNodeManager().getName())) {
+               Node archive = destNode;
+               dest = archive.getStringValue("original_node");
+               if (!cloud.hasNode(dest)) {
+                  errorMsg += "Not found node " + dest + " for restore\n";
+                  destNode = cloud.getNodeManager(dtype).createNode();
+               }
+               else {
+                  destNode = cloud.getNode(dest);
+               }
+               byte[] bs = archive.getByteValue("node_data");
+               String string;
+               string = new String(bs,"UTF-8");
+               errorMsg += setFromXml(destNode,string);
+               destNode.commit();
+               dtype = destNode.getNodeManager().getName();
+            }
+            RelationManager relationManager = cloud.getRelationManager(stype,dtype,role);
+            Relation relationNode = cloud.getNode(n.getNumber()).createRelation(destNode, relationManager);
+            if ("posrel".equals(role)) {
+               relationNode.setStringValue("pos",relation.getAttributes().getNamedItem("pos").getNodeValue());
+            }
+            if ("pos2rel".equals(role)) {
+               relationNode.setStringValue("pos1",relation.getAttributes().getNamedItem("pos1").getNodeValue());
+               relationNode.setStringValue("pos2",relation.getAttributes().getNamedItem("pos2").getNodeValue());
+            }
+            relationNode.commit();
+         }
+      }
+      return errorMsg;
+   }
 }
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/03/05 21:43:59  henk
+ * First version of the NatMM contribution.
+ *
  * Revision 1.2  2003/11/07 10:39:04  edwin
  * *** empty log message ***
  *

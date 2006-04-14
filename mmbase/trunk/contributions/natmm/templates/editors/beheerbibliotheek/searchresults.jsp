@@ -218,7 +218,7 @@ if (searchIsOn) {
                <th style="width:90;height:13;vertical-align:bottom;text-align:left;"><a class="th" href="#" onclick='javascript:changeOrder("contentelement.creatiedatum")'>Creatie</a><% if("contentelement.creatiedatum".equals(orderColumn)) { %><img border="0" src="../img/down.gif"> <% } %> </th>
                <th style="width:90;height:13;vertical-align:bottom;text-align:left;"><a class="th" href="#" onclick='javascript:changeOrder("contentelement.datumlaatstewijziging")'>Geupdate</a><% if("contentelement.datumlaatstewijziging".equals(orderColumn)) { %><img border="0" src="../img/down.gif"> <% } %> </th>
                <th style="width:90;height:13;vertical-align:bottom;text-align:left;">Auteur</th>
-               <%-- hh <th style="width:50;height:13;vertical-align:bottom;text-align:left;">Versie</th> --%>
+               <th style="width:50;height:13;vertical-align:bottom;text-align:left;">Versie</th>
             </tr>
        </mm:first>
        <% if( (counter > (curPage-1)*AMOUNT_OF_RESULTS ) && (counter < curPage*AMOUNT_OF_RESULTS+1) ) { 
@@ -306,10 +306,9 @@ if (searchIsOn) {
             </td>
             <td valign="top">
                <mm:node element="contentelement">
-                  <mm:related path="schrijver,users"><mm:field name="users.account"/></mm:related>
+                  <mm:related path="schrijver,users" orderby="schrijver.number" directions="DOWN" max="1"><mm:field name="users.account"/></mm:related>
                </mm:node>
             </td>
-            <%-- hh
             <td valign="top" align="center">
                <mm:field name="contentelement.number" jspvar="contentElementNumber" vartype="String" write="false">
                   <mm:list nodes="<%= contentElementNumber %>" path="contentelement,creatierubriek,rubriek" max="1">
@@ -329,7 +328,6 @@ if (searchIsOn) {
                   </mm:list>
                </mm:field>
             </td>
-            --%>
          </tr>
       <% } %>
       <mm:last>
