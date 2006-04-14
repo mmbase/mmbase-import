@@ -865,7 +865,7 @@ public class MembershipForm extends ActionForm {
           }
 
           if (j < nl.size() - 1) {
-             sData.append('\n');
+             sData.append("\r\n"); // unix has '\n' as the line separator, whereas windows has '\r\n' and mac has '\r'. 
           }
        }
 
