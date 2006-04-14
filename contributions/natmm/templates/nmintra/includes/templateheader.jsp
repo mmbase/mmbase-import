@@ -1,8 +1,15 @@
 <%@page language="java" contentType="text/html; charset=utf-8"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache" 
-%><%@page import="java.util.*,java.text.*,java.io.*,org.mmbase.bridge.*,org.mmbase.util.logging.Logger,nl.mmatch.HtmlCleaner,nl.leocms.util.*" 
-%><%! 
+%><%@page import="java.util.*,java.text.*,java.io.*,org.mmbase.bridge.*,
+						org.mmbase.util.logging.Logger,org.mmbase.module.Module,
+						nl.mmatch.HtmlCleaner,nl.leocms.util.*,
+						net.sf.mmapps.modules.lucenesearch.LuceneModule,
+				      org.apache.lucene.index.IndexReader,
+				      org.apache.lucene.analysis.*,org.apache.lucene.search.*,
+				      org.apache.lucene.queryParser.MultiFieldQueryParser,
+				      org.apache.lucene.document.Document" %><%! 
+						
 public String getParameter(String parameterStr, String queryStr) {
     String parameterValue = null;
     int qpos = queryStr.indexOf("&" + parameterStr + "=");
