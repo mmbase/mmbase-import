@@ -31,7 +31,7 @@ input { width: 100px;}
 
    } else {
       %>
-      <body>
+      <body style="overflow:auto;" >
       <%
    
          Node pageNode = cloud.getNode(number);
@@ -45,29 +45,34 @@ input { width: 100px;}
       UserRole role = authorizationHelper.getRoleForUserWithPagina(authorizationHelper.getUserNode(account), number);
 
       NodeList[] arrNodeList = paginaUtil.doesPageContainContentElements(pageNode);
-      if (arrNodeList[0].size() > 0 || arrNodeList[1].size() > 0 || arrNodeList[2].size() > 0){
+      boolean containsContentElements = false;
+      for(int i=0; i< arrNodeList.length; i++) {
+         if(arrNodeList[0].size() > 0) {
+            containsContentElements = true;
+         }
+      }
+      if (containsContentElements){
          %>
-            <p>Deze pagina kan niet verwijderd worden, aangezien er nog steeds verwijzingen zijn naar contentelementen.</p>
-            <table border="1" cellpadding="5" cellspacing="0">
+         <p>Deze pagina kan niet verwijderd worden, aangezien de pagina gebruik maakt van de volgende contentelementen.</p>
+         <input type="button" value="Annuleren" onclick="window.close()"/>
+         <table class="formcontent"  border="1" cellpadding="3" cellspacing="0">
          <%
-         for(Iterator it = arrNodeList[0].iterator(); it.hasNext();){
-            Node node = (Node) it.next();
-            %><tr><td>Content element</td><td><%= node.getStringValue("titel") %></td></tr><%
-         }
-         for(Iterator it = arrNodeList[1].iterator(); it.hasNext();){
-            Node node = (Node) it.next();
-            %><tr><td>Content element</td><td><%= node.getStringValue("titel") %></td></tr><%
-         }
-         for(Iterator it = arrNodeList[2].iterator(); it.hasNext();){
-            Node node = (Node) it.next();
-            %><tr><td>artikel</td><td><%= node.getStringValue("titel") %></td></tr><%
-         }
+         for(int i=0; i<arrNodeList.length; i++) {
 
+            for(Iterator it = arrNodeList[i].iterator(); it.hasNext();){
+               Node node = (Node) it.next();
+               // Use cloud.getNode(node.getNumber()) to get the node that is the extension of the contentelement.
+               // E.g. artikel or dossier instead of contentelement.
+               %><tr>
+                  <td class="fieldname"><%= cloud.getNode(node.getNumber()).getNodeManager().getName() %></td>
+                  <td><%= node.getStringValue("titel") %></td>
+               </tr><%
+            }
 
-
+         }
          %>
-            </table>
-            <input type="button" value="Annuleren" onclick="window.close()"/>
+         </table>
+         <br/><br/>
          <%
 
       } else {
