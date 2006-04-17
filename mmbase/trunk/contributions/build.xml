@@ -29,7 +29,7 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar" />
+  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,principletracker" />
   <target name="all.not.compiling" depends="" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
 
@@ -68,6 +68,15 @@ Contributions build file
 
   <target name="mmbar" depends="mmbase">
     <ant dir="mmbar"      target="package" inheritAll="false">
+      <property name="project.zip.dir"        value="${contributions.build.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
+      <property name="download.dir"        value="${download.dir}" />
+    </ant>
+  </target>
+
+
+  <target name="principletracker" depends="mmbase">
+    <ant dir="principletracker"      target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${contributions.build.dir}" />
       <property name="build.dir"        value="${build.dir}" />
       <property name="download.dir"        value="${download.dir}" />
@@ -117,6 +126,7 @@ Contributions build file
      <ant dir="multilanguagegui"        target="clean" inheritAll="false" />
      <ant dir="thememanager"        target="clean" inheritAll="false" />
      <ant dir="mmbar"        target="clean" inheritAll="false" />
+     <ant dir="principletracker"        target="clean" inheritAll="false" />
 
      <delete dir="${contributions.build.dir}" />
   </target>
