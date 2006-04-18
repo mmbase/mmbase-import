@@ -21,10 +21,11 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.21 2006-02-10 17:58:07 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.22 2006-04-18 19:29:40 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
+    private static final Logger log = Logging.getLoggerInstance(BasicTransaction.class);
     /**
      * The id of the transaction for use with the transaction manager.
      */
@@ -61,7 +62,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 // XXX: the current transaction manager does not allow multiple transactions with the
                 // same name for different users
                 // We solved this here, but this should really be handled in the Transactionmanager.
-                transactionContext = BasicCloudContext.transactionManager.create(account, account + "_" + transactionName);
+                transactionContext = account + "_" + transactionName;
+                BasicCloudContext.transactionManager.createTransaction(transactionContext);
             } catch (TransactionManagerException e) {
                 throw new BridgeException(e.getMessage(), e);
             }
@@ -69,7 +71,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     }
 
 
-    public boolean commit() {
+    public synchronized boolean commit() {
         if (canceled) {
             throw new BridgeException("Cannot commit transaction'" + name + "' (" + transactionContext +"), it was already canceled.");
         }
@@ -77,6 +79,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             throw new BridgeException("Cannot commit transaction'" + name + "' (" + transactionContext +"), it was already committed.");
         }
 
+        parentCloud.transactions.remove(transactionName); 
         // if this is a transaction within a transaction (theoretically possible)
         // leave the committing to the 'parent' transaction
         if (parentCloud instanceof Transaction) {
@@ -91,20 +94,17 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 throw new BridgeException(e.getMessage(), e);
             }
         }
-        // remove the transaction from the parent cloud
-        parentCloud.transactions.remove(transactionName);        
-        committed = true;        
+        committed = true;
         return true;
     }
 
-    public void cancel() {
+    public synchronized void cancel() {
         if (canceled) {
             throw new BridgeException("Cannot cancel transaction'" + name + "' (" + transactionContext +"), it was already canceled.");
         }
         if (committed) {
             throw new BridgeException("Cannot cancel transaction'" + name + "' (" + transactionContext +"), it was already committed.");
         }
-
 
         // if this is a transaction within a transaction (theoretically possible)
         // call the 'parent' transaction to cancel everything
@@ -165,7 +165,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     boolean contains(MMObjectNode node) {
         // additional check, so transaction can still get nodes after it has committed.
-        if (transactionContext==null) {
+        if (transactionContext == null) {
             return false;
         }
         try {
