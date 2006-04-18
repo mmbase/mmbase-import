@@ -47,6 +47,8 @@ public abstract class AbstractEventBroker {
     /**
      * this method should return true if this broker can accept and propagate
      * events to the listener of this type. There are no fixed criteria for this.
+
+     * Most implementions do <code>event instanceof &lt;EventListener associated with this broker&gt;</code>
      * 
      * @param listener
      */
@@ -56,12 +58,14 @@ public abstract class AbstractEventBroker {
      * this method should return true if this event broker can broker for 
      * events of this type. There are no fixed criteria for this.
      * 
+     * Most implementions do <code>event instanceof &lt;EvenType associated with this broker&gt;</code>
+     * 
      * @param event
      */
     public abstract boolean canBrokerForEvent(Event event);
 
     /**
-     * This method has twoo functions. It must cast both event and listener to
+     * This method has two functions. It must cast both event and listener to
      * the proper type and invoke the event on the listener. But it must allso
      * check if the listener has constraint properties set. if so it must use
      * them to decide if the event should be invoked on this listener.
@@ -77,22 +81,22 @@ public abstract class AbstractEventBroker {
         if (canBrokerForListener(listener)) {
             if (! listeners.add(listener)) {
                 if (log.isDebugEnabled()) {
-                    log.debug("" + listener + " was already in " + this.getClass().getName() + ". Ignored.");
+                    log.debug("" + listener + " was already in " + getClass() + ". Ignored.");
                 }
                 return false;
             } else if (log.isDebugEnabled()) {
-                log.debug("listener added to " + this.getClass().getName());
+                log.debug("listener added to " + getClass());
             }
             return true;
         } else {            
-            log.warn("Ignored listener for" + this.getClass().getName() + " because it cannot broker for that.");
+            log.warn("Ignored listener for" + getClass() + " because it cannot broker for that.");
         }
         return false;
     }
 
     public void removeListener(EventListener listener) {
         if (! listeners.remove(listener)) {
-            log.warn("Tried to remove " + listener + " from " + this.getClass().getName() + " but it was not found. Ignored.");
+            log.warn("Tried to remove " + listener + " from " + getClass()+ " but it was not found. Ignored.");
         }
 
     }
@@ -118,8 +122,6 @@ public abstract class AbstractEventBroker {
         //  we can only have one instance so this will do to prevent adding more instances of an envent broker
         return this.getClass().getName().equals(o.getClass().getName());
     }
-    
-    
 
     public int hashCode() {
         int result = 0;

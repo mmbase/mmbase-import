@@ -35,8 +35,7 @@ public class RelationEventBroker extends AbstractEventBroker {
     public boolean canBrokerForListener(EventListener listener) {
         // if(listener.getClass().equals(RelationEventListener.class))return
         // true;
-        if (listener instanceof RelationEventListener) return true;
-        return false;
+        return listener instanceof RelationEventListener;
     }
 
     /*
@@ -45,7 +44,7 @@ public class RelationEventBroker extends AbstractEventBroker {
      * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
      */
     public boolean canBrokerForEvent(Event event) {
-        return (event.getClass().equals(RelationEvent.class));
+        return event instanceof RelationEvent;
     }
 
     /*

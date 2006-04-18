@@ -16,28 +16,54 @@ import org.mmbase.module.core.MMBase;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.6 2006-02-07 13:21:00 ernst Exp $
+ * @version $Id: Event.java,v 1.7 2006-04-18 13:03:30 michiel Exp $
  */
-public abstract class Event implements Serializable, Cloneable{
+public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
+
+    public static final int TYPE_UNSPECIFIED = -1;
+    public static final int TYPE_NEW      = 0;
+    public static final int TYPE_CHANGE   = 1;
+    public static final int TYPE_DELETE   = 2;
+
+    protected int    eventType = TYPE_UNSPECIFIED;
     protected String machine;
 
+    /**
+     * Every event originates from a certain machine, which is identified by a String.
+     * If this equals {@link MMBase#getMachineName()} then this is a local event.
+     */
     public String getMachine() {
         return machine;
     }
+    public boolean isLocal() {
+        return MMBase.getMMBase().getMachineName().equals(machine);
+    }
 
-    public String getName() {
-        return "Event";
+
+    /**
+     * Most events will come in certain 'types', default contants which are provided are {@link
+     * TYPE_NEW}, {@link TYPE_CHANGED} and {@link TYPE_DELETE}.
+     */
+    public int getType() {
+        return eventType;
     }
 
     /**
-     * @param machine the (local) machine name. if null the local machine name is extracted from MMBase
+     * @param machine The machine name. If <code>null</code> the local machine name is extracted from MMBase, using
+     *                {@link MMBase#getMachineName()}
      */
-    public Event(String machine) {
-        if(machine == null)machine = MMBase.getMMBase().getMachineName();
-        this.machine = machine;
+    public Event(String machine, int type) {
+        this.machine =  machine == null ?
+            MMBase.getMMBase().getMachineName() :
+            machine;
+        this.eventType    = type;
     }
-    
+
+    public Event(String machine) {
+        this(machine, TYPE_UNSPECIFIED);
+    }
+
     public Object clone(){
         Object clone = null;
         try {

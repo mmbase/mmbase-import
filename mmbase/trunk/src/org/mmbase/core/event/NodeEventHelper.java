@@ -43,17 +43,17 @@ public class NodeEventHelper {
         
         //fill the old and new values maps for the event
         switch(eventType) {
-        case NodeEvent.EVENT_TYPE_NEW:
+        case Event.TYPE_NEW:
             newEventValues.putAll(node.getValues());
             break;
-        case NodeEvent.EVENT_TYPE_CHANGED:
+        case Event.TYPE_CHANGE:
             oldEventValues.putAll(node.getOldValues());
             for(Iterator i = node.getOldValues().keySet().iterator(); i.hasNext(); ) {
                 Object key = i.next();
                 newEventValues.put(key, node.getValues().get(key));
             }
             break;
-        case NodeEvent.EVENT_TYPE_DELETE:
+        case Event.TYPE_DELETE:
             oldEventValues.putAll(node.getValues());
             break;
         default: {
