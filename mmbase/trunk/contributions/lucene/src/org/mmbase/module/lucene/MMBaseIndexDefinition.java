@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.9 2006-04-10 10:49:47 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.10 2006-04-18 13:25:40 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -125,7 +125,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
      * @param id A node number. If used, the query will be limited. This is used to update the index on change of that node.
      * @return the query result as a NodeIterator object
      */
-    protected NodeIterator getNodeIterator(String id) {
+    protected NodeIterator getNodeIterator(final String id) {
         try {
             Query q = (Query) query.clone();
             String elementNumberFieldName = "number";
@@ -134,17 +134,19 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
             }
             if (id != null) {
                 Integer number = new Integer(id);
-                Node node = query.getCloud().getNode(number.intValue());
-                NodeManager nm = node.getNodeManager();
-                Iterator i = q.getSteps().iterator();
                 Constraint comp = null;
-                while(i.hasNext()) {
-                    Step step = (Step) i.next();
-                    NodeManager stepManager = query.getCloud().getNodeManager(step.getTableName());
-                    if (stepManager.equals(nm) || stepManager.getDescendants().contains(nm)) {
-                        StepField numberField = q.createStepField(step, "number");
-                        Constraint constraint = q.createConstraint(numberField, number);
-                        comp = q.createConstraint(comp, CompositeConstraint.LOGICAL_OR, constraint);
+                if (query.getCloud().hasNode(number.intValue())) {
+                    Node node = query.getCloud().getNode(number.intValue());
+                    NodeManager nm = node.getNodeManager();
+                    Iterator i = q.getSteps().iterator();
+                    while(i.hasNext()) {
+                        Step step = (Step) i.next();
+                        NodeManager stepManager = query.getCloud().getNodeManager(step.getTableName());
+                        if (stepManager.equals(nm) || stepManager.getDescendants().contains(nm)) {
+                            StepField numberField = q.createStepField(step, "number");
+                            Constraint constraint = q.createConstraint(numberField, number);
+                            comp = q.createConstraint(comp, CompositeConstraint.LOGICAL_OR, constraint);
+                        }
                     }
                 }
                 if (comp == null) return BridgeCollections.EMPTY_NODELIST.nodeIterator();
