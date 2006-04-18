@@ -28,6 +28,7 @@ public class DataTypesTest extends BridgeTest {
     }
     protected static Object[] cases = null;
 
+
     public void setUp() throws Exception {
         if (cases == null) {
             Cloud cloud = getCloud();
@@ -36,7 +37,7 @@ public class DataTypesTest extends BridgeTest {
             Node node2 = object.getList(object.createQuery()).getNode(0);
             NodeManager aa = cloud.getNodeManager("aa");
             Node node3 = aa.createNode();
-            node3.commit();
+            commit(node3);
 
             cases = new Object[] {
                 /* {field    {valid values}   {invalid values}} */
@@ -126,6 +127,13 @@ public class DataTypesTest extends BridgeTest {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         return  nodeManager.createNode();
+    }
+
+    protected void commit(Node node) {
+        node.commit();
+        if (node.getCloud() instanceof Transaction) {
+            ((Transaction) node.getCloud()).commit();
+        }
     }
 
     public void testCheckValid() {
@@ -244,13 +252,13 @@ public class DataTypesTest extends BridgeTest {
                        sufficientlyEqual(value, defaultValue));
 
         }
-        newNode.commit();
+        commit(newNode);
 
     }
     public void testDefaultValuesCommited() {
         Node newNode = getNewNode();
         NodeManager nodeManager = newNode.getNodeManager();
-        newNode.commit();
+        commit(newNode);
         for (int i = 0; i < cases.length; i++) {
             Object[] kase = (Object[]) cases[i];
             Field field = nodeManager.getField((String)kase[0]);
@@ -264,26 +272,30 @@ public class DataTypesTest extends BridgeTest {
     public void testEnumerations() {
         Node newNode = getNewNode();
         newNode.setValue("mmbase_state_enumeration", "ERROR");
-        newNode.commit();
+        commit(newNode);
         int value = newNode.getIntValue("mmbase_state_enumeration");
         assertTrue("ERROR did evaluate to 3 but to " + value, value == 3);
         newNode = getNewNode();
         newNode.setStringValue("mmbase_state_enumeration", "ERROR");
-        newNode.commit();
+        commit(newNode);
         value = newNode.getIntValue("mmbase_state_enumeration");
         assertTrue("ERROR did evaluate to 3 but to " + value, value == 3);
 
     }
 
+
+    protected byte[] getBinary() {
+        return new byte[] {1, 2, 3, 4};
+    }
     public void testBinary() {
         Node newNode = getNewNode();
         assertTrue("handle is not default null", newNode.getNodeManager().getField("handle").getDataType().getDefaultValue() == null);
-        newNode.setValue("handle", new byte[] {1, 2, 3, 4});
-        newNode.commit();
+        newNode.setValue("handle", getBinary());
+        commit(newNode);
         try {
             Node newNode2 = getNewNode();
-            newNode2.setValue("handle", new byte[] {1, 2, 3, 4});
-            newNode2.commit();
+            newNode2.setValue("handle", getBinary());
+            commit(newNode2);
             fail("There is unique on the 'checksum' of handle, so setting same value for second time should have thrown exception");
         } catch (Exception e) {
         }
