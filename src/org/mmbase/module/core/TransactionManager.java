@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.31 2006-02-07 21:45:56 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.32 2006-04-18 19:27:58 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -37,38 +37,53 @@ public class TransactionManager implements TransactionManagerInterface {
     protected Map transactions = new HashMap(); /* String -> Collection */
     protected TransactionResolver transactionResolver;
 
-    public TransactionManager(MMBase mmbase,TemporaryNodeManagerInterface tmpn) {
+    public TransactionManager(MMBase mmbase, TemporaryNodeManagerInterface tmpn) {
         this.mmbase = mmbase;
         this.tmpNodeManager = tmpn;
         transactionResolver = new TransactionResolver(mmbase);
         mmbase.getMMBaseCop();
     }
-
-    synchronized protected Collection getTransaction(String transactionName) throws TransactionManagerException {
-        Collection transaction = (Collection)transactions.get(transactionName);
+    /**
+     * Returns transaction with given name.
+     * @param transasctionName The name of the transaction to return
+     * @exception TransactionManagerExcpeption if the transaction with given name does not exist
+     * @return Collection containing the nodes in this transaction
+     */
+    synchronized public  Collection getTransaction(String transactionName) throws TransactionManagerException {
+        Collection transaction = (Collection) transactions.get(transactionName);
         if (transaction == null) {
-            throw new TransactionManagerException("Transaction "+transactionName+" does not exist");
+            throw new TransactionManagerException("Transaction " + transactionName + " does not exist (existing are " + transactions.keySet() + ")");
         } else {
             return transaction;
         }
     }
 
-    synchronized protected Collection createTransaction(String transactionName) throws TransactionManagerException {
+    /**
+     * Creates transaction with given name.
+     * @param transasctionName The name of the transaction to return
+     * @exception TransactionManagerExcpeption if the transaction with given name existed already
+     * @return Collection containing the nodes in this transaction (so, this is an empty collection)
+     */
+    synchronized public Collection createTransaction(String transactionName) throws TransactionManagerException {
         if (!transactions.containsKey(transactionName)) {
-            Collection transactionNodes = new Vector();
+            Vector transactionNodes = new Vector();
             transactions.put(transactionName, transactionNodes);
             return transactionNodes;
         } else {
-            throw new TransactionManagerException("Transaction "+transactionName+" already exists");
+            throw new TransactionManagerException("Transaction " + transactionName + " already exists");
         }
     }
 
+    /**
+     * Removes the transaction with given name
+     * @return the collection with nodes from the removed transaction or <code>null</code> if no transaction with this name existed
+     */
     synchronized protected Collection deleteTransaction(String transactionName) {
         return (Collection) transactions.remove(transactionName);
     }
 
     /**
-     * @deprecated use get()
+     * @deprecated use {@link getTransaction()}
      */
     public Vector getNodes(Object user, String transactionName) {
         try {
@@ -78,6 +93,14 @@ public class TransactionManager implements TransactionManagerInterface {
         }
     }
 
+    /**
+     * Creates a new transaction with given name
+     * @param user This parameter is ignored (WTF!)
+     * @param transasctionName The name of the transaction to create
+     * @exception TransactionManagerExcpeption if the transaction with given name already existed
+     * @return transactionName
+     * @deprecated Use {@link createTransaction}
+     */
     public String create(Object user, String transactionName) throws TransactionManagerException {
         createTransaction(transactionName);
         if (log.isDebugEnabled()) {
@@ -86,6 +109,13 @@ public class TransactionManager implements TransactionManagerInterface {
         return transactionName;
     }
 
+    /**
+     * Returns the (existing) transaction with given name.
+     * @param user This parameter is ignored (WTF!)
+     * @param transasctionName The name of the transaction to return
+     * @exception TransactionManagerExcpeption if the transaction with given name does not exist
+     * @deprecated use {@link getTransaction()}
+     */
     public Collection get(Object user, String transactionName) throws TransactionManagerException {
         return getTransaction(transactionName);
     }
@@ -93,7 +123,7 @@ public class TransactionManager implements TransactionManagerInterface {
     public String addNode(String transactionName, String owner, String tmpnumber)
         throws TransactionManagerException {
         Collection transaction = getTransaction(transactionName);
-        MMObjectNode node = tmpNodeManager.getNode(owner,tmpnumber);
+        MMObjectNode node = tmpNodeManager.getNode(owner, tmpnumber);
         if (node != null) {
             if (!transaction.contains(node)) {
                 transaction.add(node);
