@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.378 2006-04-11 22:07:49 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.379 2006-04-18 13:07:01 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -615,7 +615,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // it is in the storage now, all caches can allready be invalidated, this makes sure
         // that imediate 'select' after 'insert' will be correct'.
         //xxx: this is bad.let's kill it!
-        //QueryResultCache.invalidateAll(node, NodeEvent.EVENT_TYPE_NEW);
+        //QueryResultCache.invalidateAll(node, NodeEvent.TYPE_NEW);
         if (n <= 0) {
             log.warn("Did not get valid nodeNumber of storage " + n);
         }
@@ -2914,7 +2914,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param listener
      * @since MMBase-1.8
      */
-    public void addEventListener(Object listener){
+    public void addEventListener(org.mmbase.core.event.EventListener listener){
         mmb.addNodeRelatedEventsListener(getTableName(), listener);
     }
 
@@ -2922,7 +2922,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param listener
      * @since MMBase-1.8
      */
-    public void removeEventListener(Object listener){
+    public void removeEventListener(org.mmbase.core.event.EventListener listener){
         mmb.removeNodeRelatedEventsListener(getTableName(), listener);
     }
 
@@ -2940,7 +2940,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         eventBackwardsCompatible(event.getMachine(), event.getNodeNumber(), type);
 
         //update the cache
-        boolean localEvent = (event.getMachine().equals(mmb.getMachineName()));
         Integer changedNodeNumber = new Integer(event.getNodeNumber());
 
         //and now refire the event for the parent builders
@@ -2953,8 +2952,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             EventManager.getInstance().propagateEvent(parentBuilderEvent);
         }
 
-        if(type == NodeEvent.EVENT_TYPE_DELETE ||
-           ((! localEvent) && type == NodeEvent.EVENT_TYPE_CHANGED)){
+        if(type == Event.TYPE_DELETE || ((! event.isLocal()) && type == Event.TYPE_CHANGE)) {
             if (nodeCache.remove(changedNodeNumber) != null && log.isDebugEnabled()) {
                 log.debug("Removed node " + changedNodeNumber + " from node cache");
             }
@@ -2975,10 +2973,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
          //for backwards compatibilty: create relation changed calls
          if (event.getRelationSourceType().equals(getTableName())) {
-             eventBackwardsCompatible(event.getMachine(), event.getRelationSourceNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+             eventBackwardsCompatible(event.getMachine(), event.getRelationSourceNumber(), NodeEvent.TYPE_RELATION_CHANGE);
          }
          if (event.getRelationDestinationType().equals(getTableName())) {
-             eventBackwardsCompatible(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.EVENT_TYPE_RELATION_CHANGED);
+             eventBackwardsCompatible(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.TYPE_RELATION_CHANGE);
          }
 
          //update the cache
