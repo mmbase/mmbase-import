@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.*;
+import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -41,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.95 2006-04-11 22:57:36 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.96 2006-04-18 21:30:30 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -250,15 +251,17 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         Field         field = fieldProvider.getFieldVar();
         String fieldName = field.getName();
 
-        /* perhaps 'getSessionName' should be added to CloudProvider
-         * EXPERIMENTAL
-         */
-        CloudTag ct = null;
-        ct = (CloudTag) findParentTag(CloudTag.class, null, false);
-        if (ct != null) {
-            sessionName = ct.getSessionName();
-        }
+        {
+            /* perhaps 'getSessionName' should be added to CloudProvider
+             * EXPERIMENTAL
+             */
+            CloudTag ct = null;
+            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+            if (ct != null) {
+                sessionName = ct.getSessionName();
+            }
 
+        }
         // found the field now. Now we can decide what must be shown:
         String show = null;
 
@@ -474,6 +477,21 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         return helper.doAfterBody();
     }
 
+
+    /**
+     * @since MMBase-1.8
+     */
+    public String getPrefix() throws JspTagException {
+        FormTag ft = (FormTag) findParentTag(FormTag.class, null, false);
+        String id = (ft != null ? ft.getId() : null);
+        if (id == null) {
+            id = findFieldProvider().getId();
+        }
+        if (id == null) {
+            id = "";
+        }
+        return id;
+    }
 
     /**
      * decode and encode can be overriden.

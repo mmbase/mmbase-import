@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.36 2006-04-11 22:57:36 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.37 2006-04-18 21:30:30 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -82,11 +82,11 @@ public class NodeHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-                
+
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
         if(useLegacy(node, field) &&
            // backwards compatibility. super should deal correctly with enumerations, also for node-fields
-           tag.getCloudVar().hasNodeManager(field.getGUIType())) { 
+           tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
             buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
@@ -168,7 +168,7 @@ public class NodeHandler extends AbstractTypeHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        if(useLegacy(null, field) &&           
+        if(useLegacy(null, field) &&
             tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
@@ -188,11 +188,6 @@ public class NodeHandler extends AbstractTypeHandler {
             }
         }
         return super.whereHtmlInput(field, query);
-    }
-
-    protected Object cast(Object value, Node node, Field field) {
-        if (value == null || "".equals(value)) return "";
-        return super.cast(value, node, field);
     }
 
 

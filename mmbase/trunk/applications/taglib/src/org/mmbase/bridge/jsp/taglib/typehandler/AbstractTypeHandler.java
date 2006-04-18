@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.41 2006-04-11 22:57:36 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.42 2006-04-18 21:30:30 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -202,7 +202,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 form.setValid(false);
             }
             if (errors) {
-                StringBuffer show = new StringBuffer("<div class=\"check-error\">");
+                StringBuffer show = new StringBuffer("<div class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
                 Iterator i = col.iterator();
                 while (i.hasNext()) {
@@ -225,16 +225,16 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
         Object fieldValue = getFieldValue(node, field, false);
-        if (fieldValue == null) {
-
-        } else {
-            if (! fieldValue.equals(node.getValue(fieldName))) {
-                //log.info("Field " + field + " " + node.getValue(fieldName) + " --> " + fieldValue);
-                node.setValue(fieldName,  fieldValue);
-                return true;
+        Object oldValue = node.getValue(fieldName);
+        if (fieldValue == null ? oldValue == null : fieldValue.equals(oldValue)) {
+            return false;
+        }  else {
+            if (fieldName.equals("node")) {
+                log.info("Setting " + fieldValue + " in node");
             }
+            node.setValue(fieldName,  fieldValue);
+            return true;
         }
-        return false;
     }
 
 
@@ -321,9 +321,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      *
      */
     protected String prefix(String s) throws JspTagException {
-        String id = tag.findFieldProvider().getId();
-        if (id == null) id = "";
-        return id + "_" + s;
+        return tag.getPrefix() + "_" + s;
     }
 
     /**
@@ -333,9 +331,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @return  String with the id, like f.e. 'mm_title'
      */
     protected String prefixID(String s) throws JspTagException {
-        String id = tag.findFieldProvider().getId();
-        id = (id == null) ? "" : id + "_";
-        return "mm_" + id + s;
+        String prefix = tag.getPrefix();
+        if (! prefix.equals("")) prefix += "_";
+        return "mm_" + prefix + s;
     }
 
 
