@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  *
- * @version $Id: Properties.java,v 1.14 2006-01-24 10:43:26 michiel Exp $
+ * @version $Id: Properties.java,v 1.15 2006-04-18 13:05:36 michiel Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -42,9 +42,8 @@ public class Properties extends MMObjectBuilder {
                 log.debug("nodeChanged(): Property change ! "+ event.getMachine() + " " + event.getNodeNumber() +
                           " " + event.getBuilderName() + " "+ NodeEvent.newTypeToOldType(event.getType()));
             }
-            if (event.getType() == NodeEvent.EVENT_TYPE_CHANGED || event.getType() == NodeEvent.EVENT_TYPE_NEW ) {
+            if (event.getType() == NodeEvent.TYPE_CHANGE || event.getType() == NodeEvent.TYPE_NEW ) {
                 // The passed node number is node of prop node
-                
                 int parent = getNode(event.getNodeNumber()).getIntValue("parent");
                 if (isNodeCached(new Integer(parent))) {
                     log.debug("nodeChanged(): Zapping node properties cache for " + parent);

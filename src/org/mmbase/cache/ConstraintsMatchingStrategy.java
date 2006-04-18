@@ -149,7 +149,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
                 switch(event.getType()) {
-                case NodeEvent.EVENT_TYPE_NEW:
+                case Event.TYPE_NEW:
                     // we have to compare the constraint value with the new value of the changed field to see if the new
                     // node falls within the constraint. it it dous: flush
                     if(matcher.eventApplies(newValues, event)){
@@ -164,7 +164,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                         }
                         return true;
                     }
-                case NodeEvent.EVENT_TYPE_CHANGED:
+                case Event.TYPE_CHANGE:
                     // we have to compare the old value and then the new value of the changed field to see if the status
                     // has changed. if the node used to match the constraint but now dousn't or the reverse of this, flush.
                     if(matcher.eventApplies(newValues, event)){
@@ -186,7 +186,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                         }
                         return true;
                     }
-                case NodeEvent.EVENT_TYPE_DELETE:
+                case Event.TYPE_DELETE:
                     // we have to compare the old value of the field to see if the node used to fall within the
                     // constriant. If it did: flush
                     if(matcher.eventApplies(event.getOldValues(), event)){
