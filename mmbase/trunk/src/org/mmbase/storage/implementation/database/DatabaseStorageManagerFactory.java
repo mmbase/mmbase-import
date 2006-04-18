@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.35 2006-01-05 18:03:55 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.36 2006-04-18 14:29:20 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -61,7 +61,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
      "sum","system_user","table","temporary","then","time","timestamp","timezone_hour","timezone_minute","to","trailing","transaction","translate","translation",
      "trim","true","union","unique","unknown","update","upper","usage","user","using","value","values","varchar","varying","view","when","whenever","where","with","work",
      "write","year","zone"};
-    
+
 
     // Default query handler class.
     private final static Class DEFAULT_QUERY_HANDLER_CLASS = org.mmbase.storage.search.implementation.database.BasicSqlHandler.class;
@@ -137,7 +137,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     public String getDatabaseName() {
         return databaseName;
     }
-    
+
     /**
      * Returns the DataSource associated with this factory.
      * @since MMBase-1.8
@@ -194,10 +194,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         storageManagerClass = DEFAULT_STORAGE_MANAGER_CLASS;
 
         // default searchquery handler class
-        queryHandlerClasses.add(DEFAULT_QUERY_HANDLER_CLASS);     
-        
+        queryHandlerClasses.add(DEFAULT_QUERY_HANDLER_CLASS);
 
-        dataSource = createDataSource(null); 
+
+        dataSource = createDataSource(null);
         // temporary source only used once, for the meta data.
 
         String sqlKeywords;
@@ -212,7 +212,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 if (con == null) throw new StorageException("Did get 'null' connection from data source " + dataSource);
                 catalog = con.getCatalog();
                 log.service("Connecting to catalog with name " + catalog);
-                
+
                 DatabaseMetaData metaData = con.getMetaData();
                 String url = metaData.getURL();
                 String db = getDatabaseName(url);
@@ -223,10 +223,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                     databaseName = catalog;
                 }
                 log.service("Connecting to database with name " + getDatabaseName());
-                
+
                 // set transaction options
                 supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
-                
+
                 // determine transactionlevels
                 if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
                     transactionIsolation = Connection.TRANSACTION_SERIALIZABLE;
@@ -240,7 +240,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                     supportsTransactions = false;
                 }
                 sqlKeywords = ("" + metaData.getSQLKeywords()).toLowerCase();
-                
+
             } catch (SQLException se) {
                 // log.fatal(se.getMessage() + Logging.stackTrace(se)); will be logged in StorageManagerFactory already
                 throw new StorageInaccessibleException(se);
@@ -255,20 +255,20 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             }
         }
 
-        
+
         // why is this not stored in real properties?
 
         setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
         setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
         setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
         setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
-        
+
         // create a default disallowedfields list:
         // get the standard sql keywords
         for (int i = 0; i < STANDARD_SQL_KEYWORDS.length; i++) {
             disallowedFields.put(STANDARD_SQL_KEYWORDS[i], null); // during super.load, the null values will be replaced by actual replace-values.
         }
-        
+
         // get the extra reserved sql keywords (according to the JDBC driver)
         // not sure what case these are in ???
         StringTokenizer tokens = new StringTokenizer(sqlKeywords,", ");
