@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.12 2006-02-23 17:36:02 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.13 2006-04-18 13:07:55 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -204,7 +204,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         if (event.getBuilderName().equals("resources")) {
             String number = "" + event.getNodeNumber();
             switch(event.getType()) {
-            case NodeEvent.EVENT_TYPE_DELETE: {
+            case NodeEvent.TYPE_DELETE: {
                 // hard..
                 String name = (String) nodeNumberToResourceName.get(number);
                 if (name != null && resources.contains(name)) {

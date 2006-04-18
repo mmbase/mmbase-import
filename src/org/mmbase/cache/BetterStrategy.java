@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.18 2006-04-02 12:38:33 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.19 2006-04-18 13:05:18 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -98,7 +98,7 @@ public class BetterStrategy extends ReleaseStrategy {
         }
 
         switch (event.getType()) {
-        case NodeEvent.EVENT_TYPE_NEW:
+        case Event.TYPE_NEW:
             log.debug(">> node event type new");
             /*
              * Put all the rules that apply for new node events
@@ -113,7 +113,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
             break;
 
-        case NodeEvent.EVENT_TYPE_DELETE:
+        case Event.TYPE_DELETE:
             log.debug(">> node event type delete");
             /*
              * Put all rules here that apply to removed node events
@@ -121,7 +121,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
             break;
 
-        case NodeEvent.EVENT_TYPE_CHANGED:
+        case Event.TYPE_CHANGE:
             log.debug(">> node event type changed");
             /*
              * Put all rules here that apply to changede nodes
@@ -175,7 +175,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
 
          switch (event.getType()) {
-         case NodeEvent.EVENT_TYPE_NEW:
+         case Event.TYPE_NEW:
              log.debug(">> relation event type new");
              /*
               * Put all rules here that apply to new relation events
@@ -183,7 +183,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
              break;
 
-         case NodeEvent.EVENT_TYPE_DELETE:
+         case Event.TYPE_DELETE:
              log.debug(">> relation event type delete");
              /*
               * Put all rules here that apply to removed relation events
@@ -191,7 +191,7 @@ public class BetterStrategy extends ReleaseStrategy {
 
              break;
 
-         case NodeEvent.EVENT_TYPE_CHANGED:
+         case Event.TYPE_CHANGE:
              log.debug(">> relation event type changed");
              /*
               * Put all rules here that apply to changed relation events
