@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <project name="Lucene" default="dependent.package" basedir=".">
+  <property name="lucene.extrajars.loc"    value="http://www.mmbase.org/download/jars/lucene-extrajars.tgz" />
+  <property name="lucene.extrajars"            location="extrajars" />
+  <property name="lucene.extrajars.dest"       value="${lucene.extrajars}/lucene-extrajars.tgz" />
+  <property name="lucene.extrajars.expanded"   value="${lucene.extrajars}/lucene-core-1.9.1.jar" />
   <property name="project.name"    value="lucene" />
   <property name="project.package" value="org/mmbase/module/lucene" />
   <property name="project.jars.dir" location="../.." />
@@ -12,7 +16,19 @@
     <ant dir="${applications.dir}/crontab" inheritAll="false" />
   </target>
 
-  <target name="dependent.jar" depends="crontab,jar" />
+
+  <target name="extrajars" >
+    <echo message="extra jars" />
+    <antcall target="downloadgz">
+      <param name="sourcefile"   value="${lucene.extrajars.loc}"/>
+      <param name="destfile"     value="${lucene.extrajars.dest}"/>
+      <param name="destdir"      value="${lucene.extrajars}"/>
+      <param name="expand.dir"   value="${lucene.extrajars}"/>
+      <param name="expandedfile" value="${lucene.extrajars.expanded}"/>
+    </antcall>
+  </target>
+
+  <target name="dependent.jar" depends="extrajars,crontab,jar" />
 
   <target name="dependent.package" depends="dependent.jar,package" />
 
