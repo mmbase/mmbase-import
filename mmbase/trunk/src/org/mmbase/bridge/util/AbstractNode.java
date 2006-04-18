@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.12 2006-04-12 12:19:06 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.13 2006-04-18 13:53:23 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -463,13 +463,18 @@ public abstract class AbstractNode implements Node {
         Locale locale = getCloud().getLocale();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            Object value = getValueWithoutProcess(field.getName());
-            Collection fieldErrors = field.getDataType().validate(value, this, field);
-            Iterator i = fieldErrors.iterator();
-            while(i.hasNext()) {
-                LocalizedString error = (LocalizedString) i.next();
-                errors.add("field '" + field.getName() + "' with value '" + value + "': " + // TODO need to i18n this intro too
-                           error.get(locale));
+            if (! field.isReadOnly()) {
+                // don't validate read-only fields. Users cannot have edited those.  Most noticably,
+                // the _number_ field must not be validated, because for new nodes it does not yet
+                // point to an existing node... I think the number field should not be a NODE field...
+                Object value = getValueWithoutProcess(field.getName());
+                Collection fieldErrors = field.getDataType().validate(value, this, field);
+                Iterator i = fieldErrors.iterator();
+                while(i.hasNext()) {
+                    LocalizedString error = (LocalizedString) i.next();
+                    errors.add("field '" + field.getName() + "' with value '" + value + "': " + // TODO need to i18n this intro too
+                               error.get(locale));
+                }
             }
         }
         return errors;
