@@ -27,7 +27,7 @@ public class DataTypesTest extends BridgeTest {
         super(name);
     }
     protected static Object[] cases = null;
-    
+
     public void setUp() throws Exception {
         if (cases == null) {
             Cloud cloud = getCloud();
@@ -55,12 +55,12 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"pattern",
                               new Object[] {"ababa", "aBB", null},
                               new Object[] {"c", "abaxbab"}},
-                new Object[] {"languages", 
+                new Object[] {"languages",
                               new Object[] {"nl", "en", null},
                               new Object[] {"c", "ababab", ""}},
                 new Object[] {"integer",
                               new Object[] {new Integer(-100), "1234", "1234.4", null},
-                              new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe" 
+                              new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe"
                               }},
                 new Object[] {"range",
                               new Object[] {new Integer(5), null},
@@ -97,7 +97,7 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
 
-                new Object[] {"string_boolean", 
+                new Object[] {"string_boolean",
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
                               new Object[] {"asjdlkf", "21", new Integer(10)}},
                 new Object[] {"boolean_string",
@@ -105,12 +105,11 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] { "asjdlkf", "21", new Integer(10)}},
                 new Object[] {"node",
                               new Object[] {node1, node2, new Integer(node1.getNumber()), new Integer(node2.getNumber()),  null},
-                              new Object[] {"asjdlkf", new Integer(-1), new Integer(-100)}}
+                              new Object[] {"", "asjdlkf", new Integer(-1), new Integer(-100)}}
                 ,
-                //not working, why not...
                 new Object[] {"typedef",
                               new Object[] {node1, new Integer(node1.getNumber()),  null},
-                              new Object[] {"asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-1), new Integer(-100)}}
+                              new Object[] {"", "asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-1), new Integer(-100)}}
                 /*
                   XML not very well supported yet
                 new Object[] {"xml",
@@ -142,13 +141,13 @@ public class DataTypesTest extends BridgeTest {
                 field.getDataType().validate(validValues[j]); // should not give exception
                 Collection errors = field.getDataType().validate(validValues[j], null, field);
                 if(errors.size() != 0) {
-                    err.append("Field " + field.getName() + " value '" + Casting.toString(validValues[j]) + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
+                    err.append("V Field " + field.getName() + " value '" + (validValues[j] == null ? "" : validValues[j].getClass().getName() + " ") +  Casting.toString(validValues[j]) + "' was expected to be valid, but: " + LocalizedString.toStrings(errors, Locale.US) + "\n");
                 }
             }
             for (int j = 0; j < invalidValues.length; j++) {
                 field.getDataType().validate(invalidValues[j]); // should not give exception
                 if (field.getDataType().validate(invalidValues[j], null, field).size() == 0) {
-                    err.append("Field " + field.getName() + " value '" + Casting.toString(invalidValues[j]) + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
+                    err.append("I Field " + field.getName() + " value '" + (invalidValues[j] == null ? "" : invalidValues[j].getClass().getName() + " ") +  Casting.toString(invalidValues[j]) + "' was expected to be invalid  according to datatype " + field.getDataType() + "\n");
                 }
 
 
@@ -165,7 +164,7 @@ public class DataTypesTest extends BridgeTest {
         DataType dt = field.getDataType();
         LocalizedEntryListFactory fact = dt.getEnumerationFactory();
         assertTrue(dt instanceof StringDataType);
-        assertTrue(fact.size() == 2);
+        assertEquals(fact.size(), 2);
         assertEquals("" + fact, "bla",  fact.castKey("bla"));
         assertEquals("true", fact.castKey("true"));
         assertEquals("21",   fact.castKey("21"));
@@ -177,7 +176,7 @@ public class DataTypesTest extends BridgeTest {
         DataType dt = field.getDataType();
         LocalizedEntryListFactory fact = dt.getEnumerationFactory();
         assertTrue(dt instanceof BooleanDataType);
-        assertTrue("" + fact, fact.size() == 2);
+        assertEquals(fact.size(), 2);
         assertEquals("" + fact, "bla",  fact.castKey("bla"));
         assertEquals(Boolean.TRUE, fact.castKey("true"));
         assertEquals("21",   fact.castKey("21"));
@@ -188,11 +187,29 @@ public class DataTypesTest extends BridgeTest {
         Field field = nodeManager.getField("string_boolean");
         DataType dt = field.getDataType();
         LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        assertFalse(fact.isEmpty());
         assertTrue(dt instanceof BooleanDataType);
-        assertTrue(fact.size() == 2);
+        assertEquals(fact.size(), 2);
         assertEquals("" + fact, "bla",  fact.castKey("bla"));
         assertEquals(Boolean.TRUE, fact.castKey("true"));
         assertEquals("21",   fact.castKey("21"));
+    }
+
+    public void testEnumeration4() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        Field field = nodeManager.getField("typedef");
+        DataType dt = field.getDataType();
+        LocalizedEntryListFactory fact = dt.getEnumerationFactory();
+        assertFalse(fact.isEmpty());
+        assertTrue(dt instanceof NodeDataType);
+        int numberOfTypes = cloud.getList(null, "typedef", null, null, null, null, null, false).size();
+        assertEquals(fact.size(cloud), numberOfTypes);
+        assertEquals(fact.get(null, cloud).size(), numberOfTypes);
+        assertEquals(fact.get(Locale.US, cloud).size(), numberOfTypes);
+        assertEquals(fact.get(new Locale("dk", "CN"), cloud).size(), numberOfTypes);
+        assertEquals(nodeManager,  fact.castKey("" + nodeManager.getNumber(), cloud));
+        assertEquals("bla",  fact.castKey("bla", cloud));
     }
 
 
