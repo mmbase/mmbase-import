@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.25 2006-04-10 15:23:55 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.26 2006-04-18 13:31:16 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -51,23 +51,19 @@ public class NodeDataType extends BasicDataType {
             mustExistRestriction = new MustExistRestriction(((NodeDataType)origin).mustExistRestriction);
         }
     }
-
-    /**
-     * Casting to Node can be a expensive, so we cast to integer in stead.
-     */
-    protected Object cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
-        Object preCast = preCast(value, cloud, node, field);
-        if (preCast == null) {
-            return null;
-        } else if (preCast instanceof Node || preCast instanceof Integer) {
+    protected Object castToValidate(Object value, Node node, Field field) throws CastException {
+        if (value == null) return null;
+        Object preCast = preCast(value, node, field); // resolves enumerations
+        if (preCast instanceof Node) {
             return preCast;
-        } else {
-            return Casting.toType(Integer.class, cloud, preCast);
+        }  else {
+            Object res = Casting.toType(Node.class, getCloud(node, field), preCast);
+            if (res == null) {
+                throw new CastException("No such node " + preCast);
+            } else {
+                return res;
+            }
         }
-    }
-
-    protected boolean isCorrectType(Object value) {
-        return super.isCorrectType(value) || Casting.isType(Integer.class, value);
     }
 
     /**
@@ -87,7 +83,7 @@ public class NodeDataType extends BasicDataType {
 
     protected Collection validateCastedValue(Collection errors, Object castedValue, Object value, Node node, Field field) {
         errors = super.validateCastedValue(errors, castedValue, value, node, field);
-        errors = mustExistRestriction.validate(errors, castedValue, node, field);
+        errors = mustExistRestriction.validate(errors, value, node, field);
         return errors;
     }
 
@@ -112,13 +108,12 @@ public class NodeDataType extends BasicDataType {
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (getValue().equals(Boolean.TRUE)) {
                 if (v != null) {
-         
                     if (v instanceof String) {
                         Cloud cloud = getCloud(node, field);
                         return cloud != null && cloud.hasNode((String)v);
                     } else if (v instanceof Number) {
                         int num = ((Number)v).intValue();
-                        if (num < 0) return true;
+                        if (num < 0) return false;
                         Cloud cloud = getCloud(node, field);
                         return cloud != null && cloud.hasNode(num);
                     } else if (v instanceof Node) {
