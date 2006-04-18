@@ -21,6 +21,8 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.module.Module;
+
+import org.mmbase.core.event.*;
 import org.mmbase.module.core.*;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.bridge.util.BridgeCollections;
@@ -42,9 +44,9 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.56 2006-04-10 10:49:47 michiel Exp $
+ * @version $Id: Lucene.java,v 1.57 2006-04-18 13:25:40 michiel Exp $
  **/
-public class Lucene extends Module implements MMBaseObserver {
+public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
     public static final String PUBLIC_ID_LUCENE_2_0 = "-//MMBase//DTD luceneindex config 2.0//EN";
     public static final String DTD_LUCENE_2_0 = "luceneindex_2_0.dtd";
@@ -70,30 +72,26 @@ public class Lucene extends Module implements MMBaseObserver {
      * Parameter constants for Lucene functions.
      */
     protected final static Parameter VALUE = new Parameter("value", String.class);
-    static {
-        VALUE.setDescription("the search term(s)");
-    }
+    static { VALUE.setDescription("the search term(s)"); }
+
     protected final static Parameter INDEX = new Parameter("index", String.class);
-    static {
-        INDEX.setDescription("the name of the index to search in");
-    }
+    static { INDEX.setDescription("the name of the index to search in"); }
+
+    protected final static Parameter CLASS = new Parameter("class", Class.class, IndexDefinition.class);
+    static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
+
     protected final static Parameter SORTFIELDS = new Parameter("sortfields", String.class);
     protected final static Parameter OFFSET = new Parameter("offset", Integer.class);
-    static {
-        OFFSET.setDescription("for creating sublists");
-    }
+    static { OFFSET.setDescription("for creating sublists"); }
+
     protected final static Parameter MAX = new Parameter("max", Integer.class);
-    static {
-        MAX.setDescription("for creating sublists");
-    }
+    static { MAX.setDescription("for creating sublists"); }
+
     protected final static Parameter EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
-    static {
-        EXTRACONSTRAINTS.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()");
-    }
+    static { EXTRACONSTRAINTS.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
+
     protected final static Parameter IDENTIFIER = new Parameter("identifier", String.class);
-    static {
-        IDENTIFIER.setDescription("Normally a node number, identifier (a number of) lucene document(s) in an index.");
-    }
+    static { IDENTIFIER.setDescription("Normally a node number, identifier (a number of) lucene document(s) in an index."); }
 
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_LUCENE_2_0, DTD_LUCENE_2_0, Lucene.class);
@@ -124,8 +122,6 @@ public class Lucene extends Module implements MMBaseObserver {
     private Map searcherMap = new HashMap();
     private boolean readOnly = false;
 
-
-    protected Cloud cloud;
 
     /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
@@ -181,17 +177,18 @@ public class Lucene extends Module implements MMBaseObserver {
      * the right index is addressed.
      */
     protected Function deleteIndexFunction = new AbstractFunction("deleteIndex",
-                                                                  new Parameter[] {INDEX, IDENTIFIER}, 
+                                                                  new Parameter[] {INDEX, IDENTIFIER, CLASS},
                                                                   ReturnType.VOID) {
             public Object getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
-                String index = (String) arguments.get(INDEX);
-                String identifier = (String) arguments.get(IDENTIFIER);
                 if(!readOnly){
-                    if(identifier == null || "".equals(identifier)){
-                        scheduler.deleteIndex(index);
+                    String index      = (String) arguments.get(INDEX);
+                    String identifier = (String) arguments.get(IDENTIFIER);
+                    Class  klass = (Class) arguments.get(CLASS);
+                    if(index == null || "".equals(index)){
+                        scheduler.deleteIndex(identifier, klass);
                     } else {
-                        scheduler.deleteIndex(index, identifier);
+                        scheduler.deleteIndex(identifier, identifier);
                     }
                 }
                 return null;
@@ -208,11 +205,11 @@ public class Lucene extends Module implements MMBaseObserver {
      * It (re)loads the index for a specific item (identified by 'identifier' parameter).
      */
     protected Function updateIndexFunction = new AbstractFunction("updateIndex",
-                                                                  new Parameter[] { new Parameter(IDENTIFIER, true)},
+                                                                  new Parameter[] { new Parameter(IDENTIFIER, true),  CLASS},
                                                                   ReturnType.VOID) {
             public Object getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
-                scheduler.updateIndex(arguments.getString(IDENTIFIER));
+                scheduler.updateIndex(arguments.getString(IDENTIFIER), (Class) arguments.get(CLASS));
                 return null;
             }
         };
@@ -407,23 +404,7 @@ public class Lucene extends Module implements MMBaseObserver {
                             return;
                         }
                     }
-                    while (cloud == null) {
-                        try {
-                            cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
-                            cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
-                            log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
-                        } catch (Throwable t) {
-                            log.info(t.getMessage());
-                        }
-                        if (cloud == null) {
-                            try {
-                                log.info("No cloud found, waiting for 5 seconds");
-                                Thread.sleep(5000);
-                            } catch (InterruptedException ie) {
-                                return;
-                            }
-                        }
-                    }
+
                     ResourceWatcher watcher = new ResourceWatcher() {
                             public void onChange(String resource) {
                                 readConfiguration(resource);
@@ -446,6 +427,32 @@ public class Lucene extends Module implements MMBaseObserver {
             });
 
     }
+
+
+
+    private Cloud cloud = null;
+    protected Cloud getCloud() {
+        if (cloud != null && !cloud.getUser().isValid()) cloud = null;
+        while (cloud == null) {
+            try {
+                cloud = LocalContext.getCloudContext().getCloud("mmbase", "class", null);
+                cloud.setProperty(Cloud.PROP_XMLMODE, "flat");
+                log.info("Using cloud of " + cloud.getUser().getIdentifier() + "(" + cloud.getUser().getRank() + ") to lucene index.");
+            } catch (Throwable t) {
+                log.info(t.getMessage());
+            }
+            if (cloud == null) {
+                try {
+                    log.info("No cloud found, waiting for 5 seconds");
+                    Thread.sleep(5000);
+                } catch (InterruptedException ie) {
+                    return null;
+                }
+            }
+        }
+        return cloud;
+    }
+
     public void shutdown() {
         if (scheduler != null) {
             log.service("Stopping Lucene Scheduler");
@@ -470,7 +477,7 @@ public class Lucene extends Module implements MMBaseObserver {
 
             QueryConfigurer configurer = new IndexConfigurer(allIndexedFieldsSet, storeText, mergeText);
 
-            MMBaseIndexDefinition queryDefinition = (MMBaseIndexDefinition) QueryReader.parseQuery(queryElement, configurer, cloud, relateFrom);
+            MMBaseIndexDefinition queryDefinition = (MMBaseIndexDefinition) QueryReader.parseQuery(queryElement, configurer, getCloud(), relateFrom);
             queryDefinition.setAnalyzer(analyzer);
             // do not cache these queries
             queryDefinition.query.setCachePolicy(CachePolicy.NEVER);
@@ -484,8 +491,7 @@ public class Lucene extends Module implements MMBaseObserver {
                     Step step = (Step) i.next();
                     MMObjectBuilder builder = mmbase.getBuilder(step.getTableName());
                     log.service("Observing for builder " + builder.getTableName() + " for index " + queryElement.getAttribute("name"));
-                    builder.addLocalObserver(this);
-                    builder.addRemoteObserver(this);
+                    builder.addEventListener(this);
                 }
             }
 
@@ -511,6 +517,16 @@ public class Lucene extends Module implements MMBaseObserver {
             return null;
         }
     }
+
+    protected final IdEventListener idListener = new IdEventListener() {
+            // wrapping to avoid also registring it as a NodeEventListener
+            public void notify(IdEvent idEvent) {
+                Lucene.this.notify(idEvent);
+            }
+            public String toString() {
+                return Lucene.this.toString();
+            }
+        };
 
     protected void readConfiguration(String resource) {
         indexerMap = new HashMap();
@@ -562,10 +578,11 @@ public class Lucene extends Module implements MMBaseObserver {
                                     queries.add(id);
                                     log.service("Added mmbase index definition " + id);
                                 } else if ("jdbc".equals(name)) {
-                                    DataSource ds =  (DataSource) mmbase.getStorageManagerFactory().getAttribute(org.mmbase.storage.implementation.database.Attributes.DATA_SOURCE);
+                                    DataSource ds =  ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
                                     IndexDefinition id = new JdbcIndexDefinition(ds, childElement,
                                                                                  allIndexedFieldsSet, storeText, mergeText, analyzer);
                                     queries.add(id);
+                                    EventManager.getInstance().addEventListener(idListener);
                                     log.service("Added mmbase jdbc definition " + id);
                                 } else if ("analyzer".equals(name)) {
                                     String className = childElement.getAttribute("class");
@@ -578,7 +595,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                 }
                             }
                         }
-                        Indexer indexer = new Indexer(indexPath, indexName, queries, cloud, analyzer, readOnly);
+                        Indexer indexer = new Indexer(indexPath, indexName, queries, getCloud(), analyzer, readOnly);
                         indexer.getDescription().fillFromXml("description", indexElement);
                         log.service("Add lucene index with name " + indexName);
                         indexerMap.put(indexName, indexer);
@@ -588,7 +605,7 @@ public class Lucene extends Module implements MMBaseObserver {
                     }
                 }
             } catch (Exception e) {
-                log.warn("Can't read Lucene configuration: "+ e.getMessage());
+                log.warn("Can't read Lucene configuration: "+ e.getMessage(), e);
             }
         }
     }
@@ -614,34 +631,40 @@ public class Lucene extends Module implements MMBaseObserver {
         return getSearcher(indexName).searchSize(cloud, value, Searcher.createQuery(extraConstraints));
     }
 
-    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-        return nodeChanged(machine, number, builder, ctype);
-    }
-
-    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-        return nodeChanged(machine, number, builder, ctype);
-    }
-
-    public boolean nodeChanged(String machine, String number, String builder, String ctype) {
+    public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Received for node " + number + " of builder " + builder + " a change " + ctype);
+            log.debug("Received node event " + event);
         }
         if (scheduler != null) {
-            // if this concerns a change or new node, update the index with that node
-            if (ctype.equals("c") || ctype.equals("n")) {
-                scheduler.updateIndex(number);
-            // if this concerns removing a node, remove the index of that node
-            } else if (ctype.equals("d")) {
-                scheduler.deleteIndex(number);
+            switch(event.getType()) {
+            case Event.TYPE_NEW:
+            case Event.TYPE_CHANGE:
+                scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                break;
+            case Event.TYPE_DELETE:
+                scheduler.deleteIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                break;
             }
         }
-        return true;
+    }
+    public void notify(IdEvent event) {
+        if (scheduler != null) {
+            switch(event.getType()) {
+            case Event.TYPE_DELETE:
+                scheduler.deleteIndex(event.getId(), JdbcIndexDefinition.class);
+                break;
+            default:
+                scheduler.updateIndex(event.getId(), JdbcIndexDefinition.class);
+                break;
+
+            }
+        }
     }
 
     /**
      * Queue for index operations.
      */
-    public class Scheduler extends Thread {
+    class Scheduler extends Thread {
 
         public static final int READONLY = -100;
         public static final int IDLE = 0;
@@ -692,16 +715,16 @@ public class Lucene extends Module implements MMBaseObserver {
             }
         }
 
-        public void updateIndex(final String number) {
+        void updateIndex(final String number, final Class klass) {
             Runnable assignment = new Runnable() {
                     public void run() {
                         log.service("Update index for " + number);
                         status = BUSY_INDEX;
                         for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                             Indexer indexer = (Indexer) i.next();
-                            int updated = indexer.updateIndex(number);
+                            int updated = indexer.updateIndex(number, klass);
                             if (updated > 0) {
-                                log.service("updated " + updated + " index entries for index " + indexer.getName());
+                                log.service(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"));
                             }
                         }
                     }
@@ -711,21 +734,21 @@ public class Lucene extends Module implements MMBaseObserver {
 
         }
 
-        public void deleteIndex(final String number) {
+        void deleteIndex(final String number, final Class klass) {
             Runnable assignment = new Runnable() {
                     public void run() {
                         log.service("delete index for " + number);
                         status = BUSY_INDEX;
                         for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
                             Indexer indexer = (Indexer) i.next();
-                            indexer.deleteIndex(number);
+                            indexer.deleteIndex(number, klass);
                         }
                     }
                 };
             indexAssignments.append(assignment);
         }
 
-        public void deleteIndex(final String number, final String indexName) {
+        void deleteIndex(final String number, final String indexName) {
             Runnable assignment = new Runnable() {
                     public void run() {
                         log.service("delete index for " + number);
@@ -734,14 +757,14 @@ public class Lucene extends Module implements MMBaseObserver {
                         if (indexer == null) {
                             log.error("No such index '" + indexName + "'");
                         } else {
-                            indexer.deleteIndex(number);
+                            indexer.deleteIndex(number, IndexDefinition.class);
                         }
                     }
                 };
             indexAssignments.append(assignment);
         }
 
-        public void fullIndex() {
+        void fullIndex() {
             if (status != BUSY_FULL_INDEX) {
                 Runnable assignment = new Runnable() {
                         public void run() {
@@ -760,7 +783,7 @@ public class Lucene extends Module implements MMBaseObserver {
                 log.service("Cannot schedule full index because it is busy");
             }
         }
-        public void fullIndex(final String index) {
+        void fullIndex(final String index) {
             if (status != BUSY_FULL_INDEX) {
                 Runnable assignment = new Runnable() {
                         public void run() {
