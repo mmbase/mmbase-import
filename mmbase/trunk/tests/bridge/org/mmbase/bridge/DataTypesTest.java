@@ -201,6 +201,9 @@ public class DataTypesTest extends BridgeTest {
         assertEquals("" + fact, "bla",  fact.castKey("bla"));
         assertEquals(Boolean.TRUE, fact.castKey("true"));
         assertEquals("21",   fact.castKey("21"));
+        assertEquals(Boolean.TRUE, dt.cast("true", null, field));
+        assertEquals(Boolean.FALSE, dt.cast("21", null, field));
+        assertEquals(Boolean.FALSE, dt.cast("bla", null, field));
     }
 
     public void testEnumeration4() {
@@ -208,6 +211,7 @@ public class DataTypesTest extends BridgeTest {
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         Field field = nodeManager.getField("typedef");
         DataType dt = field.getDataType();
+        assertNotNull(dt.getEnumerationValues(null, field.getNodeManager().getCloud(), null, field));
         LocalizedEntryListFactory fact = dt.getEnumerationFactory();
         assertFalse(fact.isEmpty());
         assertTrue(dt instanceof NodeDataType);
@@ -218,6 +222,13 @@ public class DataTypesTest extends BridgeTest {
         assertEquals(fact.get(new Locale("dk", "CN"), cloud).size(), numberOfTypes);
         assertEquals(nodeManager,  fact.castKey("" + nodeManager.getNumber(), cloud));
         assertEquals("bla",  fact.castKey("bla", cloud));
+        assertEquals(null,  fact.castKey(null, cloud));
+        assertEquals("",  fact.castKey("", cloud));
+        // I think DataType.cast must really return righ ttype, so if necessary even return null?
+        assertEquals(nodeManager,  dt.cast(nodeManager, null, field));
+        assertEquals(null, dt.cast("bla", null, field));
+        assertEquals(null, dt.cast(null, null, field));
+        assertEquals(null, dt.cast("", null, field));
     }
 
 
