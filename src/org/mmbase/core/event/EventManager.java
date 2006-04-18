@@ -29,7 +29,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.10 2006-04-12 14:49:06 pierre Exp $
+ * @version $Id: EventManager.java,v 1.11 2006-04-18 13:03:30 michiel Exp $
  */
 public class EventManager {
 
@@ -46,38 +46,33 @@ public class EventManager {
     /**
      * the instance that this singleton will manage
      */
-    private static EventManager eventManager;
+    private static final EventManager eventManager = new EventManager();
 
     /**
      * The collection of event brokers. There is one for every event type that can be sent/received
      */
-    private Set eventBrokers = new CopyOnWriteArraySet();
+    private final Set eventBrokers = new CopyOnWriteArraySet();
 
     /**
      * use this metod to get an instance of the event manager
      */
     public static EventManager getInstance() {
-        if (eventManager == null) {
-            eventManager = new EventManager();
-        }
         return eventManager;
     }
 
-    private static Object findInstance(String className) {
+    private static AbstractEventBroker findInstance(String className) {
         if (className == null || "".equals(className)) return null;
         try {
             Class aClass = Class.forName(className);
-            Object newInstance = aClass.newInstance();
-            return newInstance;
+            return (AbstractEventBroker)  aClass.newInstance();
         } catch (ClassNotFoundException e) {
-            log.error("could not find class with name " + className);
-            log.error(e);
+            log.error("could not find class with name " + className, e);
         } catch (InstantiationException e) {
-            log.error("could not instantiate class with name" + className);
-            log.error(e);
+            log.error("could not instantiate class with name" + className, e);
         } catch (IllegalAccessException e) {
-            log.error("the constructor of " + className + " is not accessible");
-            log.error(e);
+            log.error("the constructor of " + className + " is not accessible", e);
+        } catch (ClassCastException e) {
+            log.error("" + className + " is not a AbstratEventBroker");
         }
         return null;
     }
@@ -196,7 +191,7 @@ public class EventManager {
      * @param event
      */
     public void propagateEvent(Event event) {
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.trace("Propagating events to " + eventBrokers);
         }
         for (Iterator i = eventBrokers.iterator(); i.hasNext();) {
@@ -205,6 +200,10 @@ public class EventManager {
                 broker.notifyForEvent(event);
                 if (log.isDebugEnabled()) {
                     log.debug("event: " + event + " has been accepted by broker " + broker);
+                }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("event: " + event + " has been rejected by broker " + broker);
                 }
             }
         }

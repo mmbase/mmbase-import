@@ -19,7 +19,7 @@ import org.mmbase.util.HashCodeUtil;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.16 2006-01-24 17:57:22 michiel Exp $
+ * @version $Id: RelationEvent.java,v 1.17 2006-04-18 13:03:30 michiel Exp $
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 
@@ -37,8 +37,6 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
 
     private NodeEvent nodeEvent;
 
-    private final int eventType;
-
     /**
      * Constructor for relation event
      * 
@@ -51,19 +49,15 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
      */
     public RelationEvent(NodeEvent nodeEvent, int relationSourceNumber, int relationDestinationNumber,
             String relationSourceType, String relationDestinationType, int role) {
-        super(nodeEvent.getMachine());
+        super(nodeEvent.getMachine(), nodeEvent.getType());
         this.nodeEvent = nodeEvent;
         this.relationSourceNumber = relationSourceNumber;
         this.relationDestinationNumber = relationDestinationNumber;
         this.relationSourceType = relationSourceType;
         this.relationDestinationType = relationDestinationType;
         this.role = role;
-        this.eventType = nodeEvent.getType();
     }
 
-    public String getName() {
-        return "relation event";
-    }
 
     /**
      * @return Returns the relationSourceType.
@@ -123,8 +117,8 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         result = HashCodeUtil.hashCode(result, role);
         result = HashCodeUtil.hashCode(result, eventType);
         return result;
-        
     }
+
     public boolean equals(Object o) {
         if (o instanceof RelationEvent) {
             RelationEvent re = (RelationEvent) o;
@@ -147,7 +141,7 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return "relation event. type: " + NodeEvent.getEventTypeGuiName(getType())
+        return "Relation event. type: " + NodeEvent.getEventTypeGuiName(getType())
                 + ", sourcetype: " + relationSourceType + ", destinationtype: " + relationDestinationType
                 + ", source-node number: " + relationSourceNumber + ", destination-node number: "
                 + relationDestinationNumber + ", role: " + role + " node event: " + nodeEvent;

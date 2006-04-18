@@ -10,6 +10,7 @@
 	<brokers>
 		<broker class="org.mmbase.core.event.NodeEventBroker"/>
 		<broker class="org.mmbase.core.event.RelationEventBroker"/>
+		<broker class="org.mmbase.core.event.IdEventBroker"/>
 		<broker class="org.mmbase.core.event.AllEventBroker"/>		
 	</brokers>
 </eventmanager>

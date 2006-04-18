@@ -17,29 +17,22 @@ import org.mmbase.util.logging.Logging;
 /**
  * This class is the event broker implementation for the NodeEvent
  *
- * @author Ernst Bunders
+ * @author Michiel Meeuwissen
  * @since MMBase-1.8
  */
-public class NodeEventBroker extends AbstractEventBroker {
+public class IdEventBroker extends AbstractEventBroker {
 
     private static Logger log = Logging.getLoggerInstance(NodeEventBroker.class);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see event.AbstractEventBroker#canBrokerFor(java.lang.Class)
-     */
+
+    // javadoc inherited
     public boolean canBrokerForListener(EventListener listener) {
-        return listener instanceof NodeEventListener;
+        return listener instanceof IdEventListener;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see event.AbstractEventBroker#shouldNotifyForEvent(event.Event)
-     */
+    // javadoc inherited
     public boolean canBrokerForEvent(Event event) {
-        return event instanceof NodeEvent;
+        return event instanceof IdEvent;
     }
 
     /*
@@ -48,8 +41,8 @@ public class NodeEventBroker extends AbstractEventBroker {
      * @see event.AbstractEventBroker#notifyEventListeners()
      */
     protected void notifyEventListener(Event event, EventListener listener) {
-        NodeEvent ne = (NodeEvent) event; //!!!!!
-        NodeEventListener nel = (NodeEventListener) listener;
+        IdEvent ne = (IdEvent) event; //!!!!!
+        IdEventListener nel = (IdEventListener) listener;
         nel.notify(ne);
     }
 
@@ -57,7 +50,7 @@ public class NodeEventBroker extends AbstractEventBroker {
      * @see org.mmbase.core.event.AbstractEventBroker#toString()
      */
     public String toString() {
-        return "NodeEvent Broker";
+        return "IdEvent Broker";
     }
 
 }
