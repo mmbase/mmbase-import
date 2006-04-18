@@ -106,12 +106,12 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"node",
                               new Object[] {node1, node2, new Integer(node1.getNumber()), new Integer(node2.getNumber()),  null},
                               new Object[] {"asjdlkf", new Integer(-1), new Integer(-100)}}
-                /*,    
-                  not working, why not...
+                ,
+                //not working, why not...
                 new Object[] {"typedef",
                               new Object[] {node1, new Integer(node1.getNumber()),  null},
                               new Object[] {"asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-1), new Integer(-100)}}
-
+                /*
                   XML not very well supported yet
                 new Object[] {"xml",
                               new Object[] {"<p />",  null},
