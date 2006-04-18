@@ -38,19 +38,5 @@
     <copy file="${oscache.dest}" todir="${project.jar.dir}" preservelastmodified="true" />
   </target>
 
-  <!--
-      Well it is not very complicated, this download stuff,
-      but should we reuse the code of the main build.xml rather then copying it?
-  -->
-  <target name="download" unless="exist" depends="testexist">
-  <!-- Download the package -->
-    <mkdir dir="${download.dir}" />
-    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
-  </target>
-
-  <target name="testexist">
-    <echo message="Testing  for ${destfile}"/>
-    <available file="${destfile}" property="exist"/>
-  </target>
 
 </project>

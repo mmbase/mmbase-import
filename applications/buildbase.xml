@@ -506,3 +506,38 @@ web-app/*                All kind of templates. They problably can (need?) to be
       </classpath>
     </java>
   </target>
+
+  <!--
+      Well it is not very complicated, this download stuff,
+      but should we reuse the code of the main build.xml rather then copying it?
+  -->
+  
+
+  <target name="downloadzip" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <mkdir dir="${destdir}" />
+    <unzip src="${destfile}" dest="${destdir}"/>
+  </target>
+  <target name="downloadgz" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
+    <delete file="${download.dir}/file.tar"/>
+  </target>
+
+  <target name="download" unless="exist" depends="testexist">
+    <!-- Download the package -->
+    <mkdir dir="${download.dir}" />
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  </target>
+
+  <target name="testexist">
+    <echo message="Testing  for ${destfile}"/>
+    <available file="${destfile}" property="exist"/>
+  </target>
+
+  <target name="testexpanded">
+    <echo message="Testing for ${expandedfile}"/>
+    <available file="${expandedfile}" property="expanded"/>
+  </target>
+
