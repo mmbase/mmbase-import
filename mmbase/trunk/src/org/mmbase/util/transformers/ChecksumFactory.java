@@ -11,6 +11,7 @@ package org.mmbase.util.transformers;
 
 import org.mmbase.util.functions.*;
 import java.util.zip.Checksum;
+import java.io.*; 
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ChecksumFactory.java,v 1.7 2005-12-10 12:59:50 michiel Exp $
+ * @version $Id: ChecksumFactory.java,v 1.8 2006-04-18 14:10:38 michiel Exp $
  */
 
 public class ChecksumFactory implements ParameterizedTransformerFactory  {
@@ -59,6 +60,7 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
 
 
     protected class ChecksumTransformer extends ByteArrayToCharTransformer implements ByteToCharTransformer {
+        private static final long serialVersionUID = 1L;
         private Checksum checksum;
         ChecksumTransformer(Checksum c) {
             checksum = c;
@@ -75,6 +77,31 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
         public String toString() {
             return "checksum(" + checksum + ")";
         }
+
+        // implementation of serializable
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            if (checksum instanceof Serializable) {
+                out.writeObject(checksum);
+            } else {
+                out.writeObject(checksum.getClass());
+            }
+        }
+        // implementation of serializable
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            Object cs = in.readObject();
+            if (cs instanceof Class) {
+                try {
+                    checksum = (Checksum) ((Class) cs).newInstance();
+                } catch (InstantiationException e) {
+                    throw new IOException(e.getMessage());
+               } catch (IllegalAccessException e) {
+                    throw new IOException(e.getMessage());
+                }
+            } else {
+                checksum = (Checksum) cs;
+            }
+        }
+
     }
 
 }
