@@ -3,7 +3,7 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
-<di:hasrole role="teacher">
+<%--<di:hasrole role="teacher">--%>
 <html>
 <head>
 <title>ISBO Rapport</title>
@@ -45,6 +45,6 @@ if (top == self) {
 </body>
 </html>
 
-</di:hasrole>
+<%--</di:hasrole>--%>
 </mm:cloud>
 </mm:content>
