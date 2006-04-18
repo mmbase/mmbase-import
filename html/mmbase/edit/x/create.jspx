@@ -3,7 +3,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <jsp:directive.page session="true" />
+  <jsp:directive.page session="true" buffer="100kb" />
   <mm:include page="head.jspx" />
   <body>
     <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
@@ -16,7 +16,7 @@
           </mm:link>
           <jsp:text>New</jsp:text>
         </h1>
-        <mm:form>
+        <mm:form id="createform">
           <input type="hidden" name="nodemager" value="${nodemanager}" />
           <table>
             <mm:fieldlist type="edit" nodetype="$nodemanager">
