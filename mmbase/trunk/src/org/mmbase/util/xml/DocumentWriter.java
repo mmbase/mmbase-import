@@ -30,12 +30,12 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.9 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: DocumentWriter.java,v 1.10 2006-04-18 13:11:41 michiel Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(DocumentWriter.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(DocumentWriter.class);
 
     /**
      * True if the document has been generated
@@ -67,11 +67,11 @@ abstract public class DocumentWriter extends DocumentReader {
      * @param systemId the SYSTEm id of the document type
      */
     public DocumentWriter(String qualifiedName, String publicId, String systemId) throws DOMException {
-        DOMImplementation domImpl=DocumentReader.getDocumentBuilder().getDOMImplementation();
-        this.publicId=publicId;
-        this.systemId=systemId;
-        DocumentType doctype=domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);
-        document=domImpl.createDocument(null,qualifiedName,doctype);
+        DOMImplementation domImpl = DocumentReader.getDocumentBuilder().getDOMImplementation();
+        this.publicId = publicId;
+        this.systemId = systemId;
+        DocumentType doctype = domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);
+        document = domImpl.createDocument(null, qualifiedName, doctype);
     }
 
 
@@ -150,7 +150,7 @@ abstract public class DocumentWriter extends DocumentReader {
         if (messageRB!=null)
         try {
             String message = messageRB.getString(key);
-            String[] args = new String[3];
+            Object[] args = new String[3];
             args[0] = a1;
             args[1] = a2;
             args[2] = a3;
