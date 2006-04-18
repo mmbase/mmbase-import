@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.47 2006-04-11 21:53:10 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.48 2006-04-18 13:31:16 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -415,13 +415,12 @@ s     */
             castedValue = value;
         }
 
-        if (errors.size() != 0) {
+        if (errors.size() > 0) {
             // no need continuing, restrictions will probably not know how to handle this value any way.
             return errors;
         }
 
-
-        errors = requiredRestriction.validate(errors, castedValue, node, field);
+        errors = requiredRestriction.validate(errors, value, node, field);
 
         if (value == null) {
             return errors; // null is valid, unless required.
@@ -859,7 +858,7 @@ s     */
                     return res;
                 }
             }
-            if ((! enforce(node, field)) ||  valid(v, node, field) || v == null) {
+            if ((! enforce(node, field)) ||  valid(v, node, field)) {
                 // no new error to add.
                 return errors;
             } else {
@@ -921,12 +920,12 @@ s     */
         }
 
         final boolean isRequired() {
-            return value.equals(Boolean.TRUE);
+            return Boolean.TRUE.equals(value);
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
             if(!isRequired()) return true;
-            return v != null || BasicDataType.this.commitProcessor != null;
+            return v != null;
         }
     }
 
@@ -941,7 +940,7 @@ s     */
         }
 
         final boolean isUnique() {
-            return value.equals(Boolean.TRUE);
+            return Boolean.TRUE.equals(value);
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
@@ -1074,10 +1073,6 @@ s     */
             } catch (CastException ce) {
                 return false;
             }
-            // tragic hack to compensate for the decision that in NodeDataType we sometime are content with an Integer when casting.
-            // if we can somehow migrate this to NodeDataType too, then that would be nice.
-            if (candidate instanceof Node) candidate = new Integer(((Node) candidate).getNumber());
-
             Iterator i = validValues.iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
@@ -1099,7 +1094,15 @@ s     */
         protected String valueString(Node node, Field field) {
             Collection col = getEnumeration(null, null, node, field);
             if(col.size() == 0) return "";
-            return col.toString();
+            StringBuffer buf = new StringBuffer();
+            Iterator it = col.iterator();
+            int i = 0;
+            while (it.hasNext() && ++i < 10) {
+                buf.append(Casting.toString(it.next()));
+                if (it.hasNext()) buf.append(", ");
+            }
+            if (i < col.size()) buf.append(".(" + (col.size() - i) + " more ..");
+            return buf.toString();
         }
 
     }
