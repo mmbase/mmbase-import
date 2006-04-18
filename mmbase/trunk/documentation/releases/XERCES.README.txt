@@ -15,3 +15,4 @@ be renamed.
 
 MMBase release team
 
+$Id: XERCES.README.txt,v 1.5 2006-04-18 15:01:56 michiel Exp $

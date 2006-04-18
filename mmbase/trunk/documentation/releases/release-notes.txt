@@ -34,15 +34,21 @@ General New Features:
 
   New applications:
    - Crontab is a new application that provides scheduling.
+
    - Oscache-cache is a new application that implements the MMBase cache using oscache
+     (shipped in distro)
+
    - Packaging is an application that offers an alternative for the sharing and distribution of 
      'packages' of mmbase code and data.
+     (stalled)
+
    - Richtext application provides support for kupu-editor, and we basicly have 'rich text' now,
      including inline urls, attachments, images, cross-links and 'blocks' (notes, intermezzo's)
 
-- Security improvments:
+- Security improvements:
    - Class security provides authentication wrapping based on calling class
      -> classauthentication.xml
+
    - It's easier to make security independent code because of new features about default authentication
      methods.
 
@@ -50,7 +56,8 @@ General New Features:
    - Support for height and width (predicted before conversion, determined after conversion, and
      stored if corresponding fields are available) (This was ported to 1.7.4 too)
 	 'modes' of mm:image.
-   - Transformations are postponed to when actually served --> with new image-servlet is possible to
+	 
+   - Transformations are postponed to when actually served --> with new image-servlet it is possible to
      set up separate image server.
 
    - FileName of upload can be stored, and be added to the URL (/mmbase/attachments/1234/myfile.pdf)
@@ -84,7 +91,7 @@ General New Features:
 
 - Tests. The junit test-cases will all succeed when we release 1.8.
 
-- Contributions:   aselect /  mmbar/  mmbob/  multilanguagegui/   thememanager/
+- Contributions:   aselect,  mmbar,  mmbob, multilanguagegui, thememanager, lucene
 
 - External libraries:  concurrency support (anticipating jdk 1.5)
                        we ship jstl/standard
