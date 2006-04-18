@@ -47,10 +47,10 @@ public class AllTests {
         suite.addTestSuite(CloudTest.class);
         suite.addTestSuite(RelationTest.class);
         suite.addTestSuite(DataTypesTest.class);
+        suite.addTestSuite(DataTypesTestTransaction.class);
         suite.addTestSuite(FunctionsTest.class);
         suite.addTestSuite(QueriesTest.class);
         suite.addTestSuite(SerializableTest.class);
         return suite;
     }
-	
 }
