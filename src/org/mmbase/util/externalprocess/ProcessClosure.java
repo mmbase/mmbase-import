@@ -28,13 +28,12 @@ import org.mmbase.util.logging.Logging;
  * begins (writeNonBlocking)
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: ProcessClosure.java,v 1.3 2003-05-12 13:10:47 kees Exp $
+ * @version $Id: ProcessClosure.java,v 1.4 2006-04-18 13:11:06 michiel Exp $
  * @since MMBase-1.6
  */
 public class ProcessClosure {
 
-    /** MMBase logging system */
-    private static Logger log = Logging.getLoggerInstance(StreamCopyThread.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ProcessClosure.class);
 
     /**
      * the name of the process closure
