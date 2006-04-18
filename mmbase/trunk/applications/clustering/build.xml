@@ -40,33 +40,5 @@
     <copy file="${jgroups.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
   </target>
 
-  
-  <!--
-      Well it is not very complicated, this download stuff,
-      but should we reuse the code of the main build.xml rather then copying it?
-  -->
-  
-
-  <target name="downloadzip" unless="expanded" depends="download,testexpanded">
-    <!-- Extract the package -->
-    <mkdir dir="${destdir}" />
-    <unzip src="${destfile}" dest="${destdir}"/>
-  </target>
-
-  <target name="download" unless="exist" depends="testexist">
-    <!-- Download the package -->
-    <mkdir dir="${download.dir}" />
-    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
-  </target>
-
-  <target name="testexist">
-    <echo message="Testing  for ${destfile}"/>
-    <available file="${destfile}" property="exist"/>
-  </target>
-
-  <target name="testexpanded">
-    <echo message="Testing for ${expandedfile}"/>
-    <available file="${expandedfile}" property="expanded"/>
-  </target>
 
 </project>
