@@ -18,11 +18,12 @@ import junit.framework.*;
  * TestSuite that runs all the release strategy tests.
  *
  * @author Ernst Bunders
+ * @version $Id: AllTests.java,v 1.2 2006-04-18 13:38:23 michiel Exp $
  */
 public class AllTests {
-    
+
     public static void main(String[] args) {
-        try { 
+        try {
             junit.textui.TestRunner.run(suite());
         } catch (Exception e) {
             System.out.println(e);
@@ -32,12 +33,11 @@ public class AllTests {
 
     public static Test suite() throws Exception {
         //MMBaseTest.startMMBase();
-
         // Create the test suite
         TestSuite suite= new TestSuite("Strategy Tests");
         suite.addTestSuite(ConstraintMatcherTest.class);
         suite.addTestSuite(ReleaseStrategyTest.class);
         return suite;
     }
-	
+
 }

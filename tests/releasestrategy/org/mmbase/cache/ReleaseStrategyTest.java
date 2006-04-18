@@ -22,6 +22,7 @@ import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.Event;
 import org.mmbase.core.event.NodeEventHelper;
 import org.mmbase.core.event.RelationEvent;
 import org.mmbase.module.core.MMBase;
@@ -137,7 +138,7 @@ public class ReleaseStrategyTest extends BridgeTest {
     public void testNodeEvent(){
         //a node event that has a type that is not part of the query path should not flush the query
         
-        NodeEvent event = NodeEventHelper.createNodeEventInstance(newsNode, NodeEvent.EVENT_TYPE_NEW, null);
+        NodeEvent event = NodeEventHelper.createNodeEventInstance(newsNode, Event.TYPE_NEW, null);
         Query q1 = Queries.createQuery(cloud, null, "people,posrel,urls", "urls.name", null, null, null, null, false);
         
         assertFalse("a node event should not flush a query if it's type is not in the path",
@@ -151,10 +152,10 @@ public class ReleaseStrategyTest extends BridgeTest {
     /**
      * here go all the tests for checks that are done for every type of relation event
      */
-    public void testRelaionEvent(){
+    public void testRelationEvent(){
         
         //type: posrel, sourceType: news, destinationType: urls
-        RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, NodeEvent.EVENT_TYPE_NEW, null);
+        RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, Event.TYPE_NEW, null);
         
         //if the query has one step, a relaion event should not flush the query
         Query q1 = Queries.createQuery(cloud, null, "urls", "urls.name", null, null, null, null, false);
@@ -211,7 +212,7 @@ public class ReleaseStrategyTest extends BridgeTest {
         Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title,urls.name",null, null, null, null, false);
         
         //a new node should not flush a multistep query frome the cache
-        NodeEvent event = NodeEventHelper.createNodeEventInstance(newsNode, NodeEvent.EVENT_TYPE_NEW, null);
+        NodeEvent event = NodeEventHelper.createNodeEventInstance(newsNode, Event.TYPE_NEW, null);
         assertFalse("node event of new node on multi step query should not release the query",
             strategy.evaluate(event, q1, null).shouldRelease());
         
@@ -223,12 +224,12 @@ public class ReleaseStrategyTest extends BridgeTest {
         Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls", "news.title,urls.name",null, null, null, null, false);
         
         //a new relation node should not flush cache the cache
-        NodeEvent event = NodeEventHelper.createNodeEventInstance(posrelNode, NodeEvent.EVENT_TYPE_NEW, null);
+        NodeEvent event = NodeEventHelper.createNodeEventInstance(posrelNode, Event.TYPE_NEW, null);
         assertFalse("node event of new relation node on multi step query should not release the query",
             strategy.evaluate(event, q1, null).shouldRelease());
         
         //but the subsequent relation event should
-        RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, NodeEvent.EVENT_TYPE_NEW, null);
+        RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, Event.TYPE_NEW, null);
         assertTrue("relation event of new relation between nodes in multi step query should flush the cache",
             strategy.evaluate(relEvent, q1, null).shouldRelease());
      
@@ -245,7 +246,7 @@ public class ReleaseStrategyTest extends BridgeTest {
         //MMObjectNode testNode = MMBase.getMMBase().getBuilder("object").getNode(newsNode.getNumber());
         //testNode.setValue("title", "another title");
         
-        NodeEvent event = new NodeEvent(null, "news", 0, getMap("title", "oldTitle"), getMap("title", "newtitle"), NodeEvent.EVENT_TYPE_CHANGED);
+        NodeEvent event = new NodeEvent(null, "news", 0, getMap("title", "oldTitle"), getMap("title", "newtitle"), Event.TYPE_CHANGE);
         
         Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 1000", null, null, null, false);
         Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.title = 'hallo'", null, null, null, false);
@@ -322,7 +323,7 @@ public class ReleaseStrategyTest extends BridgeTest {
     MMObjectNode pos = MMBase.getMMBase().getBuilder( posrelNode.getNodeManager().getName() ).getNode(posrelNode.getNumber());
     pos.setValue( "pos", new Integer(100));
     //now create a relation event
-    RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, NodeEvent.EVENT_TYPE_CHANGED, null);
+    RelationEvent relEvent = NodeEventHelper.createRelationEventInstance(posrelNode, Event.TYPE_CHANGE, null);
     	
     	Query q1 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "news.number < 10 ", null, null, null, false);
     	Query q2 = Queries.createQuery(cloud, null, "news,posrel,urls" ,"news.subtitle", "posrel.pos < 10 ", null, null, null, false);
