@@ -22,32 +22,26 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.25 2006-02-14 22:45:10 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.26 2006-04-18 13:03:30 michiel Exp $
  */
-public class NodeEvent extends Event implements Serializable, Cloneable {
+public class NodeEvent extends Event {
 
-  
+
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
 
-    public static final int EVENT_TYPE_NEW = 0;
+    /**
+     * Event type speicfic for MMBase nodes.
+     */
+    public static final int TYPE_RELATION_CHANGE = 3;
 
-    public static final int EVENT_TYPE_CHANGED = 1;
-
-    public static final int EVENT_TYPE_DELETE = 2;
-
-    public static final int EVENT_TYPE_RELATION_CHANGED = 3;
-
-
-    private final int eventType;    
-    private final int nodeNumber;    
+    private final int nodeNumber;
     private String builderName;
-    
+
     private final Map oldValues;
     private final Map newValues;
 
-    
     /**
     *@param machineName (MMBase) name of the server
     *@param builderName name of builder of node event is about
@@ -56,16 +50,11 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
     *@param eventType the type of event
     **/
     public NodeEvent(String machineName, String builderName, int nodeNumber, Map oldValues, Map newValues, int eventType ){
-        super(machineName);
+        super(machineName, eventType);
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
-        this.eventType = eventType;
         this.oldValues = oldValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(oldValues));
         this.newValues = newValues == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(new HashMap(newValues));
-    }
-    
-    public String getName() {
-        return "node event";
     }
 
 
@@ -77,20 +66,20 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
     public final Object getOldValue(String fieldName) {
         return oldValues.get(fieldName);
     }
-    
+
     /**
      * @return a set containing the names of the fields that have changed
      */
     public final Set getChangedFields() {
         switch(getType()) {
-        case EVENT_TYPE_NEW:
+        case TYPE_NEW:
             return newValues.keySet();
-        case EVENT_TYPE_CHANGED:
+        case TYPE_CHANGE:
             //for changed both old and new values are good (similar keys)
             return newValues.keySet();
-        case  EVENT_TYPE_DELETE:
+        case  TYPE_DELETE:
             return oldValues.keySet();
-        default: 
+        default:
             return Collections.EMPTY_SET;
         }
     }
@@ -104,11 +93,6 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
     public final  Object getNewValue(String fieldName) {
         return newValues.get(fieldName);
     }
-
-    public final int getType() {
-        return eventType;
-    }
-
 
     /**
      * @return Returns the builderName.
@@ -129,18 +113,18 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         for (Iterator i = getChangedFields().iterator(); i.hasNext();) {
             changedFields = changedFields + (String) i.next() + ",";
         }
-        return getName() + " : '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues + "changedFields: " + getChangedFields();
+        return "Node event: '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues + "changedFields: " + getChangedFields();
     }
 
     protected static String getEventTypeGuiName(int eventType) {
         switch (eventType) {
-        case NodeEvent.EVENT_TYPE_CHANGED:
+        case Event.TYPE_CHANGE:
             return "node changed";
-        case NodeEvent.EVENT_TYPE_DELETE:
+        case Event.TYPE_DELETE:
             return "node deleted";
-        case NodeEvent.EVENT_TYPE_NEW:
+        case Event.TYPE_NEW:
             return "new node";
-        case NodeEvent.EVENT_TYPE_RELATION_CHANGED:
+        case NodeEvent.TYPE_RELATION_CHANGE:
             return "relation changed";
         default:
             throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
@@ -165,10 +149,10 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
      */
     public static String newTypeToOldType(int eventType) {
         switch (eventType) {
-        case NodeEvent.EVENT_TYPE_CHANGED:          return "c";
-        case NodeEvent.EVENT_TYPE_DELETE:           return "d";
-        case NodeEvent.EVENT_TYPE_NEW:              return "n";
-        case NodeEvent.EVENT_TYPE_RELATION_CHANGED: return "r";
+        case Event.TYPE_CHANGE:           return "c";
+        case Event.TYPE_DELETE:           return "d";
+        case Event.TYPE_NEW:              return "n";
+        case NodeEvent.TYPE_RELATION_CHANGE: return "r";
         default: throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
         }
     }
@@ -184,10 +168,10 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
             throw new IllegalArgumentException("HELP! event of type '" + eventType + "' is unknown. This should not happen. (length = " + eventType.length() + ")");
         }
         switch(eventType.charAt(0)) {
-        case 'c': return NodeEvent.EVENT_TYPE_CHANGED;
-        case 'd': return NodeEvent.EVENT_TYPE_DELETE;
-        case 'n': return NodeEvent.EVENT_TYPE_NEW;
-        case 'r': return NodeEvent.EVENT_TYPE_RELATION_CHANGED;
+        case 'c': return Event.TYPE_CHANGE;
+        case 'd': return Event.TYPE_DELETE;
+        case 'n': return Event.TYPE_NEW;
+        case 'r': return NodeEvent.TYPE_RELATION_CHANGE;
         default: throw new IllegalArgumentException("HELP! event of type " + eventType + " is unknown. This should not happen");
         }
     }
@@ -195,12 +179,12 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
     /**
      * utility method: check if a certain field has changed
      * @param fieldName
-     * @return true if the field of given name is among the changed fields 
+     * @return true if the field of given name is among the changed fields
      */
     public boolean hasChanged(String fieldName){
         return oldValues.keySet().contains(fieldName) || newValues.keySet().contains(fieldName);
     }
-    
+
 
     public int hashCode() {
         int result = 0;
@@ -208,7 +192,7 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         result = HashCodeUtil.hashCode(result, nodeNumber);
         result = HashCodeUtil.hashCode(result, builderName);
         return result;
-        
+
     }
     public boolean equals(Object o) {
         if (o instanceof NodeEvent) {
@@ -218,7 +202,7 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
             return false;
         }
     }
-    
+
     /**
      * old values can be different things.
      * <ul>
@@ -231,7 +215,7 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
     public final Map getOldValues(){
         return oldValues;
     }
-    
+
     /**
      * new values can be different things.
      * <ul>
@@ -245,20 +229,20 @@ public class NodeEvent extends Event implements Serializable, Cloneable {
         return newValues;
     }
 
-    
+
     public static void main(String[] args) {
         //test serializable
         Map  oldv = new HashMap(), newv = new HashMap();
         oldv.put("een","veen");
         oldv.put("twee","vtwee");
         newv.putAll(oldv);
-        
-        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, NodeEvent.EVENT_TYPE_CHANGED);
+
+        NodeEvent event = new NodeEvent(  "local", "builder", 0, oldv, newv, NodeEvent.TYPE_CHANGE);
         System.out.println("event 1: " + event.toString());
         NodeEvent event2 = (NodeEvent) event.clone("otherbuilder");
         System.out.println("clone: " + event2.toString());
         System.out.println("event 1: " + event.toString());
-        
+
     }
 
 }
