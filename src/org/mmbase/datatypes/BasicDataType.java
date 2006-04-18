@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.48 2006-04-18 13:31:16 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.49 2006-04-18 17:13:35 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -1053,7 +1053,7 @@ s     */
         protected Object preCast(Object v, Cloud cloud) {
             if (getValue() == null) return v;
             try {
-                return ((LocalizedEntryListFactory) value).castKey(v);
+                return ((LocalizedEntryListFactory) value).castKey(v, cloud);
                 //return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
             } catch (NoClassDefFoundError ncdfe) {
                 log.error("Could not find class " + ncdfe.getMessage() + " while casting " + v.getClass() + " " + v, ncdfe);
@@ -1063,10 +1063,14 @@ s     */
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
-            if (value == null || ((LocalizedEntryListFactory) value).isEmpty()) return true;
+            if (value == null || ((LocalizedEntryListFactory) value).isEmpty()) {
+                return true;
+            }
             Cloud cloud = BasicDataType.this.getCloud(node, field);
             Collection validValues = getEnumeration(null, cloud, node, field);
-            if (validValues.size() == 0) return true;
+            if (validValues.size() == 0) {
+                return true;
+            }
             Object candidate;
             try {
                 candidate = BasicDataType.this.cast(v, cloud, node, field);
@@ -1076,14 +1080,7 @@ s     */
             Iterator i = validValues.iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
-                Object valid;
-                try {
-                    valid = BasicDataType.this.cast(e.getKey(), cloud, node, field);
-                } catch (CastException ce) {
-                    log.error(ce);
-                    continue;
-                }
-                if (valid instanceof Node) valid = new Integer(((Node) valid).getNumber());
+                Object valid = e.getKey();
                 if (valid.equals(candidate)) {
                     return true;
                 }
