@@ -29,10 +29,9 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,principletracker" />
+  <target name="all.compiling"   depends="init,aselect,thememanager,multilanguagegui,mmbob,mmbar,lucene,principletracker" />
   <target name="all.not.compiling" depends="" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
-
 
   <target name="jars" depends="all">
     <copy todir="${contributions.build.dir}/jars" flatten="true" preservelastmodified="true" >
