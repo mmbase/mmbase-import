@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.35 2006-03-31 13:18:20 pierre Exp $
+ * @version $Id: Field.java,v 1.36 2006-04-18 13:13:12 michiel Exp $
  */
 public interface Field extends Descriptor {
 
@@ -212,9 +212,9 @@ public interface Field extends Descriptor {
     public boolean isVirtual();
 
     /**
-     * Returns whbether  afield si 'read ionly' - that is,  a use rcannot edit it.
+     * Returns whether a field is 'read only' - that is, a user cannot edit it.
      * In general, fields with state SYSTEM or SYSTEM_VIRTUAL are defined as read only, while others are not.
-     * It is posisble to override this behaviour per field.
+     * It is possible to override this behaviour per field.
      * @return <code>true</code> when a field is read only
      * @since MMBase-1.8
      */
