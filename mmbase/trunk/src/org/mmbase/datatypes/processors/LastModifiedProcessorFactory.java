@@ -19,11 +19,13 @@ import java.io.StringWriter;
  * 'lastmodified', but it also the only parameter of this processor factory.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifiedProcessorFactory.java,v 1.1 2006-02-07 21:55:28 michiel Exp $
+ * @version $Id: LastModifiedProcessorFactory.java,v 1.2 2006-04-18 14:17:24 michiel Exp $
  * @since MMBase-1.8
  */
 
-public class LastModifiedProcessorFactory implements ParameterizedProcessorFactory {
+public class LastModifiedProcessorFactory implements ParameterizedProcessorFactory, java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter("field", String.class, "lastmodified")
