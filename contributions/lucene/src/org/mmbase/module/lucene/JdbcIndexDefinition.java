@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.7 2006-04-10 10:49:47 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.8 2006-04-18 13:25:40 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -109,52 +109,56 @@ public class JdbcIndexDefinition implements IndexDefinition {
             final Connection con = getDirectConnection();
             final Statement statement = con.createStatement();
             final ResultSet results = statement.executeQuery(s);
-            log.debug("Executed " + s + " in " + (System.currentTimeMillis() - start) + " ms");
+            if (log.isDebugEnabled()) {
+                log.debug("Executed " + s + " in " + (System.currentTimeMillis() - start) + " ms");
+            }
             final ResultSetMetaData meta = results.getMetaData();
             return new CloseableIterator() {
-                    int i = 0;
+                int i = 0;
 
-                    public boolean hasNext() {
-                        boolean hasNext;
-                        try {
-                            hasNext =  results.next();
-                        } catch(SQLException sqe) {
-                            close();
-                            return false;
-                        }
-                        if (! hasNext) {
-                            close();
-                        }
-                        return hasNext;
+                public boolean hasNext() {
+                    try {
+                        return ! results.isLast();
+                    } catch (java.sql.SQLException sqe) {
+                        log.warn(sqe);
+                        return false;
                     }
+                }
 
-                    public Object next() {
-                        JdbcEntry entry = new JdbcEntry(meta, results);
-                        i++;
-                        if (log.isServiceEnabled()) {
-                            if (i % 100 == 0) {
-                                log.service("jdbc cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
-                            } else if (log.isDebugEnabled()) {
-                                log.trace("jdbc cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
-                            }
+                public Object next() {
+                    try {
+                        if (! results.next()) {
+                            throw new NoSuchElementException();
                         }
-                        return entry;
+                    } catch (java.sql.SQLException sqe) {
+                        throw new NoSuchElementException(sqe.getMessage());
                     }
-
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-
-                    public void close() {
-                        try {
-                            if (results != null) results.close();
-                            if (statement != null) statement.close();
-                            if (con != null) con.close();
-                        } catch (Exception e) {
-                            log.error(e);
+                    JdbcEntry entry = new JdbcEntry(meta, results);
+                    i++;
+                    if (log.isServiceEnabled()) {
+                        if (i % 100 == 0) {
+                            log.service("jdbc cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
+                        } else if (log.isDebugEnabled()) {
+                            log.trace("jdbc cursor " + i + " (now at id=" + entry.getIdentifier() + ")");
                         }
                     }
-                };
+                    return entry;
+                }
+
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+
+                public void close() {
+                    try {
+                        if (results != null) results.close();
+                        if (statement != null) statement.close();
+                        if (con != null) con.close();
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
+                }
+            };
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -217,6 +221,10 @@ public class JdbcIndexDefinition implements IndexDefinition {
         return null;
     }
 
+    public String toString() {
+        return sql;
+    }
+
     class JdbcEntry implements IndexEntry {
         final ResultSetMetaData meta;
         final ResultSet results;
@@ -236,15 +244,15 @@ public class JdbcIndexDefinition implements IndexDefinition {
             try {
                 for (int i = 1; i <= meta.getColumnCount(); i++) {
                     String value = org.mmbase.util.Casting.toString(results.getString(i));
-                    if(log.isDebugEnabled()) {
+                    if(log.isTraceEnabled()) {
                         log.trace("Indexing " + value + " for " + meta.getColumnName(i) + " on " + getIdentifier());
                     }
                     String fieldName = meta.getColumnName(i);
                     if (keyWords.contains(fieldName)) {
                         document.add(new Field(fieldName,  value,   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
                     } else {
-                        document.add(new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED)); 
-                        document.add(new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED)); 
+                        document.add(new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED));
+                        document.add(new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED));
                     }
                 }
             } catch (SQLException sqe) {

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.24 2006-04-10 10:49:47 michiel Exp $
+ * @version $Id: Indexer.java,v 1.25 2006-04-18 13:25:40 michiel Exp $
  **/
 public class Indexer {
 
@@ -41,8 +41,8 @@ public class Indexer {
     private final Cloud cloud;
     private final Analyzer analyzer;
 
-    // Name of the index
     private final String path;
+    // Name of the index
     private final String index;
     private final LocalizedString description;
 
@@ -121,15 +121,26 @@ public class Indexer {
      * Used in iterative indexing.
      * @return The number of deleted lucene documents.
      * @param number the number of the node whose index to delete
+     * @param 
      */
-    public int deleteIndex(String number) {
+    public int deleteIndex(String number, Class klass) {
         IndexReader reader = null;
         try {
-            reader = IndexReader.open(path);
-            Term term = new Term("number", number);
-            return reader.deleteDocuments(term);
+            for (Iterator i = queries.iterator(); i.hasNext();) {
+                IndexDefinition indexDefinition = (IndexDefinition)i.next();
+                if (klass.isAssignableFrom(indexDefinition.getClass())) {
+                    reader = IndexReader.open(path);
+                    Term term = new Term("number", number);
+                    int deleted = reader.deleteDocuments(term);
+                    if (deleted > 0) {
+                        log.service(getName() + ": Deleted " + deleted + " for '" + number + "'");
+                    }
+                    return deleted;
+                }
+            }
+            return 0;
         } catch (Exception e) {
-            log.error("Cannot delete Index:" + e.getMessage() + " for index entry '" + number + "'");
+            log.error(getName() + ": Cannot delete Index:" + e.getMessage() + " for index entry '" + number + "'");
             return 0;
         } finally {
             if (reader != null) {
@@ -147,22 +158,25 @@ public class Indexer {
      * Used in iterative indexing.
      * @param number the number of the node whose index to update
      */
-    public int updateIndex(String number) {
+    public int updateIndex(String number, Class klass) {
         int updated = 0;
-        int deleted = deleteIndex(number);
-        log.info("Deleted " + deleted + " for '" + number + "'");
+        int deleted = deleteIndex(number, klass);
         IndexWriter writer = null;
         try {
             writer = new IndexWriter(path, analyzer, false);
             // process all queries
             for (Iterator i = queries.iterator(); i.hasNext();) {
                 IndexDefinition indexDefinition = (IndexDefinition)i.next();
-                Iterator j = indexDefinition.getSubCursor(number);
-                log.debug("Updating index " + indexDefinition + " for " + number);
-                updated += index(j, writer);
+                if (klass.isAssignableFrom(indexDefinition.getClass())) {
+                    Iterator j = indexDefinition.getSubCursor(number);
+                    if (log.isDebugEnabled()) {
+                        log.debug(getName() + ": Updating index " + indexDefinition + " for " + number);
+                    }
+                    updated += index(j, writer);
+                }
             }
         } catch (Exception e) {
-            log.error("Cannot update Index:" + e.getMessage());
+            log.error("Cannot update Index: " + e.getMessage());
         } finally {
             if (writer != null) {
                 try {
@@ -171,6 +185,11 @@ public class Indexer {
                     log.error("Can't close index writer: " + ioe.getMessage());
                 }
             }
+        }
+        if (updated > 0) {
+            log.service(getName() + ": Updated " + updated + " for '" + number + "'");
+        } else if (log.isDebugEnabled()) {
+            log.debug(getName() + ": Updated " + updated + " for '" + number + "'");
         }
         return updated;
     }
@@ -216,6 +235,8 @@ public class Indexer {
         String   lastIdentifier = null;
         if (! i.hasNext()) {
             log.debug("Empty iterator given to update " + writer);
+        } else {
+            log.debug("Update " + writer);
         }
         while(i.hasNext()) {
             IndexEntry entry = (IndexEntry) i.next();
@@ -230,7 +251,12 @@ public class Indexer {
             index(entry, document);
             lastIdentifier = newIdentifier;
         }
-        if (document != null) writer.addDocument(document);
+        if (document != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("New document " + document);
+            }
+            writer.addDocument(document);
+        }
         return indexed;
     }
 
