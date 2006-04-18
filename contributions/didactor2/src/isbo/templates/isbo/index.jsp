@@ -39,7 +39,7 @@
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
-<di:hasrole role="systemadministrator">
+<%-- <di:hasrole role="systemadministrator"> --%>
 
 <% request.getSession().setAttribute("hassysprivs","true"); %>
 <%
@@ -93,6 +93,6 @@ if (top == self) {
 </body>
 </html>
 
-</di:hasrole>
+<%--</di:hasrole>--%>
 </mm:cloud>
 </mm:content>
