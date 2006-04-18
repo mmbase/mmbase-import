@@ -19,11 +19,13 @@ import java.io.StringWriter;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.4 2006-04-18 14:17:24 michiel Exp $
  * @since MMBase-1.8
  */
 
-public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFactory {
+public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFactory, java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter.Wrapper(ChecksumFactory.PARAMS),
