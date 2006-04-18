@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.36 2006-04-11 21:52:08 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.37 2006-04-18 17:13:35 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory implements Serializable, Cloneable {
@@ -46,6 +46,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     private int size = 0; // number of explicitely added keys
+    private boolean usesCloud = false;
 
     // we don't use interfaces here, because of Serializability
     private static class LocalizedEntry implements Serializable, PublicCloneable {
@@ -71,7 +72,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
             return "entries:" + entries + "uu:" + unusedKeys;
         }
     }
-    private HashMap localized  = new HashMap();   // Locale -> LocaledEntry
+    private HashMap localized  = new HashMap();   // Locale -> LocalizedEntry
     private ArrayList bundles  = new ArrayList(); // contains all Bundles
     private ArrayList fallBack = new ArrayList(); // List of known keys, used as fallback, if nothing defined for a certain locale
 
@@ -84,7 +85,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
 
     public boolean isEmpty() {
-        return bundles.size() == 0 && fallBack.size() == 0;
+        return bundles.size() == 0 && fallBack.size() == 0 && !usesCloud;
     }
 
     /**
@@ -184,6 +185,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     public void addQuery(Locale locale, Document queryElement) {
         DocumentSerializable doc = new DocumentSerializable(queryElement);
         add(locale, doc);
+        usesCloud = true;
     }
 
 
@@ -191,7 +193,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
      * Defaulting version of {@link #get(Locale, Cloud)}. Using default anonymous cloud.
      */
     public List get(final Locale locale) {
-        return get(locale, getCloud(locale));
+        return get(locale, usesCloud ? getCloud(locale) : null);
     }
 
     protected Cloud getCloud(Locale locale) {
@@ -425,27 +427,36 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         return size + bundleSize;
     }
 
+    public Object castKey(final Object key) {
+        return castKey(key, null);
+    }
     /**
      * Since keys may be somehow wrapped, you can also 'unwrap' by this. If e.g. a constants
      * provider was used, that values can be indicated by the name of the constants and this method
      * casts to the value.
      */
-    public Object castKey(final Object key) {
+    public Object castKey(final Object key, final Cloud cloud) {
         String string = null;
         Iterator i = bundles.iterator();
         if (i.hasNext()) {
             string = Casting.toString(key);
-        }
-        while (i.hasNext()) {
-            Bundle b = (Bundle) i.next();
-            Class wrapper = b.wrapper;
-            HashMap constants = b.constantsProvider;
-            Object nk = SortedBundle.castKey(string, null, constants, wrapper);
-            if (string != nk) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Casted " + key + " to " + nk);
+            while (i.hasNext()) {
+                Bundle b = (Bundle) i.next();
+                Class wrapper = b.wrapper;
+                HashMap constants = b.constantsProvider;
+                Object nk = SortedBundle.castKey(string, null, constants, wrapper);
+                if (string != nk) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Casted " + key + " to " + nk);
+                    }
+                    return nk;
                 }
-                return nk;
+            }
+        }
+        if (usesCloud && cloud != null) {
+            if (string == null) string = Casting.toString(key);
+            if (cloud.hasNode(string)) {
+                return cloud.getNode(string);
             }
         }
         return key;
@@ -481,6 +492,8 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         localized.clear();
         bundles.clear();
         fallBack.clear();
+        usesCloud = false;
+        size = 0;
     }
 
 
@@ -578,7 +591,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return "(localized: " + localized  + "bundles: " + bundles + "fallBack: " + fallBack + ")-->" + get(null, null);
+        return "(localized: " + localized  + "bundles: " + bundles + "fallBack: " + fallBack + ")";
     }
 
     private static class Bundle implements Serializable, PublicCloneable {
@@ -704,7 +717,7 @@ public class LocalizedEntryListFactory implements Serializable, Cloneable {
         System.out.println("size: " + fact2.size());
         System.out.println("" + fact2.get(en));
         System.out.println("" + fact2.get(nl));
-        Object error = fact2.castKey("ERROR");
+        Object error = fact2.castKey("ERROR", null);
         System.out.println("ERROR=" + error.getClass().getName() + " " + error);
 
 
