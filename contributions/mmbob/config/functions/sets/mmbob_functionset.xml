@@ -1044,6 +1044,7 @@
 		<param name="description" type="String" description="Description of the new forum" />
 		<param name="account" type="String" description="default/first admin account name for this new forum" />
 		<param name="password" type="String" description="default/first admin password name for this new forum" />
+		<param name="nick" type="String" description="nickname if set" />
 		<param name="email" type="String" description="default/first admin email for this new forum" />
 		<return type="Node"> 
 			<field name="forumid" type="int" description="The newly created forum id" />
