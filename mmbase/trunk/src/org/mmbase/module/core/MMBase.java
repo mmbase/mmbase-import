@@ -45,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.191 2006-03-31 19:16:46 michiel Exp $
+ * @version $Id: MMBase.java,v 1.192 2006-04-18 13:06:41 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1067,7 +1067,7 @@ public class MMBase extends ProcessorModule {
                     } else {
                         newclass = MMObjectBuilder.class;
                     }
-                    log.error(cnfe.toString() + " Falling back to " + newclass.getName());
+                    log.error(cnfe.toString() + " (for " + parser.getClassName() + ") Falling back to " + newclass.getName());
                 }
                 builder = (MMObjectBuilder)newclass.newInstance();
 
@@ -1337,7 +1337,7 @@ public class MMBase extends ProcessorModule {
      * or both
      * @since MMBase-1.8
      */
-    public void addNodeRelatedEventsListener(String builder, Object listener){
+    public void addNodeRelatedEventsListener(String builder, org.mmbase.core.event.EventListener listener){
         if(getBuilder(builder) != null){
             if(listener instanceof NodeEventListener){
                 TypedNodeEventListenerWrapper tnelr =
@@ -1358,7 +1358,7 @@ public class MMBase extends ProcessorModule {
      * @param listener
      * @since MMBase-1.8
      */
-    public void removeNodeRelatedEventsListener(String builder, Object listener){
+    public void removeNodeRelatedEventsListener(String builder, org.mmbase.core.event.EventListener listener){
         if(getBuilder(builder) != null){
             if(listener instanceof NodeEventListener){
                 TypedNodeEventListenerWrapper tnelr =
