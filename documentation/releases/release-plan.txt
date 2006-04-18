@@ -1,6 +1,6 @@
 ===================================================================
                      MMBase 1.8.0 - Release Plan
-$Id: release-plan.txt,v 1.5 2005-09-17 13:59:58 michiel Exp $
+$Id: release-plan.txt,v 1.6 2006-04-18 15:01:56 michiel Exp $
 ===================================================================
 
 TODO for 1.8.0 release of MMBase:
@@ -15,7 +15,7 @@ The following applications should be removed from the core and moved to a separa
   DONE
 
 - Email application: find a solution for the email module class interface that is now in the core
-  DONE?
+  DONE
 
 - Config module and org.mmbase.config: xml parsers and color coders (perhaps a rewrite is better?)
   DROPPED
@@ -93,19 +93,19 @@ New projects that are not in a stable state will not be deployed in the 1.8 rele
   PENDING
 - Distro project
   PENDING
-- Field types project
-  DO
-  ----> DO FIX RMMCI 
+- Data types project
+  DONE
   ----> DO Review code and new methods (org.mmbase.bridge.*, org.mmbase.datatypes.*)
 
 - Richtext project
-  DO
+  DONE
 - Taglib II project
   DONE
 - Packaging project (new, formerly 'Applications II')
   SKIP
 - Cache release stategies
-  DO, or decide to HOLD
+  DONE
+
 
 - Editwizard 2
    Planned for 1.8.1
@@ -118,16 +118,19 @@ VI Other
 
 - testing
    - junit tests must succeed
-     DO
+     DONE
    - junit tests must be reviewed
-     DO
+     DONE
    - other test areas 
       (new features in 1.8)
       - Taglib & EL
       - DataTypes
+      DONE
       - Events and Clustering
+      DONE
       - Imaging
       - Security
          -test generality of e.g. basic editors. The idea is that they work with every security
            implementation, but this is not yet finished IIRC.
+           DONE
 
