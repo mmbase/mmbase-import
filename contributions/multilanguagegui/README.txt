@@ -28,4 +28,4 @@ To compile MultiLanguageGui and install from sources.
 
 Apr 2006
 Daniel Ockeloen
-MMCoder
+MMCoder, daniel@xs4all.nl
