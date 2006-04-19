@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.200 2006-04-10 17:28:35 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.201 2006-04-19 22:32:15 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -41,8 +41,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
     private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
-
-    private boolean changed = false;
 
     /**
      * Reference to the NodeManager
@@ -138,7 +136,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     protected void init() {
         // check whether the node is currently in transaction
         // and intialize temporaryNodeId if that is the case
-        if (cloud.contains(getNode()) && temporaryNodeId == -1) {
+        if (temporaryNodeId == -1 && cloud.contains(getNode())) {
             temporaryNodeId = getNode().getNumber();
         }
     }
@@ -172,7 +170,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         org.mmbase.module.core.VirtualNode n = new org.mmbase.module.core.VirtualNode(noderef.getBuilder());
         n.setValue("number", noderef.getNumber());
         n.clearChanged();
-        changed = false;
         noderef = n;
     }
 
@@ -237,6 +234,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      *
      * @param action The action to perform.
      */
+    // there is little common for the 4 actions (code is full of if/else code), I think it would
+    // perhaps be clearer to remove this method, and simply resolve it on the places where it is
+    // used.
     protected void edit(int action) {
         if (account == null) {
             account = cloud.getAccount();
@@ -296,7 +296,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         } else if (TemporaryNodeManager.INVALID_VALUE == result) {
             noderef.storeValue(fieldName, value); // commit() will throw that invalid.
         }
-        changed = true;
     }
     protected Integer toNodeNumber(Object v) {
         if (v == null) {
@@ -499,7 +498,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
             temporaryNodeId = -1;
         }
-        changed = false;
     }
 
     public void cancel() {
@@ -517,7 +515,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             }
             temporaryNodeId = -1;
         }
-        changed = false;
     }
 
 
@@ -838,7 +835,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public void setContext(String context) {
         // set the context on the node (run after insert).
         getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
-        changed = true;
     }
 
     // javadoc inherited (from Node)
@@ -873,7 +869,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
         // my opinion is that this should happen, as soon as edit-ting starts,..........
         // when still has modifications.....
-        if (changed) {
+        if (isChanged()) {
             if (!(cloud instanceof Transaction)) {
                 // cancel the modifications...
                 cancel();
