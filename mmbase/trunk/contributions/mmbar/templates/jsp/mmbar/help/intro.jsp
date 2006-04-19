@@ -26,7 +26,7 @@
 	<br />
 	<br />
 	<font size="+1">Daniel Ockeloen<br />
-	MMCoder<br />
+	MMCoder, daniel@xs4all.nl<br />
 	</font>
 	</p>
 	</td>
