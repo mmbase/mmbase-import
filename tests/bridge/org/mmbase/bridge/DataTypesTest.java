@@ -14,6 +14,7 @@ import org.mmbase.datatypes.*;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.tests.*;
+import junit.framework.*;
 
 /**
  *
@@ -289,17 +290,25 @@ public class DataTypesTest extends BridgeTest {
             Field field = nodeManager.getField((String)kase[0]);
             Object[] validValues = (Object[]) kase[1];
             for (int j = 0; j < validValues.length; j++) {
-                Node newNode = getNewNode();
-                newNode.setValue(field.getName(), validValues[j]);
-                commit(newNode); // should not give exception
-                // all fields are nullable in 'datatypes' so, it must be possible to set field back to null.
-                newNode.setValue(field.getName(), null);
+                try {
+                    Node newNode = nodeManager.createNode();
+                    newNode.setValue(field.getName(), validValues[j]);
+                    newNode.setValue(field.getName(), null);
+                    newNode.setValue(field.getName(), validValues[j]);
+                    newNode.commit(); // should not give exception
+                    // all fields are nullable in 'datatypes' so, it must be possible to set field back to null.
+                    newNode.setValue(field.getName(), null);
 
-                assertNull(newNode.getValue(field.getName()));
-                assertTrue(newNode.isNull(field.getName()));
-                newNode.commit();
-                assertNull(newNode.getValue(field.getName()));
-                assertTrue(newNode.isNull(field.getName()));
+                    assertNull(newNode.getValue(field.getName()));
+                    assertTrue(newNode.isNull(field.getName()));
+                    newNode.commit();
+                    assertNull(newNode.getValue(field.getName()));
+                    assertTrue(newNode.isNull(field.getName()));
+                } catch (Throwable t) {
+                    AssertionFailedError fail = new AssertionFailedError("During field " + field);
+                    fail.initCause(t);
+                    throw fail;
+                }
             }
         }
     }
