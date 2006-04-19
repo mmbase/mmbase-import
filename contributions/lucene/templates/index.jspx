@@ -17,8 +17,8 @@
           </p>
         </mm:booleanfunction>
         
-        <mm:url id="next" write="false" page="/mmbase/style/images/next.gif" />
-        <mm:url id="ok" write="false" page="/mmbase/style/images/ok.gif" />
+        <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
+        <mm:url id="ok" write="false" page="/mmbase/style/images/ok.png" />
         <table summary="Lucene indices">
           <tr>
             <th>name</th>
