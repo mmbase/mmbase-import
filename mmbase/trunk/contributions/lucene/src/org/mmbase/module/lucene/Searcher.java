@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.20 2006-01-26 16:04:03 michiel Exp $
+ * @version $Id: Searcher.java,v 1.21 2006-04-19 09:08:18 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -144,8 +144,11 @@ public class Searcher {
             searcher = new IndexSearcher(index.getPath());
             Hits hits = getHits(searcher, value, filter, sort, analyzer, extraQuery, fields);
             return hits.length();
+        } catch (java.io.IOException ioe) {
+            //probably 'no such file or directory', that doesn't really matter, simply not indexed yet.
+            log.service("Cannot run searchSize: " + ioe.getMessage());
         } catch (Exception e) {
-            log.error("Cannot run searchSize :" + e.getMessage());
+            log.error("Cannot run searchSize: " + e.getMessage(), e);
         } finally {
             if (searcher != null) {
                 try {
