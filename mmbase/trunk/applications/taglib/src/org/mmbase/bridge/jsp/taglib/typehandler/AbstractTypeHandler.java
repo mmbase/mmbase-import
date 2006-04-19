@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.42 2006-04-18 21:30:30 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.43 2006-04-19 23:32:54 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -181,18 +181,26 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.checkHtmlInput(node, field, errors);
         }
         String fieldName = field.getName();
-        Object fieldValue = getFieldValue(node, field, false);
+        Object fieldValue = getFieldValue(fieldName);
         DataType dt = field.getDataType();
         Collection col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
             // do actually set the field, because some need cross-field checking
-            if (fieldValue != null && node != null && ! fieldValue.equals(node.getValue(fieldName))
-                && ! field.isReadOnly()
-                ) {
-                try {
-                    node.setValue(fieldName,  fieldValue);
-                } catch (Throwable t) {
-                    // may throw exception like 'You cannot change the field"
+            if (node != null && ! field.isReadOnly()) {
+                Object oldValue = node.getValue(fieldName);
+                if (fieldValue == null ? oldValue != null : ! fieldValue.equals(oldValue)) {
+                    try {
+                        if(log.isDebugEnabled()) {
+                            log.debug("Setting " + fieldName + " to " + fieldValue);
+                        }
+                        node.setValue(fieldName,  fieldValue);
+                    } catch (Throwable t) {
+                        // may throw exception like 'You cannot change the field"
+                    }
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("not Setting " + fieldName + " to " + fieldValue + " because already has that value");
+                    }
                 }
             }
             return "";
@@ -227,9 +235,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         Object fieldValue = getFieldValue(node, field, false);
         Object oldValue = node.getValue(fieldName);
         if (fieldValue == null ? oldValue == null : fieldValue.equals(oldValue)) {
+            if (fieldName.equals("restricted_ordinals")) {
+                log.info("Not setting " + fieldValue + "/" + oldValue + " in node");
+            }
             return false;
         }  else {
-            if (fieldName.equals("node")) {
+            if (fieldName.equals("restricted_ordinals")) {
                 log.info("Setting " + fieldValue + " in node");
             }
             node.setValue(fieldName,  fieldValue);
