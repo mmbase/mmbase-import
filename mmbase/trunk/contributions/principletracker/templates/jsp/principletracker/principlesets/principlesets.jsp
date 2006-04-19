@@ -46,7 +46,7 @@ This applications allows you to create more for example if you want a test set o
  But if you (most likely) only have one (or a prefered one) you can add a alias called 'Principle.default' and this application will open not on this page but on the principles page with that set as the default.<br /><br /><br />
 	Have fun with this contribution,<br /><br />
 	Daniel Ockeloen<br />
-	MMCoder.<br /><br />
+	MMCoder, daniel@xs4all.nl<br /><br />
 	</td>
 </tr>
 </table>
