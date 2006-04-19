@@ -7,7 +7,7 @@
 <cache:flush scope="application"/>
 <%
 // names of rubrieken might get changed
-// UrlConverter.getCache().flushAll(); 
+UrlConverter.getCache().flushAll(); 
 %>
 <mm:cloud jspvar="cloud" rank="basic user">
 <%
