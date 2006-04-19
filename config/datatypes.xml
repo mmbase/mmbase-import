@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.35 2006-04-10 15:47:53 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.36 2006-04-19 20:02:01 michiel Exp $ -->
 
   <datatype id="xml">
     <description>
@@ -226,10 +226,13 @@
 
     <specialization id="iso639">
       <description>
-        ISO 639 language codes
+        ISO 639 language 2-letter codes (sorted alphabeticly on the name of the language in the current locale)
       </description>
+      <pattern value=".." />
       <enumeration>
-        <entry basename="org.mmbase.datatypes.resources.iso639" />
+        <!-- ValueWrapper ensures that the enumeration is presented sorted on _value_ -->
+        <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper" 
+               basename="org.mmbase.datatypes.resources.iso639" />
       </enumeration>
     </specialization>
 
