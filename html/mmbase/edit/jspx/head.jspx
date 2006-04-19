@@ -3,6 +3,10 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:directive.page session="false" />
+  <!--
+      Generic head for all pages in this directory.
+      $Id: head.jspx,v 1.2 2006-04-19 23:33:15 michiel Exp $
+  -->
   <jsp:output omit-xml-declaration="true" />
   <title>Simple editors in JSPX / MMBase Taglib 2.0</title>   
   <mm:link page="style.css.jspx">

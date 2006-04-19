@@ -3,21 +3,29 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <jsp:directive.page session="true" buffer="100kb" />
+
+  <!-- 
+       Offers a form for one new MMBase node.
+       Also handles the form, and then redirects to change.jspx, because the node is existng then.
+       $Id: create.jspx,v 1.8 2006-04-19 23:33:15 michiel Exp $
+  -->
+
+  <jsp:directive.page session="true" buffer="200kb" />
   <mm:include page="head.jspx" />
   <body>
     <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
       <mm:cloud rank="basic user">
-        <mm:import externid="ok" />
-        <mm:import externid="nodemanager" required="true" />
+        <mm:import externid="nodemanager" required="true" />        
         <h1>
           <mm:link page="." referids="nodemanager">
             <a href="${_}" class="back"><span class="navigate">back</span></a>
           </mm:link>
+            <a href="javascript:document.getElementById('createform').submit();" class="ok"><span class="navigate">ok</span></a>
           <jsp:text>New</jsp:text>
         </h1>
         <mm:form id="createform">
           <input type="hidden" name="nodemager" value="${nodemanager}" />
+          <input type="hidden" name="submitted" value="submitted" />
           <table>
             <mm:fieldlist type="edit" nodetype="$nodemanager">
               <mm:index id="index" write="false" />
@@ -31,7 +39,10 @@
             </mm:fieldlist>
           </table>
           <input type="submit" name="ok" />
-          <mm:present referid="ok">
+
+          <mm:import externid="submitted" />
+          <mm:present referid="submitted">
+            <!-- handle the form -->
             <mm:valid>
               <mm:createnode id="newnode" type="${nodemanager}">
                 <mm:fieldlist type="edit">
