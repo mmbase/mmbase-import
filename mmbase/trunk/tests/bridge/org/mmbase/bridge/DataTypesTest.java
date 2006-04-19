@@ -280,6 +280,57 @@ public class DataTypesTest extends BridgeTest {
         }
     }
 
+
+    public void testValidValuesCommit() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        for (int i = 0; i < cases.length; i++) {
+            Object[] kase = (Object[]) cases[i];
+            Field field = nodeManager.getField((String)kase[0]);
+            Object[] validValues = (Object[]) kase[1];
+            for (int j = 0; j < validValues.length; j++) {
+                Node newNode = getNewNode();
+                newNode.setValue(field.getName(), validValues[j]);
+                commit(newNode); // should not give exception
+                // all fields are nullable in 'datatypes' so, it must be possible to set field back to null.
+                newNode.setValue(field.getName(), null);
+
+                assertNull(newNode.getValue(field.getName()));
+                assertTrue(newNode.isNull(field.getName()));
+                newNode.commit();
+                assertNull(newNode.getValue(field.getName()));
+                assertTrue(newNode.isNull(field.getName()));
+            }
+        }
+    }
+
+    // Often is _is_ possible to set invalid values, which will be casted to valid values then.
+    // This is perhaps a backwards compatibility issue.
+    // Not really happy with it though.
+    /*
+    public void testInValidValuesCommit() {
+        Cloud cloud = getCloud();
+        NodeManager nodeManager = cloud.getNodeManager("datatypes");
+        StringBuffer errors = new StringBuffer();
+        for (int i = 0; i < cases.length; i++) {
+            Object[] kase = (Object[]) cases[i];
+            Field field = nodeManager.getField((String)kase[0]);
+            Object[] invalidValues = (Object[]) kase[2];
+            for (int j = 0; j < invalidValues.length; j++) {
+                Node newNode = getNewNode();
+                try {
+                    newNode.setValue(field.getName(), invalidValues[j]);
+                    commit(newNode);
+                    errors.append("Invalid value " + invalidValues[j] + " should have given exception for " + field + " but evaluated to " + newNode.getValue(field.getName()) + "\n");
+                } catch (Throwable e) {
+                }
+            }
+        }
+        assertTrue(errors.toString(), errors.length() == 0);
+    }
+    */
+
+
     public void testEnumerations() {
         Node newNode = getNewNode();
         newNode.setValue("mmbase_state_enumeration", "ERROR");
