@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.9 2006-04-14 13:05:32 nklasens Exp $
+// $Id: htmlarea.js,v 1.10 2006-04-19 05:55:30 nklasens Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
@@ -576,7 +576,7 @@ HTMLArea.prototype._createToolbar = function () {
                 var group = this.config.toolbar[i];
                 for (var j in group) {
                         var code = group[j];
-                        if (typeof code != "function" && code != undefined ) {
+                        if (typeof code == "string") {
 	                        if (/^([IT])\[(.*?)\]/.test(code)) {
 	                                // special case, create text label
 	                                var l7ed = RegExp.$1 == "I"; // localized?
