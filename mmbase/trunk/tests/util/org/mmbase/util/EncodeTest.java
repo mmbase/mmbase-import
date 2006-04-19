@@ -146,6 +146,7 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("REGEXPS_XMLTEXT_WORDS");
         documentedEncodings.add("ROT-13");
         documentedEncodings.add("ROT-5");
+        documentedEncodings.add("UNICODEESCAPER");
        return documentedEncodings;
     }
 
