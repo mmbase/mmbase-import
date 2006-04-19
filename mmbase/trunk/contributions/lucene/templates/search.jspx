@@ -12,7 +12,7 @@
         <mm:import externid="extraconstraints" />
         <mm:import externid="index" />
         <mm:import externid="reindex" />
-        <mm:url id="back" write="false" page="/mmbase/style/images/back.gif" />
+        <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
 
         <h1>Searching ${index}</h1>
         <p>
