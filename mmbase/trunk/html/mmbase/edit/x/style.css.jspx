@@ -13,6 +13,7 @@
 body { 
   margin: 0px 0px 0px 0px;
   padding: 0px 0px 0px 0px;
+  margin-top: 40px;
 }
 table { 
   margin-left: 0px;
@@ -45,7 +46,17 @@ img {
 input.small, input.big, textarea { 
   width: 100%;
 }
+table.search thead, h1 {
+  display: block;
+  width: 100%;
+  top: 0px;
+  height: 39px;
+  border-bottom: solid black 1px;
+  position: fixed;
+  background-color: #ddd;
+}
 h1 { 
+  font-size: medium;
   background-color: #ddd;
   margin-top: 0px;
   padding: 0px 0px 0px 0px;
@@ -64,12 +75,14 @@ a span.navigate {
 a.create::before {
  content: url(${create});
 }
-
 a.back::before {
  content: url(${back});
 }
 a.search::before{
  content: url(${search});
+}
+a.ok::before{
+ content: url(${ok});
 }
 
   </mm:content>
