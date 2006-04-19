@@ -12,6 +12,7 @@ package org.mmbase.util;
 
 import java.util.*;
 import java.lang.reflect.*;
+import java.text.Collator;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.logging.*;
 import org.mmbase.datatypes.StringDataType;
@@ -28,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.21 2006-04-10 16:51:35 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.22 2006-04-19 20:02:28 michiel Exp $
  */
 public class SortedBundle {
 
@@ -66,16 +67,30 @@ public class SortedBundle {
      */
 
     public static class ValueWrapper implements Comparable {
-        private String key;
-        private Comparable value;
-        protected ValueWrapper(String k, Comparable v) {
-            key = k;
+        private final Object key;
+        private final Object value;
+        private final Comparator com;
+        public ValueWrapper(Object k, Comparable v) {
+            key   = k;
             value = v;
+            com   = null;
+        }
+        public ValueWrapper(Object k, Object v, Comparator c) {
+            key   = k;
+            value = v;
+            com   = c;
         }
         public  int compareTo(Object o) {
             ValueWrapper other = (ValueWrapper) o;
-            int result = value.compareTo(other.value);
-            return result == 0 ? key.compareTo(other.key) : result;
+            int result =
+                com != null ? com.compare(value, other.value) :
+                ((Comparable) value).compareTo(other.value);
+            if (result != 0) return result;
+            if (key instanceof Comparable) {
+                return ((Comparable) key).compareTo(other.key);
+            } else {
+                return 0;
+            }
         }
         public boolean equals(Object o) {
             if (o == this) return true;
@@ -87,6 +102,9 @@ public class SortedBundle {
             return false;
         }
         public String toString() {
+            return Casting.toString(key);
+        }
+        public Object getKey() {
             return key;
         }
         /**
@@ -96,6 +114,7 @@ public class SortedBundle {
             int result = 0;
             result = HashCodeUtil.hashCode(result, key);
             result = HashCodeUtil.hashCode(result, value);
+            result = HashCodeUtil.hashCode(result, com);
             return result;
         }
     }
@@ -147,13 +166,14 @@ public class SortedBundle {
                     throw new IllegalArgumentException("Key wrapper " + wrapper + " is not Comparable");
                 }
             }
+
             m = new TreeMap(comparator);
 
             Enumeration keys = bundle.getKeys();
             while (keys.hasMoreElements()) {
                 String bundleKey = (String) keys.nextElement();
                 Object value = bundle.getObject(bundleKey);
-                Object key = castKey(bundleKey, value, constantsProvider, wrapper);
+                Object key = castKey(bundleKey, value, constantsProvider, wrapper, locale);
                 if (key == null) continue;
                 m.put(key, value);
             }
@@ -164,11 +184,14 @@ public class SortedBundle {
     }
 
 
+    public static Object castKey(final String bundleKey, final Object value, final Map constantsProvider, final Class wrapper) {
+        return castKey(bundleKey, value, constantsProvider, wrapper, null);
+    }
     /**
      * Casts a key of the bundle to the specified key-type. This type is defined by
      * the combination of the arguments. See {@link #getResource}.
      */
-    public static Object castKey(final String bundleKey, final Object value, final Map constantsProvider, final Class wrapper) {
+    protected static Object castKey(final String bundleKey, final Object value, final Map constantsProvider, final Class wrapper, final Locale locale) {
         if (bundleKey == null) return null;
         Object key;
         // if the key is numeric then it will be sorted by number
@@ -200,8 +223,15 @@ public class SortedBundle {
             try {
                 if (ValueWrapper.class.isAssignableFrom(wrapper)) {
                     log.debug("wrapper is a valueWrapper");
-                    Constructor c = wrapper.getConstructor(new Class[] { String.class, Comparable.class });
-                    key = c.newInstance(new Object[] { key, (Comparable) value});
+                    if (locale == null) {
+                        Constructor c = wrapper.getConstructor(new Class[] { Object.class, Comparable.class });
+                        key = c.newInstance(new Object[] {  key, (Comparable) value});
+                    } else {
+                        Constructor c = wrapper.getConstructor(new Class[] { Object.class, Object.class, Comparator.class });
+                        Collator comp = Collator.getInstance(locale);
+                        comp.setStrength(Collator.PRIMARY);
+                        key = c.newInstance(new Object[] { key, value, comp});
+                    }
                 } else if (Number.class.isAssignableFrom(wrapper)) {
                     if (key instanceof String) {
                         if (StringDataType.DOUBLE_PATTERN.matcher((String) key).matches()) {
@@ -227,7 +257,7 @@ public class SortedBundle {
                     key = c.newInstance(new Object[] { key });
                 }
             } catch (NoSuchMethodException nsme) {
-                log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + nsme.getMessage());
+                log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + nsme.getMessage() + " locale " + locale);
             } catch (SecurityException se) {
                 log.error(se.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + se.getMessage());
              } catch (InstantiationException ie) {
