@@ -1,7 +1,6 @@
 <%@include file="/taglibs.jsp" %>
 <%@include file="../../includes/request_parameters.jsp" %>
 <%@include file="../../includes/getresponse.jsp" %>
-<mm:import id="is_include" reset="true" />
 <%
 String postingStr = request.getParameter("pst");
 String referer = request.getParameter("referer");
