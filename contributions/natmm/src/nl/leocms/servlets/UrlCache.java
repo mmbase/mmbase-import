@@ -1,6 +1,7 @@
 package nl.leocms.servlets;
 
 import java.util.*;
+import org.mmbase.cache.oscache.OSCacheImplementation;
 
 public class UrlCache {
 
@@ -8,18 +9,19 @@ public class UrlCache {
   private Map cacheURLToJSP;
 
   public UrlCache() {
-    cacheJSPToURL = new HashMap();
-    cacheURLToJSP = new HashMap();
+    cacheJSPToURL = new OSCacheImplementation();
+    cacheURLToJSP = new OSCacheImplementation();
+    // set path explicitly, otherwise java.lang.NullPointerException
+	 // at org.mmbase.cache.oscache.OSCacheImplementation.get(OSCacheImplementation.java:135)
+    Map config = new HashMap(); 
+    config.put("path", nl.mmatch.NatMMConfig.tempDir);
+    ((OSCacheImplementation)cacheJSPToURL).config(config);
+    ((OSCacheImplementation)cacheURLToJSP).config(config);
   }
 
   public void flushAll() {
-    // this can lead to a: java.util.ConcurrentModificationException
-    for (Iterator it=cacheJSPToURL.keySet().iterator();it.hasNext();) {
-      cacheJSPToURL.remove(it.next());
-    }
-    for (Iterator it=cacheURLToJSP.keySet().iterator();it.hasNext();) {
-      cacheURLToJSP.remove(it.next());
-    }
+    cacheJSPToURL.clear();
+    cacheURLToJSP.clear();
   }
 
   public String getJSPEntry(String requestedURL) {

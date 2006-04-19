@@ -7,7 +7,7 @@
 </head>
 <body style="overflow:auto;">
    <cache:flush scope="application"/>
-   <% // UrlConverter.getCache().flushAll(); %>
+   <% UrlConverter.getCache().flushAll(); %>
    <h3>Publiceren van alle pagina's</h3>
    <b>Alle pagina zijn gepubliceerd.</b><br>
 </body>

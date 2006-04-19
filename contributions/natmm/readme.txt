@@ -1,5 +1,5 @@
 NatMM - readme.txt
-Version: 06.04.14
+Version: 06.04.17
 Author: H. Hangyi
 
 NatMM is an MMBase application which is based on LeoCMS, which is specially geared for the use in
@@ -15,8 +15,13 @@ Features of LeoCMS (currently) not used in NatMM:
 
 What is in it for you?
 
-1. All the other features of LeoCMS, like the (a) page-tree, (b) authorisation model, (c) nice-looking editwizards,
-   (d) content-library, (e) url-rewriting for Google friendly urls, and much more. LeoCMS has been build by Finalist.
+1. All the other features of LeoCMS, like the 
+   (a) page-tree, 
+   (b) authorisation model,
+   (c) nice-looking editwizards,
+   (d) content-library,
+   (e) url-rewriting for Google friendly urls, 
+   and much more. LeoCMS has been build by Finalist.
 2. The event-database in use at www.natuurmonumenten.nl. For the event-database both a back-office booking system
    and booking on the website is implemented (Struts). The event-database contains export to Excel and functionality to 
    generate statistics. See templates/natmm/doc/DatamodelCAD.doc for the datamodel and the GebruikershandleidingCAD*.doc
@@ -24,8 +29,9 @@ What is in it for you?
 3. Preview functionality based on OSCache
 4. Image cropping (see natmm\templates\editors\util\image_crop.jsp). Build by C. Brands.
 5. Image bulk upload (see natmm\templates\editors\util\image_upload.jsp). Build by N. Bukharev.
-6. Check on email addresses, Dutch zipcodes and bankaccounts (see natmm\src\nl\leocms\forms\MembershipForm.java)
-7. Example templates (see natmm\templates\natmm and nmintra) 
+6. Creating navigation structure from Excel file. Build by A. Zemskov.
+7. Check on email addresses, Dutch zipcodes and bankaccounts (see natmm\src\nl\leocms\forms\MembershipForm.java)
+8. Example templates (see natmm\templates\natmm and nmintra) 
    and the accompanying editwizards (see natmm\templates\mmbase\edit\wizard\data\config)
 
 See install\install.txt for installation.
