@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.49 2006-04-18 17:13:35 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.50 2006-04-19 20:03:09 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -291,7 +291,7 @@ s     */
         try {
             return cast(value, cloud, node, field);
         } catch (CastException ce) {
-            log.error("" + ce, ce);
+            log.error(ce.getMessage());
             return Casting.toType(classType, cloud, preCast(value, cloud, node, field));
         }
     }
@@ -401,10 +401,14 @@ s     */
         return validate(value, null, null);
     }
 
+
+    public final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field) {
+        return validate(value, node, field, false);
+    }
     /**
      * {@inheritDoc}
      */
-    public final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field) {
+    private final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field, boolean skipEnum) {
         Collection errors = VALID;
         Object castedValue;
         try {
@@ -425,7 +429,9 @@ s     */
         if (value == null) {
             return errors; // null is valid, unless required.
         }
-        errors = enumerationRestriction.validate(errors, value, node, field);
+        if (skipEnum) {
+            errors = enumerationRestriction.validate(errors, value, node, field);
+        }
         errors = uniqueRestriction.validate(errors, castedValue, node, field);
         errors = validateCastedValue(errors, castedValue, value, node, field);
         return errors;
@@ -1134,7 +1140,7 @@ s     */
             while (baseIterator.hasNext()) {
                 final Map.Entry entry = (Map.Entry) baseIterator.next();
                 Object value = entry.getKey();
-                Collection validationResult = BasicDataType.this.validate(value, node, field);
+                Collection validationResult = BasicDataType.this.validate(value, node, field, true);
                 if (validationResult == VALID) {
                     next = entry;
                     /*
@@ -1156,7 +1162,7 @@ s     */
                     for (Iterator i = validationResult.iterator(); i.hasNext();) {
                         errors += ((LocalizedString)i.next()).get(null);
                     }
-                    log.debug("Value " + value + " does not validate : " + errors);
+                    log.debug("Value " + value.getClass() + " " + value + " does not validate : " + errors);
                 }
             }
         }
