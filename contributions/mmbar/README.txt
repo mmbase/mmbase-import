@@ -26,3 +26,4 @@ To compile MMBar and install from sources.
 
 Apr 2006
 Daniel Ockeloen
+MMCoder, daniel@xs4all.nl
