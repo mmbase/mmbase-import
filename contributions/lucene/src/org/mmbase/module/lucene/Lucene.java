@@ -34,6 +34,8 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.storage.StorageManagerFactory;
 
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.mmbase.module.lucene.extraction.*;
@@ -44,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.58 2006-04-19 08:39:01 michiel Exp $
+ * @version $Id: Lucene.java,v 1.59 2006-04-19 09:08:18 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -118,8 +120,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     private String indexPath = null;
     private Scheduler scheduler = null;
     private String defaultIndex = null;
-    private Map indexerMap = new HashMap();
-    private Map searcherMap = new HashMap();
+    private Map indexerMap    = new ConcurrentHashMap();
+    private Map searcherMap   = new ConcurrentHashMap();
     private boolean readOnly = false;
 
 
