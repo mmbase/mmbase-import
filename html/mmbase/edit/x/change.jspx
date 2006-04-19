@@ -3,6 +3,16 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <!-- 
+       Offers a form for one existing MMBase node.
+       Also handles the form.
+
+       TODO: Some way to edit relations? NODE-field editor?
+             
+       $Id: change.jspx,v 1.7 2006-04-19 23:33:15 michiel Exp $
+  -->
+
   <jsp:directive.page session="true" />
 
   <mm:include page="head.jspx" />
@@ -19,11 +29,13 @@
             <mm:link page="." referids="nodemanager">
               <a href="${_}" class="back"><span class="navigate">back</span></a>
             </mm:link>
+            <a href="javascript:document.getElementById('changeform').submit();" class="ok"><span class="navigate">ok</span></a>
             <mm:nodeinfo type="gui" />
           </h1>
 
           <mm:form id="changeform">
             <input type="hidden" name="node" value="${_node}" />
+            <input type="hidden" name="submitted" value="submitted" />
             <table>
               <tbody>
                 <mm:fieldlist type="edit">
@@ -39,13 +51,17 @@
               </tbody>
             </table>
             <input type="submit" name="ok" />
-            <mm:import externid="ok" />
-            <mm:present referid="ok">
+
+            <mm:import externid="submitted" />
+            <mm:present referid="submitted">
+              <!-- handle the form -->
               <mm:valid>
                 <mm:commit />
                 <jsp:text>Committed !</jsp:text>
+                <mm:redirect page="change.jspx" referids="node" /> <!-- redirect to show actual new values -->
               </mm:valid>
             </mm:present>
+
           </mm:form>
         </mm:node>
       </mm:cloud>

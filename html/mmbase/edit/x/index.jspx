@@ -3,7 +3,10 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-
+  <!-- 
+       Produces a search-tool, and the search result with links to create and change MMBase nodes.
+       $Id: index.jspx,v 1.7 2006-04-19 23:33:15 michiel Exp $
+  -->
   <jsp:directive.page session="true" />
 
   <mm:include page="head.jspx" />
@@ -13,10 +16,18 @@
         <mm:import externid="nodemanager">object</mm:import>
 
         <form id="searchform" action="." method="post">
-          <table class="search">
+          <table class="search" summary="Search form">
             <thead>
               <tr>
                 <th colspan="2">
+                  <a href="javascript:document.getElementById('searchform').submit();" class="search">
+                    <span class="navigate">
+                      <input type="submit"  name="ok" value="ok" />
+                    </span>
+                  </a>
+                  <mm:link referids="nodemanager" page="create.jspx">
+                    <a href="${_}" class="create"><span class="navigate">create</span></a>
+                  </mm:link>
                   <select name="nodemanager" onchange="this.form.submit();">
                     <mm:listnodes type="typedef" comparator="NATURAL">
                       <mm:hasnodemanager name="${_node.name}">
@@ -31,10 +42,6 @@
                       </mm:hasnodemanager>
                     </mm:listnodes>
                   </select>
-                  <input type="submit"  name="ok" value="ok" />
-                  <mm:link referids="nodemanager" page="create.jspx">
-                    <a href="${_}" class="create"><span class="navigate">create</span></a>
-                  </mm:link>
                 </th>
               </tr>
             </thead>
@@ -49,10 +56,11 @@
           </table>
         </form>
 
+        <table id="searchresult" summary="Search results for ${nodemanager}"
+>
+          <mm:import id="pagesize">50</mm:import>
+          <mm:import externid="offset">0</mm:import>
 
-        <mm:import id="pagesize">50</mm:import>
-        <mm:import externid="offset">0</mm:import>
-        <table id="searchresult">
           <mm:listnodescontainer type="$nodemanager">
             <mm:import externid="sortfields">number</mm:import>
             <mm:import externid="sortdirections">down</mm:import>
