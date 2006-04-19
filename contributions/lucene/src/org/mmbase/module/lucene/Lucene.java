@@ -44,7 +44,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.57 2006-04-18 13:25:40 michiel Exp $
+ * @version $Id: Lucene.java,v 1.58 2006-04-19 08:39:01 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -664,7 +664,8 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
     /**
      * Queue for index operations.
      */
-    class Scheduler extends Thread {
+    // public because the constants need to be visible for the SortedBundle
+    public class Scheduler extends Thread {
 
         public static final int READONLY = -100;
         public static final int IDLE = 0;
