@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.50 2006-04-19 20:03:09 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.51 2006-04-19 21:29:16 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -403,12 +403,12 @@ s     */
 
 
     public final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field) {
-        return validate(value, node, field, false);
+        return validate(value, node, field, true);
     }
     /**
      * {@inheritDoc}
      */
-    private final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field, boolean skipEnum) {
+    private final Collection /*<LocalizedString> */ validate(final Object value, final Node node, final Field field, boolean testEnum) {
         Collection errors = VALID;
         Object castedValue;
         try {
@@ -429,7 +429,7 @@ s     */
         if (value == null) {
             return errors; // null is valid, unless required.
         }
-        if (skipEnum) {
+        if (testEnum) {
             errors = enumerationRestriction.validate(errors, value, node, field);
         }
         errors = uniqueRestriction.validate(errors, castedValue, node, field);
@@ -1140,7 +1140,7 @@ s     */
             while (baseIterator.hasNext()) {
                 final Map.Entry entry = (Map.Entry) baseIterator.next();
                 Object value = entry.getKey();
-                Collection validationResult = BasicDataType.this.validate(value, node, field, true);
+                Collection validationResult = BasicDataType.this.validate(value, node, field, false);
                 if (validationResult == VALID) {
                     next = entry;
                     /*
