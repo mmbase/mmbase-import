@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.22 2005-12-12 09:51:10 michiel Exp $
+# $Id: build.properties.default,v 1.23 2006-04-19 21:05:44 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -49,7 +49,7 @@ servlet.loc=${mmbase.loc}/jakarta-servletapi/${servlet.file}
 servlet.jar=${expand.dir}/${servlet.version}/lib/servlet.jar
 
 # ----- Hsqldb ----
-hsqldb.version=hsqldb_1_8_0_2
+hsqldb.version=hsqldb_1_8_0_4
 hsqldb.file=${hsqldb.version}.zip
 hsqldb.dest=${download.dir}/${hsqldb.file}
 hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
