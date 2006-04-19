@@ -1,5 +1,4 @@
 <% // *** one article, with shorties and teasers  *** %>
-<mm:import id="is_include" reset="true" />
 <%@include file="includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
