@@ -111,7 +111,7 @@ Contributions build file
     <ant dir="aselect"        target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="lucene"        target="dependent.install" inheritAll="false">
+    <ant dir="lucene"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="mmbob"    target="dependent.install" inheritAll="false">
@@ -120,13 +120,13 @@ Contributions build file
   </target>
 
   <target name="clean">
-     <ant dir="aselect"         target="clean" inheritAll="false" />
-     <ant dir="mmbob"           target="clean" inheritAll="false" />
-     <ant dir="multilanguagegui"        target="clean" inheritAll="false" />
-     <ant dir="thememanager"        target="clean" inheritAll="false" />
-     <ant dir="mmbar"        target="clean" inheritAll="false" />
-     <ant dir="principletracker"        target="clean" inheritAll="false" />
-
+     <ant dir="aselect"          target="clean" inheritAll="false" />
+     <ant dir="mmbob"            target="clean" inheritAll="false" />
+     <ant dir="multilanguagegui" target="clean" inheritAll="false" />
+     <ant dir="thememanager"     target="clean" inheritAll="false" />
+     <ant dir="mmbar"            target="clean" inheritAll="false" />
+     <ant dir="principletracker" target="clean" inheritAll="false" />
+     <ant dir="lucene"           target="clean" inheritAll="false" />
      <delete dir="${contributions.build.dir}" />
   </target>
 

@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
-<project name="Lucene" default="dependent.package" basedir=".">
-  <property name="lucene.extrajars.loc"    value="http://www.mmbase.org/download/jars/lucene-extrajars.tgz" />
-  <property name="lucene.extrajars"            location="extrajars" />
-  <property name="lucene.extrajars.dest"       value="${lucene.extrajars}/lucene-extrajars.tgz" />
-  <property name="lucene.extrajars.expanded"   value="${lucene.extrajars}/lucene-core-1.9.1.jar" />
+<project name="Lucene" default="package" basedir=".">
   <property name="project.name"    value="lucene" />
   <property name="project.package" value="org/mmbase/module/lucene" />
   <property name="project.jars.dir" location="../.." />
   <property name="project.jars.includes" value="contributions/lucene/extrajars/*.jar,applications/crontab/build/mmbase-crontab.jar" />
 
   <import file="../../applications/buildbase-include.xml" />
+
+  <property name="lucene.extrajars.loc"    value="http://www.mmbase.org/download/jars/lucene-extrajars.tgz" />
+  <property name="lucene.extrajars"            location="extrajars" />
+  <property name="lucene.extrajars.dest"       value="${download.dir}/lucene-extrajars.tgz" />
+  <property name="lucene.extrajars.expanded"   value="${lucene.extrajars}/lucene-core-1.9.1.jar" />
 
   <target name="crontab">
     <echo message="${applications.dir}/crontab" />
@@ -28,12 +29,19 @@
     </antcall>
   </target>
 
-  <target name="dependent.jar" depends="extrajars,crontab,jar" />
+  <target name="jar" depends="extrajars,crontab,buildbase.jar" />
 
-  <target name="dependent.package" depends="dependent.jar,package" />
+  <target name="package" depends="jar,buildbase.package" />
 
-  <target name="dependent.install" depends="dependent.jar,install" />
+  <target name="install" depends="jar,buildbase.install" />
 
-
+  <target name="clean" depends="buildbase.clean">
+    <delete>
+      <fileset dir="${lucene.extrajars}">
+        <include name="**/*.jar"/>
+        <include name="**/*.tgz"/>
+      </fileset>
+    </delete>
+  </target>
 
 </project>
