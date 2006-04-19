@@ -63,7 +63,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.37 2006-03-28 19:16:58 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.38 2006-04-19 21:10:58 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -404,7 +404,9 @@ public abstract class FileWatcher {
                     }
                     watchers.removeAll(removed);
                     removed.clear();
-                    log.debug("Sleeping " + THREAD_DELAY + " ms");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Sleeping " + THREAD_DELAY + " ms");
+                    }
                     Thread.sleep(THREAD_DELAY);
                 } catch (InterruptedException e) {
                     Thread ct = Thread.currentThread();

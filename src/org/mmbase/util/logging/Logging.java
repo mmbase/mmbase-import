@@ -57,7 +57,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.38 2006-01-02 13:27:52 michiel Exp $
+ * @version $Id: Logging.java,v 1.39 2006-04-19 21:10:58 michiel Exp $
  */
 
 
@@ -211,7 +211,7 @@ public class Logging {
         try { // to configure
             // System.out.println("Found class " + logClass.getName());
             Method conf = logClass.getMethod("configure", new Class[] { String.class } ); 
-            conf.invoke(null, new String[] { configuration } );    
+            conf.invoke(null, new Object[] { configuration } );    
         } catch (NoSuchMethodException e) {
             log.debug("Could not find configure method in " + logClass.getName());
             // okay, simply don't configure
@@ -235,11 +235,11 @@ public class Logging {
      * @param s A string describing the `category' of the Logger. This is a log4j concept.
      */
 
-    public  static Logger getLoggerInstance (String s) {   
+    public  static Logger getLoggerInstance (String s) {
         // call the getLoggerInstance static method of the logclass:
         try {
             Method getIns = logClass.getMethod("getLoggerInstance", new Class[] { String.class } );
-            Logger logger =  (Logger) getIns.invoke(null, new String[] {s}); 
+            Logger logger =  (Logger) getIns.invoke(null, new Object[] {s});
             if (configured) {
                 return logger;
             } else {
@@ -286,7 +286,7 @@ public class Logging {
     public static void shutdown() {
         try {
             Method shutdown = logClass.getMethod("shutdown", new Class[] {} ); 
-            shutdown.invoke(null, new String[] {} );    
+            shutdown.invoke(null, new Object[] {} );
         } catch (NoSuchMethodException e) {
             // System.err.println("No such method"); // okay, nothing to shutdown.
         } catch (Exception e) {

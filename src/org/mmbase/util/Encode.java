@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.25 2005-06-07 15:01:32 michiel Exp $
+ * @version $Id: Encode.java,v 1.26 2006-04-19 21:10:58 michiel Exp $
  **/
 public class Encode {
 
@@ -74,6 +74,7 @@ public class Encode {
             register("org.mmbase.util.transformers.Censor");
             register("org.mmbase.util.transformers.Rot13");
             register("org.mmbase.util.transformers.Rot5");
+            register("org.mmbase.util.transformers.UnicodeEscaper");
         } catch (IllegalArgumentException e) {
             log.warn("", e);
         }
@@ -135,7 +136,7 @@ public class Encode {
                     } else {
                         log.debug("Non configurable");
                         Transformer transformer = (Transformer) atrans.newInstance();
-                        encodings.put(transformer.toString(), new Config(atrans, -1, "Transformer: " + clazz));
+                        encodings.put(transformer.toString().toUpperCase(), new Config(atrans, -1, "Transformer: " + clazz));
                     }
                     // TODO, perhaps there should be a check here, to make sure that no two classes use the
                     // same string to identify a transformation.
@@ -323,7 +324,7 @@ public class Encode {
             System.out.println("   use: java -Dmmbase.config=... org.mmbase.util.Encode [-class <classname> [-class ..]] [-encode|-decode] <coding> [string]\n\n");
             System.out.println("On default it encodes and gets the string from STDIN\n\n");
             System.out.println("possible decoding are");
-            Vector v = new Vector(possibleEncodings());
+            List v = new ArrayList(possibleEncodings());
             java.util.Collections.sort(v);
             Iterator i = v.iterator();
             while (i.hasNext()) {
