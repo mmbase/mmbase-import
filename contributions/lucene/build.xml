@@ -31,10 +31,6 @@
 
   <target name="jar" depends="extrajars,crontab,buildbase.jar" />
 
-  <target name="package" depends="jar,buildbase.package" />
-
-  <target name="install" depends="jar,buildbase.install" />
-
   <target name="clean" depends="buildbase.clean">
     <delete>
       <fileset dir="${lucene.extrajars}">
