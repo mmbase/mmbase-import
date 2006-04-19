@@ -12,11 +12,11 @@ package org.mmbase.util;
 /**
  * The java interface {@link java.lang.Cloneable} has no public methods. This interface is simply
  * Cloneable, but with the clone method public. So, if an object is PublicCloneable, you don't know
- * merely that it s Cloneable, but you can also actually <em>do</em> it...
+ * merely that it's Cloneable, but you can also actually <em>do</em> it...
  *
  * @since MMBase-1.8
  * @author Michiel Meeuwissen
- * @version $Id: PublicCloneable.java,v 1.1 2005-12-20 18:24:49 michiel Exp $
+ * @version $Id: PublicCloneable.java,v 1.2 2006-04-19 21:10:58 michiel Exp $
  */
 public interface PublicCloneable extends Cloneable {
     public Object clone();

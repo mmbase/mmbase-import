@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: UnicodeEscaper.java,v 1.2 2005-03-16 19:01:38 michiel Exp $
+ * @version $Id: UnicodeEscaper.java,v 1.3 2006-04-19 21:10:58 michiel Exp $
  */
 
 public class UnicodeEscaper extends ReaderTransformer implements CharTransformer {
@@ -78,6 +78,6 @@ public class UnicodeEscaper extends ReaderTransformer implements CharTransformer
     }
 
     public String toString() {
-        return "Unicode escaper";
+        return "UnicodeEscaper";
     }
 }

@@ -35,12 +35,17 @@ public class DynamicDate extends Date {
     public static Date getInstance(final String format) throws ParseException {
         if (format.equals("null")) return null;
         DateParser parser = new DateParser(new java.io.StringReader(format));
-
-        parser.start();
-        if (parser.dynamic()) {
-            return new DynamicDate(format);
-        } else {
-            return parser.toDate();
+        try {
+            parser.start();
+            if (parser.dynamic()) {
+                return new DynamicDate(format);
+            } else {
+                return parser.toDate();
+            }
+        } catch (ParseException pe) {
+            ParseException p = new ParseException("In " + format + " " + pe.getMessage());
+            p.initCause(pe);
+            throw p;
         }
 
     }
@@ -180,10 +185,10 @@ public class DynamicDate extends Date {
         //System.out.println("" + Arrays.asList(TimeZone.getAvailableIDs()));
         //System.out.println(TimeZone.getDefault());
         Date d1 = getInstance(argv[0]);
-        Date d2 = Casting.ISO_8601_UTC.parse(argv[0]);
-        Date d3 = new Date(0);
+        //Date d2 = Casting.ISO_8601_UTC.parse(argv[0]);
+        Date d3 = new Date(Long.MIN_VALUE);
         System.out.println("" + d1 + " " + d1.getTime());
-        System.out.println("" + d2 + " " + d2.getTime());
+        //System.out.println("" + d2 + " " + d2.getTime());
         System.out.println("" + d3 + " " + d3.getTime());
     }
 
