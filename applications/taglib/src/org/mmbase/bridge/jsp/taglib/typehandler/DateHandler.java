@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.40 2006-04-11 22:57:36 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.41 2006-04-19 23:32:54 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -121,7 +121,7 @@ public class DateHandler extends AbstractTypeHandler {
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
         if (cal != null) {
-            buffer.append(cal.getTime().getTime());
+            buffer.append(cal.getTime().getTime() / 1000);
         }
         buffer.append("\" />");
         // give also present value, this makes it possible to see if user changed this field.
