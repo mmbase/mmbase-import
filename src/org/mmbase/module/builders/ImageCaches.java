@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.50 2006-01-27 20:00:40 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.51 2006-04-20 00:14:02 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -332,7 +332,12 @@ public class ImageCaches extends AbstractImages {
             String r = Factory.getDefaultImageFormat();
             if (r.equals("asis")) {
                 MMObjectNode original = originalImage(node);
-                return ((AbstractImages) original.getBuilder()).getImageFormat(original);
+                if (original != null) {
+                    return ((AbstractImages) original.getBuilder()).getImageFormat(original);
+                } else {
+                    log.warn("Could not find original image for " + node);
+                    return r;
+                }
             } else {
                 return r;
             }
