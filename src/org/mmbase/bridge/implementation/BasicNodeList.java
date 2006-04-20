@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.45 2006-04-02 11:36:35 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.46 2006-04-20 00:07:02 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -95,9 +95,27 @@ public class BasicNodeList extends BasicList implements NodeList {
                 int snumber = coreNode.getIntValue("snumber");
                 int dnumber = coreNode.getIntValue("dnumber");
                 int rnumber = coreNode.getIntValue("rnumber");
-                NodeManager nm1 = castToNodeManager(cloud.getNode(snumber));
-                NodeManager nm2 = castToNodeManager(cloud.getNode(dnumber));
-                Node role = cloud.getNode(rnumber);
+                NodeManager nm1;
+                if (cloud.hasNode(snumber)) {
+                    nm1 = castToNodeManager(cloud.getNode(snumber)); 
+                } else {
+                    log.warn("Source of typerel " + coreNode.getNumber() + " is " + (coreNode.isNull("snumber") ? "NULL" : "" + snumber));
+                    nm1 = cloud.getNodeManager("object");
+                }
+                NodeManager nm2;
+                if (cloud.hasNode(dnumber)) {
+                    nm2 =  castToNodeManager(cloud.getNode(dnumber));
+                } else {
+                    log.warn("Destination of typerel " + coreNode.getNumber() + " is " + (coreNode.isNull("dnumber") ? "NULL" : "" + dnumber));
+                    nm2 = cloud.getNodeManager("object");
+                }
+                Node role;
+                if (cloud.hasNode(rnumber)) {
+                    role = cloud.getNode(rnumber); 
+                } else {
+                    log.warn("Role of typerel " + coreNode.getNumber() + " is " + (coreNode.isNull("rnumber") ? "NULL" : "" + rnumber));
+                    role = cloud.getNode(BasicCloudContext.mmb.getRelDef().getNumberByName("related"));
+                }
                 node = cloud.getRelationManager(nm1.getName(), nm2.getName(), role.getStringValue("sname"));
             } else if(coreBuilder instanceof InsRel) {
                 node = cloud.getNode(coreNode.getNumber());
