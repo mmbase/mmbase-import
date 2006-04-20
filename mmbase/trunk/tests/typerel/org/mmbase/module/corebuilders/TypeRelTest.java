@@ -6,7 +6,7 @@ import org.mmbase.bridge.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.10 2005-12-17 23:12:40 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.11 2006-04-20 15:24:33 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
@@ -326,8 +326,20 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
         RelationManagerList rm1 = cloud.getRelationManagers(objectManager, urlsManager, INH_ROLE);
         assertTrue(rm1.size() > 0);
 
+        RelationManager rmi11 = cloud.getRelationManager(objectManager, urlsManager, INH_ROLE);
+        assertNotNull(rmi11);
+
+        RelationManager rmi12 = cloud.getRelationManager("object", "urls", INH_ROLE);
+        assertNotNull(rmi12);
+
         RelationManagerList rm2 = cloud.getRelationManagers(newsManager, urlsManager, INH_ROLE);
-        assertTrue(rm2.size() > 0);       
+        assertTrue(rm2.size() > 0);
+
+        RelationManager rmi21 = cloud.getRelationManager(newsManager, urlsManager, INH_ROLE);
+        assertNotNull(rmi21);
+
+        RelationManager rmi22 = cloud.getRelationManager("news", "urls", INH_ROLE);
+        assertNotNull(rmi22);
     }
 
 
