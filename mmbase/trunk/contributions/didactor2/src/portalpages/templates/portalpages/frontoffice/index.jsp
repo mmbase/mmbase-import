@@ -161,7 +161,6 @@
   //-->
   </script>
   <% int openDivs = 0; %>
-  <% System.out.println("\r\n\r\n"); %>
   <div class="rows">
     <div class="navigationbar">
       <div class="pathbar">
@@ -169,26 +168,26 @@
           <mm:field name="name"/>
         </mm:node>
       </div>
-   <!-- menu left previous,next (vorige,volgende) -->
+      <!-- menu left previous,next (vorige,volgende) -->
       <div class="stepNavigator">
         <br/><br/>
-	      <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="portalpages.previos"/>" alt="<di:translate key="portalpages.previos"/>" /></a>
-	     <a href="javascript:previousContent();" class="path"><di:translate key="portalpages.previos"/></a><img src="gfx/spacer.gif" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="portalpages.next"/></a>
-	     <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="portalpages.next"/>" alt="<di:translate key="portalpages.next"/>" /></a>
+        <a href="javascript:previousContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_last.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="portalpages.previos"/>" alt="<di:translate key="portalpages.previos"/>" /></a>
+        <a href="javascript:previousContent();" class="path"><di:translate key="portalpages.previos"/></a><img src="gfx/spacer.gif" width="15" height="1" title="" alt="" /><a href="javascript:nextContent();" class="path"><di:translate key="portalpages.next"/></a>
+        <a href="javascript:nextContent();"><img src="<mm:treefile write="true" page="/gfx/icon_arrow_next.gif" objectlist="$includePath" />" width="14" height="14" border="0" title="<di:translate key="portalpages.next"/>" alt="<di:translate key="portalpages.next"/>" /></a>
       </div>
     </div>
     
     <div class="folders">
       <div class="folderLesBody">
 
-      <!-- get first, usually "system" tree root, it is unvisible, from PP container -->
+       <%-- get first, usually named "system" tree root (unvisible), from PPcontainer --%>
         <mm:listnodes type="portalpagescontainers">    
           <mm:first>  
             <mm:field id="containernode" name="number" write="false"/>
           </mm:first>   
         </mm:listnodes> 
         
-      <!-- get node provider -->
+       <%-- get node provider --%>
         <mm:node number="$containernode" notfound="skip">
           <script type="text/javascript">
             <!-- 
@@ -198,11 +197,11 @@
           
 		      <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
 		      <mm:import id="presenttime"><mm:time time="now"/></mm:import>
-          <mm:import id="firstroot">0</mm:import>
+          <mm:import id="firstroot">1</mm:import>
           
           <mm:import id="previousDepth" jspvar="jsp_previousDepth" vartype="Integer" >-10</mm:import>
           
-          <!-- get all related node to root from portalpages (PP) -->
+         <!-- get all related node to root from portalpages (PP) -->
 		      <mm:relatednodescontainer type="portalpagesnodes" role="related">
           
             <%-- show only active pages, because this constraint will not work in tree, 
@@ -210,7 +209,8 @@
                  (we will do this by hand) --%>
 		        <mm:constraint field="active" value="0"/>
             <mm:sortorder field="order_number" direction="up" />
-            
+         
+           <!-- main div for all root portal pages -->   
             <div id="div<mm:write referid="previousnumber"/>" class="lbLevel1">
             
   		      <mm:tree type="portalpagesnodes" role="childppnn" orderby="order_number" directions="up" searchdir="destination" maxdepth="3">
@@ -227,7 +227,10 @@
               
                 <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
                 
-                <mm:compare referid="firstroot" value="1">              
+               <!-- do nothing for first root node --> 
+                <mm:compare referid="firstroot" value="0">    
+                
+                 <!-- close div when depth shrink -->
                   <mm:islessthan referid="currentDepth"  referid2="previousDepth" >
                     </div>
                     <% openDivs--; %>
@@ -235,8 +238,9 @@
                   
                   <mm:isgreaterthan referid="currentDepth"  referid2="previousDepth" >
                   
-                    <%-- list contents --%>
+                   <%-- list contents --%>
                     <% openDivs++; %>
+                   <!-- open div when depth grow -->
     		            <div id="div<mm:write referid="previousnumber"/>" class="lbLevel<mm:depth/>">
                     
     			          <script type="text/javascript">
@@ -264,7 +268,7 @@
     			            </mm:list> 
       			        </mm:listcontainer> 
     		          </mm:isgreaterthan>
-                </mm:compare>                    
+                </mm:compare><%-- "firstroot=0" --%>
 
                 <!-- show portal page -->
   		          <mm:remove referid="previousnumber"/>
@@ -284,7 +288,7 @@
                      style="padding-left: 0px"><mm:field name="name"/></a>       
   		          </div>
                 
-                <mm:import id="firstroot" reset="true">1</mm:import>
+                <mm:import id="firstroot" reset="true">0</mm:import>
                 <mm:remove referid="haschildnodes"/>
                 
                 <%-- does this portalpage node has a subnodes (portal pages works only on 2 level) --%>
