@@ -72,6 +72,14 @@
             <td><mm:function module="lucene" name="statusdescription" /></td>
           </tr>
           <tr>
+            <th>Queue</th>
+            <td>
+              <mm:listfunction module="lucene" name="queue">
+                <mm:write /><mm:last inverse="true">, </mm:last>
+              </mm:listfunction>
+            </td>
+          </tr>
+          <tr>
             <th>Search on default index</th>
             <td><mm:link page="search.jspx"><mm:param name="index" /><a href="${_}" class="navigate"><img src="${next}" alt="next"  /></a></mm:link></td>
           </tr>

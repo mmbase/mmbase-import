@@ -13,10 +13,10 @@
     -->
     <property name="initialwaittime">20</property>
     <!--
-        The 'Scheduler' waits between checks (a bit like a private crontab). This many milliseconds.
-        The queue is blocking, so it can be 0.
+        The 'Scheduler' waits before executing a scheduled assignment. This many milliseconds.
+        If the same assignment occurs within this period, it can be forgotten.
     -->
-    <property name="waittime">0</property>
+    <property name="waittime">5000</property>
     <!--
         If true, no index updates can be done, only existing indices can be used.
     -->
