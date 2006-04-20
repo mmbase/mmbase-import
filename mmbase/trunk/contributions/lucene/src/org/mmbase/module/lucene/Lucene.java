@@ -5,7 +5,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+sQuery
 */
 package org.mmbase.module.lucene;
 
@@ -28,13 +28,13 @@ import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.XMLWriter;
-import org.mmbase.util.Queue;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.storage.StorageManagerFactory;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.*;
+
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.60 2006-04-20 16:18:59 michiel Exp $
+ * @version $Id: Lucene.java,v 1.61 2006-04-20 17:53:25 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -237,11 +237,21 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
             SortedMap map = SortedBundle.getResource("org.mmbase.module.lucene.resources.status",  locale,
                                                      getClass().getClassLoader(),
                                                      SortedBundle.getConstantsProvider(Scheduler.class), Integer.class, null);
-            return map.get(new Integer(scheduler == null ? Scheduler.READONLY : scheduler.getStatus()));
+            String desc = "" + map.get(new Integer(scheduler == null ? Scheduler.READONLY : scheduler.getStatus()));
+            Object ass = (scheduler == null ? null : scheduler.getAssignment());
+            return desc + (ass == null ? "" : " " + ass);
         }
     };
     {
         addFunction(statusDescriptionFunction);
+    }
+    protected Function queueFunction = new AbstractFunction("queue", Parameter.EMPTY, ReturnType.COLLECTION) {
+        public Object getFunctionValue(Parameters arguments) {
+            return scheduler == null ? Collections.EMPTY_LIST : scheduler.getQueue();
+        }
+    };
+    {
+        addFunction(queueFunction);
     }
 
     protected Function readOnlyFunction = new AbstractFunction("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
@@ -677,9 +687,10 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
 
         // status of the scheduler
         private int status = IDLE;
+        private Runnable assignment = null;
+
         // assignments: tasks to run
-        private Queue indexAssignments = new Queue();
-        private String assignedFullIndex = null;
+        private BlockingQueue indexAssignments = new DelayQueue();
 
         Scheduler() {
             super("Lucene.Scheduler");
@@ -689,6 +700,12 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
 
         public int getStatus() {
             return status;
+        }
+        public Runnable getAssignment() {
+            return assignment;
+        }
+        public Collection getQueue() {
+            return Collections.unmodifiableCollection(indexAssignments);
         }
 
         public void run() {
@@ -706,14 +723,12 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     log.debug("Obtain Assignment from " + indexAssignments);
                 }
                 try {
-                    Runnable assignment = (Runnable) indexAssignments.get();
+                    assignment = (Runnable) indexAssignments.take();
                     log.debug("Running " + assignment);
                     // do operation...
                     assignment.run();
                     status = IDLE;
-                    if (waitTime > 0) {
-                        Thread.sleep(waitTime);
-                    }
+                    assignment = null;
                 } catch (InterruptedException e) {
                     log.debug(Thread.currentThread().getName() +" was interruped.");
                     break;
@@ -724,8 +739,33 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
             }
         }
 
+
+        abstract class Assignment implements Runnable, Delayed {
+            private long endTime = System.currentTimeMillis() + waitTime;
+            public int hashCode() {
+                return toString().hashCode();
+            }
+            public boolean equals(Object o) {
+                if (o == null) return false;
+                return o.getClass().equals(getClass()) && o.toString().equals(toString());
+            }
+            public long  getDelay(TimeUnit unit) {
+                return unit.convert(endTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+            }
+            public int compareTo(Object o) {
+                return (int) (getDelay(TimeUnit.MILLISECONDS) - ((Delayed) o).getDelay(TimeUnit.MILLISECONDS));
+            }
+        }
+        void assign(Assignment assignment) {
+            if (! indexAssignments.contains(assignment)) {
+                indexAssignments.offer(assignment);
+            } else {
+                log.debug("Canceling " + assignment + ", because already queued");
+            }
+        }
+
         void updateIndex(final String number, final Class klass) {
-            Runnable assignment = new Runnable() {
+            assign(new Assignment() {
                     public void run() {
                         log.service("Update index for " + number);
                         status = BUSY_INDEX;
@@ -738,16 +778,14 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                         }
                     }
                     public String toString() {
-                        return "UPDDATE for " + number + " " + klass;
+                        return "UPDATE for " + number + " " + klass;
                     }
 
-                };
-            indexAssignments.append(assignment);
-
+                });
         }
 
         void deleteIndex(final String number, final Class klass) {
-            Runnable assignment = new Runnable() {
+            assign(new Assignment() {
                     public void run() {
                         log.service("delete index for " + number);
                         status = BUSY_INDEX;
@@ -759,12 +797,11 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     public String toString() {
                         return "DELETE for " + number + " " + klass;
                     }
-                };
-            indexAssignments.append(assignment);
+                });
         }
 
         void deleteIndex(final String number, final String indexName) {
-            Runnable assignment = new Runnable() {
+            assign(new Assignment() {
                     public void run() {
                         log.service("delete index for " + number);
                         status = BUSY_INDEX;
@@ -778,59 +815,64 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     public String toString() {
                         return "DELETE for " + number + " " + indexName;
                     }
-                };
-            indexAssignments.append(assignment);
+                });
         }
 
+        private final Assignment ALL_FULL_INDEX = new Assignment() {
+                public void run() {
+                    status = BUSY_FULL_INDEX;
+                    log.service("start full index");
+                    for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
+                        Indexer indexer = (Indexer) i.next();
+                        indexer.fullIndex();
+                    }
+                }
+                public String toString() {
+                    return "FULLINDEX";
+                }
+                public long getDelay(TimeUnit unit) {
+                    return 0;
+                }
+            };
 
         synchronized void fullIndex() {
-            if (status != BUSY_FULL_INDEX && assignedFullIndex == null) {
-                Runnable assignment = new Runnable() {
-                        public void run() {
-                            status = BUSY_FULL_INDEX;
-                            log.service("start full index");
-                            for (Iterator i = indexerMap.values().iterator(); i.hasNext(); ) {
-                                Indexer indexer = (Indexer) i.next();
-                                indexer.fullIndex();
-                            }
-                            assignedFullIndex = null;
-                        }
-                        public String toString() {
-                            return "FULLINDEX";
-                        }
-                    };
-                assignedFullIndex = "ALL INDICES";
-                indexAssignments.append(assignment);
+            if (status != BUSY_FULL_INDEX) {
+                assign(ALL_FULL_INDEX);
                 log.service("Scheduled full index");
                 // only schedule a full index if none is currently busy.
             } else {
-                log.service("Cannot schedule full index because it is busy with " + assignedFullIndex);
+                log.service("Cannot schedule full index because it is busy with " + getAssignment());
             }
         }
         synchronized void fullIndex(final String index) {
-            if (status != BUSY_FULL_INDEX && assignedFullIndex == null) {
-                Runnable assignment = new Runnable() {
-                        public void run() {
-                            status = BUSY_FULL_INDEX;
-                            log.service("start full index for index '" + index + "'");
-                            Indexer indexer = (Indexer) indexerMap.get(index);
-                            if (indexer == null) {
-                                log.error("No such index '" + index + "'");
-                            } else {
-                                indexer.fullIndex();
+            if (status != BUSY_FULL_INDEX || ! assignment.equals(ALL_FULL_INDEX)) {
+                if (! indexAssignments.contains(ALL_FULL_INDEX)) {
+                    // only schedule a full index if no complete full index ne is currently busy or scheduled already.
+
+                    assign(new Assignment() {
+                            public void run() {
+                                status = BUSY_FULL_INDEX;
+                                log.service("start full index for index '" + index + "'");
+                                Indexer indexer = (Indexer) indexerMap.get(index);
+                                if (indexer == null) {
+                                    log.error("No such index '" + index + "'");
+                                } else {
+                                    indexer.fullIndex();
+                                }
                             }
-                            assignedFullIndex = null;
-                        }
-                        public String toString() {
-                            return "FULLINDEX for " + index;
-                        }
-                    };
-                assignedFullIndex = index;
-                indexAssignments.append(assignment);
-                log.service("Scheduled full index for '" + index + "'");
-                // only schedule a full index if none is currently busy.
+                            public String toString() {
+                                return "FULLINDEX for " + index;
+                            }
+                            public long getDelay(TimeUnit unit) {
+                                return 0;
+                            }
+                        });
+                    log.service("Scheduled full index for '" + index + "'");
+                } else {
+                    log.service("Scheduled full index for '" + index + "' because full index on every index is scheduled already");
+                }
             } else {
-                log.service("Cannot schedule full index for '" + index + "' because it is busy with " + assignedFullIndex);
+                log.service("Cannot schedule full index for '" + index + "' because it is busy with " + getAssignment());
             }
         }
 
