@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util;
 
-import java.util.Date;
+import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
@@ -77,6 +77,10 @@ public class SearchUtil {
         return manager.getList(query);
     }
 
+    public static Node findRelatedNode(Node parent, String managerName, String role) {
+        return findRelatedNode(parent, managerName, role, null, null, null, null); 
+    }
+    
     public static Node findRelatedNode(Node parent, String managerName, String role, String fieldname, String value) {
         return findRelatedNode(parent, managerName, role, fieldname, value, null, null); 
     }
@@ -263,6 +267,20 @@ public class SearchUtil {
         }
     }
     
+
+    public static void addTypeConstraints(NodeQuery query, List types) {
+        Cloud cloud = query.getCloud();
+        Field field = query.getNodeManager().getField("otype");
+        SortedSet set = new TreeSet();
+        for (Iterator iter = types.iterator(); iter.hasNext();) {
+            String type = (String) iter.next();
+            NodeManager manager = cloud.getNodeManager(type);
+            set.add(new Integer(manager.getNumber()));
+        }
+        FieldValueInConstraint constraint = query.createConstraint(query.getStepField(field), set);
+        addConstraint(query, constraint);
+    }
+    
     public static void addConstraint(NodeQuery query, Constraint constraint) {
         if (query.getConstraint() == null) {
             query.setConstraint(constraint);
@@ -283,4 +301,5 @@ public class SearchUtil {
     public static boolean isEmptyOrWhitespace(String str) {
         return (str == null) || "".equals(str.trim());
     }
+
 }
