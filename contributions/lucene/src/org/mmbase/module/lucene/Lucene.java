@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.59 2006-04-19 09:08:18 michiel Exp $
+ * @version $Id: Lucene.java,v 1.60 2006-04-20 16:18:59 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -679,6 +679,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
         private int status = IDLE;
         // assignments: tasks to run
         private Queue indexAssignments = new Queue();
+        private String assignedFullIndex = null;
 
         Scheduler() {
             super("Lucene.Scheduler");
@@ -701,13 +702,18 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                 return;
             }
             while (!mmbase.isShutdown()) {
-                log.debug("Obtain Assignment");
+                if (log.isDebugEnabled()) {
+                    log.debug("Obtain Assignment from " + indexAssignments);
+                }
                 try {
                     Runnable assignment = (Runnable) indexAssignments.get();
+                    log.debug("Running " + assignment);
                     // do operation...
                     assignment.run();
                     status = IDLE;
-                    Thread.sleep(waitTime);
+                    if (waitTime > 0) {
+                        Thread.sleep(waitTime);
+                    }
                 } catch (InterruptedException e) {
                     log.debug(Thread.currentThread().getName() +" was interruped.");
                     break;
@@ -731,6 +737,9 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                             }
                         }
                     }
+                    public String toString() {
+                        return "UPDDATE for " + number + " " + klass;
+                    }
 
                 };
             indexAssignments.append(assignment);
@@ -746,6 +755,9 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                             Indexer indexer = (Indexer) i.next();
                             indexer.deleteIndex(number, klass);
                         }
+                    }
+                    public String toString() {
+                        return "DELETE for " + number + " " + klass;
                     }
                 };
             indexAssignments.append(assignment);
@@ -763,12 +775,16 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                             indexer.deleteIndex(number, IndexDefinition.class);
                         }
                     }
+                    public String toString() {
+                        return "DELETE for " + number + " " + indexName;
+                    }
                 };
             indexAssignments.append(assignment);
         }
 
-        void fullIndex() {
-            if (status != BUSY_FULL_INDEX) {
+
+        synchronized void fullIndex() {
+            if (status != BUSY_FULL_INDEX && assignedFullIndex == null) {
                 Runnable assignment = new Runnable() {
                         public void run() {
                             status = BUSY_FULL_INDEX;
@@ -777,17 +793,22 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                                 Indexer indexer = (Indexer) i.next();
                                 indexer.fullIndex();
                             }
+                            assignedFullIndex = null;
+                        }
+                        public String toString() {
+                            return "FULLINDEX";
                         }
                     };
+                assignedFullIndex = "ALL INDICES";
                 indexAssignments.append(assignment);
                 log.service("Scheduled full index");
                 // only schedule a full index if none is currently busy.
             } else {
-                log.service("Cannot schedule full index because it is busy");
+                log.service("Cannot schedule full index because it is busy with " + assignedFullIndex);
             }
         }
-        void fullIndex(final String index) {
-            if (status != BUSY_FULL_INDEX) {
+        synchronized void fullIndex(final String index) {
+            if (status != BUSY_FULL_INDEX && assignedFullIndex == null) {
                 Runnable assignment = new Runnable() {
                         public void run() {
                             status = BUSY_FULL_INDEX;
@@ -798,13 +819,18 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                             } else {
                                 indexer.fullIndex();
                             }
+                            assignedFullIndex = null;
+                        }
+                        public String toString() {
+                            return "FULLINDEX for " + index;
                         }
                     };
+                assignedFullIndex = index;
                 indexAssignments.append(assignment);
                 log.service("Scheduled full index for '" + index + "'");
                 // only schedule a full index if none is currently busy.
             } else {
-                log.service("Cannot schedule full index because it is busy");
+                log.service("Cannot schedule full index for '" + index + "' because it is busy with " + assignedFullIndex);
             }
         }
 
