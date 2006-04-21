@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.32 2006-04-18 19:27:58 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.33 2006-04-21 16:12:02 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -180,7 +180,7 @@ public class TransactionManager implements TransactionManagerInterface {
         }
         deleteTransaction(transactionName);
         if (log.isDebugEnabled()) {
-            log.debug("Removed transaction " + transactionName + "\n" + transaction);
+            log.debug("Removed transaction (after cancel) " + transactionName + "\n" + transaction);
         }
         return transactionName;
     }
@@ -209,6 +209,9 @@ public class TransactionManager implements TransactionManagerInterface {
                 builder.removeTmpNode(node.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER));
             }
             deleteTransaction(transactionName);
+            if (log.isDebugEnabled()) {
+                log.debug("Removed transaction (after commit) " + transactionName + "\n" + transaction);
+            }
         }
         return transactionName;
     }
@@ -229,7 +232,7 @@ public class TransactionManager implements TransactionManagerInterface {
         int[] nodeexist = new int[nodes.size()];
         String username = findUserName(user),exists;
 
-        log.debug("Checking types and existence");
+        log.debug("Checking types and existance");
 
         int i = 0;
         for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
