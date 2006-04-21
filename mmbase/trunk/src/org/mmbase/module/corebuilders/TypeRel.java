@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.69 2006-04-18 13:05:52 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.70 2006-04-21 17:14:22 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -71,13 +71,13 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * TypeRel should contain only a limited amount of nodes, so we can simply cache them all, and
      * avoid all further querying.
      */
-    private TypeRelSet typeRelNodes; // for searching destinations
+    protected TypeRelSet typeRelNodes; // for searching destinations
 
-    private TypeRelSet parentTypeRelNodes; // for caching typerels for 'parent'
+    protected TypeRelSet parentTypeRelNodes; // for caching typerels for 'parent'
 
     // builders
 
-    private InverseTypeRelSet inverseTypeRelNodes; // for searching sources
+    public InverseTypeRelSet inverseTypeRelNodes; // for searching sources
 
     public boolean init() {
         if (oType != -1) return true;
@@ -204,7 +204,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                 }
                 sourceParent = sourceParent.getParentBuilder();
             }
-
             added.add(typeRel); // replaces the ones added in the 'inheritance'
             // loop (so now not any more Virtual)
         }
@@ -411,7 +410,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                     MMObjectNode node = getNode(number2);
                     return getAllowedRelationsNames(number1, node.getOType());
                 } catch (Exception e) {
-                    log.error(Logging.stackTrace(e));
+                    log.error(e);
                 }
             }
         }
@@ -603,7 +602,11 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @since MMBase-1.6.2
      */
     public int hashCode(MMObjectNode o) {
-        return 127 * o.getIntValue("snumber");
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, o.getIntValue("snumber"));
+        result = HashCodeUtil.hashCode(result, o.getIntValue("dnumber"));
+        result = HashCodeUtil.hashCode(result, o.getIntValue("rnumber"));
+        return result;
     }
 
     public String toString(MMObjectNode n) {
@@ -641,17 +644,13 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
         VirtualTypeRel(TypeRel t) {
             mmb = t.getMMBase();
-            CoreField field = Fields.createField("snumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN,
-                                                 Field.STATE_PERSISTENT, null);
-            field.setEditPosition(2);
+            CoreField field = Fields.createField("snumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
             field.finish();
             addField(field);
-            field = Fields.createField("dnumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_PERSISTENT, null);
-            field.setEditPosition(2);
+            field = Fields.createField("dnumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
             field.finish();
             addField(field);
-            field = Fields.createField("rnumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_PERSISTENT, null);
-            field.setEditPosition(2);
+            field = Fields.createField("rnumber", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
             field.finish();
             addField(field);
             tableName = "virtual_typerel";
@@ -699,7 +698,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
         // make sure only MMObjectNode's are added
         public boolean add(Object object) {
-            return super.add(object);
+            MMObjectNode node = (MMObjectNode) object;
+            return super.add(node);
         }
 
         // find some subsets:
@@ -798,8 +798,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      */
     protected class VirtualTypeRelNode extends VirtualNode {
 
-        VirtualTypeRelNode(int snumber, int dnumber) { // only for use in
-            // lookups
+        VirtualTypeRelNode(int snumber, int dnumber) { // only for use in lookups
             // We don't use this-constructor because some jvm get confused then
             super(VirtualTypeRel.getVirtualTypeRel(TypeRel.this));
             setValue("snumber", snumber);
@@ -814,14 +813,15 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             setValue("dnumber", -1);
             setValue("rnumber", -1);
         }
-
         VirtualTypeRelNode(int snumber, int dnumber, int rnumber) {
             super(VirtualTypeRel.getVirtualTypeRel(TypeRel.this));
             setValue("snumber", snumber);
             setValue("dnumber", dnumber);
             setValue("rnumber", rnumber);
+            values = Collections.unmodifiableMap(values); // make sure it is not changed any more!
         }
     }
+
 
 }
 
