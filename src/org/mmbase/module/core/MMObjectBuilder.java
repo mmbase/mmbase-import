@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.379 2006-04-18 13:07:01 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.380 2006-04-21 14:10:28 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1397,9 +1397,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if (rtn == null) {
             CoreField fdef = getField(field);
 
-            // test if the value can be derived from the enumerationlist of a datatype
-            DataType dataType = fdef.getDataType();
-            Object returnValue = dataType.getEnumerationValue(locale, (Cloud) pars.get(Parameter.CLOUD), (Node) pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+            Object returnValue;
+            if (fdef != null) {
+                // test if the value can be derived from the enumerationlist of a datatype
+                DataType dataType = fdef.getDataType();
+                returnValue = dataType.getEnumerationValue(locale, (Cloud) pars.get(Parameter.CLOUD), (Node) pars.get(Parameter.NODE), fdef, node.getStringValue(field));
+            } else {
+                returnValue = null;
+            }
             if (returnValue != null) {
                 rtn = returnValue.toString();
             } else {
