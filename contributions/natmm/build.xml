@@ -75,10 +75,43 @@
     </copy>
 
   </target>
+  
+  <target name="buildjaronly">
+    <!-- build java sources and create a jar file -->
+    <path id="classpath">
+      <fileset dir="${basedir}/addlib">
+        <include name="*.jar" />
+      </fileset>
+      <fileset dir="${basedir}/WEB-INF/lib">
+        <include name="*.jar" />
+      </fileset>
+    </path>
 
-  <target name="webapp" depends="clean,create.dirs,build">
+    <mkdir dir="${build.dir}/classes" />
+
+    <copy todir="${build.dir}/classes">
+      <fileset dir="${basedir}/src">
+        <include name="**" />
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+
+    <javac srcdir="${basedir}/src"
+           destdir="${build.dir}/classes"
+           deprecation="on"
+           debug="yes"
+           classpathref="classpath" />
+    <jar jarfile="${build.dir}/natmm/WEB-INF/lib/natmm.jar"
+         includes="**"
+         basedir="${build.dir}/classes" />
 
   </target>
+
+  <target name="webapp" depends="clean,create.dirs,build">
+  </target>
+  <target name="natmmjar" depends="clean,create.dirs,buildjaronly">
+  </target>
+
 
   <target name="war" depends="webapp">
     <jar destfile="${build.dir}/natmm.war"
