@@ -12,16 +12,26 @@
    HashSet hsetNodes = new HashSet();
    try { 
       net.sf.mmapps.modules.lucenesearch.SearchIndex si = cf.getIndex(index);
+		System.out.println("si.getName() = " + si.getName());
+		System.out.println("si.getPath() = " + si.getPath());
+		//System.out.println("si: " + si.getAnalyzer().toString());*/
       IndexReader ir = IndexReader.open(si.getIndex());
+		System.out.println("ir: " + ir.getFieldNames().toString());
       IndexSearcher searcher = new IndexSearcher(ir); 
+		System.out.println("searcher: " + searcher.toString());
+		System.out.println("luceneQuery = " + luceneQuery);
       Hits hits = searcher.search(luceneQuery);
       TreeSet includedEvents = new TreeSet();
-
+		System.out.println("hits.length() = " + hits.length());
       for (int i = 0; i < hits.length(); i++) {
          Document doc = hits.doc(i);
+			//System.out.println("doc = " + doc);
          String docNumber = doc.get("node");
+			System.out.println("path = " + path);
          if(path!=null) {
+				//System.out.println("docNumber = " + docNumber);
             NodeList list = cloud.getList(docNumber,path,"pagina.number",null,null,null,"SOURCE",true);
+				//System.out.println("list.size() = " + list.size());
             for(int j=0; j<list.size(); j++) {
                String paginaNumber = list.getNode(j).getStringValue("pagina.number");
                if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
@@ -40,7 +50,7 @@
    return hsetNodes;
 }
 
-%><%
+%><% 
 
 boolean debug = false;
 
@@ -67,31 +77,31 @@ if((sCategory != null) && (!sCategory.equals(""))) {
          hsetAllowedNodes.add(sPagesID);
       %></mm:field>
    </mm:list><%
-}
+} //System.out.println("hsetAllowedNodes.size() = " + hsetAllowedNodes.size());
 
 %><mm:log jspvar="log"><% 
 
 hsetArticlesNodes = addPages(cloud, log, cf, luceneQuery, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
-
-hsetTeaserNodes = addPages(cloud, log, cf, luceneQuery, 1, "teaser,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+System.out.println("hsetArticlesNodes.size() = " + hsetArticlesNodes.size());
+//hsetTeaserNodes = addPages(cloud, log, cf, luceneQuery, 1, "teaser,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetTeaserNodes %><br/><%= hsetPagesNodes %><% } 
-
-hsetProducctypesNodes = addPages(cloud, log, cf, luceneQuery, 2, "producttypes,posrel,pagina", rootID, nowSec, hsetPagesNodes);
+System.out.println("hsetTeaserNodes.size() = " + hsetTeaserNodes.size());
+//hsetProducctypesNodes = addPages(cloud, log, cf, luceneQuery, 2, "producttypes,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>ProducctypesHits:<br/><%= hsetProducctypesNodes %><br/><%= hsetPagesNodes %><% } 
-
+//System.out.println("hsetProducctypesNodes.size() = " + hsetProducctypesNodes.size());
 hsetProductsNodes = addPages(cloud, log, cf, luceneQuery, 3, "products,posrel,producttypes,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>ProductsHits:<br/><%= hsetProductsNodes %><br/><%= hsetPagesNodes %><% } 
-
+//System.out.println("hsetProductsNodes.size() = " + hsetProductsNodes.size());
 hsetItemsNodes = addPages(cloud, log, cf, luceneQuery, 4, "items,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>ItemsHits:<br/><%= hsetItemsNodes %><br/><%= hsetPagesNodes %><% } 
-
+//System.out.println("hsetItemsNodes.size() = " + hsetItemsNodes.size());
 hsetDocumentsNodes = addPages(cloud, log, cf, luceneQuery, 5, "documents,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>DocumentsHits:<br/><%= hsetDocumentsNodes %><br/><%= hsetPagesNodes %><% } 
-
+//System.out.println("hsetDocumentsNodes.size() = " + hsetDocumentsNodes.size());
 hsetVacatureNodes = addPages(cloud, log, cf, luceneQuery, 6, "vacature,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>VacatureHits:<br/><%= hsetVacatureNodes %><br/><%= hsetPagesNodes %><% } 
-
+//System.out.println("hsetVacatureNodes.size() = " + hsetVacatureNodes.size());
 %></mm:log
 ><%--
 // *** list of pages that contain metatags: hsetMetaNodes ***
