@@ -2,11 +2,8 @@
 %><mm:cloud jspvar="cloud"
 ><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" 
-%><%
-String[] META_TAGS = {"dit", "is", "een", "test"};
-%>
-   <mm:import jspvar="paginaID" externid="p">-1</mm:import>
-   <%
+%><mm:import jspvar="paginaID" externid="p">-1</mm:import>
+   <%--
    String rootID = "home";
    String sQuery = request.getParameter("search");
    String sMeta = request.getParameter("trefwoord");
@@ -33,11 +30,10 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
 	HashSet hsetVacatureNodes = new HashSet();
 
    LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule"); 
-
    if(mod!= null&&!sQuery.equals("")) {
       %><%@include file="includes/hashsets.jsp" %><%
    }
-   %>
+   --%>
 	<td><%@include file="includes/pagetitle.jsp" %></td>
 	<td><% String rightBarTitle = "";
 	    %><%@include file="includes/rightbartitle.jsp" 
@@ -49,7 +45,7 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
    <a name="top" />
    <br/>
    <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-   <% if(hsetCategories.size()==0) {
+   <%-- if(hsetCategories.size()==0) {
       %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekcriteria.<%
    } else { 
       %> De volgene zoekresultaten zijn gevonden in de categorieën<% 
@@ -64,10 +60,10 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
          </mm:node><%
          bFirst = false;
       }
-   %>
+   --%>
    <br/><br/>
    <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-   <%
+   <%--
    // *** Show rubrieken
    if (hsetCategories.size() > 0) {
 
@@ -162,7 +158,31 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
          <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
       }
    }
-%><br/>
+--%><br/>
+<form method="post">
+<table border="1">
+		<tr>
+			<td>search</td>
+			<td><input type="text" name="query" value="<c:out value="${param.query}"/>" /></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" value="Search" /></td>
+		</tr>
+</table>
+</form>
+<lm:search var="results">
+		<lm:match field="indexed.text" value="${param.query}" />
+</lm:search>
+<c:forEach var="n" items="${results}" varStatus="stat">
+	<mm:node number="${n.number}" notfound="skip">
+		<b><mm:field name="title" /></b> (<fmt:formatNumber value="${n.score}" type="percent" />)
+			<mm:field name="subtitle" />
+			<div class="intro"><mm:field name="intro" escape="p" /></div>
+		<hr />	
+	</mm:node>
+	<p />
+</c:forEach>
 </div>
 </td>
 <td><% 
