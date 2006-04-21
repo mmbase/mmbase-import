@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.21 2006-04-19 09:08:18 michiel Exp $
+ * @version $Id: Searcher.java,v 1.22 2006-04-21 14:31:35 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -198,6 +198,8 @@ public class Searcher {
      */
     static public Query createQuery(String constraintsText) {
         if (constraintsText == null) return null;
+        constraintsText = constraintsText.trim();
+        if ("".equals(constraintsText)) return null;
         Query query = null;
         StringTokenizer constraints = new StringTokenizer(constraintsText, "\t\n\r ", false);
         while (constraints.hasMoreTokens()) {
