@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.25 2005-11-01 22:13:51 nklasens Exp $
+ * @version $Id: TransactionResolver.java,v 1.26 2006-04-21 16:12:30 michiel Exp $
  */
 public class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
@@ -29,24 +29,28 @@ public class TransactionResolver {
     }
 
     public boolean resolve(final Collection nodes) {
-        Map numbers = new HashMap();
-        Map nnodes  = new HashMap();
+        Map numbers = new HashMap(); /* Temp key -> Real node number */
+        Map nnodes  = new HashMap(); /* MMObjectNode --> List of changed fields */
         boolean success = true;
 
         // Find all unique keys and store them in a map to remap them later
         // Also store the nodes with which fields uses them.
         for (Iterator i = nodes.iterator(); i.hasNext();) {
             MMObjectNode node = (MMObjectNode) i.next();
-            MMObjectBuilder bul = mmbase.getMMObject(node.getName());
-            log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
+            MMObjectBuilder bul = mmbase.getBuilder(node.getName());
+            if (log.isDebugEnabled()) {
+                log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
+            }
             for (Iterator f = bul.getFields().iterator();f.hasNext();) {
                 CoreField fd = (CoreField)f.next();
                 int dbtype = fd.getType();
-                log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
+                if (log.isDebugEnabled()) {
+                    log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
+                }
                 if (dbtype == Field.TYPE_INTEGER || dbtype == Field.TYPE_NODE) {
                     int state = fd.getState();
                     if (fd.inStorage()) {
-                        // Database field of type integer                        
+                        // Database field of type integer 
                         String field = fd.getName();
                         String tmpField = "_" + field;
                         if (node.getDBState(tmpField) == Field.STATE_VIRTUAL) {
@@ -113,6 +117,11 @@ public class TransactionResolver {
                 numbers.put(key, new Integer(mmbase.getStorageManager().createKey()));
             }
         }
+
+        if (log.isDebugEnabled()) {
+            log.debug("TransactionResolver -  numbers: " + numbers);
+        }
+
 
         // put numbers in the right place
         for (Iterator i = nnodes.entrySet().iterator(); i.hasNext();) {
