@@ -156,5 +156,10 @@
      <taglib-uri>http://www.opensymphony.com/oscache</taglib-uri>
      <taglib-location>/WEB-INF/classes/oscache.tld</taglib-location>
   </taglib>
-  
+
+  <taglib>
+     <taglib-uri>http://mmapps.sourceforge.net/lucenemodule/taglib</taglib-uri>
+     <taglib-location>/WEB-INF/tld/lucenemodule.tld</taglib-location>
+  </taglib>
+
 </web-app>
