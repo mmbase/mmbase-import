@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.46 2006-04-10 17:32:11 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.47 2006-04-21 16:11:38 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -121,8 +121,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      */
     public MMObjectNode getNode(String owner, String key) {
         MMObjectBuilder bul = mmbase.getBuilder("object");
-        MMObjectNode node;
-        node = bul.getTmpNode(getTmpKey(owner,key));
+        MMObjectNode node = bul.getTmpNode(getTmpKey(owner, key));
         // fallback to normal nodes
         if (node == null) {
             log.debug("getNode tmp not node found " + key);
