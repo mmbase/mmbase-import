@@ -54,7 +54,7 @@ import org.xml.sax.InputSource;
 /**
  * @author Edwin van der Elst Date :Nov 6, 2003
  * 
- * @version $Revision: 1.2 $, $Date: 2006-04-14 16:07:32 $
+ * @version $Revision: 1.3 $, $Date: 2006-04-21 15:03:13 $
  *  
  */
 public class VersioningController {
@@ -77,25 +77,30 @@ public class VersioningController {
     * @param node - Node to create a version from
     */
    public int addVersion(Node node) {
-      log.info("addVersion for " + node.getNumber());
+      log.debug("addVersion for " + node.getNodeManager().getName() + " " + node.getNumber());
       
       int archiveNumber = -1;
       String originalNode = "" + node.getNumber();
+      // This is to prevent paragraphs from being archived twice: once because they are committed by the ew
+      // and once because they are related to the article
       long now = System.currentTimeMillis()/1000 ;
       String constraints = "archief.original_node = '" + originalNode + "' AND archief.datum > '"
-                           + (now-2) + "' AND archief.datum < '" + (now+2) + "'";
-      
-      NodeManager nodeManager = cloud.getNodeManager("archief");
+                           + (now-10) + "' AND archief.datum < '" + (now+2) + "'";
 
-      if (nodeManager.getList(constraints,null,null).size()>0) {
-         //log.info("addVersion: found double archiving");
-      }
-      else {
+      NodeManager archiveManager = cloud.getNodeManager("archief");
+      org.mmbase.bridge.NodeList nlArchive = archiveManager.getList(constraints,null,null);
+      if (nlArchive.size()>0) {
+
+         archiveNumber = nlArchive.getNode(0).getNumber();
+         log.debug("addVersion: found double archiving of archive node: " + archiveNumber);
+
+      } else {
+
          try {
             String data = this.toXml(node);
             byte[] bytes = data.getBytes("UTF-8");
 
-            Node archive = nodeManager.createNode();
+            Node archive = archiveManager.createNode();
             archive.setByteValue("node_data", bytes);
             archive.setIntValue("original_node",node.getNumber());
             archive.setIntValue("datum", (int) (System.currentTimeMillis()/1000) );
@@ -116,8 +121,8 @@ public class VersioningController {
     */
    public String restoreVersion(Node archive) {
       Node node = cloud.getNode( archive.getIntValue("original_node") );
+      log.debug("restoreVersion of archive " + archive.getNumber() + " in " + node.getNodeManager().getName() + " " + node.getNumber());
       String errorMsg = "";
-      log.info("restoreVersion " + archive.getNumber());
       byte[] bs = archive.getByteValue("node_data");
       String string;
       try {
@@ -149,6 +154,7 @@ public class VersioningController {
          }
          n.commit();
          errorMsg += restoreRelations(document, n);
+
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -220,7 +226,7 @@ public class VersioningController {
          Element relationElement = document.createElement("relation");
          root.appendChild(relationElement);
          relationElement.setAttribute("destination", "" + relTo.getDestination().getNumber());
-         log.info("saveRelations from " + n.getNumber() + " to " + relTo.getDestination().getNumber());
+         log.debug("saveRelations from " + n.getNumber() + " to " + relTo.getDestination().getNumber());
          relationElement.setAttribute("dtype", nodeManager);
          relationElement.setAttribute("role", relationManager);
          if ("posrel".equals(relationManager)) {
@@ -243,7 +249,7 @@ public class VersioningController {
    }
 
    private String restoreRelations(Document document, Node n) throws Exception {
-     log.info("restoreRelations " + n.getNumber());
+     log.debug("restoreRelations " + n.getNumber());
 
      String errorMsg = "";
 
@@ -266,14 +272,14 @@ public class VersioningController {
       for (int i=0;i<relatedItems.size();i++) {
          Relation relation = relatedItems.getRelation(i);
          Node paragraph = relation.getDestination();
-         //log.info("test "+paragraph.getNumber());
+         //log.debug("test "+paragraph.getNumber());
          if (!paragraphs.contains(""+paragraph.getNumber())) {
             paragraph.delete(true);
-            //log.info("del par");
+            //log.debug("del par");
          }
          else {
             relation.delete(true);
-            //log.info("del rel");
+            //log.debug("del rel");
          }
       }
       deleteRelations(n, "related", "attachments");
@@ -326,6 +332,9 @@ public class VersioningController {
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/04/14 16:07:32  henk
+ * Versioning on preCommit
+ *
  * Revision 1.1  2006/03/05 21:43:59  henk
  * First version of the NatMM contribution.
  *
