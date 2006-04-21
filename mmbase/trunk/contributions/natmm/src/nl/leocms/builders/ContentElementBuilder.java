@@ -33,7 +33,7 @@ import nl.leocms.versioning.VersioningController;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 23-okt-2003
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ContentElementBuilder extends HtmlBuilder {
 
@@ -63,7 +63,17 @@ public class ContentElementBuilder extends HtmlBuilder {
     * @see org.mmbase.module.core.MMObjectBuilder#preCommit(org.mmbase.module.core.MMObjectNode)
     */
    public MMObjectNode preCommit(MMObjectNode node) {
-      log.info("preCommit on " + node.getNumber());
+      super.preCommit(node);
+
+      //mmbase datetime representation is in seconds
+      int seconds = (int) (System.currentTimeMillis()/1000);
+      node.setValue("datumlaatstewijziging",seconds);
+
+      return node;
+   }
+
+   public boolean commit(MMObjectNode node) {
+
       if (ADDVERSION_ON_COMMIT) {
          String builderName = node.getBuilder().getTableName();
       	 if (!builderName.equals("evenement") && !builderName.equals("pagina")) {
@@ -72,14 +82,9 @@ public class ContentElementBuilder extends HtmlBuilder {
             versioningController.addVersion(cloud.getNode(node.getNumber()));
          }
       }
-      super.preCommit(node);
-
-      //mmbase datetime representation is in seconds
-      int seconds = (int) (System.currentTimeMillis()/1000);
-      node.setValue("datumlaatstewijziging",seconds);
-      log.debug("PRECOMMIT lastmodified node: " + node.getNumber() + " time: " + seconds);
-
-      return node;
+  
+      boolean bSuperCommit = super.commit(node);
+         
+      return bSuperCommit;
    }
-
 }
