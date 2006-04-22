@@ -43,6 +43,7 @@ if (searchIsOn) {
    }
    
    if (pageNo != 0) {
+      // todo: include other possible paths between contentelements and pagina
       String nodes = Integer.toString(pageNo);
       String path = "pagina,contentrel,contentelement";
       String showField = "contentelement.number";
@@ -78,6 +79,7 @@ if (searchIsOn) {
    }
 
    if(!objects.equals("") && !OPTION_ALLE.equals(auteur)) {
+      // todo: this does not seem to work
       NodeList nlObjects = cloud.getList(objects,
                                  "contentelement,schrijver,users",
                                  "contentelement.number",
@@ -242,6 +244,7 @@ if (searchIsOn) {
                        </mm:relatednodescontainer><mm:remove referid="size" /><% 
                   }
             }
+            // todo: not used content elements can not be opened in the editwizard
             usedIn = (usedIn.equals("") ? "style=\"color:red;\" title=\"Dit " + contentTypeName + " is niet in gebruik.\"" : "title=\"Gebruikt in: " +  usedIn + "\"" );
             %>
          </mm:node>
