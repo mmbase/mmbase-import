@@ -21,89 +21,155 @@
     </descriptions>
     <properties/>
     <fieldlist>
-        <field>
-            <descriptions/>
-            <gui>
-                <guiname xml:lang="nl">Naam</guiname>
-                <guiname xml:lang="fr">Nom</guiname>
-                <guiname xml:lang="en">Name</guiname>
-                <guiname xml:lang="us">Name</guiname>
-                <guitype>string</guitype>
-            </gui>
-            <editor>
-                <positions>
-                    <input>1</input>
-                    <list>1</list>
-                    <search>1</search>
-                </positions>
-            </editor>
-            <db>
-                <name>name</name>
-                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
-            </db>
-        </field>
-        <field>
-            <descriptions/>
-            <gui>
-                <guiname xml:lang="nl">Omschrijving</guiname>
-                <guiname xml:lang="fr">Description</guiname>
-                <guiname xml:lang="en">Description</guiname>
-                <guiname xml:lang="us">Description</guiname>
-                <guitype>field</guitype>
-            </gui>
-            <editor>
-                <positions>
-                    <input>2</input>
-                    <list>2</list>
-                    <search>2</search>
-                </positions>
-            </editor>
-            <db>
-                <name>description</name>
-                <type size="2048" key="false" state="persistent" notnull="false">STRING</type>
-            </db>
-        </field>
-        <field>
-            <descriptions/>
-            <gui>
-                <guiname xml:lang="nl">Positie</guiname>
-                <guiname xml:lang="fr">Position</guiname>
-                <guiname xml:lang="en">Position</guiname>
-                <guiname xml:lang="us">Position</guiname>
-                <guitype>string</guitype>
-            </gui>
-            <editor>
-                <positions>
-                    <input>1</input>
-                    <list>2</list>
-                    <search>1</search>
-                </positions>
-            </editor>
-            <db>
-                <name>language</name>
-                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
-            </db>
-        </field>
-        <field>
-            <descriptions/>
-            <gui>
-                <guiname xml:lang="nl">Indeling</guiname>
-                <guiname xml:lang="fr">View</guiname>
-                <guiname xml:lang="en">View</guiname>
-                <guiname xml:lang="us">View</guiname>
-                <guitype>string</guitype>
-            </gui>
-            <editor>
-                <positions>
-                    <input>3</input>
-                    <list>3</list>
-                    <search>3</search>
-                </positions>
-            </editor>
-            <db>
-                <name>view</name>
-                <type size="30" key="false" state="persistent" notnull="false">STRING</type>
-            </db>
-        </field>
+      <field>
+         <descriptions/>
+         <gui>
+             <guiname xml:lang="nl">Naam</guiname>
+             <guiname xml:lang="fr">Nom</guiname>
+             <guiname xml:lang="en">Name</guiname>
+             <guiname xml:lang="us">Name</guiname>
+             <guitype>string</guitype>
+         </gui>
+         <editor>
+             <positions>
+                 <input>1</input>
+                 <list>1</list>
+                 <search>1</search>
+             </positions>
+         </editor>
+         <db>
+             <name>name</name>
+             <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">NaamDe</guiname>
+            <guiname xml:lang="en">NameDe</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>2</input>
+               <list>2</list>
+               <search>2</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">naam_de</name>
+            <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">NaamFra</guiname>
+            <guiname xml:lang="en">NameFra</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>2</input>
+               <list>2</list>
+               <search>2</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">naam_fra</name>
+            <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">NaamEng</guiname>
+            <guiname xml:lang="en">NameEng</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>2</input>
+               <list>2</list>
+               <search>2</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">naam_eng</name>
+            <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+         </db>
+      </field>      
+      <field>
+         <descriptions/>
+         <gui>
+             <guiname xml:lang="nl">Omschrijving</guiname>
+             <guiname xml:lang="fr">Description</guiname>
+             <guiname xml:lang="en">Description</guiname>
+             <guiname xml:lang="us">Description</guiname>
+             <guitype>field</guitype>
+         </gui>
+         <editor>
+             <positions>
+                 <input>2</input>
+                 <list>2</list>
+                 <search>2</search>
+             </positions>
+         </editor>
+         <db>
+             <name>description</name>
+             <type size="2048" key="false" state="persistent" notnull="false">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions/>
+         <gui>
+             <guiname xml:lang="nl">Positie</guiname>
+             <guiname xml:lang="fr">Position</guiname>
+             <guiname xml:lang="en">Position</guiname>
+             <guiname xml:lang="us">Position</guiname>
+             <guitype>string</guitype>
+         </gui>
+         <editor>
+             <positions>
+                 <input>1</input>
+                 <list>2</list>
+                 <search>1</search>
+             </positions>
+         </editor>
+         <db>
+             <name>language</name>
+             <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions/>
+         <gui>
+             <guiname xml:lang="nl">Indeling</guiname>
+             <guiname xml:lang="fr">View</guiname>
+             <guiname xml:lang="en">View</guiname>
+             <guiname xml:lang="us">View</guiname>
+             <guitype>string</guitype>
+         </gui>
+         <editor>
+             <positions>
+                 <input>3</input>
+                 <list>3</list>
+                 <search>3</search>
+             </positions>
+         </editor>
+         <db>
+             <name>view</name>
+             <type size="30" key="false" state="persistent" notnull="false">STRING</type>
+         </db>
+      </field>
     </fieldlist>
 </builder>

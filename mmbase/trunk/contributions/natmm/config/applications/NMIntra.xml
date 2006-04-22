@@ -34,6 +34,7 @@
       <builder version="0" maintainer="mmbase.org">locations</builder>
       <builder version="0" maintainer="mmbase.org">medewerkers</builder>
       <builder version="0" maintainer="mmbase.org">menu</builder>
+      <builder version="0" maintainer="mmbase.org">organisatie</builder>
       <builder version="0" maintainer="mmbase.org">pagina</builder>
       <builder version="0" maintainer="mmbase.org">paginatemplate</builder>
       <builder version="0" maintainer="mmbase.org">paragraaf</builder>
@@ -76,6 +77,7 @@
       <builder version="0" maintainer="mmbase.org">keywords</builder>
       <builder version="0" maintainer="mmbase.org">mmevents</builder>
       <builder version="0" maintainer="mmbase.org">natuurgebieden_type</builder>
+      <builder version="0" maintainer="mmbase.org">organisatie_type</builder>
       <builder version="0" maintainer="mmbase.org">phaserel</builder>
       <builder version="0" maintainer="mmbase.org">phases</builder>
       <builder version="0" maintainer="mmbase.org">pools</builder>
@@ -161,9 +163,9 @@
       <relation from="items" to="discounts" type="posrel"/>
       <relation from="items" to="images" type="posrel"/>
       <relation from="items" to="link" type="posrel"/>
-      <relation from="items" to="medewerkers" type="posrel"/>
-      <relation from="items" to="pools" type="discountrel"/>
-      <relation from="items" to="pools" type="posrel"/>
+      <relation from="items" to="persoon" type="posrel"/>
+      <relation from="items" to="item_pools" type="discountrel"/>
+      <relation from="items" to="item_pools" type="posrel"/>
       <relation from="items" to="products" type="posrel"/>
       <relation from="kb_category" to="kb_category" type="related"/>
       <relation from="kb_category" to="kb_question" type="related"/>
@@ -172,6 +174,7 @@
       <relation from="medewerkers" to="locations" type="readmore"/>
       <relation from="medewerkers" to="programs" type="readmore"/>
       <relation from="menu" to="editwizards" type="posrel"/>
+      <relation from="organisatie" to="organisatie_type" type="posrel"/>
       <relation from="pagina" to="ads" type="posrel"/>
       <relation from="pagina" to="artikel" type="contentrel"/>
       <relation from="pagina" to="artikel" type="readmore"/>
@@ -217,12 +220,14 @@
       <relation from="products" to="producttypes" type="posrel"/>
       <relation from="products" to="programs" type="posrel"/>
       <relation from="programs" to="locations" type="posrel"/>
-      <relation from="projects" to="afdelingen" type="readmore"/>
+      <relation from="projects" to="organisatie" type="readmore"/>
       <relation from="projects" to="contentblocks" type="readmore"/>
-      <relation from="projects" to="medewerkers" type="readmore"/> 
+      <relation from="projects" to="persoon" type="readmore"/>
       <relation from="projects" to="paragraaf" type="posrel"/>
       <relation from="projects" to="phases" type="phaserel"/>
-      <relation from="projects" to="projecttypes" type="posrel"/>
+		<relation from="projects" to="projecttypes" type="posrel"/>
+      <relation from="projects" to="projects" type="posrel" />
+      <relation from="projects" to="items" type="posrel" />
       <relation from="rubriek" to="images" type="contentrel"/>
       <relation from="rubriek" to="pagina" type="posrel"/>
       <relation from="rubriek" to="rubriek" type="parent"/>
@@ -269,6 +274,7 @@
       <datasource builder="locations" path="NMIntra/locations.xml"/>
       <datasource builder="medewerkers" path="NMIntra/medewerkers.xml"/>
       <datasource builder="menu" path="NMIntra/menu.xml"/>
+      <datasource builder="organisatie" path="NatMM/organisatie.xml" />
       <datasource builder="pagina" path="NMIntra/pagina.xml"/>
       <datasource builder="paginatemplate" path="NMIntra/paginatemplate.xml"/>
       <datasource builder="paragraaf" path="NMIntra/paragraaf.xml"/>
@@ -315,6 +321,7 @@
       <datasource builder="mmservers" path="NMIntra/mmservers.xml"/>
       <datasource builder="natuurgebieden_type" path="NMIntra/natuurgebieden_type.xml"/>
       <datasource builder="oalias" path="NMIntra/oalias.xml"/>
+      <datasource builder="organisatie_type" path="NatMM/organisatie_type.xml" />
       <datasource builder="phases" path="NMIntra/phases.xml"/>
       <!--<datasource builder="phaserel" path="NMIntra/phaserel.xml"/>-->
       <datasource builder="pools" path="NMIntra/pools.xml"/>
