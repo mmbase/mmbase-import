@@ -147,7 +147,7 @@ Rubriek:
    <tr><td valign="top" nowrap>Url-fragment</td><td><html:text property="urlfragment" size='40' maxlength='40'/> <span class="notvalid"><html:errors bundle="LEOCMS" property="urlfragment" /></span></td></tr>
 --%>
       <tr>
-         <td valign="top">Genre van de pagina</td>
+         <td valign="top">Template voor de pagina</td>
          <td>
             <%
                String paginaTemplateNodeNumber = "";
