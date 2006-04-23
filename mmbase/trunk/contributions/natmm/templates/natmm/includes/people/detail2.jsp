@@ -4,7 +4,7 @@
 <%@include file="../../includes/getstyle.jsp" %>
 <mm:cloud jspvar="cloud">
 <mm:node referid="pers">
-   <%@include file="../includes/people_image.jsp" %>
+   <%@include file="image.jsp" %>
    <table style="width:100%;margin-top:11px;" cellpadding="0" cellspacing="0" border="0">
    <tr>
       <td style="width:10px;vertical-align:top"><strong>Naam</strong></td>
