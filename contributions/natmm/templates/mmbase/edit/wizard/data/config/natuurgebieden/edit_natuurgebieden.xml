@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_natuurgebieden">
-   <field name="naam" ftype="line"><prompt>naam</prompt></field>
+   <field name="naam" ftype="line" dtminlength="1"><prompt>naam</prompt></field>
    <field name="titel_de" ftype="line"><prompt>code (ten behoeve van Groepsexcursies CAD)</prompt></field>
    <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
    <field name="bron" ftype="line"><prompt>nummer (voor 1,2,..,9 gebruik 09 ipv 9)</prompt></field>
