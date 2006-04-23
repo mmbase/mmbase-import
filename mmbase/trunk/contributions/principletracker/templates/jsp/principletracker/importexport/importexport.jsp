@@ -18,7 +18,7 @@
 <table>
 
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="60%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="70%">
 <tr>
   <th align="left">Export a set to disk</th>
 </tr>
@@ -32,7 +32,7 @@
 			<mm:listnodes type="principlesets">
 			<option value="<mm:field name="number" />"><mm:field name="name" />
 			</mm:listnodes>
-		</select> to <input name="filepath" value="/tmp/principleset.xml" size="35"  /><input type="submit" value="export" />
+		</select> state <select name="wantedstate"><option>active<option>all</select> to <input name="filepath" value="/tmp/principleset.xml" size="35"  /><input type="submit" value="export" />
 		<br /><br />
 	</td>
 	</form>
@@ -41,7 +41,7 @@
 
 
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="60%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="70%">
 <tr>
   <th align="left">Import from disk</th>
 </tr>

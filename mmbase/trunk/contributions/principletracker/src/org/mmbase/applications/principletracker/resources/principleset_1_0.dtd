@@ -6,10 +6,12 @@
 <!ATTLIST principleset name CDATA #IMPLIED>
 <!ATTLIST principleset description CDATA #IMPLIED>
 
-<!ELEMENT principle (state*,name*,qualification*,explanation*,argumentation*,consequence*,allowedimplementation*)>
+<!ELEMENT principle (state*,version*,theme*,name*,qualification*,explanation*,argumentation*,consequence*,allowedimplementation*)>
 <!ATTLIST principle number CDATA #IMPLIED>
 
 <!ELEMENT name (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+<!ELEMENT theme (#PCDATA)>
 <!ELEMENT qualification (#PCDATA)>
 <!ELEMENT explanation (#PCDATA)>
 <!ELEMENT argumentation (#PCDATA)>
