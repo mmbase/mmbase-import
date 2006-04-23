@@ -76,7 +76,7 @@ try{
                      <% 
                      if(text!=null) { 
                         text = HtmlCleaner.cleanText(text,"<",">","");
-                        if(!text.trim().equals("")) { %>"<%= text %>"<% }
+                        if(!text.trim().equals("")) { %><%= text %><% }
                      }
                      %>
                   </mm:field>
