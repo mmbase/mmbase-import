@@ -5,7 +5,8 @@
 <mm:compare value="exportprincipleset" referid="action">
 	<mm:import externid="exportsetid" />
 	<mm:import externid="filepath" />
-	<mm:import id="feedback" reset="true"><mm:function set="principletracker" name="exportPrincipleSet" referids="exportsetid,filepath" /></mm:import>           
+	<mm:import externid="wantedstate" />
+	<mm:import id="feedback" reset="true"><mm:function set="principletracker" name="exportPrincipleSet" referids="exportsetid,filepath,wantedstate" /></mm:import>           
 	<b>*** <mm:write referid="feedback" /> ***</b>
 </mm:compare>
 

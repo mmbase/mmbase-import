@@ -174,7 +174,7 @@ public class Controller {
 	return ""+(current+1);
     }
 
-    public String exportPrincipleSet(String setid,String filepath) {
+    public String exportPrincipleSet(String setid,String filepath,String wantedstate) {
 	org.mmbase.bridge.Node node=cloud.getNode(setid);
 	if (node!=null) {
 	    String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -194,9 +194,11 @@ public class Controller {
 		String setname = principleset.getStringValue("name");
 		String state = principlerel.getStringValue("state");
 		String name = principle.getStringValue("name");
-		if (state.equals("active")) {
+		if (wantedstate.equals("all") || state.equals("active")) {
 	            body += "  <principle number=\""+principle.getStringValue("principlenumber")+"\">\n";
 	            body += "    <state>"+principlerel.getStringValue("state")+"</state>\n";
+	            body += "    <version>"+principle.getStringValue("version")+"</version>\n";
+	            body += "    <theme>"+principle.getStringValue("theme")+"</theme>\n";
 	            body += "    <name><![CDATA["+name+"]]></name>\n";
 	            body += "    <qualification><![CDATA["+principle.getStringValue("qualification")+"]]></qualification>\n";
 	            body += "    <explanation><![CDATA["+principle.getStringValue("explanation")+"]]></explanation>\n";
@@ -275,6 +277,8 @@ public class Controller {
 				int principlenumber=-1;
 				String name="";
 				String state="active";
+				String version="";
+				String theme="";
 				String qualification="";
 				String explanation="";
 				String argumentation="";
@@ -295,6 +299,10 @@ public class Controller {
 						if (n3.getFirstChild()!=null) name = n3.getFirstChild().getNodeValue();
 					} else if (key.equals("qualification")) {
 						if (n3.getFirstChild()!=null) qualification = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("version")) {
+						if (n3.getFirstChild()!=null) version = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("theme")) {
+						if (n3.getFirstChild()!=null) theme = n3.getFirstChild().getNodeValue();
 					} else if (key.equals("explanation")) {
 						if (n3.getFirstChild()!=null) explanation = n3.getFirstChild().getNodeValue();
 					} else if (key.equals("argumentation")) {
@@ -311,6 +319,8 @@ public class Controller {
         			org.mmbase.bridge.Node pn = principlemanager.createNode();
         			pn.setIntValue("principlenumber", principlenumber);
         			pn.setStringValue("name", name);
+        			pn.setStringValue("version", version);
+        			pn.setStringValue("theme", theme);
         			pn.setStringValue("qualification", qualification);
         			pn.setStringValue("explanation", explanation);
         			pn.setStringValue("argumentation", argumentation);
