@@ -27,7 +27,7 @@
 <tr>
 
 		<th COLSPAN="8">
-		 PrincipeTracker - version 0.2
+		 PrincipeTracker - version 0.3
 		</th>
 </tr>
 </table>
