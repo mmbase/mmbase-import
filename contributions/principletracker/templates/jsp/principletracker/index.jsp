@@ -36,6 +36,7 @@
 <mm:write referid="main">
  <mm:compare value="principles"><%@ include file="principles/index.jsp" %></mm:compare>
  <mm:compare value="principlesets"><%@ include file="principlesets/index.jsp" %></mm:compare>
+ <mm:compare value="importexport"><%@ include file="importexport/index.jsp" %></mm:compare>
 </mm:write>
 
 
