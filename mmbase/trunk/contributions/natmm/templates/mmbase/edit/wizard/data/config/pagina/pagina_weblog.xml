@@ -41,6 +41,7 @@
       <optionlist include="config/option_lists/pages_title.xml" />
       <optionlist include="config/option_lists/shorty_role2.xml" />
       <optionlist include="config/option_lists/teaser_size.xml" />
+      <optionlist include="config/option_lists/teaser_weblog_role.xml" />
    </lists>
    <steps>
       <step form-schema="edit_pagina"/>
@@ -58,6 +59,6 @@
       <!-- <list include="config/artikel/zoek_weblog_contentrel_artikel.xml" /> note: remove origin from article if you want to use this -->
       <list include="config/panno/zoek_pagina_posrel_panno.xml" />
       <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />
-      <list include="config/teaser/zoek_pagina_rolerel_teaser.xml" />
+      <list include="config/teaser/zoek_pagina_index_rolerel_teaser.xml" />
    </form-schema> 
 </wizard-schema>
