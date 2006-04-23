@@ -229,10 +229,25 @@ public class Controller {
         RelationManager principlerelmanager = cloud.getRelationManager("principlesets", "principle", "principlerel");
         NodeManager principlemanager = cloud.getNodeManager("principle");
 
-        File file = new File(filepath);
-        if (file.exists()) {
-            DocumentReader reader = new DocumentReader(new InputSource(filepath), Controller.class);
-            if (reader != null) {
+        DocumentReader reader = null;
+	if (filepath.startsWith("config/")) {
+		try {
+                InputSource is = ResourceLoader.getConfigurationRoot().getInputSource(filepath.substring(7));
+                reader = new DocumentReader(is, Controller.class);
+		} catch (Exception e) {}
+	} else if (filepath.startsWith("html/")) {
+		try {
+                InputSource is = ResourceLoader.getWebRoot().getInputSource(filepath.substring(5));
+                reader = new DocumentReader(is, Controller.class);
+		} catch (Exception e) {}
+	} else {
+        	File file = new File(filepath);
+        	if (file.exists()) {
+            	   reader = new DocumentReader(new InputSource(filepath), Controller.class);
+	       } 
+	}
+
+        if (reader != null) {
 
             	Element mainnode = reader.getElementByPath("principleset");
 		if (mainnode!=null) {
@@ -309,7 +324,6 @@ public class Controller {
 	        }
 		}
 	    }
-	} 
         return "imported";
     }
     
