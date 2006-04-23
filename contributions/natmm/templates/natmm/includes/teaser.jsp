@@ -64,16 +64,20 @@ for (int i =0; i<shortyCnt;i++){
      %>
 			<td style="vertical-align:top;<%= (sTeaserLayout.equals("button")&&(maxColumnsCntr == 0) ? "text-align:right;" : "" ) %>" colspan="<%= colNum %>">
      		<% 
-			if(sTeaserLayout.equals("default")) {
+			if(!sTeaserLayout.equals("button")) {
             %><%@include file="../includes/image_logic.jsp" %><%
             
             if(!teaser_titel.equals("")&&!teaser_tz.equals("0")){ 
                %><span class="colortitle"><%=teaser_titel%></span><br><%
             }
 				
-            teaser_omschrijving = HtmlCleaner.cleanBRs(HtmlCleaner.cleanPs(teaser_omschrijving)).trim();
-            if(!teaser_omschrijving.equals("")){
-               %><%=teaser_omschrijving%><%
+            String description = HtmlCleaner.cleanBRs(HtmlCleaner.cleanPs(teaser_omschrijving)).trim();
+            if(!description.equals("")){
+               if(sTeaserLayout.equals("asis")) {
+                  %><%=teaser_omschrijving%><%
+               } else {
+                  %><%=description%><%
+               }
             } 
             %><mm:import id="hrefclass">teaser</mm:import><%
             linkTXT = readmoreTXT; 
