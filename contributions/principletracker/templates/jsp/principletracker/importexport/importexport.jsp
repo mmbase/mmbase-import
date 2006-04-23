@@ -32,7 +32,7 @@
 			<mm:listnodes type="principlesets">
 			<option value="<mm:field name="number" />"><mm:field name="name" />
 			</mm:listnodes>
-		</select> to <input name="filepath" value="/tmp/principleset.xml" size="20"  /><input type="submit" value="export" />
+		</select> to <input name="filepath" value="/tmp/principleset.xml" size="35"  /><input type="submit" value="export" />
 		<br /><br />
 	</td>
 	</form>
@@ -50,10 +50,25 @@
 	<input name="action" type="hidden" value="importprincipleset" />
 	<td>
 		<br />
-		New name for set <input name="setname" size="10" /> from <input name="filepath" value="/tmp/principleset.xml" size="20"  /><input type="submit" value="import" />
+		New name for set <input name="setname" size="10" /> from <input name="filepath" value="config/principletracker/example1.xml" size="35"  /><input type="submit" value="import" />
 		<br /><br />
 	</td>
 	</form>
 </tr>
 <table>
+
+
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 40px;" width="60%">
+<tr>
+  <th align="left">Tips :</th>
+</tr>
+<tr>
+ <td>
+	<br />
+	On importing if no name is provided we will take the name defined in the xml file you are loading. You can download from 'Resources' if you start with either 'config/' or 'html/' the examples are for example in the mmbase-principletracker.jar.
+	<br /><br />
+ </td>
+</tr>
+<table>
+
 </mm:cloud>
