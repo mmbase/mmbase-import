@@ -34,6 +34,23 @@
 		</th>
 	</mm:compare>
 
+
+	<!-- Import/Export -->
+	<mm:compare referid="main" value="importexport" inverse="true">
+		<td align="center" width="14%">
+		<a href="<mm:url page="index.jsp"><mm:param name="main">importexport</mm:param><mm:compare referid="tpi" value="" inverse="true"><mm:param name="principleset"><mm:write referid="tpi" /></mm:param></mm:compare></mm:url>">
+		Import/Export
+		</a>
+		</td>
+	</mm:compare>
+	<mm:compare referid="main" value="importexport">
+		<th align="center" width="14%">
+		<a href="<mm:url page="index.jsp"><mm:param name="main">importexport</mm:param><mm:compare referid="tpi" value="" inverse="true"><mm:param name="principleset"><mm:write referid="tpi" /></mm:param></mm:compare></mm:url>">
+		Import/Export
+		</a>
+		</th>
+	</mm:compare>
+
 	<!-- help -->
 	<mm:compare referid="main" value="help" inverse="true">
 		<td align="center" width="14%">
