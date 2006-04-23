@@ -38,7 +38,6 @@
                <jsp:param name="rs" value="<%= styleSheet %>" />
                <jsp:param name="sr" value="1" />
             </jsp:include>
-            <table class="dotline"><tr><td height="3"></td></tr></table>
             <div style="margin-top:8px;margin-bottom:8px;">
                <a href="javascript:history.go(-1);"><img src="media/buttonleft_<%= style1[iRubriekStyle] %>.gif" border="0"/></a>
                <a href="javascript:history.go(-1);">Terug naar Smoelenboek</a>
@@ -47,18 +46,21 @@
       <img src="media/trans.gif" height="1px" width="352px;" />
    </td>
    <td style="vertical-align:top;padding-left:10px;padding-right:10px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
-      <jsp:include page="includes/navright.jsp">
-         <jsp:param name="s" value="<%= paginaID %>" />
-         <jsp:param name="r" value="<%= rubriekID %>" />
-         <jsp:param name="lnr" value="<%= lnRubriekID %>" />
-      </jsp:include>
       <% if(!personID.equals("-1")) { %>
             <jsp:include page="includes/people/detail2.jsp">
                <jsp:param name="r" value="<%= rubriekID %>" />
                <jsp:param name="pers" value="<%= personID %>" />
                <jsp:param name="rs" value="<%= styleSheet %>" />
             </jsp:include>
-      <% } %>
+      <% } else { 
+         %>
+         <jsp:include page="includes/navright.jsp">
+            <jsp:param name="s" value="<%= paginaID %>" />
+            <jsp:param name="r" value="<%= rubriekID %>" />
+            <jsp:param name="lnr" value="<%= lnRubriekID %>" />
+         </jsp:include>
+         <%
+      } %>
       <img src="media/trans.gif" height="1px" width="165px;" />
    </td>
 </tr>
