@@ -4,7 +4,7 @@
  *  The license (Mozilla version 1.0) can be read at the MMBase site.
  *  See http://www.MMBase.org/license
  */
-package org.mmbase.applications.principletracker.gui;
+package org.mmbase.applications.principletracker;
 
 import java.io.*;
 import java.net.URL;
@@ -15,10 +15,14 @@ import java.util.jar.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.*;
+import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 
 /**
  * @author     Daniel Ockeloen
@@ -30,11 +34,25 @@ public class Controller {
     private static Cloud cloud;
 
 
+    /** DTD resource filename of the principleset DTD version 1.0 */
+    public static final String DTD_PRINCIPLESET_1_0 = "principleset_1_0.dtd";
+
+    /** Public ID of the principleset DTD version 1.0 */
+    public static final String PUBLIC_ID_PRINCIPLESET_1_0 = "-//MMBase//DTD principleset 1.0//EN";
+
+    /**
+     * Register the Public Ids for DTDs used by DatabaseReader
+     * This method is called by XMLEntityResolver.
+     */
+    public static void registerPublicIDs() {
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_PRINCIPLESET_1_0, DTD_PRINCIPLESET_1_0, Controller.class);
+    }
+
     /**
      *Constructor for the Controller object
      */
     public Controller() {
-        cloud = LocalContext.getCloudContext().getCloud("mmbase");
+           cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); 
     }
 
     public String getNextPatchLevel(String version) {
@@ -145,7 +163,7 @@ public class Controller {
 
             NodeIterator i = cloud.getList(query).nodeIterator();
             while (i.hasNext()) {
-                Node node = i.nextNode();
+                org.mmbase.bridge.Node node = i.nextNode();
 		String value = node.getStringValue("principle.principlenumber");
 		try {
 			int parsed = Integer.parseInt(value);
@@ -156,6 +174,144 @@ public class Controller {
 	return ""+(current+1);
     }
 
+    public String exportPrincipleSet(String setid,String filepath) {
+	org.mmbase.bridge.Node node=cloud.getNode(setid);
+	if (node!=null) {
+	    String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	    body += "<!DOCTYPE principleset PUBLIC \"//MMBase - principleset//\" \"http://www.mmbase.org/dtd/principleset_1_0.dtd\">\n";
+	    body += "<principleset name=\""+node.getStringValue("name")+"\" description=\""+node.getStringValue("description")+"\">\n";
+            RelationIterator i = node.getRelations("principlerel", "principle").relationIterator();
+            while (i.hasNext()) {
+                Relation principlerel = i.nextRelation();
+		org.mmbase.bridge.Node principleset = principlerel.getSource();
+		org.mmbase.bridge.Node principle = null;
+		if (principleset.getNumber()==node.getNumber()) {
+			principle = principlerel.getDestination();	
+		} else {
+			principle = principleset;
+			principleset = principlerel.getDestination();	
+		}
+		String setname = principleset.getStringValue("name");
+		String state = principlerel.getStringValue("state");
+		String name = principle.getStringValue("name");
+		if (state.equals("active")) {
+	            body += "  <principle number=\""+principle.getStringValue("principlenumber")+"\">\n";
+	            body += "    <state>"+principlerel.getStringValue("state")+"</state>\n";
+	            body += "    <name><![CDATA["+name+"]]></name>\n";
+	            body += "    <qualification><![CDATA["+principle.getStringValue("qualification")+"]]></qualification>\n";
+	            body += "    <explanation><![CDATA["+principle.getStringValue("explanation")+"]]></explanation>\n";
+	            body += "    <argumentation><![CDATA["+principle.getStringValue("argumentation")+"]]></argumentation>\n";
+	            body += "    <consequence><![CDATA["+principle.getStringValue("consequence")+"]]></consequence>\n";
+	            body += "    <allowedimplementation><![CDATA["+principle.getStringValue("allowedimpl")+"]]></allowedimplementation>\n";
+	            body += "  </principle>\n";
+		}
+	    }
+	    body += "</principleset>\n";
+            File sfile = new File(filepath);
+            try {
+                DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+                scan.writeBytes(body);
+                scan.flush();
+                scan.close();
+            } catch(Exception e) {
+                log.error(Logging.stackTrace(e));
+            }
+	} else {
+		log.error("Set node found");
+		return "set not found";
+	}
+	return "saved";
+    }
+
+    public String importPrincipleSet(String setname,String filepath) {
+
+        NodeManager principlesetmanager = cloud.getNodeManager("principlesets");
+        RelationManager principlerelmanager = cloud.getRelationManager("principlesets", "principle", "principlerel");
+        NodeManager principlemanager = cloud.getNodeManager("principle");
+
+        File file = new File(filepath);
+        if (file.exists()) {
+            DocumentReader reader = new DocumentReader(new InputSource(filepath), Controller.class);
+            if (reader != null) {
+
+            	Element mainnode = reader.getElementByPath("principleset");
+		if (mainnode!=null) {
+  	         NamedNodeMap nm=mainnode.getAttributes();
+                 org.w3c.dom.Node n4=nm.getNamedItem("name");
+		if (n4!=null) {
+			if (setname.equals(""))  setname = n4.getNodeValue();
+		}
+                n4=nm.getNamedItem("description");
+		String description = "";
+		if (n4!=null) {
+			description = n4.getNodeValue();
+		}
+
+		// create the new set
+        	org.mmbase.bridge.Node psn = principlesetmanager.createNode();
+        	psn.setStringValue("name", setname);
+        	psn.setStringValue("description", description);
+		psn.commit();
+
+            	for(Iterator ns=reader.getChildElements("principleset","principle");ns.hasNext(); ) {
+               		Element n=(Element)ns.next();
+  	               	nm=n.getAttributes();
+                 	if (nm!=null) {
+				int principlenumber=-1;
+				String name="";
+				String state="active";
+				String qualification="";
+				String explanation="";
+				String argumentation="";
+				String consequence="";
+				String allowedimplementation="";
+                        	org.w3c.dom.Node n2=nm.getNamedItem("number");
+                        	if (n2!=null) {
+					try {
+					    principlenumber=Integer.parseInt(n2.getNodeValue());
+					} catch(Exception e) {
+						log.error("illegal principlenumber");
+					}
+				}
+                            	org.w3c.dom.Node n3 = n.getFirstChild();
+                            	while (n3!=null) {
+					String key = n3.getNodeName();
+					if (key.equals("name")) {
+						if (n3.getFirstChild()!=null) name = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("qualification")) {
+						if (n3.getFirstChild()!=null) qualification = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("explanation")) {
+						if (n3.getFirstChild()!=null) explanation = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("argumentation")) {
+						if (n3.getFirstChild()!=null) argumentation = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("allowedimplementation")) {
+						if (n3.getFirstChild()!=null) allowedimplementation = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("consequence")) {
+						if (n3.getFirstChild()!=null) consequence = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("state")) {
+						if (n3.getFirstChild()!=null) state = n3.getFirstChild().getNodeValue();
+					}
+					n3 = n3.getNextSibling();
+				}
+        			org.mmbase.bridge.Node pn = principlemanager.createNode();
+        			pn.setIntValue("principlenumber", principlenumber);
+        			pn.setStringValue("name", name);
+        			pn.setStringValue("qualification", qualification);
+        			pn.setStringValue("explanation", explanation);
+        			pn.setStringValue("argumentation", argumentation);
+        			pn.setStringValue("consequence", consequence);
+        			pn.setStringValue("allowedimpl", allowedimplementation);
+				pn.commit();
+            			org.mmbase.bridge.Node prn = principlerelmanager.createRelation(psn, pn);
+				prn.setStringValue("state",state);
+				prn.commit();
+			}
+	        }
+		}
+	    }
+	} 
+        return "imported";
+    }
     
 }
 
