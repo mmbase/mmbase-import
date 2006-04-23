@@ -7,7 +7,7 @@
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="80%">
 <tr>
-	<th left" colspan="4">
+	<th left" colspan="5">
 	Principle Sets defined 
         </tr>
 	</th>
@@ -17,6 +17,7 @@
 	<th>Description</th>
 	<th>Alias</th>
 	<th width="10">&nbsp;</th>
+	<th width="10">&nbsp;</th>
 <tr>
  <mm:listnodes type="principlesets">
   <tr>
@@ -24,11 +25,12 @@
      <td><a href="<mm:url page="index.jsp"><mm:param name="main">principles</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="description" /></a></td>
      <td><a href="<mm:url page="index.jsp"><mm:param name="main">principles</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><mm:aliaslist><mm:write /></mm:aliaslist></a></td>
      <td><a href="<mm:url page="index.jsp" referids="main"><mm:param name="sub">editprincipleset</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><img src="images/mmbase-edit.gif" border="0" align="right"></a></td>
+     <td><a href="<mm:url page="index.jsp" referids="main"><mm:param name="sub">deleteprincipleset</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><img src="images/mmbase-delete.gif" border="0" align="right"></a></td>
   </tr>
  </mm:listnodes>
 <tr>
         <tr>
-	   <td colspan="4"><a href="<mm:url page="index.jsp" referids="main"><mm:param name="sub">newprincipleset</mm:param></mm:url>"><img src="images/mmbase-new.gif" border="0" align="right"></a></td>
+	   <td colspan="5"><a href="<mm:url page="index.jsp" referids="main"><mm:param name="sub">newprincipleset</mm:param></mm:url>"><img src="images/mmbase-new.gif" border="0" align="right"></a></td>
         </tr>
 </tr>
 </table>
@@ -46,7 +48,7 @@ This applications allows you to create more for example if you want a test set o
  But if you (most likely) only have one (or a prefered one) you can add a alias called 'Principle.default' and this application will open not on this page but on the principles page with that set as the default.<br /><br /><br />
 	Have fun with this contribution,<br /><br />
 	Daniel Ockeloen<br />
-	MMCoder, daniel@xs4all.nl<br /><br />
+	MMCoder.<br /><br />
 	</td>
 </tr>
 </table>

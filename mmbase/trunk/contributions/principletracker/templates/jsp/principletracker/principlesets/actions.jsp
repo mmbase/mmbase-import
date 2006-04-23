@@ -42,4 +42,19 @@
 	</mm:compare>
 </mm:compare>
 
+
+<mm:compare value="deleteprincipleset" referid="action">
+	<mm:import externid="principleset" />
+	<mm:import externid="deleteconfirm" />
+	<mm:compare referid="deleteconfirm" value="yes">
+	    *** delete principleset ***
+	    <mm:node referid="principleset">
+		<mm:relatednodes type="principle">
+			<mm:deletenode deleterelations="true" />
+		</mm:relatednodes>
+		<mm:deletenode />
+	    </mm:node>
+	</mm:compare>
+</mm:compare>
+
 </mm:cloud>
