@@ -29,7 +29,7 @@ if(!posrel_pos.equals("1")) { // 1 - linker kolom, geschaald op kolom breedte, v
       if(readmoreURL.equals("")) { 
          %><mm:field name="reageer" jspvar="showpopup" vartype="String" write="false"><%
             if(showpopup.equals("1")) {
-               readmoreURL = "javascript:launchCenter('" + subDir + "includes/fotopopup.jsp?i="+ images_number + "&rs=" + styleSheet + "','foto',600,600,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');setTimeout('newwin.focus();',250);";
+               readmoreURL = "javascript:launchCenter('../../includes/fotopopup.jsp?i="+ images_number + "&rs=" + styleSheet + "','foto',600,600,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');setTimeout('newwin.focus();',250);";
                validLink = true;
                resetLink = true;
             } else {
