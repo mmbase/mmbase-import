@@ -134,7 +134,8 @@ public class EventNotifier implements Runnable {
          while(iNodes.hasNext()) {
              Node nextNode = iNodes.nextNode();
              String thisSubscription = nextNode.getStringValue("inschrijvingen.number");
-             if(cloud.getList(thisSubscription
+             if(!Evenement.isGroupSubscription(cloud,thisSubscription)
+                && cloud.getList(thisSubscription
                    , "inschrijvingen,related,email"
                    , null
                    , "email.subject LIKE 'Herinnering aanmelding %'"
