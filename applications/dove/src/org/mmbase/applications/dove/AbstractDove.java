@@ -47,7 +47,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.19 2004-12-03 14:45:03 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.20 2006-04-24 12:06:07 michiel Exp $
  */
 
 public abstract class AbstractDove {
@@ -134,7 +134,7 @@ public abstract class AbstractDove {
     };
 
     //logger
-    private static Logger log = Logging.getLoggerInstance(Dove.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Dove.class);
 
     /**
      * The document that is being constructed. This should be used to
