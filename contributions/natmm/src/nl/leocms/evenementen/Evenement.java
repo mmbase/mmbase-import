@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.2 $, $Date: 2006-03-28 07:55:54 $
+ * @version $Revision: 1.3 $, $Date: 2006-04-24 07:38:30 $
  *
  */
 
@@ -156,6 +156,14 @@ public class Evenement extends DoubleDateNode {
    public static boolean isGroupBooking(Cloud cloud, String sParticipant) {
       NodeList nl = cloud.getList(sParticipant
                   ,"deelnemers,related,deelnemers_categorie"
+                  ,"deelnemers_categorie.number"
+                  ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);
+      return (nl.size()>0);
+   }
+
+   public static boolean isGroupSubscription(Cloud cloud, String sSubscription) {
+      NodeList nl = cloud.getList(sSubscription
+                  ,"inschrijvingen,posrel,deelnemers,related,deelnemers_categorie"
                   ,"deelnemers_categorie.number"
                   ,"deelnemers_categorie.groepsactiviteit='1'",null,null,null,false);
       return (nl.size()>0);
