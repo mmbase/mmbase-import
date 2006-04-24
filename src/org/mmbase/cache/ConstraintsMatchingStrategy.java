@@ -65,16 +65,29 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         Cache.putCache(constraintWrapperCache);
     }
 
-    private static Map constraintMatcherClasses;
+    private static final Map constraintMatcherConstructors = new HashMap();
     static {
-        constraintMatcherClasses = new HashMap();
         Class[] innerClasses = ConstraintsMatchingStrategy.class.getDeclaredClasses();
         for (int i = 0; i < innerClasses.length; i++) {
             Class innerClass = innerClasses[i];
-            if (innerClass.getName().endsWith("Matcher")) {
+            if (innerClass.getName().endsWith("Matcher") && ! Modifier.isAbstract(innerClass.getModifiers())) {
                 String matcherClassName = innerClass.getName();
                 matcherClassName = matcherClassName.substring(matcherClassName.lastIndexOf("$") + 1);
-                constraintMatcherClasses.put(matcherClassName, innerClass);
+                Constructor con = null;
+                Constructor[] cons = innerClass.getConstructors();
+                for (int j = 0; j < cons.length; j++) {
+                    Class [] params = cons[j].getParameterTypes();
+                    if(params.length == 1 && Constraint.class.isAssignableFrom(params[0])) {
+                        con = cons[j];
+                        break;
+                    }
+                }
+                if (con == null) {
+                    log.error("Class " + innerClass + " has no appropriate constructor");
+                    continue;
+                }
+
+                constraintMatcherConstructors.put(matcherClassName, con);
                 log.debug("** found matcher: " + matcherClassName);
             }
         }
@@ -155,22 +168,26 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     if(matcher.eventApplies(newValues, event)){
                         boolean eventMatches =  matcher.nodeMatchesConstraint(newValues, event);
                         if (log.isDebugEnabled()) {
-                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {"+matcher+"}:", query, event, node);
+                            logResult((eventMatches ? "" : "no ") + "flush: with matcher {" + matcher + "}:", query, event, node);
                         }
                         return eventMatches;
                     } else {
                         if (log.isDebugEnabled()) {
-                            logResult("flush: event does not apply to wrapper {"+matcher+"}:", query, event, node);
+                            logResult("flush: event does not apply to wrapper {" + matcher + "}:", query, event, node);
                         }
                         return true;
                     }
                 case Event.TYPE_CHANGE:
                     // we have to compare the old value and then the new value of the changed field to see if the status
-                    // has changed. if the node used to match the constraint but now dousn't or the reverse of this, flush.
+                    // has changed. if the node used to match the constraint but now doesn't or the reverse of this, flush.
                     if(matcher.eventApplies(newValues, event)){
                         boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
                         boolean stillMatches = matcher.nodeMatchesConstraint(newValues, event);
-                        boolean eventMatches = usedToMatch != stillMatches;
+                        boolean eventMatches = usedToMatch || stillMatches;
+
+                        // It may be important to check whether the changed fields of the are present in the field-list of the
+                        // query. If it is not, and usedToMatch && stillMaches, then we can still return false.
+
                         if (log.isDebugEnabled()) {
                             log.debug("** match with old values : " + (usedToMatch ? "match" : "no match"));
                             log.debug("** match with new values : " + (stillMatches ? "match" : "no match"));
@@ -188,7 +205,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     }
                 case Event.TYPE_DELETE:
                     // we have to compare the old value of the field to see if the node used to fall within the
-                    // constriant. If it did: flush
+                    // constraint. If it did: flush
                     if(matcher.eventApplies(event.getOldValues(), event)){
                         boolean eventMatches = matcher.nodeMatchesConstraint(oldValues, event);
                         if (log.isDebugEnabled()) {
@@ -201,9 +218,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                         }
                         return true;
                     }
+                default:
+                    log.error("Unrecognized event-type " + event.getType());
+                    break;
                 }
             } catch (FieldComparisonException e) {
-                log.debug(Logging.stackTrace(e));
+                log.warn(e.getMessage(), e);
             }
          }
         return true; //safe: should release
@@ -228,20 +248,17 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         // MM: I think the idea behind this is questionable.
         // How expensive is it?
-
-        Class matcherClass = (Class) constraintMatcherClasses.get(constraintClassName + "Matcher");
-        if (matcherClass == null) {
-            matcherClass = UnsupportedConstraintMatcher.class;
+        Constructor matcherConstructor = (Constructor) constraintMatcherConstructors.get(constraintClassName + "Matcher");
+        if (matcherConstructor == null) {
+            log.error("Could not match constraint of type " + constraintClassName);
+            matcherConstructor = UnsupportedConstraintMatcher.class.getConstructors()[0];
         }
         if (log.isDebugEnabled()) {
             log.debug("finding matcher for constraint class name: " + constraintClassName + "Matcher");
-            log.trace("matcher class found: " + matcherClass.getName());
+            log.trace("matcher class found: " + matcherConstructor.getDeclaringClass().getName());
         }
 
-        Constructor c = null;
-        c = matcherClass.getConstructor(new Class[] { Constraint.class });
-        if(c == null) log.debug("help! constructor is null");
-        return (AbstractConstraintMatcher) c.newInstance(new Object[] { constraint });
+        return (AbstractConstraintMatcher) matcherConstructor.newInstance(new Object[] { constraint });
 
     }
 
@@ -263,11 +280,6 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
     }
 
     private static abstract class AbstractConstraintMatcher {
-        protected Constraint wrappedConstraint;
-
-        public AbstractConstraintMatcher(Constraint constraint)  {
-            wrappedConstraint = constraint;
-        }
 
         /**
          * @param valuesToMatch the field values that the constraint value will have to be matched against.
@@ -291,12 +303,11 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
     private static class BasicCompositeConstraintMatcher extends AbstractConstraintMatcher {
-        private List wrappedConstraints;
-        private BasicCompositeConstraint wrappedCompositeConstraint;
+        private final List wrappedConstraints;
+        private final BasicCompositeConstraint wrappedCompositeConstraint;
 
-        public BasicCompositeConstraintMatcher(Constraint constraint) throws NoSuchMethodException, InstantiationException, InvocationTargetException, IllegalAccessException  {
-            super(constraint);
-            wrappedCompositeConstraint = (BasicCompositeConstraint) wrappedConstraint;
+        public BasicCompositeConstraintMatcher(BasicCompositeConstraint constraint) throws NoSuchMethodException, InstantiationException, InvocationTargetException, IllegalAccessException  {
+            wrappedCompositeConstraint = constraint;
             wrappedConstraints = new ArrayList();
             for (Iterator i = wrappedCompositeConstraint.getChilds().iterator(); i.hasNext();) {
                 Constraint c = (Constraint) i.next();
@@ -325,9 +336,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 }
             }
             if (wrappedCompositeConstraint.getLogicalOperator() == BasicCompositeConstraint.LOGICAL_AND) {
-                return matches == wrappedConstraints.size();
+                return (matches == wrappedConstraints.size()) != wrappedCompositeConstraint.isInverse();
             } else {
-                return matches > 0;
+                return (matches > 0) != wrappedCompositeConstraint.isInverse();
             }
         }
 
@@ -393,15 +404,16 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
     private static class UnsupportedConstraintMatcher extends AbstractConstraintMatcher {
 
+        final Constraint wrappedConstraint;
         public UnsupportedConstraintMatcher(Constraint constraint)  {
-            super(constraint);
+            wrappedConstraint = constraint;
         }
 
         /**
-         * Return true here, to make shure the query gets flushed.
+         * Return true here, to make sure the query gets flushed.
          */
         public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) {
-            return false;
+            return true;
         }
 
         public String toString(){
@@ -409,10 +421,16 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
         }
 
         public boolean eventApplies(Map valuesToMatch, NodeEvent event) {
-            return false;
+            return true;
         }
     }
 
+
+    private static class BasicLegacyConstraintMatcher extends UnsupportedConstraintMatcher {
+        public BasicLegacyConstraintMatcher(Constraint constraint)  {
+            super(constraint);
+        }
+    }
 
 
 
@@ -424,21 +442,16 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
      * @author ebunders
      */
     private static abstract class FieldCompareConstraintMatcher extends AbstractConstraintMatcher {
-        protected FieldCompareConstraint wrappedFieldCompareConstraint;
 
-        public FieldCompareConstraintMatcher(Constraint constraint) {
-            super(constraint);
-            wrappedFieldCompareConstraint = (FieldCompareConstraint) wrappedConstraint;
-        }
-
+        protected abstract FieldCompareConstraint getConstraint();
 
         protected boolean valueMatches(final Class fieldType, Object constraintValue, Object valueToCompare, final boolean isCaseSensitive) throws FieldComparisonException {
             if (log.isDebugEnabled()) {
                 log.debug("**method: valueMatches() fieldtype: " + fieldType);
             }
-            if(constraintValue == null) throw new FieldComparisonException("Constraint value is null");
-            if(valueToCompare == null) throw new FieldComparisonException("Value from event to compare constraint value with is null");
+            if (constraintValue == null) return valueToCompare == null;
 
+            FieldCompareConstraint wrappedFieldCompareConstraint = getConstraint();
 
             int operator = wrappedFieldCompareConstraint.getOperator();
 
@@ -621,7 +634,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             switch(operator) {
             case FieldCompareConstraint.EQUAL: {
                 boolean result = (longToCompare == constraintLong);
-                if(log.isDebugEnabled()) {
+                if(log.isTraceEnabled()) {
                     log.trace("**value " + longToCompare + " equals " + constraintLong + ": " + result);
                 }
                 return result;
@@ -703,15 +716,14 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
     private static class BasicFieldValueConstraintMatcher extends FieldCompareConstraintMatcher {
-        private Class fieldTypeClass;
+        private final Class fieldTypeClass;
 
-        protected StepField stepField;
-        protected BasicFieldValueConstraint wrappedFieldValueConstraint;
+        protected final StepField stepField;
+        protected final BasicFieldValueConstraint wrappedFieldValueConstraint;
 
-        public BasicFieldValueConstraintMatcher(Constraint constraint)  {
-            super(constraint);
+        public BasicFieldValueConstraintMatcher(BasicFieldValueConstraint constraint)  {
             MMBase mmbase = MMBase.getMMBase();
-            stepField = ((FieldConstraint) constraint).getField();
+            stepField = constraint.getField();
             if (log.isDebugEnabled()) {
                 log.debug("** builder: " + stepField.getStep().getTableName()+". field: " + stepField.getFieldName());
             }
@@ -732,28 +744,30 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.debug("** found field type: " + fieldTypeClass.getName());
                 }
-                wrappedFieldValueConstraint = (BasicFieldValueConstraint) constraint;
+                wrappedFieldValueConstraint = constraint;
             } else {
                 throw new RuntimeException("Field type " + fieldTypeClass + " is not supported");
             }
         }
 
-
+        protected FieldCompareConstraint getConstraint() {
+            return wrappedFieldValueConstraint;
+        }
         /**
          * Check the values to see if the node's value matches the constraint.
          */
         public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
             log.debug("**method: nodeMatchesConstraint");
-            if(! eventApplies(valuesToMatch, event))
-                throw new FieldComparisonException("constraint " + wrappedFieldCompareConstraint.toString() +
-                        "does not match event of type " +event.getBuilderName());
-            Object constraintValue = ((FieldValueConstraint) wrappedConstraint).getValue();
-            boolean isCaseSensitive = ((FieldValueConstraint) wrappedConstraint).isCaseSensitive();
-            return valueMatches(fieldTypeClass, constraintValue, valuesToMatch.get(stepField.getFieldName()), isCaseSensitive);
+            //if(! eventApplies(valuesToMatch, event)) throw new FieldComparisonException("constraint " + wrappedFieldCompareConstraint.toString() + "does not match event of type " +event.getBuilderName());
+            boolean matches = valueMatches(fieldTypeClass,
+                                           wrappedFieldValueConstraint.getValue(),
+                                           valuesToMatch.get(stepField.getFieldName()),
+                                           wrappedFieldValueConstraint.isCaseSensitive());
+            return  matches != wrappedFieldValueConstraint.isInverse();
         }
 
         public String toString(){
-            return "Field Value Matcher.  operator: " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[wrappedFieldCompareConstraint.getOperator()] +
+            return "Field Value Matcher.  operator: " + FieldCompareConstraint.OPERATOR_DESCRIPTIONS[wrappedFieldValueConstraint.getOperator()] +
             ", value: " + wrappedFieldValueConstraint.getValue().toString() + ", step: " +stepField.getStep().getTableName() +
             ", field name: " + stepField.getFieldName();
         }
@@ -764,12 +778,9 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
          * that is being checked is in the 'changed' fields map (valuesToMatch)
          */
         public boolean eventApplies(Map valuesToMatch, NodeEvent event) {
-            if(wrappedFieldCompareConstraint.getField().getStep().getTableName().equals(event.getBuilderName())){
-                if(valuesToMatch.get(wrappedFieldCompareConstraint.getField().getFieldName()) != null){
-                    return true;
-                }
-            }
-            return false;
+            return
+                wrappedFieldValueConstraint.getField().getStep().getTableName().equals(event.getBuilderName()) &&
+                valuesToMatch.containsKey(wrappedFieldValueConstraint.getField().getFieldName());
         }
 
     }
