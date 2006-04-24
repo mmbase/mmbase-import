@@ -18,8 +18,9 @@ import junit.framework.*;
  * TestSuite that runs all the release strategy tests.
  *
  * @author Ernst Bunders
- * @version $Id: AllTests.java,v 1.2 2006-04-18 13:38:23 michiel Exp $
+ * @version $Id: AllTests.java,v 1.3 2006-04-24 13:54:48 michiel Exp $
  */
+
 public class AllTests {
 
     public static void main(String[] args) {
