@@ -67,7 +67,7 @@ public class Clustering extends BridgeTest {
             Field f = fi.nextField();
             if (f.getName().equals("number")) {
                 // sigh, 'number' is a NODE field...
-                assertTrue(n1.getNumber() == n2.getNumber());
+                assertEquals(n1.getNumber(), n2.getNumber());
             } else {
                 Object value1 = n1.getValue(f.getName());
                 Object value2 = n2.getValue(f.getName());
@@ -84,7 +84,7 @@ public class Clustering extends BridgeTest {
 
     public void testList() {
         NodeList aa2List1 = cloud1.getNodeManager("aa").getList(null, null, null); // a node of type aa was created, so list must now be size 1.
-        assertTrue(aa2List1.size() == 1);
+        assertEquals(aa2List1.size(), 1);
 
         NodeManager aa2 = cloud2.getNodeManager("aa");
         NodeList aa2list2 = aa2.getList(null, null, null); // should not give error, but may be size 0, because still in cache
