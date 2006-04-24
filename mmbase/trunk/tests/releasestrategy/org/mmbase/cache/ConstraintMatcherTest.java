@@ -126,6 +126,9 @@ public class ConstraintMatcherTest extends BridgeTest {
         assertTrue("(like 7) matches: flush",             matchingStrategy.evaluate(event2c, q13, null).shouldRelease());
         assertTrue("(like 8) matches: flush",             matchingStrategy.evaluate(event2c, q14, null).shouldRelease());
 
+        Query q16= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string!='xyz'", null, null, null, false);
+        assertTrue("(not) matchers: flush",             matchingStrategy.evaluate(event2c, q16, null).shouldRelease());
+
         Query q15= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "NOT(string='xyz')", null, null, null, false);
         assertTrue("(not) matchers: flush",             matchingStrategy.evaluate(event2c, q15, null).shouldRelease());
     }
