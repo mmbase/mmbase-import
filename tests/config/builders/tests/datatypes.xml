@@ -222,8 +222,8 @@
     <field>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="now" />
-        <minExclusive value="today - 3 day" />
-        <maxInclusive value="today + 100 year" />
+        <minExclusive value="today - 3 day"    enforce="oncreate"/>
+        <maxInclusive value="today + 100 year" enforce="onchange"/>
       </datatype>
       <db>
         <name>dynamic_period</name>
@@ -234,8 +234,8 @@
     <field>
       <datatype base="weeknumbers" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="now" />
-        <minExclusive value="today - 3 day" />
-        <maxInclusive value="today + 100 year" />
+        <minExclusive value="today - 3 day"    enforce="oncreate" />
+        <maxInclusive value="today + 100 year" enforce="onchange" />
       </datatype>
       <db>
         <name>weeknumbers</name>
