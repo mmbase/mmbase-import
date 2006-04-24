@@ -108,7 +108,6 @@ public class ExternalProfilesManager implements Runnable {
 	                                ExternalProfileInterface ci = ExternalProfilesManager.getHandler(external);
                                 	if (externalname!=null && !externalname.equals("") && !pe.getSynced()) {
                                 	//	String account = parent.getAccount();
-						log.info("E="+pe+" "+pe.getSynced()+" "+pe.getValue());
 
 						String account = pi.getAccount();
 						if (externalname!=null && !externalname.equals("")) {
@@ -119,9 +118,9 @@ public class ExternalProfilesManager implements Runnable {
 						pe.setSynced(true);
 						pi.setSynced(true);
 						pi.save();
-						queue.remove(pi);
 					}
 				}
+				queue.remove(pi);
 			}
 			while (!checkqueue.isEmpty()) {
 				ProfileInfo pi = (ProfileInfo)checkqueue.get(0);
@@ -133,13 +132,11 @@ public class ExternalProfilesManager implements Runnable {
 					String externalname = pd.getExternalName();
 	                                ExternalProfileInterface ci = ExternalProfilesManager.getHandler(external);
                                 	if (externalname!=null && !externalname.equals("") && !pe.getSynced()) {
-						log.info("R="+pe+" "+pe.getSynced()+" "+pe.getValue());
 
 						String account = pi.getAccount();
 						if (externalname!=null && !externalname.equals("")) {
 							String value = ci.getValue(account,externalname);
 							if (value!=null && !value.equals(pe.getValue())) {
-								log.info("taken remote value="+value);
 								pe.setValue(value);
 								pe.setSynced(true);
 								pi.setSynced(true);
@@ -148,16 +145,15 @@ public class ExternalProfilesManager implements Runnable {
 						} else {
 							String value = ci.getValue(account,pe.getName());
 							if (value!=null && !value.equals(pe.getValue())) {
-								log.info("taken remote value="+value);
 								pe.setValue(value);
 								pe.setSynced(true);
 								pi.setSynced(true);
 								pi.save();
 							}
 						}
-						checkqueue.remove(pi);
 					}
 				}
+				checkqueue.remove(pi);
 			}
 	            	Thread.sleep(sleeptime);
 		} catch (InterruptedException f2){
@@ -171,12 +167,10 @@ public class ExternalProfilesManager implements Runnable {
     }
 
     static public void addToSyncQueue(ProfileInfo pi) {
-	log.info("Added to sync queue ="+pi);
 	if (!queue.contains(pi)) queue.add(pi);
     }
 
     static public void addToCheckQueue(ProfileInfo pi) {
-	log.info("Added to check queue ="+pi);
 	if (!checkqueue.contains(pi)) checkqueue.add(pi);
     }
 
