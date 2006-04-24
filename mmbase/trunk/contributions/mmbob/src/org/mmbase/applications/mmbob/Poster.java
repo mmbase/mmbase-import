@@ -459,7 +459,6 @@ public class Poster {
 		seen =  true;
 		if (profileinfo==null) {
 			profileinfo = new ProfileInfo(this);
-			log.info("NEW PROFILE FORCED");
 		}
 		profileinfo.loginTrigger();
 	}
