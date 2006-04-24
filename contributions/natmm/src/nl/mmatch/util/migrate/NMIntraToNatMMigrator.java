@@ -222,11 +222,13 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("page","title:titel;subtitle:titel_fra");
       tmRenamingFields.put("paragraph","title:titel;body:tekst");
       tmRenamingFields.put("pijler","title:naam;subtitle:naam_eng");
+      tmRenamingFields.put("projects","name:titel;description:omschrijving");
       tmRenamingFields.put("providers","name:naam;address:bezoekadres;postalcode:bezoekadres_postcode;" +
       "city:plaatsnaam;country:land;phone:telefoonnummer;fax:faxnummer;description:omschrijving");
       tmRenamingFields.put("rubriek","title:naam;subtitle:naam_eng");
       tmRenamingFields.put("questions","title:label;body:omschrijving_fra;required:verplicht");
       tmRenamingFields.put("site","title:naam");
+      tmRenamingFields.put("shop_items","title:titel;displaydate:embargo;expiredate:verloopdatum");
       tmRenamingFields.put("style","title:titel;description:omschrijving");
       tmRenamingFields.put("teasers","title:titel;body:omschrijving;expiredate:verloopdatum;" +
       "transmissiondate:embargo");
