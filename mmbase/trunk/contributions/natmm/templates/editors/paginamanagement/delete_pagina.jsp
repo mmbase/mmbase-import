@@ -17,7 +17,8 @@ input { width: 100px;}
    </script>
 </head>
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
-<%
+<% 
+
    PaginaUtil paginaUtil = new PaginaUtil(cloud);
    String number = request.getParameter("number");
    String remove = request.getParameter("remove");
@@ -26,6 +27,7 @@ input { width: 100px;}
       // remove pagina
       paginaUtil.removePagina(number);
       %>
+      <cache:flush scope="application"/>
       <body onload="refreshParentFrameAndClose()">
       <%
 
