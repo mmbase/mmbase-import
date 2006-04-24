@@ -64,19 +64,19 @@ public class ConstraintMatcherTest extends BridgeTest {
 
         // constraint matching tests
         // first tetst type 'changed'
-        assertFalse("Changed node falls within constraints before, and within constraints after event. no flush", matchingStrategy.evaluate(event1a, q1, null).shouldRelease());
+        assertTrue("Changed node falls within constraints before, and within constraints after event. flush", matchingStrategy.evaluate(event1a, q1, null).shouldRelease());
         assertTrue("Changed node falls within constraints before, but outside constraints after event. flush", matchingStrategy.evaluate(event1b, q1, null).shouldRelease());
         assertFalse("Changed node falls outside constraint before and outside constraint after event: no flush", matchingStrategy.evaluate(event1d, q1, null).shouldRelease());
         assertTrue("Changed node falls outside constraint before but within constraints after: flush", matchingStrategy.evaluate(event1e, q1, null).shouldRelease());
 
         // non-matching step and field
-        assertTrue("Changed node's type dous not match the constraint's step: flush", matchingStrategy.evaluate(event1f, q1, null).shouldRelease());
-        assertTrue("Changed node's changed field dous not match the constraint's field: flush", matchingStrategy.evaluate(event1g, q1, null).shouldRelease());
+        assertTrue("Changed node's type does not match the constraint's step: flush", matchingStrategy.evaluate(event1f, q1, null).shouldRelease());
+        assertTrue("Changed node's changed field does not match the constraint's field: flush", matchingStrategy.evaluate(event1g, q1, null).shouldRelease());
         // empty values map- exception
         assertTrue("A FieldComparisonException occurs: flush", matchingStrategy.evaluate(event1c, q1, null).shouldRelease());
 
         // wrong datatype
-        assertTrue("Datatype Boolean dous not match field integer: flush", matchingStrategy.evaluate(event1h, q1, null).shouldRelease());
+        assertTrue("Datatype Boolean does not match field integer: flush", matchingStrategy.evaluate(event1h, q1, null).shouldRelease());
         // unsupported datatype
         assertTrue("Datatype 'List' is not supported: don't flush", matchingStrategy.evaluate(event1i, q1, null).shouldRelease());
 
@@ -127,10 +127,12 @@ public class ConstraintMatcherTest extends BridgeTest {
         assertTrue("(like 8) matches: flush",             matchingStrategy.evaluate(event2c, q14, null).shouldRelease());
 
         Query q16= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "string!='xyz'", null, null, null, false);
-        assertTrue("(not) matchers: flush",             matchingStrategy.evaluate(event2c, q16, null).shouldRelease());
+        assertTrue("(not) matches: flush",             matchingStrategy.evaluate(event2c, q16, null).shouldRelease());
 
-        Query q15= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "NOT(string='xyz')", null, null, null, false);
-        assertTrue("(not) matchers: flush",             matchingStrategy.evaluate(event2c, q15, null).shouldRelease());
+        Query q15= Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "NOT([string]='xyz')", null, null, null, false);
+        assertTrue("(not) matches: flush",             matchingStrategy.evaluate(event1a, q15, null).shouldRelease());
+        assertTrue("(not) matches: flush",             matchingStrategy.evaluate(event2c, q15, null).shouldRelease());
+
     }
 
 
@@ -159,7 +161,7 @@ public class ConstraintMatcherTest extends BridgeTest {
         c2.setValue(new Boolean(false));
 
 
-        assertTrue("boolean value dous match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
+        assertTrue("boolean value does match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
         assertFalse("boolean value dus not match: don't flush",     matchingStrategy.evaluate(event1, query4, null).shouldRelease());
     }
 
@@ -196,7 +198,7 @@ public class ConstraintMatcherTest extends BridgeTest {
         BasicFieldValueConstraint c2 = (BasicFieldValueConstraint) query4.getConstraint();
         c2.setValue(new Integer(othernode.getNumber()));
 
-        assertTrue("node value dous match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
+        assertTrue("node value does match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
         assertFalse("node value dus not match: don't flush",     matchingStrategy.evaluate(event1, query4, null).shouldRelease());
     }
 
@@ -227,7 +229,7 @@ public class ConstraintMatcherTest extends BridgeTest {
         c2.setValue(cal.getTime());
 
 
-        assertTrue("date value dous match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
+        assertTrue("date value does match:  flush",              matchingStrategy.evaluate(event1, query3, null).shouldRelease());
         assertFalse("date value dus not match: don't flush",     matchingStrategy.evaluate(event1, query4, null).shouldRelease());
     }
     public void testBasicFieldValueConstraintMatcherInt() {
@@ -258,7 +260,7 @@ public class ConstraintMatcherTest extends BridgeTest {
         // operator <=
         Query query6 = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", "datatypes.integer != 4", null, null, null, false);
 
-        assertFalse("Changed node falls within constraints before, and within constraints after event. no flush,", matchingStrategy.evaluate(event2a, query1, null).shouldRelease());
+        assertTrue("Changed node falls within constraints before, and within constraints after event. flush,", matchingStrategy.evaluate(event2a, query1, null).shouldRelease());
         assertTrue("Changed node falls within constraints before, but outside constraints after event. flush", matchingStrategy.evaluate(event2b, query1, null).shouldRelease());
         assertFalse("Changed node falls outside constraint before and outside constraint after event: no flush", matchingStrategy.evaluate(event2c, query1, null).shouldRelease());
         assertTrue("Changed node falls outside constraint before but within constraints after: flush", matchingStrategy.evaluate(event2d, query1, null).shouldRelease());
@@ -305,9 +307,9 @@ public class ConstraintMatcherTest extends BridgeTest {
         Query query4 = Queries.createQuery(cloud, null, "mags,news", "mags.number", "mags.number = 11 AND news.title='test'", null, null, null, false);
 
         assertTrue("both constraints match: flush", matchingStrategy.evaluate(event, query1, null).shouldRelease());
-        assertFalse("node number dous not match: don't flush", matchingStrategy.evaluate(event, query2, null).shouldRelease());
-        assertFalse("magazine title dous not match: don't flush", matchingStrategy.evaluate(event, query3, null).shouldRelease());
-        assertTrue("event dous not (fully) match query: flush", matchingStrategy.evaluate(event, query4, null).shouldRelease());
+        assertFalse("node number does not match: don't flush", matchingStrategy.evaluate(event, query2, null).shouldRelease());
+        assertFalse("magazine title does not match: don't flush", matchingStrategy.evaluate(event, query3, null).shouldRelease());
+        assertTrue("event does not (fully) match query: flush", matchingStrategy.evaluate(event, query4, null).shouldRelease());
 
         //test the changed node
         node.setValue("subtitle", "newTitle");
@@ -319,7 +321,7 @@ public class ConstraintMatcherTest extends BridgeTest {
 
         assertTrue("changed node: value used to match, but no more: flush", matchingStrategy.evaluate(event1, query5, null).shouldRelease());
         assertTrue("changed node: value matches now, but did not before: flush", matchingStrategy.evaluate(event1, query6, null).shouldRelease());
-        assertFalse("changed node: value matched before and matches now: don't flush", matchingStrategy.evaluate(event1, query7, null).shouldRelease());
+        assertTrue("changed node: value matched before and matches now: flush", matchingStrategy.evaluate(event1, query7, null).shouldRelease());
 
         node.commit();
 
@@ -333,7 +335,7 @@ public class ConstraintMatcherTest extends BridgeTest {
         assertFalse("deleted node: one value matches: don't flush", matchingStrategy.evaluate(event2, query8, null).shouldRelease());
         assertTrue("deleted node: both  values matches: flush", matchingStrategy.evaluate(event2, query9, null).shouldRelease());
         assertFalse("deleted node: both  values don't match: don't flush", matchingStrategy.evaluate(event2, query10, null).shouldRelease());
-        assertTrue("deleted node: event dous not (fully) match query: flush", matchingStrategy.evaluate(event2, query11, null).shouldRelease());
+        assertTrue("deleted node: event does not (fully) match query: flush", matchingStrategy.evaluate(event2, query11, null).shouldRelease());
     }
 
     public void testCompositeMatcherOr(){
