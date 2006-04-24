@@ -48,6 +48,11 @@
                   <%// the person has connected to the education throw the class %>
                   <mm:related path="classrel,classes,classrel,people" constraints="<%= sConstraints %>">
                      <mm:node element="classes" jspvar="nodeClass">
+                        <mm:import id="nowtime" reset="true" jspvar="nowtime"><mm:time time="now"/></mm:import>
+                        <% 
+                          String constarint2 ="(mmevents.start <=  "+nowtime+") AND (mmevents.stop >= "+nowtime+") ";                 
+                        %>                     
+                        <mm:related path="mmevents" constraints="<%= constarint2 %>">                       
                         <%
                            String[] arrstrTemp = new String[3];
                            arrstrTemp[0] = sEducationID;
@@ -55,6 +60,7 @@
                            arrstrTemp[2] = "" + nodeClass.getNumber();
                            arliEducations.add(arrstrTemp);
                         %>
+                        </mm:related>
                      </mm:node>
                   </mm:related>
                </mm:node>
