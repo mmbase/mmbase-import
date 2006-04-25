@@ -42,13 +42,13 @@
  * The essential bits are the id's with the corresponding classes for the subitems.
  *
  * @author Michiel Meeuwissen <jsmenu@meeuw.org>
- * $Id: menu.js,v 1.8 2006-03-31 17:11:23 michiel Exp $
+ * $Id: menu.js,v 1.9 2006-04-25 21:40:20 michiel Exp $
  */
 
 //
-var TIMEOUT = 1000;
-var MENU_CLASS = "mmenu";
-var debugarea;
+var TIMEOUT    = 1000;    // ms
+var MENU_CLASS = "mmenu"; // class of a menu element
+var debugarea;            // textarea with id menu_debug if that is present on the page.
 
 function debug(mesg) {
     if (debugarea) debugarea.value = mesg + "\n" + debugarea.value;
@@ -90,35 +90,39 @@ function getElementsByClass(node, searchClass, tag) {
   return classElements;
 }
 
-function getSubMenus(elm, searchClass) {
+function getSubMenus(elm) {
     return getElementsByClass(elm, searchClass, "*");
 }
 
+/**
+ * Inits a menu by id
+ * @param reposition 'bottom', 'right', 'left' or unset.
+ */
 function initMenu(menuId, reposition) {
     if (!debugarea) debugarea = document.getElementById("menu_debug");
     var menu = document.getElementById(menuId);
     initMenuElement(menu, reposition, '');
 }
-function initMenuElement(menu, reposition, depth) {
-    var siblings = getElementsByClass(menu, depth + MENU_CLASS, "a");
-    debug("Found " + siblings.length + " subitems for " + menu.id);
-    for (var i = 0; i < siblings.length; i++) {
-        var subElm = siblings[i];
-        subElm._parent   = menu;
-        subElm.siblings = siblings;
-        addEvent(subElm, "mouseover", openMenu);
-        addEvent(subElm, "mouseout",  closeMenu);
-        var subMenus = getSubMenus(menu, subElm.id);
-        debug("found " + subMenus.length + " subitems for " + subElm.id);
+function initMenuElement(menu, reposition) {
+    var menuItems = getElementsByClass(menu, MENU_CLASS, "a");
+    debug("Found " + menuItems.length + " subitems for " + menu.id);
+    for (var i = 0; i < menuItems.length; i++) {
+        var menuItem = menuItems[i];
+        menuItem._parent  = menu;
+        menuItem.siblings = menuItems;
+        addEvent(menuItem, "mouseover", openMenu);
+        addEvent(menuItem, "mouseout",  closeMenu);
+        var subMenus = getSubMenus(menu, menuItem.id);
+        debug("found " + subMenus.length + " subitems for " + menuItem.id);
         for (var j = 0; j < subMenus.length; j++) {
             var subMenu = subMenus[j];
-            subMenu._parent     = subElm;
+            subMenu._parent     = menuItem;
             subMenu.reposition = reposition;
             subMenu.style.display = "none";
             addEvent(subMenu, "mouseover", useMenu);
             addEvent(subMenu, "mouseout",  unuseMenu);
-            
-            initMenuElement(subMenu, reposition, depth + 'sub');
+            // may contain itself mmenu items:
+            initMenuElement(subMenu, reposition);
         }
     }
 }
@@ -178,7 +182,6 @@ function openMenu(event) {
     var menu = getMenuByClass(getTarget(event));
     debug("opening " + menu.id + " ? " + menu.tagName);
     // collapse siblings
-    /*
     for (var i = 0 ; i < menu.siblings.length ; i++) {
         debug("FOUND" + menu.siblings[i].id);
         var sibl = menu.siblings[i];
@@ -187,7 +190,6 @@ function openMenu(event) {
             collapseMenu(sibl.id);
         }
     }
-    */
     menu._inuse = true;
     debug("marked used " + menu.id);
     var subMenus = getSubMenus(menu._parent, menu.id);

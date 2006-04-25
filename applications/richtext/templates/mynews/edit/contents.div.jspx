@@ -12,7 +12,7 @@
       <h1>Contents</h1>
       <mm:import externid="home">my.rich.magazine</mm:import>
       <mm:node number="$home" >
-        <mm:relatednodes  id="supercat" type="categories" role="posrel" orderby="posrel.pos">
+        <mm:relatednodes  id="supercat" type="categories" role="posrel" orderby="posrel.pos" searchdirs="destination">
           <mm:tree id="cat" type="categories" role="posrel" orderby="posrel.pos" searchdir="destination">
             <mm:grow>
               <![CDATA[<ul>]]>

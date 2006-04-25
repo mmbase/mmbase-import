@@ -13,7 +13,6 @@
   <action type="create">
     <object type="categories">
       <field name="title">Title</field>
-      <field name="end">4102441257</field>
     </object>
   </action>
 
@@ -26,6 +25,8 @@
     <field name="title" dtrequired="true" />
     <field name="subtitle" />
     <field name="intro" />
+    <field name="begin" />
+    <field name="end" />
 
     <list role="block" destination="templates" ordertype="number" orderby="field[@name='pos']">
       <title xml:lang="en">Containers</title>

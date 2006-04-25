@@ -6,9 +6,10 @@
     version="1.2"
     xmlns:jsp="http://java.sun.com/JSP/Page"	
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <mm:edit type="kupu">
+  <mm:edit type="kupu">   
     <mm:import externid="popupwidth">800</mm:import>
     <mm:param name="when" value="onrequest" />
+    <mm:param name="target" value="" />
     <h1>
       <mm:hasfunction name="index">
         <span class="index"><mm:function name="index" /></span>

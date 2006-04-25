@@ -1,21 +1,21 @@
 <!--
    Displays one full segment, plus a crumb-path, and overview of sub-segments.
    dynamic include
-   $Id: tree.div.jspx,v 1.5 2006-03-29 12:45:48 michiel Exp $
+   $Id: tree.div.jspx,v 1.6 2006-04-25 21:40:20 michiel Exp $
 -->
 <div class="segment ${param.class}"
      xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <mm:content type="text/xml" escaper="inline">
-    <jsp:directive.page session="false" />
-    <jsp:output omit-xml-declaration="true" />
-    <jsp:directive.include file="vars.jspx" />
+  <jsp:directive.page session="false" />
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.include file="vars.jspx" />
+  <mm:content type="text/xml" escaper="inline" language="$language">
     <mm:cloud>
       <mm:param name="org.mmbase.xml-mode" value="flat" />
 
-      <mm:url id="ok" write="false" page="/mmbase/style/images/ok.gif" />
-      <mm:url id="next" write="false" page="/mmbase/style/images/next.gif" />
-      <mm:url id="previous" write="false" page="/mmbase/style/images/previous.gif" />
+      <mm:url id="ok" write="false" page="/mmbase/style/images/ok.png" />
+      <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
+      <mm:url id="previous" write="false" page="/mmbase/style/images/previous.png" />
 
       <mm:import externid="segments" vartype="list" />
       <mm:node referid="cat">
