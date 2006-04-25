@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.LocaleTag;
 import javax.servlet.jsp.PageContext;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.5 2006-03-28 22:33:06 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.6 2006-04-25 18:35:28 michiel Exp $
  * @see EditTag
  * @see Editor
  * @since MMBase-1.8
@@ -44,6 +45,7 @@ public class BasicEditor extends Editor {
         new Parameter("icon", String.class, ""),
         new Parameter("iconparams", Map.class, null),
         new Parameter("when", String.class, "always"),
+        new Parameter("target", String.class, "new"),
         Parameter.CLOUD
     };
 
@@ -102,19 +104,27 @@ public class BasicEditor extends Editor {
             String icon = getValue("icon", cloud, nodenr, context);
             url = makeRelative(url, context);
             Writer html = context.getOut();
-            html.write("<div class=\"et\"><a title=\"click to edit\" href=\"");
+            Locale locale = (Locale) context.getAttribute(LocaleTag.KEY, PageContext.PAGE_SCOPE);
+            if (locale == null) {
+                locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
+            }
+            String title = ResourceBundle.getBundle("org.mmbase.bridge.jsp.taglib.resources.messages", locale).getString("edit");
+            html.write("<a class=\"mm_edit\" title=\"" + title + "\" href=\"");
             html.write(url);
-            html.write("\" onclick=\"window.open(this.href); return false;\">");
-            if (! icon.equals("")) {
+            html.write("\" ");
+            if ("new".equals(parameters.getString("target"))) {
+                html.write("onclick=\"window.open(this.href); return false;\" ");
+            }
+            html.write(">"); 
+            if (! "".equals(icon)) {
                 icon = makeRelative(icon, context);
-
                 html.write("<img src=\"");
                 html.write(icon);
-                html.write("\" alt=\"edit\">");
+                html.write("\" alt=\"" + title + "\">");
             } else {
-                html.write("[edit]");
+                html.write("[" + title + "]");
             }
-            html.write("</a></div>");
+            html.write("</a>");
         }
     }
 
