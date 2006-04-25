@@ -60,6 +60,10 @@ h1 {
   background-color: #ddd;
   margin-top: 0px;
   padding: 0px 0px 0px 0px;
+  overflow: auto;
+}
+h1 img { 
+
 }
 td {
   vertical-align: top;
