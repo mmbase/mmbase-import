@@ -72,6 +72,20 @@
         <type key="false" notnull="false" size="255" state="persistent">STRING</type>
       </db>
     </field>
+    <field>
+      <descriptions>
+        <description>Example of String length</description>
+      </descriptions>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="aaa" />
+        <minLength value="1" />
+        <maxLength value="10" />
+      </datatype>
+      <db>
+        <name>stringlength</name>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
 
     <field>
       <descriptions>
