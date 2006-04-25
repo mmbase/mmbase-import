@@ -130,4 +130,13 @@ div#security div#navigate p {
   margin-right: 3ex;
 }
 
+a.mm_edit {
+  background-color: yellow;
+  color: black;
+}
+a.mm_edit:hover {
+  background-color: #afa;
+  text-decoration: none;
+}
+
 </mm:content>
