@@ -47,9 +47,7 @@ public class LineInfo {
   }
 
   boolean validate() {
-    boolean result = ((userStr!=null) && !userStr.equals(Config.ANONYMOUS));  // not process empty or anonymous users
-    result = result && (date!=null);
-    return result;
+    return (userStr!=null) && (date!=null);
   }
 
 
