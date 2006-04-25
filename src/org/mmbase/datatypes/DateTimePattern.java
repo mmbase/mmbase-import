@@ -13,6 +13,7 @@ package org.mmbase.datatypes;
 import java.text.*;
 import java.util.*;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.util.DateFormats;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.9 2006-03-30 14:02:04 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.10 2006-04-25 15:26:59 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -53,7 +54,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
      */
     public DateFormat getDateFormat(Locale locale) {
         if (locale == null) locale = LocalizedString.getDefault();
-        return new SimpleDateFormat(pattern.get(locale), locale);
+        return DateFormats.getInstance(pattern.get(locale), null, locale);
     }
 
 
