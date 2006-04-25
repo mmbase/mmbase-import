@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.10 2006-03-22 23:23:14 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.11 2006-04-25 22:35:06 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -143,7 +143,9 @@
             <xsl:variable name="width"><xsl:value-of select="node:function($cloud, string(@id ), 'width')" /></xsl:variable>
             <xsl:variable name="height"><xsl:value-of select="node:function($cloud, string(@id ), 'height')" /></xsl:variable>
             <a onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
-              <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+              <xsl:attribute name="id">
+                <xsl:value-of select="$relation/o:field[@name = 'id']" />
+              </xsl:attribute>
               <xsl:attribute name="href"><xsl:apply-templates select="." mode="url" /></xsl:attribute>
               <xsl:apply-templates select="." mode="img">
                 <xsl:with-param name="relation" select="$relation" />
@@ -161,7 +163,10 @@
                onclick="window.open(this.href, '{taglib:escape('identifier',./o:field[@name = 'title'])}', 'width={$width + 20},height={$height + 20}'); return false;">
 
               <xsl:attribute name="title"><xsl:value-of select="./o:field[@name = 'title']" /></xsl:attribute>
-              <xsl:attribute name="id"><xsl:value-of select="$relation/o:field[@name = 'id']" /></xsl:attribute>
+              <xsl:attribute name="id">
+                <xsl:value-of select="$relation/o:field[@name = 'id']" />
+                <xsl:value-of select="$position" />                
+              </xsl:attribute>
               <xsl:apply-templates select="." mode="img">
                 <xsl:with-param name="relation" select="$relation" />
                 <xsl:with-param name="position" select="$position"  />
@@ -358,10 +363,10 @@
   <xsl:template match="mmxf:p" mode="with_relations">
     <xsl:param name="relations" />
     <xsl:element name="{name()}">
+      <xsl:copy-of select="@class" />
       <xsl:apply-templates select="." mode="relations">
         <xsl:with-param name="relations" select="$relations" />
       </xsl:apply-templates>
-      <xsl:copy-of select="@*" />
       <xsl:apply-templates select="node()" />
     </xsl:element>
   </xsl:template>
@@ -390,7 +395,7 @@
     </xsl:choose>
   </xsl:template>
 
-
+  
   <!--
     Presents only relations. Iterates over all given relations, and applies the 'inline' mode template on every related node.
     It provides three parameters then:
