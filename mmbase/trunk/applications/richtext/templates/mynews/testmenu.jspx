@@ -74,9 +74,7 @@
         <a class="mmenu" id="i" href="item">Item</a>
         <div class="i sub" id="submenu2">
           <a class="submmenu" id="subi" href="subitem">sub</a>
-          <div class="subi sub">
-            <a href="subsubitem">subsub</a>
-          </div>
+
         </div>
       </div>
       <mm:import externid="debug" />
