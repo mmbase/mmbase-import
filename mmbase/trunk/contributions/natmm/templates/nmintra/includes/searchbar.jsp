@@ -6,7 +6,11 @@ function startSearch() {
     if(search != '') {
         href += "&search=" + search;
     }
-    document.location =  href;
+    var adv = escape(document.searchform.elements["adv"].value);
+	 if(adv != '') {
+        href += "&t=" + adv;
+    }
+	 document.location =  href;
     return false; 
 }
 function startPhone() {
@@ -43,6 +47,11 @@ function startPhone() {
     <td><img src="media/spacer.gif" width="7" height="1"></td>
     <td><img src="media/spacer.gif" width="1" height="1"><br>
         <input type="submit" name="Submit" value="Zoek" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;"></td>
+	 <td><img src="media/spacer.gif" width="7" height="1"></td>
+    <td><img src="media/spacer.gif" width="7" height="1"></td>
+    <td><img src="media/spacer.gif" width="1" height="1"><br>
+	 	  <input type="hidden" name="adv">
+        <input type="submit" name="AdvSubmit" value="Uitgebreid Zoeken" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;width:110px;" onClick="document.searchform.adv.value='adv_search';"></td>
     </tr>
     </form>
 </table>

@@ -3,12 +3,58 @@
 ><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" 
 %><mm:import jspvar="paginaID" externid="p">-1</mm:import>
-   <%--
+   <%
    String rootID = "home";
    String sQuery = request.getParameter("search");
+	if(sQuery==null) { sQuery = ""; }
    String sMeta = request.getParameter("trefwoord");
    String sCategory = request.getParameter("categorie");
-   if(sCategory==null) { sCategory = ""; }
+	if(sCategory==null) { sCategory = ""; }
+	String sPool = request.getParameter("pool");
+	String sArchieve = request.getParameter("archive");
+	String sAdv = request.getParameter("adv");
+	if (sAdv==null) {sAdv = ""; }
+	if (sArchieve==null) {sArchieve = "ja";}
+	int fromDay = 0; int fromMonth = 0; int fromYear = 0;
+   int toDay = 0; int toMonth = 0; int toYear = 0;
+   int thisDay = cal.get(Calendar.DAY_OF_MONTH);
+   int thisMonth = cal.get(Calendar.MONTH)+1;
+   int thisYear = cal.get(Calendar.YEAR);
+   int startYear = 2004;
+   long fromTime = 0;
+   long toTime = 0;
+	boolean checkOnPeriod = false;
+	boolean periodExceedsMonth = true;
+	
+	if(!periodId.equals("")) {
+          try{
+              fromDay = new Integer(periodId.substring(0,2)).intValue(); 
+              fromMonth = new Integer(periodId.substring(2,4)).intValue();
+              fromYear = new Integer(periodId.substring(4,8)).intValue();
+      
+              toDay = new Integer(periodId.substring(8,10)).intValue();
+              toMonth = new Integer(periodId.substring(10,12)).intValue();
+              toYear = new Integer(periodId.substring(12)).intValue();
+              if((fromDay+fromMonth+fromYear+toDay+toMonth+toYear)>0)
+              {   // if not set use defaults for day, month and year
+                  if(fromDay==0) fromDay = 1;
+                  if(fromMonth==0) fromMonth = 1;
+                  if(fromYear==0) fromYear = startYear; 
+                  if(toDay==0) toDay = thisDay;
+                  if(toMonth==0) toMonth = thisMonth;
+                  if(toYear==0) toYear = thisYear;
+      
+                  cal.set(fromYear,fromMonth-1,fromDay,0,0,0);
+                  fromTime = (cal.getTime().getTime()/1000);
+      
+                  cal.set(toYear,toMonth-1,toDay,23,60,0);
+                  toTime = (cal.getTime().getTime()/1000);    
+                  checkOnPeriod = (fromTime<=toTime);
+                  periodExceedsMonth = toTime > (fromTime + 31*24*3600);
+              }
+          } catch (Exception e) { }
+      }
+   
    boolean categorieExists = false;
    %><mm:node number="<%=  sCategory %>" notfound="skipbody"
       ><mm:nodeinfo type="type" write="false" jspvar="nType" vartype="String"><%
@@ -29,15 +75,15 @@
 	HashSet hsetDocumentsNodes = new HashSet();
 	HashSet hsetVacatureNodes = new HashSet();
 
-   LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule"); 
+   LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule");
    if(mod!= null&&!sQuery.equals("")) {
       %><%@include file="includes/hashsets.jsp" %><%
    }
-   --%>
+   %>
 	<td><%@include file="includes/pagetitle.jsp" %></td>
-	<td><% String rightBarTitle = "";
-	    %><%@include file="includes/rightbartitle.jsp" 
-	%></td>
+	<td><% String rightBarTitle = "Uitgebreid Zoeken";
+	    if(actionId.equals("adv_search")) { %><%@include file="includes/rightbartitle.jsp" 
+	%><% } %></td>
 	</tr>
 	<tr>
 	<td class="transperant">
@@ -45,7 +91,7 @@
    <a name="top" />
    <br/>
    <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-   <%-- if(hsetCategories.size()==0) {
+   <% if(hsetCategories.size()==0) {
       %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekcriteria.<%
    } else { 
       %> De volgene zoekresultaten zijn gevonden in de categorieën<% 
@@ -60,10 +106,10 @@
          </mm:node><%
          bFirst = false;
       }
-   --%>
+   %>
    <br/><br/>
    <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-   <%--
+   <%
    // *** Show rubrieken
    if (hsetCategories.size() > 0) {
 
@@ -158,36 +204,16 @@
          <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
       }
    }
---%><br/>
-<form method="post">
-<table border="1">
-		<tr>
-			<td>search</td>
-			<td><input type="text" name="query" value="<c:out value="${param.query}"/>" /></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><input type="submit" value="Search" /></td>
-		</tr>
-</table>
-</form>
-<lm:search var="results">
-		<lm:match field="indexed.text" value="${param.query}" />
-</lm:search>
-<c:forEach var="n" items="${results}" varStatus="stat">
-	<mm:node number="${n.number}" notfound="skip">
-		<b><mm:field name="title" /></b> (<fmt:formatNumber value="${n.score}" type="percent" />)
-			<mm:field name="subtitle" />
-			<div class="intro"><mm:field name="intro" escape="p" /></div>
-		<hr />	
-	</mm:node>
-	<p />
-</c:forEach>
+%><br/>
 </div>
 </td>
 <td><% 
 
 // *********************************** right bar *******************************
-%><img src="media/spacer.gif" width="10" height="1"></td>
+	if(actionId.equals("adv_search")) { 
+		%><%@include file="includes/searchform.jsp"
+		%><%@include file="includes/whiteline.jsp" 
+   	%><% } 
+	%></td>
 <%@include file="includes/footer.jsp" %>
 </mm:cloud>
