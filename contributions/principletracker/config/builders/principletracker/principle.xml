@@ -166,7 +166,7 @@
           <search>12</search>
         </positions>
        </editor>
-       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
        <db>
         <name>argumentation</name>
         <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
