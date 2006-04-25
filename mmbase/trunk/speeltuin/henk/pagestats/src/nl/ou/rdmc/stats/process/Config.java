@@ -35,8 +35,6 @@ public class Config  {
   public final static String IP_PARAM = "ip";
   public final static String SESSIONID_PARAM = "sessionid";
 
-  public final static String ANONYMOUS = "anonymous";
-
   private List logTags;
 
   private Map tagsForSubtraces; // map of usetag by subtrace names
