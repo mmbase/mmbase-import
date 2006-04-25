@@ -315,9 +315,36 @@ public abstract class NodeTest extends BridgeTest {
 
         // set context to something different:
         node.setContext(otherContext);
-
         // now, the new context must be equal to otherContext
-        assertTrue("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext.equals(node.getContext()));
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getValue("owner") + "'", otherContext, node.getValue("owner"));
+        node.commit();
+
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getValue("owner") + "'", otherContext, node.getValue("owner"));
+    }
+
+    public void testSetOwner() {
+        String context = node.getContext();
+        String otherContext = getOtherContext(node);
+
+        if (otherContext.equals(context)) {
+            otherContext = context + "other";
+            System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
+        }
+
+        // set context to something different:
+        node.setValue("owner", otherContext);
+        // now, the new context must be equal to otherContext
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getValue("owner") + "'", otherContext, node.getValue("owner"));
+
+        node.commit();
+
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
+        assertEquals("Context did not change '" + otherContext + "' != '" + node.getValue("owner") + "'", otherContext, node.getValue("owner"));
+
+
     }
 
     public void testFieldGUI() {
