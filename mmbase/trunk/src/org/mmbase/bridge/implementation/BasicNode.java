@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.201 2006-04-19 22:32:15 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.202 2006-04-25 19:35:20 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -329,6 +329,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @since MMBase-1.8
      */
     public Object getValueWithoutProcess(String fieldName) {
+        // an exception is made for 'owner' field in setValueWithoutProcess, so for symmetry, we
+        // must make the same exception here (and also in (getStringValue).
+        if ("owner".equals(fieldName)) {
+            return getContext();
+        }
         Object result = getNode().getValue(fieldName);
         if (result instanceof MMObjectNode) {
             MMObjectNode mmnode = (MMObjectNode) result;
@@ -336,8 +341,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         return result;
     }
-    //TODO, silly get-methods could be moved to AbstractNode, (calling getValueWithoutProcess) but they depend on noderef now, so I
-    //don't dare do that right ahead.
+    //TODO, silly get-methods could be removed (because in AbstractNode), (calling
+    //getValueWithoutProcess) but they depend on noderef now, so I don't dare to do that right ahead.
 
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
@@ -449,6 +454,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public String getStringValue(String fieldName) {
+        if ("owner".equals(fieldName)) {
+            return getContext();
+        }
         String result = getNode().getStringValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
