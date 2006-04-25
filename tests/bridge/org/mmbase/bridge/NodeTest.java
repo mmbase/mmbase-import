@@ -305,6 +305,8 @@ public abstract class NodeTest extends BridgeTest {
 
 
     public void testSetContext() {
+
+        assertTrue(node.getClass().equals(org.mmbase.bridge.implementation.BasicNode.class));
         String context = node.getContext();
         String otherContext = getOtherContext(node);
 
@@ -317,11 +319,11 @@ public abstract class NodeTest extends BridgeTest {
         node.setContext(otherContext);
         // now, the new context must be equal to otherContext
         assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getValue("owner") + "'", otherContext, node.getValue("owner"));
+        assertEquals(node.getContext(), node.getValue("owner"));
         node.commit();
 
         assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getValue("owner") + "'", otherContext, node.getValue("owner"));
+        assertEquals(node.getContext(), node.getValue("owner"));
     }
 
     public void testSetOwner() {
@@ -337,12 +339,12 @@ public abstract class NodeTest extends BridgeTest {
         node.setValue("owner", otherContext);
         // now, the new context must be equal to otherContext
         assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getValue("owner") + "'", otherContext, node.getValue("owner"));
+        assertEquals(node.getContext(), node.getValue("owner"));
 
         node.commit();
 
         assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-        assertEquals("Context did not change '" + otherContext + "' != '" + node.getValue("owner") + "'", otherContext, node.getValue("owner"));
+        assertEquals(node.getContext(), node.getValue("owner"));
 
 
     }
