@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.35 2006-04-11 22:57:36 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.36 2006-04-25 18:46:47 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -118,6 +118,18 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         return field.getDataType().cast(value, node, field);
     }
 
+    protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
+        Object value = super.getFieldValue(node, field, useDefault);
+        // if an enum is required ('not null'), and no default value was specified, then we simply default to the first
+        // entry, as HTML rendering would do any way.
+        if (value == null && field.getDataType().isRequired()) {
+            Iterator i = getIterator(node, field);
+            if (i!= null && i.hasNext()) {
+                value = ((Map.Entry) i.next()).getKey();
+            }
+        }
+        return value;
+    }
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuffer buffer = new StringBuffer();

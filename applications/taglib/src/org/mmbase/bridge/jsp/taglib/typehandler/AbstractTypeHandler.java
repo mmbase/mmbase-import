@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.43 2006-04-19 23:32:54 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.44 2006-04-25 18:46:47 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -131,7 +131,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @since MMBase-1.8
      */
     protected String getClasses(Field field) {
-        return "mm_validate mm_" + field.getName() + " mm_" + field.getNodeManager().getName();
+        return "mm_validate mm_f_" + field.getName() + " mm_nm_" + field.getNodeManager().getName();
     }
 
     /**
@@ -154,18 +154,21 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return show.toString();
     }
 
-    protected Object getFieldValue(String fieldName) throws JspTagException {
+    protected final Object getFieldValue(String fieldName) throws JspTagException {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
-        if ("".equals(found)) found = null;
         return found;
     }
+    protected boolean interpretEmptyAsNull() {
+        return true;
+    }
+
     protected Object cast(Object value, Node node, Field field) {
         return field.getDataType().cast(value, node, field);
     }
     protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         String fieldName = field.getName();
         Object value = getFieldValue(fieldName);
-        if (value == null) {
+        if (value == null || interpretEmptyAsNull()) {
             if (node != null) {
                 value = node.isNull(fieldName) ? null : node.getValue(fieldName);
             } else if (useDefault) {
@@ -183,6 +186,16 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String fieldName = field.getName();
         Object fieldValue = getFieldValue(fieldName);
         DataType dt = field.getDataType();
+        if (fieldValue == null) {
+            log.debug("Field value not found in context, using existing value ");
+            fieldValue = getFieldValue(node, field, node == null);
+        } else if (fieldValue.equals("") && ! field.isRequired()) {
+            log.debug("Field value found in context is empty, interpreting as null");
+            fieldValue = null;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Value for field " + fieldName + ": " + fieldValue);
+        }
         Collection col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
             // do actually set the field, because some need cross-field checking
