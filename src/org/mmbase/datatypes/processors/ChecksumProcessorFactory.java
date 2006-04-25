@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.4 2006-04-18 14:17:24 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.5 2006-04-25 23:53:41 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -44,7 +44,11 @@ public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFac
                 private static final long serialVersionUID = 1L;
 
                 public void commit(Node node, Field field) {
-                    if (node.isNull(sourceField)) return; // leave checksum null too.
+                    if (node.isNull(sourceField)) {
+                        // set checksum null too.
+                        node.setValue(field.getName(), null);
+                        return;
+                    }
                     StringWriter writer = new StringWriter();
                     transformer.transform(node.getInputStreamValue(sourceField), writer);
                     node.setStringValue(field.getName(), writer.toString());
