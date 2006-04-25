@@ -10,7 +10,7 @@
 
        TODO: Some way to edit relations? NODE-field editor?
              
-       $Id: change.jspx,v 1.8 2006-04-19 23:41:09 michiel Exp $
+       $Id: change.jspx,v 1.9 2006-04-25 19:48:05 michiel Exp $
   -->
 
   <jsp:directive.page session="true" />
@@ -21,19 +21,20 @@
     <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
       <mm:cloud rank="basic user">
 
-        <mm:import externid="node" required="true" />
-        <mm:node referid="node">
-
-          <h1>
-            <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
-            <mm:link page="." referids="nodemanager">
-              <a href="${_}" class="back"><span class="navigate">back</span></a>
-            </mm:link>
-            <a href="javascript:document.getElementById('changeform').submit();" class="ok"><span class="navigate">ok</span></a>
-            <mm:nodeinfo type="gui" />
-          </h1>
-
-          <mm:form id="changeform">
+        <mm:form id="changeform">
+          <mm:import externid="node" required="true" />
+          <mm:node referid="node">
+            
+            <h1>
+              <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
+              <mm:link page="." referids="nodemanager">
+                <a href="${_}" class="back"><span class="navigate">back</span></a>
+              </mm:link>
+              <a href="javascript:document.getElementById('changeform').submit();" class="ok"><span class="navigate">ok</span></a>
+              <mm:nodeinfo type="gui" />
+            </h1>
+            
+            
             <input type="hidden" name="node" value="${_node}" />
             <input type="hidden" name="submitted" value="submitted" />
             <table>
@@ -51,19 +52,17 @@
               </tbody>
             </table>
             <input type="submit" name="ok" />
-
             <mm:import externid="submitted" />
             <mm:present referid="submitted">
               <!-- handle the form -->
               <mm:valid>
                 <mm:commit />
                 <jsp:text>Committed !</jsp:text>
-                <mm:redirect page="change.jspx" referids="node" /> <!-- redirect to show actual new values -->
+                <mm:redirect page="change.jspx" referids="node,nodemanager" />
               </mm:valid>
             </mm:present>
-
-          </mm:form>
-        </mm:node>
+          </mm:node>
+        </mm:form>
       </mm:cloud>
     </mm:content>
   </body>
