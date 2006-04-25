@@ -181,14 +181,21 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                     // we have to compare the old value and then the new value of the changed field to see if the status
                     // has changed. if the node used to match the constraint but now doesn't or the reverse of this, flush.
                     if(matcher.eventApplies(newValues, event)){
-                        boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
-                        boolean stillMatches = matcher.nodeMatchesConstraint(newValues, event);
-                        boolean eventMatches = usedToMatch || stillMatches;
+                        boolean eventMatches =
+                            matcher.nodeMatchesConstraint(oldValues, event) || // used to match
+                            matcher.nodeMatchesConstraint(newValues, event); // still matches
 
-                        // It may be important to check whether the changed fields of the are present in the field-list of the
-                        // query. If it is not, and usedToMatch && stillMaches, then we can still return false.
+                        // It may be important to check whether the changed fields of the are
+                        // present in the field-list of the query. If it is not, and usedToMatch &&
+                        // stillMaches, then we can still return false.  Also, it is important to
+                        // check if there is a sort-order on the changed field, because even if the
+                        // field itself is not in the result, and it matches the constraint before
+                        // and after the event, it can still change the order of the result, if
+                        // there is a sortorder on it.
 
                         if (log.isDebugEnabled()) {
+                            boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
+                            boolean stillMatches = matcher.nodeMatchesConstraint(newValues, event);
                             log.debug("** match with old values : " + (usedToMatch ? "match" : "no match"));
                             log.debug("** match with new values : " + (stillMatches ? "match" : "no match"));
                             log.debug("**old values: " + oldValues);
