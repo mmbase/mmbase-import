@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.4 2006-03-23 00:59:07 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.5 2006-04-25 21:40:20 michiel Exp $ --&gt;</jsp:text>
   <mm:content type="text/html" expires="0">
     <head>
       <title>MMBase Richtext Application</title>
@@ -17,8 +17,8 @@
     </head>
 
     <body >
-      <mm:url id="ok" write="false" page="/mmbase/style/images/ok.gif" />
-      <mm:url id="next" write="false" page="/mmbase/style/images/next.gif" />
+      <mm:url id="ok" write="false" page="/mmbase/style/images/ok.png" />
+      <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
       <h1>MMBase RichText</h1>
       <p>
         
@@ -66,8 +66,10 @@
         </tr>
         <tr>
           <td>The example site also needs Editwizards.</td>
-          <td>Those are used for editing the site's structure. Also the 'list' pages of the
-          editwizards are used sometimes</td>
+          <td>
+            Those are used for editing the site's structure. Also the 'list' pages of the
+            editwizards are used sometimes
+          </td>
           <td>
             <mm:haspage page="/mmbase/edit/wizard">
               <img src="${ok}" alt="[ok]"  />

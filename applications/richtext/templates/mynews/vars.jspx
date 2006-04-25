@@ -9,5 +9,5 @@
   <mm:import id="h" externid="home" from="this">my.rich.magazine</mm:import>
   <mm:import externid="vars">home?,edit?</mm:import>
   <mm:import externid="catvars">${vars},cat?,subcat?</mm:import>
-
+  <mm:import externid="language">en</mm:import>
 </jsp:root>

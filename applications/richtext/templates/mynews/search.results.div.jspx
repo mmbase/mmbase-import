@@ -6,8 +6,7 @@
     id="search-result">
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page session="false" />
-  <mm:import externid="cat" />
-  <mm:import externid="subcat" />
+  <jsp:directive.include file="vars.jspx" />
   <mm:import externid="article" />
   <mm:import externid="dosearch" id="search" />
   <mm:isempty referid="search">

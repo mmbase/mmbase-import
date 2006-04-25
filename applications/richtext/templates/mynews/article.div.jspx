@@ -3,8 +3,9 @@
      xmlns:jsp="http://java.sun.com/JSP/Page">
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page session="false" />
+  <jsp:directive.include file="vars.jspx" />
   <mm:import externid="article" required="true" />
-  <mm:content type="application/xml">
+  <mm:content type="application/xml" language="$language">
     <mm:cloud>
       <mm:node referid="article">
         <jsp:directive.include file="rich.jspx" />
@@ -12,9 +13,7 @@
           <jsp:directive.include file="moreimages.jspx" />
           <jsp:directive.include file="referred.jspx" />
           <p>
-            <mm:import externid="cat" />
-            <mm:import externid="subcat" />
-            <mm:link referids="cat?,subcat?" page=".">
+            <mm:link referids="$vars" page=".">
               <a  class="navigate" href="${_}">&amp;lt; back</a>
             </mm:link>
           </p>
