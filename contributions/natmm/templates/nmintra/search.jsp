@@ -4,17 +4,18 @@
 %><%@include file="includes/calendar.jsp" 
 %><mm:import jspvar="paginaID" externid="p">-1</mm:import>
    <%
-   String rootID = "home";
+   //String rootID = "home";
    String sQuery = request.getParameter("search");
 	if(sQuery==null) { sQuery = ""; }
    String sMeta = request.getParameter("trefwoord");
    String sCategory = request.getParameter("categorie");
 	if(sCategory==null) { sCategory = ""; }
 	String sPool = request.getParameter("pool");
+	if (sPool==null) {sPool = ""; }
 	String sArchieve = request.getParameter("archive");
 	String sAdv = request.getParameter("adv");
 	if (sAdv==null) {sAdv = ""; }
-	if (sArchieve==null) {sArchieve = "ja";}
+	if (sArchieve==null) {sArchieve = "nee";}
 	int fromDay = 0; int fromMonth = 0; int fromYear = 0;
    int toDay = 0; int toMonth = 0; int toYear = 0;
    int thisDay = cal.get(Calendar.DAY_OF_MONTH);
@@ -149,35 +150,35 @@
                   <mm:related path="contentrel,artikel" fields="artikel.number">
                      <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetArticlesNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>&article=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
+                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&article=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
                   <mm:related path="contentrel,teaser">
                      <mm:field name="teaser.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetTeaserNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>"><mm:field name="teaser.titel"/></a></li><%
+                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>"><mm:field name="teaser.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
 						<mm:related path="posrel,producttypes" fields="producttypes.number">
                      <mm:field name="producttypes.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetProducctypesNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>&p=<mm:field name="producttypes.number"/>"><mm:field name="producttypes.title"/></a></li><%
+                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&pool=<mm:field name="producttypes.number"/>">*<mm:field name="producttypes.title"/>*</a></li><%
                      }
                      %></mm:field>
                   </mm:related>
 						<mm:related path="posrel,producttypes,posrel,products">
                      <mm:field name="products.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetProductsNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>"><mm:field name="products.name"/></a></li><%
+                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&pool=<mm:field name="producttypes.number"/>&product=<mm:field name="products.number"/>"><mm:field name="products.name"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
 						<mm:related path="posrel,items">
                      <mm:field name="items.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetItemsNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>"><mm:field name="items.titel"/></a></li><%
+                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>"><mm:field name="items.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
@@ -191,7 +192,7 @@
 						<mm:related path="contentrel,vacature">
                      <mm:field name="vacature.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetVacatureNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<mm:field name="pagina.number"/>"><mm:field name="vacature.titel"/></a></li><%
+                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&project=<mm:field name="vacature.number"/>"><mm:field name="vacature.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>
