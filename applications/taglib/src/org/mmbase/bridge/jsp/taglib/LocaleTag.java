@@ -24,13 +24,13 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.22 2006-03-24 17:36:58 michiel Exp $ 
+ * @version $Id: LocaleTag.java,v 1.23 2006-04-26 07:04:44 michiel Exp $ 
  */
 
 public class LocaleTag extends CloudReferrerTag  {
     private static final Logger log = Logging.getLoggerInstance(LocaleTag.class);
 
-    protected static final String KEY = "javax.servlet.jsp.jstl.fmt.locale.page";
+    public static final String KEY = "javax.servlet.jsp.jstl.fmt.locale.page";
     private Attribute language = Attribute.NULL;
     private Attribute country =  Attribute.NULL;
     private Attribute variant =  Attribute.NULL;
