@@ -11,7 +11,7 @@
   </head>
   <body>
     <div style="margin-left: 10px">
-      <di:hasrole role="systemadministrator">
+<%--      <di:hasrole role="systemadministrator"> --%>
         <mm:node number="$component">
           <h1><mm:field name="name" /></h1>
           <mm:field name="classname">
@@ -200,7 +200,7 @@
             </ul>
           <% } %>
         </mm:node>
-      </di:hasrole>
+<%--      </di:hasrole> --%>
     </div>
   </body>
 </html>
