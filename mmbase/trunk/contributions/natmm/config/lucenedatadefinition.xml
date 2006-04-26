@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<luceneindexdefinition defaultindex="natmmDefaultIndex">
+<luceneindexdefinition defaultindex="natmmIndexArtikel">
 
+<!-- NatMM index -->
    <index name="natmmIndexArtikel">
       <table name="artikel">
          <field name="titel">indexed.text</field>
@@ -86,8 +87,68 @@
          </related>
       </table>
    </index>
-   <!--
-   <index name="natmmIndexMeta">
+
+<!-- NMIntra index -->   
+
+	<index name="natmmIndexTeaser">
+      <table name="teaser">
+         <field name="titel">indexed.text</field>
+		 <field name="omschrijving">indexed.text</field>
+         <related name="producttypes">
+            <field name="title">indexed.text</field>
+            <related name="products">
+               <field name="name">indexed.text</field>
+			   <field name="description">indexed.text</field>
+            </related>
+         </related>
+      </table>
+   </index>
+   
+	<index name="natmmIndexProducttypes">
+      <table name="producttypes">
+         <field name="title">indexed.text</field>
+      </table>
+   </index>
+
+	<index name="natmmIndexProducts">
+      <table name="products">
+            <field name="name">indexed.text</field>
+      </table>
+   </index>
+   
+   <index name="natmmIndexItems">
+      <table name="items">
+         <field name="titel">indexed.text</field>
+         <field name="intro">indexed.text</field>
+		 <field name="body">indexed.text</field>
+      </table>
+   </index>
+   
+   <index name="natmmIndexDocuments">
+      <table name="documents">
+         <field name="filename">indexed.text</field>
+      </table>
+   </index>
+
+   <index name="natmmIndexVacature">
+      <table name="vacature">
+         <field name="titel">indexed.text</field>
+         <field name="functienaam">indexed.text</field>
+         <field name="omschrijving">indexed.text</field>
+		 <field name="functieinhoud">indexed.text</field>
+		 <field name="functieomvang">indexed.text</field>
+		 <field name="duur">indexed.text</field>
+		 <field name="afdeling">indexed.text</field>
+		 <field name="functieeisen">indexed.text</field>
+		 <field name="opleidingseisen">indexed.text</field>
+		 <field name="competenties">indexed.text</field>
+		 <field name="salarisschaal">indexed.text</field>
+         <field name="metatags">indexed.text</field>
+      </table>
+   </index>
+
+   
+<!--   <index name="natmmIndexMeta">
       <table name="pagina">
          <field name="metatags" />
          <related name="artikel">
