@@ -14,7 +14,6 @@ MMBase running, you must do the following:
    On default  the distro nees web-app 2.4. If the application server does not  support that
    (e.g. Tomcat 4). then you need to replace web.xml with web-2.3.xml and mmbase-taglib-2.jar with
    mmbase-taglib.jar.
-   Probably also jstl.jar and standard.jar need to be removed or replaced with earlier versions.
 
 3. Download and install ImageMagick. See note below if you're having
    problems with Imagemagick or don't want to use it.
