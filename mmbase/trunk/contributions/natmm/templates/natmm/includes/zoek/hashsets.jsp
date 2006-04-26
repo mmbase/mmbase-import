@@ -63,7 +63,7 @@ while(qStr.indexOf(DOUBLESPACE)>-1) {
 qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ")+ "*";
 %><!-- searching on <%= qStr %> --><% 
 Analyzer analyzer = new StopAnalyzer();
-String[] fields = {"titel", "omschrijving", "ondertitel", "tekst", "metatags"};
+String[] fields = { "indexed.text" };
 Query luceneQuery = MultiFieldQueryParser.parse(qStr, fields, analyzer);
 
 net.sf.mmapps.modules.lucenesearch.LuceneManager lm  = mod.getLuceneManager();
