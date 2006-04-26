@@ -16,7 +16,7 @@
  	   <tr><td>
 		  			<select name="categorie" class="<%= cssClassName %>" style="width:172px;" />
                   <option value="">Alles</option>
-                  <mm:list nodes="<%= request.getParameter("root") %>" path="rubriek1,parent,rubriek2" orderby="parent.pos">
+                  <mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2" orderby="parent.pos">
                      <mm:field name="rubriek2.number" jspvar="sCategoryNumber" vartype="String">
                      <mm:field name="rubriek2.naam" jspvar="sCategoryName" vartype="String">
                         <option value="<%= sCategoryNumber %>" <%
@@ -34,7 +34,7 @@
 		<tr><td>
 				<select name="pool" class="<%= cssClassName %>" style="width:172px;">
 					<option value="">Alles</option>
-					<mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel,posrel,pools" orderby="pools.name" directions="UP">
+					<mm:list path="pools" orderby="pools.name" directions="UP">
 				      <mm:field name="pools.number" jspvar="thispool" vartype="String" write="false">
 				         <option value="<%= thispool %>"  <% if(sPool.equals(thispool)){ %>SELECTED<% } %>><mm:field name="pools.name" />
 			     		</mm:field>

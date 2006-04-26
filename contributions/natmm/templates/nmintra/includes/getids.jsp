@@ -42,7 +42,7 @@ if(websiteId.equals("")&&!pageId.equals("")){
             rubriekId = dummy; 
         %></mm:field
         ><% websiteExists = true; 
-    %></mm:list><%
+    %></mm:list><% 
 
     // homepage
     if(!websiteExists) { 
@@ -85,20 +85,20 @@ if(pageId.equals("")) {
 
 if(rubriekId.equals("")&&!pageId.equals("")){ 
 
-    %><mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2,posrel,pagina" 
+    %><mm:list nodes="<%= websiteId %>" path="rubriek,posrel,pagina" 
         constraints="<%= "pagina.number='" + pageId + "'"%>"
-        ><mm:field name="rubriek2.number" jspvar="dummy" vartype="String" write="false"><%
+        ><mm:field name="rubriek.number" jspvar="dummy" vartype="String" write="false"><%
             rubriekId = dummy; 
         %></mm:field
     ></mm:list><% 
     
     if(rubriekId.equals("")) { 
-      %><mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2,parent,rubriek3,posrel,pagina" 
+      %><mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2,posrel,pagina" 
            constraints="<%= "pagina.number='" + pageId + "'"%>"
            ><mm:field name="rubriek2.number" jspvar="dummy" vartype="String" write="false"><%
                rubriekId = dummy; 
            %></mm:field
-       ></mm:list><%
+       ></mm:list><% 
     }
 } 
 

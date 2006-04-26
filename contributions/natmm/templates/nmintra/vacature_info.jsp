@@ -112,12 +112,12 @@ if(!articleId.equals("")) {
        <tr><td style="padding:10px;padding-top:18px;">
        <%@include file="includes/relatedteaser.jsp" %>
        <% // delete the expired vacatures %>
-       <mm:list nodes="<%= pageId %>" path="pagina,posrel,vacature" fields="vacature.number" orderby="vacature.embargo" directions="DOWN"
+       <mm:list nodes="<%= pageId %>" path="pagina,contentrel,vacature" fields="vacature.number" orderby="vacature.embargo" directions="DOWN"
                 constraints="<%= "vacature.verloopdatum < '" + nowSec + "'" %>"> 
-            ><mm:deletenode element="posrel" />
+            ><mm:deletenode element="contentrel" />
        </mm:list>
        <% // show vacatures the vacatures that passed their embargo %>
-       <mm:list nodes="<%= pageId %>" path="pagina,posrel,vacature" fields="vacature.number"
+       <mm:list nodes="<%= pageId %>" path="pagina,contentrel,vacature" fields="vacature.number"
                 orderby="vacature.embargo" directions="DOWN" constraints="<%= "vacature.embargo <= '" + nowSec + "'" %>"
             ><mm:node element="vacature"><%
                if(isIPage) { readmoreUrl = "ipage.jsp"; }
