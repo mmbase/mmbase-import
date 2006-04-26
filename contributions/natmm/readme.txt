@@ -1,5 +1,5 @@
 NatMM - readme.txt
-Version: 06.04.17
+Version: 06.04.24
 Author: H. Hangyi
 
 NatMM is an MMBase application which is based on LeoCMS, which is specially geared for the use in
@@ -9,9 +9,8 @@ more important than workflow, staging and live clouds, etc.
 Features of LeoCMS (currently) not used in NatMM:
 1. one click editing
 2. workflow
-3. versioning
-4. notification
-5. remote publishing (staging and live clouds)
+3. notification
+4. remote publishing (staging and live clouds)
 
 What is in it for you?
 
@@ -21,6 +20,7 @@ What is in it for you?
    (c) nice-looking editwizards,
    (d) content-library,
    (e) url-rewriting for Google friendly urls, 
+   (f) versioning
    and much more. LeoCMS has been build by Finalist.
 2. The event-database in use at www.natuurmonumenten.nl. For the event-database both a back-office booking system
    and booking on the website is implemented (Struts). The event-database contains export to Excel and functionality to 
