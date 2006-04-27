@@ -71,7 +71,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">Reference to the original image</description>
-        <description xml:lang="nl">Refrentie naar de originele afbeelding</description>
+        <description xml:lang="nl">Referentie naar de originele afbeelding</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">ID</guiname>
