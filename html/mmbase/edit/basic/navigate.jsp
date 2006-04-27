@@ -18,7 +18,7 @@
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
     <a href="<mm:url page="change_node.jsp" referids="node_number" />">
-      <span class="change"></span><span class="alt">[change]</span>
+      <span class="change"><!-- needed for IE --></span><span class="alt">[change]</span>
      </a>
   </th></tr>
     <tr><th width="50%">Destination</th><th width="50%">Source</th></tr>

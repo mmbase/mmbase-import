@@ -47,7 +47,7 @@
   ( <mm:nodeinfo type="nodemanager" /> )
 
     <a href="<mm:url page="navigate.jsp" referids="this_node@node_number" />">
-      <span class="tree"></span><span class="alt">[tree]</span>
+      <span class="tree"><!-- needed for IE --></span><span class="alt">[tree]</span>
      </a>
      <a href="<mm:url page="functions.jsp" referids="this_node@node_number" />">
        Functions-view.
@@ -68,11 +68,10 @@
          </mm:stringlist>
          | <a target="_new" href="<mm:url referids="node_number" page="mmxf_preview.jsp" />">preview</a>
        </mm:present>
-     </td>
    </th></tr>
    <mm:fieldlist id="my_form" type="edit" fields="owner">
      <tr>
-       <td class="data" title="<mm:fieldinfo type="description" /> (<mm:fieldinfo type="datatype" />: <mm:fieldinfo type="datatypedescription" />)"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
+       <td class="data" title="<mm:fieldinfo type="description"  escape="text/html/attribute" /> (<mm:fieldinfo type="datatype" />: <mm:fieldinfo type="datatypedescription" escape="text/html/attribute" />)"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
        <td class="listdata" colspan="2">
          <mm:fieldinfo type="$showtype" />
          <mm:fieldinfo type="errors">
