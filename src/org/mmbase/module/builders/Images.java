@@ -31,7 +31,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.112 2006-04-27 16:40:48 pierre Exp $
+ * @version $Id: Images.java,v 1.113 2006-04-27 16:48:49 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -293,7 +293,7 @@ public class Images extends AbstractImages {
         }
 
         return
-            "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" " +
+            "<a href=\"" + image + "\" class=\"mm_gui\" onclick=\"window.open(this.href); return false;\"><img src=\"" + imageThumb + "\" " +
             heightAndWidth +
             "border=\"0\" alt=\"" + 
             org.mmbase.util.transformers.Xml.XMLAttributeEscape(alt, '\"') + 
