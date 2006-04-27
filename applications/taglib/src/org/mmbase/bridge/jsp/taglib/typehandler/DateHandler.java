@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.44 2006-04-27 16:36:53 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.45 2006-04-27 17:36:44 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -142,16 +142,16 @@ public class DateHandler extends AbstractTypeHandler {
             if (searchi == null) searchi = "no";
             buffer.append("<select name=\"").append(name).append("\" ");
             buffer.append("id=\"").append(fieldid).append("\" class=\"mm_search\">");
-            buffer.append("  <option value=\"no\" ");
+            buffer.append("<option value=\"no\" ");
             if (searchi.equals("no")) buffer.append(" selected=\"selected\" ");
             buffer.append(">&nbsp;</option>");
-            buffer.append("  <option value=\"less\" ");
+            buffer.append("<option value=\"less\" ");
             if (searchi.equals("less")) buffer.append(" selected=\"selected\" ");
             buffer.append(">&lt;</option>");
-            buffer.append("  <option value=\"greater\" ");
+            buffer.append("<option value=\"greater\" ");
             if (searchi.equals("greater")) buffer.append(" selected=\"selected\" ");
             buffer.append(">&gt;</option>");
-            buffer.append("  <option value=\"equal\" ");
+            buffer.append("<option value=\"equal\" ");
             if (searchi.equals("equal")) buffer.append(" selected=\"selected\" ");
             buffer.append(">=</option>");
             buffer.append("</select>");
@@ -205,7 +205,7 @@ public class DateHandler extends AbstractTypeHandler {
             }
 
             if (element.getMax() - element.getMin() < 200) {
-                buffer.append("<select class=\"mm_").append(element.getName()).append("\" ");
+                buffer.append("<select class=\"mm_datetime_").append(element.getName()).append("\" ");
                 buffer.append("name=\"").append(name).append("\" ");
                 buffer.append("id=\"").append(fieldid).append("\" ");
                 addExtraAttributes(buffer);
@@ -229,7 +229,7 @@ public class DateHandler extends AbstractTypeHandler {
                         buffer.append(checkOption);
                     } else {
                         String val = element.toString(i - element.getOffset(), locale, pattern.length());
-                        buffer.append("  <option value=\"" + i + "\">" + val + "</option>");
+                        buffer.append("<option value=\"" + i + "\">" + val + "</option>");
                     }
                 }
                 if (check > element.getMax()) {
@@ -237,7 +237,7 @@ public class DateHandler extends AbstractTypeHandler {
                 }
                 buffer.append("</select>");
             } else {
-                buffer.append("<input class=\"mm_").append(element.getName()).append("\" type=\"text\" size=\"").append( (pattern.length() + 1) ).append("\" ");
+                buffer.append("<input class=\"mm_datetime_").append(element.getName()).append("\" type=\"text\" size=\"").append( (pattern.length() + 1) ).append("\" ");
                 buffer.append("name=\"").append(name).append("\" ");
                 buffer.append("id=\"").append(fieldid).append("\" ");
                 addExtraAttributes(buffer);
