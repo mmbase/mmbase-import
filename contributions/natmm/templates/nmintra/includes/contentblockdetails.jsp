@@ -39,7 +39,7 @@
 			   %><li><a href="archive.jsp?p=<mm:list path="paginatemplate,gebruikt,pagina" constraints="paginatemplate.url LIKE '%archive.jsp'" max="1"><mm:field name="pagina.number" /></mm:list
                               >&project=<mm:field name="projects.number"
 						/>"><span style="text-decoration:underline;" class="dark_<%= cssClassName  
-						%>"><mm:field name="projects.name"/></span></a></li>
+						%>"><mm:field name="projects.titel"/></span></a></li>
 	   </mm:related>
 		<%	
 		if (beginUL) { 

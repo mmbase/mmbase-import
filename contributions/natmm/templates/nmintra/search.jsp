@@ -178,7 +178,7 @@
 						<mm:related path="posrel,items">
                      <mm:field name="items.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetItemsNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>"><mm:field name="items.titel"/></a></li><%
+                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&u=<mm:field name="items.number"/>"><mm:field name="items.titel"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related>

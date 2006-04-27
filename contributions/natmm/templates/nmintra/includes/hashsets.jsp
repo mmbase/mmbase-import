@@ -6,6 +6,7 @@
       int index,
       String path,
       String rootRubriek,
+		String sPoolNumber,
       long nowSec,
 		long fromTime,
 		long toTime,
@@ -38,7 +39,7 @@
 					if ((fromTime>0)||(toTime>0)) {
 						sConstraints += " AND ( " + sBuiderName + ".embargo > '" + fromTime + "') AND (" + sBuiderName + ".embargo < '" + toTime + "')";
 					}
-				}
+				} 
 				NodeList list = cloud.getList(docNumber,path,"pagina.number",sConstraints,null,null,null,true);
             for(int j=0; j<list.size(); j++) {
                String paginaNumber = list.getNode(j).getStringValue("pagina.number");
@@ -73,7 +74,6 @@ qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ")+ "*";
 Analyzer analyzer = new StopAnalyzer();
 String[] fields = {"indexed.text"};
 org.apache.lucene.search.Query luceneQuery = MultiFieldQueryParser.parse(qStr, fields, analyzer);
-
 net.sf.mmapps.modules.lucenesearch.LuceneManager lm  = mod.getLuceneManager();
 net.sf.mmapps.modules.lucenesearch.SearchConfig cf = lm.getConfig();
 
@@ -89,25 +89,25 @@ if((sCategory != null) && (!sCategory.equals(""))) {
 
 %><mm:log jspvar="log"><% //debug = true;
 
-hsetArticlesNodes = addPages(cloud, log, cf, luceneQuery, 0, "artikel,contentrel,pagina", sCategory, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
+hsetArticlesNodes = addPages(cloud, log, cf, luceneQuery, 0, "artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
 
 hsetTeaserNodes = addPages(cloud, log, cf, luceneQuery, 4, "teaser,contentrel,pagina", sCategory, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetTeaserNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetProductsNodes = addPages(cloud, log, cf, luceneQuery, 6, "products,posrel,producttypes,posrel,pagina", sCategory, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
+hsetProductsNodes = addPages(cloud, log, cf, luceneQuery, 6, "products,posrel,producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>ProductsHits:<br/><%= hsetProductsNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetProducctypesNodes = addPages(cloud, log, cf, luceneQuery, 5, "producttypes,posrel,pagina", sCategory, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
+hsetProducctypesNodes = addPages(cloud, log, cf, luceneQuery, 5, "producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>ProducctypesHits:<br/><%= hsetProducctypesNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetItemsNodes = addPages(cloud, log, cf, luceneQuery, 7, "items,posrel,pagina", sCategory, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
+hsetItemsNodes = addPages(cloud, log, cf, luceneQuery, 7, "items,posrel,pagina", sCategory, nowSec, sPool, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>ItemsHits:<br/><%= hsetItemsNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetDocumentsNodes = addPages(cloud, log, cf, luceneQuery, 8, "documents,posrel,pagina", sCategory, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
+hsetDocumentsNodes = addPages(cloud, log, cf, luceneQuery, 8, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>DocumentsHits:<br/><%= hsetDocumentsNodes %><br/><%= hsetPagesNodes %><% } 
 
-//hsetVacatureNodes = addPages(cloud, log, cf, luceneQuery, 9, "vacature,contentrel,pagina", sCategory, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
+hsetVacatureNodes = addPages(cloud, log, cf, luceneQuery, 9, "vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>VacatureHits:<br/><%= hsetVacatureNodes %><br/><%= hsetPagesNodes %><% } 
 
 %></mm:log

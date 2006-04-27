@@ -6,7 +6,6 @@
    }
 				
 // ************************** the membershipshorm ***************************
-
 %><table width="100%" cellspacing="0" cellpadding="0">
 <form name="shoppingcart" method="post" target="" onKeyPress="javascript:useEnterKey();"
 	action="javascript:changeIt('<mm:url page="<%= pageUrl + "&p=bestel&t=change" %>" />');">
@@ -17,13 +16,16 @@
 	<% String articleConstraint = "contentrel.pos='1'"; 
 		if(shop_itemsIterator.size()==0) {
 			articleConstraint = "contentrel.pos='0'"; 
-		}
+		} 
 	%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" constraints="<%= articleConstraint %>"
 		><%@include file="../includes/relatedarticle.jsp" 
 	%></mm:list><br>
 	<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
 	<% if(bShowPrices&&bMemberDiscount) { 
-	   %><%@include file="../includes/membershipsform.jsp"%><br>
+	   %><jsp:include page="../includes/membershipsform.jsp.jsp">
+            <jsp:param name="mi" value="<%= memberId %>" />
+            <jsp:param name="pu" value="<%= pageUrl %>" />
+         </jsp:include><br>
 	   <img src="media/spacer.gif" width="1" height="25" border="0" alt=""><br><%
 	} %>
 	</td>
@@ -31,7 +33,7 @@
 	<td width="180"><%@include file="../includes/relatedshoplinks.jsp"%></td>
 </tr>
 </table>
-<%
+<% 
 // ************************** the table with shop_items ***************************
 if(shop_itemsIterator.size()>0) {
 
@@ -168,7 +170,7 @@ if(generaldiscount>0) {
 			} %></td>
 		<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 	</tr><%
-}
+} 
 // ************************** shipping costs and donation ***************************
 if(bShowPrices) {
    if(bExtraCosts) {

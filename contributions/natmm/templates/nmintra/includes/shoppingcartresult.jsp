@@ -201,7 +201,12 @@ emails =
       String formMessageHref = "shoppingcart.jsp";
       String formMessageLinktext = okLink;
       
-      %><%@include file="../includes/formmessage.jsp" %><%
+      %><jsp:include page="../includes/formmessage.jsp">
+            <jsp:param name="ft" value="<%= formTitle %>" />
+            <jsp:param name="fm" value="<%= formMessage %>" />
+            <jsp:param name="fmh" value="<%= formMessageHref %>" />
+            <jsp:param name="fmlt" value="<%= formMessageLinktext %>" />
+         </jsp:include><%
       
       shop_items.clear();
 		
@@ -210,7 +215,13 @@ emails =
 		String formMessage = warningMessage;
 		String formMessageHref = "javascript:history.go(-1)";
 		String formMessageLinktext = warningLink;
-		%><%@include file="../includes/formmessage.jsp" %><% 
+		%><jsp:include page="../includes/formmessage.jsp">
+            <jsp:param name="ft" value="<%= formTitle %>" />
+            <jsp:param name="fm" value="<%= formMessage %>" />
+            <jsp:param name="fmh" value="<%= formMessageHref %>" />
+            <jsp:param name="fmlt" value="<%= formMessageLinktext %>" />
+         </jsp:include>
+		<% 
 	} 
 
 %>
