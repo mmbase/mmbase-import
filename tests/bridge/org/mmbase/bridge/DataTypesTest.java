@@ -46,7 +46,7 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"abcdefg", "ijklm\nopqrstx", null},
                               new Object[] {}},
                 new Object[] {"line",
-                              new Object[] {"abcdefg", null},
+                              new Object[] {"abcdefg", new Integer(40), new Float(3.141592), null},
                               new Object[] {"ijklm\nopqrstx"}},
                 new Object[] {"field",
                               new Object[] {"xyz", "zyz\nkloink", null} ,
@@ -67,12 +67,12 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"nl", "en", null},
                               new Object[] {"c", "ababab", ""}},
                 new Object[] {"integer",
-                              new Object[] {new Integer(-100), "1234", "1234.4", "1e7",  null},
+                              new Object[] {new Integer(-100), "-1", new Integer(100), "-100", new Float(10.0), "1234", "1234.4", "1e7",  null},
                               new Object[] {new Long(Long.MAX_VALUE), "1e30",  "asdfe"
                               }},
                 new Object[] {"range",
-                              new Object[] {new Integer(5), null},
-                              new Object[] {new Integer(0), new Integer(10)}},
+                              new Object[] {new Integer(5), "1", "6.0", new Float(2.0), null},
+                              new Object[] {"-1", "11", "xyz", new Integer(0), new Integer(10)}},
                 new Object[] {"datetime",
                               new Object[] {new Date(), "2005-01-01", DynamicDate.getInstance("now - 5 year"), null},
                               new Object[] {"xxx"}},
@@ -95,6 +95,10 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"2", "4", new Integer(6), null, new Double(1.0), "1.0", "1e20", null},
                               new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
                               }},
+                new Object[] {"handle",
+                              new Object[] {new byte[] {4, 3, 2, 1}, getBinary(), null}, 
+                              new Object[] {new byte[] {1, 2}}
+                },
                 new Object[] {"boolean",
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", new Integer(1), new Integer(0), null},
                               new Object[] {"asjdlkf", "21", "yes", new Integer(10)}},
@@ -302,6 +306,9 @@ public class DataTypesTest extends BridgeTest {
                     newNode.setValue(field.getName(), null);
                     newNode.setValue(field.getName(), validValues[j]);
                     newNode.commit(); // should not give exception
+                    if(field.getName().equals("handle")) {
+                        assertFalse(newNode.isNull("checksum"));
+                    }
                     // all fields are nullable in 'datatypes' so, it must be possible to set field back to null.
                     newNode.setValue(field.getName(), null);
 
@@ -310,6 +317,9 @@ public class DataTypesTest extends BridgeTest {
                     newNode.commit();
                     assertNull(newNode.getValue(field.getName()));
                     assertTrue(newNode.isNull(field.getName()));
+                    if(field.getName().equals("handle")) {
+                        assertTrue(newNode.isNull("checksum"));
+                    }
                 } catch (Throwable t) {
                     AssertionFailedError fail = new AssertionFailedError("During field " + field);
                     fail.initCause(t);
@@ -361,7 +371,7 @@ public class DataTypesTest extends BridgeTest {
     }
 
 
-    protected byte[] getBinary() {
+    protected  byte[] getBinary() {
         return new byte[] {1, 2, 3, 4};
     }
     public void testBinary() {
