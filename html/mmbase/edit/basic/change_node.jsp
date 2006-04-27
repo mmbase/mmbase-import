@@ -102,7 +102,7 @@
   <td class="navigate" width="0%">
  <mm:maywrite>
  <a  href="<mm:url referids="this_node@node_number"  page="edit_aliases.jsp" />">
-       <span class="select"></span><span class="alt">[edit aliases]</span>
+       <span class="select"><!-- needed for IE --></span><span class="alt">[edit aliases]</span>
 </a>     
    </mm:maywrite>    
 </tr>
