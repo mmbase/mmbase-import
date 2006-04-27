@@ -60,8 +60,8 @@
       
       <field>
         <descriptions>
-          <description xml:lang="en">Objectnumber referenced by the jumper, i.e. for teasers</description>
-          <description xml:lang="nl">Object nummer referentie, o.a. voor teasers</description>
+          <description xml:lang="en">Object number referenced by the jumper, i.e. for teasers</description>
+          <description xml:lang="nl">Objectnummerreferentie, o.a. voor teasers</description>
         </descriptions>
        <gui>
          <guiname xml:lang="en">ID</guiname>
@@ -75,10 +75,9 @@
            <search>2</search>
          </positions>
        </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
        <db>
          <name>id</name>
-         <type state="persistent" notnull="false" key="false">INTEGER</type>
+         <type state="persistent" notnull="false" key="false">NODE</type>
        </db>
     </field>
 
