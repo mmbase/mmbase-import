@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.51 2006-04-20 00:14:02 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.52 2006-04-27 16:40:48 pierre Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -106,7 +106,7 @@ public class ImageCaches extends AbstractImages {
 
             List cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
             MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
-            //heightAndWidth = "heigth=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
+            //heightAndWidth = "height=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
             heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
             imageThumb = servlet.toString() + thumb.getNumber();
             if (res != null) {

@@ -21,7 +21,7 @@
     background: #eee;
     visibility: hidden;
     top: 50px;
-    heigth: 100%;
+    height: 100%;
 }
  div.toc span {
    margin-left: 3ex;
