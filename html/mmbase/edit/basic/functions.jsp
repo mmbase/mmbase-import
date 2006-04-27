@@ -10,7 +10,7 @@
 <mm:node number="$node_number" jspvar="node">
   <h1><mm:nodeinfo type="gui" /> (<mm:nodeinfo type="guinodemanager" />)
         <a href="<mm:url referids="node_number,node_number" page="change_node.jsp"/>">
-           <span class="change"></span><span class="alt">[change]</span>  
+           <span class="change"><!-- needed for IE --></span><span class="alt">[change]</span>  
          </a>
 
   </h1>

@@ -203,7 +203,7 @@
         <mm:maydelete>
           <mm:hasrelations inverse="true">
             <a href="<mm:url referid="deleteurl" referids="node_number"  />">
-              <span class="delete"></span><span class="alt">[delete]</span>
+              <span class="delete"><!-- needed for IE --></span><span class="alt">[delete]</span>
             </a>
           </mm:hasrelations>
           <mm:hasrelations>
@@ -215,7 +215,7 @@
      <td class="navigate">
     <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || mayLink) { %>
        <a href="<mm:url page="$to_page" referids="node_number,node_number@push,nopush?" />">
-         <span class="change"></span><span class="alt">[change]</span>
+         <span class="change"><!-- needed for IE --></span><span class="alt">[change]</span>
        </a>
      <% } else { %>&nbsp;<% } %>
      </td>

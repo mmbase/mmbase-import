@@ -88,7 +88,7 @@
         <mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param>
         <mm:param name="delete">true</mm:param>
         </mm:url>' >
-        <span class="delete"></span><span class="alt">x</span>
+        <span class="delete"><!-- needed for IE --></span><span class="alt">x</span>
       </a>
     </mm:maydelete>
     <mm:maywrite>

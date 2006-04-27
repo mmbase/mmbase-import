@@ -29,7 +29,7 @@
     <tr><td><mm:write /></td><td><a href="<mm:url referids="node_number">
          <mm:param name="delete_alias"><mm:write referid="alias" /></mm:param>
 	 </mm:url>">
- <span class="delete"></span><span class="alt">[delete]</span></a>
+ <span class="delete"><!-- needed for IE --></span><span class="alt">[delete]</span></a>
 </mm:aliaslist>
 </table>
 </td></tr>
