@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.41 2006-04-19 23:32:54 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.42 2006-04-27 09:31:38 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -203,7 +203,7 @@ public class DateHandler extends AbstractTypeHandler {
                 addExtraAttributes(buffer);
                 buffer.append(">");
                 String checkOption = "  <option selected=\"selected\" value=\"" + check + "\">" +
-                    (check == -1 ? "==" : element.toString(check - element.getOffset(), locale, pattern.length())) +
+                    (check == -1 ? "--" : element.toString(check - element.getOffset(), locale, pattern.length())) +
                     "</option>";
                 if (! required && first) {
                     if (check == -1) {
