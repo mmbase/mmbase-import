@@ -87,7 +87,7 @@
         JSPX-code. On the other hand they do e.g. not work in IE, and lack all kind of features.
       </td>
       <td class="link" >
-        <a href="<mm:url page="/mmbase/edit/jspx" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="/mmbase/edit/x" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
