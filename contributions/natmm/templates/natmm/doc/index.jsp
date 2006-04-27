@@ -16,16 +16,28 @@
      <table>
         <tr><th style="width:80%;">Gebruikershandleiding voor</th>
             <th style="width:20%;">Document</th></tr>
-        <tr><td style="width:80%;">het <b>zoeken van activiteiten</b> in de Centrale Activiteiten Database</td>
-            <td style="width:20%;"><a href="GebruikershandleidingCADZoek.doc" title="GebruikershandleidingCADZoek.doc">GebruikershandleidingCADZoek.doc</a></td></tr>
-        <tr><td style="width:80%;">het <b>aanmelden van gebruikers</b> op de Centrale Activiteiten Database</td>
-            <td style="width:20%;"><a href="GebruikershandleidingCADAanmeld.doc" title="GebruikershandleidingCADAanmeld.doc">GebruikershandleidingCADAanmeld.doc</a></td></tr>
-        <tr><td style="width:80%;">het <b>invoeren en bewerken van activiteiten</b> in de Centrale Activiteiten Database</td>
-            <td style="width:20%;"><a href="GebruikershandleidingCADBewerk.doc" title="GebruikershandleidingCADBewerk.doc">GebruikershandleidingCADBewerk.doc</a></td></tr>
+
         <tr><td style="width:80%;">het werken met de MMBase <b>editwizards</b></td>
             <td style="width:20%;"><a href="GebruikershandleidingEditwizards.doc" title="GebruikershandleidingEditwizards.doc">GebruikershandleidingEditwizards.doc</a></td></tr>
-         <tr><td style="width:80%;"><b>autorisatie van gebruikers</b> in de beheeromgeving</td>
+
+        <tr><td style="width:80%;">het werken met <b>www.natuurmonumenten.nl (inclusief Naardermeer, A6-A9, etc.)</b></td>
+            <td style="width:20%;"><a href="GebruikershandleidingNatMM.doc" title="GebruikershandleidingNatMM.doc">GebruikershandleidingNatMM.doc</a></td></tr>
+
+        <tr><td style="width:80%;">het <b>zoeken van activiteiten</b> in de Centrale Activiteiten Database</td>
+            <td style="width:20%;"><a href="GebruikershandleidingCADZoek.doc" title="GebruikershandleidingCADZoek.doc">GebruikershandleidingCADZoek.doc</a></td></tr>
+
+        <tr><td style="width:80%;">het <b>aanmelden van gebruikers</b> op de Centrale Activiteiten Database</td>
+            <td style="width:20%;"><a href="GebruikershandleidingCADAanmeld.doc" title="GebruikershandleidingCADAanmeld.doc">GebruikershandleidingCADAanmeld.doc</a></td></tr>
+
+        <tr><td style="width:80%;">het <b>invoeren en bewerken van activiteiten</b> in de Centrale Activiteiten Database</td>
+            <td style="width:20%;"><a href="GebruikershandleidingCADBewerk.doc" title="GebruikershandleidingCADBewerk.doc">GebruikershandleidingCADBewerk.doc</a></td></tr>
+
+        <tr><td style="width:80%;"><b>briefing voor gidsen</b> voor gebruik van de Centrale Activiteiten Database</td>
+            <td style="width:20%;"><a href="BriefingGidsen.doc" title="BriefingGidsen.doc">BriefingGidsen.doc</a></td></tr>
+
+        <tr><td style="width:80%;"><b>autorisatie van gebruikers</b> in de beheeromgeving</td>
             <td style="width:20%;"><a href="GebruikershandleidingAutorisatie.doc" title="GebruikershandleidingAutorisatie.doc">GebruikershandleidingAutorisatie.doc</a></td></tr>
+
         <tr><td style="width:80%;">het gebruiken van de <b>Mailformulier functionaliteit</b> door externe website</td>
             <td style="width:20%;"><a href="GebruikershandleidingMailformExtern.doc" title="GebruikershandleidingMailformExtern.doc">GebruikershandleidingMailformExtern.doc</a></td></tr>
      </table>
