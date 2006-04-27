@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.47 2006-04-27 11:27:39 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.48 2006-04-27 17:35:59 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -228,14 +228,20 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     }
                 }
             }
-            return "";
+            if (errors) {
+                return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
+            } else {
+                return "";
+            }
         } else {
             FormTag form =  (FormTag) tag.findParentTag(FormTag.class, null, false);
             if (form != null) {
                 form.setValid(false);
             }
             if (errors) {
-                StringBuffer show = new StringBuffer("<div class=\"mm_check_error\">");
+                StringBuffer show = new StringBuffer("<div id=\"");
+                show.append(prefixError(field.getName()));
+                show.append("\" class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
                 Iterator i = col.iterator();
                 while (i.hasNext()) {
@@ -368,6 +374,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String prefix = tag.getPrefix();
         if (! prefix.equals("")) prefix += "_";
         return "mm_" + prefix + s;
+    }
+
+    protected String prefixError(String s) throws JspTagException {
+        String prefix = tag.getPrefix();
+        if (! prefix.equals("")) prefix += "_";
+        return "mm_check_" + prefix + s;
     }
 
 
