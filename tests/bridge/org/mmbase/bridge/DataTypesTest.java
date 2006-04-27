@@ -115,13 +115,16 @@ public class DataTypesTest extends BridgeTest {
                 new Object[] {"boolean_string",
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", null},
                               new Object[] { "asjdlkf", "21", new Integer(10)}},
+                new Object[] {"integer_string",
+                              new Object[] {"1", "100", new Integer(10), new Integer(-1), "-1" , new Float(3.141593), "", null},
+                              new Object[] { "asjdlkf"}},
                 new Object[] {"node",
-                              new Object[] {node1, node2, new Integer(node1.getNumber()), new Integer(node2.getNumber()),  null},
-                              new Object[] {"", "asjdlkf", new Integer(-1), new Integer(-100)}}
+                              new Object[] {node1, node2, "" + node1.getNumber(), new Integer(node1.getNumber()), new Integer(node2.getNumber()),  new Integer(-1), null},
+                              new Object[] {"", "asjdlkf", new Integer(-2), new Integer(-100)}}
                 ,
                 new Object[] {"typedef",
-                              new Object[] {node1, new Integer(node1.getNumber()),  null},
-                              new Object[] {"", "asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-1), new Integer(-100)}}
+                              new Object[] {node1, new Integer(node1.getNumber()), new Integer(-1),  null},
+                              new Object[] {"", "asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-2), new Integer(-100)}}
                 /*
                   XML not very well supported yet
                 new Object[] {"xml",
