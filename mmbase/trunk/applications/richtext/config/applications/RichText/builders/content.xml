@@ -35,7 +35,9 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minLength value="2" />
+      </datatype>
       <db>
         <name>title</name>
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
