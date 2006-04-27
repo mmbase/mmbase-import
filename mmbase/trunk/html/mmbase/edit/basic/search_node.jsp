@@ -50,7 +50,7 @@
       (<mm:nodeinfo nodetype="$node_type" type="type" />)      
       <mm:maycreate type="$node_type">
         <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
-          <span class="create"></span><span class="alt">[create]</span>
+          <span class="create"><!-- needed for IE --></span><span class="alt">[create]</span>
         </a>
     </mm:maycreate>
     </th>
@@ -84,14 +84,14 @@
       	    	    	<td class="navigate">
                         <% if (nt.mayCreateNode()) { %>
 			    <a href="<mm:url page="create_node.jsp"><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>" >
-                  <span class="create"></span><span class="alt">[create]</span>
+                  <span class="create"><!-- needed for IE --></span><span class="alt">[create]</span>
              	  </a>
                        <% } else { %>&nbsp;<% } %>
       	    	    	</td>												
       	    	    	<td class="navigate">
 			    <% if (! nt.getName().equals(node_type)) { %>
             	 <a href="<mm:url><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>">
-                  <span class="select"></span><span class="alt">[list]</span>
+                  <span class="select"><!-- needed for IE --></span><span class="alt">[list]</span>
                </a>
 			    <% } else { %>
 			    &nbsp;
