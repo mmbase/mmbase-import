@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.158 2006-02-13 18:05:31 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.159 2006-04-27 11:57:46 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable {
 
@@ -221,19 +221,19 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         }
     }
 
-    public Node getNode(int nodeNumber) throws NotFoundException {
+    public final Node getNode(int nodeNumber) throws NotFoundException {
         return getNode("" + nodeNumber);
     }
 
-    public Node getNodeByAlias(String aliasname) throws NotFoundException {
+    public final Node getNodeByAlias(String aliasname) throws NotFoundException {
         return getNode(aliasname);
     }
 
-    public Relation getRelation(int nodeNumber) throws NotFoundException {
+    public final Relation getRelation(int nodeNumber) throws NotFoundException {
         return getRelation("" + nodeNumber);
     }
 
-    public Relation getRelation(String nodeNumber) throws NotFoundException {
+    public final Relation getRelation(String nodeNumber) throws NotFoundException {
         return (Relation)getNode(nodeNumber);
     }
 
@@ -546,6 +546,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         Transaction tran = (Transaction)transactions.get(name);
         if (tran == null) {
             tran = createTransaction(name, false);
+        } else {
         }
         return tran;
     }
@@ -590,7 +591,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
     * @param nodeID the node on which to check the operation
     */
     void verify(Operation operation, int nodeID) {
-        if (mmbaseCop == null) throw new org.mmbase.security.SecurityException("No MMBaseCop"); // mmbase cop can be null if deserialization not yet ready.
+        while (mmbaseCop == null) {
+            synchronized(this) {
+                if (mmbaseCop == null) {
+                    throw new org.mmbase.security.SecurityException("No MMBaseCop"); // mmbase cop can be null if deserialization not yet ready.
+                }
+            }
+        }
         mmbaseCop.getAuthorization().verify(userContext, nodeID, operation);
     }
 
@@ -619,6 +626,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
 
     // javadoc inherited
     public NodeList getList(Query query) {
+        log.debug("get List");
         NodeList result;
         if (query.isAggregating()) { // should this perhaps be a seperate method? --> Then also 'isAggregating' not needed any more
             result = getResultNodeList(query);
@@ -649,6 +657,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      * @since MMBase-1.7
      */
     protected NodeList getResultNodeList(Query query) {
+        log.debug("Resultnode list");
         try {
 
             boolean checked = setSecurityConstraint(query);
@@ -717,6 +726,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
      * @since MMBase-1.7
      */
     boolean setSecurityConstraint(Query query) {
+        if (mmbaseCop == null) return false;
         Authorization auth = mmbaseCop.getAuthorization();
         if (query instanceof BasicQuery) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
             BasicQuery bquery = (BasicQuery) query;
@@ -967,6 +977,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         properties.put(key, value);
     }
 
+    public Map getProperties() {
+        return Collections.unmodifiableMap(properties);
+    }
+
     public Collection getFunctions(String setName) {
         FunctionSet set = FunctionSets.getFunctionSet(setName);
         if (set == null) {
@@ -1030,14 +1044,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
         description = name;
         properties = (HashMap) in.readObject();
         locale     = (Locale) in.readObject();
-        org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter());        
+        org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter());
         transactions = new HashMap();
         nodeManagerCache = new HashMap();
     }
 
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-
         out.writeUTF(name);
         out.writeObject(userContext);
         HashMap props = new HashMap();
@@ -1057,16 +1070,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable,
 
     class BasicCloudStarter implements Runnable {
         public void run() {
-            LocalContext.getCloudContext().assertUp();
-            BasicCloud.this.init();
-            if (BasicCloud.this.userContext == null) {
-                throw new java.lang.SecurityException("Login invalid: did not supply user object");
+            synchronized(BasicCloud.this) {
+                LocalContext.getCloudContext().assertUp();
+                BasicCloud.this.init();
+                if (BasicCloud.this.userContext == null) {
+                    throw new java.lang.SecurityException("Login invalid: did not supply user object");
+                }
+                if (BasicCloud.this.userContext.getAuthenticationType() == null) {
+                    log.warn("Security implementation did not set 'authentication type' in the user object.");
+                }
+                log.service("Deserialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
             }
-            
-            if (BasicCloud.this.userContext.getAuthenticationType() == null) {
-                log.warn("Security implementation did not set 'authentication type' in the user object.");
-            }
-            log.service("Deserialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
         }
     }
 }
