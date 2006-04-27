@@ -28,8 +28,8 @@
 	
 	TreeMap shop_itemsIterator = (TreeMap) shop_items.clone();
 	int totalSum = 0;
-	
-	if(actionId.equals("proceed")) {
+
+	if(actionId.equals("proceed")) { 
 		%><%@include file="includes/shoppingcartform.jsp" 
 		%><%@include file="includes/shoppingcartscript.jsp" %><%
 	} else if(actionId.equals("send")&&shop_items.size()>0) {

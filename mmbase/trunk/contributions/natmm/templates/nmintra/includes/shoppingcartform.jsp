@@ -57,11 +57,11 @@ if(bShowPrices) {
            ></mm:field><%
            // *** for all shop items, that use this pool ***
            if(shop_items.size()>1) { 
-               %><mm:list nodes="<%= allShop_items %>" path="items,posrel,pools" orderby="items.title" directions="UP" 
+               %><mm:list nodes="<%= allShop_items %>" path="items,posrel,pools" orderby="items.titel" directions="UP" 
          	   	fields="items.number" distinct="true" constraints="<%= "pools.number = '"  + thisPool + "'" %>"
          		   ><mm:first>Antwoorden zijn nodig voor:</mm:first
          		   ><mm:node element="items"
-         		      ><li><mm:field name="title" />
+         		      ><li><mm:field name="titel" />
                	   <mm:field name="number" jspvar="thisShop_item" vartype="String" write="false"><%
                   	   String numberOfItems = (String) shop_items.get(thisShop_item);
                   	   %>(<%= numberOfItems %> items)<%
@@ -71,7 +71,7 @@ if(bShowPrices) {
    	     } 
    	     %><%@include file="../includes/shoppingcartnordered.jsp" %><%
    	     for(int i =0; i< numberOrdered; i++) {
-   	         %><%@include file="../includes/shoppingcartquestions.jsp" %><% 
+   	         %><%@include file="../includes/shoppingcartquestions.jsp" %><%
            }
          %></td></tr>
        </mm:node

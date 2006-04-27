@@ -1,3 +1,9 @@
+<%@include file="../includes/templateheader.jsp" %>
+<%@include file="../includes/calendar.jsp" %>
+<%@include file="../includes/feedbackformscript.jsp" %>
+<%@include file="../includes/getresponse.jsp" %>
+<% String memberId = request.getParameter("mi");
+	String pageUrl = request.getParameter("pu");%>
 <table width="180" cellspacing="0" cellpadding="0" align="right">
 	<tr>
 		<td width="180">

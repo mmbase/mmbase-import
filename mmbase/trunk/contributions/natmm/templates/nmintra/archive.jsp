@@ -73,7 +73,7 @@
       if(!projectNameId.equals("")) {
           extTemplateQueryString += "&projectname=" + projectNameId;
           if(!allConstraint.equals("")) allConstraint += " AND ";
-          allConstraint += " UPPER(projects.name) LIKE '%" + projectNameId.toUpperCase() + "%'";
+          allConstraint += " UPPER(projects.titel) LIKE '%" + projectNameId.toUpperCase() + "%'";
       }
       if(!departmentId.equals("default")) {
           extTemplateQueryString += "&department=" + departmentId;
@@ -164,7 +164,7 @@
 				}
                 %><%@include file="includes/offsetlinks.jsp" %><%
                 if(listSize>0) {
-                   %><mm:list nodes="<%= searchResults %>" path="projects" orderby="projects.name" directions="UP" 
+                   %><mm:list nodes="<%= searchResults %>" path="projects" orderby="projects.titel" directions="UP" 
                        offset="<%= "" + thisOffset*10 %>" max="10" distinct="true" fields="projects.number"
                        ><mm:node element="projects"><%
                        String readmoreUrl = "archive.jsp";
@@ -174,7 +174,7 @@
                            readmoreUrl += project_number; 
                        %></mm:field
                        ><a href="<%= readmoreUrl %>"><div style="text-decoration:underline;" class="dark_<%= cssClassName  
-                            %>"><mm:field name="name"/></div>
+                            %>"><mm:field name="titel"/></div>
                             <%@include file="includes/dateperiod.jsp" %><br/>
                             <% String summary = ""; 
                               %><mm:field name="goal" jspvar="projects_goal" vartype="String" write="false"
@@ -182,7 +182,7 @@
                                       summary += projects_goal + " ";
                                   %></mm:isnotempty
                               ></mm:field
-                              ><mm:field name="description" jspvar="projects_description" vartype="String" write="false"
+                              ><mm:field name="omschrijving" jspvar="projects_description" vartype="String" write="false"
                                   ><mm:isnotempty><%
                                       summary += projects_description;
                                   %></mm:isnotempty

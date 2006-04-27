@@ -22,7 +22,7 @@ nodePaths.put("producttypes", fields);
 fields = new Vector(); fields.add(new Integer(300)); fields.add("products.name"); fields.add("products.description");
 nodePaths.put("producttypes,posrel,products", fields);
 
-fields = new Vector(); fields.add(new Integer(200)); fields.add("items.title"); fields.add("items.intro"); fields.add("items.body");
+fields = new Vector(); fields.add(new Integer(200)); fields.add("items.titel"); fields.add("items.intro"); fields.add("items.body");
 nodePaths.put("items", fields);
 
 fields = new Vector(); fields.add(new Integer(200)); fields.add("documents.filename");

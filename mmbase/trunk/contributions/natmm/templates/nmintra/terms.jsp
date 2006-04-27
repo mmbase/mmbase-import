@@ -91,7 +91,7 @@
                                     readmoreUrl += project_number; 
                                 %></mm:field
                                 ><a href="<%= readmoreUrl %>"><span style="text-decoration:underline;" class="dark_<%= cssClassName  
-                                    %>"> <mm:field name="projects.name"/></span></a>
+                                    %>"> <mm:field name="projects.titel"/></span></a>
                                 <mm:last>]</mm:last>
                             </mm:related
                             ><mm:related path="rolerel,terms" orderby="terms.name" searchdir="destination"
