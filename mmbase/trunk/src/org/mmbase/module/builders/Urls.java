@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.24 2006-04-12 19:47:38 michiel Exp $
+ * @version $Id: Urls.java,v 1.25 2006-04-27 16:48:49 michiel Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Urls.class);
@@ -38,7 +38,7 @@ public class Urls extends MMObjectBuilder {
             String url = node.getStringValue("url");
             if (url != null) {
                 url = org.mmbase.util.transformers.Xml.XMLEscape(url);
-                return "<a href=\"" + url + "\" target=\"extern\">" + url + "</a>";
+                return "<a href=\"" + url + "\" class=\"mm_gui\" onclick=\"window.open(this.href); return false;\">" + url + "</a>";
             }
         }
         return null;
