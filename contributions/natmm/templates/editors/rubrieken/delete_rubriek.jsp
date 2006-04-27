@@ -1,5 +1,18 @@
 <%@page import="nl.leocms.util.*, nl.leocms.authorization.*, org.mmbase.bridge.*" %>
 <%@include file="/taglibs.jsp" %>
+<% 
+String referrer = request.getParameter("referrer");
+if(referrer==null) { 
+   referrer = request.getHeader("referer"); // html-specs are wrong
+   if(referrer==null) { 
+      referrer = "";
+   }
+}
+String parentFrame = "frames.jsp";
+if(referrer.indexOf("paginamanagement")>-1) {
+   parentFrame = "/editors/paginamanagement/frames.jsp";
+}
+%>
 <html>
 <head>
 <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
@@ -10,7 +23,7 @@ input { width: 100px;}
 </style>
 <script language="JavaScript1.1">
       function refreshParentFrameAndClose() {
-         opener.top.bottompane.location = "frames.jsp";
+         opener.top.bottompane.location = "<%= parentFrame %>";
          window.close();
       }
    </script>
@@ -49,7 +62,12 @@ if ((remove != null) && (remove.equals("ja"))) {
          if ((role!= null) && (role.getRol() >= nl.leocms.authorization.Roles.EINDREDACTEUR)) {
             %>
             Weet u het zeker dat u deze rubriek wilt verwijderen?
-            <form action="delete_rubriek.jsp"><input type="hidden" name="number" value="<%=number%>"><input type="submit" name="remove" value="ja"/>&nbsp;<input type="button" value="nee" onclick="window.close()"/></form>
+            <form action="delete_rubriek.jsp">
+               <input type="hidden" name="referrer" value="<%=referrer%>">
+               <input type="hidden" name="number" value="<%=number%>">
+               <input type="submit" name="remove" value="ja"/>&nbsp;
+               <input type="button" value="nee" onclick="window.close()"/>
+            </form>
             <%
          } else {
             %>
