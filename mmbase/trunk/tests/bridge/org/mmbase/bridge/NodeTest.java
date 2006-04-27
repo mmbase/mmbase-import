@@ -306,7 +306,6 @@ public abstract class NodeTest extends BridgeTest {
 
     public void testSetContext() {
 
-        assertTrue(node.getClass().equals(org.mmbase.bridge.implementation.BasicNode.class));
         String context = node.getContext();
         String otherContext = getOtherContext(node);
 
