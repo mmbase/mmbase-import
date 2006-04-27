@@ -33,7 +33,7 @@ import nl.leocms.versioning.VersioningController;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 23-okt-2003
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ContentElementBuilder extends HtmlBuilder {
 
@@ -47,24 +47,25 @@ public class ContentElementBuilder extends HtmlBuilder {
     * @see org.mmbase.module.core.MMObjectBuilder#setDefaults(org.mmbase.module.core.MMObjectNode)
     */
    public void setDefaults(MMObjectNode node) {
-      super.setDefaults(node);
+      log.debug("DEFAULT create node: " + node.getName() + " "  + node.getNumber());
 
-      //mmbase datetime representation is in seconds
       int seconds = (int) (System.currentTimeMillis()/1000);
+      super.setDefaults(node);
+      //mmbase datetime representation is in seconds
       node.setValue("creatiedatum",seconds);
       node.setValue("datumlaatstewijziging",seconds);
       node.setValue("embargo",seconds);
       node.setValue("verloopdatum", seconds + (30*24*60*60) ); // one month
       node.setValue("reageer","0"); // 0 = false
-      log.debug("DEFAULT create node: " + node.getNumber() + " time: " + seconds);
    }
 
    /**
     * @see org.mmbase.module.core.MMObjectBuilder#preCommit(org.mmbase.module.core.MMObjectNode)
     */
    public MMObjectNode preCommit(MMObjectNode node) {
-      super.preCommit(node);
+      log.debug("PRECOMMIT lastmodified node: "  + node.getName() + " " + node.getNumber());
 
+      super.preCommit(node);
       //mmbase datetime representation is in seconds
       int seconds = (int) (System.currentTimeMillis()/1000);
       node.setValue("datumlaatstewijziging",seconds);
@@ -75,16 +76,15 @@ public class ContentElementBuilder extends HtmlBuilder {
    public boolean commit(MMObjectNode node) {
 
       if (ADDVERSION_ON_COMMIT) {
-         String builderName = node.getBuilder().getTableName();
-      	 if (!builderName.equals("evenement") && !builderName.equals("pagina")) {
+         String builderName = node.getName();
+         log.debug("COMMIT new version node for: " + builderName + " " + node.getNumber());
+      	if (!builderName.equals("evenement") && !builderName.equals("pagina")) {
             Cloud cloud = CloudFactory.getCloud();
             VersioningController versioningController = new VersioningController(cloud);
             versioningController.addVersion(cloud.getNode(node.getNumber()));
          }
       }
-  
-      boolean bSuperCommit = super.commit(node);
          
-      return bSuperCommit;
+      return super.commit(node);
    }
 }
