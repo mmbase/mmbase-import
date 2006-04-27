@@ -10,7 +10,7 @@
 
        TODO: Some way to edit relations? NODE-field editor?
              
-       $Id: change.jspx,v 1.10 2006-04-27 09:56:23 michiel Exp $
+       $Id: change.jspx,v 1.11 2006-04-27 11:44:57 michiel Exp $
   -->
 
   <jsp:directive.page session="true" buffer="200kb" />
@@ -42,7 +42,7 @@
             <input type="hidden" name="submitted" value="submitted" />
             <table>
               <tbody>
-                <mm:fieldlist type="edit" fields="owner">
+                <mm:fieldlist type="edit" fields="number,owner">
                   <mm:index id="index" write="false" />
                   <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
                     <td><mm:fieldinfo type="guiname" /></td>
