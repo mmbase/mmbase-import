@@ -110,7 +110,7 @@ public class PaginaAllRenderer extends TreeCellRendererAdapter implements TreeCe
             }
             if ((model.getChildCount(n) == 0) && (level > 0)) {
                if (role.getRol() >= Roles.EINDREDACTEUR) {
-                  out.print("&nbsp;<a href=\"delete_rubriek.jsp?number=" + n.getNumber() + "\" onclick=\"openPopupWindow('delete_rubriek', 500, 300)\""+ " target=\"delete_rubriek\"" +"\">");
+                  out.print("&nbsp;<a href=\"../rubrieken/delete_rubriek.jsp?number=" + n.getNumber() + "\" onclick=\"openPopupWindow('delete_rubriek', 500, 300)\""+ " target=\"delete_rubriek\"" +"\">");
                   out.println("<img src='../img/remove.gif' border='0' align='top' title='Verwijder rubriek'/>");
                   out.print("</a>");
                }
