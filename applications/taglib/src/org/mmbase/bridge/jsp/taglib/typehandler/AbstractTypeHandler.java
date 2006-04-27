@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.46 2006-04-27 09:31:59 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.47 2006-04-27 11:27:39 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -154,8 +154,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return show.toString();
     }
 
-    protected final Object getFieldValue(String fieldName) throws JspTagException {
-        Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+    /**
+     * Returns the field value as specified by the client's post.
+     */
+    protected Object getFieldValue(Field field) throws JspTagException {
+        Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
         return found;
     }
     protected boolean interpretEmptyAsNull(Field field) {
@@ -165,10 +168,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     protected Object cast(Object value, Node node, Field field) {
         return field.getDataType().cast(value, node, field);
     }
+
+    /**
+     * Returns the field value to be used in the page.
+     */
     protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
-        String fieldName = field.getName();
-        Object value = getFieldValue(fieldName);
+        Object value = getFieldValue(field);
         if (value == null) {
+            String fieldName = field.getName();
             if (node != null) {
                 value = node.isNull(fieldName) ? null : node.getValue(fieldName);
             } else if (useDefault) {
@@ -183,8 +190,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (eh != null) {
             return eh.checkHtmlInput(node, field, errors);
         }
-        String fieldName = field.getName();
-        Object fieldValue = getFieldValue(fieldName);
+        Object fieldValue = getFieldValue(field);
         DataType dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
@@ -194,13 +200,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             fieldValue = null;
         }
         if (log.isDebugEnabled()) {
-            log.debug("Value for field " + fieldName + ": " + fieldValue);
+            log.debug("Value for field " + field + ": " + fieldValue);
         }
         Collection col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.
             if (node != null && ! field.isReadOnly()) {
+                String fieldName = field.getName();
                 Object oldValue = node.getValue(fieldName);
                 if (fieldValue == null ? oldValue != null : ! fieldValue.equals(oldValue)) {
                     try {
