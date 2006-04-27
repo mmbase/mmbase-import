@@ -69,6 +69,7 @@
       <builder version="0" maintainer="mmbase.org">forums</builder>
       <builder version="0" maintainer="mmbase.org">imagesets</builder>
       <builder version="0" maintainer="mmbase.org">items</builder>
+      <builder version="0" maintainer="mmbase.org">item_pools</builder>
       <builder version="0" maintainer="mmbase.org">kb_answer</builder>
       <builder version="0" maintainer="mmbase.org">kb_category</builder>
       <builder version="0" maintainer="mmbase.org">kb_displayable</builder>
@@ -119,21 +120,21 @@
       <relation from="artikel" to="images" type="posrel"/> 
       <relation from="artikel" to="items" type="readmore"/>
       <relation from="artikel" to="paragraaf" type="posrel"/>
-      <relation from="artikel" to="pools" type="posrel"/>
       <relation from="avatarsets" to="images" type="posrel"/>
+      <relation from="community" to="pools" type="related"/> 
       <relation from="competencies" to="competencetypes" type="posrel"/>
       <relation from="contentblocks" to="attachments" type="readmore"/>
       <relation from="contentblocks" to="link" type="posrel"/>
       <relation from="contentblocks" to="pagina" type="posrel"/>
       <relation from="contentblocks" to="pagina" type="readmore"/>
       <relation from="contentblocks" to="projects" type="posrel"/>
+      <relation from="contentelement" to="pools" type="posrel"/>
       <relation from="divisions" to="afdelingen" type="posrel"/>
       <relation from="divisions" to="locations" type="posrel"/>
       <relation from="documents" to="documents" type="posrel"/>
       <relation from="educations" to="afdelingen" type="rolerel"/>
       <relation from="educations" to="attachments" type="posrel"/>
       <relation from="educations" to="competencies" type="posrel"/>
-      <relation from="educations" to="education_pools" type="posrel"/>
       <relation from="educations" to="feedback" type="related"/>
       <relation from="educations" to="keywords" type="related"/>
       <relation from="educations" to="medewerkers" type="rolerel"/>
@@ -150,6 +151,7 @@
       <relation from="evenement_blueprint" to="paragraaf" type="posrel"/>
       <relation from="formulier" to="formulierveld" type="posrel"/>
       <relation from="formulierveld" to="formulierveldantwoord" type="posrel"/>
+      <relation from="formulierveld" to="pools" type="posrel"/>
       <relation from="forummessagebox" to="forumprivatemessage" type="related"/>
       <relation from="forums" to="postareas" type="related"/>
       <relation from="forums" to="posters" type="related"/>
@@ -165,7 +167,6 @@
       <relation from="items" to="link" type="posrel"/>
       <relation from="items" to="persoon" type="posrel"/>
       <relation from="items" to="item_pools" type="discountrel"/>
-      <relation from="items" to="item_pools" type="posrel"/>
       <relation from="items" to="products" type="posrel"/>
       <relation from="kb_category" to="kb_category" type="related"/>
       <relation from="kb_category" to="kb_question" type="related"/>
@@ -193,7 +194,6 @@
       <relation from="pagina" to="pagina" type="readmore"/>
       <relation from="pagina" to="pagina" type="related"/>
       <relation from="pagina" to="paginatemplate" type="gebruikt"/>
-      <relation from="pagina" to="pools" type="posrel"/>
       <relation from="pagina" to="producttypes" type="posrel"/>
       <relation from="pagina" to="programs" type="posrel"/>
       <relation from="pagina" to="shorty" type="contentrel"/>
@@ -208,9 +208,6 @@
       <relation from="phaserel" to="afdelingen" type="readmore"/>
       <relation from="phaserel" to="contentblocks" type="readmore"/>
       <relation from="phaserel" to="medewerkers" type="readmore"/> 
-      <relation from="pools" to="artikel" type="posrel"/>
-      <relation from="pools" to="community" type="related"/> 
-      <relation from="pools" to="formulierveld" type="posrel"/>
       <relation from="postareas" to="posters" type="rolerel"/>
       <relation from="postareas" to="postthreads" type="related"/>
       <relation from="posters" to="avatarsets" type="related"/> 
@@ -311,6 +308,7 @@
       <datasource builder="groups" path="NMIntra/groups.xml"/>
       <datasource builder="imagesets" path="NMIntra/imagesets.xml"/>
       <datasource builder="items" path="NMIntra/items.xml"/>
+      <datasource builder="item_pools" path="NMIntra/item_pools.xml"/>
       <datasource builder="kb_answer" path="NMIntra/kb_answer.xml"/>
       <datasource builder="kb_category" path="NMIntra/kb_category.xml"/>
       <datasource builder="kb_displayable" path="NMIntra/kb_displayable.xml"/>
