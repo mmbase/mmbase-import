@@ -7,7 +7,7 @@
   <!-- 
        Offers a form for one new MMBase node.
        Also handles the form, and then redirects to change.jspx, because the node is existng then.
-       $Id: create.jspx,v 1.8 2006-04-19 23:33:15 michiel Exp $
+       $Id: create.jspx,v 1.9 2006-04-27 09:56:23 michiel Exp $
   -->
 
   <jsp:directive.page session="true" buffer="200kb" />
@@ -16,7 +16,10 @@
     <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
       <mm:cloud rank="basic user">
         <mm:import externid="nodemanager" required="true" />        
-        <h1>
+
+        <mm:import externid="submitted">init</mm:import>
+
+        <h1 class="${submitted}">
           <mm:link page="." referids="nodemanager">
             <a href="${_}" class="back"><span class="navigate">back</span></a>
           </mm:link>
@@ -40,8 +43,7 @@
           </table>
           <input type="submit" name="ok" />
 
-          <mm:import externid="submitted" />
-          <mm:present referid="submitted">
+          <mm:compare referid="submitted" value="submitted">
             <!-- handle the form -->
             <mm:valid>
               <mm:createnode id="newnode" type="${nodemanager}">
@@ -50,9 +52,11 @@
                 </mm:fieldlist>
               </mm:createnode>
               <mm:commit />
-              <mm:redirect page="change.jspx" referids="newnode@node" />
+              <mm:redirect page="change.jspx" referids="newnode@node,nodemanager">
+                <mm:param name="ok" value="ok" />
+              </mm:redirect>
             </mm:valid>
-          </mm:present>
+          </mm:compare>
         </mm:form>
       </mm:cloud>
     </mm:content>
