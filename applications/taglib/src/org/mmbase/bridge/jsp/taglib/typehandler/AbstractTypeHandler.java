@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.45 2006-04-27 09:12:15 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.46 2006-04-27 09:31:59 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -158,7 +158,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         return found;
     }
-    protected boolean interpretEmptyAsNull() {
+    protected boolean interpretEmptyAsNull(Field field) {
         return true;
     }
 
@@ -168,7 +168,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         String fieldName = field.getName();
         Object value = getFieldValue(fieldName);
-        if (value == null && interpretEmptyAsNull()) {
+        if (value == null) {
             if (node != null) {
                 value = node.isNull(fieldName) ? null : node.getValue(fieldName);
             } else if (useDefault) {
@@ -207,7 +207,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                         if(log.isDebugEnabled()) {
                             log.debug("Setting " + fieldName + " to " + fieldValue);
                         }
-                        node.setValue(fieldName,  fieldValue);
+                        if ("".equals(fieldValue) && interpretEmptyAsNull(field)) {
+                            node.setValue(fieldName,  null);
+                        } else {
+                            node.setValue(fieldName,  fieldValue);
+                        }
                     } catch (Throwable t) {
                         // may throw exception like 'You cannot change the field"
                     }
@@ -249,15 +253,13 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         Object fieldValue = getFieldValue(node, field, false);
         Object oldValue = node.getValue(fieldName);
         if (fieldValue == null ? oldValue == null : fieldValue.equals(oldValue)) {
-            if (fieldName.equals("restricted_ordinals")) {
-                log.info("Not setting " + fieldValue + "/" + oldValue + " in node");
-            }
             return false;
         }  else {
-            if (fieldName.equals("restricted_ordinals")) {
-                log.info("Setting " + fieldValue + " in node");
+            if ("".equals(fieldValue) && interpretEmptyAsNull(field)) {
+                node.setValue(fieldName,  null);
+            } else {
+                node.setValue(fieldName,  fieldValue);
             }
-            node.setValue(fieldName,  fieldValue);
             return true;
         }
     }
