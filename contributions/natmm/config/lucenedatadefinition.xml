@@ -94,13 +94,6 @@
       <table name="teaser">
          <field name="titel">indexed.text</field>
 		 <field name="omschrijving">indexed.text</field>
-         <related name="producttypes">
-            <field name="title">indexed.text</field>
-            <related name="products">
-               <field name="name">indexed.text</field>
-			   <field name="description">indexed.text</field>
-            </related>
-         </related>
       </table>
    </index>
    
