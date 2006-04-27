@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.56 2006-04-27 09:31:59 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.57 2006-04-27 17:37:25 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -63,9 +63,10 @@ public class StringHandler extends AbstractTypeHandler {
                 if (dataType.getPattern().matcher("\n").matches()) {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-                        buffer.append("<textarea class=\"big " + getClasses(field) + "\" wrap=\"soft\" rows=\"10\" cols=\"80\" ");
+                        // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
+                        buffer.append("<textarea class=\"big " + getClasses(field) + "\" rows=\"10\" cols=\"80\" ");
                     } else {
-                        buffer.append("<textarea class=\"small " + getClasses(field) + "\" wrap=\"soft\" rows=\"5\" cols=\"80\" ");
+                        buffer.append("<textarea class=\"small " + getClasses(field) + "\" rows=\"5\" cols=\"80\" ");
                     }
                     addExtraAttributes(buffer);
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");

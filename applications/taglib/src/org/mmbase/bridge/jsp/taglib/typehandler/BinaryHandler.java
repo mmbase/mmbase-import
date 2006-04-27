@@ -27,7 +27,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.1 2006-04-27 09:45:10 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.2 2006-04-27 17:37:25 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -64,13 +64,11 @@ public class BinaryHandler extends AbstractTypeHandler {
 
     }
 
-    /*
     public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         // XXXX TODO
         return "";
     }
 
-    */
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
