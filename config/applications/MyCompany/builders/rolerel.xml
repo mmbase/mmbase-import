@@ -16,7 +16,6 @@
 
 		long name : nl.vpro.mmbase.module.builders.Urls will start that class
 -->
-	<classfile>RoleRel</classfile>
 	<searchage>14</searchage>
 	<!-- <names>
 	names defines the different names used in user visible parts, singular for
