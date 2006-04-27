@@ -89,7 +89,7 @@
         <positions>
           <input>4</input>
           <list>-1</list>
-          <search>-1</search>
+          <search>4</search>
         </positions>
       </editor>
       <db>
@@ -128,7 +128,7 @@
         <positions>
           <input>6</input>
           <list>-1</list>
-          <search>-1</search>
+          <search>6</search>
         </positions>
       </editor>
       <db>
