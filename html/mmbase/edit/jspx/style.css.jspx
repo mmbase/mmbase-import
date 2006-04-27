@@ -71,6 +71,9 @@ h1.submitted {
 h1.ok { 
   background-color: #e0f0e0;
 }
+h1.new { 
+  background-color: #f0f0e0;
+}
 td {
   vertical-align: top;
 }

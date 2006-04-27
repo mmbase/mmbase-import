@@ -7,7 +7,7 @@
   <!-- 
        Offers a form for one new MMBase node.
        Also handles the form, and then redirects to change.jspx, because the node is existng then.
-       $Id: create.jspx,v 1.9 2006-04-27 09:56:23 michiel Exp $
+       $Id: create.jspx,v 1.10 2006-04-27 14:33:28 michiel Exp $
   -->
 
   <jsp:directive.page session="true" buffer="200kb" />
@@ -17,7 +17,7 @@
       <mm:cloud rank="basic user">
         <mm:import externid="nodemanager" required="true" />        
 
-        <mm:import externid="submitted">init</mm:import>
+        <mm:import externid="submitted">new</mm:import>
 
         <h1 class="${submitted}">
           <mm:link page="." referids="nodemanager">
@@ -41,7 +41,7 @@
               </tr>
             </mm:fieldlist>
           </table>
-          <input type="submit" name="ok" />
+          <input type="submit" name="ok" value="create" />
 
           <mm:compare referid="submitted" value="submitted">
             <!-- handle the form -->

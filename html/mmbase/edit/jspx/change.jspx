@@ -10,7 +10,7 @@
 
        TODO: Some way to edit relations? NODE-field editor?
              
-       $Id: change.jspx,v 1.11 2006-04-27 11:44:57 michiel Exp $
+       $Id: change.jspx,v 1.12 2006-04-27 14:33:28 michiel Exp $
   -->
 
   <jsp:directive.page session="true" buffer="200kb" />
@@ -54,14 +54,16 @@
                 </mm:fieldlist>
               </tbody>
             </table>
-            <input type="submit" name="ok" />
+            <input type="submit" name="ok" value="save" />
 
             <mm:compare referid="submitted" value="submitted">
               <!-- handle the form -->
               <mm:valid>
                 <mm:commit />
+                <mm:log>Redirecting!</mm:log>
                 <mm:redirect page="change.jspx" referids="node,nodemanager">
                   <mm:param name="ok" value="ok" />
+                  <mm:param name="now"><mm:time time="now" /></mm:param>
                 </mm:redirect>
               </mm:valid>
             </mm:compare>
