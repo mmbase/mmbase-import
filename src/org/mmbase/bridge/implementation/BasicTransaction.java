@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.22 2006-04-18 19:29:40 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.23 2006-04-27 11:58:42 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -36,9 +36,9 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     /**
      * The name of the transaction as used by the user.
      */
-    protected String transactionName = null;
+    protected final String transactionName;
 
-    protected BasicCloud parentCloud = null;
+    protected final BasicCloud parentCloud;
 
     /*
      * Constructor to call from the CloudContext class.
@@ -78,22 +78,32 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         if (committed) {
             throw new BridgeException("Cannot commit transaction'" + name + "' (" + transactionContext +"), it was already committed.");
         }
+        log.debug("Committing transaction " + transactionContext);
 
-        parentCloud.transactions.remove(transactionName); 
+        parentCloud.transactions.remove(transactionName);  // hmpf
+
         // if this is a transaction within a transaction (theoretically possible)
         // leave the committing to the 'parent' transaction
         if (parentCloud instanceof Transaction) {
             // do nothing
         } else {
             try {
+                Collection col = BasicCloudContext.transactionManager.getTransaction(transactionContext);
                 // BasicCloudContext.transactionManager.commit(account, transactionContext);
                 BasicCloudContext.transactionManager.commit(userContext, transactionContext);
+                Iterator i = col.iterator();
+                while (i.hasNext()) {
+                    MMObjectNode n = (MMObjectNode) i.next();
+                    Node node = parentCloud.makeNode(n, "" + n.getNumber());
+                    node.commit();
+                }
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
                 throw new BridgeException(e.getMessage(), e);
             }
         }
+
         committed = true;
         return true;
     }
@@ -185,7 +195,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      * eventually be removed from the MMBase cache.
      */
     protected void finalize() {
-        if ((transactionContext!=null) && !(parentCloud instanceof Transaction)) {
+        if ((transactionContext != null) && !(parentCloud instanceof Transaction)) {
             cancel();
         }
     }
