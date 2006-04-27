@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.44 2006-04-25 18:46:47 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.45 2006-04-27 09:12:15 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -168,7 +168,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         String fieldName = field.getName();
         Object value = getFieldValue(fieldName);
-        if (value == null || interpretEmptyAsNull()) {
+        if (value == null && interpretEmptyAsNull()) {
             if (node != null) {
                 value = node.isNull(fieldName) ? null : node.getValue(fieldName);
             } else if (useDefault) {
@@ -198,7 +198,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         }
         Collection col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
-            // do actually set the field, because some need cross-field checking
+            // do actually set the field, because some datatypes need cross-field checking
+            // also in an mm:form, you can simply commit.
             if (node != null && ! field.isReadOnly()) {
                 Object oldValue = node.getValue(fieldName);
                 if (fieldValue == null ? oldValue != null : ! fieldValue.equals(oldValue)) {
