@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.43 2006-04-27 11:27:39 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.44 2006-04-27 16:36:53 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -144,7 +144,7 @@ public class DateHandler extends AbstractTypeHandler {
             buffer.append("id=\"").append(fieldid).append("\" class=\"mm_search\">");
             buffer.append("  <option value=\"no\" ");
             if (searchi.equals("no")) buffer.append(" selected=\"selected\" ");
-            buffer.append("> </option>");
+            buffer.append(">&nbsp;</option>");
             buffer.append("  <option value=\"less\" ");
             if (searchi.equals("less")) buffer.append(" selected=\"selected\" ");
             buffer.append(">&lt;</option>");
