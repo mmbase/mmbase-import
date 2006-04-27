@@ -70,30 +70,30 @@
 	  </tr><tr align="left">
 		<td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
 		<td colspan="3">
-		<!- table in table -->
+		<!-- table in table -->
 		  <table width="100%" border="0" cellspacing="0" cellpadding="4">
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></td>
 			  <td nowrap="nowrap"> Search object to relate to </td>
 			</tr>
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></td>
 			  <td nowrap="nowrap"> Create new object (and relate) </td>
 			</tr>
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="22" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="22" height="20" border="0" /></td>
 			  <td nowrap="nowrap"> Create relation </td>
 			</tr>
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></td>
 			  <td nowrap="nowrap"> Edit node </td>
 			</tr>
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
+			  <td class="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></td>
 			  <td nowrap="nowrap"> Delete node </td>
 			</tr>
 		  </table>
-		<!- end table in table -->
+		<!-- end table in table -->
     </td>
     <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
   </tr><tr>
