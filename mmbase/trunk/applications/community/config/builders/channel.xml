@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="channel" maintainer="mmbase.org" version="0" extends="object">
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="channel" maintainer="mmbase.org" version="0" extends="object">
   <status>active</status>
-  <classfile>org.mmbase.applications.community.builders.Channel</classfile>
-
+  <class>org.mmbase.applications.community.builders.Channel</file>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">Channel</singular>
@@ -11,16 +14,15 @@
     <plural xml:lang="en">Channels</plural>
     <plural xml:lang="nl">Kanalen</plural>
   </names>
-  
   <descriptions>
     <description xml:lang="en">A channel of a community</description>
     <description xml:lang="nl">Een kanaal binnen een gemeenschap</description>
   </descriptions>
-
   <properties>
     <property name="baserecordpath">/tmp/chatlogs</property>
   </properties>
   <fieldlist>
+
     <field>
       <descriptions>
         <description xml:lang="en">Title of the channel (i.e. main topic)</description>
@@ -29,13 +31,13 @@
       <gui>
         <guiname xml:lang="en">Title</guiname>
         <guiname xml:lang="nl">Titel</guiname>
-        <guitype>string</guitype>
       </gui>
-        <editor>
+      <editor>
         <positions>
           <list>1</list>
         </positions>
       </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>title</name>
         <type state="persistent" size="255" notnull="false">STRING</type>
@@ -50,8 +52,8 @@
       <gui>
         <guiname xml:lang="en">Subtitle</guiname>
         <guiname xml:lang="nl">Subtitel</guiname>
-        <guitype>string</guitype>
       </gui>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>subtitle</name>
         <type state="persistent" size="255" notnull="false">STRING</type>
@@ -66,8 +68,8 @@
       <gui>
         <guiname xml:lang="en">Intro</guiname>
         <guiname xml:lang="nl">Intro</guiname>
-        <guitype>field</guitype>
       </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>intro</name>
         <type state="persistent" size="2047" notnull="false">STRING</type>
@@ -82,8 +84,8 @@
       <gui>
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Beschrijving</guiname>
-        <guitype>field</guitype>
       </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>body</name>
         <type state="persistent" size="2047" notnull="false">STRING</type>
@@ -105,7 +107,6 @@
           <list>7</list>
         </positions>
       </editor>
-      
       <db>
         <name>session</name>
         <type state="persistent" notnull="true">INTEGER</type>
@@ -121,13 +122,18 @@
       <gui>
         <guiname xml:lang="en">Logon State</guiname>
         <guiname xml:lang="nl">Login status</guiname>
-        <guitype>org.mmbase.applications.community.resources.channellogin</guitype>
       </gui>
       <editor>
         <positions>
           <list>3</list>
         </positions>
       </editor>      
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="0" />
+        <enumeration>
+          <entry basename="org.mmbase.applications.community.resources.channellogin" />
+        </enumeration>
+      </datatype>
       <db>
         <name>state</name>
         <type state="persistent" notnull="true">INTEGER</type>
@@ -142,13 +148,18 @@
       <gui>
         <guiname xml:lang="en">Open</guiname>
         <guiname xml:lang="nl">Open</guiname>
-        <guitype>org.mmbase.applications.community.resources.channelopen</guitype>
       </gui>
       <editor>
         <positions>          
           <list>2</list>
         </positions>
       </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="-1" />
+        <enumeration>
+          <entry basename="org.mmbase.applications.community.resources.channelopen" />
+        </enumeration>
+      </datatype>
       <db>
         <name>open</name>
         <type state="persistent" notnull="true">INTEGER</type>
@@ -163,7 +174,6 @@
       <gui>
         <guiname xml:lang="en">Highest sequence</guiname>
         <guiname xml:lang="nl">Hoogste volgordenr</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -178,7 +188,6 @@
       </db>
     </field>
 
-
     <field>
       <descriptions>
         <description xml:lang="en">Maximum number of users that can simultaneously log on</description>
@@ -187,7 +196,6 @@
       <gui>
         <guiname xml:lang="en">Maximum users</guiname>
         <guiname xml:lang="nl">Maximum gebruikers</guiname>
-        <guitype>integer</guitype>
       </gui>
       <db>
         <name>maxusers</name>
