@@ -31,7 +31,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.111 2006-03-31 19:17:28 michiel Exp $
+ * @version $Id: Images.java,v 1.112 2006-04-27 16:40:48 pierre Exp $
  */
 public class Images extends AbstractImages {
 
@@ -265,7 +265,7 @@ public class Images extends AbstractImages {
             Dimension dim = imageCaches.getDimension(icache);
             StringBuffer buf = new StringBuffer();
             if(dim.getHeight() > 0) {
-                buf.append("heigth=\"").append(dim.getHeight()).append("\" ");
+                buf.append("height=\"").append(dim.getHeight()).append("\" ");
             } else {
                 log.warn("Found non-positive height.");
             }
