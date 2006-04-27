@@ -100,10 +100,8 @@
 <table><!-- pager -->
   <tr>
   <mm:context>
-    <td class="navigate" colspan="1" style="text-align: left;">
-
+    <td class="navigate" colspan="1" style="text-align: left; white-space: nowrap;">
       <mm:isgreaterthan referid="page" value="$config.indexoffset">
-        <nobr>
         <a href='<mm:url referid="purl" referids="config.indexoffset@page" />'>
            <span class="previous"></span><span class="alt">[&lt;&lt;-first ]</span>
          </a>
@@ -111,11 +109,9 @@
         <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="$[+ $page - 1]" /></mm:url>'>
           <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
         </a>
-        </nobr>
       </mm:isgreaterthan>
     </td>
-    <td class="navigate" colspan="1">
-    <nobr style="width:100%;">
+    <td class="navigate" colspan="1" style="white-space: nowrap; width:100%;">
     <mm:previousbatches maxtotal="$config.batches" indexoffset="$config.indexoffset">
       <mm:first>
         <mm:index>
@@ -149,11 +145,9 @@
          </mm:index>
        </mm:last>
     </mm:nextbatches>
-      </nobr>
       </td>
-      <td class="navigate" colspan="1" style="text-align: right;">
+      <td class="navigate" colspan="1" style="text-align: right; white-space: nowrap;">
         <mm:present referid="needsnext">
-          <nobr>
           <a href='<mm:url referid="purl"><mm:param name="page" vartype="integer" value="$[+ $page + 1]" /></mm:url>'>
           <span class="next"></span><span class="alt">[next page -&gt;]</span>
         </a>
@@ -162,7 +156,6 @@
            </mm:url>'>
            <span class="next"></span><span class="alt">[last -&gt;&gt;]</span>
          </a>
-         </nobr>
         </mm:present>
       </td>
     </mm:context>
@@ -197,7 +190,7 @@
     </mm:fieldlist>
     </mm:context>
     <mm:size id="size" write="false" />
-    <th colspan="2"><nobr><mm:write referid="totalsize"><mm:compare value="0"><%=m.getString("search.noresults")%></mm:compare><mm:isgreaterthan value="0"><mm:write vartype="integer" value="$[+$offset + 1]" />-<mm:write vartype="integer" value="$[+$offset + $size]" />/<mm:write  /></mm:isgreaterthan></mm:write></nobr></th><!-- X and -> collum -->
+    <th colspan="2" style="white-space: nowrap;"><mm:write referid="totalsize"><mm:compare value="0"><%=m.getString("search.noresults")%></mm:compare><mm:isgreaterthan value="0"><mm:write vartype="integer" value="$[+$offset + 1]" />-<mm:write vartype="integer" value="$[+$offset + $size]" />/<mm:write  /></mm:isgreaterthan></mm:write></th><!-- X and -> collum -->
   </tr>
 
 <mm:listnodes id="node_number" directions="$directions"  orderby="$orderby" jspvar="sn">
