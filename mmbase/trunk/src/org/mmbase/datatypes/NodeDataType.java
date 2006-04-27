@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.26 2006-04-18 13:31:16 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.27 2006-04-27 14:54:07 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType {
@@ -59,6 +59,9 @@ public class NodeDataType extends BasicDataType {
         }  else {
             Object res = Casting.toType(Node.class, getCloud(node, field), preCast);
             if (res == null) {
+                if (Casting.toInt(value) == -1) {
+                    return null;
+                }
                 throw new CastException("No such node " + preCast);
             } else {
                 return res;
