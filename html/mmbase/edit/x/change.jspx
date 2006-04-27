@@ -10,22 +10,25 @@
 
        TODO: Some way to edit relations? NODE-field editor?
              
-       $Id: change.jspx,v 1.9 2006-04-25 19:48:05 michiel Exp $
+       $Id: change.jspx,v 1.10 2006-04-27 09:56:23 michiel Exp $
   -->
 
-  <jsp:directive.page session="true" />
-
+  <jsp:directive.page session="true" buffer="200kb" />
   <mm:include page="head.jspx" />
 
   <body>
+    <mm:write value="bla" cookie="bla" />
     <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
       <mm:cloud rank="basic user">
 
+        <mm:import externid="ok">init</mm:import>
+        <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>
+
         <mm:form id="changeform">
           <mm:import externid="node" required="true" />
-          <mm:node referid="node">
+          <mm:node referid="node" jspvar="n">
             
-            <h1>
+            <h1 class="${submitted}">
               <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
               <mm:link page="." referids="nodemanager">
                 <a href="${_}" class="back"><span class="navigate">back</span></a>
@@ -52,15 +55,16 @@
               </tbody>
             </table>
             <input type="submit" name="ok" />
-            <mm:import externid="submitted" />
-            <mm:present referid="submitted">
+
+            <mm:compare referid="submitted" value="submitted">
               <!-- handle the form -->
               <mm:valid>
                 <mm:commit />
-                <jsp:text>Committed !</jsp:text>
-                <mm:redirect page="change.jspx" referids="node,nodemanager" />
+                <mm:redirect page="change.jspx" referids="node,nodemanager">
+                  <mm:param name="ok" value="ok" />
+                </mm:redirect>
               </mm:valid>
-            </mm:present>
+            </mm:compare>
           </mm:node>
         </mm:form>
       </mm:cloud>

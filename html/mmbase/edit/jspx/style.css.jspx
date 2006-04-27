@@ -65,6 +65,12 @@ h1 {
 h1 img { 
 
 }
+h1.submitted { 
+  background-color: #f0e0e0;
+}
+h1.ok { 
+  background-color: #e0f0e0;
+}
 td {
   vertical-align: top;
 }
