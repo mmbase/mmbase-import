@@ -240,7 +240,7 @@
       <td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />) </td>
       <td class="navigate">
         <a href="<mm:url referids="node_type,node?,role_name?,direction?"  page="create_node.jsp" />" >
-        <span class="create"></span><span class="alt">[create]</span>
+        <span class="create"><!-- needed for IE --></span><span class="alt">[create]</span>
       </a>
     </td>
   </tr>

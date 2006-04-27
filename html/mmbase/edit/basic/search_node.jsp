@@ -118,10 +118,11 @@
           </mm:present>
           <mm:notpresent referid="node_type">
             <form name="search" method="post" action="<mm:url page="change_node.jsp"/>">
-            <table class="search" align="center" width="100%" border="0" cellspacing="1">
-              <tr><td width="20%"><%=m.getString("aliasornumber")%></td><td width="80%"><input class="small" type="text" size="5" name="node_number" /></td></tr>
-              <tr><td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td></tr>
-            </table>
+              <table class="search" align="center" width="100%" border="0" cellspacing="1">
+                <tr><td width="20%"><%=m.getString("aliasornumber")%></td><td width="80%"><input class="small" type="text" size="5" name="node_number" /></td></tr>
+                <tr><td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td></tr>
+              </table>
+            </form>
           </mm:notpresent>
 	    </td>
     	</tr>
