@@ -163,16 +163,27 @@
 
   <%-- If "done" pressed then show the feedback else show next question set --%>
   <% if ( sCommand.equals("done") ) { %>
-     <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids">
-       <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
-       <mm:param name="tests"><mm:write referid="tests"/></mm:param>
-     </mm:treeinclude>
-
-     <mm:import id="page">/education/tests/feedback.jsp</mm:import>
-     <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
-       <mm:param name="tests"><mm:field name="number"/></mm:param>
-       <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
-     </mm:treeinclude>
+      <mm:import id="feedbackpage"><mm:field name="feedbackpage"/></mm:import>
+      <mm:compare referid="feedbackpage" value="0">
+        <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids">
+          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+          <mm:param name="tests"><mm:write referid="tests"/></mm:param>
+        </mm:treeinclude>
+        
+        <mm:import id="page">/education/tests/feedback.jsp</mm:import>
+        <mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+          <mm:param name="tests"><mm:field name="number"/></mm:param>
+          <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+        </mm:treeinclude>
+      </mm:compare>
+      
+      <mm:compare referid="feedbackpage" value="0" inverse="true">
+        <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids">
+          <mm:param name="testNo"><mm:write referid="tests"/></mm:param>
+          <mm:param name="madetestNo"><mm:write referid="madetest"/></mm:param>
+          <mm:param name="userNo"><mm:write referid="user"/></mm:param>
+        </mm:treeinclude>
+      </mm:compare>
   <% } else { %>
      <mm:treeinclude page="/education/tests/buildtest.jsp"  objectlist="$includePath" referids="$referids">
        <mm:param name="learnobject"><mm:write referid="learnobject"/></mm:param>

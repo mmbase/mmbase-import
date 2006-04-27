@@ -17,6 +17,19 @@
 </head>
 <body>
 
+<mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" referids="$referids">
+  <mm:param name="madetest"><mm:write referid="madetestNo"/></mm:param>
+  <mm:param name="tests"><mm:write referid="testNo"/></mm:param>
+</mm:treeinclude>
+
+<mm:import id="page">/education/tests/feedback.jsp</mm:import>
+<mm:treeinclude page="$page" objectlist="$includePath" referids="$referids">
+  <mm:param name="tests"><mm:write referid="testNo"/></mm:param>
+  <mm:param name="madetest"><mm:write referid="madetestNo"/></mm:param>
+</mm:treeinclude>
+
+<hr/>
+
 <mm:treeinclude page="/education/tests/viewanswers.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="testNo"><mm:write referid="testNo"/></mm:param>
   <mm:param name="madetestNo"><mm:write referid="madetestNo"/></mm:param>
