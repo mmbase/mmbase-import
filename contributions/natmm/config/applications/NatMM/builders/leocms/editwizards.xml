@@ -50,8 +50,8 @@
       <editor>
         <positions>
           <input>2</input>
-          <list>-1</list>
-          <search>3</search>
+          <list>2</list>
+          <search>2</search>
         </positions>
       </editor>
       <db>
@@ -69,8 +69,8 @@
       <editor>
         <positions>
           <input>3</input>
-          <list>-1</list>
-          <search>-1</search>
+          <list>3</list>
+          <search>3</search>
         </positions>
       </editor>
       <db>
@@ -279,7 +279,7 @@
       <editor>
         <positions>
           <input>14</input>
-          <list>-1</list>
+          <list>14</list>
           <search>-1</search>
         </positions>
       </editor>
@@ -298,7 +298,7 @@
       <editor>
         <positions>
           <input>15</input>
-          <list>-1</list>
+          <list>15</list>
           <search>-1</search>
         </positions>
       </editor>
