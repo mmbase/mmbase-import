@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.42 2006-04-27 09:31:38 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.43 2006-04-27 11:27:39 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -105,6 +105,14 @@ public class DateHandler extends AbstractTypeHandler {
         return dateTimePattern;
 
 
+    }
+
+    /**
+     * Returns the field value as specified by the client's post.
+     */
+    protected Object getFieldValue(Field field) throws JspTagException {
+        Calendar cal = getSpecifiedValue(field, getInstance());
+        return cal == null ? null : cal.getTime();
     }
 
     /**
