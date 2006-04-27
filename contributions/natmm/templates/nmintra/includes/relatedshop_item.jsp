@@ -84,7 +84,7 @@
 				> besteld: </mm:first
 				><mm:first inverse="true">, </mm:first
 				><a href="<mm:url page="shop_items.jsp"><mm:param name="u"><mm:field name="items.number" /></mm:param></mm:url
-					>"><mm:field name="items.title" /></a><mm:last>.</mm:last
+					>"><mm:field name="items.titel" /></a><mm:last>.</mm:last
 				></mm:list
 			></mm:field> Deze actie loopt <%
 				if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
@@ -117,7 +117,7 @@
 			<mm:field name="discountrel.body" /><br>
 			Geniet dus nu van deze aanbieding op <a href="<mm:url page="shop_items.jsp"
 					><mm:param name="u"><mm:field name="items1.number" /></mm:param></mm:url
-					>"><mm:field name="items1.title" /></a>.
+					>"><mm:field name="items1.titel" /></a>.
 			Deze actie loopt <%
 				if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
 					%> van <%

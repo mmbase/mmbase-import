@@ -55,7 +55,7 @@ if(!poolId.equals("")) { // *** use mm:list to only show producttypes related to
          		><mm:first
          		   ><div class="subtitle">Gerelateerde producten in de interne webwinkel</div>
          	   </mm:first
-         	   ><mm:field name="title" id="shopitems_title" write="false" 
+         	   ><mm:field name="titel" id="shopitems_title" write="false" 
          	   /><mm:field name="number" id="shopitems_number" write="false" 
          	      /><mm:related path="posrel,pagina" max="1"
       	         ><a href="shop_items.jsp?p=<mm:field name="pagina.number" />&u=<mm:write referid="shopitems_number" 
