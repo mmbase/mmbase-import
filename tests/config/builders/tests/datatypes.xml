@@ -329,6 +329,13 @@
       </db>
     </field>
     <field>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integer_string</name>
+        <type state="persistent" >INTEGER</type>
+      </db>
+    </field>
+    <field>
       <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
           <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery">
