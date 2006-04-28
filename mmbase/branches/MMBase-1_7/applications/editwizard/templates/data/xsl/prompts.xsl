@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.20.2.6 2005-11-29 14:15:20 andre Exp $
+    @version $Id: prompts.xsl,v 1.20.2.7 2006-04-28 08:17:39 ernst Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -91,7 +91,10 @@
   <!-- new button prompts and tooltips -->
   <xsl:variable name="tooltip_new">Add a new item to the list</xsl:variable>
   <xsl:template name="prompt_new">
-    <img src="{$mediadir}new.gif" alt="{$tooltip_new}" class="imgbutton"/>
+    <img src="{$mediadir}new.gif"
+         alt="{$tooltip_new}"
+         title="{$tooltip_new}"
+         class="imgbutton"/>
   </xsl:template>
 
   <!-- remove button prompts and tooltips (for relations) -->
@@ -189,38 +192,38 @@
   <xsl:template name="prompt_logout">logout</xsl:template>
   <xsl:variable name="tooltip_logout">Logout and return to the index page</xsl:variable>
 
-  <!-- prompts and tooltips for lists -->
-	<xsl:template name="prompt_search_age">
-		<xsl:param name="age" />
-		<xsl:if test="$age=1"> from the previous day</xsl:if>
-		<xsl:if test="$age=7"> from the previous 7 days</xsl:if>
-		<xsl:if test="$age=31"> from the previous month</xsl:if>
-		<xsl:if test="$age=356"> from the previous year</xsl:if>
-		<xsl:if test="$age=-1"> over the whole cloud</xsl:if>
-	</xsl:template>
-	
-	<xsl:template name="prompt_edit_list">
-		<xsl:param name="age" />
-		<xsl:param name="searchvalue" />
-		<xsl:value-of select="$title" disable-output-escaping="yes"  />
-		<xsl:call-template name="prompt_search_age" >
-			<xsl:with-param name="age" select="$age" />
-		</xsl:call-template>
-    <xsl:if test="$searchvalue" >
-      - search for <xsl:value-of select="$searchvalue" />
-    </xsl:if>
-    (items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pages <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
+  <xsl:template name="prompt_search_age">
+    <xsl:param name="age" />
+    <xsl:if test="$age=1"> from the previous day</xsl:if>
+    <xsl:if test="$age=7"> from the previous 7 days</xsl:if>
+    <xsl:if test="$age=31"> from the previous month</xsl:if>
+    <xsl:if test="$age=356"> from the previous year</xsl:if>
+    <xsl:if test="$age=-1"> all</xsl:if>
   </xsl:template>
-	
+
+  <!-- prompts and tooltips for lists -->
+  <xsl:template name="prompt_edit_list">
+      <xsl:param name="age" />
+      <xsl:param name="searchvalue" />
+      <xsl:call-template name="prompt_search_age" >
+        <xsl:with-param name="age" select="$age" />
+      </xsl:call-template>
+      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+      <xsl:value-of select="$title" disable-output-escaping="yes"  />
+      <xsl:if test="$searchvalue" >
+        - search for <xsl:value-of select="$searchvalue" />
+      </xsl:if>
+      (items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pages <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
+  </xsl:template>
   <xsl:variable name="tooltip_edit_list">These are the items that you can edit.</xsl:variable>
   <xsl:variable name="tooltip_sort_on">Sort on</xsl:variable>
   <xsl:variable name="tooltip_sort_up">up</xsl:variable>
   <xsl:variable name="tooltip_sort_down">down</xsl:variable>
   <xsl:template name="prompt_sort_up">
-    <img src="{$mediadir}sortup.gif" alt="{$tooltip_up}" height="15" width="15" />
+    <img src="{$mediadir}sortup.png" alt="{$tooltip_up}" height="15" width="15" />
   </xsl:template>
   <xsl:template name="prompt_sort_down">
-    <img src="{$mediadir}sortdown.gif" alt="{$tooltip_up}" height="15" width="15" />
+    <img src="{$mediadir}sortdown.png" alt="{$tooltip_up}" height="15" width="15" />
   </xsl:template>
 
   <!-- searchlist prompts/tooltips -->
