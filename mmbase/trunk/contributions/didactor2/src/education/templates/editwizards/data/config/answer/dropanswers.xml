@@ -19,12 +19,12 @@
         <title xml:lang="nl">Nieuw drag en drop positie combinatie invoeren</title>
         <title xml:lang="en">Enter new drag and drop position combination</title>
         <field name="dragnumber" >
-            <prompt xml:lang="nl">Sleepafbeelding (positie)</prompt>
-            <prompt xml:lang="en">Drag image (position)</prompt>
+            <prompt xml:lang="nl">Sleepafbeelding op positie:</prompt>
+            <prompt xml:lang="en">Drag image position:</prompt>
         </field>
         <field name="dropnumber">
-            <prompt xml:lang="nl">Doelafbeelding (positie)</prompt>
-            <prompt xml:lang="en">Target image (position)</prompt>
+            <prompt xml:lang="nl">Doelafbeelding op positie:</prompt>
+            <prompt xml:lang="en">Drop image position:</prompt>
         </field>
     </form-schema>
 </wizard-schema>
