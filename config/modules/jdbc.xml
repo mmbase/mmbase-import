@@ -70,6 +70,9 @@
     <!-- MySQL
     <property name="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
     -->
+    <!-- MySQL when it is configured to use utf-8. The data in the database will also be readable by other programs tested on mysql 4.1
+    <property name="url">jdbc:mysql://$HOST:$PORT/$DBM?useUnicode=true&amp;characterEncoding=UTF-8</property>
+    -->
     <!-- Oracle
          MM: I don' think this is regularly tested.
     <property name="url">jdbc:oracle:oci8:@$DBM</property>
