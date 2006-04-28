@@ -29,10 +29,10 @@ if(!poolId.equals("")) { // *** use mm:list to only show producttypes related to
        <select name="producttype" onChange="javascript:postP();" style="width:300px;">
        <option value="" >...
        <mm:list nodes="<%= poolId %>" path="producttypes,posrel,products"
-                orderby="products.name" directions="UP" fields="products.number,products.name"
+                orderby="products.titel" directions="UP" fields="products.number,products.titel"
             ><mm:field name="products.number" jspvar="products_number" vartype="String" write="false"
                 ><option <% if(products_number.equals(productId)) { %>SELECTED<% } %>                   
-                    value="<%= products_number %>" ><mm:field name="products.name" 
+                    value="<%= products_number %>" ><mm:field name="products.titel" 
             /></mm:field
        ></mm:list
        ></select>

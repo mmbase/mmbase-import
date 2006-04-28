@@ -72,17 +72,17 @@ if(!locations.isEmpty()) {
             if(!poolId.equals("")) { 
             
                 %><mm:list nodes="<%= locationId %>" path="locations,readmore,products,posrel,producttypes" 
-                     constraints="<%= "producttypes.number= '" + poolId + "'" %>" orderby="products.name" directions="UP"
+                     constraints="<%= "producttypes.number= '" + poolId + "'" %>" orderby="products.titel" directions="UP"
                         ><mm:first><table border="1" cellpadding="0" cellspacing="0"></mm:first>
                         <tr>
                             <td style="padding:10px;padding-top:2px;padding-bottom:2px;width:275px;">
-                                <mm:field name="products.name"><mm:isnotempty><mm:write /></mm:isnotempty><mm:isempty>&nbsp;</mm:isempty></mm:field>
+                                <mm:field name="products.titel"><mm:isnotempty><mm:write /></mm:isnotempty><mm:isempty>&nbsp;</mm:isempty></mm:field>
                             </td>
                             <td style="padding:10px;padding-top:2px;padding-bottom:2px;">
                                 <mm:field name="readmore.readmore"><mm:isnotempty><mm:write /></mm:isnotempty><mm:isempty>&nbsp;</mm:isempty></mm:field>
                             </td>
                             <td style="padding:10px;padding-top:2px;padding-bottom:2px;">
-                                <mm:field name="products.description"><mm:isnotempty><mm:write /></mm:isnotempty><mm:isempty>&nbsp;</mm:isempty></mm:field>
+                                <mm:field name="products.omschrijving"><mm:isnotempty><mm:write /></mm:isnotempty><mm:isempty>&nbsp;</mm:isempty></mm:field>
                             </td>
                         </tr>
                         <mm:last></table></mm:last
