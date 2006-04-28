@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.29 2006-04-25 23:23:08 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.30 2006-04-28 08:22:38 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -109,13 +109,27 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         } else if (origin instanceof BooleanDataType) {
             patternRestriction.setValue(BOOLEAN_PATTERN);
         } else if (origin instanceof IntegerDataType) {
-            patternRestriction.setValue(INTEGER_PATTERN);
+            PatternRestriction parent = new PatternRestriction(INTEGER_PATTERN);
+            parent.setEnforceStrength(ENFORCE_ABSOLUTE);
+            patternRestriction = new PatternRestriction( parent);
         } else if (origin instanceof LongDataType) {
-            patternRestriction.setValue(LONG_PATTERN);
+            PatternRestriction parent = new PatternRestriction(LONG_PATTERN);
+            parent.setEnforceStrength(ENFORCE_ABSOLUTE);
+            patternRestriction = new PatternRestriction( parent);
         } else if (origin instanceof FloatDataType) {
-            patternRestriction.setValue(DOUBLE_PATTERN);
+            PatternRestriction parent = new PatternRestriction(DOUBLE_PATTERN);
+            parent.setEnforceStrength(ENFORCE_ABSOLUTE);
+            patternRestriction = new PatternRestriction( parent);
         } else if (origin instanceof DoubleDataType) {
-            patternRestriction.setValue(DOUBLE_PATTERN);
+            PatternRestriction parent = new PatternRestriction(DOUBLE_PATTERN);
+            parent.setEnforceStrength(ENFORCE_ABSOLUTE);
+            patternRestriction = new PatternRestriction( parent);
+        }
+        if (origin instanceof NumberDataType) {
+            // number datatypes intrinsicly have a minimal and a maximal value, so these would have been interhited.
+            // but on a string they would never work (strings are compared alphabeticly), so remove those restrictions:
+            setMin(null, true);
+            setMax(null, true);
         }
     }
 
