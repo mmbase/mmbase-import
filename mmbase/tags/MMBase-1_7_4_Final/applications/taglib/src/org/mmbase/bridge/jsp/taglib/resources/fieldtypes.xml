@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE fieldtypes PUBLIC "-//MMBase//DTD fieldtypes 1.0//EN" "http://www.mmbase.org/dtd/fieldtypes_1_0.dtd">
+<!-- version: $Id: fieldtypes.xml,v 1.4 2003-06-06 10:03:30 pierre Exp $-->
+<fieldtypes>
+  <fieldtype id="string">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.StringHandler</class>
+  </fieldtype>
+  <fieldtype id="integer">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.IntegerHandler</class>
+  </fieldtype>
+  <fieldtype id="long">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.LongHandler</class>
+  </fieldtype>
+  <fieldtype id="float">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.FloatHandler</class>
+  </fieldtype>
+  <fieldtype id="double">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.DoubleHandler</class>
+  </fieldtype>
+  <fieldtype id="byte">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.ByteHandler</class>
+  </fieldtype>
+  <fieldtype id="xml">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.XmlHandler</class>
+  </fieldtype>
+  <fieldtype id="node">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.NodeHandler</class>
+  </fieldtype>
+</fieldtypes>

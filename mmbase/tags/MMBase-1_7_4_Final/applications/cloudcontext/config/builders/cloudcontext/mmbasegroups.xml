@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="mmbasegroups" maintainer="www.mmbase.org" version="1" extends="object">
+  <classfile>org.mmbase.security.implementation.cloudcontext.builders.Groups</classfile>
+  <names>
+    <singular xml:lang="en">Security Group</singular>
+    <singular xml:lang="nl">Security groep</singular>
+    <singular xml:lang="eo">Sekureca grupo</singular>
+    <plural xml:lang="en">Security groups</plural>
+    <plural xml:lang="nl">Security groepen</plural>
+    <plural xml:lang="eo">Securecaj grupoj</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="en">MMBase security groups</description>
+    <description xml:lang="nl">MMBase groepen voor security</description>
+  </descriptions>
+  <fieldlist>
+    <field>
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="eo">Nomo</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <db>
+        <name>name</name>
+        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+    <field>
+      <gui>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="eo">Priskribo</guiname>
+        <guitype>field</guitype>
+      </gui>
+      <db>
+        <name>description</name>
+        <type state="persistent" size="1024" notnull="false">STRING</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>

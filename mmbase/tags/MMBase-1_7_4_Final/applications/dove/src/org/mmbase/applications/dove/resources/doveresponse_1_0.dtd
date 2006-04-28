@@ -1,0 +1,80 @@
+<!--
+     doveresponse.dtd
+       - DTD for MMBase DOVE protocol (RPC using xml)
+-->
+
+<!ENTITY % errortype "(server,parser,client)">
+
+<!ELEMENT response (getdata|getnew|getnewrelation|getrelations|getconstraints|getlist|put)+ >
+
+<!ELEMENT getdata ((object|error)+) >
+<!ATTLIST getdata id ID #IMPLIED>
+
+<!ELEMENT getnew (object|error) >
+<!ATTLIST getnew id ID #IMPLIED>
+<!ATTLIST getnew type NMTOKEN #IMPLIED>
+
+<!ELEMENT getnewrelation (relation|error) >
+<!ATTLIST getnewrelation id ID #IMPLIED>
+<!ATTLIST getnewrelation role NMTOKEN #IMPLIED>
+<!ATTLIST getnewrelation source NMTOKEN #IMPLIED>
+<!ATTLIST getnewrelation destination NMTOKEN #IMPLIED>
+
+<!ELEMENT getrelations ((object|error)+) >
+<!ATTLIST getrelations id ID #IMPLIED>
+
+<!ELEMENT getconstraints (error|(singularname,pluralname,description,fields,relations))+) >
+<!ATTLIST getconstraints id ID #IMPLIED>
+<!ATTLIST getconstraints type NMTOKEN #REQUIRED >
+<!ATTLIST getconstraints xml:lang NMTOKEN "en" >
+
+<!ELEMENT getlist (query+|error) >
+<!ATTLIST getlist id ID #IMPLIED>
+
+<!ELEMENT query (object?|error)>
+<!ATTLIST query xpath CDATA #REQUIRED >
+<!ATTLIST query where CDATA #IMPLIED >
+
+<!ELEMENT put (new|error) >
+<!ATTLIST put id ID #IMPLIED>
+
+<!ELEMENT new ((object|relation)*) >
+
+<!ELEMENT singularname (#PCDATA) >
+<!ATTLIST singularname xml:lang NMTOKEN "en" >
+
+<!ELEMENT pluralname (#PCDATA) >
+<!ATTLIST pluralname xml:lang NMTOKEN "en" >
+
+<!ELEMENT description (#PCDATA) >
+<!ATTLIST description xml:lang NMTOKEN "en" >
+
+<!ELEMENT fields (field*) >
+
+<!ELEMENT relations (relation*) >
+
+<!ELEMENT object ((field|relation)*)>
+<!ATTLIST object number NMTOKEN #REQUIRED >
+<!ATTLIST object type NMTOKEN #REQUIRED >
+
+<!ELEMENT relation ((field|object)*)>
+<!ATTLIST relation type NMTOKEN #REQUIRED >
+<!ATTLIST relation number NMTOKEN #REQUIRED >
+<!ATTLIST relation role NMTOKEN #REQUIRED>
+<!ATTLIST relation source NMTOKEN #REQUIRED >
+<!ATTLIST relation destination NMTOKEN #REQUIRED >
+
+<!ELEMENT field (#PCDATA | (guiname,description,guitype,maxlength,required))>
+<!ATTLIST field name NMTOKEN #REQUIRED >
+
+<!ELEMENT guiname (#PCDATA) >
+<!ATTLIST guiname xml:lang NMTOKEN "en" >
+
+<!ELEMENT guitype (#PCDATA) >
+
+<!ELEMENT maxlength (#PCDATA) >
+
+<!ELEMENT required (#PCDATA) >
+
+<!ELEMENT error (#PCDATA)>
+<!ATTLIST error type %errortype #REQUIRED >

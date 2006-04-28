@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+ [ 
+   <!ENTITY base         SYSTEM "mediasources.xml">
+   <!ENTITY formats      SYSTEM "formats.xml" >
+   <!ENTITY type        "audio">
+   <!ENTITY extrafields  "" >
+  ]
+><wizard-schema id="media">
+	<title xml:lang="en">Audio source</title>
+	<title xml:lang="nl">Audiobron</title>
+  &base;
+
+ </wizard-schema>

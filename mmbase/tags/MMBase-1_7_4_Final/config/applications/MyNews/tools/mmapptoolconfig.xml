@@ -1,0 +1,22 @@
+<mmapptoolconfig>
+
+	<colors>
+                <objectcolor red="0" green="86" blue="116" />
+                <backgroundcolor red="66" green="189" blue="173" />
+                <linecolor red="0" green="0" blue="0" />
+                <textcolor red="255" green="255" blue="255" />
+                <activecolor red="140" green="240" blue="230" />
+	</colors>
+
+	<builderovallist>
+		<builderoval name="mags" xpos="275" ypos="108" fontsize="15" />
+		<builderoval name="news" xpos="275" ypos="194" fontsize="15" />
+		<builderoval name="people" xpos="405" ypos="166" fontsize="15" />
+		<builderoval name="urls" xpos="174" ypos="260" fontsize="15" />
+		<builderoval name="jumpers" xpos="275" ypos="46" fontsize="15" />
+		<builderoval name="images" xpos="144" ypos="159" fontsize="15" />
+		<builderoval name="mmevents" xpos="375" ypos="261" fontsize="15" />
+	</builderovallist>
+
+</mmapptoolconfig>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="MMBase bugtracker project" default="package" basedir=".">
+  <property name="project.name"     value="bugtracker" />
+  &base;
+</project>
+
+
+
+

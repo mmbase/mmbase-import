@@ -1,0 +1,270 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Summary of Coding Standards</title>
+    <date>2003-02-14</date>
+    <edition>$Id: codingstandards.xml,v 1.6 2004-02-17 10:21:13 gerard Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+    <section>
+      <title>References</title>
+
+      <para>The following is a short summary of coding standards that need to be applied to source code.</para>
+      <para>All future sources need to conform to these standards.</para>
+      <para>These conventions were based on suggestions from the following documents:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            <ulink url="http://java.sun.com/docs/codeconv/">Code Conventions for the JavaTM Programming Language</ulink>
+          </para>
+          <simpara>This is the basis for these guidelines. Unless otherwise specified, the conventions described here follow those as outlined in the above document.</simpara>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://www.ambysoft.com/javaCodingStandards.html">AmbySoft Inc. Coding Standards for Java</ulink>
+          </para>
+          <simpara>This document contains several suggestions which were used to expand the standard conventions, especially for naming identifiers.</simpara>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://www.objectmentor.com/publications/naming.htm">Ottinger's Rules for Variable and Class Naming</ulink>
+          </para>
+          <simpara>This document also contains suggestions for naming, focused on improving the readability of your code.</simpara>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Documentation</title>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>Java documentation is mandatory!</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Use C-style documentation (/*...*/) for documenting-out obsolete code</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Use Single line documentation (// ...) for in-code documentation.</simpara>
+          <simpara>Single line comments should be on their own line, preceding the statement concerned. The exception is local variables declaration, where the line comment may follow directly behind the declaration.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Required javadoc tags:</simpara>
+          <itemizedlist>
+            <listitem>
+              <simpara>For a class/interface:</simpara>
+              <simpara><token>@author</token> (by alphabetical order)</simpara>
+              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.6 2004-02-17 10:21:13 gerard Exp $ , so that CVS can insert the correct version number.)</simpara>
+            </listitem>
+            <listitem>
+              <simpara>For a member function:</simpara>
+              <simpara><token>@param</token></simpara>
+              <simpara><token>@return</token></simpara>
+              <simpara><token>@exception</token></simpara>
+            </listitem>
+            <listitem>
+              <simpara>From version 1.5 of MMBase and onwards, new classes and member functions should contain the  <token>@since</token>tag (i.e. <token>@since</token> MMBase-1.6)</simpara>
+              <simpara>The version to use during development will be defined by the MMC.</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Deprecated member functions should be indicated as such with <token>@deprecated</token>, and the reason should be given</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Important member function or class dependencies should be documented with <token>@see</token></simpara>
+            </listitem>
+            <listitem>
+              <simpara>Special targeted javadoc tags are documented in the Cleaning Project Notification Plan (see the Cleaning project on the MMBase website for more information)</simpara>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>
+          <simpara>Use Single line documentation (<token>// ...</token>) for in-code documentation.</simpara>
+          <simpara>Single line comments should be on their own line, preceding the statement concerned. The exception is local variables declaration, where the line comment may follow directly behind the declaration.</simpara>
+        </listitem>
+      </itemizedlist>
+
+    </section>
+
+    <section>
+      <title>Naming</title>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>Names should be full English descriptors where possible. They should be smaller than 20 characters and unique within the context.</simpara>
+          <itemizedlist>
+            <listitem>
+              <simpara>Interface names may be :</simpara>
+              <itemizedlist>
+                <listitem>
+                  <simpara>adjectives, i.e <token>Runnable</token>. These names should apply to interfaces that describe one specific property or behavior that applies to different classes but is not the 'main' task of these classes</simpara>
+                </listitem>
+                <listitem>
+                  <simpara>&lt;basename&gt;Interface, i.e. <token>TransactionManagerInterface</token>. These names should describe complex behavior which is the main task of an implementing class.</simpara>
+                </listitem>
+                <listitem>
+                  <simpara>Nouns, i.e. <token>Node</token>. Only a specific set of interfaces (such as the bridge and security) use nouns.</simpara>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+            <listitem>
+              <simpara>The first word in a member function name should be an active verb</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Member field names should not start with verbs. They may start with m_ to emphasize them as being member fields in the code.</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Collections (lists, enumerations) should be given a plural name</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Names of member functions that retrieve a field should start with <token>get</token>. Member functions that retrieve a boolean field should start with <token>is</token>, or optionally <token>has</token>, or <token>can</token>, depending on the data retrieved.</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Names of member functions that set a field should start with <token>set</token>.</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Parameters and local variables for streams can be named <token>in</token>, <token>out</token>, or <token>inOut</token>.</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Local variables for loop counters may use short generic names. Accepted names are <token>i</token>, <token>j</token>, or <token>k</token>.
+Note: Collections should use Iterator (preferred) or Enumeration for loops, not counters</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Parameters and local variables for exceptions can be named <token>e</token>.</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Package names should be singular.</simpara>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>
+          <simpara>Specific choices for names by category:</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Case:</simpara>
+          <itemizedlist>
+            <listitem>
+              <simpara>Except for constants, Names should use mixed case: capitalize first letters of class, interface, and constructor names (other member functions or fields use lowercase), and capitalize the first letter of every non-initial word.</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Constants are all upper case and should be defined as static final.</simpara>
+            </listitem>
+            <listitem>
+              <simpara>Do not fully capitalize acronym such as <token>SQL</token> or <token>XML</token> (but <token>sql/Sql</token> or <token>xml/Xml</token>)</simpara>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+    </section>
+    <section>
+      <title>Spacing</title>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>Indentation is four spaces for each block. Do not use tabs.</simpara>
+          <simpara>This deviates from some standards, there are differences in how people use tabs or how editors show them. The alternate would be to use ONLY tabs (which is not likely to work).</simpara>
+        </listitem>
+        <listitem>
+          <simpara>A keyword followed by a parenthesis should be separated by a space (i.e. if (...))</simpara>
+        </listitem>
+        <listitem>
+          <simpara>A method and it's parameter list should NOT be separated by a space.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>A space should be inserted after a comma in a list, or a semicolon in a for-statement.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>All binary operators should be separated by spaces.</simpara>
+        </listitem>
+      </itemizedlist>
+
+    </section>
+    <section>
+      <title>Other</title>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>At most one declaration per line.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Declarations should be at the beginning of a block.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>At most one statement per line.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Placing of braces for blocks follow the C-standard :</simpara>
+          <programlisting format="linespecific"><![CDATA[
+    statement {
+        otherstatement;
+    }
+          ]]></programlisting>
+        </listitem>
+        <listitem>
+          <simpara><token>if</token>, <token>for</token>, <token>do</token>, <token>while</token>, <token>switch</token> and <token>try/catch</token> blocks should be braced.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Values of return statements should not be put in parenthesis - <token>return</token> is a statement, not a function.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Restrict access to member functions as much as possible. All fields should be private, unless they are constants. Accessing a field should work using the accessor member functions.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Elements in a class should be ordered in the following way:</simpara>
+          <orderedlist>
+           <listitem><simpara>public static fields (constants)</simpara></listitem>
+           <listitem><simpara>private static fields (i.e. log field)</simpara></listitem>
+           <listitem><simpara>private fields</simpara></listitem>
+           <listitem><simpara>constructors</simpara></listitem>
+           <listitem><simpara>finalize()</simpara></listitem>
+           <listitem><simpara>static public member functions</simpara></listitem>
+           <listitem><simpara>static protected member functions</simpara></listitem>
+           <listitem><simpara>static private member functions</simpara></listitem>
+           <listitem><simpara>public member functions</simpara></listitem>
+           <listitem><simpara>protected member functions</simpara></listitem>
+           <listitem><simpara>private member functions</simpara></listitem>
+           <listitem><simpara>public static void main()</simpara></listitem>
+          </orderedlist>
+        </listitem>
+        <listitem>
+          <simpara>Use named constants, not literals.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Use wildcards in import statements if you use 3 or more classes from the same package.</simpara>
+        </listitem>
+      </itemizedlist>
+
+    </section>
+    <section>
+      <title>Specific MMBase issues</title>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>Each class should contain the Mozilla license text.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>New java objects are made using member functions that start with <token>create</token>, i,e <methodname>createAlias()</methodname>, <methodname>createObject()</methodname>. The prefixes <token>add</token> and <token>insert</token> are only used for Collections.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>Remove java objects with member functions starting with <token>delete</token> (i.e. <methodname>deleteAlias</methodname>, <methodname>deleteRelations</methodname>).</simpara>
+        </listitem>
+      </itemizedlist>
+
+    </section>
+</article>
