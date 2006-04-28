@@ -42,7 +42,7 @@
             <mm:param name="role_name"><%= role %></mm:param>
             <mm:param name="direction"><%= searchDir.equals("destination") ? "create_child" : "create_parent" %></mm:param>
             </mm:url>'>
-           <span class="create"><!-- needed for IE --></span><span class="alt">+</span>
+           <span class="create"></span><span class="alt">+</span>
        </a>
       <mm:previousbatches max="1">
         <a href='<mm:url referid="purl">
@@ -88,13 +88,13 @@
         <mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param>
         <mm:param name="delete">true</mm:param>
         </mm:url>' >
-        <span class="delete"><!-- needed for IE --></span><span class="alt">x</span>
+        <span class="delete"></span><span class="alt">x</span>
       </a>
     </mm:maydelete>
     <mm:maywrite>
       <%-- edit the relation --%>
       <a href="<mm:url referids="node_number,node_number@push" page="change_node.jsp" />" >
-        <span class="select"><!-- needed for IE --></span><span class="alt">-&gt;</span>
+        <span class="select"></span><span class="alt">-&gt;</span>
       </a>
     </mm:maywrite>
   </td>
@@ -110,7 +110,7 @@
     <td class="navigate" colspan="1">
        <%-- edit the related node --%>
       <a href="<mm:url referids="relatednumber@node_number,relatednumber@push" page="change_node.jsp" />">
-      <span class="select"><!-- needed for IE --></span><span class="alt">-&gt;</span>
+      <span class="select"></span><span class="alt">-&gt;</span>
     </a>
   </td>
 </mm:relatednode>

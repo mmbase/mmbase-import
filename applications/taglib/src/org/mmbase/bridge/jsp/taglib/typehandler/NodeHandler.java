@@ -18,7 +18,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.util.Encode;
-import org.mmbase.util.functions.*;
 
 //import org.mmbase.util.logging.*;
 
@@ -26,14 +25,13 @@ import org.mmbase.util.functions.*;
 /**
  * Taglibs handler for Node typed fields.
  *
- *
- * Currently this recognizes node manager names for the guitype (produces dropdowns). If gui-type is not another builder,
- * this falls back to 'AbstractTypeHandler'. This behaviour is legacy. AbstractTypeHandler deals with enumerations genericly.
+ * Currently this recognized node manager names for the guitype (produces dropdowns). If gui-type is not another builder,
+ * this falls back to 'AbstractTypeHandler'.
  *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.37 2006-04-18 21:30:30 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.26.2.2 2004-07-26 20:12:13 nico Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -72,25 +70,15 @@ public class NodeHandler extends AbstractTypeHandler {
     }
 
     /**
-     * @since MMBase-1.8
-     */
-    protected boolean useLegacy(Node node, Field field) {
-        return field.getDataType().getEnumerationValues(null, field.getNodeManager().getCloud(), node, field) == null;
-    }
-
-    /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
-        if(useLegacy(node, field) &&
-           // backwards compatibility. super should deal correctly with enumerations, also for node-fields
-           tag.getCloudVar().hasNodeManager(field.getGUIType())) {
+        if(tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
-            buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
-            buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
+            buffer.append("<select name=\"" + prefix(field.getName()) + "\"");
             addExtraAttributes(buffer);
             buffer.append(">\n");
             // list all our nodes of the specified builder here...
@@ -99,11 +87,9 @@ public class NodeHandler extends AbstractTypeHandler {
 
 
             // args for gui function
-            Parameters args = new Parameters(org.mmbase.module.core.MMObjectBuilder.GUI_PARAMETERS);
-            args.set("field",    "");
-            args.set("locale",   tag.getLocale());
-            args.set("response", tag.getPageContext().getResponse());
-            args.set("request",  tag.getPageContext().getRequest());
+            List args = new ArrayList();
+            args.add("");
+            args.add(tag.getCloudVar().getLocale().getLanguage());
             // should actually be added
             //args.add(sessionName);
             //args.add(tag.pageContext.getResponse());
@@ -134,11 +120,11 @@ public class NodeHandler extends AbstractTypeHandler {
                 buffer.append("  <option ");
                 if(gui.getValue().equals(value)) {
                     // this is the selected one!
-                    buffer.append("selected=\"selected\" ");
+                    buffer.append("selected=\"selected\"");
                 } else if (search) {
                     String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
                     if (gui.getValue().equals(searchi)) {
-                        buffer.append(" selected=\"selected\" ");
+                        buffer.append(" selected=\"selected\"");
                     }
                 }
                 buffer.append("value=\"" + gui.getValue() + "\">");
@@ -152,9 +138,8 @@ public class NodeHandler extends AbstractTypeHandler {
                 buffer.append(name);
                 String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
                 buffer.append("\" ");
-                buffer.append("id=\"").append(prefixID(field.getName() + "_search")).append("\" ");
                 if (searchi != null) {
-                    buffer.append("checked=\"checked\"");
+                    buffer.append(" checked=\"checked\"");
                 }
                 buffer.append(" />\n");
             }
@@ -168,27 +153,24 @@ public class NodeHandler extends AbstractTypeHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        if(useLegacy(null, field) &&
-            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
+        if (tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
-            }
+            } 
         }
         return super.whereHtmlInput(field);
     }
 
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
-        if(useLegacy(null, field) &&
-           tag.getCloudVar().hasNodeManager(field.getGUIType())) {
+        if (tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
             if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
                 return null;
-            }
-        }
+            } 
+        }                
         return super.whereHtmlInput(field, query);
     }
-
 
 }

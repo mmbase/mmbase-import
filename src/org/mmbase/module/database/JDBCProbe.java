@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database;
 
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -17,12 +16,14 @@ import org.mmbase.util.logging.Logging;
  * JDBCProbe checks all JDBC connection every X seconds to find and
  * remove bad connections works using a callback into JDBC.
  *
- * @version $Id: JDBCProbe.java,v 1.14 2006-02-10 16:03:00 michiel Exp $
+ *
+ * @version $Id: JDBCProbe.java,v 1.9 2004-03-15 16:18:48 michiel Exp $
  * @author Daniel Ockeloen
- */
+
+*/
 public class JDBCProbe implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(JDBCProbe.class);
-
+    
     private JDBC parent = null;
     private long checkTime;
 
@@ -32,33 +33,30 @@ public class JDBCProbe implements Runnable {
     }
 
     public JDBCProbe(JDBC parent, int ct) {
-        this(parent, (long) ct * 1000);
-    }
-
-    public JDBCProbe(JDBC parent, long ct) {
         this.parent = parent;
-        checkTime = ct;
-        MMBaseContext.startThread(this, "JDBCProbe");
+        checkTime = ct * 1000;
+	Thread t = new Thread(this, "JDBCProbe");
+	t.setDaemon(true);
+	t.start();
     }
-
+    
     /**
      * admin probe, try's to make a call to all the maintainance calls.
      */
     public void run () {
-        log.service("JDBC probe starting with sleep time of " +( checkTime / 1000) + " s");
-        // todo: how to stop this thread except through interrupting it?
+        log.info("JDBC probe starting");
         while (true) {
-            try {
+            try { 
                 Thread.sleep(checkTime);
-            } catch(InterruptedException e) {
-                log.debug(Thread.currentThread().getName() +" was interrupted.");
-                break; // likely interrupted due to MMBase going down - break out of loop
+            } catch(InterruptedException e) { 
+                log.info("Interrupted " + e.getMessage());
             }
 
             try {
                 parent.checkTime();
             } catch (Exception e) {
                 log.error(e.getMessage());
+                
             }
         }
     }

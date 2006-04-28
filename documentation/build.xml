@@ -1,6 +1,3 @@
-<!--
-  $Id: build.xml,v 1.27 2006-03-29 18:14:45 michiel Exp $
--->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
   <!-- ===================== Initialize Property Values =================== -->
@@ -34,7 +31,6 @@
   <property name="release.lib.dir"      value="${web.dir}/lib"/>
   <property name="compile.lib.dir"      value="${build.dir}/lib"/>
   <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
-  <property name="applications.dir"     value="${source.dir}/applications" />
   <property name="mmbase.jar"           value="${build.dir}/mmbase.jar"/>
 
 
@@ -115,28 +111,14 @@
   <!-- this is documentation that hasn't been converted to docbook -->
   <!-- (yet)                                                       -->
   <target name="documentation.static.copy">
-    <!--
     <copy todir="${documentation.dest.dir}/" >
       <fileset dir="${mmbase.html.documentation.dir}" />
     </copy>
-    -->
-  </target>
-  
-  <target name="applications.documentation.copy" 
-    description="Copies documentation from applications to documentation directory">
-    <copy todir="${documentation.src.dir}/applications">
-	  <mapper type="regexp" from="(.*)/documentation(.*)" to="\1\2" />
-      <fileset dir="${applications.dir}/">
-        <include name="**"/>
-      </fileset>
-    </copy>
   </target>
 
+
   <target name="lib.compile">
-    <ant inheritAll="false" dir="${source.dir}" target="lib.compile">
-      <property name="build.dir"        value="${build.dir}" />
-      <property name="download.dir"     value="${download.dir}" />
-    </ant>
+    <ant inheritAll="false" dir="${source.dir}" target="lib.compile" />
   </target>
 
   <!-- compile the XSLTransformer -->
@@ -147,7 +129,6 @@
            destdir="${build.dir}/classes"
            depend="true"
            debug="${debug}"
-           source="1.4"
            optimize="${optimize}"
            deprecation="${deprecation}">
       <include name="org/mmbase/util/XSLTransformer.java" />
@@ -173,7 +154,7 @@
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.resources,applications.documentation.copy,xsltransformer,download"
+          depends="documentation.resources,xsltransformer,download"
           description="Create HTML documentation from the DocBook sources">
 
     <echo message="${documentation.dest.dir}" />
@@ -197,7 +178,6 @@
       <arg value="${documentation.dest.dir}" />
       <arg value="exclude=build.xml" />
       <arg value="exclude=build" />
-      <arg value="exclude=templates" />
     </java>
   </target>
 
@@ -247,7 +227,6 @@
       <arg value="extension=fo" />
       <arg value="exclude=build" />
       <arg value="exclude=build.xml" />
-      <arg value="exclude=templates" />
       <arg value="paper.type=A4" />
     </java>
 
@@ -291,7 +270,7 @@
   <!-- ================================================================================ -->
   <!-- Main documentation Target                                                        -->
   <!-- ================================================================================ -->
-  <target name="documentation" depends="documentation.html,documentation.static.copy">
+  <target name="documentation" depends="documentation.html,documentation.static.copy"> <!-- ,documentation.pdf"-->
     <!-- delete dir="${documentation.temp.dir}"/ -->
   </target>
  

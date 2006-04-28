@@ -10,24 +10,27 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.jstl.core.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.jsp.taglib.CloudProvider;
+import org.mmbase.bridge.jsp.taglib.TagIdentifier;
 
 /**
  * A Query container can be used around node-list Tags. Basicly, it adminstrates a Query object.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainer.java,v 1.7 2005-12-15 21:47:27 michiel Exp $
+ * @version $Id: QueryContainer.java,v 1.1.2.2 2004-07-26 20:12:19 nico Exp $
  */
-public interface QueryContainer extends  CloudProvider {
+public interface QueryContainer extends TagIdentifier, QueryContainerOrListProvider {
 
     /**
      * Returns the currently by the container defined query object. Subtags can use this query
      * object to change it or to use it. 
      */
     Query getQuery();
+
+
+
+    Cloud getCloudVar() throws JspTagException;
 
 }

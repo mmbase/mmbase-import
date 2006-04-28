@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.35 2005-11-28 12:42:37 michiel Exp $
+    @version $Id: base.xsl,v 1.28.2.5 2004-06-03 08:49:59 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -81,7 +81,7 @@
   <!-- relative to root -->
   <xsl:variable name="rootreferrer">
     <xsl:choose>
-      <xsl:when test="substring($referrer, 1, 6) = 'https:'">
+      <xsl:when test="substring($referrer, 1, 5) = 'https:'">
         <xsl:value-of select="$referrer" />
       </xsl:when>
       <xsl:when test="substring($referrer, 1, 5) = 'http:'">
@@ -101,27 +101,12 @@
     </xsl:call-template>
   </xsl:variable>
 
-  <xsl:param name="wizardjsp">wizard.jsp</xsl:param>
-  <xsl:variable name="wizardamp">
-    <xsl:choose>
-      <xsl:when test="contains($wizardjsp, '?')">
-        <xsl:text>&amp;</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>?</xsl:text>
-      </xsl:otherwise>      
-    </xsl:choose>    
-  </xsl:variable>
+  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" />&amp;country=<xsl:value-of select="$country" />&amp;debug=<xsl:value-of select="$debug" /></xsl:param>
 
-  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" />&amp;country=<xsl:value-of select="$country" />&amp;debug=<xsl:value-of select="$debug" /></xsl:param>
+  <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
+  <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
 
-  <xsl:variable name="listpage">list.jsp?<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
-  
-
-
-  <xsl:variable name="wizardpage"><xsl:value-of select="$wizardjsp" /><xsl:value-of select="$wizardamp" /><xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
-  <xsl:variable name="formwizardpage"><xsl:value-of select="$wizardjsp" /><xsl:value-of select="$sessionid" /></xsl:variable>
-
+  <xsl:variable name="formwizardpage">wizard.jsp<xsl:value-of select="$sessionid" /></xsl:variable>
   <xsl:template name="formwizardargs">
     <input type="hidden" name="proceed" value="true" />
     <input type="hidden" name="sessionkey" value="{$sessionkey}" />
@@ -131,11 +116,11 @@
     <input type="hidden" name="popupid" value="{$popupid}" />
   </xsl:template>
 
-  <xsl:variable name="popuppage">wizard.jsp?<xsl:value-of select="$wizardparams" /></xsl:variable>
+  <xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
 
   <!--xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$sessionid" />?referrer=<xsl:value-of select="$referrer_encoded" />&amp;language=<xsl:value-of select="$language" /></xsl:variable-->
-  <xsl:variable name="deletepage">deletelistitem.jsp?<xsl:value-of select="$wizardparams" /></xsl:variable>
-  <xsl:variable name="uploadpage">upload.jsp?<xsl:value-of select="$wizardparams" /></xsl:variable>
+  <xsl:variable name="deletepage">deletelistitem.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
+  <xsl:variable name="uploadpage">upload.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
 
   <xsl:variable name="wizardtitle">
     <xsl:call-template name="i18n">

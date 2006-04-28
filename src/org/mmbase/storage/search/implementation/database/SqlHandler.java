@@ -55,7 +55,7 @@ import org.mmbase.storage.search.*;
  * of responsibility.
  *
  * @author  Rob van Maris
- * @version $Id: SqlHandler.java,v 1.7 2005-10-01 20:11:03 michiel Exp $
+ * @version $Id: SqlHandler.java,v 1.5 2003-03-10 11:51:01 pierre Exp $
  * @since MMBase-1.7
  */
 public interface SqlHandler {
@@ -84,8 +84,10 @@ public interface SqlHandler {
      *        At some point <code>appendConstraintToSql()</code> will have
      *        to be called on this handler, to generate the constraints in
      *        the query.
+     * @return SQL string representation of the query.
      */
-    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException;
+    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain)
+    throws SearchQueryException;
 
     /**
      * Represents Constraint object, that is not a CompositeConstraint,
@@ -136,8 +138,7 @@ public interface SqlHandler {
     /**
      * Maps string to value that is allowed as table or field name.
      *
-     * @deprecated use {@link org.mmbase.storage.StorageManagerFactory#getStorageIdentifier}
-     * @param value The string value.
+     * @param The string value.
      * @return The mapped value.
      */
     public String getAllowedValue(String value);

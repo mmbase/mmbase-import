@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="RichText" maintainer="richtext.mmbase.omroep.nl" version="1" auto-deploy="false">
+	<requirements>
+		<requires name="Resources" maintainer="mmbase.org" version="1" />
+	</requirements>
+
+	<neededbuilderlist>
+		<builder maintainer="mmbase.org" version="1">xmlnews</builder>
+		<builder maintainer="mmbase.org" version="1">images</builder>
+		<builder maintainer="mmbase.org" version="1">urls</builder>
+		<builder maintainer="mmbase.org" version="1">idrel</builder>
+	</neededbuilderlist>
+
+	<neededreldeflist>
+		<reldef source="idrel" target="idrel" direction="bidirectional" guisourcename="Idrel" guitargetname="Idrel" builder="idrel" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+		<relation from="xmlnews"  to="images" type="idrel" />
+		<relation from="xmlnews"  to="urls"   type="idrel" />
+	</allowedrelationlist>
+
+	<datasourcelist>
+		<datasource builder="xmlnews" path="RichText/xmlnews.xml" />
+		<datasource builder="images"  path="RichText/images.xml" />
+		<datasource builder="urls"    path="RichText/urls.xml" />
+	</datasourcelist>
+
+	<relationsourcelist>
+		<relationsource builder="idrel" path="RichText/idrel.xml" />
+	</relationsourcelist>
+
+	<contextsourcelist>
+		<contextsource path="RichText/backup.xml" type="depth" goal="backup"/>
+	</contextsourcelist>
+
+	<description><![CDATA[RichText test article, with some related nodes.
+Depends on Resources application.
+	]]></description>
+
+	<install-notice><![CDATA[The formatter example of the taglib example will work now and demonstrate how 'XML' fields can be used.
+	]]></install-notice>
+</application>

@@ -22,47 +22,41 @@ import org.mmbase.util.logging.*;
 /**
  * A function tag for functions returning a NodeList. The result is iterated.
  *
- * This is one of the most straightforward ListProvider/NodeProvider implementations, you could use it as a template.
+ * This is one of the most straightforward ListProvider/NodeProvider implementations, you could use it as a template. 
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.14 2005-12-29 19:48:42 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.3.2.3 2005-03-14 18:33:24 michiel Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
+    //cannot extend AbstractNodeList because we extend AbstractFunctionTag alreeady. Sigh, stupid java.
+    //even proxies are no option because I do not instantiate nor call these tag objects.
+    //therefore, all this stuff with helpers.
 
     private static final Logger log = Logging.getLoggerInstance(NodeListFunctionTag.class);
 
-    //cannot extend AbstractNodeList because we extend AbstractFunctionTag already.
-    //even proxies are no option because I do not instantiate nor call these tag objects.
-    //therefore, all this stuff with helpers.
+
     private NodeProviderHelper nodeHelper = new NodeProviderHelper(this);
     private NodeListHelper     listHelper = new NodeListHelper(this, nodeHelper);
 
 
-    // implementation of NodeProvider
+    // implementation of NodeProvider 
+
     public Node getNodeVar() throws JspTagException {
         return nodeHelper.getNodeVar();
     }
-
-    public Query getGeneratingQuery() throws JspTagException {
-        return nodeHelper.getGeneratingQuery();
+    public void setModified() {
+        nodeHelper.setModified();
     }
-    /**
-     * @since MMBase-1.8
-     */
-    public void setCommitonclose(String c) throws JspTagException {
-        nodeHelper.setCommitonclose(c);
-    }
-
     public void setJspvar(String jv) {
         nodeHelper.setJspvar(jv);
     }
 
+
     // implementation of ListProvider
-    public int size() {
+    public int size(){
         return listHelper.size();
     }
-
     public int getIndex() {
         return listHelper.getIndex();
     }
@@ -74,7 +68,6 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     public boolean isChanged() {
         return listHelper.isChanged();
     }
-
     public Object getCurrent() {
         return listHelper.getCurrent();
     }
@@ -82,6 +75,7 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     public void remove() {
         listHelper.remove();
     }
+
 
     // extra stuff (should perhaps be part of ListProvider interface)
     public void setMax(String m) throws JspTagException {
@@ -91,50 +85,45 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     public void setOffset(String o) throws JspTagException {
         listHelper.setOffset(o);
     }
-
     public void setComparator(String c) throws JspTagException {
         listHelper.setComparator(c);
     }
+
+
 
     public ContextContainer getContextContainer() throws JspTagException {
         return listHelper.getContextContainer();
     }
 
     public int doStartTag() throws JspTagException {
+
         NodeList list;
-        Object value = getFunctionValue(false);
-
-        /* should be something like:
-
-        NodeList list = Casting.toNodeList(getCloudVar(), value);
-
-        */
-        if (value instanceof NodeList) {
-            list = (NodeList) value;
-        } else {
-            list = getCloudVar().createNodeList();
-            if (value != null) {
-                list.addAll((Collection) value);
+        { 
+            Object value = getFunctionValue();
+            if (value instanceof NodeList) {
+                list = (NodeList) value;
+            } else {
+                list = getCloudVar().getCloudContext().createNodeList();
+                list.addAll((Collection) value); 
+                // the Collection must contain "Nodes" only, no MMObjectNodes otherwise Exception from BasicNodeList, because it cannot convert without Cloud
             }
         }
-        listHelper.doStartTagHelper();
         return listHelper.setReturnValues(list, true);
     }
+
 
     public int doAfterBody() throws JspException {
         log.debug("doafterbody");
         nodeHelper.doAfterBody();
         return listHelper.doAfterBody();
+
     }
 
     public int doEndTag() throws JspTagException {
-        super.doEndTag();
+        super.doEndTag();        
         listHelper.doEndTag();
         return nodeHelper.doEndTag();
     }
 
-    public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
-        return new ListProviderLoopTagStatus(this);
-    }
-}
 
+}

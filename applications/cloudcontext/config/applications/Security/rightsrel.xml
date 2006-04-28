@@ -59,13 +59,9 @@
 		<operation>read</operation>
 	</node>
 
-  <!-- security objects may only be read, and linked to-->
+  <!-- security object may only be read-->
 	<node number="740" owner="security" snumber="1002" dnumber="600" rtype="grants" dir="bidirectional">
 		<operation>read</operation>
-	</node>
-
-	<node number="741" owner="security" snumber="518" dnumber="468"  rtype="grants" dir="bidirectional">
-		<operation>change relation</operation>
 	</node>
 
 </rightsrel>

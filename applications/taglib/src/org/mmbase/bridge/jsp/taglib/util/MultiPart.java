@@ -9,19 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
-import java.util.*;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
+import java.util.Enumeration;
+import java.io.*;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
-import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.apache.commons.fileupload.*;
 
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.18 2006-03-28 20:32:40 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.4.2.3 2005-02-03 09:23:26 michiel Exp $
  **/
 
 public class MultiPart {
@@ -31,10 +31,9 @@ public class MultiPart {
 
     public static boolean isMultipart(PageContext pageContext) {
         String ct = ((HttpServletRequest)pageContext.getRequest()).getContentType();
-        if (ct == null) {
+        if (ct == null)
             return false;
-        }
-        return (ct.startsWith("multipart/"));
+        return (ct.indexOf("multipart/form-data") != -1);
     }
 
     public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
@@ -46,10 +45,10 @@ public class MultiPart {
 
             if (log.isDebugEnabled()) {
                 if (multipartRequest != null) {
-                    Iterator paramNames = multipartRequest.getParameterNames();
+                    Enumeration e = multipartRequest.getParameterNames();
                     StringBuffer params = new StringBuffer();
-                    while (paramNames.hasNext()) {
-                        params.append(paramNames.next()).append(",");
+                    while (e.hasMoreElements()) {
+                        params.append(e.nextElement()).append(",");
                     }
                     log.debug("multipart parameters: " + params);
                 } else {
@@ -57,109 +56,154 @@ public class MultiPart {
                 }
             }
             pageContext.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest, PageContext.REQUEST_SCOPE);
-        } else {
-            log.debug("Found multipart request on pageContext" + multipartRequest);
         }
         return multipartRequest;
     }
 
-    static public class MMultipartRequest {
+    // following class can be reimplemented when using other MultiPart post parser.
 
-        private Map parametersMap = new HashMap();
-        private String coding = null;
+    // oreilly implmenetation:
+    /* Doesn't seem to work (yet)
+    class MMultipartRequest {
+    
+        private static final Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
+        private MultipartRequest o;
+    
+        MMultipartRequest(HttpServletRequest req) {
+            try {
+                o = new MultipartRequest(req, System.getProperty("java.io.tmpdir"));
+            } catch (IOException e) {
+                log.warn("" + e);
+            }
+        };
+    
+        public byte[] getBytes(String param) throws JspTagException {
+            try {
+                File f = o.getFile(param);
+                FileInputStream fs = new FileInputStream(f);
+    
+                // read the file to a byte[].
+                // little cumbersome, but well...
+                // perhaps it would be littler so if we use MultipartParser
+                // but this is simpler, because oreilly..MultipartRequest is like a request.
+    
+                byte[] buf = new byte[1000];
+                Vector bufs = new Vector();
+                int size = 0;
+                int grow;
+                while ((grow = fs.read(buf)) > 0) {
+                size += grow;
+                bufs.add(buf);
+                buf = new byte[1000];
+                }
+                log.debug("size of image " + size);
+                byte[] bytes = new byte[size];
+                // copy the damn thing...
+                Iterator i = bufs.iterator();
+                int curpos = 0;
+                while (i.hasNext()) {
+                    byte[] tmp = (byte []) i.next();
+                    System.arraycopy(tmp, 0, bytes, curpos, tmp.length);
+                    curpos += tmp.length;
+                }
+                log.debug("size of image " + curpos);
+                return bytes;
+            }
+            catch (FileNotFoundException e) {
+                throw new JspTagException(e.toString());
+            }
+            catch (IOException e) {
+                throw new JspTagException(e.toString());
+            }
+    
+                //} catch (org.mmbase.util.PostValueToLargeException e) {
+                //throw new JspTagException("Post value to large (" + e.toString() + ")");
+                //}
+        };
+        public Object getParameterValues(String param) {
+            Object result = null;
+            Object[] resultvec = o.getParameterValues(param);
+            if (resultvec != null) {
+                if (resultvec.length > 1) {
+                    Vector rresult = new Vector(resultvec.length);
+                    for (int i=0; i < resultvec.length; i++) {
+                        rresult.add(resultvec[i]);
+                    }
+                    result  = rresult;
+                } else {
+                    result = (String) resultvec[0];
+                }
+            }
+            return result;
+        };
+        public Enumeration getParameterNames() {
+            return o.getParameterNames();
+        }
+    }
+    */
+    // org.mmbase.util.HttpPost implementation
+
+    static public class MMultipartRequest {
+        private static final Logger log = Logging.getLoggerInstance(MultiPart.class);
+        private org.mmbase.util.HttpPost o = null;
 
         MMultipartRequest(HttpServletRequest req, String c) {
-            try {
-                DiskFileUpload fu =  new DiskFileUpload();
-                fu.setHeaderEncoding("ISO-8859-1"); // if incorrect, it will be fixed later.
-                List fileItems = fu.parseRequest(req);
-                for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
-                    FileItem fi = (FileItem)i.next();
-                    if (fi.isFormField()) {
-                        String value;
-                        try {
-                            value = fi.getString("ISO-8859-1");
-                        } catch(java.io.UnsupportedEncodingException uee) {
-                            log.error("could not happen, ISO-8859-1 is supported");
-                            value = fi.getString();
-                        }
-                        Object oldValue = parametersMap.get(fi.getFieldName());
-                        if (oldValue == null ) {
-                            parametersMap.put(fi.getFieldName(), value);
-                        } else if (!(oldValue instanceof FileItem)) {
-                            List values;
-                            if (oldValue instanceof String) {
-                                values = new ArrayList();
-                                values.add(oldValue);
-                            } else {
-                                values = (List)oldValue;
-                            }
-                            values.add(value);
-                            parametersMap.put(fi.getFieldName(), values);
-                        }
-                    } else {
-                        parametersMap.put(fi.getFieldName(), fi);
-                    }
-                }
-            } catch (FileUploadException e) {
-                log.error(e.getMessage(), e);
-                throw new RuntimeException(e);
-            }
-            coding = c;
-            log.debug("Created with encoding: " + coding);
+            log.debug("Creating HttpPost instance");
+            o = new org.mmbase.util.HttpPost(req);
+
         }
 
         /**
-         * Method to retrieve the bytes of an uploaded file.
+         * Method to retrieve the byte's
          * @param param The name of the parameter
          * @return <code>null</code> if parameter not found, otherwise the bytes from the parameter
          */
         public byte[] getBytes(String param) throws JspTagException {
-            log.debug("Getting bytes for " + param);
-            Object value = parametersMap.get(param);
-            if (value instanceof FileItem) {
-                try {
-                    return ((FileItem)value).get();
-                } catch (Exception e) {
-                    throw new TaglibException(e);
+            try {
+                log.debug("Getting bytes for " + param);
+                if (o.isPostedToFile()) {
+                    File file = new File(o.getPostParameterFile(param));
+                    if (!file.exists()) {
+                    	log.warn(file.getPath() + "does not exits");
+                    }
+                    FileInputStream fis = new FileInputStream(file);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[200];
+                    int readsize = 0;
+                    while ((readsize = fis.read(buffer)) > 0) {
+                        baos.write(buffer, 0, readsize);
+                    }
+                    fis.close();
+                    return baos.toByteArray();
+                } else {
+                    return o.getPostParameterBytes(param);
                 }
-            } else {
-                return null;
-            }
-        }
-        public FileItem getFileItem(String param) throws JspTagException {
-            log.debug("Getting outputstream for " + param);
-            Object value = parametersMap.get(param);
-            if (value instanceof FileItem) {
-                try {
-                    return (FileItem)value;
-                } catch (Exception e) {
-                    throw new TaglibException(e);
-                }
-            } else {
-                return null;
+            } catch (Exception e) {
+                log.warn(Logging.stackTrace(e));
+                throw new TaglibException(e);
             }
         }
 
         /**
          * Method to retrieve the bytes of an uploaded file as a string using eitehr the encoding specified in the file or
          * the default encoding.
+         * @param param The name of the parameter
          * @return <code>null</code> if parameter not found, otherwise the bytes from the parameter
          */
         protected String encodeBytesAsString(byte[] data) throws JspTagException {
-            String encoding = coding;
+            String encoding = "ISO-8859-1";
             // get first 60 bytes to determine if this is a xml type
             byte[] xmlbytes = new byte[60];
             int sz = data.length;
             if (sz > 60) sz = 60;
-            System.arraycopy(data, 0, xmlbytes, 0, sz);
+            System.arraycopy((byte[])data, 0, xmlbytes, 0, sz);
             String xmltext = new String(xmlbytes);
             if (xmltext.startsWith("<?xml")) {
                 int i = xmltext.indexOf("encoding");
-                log.debug("i=*" + i + "*");
+                log.info("i=*" + i + "*");
                 if (i > 0) {
                     int j = xmltext.indexOf("?>", i);
-                    log.debug("j=*" + j + "*");
+                    log.info("j=*" + j + "*");
                     if (j > i) {
                         // get trimmed attribute value
                         encoding = xmltext.substring(i + 8, j).trim();
@@ -177,39 +221,36 @@ public class MultiPart {
             }
         }
 
-        /**
-         * @since MMBase-1.8
-         */
-        public boolean isFile(String param) {
-            Object value = parametersMap.get(param);
-            return value instanceof FileItem;
-        }
 
         /**
-         * Method to retrieve the parameter.
+         * Method to retrieve the parameter
          * @param param The name of the parameter
          * @return <code>null</code> if parameter not found, when a single occurence of the parameter
-         * the result as a <code>String</code> using the encoding specified. When if was a MultiParameter parameter, it will return
-         * a <code>List</code> of <code>String</code>'s
+         * the result as a <code>String</code> using the encoding specified. When if was a MulitParameter parameter, it will return
+         * a <code>Vector</code> of <code>String</code>'s
          */
         public Object getParameterValues(String param) throws JspTagException {
             // this method will return null, if the parameter is not set...
-            Object value = parametersMap.get(param);
-            //log.debug("Got param " + param + " " + (value == null ? "NULL" : value.getClass().getName()) + " " + value);
-
-            if (value instanceof FileItem) {
-                try {
-                    return encodeBytesAsString(((FileItem)value).get());
-                } catch (Exception e) {
-                    throw new TaglibException(e);
-                }
-            } else {
-                return value;
+            if (!o.getPostParameters().containsKey(param)) {
+                return null;
             }
+            // if it is a PostMultiParameter, return it..
+            if (o.checkPostMultiParameter(param)) {
+                log.debug("This is a multiparameter!");
+                return o.getPostMultiParameter(param, "ISO-8859-1");
+            }
+
+            // get the info as String...
+            byte[] data = getBytes(param);
+            if (data == null) {
+                throw new JspTagException("retrieved no data for parameter:" + param);
+            }
+            return encodeBytesAsString(data);
+            
         }
 
-        public Iterator getParameterNames() {
-            return parametersMap.keySet().iterator();
+        public Enumeration getParameterNames() {
+            return o.getPostParameters().keys();
         }
     }
 

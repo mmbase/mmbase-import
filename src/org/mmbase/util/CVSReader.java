@@ -22,10 +22,9 @@ import org.mmbase.util.logging.*;
 /**
  * Class for reading and parsing the contents of a CVS (comma value seperated) file.
  *
- * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.11 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: CVSReader.java,v 1.9 2003-03-10 11:51:05 pierre Exp $
  */
 public class CVSReader {
 
@@ -175,7 +174,7 @@ public class CVSReader {
     /**
      * Returns the element at the given row and with the given column name.
      * @param row the element row
-     * @param colname the element columnname
+     * @param col the element columnname
      * @return the element as a String.
      */
     public String getElement(int row,String colname) {

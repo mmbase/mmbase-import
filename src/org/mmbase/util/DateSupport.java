@@ -34,10 +34,9 @@ import org.mmbase.util.logging.Logging;
  * This means that some timezone conversions have to be made.
  * We assume nothing about timezones, we just read the value specified by the system (Timezone.getDefault() call).
  *
- * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.26 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: DateSupport.java,v 1.19.2.3 2004-06-17 11:52:08 rob Exp $
  */
 public class DateSupport {
 
@@ -305,7 +304,7 @@ public class DateSupport {
             if (dooffset) {
                 val += offset;
             }
-            v = new Date((long) val * 1000);
+	    v = new Date((long) val * 1000);
         }
         SimpleDateFormat f = new SimpleDateFormat("HH:mm:ss");
         return f.format(v);
@@ -488,6 +487,7 @@ public class DateSupport {
             // Do not worry about the code below, since it will never be called
 
             TimeZone tz1, tz2;
+            long off = 5400;
             int off1, off2;
             Date d = new Date();
 
@@ -502,7 +502,8 @@ public class DateSupport {
             if (tz2.inDaylightTime(d)) {
                 off2 += (3600 * 1000);
             }
-            return off1 - off2;
+            off = off1 - off2;
+            return off;
         } else {
             return (long) offset * 1000;
         }
@@ -539,10 +540,33 @@ public class DateSupport {
         return l;
     }
 
+    /**
+     * Convert date to long with timezone-offset <br />
+     * example : <br />convertDateToLongWithTimeZone ( "14:12:56 3/5/1998", 3, 30 ) <br />
+     *           will convert the date to milliseconds passes from 1970 untill this date with -3:30 timezone
+     * @param date Date to be converted in format:  hour:minute:second day/month/year
+     * @param hour Hour-part of the timezone-offset (int)
+     * @param minutes Minutes-part of the timezone-offset (int)
+     * @deprecated-now Do not use this code ever!
+     */
+    public static long convertDateToLongWithTimeZone(String date, int hour, int minutes) {
+        return convertStringToLongWithTimeZone(date, hour, minutes);
+    }
+
     /*
      * ----- private functions used by convertDateToLong --------
      */
 
+    /**
+     * Convert a string with a fixed (3:30) timezone offset
+     * @obsolete Do not use this method ever!!
+     */
+    private static long convertStringToLong(String date) {
+        // Set timezone to local timezone (Netherlands = 3:30 difference)
+        // NEVER, NEVER CALL THIS METHOD!!! IT IS OBSOLETE!!!
+        log.warn("DateSupport::converStringToLong   Obsolete code!");
+        return convertDateToLongWithTimeZone(date, 3, 30);
+    }
 
     /**
      * @obsolete Do not use this method ever!!
@@ -691,7 +715,7 @@ public class DateSupport {
 
     /**
      * Main method used for testing purposes
-     * @param args Array of arguments
+     * @param args[] Array of arguments
      */
     public static void main(String args[]) {
         log.info("Date (without corr)" + date2string((int) (System.currentTimeMillis() / 1000)) + " " + System.currentTimeMillis() / 1000);

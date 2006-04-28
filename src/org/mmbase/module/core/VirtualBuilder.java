@@ -10,10 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
-import org.mmbase.bridge.Field;
-import org.mmbase.datatypes.*;
-import org.mmbase.core.CoreField;
-import org.mmbase.core.util.Fields;
+import org.mmbase.module.corebuilders.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,12 +22,13 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.22 2006-01-16 15:17:59 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.9 2003-12-17 20:45:03 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
+
+    // logging variable
     private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
 
-    private static int counter = 0;
     /**
      * Creates an instance of a Virtual builder.
      * A builder instantiated with this constrcutor is not registered in MMBase
@@ -38,10 +37,11 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @param m the MMbase cloud creating the node
      */
     public VirtualBuilder(MMBase m) {
-        this.mmb = m;
-        this.tableName = "virtualnodes_" + counter++;
-        this.description = "";
-        virtual = true;
+        this.mmb=m;
+        this.tableName="virtualnodes_"+System.currentTimeMillis();
+        this.description="";
+        fields=new Hashtable();
+        virtual=true;
     }
 
     /**
@@ -50,15 +50,9 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @param tableName the name of the builder as known in the MMbase system
      */
     protected VirtualBuilder(MMBase m, String tableName) {
-        this.mmb = m;
-        this.tableName = tableName;
-        this.description = "";
-        virtual = true;
-        if (m.addBuilder(tableName, this) != null) {
-            log.debug("Replaced virtual builder '" + tableName + "'");
-        } else {
-            log.debug("Created virtual builder '" + tableName + "'");
-        }
+        this(m);
+        this.tableName=tableName;
+        m.mmobjs.put(tableName,this);
     }
 
     /**
@@ -101,7 +95,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * @return A newly initialized <code>VirtualNode</code>.
      */
     public MMObjectNode getNewNode(String owner) {
-        VirtualNode node = new VirtualNode(this);
+        VirtualNode node=new VirtualNode(this);
         node.setValue("number",-1);
         node.setValue("owner",owner);
         node.setValue("otype",oType);
@@ -110,16 +104,16 @@ public class VirtualBuilder extends MMObjectBuilder {
     }
 
    /**
-     * {@inheritDoc}
+     * What should a GUI display for this node.
      * The default behavior of a virtual node is to display the content of
      * the 'name' field (if present).
      * XXX: should be changed to something better
      * @param node The node to display
      * @return either the name field of the node or "no info"
      */
-     public String getGUIIndicator(MMObjectNode node) {
+     public String getGUIInicator(MMObjectNode node) {
         String s= node.getStringValue("name");
-        if (s != null) {
+        if (s!=null) {
             return s;
         } else {
             return GUI_INDICATOR;
@@ -129,61 +123,49 @@ public class VirtualBuilder extends MMObjectBuilder {
     /**
      * Return a field's database state.
      * The default behavior for a virtual node is to return <code>DBSTATE_VIRTUAL</code>.
-     * @param fieldName the requested field's name
+     * @param the requested field's name
      * @return <code>DBSTATE_VIRTUAL</code>
      */
     public int getDBState(String fieldName) {
-        return Field.STATE_VIRTUAL;
+        return FieldDefs.DBSTATE_VIRTUAL;
     }
-
-    /**
-     * {@inheritDoc}
-     * Since virtual builders are generally not associated with a database,
-     * this method returns null.
-     * @param fieldName name of the field
-     * @param node
-     * @return <code>null</code>
-     */
-    protected String getShortedText(String fieldName, MMObjectNode node) {
-        return null;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     * Since virtual builders are generally not associated with a database,
-     * this method returns null.
-     * @param fieldName name of the field
-     * @param node
-     * @return <code>null</code>
-     */
-    protected byte[] getShortedByte(String fieldName, MMObjectNode node) {
-        return null;
-    }
-
 
     /**
      * Get text from a blob field from a database.
-     * @since MMBase-1.8
+     * Since virtual builders are generally not associated with a database,
+     * this method returns null.
+     * @param fieldname name of the field
+     * @param number number of the object in the table
+     * @return <code>null</code>
      */
-    public Map getFields(MMObjectNode node) {
-        Map res = new HashMap();
-        // determine fields and field types
-        Map values = node.getValues();
-        synchronized(values) {
-            Iterator i = values.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String fieldName = (String) entry.getKey();
-                Object value = entry.getValue();
-                if (value == null) value = new Object();
-                DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
-                int type = Fields.classToType(value.getClass());
-                CoreField fd = Fields.createField(fieldName, type, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, fieldDataType);
-                fd.finish();
-                res.put(fieldName, fd);
-            }
-        }
-        return res;
+    public String getShortedText(String fieldname,int number) {
+        return null;
+    }
+
+
+    /**
+     * Get binary data of a blob field from a database.
+     * Since virtual builders are generally not associated with a database,
+     * this method returns null.
+     * @param fieldname name of the field
+     * @param number number of the object in the table
+     * @return <code>null</code>
+     */
+    public byte[] getShortedByte(String fieldname,int number) {
+        return null;
+    }
+
+    /**
+     * Performs some necessary postprocessing on nodes retrieved from a 
+     * search query.
+     * Since virtual nodes are not real nodes, this method is empty, 
+     * overriding the behaviour defined in 
+     * {@link org.mmbase.module.core.MMObjectBuilder#processSearchResults(List)
+     * MMObjectBuilder}.
+     * 
+     * @param results The (virtual) nodes.
+     */
+    public void processSearchResults(List results) {
+        // empty!
     }
 }

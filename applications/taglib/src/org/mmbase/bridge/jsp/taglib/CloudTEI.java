@@ -17,33 +17,29 @@ import javax.servlet.jsp.tagext.TagData;
  * The TEI class belonging to the CloudTag and descendents
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudTEI.java,v 1.8 2006-03-18 07:58:38 michiel Exp $
+ * @version $Id: CloudTEI.java,v 1.5 2003-06-06 10:03:06 pierre Exp $ 
  */
 
 public class CloudTEI extends TagExtraInfo {
-
+    
     protected String cloudType() {
-        return org.mmbase.bridge.Cloud.class.getName();
+        return "org.mmbase.bridge.Cloud";
     }
-
+        
     /**
      * Implementation of TagExtraInfo return values declared here
      * should be filled at one point, in this case with the CloudTag.
      **/
-    public VariableInfo[] getVariableInfo(TagData data){
+    public VariableInfo[] getVariableInfo(TagData data){      
         VariableInfo[] variableInfo = null;
 
         String jspvar  = (String) data.getAttribute("jspvar");
 
         if (jspvar != null) {
-            variableInfo    =  new VariableInfo[2];
-            variableInfo[0] =  new VariableInfo(jspvar, cloudType(), true, VariableInfo.NESTED);
-            variableInfo[1] =  new VariableInfo("TAGINFO", "Integer", true, VariableInfo.NESTED);
-        } else {
             variableInfo    =  new VariableInfo[1];
-            variableInfo[0] =  new VariableInfo("TAGINFO", "Integer", true, VariableInfo.NESTED);
+            variableInfo[0] =  new VariableInfo(jspvar, cloudType(), true, VariableInfo.NESTED);
         }
         return variableInfo;
     }
-
+        
 }

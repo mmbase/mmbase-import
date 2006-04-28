@@ -10,11 +10,18 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.email;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
-
-import javax.mail.MessagingException;
+import java.io.*;
+import javax.naming.*;
+import javax.mail.*;
 import javax.mail.internet.*;
+import javax.activation.*;
 
+import org.mmbase.module.database.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -79,34 +86,32 @@ public class MimeMessageGenerator {
             if (mmp!=null) {
                 return(mmp);
             }
-	} else {
-        if (rootnodes.size()>1) {
+	} else if (rootnodes.size()>1) {
             try {
-                MimeMultipart root = new MimeMultipart();
-                root.setSubType("mixed");
-                Enumeration l = rootnodes.elements();
-                while (l.hasMoreElements()) {
-                    MimeBodyTag t = (MimeBodyTag) l.nextElement();
-                    MimeMultipart mmp = t.getMimeMultipart();
-                    if (mmp != null) {
-                        log.info("setting parent info : " + t.getId());
-                        MimeBodyPart wrapper = new MimeBodyPart();
+		MimeMultipart root = new MimeMultipart();
+		root.setSubType("mixed");
+		Enumeration l=rootnodes.elements();
+		while (l.hasMoreElements()) {
+                    MimeBodyTag t=(MimeBodyTag)l.nextElement();
+                    MimeMultipart mmp=t.getMimeMultipart();
+                    if (mmp!=null) {
+                        log.info("setting parent info : "+t.getId());
+                        MimeBodyPart wrapper=new MimeBodyPart();
                         wrapper.setContent(mmp);
                         root.addBodyPart(wrapper);
-                    }
-                    else {
-                        log.info("adding info : " + t.getId());
+                    } else {
+                        log.info("adding info : "+t.getId());
                         root.addBodyPart(t.getMimeBodyPart());
                     }
-                }
-                return root;
-            } catch (MessagingException e) {
-                log.error("Root generation error" + e.getMessage());
+		}
+		return root;
+            } catch(Exception e) {
+                log.error("Root generation error");
+                e.printStackTrace();
             }
-    	} else {
-                log.error("Don't have a root node");
-    	}
-    }
+	} else {
+            log.error("Don't have a root node");
+	}
 	return null;
     }
 

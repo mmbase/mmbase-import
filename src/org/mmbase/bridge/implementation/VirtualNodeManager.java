@@ -10,15 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import javax.servlet.*;
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
-import org.mmbase.datatypes.*;
-import org.mmbase.core.CoreField;
-import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.search.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -29,147 +24,84 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.41 2006-02-28 08:53:01 nklasens Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.19 2004-01-16 14:51:57 michiel Exp $
  */
-public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
-    private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
+public class VirtualNodeManager extends BasicNodeManager {
+    private static final Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
 
-    private static final boolean allowNonQueriedFields = true; // not yet configurable
+    VirtualNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
+        super(builder, cloud);
+    }
 
-    // field types
-    final protected Map fieldTypes = new HashMap();
+    VirtualNodeManager(BasicCloud cloud) {
+        super(new VirtualBuilder(BasicCloudContext.mmb), cloud);
+    }
 
-    final MMObjectBuilder builder;
-
-    /**
-     * Instantiated a Virtual NodeManager, and tries its best to find reasonable values for the field-types.
-     */
-    VirtualNodeManager(org.mmbase.module.core.VirtualNode node, Cloud cloud) {
-        super(cloud);
+    VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
+        this(cloud);
         // determine fields and field types
-        if (node.getBuilder() instanceof VirtualBuilder) {
-            VirtualBuilder virtualBuilder = (VirtualBuilder) node.getBuilder();;
-            Map fields = virtualBuilder.getFields(node);
-            Iterator i = fields.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String fieldName = (String) entry.getKey();
-                CoreField fd = (CoreField) entry.getValue();
-                Field ft = new BasicField(fd, this);
-                fieldTypes.put(fieldName, ft);
+        for (Enumeration e = node.values.keys(); e.hasMoreElements(); ) {
+            String fieldName=(String)e.nextElement();
+            Object value = node.values.get(fieldName);
+            int fieldType = Field.TYPE_UNKNOWN;
+            if (value instanceof MMObjectNode) {
+                fieldType = Field.TYPE_NODE;
+            } else if (value instanceof String) {
+                fieldType = Field.TYPE_STRING;
+            } else if (value instanceof Integer) {
+                fieldType = Field.TYPE_INTEGER;
+            } else if (value instanceof  byte[]) {
+                fieldType = Field.TYPE_BYTE;
+            } else if (value instanceof  Float) {
+                fieldType = Field.TYPE_FLOAT;
+            } else if (value instanceof  Double) {
+                fieldType = Field.TYPE_DOUBLE;
+            } else if (value instanceof  Long) {
+                fieldType = Field.TYPE_LONG;
             }
-            builder = null;
-            setStringValue("name", "virtual builder");
-            setStringValue("description", "virtual builder");
-        } else {
-            builder = node.getBuilder();
-            BasicNodeManager.sync(builder, fieldTypes, this);
+            FieldDefs fd = new FieldDefs(fieldName, "field", -1, -1, fieldName, fieldType, -1, Field.STATE_VIRTUAL);
+            Field ft = new BasicField(fd,this);
+            fieldTypes.put(fieldName,ft);
         }
     }
 
+
     /**
-     * @since MMBase-1.8
+     * Initializes the node.
+     * Sets nodemanager to typedef, and creates a virtual node for this manager.
      */
-    VirtualNodeManager(Query query, Cloud cloud) {
-        super(cloud);
-        if (query instanceof NodeQuery) {
-            builder = BasicCloudContext.mmb.getBuilder(((NodeQuery) query).getNodeManager().getName());
-            BasicNodeManager.sync(builder, fieldTypes, this);
+    protected void init() {
+        if (cloud == null) {
+            nodeManager = ContextProvider.getDefaultCloudContext().getCloud("mmbase").getNodeManager("typedef");
         } else {
-            builder = null;
-            if (log.isDebugEnabled()) {
-                log.debug("Creating NodeManager for " + query.toSql());
-            }
-            // code to solve the fields.
-            Iterator steps = query.getSteps().iterator();
-            while (steps.hasNext()) {
-                Step step = (Step) steps.next();
-                DataType nodeType  = DataTypes.getDataType("node");
-                String name = step.getAlias();
-                if (name == null) name = step.getTableName();
-                CoreField fd = Fields.createField(name, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
-                fd.finish();
-                Field ft = new BasicField(fd, this);
-                fieldTypes.put(name, ft);
-
-                if (allowNonQueriedFields && ! query.isAggregating()) {
-                    /// if hasField returns true also for unqueried fields
-                    Iterator fields = cloud.getNodeManager(step.getTableName()).getFields().iterator();
-                    while (fields.hasNext()) {
-                        Field f = (Field) fields.next();
-                        final String fieldName = name + "." + f.getName();
-                        fieldTypes.put(fieldName, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
-                                public String getName() {
-                                    return fieldName;
-                                }
-                            });
-                    }
-                }
-            }
-            if (! allowNonQueriedFields || query.isAggregating()) {
-                //hasField only returns true for queried fields
-                Iterator fields = query.getFields().iterator();
-                while(fields.hasNext()) {
-                    StepField field = (StepField) fields.next();
-                    Step step = field.getStep();
-                    Field f = cloud.getNodeManager(step.getTableName()).getField(field.getFieldName());
-                    String name = field.getAlias();
-                    if (name == null) {
-                        name = step.getAlias();
-                        if (name == null) name = step.getTableName();
-                        name += "." + field.getFieldName();
-                    }
-                    final String fieldName = name;
-                    fieldTypes.put(name, new BasicField(((BasicField)f).coreField , this)  { // XXX casting is wrong!!, but I don't have other solution right now
-                            public String getName() {
-                                return fieldName;
-                            }
-                        });
-
-                }
-            }
-            setStringValue("name", "cluster builder");
-            setStringValue("description", "cluster builder");
+            nodeManager = cloud.getNodeManager("typedef");
         }
-
+        noderef = new VirtualNode(BasicCloudContext.mmb.getTypeDef());
+        super.init();
     }
 
     /**
-
-    /**
-     * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
-     * @since MMBase-1.8
+     * Initializes the NodeManager
      */
-    protected Map getFieldTypes() {
-        return fieldTypes;
+    protected void initManager() {
+        noderef.setValue("name", builder.getTableName());
+        noderef.setValue("description", builder.getDescription());
+        super.initManager();
     }
 
-
-
-    public String getGUIName(int plurality, Locale locale) {
-        if (locale == null) locale = cloud.getLocale();
-        if (builder != null) {
-            if (plurality == NodeManager.GUI_SINGULAR) {
-                return builder.getSingularName(locale.getLanguage());
-            } else {
-                return builder.getPluralName(locale.getLanguage());
-            }
-        } else {
-            return getName();
-        }
+    /**
+     * Gets a new (initialized) node.
+     * Throws an exception since this type is virtual, and creating nodes is not allowed.
+     */
+    public Node createNode() {
+        throw new BridgeException("Cannot create a node from a virtual node type.");
     }
 
-    public String getName() {
-        return builder == null ? getStringValue("name") : builder.getTableName();
+    /**
+     * Search nodes of this type.
+     * Throws an exception since this type is virtual, and searching is not allowed.
+     */
+    public NodeList getList(String where, String sorted, boolean direction) {
+        throw new BridgeException("Cannot perform search on a virtual node type.");
     }
-    public String getDescription() {
-        return getDescription(null);
-    }
-
-    public String getDescription(Locale locale) {
-        if (builder == null) return getStringValue("description");
-        if (locale == null) locale = cloud.getLocale();
-        return builder.getDescription(locale.getLanguage());
-    }
-
 }

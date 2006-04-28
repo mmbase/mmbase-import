@@ -16,6 +16,8 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
+import java.util.Calendar;
+import java.util.Date;
 
 
 import org.mmbase.storage.search.*;
@@ -28,14 +30,14 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.6 2006-04-11 22:57:36 michiel Exp $
+ * @version $Id: DurationHandler.java,v 1.1.2.1 2004-09-17 07:23:04 michiel Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(DurationHandler.class);
 
     private static int DATE_FACTOR      = 1000; // MMBase stores dates in seconds not in milliseconds
-
+   
     /**
      * @param tag
      */
@@ -64,8 +66,8 @@ public class DurationHandler extends AbstractTypeHandler {
             currentHours   = help / 60;
         }
 
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("<input type=\"hidden\" class=\"" + getClasses(field) + "\" name=\"");
+        StringBuffer buffer = new StringBuffer();      
+        buffer.append("<input type=\"hidden\"  name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
         buffer.append(currentValue);
@@ -77,11 +79,9 @@ public class DurationHandler extends AbstractTypeHandler {
 
         if (search) { // operator drop-down
             String name = prefix(field.getName() + "_search");
-            String fieldid = prefixID(field.getName() + "_search");
             String searchi =  (String) container.find(tag.getPageContext(), name);
             if (searchi == null) searchi = "no";
-            buffer.append("<select name=\"").append(name).append("\" ");
-            buffer.append("id=\"").append(fieldid).append("\">\n");
+            buffer.append("<select name=\"" + name + "\">\n");
             buffer.append("  <option value=\"no\" ");
             if (searchi.equals("no")) buffer.append(" selected=\"selected\" ");
             buffer.append("> </option>");
@@ -99,17 +99,16 @@ public class DurationHandler extends AbstractTypeHandler {
 
 
 
-
+        
         String hoursName = prefix(field.getName() + "_hours");
-        String hoursId = prefixID(field.getName() + "_hours");
         String searchHours =  (String) container.find(tag.getPageContext(), hoursName);
-        buffer.append("<input size=\"5\" type=\"text\" name=\"").append(hoursName).append("\" id=\"").append(hoursId).append("\" ");
-        buffer.append("value=\"").append( (searchHours == null ? "" + currentHours : searchHours) ).append("\" /> h :\n");
+        buffer.append("<input size=\"5\" type=\"text\" name=\"" + hoursName + "\" value=\"" + (searchHours == null ? "" + currentHours : searchHours) + "\" /> h :\n");
 
         String minutesName = prefix(field.getName() + "_minutes");
-        String minutesId = prefixID(field.getName() + "_minutes");
-        buffer.append("<select name=\"").append(minutesName).append("\" ");
-        buffer.append("id=\"").append(minutesId).append("\">\n");
+        String searchMinutes =  (String) container.find(tag.getPageContext(), minutesName);
+        buffer.append("<select name=\"");
+        buffer.append(minutesName);
+        buffer.append("\">\n");
         for (int i = 0; i <= 59; i++) {
             if (currentMinutes == i) {
                 buffer.append("  <option selected=\"selected\">" + i + "</option>\n");
@@ -120,9 +119,10 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("</select> min : ");
 
         String secondsName = prefix(field.getName() + "_seconds");
-        String secondsId = prefixID(field.getName() + "_seconds");
-        buffer.append("<select name=\"").append(secondsName).append("\" ");
-        buffer.append("id=\"").append(secondsId).append("\">\n");
+        String searchSecond =  (String) container.find(tag.getPageContext(), secondsName);
+        buffer.append("<select name=\"");
+        buffer.append(secondsName);
+        buffer.append("\">\n");
         for (int i = 0; i <= 59; i++) {
             if (currentSeconds == i) {
                 buffer.append("  <option selected=\"selected\">" + i + "</option>\n");
@@ -133,10 +133,9 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("</select> s . ");
 
         String milliSecondsName = prefix(field.getName() + "_milliseconds");
-        String milliSecondsId = prefixID(field.getName() + "_milliseconds");
         String searchMilliSeconds =  (String) container.find(tag.getPageContext(), milliSecondsName);
-        buffer.append("<input size=\"5\" type=\"text\" name=\"").append(milliSecondsName).append("\" id=\"").append(milliSecondsId).append("\" ");
-        buffer.append("value=\"").append( (searchMilliSeconds == null ? "" + currentMilliSeconds : searchMilliSeconds) ).append("\" /> ms\n");
+        buffer.append("<input size=\"5\" type=\"text\" name=\"" + milliSecondsName + "\" value=\"" + (searchMilliSeconds == null ? "" + currentMilliSeconds : searchMilliSeconds) + "\" /> ms\n");
+
 
         return buffer.toString();
     }
@@ -177,13 +176,13 @@ public class DurationHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    public String whereHtmlInput(Field field) throws JspTagException {            
      String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
             return null;
         }
-
+  
         long time = getSpecifiedValue(field);
         if (time == -1) return null;
 
@@ -214,9 +213,6 @@ public class DurationHandler extends AbstractTypeHandler {
 
         Long time = new Long(getSpecifiedValue(field));
 
-        if (query.getSteps().size() > 1) {
-            fieldName = field.getNodeManager().getName()+"."+fieldName;
-        }
         Constraint con;
         if (operator.equals("greater")) {
             con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.GREATER, time);

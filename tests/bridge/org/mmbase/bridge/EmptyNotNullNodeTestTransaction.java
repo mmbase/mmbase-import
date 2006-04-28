@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.*;
-import org.w3c.dom.Document;
 
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
@@ -27,7 +25,6 @@ public class EmptyNotNullNodeTestTransaction extends EmptyNotNullNodeTest {
     protected Cloud getCloud() {
         return super.getCloud().getTransaction("test_transaction");
     }
-
 
     public void tearDown() {
         // simply roll back transaction

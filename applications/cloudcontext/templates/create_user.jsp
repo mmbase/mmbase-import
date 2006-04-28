@@ -3,11 +3,11 @@
 %><%@include file="import.jsp" %><%@include file="settings.jsp"
 %>
 <mm:import id="url">edit_user.jsp</mm:import>
-<mm:cloud  loginpage="login.jsp"  rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 
 <h1><%=getPrompt(m,"create_user")%></h1>
 
-<%@include file="you.div.jsp" %>
+ <%@include file="you.div.jsp" %>
 
 <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_user.jsp</mm:param></mm:url>" method="post">
  <table>

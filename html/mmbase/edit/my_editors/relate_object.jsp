@@ -1,6 +1,6 @@
 <% String title = "Relate objects"; %>
 <%@ include file="inc_top.jsp" %>
-<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="$rank">
+<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
 
 <mm:context id="relate_node">
 <mm:import externid="ntype" jspvar="ntype" required="true" />	<%-- nodetype to relate with --%>
@@ -21,7 +21,7 @@
 	<!-- table with back button -->
 	<table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">	
 	<tr bgcolor="#EFEFEF">
-	  <td width="24" class="right"><a href="<mm:url page="edit_object.jsp" referids="nr" />"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
+	  <td width="24" align="right"><a href="<mm:url page="edit_object.jsp" referids="nr" />"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
 	  <td><a href="<mm:url page="edit_object.jsp" referids="nr" />">Back</a> to editing <b><mm:node referid="nr"><mm:nodeinfo type="type" /></mm:node></b> object</td>
 	</tr>
 	<tr valign="top">
@@ -41,11 +41,11 @@
   </td>
   <td valign="top" width="80%">
   	<!-- ### Search results -->	
+
 	<mm:notpresent referid="rnr">
-	  <mm:compare referid="searchbox" value="after" inverse="true"><%@ include file="inc_searchform.jsp" %></mm:compare>
-  	  <%@ include file="inc_searchresults.jsp" %>
+  		<%@ include file="inc_searchresults.jsp" %>
   	</mm:notpresent>
-  	
+
   	<!-- ### Relate nodes -->
 	<%@ include file="inc_relate.jsp" %>
 
@@ -70,30 +70,30 @@
 	  </tr><tr align="left">
 		<td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
 		<td colspan="3">
-		<!-- table in table -->
+		<!- table in table -->
 		  <table width="100%" border="0" cellspacing="0" cellpadding="4">
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></td>
+			  <td align="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Search object to relate to </td>
 			</tr>
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></td>
+			  <td align="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Create new object (and relate) </td>
 			</tr>
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="22" height="20" border="0" /></td>
+			  <td align="right" width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="22" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Create relation </td>
 			</tr>
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></td>
+			  <td align="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Edit node </td>
 			</tr>
 			<tr>
-			  <td class="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></td>
+			  <td align="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></td>
 			  <td nowrap="nowrap"> Delete node </td>
 			</tr>
 		  </table>
-		<!-- end table in table -->
+		<!- end table in table -->
     </td>
     <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
   </tr><tr>
@@ -105,7 +105,7 @@
   <td width="80%" valign="top">
   	<!-- ### Search form -->
 	<mm:notpresent referid="rnr">
-	  <mm:compare referid="searchbox" value="after"><%@ include file="inc_searchform.jsp" %></mm:compare>
+	  <%@ include file="inc_searchform.jsp" %>
 	</mm:notpresent>
   </td>
 </tr>

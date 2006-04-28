@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ShrinkTag.java,v 1.5 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: ShrinkTag.java,v 1.2.2.3 2005-03-14 18:33:24 michiel Exp $
  */
 public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer { 
 
@@ -162,7 +162,7 @@ public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
                 }
                 helper.setValue(value.toString());
                 helper.doEndTag();
-                return  super.doEndTag();
+                return super.doEndTag();
             } else {
                 log.debug("Empty stack, nothing to do");
                 return super.doEndTag();

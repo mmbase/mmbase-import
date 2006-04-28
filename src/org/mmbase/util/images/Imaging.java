@@ -31,6 +31,8 @@ public abstract class Imaging {
     public static final String FIELD_CKEY    = "ckey";
 
 
+
+
     /**
      * Returns the mimetype using ServletContext.getServletContext which returns the servlet context
      * @param ext A String containing the extension.
@@ -74,7 +76,6 @@ public abstract class Imaging {
 
     }
 
-    private static final char NOQUOTING = '-';
     /**
      * Parses the 'image conversion template' to a List. I.e. it break
      * it up in substrings, with '+' delimiter. However a + char does
@@ -84,6 +85,7 @@ public abstract class Imaging {
      * @since MMBase-1.7
      */
     // @author michiel
+    protected static final char NOQUOTING = '-';
     public static List parseTemplate(String template) {
         if (log.isDebugEnabled()) log.debug("parsing " + template);
         List params = new ArrayList();
@@ -336,70 +338,5 @@ public abstract class Imaging {
         }
     }
 
-
-    /**
-     * main is only for testing.
-     */
-    public static void main(String[] args) {
-        try {
-            File file = new File(args[0]);
-            FileInputStream input = new FileInputStream(file);
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            int b = input.read();
-            while (b != -1) {
-                bytes.write(b);
-                b = input.read();
-            }
-            input.close();
-            byte[] ba = bytes.toByteArray();
-            ImageInformer   informer   = new ImageMagickImageInformer();
-            
-            Dimension originalSize = informer.getDimension(ba);
-
-            ImageConverter  converter1  = new ImageMagickImageConverter();
-            ImageConverter  converter2  = new JAIImageConverter();
-            
-
-            String[] templates = {
-                "s(100x60)+f(jpeg)",
-                "part(10x10x30x50)",
-                "part(10x10x2000x2000)",
-                "s(10000@)",  "s(100x100@)",
-                "s(10000x2000>)", "s(100000x2000<)", 
-                "s(4x5<)", "s(4x5>)",
-                "r(90)", "r(45)", "r(198)", "r(-30)", 
-                "border(5)", "border(5x8)",
-                "r(45)+border(10x20)",
-                "flip",
-                "s(100)", "s(x100)", "s(10x70)", "s(70x10)",  "s(60x70!)", "s(80%x150%)",
-                "s(100)+f(png)+r(20)+s(400x400)"                                
-            };
-
-            System.out.println("original size: " + originalSize);
-            System.out.println("template:predicted size:actual size (IM):actual size(JAI)");
-            for (int i = 0 ; i < templates.length; i++) {
-
-                String template = templates[i];
-                List params = parseTemplate(template);
-                System.out.print(template + ":" + predictDimension(originalSize, params) + ":");
-                try {
-                    System.out.print(informer.getDimension(converter1.convertImage(ba, null, params)));
-                } catch (Exception e) {
-                    System.out.print(e.getMessage());
-                }
-                System.out.print(":");
-                try {
-                    System.out.print(informer.getDimension(converter2.convertImage(ba, null, params)));
-                } catch (Exception e) {
-                    System.out.print(e.getMessage());
-                }
-                System.out.println("");
-            }
-
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
-        }
-        
-    }
 
 }

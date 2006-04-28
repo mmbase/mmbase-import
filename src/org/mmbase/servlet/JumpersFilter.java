@@ -20,9 +20,8 @@ import org.mmbase.util.logging.*;
 /**
  * Redirects request based on information supplied by the jumpers builder.
  *
- * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.15 2006-01-25 15:29:18 michiel Exp $
+ * @version $Id: JumpersFilter.java,v 1.9.2.4 2005-02-11 15:06:30 michiel Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -86,8 +85,10 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      */
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws java.io.IOException, ServletException {
         if (mmbase == null) {
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
+            HttpServletResponse res = (HttpServletResponse) servletResponse;
+            res.setHeader("Retry-After", "60");
+            res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
+            return;            
         }
         if (jumpers == null) {
             if (mmbase != null) {

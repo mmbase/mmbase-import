@@ -12,18 +12,23 @@ package org.mmbase.util.transformers;
 
 import java.util.Map;
 
+import org.mmbase.util.logging.*;
+
 /**
  * Some Transformers implement more than one transformation. The instance can be configured.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
+
 public abstract class ConfigurableStringTransformer extends StringTransformer implements ConfigurableTransformer {
 
+    private static Logger log = Logging.getLoggerInstance(ConfigurableStringTransformer.class.getName());
     protected int to;
 
     public ConfigurableStringTransformer() {
         super();
+        configure(1);        
     }
 
     public ConfigurableStringTransformer(int conf) {

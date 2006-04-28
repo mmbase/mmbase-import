@@ -44,16 +44,10 @@ package org.mmbase.util;
  * the buffer is marked as shared. Any further changes to the buffer will
  * cause a copy to be made. <p>
  *
- * this is based on StringBuffer code, we have a seperate class since sun doesn't
- * allow us to extend StringBuffer for some reason and we want methods like replace
- * over the whole buffer.
- *
- * @license Sun license
  * @see     String
- * @author Daniel Ockeloen 
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.10 2006-01-06 19:06:48 daniel Exp $
+ * @version $Id: StringObject.java,v 1.6 2003-03-07 09:31:15 pierre Exp $
  */
 
 public final class StringObject {
@@ -279,7 +273,7 @@ public final class StringObject {
 
     /**
      * Appends a character to the end of this buffer.
-     * @param c        the character to be appended
+     * @param ch        the character to be appended
      * @return         the StringBuffer itself, NOT a new one.
      */
     public synchronized StringObject append(char c) {
@@ -390,7 +384,7 @@ public final class StringObject {
     /**
      * Inserts a character into the String buffer.
      * @param offset        the offset at which to insert
-     * @param c                the character to insert
+     * @param ch                the character to insert
      * @return                 the StringBuffer itself, NOT a new one.
      * @exception        StringIndexOutOfBoundsException If the offset invalid.
      */
@@ -598,11 +592,14 @@ public final class StringObject {
         }
         return -1;
     }
-    
 
-    /**
-     */
     public byte[] getBytes() {
-        return toString().getBytes();
+        int j = 0;
+        int i = 0;
+        byte[] dst=new byte[count];
+        while (j < count) {
+            dst[j++] = (byte)value[i++];
+        }
+        return dst;
     }
 }

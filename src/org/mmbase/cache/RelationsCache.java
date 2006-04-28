@@ -9,12 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
+import org.mmbase.util.logging.*;
+
 /**
  * Cache from MMObjectNode number to List of InsRel MMObjectNodes instances (relation nodes).
  * Used in MMObjectNode.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelationsCache.java,v 1.3 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: RelationsCache.java,v 1.2 2003-12-03 06:57:45 keesj Exp $
  * @see   org.mmbase.module.core.MMObjectNode#getRelations
  * @see   org.mmbase.module.core.MMObjectNode#getRelationNodes
  * @since MMBase-1.7
@@ -22,6 +24,8 @@ package org.mmbase.cache;
 
 
 public class RelationsCache extends Cache {
+
+    private static Logger log = Logging.getLoggerInstance(RelationsCache.class);
 
     // There will be only one list cache, and here it is:
     private static RelationsCache relationsCache;

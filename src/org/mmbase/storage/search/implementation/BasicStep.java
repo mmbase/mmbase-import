@@ -18,20 +18,23 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.8 2005-10-30 19:08:56 michiel Exp $
+ * @version $Id: BasicStep.java,v 1.5 2003-03-10 11:50:56 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
-
+    
     /** Associated builder. */
-    protected MMObjectBuilder builder = null;
+    private MMObjectBuilder builder = null;
+    
     /** Alias property. */
-    protected String alias = null;
+    private String alias = null;
+    
     /**
      * Nodenumber set for nodes to be included (ordered
      * using integer comparison).
      */
-    protected SortedSet nodes = new TreeSet();
+    private SortedSet nodes = new TreeSet();
+    
     /**
      * Constructor.
      *
@@ -41,11 +44,12 @@ public class BasicStep implements Step {
     // package visibility!
     BasicStep(MMObjectBuilder builder) {
         if (builder == null) {
-            throw new IllegalArgumentException("Invalid builder value: " + builder);
+            throw new IllegalArgumentException(
+            "Invalid builder value: " + builder);
         }
         this.builder = builder;
     }
-
+    
     /**
      * Sets alias property.
      *
@@ -61,7 +65,7 @@ public class BasicStep implements Step {
         this.alias = alias;
         return this;
     }
-
+    
     /**
      * Adds node to nodes.
      *
@@ -71,12 +75,13 @@ public class BasicStep implements Step {
      */
     public BasicStep addNode(int nodeNumber) {
         if (nodeNumber < 0) {
-            throw new IllegalArgumentException("Invalid nodeNumber value: " + nodeNumber);
+            throw new IllegalArgumentException(
+            "Invalid nodeNumber value: " + nodeNumber);
         }
         nodes.add(new Integer(nodeNumber));
         return this;
     }
-
+    
     /**
      * Gets the associated builder.
      *
@@ -85,22 +90,22 @@ public class BasicStep implements Step {
     public MMObjectBuilder getBuilder() {
         return builder;
     }
-
+    
     // javadoc is inherited
     public String getTableName() {
         return builder.getTableName();
     }
-
+    
     // javadoc is inherited
     public String getAlias() {
         return alias;
     }
-
+    
     // javadoc is inherited
     public SortedSet getNodes() {
         return Collections.unmodifiableSortedSet(nodes);
     }
-
+    
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -109,27 +114,25 @@ public class BasicStep implements Step {
         if (obj instanceof Step && !(obj instanceof RelationStep)) {
             Step step = (Step) obj;
             return getTableName().equals(step.getTableName())
-                && (alias == null ? step.getAlias() == null : alias.equals(step.getAlias()))
-                && nodes.equals(step.getNodes());
+            && (alias == null? true: alias.equals(step.getAlias()))
+            && nodes.equals(step.getNodes());
         } else {
             return false;
         }
     }
-
+    
     // javadoc is inherited
     public int hashCode() {
         return 41 * builder.getTableName().hashCode()
         + (alias == null? 0: 43 * alias.hashCode()) + 47 * nodes.hashCode();
     }
-
+    
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("Step(tablename:").
-        append(getTableName()).
-        append(", alias:").append(alias).
-        append(", nodes:").append(nodes).
-        append(")");
-        return sb.toString();
+        return "Step(tablename:" + getTableName()
+        + ", alias:" + alias 
+        + ", nodes:" + nodes
+        + ")";
     }
-
+    
 }

@@ -1,12 +1,8 @@
-<?xml version="1.0" ?>
-<builder 
-  xmlns="http://www.mmbase.org/xmlns/builder"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                      http://www.mmbase.org/xmlns/builder.xsd"                        
-  name="rightsrel" maintainer="www.mmbase.org" version="1" extends="insrel">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="rightsrel" maintainer="www.mmbase.org" version="1" extends="insrel">
   <status>active</status>
-  <class>org.mmbase.security.implementation.cloudcontext.builders.RightsRel</class>
+  <classfile>org.mmbase.security.implementation.cloudcontext.builders.RightsRel</classfile>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">Rights relation</singular>
@@ -26,25 +22,16 @@
         <guiname xml:lang="nl">Operatie</guiname>
         <guiname xml:lang="eo">Ago</guiname>
         <guiname xml:lang="en">Operation</guiname>
+        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
           <list>3</list>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <enumeration>
-          <entry value="read" />
-          <entry value="write" />
-          <entry value="create" />
-          <entry value="change relation" />
-          <entry value="delete" />
-          <entry value="change context" />
-        </enumeration>
-      </datatype>
       <db>
         <name>operation</name>
-        <type notnull="true" size="15" state="persistent">STRING</type>
+        <type state="persistent" size="15" notnull="true">STRING</type>
       </db>
     </field>
   </fieldlist>

@@ -24,7 +24,7 @@ package org.mmbase.bridge;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: RelationManager.java,v 1.8 2004-10-09 09:39:32 nico Exp $
+ * @version $Id: RelationManager.java,v 1.7 2002-12-05 09:50:32 kees Exp $
  */
 public interface RelationManager extends NodeManager {
     /**
@@ -91,9 +91,6 @@ public interface RelationManager extends NodeManager {
      * This method from Node is redeclared here to prevent an ambiguous invocation of method.
      * reson: the the method in the base class (Node) is more specific than the one in the RelationManager
      * (RelationManager extends Node).
-     * @param sourceNode source node of the relation
-     * @param relationManager relation manager of the relation
-     * @return new Relation
      **/
     public Relation createRelation(Node sourceNode, RelationManager relationManager);
 
@@ -101,14 +98,13 @@ public interface RelationManager extends NodeManager {
      * Retrieves all the relations of this type from a given node.
      * @param node the node from which to give the relations
      * @return a list of relations
-     */
+     **/
+
     public RelationList getRelations(Node node);
 
     /**
      * Check if the current user may create a new relation of this type between
      * the specified nodes.
-     * @param sourceNode source node of the relation
-     * @param destinationNode destination node of the relation
      *
      * @return  Check if the current user may create a new relation of this type
      *          between the specified nodes.

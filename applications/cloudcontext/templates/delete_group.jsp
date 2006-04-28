@@ -4,7 +4,7 @@
 %><mm:content language="$language" type="text/html" expires="0">
 <mm:import externid="group" required="true" />
 
-<mm:cloud loginpage="login.jsp"  rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
   <mm:node id="group" referid="group">
     <mm:import id="current">groups</mm:import>
     <%@include file="navigate.div.jsp" %>

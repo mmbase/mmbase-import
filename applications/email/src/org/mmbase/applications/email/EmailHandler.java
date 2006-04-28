@@ -15,7 +15,8 @@ import java.util.*;
 import javax.mail.internet.MimeMultipart;
 
 import org.mmbase.util.StringObject;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
 
 
 import org.mmbase.util.logging.Logger;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.17 2006-03-23 16:42:09 daniel Exp $
+ * @verson $Id: EmailHandler.java,v 1.8.2.1 2004-06-01 13:44:19 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -81,8 +82,8 @@ public class EmailHandler {
                 headers.put("CC", null);
                 headers.put("BCC", null);
 
-            }
-        } else {
+            } 
+        } else {            
             // one simple mail
             NodeRecipient to = new NodeRecipient(-1, node.getStringValue("to"));
             sendMail(node, from, to, body, headers);
@@ -106,18 +107,11 @@ public class EmailHandler {
     private static Map getHeaders(MMObjectNode node) {
         Map headers = new HashMap();
 
-        MMObjectBuilder email = node.getBuilder();
         // headers.put("From", node.getStringValue("from"));
-        if (email.hasField("replyto")) {
-            headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
-        }
-        if (email.hasField("cc")) {
-            headers.put("CC",       unemptyString(node.getStringValue("cc")));
-        }
-        if (email.hasField("bcc")) {
-            headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
-        }
-        headers.put("Subject",  unemptyString(node.getStringValue("subject"))); // subject field is obligory
+        headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
+        headers.put("CC",       unemptyString(node.getStringValue("cc")));
+        headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
+        headers.put("Subject",  unemptyString(node.getStringValue("subject")));
         return headers;
     }
 
@@ -138,7 +132,7 @@ public class EmailHandler {
     private static Set getTo(MMObjectNode node) {
         Set toUsers = new LinkedHashSet();
         String to = node.getStringValue("to");
-        if (to != null && !to.equals("")) {
+        if (to != null) {
             toUsers.add(new NodeRecipient(-1, to));
         }
         return toUsers;
@@ -183,7 +177,7 @@ public class EmailHandler {
             }
         }
         return toUsers;
-    }
+    }  
 
 
 
@@ -215,7 +209,7 @@ public class EmailHandler {
                    } else if (value.equals("text/xml")) {
                        // default encoding for text/xml
                        encoding = "utf-8";
-                   }
+                   } 
                    // default encoding for text/html en text/plain is ISO-8859-1
 
                }
@@ -310,7 +304,7 @@ public class EmailHandler {
         String osubject = (String) headers.get("Subject");
 
         // if the subject starts with a url call that url
-        if (osubject != null && osubject.indexOf("http://") == 0) {
+        if (osubject.indexOf("http://") == 0) {
             String subject = getUrlExtern(osubject, "" , "" + to.nodeNumber);
             subject = stripToOneLine(subject);
             headers.put("Subject", subject);
@@ -336,7 +330,7 @@ public class EmailHandler {
             String subject = (String) headers.get("Subject");
             if (subject != null && subject.indexOf("fakemail")!=-1) {
                 // add one to the sendmail counter
-                // refix numberofmailsend++;
+                // refix numberofmailsend++;                
                 log.info("Email -> fake send to " + to);
                 return true;
             } else {
@@ -345,8 +339,8 @@ public class EmailHandler {
                 // get mail text to see if we have a mime msg
                 if (body.indexOf("<multipart") == -1) {
                     mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
-                } else {
-                    MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body);
+                } else {            
+                    MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body);            
                     mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
                 }
 
@@ -369,7 +363,7 @@ public class EmailHandler {
             return true;
         }
     }
-    /**
+    /** 
      * Simple structure representing an email-adres which is associated with a node-number.
      */
 
@@ -388,7 +382,7 @@ public class EmailHandler {
                 return false;
             }
         }
-        public int hashCode() {
+        public int hashcode() {
             return email.hashCode() + nodeNumber;
         }
         public String toString() {

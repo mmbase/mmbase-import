@@ -12,10 +12,8 @@ package org.mmbase.bridge.implementation;
 
 import java.util.List;
 import java.util.ArrayList;
-
 import org.mmbase.bridge.*;
 import org.mmbase.security.*;
-import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
@@ -25,13 +23,15 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.34 2005-12-27 22:14:14 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.25 2003-12-21 17:42:04 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
 
     public MMObjectNode relDefNode;
     private MMObjectNode typeRelNode;
+    private int snum;
+    private int dnum;
 
     /**
      * Creates a new Relation manager (for insert).
@@ -42,8 +42,8 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * @param cloud the cloud for which to create the manager
      * @param id the id of the node in the temporary cloud
      */
-    BasicRelationManager(MMObjectNode node, BasicCloud cloud, int nodeId) {
-        super(node, cloud, nodeId);
+    BasicRelationManager(MMObjectNode node, Cloud cloud, int nodeId) {
+        super(node,cloud,nodeId);
     }
 
     /**
@@ -54,52 +54,47 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * @param node the node on which to base the relation manager
      * @param cloud the cloud for which to create the manager
      */
-    BasicRelationManager(MMObjectNode node, BasicCloud cloud) {
-        super(node, cloud);
-    }
-
-    public final boolean isRelationManager() {
-        return true;
-    }
-    public final  RelationManager toRelationManager() {
-        return this;
+    BasicRelationManager(MMObjectNode node, Cloud cloud) {
+        super(node,cloud);
     }
 
     /**
      * Initializes the NodeManager: determines the MMObjectBuilder from the
-     * passed node (reldef or typerel), and fills temporary variables to maintain status.
+     * passed node (reldef or typerel), and fillls temporary variables to maintain status.
      */
     protected void initManager() {
-        MMObjectBuilder bul = noderef.getBuilder();        
-        if (bul instanceof RelDef) {
-            relDefNode = noderef;
-        } else if (bul instanceof TypeRel) {
+        if (noderef.getBuilder() instanceof RelDef) {
+            relDefNode= noderef;
+        } else {
             typeRelNode = noderef;
-            relDefNode = typeRelNode.getBuilder().getNode(typeRelNode.getIntValue("rnumber"));
-            if (relDefNode == null) {
-                log.warn("No node found for 'rnumber'" + typeRelNode.getIntValue("rnumber"));
-            }
-        } else {
-            throw new RuntimeException("The builder of node " + noderef.getNumber() + " is not reldef or typerel, but " + bul.getTableName() + " cannot instantiate a relation manager with this");
+            snum=typeRelNode.getIntValue("snumber");
+            dnum=typeRelNode.getIntValue("dnumber");
+            relDefNode= typeRelNode.getBuilder().getNode(typeRelNode.getIntValue("rnumber"));
+
         }
-        
-        RelDef relDef = (RelDef) relDefNode.getBuilder();
-        if (relDef != null) {
-            builder = relDef.getBuilder(relDefNode.getNumber());
+        if (relDefNode == null) {
+            log.warn("No node found for 'rnumber'" + typeRelNode.getIntValue("rnumber"));
         } else {
-            log.warn("builder of " + relDefNode + " was  null");
+            RelDef relDef = (RelDef) relDefNode.getBuilder();
+            if (relDef != null) {
+                builder = relDef.getBuilder(relDefNode.getNumber());
+            } else {
+                log.warn("builder of " + relDefNode + " was  null");
+            }
         }
         super.initManager();
     }
 
-
-    protected void setNodeManager(MMObjectNode node) {
-        int nodeNumber = node.getNumber();
-        if (nodeNumber >= 0 && nodeNumber == getNode().getBuilder().getNumber()) { // this is the typedef itself
-            nodeManager = this;
-        } else {
-            super.setNodeManager(node);
+    public Node createNode() {
+        Node relation = super.createNode();
+        if(relation == null) {
+            throw new RuntimeException("relation node is null");
         }
+        if(relDefNode == null) {
+            throw new RuntimeException("reldef node is null");
+        }
+        ((BasicNode)relation).setValueWithoutChecks("rnumber", new Integer(relDefNode.getNumber()));
+        return relation;
     }
 
     public String getForwardRole() {
@@ -127,38 +122,23 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
     public NodeManager getSourceManager() {
-        if (typeRelNode == null) {
+        if (typeRelNode==null) {
             throw new BridgeException("This relationmanager does not contain source information.");
         }
-        int nr = typeRelNode.getIntValue("snumber");
+        int nr=typeRelNode.getIntValue("snumber");
         return cloud.getNodeManager(nr);
     }
 
     public NodeManager getDestinationManager() {
-        if (typeRelNode == null) {
+        if (typeRelNode==null) {
             throw new BridgeException("This relationmanager does not contain destination information.");
         }
-        int nr = typeRelNode.getIntValue("dnumber");
+        int nr=typeRelNode.getIntValue("dnumber");
         return cloud.getNodeManager(nr);
     }
 
-
-    protected final BasicNode createBasicNode() {
-        return createBasicRelation();
-    }
-
-    /**
-     * BasicRelationManager is garantueed to create BasicRelations. Extension therefore most override this and not {@link #createBasicNode}.
-     * @since MMBase-1.8
-     */
-    protected BasicRelation createBasicRelation() {
-        if(relDefNode == null) {
-            throw new RuntimeException("reldef node is null");
-        }
-        NodeAndId n = createMMObjectNode();
-        BasicRelation relation =  new BasicRelation(n.node, cloud, n.id);
-        relation.setValueWithoutChecks("rnumber", new Integer(relDefNode.getNumber()));
-        return relation;
+    public Relation createRelation(Node sourceNode, RelationManager relationManager) {
+        return super.createRelation(sourceNode, relationManager);
     }
 
     public Relation createRelation(Node sourceNode, Node destinationNode) {
@@ -172,11 +152,12 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         if (destinationNode.getCloud() != cloud) {
             throw new BridgeException("Relationmanager and destination node are not in the same transaction or in different clouds.");
         }
-        if (!(cloud instanceof Transaction)  && (sourceNode.isNew() || destinationNode.isNew())) {
+        if (!(cloud instanceof Transaction)  &&
+                (((BasicNode)sourceNode).isNew() || ((BasicNode)destinationNode).isNew())) {
             throw new BridgeException("Cannot add a relation to a new node that has not been committed.");
         }
 
-       BasicRelation relation = createBasicRelation();
+       BasicRelation relation = (BasicRelation)createNode();
        relation.setSource(sourceNode);
        relation.setDestination(destinationNode);
        relation.checkValid();
@@ -186,13 +167,14 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public RelationList getRelations(Node node) {
         // XXX: no caching is done here?
+        List result = new ArrayList();
         InsRel insRel = (InsRel) builder;
-        List result = insRel.getRelationsVector(node.getNumber());
+        result.addAll(insRel.getRelationsVector(node.getNumber()));
         return new BasicRelationList(result, this);
     }
 
     public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {
-        return cloud.check(Operation.CREATE, builder.getNumber(),
+        return cloud.check(Operation.CREATE, builder.oType,
                            sourceNode.getNumber(), destinationNode.getNumber());
     }
 }

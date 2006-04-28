@@ -17,13 +17,12 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.33 2006-01-06 18:12:52 michiel Exp $
+ * @version $Id: Version.java,v 1.28.2.12 2005-09-21 23:53:42 michiel Exp $
  */
 public class Version {
 
     /**
-     * Returns the 'name' part of the MMBase version. This will normally be 'MMBase'.
-     * @return Name part of version
+     * Returns the 'name' part of the MMBase version. This will normall be 'MMBase'.
      * @since MMBase-1.6
      */
     public static String getName() {
@@ -32,7 +31,6 @@ public class Version {
 
     /**
      * Returns the major version number of this MMBase.
-     * @return major version number
      * @since MMBase-1.6
      */
     public static int getMajor() {
@@ -40,26 +38,23 @@ public class Version {
     }
     /**
      * Returns the minor version number of this MMBase.
-     * @return minor version number
      * @since MMBase-1.6
      */
     public static int getMinor() {
-        return 8;
+        return 7;
     }
 
     /**
-     * Returns the patch level number of this MMBase.
-     * @return patch level number
+     * Returns the patch level numer of this MMBase.
      * @since MMBase-1.6
      */
     public static int getPatchLevel() {
-        return 0;
+        return 4;
     }
 
     /**
      * Returns the build date of this MMBase. During the build, the
      * value of this is stored in builddate.properties.
-     * @return build date of this MMBase
      *
      * @since MMBase-1.6
      */
@@ -81,7 +76,6 @@ public class Version {
 
     /**
      * Returns the version number of this MMBase.
-     * @return version number
      * @since MMBase-1.6
      */
     public static String getNumber() {
@@ -90,25 +84,22 @@ public class Version {
 
     /**
      * Returns if this is a release version of MMBase. If this is false this MMBase is only a CVS snapshot.
-     * @return is a release version
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return false;
+        return true;
     };
 
     /**
      * A String describing the status of this release. Like 'final' or 'rc3'.
-     * @return status of this release
      * @since MMBase-1.7
      */
     public static String getReleaseStatus() {
-        return "rc1";
+        return "final";
     };
 
     /**
      * Returns the version of this MMBase.
-     * @return version of this MMBase
      * @since MMBase-1.6
      */
     public static String get() {
@@ -120,8 +111,6 @@ public class Version {
      * Prints the version of this mmbase on stdout.
      * can be usefull on command line:
      * <code>java -jar mmbase.jar<code>
-     * 
-     * @param args command line args
      */
     public static void main(String args[]) {
         System.out.println(get());

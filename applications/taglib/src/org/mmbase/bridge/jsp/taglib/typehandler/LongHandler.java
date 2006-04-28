@@ -23,7 +23,7 @@ import org.mmbase.storage.search.Constraint;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.11 2006-02-09 13:53:00 michiel Exp $
+ * @version $Id: LongHandler.java,v 1.7.2.2 2004-09-17 07:23:05 michiel Exp $
  */
 
 public class LongHandler extends AbstractTypeHandler {
@@ -40,7 +40,7 @@ public class LongHandler extends AbstractTypeHandler {
         dateHandler = new DateHandler(tag);
         durationHandler = new DurationHandler(tag);
     }
-
+    
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
@@ -58,7 +58,7 @@ public class LongHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {               
         String gui = field.getGUIType();
         if (gui.equals("eventtime")) {
             return dateHandler.useHtmlInput(node, field);
@@ -81,7 +81,7 @@ public class LongHandler extends AbstractTypeHandler {
         } else {
             return super.whereHtmlInput(field);
         }
-    }
+    }       
 
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String gui = field.getGUIType();
@@ -92,10 +92,10 @@ public class LongHandler extends AbstractTypeHandler {
         } else {
             return super.whereHtmlInput(field, query);
         }
-    }
+    }       
 
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
-        String gui = field.getGUIType();
+        String gui = field.getGUIType();      
         if (gui.equals("eventtime")) {
             dateHandler.paramHtmlInput(handler, field);
         } else if (gui.equals("relativetime")) {
@@ -104,12 +104,6 @@ public class LongHandler extends AbstractTypeHandler {
             super.paramHtmlInput(handler, field);
         }
     }
-
-    protected Object cast(Object value, Node node, Field field) {
-        if (value == null || "".equals(value)) return "";
-        return  super.cast(value, node, field);
-    }
-
 
 
 }

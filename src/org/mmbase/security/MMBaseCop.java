@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import java.io.File;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -18,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.22 2005-09-16 13:14:48 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.17 2004-03-26 15:48:26 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
@@ -28,18 +29,40 @@ public class MMBaseCop extends SecurityManager  {
      */
     private MMBaseCopConfig config;
 
+    /** 
+     * The file from which the config is loaded..
+     */
+    private File configFile;
+
     /**
      * The constructor, will load the classes for authorization and authentication
      * with their config files, as specied in the xml from configUrl
      * @throws  java.io.IOException When reading the file failed
      * @throws  java.lang.NoSuchMethodException When a tag was not specified
      * @throws  org.mmbase.security.SecurityException When the class could not  be loaded
+     *
+     * @param configPath Path to the security configuration file (security.xml)
+     *	  
      */
-    public MMBaseCop() throws java.io.IOException, NoSuchMethodException, SecurityException {
+    public MMBaseCop(String configPath) throws java.io.IOException, NoSuchMethodException, SecurityException {
         super();
-        config = new MMBaseCopConfig(this);
-        config.load();
-        log.service("Done loading security configuration");
+
+        configFile = new File(configPath);
+        if (! configFile.isAbsolute()) { // so relative to currently
+            // being parsed file. make it absolute,
+            log.debug("config file was not absolutely given (" + configPath + ")");
+            configFile = new File(configFile.getParent() + File.separator + configPath);
+            log.debug("will use: " + configFile.getAbsolutePath());
+        }
+        log.service("using: '" + configFile.getAbsolutePath() + "' as config file for security");
+
+        config = new MMBaseCopConfig(this, configFile);
+        if(config.getActive()) {
+            // only start watching the files, when we have a active security system...
+            config.startWatching();
+        }
+
+        log.service("done loading security configuration");
     }
 
 
@@ -52,17 +75,26 @@ public class MMBaseCop extends SecurityManager  {
      */
     public void reload() throws java.io.IOException, NoSuchMethodException, SecurityException {
         log.debug("Retrieving a new security configuration...");
-        MMBaseCopConfig newConfig = new MMBaseCopConfig(this);
-        newConfig.load();
-        // if no exception happed, the configuration can be replaced
-        config.watcher.clear();
-        config = newConfig;
-        log.info("Done changing security configuration");
+        MMBaseCopConfig newConfig = new MMBaseCopConfig(this, configFile);
+
+        log.debug("Changing the security configration now");
+        synchronized(this) {
+            // first stop watching the config file changes
+            config.stopWatching();
+            // replace the old with the new one..
+            config = newConfig;
+            if(config.getActive()) {
+                // only start watching the files, when we have a active security system...s
+                config.startWatching();
+            }
+        }
+        log.info("done changing security configuration");
     }
 
-    private final MMBaseCopConfig getConfig() {
-        if (config == null) throw new RuntimeException("No MMBaseCopConfig in MMBaseCop!!");
-        return config;
+    private MMBaseCopConfig getConfig() {
+        synchronized(this) {
+            return config;
+        }
     }
 
     /**

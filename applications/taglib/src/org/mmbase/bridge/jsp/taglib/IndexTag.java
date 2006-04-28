@@ -14,18 +14,22 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.Query;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.jstl.core.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.21 2005-12-15 21:47:27 michiel Exp $ 
+ * @version $Id: IndexTag.java,v 1.16.2.2 2005-03-14 18:33:24 michiel Exp $ 
  */
 
 public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
+
+    private static final Logger log = Logging.getLoggerInstance(IndexTag.class);
+
 
     private Attribute container = Attribute.NULL;
 
@@ -59,22 +63,16 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
         } else if (parentListId != Attribute.NULL) {
             index = getList().getIndex()  + getOffset();;
         } else {
-            Tag tag = findLoopOrQuery(null, true);
+            QueryContainerOrListProvider tag = (QueryContainerOrListProvider) findParentTag(QueryContainerOrListProvider.class, null);
             if (tag instanceof QueryContainer) {
                 Query query = ((QueryContainer) tag).getQuery();
                 index = query.getOffset() / query.getMaxNumber() + offset.getInt(this, 0);
             } else {
-                LoopTagStatus status = ((LoopTag) tag).getLoopStatus();
-                if (status == null) throw new TaglibException("The tag " + tag + " return loop status 'null'");
-                index = status.getIndex();
-                if (tag instanceof ListProvider) {
-                    index += offset.getInt(this, ((ListProvider) tag).getIndexOffset());
-                } else {
-                    index += offset.getInt(this, 0);
-                }
+                index = ((ListProvider) tag).getIndex() + getOffset();
             }
         }
 
+        
         helper.setValue(new Integer(index));
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());

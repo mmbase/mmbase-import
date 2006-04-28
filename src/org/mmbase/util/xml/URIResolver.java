@@ -9,20 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import javax.xml.transform.Source;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.SizeMeasurable;
-import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This URIResolver can be used to resolve URI's, also in TransformerFactory's.
- *
+ * This URIResolver can be used to resolve URI's, also in TransformerFactory's. 
+ * 
  * It has knowledge of a kind of path (as used by shells). Every entry
  * of this path is labeled with a 'prefix'.
  *
@@ -32,7 +34,7 @@ import org.mmbase.util.logging.Logging;
    <li> Current working directory (prefix: none or 'file:')</li>
    <li> MMBase configuration directory (prefix: 'mm:') </li>
  </ol>
-
+ 
  * Optionially you can add other dirs  between these two.
  *
  * When you start searching in the current working dir, and the URI
@@ -41,16 +43,15 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.26 2006-03-13 13:19:38 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.16.2.1 2004-05-09 14:52:52 michiel Exp $
  */
 
-public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable, Serializable {
-
-
-    private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
+public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
+    
     private static final Logger log = Logging.getLoggerInstance(URIResolver.class);
 
-    private EntryList     dirs;  // prefix -> URL pairs
+    private EntryList     extraDirs;  // prefix -> File pairs
+    private File          cwd;
     private int           hashCode;
 
 
@@ -69,47 +70,25 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * @see org.mmbase.cache.xslt.FactoryCache
      */
 
-    public URIResolver(URL c, boolean overhead) {
+    public URIResolver(File c, boolean overhead) {
+        cwd      = c;
         hashCode = c.hashCode();
     }
     /**
      * Create an URIResolver for a certain directory.
-     * @param c   The directory for which this URIResolver must be created.
+     * @param c   The directory for which this URIResolver must be created.     
+     * 
      */
 
-    public URIResolver(URL c) {
+    public URIResolver(File c) {
         this(c, null);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    private static URL toURL(File f) {
-        try {
-            return f.toURL();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    /**
-     * @deprecated
-     */
-    public URIResolver(File f) {
-        this(toURL(f), null);
     }
 
     /**
      * Create an URIResolver without support for a certain directory. (Will be taken the first root).
      */
     public URIResolver() {
-        this((URL) null, null);
-    }
-
-    /**
-     * @deprecated
-     */
-    public URIResolver(File f, EntryList extraDirs) {
-        this(toURL(f), extraDirs);
+        this(null, null); 
     }
 
     /**
@@ -117,47 +96,43 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * ordered list of URIResolver.Entry's. First in this list are the
      * directories which must be checked first, in case no prefix is
      * given.
-     * @param c 'Current working dir'
-     * @param extraDirs A EntryList, containing 'extra' dirs with
+     * @param extradirs A EntryList, containing 'extra' dirs with
      * prefixes.  If not specified or null, there will still be one
      * 'extra dir' available, namely the MMBase configuration
      * directory (with prefix mm:)
      */
-    public URIResolver(URL c, EntryList extraDirs) {
+    public URIResolver(File c, EntryList extradirs) {
         if (log.isDebugEnabled()) log.debug("Creating URI Resolver for " + c);
-        URL cwd;
         if (c == null) {
+            log.debug("No working directory specified, using filesystem root");
             File[] roots = File.listRoots();
             if (roots != null && roots.length > 0) {
-                try {
-                    cwd = roots[0].toURL();
-                } catch (Exception e) {
-                    cwd = null;
-                }
+                cwd = roots[0];
             } else {
                 log.warn("No filesystem root available, trying with 'null'");
-                cwd = null;
-                // will this result in anything useful?
+                cwd = null; 
+                // will this result in anything useful? 
                 // well, I don't think we will use mmbase on root-less systems anyway?
             }
         } else {
             cwd = c;
         }
-        dirs = new EntryList();
-        dirs.add(new Entry("", cwd));
-        if (extraDirs != null) {
-            dirs.addAll(extraDirs);
+        extraDirs = new EntryList();
+        if (extradirs != null) {
+            extraDirs.addAll(extradirs);
         }
-        dirs.add(new Entry("mm:", ResourceLoader.getConfigurationRoot().getResource("/")));
+        extraDirs.add(new Entry("mm:", new File(MMBaseContext.getConfigPath())));
+
         // URIResolvers  cannot be changed, the hashCode can already be calculated and stored.
 
-        if (extraDirs == null || extraDirs.size() == 0) { // only mmbase config, and root cannot change
+        if (extraDirs.size() == 1) { // only mmbase config, cannot change
             if (log.isDebugEnabled()) log.debug("getting hashCode " + cwd.hashCode());
-            hashCode = cwd.hashCode();
+            hashCode = cwd.hashCode(); 
             // if only the cwd is set, then you alternatively use the cwd has hashCode is this way.
             // it this way in these case it is easy to avoid constructing an URIResolver at all.
         } else {
-            hashCode = dirs.hashCode(); // see also javadoc of List
+            hashCode = 31 * cwd.hashCode() + extraDirs.hashCode(); // see also javadoc of List
+            if (log.isDebugEnabled()) log.debug("getting hashCode " + hashCode + " based on '" + extraDirs + "'");
         }
     }
 
@@ -166,146 +141,136 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * constructor.
      *
      */
-    public URL getCwd() {
-        return ((Entry) dirs.get(0)).getDir();
+    
+    public File getCwd() {
+        return cwd;
+    }
+
+    /**
+     * Resolves a given string to a File. 
+     * 
+     * @param href A string, which can be a relative Path or an URI
+     *             starting with mm: or one of the other configured prefixes.
+     * @return A File
+     */
+
+    public File resolveToFile(String href) {
+        return resolveToFile(href, null);
     }
 
     /**
      * Creates a 'path' string, which is a list of directories. Mainly usefull for debugging, of course.
-     *
+     * 
      * @return A String which could be used as a shell's path.
      */
     public String getPath() {
-        StringBuffer result = new StringBuffer();
-        Iterator i = dirs.iterator();
+        String result = cwd.toString();
+        Iterator i = extraDirs.iterator();            
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
-            result.append(File.pathSeparatorChar);
-            result.append(entry.getDir().toString());
+            result += File.pathSeparatorChar + entry.getDir().getAbsolutePath();
         }
-        return result.toString();
+        return result;        
     }
 
     /**
-     * Creates a List of strings, every entry is a directory prefixed with its 'prefix'. Handy during debugging.
+     * Creates a List of strings, every entry is a directory prefixed with its 'prefix'. Handy during debugging. 
      *
      * @return A List with prefix:path Strings.
      */
     public List getPrefixPath() {
-        List result = new ArrayList();
-        Iterator i = dirs.iterator();
+        Vector result = new Vector();
+        result.add(cwd.toString());
+        Iterator i = extraDirs.iterator();            
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
-            result.add(entry.getPrefix() + entry.getDir().toString());
+            result.add(entry.getPrefix() + entry.getDir().getAbsolutePath());
         }
-        return result;
+        return result;        
     }
+    
+
 
     /**
-     * @deprecated
+     * Resolves the string href (possible with use of base directory
+     * 'base') to a File.  If href is a relative Path (without
+     * prefix), and cannot be found in the cwd or 'base', then all
+     * 'extra' dirs are tried, until it finds a file that exists. It
+     * starts with first entry in these 'extradirs' List and ends with
+     * the MMBase configuration directory.
+     * 
+     * @param href
+     * @param base
+     * @return A File
+     * @see #resolveToFile
+     * @throws I
      */
-    public File resolveToFile(String href) {
-        return resolveToFile(href, null);
-    }
-    /**
-     * @deprecated
-     */
-    public File resolveToFile(String href,  String base)  {
-        try {
-            return new File(resolveToURL(href, base).getFile());
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-
-
-
-
-    public URL resolveToURL(final String href,  final String base) throws TransformerException {
+    public File resolveToFile(String href, String base) {       
         if (log.isDebugEnabled()) {
-            log.debug("Using resolver  " + this + " to resolve href: " + href + "   base: " + base);
-        }
-        try {
-            URL baseURL;
-            if (base == null  // 'base' is often 'null', but happily, this object knows about cwd itself.
-                || base.endsWith("javax.xml.transform.stream.StreamSource"))  {
-                baseURL = getCwd();
-            } else {
-                baseURL = resolveToURL(base, null); // resolve URIRsolver's prefixes like mm:, ew: in base.
-            }
+            log.debug("Using resolver of " + cwd.toString() + " href: " + href + "   base: " + base);
 
-            URL path = null;
-            { // check all known prefixes
-                Iterator i = dirs.iterator();
-                while (i.hasNext()) {
-                    Entry entry = (Entry) i.next();
-                    String pref = entry.getPrefix();
-                    if (! "".equals(pref) && href.startsWith(pref)) { //explicitely stated!
-                        path = new URL(entry.getDir(), href.substring(entry.getPrefixLength()));
-                        log.trace("href matches " + entry + " returing " + path);
-                        break;
-                    }
+        }
+        File path = null;
+        if (base == null  // 'base' is often 'null', but happily, this object knows about cwd itself.
+            || base.endsWith("javax.xml.transform.stream.StreamSource"))  {
+            base = cwd.toString() + File.separator + "A_STREAM_SOURCE_NOT_A_FILE";
+        }
+
+        { // check all known prefixes
+            Iterator i = extraDirs.iterator();            
+            while (i.hasNext()) {
+                Entry entry = (Entry) i.next();
+                if (href.startsWith(entry.getPrefix())) {
+                    path = new File(entry.getDir(), href.substring(entry.getPrefixLength()));
+                }            
+            }
+        }
+
+        if (path == null) { // still not found
+            if (href.startsWith("file:")) {
+                href = href.substring(5);
+            }            
+            path = new File(href);
+            
+            if (! path.isAbsolute()) { // an opportunity to use base of cwd
+                if (base.startsWith("file:/")) {
                     try {
-                        URL u = new URL(entry.getDir(), href);
-                        log.trace("Trying " + u);
-                        // getDoInput does not work for every connection.
-                        if (u.openConnection().getInputStream() != null) {
-                            path = u;
-                            break;
-                        }
-                    } catch (MalformedURLException mfe) {
-                        log.debug(mfe);
-                        // ignore, this might be because of a prefix, which is not yet tried.
-                    } catch (java.io.IOException io) {
-                        log.debug(io);
-                        // ignore, try next one.
+                        path = new File(new File(new URI(base).getPath()).getParent(), href); 
+                    } catch (URISyntaxException e) {
+                        throw new IllegalArgumentException("base: " + base + " is not a valid file: " + e.toString());
+                    }
+                } else { // I don't know what is in base, but I do know that I don't know how to use it. Use cwd.
+                    path = new File(cwd, href); // look in cwd.
+                }
+
+                if (! path.isFile()) { // still no file? Try searching it in all dir which are configured.
+                    if (log.isDebugEnabled()) log.debug(path.toString() + "does not exist, trying defaults");
+                    Iterator i = extraDirs.iterator();
+                    while (i.hasNext() && ! path.isFile()) {
+                        Entry entry = (Entry) i.next();
+                        path = new File(entry.getDir(), href);
                     }
                 }
             }
-
-            // still not found!
-            if (path == null) {
-                if (href.startsWith("file:")) { // don't know excactly why this is good.
-                    path =  new URL(baseURL, href.substring(5));
-                } else {
-                    path =  new URL(baseURL, href);
-                }
-                try {
-                    if (path.openConnection().getInputStream() == null) {
-                        path = null;
-                    }
-                } catch (Exception e) {
-                    path = null;
-                }
-
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Returning " + path);
-            }
-            return path;
-
-        } catch (Exception e) {
-            throw new TransformerException(e);
         }
+        if (log.isDebugEnabled()) log.debug("using " + path.toString());
+        if (! path.isFile()) {
+            throw new IllegalArgumentException("Could not resolve '" + href + "'\n with path " + this + " and href: '" + href + "'   base: '" + base + "'");
+        }
+        if (! path.canRead()) {
+            throw new IllegalArgumentException("Resolved to non-readable file ('" + path + "')\n with path " + this);
+        }
+        return path;
     }
 
     /**
      * Implementation of the resolve method of javax.xml.transform.URIResolver.
-     *
+     * 
      * @see javax.xml.transform.URIResolver
      **/
-
-    public Source resolve(String href,  String base) throws TransformerException {
-        try {
-            URL u = resolveToURL(href, base);
-            if (u == null) return null;
-            Source source = new StreamSource(u.openStream());
-            source.setSystemId(u.toString());
-            return source;
-        } catch (Exception e) {
-            throw new TransformerException(e);
-        }
+    
+    public Source resolve(String href,  String base) throws javax.xml.transform.TransformerException {
+        return new javax.xml.transform.stream.StreamSource(resolveToFile(href, base));
     }
 
 
@@ -321,13 +286,15 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
     public boolean equals(Object o) {
         if (o != null && (o instanceof URIResolver)) {
-            URIResolver res = (URIResolver) o;
-            return (dirs == null ? (res.dirs == null || res.dirs.size() == 1) : dirs.equals(res.dirs));
+            URIResolver res = (URIResolver) o;          
+            return (extraDirs == null ? (res.extraDirs == null || res.extraDirs.size() == 1) : 
+                                         extraDirs.equals(res.extraDirs)) && 
+                   cwd.equals(res.cwd);
             // See java javadoc, lists compare every element, files equal if  point to same file
             // extraDirs == null?
             // -> created with first constructor.
         }
-        return false;
+        return false;        
     }
 
 
@@ -336,7 +303,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     }
 
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
-        return sizeof.sizeof(dirs);
+        return sizeof.sizeof(extraDirs);
     }
     public String toString() {
         return getPrefixPath().toString();
@@ -346,41 +313,26 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * This is a list of prefix/directory pairs which is used in the constructor of URIResolver.
      */
 
-    static public class EntryList extends ArrayList {
+    static public class EntryList extends Vector {
         public EntryList() {
         }
 
         /**
-         * @throws IllegalArgumentException If you don't add an Entry.
+         *
+         * @throws ClassCastException If you don't add an Entry.
          */
         public boolean add(Object o) {
-            if (!(o instanceof Entry)) {
-                throw new IllegalArgumentException("object must be of type Entry");
-            }
-            return super.add(o);
+            return super.add((Entry) o);                 
         }
 
         /**
-         * Adds an prefix/dir entry to the List.
+         * Adds an prefix/dir entry to the List. 
          * @return The list again, so you can easily 'chain' a few.
          * @throws IllegalArgumentException if d is not a directory.
-         * @deprecated
          */
         public EntryList add(String p, File d) {
-            try {
-                add(new Entry(p, d.toURI().toURL()));
-                return this;
-            } catch (Exception e) {
-                return this;
-            }
-        }
-        public EntryList add(String p, URL u) {
-            try {
-                add(new Entry(p, u));
-                return this;
-            } catch (Exception e) {
-                return this;
-            }
+            add(new Entry(p, d));
+            return this;
         }
     }
 
@@ -388,71 +340,41 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * Objects of this type connect a prefix (must normally end in :)
      * with a File (which must be a Directory). A List of this type
      * (EntryList) can be fed to the constructor of URIResolver.
-     *
+     * 
      */
 
-    static class Entry implements java.io.Serializable {
-        private static final long serialVersionUID = 1L; 
+    static class Entry {
         private String prefix;
-        private URL    dir;
+        private File   dir;
         private int    prefixLength;
 
-        Entry(String p, URL u) {
+        Entry(String p, File d) {
             prefix = p;
-            dir = u;
+            dir    = d;
             prefixLength = prefix.length(); // avoid calculating it again.
-
-            /*
             if (! d.isDirectory()) {
                 throw new IllegalArgumentException(d.toString() + " is not an existing directory");
             }
-            */
         }
-        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-            try {
-                out.writeUTF(prefix);
-                if (dir.getProtocol().equals("mm")) {
-                    out.writeObject("mm");
-                } else {
-                    out.writeObject(dir);
-                }
-            } catch (Throwable t) {
-                log.warn(t);
-            }
-        }
-        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException  {
-            try {
-                prefix = in.readUTF();
-                Object o = in.readObject();
-                if ("mm".equals(o)) {
-                    dir = ResourceLoader.getConfigurationRoot().getResource("/");
-                } else {
-                    dir = (URL) o;
-                }
-            } catch (Throwable t) {
-                log.warn(t);
-            }
-            prefixLength = prefix.length(); 
-        }
-
+    
         String getPrefix() {
             return prefix;
         }
-        URL getDir() {
+        File getDir() {
             return dir;
         }
         int getPrefixLength() {
             return prefixLength;
         }
         public String toString() {
-            return prefix + ":" + dir.toString();
+            return dir.toString();
         }
-        public boolean equals(Object o) {
+        public boolean equals(Object o) {            
             if (o instanceof File) {
                 return dir.equals(o);
             } else if (o instanceof Entry) {
                 Entry e = (Entry) o;
-                return dir.equals(e.dir);
+                return dir.equals(e.dir);                
             } else {
                 return false;
             }
@@ -461,36 +383,6 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         public int hashCode() {
             return dir.hashCode();
         }
-
-    }
-
-    /**
-     * For testing only
-     * @since MMBase-1.8
-     */
-    public static void main(String argv[]) throws Exception {
-
-        URIResolver resolver = new URIResolver(new URL("file:///tmp/"));
-        System.out.println("Resolving with " + resolver);
-        String href, base;
-
-        href = "xsl/list.xsl";  base = null;
-        System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
-        href = "xsl/prompts.xsl";  base = "file:///home/mmbase/mmbase17/mmbase/edit/wizard/data/xsl/base.xsl";
-        System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
-
-        FileOutputStream fos = new FileOutputStream("/tmp/uriresolver.ser");
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(resolver);
-        oos.close();
-
-        FileInputStream fis = new FileInputStream("/tmp/uriresolver.ser");
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        URIResolver resolver2 = (URIResolver) ois.readObject();
-        ois.close();
-
-        System.out.println("r" + resolver.resolveToURL("mm:hoi", null).getProtocol());
-
 
     }
 

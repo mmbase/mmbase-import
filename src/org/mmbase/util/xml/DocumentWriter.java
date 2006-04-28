@@ -30,12 +30,12 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.10 2006-04-18 13:11:41 michiel Exp $
+ * @version $Id: DocumentWriter.java,v 1.4 2003-08-18 16:50:53 pierre Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
     // logger
-    private static final Logger log = Logging.getLoggerInstance(DocumentWriter.class);
+    private static Logger log = Logging.getLoggerInstance(DocumentWriter.class.getName());
 
     /**
      * True if the document has been generated
@@ -63,22 +63,42 @@ abstract public class DocumentWriter extends DocumentReader {
      * It is actually filled with a call to {@link #generateDocument()}, which is in turn called when
      * the document is first accessed through {@link #getDocument()}.
      * @param qualifiedName the qualified name of the document's root element
-     * @param publicId the PUBLIC id of the document type
-     * @param systemId the SYSTEm id of the document type
+     * @param publicID the PUBLIC id of the document type
+     * @param systemID the SYSTEm id of the document type
      */
     public DocumentWriter(String qualifiedName, String publicId, String systemId) throws DOMException {
-        DOMImplementation domImpl = DocumentReader.getDocumentBuilder().getDOMImplementation();
-        this.publicId = publicId;
-        this.systemId = systemId;
-        DocumentType doctype = domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);
-        document = domImpl.createDocument(null, qualifiedName, doctype);
+        DOMImplementation domImpl=DocumentReader.getDocumentBuilder().getDOMImplementation();
+        this.publicId=publicId;
+        this.systemId=systemId;
+        DocumentType doctype=domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);
+        document=domImpl.createDocument(null,qualifiedName,doctype);
     }
 
+    /**
+     * Constructs the document by reading it from a file.
+     * @param path the path to the file from which to read the document
+     */
+    public DocumentWriter(String path) {
+        super(path);
+        documentGenerated = true;
+    }
 
     /**
      * Constructs the document by reading it from a source.
+     * You can pass a resolve class to this constructor, allowing you to indicate the package in which the dtd
+     * of the document read is to be found. The dtd sould be in the resources package under the package of the class passed.
+     * @param path the path to the file from which to read the document
+     * @param validating whether to validate the document
+     * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
+     */
+    public DocumentWriter(String path, boolean validating, Class resolveBase) {
+        super(path, validating, resolveBase);
+        documentGenerated = true;
+    }
+    
+    /**
+     * Constructs the document by reading it from a source.
      * @param source the input source from which to read the document
-     * @since MMBase-1.7
      */
     public DocumentWriter(InputSource source) {
         super(source);
@@ -92,7 +112,6 @@ abstract public class DocumentWriter extends DocumentReader {
      * @param source the input source from which to read the document
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
-     * @since MMBase-1.7
      */
     public DocumentWriter(InputSource source, boolean validating, Class resolveBase) {
         super(source, validating, resolveBase);
@@ -108,7 +127,7 @@ abstract public class DocumentWriter extends DocumentReader {
         try {
             messageRB = ResourceBundle.getBundle(resourcelocation);
         } catch (MissingResourceException e) {
-            log.error("Resource for DocumentWriter is missing: "+resourcelocation);
+            log.error("Resource for XMLBuilderWriter is missing: "+resourcelocation);
         }
     }
 
@@ -150,13 +169,13 @@ abstract public class DocumentWriter extends DocumentReader {
         if (messageRB!=null)
         try {
             String message = messageRB.getString(key);
-            Object[] args = new String[3];
+            String[] args = new String[3];
             args[0] = a1;
             args[1] = a2;
             args[2] = a3;
             return java.text.MessageFormat.format(message, args);
         } catch (MissingResourceException e) {
-            log.error("Resource for DocumentWriter is broken. There is no " + key + " key in resource.");
+            log.error("Resource for XMLBuilderWriter is broken. There is no " + key + " key in resource.");
         }
         return null;
     }
@@ -170,9 +189,9 @@ abstract public class DocumentWriter extends DocumentReader {
      * @return the newly created element
      */
     protected Element addContentElement(String tagname,String content, Element out) {
-        Element el = document.createElement(tagname);
-        if (content == null) content="";
-        Text tel = document.createTextNode(content);
+        Element el=document.createElement(tagname);
+        if (content==null) content="";
+        Text tel=document.createTextNode(content);
         el.appendChild(tel);
         out.appendChild(el);
         return el;
@@ -280,15 +299,14 @@ abstract public class DocumentWriter extends DocumentReader {
      * Gets whether the document will include comments
      * @return  if true, the document will include comments
      */
-    public boolean includeComments() {
+    public boolean getIncludeComments() {
         return includeComments;
     }
 
     /**
      * Generates the document and returns it as a string.
-     * @throws TransformerException if the document is malformed
      */
-    public String writeToString() throws TransformerException {
+    public String writeToString() throws IOException, TransformerException {
         StringWriter strw=new StringWriter(500);
         write(new StreamResult(strw));
         return strw.toString();
@@ -297,8 +315,6 @@ abstract public class DocumentWriter extends DocumentReader {
     /**
      * Generates the document and store it as a file in the given path.
      * @param filename the filepath where the configuration is to be stored
-     * @throws TransformerException if the document is malformed
-     * @throws IOException if the file cannot be written
      */
     public void writeToFile(String filename) throws IOException, TransformerException {
         writeToStream(new FileOutputStream(filename));
@@ -308,7 +324,7 @@ abstract public class DocumentWriter extends DocumentReader {
      * Generates the document and store it in the given stream.
      * @param out the output stream where the configuration is to be stored
      */
-    public void writeToStream(OutputStream out) throws TransformerException {
+    public void writeToStream(OutputStream out) throws IOException, TransformerException {
         write(new StreamResult(out));
     }
 
@@ -316,7 +332,7 @@ abstract public class DocumentWriter extends DocumentReader {
      * Generates the document and writes it to the result object.
      * @param result the StreamResult object where to store the configuration'
      */
-    public void write(StreamResult result) throws TransformerException {
+    public void write(StreamResult result) throws IOException, TransformerException {
         Document doc=getDocument();
         TransformerFactory tfactory = TransformerFactory.newInstance();
         tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));

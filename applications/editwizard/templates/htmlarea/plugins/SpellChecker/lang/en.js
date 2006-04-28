@@ -1,7 +1,7 @@
 // I18N constants
 
 // LANG: "en", ENCODING: UTF-8 | ISO-8859-1
-// Author: Mihai Bazon, http://dynarch.com/mishoo
+// Author: Mihai Bazon, <mishoo@infoiasi.ro>
 
 // FOR TRANSLATORS:
 //
@@ -31,7 +31,6 @@ SpellChecker.I18N = {
 	"Replace all"                           : "Replace all",
 	"Replace with"                          : "Replace with",
 	"Replace"                               : "Replace",
-	"Revert"                                : "Revert",
 	"SC-spell-check"                        : "Spell-check",
 	"Suggestions"                           : "Suggestions",
 	"pliz weit ;-)"                         : "pliz weit ;-)"

@@ -10,7 +10,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.22 2006-03-31 08:45:43 pierre Exp $
+    @version $Id: searchlist.xsl,v 1.17.2.4 2005-05-13 14:02:47 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -83,28 +83,13 @@
             </tr>
           </xsl:if>
           <xsl:for-each select="object">
-            <tr number="{@number}" id="item_{@number}">
+            <tr number="{@number}" onClick="doclick_search(this);" id="item_{@number}">
               <xsl:choose>
-                <xsl:when test="@maylink=&apos;true&apos;">
-                  <xsl:attribute name="onClick">doclick_search(this);</xsl:attribute>
-                  <xsl:choose>
-                    <xsl:when test="(position() mod 2) = 0">
-                      <xsl:attribute name="class">even</xsl:attribute>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:attribute name="class">odd</xsl:attribute>
-                    </xsl:otherwise>
-                  </xsl:choose>
+                <xsl:when test="(position() mod 2) = 0">
+                  <xsl:attribute name="class">even</xsl:attribute>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:choose>
-                    <xsl:when test="(position() mod 2) = 0">
-                      <xsl:attribute name="class">even-disabled</xsl:attribute>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:attribute name="class">odd-disabled</xsl:attribute>
-                    </xsl:otherwise>
-                  </xsl:choose>
+                  <xsl:attribute name="class">odd</xsl:attribute>
                 </xsl:otherwise>
               </xsl:choose>
               <td style="display: none;">
@@ -141,7 +126,7 @@
                 </xsl:when>
                 <xsl:when test="@type=&apos;audioparts&apos;">
                   <td>
-                    <a target="_blank" href="{node:function($cloud, string(field/@number), &apos;url()&apos;)}">
+									<a target="_blank" href="{node:function($cloud, string(field/@number), &apos;url()&apos;)}">
                       <xsl:call-template name="prompt_audio" />
                     </a>
                   </td>
@@ -149,7 +134,7 @@
                 </xsl:when>
                 <xsl:when test="@type=&apos;videoparts&apos;">
                   <td>
-                    <a target="_blank" href="{node:function($cloud, string(field/@number), &apos;url()&apos;)}">
+									<a target="_blank" href="{node:function($cloud, string(field/@number), &apos;url()&apos;)}">
                       <xsl:call-template name="prompt_video" />
                     </a>
                   </td>

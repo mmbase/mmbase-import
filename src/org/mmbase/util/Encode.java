@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.26 2006-04-19 21:10:58 michiel Exp $
+ * @version $Id: Encode.java,v 1.19 2004-03-20 00:01:55 michiel Exp $
  **/
 public class Encode {
 
@@ -72,11 +72,9 @@ public class Encode {
             register("org.mmbase.util.transformers.XmlField");
             register("org.mmbase.util.transformers.LinkFinder");
             register("org.mmbase.util.transformers.Censor");
-            register("org.mmbase.util.transformers.Rot13");
-            register("org.mmbase.util.transformers.Rot5");
-            register("org.mmbase.util.transformers.UnicodeEscaper");
         } catch (IllegalArgumentException e) {
-            log.warn("", e);
+            e.printStackTrace();
+            System.err.println(e.toString());
         }
     }
 
@@ -101,16 +99,9 @@ public class Encode {
                 ((ConfigurableTransformer) trans).configure(e.config);
             }
         } else {
-            throw new IllegalArgumentException("encoding: '" + encoding + "' unknown" + encodings.keySet());
+            throw new IllegalArgumentException("encoding: '" + encoding + "' unknown");
         }
 
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public Transformer getTransformer() {
-        return trans;
     }
 
 
@@ -118,11 +109,12 @@ public class Encode {
      * Add new transformation types. Feed it with a class name (which
      * must implement Transformer)
      *
-     * @param clazz a class name.
+     * @param String a class name.
      */
+
     public static void register(String clazz) {
         if (! registered.contains(clazz)) { // if already registered, do nothing.
-            log.service("registering encode class " + clazz);
+            log.info("registering encode class " + clazz);
             try {
                 Class atrans = Class.forName(clazz);
                 if(Transformer.class.isAssignableFrom(atrans)) { // make sure it is of the right type.
@@ -131,12 +123,12 @@ public class Encode {
                         // Instantiate it, just once, to call the method 'transformers'
                         // In this way we find out what this class can do.
                         ConfigurableTransformer transformer = (ConfigurableTransformer) atrans.newInstance();                       
-                        Map newencodings = transformer.transformers();
+                        Map newencodings = (Map) transformer.transformers();
                         encodings.putAll(newencodings); // add them all to our encodings.
                     } else {
                         log.debug("Non configurable");
                         Transformer transformer = (Transformer) atrans.newInstance();
-                        encodings.put(transformer.toString().toUpperCase(), new Config(atrans, -1, "Transformer: " + clazz));
+                        encodings.put(transformer.toString(), new Config(atrans, -1, "Transformer: " + clazz));
                     }
                     // TODO, perhaps there should be a check here, to make sure that no two classes use the
                     // same string to identify a transformation.
@@ -183,7 +175,7 @@ public class Encode {
     /**
      *	This function will decode a given string to it's decoded variant.
      *  @see #encode
-     *	@param	encoding    a string that describes which decoding should be used.
+     *	@param	decoding    a string that describes which decoding should be used.
      *	@param	toDecode    a string which is the value which should be encoded.
      *	@return     	    a string which is the encoded representation of toEncode
      *	    	    	    with the given encoding
@@ -247,13 +239,12 @@ public class Encode {
     /**
      * All the currently known encodings.
      *
-     * @return Set of Strings containing the names of the registered encodings.
+     * @return Set of Strings.
      */
 
     public static Set possibleEncodings() {
         return encodings.keySet();
     }
-    
     /**
      * Checks if a certain string represents a known transformation.
      *
@@ -287,8 +278,8 @@ public class Encode {
     public static void  main(String[] argv) {
         try {
             org.mmbase.module.core.MMBaseContext.init(System.getProperty("mmbase.config"), false);
-        } catch (Throwable e) {
-            System.err.println("Could not intialize mmbase context, proceeding without it: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println(e.toString());
         }
         String coding = null;
         boolean decode = false;
@@ -324,7 +315,7 @@ public class Encode {
             System.out.println("   use: java -Dmmbase.config=... org.mmbase.util.Encode [-class <classname> [-class ..]] [-encode|-decode] <coding> [string]\n\n");
             System.out.println("On default it encodes and gets the string from STDIN\n\n");
             System.out.println("possible decoding are");
-            List v = new ArrayList(possibleEncodings());
+            Vector v = new Vector(possibleEncodings());
             java.util.Collections.sort(v);
             Iterator i = v.iterator();
             while (i.hasNext()) {
@@ -342,8 +333,8 @@ public class Encode {
                     while (line != null) {
                             string += line + "\n";
                             line = stdinReader.readLine();
-                    }                   
-                    log.service("----------------");
+                    }
+                    System.out.println("----------------");
                 } catch (java.io.IOException e) {
                     System.err.println(e.toString());
                 }

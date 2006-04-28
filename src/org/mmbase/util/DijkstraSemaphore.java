@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Karthik Rangaraju
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: DijkstraSemaphore.java,v 1.8 2005-03-16 19:06:44 michiel Exp $
+ * @version $Id: DijkstraSemaphore.java,v 1.7 2004-01-13 14:47:27 michiel Exp $
  */
 public class DijkstraSemaphore {
 
@@ -75,7 +75,7 @@ public class DijkstraSemaphore {
             }
             wait();
             if (startwait != 0) { 
-                log.debug("Waited " + (System.currentTimeMillis() - startwait) + " ms for a resource");
+                log.debug("Waited " + (System.currentTimeMillis() - startwait) + " ms for a connection");
             }
         }
         count--;

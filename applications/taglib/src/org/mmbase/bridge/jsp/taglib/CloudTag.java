@@ -21,9 +21,7 @@ import javax.servlet.RequestDispatcher;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.ContextProvider;
-import org.mmbase.security.*; // hmm, not from bridge, but we do need it anyway
-import org.mmbase.util.functions.*;
-
+import org.mmbase.security.Rank; // hmm, not from bridge, but we do need it anyway
 
 import org.mmbase.util.StringSplitter;
 
@@ -38,11 +36,22 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.131 2006-02-14 22:28:54 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.94.2.8 2005-03-14 18:33:24 michiel Exp $
  */
 
-public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
+public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
+    private static final int METHOD_UNSET = -1;
+    private static final int METHOD_HTTP = 0;
+    private static final int METHOD_ASIS = 1;
+    private static final int METHOD_ANONYMOUS = 2;
+    private static final int METHOD_LOGOUT = 3;
+    private static final int METHOD_LOGINPAGE = 4;
+    // private static final int METHOD_GIVEN_OR_ANONYMOUS = 5;
+    private static final int METHOD_DELEGATE = 6;
+    private static final int METHOD_SESSIONDELEGATE = 7;
+    private static final int METHOD_PAGELOGON = 8;
+    private static final int METHOD_SESSIONLOGON = 9;
 
     /**
      * Constants needed for the loginpage attribute functionality
@@ -57,15 +66,16 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private static final String LOGINPAGE_DENYREASON_FAIL = "failed";
     private static final String LOGINPAGE_DENYREASON_RANKTOOLOW = "rank";
 
+    private static final int DENYREASON_NEED = 0;
     private static final int DENYREASON_FAIL = 1;
     private static final int DENYREASON_RANKTOOLOW = 2;
 
     private static final Logger log = Logging.getLoggerInstance(CloudTag.class);
 
     private static final String DEFAULT_CLOUD_NAME = "mmbase";
+    private static final String DEFAULT_AUTHENTICATION = "name/password";
 
     private static final String REALM = "realm_";
-
 
     private String jspVar;
 
@@ -78,7 +88,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private Cloud cloud;
 
     /**
-     * @since MMBase-1.7
+     * @since MMBases-1.7
      */
     private boolean sessionCloud = true;
 
@@ -86,7 +96,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private Attribute loginpage = Attribute.NULL;
 
-    //private int method = CloudContext.METHOD_UNSET; // how to log on, method can eg be 'http'.
+    //private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.
     private Attribute method = Attribute.NULL;
     private Attribute logonatt = Attribute.NULL;
     private List logon;
@@ -96,7 +106,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private Attribute onfail = Attribute.NULL;
 
-    private static final String FAILMESSAGE = "<h1>CloudTag Error</h1>";
+    private static String FAILMESSAGE = "<h1>CloudTag Error</h1>";
 
     private HttpSession session;
     private HttpServletRequest request;
@@ -106,7 +116,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     /**
      * @return the default cloud context
      **/
-    public  CloudContext getDefaultCloudContext() throws JspTagException {
+    public CloudContext getDefaultCloudContext() throws JspTagException {
         if (cloudContext == null) {
             cloudContext = ContextProvider.getCloudContext(cloudURI.getString(this));
         }
@@ -161,7 +171,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         String s = rank.getString(this);
         Rank r = Rank.getRank(s);
         if (r == null) {
-            throw new JspTagException("Unknown rank '" + s + "'");
+            throw new JspTagException("Unknown rank " + s);
         }
         return r;
     }
@@ -173,23 +183,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         onfail = getAttribute(of);
     }
 
-    // javadoc inherited (from ParameterHandler)
-    public void addParameter(String key, Object value) {
-        if (cloud != null) {
-            cloud.setProperty(key, value);
-        }
-    }
-
     /**
      * If this cloud is 'anonymous' according to rank attribute.
      * @since MMBase-1.7
      */
     private boolean rankAnonymous() throws JspTagException {
-        if (rank == Attribute.NULL) {
+        if (rank == Attribute.NULL)
             return true;
-        }
         String rankString = rank.getString(this);
-        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS);
+        return rankString.equals("") || rankString.equals(Rank.ANONYMOUS.toString());
     }
 
     public void setJspvar(String jv) {
@@ -207,7 +209,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     protected String getAuthenticate() throws JspTagException {
         String a = authenticate.getString(this);
         if (a.equals("")) {
-            return cloudContext.getAuthentication().getTypes(getMethod())[0];
+            return DEFAULT_AUTHENTICATION;
         }
         return a;
     }
@@ -217,26 +219,31 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     protected int getMethod() throws JspTagException {
-        String m = method.getString(this);
-        int r =  cloudContext.getAuthentication().getMethod(m);
-        log.debug("method '" + m + "' -> " + r);
-        return r;
-    }
-
-    /**
-     * @return The login-method, or METHOD_LOGINPAGE if loginpage was specified, or the default method of the authentication implemnetation if also that was not specified.
-     * @since MMBase-1.8
-     */
-    protected int getMethodOrDefault() throws JspTagException {
-        int m = getMethod();
-        if (m == AuthenticationData.METHOD_UNSET) {
-            if (! "".equals(loginpage.getString(this))) {
-                return AuthenticationData.METHOD_LOGINPAGE;
-            } else {
-                return  cloudContext.getAuthentication().getDefaultMethod(request.getProtocol());
-            }
+        String m = method.getString(this).toLowerCase();
+        if ("".equals(m)) {
+            return METHOD_UNSET;
+        } else if ("http".equals(m)) {
+            return METHOD_HTTP;
+        } else if ("asis".equals(m)) {
+            return METHOD_ASIS;
+        } else if ("anonymous".equals(m)) {
+            return METHOD_ANONYMOUS;
+        } else if ("logout".equals(m)) {
+            return METHOD_LOGOUT;
+        } else if ("loginpage".equals(m)) {
+            return METHOD_LOGINPAGE;
+        } else if ("delegate".equals(m)) {
+            return METHOD_DELEGATE;
+        } else if ("sessiondelegate".equals(m)) {
+            return METHOD_SESSIONDELEGATE;
+        } else if ("pagelogon".equals(m)) {
+            return METHOD_PAGELOGON;
+        } else if ("sessionlogon".equals(m)) {
+            return METHOD_SESSIONLOGON;
+            //} else if ("given_or_anonymous".equals(m)) {
+            //    return METHOD_GIVEN_OR_ANONYMOUS;
         } else {
-            return m;
+            throw new JspTagException("Unknown value for 'method'  attribute (" + m + ")");
         }
     }
 
@@ -292,7 +299,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 String path = request.getContextPath();
                 if (path.equals("")) path = "/";
                 c.setPath(path);
-                c.setMaxAge((int) (60 * 60 * 24 * 365.25)); // let it live one year
+                c.setMaxAge(-1); // duration of browser
             } else {
                 c.setValue(r);
             }
@@ -314,9 +321,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 }
                 return false;
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Setting realm " + r + " in session " + REALM + getSessionName());
-            }
+            log.debug("setting realm in session");
             session.setAttribute(REALM + getSessionName(), r);
         }
         return true;
@@ -327,7 +332,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
 
     private void removeRealm() throws JspTagException {
-        log.debug("Removing realm");
         if (session == null) {
             String cookie = REALM + getSessionName();
             log.debug("removing cookie");
@@ -361,12 +365,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             }
             return null;
         } else {
-            String realm =  (String) session.getAttribute(REALM + getSessionName());
-            if (log.isDebugEnabled()) {
-                log.debug("Getting realm  from session " + REALM + getSessionName() + " --> " + realm);
-            }
-            return realm;
-
+            return (String) session.getAttribute(REALM + getSessionName());
         }
     }
 
@@ -381,23 +380,21 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
     private int denyHTTP(String message) throws JspTagException {
         log.debug("sending deny");
-
-
         if (response.isCommitted()) {
-            throw new JspTagException("Response is commited already, cannot send a deny");
+            throw new JspTagException("Response is commited already, cannot send a deny");            
         }
-
+        
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         if (getRealm() == null) {
-            String contextPath = request.getContextPath().replace('/', '_');
+            String contextPath = request.getContextPath();
             if (!setRealm("MMBase" + contextPath + "@" + request.getServerName())) {
                 return SKIP_BODY;
             }
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Setting header WWW-Authenticate: " + getRealm());
+            log.debug("setting header: " + getRealm());
         }
         response.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealm() + "\"");
 
@@ -423,11 +420,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     /**
      * Sets the cloud member variable to an anonymous cloud.
-     * @return logoutInfo A map containing information for actual logout.
      * @return true on success (cloud is set), false on failure (cloud is set to null)
      */
 
-    private boolean setAnonymousCloud(Parameters logoutInfo) throws JspTagException {
+    private boolean setAnonymousCloud(Map logoutInfo) throws JspTagException {
         try {
             // request/response information is not needed for mmbase-only implementation.
             // but when using 'delegated' login-method, you might also want to delegate logout.
@@ -435,33 +431,27 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 log.debug("creating an anonymous cloud for cloud '" + getName() + "' (with " + logoutInfo + ")");
             }
             // removeCloud(); // should not remove existing cloud from session
-            if (logoutInfo != null) logoutInfo.checkRequiredParameters();
-            cloud = getDefaultCloudContext().getCloud(getName(), "anonymous", logoutInfo == null ? null : logoutInfo.toMap());
-            if (locale != null) {
-                cloud.setLocale(locale);
-            }
+            cloud = getDefaultCloudContext().getCloud(getName(), "anonymous", logoutInfo);
+            cloud.setLocale(locale);
             return true;
         } catch (java.lang.SecurityException e) {
             // login failed for anymous ?! That's odd, provide null.
             log.info("Could not create anonymous cloud because " + e.toString());
             cloud = null;
             return false;
-        } catch (NotFoundException nfe) {
-            try {
-                if (!response.isCommitted()) {
-                    response.setHeader("Retry-After", "60");
-                    response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, nfe.getMessage());
-                }
-                return false;
-            } catch (IOException ioe) {
-                throw new TaglibException(ioe);
-            }
         } catch (Throwable t) {
-            throw new TaglibException("Could not create anonymous cloud because " + t.getClass().getName() + ": " + t.getMessage(), t);
+            throw new TaglibException("Could not create anonymous cloud because " + t.getMessage(), t);
         }
     }
 
-
+    /**
+     * Return the name of session variable in which the cloud is
+     * stored. This is on default "cloud_mmbase" but this can be
+     * influenced with the sessionname attribute. If two pages have
+     * different sessionnames for the cloud, they can be logged in
+     * simultaniously with different clouds, but in the same session.
+     * If no sessionname is given or an empty sessionname, it returns the defaultvalue.
+     */
     public String getSessionName() throws JspTagException {
         String sn = sessionName.getString(this);
         if (sn.equals("")) {
@@ -478,20 +468,16 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private int evalBody() throws JspTagException {
 
-        if (getId() != null) { // writeclou to context.
+        if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), cloud);
         }
 
         if (cloud == null) {
             return SKIP_BODY;
         }
-        cloud.setProperty("request", request);
+
         if (jspVar != null) {
             log.debug("Setting jspVar " + jspVar);
-            Object was = pageContext.getAttribute(jspVar);
-            if (was != null && ! was.equals(cloud)) {
-                throw new JspTagException("Jsp-var '" + jspVar + "' already in pagecontext! (" + was + "), can't write " + cloud + " in it. This may be a backwards-compatibility issue. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
-            }
             pageContext.setAttribute(jspVar, cloud);
         }
 
@@ -504,8 +490,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
         ContentTag tag = (ContentTag) findParentTag(ContentTag.class, null, false);
         if (tag != null) {
-            UserContext user = cloud.getUser();
-            if (sessionCloud && ! user.getRank().equals(org.mmbase.security.Rank.ANONYMOUS)) {
+            User user = cloud.getUser();
+            if (sessionCloud && ! user.getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
                 tag.setUser(cloud.getUser());
             }
         }
@@ -523,24 +509,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     private final boolean checkReuse() throws JspTagException {
         if (getReferid() != null) {
-            int method = getMethod();
-            if ((method != AuthenticationData.METHOD_UNSET &&
-                 method != AuthenticationData.METHOD_PAGELOGON &&
-                 method != AuthenticationData.METHOD_SESSIONLOGON) ||
-                logonatt != Attribute.NULL) { // probably add some more
-                throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method'  or 'logon' attributes");
+            if (method != Attribute.NULL || logonatt != Attribute.NULL) { // probably add some more
+                throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method' or 'logon' attributes");
             }
             log.debug("found cloud with referid");
             cloud = (Cloud) getContextProvider().getContextContainer().getObject(getReferid());
-            if (method == AuthenticationData.METHOD_SESSIONLOGON) {
-                session = pageContext.getSession();
-                if (session == null) {
-                    throw new JspTagException("No session, cannot store cloud in session");
-                }
-                String sn = getSessionName();
-                cloud.setProperty(Cloud.PROP_SESSIONNAME, sn);
-                session.setAttribute(sn, cloud);
-            }
             return true;
         }
         return false;
@@ -552,25 +525,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
 
     private final boolean checkAnonymous() throws JspTagException {
-        try {
-            int m = getMethod();
-            if ((m == AuthenticationData.METHOD_UNSET && logon == null && rankAnonymous() && loginpage == Attribute.NULL) || m == AuthenticationData.METHOD_ANONYMOUS) { // anonymous cloud:
-                log.debug("Implicitely requested anonymous cloud. Not using session");
-                setAnonymousCloud();
-                return true;
-            } else {
-                return false;
-            }
-        } catch (NotFoundException nfe) {
-            try {
-                if (!response.isCommitted()) {
-                    response.setHeader("Retry-After", "60");
-                    response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, nfe.getMessage());
-                }
-                return true;
-            } catch (IOException ioe) {
-                throw new TaglibException(ioe);
-            }
+        setAnonymousCloud();
+        if ((method == Attribute.NULL && logon == null && rankAnonymous() && loginpage == Attribute.NULL) || getMethod() == METHOD_ANONYMOUS) { // anonymous cloud:
+            log.debug("Implicitely requested anonymous cloud. Not using session");
+
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -597,30 +558,21 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * Checks if the cloud of the session if requested to be 'logged out'.
      */
     private final boolean checkLogoutMethod() throws JspTagException {
-        if (getMethod() == AuthenticationData.METHOD_LOGOUT) {
-            log.debug("Requested logout");
-            if (cloud != null) { // if cloud already null, don't do it, otherwise login method="http" on same page doesnt work
+        if (getMethod() == METHOD_LOGOUT) {
+            if (cloud != null) {
                 removeRealm();
-
                 if (session != null) {
                     log.debug("ok. session is not null");
                     session.removeAttribute(getSessionName()); // remove cloud itself
                 }
             }
-            // add some information for actual logout
-            // Logout is loging in with 'anonymous' with some extra info.
-            Parameters logoutInfo = cloudContext.getAuthentication().createParameters("anonymous");
-            fillStandardParameters(logoutInfo);
-            if (cloud != null) {
-                String authenticate = cloud.getUser().getAuthenticationType();
-                logoutInfo.setIfDefined(AuthenticationData.PARAMETER_AUTHENTICATE, authenticate);
-            }
-            logoutInfo.setIfDefined(AuthenticationData.PARAMETER_LOGOUT, Boolean.TRUE);
+            Map logoutInfo = new HashMap();
+            logoutInfo.put("request", request);
+            logoutInfo.put("response", response);
             setAnonymousCloud(logoutInfo);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -634,30 +586,27 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (log.isDebugEnabled()) {
             log.debug("getting (thus creating) session now: " + session);
         }
-        session = pageContext.getSession();
+        session = (HttpSession) pageContext.getSession();
         if (session != null) { // some people like to disable their session
-            String sessionName = getSessionName();
-            Object c = session.getAttribute(sessionName);
+            Object c = session.getAttribute(getSessionName());
             if (c != null && ! (c instanceof Cloud)) {
-                throw new TaglibException("The session variable '" + sessionName + "' is not of type Cloud (but it is a '" + c.getClass().getName() + "'), and perhaps is used for another goal. This error could be avoided by use of the 'sessionname' attribute of the cloud-tag.");
+                throw new TaglibException("The session variable '" + getSessionName() + "' is not of type Cloud (but it is a '" + c.getClass().getName() + "'), and perhaps is used for another goal. This error could be avoided by use of the 'sessionname' attribute of the cloud-tag.");
             }
             cloud = (Cloud) c;
             if (cloud != null) {
                 if (cloud.getUser().isValid()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Created/found a session. Cloud '" + sessionName + "' in it is of: " + cloud.getUser());
-                    }
-
+                    if (log.isDebugEnabled()) {                        
+                        log.debug("Created/found a session. Cloud in it is of: " + cloud.getUser());
+                    }                    
                 } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Found invalid cloud in session variable '" + sessionName + "' of '" + cloud.getUser() + "'. Discarding.");
-                    }
+                    if (log.isDebugEnabled()) {                        
+                        log.debug("Found invalid cloud in session of '" + cloud.getUser() + "'. Discarding.");
+                    }                    
                     cloud = null;
                 }
             } else {
-                log.debug("No cloud found in session variable '" + sessionName + "'");
+                log.debug("No cloud found");
             }
-
         } else {
             log.debug("Not succeeded creating a session");
         }
@@ -683,7 +632,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
 
     private final boolean checkAsis() throws JspTagException {
-        if (getMethod() == AuthenticationData.METHOD_ASIS) {
+        if (getMethod() == METHOD_ASIS) {
             session = request.getSession(false);
             if (session != null) {
                 cloud = (Cloud) session.getAttribute(getSessionName());
@@ -728,26 +677,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * cloud member variable is made null.
      */
     private final void checkCloud() throws JspTagException {
-
-        if (cloud == null) {
-            log.debug("Cloud is null, cannot check it");
-            removeCloud();
-            return;
-        }
         // we have a cloud, check if it is a desired one
         // otherwise make it null.
         if (log.isDebugEnabled()) {
-            log.debug("found cloud m: " + method + " l: " + logon + ". Checking it.");
-;
-        }
-        if (cloud.getUser() == null) {
-            log.debug("found a cloud in the session, but is has no user, throwing it away");
-            removeCloud();
-            return;
+            log.debug("found cloud in session m: " + method + " l: " + logon + ". Checking it");
         }
 
-
-        if (!cloud.getUser().isValid()) {
+        if (cloud == null || cloud.getUser() == null || (!cloud.getUser().isValid())) {
             // Makes the cloud variable null (may not be null already) if it
             // is 'expired'. This means normally that the security
             // configuration has been changed, or MMBase restarted or
@@ -759,12 +695,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         }
 
         int meth = getMethod();
-        if (logon == null && rank == Attribute.NULL && meth != AuthenticationData.METHOD_UNSET  && meth != AuthenticationData.METHOD_ASIS) {
+        if (logon == null && rank == Attribute.NULL && meth != METHOD_UNSET && meth != METHOD_ASIS) {
             // authorisation was requested, but not indicated for whom
             if (log.isDebugEnabled()) {
                 log.debug("Implicitily requested non-anonymous (by method) cloud. Current user: " + cloud.getUser().getIdentifier());
             }
-            if (cloud.getUser().getRank().equals(Rank.ANONYMOUS)) { // so it simply may not be anonymous
+            if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
                 log.debug("there was a cloud, but anonymous. log it on");
                 removeCloud();
                 return;
@@ -787,7 +723,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             if (log.isDebugEnabled()) {
                 log.debug("Explicitily requested non-anonymous cloud (by rank). Current user: " + cloud.getUser());
             }
-            Rank curRank = cloud.getUser().getRank();
+            Rank curRank = Rank.getRank(cloud.getUser().getRank());
             if (curRank.getInt() < getRank().getInt()) {
                 if (log.isDebugEnabled()) {
                     log.debug("logged on, but rank of user (" + curRank.toString() + ") is too low (must be " + getRank().toString() + "). log out first.");
@@ -799,13 +735,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             }
 
         }
-        if (meth != AuthenticationData.METHOD_UNSET &&
-            meth != AuthenticationData.METHOD_ASIS &&
-            cloud != null &&
-            authenticate != Attribute.NULL &&
-            (!cloud.getUser().getAuthenticationType().equals(getAuthenticate()))) {
-            log.debug("Cloud was logged on with different authentication type ('" + cloud.getUser().getAuthenticationType()
-                      + "' in stead of the requested '" + getAuthenticate() + "'. Should do procedure again.");
+        if (meth != METHOD_UNSET && meth != METHOD_ASIS && cloud != null && (!cloud.getUser().getAuthenticationType().equals(getAuthenticate()))) {
+            log.debug(
+                "Cloud was logged on with different authentication type ('"
+                    + cloud.getUser().getAuthenticationType()
+                    + "' in stead of the requested '" + getAuthenticate()
+                    + "'. Should do procedure again.");
             removeCloud();
             return;
         } else {
@@ -821,7 +756,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * continue then. EVAL_BODY  otherwise (can be ignored).
      */
 
-    private final int doHTTPAuthentication(Parameters user) throws JspTagException {
+    private final int doHTTPAuthentication(Map user) throws JspTagException {
         log.debug("with http");
 
         if (getRealm() == null) {
@@ -829,7 +764,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             return denyHTTP("<h2>Need to log in again</h2> You logged out");
         }
         if (log.isDebugEnabled()) {
-            log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm() + " authorization " + request.getHeader("Authorization"));
+            log.debug("authent: " + request.getHeader("WWW-Authenticate") + " realm: " + getRealm());
         }
         // find logon, password with http authentication
         String userName = null;
@@ -872,14 +807,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
               logon.add(userName); why is this..
             */
         }
-        user.set(AuthenticationData.PARAMETER_USERNAME, userName);
-        user.set(AuthenticationData.PARAMETER_PASSWORD, password);
+        user.put("username", userName);
+        user.put("password", password);
         return EVAL_BODY;
 
     }
-
-
-
 
     /**
      * Sets logon-variables using the login page (with the loginpage attribute) in the Map argument.
@@ -889,7 +821,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * (can be ignored).
      */
 
-    private int doLoginPage(Parameters user) throws JspTagException {
+    private int doLoginPage(Map user) throws JspTagException {
         log.debug("login page required to acces this cloud data!");
 
         // look if we need to login(param command='login') with methods and with the params...
@@ -908,17 +840,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             if (cloudNamePassed != null) {
                 setName(cloudNamePassed); // THIS SEEM DANGEROUS
             }
-            user.setAutoCasting(true);
             Enumeration enumeration = request.getParameterNames();
             while (enumeration.hasMoreElements()) {
                 String key = (String) enumeration.nextElement();
-                String value = (String) org.mmbase.bridge.jsp.taglib.util.ContextContainer.fixEncoding(request.getParameter(key), pageContext);
+                String value = request.getParameter(key);
                 if (log.isDebugEnabled()) {
                     log.debug("security info --> key:" + key + " value:" + value);
                 }
-                user.setIfDefined(key, value);
+                user.put(key, value);
             }
-            fillStandardParameters(user);
             return EVAL_BODY;
         } else {
             // no command give, send redirect to specified login page
@@ -933,7 +863,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * @return SKIP_BODY
      */
     private int denyLoginPage(String reason, String exactReason) throws JspTagException {
-        log.debug("Denying to login-page");
         try {
 
             // find this page relative to login-page
@@ -948,7 +877,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
 
             /*
-            if (1 == 0) {
+            if (1 == 0) { 
                 // XXXXX hmm, should test this in freeze
                 // making relative urls'.
 
@@ -1001,17 +930,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                     referrer = referrerPage;
                 }
             }
-            log.debug("Using " + referrer);
-            if (! response.isCommitted()) {
-                //reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
-                RequestDispatcher rd = request.getRequestDispatcher(toFile);
-                request.setAttribute("referrerpage", referrerPage);
-                request.setAttribute("referrer", referrer);
-                request.setAttribute("reason", reason);
-                request.setAttribute("exactreason", exactReason);
-                request.setAttribute("usernames", logon);
-                rd.forward(request, response);
-            }
+            //reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
+            RequestDispatcher rd = request.getRequestDispatcher(toFile);
+            request.setAttribute("referrerpage", referrerPage);
+            request.setAttribute("referrer", referrer);
+            request.setAttribute("reason", reason);
+            request.setAttribute("exactreason", exactReason);
+            rd.forward(request, response);
             return SKIP_BODY;
         } catch (javax.servlet.ServletException ioe) {
             throw new TaglibException("error sending redirect", ioe);
@@ -1021,10 +946,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     private final int deny(int reason, String exactReason) throws JspTagException {
-        int meth = getMethodOrDefault();
+
+        int method = getMethod();
         // did not succeed, so problably the password was wrong.
-        switch(meth){
-        case AuthenticationData.METHOD_HTTP:  // give a deny, people can retry the password then.
+        if (method == METHOD_HTTP) { // give a deny, people can retry the password then.
             switch (reason) {
             case DENYREASON_RANKTOOLOW :
                 return denyHTTP("<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
@@ -1032,7 +957,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             default :
                 return denyHTTP("<h2>This page requires authentication</h2>");
             }
-        case AuthenticationData.METHOD_LOGINPAGE:
+        } else if (method == METHOD_LOGINPAGE || (method == METHOD_UNSET && loginpage != Attribute.NULL)) {
             switch (reason) {
             case DENYREASON_RANKTOOLOW :
                 return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW, exactReason);
@@ -1040,17 +965,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             default :
                 return denyLoginPage(LOGINPAGE_DENYREASON_FAIL, exactReason);
             }
-        case AuthenticationData.METHOD_DELEGATE:
-        case AuthenticationData.METHOD_SESSIONDELEGATE:
+        } else if (method == METHOD_DELEGATE || method == METHOD_SESSIONDELEGATE) {
             switch (reason) {
             case DENYREASON_RANKTOOLOW :
-                // throw new JspTagException("Rank too low");
+                throw new JspTagException("Rank too low");
             case DENYREASON_FAIL :
             default :
                 return SKIP_BODY;
             }
-        default:
-            // strange, no method given, password wrong (or missing), that's really wrong.
+        } else { // strange, no method given, password wrong (or missing), that's really wrong.
             switch (reason) {
             case DENYREASON_FAIL : {
                 if ("name/password".equals(getAuthenticate())) {
@@ -1077,23 +1000,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * @return SKIP_BODY on fail and EVAL_BODY otherwise.
      *
      */
-    private final int doLogin(Parameters user) throws JspTagException {
+    private final int doLogin(Map user) throws JspTagException {
         log.debug("Username found. logging in");
         try {
-            user.checkRequiredParameters();
-            cloud = getDefaultCloudContext().getCloud(getName(), getAuthenticate(), user == null ? null : user.toMap());
-            log.debug("Logged in " );
-            if (!cloud.getUser().isValid()) {
-                log.warn("Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
-                return deny(DENYREASON_FAIL, "Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
-            }
+            cloud = getDefaultCloudContext().getCloud(getName(), getAuthenticate(), user);
+            log.debug("Logged in");
             // ok, logging on work, now check rank if necessary
             if (rank != Attribute.NULL) {
                 log.debug("Checking for rank");
-                Rank curRank = cloud.getUser().getRank();
-                if (curRank == null) {
-                    throw new RuntimeException ("The user " + cloud.getUser() + " had rank 'null'");
-                }
+                Rank curRank = Rank.getRank(cloud.getUser().getRank());
                 Rank r = getRank();
                 if (curRank.getInt() < r.getInt()) {
                     if (log.isDebugEnabled()) {
@@ -1103,7 +1018,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                     if (session != null) {
                         session.removeAttribute(getSessionName());
                     }
-                    log.debug("rank too low");
+                    log.debug("rank to low");
                     return deny(DENYREASON_RANKTOOLOW, "" + curRank + " < " + r);
                 }
             }
@@ -1122,67 +1037,47 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
 
     private final int makeCloud() throws JspTagException {
-        Parameters user = null;
-        int meth = getMethodOrDefault();
-        if (log.isDebugEnabled()) {
-            log.debug("Creating the cloud with method " + meth);
-        }
+        log.debug("logging on the cloud...");
+        Map user = null;
+        int method = getMethod();
 
         // check how to log on:
-        switch(meth) {
-
-        case AuthenticationData.METHOD_SESSIONDELEGATE:
-        case AuthenticationData.METHOD_DELEGATE:
-            if (log.isDebugEnabled()) {
-                log.debug("delegate for " + getAuthenticate());
-            }
-            user = cloudContext.getAuthentication().createParameters(getAuthenticate());
-            if (logon != null) {
-                user.setIfDefined(AuthenticationData.PARAMETER_USERNAMES, logon);
-            }
-            if (rank != Attribute.NULL) {
-                user.setIfDefined(AuthenticationData.PARAMETER_RANK, getRank());
-            }
-            sessionCloud = meth == AuthenticationData.METHOD_SESSIONDELEGATE;
-            break;
-        case AuthenticationData.METHOD_HTTP:
-            log.debug("http");
-            user = cloudContext.getAuthentication().createParameters(getAuthenticate());
+        if (method == METHOD_DELEGATE || method == METHOD_SESSIONDELEGATE) {
+            user = new HashMap();
+            user.put("request", request);
+            user.put("response", response);
+            user.put("usernames", logon);
+            sessionCloud = method == METHOD_SESSIONDELEGATE;
+        } else if (method == METHOD_HTTP) {
+            user = new HashMap();
             sessionCloud = true;
             if (doHTTPAuthentication(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
-            break;
-        case AuthenticationData.METHOD_LOGINPAGE:
-            log.debug("loginpage for " + getAuthenticate());
-            user = cloudContext.getAuthentication().createParameters(getAuthenticate());
+        } else if (loginpage != Attribute.NULL && (method == METHOD_LOGINPAGE || method == METHOD_UNSET)) {
+            user = new HashMap();
             sessionCloud = true;
             if (doLoginPage(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
-            break;
-        default:
-            log.debug("default");
-            if (logon != null && pwd != Attribute.NULL) {
-                user = cloudContext.getAuthentication().createParameters(getAuthenticate());
-                user.set(AuthenticationData.PARAMETER_USERNAME, logon.get(0));
-                user.set(AuthenticationData.PARAMETER_PASSWORD, pwd.getString(this));
-                if (meth == AuthenticationData.METHOD_PAGELOGON) {
-                    sessionCloud = false;
-                } else {
-                    if (meth != AuthenticationData.METHOD_SESSIONLOGON) {
-                        log.warn("Using logon/pwd (or username/password) attributes on page '" + request.getRequestURI() + "' without specifying method='[pagelogon|sessionlogon]', defaulting to 'sessionlogon'. Be aware that users of this page now are authenticated in their session!");
-                    }
-                    sessionCloud = true;
-                }
-            } else {
+        } else if (logon != null && pwd != Attribute.NULL) {
+            user = new HashMap();
+            user.put("username", logon.get(0));
+            user.put("password", pwd.getString(this));
+            if (method == METHOD_PAGELOGON) {
                 sessionCloud = false;
+            } else {
+                if (method != METHOD_SESSIONLOGON) {
+                    log.warn("Using logon/pwd (or username/password) attributes on page '" + request.getRequestURI() + "' without specifying method='[pagelogon|sessionlogon]', defaulting to 'sessionlogon'. Be aware that users of this page now are authenticated in their session!");
+                }
+                sessionCloud = true;
             }
+        } else {
+            sessionCloud = false;
         }
 
         // do the MMCI cloud logging on
         if (user != null) {
-            fillStandardParameters(user);
             if (doLogin(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
@@ -1205,12 +1100,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             return SKIP_BODY;
         } else {
             if (session != null && sessionCloud) {
-                String sn = getSessionName();
-                cloud.setProperty(Cloud.PROP_SESSIONNAME, sn);
-                log.debug("Setting cloud in session variable '" + sn + "'");
-                session.setAttribute(sn, cloud);
-            } else {
-                log.debug("Not storing cloud because session: " + (session != null) + " put cloud " + sessionCloud);
+                session.setAttribute(getSessionName(), cloud);
             }
         }
         return EVAL_BODY;
@@ -1229,17 +1119,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         }
     }
 
-    public void setTAGINFO(Object o) {
-        log.info("" + o);
-    }
-
-
     /**
      *  Sets the cloud variable considering all requirements. SKIP_BODY if this can not be done.
      *
      */
     public int doStartTag() throws JspTagException {
-        //log.info("" +  Collections.list(pageContext.setAttributeNamesInScope(PageContext.PAGE_SCOPE)));
         checkLocale();
 
         {
@@ -1247,13 +1131,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             logon = s.equals("") ? null : StringSplitter.split(s);
         }
 
-        getDefaultCloudContext();
         if (checkReuse()) { // referid
             return evalBody();
         }
         if (checkAnonymous()) { // check if requested, and create
             if (cloud == null) { // could not be created!
-                // what can we do now?
+                // what can we do now?                
                 return SKIP_BODY;
             } else {
                 // yes, found
@@ -1282,7 +1165,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             }
             return SKIP_BODY;
         }
-        if (checkLogoutMethod()) {
+        if (checkLogoutMethod()) { 
             return evalBody();
         }
 

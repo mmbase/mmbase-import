@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.25 2005-06-20 16:03:38 michiel Exp $ 
+ * @version $Id: CountRelationsTag.java,v 1.20.2.4 2005-03-29 08:58:23 michiel Exp $ 
  */
 
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
@@ -53,11 +53,10 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         } else {
             log.debug("Search the node.");
             Node node = getNode();
-            Cloud cloud = node.getCloud();
             NodeManager other = 
                 type == Attribute.NULL ? 
-                cloud.getNodeManager("object") : 
-                cloud.getNodeManager(type.getString(this));
+                getCloudVar().getNodeManager("object") : 
+                getCloudVar().getNodeManager(type.getString(this));
             String direction = (String) searchDir.getValue(this);
             if (direction == null) direction = "BOTH";
             helper.setValue(new Integer(node.countRelatedNodes(other, (String) role.getValue(this), direction)));
@@ -74,7 +73,6 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
 
     public int doEndTag() throws JspTagException {
         helper.doEndTag();
-        return super.doEndTag();
-
+        return super.doEndTag();        
     }
 }

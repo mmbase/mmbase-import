@@ -8,12 +8,15 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class BasicConstraintTest extends TestCase {
     
     /** Test instance. */
     private BasicConstraint instance = null;
+    
+    /** MMBase instance. */
+    private MMBase mmbase;
     
     public BasicConstraintTest(java.lang.String testName) {
         super(testName);
@@ -28,7 +31,7 @@ public class BasicConstraintTest extends TestCase {
      */
     public void setUp() throws Exception {
         MMBaseContext.init();
-        MMBase.getMMBase();
+        mmbase = MMBase.getMMBase();
         instance = new BasicConstraint();
     }
     

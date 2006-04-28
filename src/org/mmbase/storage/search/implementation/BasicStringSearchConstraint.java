@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
-import org.mmbase.bridge.Field;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.StringSearchConstraint;
 
@@ -18,24 +18,24 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicStringSearchConstraint.java,v 1.8 2005-07-08 12:23:45 pierre Exp $
+ * @version $Id: BasicStringSearchConstraint.java,v 1.5 2003-03-10 11:50:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
-
+    
     /** The search type. */
     private int searchType = 0;
-
+    
     /** The match type. */
     private int matchType = 0;
-
+    
     /** Map storing additional parameters. */
     private Map parameters = new HashMap(3);
-
+    
     /** List of searchterms. */
     private List searchTerms = null;
-
-    /**
+    
+    /** 
      * Creates a new instance of BasicStringSearchConstraint.
      *
      * @param field The associated field.
@@ -46,33 +46,33 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      * @see #getSearchType
      * @see #getMatchType
      */
-    public BasicStringSearchConstraint(StepField field, int searchType,
+    public BasicStringSearchConstraint(StepField field, int searchType, 
     int matchType, List searchTerms) {
         this(field, searchType, matchType);
         setSearchTerms(searchTerms);
     }
-
-    /**
+        
+    /** 
      * Creates a new instance of BasicStringSearchConstraint.
      *
      * @param field The associated field.
      * @param searchType The search type.
      * @param matchType The match type.
-     * @param searchTerms String containing searchterms as words separated
+     * @param searchTerms String containing searchterms as words separated 
      *        by white space.
      * @throws IllegalArgumentValue when an invalid argument is supplied.
      * @see #getSearchType
      * @see #getMatchType
      */
-    public BasicStringSearchConstraint(StepField field, int searchType,
+    public BasicStringSearchConstraint(StepField field, int searchType, 
     int matchType, String searchTerms) {
         this(field, searchType, matchType);
         setSearchTerms(searchTerms);
     }
-
-    /**
+    
+    /** 
      * Creates a new instance of BasicStringSearchConstraint.
-     * Private, is to be called from all other creators.
+     * Private, is to be called from all other creators. 
      *
      * @param field The associated field.
      * @param searchType The search type.
@@ -81,11 +81,11 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      * @see #getSearchType
      * @see #getMatchType
      */
-    private BasicStringSearchConstraint(StepField field, int searchType,
+    private BasicStringSearchConstraint(StepField field, int searchType, 
     int matchType) {
         super(field);
-        if (field.getType() != Field.TYPE_STRING
-        && field.getType() != Field.TYPE_XML) {
+        if (field.getType() != FieldDefs.TYPE_STRING
+        && field.getType() != FieldDefs.TYPE_XML) {
             throw new IllegalArgumentException(
             "StringSearchConstraint not allowed for this field type: "
             + getField().getType());
@@ -93,9 +93,9 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         setSearchType(searchType);
         setMatchType(matchType);
     }
-
+    
     /**
-     * Sets the match type.
+     * Sets the match type. 
      *
      * @param matchType The matchtype.
      * @return This <code>BasicStringSearchConstraint</code> instance.
@@ -115,7 +115,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         }
         return this;
     }
-
+    
     /**
      * Sets the search type.
      *
@@ -137,7 +137,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         }
         return this;
     }
-
+    
     /**
      * Adds searchterm to list of searchterms.
      *
@@ -153,7 +153,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         searchTerms.add(searchTerm);
         return this;
     }
-
+    
     /**
      * Sets searchterms to elements in specified list.
      *
@@ -179,11 +179,11 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         this.searchTerms = newSearchTerms;
         return this;
     }
-
+    
     /**
      * Sets searchterms to searchterms in string.
      *
-     * @param searchTerms String containing searchterms as words separated
+     * @param searchTerms String containing searchterms as words separated 
      *        by white space.
      * @return This <code>BasicStringSearchConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
@@ -201,7 +201,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         this.searchTerms = newSearchTerms;
         return this;
     }
-
+    
     /**
      * Sets parameter. Ignored if parameter is not relavant to the present
      * search- and matchtype.
@@ -217,7 +217,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         && matchType == StringSearchConstraint.MATCH_TYPE_FUZZY) {
             if (!(value instanceof Float)) {
                 throw new IllegalArgumentException(
-                "Invalid type for parameter \"" + name + "\": "
+                "Invalid type for parameter \"" + name + "\": " 
                 + value.getClass().getName());
             }
             float floatValue = ((Float) value).floatValue();
@@ -229,7 +229,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         && searchType == StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED) {
             if (!(value instanceof Integer)) {
                 throw new IllegalArgumentException(
-                "Invalid type for parameter \"" + name + "\": "
+                "Invalid type for parameter \"" + name + "\": " 
                 + value.getClass().getName());
             }
             int intValue = ((Integer) value).intValue();
@@ -249,50 +249,28 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     public Map getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
-
+    
     // javadoc is inherited
     public int getMatchType() {
         return matchType;
     }
-
-    /**
-     * Returns a description of the match type
-     */
-    public String getMatchTypeDescription() {
-        try {
-            return StringSearchConstraint.MATCH_TYPE_DESCRIPTIONS[matchType];
-        } catch (IndexOutOfBoundsException ioobe) {
-            return null;
-        }
-    }
-
+    
     // javadoc is inherited
     public int getSearchType() {
         return searchType;
     }
-
-    /**
-     * Returns a description of the search type
-     */
-    public String getSearchTypeDescription() {
-        try {
-            return StringSearchConstraint.SEARCH_TYPE_DESCRIPTIONS[searchType];
-        } catch (IndexOutOfBoundsException ioobe) {
-            return null;
-        }
-    }
-
+    
     // javadoc is inherited
     public List getSearchTerms() {
         return Collections.unmodifiableList(searchTerms);
     }
-
+    
     // javadoc is inherited
     public int getBasicSupportLevel() {
         // no basic support
         return SearchQueryHandler.SUPPORT_NONE;
     }
-
+    
     // javadoc is inherited
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
@@ -311,7 +289,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
             return false;
         }
     }
-
+    
     // javadoc is inherited
     public int hashCode() {
         return super.hashCode()
@@ -320,18 +298,16 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         + 131 * parameters.hashCode()
         + 137 + searchTerms.hashCode();
     }
-
+    
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("StringSearchConstraint(inverse:").
-        append(isInverse()).
-        append("field:").append(getFieldName()).
-        append(", casesensitive:").append(isCaseSensitive()).
-        append(", searchtype:").append(getSearchTypeDescription()).
-        append(", matchtype:").append(getMatchTypeDescription()).
-        append(", parameters:").append(parameters).
-        append(", searchterms:").append(searchTerms).
-        append(")");
-        return sb.toString();
+        return
+        "StringSearchConstraint(inverse:" + isInverse()
+        + ", field:" + getField()
+        + ", casesensitive:" + isCaseSensitive()
+        + ", searchtype:" + searchType
+        + ", matchtype:" + matchType
+        + ", parameters:" + parameters
+        + ", searchterms:" + searchTerms + ")";
     }
 }

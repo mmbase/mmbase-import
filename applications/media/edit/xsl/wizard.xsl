@@ -35,11 +35,11 @@
        </xsl:if>
      </xsl:if>
 
-     <img height="10" src="{$referrerdir}media/a_right.gif" alt="-&gt;" />
+     <img height="10" src="{$referrerdir}/media/a_right.gif" alt="-&gt;" />
     <input type="text" name="{@fieldname}" value="{value}" class="input" onBlur="validate_validator(event);">
      <xsl:apply-templates select="@*" />
     </input> ms
-     <img height="10" src="{$referrerdir}media/a_right.gif" alt="-&gt;" />      
+     <img height="10" src="{$referrerdir}/media/a_right.gif" alt="-&gt;" />      
      <input class="check" type="button" value="{$button_check}{$thisprompt}" title="{$tooltip_check}" onClick="setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
 
      </xsl:if>
@@ -59,7 +59,7 @@
      <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
        <xsl:if test="substring(@number, 1, 1) != 'n'"><!-- cannot view if not commited -->
          <br />
-         <a target="_new" href="{$referrerdir}view/showurls.jsp?fragment={@number}">view</a>         
+         <a target="_new" href="{$referrerdir}/view/showurls.jsp?fragment={@number}">view</a>         
        </xsl:if>
     </xsl:if>
 

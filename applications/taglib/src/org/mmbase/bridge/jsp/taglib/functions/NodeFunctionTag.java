@@ -16,15 +16,18 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
-import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
+
 
 /**
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.11 2005-11-23 10:29:39 michiel Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.2.2.4 2005-03-14 18:33:24 michiel Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
+
+    private static final Logger log = Logging.getLoggerInstance(NodeFunctionTag.class);
 
     protected  NodeProviderHelper nodeHelper = new NodeProviderHelper(this); // no m.i. and there are more nodeprovider which cannot extend this, they can use the same trick.
 
@@ -32,40 +35,50 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         nodeHelper.setJspvar(jv);
     }
 
-
+    
     public Node getNodeVar() {
         return nodeHelper.getNodeVar();
     }
+    
 
-
-    protected void setNodeVar(Node node) {
+    protected void setNodeVar(Node node) {        
         nodeHelper.setNodeVar(node);
     }
+    
 
-
-    protected void fillVars() throws JspTagException {
+    protected void fillVars() throws JspTagException {    
         nodeHelper.fillVars();
     }
-
-    public Query getGeneratingQuery() throws JspTagException {
-        return nodeHelper.getGeneratingQuery();
-    }
-    /**
-     * @since MMBase-1.8
-     */
-    public void setCommitonclose(String c) throws JspTagException {
-        nodeHelper.setCommitonclose(c);
+               
+    public void setModified() {
+        nodeHelper.setModified();
     }
 
-
+    protected boolean getModified() {
+        return nodeHelper.getModified();
+    }
+    
     public int doEndTag() throws JspTagException {
-        nodeHelper.doEndTag();
-        return super.doEndTag();
+        super.doEndTag();        
+        return nodeHelper.doEndTag();
     }
 
     public int doStartTag() throws JspTagException {
-        Object value = getFunctionValue(false); // don't register, 'fillVars' will do.
-        Node node = Casting.toNode(value, getCloudVar());
+        Object value =  getFunctionValue();
+        Node node;
+        if (value instanceof Node) {
+            node = (Node) value;
+        } if (value instanceof String) {
+            node = getCloudVar().getNode((String) value);
+        } if (value instanceof Integer) {
+            node = getCloudVar().getNode(((Integer) value).intValue());
+        } else {
+            // depend on 'convert' of BasicNodeList, ugly ugly
+            NodeList list = getCloudVar().getCloudContext().createNodeList();
+            list.add(value);
+            node = list.getNode(0);
+            
+        }
         setNodeVar(node);
         fillVars();
         return  EVAL_BODY_BUFFERED;
@@ -84,5 +97,7 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
         }
         return nodeHelper.doAfterBody();
     }
+
+
 
 }

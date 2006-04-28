@@ -192,6 +192,46 @@
 	<BR>
 	</TD>
 </TR>
+<IF $MOD-CONFIG-CHECK-builders-$PARAM1^==Checked ok>
+	<FORM ACTION="config/configdetail.shtml?show+builders+$PARAM1" METHOD="POST" TARGET="_xml">
+<ELSE>
+	<FORM ACTION="config/configdetail.shtml?annotate+builders+$PARAM1" METHOD="POST" TARGET="_xml">
+</IF>
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Status</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD" COLSPAN="3">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>View</B>
+	</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			XML Check
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-CONFIG-CHECK-builders-$PARAM1
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="3">
+				<CENTER>
+				<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMADMIN">
+				<INPUT TYPE="SUBMIT" VALUE="YES">
+		</TD>
+</TR>
+
+<TR>
+	<TD>
+	<BR>
+	</TD>
+</TR>
 
 <TR>
 		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
@@ -204,6 +244,7 @@
 </TR>
 
 </TABLE>
+</FORM>
 </IF>
 
 

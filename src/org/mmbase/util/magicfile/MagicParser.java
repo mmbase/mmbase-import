@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version $Id: MagicParser.java,v 1.10 2005-10-07 18:41:29 michiel Exp $
+ * @version $Id: MagicParser.java,v 1.7 2003-10-15 07:30:28 keesj Exp $
  * @todo NOT TESTED YET
  */
 
@@ -38,7 +38,7 @@ public class MagicParser implements DetectorProvider {
      */
     public final static String DEFAULT_MAGIC_FILE = "/etc/mime-magic";
     
-    private static final Logger log = Logging.getLoggerInstance(MagicParser.class);
+    private static Logger log = Logging.getLoggerInstance(MagicParser.class.getName());
     private List detectors;
 
     // what a mess:
@@ -57,7 +57,6 @@ public class MagicParser implements DetectorProvider {
 
     /**
      * Construct a new MagicParser with configuration file
-     * @since MMBase-1.7
      */
     public MagicParser(String fileName) {
     	log.info("creating a new MagicParser with configuration" + DEFAULT_MAGIC_FILE);
@@ -74,7 +73,7 @@ public class MagicParser implements DetectorProvider {
                 }
             }
         } catch (Exception e) {
-            log.error("" + e.getMessage() + "}", e);
+            System.out.println("" + e.getMessage() + "}");
         };
     }
 
@@ -455,7 +454,7 @@ public class MagicParser implements DetectorProvider {
             // If there are multiple test level, an upper one doesn't have to have a message string
             if (n > 0) {
                 level = "parseMessageString";
-                parseMessageString(line, n);
+                n = parseMessageString(line, n);
             } else {
                 message = "";
             }

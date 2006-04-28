@@ -8,23 +8,21 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.jstl.core.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Basic interface that parent should implement if they provide Lists.
  * For example the several NodeListTag's  provide a List.
  *
- * @author Michiel Meeuwissen
- * @version $Id: ListProvider.java,v 1.13 2005-12-15 21:47:27 michiel Exp $
+ * @author Michiel Meeuwissen 
+ * @version $Id: ListProvider.java,v 1.8 2003-12-18 11:52:42 michiel Exp $ 
  */
-public interface ListProvider extends ContextProvider, LoopTag {
+public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.taglib.containers.QueryContainerOrListProvider {
     /**
      * @return the size of the list
+     *
      */
     public int size();
-
+    
     /**
      * @return the index of the current item in a list
      *
@@ -41,10 +39,10 @@ public interface ListProvider extends ContextProvider, LoopTag {
     /**
      * @return the current item in a list
      */
-
+    
     public Object getCurrent();
 
-
+    
     /**
      * @return a boolean indicating wether the field on which was
      * sorted is changed.
@@ -57,45 +55,5 @@ public interface ListProvider extends ContextProvider, LoopTag {
      * @since MMBase-1.7
      */
     public void remove();
-
-
-    /**
-     * @since MMBase-1.8
-     */
-    public class ListProviderLoopTagStatus implements LoopTagStatus {
-        private static final Logger log = Logging.getLoggerInstance(ListProviderLoopTagStatus.class);
-
-        private final ListProvider prov;
-        public ListProviderLoopTagStatus(ListProvider l) {
-            prov = l;
-        }
-        public Object getCurrent() {
-            return prov.getCurrent();
-        }
-        public int getIndex() {
-            return prov.getIndex();// - prov.getIndexOffset();
-        }
-
-        public int getCount() {
-            return prov.size();
-        }
-
-        public boolean isFirst() {
-            return getIndex() == 0;
-        }
-        public boolean isLast() {
-            return getCount() == getIndex() + 1;
-        }
-        public Integer getBegin() {
-            return null;
-        }
-        public Integer getEnd() {
-            return null;
-        }
-        public Integer getStep() {
-            return null;
-        }
-    }
-
 
 }

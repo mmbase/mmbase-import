@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.8.0 - Building
+                     MMBase 1.7.4 - Building
 ===================================================================  
   
 This is the source distribution of the MMBase project. It includes the
@@ -39,6 +39,8 @@ config/                     MMBase config dir
                             modules are activated by default  
   security/                 Configuration for the security
   utils/                    All config related to org.mmbase.util-classes 
+    httppost.xml            Config related to upload files (max size,
+                            upload-dir, etc)
   xslt/                     Some xslt's for displaying config files in
                             adminpages
 docs/                       

@@ -17,7 +17,7 @@ import java.util.Comparator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeList.java,v 1.4 2004-06-08 08:45:16 michiel Exp $
+ * @version $Id: BridgeList.java,v 1.3 2002-10-25 11:09:39 pierre Exp $
  * @since  MMBase-1.6
  */
 public interface BridgeList extends List {
@@ -36,7 +36,7 @@ public interface BridgeList extends List {
      * Use this to store and retrieve metadata on whow teh listw as created
      * (such as what sort-order was specified)
      * @param key the key of the property
-     * @param value the property value
+     * @param the property value
      */
     public void setProperty(Object key, Object value);
 

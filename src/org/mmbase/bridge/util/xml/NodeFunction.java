@@ -10,13 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.*;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.xpath.XPathAPI;
 
@@ -51,22 +46,18 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.16 2005-11-04 13:11:06 nklasens Exp $
+ * @version $Id: NodeFunction.java,v 1.8 2003-12-16 21:25:00 michiel Exp $
  * @since   MMBase-1.6
  */
 
 public  class NodeFunction {
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
 
-
-
     /**
      * Supposes the default cloud 'mmbase'.
-     * @param  node  The number (or alias) of the Node
-     * @param  function The function (with arguments).
-     * @return The result of the function (as a String)
-     * @see #function(String, String, String)
+     * @see #function
      */
+
     public static String function(String node, String function) {
         if (log.isDebugEnabled()) {
             log.debug("calling with string '" + node + "' function: " + function);
@@ -81,48 +72,17 @@ public  class NodeFunction {
      * @return The result of the function (as a String)
      */
     public static String function(String cloudName, String number, String function) {
-        log.debug("calling base for cloud " + cloudName);
+        log.debug("calling base");
         try {
             Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudName);
             return function(cloud, number, function);
-        } catch (Exception e) {
+        } catch (BridgeException e) {
             return "could not execute '" + function + "' on node '" + number + "' (" + e.toString() + ")";
-        }
-    }
-
-    
-    /**
-     * @since MMBase-1.8
-     */
-    public static org.w3c.dom.Element nodeFunction(org.w3c.dom.NodeList destination, Cloud cloud, String number, String function, String arguments) {
-        // it only want to work withh a NodeList. I think my book sais that it should also work with
-        // Element, but no..
-
-        try {
-            Node node = cloud.getNode(number);
-            Generator gen = new Generator(destination.item(0).getOwnerDocument());
-            java.util.List args = org.mmbase.util.StringSplitter.splitFunctions(arguments);
-            if (log.isDebugEnabled()) {
-                log.debug("Executing " + function+ " " + args + " on " + node.getNumber());
-            }
-            Node resultNode = node.getFunctionValue(function, args).toNode();
-            org.w3c.dom.Element element = gen.add(resultNode);
-            if (log.isDebugEnabled()) {
-                log.debug("Returning " + org.mmbase.util.xml.XMLWriter.write(element, false));
-            }
-            return element;
-        } catch (Exception e) {
-            log.error("" + e + " " + Logging.stackTrace(e));
-            return null;
         }
     }
 
     /**
      * It can be handy to supply a whole node, it will search for the field 'number' itself.
-     * @param  node  The number (or alias) of the Node
-     * @param  function The function (with arguments).
-     * @return The result of the function (as a String)
-     * @throws javax.xml.transform.TransformerException if xpath fails
      */
     public static String function(org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
@@ -131,64 +91,27 @@ public  class NodeFunction {
     }
 
     public static String function(Cloud cloud, String number, String function) {
-        return function(cloud, number, function, "");
-    }
-
-    /**
-     * @param request Meant to be an HttpServletRequest. If not, will be ignored (empty string e.g.).
-     * @since MMBase-1.8
-     */
-    public static String function(Cloud cloud, String number, String function, Object request) {
-        log.debug("calling base on " + number + " for " + function);
-        Node node;
+        log.debug("calling base");
         try {
-            node = cloud.getNode(number);
-
-            Function func = null;
-            Parameters params = null;
-            if (function.indexOf("(") > -1) { 
-                List args = new ArrayList();
-                String functionName = org.mmbase.util.functions.NodeFunction.getFunctionNameAndFillArgs(function, args);
-                func = node.getFunction(functionName);
-                params = func.createParameters();
-                params.setAll(args);
+            Node node = cloud.getNode(number);
+            node.getStringValue(function);
+            return node.getStringValue(function);
+        } catch (BridgeException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("could not execute '" + function + "' on node '" + number + "'");
+                log.trace(Logging.stackTrace(e));
             }
-            else {
-                func = node.getFunction(function);
-                params = func.createParameters();
-            }
-            
-            params.setIfDefined(Parameter.CLOUD, cloud);
-            if (request instanceof HttpServletRequest) {
-                params.setIfDefined(Parameter.REQUEST, request);
-            }
-            return func.getFunctionValue(params).toString();
-        } catch (Throwable e) {
-            log.info("could not execute '" + function + "' on node '" + number + "'");
-            log.info(Logging.stackTrace(e) + Logging.stackTrace());
-            return "could not execute " + function + " on node " + number + "(" + e.getClass() + " " + e.getMessage() + ")";
+            return "could not execute " + function + " on node " + number + "(" + e.toString() + ")";
         }
     }
 
     /**
      * It can be handy to supply a whole node, it will search for the field 'number' itself.
-     * @param cloud cloud to execute in
-     * @param  node  The number (or alias) of the Node
-     * @param  function The function (with arguments).
-     * @return The result of the function (as a String)
-     * @throws javax.xml.transform.TransformerException if xpath fails
      */
     public static String function(Cloud cloud, org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
         String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return function(cloud, number, function);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public static String guiName(Cloud cloud,  String node) {
-        return cloud.getNode(node).getNodeManager().getGUIName();
     }
 
 }

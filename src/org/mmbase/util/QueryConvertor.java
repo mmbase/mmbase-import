@@ -14,12 +14,10 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.core.CoreField;
-import org.mmbase.storage.StorageManagerFactory;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.CompositeConstraint;
 import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.FieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
@@ -42,24 +40,29 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * Note that if the expression to convert starts with "WHERE", it is not converted at all,
  * but returned as is.
  *
- * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.30 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: QueryConvertor.java,v 1.24 2004-02-09 13:50:35 pierre Exp $
  */
 public class QueryConvertor {
 
-    static StorageManagerFactory factory = null;
+    // logger
+    //private static Logger log = Logging.getLoggerInstance(QueryConverter.class.getName());
+
+    /**
+     * Database used to convert invalid fieldnames (i.e.e keywords) to valid ones.
+     */
+    public static MMJdbc2NodeInterface database;
 
     /**
      * Converts query to a SQL "where"-clause.
      * @param query the query to convert
-     * @param smf the storagemanagerfactory to use when converting fieldnames
+     * @param db the database to use when converting fieldnames
      * @deprecated Use {@link #setConstraint setConstraint()} to parse
      *        these expressions.
      */
-    public static String altaVista2SQL(String query, StorageManagerFactory smf) {
-        factory = smf;
+    public static String altaVista2SQL(String query,MMJdbc2NodeInterface db) {
+        database=db;
         return altaVista2SQL(query);
     }
 
@@ -303,20 +306,21 @@ class DBQuery  extends ParseItem {
                     }
                 }
 
-                CoreField coreField = step.getBuilder().getField(condition.fieldName);
-                if (coreField == null) {
+                FieldDefs fieldDefs
+                    = step.getBuilder().getField(condition.fieldName);
+                if (fieldDefs == null) {
                     // Field not found.
                     throw new IllegalStateException("Field with name '"
                         + condition.fieldName + "' not found in builder "
                         + step.getTableName());
                 } else {
-                    field = query.addField(step, coreField);
+                    field = query.addField(step, fieldDefs);
                 }
             }
 
             int fieldType = field.getType();
-            if (fieldType == Field.TYPE_STRING
-                || fieldType == Field.TYPE_XML) {
+            if (fieldType == FieldDefs.TYPE_STRING
+                || fieldType == FieldDefs.TYPE_XML) {
                 // String field.
                 fieldValueConstraint = new BasicFieldValueConstraint(field, condition.value.getValue());
                 fieldValueConstraint.setCaseSensitive(false);
@@ -332,28 +336,28 @@ class DBQuery  extends ParseItem {
                     break;
 
                 case DBConditionItem.EQUAL:
-                    if (fieldType == Field.TYPE_STRING
-                        || fieldType == Field.TYPE_XML) {
-                        fieldValueConstraint.setOperator(FieldCompareConstraint.LIKE);
+                    if (fieldType == FieldDefs.TYPE_STRING
+                        || fieldType == FieldDefs.TYPE_XML) {
+                        fieldValueConstraint.setOperator(FieldValueConstraint.LIKE);
                     } else {
-                        fieldValueConstraint.setOperator(FieldCompareConstraint.EQUAL);
+                        fieldValueConstraint.setOperator(FieldValueConstraint.EQUAL);
                     }
                     break;
 
                 case DBConditionItem.GREATER:
-                    fieldValueConstraint.setOperator(FieldCompareConstraint.GREATER);
+                    fieldValueConstraint.setOperator(FieldValueConstraint.GREATER);
                     break;
 
                 case DBConditionItem.SMALLER:
-                    fieldValueConstraint.setOperator(FieldCompareConstraint.LESS);
+                    fieldValueConstraint.setOperator(FieldValueConstraint.LESS);
                     break;
 
                 case DBConditionItem.GREATEREQUAL:
-                    fieldValueConstraint.setOperator(FieldCompareConstraint.GREATER_EQUAL);
+                    fieldValueConstraint.setOperator(FieldValueConstraint.GREATER_EQUAL);
                     break;
 
                 case DBConditionItem.SMALLEREQUAL:
-                    fieldValueConstraint.setOperator(FieldCompareConstraint.LESS_EQUAL);
+                    fieldValueConstraint.setOperator(FieldValueConstraint.LESS_EQUAL);
                     break;
 
                 default:
@@ -444,8 +448,8 @@ class DBConditionItem extends ParseItem {
             prefix = fieldName.substring(0, prefixPos);
             fieldName = fieldName.substring(prefixPos + 1);
         }
-        if (QueryConvertor.factory != null) {
-            identifier = (String)QueryConvertor.factory.getStorageIdentifier(fieldName);
+        if (QueryConvertor.database!=null) {
+            identifier=QueryConvertor.database.getAllowedField(fieldName);
         } else {
             identifier = fieldName;
         }
@@ -476,8 +480,6 @@ class DBConditionItem extends ParseItem {
             break;
         case 's':
             operator = SMALLEREQUAL;
-            break;
-        default:
             break;
         }
     }
@@ -691,9 +693,16 @@ class DBLogicalOperator extends ParseItem {
             case OR:
                 result.append(" OR ");
                 break;
-            default:
-                break;
         }
     }
 }
+
+
+
+
+
+
+
+
+
 

@@ -25,7 +25,6 @@ import org.mmbase.util.logging.*;
  * &lt;fact&gt;   -&gt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' <br />
  *
  * @author Arnold Beck
- * @version $Id: ExprCalc.java,v 1.12 2004-09-29 14:29:24 pierre Exp $
  */
 public class ExprCalc {
     private static final int MC_SYMB=1;
@@ -125,7 +124,7 @@ public class ExprCalc {
             ||  mCode==MC_EOT) {
 
         } else {
-            log.error("expr: Could not evaluate expression '" + input + "'");
+            log.error("expr: Could not evaluate expression '" + input + "'");            
         }
         return tmp;
     }

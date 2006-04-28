@@ -14,20 +14,17 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeManagerIterator.java,v 1.8 2004-10-09 09:39:32 nico Exp $
+ * @version $Id: NodeManagerIterator.java,v 1.6 2003-03-04 13:44:41 nico Exp $
  */
 public interface NodeManagerIterator extends NodeIterator {
 
     /**
      * Returns the next element in the iterator as a NodeManager
-     * @return next node manager
      */
     public NodeManager nextNodeManager();
 
     /**
      * Returns the previous element in the iterator as a NodeManager
-     * @return previous node manager
-     * @since MMBase-1.7
      */
     public NodeManager previousNodeManager();
 

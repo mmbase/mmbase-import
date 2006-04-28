@@ -14,6 +14,9 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * NodeBreaker stores temporary nodes with an expiration time.
  * After this has expired the node is removed.
@@ -25,10 +28,12 @@ import org.mmbase.module.core.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: NodeBreaker.java,v 1.9 2005-10-05 10:59:39 michiel Exp $
+ * @version $Id: NodeBreaker.java,v 1.7 2004-02-09 13:24:20 pierre Exp $
  */
 public class NodeBreaker implements Runnable {
 
+    // logger
+    private static Logger log = Logging.getLoggerInstance(NodeBreaker.class.getName());
     // Lists of ids and expirationtimes temporary node manager
     // These are co-related: ids[x] and expirationtimes[x] belong to the same
     // objkect: ids[x] is the object number or key, expirationtimes[x] determines
@@ -46,7 +51,8 @@ public class NodeBreaker implements Runnable {
     /**
      * Creates a new node breaker.
      * Used by the Channel builder.
-     * @param checkInterval the interval at which the relation breaker checks for expired relations
+     * @param mmb reference to MMBase
+     * @param checkinterval the interval at which the relation breaker checks for expired relations
      * @param tmpNodeManager the temporary node manager that holds the relations.
      */
     public NodeBreaker(long checkInterval, TemporaryNodeManager tmpNodeManager) {

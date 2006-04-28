@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
  * configure string).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleImpl.java,v 1.12 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: SimpleImpl.java,v 1.10 2003-03-12 20:02:03 michiel Exp $
  * @since   MMBase-1.4
  */
 
@@ -41,45 +41,45 @@ public class SimpleImpl extends AbstractSimpleImpl implements Logger {
     /**
      * The configure method of this Logger implemenation.
      *
-     * @param c A string, which can contain the output (stdout or
+     * @param A string, which can contain the output (stdout or
      * stderr) and the priority (e.g. 'info')
      */
-
+   
     public static  void configure(String c) {
 
         if (c == null) {
             return; // everything default
         }
-
-        StringTokenizer t    = new StringTokenizer(c, ",");
+        
+        StringTokenizer t    = new StringTokenizer(c, ","); 
         while (t.hasMoreTokens()) {
             String token = t.nextToken();
             if (token.equals("stderr")) {
-                ps = System.err;
+                ps = System.err;             
             }
             if (token.equals("stdout")) {
-                ps = System.out;
+                ps = System.out;             
             }
             if (token.equals("trace")) {
-                root.setLevel(Level.TRACE);
+                level = Level.TRACE_INT;
             }
             if (token.equals("debug")) {
-                root.setLevel(Level.DEBUG);
+                level = Level.DEBUG_INT;
             }
             if (token.equals("service")) {
-                root.setLevel(Level.SERVICE);
+                level = Level.SERVICE_INT;
             }
             if (token.equals("info")) {
-                root.setLevel(Level.INFO);
+                level = Level.INFO_INT;
             }
             if (token.equals("warn")) {
-                root.setLevel(Level.WARN);
+                level = Level.WARN_INT;
             }
             if (token.equals("error")) {
-                root.setLevel(Level.ERROR);
+                level = Level.ERROR_INT;
             }
             if (token.equals("fatal")) {
-                root.setLevel(Level.FATAL);
+                level = Level.FATAL_INT;
             }
         }
     }

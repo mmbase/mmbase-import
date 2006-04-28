@@ -1,4 +1,0 @@
-MMBase Developer is an application for MMBase developers. It aims at providing a development tool to create and visualize MMBase clouds. <p />
-
-
-The basic idea is work offline and model mmbase clouds using a java swing application. At later stage live publishing from the application to an mmbase cloud should be possible.

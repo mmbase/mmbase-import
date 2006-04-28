@@ -10,12 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.cloudcontext;
 
 import java.util.*;
-
 import org.mmbase.security.implementation.cloudcontext.builders.*;
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBaseObserver;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
-import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,23 +25,18 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.21 2006-02-20 18:34:16 michiel Exp $
+ * @version $Id: User.java,v 1.11.2.1 2005-05-11 14:28:34 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
-public class User extends BasicUser implements MMBaseObserver {
+public class User extends UserContext implements MMBaseObserver {
     private static final Logger log = Logging.getLoggerInstance(User.class);
-
-    private static final long serialVersionUID = 1;
-
     protected MMObjectNode node;
-    protected long key;
+    private long key;
 
     /**
      * @javadoc
      */
-    protected User(MMObjectNode n, long l, String app) {
-        super(app);
-        if (n == null) throw new IllegalArgumentException();
+    User(MMObjectNode n, long l) {
         node = n;
         key = l;
 //        Adding local observers seems like a plan, but unfortunately there is no way to unregister
@@ -57,14 +51,10 @@ public class User extends BasicUser implements MMBaseObserver {
         if (node == null) {
             return "anonymous";
         } else {
-            MMObjectBuilder builder = node.getBuilder();
-            if (builder.hasField(Users.FIELD_USERNAME)) {
-                return node.getStringValue(Users.FIELD_USERNAME);
-            } else {
-                return null;
-            }
+            return Users.getBuilder().getUserName(node);
         }
     }
+
 
     // javadoc inherited
     public Rank getRank() throws SecurityException {
@@ -84,18 +74,19 @@ public class User extends BasicUser implements MMBaseObserver {
         }
     }
 
+
     /**
      * @javadoc
      */
-    protected long getKey() {
+    long getKey() {
         return key;
     }
 
     /**
      * @javadoc
      */
-    public boolean isValidNode() {
-        return (node == null) ||  Users.getBuilder().isValid(node);
+    boolean isValid() {
+        return (node == null) || Users.getBuilder().isValid(node);
     }
 
 
@@ -113,65 +104,24 @@ public class User extends BasicUser implements MMBaseObserver {
         return node;
     }
 
-    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-        return nodeChanged(number, ctype);
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        return nodeChanged(number,ctype);
     }
 
-    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-        return nodeChanged(number, ctype);
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        return nodeChanged(number,ctype);
     }
 
-    private boolean nodeChanged(String number, String ctype) {
-        if ((node != null) && (node.getNumber() == Integer.parseInt(number))) {
+    private boolean nodeChanged(String number,String ctype) {
+        if ((node!=null) && (node.getNumber()==Integer.parseInt(number))) {
             if (ctype.equals("d")) {
-                log.service("Node was invalidated!");
                 node = null; // invalidate
-            } else if (ctype.equals("c")) {
+            }
+            if (ctype.equals("c")) {
                 node = Users.getBuilder().getNode(number);
             }
         }
         return true;
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-        final int number = in.readInt();
-        key = in.readLong();
-        if (number == -1) {
-            log.warn("Found node -1 on deserialization!. Interpreting as 'null'. User object was probably not correctly serialized, or not assiociated with a real node.");
-            node = null;
-        } else {
-            org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
-                        node = Users.getBuilder().getNode(number);
-                    }
-                });
-        }
-    }
-
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-        out.writeInt(node == null ? -1 : node.getNumber());
-        out.writeLong(key);
-    }
-
-    public boolean equals(Object o) {
-        if (o instanceof User) {
-            User ou = (User) o;
-            return
-                super.equals(o) &&
-                (node == null ? ou.node == null : node.getNumber() == ou.node.getNumber()) &&
-                key == ou.key;
-        } else {
-            return false;
-        }
-    }
-
-    public int hashCode() {
-        int result = super.hashCode();
-        result = HashCodeUtil.hashCode(result, node);
-        result = HashCodeUtil.hashCode(result, key);
-        return result;
     }
 
 }

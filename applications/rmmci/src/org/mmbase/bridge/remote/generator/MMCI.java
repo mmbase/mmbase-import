@@ -21,15 +21,15 @@ import org.w3c.dom.*;
 /**
  * @author Kees Jongenburger <keesj@dds.nl>
  **/
-public class MMCI {
-    Map classes;
-    List classesList;
+public class MMCI{
+    Hashtable classes;
+    Vector classesVector;
 
     private static MMCI STATIC_MMCI = null;
 
     public MMCI(){
-        classes = new HashMap();
-        classesList = new ArrayList();
+        classes = new Hashtable();
+        classesVector = new Vector();
     }
 
     public static MMCI getDefaultMMCI() throws Exception{
@@ -46,26 +46,25 @@ public class MMCI {
 
     public static MMCI fromXML(Document document) throws Exception{
         MMCI mmci =  new MMCI();
-        Element xmle = document.getDocumentElement();
-        NodeList nls = xmle.getChildNodes();
-        for(int i = 0; i < nls.getLength(); i++) {
-            Node element = nls.item(i);
+        Element xmle=document.getDocumentElement();
+        NodeList nls=xmle.getChildNodes();
+        for(int i=0; i<nls.getLength(); i++) {
+            Node element=nls.item(i);
             if (element instanceof Element) {
                 XMLClass myClass = XMLClass.fromXML((Element)element);
-                if (myClass == null) throw new Exception("Not found " + element);
-                mmci.classes.put(myClass.getName(), myClass);
-                mmci.classesList.add(myClass);
+                mmci.classes.put(myClass.getName(),myClass);
+                mmci.classesVector.addElement(myClass);
             }
         }
         return mmci;
     }
 
-    public List getClasses(){
-        return classesList;
+    public Vector getClasses(){
+        return classesVector;
     }
-    public XMLClass getClass(String name)  {
-        if (classes.get(name) == null) {
-            return null;
+    public XMLClass getClass(String name) throws NotInMMCIException{
+        if (classes.get(name) == null){
+            throw new NotInMMCIException("Class " + name + " is not known to the MMCI");
         }
         return (XMLClass)((XMLClass)classes.get(name)).clone(true);
     }
@@ -77,10 +76,8 @@ public class MMCI {
         //xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeException"));
 
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.BridgeList",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cacheable",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Cloud",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.CloudContext",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Descriptor", doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Field",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.FieldList",doc));
@@ -103,9 +100,9 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.User",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Query",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeQuery",doc));
-        // storage interfaces
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Constraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Step",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.RelationStep",doc));
@@ -120,39 +117,10 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.LegacyConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
+				//why???
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldCompareConstraint",doc));
-        // cache classes
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.cache.CachePolicy",doc));
-        // datatypes classes
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DataType$Restriction", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.LengthDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.ComparableDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BinaryDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.BooleanDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DateTimeDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.DoubleDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.FloatDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.IntegerDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.ListDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.LongDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.NodeDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.NumberDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.StringDataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.datatypes.XmlDataType",doc));
-        // security classes
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.UserContext",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.Rank",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.AuthenticationData",doc));
-        // function classes
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.ReturnType", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameter", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters", doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function", doc));
-
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.LocalizedString", doc));
-
+        //xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
     }
 
     public static void main(String [] argv) throws Exception{
@@ -169,10 +137,10 @@ public class MMCI {
             if (argv.length==1) {
                 os = new FileOutputStream(argv[0]);
             }
-        OutputStreamWriter w = new OutputStreamWriter(os);
-        XMLWriter.write(doc,w,true);
+	    OutputStreamWriter w = new OutputStreamWriter(os);
+	    XMLWriter.write(doc,w,true);
             w.flush();
-        w.close();
+	    w.close();
         }
     }
 

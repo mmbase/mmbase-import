@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.83 2005-12-05 17:21:17 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.65.2.3 2005-03-14 19:11:53 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -51,9 +51,8 @@ import org.mmbase.util.logging.*;
 public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private static final Logger log = Logging.getLoggerInstance(ContextTag.class);
 
-    public static final String CONTEXTTAG_KEY      = "org.mmbase.taglib.context";
-    public static final String DEFAULTENCODING_KEY = "org.mmbase.taglib.defaultencoding";
-    public static final String ISELIGNORED_PARAM   = "mmbase.taglib.defaultencoding";
+    static final String CONTEXTTAG_KEY = "__context";
+    public static final String DEFAULTENCODING_KEY = "__defaultencoding";
 
     private ContextContainer container = null;
     private ContextProvider  parent = null;
@@ -62,31 +61,9 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private CloudContext cloudContext;
 
     private Attribute referid = Attribute.NULL;
-    private Attribute scope   = Attribute.NULL;
 
     public void setReferid(String r) throws JspTagException {
         referid = getAttribute(r);
-    }
-    
-    public void setScope(String s) throws JspTagException {
-        scope = getAttribute(s);
-    }
-
-    private int getScope() throws JspTagException {        
-        String ss = scope.getString(this).toLowerCase();
-        if ("".equals(ss)) {
-            return PageContext.PAGE_SCOPE;
-        } else if ("request".equals(ss)) {
-            return PageContext.REQUEST_SCOPE;
-        } else if ("session".equals(ss)) {
-            return PageContext.SESSION_SCOPE;
-        } else if ("page".equals(ss)) {
-            return PageContext.PAGE_SCOPE;
-        } else if ("application".equals(ss)) {
-            return PageContext.APPLICATION_SCOPE;
-        } else {
-            throw new JspTagException("Unknown scope '" + ss + "'");
-        }
     }
 
     /**
@@ -107,16 +84,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         log.debug("setting page context");
     }
 
-    /**
-     * @param c Parent context-container, if <code>null</code> then a container writing to page context will be instantiated.
-     */
-    void createContainer(ContextContainer c) { //throws JspTagException {
-        if (c == null && (!"true".equals(pageContext.getServletContext().getInitParameter(ISELIGNORED_PARAM)))) {
-            container = new PageContextContainer(pageContext);
-        } else {
-            container = new StandaloneContextContainer(pageContext, getId(), c);
-        }
-
+    void createContainer(ContextContainer c) {
+        container = new ContextContainer(getId(), c);
     }
 
     public ContextContainer getContextContainer() {
@@ -128,37 +97,18 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         parent = null;
         searchedParent = false;
 
-        int s = getScope();
-        if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
-            Object o;
-            if (s == PageContext.PAGE_SCOPE) {
-                o = getObject(referid.getString(this));
-            } else {
-                String id = referid.getString(this);
-                if (id.equals("")) {
-                    id = getId();
-                    if (id == null) throw new JspTagException("Must use id or referid attributes when using 'scope' attibute of context tag");
-                }
-                o = pageContext.getAttribute(id, s);
-            }
-            if (o == null || "".equals(o)) { // that means, lets ignore it.
+        if (referid != Attribute.NULL) {
+            Object o = getObject(referid.getString(this));
+            if ("".equals(o)) { // that means, lets ignore it.
                 createContainer(getContextProvider().getContextContainer());
             } else {
                 if (! (o instanceof ContextContainer)) {
                     throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
                 }
                 container = (ContextContainer)  o;
-                container.setParent(pageContext, getContextProvider().getContextContainer());
             }
         } else {
             createContainer(getContextProvider().getContextContainer());
-        }
-        if (s != PageContext.PAGE_SCOPE) {
-            String id = getId();
-            if (id == null) {
-                id = referid.getString(this);
-            }
-            pageContext.setAttribute(id, container, s);            
         }
         setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
@@ -170,6 +120,18 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         log.debug("out");
         // return EVAL_BODY_INCLUDE; does not work in orion 1.6, tomcat < 4.1.19
         return EVAL_BODY;
+    }
+
+    private ContextProvider getParentContext() throws JspTagException {
+        if (! searchedParent) {
+            try {
+                parent = getContextProvider();
+            } catch (JspTagException e) {
+                throw new TaglibException("Could not find parent context!" + e.getMessage(), e);
+            }
+            searchedParent = true;
+        }
+        return parent;
     }
 
     /**
@@ -299,17 +261,11 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     }
 
-    public  org.apache.commons.fileupload.FileItem getFileItem(String key) throws JspTagException {
-        return MultiPart.getMultipartRequest(pageContext).getFileItem(key);
-
-    }
-
+    // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
     public int doAfterBody() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-        container.release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
-        // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
                 if (bodyContent != null) {
@@ -325,14 +281,11 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public int doEndTag() throws JspTagException {
         container = null;
         parent = null;
-        cloudContext = null;
+        cloudContext = null;        
         return super.doEndTag();
     }
+    
 
-
-    public String toString() {
-        return getClass().getName() + " with id " + getId();
-    }
 
 }
 

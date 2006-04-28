@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import org.mmbase.util.ResourceWatcher;
+import java.io.File;
+
+import org.mmbase.util.FileWatcher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -20,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.11 2005-09-09 15:07:50 michiel Exp $
+ * @version $Id: Configurable.java,v 1.7 2004-03-26 15:48:26 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class Configurable {
@@ -34,21 +36,13 @@ public abstract class Configurable {
     /**
      * This specific security configuration file. The file is absolute. Might be
      * null if the implementation does not have its own configuruation file.
-     * @since MMBase-1.8
      */
-    protected String configResource; // relative to securityLoader
-
-
-    /**
-     * @deprecated
-     */
-    protected java.io.File configFile;
-
+    protected File configFile;
 
     /**
      * This filewatcher checks the configuration file for changes.
      */
-    protected ResourceWatcher configWatcher;
+    protected FileWatcher fileWatcher;
 
 
     /**
@@ -56,36 +50,24 @@ public abstract class Configurable {
      * This methods sets the member variables of this object and then
      * calls the method load();
      * @param manager The class that created this instance.
-     * @param configWatcher checks the files for changes
+     * @param fileWatcher checks the files
      * @param configPath The url which contains the config information for the authorization (e.g. context/config.xml). Or null (if configured to be "")
      * @see #load
      */
-    public final void load(MMBaseCop manager, ResourceWatcher configWatcher, String configPath) {
+    public final void load(MMBaseCop manager, FileWatcher fileWatcher, String configPath) {
         if (log.isDebugEnabled()) {
             log.debug("Calling load() with as config file:" + configPath);
         }
         this.manager = manager;
-        this.configWatcher = configWatcher;
-
-        configWatcher.setDelay(10 * 1000);
-
-        if (configPath != null && !configPath.equals("")) {
-            if (configPath.startsWith("/")) {
-                configResource = "file://" + configPath;
-            } else {
-                configResource = configPath;
-            }
-            
-            
-            java.util.List files = configWatcher.getResourceLoader().getFiles(configResource);
-            
-            if (files.size() > 0) {
-                configFile = (java.io.File) files.get(0);
-            }
-            
-            configWatcher.add(configResource);
+        this.fileWatcher = fileWatcher;
+        if(configPath != null) {
+            this.configFile = new File(configPath).getAbsoluteFile();
         }
+        fileWatcher.setDelay(10 * 1000);
 
+        if (configFile != null) {
+            fileWatcher.add(configFile); // add the file.
+        }
 
         load();
     }

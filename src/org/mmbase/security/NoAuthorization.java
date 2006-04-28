@@ -9,15 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.security.SecurityException;
 import java.util.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This class is used when no authorization is configured. Everything is allowed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthorization.java,v 1.11 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: NoAuthorization.java,v 1.10 2003-11-26 20:50:49 michiel Exp $
  */
 final public class NoAuthorization extends Authorization {
+
+    private static final Logger log = Logging.getLoggerInstance(NoAuthorization.class);
 
     // This defined the 'context' used everywhere where one is needed.
     private static final String EVERYBODY = "everybody";

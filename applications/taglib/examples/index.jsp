@@ -1,12 +1,12 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:content type="html" expires="0">
+%><mm:content type="text/html">
 <mm:cloud>
-<html xmlns="http://www.w3.org/1999/xhtml">
 
+<html>
 
 <head>
   <title>Taglib examples</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -18,7 +18,7 @@
 <p>
   The pages found here are made to give some taglib examples. Things are kept
   simple so that the page sources are as clear as possible. You may need the 'mynews' example to be installed. 
-  You can install this application by going to <a href="<mm:url page="/mmbase/admin/default.jsp?category=admin&amp;subcategory=applications" />">ADMIN ->
+  You can install this application by going to <a href="<mm:url page="/mmbase/admin/default.jsp?category=admin&subcategory=applications" />">ADMIN ->
   APPLICATIONS</a>, if you have not done so yet (The default name/password is admin/admin2k).
   </p> 
 <p>

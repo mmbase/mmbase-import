@@ -10,32 +10,32 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation.database.informix.excalibur;
 
 import java.util.*;
-import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
  *
  * @author Rob van Maris
- * @version $Id: XmlEtxIndicesReader.java,v 1.3 2005-10-05 12:26:11 michiel Exp $
+ * @version $Id: XmlEtxIndicesReader.java,v 1.1 2003-12-23 11:03:04 robmaris Exp $
  * @since MMBase-1.7
  */
-public class XmlEtxIndicesReader extends DocumentReader {
-
+public class XmlEtxIndicesReader extends XMLBasicReader {
+    
     /** Creates a new instance of XmlEtxIndicesReader */
     public XmlEtxIndicesReader(InputSource source) {
         super(source, true, XmlEtxIndicesReader.class);
     }
-
+    
     /**
      * Gets <code>sbspace</code> elements.
      *
      * @return <code>sbspace<code> elements.
      */
-    public Iterator getSbspaceElements() {
+    public Enumeration getSbspaceElements() {
         return getChildElements("etxindices", "sbspace");
     }
-
+    
     /**
      * Gets value of <code>name</code> attribute of <code>sbspace</code> element.
      *
@@ -45,17 +45,17 @@ public class XmlEtxIndicesReader extends DocumentReader {
     public String getSbspaceName(Element sbspace) {
         return getElementAttributeValue(sbspace, "name");
     }
-
+    
     /**
      * Gets <code>etxindex</code> child elements of <code>sbspace</code> element.
      *
      * @param sbspace The <code>sbspace</element>
      * @return <code>etxindex</code> elements.
      */
-    public Iterator getEtxindexElements(Element sbspace) {
+    public Enumeration getEtxindexElements(Element sbspace) {
         return getChildElements(sbspace, "etxindex");
     }
-
+    
     /**
      * Gets value of <code>table</code> attribute of <code>etxindex</code> element.
      *
@@ -65,7 +65,7 @@ public class XmlEtxIndicesReader extends DocumentReader {
     public String getEtxindexTable(Element etxindex) {
         return getElementAttributeValue(etxindex, "table");
     }
-
+    
     /**
      * Gets value of <code>field</code> attribute of <code>etxindex</code> element.
      *
@@ -75,12 +75,12 @@ public class XmlEtxIndicesReader extends DocumentReader {
     public String getEtxindexField(Element etxindex) {
         return getElementAttributeValue(etxindex, "field");
     }
-
+    
     /**
      * Gets name of <code>etxindex</code> element.
      *
      * @param etxindex The <code>etxindex</code> element.
-     * @return Value of <code>etxindex</code> element.
+     * @param Value of <code>etxindex</code> element.
      */
     public String getEtxindexValue(Element etxindex) {
         return getElementValue(etxindex);

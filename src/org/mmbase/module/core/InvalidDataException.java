@@ -9,17 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.lang.Exception;
 
 /**
  * This exception gets thrown when a node contains invalid data.
  *
  * @author Pierre van Rooden
- * @version $Id: InvalidDataException.java,v 1.8 2005-10-05 10:00:54 michiel Exp $
+ * @version $Id: InvalidDataException.java,v 1.5 2003-09-04 11:05:33 pierre Exp $
  */
 public class InvalidDataException extends Exception {
 
     // Name of the field that caused the exception
-    private String invalidField = null;
+    private String invalidField=null;
 
     //javadoc is inherited
     public InvalidDataException () {
@@ -38,30 +39,29 @@ public class InvalidDataException extends Exception {
 
     //javadoc is inherited
     public InvalidDataException(String message, Throwable cause) {
-        super(message, cause);
+        super(message,cause);
     }
 
     /**
      * Create the exception.
      * @param message a description of the exception
-     * @param fieldName the name of the field that caused the exception
+     * @param fieldMame the name of the field that caused the exception
      */
     public InvalidDataException (String message, String fieldName) {
         super(message);
-        invalidField = fieldName;
+        invalidField=fieldName;
     }
 
     /**
      * Create the exception.
      * The cause can be retrieved with getCause().
      *
-     * @param cause Throwable the cause of the exception
-     * @param fieldName the name of the field that caused the exception
-     * @since MMBase-1.7
+     * @param Throwable the cause of the exception
+     * @param fieldMame the name of the field that caused the exception
      */
     public InvalidDataException (Throwable cause, String fieldName) {
         super(cause);
-        invalidField = fieldName;
+        invalidField=fieldName;
     }
 
     /**

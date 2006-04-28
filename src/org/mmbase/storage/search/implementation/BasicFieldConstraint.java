@@ -16,19 +16,17 @@ import org.mmbase.storage.search.*;
  * The caseSensitive property defaults to <code>true</code>.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldConstraint.java,v 1.7 2005-05-02 13:03:30 michiel Exp $
+ * @version $Id: BasicFieldConstraint.java,v 1.5 2003-03-10 11:50:54 pierre Exp $
  * @since MMBase-1.7
  */
-
-// this class would logically be abstract, but test-cases are instantiating it.
 public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {
-
+    
     /** The associated field. */
     private StepField field;
-
+    
     /** The caseSensitive property. */
     private boolean caseSensitive = true;
-
+    
     /**
      * Constructor.
      * Protected, so only subclasses can be instantiated.
@@ -36,10 +34,12 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
      * @param field The associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    protected BasicFieldConstraint(StepField field) {        
+    protected BasicFieldConstraint(StepField field) {
+        
         // Test for non-null value.
         if (field == null) {
-            throw new IllegalArgumentException("Invalid field value: " + field);
+            throw new IllegalArgumentException(
+            "Invalid field value: " + field);
         }
         this.field = field;
     }
@@ -55,17 +55,17 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
         this.caseSensitive = caseSensitive;
         return this;
     }
-
+    
     // javadoc is inherited
     public StepField getField() {
         return field;
     }
-
+    
     // javadoc is inheritied
     public boolean isCaseSensitive() {
         return caseSensitive;
     }
-
+    
     // javadoc is inherited
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
@@ -80,7 +80,7 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
             return false;
         }
     }
-
+    
     // javadoc is inherited
     public int hashCode() {
         return super.hashCode()
@@ -90,23 +90,4 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
             87 * field.getStep().getTableName().hashCode():
             83 * field.getStep().getAlias().hashCode());
     }
-
-    /**
-     * Returns the main field's fieldname, possibly extended with the step'sname if known.
-     * May return null or partial fieldnames if not all data is available (for use in debugging).
-     */
-    public String getFieldName() {
-        return BasicStepField.getFieldName(getField());
-    }
-
-    // javadoc is inherited
-    public String toString() {
-        StringBuffer sb = new StringBuffer("BasicFieldConstraint(inverse:").
-        append(isInverse()).
-        append("field:").append(getFieldName()).
-        append(", casesensitive:").append(isCaseSensitive()).
-        append(")");
-        return sb.toString();
-    }
-
 }

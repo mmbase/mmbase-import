@@ -9,49 +9,84 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Probably your builder must extend this if 'properties' on its nodes must work decently?
- *
- * @javadoc
- *
- * @version $Id: Properties.java,v 1.15 2006-04-18 13:05:36 michiel Exp $
+ * @version $Id: Properties.java,v 1.10 2003-03-04 14:12:22 nico Exp $
  */
-public class Properties extends MMObjectBuilder {
+public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
-    private static final Logger log = Logging.getLoggerInstance(Properties.class);
+    private static Logger log = Logging.getLoggerInstance(Properties.class.getName());
 
-    public String getGUIIndicator(MMObjectNode node) {
-        String str = node.getStringValue("key");
-        if (str.length() > 15) {
-            return str.substring(0, 12) + "...";
-        } else {
-            return str;
-        }
-    }
+	public String getGUIIndicator(MMObjectNode node) {
+		String str=node.getStringValue("key");
+		if (str.length()>15) {
+			return(str.substring(0,12)+"...");
+		} else {
+			return(str);
+		}
+	}
+	
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
+	}
 
-    /* (non-Javadoc)
-     * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
-     */
-    public void notify(NodeEvent event) {
-        if (event.getBuilderName().equals(this.getTableName())) {
-            if (log.isDebugEnabled()) {
-                log.debug("nodeChanged(): Property change ! "+ event.getMachine() + " " + event.getNodeNumber() +
-                          " " + event.getBuilderName() + " "+ NodeEvent.newTypeToOldType(event.getType()));
-            }
-            if (event.getType() == NodeEvent.TYPE_CHANGE || event.getType() == NodeEvent.TYPE_NEW ) {
-                // The passed node number is node of prop node
-                int parent = getNode(event.getNodeNumber()).getIntValue("parent");
-                if (isNodeCached(new Integer(parent))) {
-                    log.debug("nodeChanged(): Zapping node properties cache for " + parent);
-                    MMObjectNode pnode = getNode(parent);
-                    if (pnode != null) pnode.delPropertiesCache();
-                }
-            }
-        }
-        super.notify(event);
-    }
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
+	}
+
+	
+	/* Notifies memo:
+
+	* passed ctype:
+
+	* d: node deleted
+
+	* c: node changed
+
+	* n: new node
+
+	* f: node field changed
+
+	* r: node relation changed
+	* x: some xml notify?
+
+	*/
+
+	public boolean nodeChanged(String machine,String number, String builder, String ctype) {
+		if (builder.equals(tableName)) {
+			log.debug("nodeChanged(): Property change ! "+machine+","+number+","+builder+","+ctype);
+			if (ctype.equals("d")) {
+				// Should zap node prop cache parent, but node already gone...
+			}
+/*
+			 else if (ctype.equals("p")) {
+				// The passed node number is node number of parent!
+				if (isNodeCached(Integer.parseInt(number))) {
+					MMObjectNode pnode=getNode(number);
+					if (pnode!=null) {
+						log.debug("nodeChanged(): Zapping node prop cache for "+number);
+						pnode.delPropertiesCache();
+					}
+				}
+			}
+*/
+			    else if (ctype.equals("c") || ctype.equals("n") || ctype.equals("f")) { 
+				// The passed node number is node of prop node
+				MMObjectNode node=getNode(number);
+				if (node!=null) {
+					int parent=node.getIntValue("parent");
+					if (isNodeCached(parent)) {
+						log.debug("nodeChanged(): Zapping node properties cache for "+parent);
+						MMObjectNode pnode=getNode(parent);	
+						if (pnode!=null) pnode.delPropertiesCache();
+					}	
+				}
+			}
+		}
+		return(true);
+	}
 }

@@ -13,6 +13,7 @@ package org.mmbase.applications.community.modules;
 import java.util.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.TemporaryNodeManager;
 
 import org.mmbase.util.logging.Logger;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use NodeBreaker instead
  *
  * @author Dirk-Jan Hoekstra
- * @version $Id: RelationBreaker.java,v 1.9 2005-10-05 10:59:39 michiel Exp $
+ * @version $Id: RelationBreaker.java,v 1.7 2003-06-18 20:03:55 michiel Exp $
  */
 
 public class RelationBreaker extends Thread {
@@ -51,7 +52,7 @@ public class RelationBreaker extends Thread {
      * Creates a new relation breaker.
      * Used by the Channel builder.
      * @param mmb reference to MMBase
-     * @param checkInterval the interval at which the relation breaker checks for expired relations
+     * @param checkinterval the interval at which the relation breaker checks for expired relations
      * @param tmpNodeManager the temporary node manager that holds the relations.
      */
     public RelationBreaker(MMBase mmb, long checkInterval, TemporaryNodeManager tmpNodeManager) {
@@ -123,7 +124,7 @@ public class RelationBreaker extends Thread {
      * Runs the thread that checks for expired relations.
      */
     public void run() {
-        mmb.getInsRel();
+        InsRel insrel = mmb.getInsRel();
         long currentTime;
 
         while (shouldRun) {
@@ -175,15 +176,7 @@ class RelationHolder {
      * In this specific case, the object should be equal to the id.
      */
     public synchronized boolean equals(Object anObject) {
-        return (id.equals(anObject));
-    }
-    
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public synchronized int hashCode() {
-        return id.hashCode();
+        return (id.equals((String)anObject));
     }
 
     /**

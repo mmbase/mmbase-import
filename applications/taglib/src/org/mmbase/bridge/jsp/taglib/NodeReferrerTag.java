@@ -11,14 +11,13 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.util.functions.Parameter;
-import org.mmbase.util.functions.Parameters;
 
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Cloud;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+
 /**
  * A tag which is a 'NodeReferrerTag's can be the child of a
  * NodeProvider tag, which supplies a 'Node' to its child tags. For
@@ -26,23 +25,14 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.23 2006-02-10 18:04:26 michiel Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.15 2003-09-08 12:05:13 michiel Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
 
-    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class); 
-    protected Attribute parentNodeId = Attribute.NULL;
-    private Attribute element  = Attribute.NULL;
-    /**
-     * The element attribute is used to access elements of
-     * clusternodes.
-     * @since MMBase-1.7.4
-     */
-    public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
-    }
+    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
 
+    protected Attribute parentNodeId = Attribute.NULL;
 
     /**
      * A NodeReferrer probably wants to supply the attribute 'node',
@@ -77,23 +67,6 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
      */
 
     protected Node getNode() throws JspTagException {
-        Node node =  findNodeProvider().getNodeVar();
-        if (node != null && element != Attribute.NULL) {
-            node = node.getNodeValue(element.getString(this));            
-        }
-        return node;
+        return findNodeProvider().getNodeVar();
     }
-
-    protected void fillStandardParameters(Parameters p) throws JspTagException {
-        super.fillStandardParameters(p);
-        NodeProvider np = findNodeProvider(false);
-        if (np != null) {
-            Node node = np.getNodeVar();
-            Cloud cloud = node.getCloud();
-            p.setIfDefined(Parameter.CLOUD, cloud);
-            p.setIfDefined(Parameter.USER, cloud.getUser());
-            
-        }
-    }
-
 }

@@ -37,19 +37,19 @@ public class RealURLComposer extends FragmentURLComposer  {
         if (fragment != null) { // can add this for RM-sources
             long start = fragment.getLongValue("start");
             long end   = fragment.getLongValue("stop");
-            String sep = "?";
-            if (start > -1 && start != end) {
+            char sep = '?';
+            if (start > -1) {            
                 appendTime(start, args.append(sep).append("start="));
-                sep = "&amp;";
+                sep = '&';
             }
-            if (end > -1 && start != end) {
+            if (end > -1) {            
                 appendTime(end, args.append(sep).append("end="));
-                sep = "&amp;";
+                sep = '&';
             }
+            
             // real...
-            String title = fragment.getStringValue("title").replaceAll(",","");
-            args.append(sep).append("title=").append(makeRealCompatible(title));
-
+            String title = fragment.getStringValue("title");
+            args.append(sep).append("title=").append(title);
         } 
         return args;
     }

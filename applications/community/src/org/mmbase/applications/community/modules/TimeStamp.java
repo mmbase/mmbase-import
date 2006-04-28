@@ -12,6 +12,9 @@ package org.mmbase.applications.community.modules;
 
 import java.util.Date;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Creates a timestamp value out of two integer values.
  * Supposedly needed because the Informix setup had no configuration
@@ -21,11 +24,13 @@ import java.util.Date;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: TimeStamp.java,v 1.8 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: TimeStamp.java,v 1.7 2003-06-18 20:03:55 michiel Exp $
  */
 
 public class TimeStamp extends Date
 {
+
+    private static Logger log = Logging.getLoggerInstance(TimeStamp.class.getName()); 
 
     /**
      * the 16 least significant bits of the timestamp value

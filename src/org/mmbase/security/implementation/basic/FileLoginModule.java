@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Simple implemetation, to provide authentication from files...
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: FileLoginModule.java,v 1.4 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: FileLoginModule.java,v 1.3 2002-06-07 12:56:57 pierre Exp $
  */
 public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
@@ -74,6 +74,7 @@ public class FileLoginModule implements LoginModule {
         }
 
         // do a list with usernames and passwords...
+        java.util.Enumeration e =  accounts.keys();
         log.debug("There are  "+accounts.size()+" users which can logon to our system");
         if ( !accounts.containsKey(loginInfo.get("username"))) {
             log.debug("username: '"+loginInfo.get("username")+"' not found");

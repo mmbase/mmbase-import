@@ -5,6 +5,8 @@
 <% String path1 = ntype;		// Eerst stukje van kruimelpad %>
 <%@ include file="inc_head.jsp" %>
 
+<% request.getSession().invalidate();	// start all over again %>
+
 <p>&nbsp;</p>
 <p class="message">You were logged out.</p>
 <p>&nbsp;</p>

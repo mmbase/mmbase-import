@@ -7,56 +7,59 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-
 package org.mmbase.security;
 
 /**
- * This User interface defines the storage for the authentication
- * and authorization, so that information can be shared.
- * This interface is NOT a container class for client related stuff, altrough
- * this is possible. Notice that after the login on the cloud it is not
- * certain that you will receive the same User object back !
+ * A UserContext object is the result of an authentication, on which authorization can be
+ * based. Normally your authorization/authentication implementation will also provide an extension
+ * to this class.
+ *
+ * This default implementation is the most simple one, actually implementing 'no authorization'
+ * (because the rank is fixed to 'administrator').
+ *
+ * This class is <em>not</em> necessarily also the container class for the client's credentials,
+ * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: UserContext.java,v 1.17 2006-01-09 12:18:49 johannes Exp $
+ * @version $Id: UserContext.java,v 1.14 2003-07-09 10:03:11 michiel Exp $
  */
-public interface UserContext extends java.io.Serializable {
-    /**
-     *  Get the unique identifier for this user. This should be unique
-     *  for every different user inside a cloud.
-     *	@return an unique id for the current user
-     */
-    public String getIdentifier();
+public class UserContext {
 
     /**
-     *  Get the rank of this user.
-     *	@return the rank of this user
-     */
-    public Rank getRank();
-
-    /**
-     *  Is valid
-     *	@return <code>true</code> if the user is still valid.
-     *      	<code>false</code> if the user is expired..
-     */
-    public boolean isValid();
-
-
-    /**
-     * Return the default owner field value for new nodes created by this user.
-     * @return owner field value
+     * Gets the unique identifier for this user. This should be unique
+     * for every different user on the system.
      *
-     * @since MMBase-1.7
+     * @return A unique identifier for this user.
      */
-    public String getOwnerField();
+    public String getIdentifier() {
+        return "anonymous";
+    }
 
     /**
-     * Returns the original authentication type as specified in getCloud
-     * @return authentication type
-     *
-     * @since MMBase-1.7
-     * @see   org.mmbase.bridge.CloudContext#getCloud
+     * Gets the owner field value of new objects created by this user. The default implementation
+     * returns the user's identifier. This can be changed if the authorization implementation does
+     * not attribute rights to users directly ('context' implementations).
+     * @return A possible value for the owner field
      */
-    public String getAuthenticationType();
+    public String getOwnerField() {
+        return getIdentifier();
+    }
+
+    /**
+     * Gets the rank of this user.
+     * @return the user rank
+     */
+    public Rank getRank() throws org.mmbase.security.SecurityException {
+        // we need the highest rank.. to fool the security checks that we are allowed...
+        return Rank.ADMIN;
+    }
+
+    /**
+     * Gets a string representation of this user context (for debugging)
+     * @return a string describing the usercontext
+     */
+    public String toString() {
+        return getIdentifier() + " (" + getRank() + ")";
+    }
 
 }

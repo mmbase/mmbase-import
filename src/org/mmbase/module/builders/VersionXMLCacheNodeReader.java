@@ -10,27 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.XMLBasicReader;
-import org.mmbase.util.logging.*;
-
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 
-/**
- * @javadoc
- * @deprecated is this (cacheversionfile) used? seems obsolete now
- * @author Daniel Ockeloen
- * @version $Id: VersionXMLCacheNodeReader.java,v 1.6 2005-11-23 15:45:13 pierre Exp $
- */
 public class VersionXMLCacheNodeReader {
 
-    private static Logger log = Logging.getLoggerInstance(VersionCacheNode.class.getName());
     Document document;
     Versions parent;
 
@@ -39,15 +28,11 @@ public class VersionXMLCacheNodeReader {
             DocumentBuilder db = XMLBasicReader.getDocumentBuilder(false);
             File file = new File(filename);
             if (!file.exists()) {
-                log.error("no cache version " + filename + " found)");
+                System.out.println("ERROR -> no cache version " + filename + " found)");
             }
             document = db.parse(file);
-        }
-        catch (SAXException e) {
-            log.error("", e);
-        }
-        catch (IOException e) {
-            log.error("", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -73,16 +58,16 @@ public class VersionXMLCacheNodeReader {
                         Node n3 = nm.getNamedItem("name");
                         if (n3 != null) {
                             String name = n3.getNodeValue();
-                            if (log.isDebugEnabled()) log.debug("name = " + name);
-                            // find the node
+                            System.out.println("name = " + name);
+                            // find the node 
                             MMObjectNode versionnode = null;
                             String query = "name=='" + name + "'+type=='cache'";
                             Enumeration b = parent.search(query);
                             if (b.hasMoreElements()) {
                                 versionnode = (MMObjectNode)b.nextElement();
                             }
-                            if (log.isDebugEnabled()) log.debug("versionnode=" + versionnode);
-                            VersionCacheNode cnode = new VersionCacheNode(parent.getMMBase());
+                            System.out.println("versionnode=" + versionnode);
+                            VersionCacheNode cnode = new VersionCacheNode(parent.mmb);
                             cnode.setVersionNode(versionnode);
 
                             n3 = n2.getFirstChild();
@@ -133,7 +118,7 @@ public class VersionXMLCacheNodeReader {
                 n2 = n2.getNextSibling();
             }
         }
-        return handlers;
+        return (handlers);
     }
 
     /**
@@ -190,7 +175,7 @@ public class VersionXMLCacheNodeReader {
                 n2 = n2.getNextSibling();
             }
         }
-        return results;
+        return (results);
     }
 
 }

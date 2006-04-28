@@ -15,8 +15,7 @@ package org.mmbase.module.core;
  * itself as a change listener on Builder to recieve signals if nodes change.
  *
  * @author Daniel Ockeloen
- * @version $Id: MMBaseObserver.java,v 1.9 2005-10-07 18:30:40 michiel Exp $
- * @deprecated Use {@link org.mmbase.core.event.NodeEventListener}
+ * @version $Id: MMBaseObserver.java,v 1.8 2003-05-23 10:58:39 michiel Exp $
  */
 public interface MMBaseObserver {
     /**

@@ -22,10 +22,11 @@ import java.io.*;
  *
  * @since MMBase 1.7
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: IECompatibleJpegInputStream.java,v 1.6 2005-05-12 15:37:44 michiel Exp $
+ * @version $Id: IECompatibleJpegInputStream.java,v 1.3 2004-04-07 14:11:08 keesj Exp $
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 
+    private Thread converter;
     private PipedInputStream pis;
     private PipedOutputStream pos;
 
@@ -40,8 +41,14 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
         try {
             pis.connect(pos);
         } catch (IOException ioe) {
-        }
-        ThreadPools.filterExecutor.execute(this);
+            System.out.println(ioe);
+            ioe.printStackTrace();
+        };
+
+        // I don't know if it's to heavy to start a thread
+        // maybe just calling the run method is enough(proivded that the buffers are big enough)..
+        converter = new Thread(this, "IECompatibleJpegInputStream");
+        converter.start();
     }
 
     public void run() {
@@ -108,6 +115,8 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
 
     public void close() throws IOException {
         pis.close();
+        converter.interrupt();
+        converter = null;
         super.close();
     }
 
@@ -131,7 +140,7 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
      * Util method that uses the IECompatibleInputStream to convert a byte array
      * if the content is not a jpeg the content is not affected
      * @param in the byte array
-     * @return the converted (ie compatible) jpeg
+     * @returnthe converted (ie compatible) jpeg
      */
     public static byte[] process(byte[] in) {
         try {

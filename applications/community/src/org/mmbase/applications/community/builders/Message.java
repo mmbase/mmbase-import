@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.32 2005-10-07 20:58:32 michiel Exp $
+ * @version $Id: Message.java,v 1.23 2004-01-08 07:34:22 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -132,7 +132,7 @@ public class Message extends MMObjectBuilder {
         // In future version, these virutal fields migth actually be used to set or get
         // this data directly from the message node
         checkAddTmpField("channel"); // node number of the channel object for this message
-        checkAddTmpField("user");    // node number of the user object for this message
+        checkAddTmpField("user");  // node number of the user object for this message
         checkAddTmpField("username"); // username of the person posting the message
 
         activate();
@@ -165,27 +165,27 @@ public class Message extends MMObjectBuilder {
     /**
      * Obtains the description of an error that occurred during a
      * user-induced action on a message (such as a post).
-     * @param error the error number
+     * @param the error number
      * @return the error description
      */
     public String getMessageError(int error) {
         switch (error) {
-        case POST_ERROR_BODY_EXCEEDS_SIZE:
-            return "Message body size exceeds " + maxBodySize + " bytes";
-        case POST_ERROR_NO_USER:
-            return "User name or object needed";
-        case POST_ERROR_NEED_LOGIN:
-            return "User needs to be logged on to post";
-        case POST_ERROR_RELATION_CHANNEL:
-            return "Could not create temporary relations between message and channel.";
-        case POST_ERROR_RELATION_USER:
-            return "Could not create temporary relations between message and user.";
-        case POST_ERROR_NO_BODY_TEXT:
-            return "No message body text specified.";
-        case POST_ERROR_NO_SUBJECT:
-            return "No subject specified.";
-        default :
-            return "Could not post message.";
+            case POST_ERROR_BODY_EXCEEDS_SIZE:
+                return "Message body size exceeds " + maxBodySize + " bytes";
+            case POST_ERROR_NO_USER:
+                return "User name or object needed";
+            case POST_ERROR_NEED_LOGIN:
+                return "User needs to be logged on to post";
+            case POST_ERROR_RELATION_CHANNEL:
+                return "Could not create temporary relations between message and channel.";
+            case POST_ERROR_RELATION_USER:
+                return "Could not create temporary relations between message and user.";
+            case POST_ERROR_NO_BODY_TEXT:
+                return "No message body text specified.";
+            case POST_ERROR_NO_SUBJECT:
+                return "No subject specified.";
+            default :
+                return "Could not post message.";
         }
     }
 
@@ -316,7 +316,8 @@ public class Message extends MMObjectBuilder {
 
         // Build a temporary message node.
         String key = tmpNodeManager.createTmpNode("message", messageUser, getNewTemporaryKey());
-        MMObjectNode message = getNewTmpNode(messageUser, key);
+        MMObjectNode message = tmpNodeManager.getNode(messageUser, key);
+        message.parent = this;
 
         // Set the fields.
         int sequence = channelBuilder.getNewSequence(channelNode);
@@ -372,7 +373,7 @@ public class Message extends MMObjectBuilder {
         if (chatter != -1) {
             try {
                 String tmp = tmpNodeManager.createTmpRelationNode("creator", messageUser, getNewTemporaryKey(), "realuser", key);
-                tmpNodeManager.setObjectField(messageUser, tmp, "snumber", new Integer(chatter));
+                tmpNodeManager.setObjectField(messageUser, tmp, "snumber", (Object) new Integer(chatter));
                 // add the message relation to the relation breaker
                 chatboxMessages.add(messageUser + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());
                 MMObjectNode node = tmpNodeManager.getNode(messageUser, tmp);
@@ -508,6 +509,9 @@ public class Message extends MMObjectBuilder {
      * @return A <code>Vector</code> containing the requested fields.
      */
     public Vector getListMessages(StringTagger params) {
+
+        Hashtable optionalAttributes = new Hashtable();
+
         /* Get the thread/node from who the related messages have to be given.
          */
         String id = params.Value("NODE");
@@ -723,7 +727,7 @@ public class Message extends MMObjectBuilder {
 
     /**
      * Retrieves a list of messages related to a thread.
-     * @param node the message or channel node that is the parent of
+     * @param thread the number of the message or channel that is the parent of
      *      the messages requested
      * @param ci A Comparator to use for sorting the messages
      * @return A <code>Vector</code> containing the requested message nodes.
@@ -795,7 +799,7 @@ public class Message extends MMObjectBuilder {
      */
     private int addRelated(Object key, int otypeWanted, int count, int offset, Vector result) {
         if (key != null) {
-            MMObjectNode node = (MMObjectNode) temporaryNodes.get("" + key);
+            MMObjectNode node = (MMObjectNode) TemporaryNodes.get("" + key);
             count = addRelatedNode(node, otypeWanted, count, offset, result);
         }
         return count;
@@ -803,7 +807,7 @@ public class Message extends MMObjectBuilder {
 
     /**
      * Get temporary MMObjectNodes related to a specified MMObjectNode
-     * @param node this is the source MMObjectNode
+     * @param sourceNode this is the source MMObjectNode
      * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
      */
     public Vector getTemporaryRelated(MMObjectNode node, String wtype) {
@@ -812,15 +816,18 @@ public class Message extends MMObjectBuilder {
 
     /**
      * Get temporary MMObjectNodes related to a specified MMObjectNode
-     * @param node this is the source MMObjectNode
+     * @param sourceNode this is the source MMObjectNode
      * @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
      */
     public Vector getTemporaryRelated(MMObjectNode node, String wtype,
                                       int offset, int max) {
         Vector result = new Vector();
         if (max <= 0) return result;
+        MMObjectNode relatedNode;
         MMObjectNode tmpInsRel;
         boolean found;
+        String _dnumber;
+        String _snumber;
         int otypewanted = mmb.getTypeDef().getIntValue(wtype);
         int count = 0;
 
@@ -830,11 +837,11 @@ public class Message extends MMObjectBuilder {
         if (_number == null) number = node.getNumber();
 
         // Get all temporary nodes and filter out all insrels.
-        Iterator tmpInsRels = temporaryNodes.keySet().iterator();
-        while ((count < (offset + max)) && tmpInsRels.hasNext()) {
-            tmpInsRel = (MMObjectNode) temporaryNodes.get(tmpInsRels.next());
+        Enumeration tmpInsRels = TemporaryNodes.keys();
+        while ((count < (offset + max)) && tmpInsRels.hasMoreElements()) {
+            tmpInsRel = (MMObjectNode) TemporaryNodes.get(tmpInsRels.nextElement());
             if (tmpInsRel != null) {
-                if (tmpInsRel.getBuilder() instanceof InsRel) {
+                if (tmpInsRel.parent instanceof InsRel) {
                     found = false;
                     // Test if the (_)snumbers are equal.
                     if (_number != null) {
@@ -951,7 +958,7 @@ public class Message extends MMObjectBuilder {
         log.service("removeNode(): node=" + node.getNumber());
 
         // Make sure we got a Message node, else abort the remove operation.
-        if (!(node.getBuilder() instanceof Message)) {
+        if (!(node.parent instanceof Message)) {
             log.error(node.getNumber() + " is of type " + node.getName() + " instead of Message");
             return;
         }
@@ -1076,7 +1083,7 @@ public class Message extends MMObjectBuilder {
             return new Integer(getNrMsgAndHighSeq(node).messageCount);
         }
         if (field.equals(F_HAS_REPLIES)) {
-            return Boolean.valueOf(hasReplies(node));
+            return new Boolean(hasReplies(node));
         }
         if (field.equals(F_PARENT)) {
             return node.getValue(F_THREAD);
@@ -1126,7 +1133,7 @@ public class Message extends MMObjectBuilder {
     /**
      * Handles the $MOD-MMBASE-BUILDER-message- commands.
      */
-    public String replace(PageInfo sp, StringTokenizer tok) {
+    public String replace(scanpage sp, StringTokenizer tok) {
         /* The first thing we expect is a message number.
          */
         if (!tok.hasMoreElements()) {
@@ -1136,7 +1143,7 @@ public class Message extends MMObjectBuilder {
         String tmp = tok.nextToken();
         MMObjectNode message = getNode(tmp);
         //tmp = tmp.substring(tmp.indexOf("_") + 1);
-        if (message == null) message = (MMObjectNode) temporaryNodes.get(tmp.trim());
+        if (message == null) message = (MMObjectNode) TemporaryNodes.get(tmp.trim());
         if (message == null) {
             log.error("Message with id '" + tmp + "' cannot be found.");
             return "";
@@ -1210,11 +1217,11 @@ public class Message extends MMObjectBuilder {
 
     /**
      * Returns the channel in which the given message node is posted.
-     * @param node the node to get the channel of
+     * @param the node to get the channel of
      * @return teh channel of teh message as a <code>MMObjectNode</code>
      */
     public MMObjectNode isPostedInChannel(MMObjectNode node) {
-        while (node.getBuilder() instanceof Message) {
+        while (node.parent instanceof Message) {
             node = getNode(node.getIntValue(F_THREAD));
         }
         return node;

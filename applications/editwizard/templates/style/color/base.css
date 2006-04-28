@@ -1,6 +1,6 @@
 body {
-  color: black;
-  background-color: white;
+  color: #000000;
+  background-color: #FFFFFF;
 }
 
 input,
@@ -9,36 +9,37 @@ select {
   color: black;
 }
 
-a:link  {
-  color: #18248C;
+a:link  { 
+  color: #18248C; 
 }
-a:visited {
-  color: #00046C;
+a:visited { 
+  color: #00046C; 
 }
-a:hover   {
-  color: #3844AC;
+a:hover   { 
+  color: #3844AC; 
 }
-a:active  {
-  color: #3844AC;
+a:active  { 
+  color: #3844AC; 
 }
 
 .tooltip {
   background-color: #FFFF88;
-  border-color: black;
+  border-color: #000000;
 }
 
-table {
-  background-color: white;
-  border-color: silver;
-  color: black;
+table { 
+  background-color: #fff;
+  border-color: #ccc; 
+  color: #000;
 }
 
 table.head {
+  /*	background-color: #CCC; */
 }
 
-tr.headsubtitle  {
-  background-color: silver;
-}
+tr.headsubtitle  {         
+  background-color: #CCC;
+} 
 
 table.body {
 }
@@ -46,5 +47,5 @@ table.body {
 .pagenav,
 .pagenav-disabled,
 .pagenav-current {
-  color: black;
+  color: #000000;
 }

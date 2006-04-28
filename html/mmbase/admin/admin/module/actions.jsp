@@ -57,7 +57,7 @@
   <th class="navigate" >Change</th>
 </tr>
 <tr>
- <td class="data">Class</td>
+ <td class="data">Classfile</td>
  <td class="data" colspan="3"><%=mmAdmin.getInfo("MODULECLASSFILE-"+module,request,response)%></td>
  <td class="linkdata" >
     Not Available
@@ -116,6 +116,37 @@
   </form>
 
 <tr><td>&nbsp;</td></tr>
+
+<%
+    Module mmconfig=ContextProvider.getDefaultCloudContext().getModule("config");
+    if (mmconfig!=null) {
+        String check=mmconfig.getInfo("CHECK-modules-"+module);
+%>
+<tr>
+<th class="header">Action</th>
+  <th class="header" colspan="3">Status</th>
+  <th class="navigate" >View</th>
+</tr>
+<tr>
+ <td class="data">XML-check</td>
+ <td class="data" colspan="3"><%=check%></td>
+ <td class="linkdata" >
+  <form action="<mm:url page="../config/details.jsp"/>" method="POST" target="_xml">
+<%    if (check.equals("Checked ok")) { %>
+        <input type="hidden" name="todo" value="show" />
+<%  } else { %>
+        <input type="hidden" name="todo" value="annotate" />
+<%  } %>
+    <input type="hidden" name="config" value="modules" />
+    <input type="hidden" name="target" value="<%=module%>" />
+    <input type="image" src="<mm:url page="/mmbase/style/images/search.gif" />" alt="view" border="0"  />
+  </form>
+ </td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<% } %>
 
 <tr class="footer">
 <td class="navigate"><a href="<mm:url page="../modules.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>

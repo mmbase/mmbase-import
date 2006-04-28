@@ -12,7 +12,6 @@ package org.mmbase.bridge.jsp.taglib.containers;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Query;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
@@ -23,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QuerySortOrderTag.java,v 1.5 2005-05-27 10:37:51 michiel Exp $
+ * @version $Id: QuerySortOrderTag.java,v 1.1 2003-12-18 09:05:48 michiel Exp $
  */
 public class QuerySortOrderTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -32,7 +31,6 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
     protected Attribute container  = Attribute.NULL;
     protected Attribute direction  = Attribute.NULL;
     protected Attribute field      = Attribute.NULL;
-    protected Attribute casesensitive = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -40,9 +38,6 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
 
     public void setDirection(String d) throws JspTagException {
         direction = getAttribute(d);
-    }
-    public void setCasesensitive(String s) throws JspTagException {
-        casesensitive = getAttribute(s);
     }
     public void setField(String f) throws JspTagException {
         field = getAttribute(f);
@@ -52,11 +47,29 @@ public class QuerySortOrderTag extends CloudReferrerTag implements QueryContaine
     public int doStartTag() throws JspTagException { 
         QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         
-        Query query = c.getQuery();        
-        int order = Queries.getSortOrder(direction.getString(this));
+        String dir = direction.getString(this).toUpperCase();
+        
+        Query query = c.getQuery();
+        
+        int order;
+        
+        if (dir.equals("")) {
+            order = SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("UP")) {
+            order = SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("DOWN")) {
+            order = SortOrder.ORDER_DESCENDING;
+        } else if (dir.equals("ASCENDING")) {
+            order = SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("DESCENDING")) {
+            order = SortOrder.ORDER_DESCENDING;
+        } else {
+            throw new JspTagException("Unknown sort-order '" + dir + "'");
+        }
+        
         StepField stepField = query.createStepField(field.getString(this));
                    
-        query.addSortOrder(stepField, order, casesensitive.getBoolean(this, false));
+        query.addSortOrder(stepField, order);
         return SKIP_BODY;
     }
 

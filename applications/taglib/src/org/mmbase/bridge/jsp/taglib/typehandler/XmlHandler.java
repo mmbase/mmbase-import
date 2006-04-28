@@ -11,7 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.util.StringBufferWriter;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +29,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.16 2006-04-27 17:37:25 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.8 2004-01-19 17:22:10 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -50,7 +51,7 @@ public class XmlHandler extends StringHandler {
         x.configure(Xml.ESCAPE);
         ct.add(x);
     }
-
+    
 
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
@@ -59,22 +60,42 @@ public class XmlHandler extends StringHandler {
         if(! search) {
             StringBuffer buffer = new StringBuffer();
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-            // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
-            buffer.append("<textarea class=\"big " + getClasses(field) + "\"  rows=\"10\" cols=\"80\" ");
-            buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
-            buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
+            buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"");
+            buffer.append(prefix(field.getName()));
+            buffer.append("\"");
             addExtraAttributes(buffer);
             buffer.append(">");
-            String value;
             if (node != null) {
-                value = org.mmbase.util.Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node));
-            } else {
-                value = "";
-            }
-            buffer.append(value);
-            String opt = tag.getOptions();
-            if (opt != null && opt.indexOf("noempty") > -1 && value.equals("")) {
-                buffer.append(" ");
+                try {
+                    // get the XML from this thing....
+                    // javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+                    // javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
+                    // org.w3c.dom.Element xml = node.getXMLValue(field.getName(), dBuilder.newDocument());
+                    org.w3c.dom.Document xml = node.getXMLValue(field.getName());
+
+                    if(xml != null) {
+                        // make a string from the XML
+                        TransformerFactory tfactory = TransformerFactory.newInstance();
+                        //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
+                        Transformer serializer = tfactory.newTransformer();
+                        serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+                        serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                        StringBufferWriter str = new StringBufferWriter(buffer);     
+                        Writer w = new TransformingWriter(str, ct);
+                        // there is a <field> tag placed around it,... we hate it :)
+                        // change this in the bridge?
+                        serializer.transform(new DOMSource(xml),  new StreamResult(w));
+
+                        w.close();
+
+                    }
+                } catch(IOException ioe) {
+                    throw new JspTagException(ioe.toString() + " " + Logging.stackTrace(ioe));
+                } catch(TransformerConfigurationException tce) {
+                    throw new JspTagException(tce.toString() + " " + Logging.stackTrace(tce));
+                } catch(TransformerException te) {
+                    throw new JspTagException(te.toString() + " " + Logging.stackTrace(te));
+                }
             }
             buffer.append("</textarea>");
             return buffer.toString();

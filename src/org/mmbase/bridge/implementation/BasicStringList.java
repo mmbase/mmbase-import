@@ -13,16 +13,16 @@ package org.mmbase.bridge.implementation;
 import java.util.Collection;
 import org.mmbase.bridge.StringList;
 import org.mmbase.bridge.StringIterator;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of Strings
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.11 2005-12-10 14:31:46 michiel Exp $
+ * @version $Id: BasicStringList.java,v 1.9 2003-08-08 12:07:17 michiel Exp $
  */
 public class BasicStringList extends BasicList implements StringList {
-
-    static final StringList EMPTY = new BasicStringList();
+    private static Logger log = Logging.getLoggerInstance(BasicStringList.class.getName());
 
     BasicStringList() {
         super();

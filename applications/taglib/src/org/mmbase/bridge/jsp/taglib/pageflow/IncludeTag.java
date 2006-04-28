@@ -11,9 +11,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
-import org.mmbase.bridge.jsp.taglib.util.Notfound;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
-import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.NotFoundException;
 import java.net.*;
 //import javax.net.ssl.*;
@@ -34,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.66 2006-03-28 22:35:22 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.48.2.5 2005-03-15 16:46:31 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -45,11 +43,11 @@ public class IncludeTag extends UrlTag {
     private static final int DEBUG_NONE = 0;
     private static final int DEBUG_HTML = 1;
     private static final int DEBUG_CSS  = 2;
-    private static final int DEBUG_XML  = 3;
 
-    public static final String INCLUDE_PATH_KEY   = "javax.servlet.include.servlet_path";
-    public static final String INCLUDE_LEVEL_KEY = "org.mmbase.taglib.includeLevel";
+    private static  Set invalidIncludingAppServerRequestClasses = new HashSet();
 
+    static {
+    }
 
     protected Attribute debugType = Attribute.NULL;
 
@@ -57,12 +55,7 @@ public class IncludeTag extends UrlTag {
 
     private Attribute encodingAttribute = Attribute.NULL;
 
-    private Attribute attributes        = Attribute.NULL;
-
-    protected Attribute notFound        = Attribute.NULL;
-
-    protected Attribute resource        = Attribute.NULL;
-
+    private   Attribute  attributes       = Attribute.NULL;
 
     /**
      * Test whether or not the 'cite' parameter is set
@@ -75,30 +68,20 @@ public class IncludeTag extends UrlTag {
         encodingAttribute = getAttribute(e);
     }
 
-    public void setNotfound(String n) throws JspTagException {
-        notFound = getAttribute(n);
-    }
-
     protected boolean getCite() throws JspTagException {
-        return resource != Attribute.NULL || cite.getBoolean(this, false);
+        return cite.getBoolean(this, false);
     }
 
+    /**
+     * @since MMBase-1.7.4
+     */
     public void setAttributes(String a) throws JspTagException {
         attributes = getAttribute(a);
     }
 
-    public void setResource(String r) throws JspTagException {
-        resource = getAttribute(r);
-    }
-
-    protected String getPage() throws JspTagException {
-        if (resource != Attribute.NULL) return resource.getString(this);
-        return super.getPage();
-    }
-
     public int doStartTag() throws JspTagException {
-        if (page == Attribute.NULL && resource == Attribute.NULL) { // for include tags, page attribute is obligatory.
-            throw new JspTagException("No attribute 'page' or 'resource' was specified");
+        if (page == null) { // for include tags, page attribute is obligatory.
+            throw new JspTagException("Attribute 'page' was not specified");
         }
         return super.doStartTag();
     }
@@ -106,6 +89,7 @@ public class IncludeTag extends UrlTag {
     protected void doAfterBodySetValue() throws JspTagException {
         includePage();
     }
+
     /**
      * Opens an Http Connection, retrieves the page, and returns the result.
      **/
@@ -118,6 +102,25 @@ public class IncludeTag extends UrlTag {
 
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 
+            /*
+            if (connection instanceof HttpsURLConnection) {
+                ((HttpsURLConnection) connection).setHostnameVerifier(new HostnameVerifier() {
+                        public boolean verify(String hostname, SSLSession session) {
+                            return true;
+                        }
+                    }); 
+            }
+            */
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode >= 300) {
+                if (responseCode >= 500) {
+                    log.warn("Server error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage());
+                } else if (responseCode >= 400) {
+                    log.warn("Client error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage());
+                } 
+                log.warn("Redirect " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage() + " " + connection.getInstanceFollowRedirects());
+            }
             if (request != null) {
                 // Also propagate the cookies (like the jsession...)
                 // Then these, and the session,  also can be used in the include-d page
@@ -134,66 +137,43 @@ public class IncludeTag extends UrlTag {
                 }
             }
 
-            String result;
-            int responseCode;
-            try {
-                responseCode = connection.getResponseCode();
-                // how about responsecodes < 200?
-                if (responseCode < 300) {
-
-                    String encoding = encodingAttribute.getString(this);
-                    if (encoding.equals("")) {
-                        encoding = connection.getContentEncoding();
-                    }
-                    log.debug("Found content encoding " + encoding);
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    InputStream inputStream = connection.getInputStream();
-                    int c = inputStream.read();
-                    while (c != -1) {
-                        bytes.write(c);
-                        c = inputStream.read();
-                    }
-                    byte[] allBytes = bytes.toByteArray();
-                    if (encoding == null || encoding.equals("")) {
-                        String contentType = connection.getContentType();
-                        if (contentType != null) {
-                            // according to http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/, 'higher level' charset indication should prevail
-                            encoding = GenericResponseWrapper.getEncoding(contentType);
-                        }
-
-                        if (encoding == null && contentType != null) { // take a default based on the content type
-                            encoding = GenericResponseWrapper.getDefaultEncoding(contentType);
-                        }
-                        if (encoding.equals(GenericResponseWrapper.TEXT_XML_DEFAULT_CHARSET)) { // if content-type is text/xml the body should be US-ASCII, which we will ignore and evalute the body. See comments in GenericResponseWrapper#getDefaultEncoding.
-                            encoding = GenericResponseWrapper.getXMLEncoding(allBytes); // Will detect if body is XML, and set encoding to something if it is, otherwise, remains null.
-                        }
-
-                    }
-                    log.debug("Using " + encoding);
-                    result = new String(allBytes, encoding) + debugEnd(absoluteUrl);
-
-                } else {
-                    if (responseCode >= 500) {
-                        result = "Server error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage();
-                    } else if (responseCode >= 400) {
-                        result = "Client error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage();
-                    } else { // >= 300 < 400
-                        result = "Redirect " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage() + " " + connection.getInstanceFollowRedirects();
-                    }
-                }
-            } catch (java.net.ConnectException ce) {
-                result = "For " + includeURL + ": " + ce.getMessage();
-                responseCode = -1;
+            String encoding = encodingAttribute.getString(this);
+            if (encoding.equals("")) {            
+                encoding = connection.getContentEncoding();
             }
+            log.debug("Found content encoding " + encoding);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            InputStream inputStream = connection.getInputStream();
+            int c = inputStream.read();
+            while (c != -1) {
+                bytes.write(c);
+                c = inputStream.read();
+            }
+            byte[] allBytes = bytes.toByteArray();
+            if (encoding == null || encoding.equals("")) {
+                String contentType = connection.getContentType();
+                if (contentType != null) {
+                    // according to http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/, 'higher level' charset indication should prevail
+                    encoding = GenericResponseWrapper.getEncoding(contentType);
+                }
 
-            handleResponse(responseCode, result, absoluteUrl);
+                if (encoding == null && contentType != null) { // take a default based on the content type
+                    encoding = GenericResponseWrapper.getDefaultEncoding(contentType);
+                }
+                if (encoding == GenericResponseWrapper.TEXT_XML_DEFAULT_CHARSET) { // if content-type is text/xml the body should be US-ASCII, which we will ignore and evalute the body. See comments in GenericResponseWrapper#getDefaultEncoding. 
+                    encoding = GenericResponseWrapper.getXMLEncoding(allBytes); // Will detect if body is XML, and set encoding to something if it is, otherwise, remains null.
+                }
+
+            }
+            log.debug("Using " + encoding);
+            helper.setValue(debugStart(absoluteUrl) + new String(allBytes, encoding) + debugEnd(absoluteUrl));
 
             if (log.isDebugEnabled()) {
                 log.debug("found string: " + helper.getValue());
             }
 
         } catch (IOException e) {
-            throw new TaglibException (e.getMessage(), e);
+            throw new TaglibException (e);
         }
     }
 
@@ -207,41 +187,6 @@ public class IncludeTag extends UrlTag {
                  request, response);
     }
 
-
-    protected boolean addContext() {
-        return false;
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    protected void handleResponse(int code, String result, String url) throws JspTagException {
-
-        String page;
-        switch(code) {
-        case 200:
-            page = result;
-            break;
-        default:
-        case 404:
-            switch(Notfound.get(notFound, this)) {
-            case Notfound.SKIP:
-            case Notfound.PROVIDENULL:
-                page = "";
-                break;
-            case Notfound.THROW:
-                if ("".equals(result)) result = "The requested resource '" + url + "' is not available";
-                throw new JspTagException(result);
-            default:
-            case Notfound.DEFAULT:
-            case Notfound.MESSAGE:
-                if ("".equals(result)) result = "The requested resource '" + url + "' is not available";
-                page = result;
-            }
-            break;
-        }
-        helper.setValue(debugStart(url) + page + debugEnd(url));
-    }
     /**
      * Use the RequestDispatcher to include a page without doing a request.
      * Encoding apparently work, but why they do isn't very clear.
@@ -262,11 +207,9 @@ public class IncludeTag extends UrlTag {
                     log.debug("key '" + e.getKey() + "' value '" + Arrays.asList((String[]) o) + "'");
                 } else {
                     log.debug("key '" + e.getKey() + "' value '" + o.toString() + "'");
-                }
+                }                
             }
-        }
-
-        req.removeAttribute(ContextTag.CONTEXTTAG_KEY);
+        } 
 
         if (attributes != Attribute.NULL) {
             Iterator i = Referids.getReferids(attributes, this).entrySet().iterator();
@@ -274,8 +217,9 @@ public class IncludeTag extends UrlTag {
                 Map.Entry entry = (Map.Entry) i.next();
                 req.setAttribute((String) entry.getKey(), entry.getValue());
             }
-
+            
         }
+         
         // Orion bug fix.
         req.getParameterMap();
 
@@ -289,16 +233,17 @@ public class IncludeTag extends UrlTag {
                 throw new NotFoundException("Page \"" + relativeUrl + "\" does not exist (No request-dispatcher could be created)");
             }
 
-            IncludeWrapper responseWrapper;
+            GenericResponseWrapper responseWrapper;
             String encoding = encodingAttribute.getString(this);
-            if (encoding.equals("")) {
-                responseWrapper = new IncludeWrapper(resp);
+            if (encoding.equals("")) { 
+                responseWrapper = new GenericResponseWrapper(resp);
             } else {
-                responseWrapper = new IncludeWrapper(resp, encoding);
+                responseWrapper = new GenericResponseWrapper(resp, encoding);
             }
-            requestDispatcher.include(requestWrapper, responseWrapper);
 
-            handleResponse(responseWrapper.getStatus(), responseWrapper.toString(), relativeUrl);
+            requestDispatcher.include(requestWrapper, responseWrapper);                
+            String page = responseWrapper.toString();
+            helper.setValue(debugStart(relativeUrl) + page + debugEnd(relativeUrl));                
 
 
         } catch (Throwable e) {
@@ -323,48 +268,67 @@ public class IncludeTag extends UrlTag {
      * When staying in the same web-application, then the file also can be found on the file system,
      * and the possibility arises simply citing it (passing the web-server). It is in no way
      * interpreted then. This can be useful when creating example pages.
-     * @param bodyContent unused
-     * @param relativeUrl URL to cite relative to root of web-app.
-     * @param request     unused
      */
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
             if (log.isDebugEnabled()) log.trace("Citing " + relativeUrl);
-            if (resource == Attribute.NULL) {
-                if (relativeUrl.indexOf("..") > -1 || relativeUrl.toUpperCase().indexOf("WEB-INF") > -1)  { // toUpperCase: just for windows, of course
-                    throw new JspTagException("Not allowed to cite " + relativeUrl);
-                }
+            if (relativeUrl.indexOf("..") > -1 || relativeUrl.toUpperCase().indexOf("WEB-INF") > -1)  { // toUpperCase: just for windows, of course
+                throw new JspTagException("Not allowed to cite " + relativeUrl);
             }
+            String urlFile = pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length()));
 
             // take of the sessionid if it is present
             //HttpSession session = request.getSession(false);
             //if (session != null && session.isNew())
-            { // means there is a ;jsession argument
-                int j = relativeUrl.lastIndexOf(';');
+                { // means there is a ;jsession argument
+                int j = urlFile.lastIndexOf(';');
                 if (j != -1) {
-                    relativeUrl = relativeUrl.substring(0, j);
+                    urlFile = urlFile.substring(0, j);
                 }
 
             }
+            File file = new File(urlFile);
+
+            if (file.isDirectory()) {
+                throw new JspTagException("Cannot cite a directory");
+            }
+
+            if (! file.toURL().getProtocol().equals("file")) {
+                throw new JspTagException("Cannot only cite local files");
+            }
 
 
-            String resource = relativeUrl;
-            if (log.isDebugEnabled()) log.debug("Citing " + resource);
+            if (log.isDebugEnabled()) log.debug("Citing " + file.toString());
+            FileInputStream inputStream = new FileInputStream(file);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            int c = inputStream.read();
+            while (c != -1) {
+                bytes.write(c);
+                c = inputStream.read();
+            }
+            byte[] allBytes = bytes.toByteArray();
+            
+            String encoding = encodingAttribute.getString(this);
+            if (encoding.equals("")) {
+                encoding = GenericResponseWrapper.getXMLEncoding(allBytes);
+            }
 
-
-            Reader reader = ResourceLoader.getWebRoot().getReader(resource);
-            if (reader == null) {
-                handleResponse(404, "No such resource " + resource, resource);
+            String fileContents;
+            if (encoding == null) {
+                log.debug("Could not find XML encoding in file");
+                if (file.getName().endsWith(".xml")) {
+                    log.debug("Supposing UTF-8");
+                    fileContents = new String(allBytes, "UTF-8");
+                } else {
+                    log.debug("NOT XML");
+                    // use default encoding for other files               
+                    fileContents = new String(allBytes, System.getProperty("file.encoding"));
+                }
             } else {
-                StringWriter writer = new StringWriter();
-                while (true) {
-                    int c = reader.read();
-                    if (c == -1) break;
-                    writer.write(c);
-                }
-                handleResponse(200, writer.toString(), resource);
+                log.debug("Found " + encoding);
+                fileContents = new String(allBytes, encoding);
             }
-
+            helper.setValue(debugStart(urlFile) + fileContents + debugEnd(urlFile));
         } catch (IOException e) {
             throw new TaglibException (e);
         }
@@ -375,15 +339,19 @@ public class IncludeTag extends UrlTag {
      */
     protected void includePage() throws JspTagException {
         try {
-            String gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
+            // Variables to keep track of which level we are at and what URI is current
+            int includeLevel;
+            String includeURI="";
+            String previncludeURI="";
 
-            if (gotUrl == null || "".equals(gotUrl)) {
-                return; //if there is no url, we cannot include
-            }
+            String gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
 
             if (pageLog.isServiceEnabled()) {
                 pageLog.service("Parsing mm:include JSP page: " + gotUrl);
             }
+            // if not absolute, make it absolute:
+            // (how does one check something like that?)
+            String urlString;
 
             // Do some things to make the URL absolute.
             String nudeUrl; // url withouth the params
@@ -404,61 +372,82 @@ public class IncludeTag extends UrlTag {
 
 
             if (nudeUrl.indexOf(':') == -1) { // relative
-                // Fetch include level from Attributes, mainly for debugging
-                Integer level = (Integer) request.getAttribute(INCLUDE_LEVEL_KEY);
-                int includeLevel;
+                // This code, which passes the RequestURI through Attributes is necessary
+                // Because Orion doesn't adapt the RequestURI when using the RequestDispatcher
+                // This breaks relative includes of more than 1 level.
+
+                // Fetch includelevel en reqeust URI from Attributes.
+                Integer level = (Integer) request.getAttribute("includeTagLevel");
                 if (level == null) {
                     includeLevel = 0;
                 } else {
                     includeLevel = level.intValue();
                 }
-
-                // Fetch the current servlet from request attribute.
-                // This is needed when we are resolving relatively.
-                String includingServlet = (String) request.getAttribute(INCLUDE_PATH_KEY);
-                if (includingServlet == null) {
-                    includingServlet = request.getServletPath();
+                includeURI = (String) request.getAttribute("includeTagURI");
+                if (includeLevel == 0 || includeURI==null) {
+                    includeURI = request.getRequestURI();
+                    paramsIndex = includeURI.indexOf('?');
+                    if (paramsIndex != -1) {
+                        includeURI = includeURI.substring(0, paramsIndex);
+                    }
                 }
                 if (log.isDebugEnabled()) {
-                    log.debug("Including from : Level=" + includeLevel + " URI=" + includingServlet);
+                    log.debug("Include: Level=" + includeLevel + " URI=" + includeURI);
                 }
 
-                String includedServlet;
-                if (nudeUrl.startsWith("/")) {
+                if (nudeUrl.charAt(0) == '/') {
                     log.debug("URL was absolute on servletcontext");
-                    includedServlet = gotUrl;
+                    urlString = gotUrl;
                 } else {
                     log.debug("URL was relative");
-                    // Using url-objects only because they know how to resolve relativity
-                    URL u = new URL("http", "localhost", includingServlet);
-                    URL dir = new URL(u, "."); // directory
+                    File currentDir = new File(includeURI + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)
+                    
+                    urlString =
+                        // find the parent directory of the relativily given URL:
+                        // parent-file: the directory in which the current file is.
+                        // nude-Url   : is the relative path to this dir
+                        // canonicalPath: to get rid of /../../ etc
+                        // replace:  windows uses \ as path seperator..., but they may not be in URL's..
+                        new File(currentDir.getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
 
-                    File currentDir = new File(includingServlet + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)
-                    nudeUrl = new URL(dir, nudeUrl).getFile();
-                    includedServlet = nudeUrl + params;
+                    // getCanonicalPath gives also gives c: in windows:
+                    // take it off again if necessary:
+                    int colIndex = urlString.indexOf(':');
+                    if (colIndex == -1) {
+                        urlString += params;
+                    } else {
+                        urlString = urlString.substring(colIndex + 1) + params;
+                    }
                 }
 
                 // Increase level and put it together with the new URI in the Attributes of the request
                 includeLevel++;
-                request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
-
+                request.setAttribute("includeTagLevel", new Integer(includeLevel));
+                // keep current URI so we can retrieve it after the include
+                previncludeURI = includeURI;
+                includeURI = urlString;
+                paramsIndex = includeURI.indexOf('?');
+                if (paramsIndex != -1) {
+                    includeURI = includeURI.substring(0, paramsIndex);
+                }
+                request.setAttribute("includeTagURI", includeURI);
                 if (log.isDebugEnabled()) {
-                    log.debug("Next Include: Level=" + includeLevel + " URI=" + includedServlet);
+                    log.debug("Next Include: Level=" + includeLevel + " URI=" + includeURI);
                 }
 
                 if (getCite()) {
-                    cite(bodyContent, includedServlet, request);
+                    cite(bodyContent, urlString, request);
                 } else {
-                    internal(bodyContent, includedServlet, request, response);
+                    if (invalidIncludingAppServerRequestClasses.contains(request.getClass().getName())) {
+                        externalRelative(bodyContent, response.encodeURL(urlString), request, response);
+                    } else {
+                        internal(bodyContent, urlString.substring(request.getContextPath().length()), request, response);
+                    }
                 }
                 // Reset include level and URI to previous state
                 includeLevel--;
-                if (includeLevel == 0) {
-                    request.removeAttribute(INCLUDE_LEVEL_KEY);
-                } else {
-                    request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
-                }
-
+                request.setAttribute("includeTagLevel", new Integer(includeLevel));
+                request.setAttribute("includeTagURI", previncludeURI);
             } else { // really absolute
                 if (getCite()) {
                     cite(bodyContent, gotUrl, request);
@@ -494,8 +483,6 @@ public class IncludeTag extends UrlTag {
                                // to select this property in their jsp pages.
         } else if (dtype.equals("html")) {
             return DEBUG_HTML;
-        } else if (dtype.equals("xml")) {
-            return DEBUG_XML;
         } else if (dtype.equals("css")) {
             return DEBUG_CSS;
         } else {
@@ -517,10 +504,7 @@ public class IncludeTag extends UrlTag {
     private String debugStart(String url) throws JspTagException {
         switch(getDebug()) {
         case DEBUG_NONE: return "";
-        case DEBUG_HTML:
-            return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
-        case DEBUG_XML:
-            return "<!-- " + getThisName() + " page = '" + url + "' -->";
+        case DEBUG_HTML: return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
         case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
         default: return "";
         }
@@ -532,36 +516,9 @@ public class IncludeTag extends UrlTag {
     private String debugEnd(String url) throws JspTagException {
         switch(getDebug()) {
         case DEBUG_NONE: return "";
-        case DEBUG_HTML:
-            return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
-        case DEBUG_XML:
-            return "<!-- END " + getThisName() + " page = '" + url + "' -->";
+        case DEBUG_HTML: return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
         case DEBUG_CSS:  return "\n/* END " + getThisName() + " page = '" + url + "' */\n";
         default: return "";
         }
-    }
-    private static class IncludeWrapper extends GenericResponseWrapper {
-        int includeStatus = 200;
-        public IncludeWrapper(HttpServletResponse resp) {
-            super(resp);
-        }
-        public IncludeWrapper(HttpServletResponse resp, String encoding) {
-            super(resp, encoding);
-        }
-
-        // don't wrap status to including request.
-        public void setStatus(int status) {
-            includeStatus = status;
-        }
-        public void sendError(int sc, String mes) {
-            includeStatus = sc;
-        }
-        public void sendError(int sc) {
-            includeStatus = sc;
-        }
-        public int getStatus() {
-            return includeStatus;
-        }
-
     }
 }

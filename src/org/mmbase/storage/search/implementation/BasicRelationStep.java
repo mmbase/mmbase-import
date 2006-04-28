@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.storage.search.*;
 
 /**
@@ -20,7 +19,7 @@ import org.mmbase.storage.search.*;
  * The directionality property defaults to DIRECTIONS_BOTH.
  *
  * @author Rob van Maris
- * @version $Id: BasicRelationStep.java,v 1.11 2005-10-30 19:08:33 michiel Exp $
+ * @version $Id: BasicRelationStep.java,v 1.8 2004-02-23 19:01:03 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
@@ -49,14 +48,17 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     // package visibility!
-    BasicRelationStep(InsRel builder, Step previous, Step next) {
+    BasicRelationStep(InsRel builder,
+        Step previous, Step next) {
         super(builder);
         if (previous == null) {
-            throw new IllegalArgumentException("Invalid previous value: " + previous);
+            throw new IllegalArgumentException(
+            "Invalid previous value: " + previous);
         }
         this.previous = previous;
         if (next == null) {
-            throw new IllegalArgumentException("Invalid next value: " + next);
+            throw new IllegalArgumentException(
+            "Invalid next value: " + next);
         }
         this.next = next;
     }
@@ -68,7 +70,8 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      * @return This <code>BasicRelationStep</code> instance.
      * @see #getCheckedDirectionality
      */
-    public BasicRelationStep setCheckedDirectionality(boolean checkedDirectionality) {
+    public BasicRelationStep setCheckedDirectionality(
+            boolean checkedDirectionality) {
         this.checkedDirectionality = checkedDirectionality;
         return this;
     }
@@ -116,32 +119,9 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         return directionality;
     }
 
-    /**
-     * Returns a description of the part
-     */
-    public String getDirectionalityDescription() {
-        try {
-            return RelationStep.DIRECTIONALITY_DESCRIPTIONS[directionality];
-        } catch (IndexOutOfBoundsException ioobe) {
-            return null;
-        }
-    }
-
     // javadoc is inherited
     public Integer getRole() {
         return role;
-    }
-
-    // javadoc is inherited
-    public String getRoleDescription() {
-        String roleName = "reldef:"+role;
-        if (role != null && getBuilder() != null) {
-            MMObjectNode node = getBuilder().getNode(role.intValue());
-            if (node != null) {
-                roleName = node.getGUIIndicator();
-            }
-        }
-        return roleName;
     }
 
     // javadoc is inherited
@@ -162,7 +142,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         if (obj instanceof RelationStep) {
             RelationStep step = (RelationStep) obj;
             return getTableName().equals(step.getTableName())
-                && (alias != null ? alias.equals(step.getAlias()) : step.getAlias() == null)
+                && getAlias().equals(step.getAlias())
                 && getNodes().equals(step.getNodes())
                 && step.getDirectionality() == directionality
                 && (role == null? step.getRole() == null: role.equals(step.getRole()));
@@ -173,6 +153,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
 
  // javadoc is inherited
     public int hashCode() {
+        String alias = getAlias();
         return 41 * (getTableName().hashCode()
                      + 43 * ( (alias != null ? alias.hashCode() : 0)
                               + 47 * (getNodes().hashCode()
@@ -189,9 +170,9 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         append(", nodes:").
         append(getNodes()).
         append(", dir:").
-        append(getDirectionalityDescription()).
+        append(RelationStep.DIRECTIONALITY_NAMES[getDirectionality()]).
         append(", role:").
-        append(getRoleDescription()).
+        append(getRole()).
         append(")");
         return sb.toString();
     }

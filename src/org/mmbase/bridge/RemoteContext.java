@@ -19,7 +19,7 @@ import java.net.MalformedURLException;
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.7 2005-06-07 12:02:37 michiel Exp $
+ * @version $Id: RemoteContext.java,v 1.5.2.1 2004-07-13 18:38:14 nico Exp $
  * @since MMBase-1.5
  */
 public class RemoteContext {
@@ -35,7 +35,7 @@ public class RemoteContext {
      */
     public static CloudContext getCloudContext(String uri) {
         try {
-            
+
             Object remoteCloudContext= Naming.lookup(uri);
             try {
                 Class clazz = Class.forName("org.mmbase.bridge.remote.implementation.RemoteCloudContext_Impl");
@@ -48,19 +48,20 @@ public class RemoteContext {
                 return null;
             }
         } catch (MalformedURLException mue) {
-            String message = mue.getMessage();
-            if (message != null && message.indexOf("no protocol") > -1) {
-                throw new RuntimeException("This exception maybe occured, because the servlet container is " +
-                                           "installed in a directory with spaces.\n" +
-                                           "The java.rmi.server.RMIClassLoader loads classes from network locations " +
-                                           "(one or more URLS) for marschalling and unmarschalling parameters and return values. " +
-                                           "The RMIClassLoader uses a codebase where to load the classes. The codebase is a string " +
-                                           "with URLs separated by spaces.\n" +
-                                           "Error message: " + mue.getMessage());
-            }
-            throw new BridgeException("While connecting to " + uri + ": " + mue.getMessage(), mue);
+        	String message = mue.getMessage();
+        	if (message != null && message.indexOf("no protocol") > -1) {
+                throw new RuntimeException(
+                	"This exception maybe occured, because the servlet container is " +
+                	"installed in a directory with spaces.\n" +
+                	"The java.rmi.server.RMIClassLoader loads classes from network locations " +
+					"(one or more URLS) for marschalling and unmarschalling parameters and return values. " +
+					"The RMIClassLoader uses a codebase where to load the classes. The codebase is a string " +
+					"with URLs separated by spaces.\n" +
+					"Error message: " + mue.getMessage());
+        	}
+            throw new RuntimeException(mue.getMessage());
         } catch (Exception e){
-            throw new BridgeException("While connecting to " + uri + ": " +  e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
         }
     }
     public static void main(String[] argv) {

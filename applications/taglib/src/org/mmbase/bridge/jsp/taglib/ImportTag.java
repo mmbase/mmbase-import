@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.58 2005-05-18 08:04:16 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.41.2.6 2005-03-14 18:33:24 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -77,7 +77,6 @@ public class ImportTag extends ContextReferrerTag {
 
     public int doStartTag() throws JspTagException {
         Object value = null;
-        helper.overrideWrite(false);
         log.trace("dostarttag of import");
         
         if (getId() == null) {
@@ -113,10 +112,6 @@ public class ImportTag extends ContextReferrerTag {
                         result = cc.find(pageContext, from, useId);
                     }
                     if (result != null) {
-                        if (! (from == ContextContainer.LOCATION_PARAMETERS || from == ContextContainer.LOCATION_MULTIPART)) {
-                            helper.overrideNoImplicitList();
-                        }
-
                         cc.register(useId, result, ! res);
                         found = true;
                         break;
@@ -129,7 +124,7 @@ public class ImportTag extends ContextReferrerTag {
                 if (fromString.equals("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
                     throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in session, because there is no session");
                 }
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : ("in " + fromString)));
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : fromString));
             }
             if (found) {
                 value = getObject(useId);
@@ -141,8 +136,7 @@ public class ImportTag extends ContextReferrerTag {
         if (found) {
             setValue(value, WriterHelper.NOIMPLICITLIST);
             if (useId != null) {
-                ContextContainer cc = getContextProvider().getContextContainer();
-                cc.reregister(useId, helper.getValue());
+                getContextProvider().getContextContainer().reregister(useId, helper.getValue());
             }
             return SKIP_BODY;
         } else {
@@ -157,9 +151,11 @@ public class ImportTag extends ContextReferrerTag {
      * @since MMBase-1.7.2
      */
     protected void setValue(Object value, boolean noImplicitList) throws JspTagException {
-        value = getEscapedValue(value);
-        if (log.isDebugEnabled()) {
-            log.debug("Setting " + value + " " + (value == null ? "NULL" : "" + value.getClass()));
+        if (helper.getEscape() != null) {
+            CharTransformer escaper  = ContentTag.getCharTransformer(helper.getEscape());
+            if (escaper != null && value != null) {
+                value = escaper.transform((String) value);
+            }
         }
         helper.setValue(value, noImplicitList);
     }
@@ -177,7 +173,7 @@ public class ImportTag extends ContextReferrerTag {
         }
         if (externid != Attribute.NULL) {
             if (! found ) {
-                if (log.isDebugEnabled()) log.debug("External Id " + externid.getString(this) + " not found");
+                if (log.isDebugEnabled()) log.debug("External Id " + externid.getString(this) + " not found, using " + bodyContent);
                 // try to find a default value in the body.
                 Object body = bodyContent != null ? bodyContent.getString() : "";
                 if (! "".equals(body)) { // hey, there is a body content!
@@ -198,11 +194,8 @@ public class ImportTag extends ContextReferrerTag {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
                 }
-                boolean res = reset.getBoolean(this, false);
-                // should this be more general? Also in other contextwriters?
-
-                getContextProvider().getContextContainer().register(useId, helper, !res);
-
+                boolean res = reset.getBoolean(this, false); // should this be more general? Also in other contextwriters?
+                getContextProvider().getContextContainer().register(useId, helper.getValue(), !res);
             } else {
                 if (helper.getJspvar() == null) {
                     found = false; // for use next time
@@ -214,7 +207,7 @@ public class ImportTag extends ContextReferrerTag {
         found = false; // for use next time
         useId = null;
         bodyContent = null;
-        helper.doEndTag();
+        helper.release();
         log.debug("end of importag");
         super.doEndTag();
         return EVAL_PAGE;

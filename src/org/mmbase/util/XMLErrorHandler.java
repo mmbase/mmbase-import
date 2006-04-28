@@ -18,17 +18,15 @@ import org.xml.sax.SAXParseException;
 /**
  * Provides ErrorHandler methods
  *
- * @move org.mmbase.util.xml
- * @rename ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.17 2005-08-29 08:54:15 michiel Exp $
+ * @version $Id: XMLErrorHandler.java,v 1.13 2003-07-18 14:57:50 michiel Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
-    public static final int WARNING =   1;
-    public static final int ERROR =   2;
-    public static final int FATAL_ERROR = 3;
-    public static final int NEVER = 4;
+    public static int WARNING =   1;
+    public static int ERROR =   2;
+    public static int FATAL_ERROR = 3;
+    public static int NEVER = 4;
 
     private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class);
     private int exceptionLevel;
@@ -115,9 +113,11 @@ public class XMLErrorHandler implements ErrorHandler {
         StringBuffer str = new StringBuffer();
         String systemId = ex.getSystemId();
         if (systemId != null) {
+            int index = systemId.lastIndexOf('/');
+            if (index != -1) {
+                systemId = systemId.substring(index + 1);
+            }
             str.append(systemId);
-        } else {
-            str.append("[NO SYSTEM ID]");
         }
         str.append(" line:");
         str.append(ex.getLineNumber());

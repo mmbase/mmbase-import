@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  */
 
 public abstract class StringTransformer implements CharTransformer {
-    private static final Logger log = Logging.getLoggerInstance(StringTransformer.class);
+    private static Logger log = Logging.getLoggerInstance(StringTransformer.class.getName());
 
     // javadoc inherited
     public abstract String transform(String r);

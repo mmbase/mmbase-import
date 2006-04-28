@@ -18,16 +18,21 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Module;
 import org.mmbase.bridge.Node;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import org.mmbase.bridge.jsp.taglib.*;
 
 /**
  * Posts a message
  *
  * @author Pierre van Rooden
- * @version $Id: UpdateTag.java,v 1.11 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: UpdateTag.java,v 1.8.2.2 2004-07-26 20:12:21 nico Exp $
  */
  
 public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
+
+    private static Logger log = Logging.getLoggerInstance(UpdateTag.class.getName());
 
     private Module community=null;
     private String message;

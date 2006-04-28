@@ -18,7 +18,7 @@ import java.util.*;
  * #getWidth} or {@link #getHeight} are called for the first time. 
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.7.4
+ * @since MMBase-1.8
  */
 
 
@@ -35,9 +35,7 @@ public class LazyDimension extends Dimension {
     private void getDimension() {
         if (loaded) return;
         List args = new ArrayList();
-        if (template != null) {
-            args.add(template);
-        }
+        args.add(template);
         Dimension dim = (Dimension) node.getFunctionValue("dimension", args).get();
         x = dim.getWidth();
         y = dim.getHeight();

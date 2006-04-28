@@ -15,12 +15,10 @@ package org.mmbase.util.transformers;
  * can be pointed out to be typical for Transformers. This interface
  * ended up a bit emptier than I anticipated.
  *
- * A Transformer must be serializable, because it is exposed through bridge (as 'processors').
- *
  * @author Michiel Meeuwissen
  */
 
-public interface Transformer extends java.io.Serializable {
+public interface Transformer {
 
     String toString();
 }

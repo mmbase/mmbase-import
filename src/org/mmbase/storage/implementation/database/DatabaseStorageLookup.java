@@ -16,7 +16,6 @@ import org.xml.sax.InputSource;
 
 import org.mmbase.storage.*;
 
-import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,14 +26,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.7 2005-12-17 15:47:49 michiel Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.4 2004-02-05 08:23:58 pierre Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageLookup.class);
 
-    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK = "/org/mmbase/storage/implementation/database/resources/lookup.xml";
-    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH     = "storage/databases/lookup.xml";
+    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH = "/org/mmbase/storage/implementation/database/resources/lookup.xml";
 
     /** Public ID of the Storage DTD version 1.0 */
     public static final String PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0 = "-//MMBase//DTD storage config 1.0//EN";
@@ -50,31 +48,16 @@ public class DatabaseStorageLookup extends DocumentReader {
      * Register the Public Ids for DTDs used by StorageReader
      * This method is called by XMLEntityResolver.
      */
-    static  {
+    public static void registerPublicIDs() {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0, DTD_DATABASE_STORAGE_LOOKUP_1_0, DatabaseStorageLookup.class);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    private static InputSource getInputSource() {
-        InputSource is = null;
-        try {
-            is = ResourceLoader.getConfigurationRoot().getInputSource(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH);
-        } catch (java.io.IOException ioe) {
-        }
-        if (is == null) { // 1.7 compatibility
-            return new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK));
-        } else {
-            return is;
-        }
     }
 
     /**
      * Constructor, accesses the storage lookup xml resource
      */
-    DatabaseStorageLookup() {
-        super(getInputSource(), DocumentReader.validate(), DatabaseStorageLookup.class);
+    protected DatabaseStorageLookup() {
+        super(new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH)),
+              DocumentReader.validate(), DatabaseStorageLookup.class);
     }
 
     /**
@@ -82,7 +65,7 @@ public class DatabaseStorageLookup extends DocumentReader {
      * @param dmd the database meta data
      * @return The database configuration resource, or <code>null</code> if it cannot be determined
      */
-    String getResourcePath(DatabaseMetaData dmd) throws SQLException, StorageConfigurationException {
+    protected String getResourcePath(DatabaseMetaData dmd) throws SQLException, StorageConfigurationException {
         Element root = document.getDocumentElement();
         NodeList filterList = root.getElementsByTagName("filter");
         for (int i = 0; i < filterList.getLength(); i++) {
@@ -91,26 +74,6 @@ public class DatabaseStorageLookup extends DocumentReader {
             if (match(filter, dmd)) {
                 log.service("Auto detection selected '" + resourcePath + "' for the current database.");
                 return resourcePath;
-            }
-        }
-        // not found, return null
-        return null;
-    }
-
-    /**
-     * Returns an given connection URL for a given Driver CLass. Or <code>null</code> if no such
-     * thing was defined in lookup.xml. In that case the configured URL in MMBase can be used.
-     * 
-     * @since MMBase-1.8
-     */
-    String getMetaURL(Class clazz) {
-        Element root = document.getDocumentElement();
-        NodeList urlList = root.getElementsByTagName("url");
-        for (int i = 0; i < urlList.getLength(); i++) {
-            Element url = (Element) urlList.item(i);
-            String driverClass = url.getAttribute("driver-class");
-            if (clazz.getName().startsWith(driverClass)) {
-                return getNodeTextValue(url);
             }
         }
         // not found, return null

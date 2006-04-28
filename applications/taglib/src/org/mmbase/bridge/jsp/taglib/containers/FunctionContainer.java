@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainer.java,v 1.7 2005-05-04 22:24:51 michiel Exp $
+ * @version $Id: FunctionContainer.java,v 1.6 2004-02-11 20:40:14 keesj Exp $
  */
 public interface FunctionContainer extends ParamHandler, TagIdentifier, FunctionContainerOrNodeProvider {
 
@@ -39,4 +39,9 @@ public interface FunctionContainer extends ParamHandler, TagIdentifier, Function
      */
     String  getName() throws JspTagException;
     
+
+    interface Entry {
+        String getKey();
+        Object getValue();
+    }
 }

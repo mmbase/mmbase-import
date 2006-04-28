@@ -14,15 +14,10 @@ import java.sql.*;
 /**
  * JDBCInterface is _only_ the module JDBC interface who setup the connections
  * it has nothing tofo with the JDBC interface.
- *
- * @duplicate Not really needed. Remove and reference JDBC directly. Note that direct
- *            references to JDBC will be removed from most of the core (only the storagemanagerfactory
- *            will reference the JDBC module directly)
- * @author vpro
- * @version $Id: JDBCInterface.java,v 1.7 2004-10-07 17:22:35 pierre Exp $
+ * @version $Id: JDBCInterface.java,v 1.6 2003-05-01 14:51:40 michiel Exp $
  */
 public interface JDBCInterface {
-
+    
     /**
      * @javadoc
      */
@@ -39,8 +34,8 @@ public interface JDBCInterface {
      * @javadoc
      */
     public String makeUrl(String host, int port, String dbm);
-
-    // JDBC Pools
+    
+    // JDBC Pools    
     /**
      * @javadoc
      */
@@ -53,7 +48,7 @@ public interface JDBCInterface {
 
     /**
      * @javadoc
-     */
+     */    
     public Connection getDirectConnection(String url) throws SQLException;
 
     /**

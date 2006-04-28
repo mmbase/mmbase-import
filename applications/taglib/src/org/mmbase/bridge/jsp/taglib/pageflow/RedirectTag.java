@@ -14,6 +14,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mmbase.util.GenericResponseWrapper;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 
 
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * Does a redirect, using the features of UrlTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RedirectTag.java,v 1.5 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: RedirectTag.java,v 1.1.2.4 2005-03-14 18:33:24 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -53,6 +54,7 @@ public class RedirectTag extends UrlTag  {
         } catch (java.io.IOException io) {
             throw new TaglibException(io);
         }
+        super.doEndTag();        
 	return SKIP_PAGE;
     }
 

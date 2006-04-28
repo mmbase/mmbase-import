@@ -71,7 +71,7 @@
 
               <!-- this is a trick to find out if there are any more pages -->
               <mm:last>                
-                <mm:write><mm:islessthan value="$[+ $size - $pagesize]">...</mm:islessthan></mm:write>
+                <mm:write><mm:islessthan value="${+ $size - $pagesize}">...</mm:islessthan></mm:write>
               </mm:last>
             </mm:nextbatches>
           </th>

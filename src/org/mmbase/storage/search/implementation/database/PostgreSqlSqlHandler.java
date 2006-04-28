@@ -9,11 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
+import java.util.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
-import java.util.*;
-import org.mmbase.module.corebuilders.RelDef;
-import org.mmbase.module.core.MMObjectNode;
 
 /**
  * The PostgreSQL query handler, implements {@link
@@ -36,45 +34,49 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.20 2006-02-27 23:55:26 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.6 2003-12-11 13:05:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
+    /** Logger instance. */
     private static final Logger log = Logging.getLoggerInstance(PostgreSqlSqlHandler.class);
 
     /**
      * Constructor.
+     *
+     * @param disallowedValues Map mapping disallowed table/fieldnames
+     *        to allowed alternatives.
      */
-    public PostgreSqlSqlHandler() {
-        super();
+    public PostgreSqlSqlHandler(Map disallowedValues) {
+        super(disallowedValues);
     }
 
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
-        case SearchQueryHandler.FEATURE_MAX_NUMBER:
-            result = SearchQueryHandler.SUPPORT_OPTIMAL;
-            break;
+            case SearchQueryHandler.FEATURE_MAX_NUMBER:
+                result = SearchQueryHandler.SUPPORT_OPTIMAL;
+                break;
 
-        case SearchQueryHandler.FEATURE_OFFSET:
-            result = SearchQueryHandler.SUPPORT_OPTIMAL;
-            break;
-            /*
-              case SearchQueryHandler.FEATURE_REGEXP:
-              result = SearchQueryHandler.SUPPORT_OPTIMAL;
-              break;
-            */
-        default:
-            result = super.getSupportLevel(feature, query);
+            case SearchQueryHandler.FEATURE_OFFSET:
+                result = SearchQueryHandler.SUPPORT_OPTIMAL;
+                break;
+                /*
+            case SearchQueryHandler.FEATURE_REGEXP:
+                result = SearchQueryHandler.SUPPORT_OPTIMAL;
+                break;
+                */
+            default:
+                result = super.getSupportLevel(feature, query);
         }
         return result;
     }
 
 
     protected boolean useLower(FieldCompareConstraint constraint) {
-        if (constraint.getOperator() == FieldCompareConstraint.LIKE) {
+        if (constraint.getOperator() == FieldValueConstraint.LIKE) {
             return false;
         } else {
             return true;
@@ -102,47 +104,6 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
     */
 
-    /**
-     * <a href="http://www.postgresql.org/docs/7.4/static/functions-datetime.html">date time
-     * functions</a>
-     *
-     * @javadoc
-     */
-    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
-        String datePartFunction = null;
-        switch (datePart) {
-        case FieldValueDateConstraint.CENTURY:
-            datePartFunction = "CENTURY";
-            break;
-        case FieldValueDateConstraint.QUARTER:
-            datePartFunction = "QUARTER";
-            break;
-        case FieldValueDateConstraint.WEEK:
-            datePartFunction = "WEEK";
-            break;
-        case FieldValueDateConstraint.DAY_OF_YEAR:
-            datePartFunction = "DOY";
-            break;
-        case FieldValueDateConstraint.DAY_OF_WEEK:
-            datePartFunction = "DOW";
-            break;
-        case FieldValueDateConstraint.MILLISECOND:
-            datePartFunction = "MILLISECONDS";
-            break;
-        default:
-            log.debug("Unknown datePart " + datePart);
-        }
-        if (datePartFunction != null) {
-            sb.append("EXTRACT(");
-            sb.append(datePartFunction);
-            sb.append(" FROM ");
-            appendField(sb, step, fieldName, multipleSteps);
-            sb.append(')');
-        } else {
-            // others are supported in super..
-            super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
-        }
-    }
 
 
     // javadoc is inherited
@@ -188,54 +149,5 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             log.debug("generated SQL: " + strSQL);
         }
         return strSQL;
-    }
-
-
-    /**
-     * Optimizes postgresql queries by adding the ONLY keyword to a relation-table, provided that the
-     * role was given (and therefor teh sleection onlky applies to the given table).
-     *
-     * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuffer, org.mmbase.storage.search.Step)
-     */
-    protected void appendTableName(StringBuffer sb, Step step) {
-        if(step instanceof RelationStep) {
-            RelationStep rs = (RelationStep) step;
-            if (rs.getRole() != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Adding ONLY keyword to tablename " + step.getTableName());
-                }
-                sb.append(" ONLY ");
-            } else {
-                org.mmbase.module.core.MMBase mmbase = org.mmbase.module.core.MMBase.getMMBase();
-                // no role specified, check if more then one roles on sub tables are possible...
-                int sourceBuilder = mmbase.getBuilder(rs.getPrevious().getTableName()).getObjectType();
-                int destinationBuilder = mmbase.getBuilder(rs.getNext().getTableName()).getObjectType();
-                int directionality = rs.getDirectionality();
-                RelDef reldef = mmbase.getRelDef();
-                Set tables = new HashSet();
-                Enumeration allowed = mmbase.getTypeRel().getAllowedRelations(sourceBuilder, destinationBuilder);
-                while(allowed.hasMoreElements()) {
-                    MMObjectNode typeRel = (MMObjectNode) allowed.nextElement();
-                    int rnumber = typeRel.getIntValue("rnumber");
-                    tables.add(reldef.getBuilder(rnumber).getTableName());
-                }
-                if (tables.size() == 1) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("No role defined but only one table possible (" + tables + "), adding with ONLY");
-                    }
-                    sb.append(" ONLY ").
-                        append(mmbase.getBaseName()).
-                        append('_').
-                        append((String) tables.iterator().next());
-                    appendTableAlias(sb, step);
-                    return;                        
-                } else {                    
-                    if (log.isDebugEnabled()) {
-                        log.debug("Not adding ONLY to table name because role of " + step + " is null, and the following tables are possible " + tables);
-                    }
-                }
-            }
-        }
-        super.appendTableName(sb, step);
     }
 }

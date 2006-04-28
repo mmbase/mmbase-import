@@ -69,10 +69,9 @@
         <xsl:text>: </xsl:text>
       </strong>
       <xsl:apply-templates mode="titlepage.mode"/>
-      <br /><strong class="{name(.)}"><xsl:text>Date: </xsl:text></strong> <xsl:value-of select="//*/date"/>
     </div>
   </xsl:template>
-  
+
   <!-- do not show revision history -->
   <xsl:template match="revhistory" mode="titlepage.mode" />
 

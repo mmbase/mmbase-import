@@ -11,20 +11,23 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import org.mmbase.module.Module;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.*;
 
 import org.w3c.dom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: ModuleWriter.java,v 1.8 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id: ModuleWriter.java,v 1.5 2003-03-10 11:51:17 pierre Exp $
  */
 public class ModuleWriter extends DocumentWriter  {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(ModuleWriter.class.getName());
 
     /**
      * Hold a reference to the module for which to create an XML document.
      */
-    protected Module module;
+    private Module module;
 
     /**
      * Constructs the document writer.
@@ -32,9 +35,8 @@ public class ModuleWriter extends DocumentWriter  {
      * @param module the module for which to create an XML document.
      */
     public ModuleWriter(Module module) throws DOMException {
-        super("module", ModuleReader.PUBLIC_ID_MODULE,
-                        XMLEntityResolver.DOMAIN + XMLEntityResolver.DTD_SUBPATH + ModuleReader.DTD_MODULE);
-        this.module = module;
+        super("module", "-//MMBase/DTD module config 1.0//EN","http://www.mmbase.org/dtd/module_1_0.dtd");
+        this.module=module;
         getMessageRetriever("org.mmbase.util.xml.resources.modulewriter");
     }
 
@@ -43,7 +45,7 @@ public class ModuleWriter extends DocumentWriter  {
      * @throws DOMException when an error occurred during generation
      */
     protected void generate() throws DOMException {
-        Element root = document.getDocumentElement();
+        Element root=document.getDocumentElement();
         addComment("module.configuration",module.getName(),module.getModuleInfo(),root);
         root.setAttribute("maintainer",module.getMaintainer());
         root.setAttribute("version",""+module.getVersion());
@@ -59,12 +61,12 @@ public class ModuleWriter extends DocumentWriter  {
         root.appendChild(properties);
         // properties.property
         Map datamap=module.getInitParameters();
-        for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            String propname = (String) entry.getKey();
-            String propvalue = (String) entry.getValue();
+        for (Iterator i=datamap.keySet().iterator(); i.hasNext();) {
+            String propname=(String)i.next();
+            String propvalue=(String)datamap.get(propname);
             Element elm=addContentElement("property",propvalue,properties);
             elm.setAttribute("name",propname);
         }
+
     }
 }

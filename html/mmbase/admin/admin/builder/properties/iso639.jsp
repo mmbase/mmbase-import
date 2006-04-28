@@ -1,4 +1,3 @@
-<!-- TODO: list is available as a datatype and resourcebundle too, so this jsp should be simplified -->
 <select name="<%=property%>" >
 <% if (value!=null) { %>
 <option selected="selected"><%=value%></option>

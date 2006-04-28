@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
+
+import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -31,16 +33,20 @@ import org.mmbase.util.logging.Logging;
  * 9 : is replaced by a random digit (0-9)<br />
  * <br />
  *
- * @license uses the GNU license, should be moved external
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGenerator.java,v 1.11 2005-12-18 00:19:21 michiel Exp $
+ * @version $Id: PasswordGenerator.java,v 1.6 2003-03-10 11:51:09 pierre Exp $
  */
 
-public class PasswordGenerator implements PasswordGeneratorInterface {
+public class PasswordGenerator extends Module implements PasswordGeneratorInterface {
 
-    private static final Logger log = Logging.getLoggerInstance(PasswordGenerator.class);
+    // logger
+    private static Logger log = Logging.getLoggerInstance(PasswordGenerator.class.getName());
 
+    /**
+     * For testing.
+     */
+    private static PasswordGenerator PG;
 
     /**
      * List of consonants that can be used in a password.
@@ -65,13 +71,55 @@ public class PasswordGenerator implements PasswordGeneratorInterface {
     /**
      * Default template to use when generating passwords.
      */
-    String defaulttemplate = "SSSSSS";
+    String defaulttemplate=new String("SSSSSS");
 
     /**
      * Creates the generator
      */
     public PasswordGenerator() {
-        ranPool = new RandomPool();
+        ranPool=new RandomPool();
+    }
+
+    /**
+     * Called when the module is loaded.
+     * Not used.
+     */
+    public void onload() {
+    }
+
+    /**
+     * Called when the module is reloaded.
+     * Tries to retrieve a default template for a password from the
+     * template property from the module configuration file.
+     * Not used.
+     */
+    public void reload() {
+        defaulttemplate=getInitParameter("template");
+        if (defaulttemplate==null) defaulttemplate=new String("SSSSSS");
+    }
+
+    /**
+     * Initializes the module.
+     * Tries to retrieve a default template for a password from the
+     * template property from the module configuration file.
+     */
+    public void init() {
+        defaulttemplate=getInitParameter("template");
+        if (defaulttemplate==null) defaulttemplate=new String("SSSSSS");
+    }
+
+    /**
+     * Called when the module is unloaded.
+     * Not used.
+     */
+    public void unload() {
+    }
+
+    /**
+     * Called when the module is shut down (removed).
+     * Not used.
+     */
+    public void shutdown() {
     }
 
     /**
@@ -79,7 +127,7 @@ public class PasswordGenerator implements PasswordGeneratorInterface {
      * Used for testing.
      */
     public static void main(String args[]) {
-        PasswordGenerator PG = new PasswordGenerator();
+        PG=new PasswordGenerator();
         log.info("Password "+PG.getPassword());
         log.info("Password "+PG.getPassword("SSS 9 SSS"));
         log.info("Password "+PG.getPassword("SSSS"));
@@ -109,7 +157,7 @@ public class PasswordGenerator implements PasswordGeneratorInterface {
      * @return the generated password.
      */
     public String getPassword() {
-        return getPassword(defaulttemplate);
+        return(getPassword(defaulttemplate));
     }
 
     /**
@@ -119,8 +167,8 @@ public class PasswordGenerator implements PasswordGeneratorInterface {
      */
     public String getPassword(String template) {
         int len;
-        boolean next = true;
-        StringBuffer pwd = new StringBuffer();
+        boolean next=true;
+        StringBuffer pwd=new StringBuffer();
 
         len=template.length();
         for (int i=0;i<len;i++) {
@@ -170,7 +218,7 @@ public class PasswordGenerator implements PasswordGeneratorInterface {
         } else if (tmplChar == 'S') {        //random syllable
             if (consonantNext) {
                 charsOut = consonants[mod(ranPool.value(), consonants.length)];
-                if (!"qu".equals(charsOut)) consonantNext = false;
+                if (charsOut != "qu") consonantNext = false;
             } else {
                 charsOut = vowels[mod(ranPool.value(), vowels.length)];
                 consonantNext = true;

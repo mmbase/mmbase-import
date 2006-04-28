@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * Avoiding such inconsistencies is the responsibility of the user.
  *
  * @author  Rob van Maris
- * @version $Id: ModifiableQuery.java,v 1.5 2004-05-07 13:23:42 michiel Exp $
+ * @version $Id: ModifiableQuery.java,v 1.4.2.1 2004-05-07 13:24:14 michiel Exp $
  * @since MMBase-1.7
  */
 public class ModifiableQuery implements SearchQuery {

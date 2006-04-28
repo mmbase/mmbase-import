@@ -25,13 +25,13 @@ import org.mmbase.util.logging.*;
  * In this manner, it is more an application than a module.
  * The community 'application' consists of the Community, Channel, and Message builder.
  * <br />
- * The {@link org.mmbase.applications.community.builders.Community} builder is a pool of channels
+ * The {@link org.mmbase.module.builders.Community} builder is a pool of channels
  * of a similar type (chatbox, forum, or guestbook).
  * <br />
- * The {@link org.mmbase.applications.community.builders.Channel} builder defines a channel - a
+ * The {@link org.mmbase.module.builders.Channel} builder defines a channel - a
  * 'location' which manages a forum discussion or chat.
  * <br />
- * The {@link org.mmbase.applications.community.builders.Message} builder defines a single message - a
+ * The {@link org.mmbase.module.builders.Message} builder defines a single message - a
  * persistent message in case of a forum or guestbook, a temporary message in the
  * case of a chat.
  * <br />
@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.21 2005-10-05 10:59:39 michiel Exp $
+ * @version $Id: CommunityPrc.java,v 1.15 2004-03-16 12:24:45 michiel Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -83,29 +83,17 @@ public class CommunityPrc extends ProcessorModule {
         if (!active) {
 
             messageBuilder = (Message) mmb.getBuilder("message");
-            if (messageBuilder == null) {
-                log.info("Community module could not be activated because message builder missing");
-                return false;
-            }
-            if (!messageBuilder.activate()) {
-                log.info("Community module could not (yet) be activated because message builder could not be activated" + (messageBuilder == null ? "." : " (" + messageBuilder + ")."));
+            if (messageBuilder == null  || !messageBuilder.activate()) {
+                log.info("Community module could not (yet) be activated because message builder missing or could not be activated" + (messageBuilder == null ? "." : " (" + messageBuilder + ")."));
                 return false;
             }
             communityBuilder = (Community)mmb.getBuilder("community");
-            if (communityBuilder == null) {
-                log.info("Community builder missing. Communityprc can work without it though.");
-            } else {
-                if(!communityBuilder.activate()) {
-                    log.info("Community builder could not be activated. Communityprc can work without that though.");
-                }
+            if (communityBuilder == null || !communityBuilder.activate()) {
+                log.info("Community builder missing or could not be activated. Communityprc can work without it though.");
             }
             channelBuilder = (Channel) mmb.getBuilder("channel");
-            if (channelBuilder == null) {
-                log.info("Channel builder missing. Communityprc can work without it though.");
-            } else {
-                if (! channelBuilder.activate()) {
-                    log.info("Channel builder could not be activated. Communityprc can work without that though.");
-                }
+            if (channelBuilder == null || ! channelBuilder.activate()) {
+                log.info("Channel builder missing or could not be activated. Communityprc can work without it though.");
             }
             initializeTreeBuilder();
             active = true;
@@ -133,11 +121,11 @@ public class CommunityPrc extends ProcessorModule {
      * Handle a $MOD command.
      * The actual commands are directed to the Message, Channel, and
      * Community builders.
-     * @param sp The PageInfo (containing http and user info) that calls the function
+     * @param sp The scanpage (containing http and user info) that calls the function
      * @param cmds the command to execute
      * @return the result value as a <code>String</code>
      */
-    public String replace(PageInfo sp, String cmds) {
+    public String replace(scanpage sp, String cmds) {
         if (activate()) {
             StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
             if (tok.hasMoreTokens()) {
@@ -160,18 +148,21 @@ public class CommunityPrc extends ProcessorModule {
      * Execute the commands provided in the form values.
      * This method returns values which allow the page to
      * check whether the operation was succesful (MESSAGE-NUMBER or MESSAGE-ERROR).
-     * The data is stored (added) in the <code>vars<vars> parameter. This allows a system that uses the MMCI
+     * If the page has a session object, the data is stored in the session
+     * object. This means that SCAN can retrieve the data using the $SESSION
+     * command. If session is not present, the data is stored (added) in the
+     * <code>vars<vars> parameter. This allows a system that uses the MMCI
      * (such as jsp) to retrieve the value.
      * <br />
      * XXX: This is a bit of a sloppy way to pass results, and the actual
      * mechanics may get changed (formalized) in the future.
      *
-     * @param sp The PageInfo (containing http and user info) that calls the function
+     * @param sp The scanpage (containing http and user info) that calls the function
      * @param cmds the commands to process
      * @param vars variables that were set to be used during processing.
      * @return the result value as a <code>String</code>
      */
-    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
         boolean result = false;
         if (activate()) {
             String token;
@@ -199,14 +190,23 @@ public class CommunityPrc extends ProcessorModule {
 
     /**
      * Stores an output parameter as a value.
+     * The limitations of SCAN require the value to be set in a {@link sessionInfo}
+     * variable maintained by the scan servlet.
      * However, the MMCI does not 'know' sessionInfo, so in those instances
      * variables are stored in the vars parameter (which is passed back to the
      * MMCI).
      * If neither object is supported, no data is returned.
      */
-    private void setReturnValue(PageInfo sp, Hashtable vars, String name, String value) {
-        if (vars!=null) {
-            // return it in the vars hashtable
+    private void setReturnValue(scanpage sp, Hashtable vars, String name, String value) {
+        if (sp.session!=null) {
+            // for SCAN, the data need be stored in a SESSION var
+            if (value==null) {
+                sp.session.removeValue(name);
+            } else {
+                sp.session.setValue(name,value);
+            }
+        } else if (vars!=null) {
+            // otherwise return it in the vars hashtable
             if (value==null) {
                 vars.remove(name);
             } else {
@@ -222,7 +222,7 @@ public class CommunityPrc extends ProcessorModule {
      * @param vars variables that were set to be used during processing.
      * @return <code>true</code> if the post was successful
      */
-    private boolean doPostProcess(PageInfo sp, Hashtable cmds, Hashtable vars) {
+    private boolean doPostProcess(scanpage sp, Hashtable cmds, Hashtable vars) {
         // Get the MessageThread, Subject and Body from the formvalues.
         String tmp = (String)cmds.get("MESSAGE-POST");
         setReturnValue(sp,vars,"MESSAGE-ERROR",null);
@@ -268,7 +268,7 @@ public class CommunityPrc extends ProcessorModule {
      * @param vars variables that were set to be used during processing.
      * @return <code>true</code> if the update was sucecsful
      */
-    private boolean doUpdateProcess(PageInfo sp, Hashtable cmds, Hashtable vars) {
+    private boolean doUpdateProcess(scanpage sp, Hashtable cmds, Hashtable vars) {
         String tmp = (String)cmds.get("MESSAGE-UPDATE");
         try {
             // Get the Subject, Body, number from the formvalues.
@@ -321,12 +321,12 @@ public class CommunityPrc extends ProcessorModule {
     /**
      * Generates a list of values from a command to the processor.
      * Recognized commands are TREE, WHO, and TEMPORARYRELATIONS.
-     * @param context the context of the page or calling application (currently, this should be a PageInfo object)
+     * @param context the context of the page or calling application (currently, this should be a scanpage object)
      * @param command the list command to execute.
      * @param params contains the attributes for the list
      * @return a <code>Vector</code> that contains the list values as MMObjectNodes
      */
-    public Vector getNodeList(Object context, String command, Map params) {
+    public Vector getNodeList(Object context, String command, Map params) throws ParseException {
         activate();
         if (command.equals("WHO")) return channelBuilder.getNodeListUsers(params);
         if (command.equals("TEMPORARYRELATIONS")) return getNodeListTemporaryRelations(params);
@@ -342,12 +342,12 @@ public class CommunityPrc extends ProcessorModule {
      * @param command the list command to execute.
      * @return a <code>Vector</code> that contains the list values
      */
-    public Vector getList(PageInfo sp, StringTagger params, String command) {
+    public Vector getList(scanpage sp, StringTagger params, String command) throws ParseException {
         if (activate()) {
             if (command.equals("TREE")) return messageBuilder.getListMessages(params);
             if (command.equals("WHO")) return channelBuilder.getListUsers(params);
             if (command.equals("TEMPORARYRELATIONS")) return getListTemporaryRelations(params);
-            throw new UnsupportedOperationException("Unknown command '" + command + "'");
+            throw new ParseException("Unknown command '" + command + "'");
         } else {
             throw new RuntimeException("CommunityPrc module could not be activated");
             // return null; // returning null gives NPE in ProcessorModule, how nice it that?
@@ -415,7 +415,7 @@ public class CommunityPrc extends ProcessorModule {
         if (number.indexOf("_") < 0)
             node = messageBuilder.getNode(number);
         else
-            node = (MMObjectNode)MMObjectBuilder.temporaryNodes.get(number);
+            node = (MMObjectNode)messageBuilder.TemporaryNodes.get(number);
         Vector relatedNodes = messageBuilder.getTemporaryRelated(node, (String)params.get("TYPE"),offset,max);
         return relatedNodes;
     }

@@ -12,7 +12,6 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 import java.util.*;
 
 import org.mmbase.module.core.MMBaseObserver;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @todo undoubtly, this is too crude.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheInvalidator.java,v 1.8 2006-03-28 23:06:58 michiel Exp $
+ * @version $Id: CacheInvalidator.java,v 1.4 2003-11-05 15:48:03 keesj Exp $
  * @since MMBase-1.7
  */
 class CacheInvalidator implements MMBaseObserver {
@@ -64,11 +63,7 @@ class CacheInvalidator implements MMBaseObserver {
      * What happens if something changes: clear the caches
      */
     synchronized protected boolean nodeChanged(String machine, String number, String builder, String ctype) {
-        if (((int) (System.currentTimeMillis() / 1000) - MMBase.startTime) > 300) {
-            log.service("A security object " + number + " (" + builder + ") has changed, invalidating all security caches");
-        } else if (log.isDebugEnabled()) {
-            log.debug("A security object " + number + " (" + builder + ") has changed, invalidating all security caches");
-        }
+        log.debug("A security object has changed, invalidating all security caches");
         Iterator i = securityCaches.iterator();
         while (i.hasNext()) {
             Map c = (Map) i.next();

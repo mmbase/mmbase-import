@@ -11,6 +11,9 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 
+import java.io.FileInputStream;
+import java.io.StringReader;
+
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -29,24 +32,20 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * The DocumentReader class provides methods for loading a xml document in memory.
- * It serves as the base class for DocumentWriter (which adds ways to write a document), and
+ * It serves as the base class for DocumentWriter (which adds ways to write a document), and 
  * XMLBasicReader, which adds path-like methods with which to retrieve elements.
- *
- * This can also be a class for general static dom utilities.
- *
  *
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.24 2006-04-10 15:35:30 michiel Exp $
- * @since MMBase-1.7
+ * @version $Id: DocumentReader.java,v 1.1 2003-08-18 16:50:52 pierre Exp $
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
 
     /** for the document builder of javax.xml. */
-    private static Map documentBuilders = Collections.synchronizedMap(new HashMap());
+    private static Map documentBuilders = Collections.synchronizedMap(new HashMap());     
 
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
 
@@ -70,28 +69,44 @@ public class DocumentReader  {
 
     protected Document document;
 
-    private String systemId;
+    private String xmlFilePath;
 
-    static UtilReader.PropertiesMap utilProperties = null;
-    /**
+    /**  
      * Returns the default setting for validation for DocumentReaders.
+     * @todo add a way to configure this value, so validation can be turned off in i.e. production environments
      * @return true if validation is on
      */
     protected static final boolean validate() {
-        Object validate = utilProperties == null ? null : utilProperties.get("validate");
-        return validate == null || validate.equals("true");
+        return true;
     }
-
+    
     /**
-     * Whether to validate given a request for that. So, the request is followed, unless it is configured to 'never' validate.
-     * @since MMBase-1.8
-     */    
-    protected static final boolean validate(boolean requested) {
-        Object validate = utilProperties == null ? null : utilProperties.get("validate");
-        if (validate != null && validate.equals("never")) return false;
-        return requested;
+     * Creates an input source for a document, based on a filepath
+     * If the file cannot be opened, the method returns an inputsource of an error document describing the condition 
+     * under which this failed.
+     * @param path the path to the file containing the doxument
+     * @return the input source to the document.
+     */
+    private static InputSource getInputSource(String path) {
+        try {
+            // remove file protocol if present to avoid errors in accessing file
+            if (path.startsWith("file://")) path= path.substring(7);
+            InputSource is = new InputSource(new FileInputStream(path));
+            is.setSystemId("file://" + path);
+            return is;
+        } catch (java.io.FileNotFoundException e) {
+            log.error("Error reading " + path + ": " + e.toString());
+            log.service("Using empty source");
+            // try to handle more or less gracefully
+            InputSource is = new InputSource();
+            is.setSystemId(FILENOTFOUND + path);
+            is.setCharacterStream(new StringReader("<?xml version=\"1.0\"?>\n" +
+                                                   "<!DOCTYPE error PUBLIC \"" + PUBLIC_ID_ERROR + "\"" +
+                                                   " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" +
+                                                   "<error>" + e.toString() + "</error>"));
+            return is;
+        }
     }
-
 
     /**
      * Creates an empty document reader.
@@ -100,31 +115,31 @@ public class DocumentReader  {
     }
 
     /**
-     * Constructs the document by reading it from a source.
-     * @param source the input source from which to read the document
+     * Constructs the document by reading it from a file.
+     * @param path the path to the file from which to read the document
      */
-    public DocumentReader(InputSource source) {
-        this(source, validate(), null);
-    }
-
-    /**
-     * Constructs the document by reading it from a source.
-     * @param source the input source from which to read the document
-     * @param validating whether to validate the document
-     */
-    public DocumentReader(InputSource source, boolean validating) {
-        this(source, validating, null);
+    public DocumentReader(String path) {
+        this(getInputSource(path), validate(), null);
     }
 
     /**
      * Constructs the document by reading it from a source.
      * You can pass a resolve class to this constructor, allowing you to indicate the package in which the dtd
      * of the document read is to be found. The dtd sould be in the resources package under the package of the class passed.
-     * @param source the input source from which to read the document
+     * @param path the path to the file from which to read the document
+     * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
-    public DocumentReader(InputSource source, Class resolveBase) {
-        this(source, DocumentReader.validate(), resolveBase);
+    public DocumentReader(String path, boolean validating, Class resolveBase) {
+        this(getInputSource(path), validating, resolveBase);
+    }
+    
+    /**
+     * Constructs the document by reading it from a source.
+     * @param source the input source from which to read the document
+     */
+    public DocumentReader(InputSource source) {
+        this(source, validate(), null);
     }
 
     /**
@@ -136,42 +151,29 @@ public class DocumentReader  {
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
     public DocumentReader(InputSource source, boolean validating, Class resolveBase) {
-        if (source == null) {
-            throw new IllegalArgumentException("InputSource cannot be null");
-        }
         try {
-            systemId = source.getSystemId();
+            xmlFilePath = source.getSystemId();
             XMLEntityResolver resolver = null;
             if (resolveBase != null) resolver = new XMLEntityResolver(validating, resolveBase);
-            DocumentBuilder dbuilder = getDocumentBuilder(validating, null/* no error handler */, resolver);
+            DocumentBuilder dbuilder = DocumentReader.getDocumentBuilder(validating, null, resolver);
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
             document = dbuilder.parse(source);
         } catch(org.xml.sax.SAXException se) {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + Logging.stackTrace(se));
         } catch(java.io.IOException ioe) {
-            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe, ioe);
+            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe);
         }
     }
 
     /**
-     * @since MMBase-1.8
-     */
-    public DocumentReader(Document doc) {
-        document = doc;
-    }
-
-
-    private static boolean warnedJAXP12 = false;
-    /**
      * Creates a DocumentBuilder using SAX.
      * @param validating if true, the documentbuilder will validate documents read
-     * @param xsd     Whether to use XSD for validating
      * @param handler a ErrorHandler class to use for catching parsing errors, pass null to use a default handler
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use a default resolver
      * @return a DocumentBuilder instance, or null if none could be created
      */
-    private static DocumentBuilder createDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
+    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
         DocumentBuilder db;
         if (handler == null) handler = new XMLErrorHandler();
         if (resolver == null) resolver = new XMLEntityResolver(validating);
@@ -180,17 +182,6 @@ public class DocumentReader  {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get document builder AFTER setting the validation
             dfactory.setValidating(validating);
-            if (validating && xsd) {
-                try {
-                    dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
-                                          "http://www.w3.org/2001/XMLSchema");
-                } catch (IllegalArgumentException iae) {
-                    if (! warnedJAXP12) {
-                        log.warn("The XML parser does not support JAXP 1.2, XSD validation will not work.", iae);
-                        warnedJAXP12 = true;
-                    }
-                }
-            }
             dfactory.setNamespaceAware(true);
 
             db = dfactory.newDocumentBuilder();
@@ -209,7 +200,7 @@ public class DocumentReader  {
     }
 
     /**
-     * Creates a DocumentBuilder with default settings for handler, resolver, or validation,
+     * Creates a DocumentBuilder with default settings for handler, resolver, or validation, 
      * obtaining it from the cache if available.
      * @return a DocumentBuilder instance, or null if none could be created
      */
@@ -217,57 +208,38 @@ public class DocumentReader  {
         return getDocumentBuilder(validate(), null, null);
     }
 
-
-    /**
-     * Obtain a DocumentBuilder
-     */
-    public static DocumentBuilder getDocumentBuilder(boolean validating) {
-        return DocumentReader.getDocumentBuilder(validating, null, null);
-    }
-
-    /**
-     * See {@link #getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
-     */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
-        return getDocumentBuilder(validating, false, handler, resolver);
-    }
-
     /**
      * Creates a DocumentBuilder.
-     * DocumentBuilders that use the default error handler or entity resolver are cached (one for validating,
+     * DocumentBuilders that use the default error handler or entity resolver are cached (one for validating, 
      * one for non-validating document buidlers).
      * @param validating if true, the documentbuilder will validate documents read
-     * @param xsd        if true, validating will be done by an XML schema definiton.
      * @param handler a ErrorHandler class to use for catching parsing errors, pass null to use the default handler
      * @param resolver a EntityResolver class used for resolving the document's dtd, pass null to use the default resolver
      * @return a DocumentBuilder instance, or null if none could be created
-     * @since MMBase-1.8.
      */
-    public static DocumentBuilder getDocumentBuilder(boolean validating, boolean xsd, ErrorHandler handler, EntityResolver resolver) {
-        validating = validate(validating);
+    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
         if (handler == null && resolver == null) {
-            String key = "" + validating + xsd;
-            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(key);
+            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(new Boolean(validating));
             if (db == null) {
-                db = createDocumentBuilder(validating, xsd, null, null);
-                documentBuilders.put(key, db);
+                db = createDocumentBuilder(validating, null, null);
+                documentBuilders.put(new Boolean(validating), db);
             }
             return db;
         } else {
-            return createDocumentBuilder(validating, xsd, handler, resolver);
+            return createDocumentBuilder(validating, handler, resolver);
         }
     }
 
     /**
      * Return the text value of a node.
-     * It includes the contents of all child textnodes and CDATA sections, but ignores
+     * It includes the contents of all child textnodes and CDATA sections, but ignores 
      * everything else (such as comments)
      * The code trims excessive whitespace unless it is included in a CDATA section.
-     *
+     * 
      * @param n the Node whose value to determine
-     * @return a String representing the node's textual value
+     * @return a String representing the node's textual value 
      */
-    public static String getNodeTextValue(Node n) {
+    public String getNodeTextValue(Node n) {
         NodeList nl = n.getChildNodes();
         StringBuffer res = new StringBuffer();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -282,261 +254,11 @@ public class DocumentReader  {
     }
 
     /**
-     * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
-     * passed namespace
-     */
-    static public boolean hasAttribute(Element element, String nameSpace, String localName) {
-        return element.hasAttributeNS(nameSpace,localName) || element.hasAttribute(localName);
-    }
-
-    /**
-     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
-     * passed namespace
-     */
-    static public String getAttribute(Element element, String nameSpace, String localName) {
-        if (element.hasAttributeNS(nameSpace, localName)) {
-            return element.getAttributeNS(nameSpace, localName);
-        } else {
-            return element.getAttribute(localName);
-        }
-    }
-
-    /**
-     * Utility method to make a document of an element.
-     * @since MMBase-1.8
-     */
-    static public Document toDocument(Element element) {
-        DocumentBuilder documentBuilder = getDocumentBuilder(false, null, null);
-        DOMImplementation impl = documentBuilder.getDOMImplementation();
-        Document document = impl.createDocument(element.getNamespaceURI(), element.getLocalName(), null);
-        Element copy = (Element) document.importNode(element, true);
-        Element dest = document.getDocumentElement();
-        NamedNodeMap attributes = copy.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Attr attribute = (Attr) (attributes.item(i).cloneNode(true));
-            dest.setAttributeNode(attribute);
-
-        }
-        NodeList childs = copy.getElementsByTagName("*");
-        for (int i = 0; i < childs.getLength() ; i++) {
-            dest.appendChild(childs.item(i));
-        }
-        document.normalize();
-        return document;
-    }
-
-    static public void appendChild(Element parent, Element newChild, String path) {
-        String[] p = path.split(",");
-        int i = 0;
-        Node refChild = null;
-        NodeList childs = parent.getElementsByTagName("*");
-        int j = 0;
-        while (j < childs.getLength() && i < p.length) {
-            Element child = (Element) childs.item(j);
-            if (child.getTagName().equals(p[i])) {
-                j++;
-            } else {
-                i++;
-            }
-        }
-        parent.insertBefore(newChild, refChild);
-    }
-
-    /**
      * Returns the systemID of the InputSource used to read the document.
      * This is generally the document's file path.
      * @return the systemID as a String
-     *
-     * @since MMBase-1.8
      */
-    public String getSystemId() {
-        return systemId;
+    public String getFileName() {
+        return xmlFilePath;
     }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public void setSystemId(String url) {
-        systemId = url;
-    }
-
-    /**
-     * @param e Element
-     * @return Tag name of the element
-     */
-    public String getElementName(Element e) {
-        return e.getLocalName();
-    }
-
-    /**
-     * @param path Path to the element
-     * @param attr Attribute name
-     * @return Value of attribute
-     */
-    public String getElementAttributeValue(String path, String attr) {
-        return getElementAttributeValue(getElementByPath(path),attr);
-    }
-
-
-    /**
-     * @param e Element
-     * @param attr Attribute name
-     * @return Value of attribute
-     */
-    public String getElementAttributeValue(Element e, String attr) {
-        if (e == null) {
-            return "";
-        } else {
-            return e.getAttribute(attr);
-        }
-    }
-
-    /**
-     * Determine the root element of the contained document
-     * @return root element
-     * @deprecated
-     */
-    public Element getRootElement() {
-        if (document == null) {
-            log.error("Document is not defined, cannot get root element");
-        }
-        return document.getDocumentElement();
-    }
-
-    /**
-     * @param path Dot-separated list of tags describing path from root element to requested element.
-     *             NB the path starts with the name of the root element.
-     * @return Leaf element of the path
-     */
-    public Element getElementByPath(String path) {
-        if (document == null) {
-            log.error("Document is not defined, cannot get " + path);
-        }
-        return getElementByPath(document.getDocumentElement(),path);
-    }
-
-    /**
-     * @param e Element from which the "relative" path is starting.
-     *          NB the path starts with the name of the root element.
-     * @param path Dot-separated list of tags describing path from root element to requested element
-     * @return Leaf element of the path
-     */
-    public Element getElementByPath(Element e, String path) {
-        StringTokenizer st = new StringTokenizer(path,".");
-        if (!st.hasMoreTokens()) {
-            // faulty path
-            log.error("No tokens in path");
-            return null;
-        } else {
-            String root = st.nextToken();
-            if (e.getLocalName().equals("error")) {
-                // path should start with document root element
-                log.error("Error occurred : (" + getElementValue(e) + ")");
-                return null;
-            } else if (!e.getLocalName().equals(root)) {
-                // path should start with document root element
-                log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getLocalName()+"): incorrect xml file" +
-                          "("+getSystemId()+")");
-                return null;
-            }
-            OUTER:
-            while (st.hasMoreTokens()) {
-                String tag = st.nextToken();
-                NodeList nl = e.getChildNodes();
-                for(int i = 0; i < nl.getLength(); i++) {
-                    if (! (nl.item(i) instanceof Element)) continue;
-                    e = (Element)nl.item(i);
-                    if (e.getLocalName().equals(tag)) continue OUTER;
-                }
-                // Handle error!
-                return null;
-            }
-            return e;
-        }
-    }
-
-
-    /**
-     * @param path Path to the element
-     * @return Text value of element
-     */
-    public String getElementValue(String path) {
-        return getElementValue(getElementByPath(path));
-    }
-
-    /**
-     * @param e Element
-     * @return Text value of element
-     */
-    public String getElementValue(Element e) {
-        if (e == null) {
-            return "";
-        } else {
-            return getNodeTextValue(e);
-        }
-    }
-
-    /**
-     * @param path Path to the element
-     * @return Iterator of child elements
-     */
-    public Iterator getChildElements(String path) {
-        return getChildElements(getElementByPath(path));
-    }
-
-    /**
-     * @param e Element
-     * @return Iterator of child elements
-     */
-    public Iterator getChildElements(Element e) {
-        return getChildElements(e,"*");
-    }
-
-    /**
-     * @param path Path to the element
-     * @param tag tag to match ("*" means all tags")
-     * @return Iterator of child elements with the given tag
-     */
-    public Iterator getChildElements(String path,String tag) {
-        return getChildElements(getElementByPath(path),tag);
-    }
-
-    /**
-     * @param e Element
-     * @param tag tag to match ("*" means all tags")
-     * @return Iterator of child elements with the given tag
-     * @todo XXXX MM: Since we have changed the return type from 1.7 to 1.8 anyway, why don't we return a List then?
-     */
-    public Iterator getChildElements(Element e,String tag) {
-        List v = new ArrayList();
-        boolean ignoretag = tag.equals("*");
-        if (e!=null) {
-            NodeList nl = e.getChildNodes();
-            for (int i=0;i<nl.getLength();i++) {
-                Node n = nl.item(i);
-                if (n.getNodeType() == Node.ELEMENT_NODE &&
-                    (ignoretag ||
-                     ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
-                    v.add(n);
-                }
-            }
-        }
-        return v.iterator();
-    }
-
-    public static void main(String[] argv) throws Exception {
-        if (argv.length == 0) {
-            System.out.println("Usage: java -Dmmbase.config=<config dir> org.mmbase.util.xml.DocumentReader <path to xml>");
-            System.out.println(" The mmbase config dir is used to resolve XSD's (in config/xmlns) and DTD's (in config/dtd).");
-            System.out.println(" Errors will be reported if the XML is invalid");
-            
-            return;
-        }
-        Document d = org.mmbase.util.ResourceLoader.getDocument(new java.io.File(argv[0]).toURL(), true, null);
-        /*
-        DocumentReader doc =  new DocumentReader(d);
-        System.out.println(XMLWriter.write(toDocument(doc.getRootElement()), true, false));
-        */
-    }
-
 }

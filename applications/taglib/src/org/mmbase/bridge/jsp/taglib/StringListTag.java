@@ -13,30 +13,28 @@ import java.io.IOException;
 import java.util.*;
 
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.jstl.core.*;
 
-import org.mmbase.util.Casting;
 import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.26 2006-04-12 14:51:40 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.15.2.2 2004-07-05 17:20:00 michiel Exp $ 
  * @since MMBase-1.7
  */
 
 public class StringListTag extends NodeReferrerTag implements ListProvider, Writer { // need to extend NodeRefferer becasue of AliasListTag, no MI in java.
 
-    protected List returnList;
+    private static final Logger log = Logging.getLoggerInstance(StringListTag.class);
+
+    protected  List    returnList;
     protected Iterator iterator;
     protected int      currentItemIndex= -1;
 
     protected Attribute  max = Attribute.NULL;
     protected Attribute  comparator = Attribute.NULL;
-    protected Attribute  add= Attribute.NULL;
-    protected Attribute  retain = Attribute.NULL;
-    protected Attribute  remove = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -65,18 +63,6 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         max = getAttribute(m);
     }
 
-    public void setAdd(String a) throws JspTagException {       
-        add = getAttribute(a);
-    }
-
-    public void setRetain(String r) throws JspTagException {       
-        retain = getAttribute(r);
-    }
-
-    public void setRemove(String r) throws JspTagException {       
-        remove = getAttribute(r);
-    }
-
     protected int getMaxNumber() throws JspTagException {
         return max.getInt(this, -1);
     }
@@ -84,6 +70,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     public void setComparator(String c) throws JspTagException {
         comparator = getAttribute(c);
     }
+
 
     /**
      * Lists do implement ContextProvider
@@ -94,7 +81,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
     // ContextProvider implementation
     public ContextContainer getContextContainer() {
-        return collector;
+        return collector.getContextContainer();
     }
 
 
@@ -130,14 +117,10 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
-            if (! (o instanceof Collection)) {
-                throw new JspTagException("Context variable " + getReferid() + " is not a Collection");
+            if (! (o instanceof List)) {
+                throw new JspTagException("Context variable " + getReferid() + " is not a List");
             }
-            if (o instanceof List) {
-                returnList = (List) o;
-            } else {
-                returnList = new ArrayList((Collection) o);
-            }
+            returnList = (List) o;
             truncateList();
             if (getReferid().equals(getId())) { // in such a case, don't whine
                 getContextProvider().getContextContainer().unRegister(getId());
@@ -145,38 +128,9 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         } else {
             returnList = getList();
         }
+        currentItemIndex = - 1;  // reset index
 
-        if (getId() != null) {
-            returnList = new ArrayList(returnList);
-        }
-        if (add != Attribute.NULL) {
-            Object addObject = getObject(add.getString(this));
-            if (addObject instanceof Collection) {
-                returnList.addAll((Collection) addObject);
-            } else {
-                returnList.add(Casting.toString(addObject));
-            }
-        }
-        if (retain != Attribute.NULL) {
-            Object retainObject = getObject(retain.getString(this));
-            if (retainObject instanceof Collection) {
-                returnList.retainAll((Collection) retainObject);
-            } else {
-                returnList.retainAll(Collections.singletonList(Casting.toString(retainObject)));
-            }
-        }
-        if (remove != Attribute.NULL) {
-            Object removeObject = getObject(remove.getString(this));
-            if (removeObject instanceof Collection) {
-                returnList.removeAll((Collection) removeObject);
-            } else {
-                returnList.remove(Casting.toString(removeObject));
-            }
-        }
-
-        currentItemIndex = - 1;  // reset index        
-
-        ListSorter.sort(returnList, (String) comparator.getValue(this), this);
+        ListSorter.sort(returnList, (String) comparator.getValue(this), pageContext);
         iterator = returnList.iterator();
         // if we get a result from the query
         // evaluate the body , else skip the body
@@ -220,24 +174,16 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         // dereference for gc
         returnList = null;
         iterator   = null;
-        if (collector != null) {
-            collector.release(pageContext, getContextProvider().getContextContainer());
-            collector  = null;
-        }
+        collector  = null;
         return  super.doEndTag();
     }
 
     protected void setNext() throws JspTagException {
         currentItemIndex++;
-        helper.setValue(iterator.next());
+        helper.setValue("" + iterator.next());
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
     }
-
-    public LoopTagStatus getLoopStatus() {
-        return new ListProviderLoopTagStatus(this);
-    }
-
 }
 

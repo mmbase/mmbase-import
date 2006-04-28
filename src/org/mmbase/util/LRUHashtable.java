@@ -9,21 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import org.mmbase.cache.CacheImplementationInterface;
 import java.util.*;
-
 /**
  * A hashtable which has a maximum of entries.  Old entries are
  * removed when the maximum is reached.  This table is used mostly to
  * implement a simple caching system.
  *
- * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.24 2006-02-23 17:37:23 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.17.2.1 2004-09-07 14:37:24 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
-public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface, SizeMeasurable {
+public class LRUHashtable extends Hashtable implements Cloneable {
 
     private static final String ROOT     = "root";
     private static final String DANGLING = "dangling";
@@ -49,16 +46,32 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
     private int currentSize = 0;
 
     /**
+     * The number of times an element was succesfully retrieved from the table.
+     */
+    private int hit;
+    /**
+     * The number of times an element cpould not be retrieved from the table.
+     */
+
+
+    private int miss;
+    /**
+     * The number of times an element was committed to the table.
+     */
+    private int puts;
+
+    /**
      * Creates the URL Hashtable.
      * @param size the maximum capacity
      * @param cap the starting capacity (used to improve performance)
      * @param lf the amount with which current capacity frows
      */
-    public LRUHashtable(int size, int cap, float lf) {
+    public LRUHashtable(int size,int cap,float lf) {
         super(cap, lf);
         root.next = dangling;
         dangling.prev = root;
         this.size = size;
+        hit = miss = puts = 0;
     }
 
     /**
@@ -66,7 +79,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      * @param size the maximum capacity
      * @param cap the starting capacity (used to improve performance)
      */
-    public LRUHashtable(int size, int cap) {
+    public LRUHashtable(int size,int cap) {
         this(size, cap, 0.75f);
     }
 
@@ -111,6 +124,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
                 remove(root.next.key);
             }
         }
+        puts++;
         return rtn;
     }
 
@@ -136,12 +150,14 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
     public synchronized Object get(Object key) {
         LRUEntry work = (LRUEntry) super.get(key);
         if (work != null) {
+            hit++;
             work.requestCount++;
             Object rtn = work.value;
             removeEntry(work);
             appendEntry(work);
             return rtn;
         } else {
+            miss++;
             return null;
         }
     }
@@ -176,7 +192,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
 
     /**
      * Returns the entries of this Map. Modification are reflected.
-     *
+     * 
      * @since MMBase-1.6.3
      */
     public Set entrySet() {
@@ -203,7 +219,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      * This may result in removal of entries in the table.
      * @param size the new desired size
      */
-    public void setMaxSize(int size) {
+    public void setSize(int size) {
         if (size < 0 ) throw new IllegalArgumentException("Cannot set size of LRUHashtable to negative value");
         if (size < this.size) {
             while(currentSize > size) {
@@ -216,7 +232,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
     /**
      * Return the maximum size of the table
      */
-    public int maxSize() {
+    public int getSize() {
         return size;
     }
 
@@ -246,7 +262,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      * and a description of the underlying hashtable
      */
     public String toString() {
-        return "Size=" + currentSize + ", Max=" + size;
+        return "Size=" + currentSize + ", Max=" + size + ", Ratio=" + getRatio() + " : " + super.toString();
     }
 
     /**
@@ -258,9 +274,19 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      */
     public String toString(boolean which) {
         if (which) {
-            StringBuffer b = new StringBuffer();
-            b.append("Size " + currentSize + ", Max " + size + " : ");
-            b.append(super.toString());
+            StringBuffer b= new StringBuffer();
+            b.append("Size " + currentSize + ", Max " + size + " : {");
+            LRUEntry walk = root.next;
+            while (walk != dangling) {
+                if (which) {
+                    b.append("" + walk.key + "=" + walk.value);
+                    which = false;
+                } else {
+                    b.append("," + walk.key + "=" + walk.value);
+                }
+                walk = walk.next;
+            }
+            b.append("}");
             return b.toString();
         } else {
             return toString();
@@ -291,6 +317,53 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
     }
 
 
+    /**
+     * Returns the ratio of hits and misses.
+     * The higher the ratio, the more succesfull the table retrieval is.
+     * A value of 1 means every attempt to retrieve data is succesfull,
+     * while a value nearing 0 means most times the object requested it is
+     * not available.
+     * Generally a high ratio means the table can be shrunk, while a low ratio
+     * means its size needs to be increased.
+     *
+     * @return A double between 0 and 1 or NaN.
+     */
+    public double getRatio() {
+        return ((double) hit) / (  hit + miss );
+    }
+
+    /**
+     * Returns the number of times an element was succesfully retrieved
+     * from the table.
+     */
+    public int getHits() {
+        return hit;
+    }
+
+    /**
+     * Returns the number of times an element cpould not be retrieved
+     * from the table.
+     */
+    public int getMisses() {
+        return miss;
+    }
+
+    /**
+     * Returns the number of times an element was committed to the table.
+     */
+    public int getPuts() {
+        return puts;
+    }
+
+    /**
+     * Returns statistics on this table.
+     * The information shown includes number of accesses, ratio of misses and hits,
+     * current size, and number of puts.
+     */
+    public String getStats() {
+        return "Access "+ (hit + miss) + " Ratio " + getRatio() + " Size " + size() + " Puts " + puts;
+    }
+
 
     /**
      * @deprecated use getOrderedEntries
@@ -303,22 +376,22 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      * @deprecated use getOrderedEntries
      */
     public Enumeration getOrderedElements(int maxnumber) {
-        List results = new ArrayList();
+        Vector results = new Vector();
         LRUEntry current = root.next;
         if (maxnumber != -1) {
             int i = 0;
             while (current!=null && current!=dangling && i<maxnumber) {
-                results.add(0, current.value);
-                current = current.next;
-                i++;
+                results.insertElementAt(current.value,0);
+                current=current.next;
+                i+=1;
             }
         } else {
             while (current!=null && current!=dangling) {
-                results.add(0, current.value);
-                current = current.next;
-            }
+                results.insertElementAt(current.value,0);
+                current=current.next;
+                }
         }
-        return Collections.enumeration(results);
+        return results.elements();
     }
 
     /**
@@ -339,7 +412,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
      */
 
     public List getOrderedEntries(int maxNumber) {
-        List results = new ArrayList();
+        List results = new Vector();
         LRUEntry current = root.next;
         int i = 0;
         while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
@@ -348,25 +421,6 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
             i++;
         }
         return Collections.unmodifiableList(results);
-    }
-
-
-    public void config(Map map) {
-        // lru needs no configuration.
-    }
-
-    public int getByteSize() {
-        return getByteSize(new SizeOf());
-    }
-    public int getByteSize(SizeOf sizeof) {
-        int len = 4 * SizeOf.SZ_REF + (30 + 5 * SizeOf.SZ_REF) * currentSize;  // 30:overhead of Hashtable, 5*SZ_REF: overhead of LRUEntry
-        LRUEntry current = root.next;
-        while (current != null && current != dangling) {
-            current = current.next;
-            len += sizeof.sizeof(current.key);
-            len += sizeof.sizeof(current.value);
-        }
-        return len;
     }
 
     /**
@@ -443,8 +497,7 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
             return new SizeOf().sizeof(value);
         }
         public int getByteSize(SizeOf sizeof) {
-            return 20 + // 5 references
-                sizeof.sizeof(value);
+            return sizeof.sizeof(value);
         }
         public String toString() {
             return  value == LRUHashtable.this ? "[this lru]" : String.valueOf(value);
@@ -491,119 +544,11 @@ public class LRUHashtable extends Hashtable implements Cloneable, CacheImplement
             if (work != null) {
                 LRUHashtable.this.removeEntry(work);
                 LRUHashtable.this.currentSize--;
-            }
+            } 
         }
     }
 
-    public static void main(String argv[]) {
-        int treesiz = 1024;
-        int opers = 1000000;
-        int thrds  = 1;
 
-        try {
-            if (argv.length > 0) {
-                treesiz = Integer.parseInt(argv[0]);
-            }
-            if (argv.length > 1) {
-                opers = Integer.parseInt(argv[1]);
-            }
-            if (argv.length > 2) {
-                thrds = Integer.parseInt(argv[2]);
-            }
-        } catch (Exception e) {
-            System.out.println("Usage: java org.mmbase.util.LRUHashtable <size of table> <number of operation to do> <threads>");
-            return;
-        }
-
-        final int TREESIZ = treesiz;
-        final int OPERS = opers;
-        final int THREADS = thrds;
-
-        final LRUHashtable treap = new LRUHashtable(TREESIZ);
-        long ll1 = System.currentTimeMillis();
-
-        // fill the map
-        for (int i = 0; i < TREESIZ; i++) {
-            treap.put(""+i,""+i);
-        }
-        long ll2=System.currentTimeMillis();
-        System.out.println("Size "+treap.size());
-
-        if (TREESIZ <= 1024) {
-            System.out.println("LRUHashtable initaly " + treap.toString(true));
-        }
-
-        final  int score[][] = new int[TREESIZ][THREADS];
-        long ll3 = System.currentTimeMillis();
-
-        Thread[] threads = new Thread[THREADS];
-        for (int t = 0; t < THREADS; t++) {
-            final int  threadnr = t;
-            Runnable runnable = new Runnable() {
-                    public void run() {
-                        if (THREADS > 1) {
-                            System.out.println("Thread " + threadnr + " started");
-                        }
-                        Random rnd = new Random();
-                        for (int i = 0;i<OPERS;i++) {
-                            // Put and get mixed
-                            int j = Math.abs(rnd.nextInt())%(TREESIZ/2)+(TREESIZ/4);
-                            int k = Math.abs(rnd.nextInt())%2;
-                            Object rtn;
-                            switch (k) {
-                            case 0:
-                                rtn=treap.put(""+j,""+j);
-                                score[j][threadnr]++;
-                                break;
-                            case 1:
-                                rtn=treap.get(""+j);
-                                score[j][threadnr]++;
-                                break;
-                            }
-                            // Only a get
-                            j = Math.abs(rnd.nextInt())%(TREESIZ);
-                            rtn = treap.get(""+j);
-                            score[j][threadnr]++;
-                        }
-                        if (THREADS > 1) {
-                            System.out.println("Thread " + threadnr + " ready");
-                        }
-                    }
-            };
-            threads[t] = new Thread(runnable);
-            threads[t].start();
-        }
-        long ll4 = System.currentTimeMillis();
-        for (int i = 0; i < THREADS; i++) {
-            try {
-                threads[i].join();
-            } catch (InterruptedException ie) {
-                System.err.println("Interrupted");
-            }
-        }
-                
-        long ll5 = System.currentTimeMillis();
-        if (TREESIZ <= 1024) {
-            System.out.println("LRUHashtable afterwards " + treap.toString(true));
-
-            for (int i = 0; i <TREESIZ; i++) {
-                int totscore = 0;
-                for (int j = 0; j < THREADS; j++) {
-                    totscore += score[i][j];
-                }
-                System.out.println("" + i + " score " + totscore);
-            }
-        }
-        System.out.println("Creation " + (ll2-ll1) + " ms");
-        System.out.println("Thread starting " + (ll4-ll3) + " ms");
-        if (TREESIZ <= 1024) {
-            System.out.println("Print    " + (ll3-ll2) + " ms");
-        } else {
-            System.out.println("Not printed (too huge)");
-        }
-        long timePerKop = (ll5 - ll3) * 1000 / (OPERS);
-        System.out.println("Run      " + (ll5-ll3) + " ms (" + timePerKop + " ms/koperation,  " + (timePerKop / THREADS) + " ms/koperation total from " + THREADS + " threads)");
-    }
 }
 
 

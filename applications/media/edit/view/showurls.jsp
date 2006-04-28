@@ -29,32 +29,32 @@
       (<a href="<mm:url referids="super@fragment" />"><mm:field name="title" /></a>)
     </mm:relatednodes>
     <mm:log jspvar="log">
-      <mm:functioncontainer>
-        <mm:param name="format" value="smil,html,ram,rm,wmp,asf,mov" />
-        <% char accesskey = '1'; %>
-        <mm:listfunction name="filteredurls" jspvar="object">
-          <%
-          URLComposer uc = (URLComposer) object;
-          String url = uc.getURL();
-          if (url.indexOf("://") == -1 ) url = thisServer(request,  url);
-          String completeIndication;
-          if (uc instanceof FragmentURLComposer || ! subfragment) {
-             completeIndication = "";
-          } else {
-             completeIndication = " (*)";
-             foundNonFragments = true;
+      <mm:field name="filteredurls(smil,html,ram,wmp,rm,mov)" jspvar="urls" vartype="list">
+        <%
+        Iterator i = urls.iterator();
+        char accesskey = '1';
+        while(i.hasNext()) {
+           URLComposer uc = (URLComposer) i.next();
+           String url = uc.getURL();
+           if (url.indexOf("://") == -1 ) url = thisServer(request,  url);
+           String completeIndication;
+           if (uc instanceof FragmentURLComposer || ! subfragment) {
+              completeIndication = "";
+           } else {
+              completeIndication = " (*)";
+              foundNonFragments = true;
            }
            String description = uc.getDescription(options);
            out.println("<h3>" + uc.getGUIIndicator(options) + "</h3>" + 
                      "<!--" + uc.getClass().getName() + " -->" +
-                     "<p title='" + uc.getFormat() + "/" + uc.getMimeType() + "'><a accesskey='" + accesskey++ + "' href='" + url + "'>" + url + "</a>" + completeIndication + "</p>" + 
+                     "<p><a accesskey='" + accesskey++ + "' href='" + url + "'>" + url + "</a>" + completeIndication + "</p>" + 
                      (description != null ? "<p>" + description + "</p>" : "")
                       ); 
        
 
+       }
        %>
-     </mm:listfunction>
-   </mm:functioncontainer>
+     </mm:field>
    </mm:log>
    <% if (foundNonFragments) { %>
    <hr />

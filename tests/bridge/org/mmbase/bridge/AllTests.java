@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import org.mmbase.tests.MMBaseTest;
-import org.mmbase.bridge.util.*;
 import junit.framework.*;
 
 /**
@@ -30,27 +28,22 @@ public class AllTests {
     }
 
     public static Test suite() throws Exception {
-        MMBaseTest.startMMBase();
+        org.mmbase.tests.BridgeTest.startMMBase();
 
         // Create the test suite
         TestSuite suite= new TestSuite("Bridge Tests");
-        //suite.addTestSuite(CloudContextTest.class);
+        suite.addTestSuite(CloudContextTest.class);
         suite.addTestSuite(EmptyNodeTest.class);
         suite.addTestSuite(EmptyNodeTestTransaction.class);
-        suite.addTestSuite(EmptiedNodeTest.class);
-        suite.addTestSuite(EmptyNotNullNodeTest.class); 
-        suite.addTestSuite(EmptyNotNullNodeTestTransaction.class);
+        suite.addTestSuite(EmptiedNodeTest.class); // are failing
+        suite.addTestSuite(EmptyNotNullNodeTest.class); // are failing
+        suite.addTestSuite(EmptyNotNullNodeTestTransaction.class); // would fail too
         suite.addTestSuite(FilledNodeTest.class); 
         suite.addTestSuite(FilledNodeTestTransaction.class);
-        suite.addTestSuite(ErroneousFilledNodeTest.class); 
         suite.addTestSuite(NodeManagerTest.class);
         suite.addTestSuite(CloudTest.class);
         suite.addTestSuite(RelationTest.class);
-        suite.addTestSuite(DataTypesTest.class);
-        suite.addTestSuite(DataTypesTestTransaction.class);
-        suite.addTestSuite(FunctionsTest.class);
-        suite.addTestSuite(QueriesTest.class);
-        suite.addTestSuite(SerializableTest.class);
         return suite;
     }
+	
 }

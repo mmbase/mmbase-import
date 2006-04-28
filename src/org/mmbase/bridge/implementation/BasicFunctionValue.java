@@ -11,9 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.bridge.util.MapNode;
-import org.mmbase.module.core.VirtualNode;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.InsRel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.util.*;
@@ -23,68 +22,192 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.19 2005-12-29 22:03:13 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.6 2004-01-14 21:51:15 michiel Exp $
  * @since   MMBase-1.6
  */
-public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValue {
+public class BasicFunctionValue implements FieldValue {
 
-    private final Object value;
+    static private BridgeException CANNOTCHANGE =  new BridgeException("Cannot change function value");
 
-    /**
-     * Constructor for a function value returned by a Node.
-     * @since MMBase-1.8
-     * @param node the node that called the function
-     * @param value the function value
-     */
-    BasicFunctionValue(Node node, Object value) {
-        super(node, null);
-        this.value = convert(value, null);
-    }
+    private   Node node = null;
+    private   MMObjectNode mmobjectnode = null;
+    private   Object value = null;
 
-    /**
-     * Constructor for a function value returned by a Module or NodeManager.
-     * @since MMBase-1.8
-     * @param cloud the cloud under which the call was run, used to instantiate NodeList values
-     * @param value the function value
-     */
-    BasicFunctionValue(Cloud cloud, Object value) {
-        super(null, cloud);
-        Object v = value;
-        if (v instanceof List) { // might be a collection of MMObjectNodes
-            List list  = (List) v;
+    BasicFunctionValue (Node n, MMObjectNode node, Object value) {
+        this.node         = n;
+        this.mmobjectnode = node;
+        this.value        = value; 
+        if (this.value instanceof List) { // might be a collection of MMObjectNodes
+            List list  = (List) this.value;
             if (list.size() > 0) {
-                Object first = list.get(0);
-                if (first instanceof MMObjectNode || first instanceof Node) { // if List of MMObjectNodes, make NodeList
-                    if (cloud == null) {
-                        if (first instanceof Node) {
-                            cloud = ((Node) first).getCloud();
-                        } else {
-                            cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                        }
-                        // throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
-                    }
-                    NodeList l = cloud.createNodeList();
-                    v = l;
-                    l.addAll(list);
+                if (list.get(0) instanceof MMObjectNode) { // if List of MMObjectNodes, make NodeList
+                    this.value = new BasicNodeList(list, n.getCloud());
                 }
             }
         }
-        this.value = convert(v, cloud);
     }
 
-    protected static Object convert(Object o, Cloud cloud) {
-        if (o instanceof VirtualNode) {
-            VirtualNode vn = (VirtualNode) o;
-            return new MapNode(vn.getValues(), cloud);
-        } else if (o instanceof MMObjectNode) {
-            MMObjectNode mn = (MMObjectNode) o;
-            return cloud.getNode(mn.getNumber());
-        }
-        return o;
+    /**
+     * Function values cannot be changed
+     * @return false
+     */
+    public boolean canModify() {
+        return false;
     }
 
     public Object get() {
         return value;
+    }
+
+    public Object getField() {
+        return null;
+    }
+
+    public Node getNode() {
+        return node;
+    }
+
+    public boolean toBoolean() {
+        return Casting.toBoolean(value);
+    }
+
+    public byte[] toByte() {
+        return Casting.toByte(value);
+    }
+
+    public float toFloat() {
+        return Casting.toFloat(value);
+    }
+
+    public double toDouble() {
+        return Casting.toDouble(value);
+    }
+
+    public long toLong() {
+        return Casting.toLong(value);
+    }
+
+    public int toInt() {
+        return Casting.toInt(value);
+    }
+
+    public Node toNode() {
+        MMObjectNode noderes = Casting.toNode(value, mmobjectnode.parent);
+        if (noderes != null) {
+            if (noderes.parent instanceof InsRel) {
+                return new BasicRelation(noderes, node.getCloud()); //.getNodeManager(noderes.parent.getTableName()));
+            } else {
+                return new BasicNode    (noderes, node.getCloud()); //.getNodeManager(noderes.parent.getTableName()));
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public String toString() {
+        return Casting.toString(value);
+    }
+
+    public Document toXML() throws IllegalArgumentException {
+        return Casting.toXML(value, null, null);
+    }
+
+    public Element toXML(Document tree) throws IllegalArgumentException {
+        Document doc = toXML();
+        if(doc == null) return  null;
+        return (Element) tree.importNode(doc.getDocumentElement(), true);
+    }
+
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void set(Object value) {
+        throw CANNOTCHANGE;
+    }
+
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setBoolean(boolean value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setFLoat(float value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setDouble(double value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setLong(long value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setInt(int value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setByte(byte[] value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setString(String value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setNode(Node value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
+    public void setXML(Document value) {
+        throw CANNOTCHANGE;
     }
 
 }

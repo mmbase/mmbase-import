@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.35 2006-04-11 22:57:36 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.21.2.4 2004-08-05 14:16:49 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -50,12 +50,7 @@ public class IntegerHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        EnumHandler eh = getEnumHandler(node, field);
-        if (eh != null) {
-            return eh.htmlInput(node, field, search);
-        }
 
-        // following is all legacy
         String guiType = field.getGUIType();
         StringBuffer buffer = new StringBuffer();
         if (guiType.equals("boolean")) {
@@ -63,8 +58,9 @@ public class IntegerHandler extends AbstractTypeHandler {
             if (node != null) {
                 value = node.getBooleanValue(field.getName());
             }
-            buffer.append("<input class=\"" + getClasses(field) + "\" type=\"checkbox\" name=\"").append( prefix(field.getName()) ).append("\" ");
-            buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
+            buffer.append("<input type=\"checkbox\" name=\"");
+            buffer.append(prefix(field.getName()));
+            buffer.append("\"");
             if (value) {
                 buffer.append(" checked=\"checked\" ");
             }
@@ -73,8 +69,9 @@ public class IntegerHandler extends AbstractTypeHandler {
             return buffer.toString();
         } else if (guiType.equals("types")) {
             log.warn("Guitype 'types' is deprecated. Use 'typedef' instead.");
-            buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
-            buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
+            buffer.append("<select name=\"");
+            buffer.append(prefix(field.getName()));
+            buffer.append("\"");
             addExtraAttributes(buffer);
             buffer.append(">\n");
             int value = 0;
@@ -82,14 +79,14 @@ public class IntegerHandler extends AbstractTypeHandler {
                 value = node.getIntValue(field.getName());
             }
             // list all node managers.
-            Cloud cloud = node != null ? node.getCloud() : tag.getCloudVar();
-            NodeManager typedef = cloud.getNodeManager("typedef");
-            NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
+            org.mmbase.bridge.Cloud cloud = tag.getCloudVar();
+            org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("typedef");
+            org.mmbase.bridge.NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
             //java.util.Collections.sort(l);
             while (i.hasNext()) {
                 Node nmNode = i.nextNode();
                 try {
-                    NodeManager nm = cloud.getNodeManager(nmNode.getStringValue("name"));
+                    org.mmbase.bridge.NodeManager nm = cloud.getNodeManager(nmNode.getStringValue("name"));
                     int listvalue = nmNode.getNumber();
                     buffer.append("<option value=\"");
                     buffer.append(listvalue);
@@ -102,21 +99,22 @@ public class IntegerHandler extends AbstractTypeHandler {
                     buffer.append(">");
                     buffer.append(nm.getGUIName());
                     buffer.append("</option>\n");
-                } catch (BridgeException e) {
+                } catch (org.mmbase.bridge.BridgeException e) {
                     // ignore possible errors.
                 }
             }
             buffer.append("</select>");
             if (search) {
-                buffer.append("<input type=\"checkbox\"" );
-                buffer.append("name=\"").append( prefix(field.getName() + "_search") ) ;
-                buffer.append("id=\"").append( prefixID(field.getName() + "_search") ).append("\" />\n");
+                buffer.append("<input type=\"checkbox\" name=\"");
+                buffer.append(prefix(field.getName() + "_search"));
+                buffer.append("\" />\n");
             }
             return buffer.toString();
         } else if (guiType.equals("reldefs")) {
             log.warn("Guitype 'reldefs' is deprecated. Use 'reldef' instead.");
-            buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append(prefix(field.getName())).append("\" ");
-            buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
+            buffer.append("<select name=\"");
+            buffer.append(prefix(field.getName()));
+            buffer.append("\"");
             addExtraAttributes(buffer);
             buffer.append(">\n");
             int value = 0;
@@ -124,9 +122,9 @@ public class IntegerHandler extends AbstractTypeHandler {
                 value = node.getIntValue(field.getName());
             }
             // list all roles
-            Cloud cloud = node != null ? node.getCloud() : tag.getCloudVar();
-            NodeManager typedef = cloud.getNodeManager("reldef");
-            NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
+            org.mmbase.bridge.Cloud cloud = tag.getCloudVar();
+            org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("reldef");
+            org.mmbase.bridge.NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
 
             //java.util.Collections.sort(l);
             while (i.hasNext()) {
@@ -148,9 +146,9 @@ public class IntegerHandler extends AbstractTypeHandler {
             }
             buffer.append("</select>");
             if (search) {
-                buffer.append("<input type=\"checkbox\" ");
-                buffer.append("name=\"").append(prefix(field.getName() + "_search")).append("\" ");
-                buffer.append("id=\"").append(prefixID(field.getName() + "_search")).append("\" />\n");
+                buffer.append("<input type=\"checkbox\" name=\"");
+                buffer.append(prefix(field.getName() + "_search"));
+                buffer.append("\" />\n");
             }
             return buffer.toString();
         } else if (guiType.equals("eventtime")) {
@@ -158,9 +156,9 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.htmlInput(node, field, search);
         } else {
-            EnumHandler e = new EnumHandler(tag, node, field);
-            if (e.isAvailable()) {
-                return e.htmlInput(node, field, search);
+            EnumHandler eh = new EnumHandler(tag, field);
+            if (eh.isAvailable()) {
+                return eh.htmlInput(node, field, search);
             }
         }
 
@@ -171,11 +169,6 @@ public class IntegerHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
-        log.debug("using html-input");
-        EnumHandler eh = getEnumHandler(node, field);
-        if (eh != null) {
-            return eh.useHtmlInput(node, field);
-        }
         String guiType = field.getGUIType();
         String fieldName = field.getName();
         long currentValue = node.getLongValue(fieldName);
@@ -194,6 +187,11 @@ public class IntegerHandler extends AbstractTypeHandler {
             return dateHandler.useHtmlInput(node, field);
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.useHtmlInput(node, field);
+        } else {
+            EnumHandler eh = new EnumHandler(tag, field);
+            if (eh.isAvailable()) {
+                return eh.useHtmlInput(node, field);
+            }
         }
 
         return super.useHtmlInput(node, field);
@@ -217,7 +215,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.whereHtmlInput(field);
         } else {
-            EnumHandler eh = new EnumHandler(tag, null, field);
+            EnumHandler eh = new EnumHandler(tag, field);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field);
             }
@@ -240,7 +238,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.whereHtmlInput(field, query);
         } else {
-            EnumHandler eh = new EnumHandler(tag, null, field);
+            EnumHandler eh = new EnumHandler(tag, field);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field, query);
             }
@@ -258,11 +256,6 @@ public class IntegerHandler extends AbstractTypeHandler {
         }
     }
 
-    protected Object cast(Object value, Node node, Field field) {
-        if (value == null || "".equals(value)) return "";
-        return  super.cast(value, node, field);
-    }
-
 
     private class IntegerDateHandler extends DateHandler {
         public IntegerDateHandler(FieldInfoTag tag) {
@@ -270,7 +263,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         }
         
         protected int checkYear(Integer year, String fieldName) throws JspTagException {
-            int y = super.checkYear(year.intValue(), fieldName);
+            int y = super.checkYear(year, fieldName);
             if (y < 1902 || y > 2037) {
                 throw new JspTagException("Year of field '" + fieldName + "' must be between 1901 and 2038 (now " + y + ")");
             }

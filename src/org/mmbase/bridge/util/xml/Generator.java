@@ -11,132 +11,59 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import org.w3c.dom.*;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import javax.xml.parsers.DocumentBuilder;
 import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
-
 
 /**
  * Uses the XML functions from the bridge to construct a DOM document representing MMBase data structures.
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.39 2006-02-17 21:16:57 michiel Exp $
+ * @version $Id: Generator.java,v 1.21 2004-03-05 10:41:25 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
 
     private static final Logger log = Logging.getLoggerInstance(Generator.class);
 
-    public final static String NAMESPACE =  "http://www.mmbase.org/xmlns/objects";
     private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD objects config 1.0//EN";
     private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
-
     private Document document = null;
-    private DocumentBuilder documentBuilder = null;
     private Cloud cloud = null;
-
-    private boolean namespaceAware = false;
 
     /**
      * To create documents representing structures from the cloud, it
      * needs a documentBuilder, to contruct the DOM Document, and the
-     * cloud from which the data to be inserted will come from.
+     * cloud from which the data to be inserted will come from.    
      *
      * @param documentBuilder The DocumentBuilder which will be used to create the Document.
      * @param cloud           The cloud from which the data will be.
-     * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder()
+     * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder
      */
-    public Generator(DocumentBuilder documentBuilder, Cloud cloud) {
-        this.documentBuilder = documentBuilder;        
+    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, Cloud cloud) {
+        DOMImplementation impl = documentBuilder.getDOMImplementation();
+        this.document = impl.createDocument(null, "objects", impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM));
         this.cloud = cloud;
-
+        if (cloud != null) {
+            addCloud();
+        }
+        this.document.getDocumentElement().setAttribute("xmlns", "http://www.mmbase.org/objects");
+        //Element rootElement = document.createElement("objects");
+        //document.appendChild(rootElement);
     }
 
-    public Generator(DocumentBuilder documentBuilder) {
+    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder) {
         this(documentBuilder, null);
-    }
-
-    public Generator(Document doc) {
-        document = doc;
-        namespaceAware = document.getDocumentElement().getNamespaceURI() != null;
     }
 
     /**
      * Returns the working DOM document.
      * @return The document, build with the operations done on the generator class
      */
-    public  Document getDocument() {
-        if (document == null) {
-            DOMImplementation impl = documentBuilder.getDOMImplementation();
-            document = impl.createDocument(namespaceAware ? NAMESPACE : null, 
-                                           "objects", 
-                                           impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM)
-                                           );
-            if (cloud != null) {
-                addCloud();
-            }
-        }
+    public Document getDocument() {
         return document;
-    }
-
-    /**
-     * If namespace aware, element are created with the namespace http://www.mmbase.org/objects,
-     * otherwise, without namespace.
-     * @since MMBase-1.8
-     */
-    public void setNamespaceAware(boolean n) {
-        if (document != null) throw new IllegalStateException("Already started constructing");
-        namespaceAware = n;
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public boolean isNamespaceAware() {
-        return namespaceAware;
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    protected Element createElement(String name) {
-        getDocument();
-        if (namespaceAware) {
-            return document.createElementNS(NAMESPACE, name);
-        } else {
-            return document.createElement(name);
-        }
-                
-    }
-    protected final void setAttribute(Element element, String name, String value) {
-        // attributes normally have no namespace. You can assign one, but then they will always have
-        // to be indicated explicitely (in controdiction to elements).
-        // So attributes are created without namespace.
-        /*
-        if (namespaceAware) {
-            element.setAttributeNS(NAMESPACE, name, value);
-        } else {
-            element.setAttribute(name, value);
-        }
-        */
-        element.setAttribute(name, value);
-    }
-    
-    protected final String getAttribute(Element element, String name) {
-        // see setAttribute
-        /*
-        if (namespaceAware) {
-            return element.getAttributeNS(NAMESPACE, name);
-        } else {
-            return element.getAttribute(name);
-        }
-        */
-        return element.getAttribute(name);
     }
 
     /**
@@ -153,21 +80,20 @@ public class Generator {
      * @return the generated xml as a (formatted) string
      */
     public String toString(boolean ident) {
-        return XMLWriter.write(document, ident);
+        return XMLWriter.write(document, true);
     }
 
     private void addCloud() {
-        setAttribute(document.getDocumentElement(), "cloud", cloud.getName());
+        document.getDocumentElement().setAttribute("cloud", cloud.getName());
     }
 
     /**
      * Adds a field to the DOM Document. This means that there will
      * also be added a Node if this is necessary.
-     * @param node An MMbase bridge Node.
-     * @param fieldDefinition An MMBase bridge Field.
+     * @param An MMbase bridge Node.
+     * @param An MMBase bridge Field.
      */
-    public Element add(org.mmbase.bridge.Node node, Field fieldDefinition) {
-        getDocument();
+    public void add(org.mmbase.bridge.Node node, Field fieldDefinition) {
         if (cloud == null) {
             cloud = node.getCloud();
             addCloud();
@@ -175,32 +101,27 @@ public class Generator {
 
         Element object = getNode(node);
 
-        if (! (object.getFirstChild() instanceof Element)) {
-            log.warn("Cannot find first field of " + XMLWriter.write(object, false));
-            return object;
-        }
         // get the field...
         Element field = (Element)object.getFirstChild();
-        while (field != null && !fieldDefinition.getName().equals(getAttribute(field, "name"))) {
+        while (field != null && !fieldDefinition.getName().equals(field.getAttribute("name"))) {
             field = (Element)field.getNextSibling();
         }
         // when not found, we are in a strange situation..
-        if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));
+        if(field == null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));        
         // when it is filled (allready), we can return
-        if (field.getTagName().equals("field")) {
-            return field;
-        }
+        if (field.getTagName().equals("field"))
+            return;
 
-        // was not filled, so fill it... first remove the unfilled
-        Element filledField = createElement("field");
+        // was not filled, so fill it... first remove the unfilled 
+        Element filledField = document.createElement("field");
 
         field.getParentNode().replaceChild(filledField, field);
         field = filledField;
         // the name
-        setAttribute(field, "name", fieldDefinition.getName());
+        field.setAttribute("name", fieldDefinition.getName());
         // now fill it with the new info...
         // format
-        setAttribute(field, "format", getFieldFormat(fieldDefinition));
+        field.setAttribute("format", getFieldFormat(node, fieldDefinition));
         // the value
         switch (fieldDefinition.getType()) {
         case Field.TYPE_XML :
@@ -211,44 +132,34 @@ public class Generator {
                 field.appendChild(importDocument(field, doc));
             }
             break;
-        case Field.TYPE_BINARY :
+        case Field.TYPE_BYTE :
             org.mmbase.util.transformers.Base64 transformer = new org.mmbase.util.transformers.Base64();
             field.appendChild(document.createTextNode(transformer.transform(node.getByteValue(fieldDefinition.getName()))));
-            break;
-        case Field.TYPE_DATETIME :
-            // shoudlw e use ISO_8601_LOOSE here or ISO_8601_UTC?
-            field.appendChild(document.createTextNode(org.mmbase.util.Casting.ISO_8601_LOOSE.format(node.getDateValue(fieldDefinition.getName()))));
             break;
         default :
             field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
         }
         // or do we need more?
-        return field;
     }
 
     /**
      * Adds one Node to a DOM Document.
      * @param node An MMBase bridge Node.
      */
-    public Element add(org.mmbase.bridge.Node node) {
+    public void add(org.mmbase.bridge.Node node) {
         // process all the fields..
-        NodeManager nm = node.getNodeManager();
-        FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator();
+        FieldIterator i = node.getNodeManager().getFields().fieldIterator();
         while (i.hasNext()) {
-            Field field = i.nextField();
-            if (field.getType() != Field.TYPE_BINARY) {
-                add(node, field);
-            }
+            add(node, i.nextField());
         }
-        return getNode(node);
     }
 
     /**
      * Adds one Relation to a DOM Document.
      * @param relation An MMBase bridge Node.
      */
-    public Element add(Relation relation) {
-        return add((org.mmbase.bridge.Node)relation);
+    public void add(Relation relation) {
+        add((org.mmbase.bridge.Node)relation);
 
     }
 
@@ -274,42 +185,35 @@ public class Generator {
 
         }
     }
-
-    protected Element getElementById(Node n, String id) {
-
-        NodeList list = n.getChildNodes();
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Node node = list.item(i);
-            if (node instanceof Element) {
-                if (getAttribute((Element) node, "id").equals(id)) {
-                    return (Element) node;
-                }
-            }
-        }
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Node node = list.item(i);
-            Element subs = getElementById(node, id);
-            if (subs != null) return subs;
-        }
-        return null;
-        
-    }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
-     * @param node MMbase node
-     * @return Element which represents a bridge.Node
      */
     private Element getNode(org.mmbase.bridge.Node node) {
+        // MMBASE BUG...
+        // we dont know if we have the correct typee...
+        node = cloud.getNode(node.getNumber());
 
         // if we are a relation,.. behave like one!
-        // why do we find it out now, and not before?
+        // why do we find it out now, and not before?       
+
+        // TODO: reseach!!
         boolean getElementByIdWorks = false;
         Element object = null;
         if (getElementByIdWorks) {
-            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
-            object = getDocument().getElementById("" + node.getNumber());
+            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.            
+            object = document.getElementById("" + node.getNumber());
         } else {
-            object = getElementById(getDocument(), "" + node.getNumber());
+            // TODO: this code should be removed!! but other code doesnt work :(
+            // this cant be fast in performance...
+            String xpath = "//*[@id='" + node.getNumber() + "']";
+            try {
+                object = (Element)org.apache.xpath.XPathAPI.selectSingleNode(document.getDocumentElement(), xpath);
+            } catch (javax.xml.transform.TransformerException te) {
+                String msg = "error executing query: '" + xpath + "'";
+                log.error(msg);
+                log.error(Logging.stackTrace(te));
+                throw new BridgeException(msg);
+            }
         }
 
         if (object != null)
@@ -324,24 +228,22 @@ public class Generator {
         }
 
         // node didnt exist, so we need to create it...
-        object = createElement("object");
-
-        setAttribute(object, "id", "" + node.getNumber());
-        setAttribute(object, "type", node.getNodeManager().getName());
+        object = document.createElement("object");
+        object.setAttribute("id", "" + node.getNumber());
+        object.setAttribute("type", node.getNodeManager().getName());
         // and the otype (type as number)
-        setAttribute(object, "otype", node.getStringValue("otype"));
+        object.setAttribute("otype", node.getStringValue("otype"));
 
-        // add the fields (empty)
+        // add the fields (empty) 
         // While still having 'unfilledField's
         // you know that the node is not yet presented completely.
 
-        FieldIterator i = node.getNodeManager().getFields(NodeManager.ORDER_CREATE).fieldIterator();
+        FieldIterator i = node.getNodeManager().getFields().fieldIterator();
         while (i.hasNext()) {
             Field fieldDefinition = i.nextField();
-            Element field = createElement("unfilledField");
-
+            Element field = document.createElement("unfilledField");
             // the name
-            setAttribute(field, "name", fieldDefinition.getName());
+            field.setAttribute("name", fieldDefinition.getName());
             // add it to the object
             object.appendChild(field);
         }
@@ -364,7 +266,7 @@ public class Generator {
         if (dt != null) {
             namespace = dt.getSystemId();
         } else {
-            namespace = "http://www.mmbase.org/xmlns/" + tagName;
+            namespace = "http://www.mmbase.org/" + tagName;
         }
         if (log.isDebugEnabled()) {
             log.debug("using namepace: " + namespace);
@@ -375,7 +277,7 @@ public class Generator {
         return fieldContent;
     }
 
-    private String getFieldFormat(Field field) {
+    private String getFieldFormat(org.mmbase.bridge.Node node, Field field) {
         switch (field.getType()) {
         case Field.TYPE_XML :
             return "xml";
@@ -388,7 +290,7 @@ public class Generator {
             // was it a builder?
             String fieldName = field.getName();
             String guiType = field.getGUIType();
-
+            
             // I want a object database type!
             if (fieldName.equals("otype")
                 || fieldName.equals("number")
@@ -405,34 +307,28 @@ public class Generator {
         case Field.TYPE_FLOAT :
         case Field.TYPE_DOUBLE :
             return "numeric";
-        case Field.TYPE_BINARY :
+        case Field.TYPE_BYTE :
             return "bytes";
-        case Field.TYPE_DATETIME:
-            return "datetime";
-        case Field.TYPE_BOOLEAN:
-            return "boolean";
-        case Field.TYPE_LIST:
-            return "list";
         default :
             throw new RuntimeException("could not find field-type for:" + field.getType() + " for field: " + field);
         }
     }
 
     private Element createRelationEntry(Relation relation, org.mmbase.bridge.Node relatedNode) {
-        Element fieldElement = createElement("relation");
+        Element fieldElement = document.createElement("relation");
         // we have to know what the relation type was...
         org.mmbase.bridge.Node reldef = cloud.getNode(relation.getStringValue("rnumber"));
 
-        setAttribute(fieldElement, "object", "" + relation.getNumber());
+        fieldElement.setAttribute("object", "" + relation.getNumber());
 
         if (relation.getSource().getNumber() == relatedNode.getNumber()) {
-            setAttribute(fieldElement, "role", reldef.getStringValue("sname"));
-            setAttribute(fieldElement, "related", "" + relation.getDestination().getNumber());
-            setAttribute(fieldElement, "type", "source");
+            fieldElement.setAttribute("role", reldef.getStringValue("sname"));
+            fieldElement.setAttribute("related", "" + relation.getDestination().getNumber());
+            fieldElement.setAttribute("type", "source");
         } else {
-            setAttribute(fieldElement, "role", reldef.getStringValue("dname"));
-            setAttribute(fieldElement, "related", "" + relation.getSource().getNumber());
-            setAttribute(fieldElement, "type", "destination");
+            fieldElement.setAttribute("role", reldef.getStringValue("dname"));
+            fieldElement.setAttribute("related", "" + relation.getSource().getNumber());
+            fieldElement.setAttribute("type", "destination");
         }
         return fieldElement;
     }

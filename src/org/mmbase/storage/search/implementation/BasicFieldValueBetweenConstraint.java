@@ -15,17 +15,17 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.8 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.6 2004-03-15 14:54:25 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint
 implements FieldValueBetweenConstraint {
 
     /** The lower limit. */
-    private Object lowerLimit = null;
+    private String lowerLimit = null;
 
     /** The upper limit. */
-    private Object upperLimit = null;
+    private String upperLimit = null;
 
     /**
      * Constructor.
@@ -57,7 +57,7 @@ implements FieldValueBetweenConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueBetweenConstraint setLowerLimit(Object lowerLimit) {
-        this.lowerLimit = lowerLimit;
+        this.lowerLimit = convertValue(lowerLimit);
         return this;
     }
 
@@ -72,17 +72,17 @@ implements FieldValueBetweenConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueBetweenConstraint setUpperLimit(Object upperLimit) {
-        this.upperLimit = upperLimit;
+        this.upperLimit = convertValue(upperLimit);
         return this;
     }
 
     // javadoc is inherited
-    public Object getLowerLimit() {
+    public String getLowerLimit() {
         return lowerLimit;
     }
 
     // javadoc is inherited
-    public Object getUpperLimit() {
+    public String getUpperLimit() {
         return upperLimit;
     }
 
@@ -117,11 +117,46 @@ implements FieldValueBetweenConstraint {
     public String toString() {
         StringBuffer sb = new StringBuffer("FieldValueBetweenConstraint(inverse:").
         append(isInverse()).
-        append(", field:").append(getFieldName()).
-        append(", casesensitive:").append(isCaseSensitive()).
-        append(", lower:").append(getLowerLimit()).
-        append(", upper:").append(getUpperLimit()).
+        append(", field:").
+        append(getField().getAlias()). // TODO RvM: handle null alias.
+        append(", casesensitive:").
+        append(isCaseSensitive()).
+        append(", lower:").
+        append(getLowerLimit()).
+        append(", upper:").
+        append(getUpperLimit()).
         append(")");
         return sb.toString();
+    }
+
+    /**
+     * Tests type of value, and converts it to a string as required by {@link
+     * #getLowerLimit() getLowerLimit()} and {@link #getUpperLimit()
+     * getUpperLimit()}
+     *
+     * @param value The value.
+     * @return The resulting string.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @see org.mmbase.storage.FieldValueBetweenConstraint#getLowerLimit()
+     * @see org.mmbase.storage.FieldValueBetweenConstraint#getUpperLimit()
+     */
+    private String convertValue(Object value) {
+        String result = null;
+        BasicStepField.testValue(value, getField());
+        if (value instanceof Number) {
+            // Add value as string. This facilitates comparison of
+            // numerical values of different type.
+            Number numberValue = (Number) value;
+            // Represent integral value as integer,
+            // other values as floating point.
+            if (numberValue.intValue() == numberValue.doubleValue()) {
+                result = Integer.toString(numberValue.intValue());
+            } else {
+                result = numberValue.toString();
+            }
+        } else {
+            result = value.toString();
+        }
+        return result;
     }
 }

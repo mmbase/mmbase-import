@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.13 2005-12-09 21:39:21 johannes Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.10.2.2 2004-07-26 20:12:18 nico Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {
@@ -44,11 +44,7 @@ public class LeafIncludeTag extends IncludeTag {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving page '" + leafPage + "'");
         }
-
-        if (leafPage == null || "".equals(leafPage)) {
-            throw new JspTagException("Could not find page " + orgPage);
-        }
-
+        if (leafPage == null) throw new JspTagException("Could not find page " + orgPage);
         return leafPage;
     }
     
@@ -62,21 +58,11 @@ public class LeafIncludeTag extends IncludeTag {
         objectList = getAttribute(p);
     }
 
-    protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
-        String url = "";
-        try {
-            url = super.getUrl(writeamp, encode);
-        } catch (JspTagException e) {
-            if (!notFound.getString(this).equals("skip")) {
-                throw(e);
-            }
-        }
-        return url;
-    }
-
     // override to cancel 
     protected boolean doMakeRelative() {
     	log.debug("doMakeRelative() overridden!");
         return false;
     }
+
+
 }

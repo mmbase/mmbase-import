@@ -9,18 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import java.util.Locale;
-
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.ContextProvider;
 
-import org.mmbase.util.functions.Parameter;
-import org.mmbase.util.functions.Parameters;
-
-
+import org.mmbase.util.functions.*;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -29,21 +24,19 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Tags which are meant to live as a child of the CloudTag, could extend this
- * class.
+ * class. 
  *
- * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.29 2006-03-09 13:24:31 nklasens Exp $
+ * @author Michiel Meeuwissen 
+ * @version $Id: CloudReferrerTag.java,v 1.21.2.3 2005-08-15 10:05:13 michiel Exp $ 
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
-
-    private static final Logger log = Logging.getLoggerInstance(CloudReferrerTag.class);
-
+	
+    private static final Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
 
     private static CloudContext cloudContext;
 
-
-    private Attribute cloudId = Attribute.NULL;
+    private Attribute cloudId = Attribute.NULL; 
     // the id of the cloud to which we refer
     // not yet supported by CloudTag
 
@@ -51,7 +44,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     /**
      * If there are more clouds to choose from, you can have a 'cloud'
      * attribute in your tag, in wich you can indicate the id of the
-     * cloud you mean.
+     * cloud you mean.    
      */
     public void setCloud(String c) throws JspTagException {
         cloudId = getAttribute(c);
@@ -63,7 +56,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     *
     * @return the CloudTag if found, else an exception.
     */
-
+	
     protected CloudProvider findCloudProvider() throws JspTagException {
         return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
     }
@@ -73,12 +66,26 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
      * @return the CloudProvider or null.
      *
-    */
-    public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {
+    */	
+    public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {        
         return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
     }
 
-
+    /**
+     * Find the CloudProvider and return its cloud variable in one
+     * step. And the result of findCloudProvider is stored, so
+     * invoking this function more often is better then invoking
+     * findCloudProvider every time.
+     *
+     * @return a Cloud
+     * @throws JspTagException
+     * 
+     * @deprecated (2004-05-08) use getCloudWeblogic, because this breaks the bean specs
+     */
+    public Cloud getCloud() throws JspTagException {
+    	return getCloudVar();
+    }
+    
     /**
      * Find the CloudProvider and return its cloud variable in one
      * step. And the result of findCloudProvider is stored, so
@@ -94,12 +101,12 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
 
     /**
-    * @return the cloud context
+    * @return the cloud context 
     */
     protected CloudContext getCloudContext(){
         if (cloudContext == null){
             cloudContext = ContextProvider.getDefaultCloudContext();
-        }
+        } 
         return cloudContext;
     }
 
@@ -112,7 +119,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      * Gets a node from the context.
      */
 
-    protected Node getNodeOrNull(String key) throws JspTagException {
+    protected Node getNodeOrNull(String key) throws JspTagException {        
         Object n = getObject(key);
         if (n instanceof Node) {
             log.debug("found a Node in Context");
@@ -129,28 +136,13 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
     protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
-        CloudProvider prov = findCloudProvider(false);
-        if (prov != null) {
-            Cloud cloud = prov.getCloudVar();
-            if (cloud != null) {
-                p.setIfDefined(Parameter.CLOUD, cloud);
-                p.setIfDefined(Parameter.USER, cloud.getUser());
-            }
+        if (p.hasParameter(Parameter.CLOUD)) {
+            p.set(Parameter.CLOUD, getCloudVar());
+        }
+        if (p.hasParameter(Parameter.USER)) {
+            p.set(Parameter.USER, getCloudVar().getUser());
         }
     }
 
-    /**
-     * @since MMBase-1.8
-     */
-    public Locale getLocale() throws JspTagException {
-        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
-        if (localeTag != null) {
-            Locale locale = localeTag.getLocale();
-            if (locale != null) {
-                return locale;
-            }
-        }
-        return  getCloudVar().getLocale();
-    }
 
 }

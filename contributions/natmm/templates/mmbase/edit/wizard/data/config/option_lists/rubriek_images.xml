@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="rubriek_images">
-   <option id="0">afbeelding voor rubriek op de homepage</option>
-   <option id="1">logo onder de navigatie in de linkerkolom</option>
-   <option id="2">afbeelding boven het zoekveld in de rechterkolom</option>
-</optionlist>

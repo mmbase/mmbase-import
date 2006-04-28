@@ -6,30 +6,30 @@
   <body>
     <h1>Cloud without attributes</h1>
     <p>
-      <mm:cloud >
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must be anonymous)
       </mm:cloud>
     </p>
     <h1>Cloud method='asis' attribute</h1>
     <p>
-      <mm:cloud method="asis" >
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud method="asis" jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must not be anonymous)
       </mm:cloud>
     </p>
     <h1>Cloud method='anonymous' attribute</h1>
     <p>
-      <mm:cloud method="anonymous" >
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud method="anonymous" jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must be anonymous)
       </mm:cloud>
     </p>
     <h1>Cloud method='asis' attribute (again)</h1>
     <p>
       Anonymous cloud will not replace the one in the session.
-      <mm:cloud method="asis" >
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud method="asis" jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must not be anonymous)
       </mm:cloud>
     </p>
@@ -56,14 +56,14 @@
     </p>
     <h1>'asis' again</h1>
     <p>
-      <mm:cloud method="asis" >
-        You are logged in as: <mm:cloudinfo type="user" />
+      <mm:cloud method="asis" jspvar="cloud">
+        You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must be 'foo')
       </mm:cloud>
     </p>
     <hr />
-    <a href="<mm:url page="cloud2.jsp" />">Previous</a><br />
-    <a href="<mm:url page="cloud4.jsp" />">Next</a>
+    <a href="cloud2.jsp">Previous</a><br />
+    <a href="cloud4.jsp">Next</a>
     <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
   <hr />
   </body>

@@ -11,6 +11,8 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This is a basic implementation of ObjectMerger.
@@ -25,9 +27,16 @@ import java.util.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: BasicMerger.java,v 1.5 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: BasicMerger.java,v 1.4 2003-03-07 08:50:02 pierre Exp $
  */
 public class BasicMerger implements ObjectMerger {
+
+    /** The initialization parameters, stored as String name-value pairs. */
+    private static HashMap initParams = null;
+
+    /** Logger instance. */
+    private static Logger log
+    = Logging.getLoggerInstance(BasicMerger.class.getName());
 
     /** Initialize this instance. This implementation simply stores
      * the initialization parameters.
@@ -35,6 +44,7 @@ public class BasicMerger implements ObjectMerger {
      * name/value pairs (both String).
      */
     public void init(HashMap params) {
+        initParams = params;
     }
 
     /** Merge a field. This implementation leaves all fields unaffected.

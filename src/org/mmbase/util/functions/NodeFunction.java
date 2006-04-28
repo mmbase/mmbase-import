@@ -9,207 +9,130 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import java.util.*;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.bridge.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.module.core.*;
+import org.mmbase.bridge.*;
+import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
- * A NodeFunction represents a function on a node instances of this builder. This means
- * that it always has one implicit node argument. This node-argument needs not be mentioned in
- * the Parameter array of the constructor.
+ * Describing a function on a bridge Node, giving access to the underlying executeFunction of the MMObjectBuilder.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.21 2006-03-02 17:25:13 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.1 2003-12-21 13:25:36 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
- * @see org.mmbase.util.functions.BeanFunction
- * @since MMBase-1.8
+ * @since MMBase-1.7
  */
-
-public abstract class NodeFunction extends AbstractFunction {
+public class NodeFunction extends Function {
 
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
 
     /**
-     * Utility function, for easy call of function on node by one string.
+     * A cache, to avoid doing refliection on every function call on a Node.
+     * nodemanager name -> Map, functioname-> Parameter[]
      */
-    public static FieldValue getFunctionValue(Node node, String function) {
-        if(node == null) {
-            log.warn("Tried to execute node-function on null!");
-            return null;
-        }
-        List args = new ArrayList();
-        String functionName = getFunctionNameAndFillArgs(function, args);
-        if (log.isDebugEnabled()) {
-            log.debug("Executing " + functionName + " " + args + " on " + node.getNumber());
-        }
+    private static Map parameterConstants = new HashMap(); 
+    
+    /**
+     * Utility function, which can be called from MMObjectBuilder implementations to implement their
+     * getParameters easily
+     */
 
-        return node.getFunctionValue(functionName, args);
+    public static Parameter[] getParametersByReflection(Class claz, String name) {
+        Map constants = (Map) parameterConstants.get(claz.getName());
+        if (constants == null) {
+            constants = getParameterConstants(claz);
+            parameterConstants.put(claz.getName(), constants);
+        }
+        return (Parameter[]) constants.get(name);
+
     }
 
-    public static String getFunctionNameAndFillArgs(String function, java.util.List args) {
-        String functionName = function;
-        int pos1 = function.indexOf('(');
-        if (pos1 != -1) {
-            int pos2 = function.lastIndexOf(')');
-            if (pos2 != -1) {
-                functionName = function.substring(0, pos1);
-                java.util.List args2 = org.mmbase.util.StringSplitter.splitFunctions(function.subSequence(pos1 + 1, pos2));
-                args.addAll(args2);
-            }
-        }
-        return functionName;
-    }
+    public static Function getFunction(Node node, String name) {
+        // find the MMObjectBuilder belong to this node.
+        // XXX the method should perhaps be on bridge's Node!
 
-    public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
-        super(name, getNodeParameterDef(def), returnType);
-    }
+        String nodeManager = node.getNodeManager().getName();
+        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder builder = mmbase.getBuilder(nodeManager);
 
-    protected static Parameter[] getNodeParameterDef(Parameter[] def) {
-        List defList = Arrays.asList(def);
-        if (defList.contains(Parameter.NODE) && defList.contains(Parameter.CLOUD)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CORENODE};
-        } else if (defList.contains(Parameter.NODE)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CLOUD, Parameter.CORENODE};
-        } else if (defList.contains(Parameter.CLOUD)) {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CORENODE};
-        } else {
-            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CLOUD, Parameter.CORENODE};
+        Parameter[] parameters = builder.getParameterDefinition(name);
+        if (parameters == null) {
+            // can set later.
+            log.warn("Trying to use unknown function '" + name + "' on builder '" + nodeManager + "'");            
+            //throw new IllegalArgumentException("The function 'name' cannot be found on the builder '" + nodeManager + "'");
         }
+        
+        NodeFunction function = new NodeFunction(name, parameters, new ReturnType(Object.class, null), node);
+
+        return function;
     }
 
     /**
-     * Returns a new instance of NodeInstanceFunction, which represents an actual Function.
-     */
-    final public Function newInstance(MMObjectNode node) {
-        return new NodeInstanceFunction(node);
-    }
-
-    /**
-     * Implements the function on a certain node. Override this method <em>or</em> it's bridge
-     * counter-part {@link #getFunctionValue(org.mmbase.bridge.Node, Parameters)}.  Overriding the
-     * bridge version has two advantages. It's easier, and mmbase security will be honoured. That
-     * last thing is of course not necesary if you are not going to use other nodes.
+     * Trying to determin Parameter[] constants using a Class. It considers all static fields of
+     * type Parameter[]. The name of the field is lowercased and everything after and including the
+     * first underscore is removed. This gives a key (which is supposed to equal to the 'execute' function name).
      *
-     * XXX: made final because it does not work well if you don't implement a bridge version
+     * @return a map, with function name -> Parameter[] pairs.
+     * 
      */
-    protected final Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
-        if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
-        Node node = (Node) parameters.get(Parameter.NODE);
-        if (node == null) {
-            Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
-            if (cloud == null) {
-                // lets try this
-                try {
-                    cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                } catch (org.mmbase.security.SecurityException se) {
-                    // perhaps class-security not implemented by security implementation.
-                    log.warn("" + se.getMessage());
-                    cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+    private static Map getParameterConstants(Class clazz) {
+        log.service("Finding function parameters of class " + clazz);
+        return getParameterConstants(clazz, new HashMap());
+    }
+    private static Map getParameterConstants(Class clazz, Map map) {
+
+        log.debug("Searching " + clazz);
+        Field[] fields = clazz.getDeclaredFields();
+        for (int i = 0 ; i < fields.length; i++) {
+            Field field = fields[i];
+            try {
+                
+                int mod = field.getModifiers(); 
+                if (! Modifier.isStatic(mod)) continue;
+                
+                if (! field.getType().equals(Parameter[].class)) continue;
+                
+                
+                
+                // get name (using convention)
+                
+                String name = field.getName().toLowerCase();
+                int underscore = name.indexOf("_");
+                if (underscore > 0) {
+                    name = name.substring(0, underscore);
                 }
-                if (cloud == null) {
-                    throw new RuntimeException("No cloud argument given"  + this + "(" + parameters + ")!" + Logging.stackTrace());
+                if (! map.containsKey(name)) { // overriding works, but don't do backwards :-)
+                    log.debug("Found a function definition '" + name + "' in " + clazz);
+                    map.put(name, (Parameter[])field.get(null));
                 }
+            } catch (IllegalAccessException iae) { // never mind
+                log.warn("Found inaccessible parameter[] constant: " + field.getName());
+
             }
-            if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
-                node = new org.mmbase.bridge.implementation.VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
-            } else {
-                int number = coreNode.getNumber();
-                if (number == -1) {
-                    // must be in transaction or uncommited node
-                    String tmpNumber = coreNode.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER);
-                    if (cloud.hasNode(tmpNumber)) {
-                        node = cloud.getNode(tmpNumber);
-                    } else {
-                        // last resort..., we're really desperate now.
-                        // This happens when calling gui() in transaction.
-                        // Perhaps we need something like a public new BasicNode(MMobjectNode, Cloud). Abusing VirtualNode for similar purpose now.
-                        org.mmbase.module.core.VirtualNode virtual = new org.mmbase.module.core.VirtualNode(coreNode.getBuilder());
-                        Iterator i = coreNode.getValues().entrySet().iterator();
-                        while (i.hasNext()) {
-                            Map.Entry entry = (Map.Entry) i.next();
-                            virtual.storeValue((String) entry.getKey(), entry.getValue());
-                        }
-                        node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud);
-                    }
-                } else {
-                    if (cloud.mayRead(number)) {
-                        node = cloud.getNode(number);
-                    } else {
-                        log.warn("Could not produce Bridge Node for '" + number + "', cannot execute node function.");
-                        return null;
-                    }
-                }
-            }
-            parameters.set(Parameter.NODE, node);
         }
-        return getFunctionValue(node, parameters);
+        Class sup = clazz.getSuperclass();
+        if (sup != null) {
+            getParameterConstants(sup, map);
+        }
 
+        return map;
+        
     }
 
-    /**
-     * Utility method to convert a {@link org.mmbase.bridge.Node} to a a {@link org.mmbase.module.core.MMObjectNode}.
-     */
-    protected final MMObjectNode getCoreNode(final MMObjectBuilder builder, final Node node) {
-        if (node instanceof org.mmbase.bridge.implementation.VirtualNode) {
-            return ((org.mmbase.bridge.implementation.VirtualNode) node).getNodeRef();
-        } else {
-            return builder.getNode(node.getNumber());
-        }
 
+
+    private Node node;
+    public NodeFunction(String name, Parameter[] def, ReturnType returnType, Node node) {
+        super(name, def, returnType);
+        this.node = node;
     }
 
-    /**
-     */
-    protected abstract Object getFunctionValue(Node node, Parameters parameters);
-
-    protected Node getNode(Parameters parameters) {
-        if (! parameters.containsParameter(Parameter.NODE)) {
-            throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
-        }
-        Node node = (Node) parameters.get(Parameter.NODE);
-        if (node == null) {
-            throw new IllegalArgumentException("The '" + Parameter.NODE + "' argument of  " + getClass() + " " + toString() + " must not be null ");
-        }
-        return node;
-    }
-
-    /**
-     * To implement a NodeFunction, you must override {@link #getFunctionValue(Node, Parameters)}.
-     * This one can be overriden if the same function must <em>also</em> be a builder function.
-     */
-    public Object getFunctionValue(Parameters parameters) {
-        return  getFunctionValue(getNode(parameters), parameters);
-    }
-
-    /**
-     * This represents the function on one specific Node. This is instantiated when new Istance
-     * if called on a NodeFunction.
-     */
-    private class NodeInstanceFunction extends WrappedFunction {
-
-        protected MMObjectNode node;
-
-        public NodeInstanceFunction(MMObjectNode node) {
-            super(NodeFunction.this);
-            this.node = node;
-        }
-        //javadoc inherited
-        public final Object getFunctionValue(Parameters parameters) {
-            parameters.set(Parameter.CORENODE, node);
-            return NodeFunction.this.getFunctionValue(node, parameters);
-
-        }
-
-        public String toString() {
-            return NodeFunction.this.toString() + " for node " + node.getNumber();
-        }
+    public Object getFunctionValue(Parameters arguments) {
+        return node.getFunctionValue(name, arguments).get();
     }
 
 }
-
-

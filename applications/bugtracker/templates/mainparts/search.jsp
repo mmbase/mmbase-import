@@ -1,47 +1,19 @@
-
-<form action="<mm:url referids="parameters,$parameters" />" method="post">
-
-<table class="list">
-  <tr class="listsearch">
-    <td colspan="3">
-      Maintainer:
-      <select name="smaintainer">
-        <option value="-1">any</option>
-        <mm:listnodescontainer path="users,groups">
-          <mm:constraint field="groups.name" value="BugTrackerCommitors" />
-          <mm:sortorder  field="lastname" />
-          <mm:listnodes>
-            <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="smaintainer">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
-          </mm:listnodes>
-        </mm:listnodescontainer>
-      </select>
-    </td>
-    <td colspan="4">
-      Submitter:
-      <select name="ssubmitter">
-        <option value="-1">any</option>
-        <mm:listnodescontainer path="users">
-          <mm:sortorder  field="lastname" />
-          <mm:listnodes>
-            <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="ssubmitter">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
-          </mm:listnodes>
-        </mm:listnodescontainer>
-      </select>
-    </td>
-  <td colspan="2">&nbsp;</td>
-</tr>
+<mm:import externid="portal" id="po2" jspvar="portal" />
+<mm:import externid="page" id="pa2" jspvar="page2" />
+<form action="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />" method="POST">
+<table cellspacing="0" cellpadding="0" class="list" width="97%">
 <tr class="listsearch">
-  <td width="50">
-      <input name="sbugid" size="4" />
-    </td>
-    <td width="50">
-     <mm:context>
-      <mm:import id="sstatus_list" vartype="list">open,accepted,rejected,pending,integrated,closed</mm:import>
-      <mm:import id="sstatustest" externid="sstatus"/>
+	<td width="50">
+	<INPUT NAME="sbugid" SIZE="4">
+	</td>
+	<td width="50">
+        <mm:context>
+        <mm:import id="sstatus_list" vartype="list">open,accepted,rejected,pending,integrated,closed</mm:import>
+        <mm:import id="sstatustest" externid="sstatus"/>
 	<select name="sstatus">
-           <option value="">any</option>
+              <option value="">any</option>
               <mm:stringlist id="sstatusitem" referid="sstatus_list">
-             <mm:index>
+             <mm:index id="index">
               <mm:compare referid2="sstatustest"><option value="<mm:write/>" selected="true"><mm:write referid="sstatusitem"/></option></mm:compare>
               <mm:compare referid2="sstatustest" inverse="true"><option value="<mm:write/>"><mm:write referid="sstatusitem"/></option></mm:compare>
              </mm:index>
@@ -60,7 +32,7 @@
               <mm:compare referid2="stypetest"><option value="<mm:write/>" selected="true"><mm:write referid="stypeitem"/></option></mm:compare>
               <mm:compare referid2="stypetest" inverse="true"><option value="<mm:write/>"><mm:write referid="stypeitem"/></option></mm:compare>
              </mm:index>
-           </mm:stringlist>
+        </mm:stringlist>
 	</select>
         </mm:context>
 	</td>
@@ -69,8 +41,9 @@
         <mm:import id="spriority_list" vartype="list">high,medium,low</mm:import>
         <mm:import id="sprioritytest" externid="spriority"/>
 	<select name="spriority">
+              <option value="">any</option>
               <mm:stringlist id="spriorityitem" referid="spriority_list">
-             <mm:index>
+             <mm:index id="index">
               <mm:compare referid2="sprioritytest"><option value="<mm:write/>" selected="true"><mm:write referid="spriorityitem"/></option></mm:compare>
               <mm:compare referid2="sprioritytest" inverse="true"><option value="<mm:write/>"><mm:write referid="spriorityitem"/></option></mm:compare>
              </mm:index>
@@ -79,126 +52,92 @@
         </mm:context>
 	</td>
 	<td width="50">
-	<input name="sversion" size="3" value="<mm:write referid="sversion" />" />
+	<INPUT NAME="sversion" SIZE="3">
 	</td>
 	<td width="50">
-	<input name="sfixedin" size="3" value="<mm:write referid="sfixedin" />" />
-	</td>
-	<td width="50">
-	<select name="sarea">
-		<option value="">any</option>
-		<mm:listnodes type="areas" orderby="areas.name">
-		<option <mm:field name="number"><mm:compare value="$sarea">selected="selected"</mm:compare>  value="<mm:write />" </mm:field>><mm:field name="substring(name,15,.)" />
+	<SELECT NAME="sarea">
+		<OPTION VALUE="">
+		<mm:listnodes type="areas">
+		<OPTION VALUE="<mm:field name="number" />"><mm:field name="substring(name,15,.)" />
 		</mm:listnodes>
-	</select>
+	</SELECT>
 	</td>
 	<td width="300">
-	<input name="sissue" size="20" value="<mm:write referid="sissue" />" />
+	<INPUT NAME="sissue" SIZE="20">
+	<a href="advancedsearch.jsp?portal=<%=portal%>&page=<%=page2%>">a</a>
 	</td>
 	<td>
-	<input type="submit" value="search" />
+	<INPUT TYPE="SUBMIT" VALUE="search">
 	</td>
 </tr>
-</form>
+</FORM>
 <tr>
-   <th width="50"> Bug # </th>	<th>Status</th> <th> Type </th> <th> Priority </th> <th> Version </th> <th> Fixed in</th> <th> Area </th> <th> Issue </th> <th> &nbsp; </th>
+	<th width="50">
+	Bug #
+	</th>
+	<th>
+	Status
+	</th>
+	<th>
+	Type
+	</th>
+	<th>
+	Priority
+	</th>
+	<th>
+	Version
+	</th>
+	<th>
+	Area
+	</th>
+	<th>
+	Issue
+	</th>
+	<th>
+	&nbsp;
+	</th>
 </tr>
 <!-- the real searchpart -->
-<mm:url id="pagingurl" referids="parameters,$parameters,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority,smaintainer,ssubmitter" write="false" />
 
-<mm:write referid="smaintainer">
-  <mm:compare value="-1">
-    <mm:write referid="ssubmitter">
-       <mm:compare value="-1">
-          <mm:import id="root">pools</mm:import>
-       </mm:compare>
-       <mm:compare value="-1" inverse="true">
-           <mm:import id="root">users,rolerel</mm:import>
-       </mm:compare>
-    </mm:write>
-  </mm:compare>
-  <mm:compare value="-1" inverse="true">
-    <mm:import id="root">users,rolerel</mm:import>
-  </mm:compare>
-</mm:write>
+<mm:present referid="where" inverse="true">
+<% 	where="";
+	if (sissue!=null && !sissue.equals(""))  where+="issue like '%"+sissue+"%'";
+	if (sstatus!=null && !sstatus.equals("")) { if (!where.equals("")) where+=" and ";where+="bstatus="+sstatus; }
+	if (stype!=null && !stype.equals("")) { if (!where.equals("")) where+=" and ";where+="btype="+stype; }
+	if (sversion!=null && !sversion.equals("")) { if (!where.equals("")) where+=" and ";where+="version like '%"+sversion+"%'"; }
+	if (sbugid!=null && !sbugid.equals("")) { if (!where.equals("")) where+=" and ";where+="bugreports.bugid="+sbugid; }
+	if (sarea!=null && !sarea.equals("")) { if (!where.equals("")) where+=" and ";where+="areas.number="+sarea; }
+	if (spriority!=null && !spriority.equals("")) { if (!where.equals("")) where+=" and ";where+="bugreports.bpriority="+spriority; }
+%>
+</mm:present>
+<mm:list path="pools,bugreports,areas" nodes="BugTracker.Start" orderby="bugreports.bugid" directions="down" constraints="<%=where%>">
+	<mm:last>
+		<mm:import id="total"><mm:index/></mm:import>
+	</mm:last>
+</mm:list>
+<% String total="0"; %>
+<mm:present referid="total">
+  <mm:write referid="total" jspvar="tmp" vartype="integer">
+	<% total = tmp.toString(); %>
+  </mm:write>
+</mm:present>
 
-
-<mm:listcontainer path="$root,bugreports,areas">
-  <mm:write referid="root">
-    <mm:compare value="pools">
-      <mm:constraint field="pools.number" value="BugTracker.Start" />
-    </mm:compare>
-    <mm:compare value="pools" inverse="true">
-      <mm:composite operator="or">
-       <mm:write referid="smaintainer">
-         <mm:isgreaterthan value="0">
-           <mm:composite operator="and">	
-             <mm:constraint field="rolerel.role" value="maintainer" />
-             <mm:constraint field="users.number" value="$_" />
-           </mm:composite>
-         </mm:isgreaterthan>
-       </mm:write>
-       <mm:write referid="ssubmitter">
-         <mm:isgreaterthan value="0">
-           <mm:composite operator="and">	
-             <mm:constraint field="rolerel.role" value="submitter" />
-             <mm:constraint field="users.number" value="$_" />
-           </mm:composite>
-         </mm:isgreaterthan>
-       </mm:write>
-     </mm:composite>
-    </mm:compare>
-  </mm:write>
-
-  
-  <mm:sortorder  field="bugreports.bugid" direction="down" />
-
-  <%-- what a mess --%>
-  <mm:write referid="sissue">
-    <mm:isnotempty><mm:constraint field="bugreports.issue" operator="LIKE" value="%$_%" /></mm:isnotempty>
-  </mm:write>
-  <mm:write referid="sstatus">
-    <mm:isnotempty><mm:constraint field="bugreports.bstatus" value="$_" /></mm:isnotempty>
-  </mm:write>
-  <mm:write referid="stype">
-    <mm:isnotempty><mm:constraint field="bugreports.btype" value="$_" /></mm:isnotempty>
-  </mm:write>
-  <mm:write referid="sversion">
-    <mm:isnotempty><mm:constraint field="bugreports.version" operator="LIKE" value="%$_%" /></mm:isnotempty>
-  </mm:write>
-  <mm:write referid="sfixedin">
-    <mm:isnotempty><mm:constraint field="bugreports.fixedin" operator="LIKE" value="%$_%" /></mm:isnotempty>
-  </mm:write>
-  <mm:write referid="sbugid">
-    <mm:isnotempty><mm:constraint field="bugreports.bugid" value="$_" /></mm:isnotempty>
-  </mm:write>
-  <mm:write referid="sarea">
-    <mm:isnotempty><mm:constraint field="areas.number" value="$_" /></mm:isnotempty>
-  </mm:write>
-  <mm:write referid="spriority">
-    <mm:isnotempty><mm:constraint field="bugreports.bpriority" value="$_" operator="<=" /></mm:isnotempty>
-  </mm:write>
-
-  <mm:size id="total" write="false" />
-  <mm:write value="$[+$total/15 + 1]" vartype="integer" id="lastpage" write="false" />
-
-  <mm:offset value="$noffset" />
-  <mm:maxnumber value="15" />
-
-
-  <mm:list fields="bugreports.bugid,bugreports.bstatus,bugreports.btype,bugreports.bpriority,bugreports.version,bugreports.fixedin,areas.name,bugreports.issue">
-  <tr <mm:even>class="even"</mm:even>>
-      <td>#<mm:field name="bugreports.bugid" /></td>
-      <td>
-	<mm:field name="bugreports.bstatus">
-		<mm:compare value="1">Open</mm:compare>
-		<mm:compare value="2">Accepted</mm:compare>
-		<mm:compare value="3">Rejected</mm:compare>
-		<mm:compare value="4">Pending</mm:compare>
-		<mm:compare value="5">Integrated</mm:compare>
-		<mm:compare value="6">Closed</mm:compare>
-	</mm:field>
-      </td>
+<%! String last="0"; %>
+<mm:list path="pools,bugreports,areas" nodes="BugTracker.Start" orderby="bugreports.bugid" directions="down" constraints="<%=where%>" max="15" offset="$noffset">
+<tr>
+		<td>
+			#<mm:field name="bugreports.bugid" />
+		</td>
+		<td>
+			 <mm:field name="bugreports.bstatus">
+				<mm:compare value="1">Open</mm:compare>
+				<mm:compare value="2">Accepted</mm:compare>
+				<mm:compare value="3">Rejected</mm:compare>
+				<mm:compare value="4">Pending</mm:compare>
+				<mm:compare value="5">Integrated</mm:compare>
+				<mm:compare value="6">Closed</mm:compare>
+			 </mm:field>
+		</td>
 		<td>
 			 <mm:field name="bugreports.btype">
 				<mm:compare value="1">Bug</mm:compare>
@@ -218,74 +157,71 @@
 			 <mm:field name="bugreports.version" />&nbsp;
 		</td>
 		<td>
-			 <mm:field name="bugreports.fixedin" />&nbsp;
-		</td>
-		<td>
 			 <mm:field name="areas.name" />&nbsp;
 		</td>
 		<td>
 			 <mm:field name="bugreports.issue" escape="inline"/>&nbsp;
 		</td>
 		<td>
-		    <a href="<mm:url referids="parameters,$parameters"><mm:param name="btemplate" value="fullview.jsp" /><mm:param name="bugreport"><mm:field name="bugreports.number" /></mm:param></mm:url>"><img src="<mm:url page="images/arrow-right.png" />" border="0" align="right"></a>
+			<A HREF="fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:field name="bugreports.number" />"><IMG SRC="images/arrow-right.gif" BORDER="0" ALIGN="right"></A>
 		</td>
 </tr>
- <mm:last><mm:index id="lastindex" write="false" /></mm:last>
+<mm:last>
+<mm:import id="last" reset="true" jspvar="last" ><mm:index offset="$noffset" /></mm:import>
+</mm:last>
 </mm:list>
 
 <tr>
-   <td colspan="1" class="listpaging">
-     &nbsp;
-     <mm:write referid="noffset">
-       <mm:isgreaterthan value="0">
-         <mm:isgreaterthan value="15">
-           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="0" /></mm:url>" alt="first page" title="first page"><img src="<mm:url page="images/arrow-left.png" />" border="0" /></a>
-         </mm:isgreaterthan>
-         <mm:write id="previouspage" value="$[+ $noffset - 15]" vartype="integer" write="false" />
-         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$previouspage" /></mm:url>" alt="previous page" title="previous page"><img src="<mm:url page="images/arrow-left.png" />" border="0" /></a>
-       </mm:isgreaterthan>
-     </mm:write>
-   </td>
-   <td colspan="3" class="listpaging">
-    &nbsp;
-    <mm:previousbatches indexoffset="1" max="10">
-	<mm:first><mm:index><mm:compare value="1" inverse="true">...</mm:compare></mm:index></mm:first>
-        <a href="<mm:url referid="pagingurl"><mm:param name="noffset"><mm:write /></mm:param></mm:url>"><mm:index /></a>
-        <mm:last inverse="true">,</mm:last>
-    </mm:previousbatches>
-   </td>
-   <td colspan="3" class="listpaging" align="middle">
-     <mm:write referid="total">
-	<mm:compare value="0">
-	  No bugs found in MMBase (ok, not the one you are looking for)
-        </mm:compare>
-	<mm:compare value="0" inverse="true">
-	  <mm:index offset="1" />: <mm:write value="$[+ $noffset + 1]" vartype="integer" /> - <mm:write value="$[+ $noffset + $lastindex]" vartype="integer" /> / <mm:write />
-        </mm:compare>
-     </mm:write>
-  </td>
-  <td colspan="1" class="listpaging">
-   <mm:nextbatches indexoffset="1" max="10">
-       <a href="<mm:url referid="pagingurl"><mm:param name="noffset"><mm:write /></mm:param></mm:url>"><mm:index /></a>
-       <mm:last inverse="true">, </mm:last>
-       <mm:last><mm:index><mm:compare referid2="lastpage" inverse="true">...</mm:compare></mm:index></mm:last>
-   </mm:nextbatches>
-
-  </td>
-  <td colspan="1" class="listpaging">
-     <mm:write value="$[+ $noffset + 15]" vartype="integer">
-       <mm:islessthan value="$total">
-         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$_" /></mm:url>" alt="next page" title="next page"><img src="<mm:url page="images/arrow-right.png" />" border="0" /></a>
-         <mm:islessthan value="$[+ $total - 15]">
-           <mm:write id="lastoffset" value="$[+ ($lastpage  - 1) * 15]" vartype="integer" write="false" />
-           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$lastoffset" /></mm:url>" alt="last page" title="last page"><img src="<mm:url page="images/arrow-right.png" />" border="0" /></a>
-         </mm:islessthan>
-       </mm:islessthan>
-     </mm:write>
-  </td>
+	<center>
+	<% 
+		int noffseti=1;
+		int lasti=1;
+		int totali=1;
+		try {
+			noffseti=Integer.parseInt(noffset);		
+			lasti=Integer.parseInt(last);		
+			totali=Integer.parseInt(total);		
+		} catch(Exception e) {}
+	%>
+	<td colspan="3" class="listpaging">
+			&nbsp;
+			<mm:compare referid="noffset" value="0" inverse="true"><a href="index.jsp?portal=<%=portal%>&page=<%=page2%>&noffset=<%=(noffseti-15)%>&where=<%=org.mmbase.util.URLEscape.escapeurl(where)%>"><img src="images/arrow-left.gif" BORDER="0" align="right"></a></mm:compare>
+	</td>
+	<td colspan="3" class="listpaging" align="middle">
+			<center>
+			<% if (!total.equals("0")) { %>
+			<%=(noffseti+1)%> to <%=(lasti+1)%> from <%=total%>
+			<% } else { %>
+				No bugs found in MMBase (ok not the one you are looking for)
+			<% } %>
+			</center>
+	</td>
+	<td colspan="2" class="listpaging">
+			<% if (((lasti+1)!=totali) && !total.equals("0")) { %><a href="index.jsp?portal=<%=portal%>&page=<%=page2%>&noffset=<%=(noffseti+15)%>&where=<%=org.mmbase.util.URLEscape.escapeurl(where)%>"><IMG SRC="images/arrow-right.gif" BORDER="0" ALIGN="left"></a><% } %>
+		&nbsp;
+	</td>
 </tr>
 
-</mm:listcontainer>
 </table>
+<!-- end of the searchpart -->
+<center>
+<table cellspacing="0" cellpadding="0" align="middle" width="80%">
+<tr>
 
+		<mm:present referid="user" inverse="true" >
+			<td>
+			 <center><font color="#000000">We have no idea who you are please login !<A HREF="changeUser.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />"><IMG SRC="images/arrow-right.gif" border="0" valign="middle"></A></font>
+			</td>
+		</mm:present>
+		<mm:present referid="user">
+			<td colspan="1">
+			<br />
+			<mm:node number="$user">
+			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <A HREF="changeUser.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />">change name</A> )<br /> i have a new bug and want to report it</font><A HREF="newBug.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&user=<mm:write referid="user" />"><IMG SRC="images/arrow-right.gif" BORDER="0" ></A>
+			</td>
+			</mm:node>
+		</mm:present>
+</tr>
+</table>
+</center>
 </form>

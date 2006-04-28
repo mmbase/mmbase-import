@@ -178,7 +178,7 @@ public class URLCache extends Cache {
          * makes sure that the observer will listen to the builder of this node
          */
         synchronized void put(MMObjectNode node) {
-            MMObjectBuilder bul = node.getBuilder();
+            MMObjectBuilder bul = node.parent;
             if (!observingBuilders.contains(bul.getTableName())) {
                 addToObservingBuilder(bul);
             }

@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.43 2006-03-15 08:36:58 nklasens Exp $
+    @version $Id: list.xsl,v 1.37.2.4 2005-05-20 10:34:52 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -21,8 +21,6 @@
   <xsl:param name="deletedescription">
     <xsl:value-of select="$tooltip_delete" />
   </xsl:param>
-
-  <xsl:param name="createprompt" />
 
   <xsl:param name="age" />
   <xsl:param name="searchvalue" />
@@ -71,7 +69,7 @@
     <td>
       <div title="{$tooltip_edit_list}">
         <xsl:call-template name="prompt_edit_list" >
-          <xsl:with-param name="age" select="$age" />
+				  <xsl:with-param name="age" select="$age" />
           <xsl:with-param name="searchvalue" select="$searchvalue" />
         </xsl:call-template>
       </div>
@@ -105,11 +103,6 @@
         <xsl:if test="$searchfields=&apos;&apos; and $creatable=&apos;true&apos;">
           <br />
           <div width="100%" align="left">
-            <xsl:if test="$createprompt">
-              <div style="width: 200px;">
-                <xsl:value-of select="$createprompt" />
-              </div>
-            </xsl:if>
             <a
               href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}"
               title="{$tooltip_new}">
@@ -119,10 +112,6 @@
         </xsl:if>
       </td>
     </tr>
-    <xsl:call-template name="listlinks" />
-  </xsl:template>
-
-  <xsl:template name="listlinks">
     <tr class="linkcanvas">
       <td>
         <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}">
@@ -148,12 +137,6 @@
             <tr>
               <xsl:if test="$creatable=&apos;true&apos;">
                 <td>
-
-                  <xsl:if test="$createprompt">
-                    <div style="width: 200px;">
-                      <xsl:value-of select="$createprompt" />
-                    </div>
-                  </xsl:if>
                   <a href="{$wizardpage}&amp;referrer={$referrer_encoded}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
                     <xsl:call-template name="prompt_new" />
                   </a>
@@ -275,7 +258,7 @@
                  href="{$listpage}&amp;orderby={@fieldname}&amp;directions=DOWN">
                <xsl:call-template name="prompt_sort_down" />
              </a>
-            </th>
+           </th>
           </xsl:for-each>
         </tr>
       </xsl:if>

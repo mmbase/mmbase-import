@@ -1,5 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud rank="administrator">
+<%@page import="org.mmbase.bridge.*" 
+%><%@include file="../settings.jsp" %>
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
@@ -29,18 +31,25 @@
   <th class="header">Auto-Deploy</th>
   <th class="navigate">Manage</th>
 </tr>
-<mm:nodelistfunction module="mmadmin" name="APPLICATIONS">
+<%
+   Module mmAdmin = ContextProvider.getDefaultCloudContext().getModule("mmadmin");
+   java.util.Map params = new java.util.Hashtable();
+   params.put("CLOUD", cloud);
+   NodeList apps = mmAdmin.getList("APPLICATIONS", params, request, response);
+   for (int i=0; i<apps.size(); i++) {
+    Node app = apps.getNode(i);
+%>
 <tr>
-  <td class="data"><mm:field id="application" name="item1" /></td>
-  <td class="data"><mm:field name="item2" /></td>
-  <td class="data"><mm:field name="item3" /></td>
-  <td class="data"><mm:field name="item4" /></td>
-  <td class="data"><mm:field name="item5" /></td>
+  <td class="data"><%=app.getStringValue("item1")%></td>
+  <td class="data"><%=app.getStringValue("item2")%></td>
+  <td class="data"><%=app.getStringValue("item3")%></td>
+  <td class="data"><%=app.getStringValue("item4")%></td>
+  <td class="data"><%=app.getStringValue("item5")%></td>
   <td class="navigate">
-    <a href="<mm:url referids="application" page="application/actions.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
+    <a href="<mm:url page="<%="application/actions.jsp?application="+app.getStringValue("item1")%>" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
   </td>
 </tr>
-</mm:nodelistfunction>
+<% } %>
 <tr><td>&nbsp;</td></tr>
 
   <tr class="footer">

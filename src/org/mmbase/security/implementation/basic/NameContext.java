@@ -11,23 +11,26 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.basic;
 
 import org.mmbase.security.Rank;
-import org.mmbase.security.BasicUser;
+import org.mmbase.security.UserContext;
 import org.mmbase.security.SecurityException;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A UserContext implementation based only on user name, which serves as the identifier for the
  * user.
  * 
  * @author Eduard Witteveen
- * @version $Id: NameContext.java,v 1.6 2005-03-01 14:08:33 michiel Exp $
+ * @version $Id: NameContext.java,v 1.3 2003-07-09 10:12:41 michiel Exp $
  */
-public class NameContext extends BasicUser {
+public class NameContext extends UserContext {
+    private static Logger log = Logging.getLoggerInstance(NameContext.class);
 
     private String identifier = null;
     private Rank   rank       = null;
 
-    public NameContext(Rank rank, String authenticationType) {
-        super(authenticationType);
+    public NameContext(Rank rank) {
         this.rank = rank;
     }
 
@@ -43,13 +46,6 @@ public class NameContext extends BasicUser {
             throw new SecurityException("No rank was provider by the security implementation. This is required.");
         }
         return rank;
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    void setRank(Rank r) {
-        rank = r;
     }
 
     void setIdentifier(String ident) {

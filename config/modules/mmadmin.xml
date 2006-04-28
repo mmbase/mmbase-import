@@ -6,17 +6,19 @@
 		or viewing module and builder properties.
 -->
 <module>
-  <!-- 
-    This module is necessary to administrate MMbase, and should normally be active.
-  -->
-  <status>active</status>
 
-  <class>org.mmbase.module.tools.MMAdmin</class>
+	<!-- 
+		This module is necessary to administrate MMbase, and should normally be active.
+	-->
+	<status>active</status>
 
-  <!-- <properties>
-     This module does not have any properties.
-   -->
-  <properties>
-  </properties>
+	<classfile>org.mmbase.module.tools.MMAdmin</classfile>
+
+	<!-- <properties>
+		 This module does not have any properties.
+		 This tag should be left empty, but in place.
+	 -->
+	<properties>
+	</properties>
 
 </module>

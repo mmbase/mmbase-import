@@ -24,7 +24,7 @@
         params.put("sessionid",  request.getSession().getId());
         params.put("sessionkey", sessionKey);
         
-        java.net.URL template = ewConfig.uriResolver.resolveToURL("xsl/exception.xsl", null);
+        java.io.File template = ewConfig.uriResolver.resolveToFile("xsl/exception.xsl");
     
         String message = exception.getMessage();
         if (message == null) {
@@ -43,13 +43,12 @@
         docel.appendChild(excnode);
     
         org.w3c.dom.Node sttnode = docel.getOwnerDocument().createElement("stacktrace");
-        
-        Utils.storeText(sttnode, org.mmbase.util.logging.Logging.stackTrace(exception));
+        Utils.storeText(sttnode,org.mmbase.util.logging.Logging.stackTrace(exception));
         docel.appendChild(sttnode);
     
         Utils.transformNode(doc, template, ewConfig.uriResolver, out, params);
    } catch (Exception e) {
-        out.println("<pre>The following error occurred: " + exception + org.mmbase.util.logging.Logging.stackTrace(exception) + "</pre>");  
+        out.println("The following error occurred: "+exception);  
    }
 %>
 

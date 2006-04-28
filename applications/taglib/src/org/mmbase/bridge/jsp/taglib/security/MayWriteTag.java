@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 
-import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
@@ -21,52 +20,34 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if node may be changed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayWriteTag.java,v 1.10 2006-04-11 22:55:09 michiel Exp $
+ * @version $Id: MayWriteTag.java,v 1.8.2.1 2005-03-14 18:33:24 michiel Exp $
  */
 
 public class MayWriteTag extends NodeReferrerTag implements Condition {
 
     protected Attribute inverse = Attribute.NULL;
-    protected Attribute number = Attribute.NULL;
 
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
-    }
-    public void setNumber(String n) throws JspTagException {
-        number = getAttribute(n);
     }
     protected boolean getInverse() throws JspTagException {
         return inverse.getBoolean(this, false);
     }
 
-    protected Node getNodeToCheck() throws JspTagException {
-        Node node;
-        String n  = number.getString(this);
-        if ("".equals(n)) {
-            node = getNode();
-        } else {
-            node = getCloudVar().getNode(n);
-        }
-        return node;
-    }
-
     public int doStartTag() throws JspTagException {
-        if ((getNodeToCheck().mayWrite()) != getInverse()) {
-            return EVAL_BODY;
+        if ((getNode().mayWrite()) != getInverse()) {
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }
     }
     public int doAfterBody() throws JspTagException {
-        if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
-            try{
-                if(bodyContent != null) {
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                }
-            } catch(java.io.IOException e){
-                throw new JspTagException("IO Error: " + e.getMessage());
-            }
+        try{
+            if(bodyContent != null)
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            return SKIP_BODY;
+        } catch(java.io.IOException e){
+            throw new JspTagException("IO Error: " + e.getMessage());
         }
-        return SKIP_BODY;
     }
 }

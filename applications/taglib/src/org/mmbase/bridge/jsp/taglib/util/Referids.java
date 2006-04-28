@@ -21,10 +21,10 @@ import org.mmbase.util.logging.*;
  * A helper class to implement referids attribute.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Referids.java,v 1.5 2006-01-25 19:38:44 michiel Exp $
+ * @version $Id: Referids.java,v 1.2.2.2 2004-06-11 08:37:35 michiel Exp $
  * @since MMBase-1.7
  */
-public abstract class  Referids  {
+public class  Referids  {
     private static final Logger log = Logging.getLoggerInstance(Referids.class);
 
     public static Map getReferids(Attribute referids, ContextReferrerTag tag) throws JspTagException {

@@ -16,6 +16,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.util.logging.*;
 
 /**
  * ListNodesTag, provides functionality for listing single nodes in MMBase
@@ -23,10 +24,11 @@ import org.mmbase.bridge.util.Queries;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.28 2005-11-23 10:29:39 michiel Exp $
+ * @version $Id: ListNodesTag.java,v 1.21.2.4 2004-07-26 20:12:15 nico Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
+    private static final Logger log = Logging.getLoggerInstance(ListNodesTag.class);
 
     protected Attribute type = Attribute.NULL;
     protected Attribute container = Attribute.NULL;
@@ -35,8 +37,6 @@ public class ListNodesTag extends AbstractNodeListTag {
     protected Attribute element    = Attribute.NULL;
     protected Attribute searchDirs = Attribute.NULL;
     protected Attribute nodes      = Attribute.NULL;
-
-    protected Attribute distinct   = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -74,14 +74,6 @@ public class ListNodesTag extends AbstractNodeListTag {
     public void setNodes(String n) throws JspTagException {
        nodes = getAttribute(n);
     }
-
-    /**
-     * @since MMBase-1.8
-     */
-    public void setDistinct(String d) throws JspTagException {
-        distinct = getAttribute(d);
-    }
-
 
 
     /**
@@ -126,9 +118,6 @@ public class ListNodesTag extends AbstractNodeListTag {
         }
         if (nodes != Attribute.NULL) {
             Queries.addStartNodes(query, nodes.getString(this));
-        }
-        if (distinct != Attribute.NULL) {
-            query.setDistinct(distinct.getBoolean(this, false));
         }
         return query;
     }

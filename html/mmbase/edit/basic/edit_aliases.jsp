@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp"
-%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
-<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank">
+%><mm:content type="text/html" language="$config.lang" expires="0">
+<mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <title>Edit aliases</title>
 </head>
@@ -29,7 +29,7 @@
     <tr><td><mm:write /></td><td><a href="<mm:url referids="node_number">
          <mm:param name="delete_alias"><mm:write referid="alias" /></mm:param>
 	 </mm:url>">
- <span class="delete"><!-- needed for IE --></span><span class="alt">[delete]</span></a>
+ <span class="delete"></span><span class="alt">[delete]</span></a>
 </mm:aliaslist>
 </table>
 </td></tr>

@@ -18,11 +18,9 @@ package org.mmbase.util;
  * the generator.
  * The meaning of the characters in a template is left to the implementing class.
  *
- * @deprecated no real need for an interface as there is only one implementation
- * @application SCAN (users)
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGeneratorInterface.java,v 1.6 2004-09-30 14:07:11 pierre Exp $
+ * @version $Id: PasswordGeneratorInterface.java,v 1.5 2003-03-10 11:51:09 pierre Exp $
  */
 
 public interface PasswordGeneratorInterface {

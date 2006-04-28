@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * <contenttype>=<supposed charset> properties.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharsetRemoverFilter.java,v 1.6 2005-07-11 08:22:24 michiel Exp $
+ * @version $Id: CharsetRemoverFilter.java,v 1.1.2.6 2005-03-11 11:59:06 michiel Exp $
  * @since MMBase-1.7.4
  */
 
@@ -80,12 +80,18 @@ public class CharsetRemoverFilter implements Filter {
         throws java.io.IOException, ServletException {
 
         HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper((HttpServletResponse) servletResponse) {
-                private String contentType;
+                private String contentType = null;
                 private PrintWriter writer = null;
 
                 
                 public void setContentType(String ct) {
-                    contentType = ct;
+                    if (contentType == null) {                        
+                        contentType = ct;
+                    }     
+                    if (log.isDebugEnabled()) {
+                        log.trace("Setting contentType to " + ct + " " + Logging.stackTrace(new Exception()));
+                    }
+                    getResponse().setContentType(ct);                    
                 }
                 /**
                  * This is the essence of this whole thing. The idea
@@ -98,29 +104,18 @@ public class CharsetRemoverFilter implements Filter {
                     if (writer == null) {                        
                         String charSet = contentType == null ? null : (String) contentTypes.get(contentType);
                         if (charSet != null) {
-                            if (contentType != null) {                                
-                                super.setContentType(contentType);                            
-                            }
+                            if (charSet.equals("")) charSet = "ISO-8859-1"; // default for HTTP, IIRC.                             
                             if (log.isDebugEnabled()) {
                                 log.debug("Wrapping outputstream to avoid charset " + charSet);
                             }
                             try {
-                                writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), charSet), false) {
-                                        public void write(String s, int off, int len) {
-                                            super.write(s, off, len);
-                                            flush();
-                                        }
-
-                                    };
+                                // no need buffering, i supposed the wrapped outputstream is already buffered, using getBufferSize etc.
+                                writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), charSet));
                             } catch (UnsupportedEncodingException uee) {
-                                log.error(uee);
+                                log.error(uee); 
                                 writer = super.getWriter();
                             }
                         } else {
-                            if (contentType != null) {
-                                super.setContentType(contentType);
-                            }
-
                             if (log.isDebugEnabled()) {
                                 log.debug(" " + contentType + " is not contained by " + contentTypes);
                             }
@@ -132,6 +127,16 @@ public class CharsetRemoverFilter implements Filter {
                     }
                     return writer;                        
                 }
+                public void flushBuffer() throws IOException {                    
+                    if (log.isDebugEnabled()) {
+                        log.debug("Flushing for " + ((HttpServletRequest) servletRequest).getRequestURI());
+                    }
+                    if (writer != null) writer.flush();
+                    super.flushBuffer();                    
+                }
+                
+                    
+
         };
         filterChain.doFilter(servletRequest, wrapper);
         

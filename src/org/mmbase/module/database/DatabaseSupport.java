@@ -12,16 +12,12 @@ package org.mmbase.module.database;
 import java.sql.*;
 
 /**
- * Interface to support specific database things for the JDBC module
- *
- * @javadoc
- * @duplicate make this a class instead of an interface, and let {@link DatabaseSupportInformix} extend
- *            from it instead of implementing the interface.
- * @author vpro
- * @version $Id: DatabaseSupport.java,v 1.5 2004-10-07 17:22:34 pierre Exp $
+ * Interface to support specific database things
+ * for the JDBC module
+ * @version $Id: DatabaseSupport.java,v 1.4 2003-03-10 11:50:37 pierre Exp $
  */
 public interface DatabaseSupport {
 
-    public void init();
-    public void initConnection(Connection con);
+	public void init();
+	public void initConnection(Connection con);
 }

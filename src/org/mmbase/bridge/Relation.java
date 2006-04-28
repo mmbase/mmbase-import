@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Relation.java,v 1.4 2004-06-08 08:45:17 michiel Exp $
+ * @version $Id: Relation.java,v 1.3 2002-01-31 10:05:08 pierre Exp $
  */
 public interface Relation extends Node {
 
@@ -33,13 +33,13 @@ public interface Relation extends Node {
 
     /**
      * set the source of the relation
-     * @param node the source node
+     * @param the source node
      */
     public void setSource(Node node);
 
     /**
      * set the destination of the relation
-     * @param node the destination node
+     * @param the destination node
      */
     public void setDestination(Node node);
 

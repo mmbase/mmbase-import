@@ -17,9 +17,8 @@ import org.mmbase.util.logging.*;
  * The relative time value has to be provided as either one integer value (representing the time in milliseconds),
  * or as a set of time attribute integers (hours,minutes,seconds and milliseconds).
  *
- * @application SCAN or Tools (INFO, AnnotRel builder)
  * @author David V van Zeventer
- * @version $Id: RelativeTime.java,v 1.9 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id: RelativeTime.java,v 1.5 2003-03-10 11:51:11 pierre Exp $
  */
 public class RelativeTime {
 
@@ -107,18 +106,18 @@ public class RelativeTime {
             }
 
             //Invalid timePosition used -> returning -1
-            log.warn("Invalid timePos used -> timePos="+timePos+" returning -1");
+            log.warn("RelativeTime::getTimeValue: Invalid timePos used -> timePos="+timePos+" returning -1");
             return -1;
 
         } else {    //Negative timeValue used -> returning -1
-            log.warn("Negative timeValue used at position "+timePos+" -> timeValue="+timeValue+" returning -1");
+            log.warn("RelativeTime::getTimeValue: Negative timeValue used at position "+timePos+" -> timeValue="+timeValue+" returning -1");
             return -1;
         }
     }
 
     /**
      * Converts an integer (representing the time in milliseconds) to a string (like "12:42:15.020")
-     * @param timeValue The amount of time in milliseconds.
+     * @param time The amount of time in milliseconds.
      * @return String containing the amount of time in the "h:m:s.ms" format.
      */
     public static String convertIntToTime(int timeValue) {
@@ -127,10 +126,10 @@ public class RelativeTime {
         int m  = getMinutes(timeValue);
         int s  = getSeconds(timeValue);
         int ms = getMillis(timeValue);
-        if (!testTimeValue(h,HOUR_POS)) h = -1;
-        if (!testTimeValue(m,MINUTE_POS)) m = -1;
-        if (!testTimeValue(s,SECOND_POS)) s = -1;
-        if (!testTimeValue(ms,MILLI_POS)) ms= -1;
+        if (testTimeValue(h,HOUR_POS)==false) h = -1;
+        if (testTimeValue(m,MINUTE_POS)==false) m = -1;
+        if (testTimeValue(s,SECOND_POS)==false) s = -1;
+        if (testTimeValue(ms,MILLI_POS)==false) ms= -1;
 
         //Setting milliseconds attribute to right format value.
         if (ms < 0) {
@@ -172,6 +171,7 @@ public class RelativeTime {
      */
     public static int convertTimeToInt(String time) {
         int result = 0;        //The amount of milliseconds that is to be returned.
+        int attrIntValue=0;
         String attrStrValues[] = new String[4];
 
         // Splice string value into time attribute tokens.
@@ -184,13 +184,13 @@ public class RelativeTime {
 
         // Test all time attribute values.
         for (int i=0; i<attrStrValues.length; i++) {
-            if (!testTimeValue(Integer.parseInt(attrStrValues[i]),i)) {
+            if ( testTimeValue(Integer.parseInt(attrStrValues[i]),i) == false ) {
                 return -1;
             }
         }
 
         // Convert hours,minutes and seconds to millis and adding them to result.
-        int attrIntValue = Integer.parseInt(attrStrValues[HOUR_POS]);
+        attrIntValue = Integer.parseInt(attrStrValues[HOUR_POS]);
         result += attrIntValue*3600*1000;
         attrIntValue = Integer.parseInt(attrStrValues[MINUTE_POS]);
         result += attrIntValue*60*1000;
@@ -220,31 +220,31 @@ public class RelativeTime {
     private static boolean testTimeValue(int timeAttrValue, int timePos) {
         // Test if value is negative.
         if (timeAttrValue < 0) {
-            log.warn("Negative timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+            log.warn("RelativeTime::testTimeValue: Negative timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
             return false;
         }
         if (timePos == HOUR_POS) {
             if (timeAttrValue >23) {
-                log.warn("Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+                log.warn("RelativeTime::testTimeValue: Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
                 return false;
             }
         } else if (timePos == MINUTE_POS) {
             if (timeAttrValue >59) {
-                log.warn("Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+                log.warn("RelativeTime::testTimeValue: Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
                 return false;
             }
         } else if (timePos == SECOND_POS) {
             if (timeAttrValue >59) {
-                log.warn("Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+                log.warn("RelativeTime::testTimeValue: Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
                 return false;
             }
         } else if (timePos == MILLI_POS) {
             if (timeAttrValue >999) {
-                log.warn("Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+                log.warn("RelativeTime::testTimeValue: Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
                 return false;
             }
         } else {     //Invalid timePosition provided -> returning false
-            log.warn("Invalid timePos provided -> timePos="+timePos+" returning false");
+            log.warn("RelativeTime::testTimeValue: Invalid timePos provided -> timePos="+timePos+" returning false");
             return false;
         }
 
@@ -330,7 +330,7 @@ public class RelativeTime {
                 e = testProps.keys();
                 while (e.hasMoreElements()) {
                     timeKey = (String)e.nextElement();
-                    timeValue = convertTimeToInt(timeKey);
+                    timeValue = (int)convertTimeToInt(timeKey);
                     log.info("convertTimeToInt using timeKey="+timeKey+" , timeValue="+timeValue+" in testProps? "+testProps.contains(new Integer(timeValue)));
                 }
             } else if (args[0].equals("convertTimeToInt2")) {

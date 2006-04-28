@@ -14,16 +14,21 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Module;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import org.mmbase.bridge.jsp.taglib.*;
 
 /**
  * SetInfo tag stores information in the multipurpose INFO field.
  *
  * @author Pierre van Rooden
- * @version $Id: SetInfoTag.java,v 1.10 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: SetInfoTag.java,v 1.9 2003-06-18 20:03:57 michiel Exp $
  */
  
 public class SetInfoTag extends NodeReferrerTag {
+
+    private static Logger log = Logging.getLoggerInstance(SetInfoTag.class.getName());
 
     protected Node node;
     private String key=null;
@@ -44,7 +49,6 @@ public class SetInfoTag extends NodeReferrerTag {
 
     /**
      * store the given value
-     * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
      **/
     public int doAfterBody() throws JspTagException {
         String value=bodyContent.getString();
