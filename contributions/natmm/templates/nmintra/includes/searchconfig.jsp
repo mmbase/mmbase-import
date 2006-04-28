@@ -13,13 +13,13 @@ nodePaths.put("teaser", fields);
 fields = new Vector(); fields.add(new Integer(300)); fields.add("producttypes.title");
 nodePaths.put("teaser,posrel,producttypes", fields);
 
-fields = new Vector(); fields.add(new Integer(300)); fields.add("products.name"); fields.add("products.description");
+fields = new Vector(); fields.add(new Integer(300)); fields.add("products.titel"); fields.add("products.omschrijving");
 nodePaths.put("teaser,posrel,producttypes,posrel,products", fields);
 
 fields = new Vector(); fields.add(new Integer(200)); fields.add("producttypes.title");
 nodePaths.put("producttypes", fields);
 
-fields = new Vector(); fields.add(new Integer(300)); fields.add("products.name"); fields.add("products.description");
+fields = new Vector(); fields.add(new Integer(300)); fields.add("products.titel"); fields.add("products.omschrijving");
 nodePaths.put("producttypes,posrel,products", fields);
 
 fields = new Vector(); fields.add(new Integer(200)); fields.add("items.titel"); fields.add("items.intro"); fields.add("items.body");

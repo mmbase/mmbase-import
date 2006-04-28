@@ -26,7 +26,7 @@
          if(path!=null) {
 				String sBuiderName = path.substring(0,path.indexOf(","));
 				String sConstraints = "";
-				if (sBuiderName.equals("producttypes")||sBuiderName.equals("products")||(sBuiderName.equals("documents"))){
+				if (sBuiderName.equals("producttypes")||(sBuiderName.equals("documents"))){
 					if (sArchieve.equals("ja")||(fromTime>0)||(toTime>0))
 					   break;
 				}
@@ -39,13 +39,16 @@
 					if ((fromTime>0)||(toTime>0)) {
 						sConstraints += " AND ( " + sBuiderName + ".embargo > '" + fromTime + "') AND (" + sBuiderName + ".embargo < '" + toTime + "')";
 					}
-				} 
+				}
 				NodeList list = cloud.getList(docNumber,path,"pagina.number",sConstraints,null,null,null,true);
             for(int j=0; j<list.size(); j++) {
                String paginaNumber = list.getNode(j).getStringValue("pagina.number");
 					if((rootRubriek.equals(""))||(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek))) {
-                  hsetPagesNodes.add(paginaNumber);
-                  hsetNodes.add(docNumber);
+						NodeList nlPools = PoolUtil.getPool(cloud,docNumber);
+						if (sPoolNumber.equals("")||(nlPools.contains(cloud.getNode(sPoolNumber)))){
+	                  hsetPagesNodes.add(paginaNumber);
+   	               hsetNodes.add(docNumber);
+						}
                }
             }
          } 
@@ -92,7 +95,7 @@ if((sCategory != null) && (!sCategory.equals(""))) {
 hsetArticlesNodes = addPages(cloud, log, cf, luceneQuery, 0, "artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetTeaserNodes = addPages(cloud, log, cf, luceneQuery, 4, "teaser,contentrel,pagina", sCategory, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
+hsetTeaserNodes = addPages(cloud, log, cf, luceneQuery, 4, "teaser,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetTeaserNodes %><br/><%= hsetPagesNodes %><% } 
 
 hsetProductsNodes = addPages(cloud, log, cf, luceneQuery, 6, "products,posrel,producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
@@ -101,7 +104,7 @@ if(debug) { %><br/>ProductsHits:<br/><%= hsetProductsNodes %><br/><%= hsetPagesN
 hsetProducctypesNodes = addPages(cloud, log, cf, luceneQuery, 5, "producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>ProducctypesHits:<br/><%= hsetProducctypesNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetItemsNodes = addPages(cloud, log, cf, luceneQuery, 7, "items,posrel,pagina", sCategory, nowSec, sPool, fromTime, toTime, sArchieve, hsetPagesNodes);
+hsetItemsNodes = addPages(cloud, log, cf, luceneQuery, 7, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
 if(debug) { %><br/>ItemsHits:<br/><%= hsetItemsNodes %><br/><%= hsetPagesNodes %><% } 
 
 hsetDocumentsNodes = addPages(cloud, log, cf, luceneQuery, 8, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, sArchieve, hsetPagesNodes);
@@ -111,40 +114,7 @@ hsetVacatureNodes = addPages(cloud, log, cf, luceneQuery, 9, "vacature,contentre
 if(debug) { %><br/>VacatureHits:<br/><%= hsetVacatureNodes %><br/><%= hsetPagesNodes %><% } 
 
 %></mm:log
-><%--
-// *** list of pages that contain metatags: hsetMetaNodes ***
-if(debug) { %><br/>substracting for metatags:<br/><%}
-SearchIndex metaSearchindex = cf.getIndex(4);
-IndexReader mir = IndexReader.open(metaSearchindex.getIndex());
-IndexSearcher metaSearcher = new IndexSearcher(mir);
-Hits metaHits = null;
-if ((sMeta != null) && (!sMeta.equals(""))) {
-   metaHits = metaSearcher.search(MultiFieldQueryParser.parse(sMeta, fields, analyzer));
-
-   if (metaHits != null){
-   
-      HashSet hsetMetaNodes = new HashSet();
-      for (int i = 0; i < metaHits.length(); i++) {
-   
-         Document doc = metaHits.doc(i);
-         String docNumber = doc.get("node");
-         hsetMetaNodes.add(docNumber);
-      }
-   
-      // *** remove all pages that do not contain the selected metatag ***
-      for(Iterator it = hsetPagesNodes.iterator(); it.hasNext(); ) {
-   
-         String sPageID = (String) it.next();
-         if (!hsetMetaNodes.contains(sPageID)) {
-            it.remove();
-            if(debug) { %><%= sPageID %>, <% }
-         }
-      }
-   } 
-}
-if(metaSearcher!=null) { metaSearcher.close(); }
-if(mir!=null) { mir.close(); }
---%><%
+><%
 
 // *** Create list of categories from list of pages: hSetCategories ***
 // *** Seems to me it is faster than create another index ***

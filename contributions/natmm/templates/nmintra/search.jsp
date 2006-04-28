@@ -89,123 +89,134 @@
 	<tr>
 	<td class="transperant">
 	<div class="<%= infopageClass %>">
-   <a name="top" />
-   <br/>
-   <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-   <% if(hsetCategories.size()==0) {
-      %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekcriteria.<%
-   } else { 
-      %> De volgene zoekresultaten zijn gevonden in de categorieën<% 
-   }
-      boolean bFirst = true;
-      for (Iterator it = hsetCategories.iterator(); it.hasNext();)
-      {
-         String sRubriek = (String) it.next();
-         if(!bFirst) { %> | <% }
-         %><mm:node number="<%=sRubriek%>">
-            <a href="zoek.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><b><mm:field name="naam"/></b></a>
-         </mm:node><%
-         bFirst = false;
-      }
-   %>
-   <br/><br/>
-   <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-   <%
-   // *** Show rubrieken
-   if (hsetCategories.size() > 0) {
+   <table border="0" cellpadding="0" cellspacing="0">
+        <tr><td colspan="3"><img src="media/spacer.gif" width="1" height="8"></td></tr>
+        <tr><td><img src="media/spacer.gif" width="10" height="1"></td>
+        <td><a name="top"/>
+		  		<% if(hsetCategories.size()==0) {
+			      %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekcriteria.<%
+				   } else { 
+				      %> De volgene zoekresultaten zijn gevonden in de categorieën <br/><% 
+				   }
+				      boolean bFirst = true;
+				      for (Iterator it = hsetCategories.iterator(); it.hasNext();)
+				      {
+				         String sRubriek = (String) it.next();
+				         if(!bFirst) { %> | <% }
+				         %><mm:node number="<%=sRubriek%>">
+									<mm:field name="naam" jspvar="name" vartype="String" write="false">
+						            <a href="search.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><b><%= name.toUpperCase() %></b></a>
+									</mm:field>	
+			   	         </mm:node><%
+				         bFirst = false;
+				      }
+				   %>
+				   <br/><br/>
+				   <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
+				   <%
+				   // *** Show rubrieken
+				   if (hsetCategories.size() > 0) {
 
-      for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
-         String sRubriek = (String) it.next();
+				      for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
+				         String sRubriek = (String) it.next();
 
-         HashSet hsetPagesForThisCategory = new HashSet(); %>
-         <mm:node number="<%=sRubriek%>">
-            <mm:relatednodes type="pagina">
-               <mm:field name="number" jspvar="sID" vartype="String" write="false"><%
-                     hsetPagesForThisCategory.add(sID);
-               %></mm:field>
-            </mm:relatednodes>
-            <a name="<mm:field name="number" />" />
-            <span class="colortitle"><mm:field name="naam"/></span>
-            <br/><%
-            
-            bFirst = true;
-            for (Iterator itp = hsetPagesNodes.iterator(); itp.hasNext(); ) {
-               String sPageID = (String) itp.next();
+				         HashSet hsetPagesForThisCategory = new HashSet(); %>
+				         <mm:node number="<%=sRubriek%>">
+				            <mm:relatednodes type="pagina">
+				               <mm:field name="number" jspvar="sID" vartype="String" write="false"><%
+				                     hsetPagesForThisCategory.add(sID);
+				               %></mm:field>
+				            </mm:relatednodes>
+				            <a name="<mm:field name="number" />" />
+				            <span class="colortitle"><b>
+									<mm:field name="naam" jspvar="name" vartype="String" write="false">
+										<%= name.toUpperCase() %>
+									</mm:field></b>
+								</span>
+				            <br/><%
 
-               if(!hsetPagesForThisCategory.contains(sPageID)) {
-                  continue;
-               }
+				            bFirst = true;
+				            for (Iterator itp = hsetPagesNodes.iterator(); itp.hasNext(); ) {
+            				   String sPageID = (String) itp.next();
 
-               String templateUrl = "index.jsp";
+				               if(!hsetPagesForThisCategory.contains(sPageID)) {
+            				      continue;
+				               }
 
-               %><mm:node number="<%=sPageID%>"><%
-                  if (!bFirst) { %><br/><% } %>
-                  <b><mm:field name="titel"/></b>
-                  <ul style="margin:0px;margin-left:16px;">
-                  <mm:related path="gebruikt,template">
-                     <mm:field name="template.url" jspvar="dummy" vartype="String" write="false">
-                        <% templateUrl = dummy; %>
-                     </mm:field>
-                  </mm:related>
-                  <mm:related path="contentrel,artikel" fields="artikel.number">
-                     <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetArticlesNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&article=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-                  <mm:related path="contentrel,teaser">
-                     <mm:field name="teaser.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetTeaserNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>"><mm:field name="teaser.titel"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-						<mm:related path="posrel,producttypes" fields="producttypes.number">
-                     <mm:field name="producttypes.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetProducctypesNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&pool=<mm:field name="producttypes.number"/>">*<mm:field name="producttypes.title"/>*</a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-						<mm:related path="posrel,producttypes,posrel,products">
-                     <mm:field name="products.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetProductsNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&pool=<mm:field name="producttypes.number"/>&product=<mm:field name="products.number"/>"><mm:field name="products.name"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-						<mm:related path="posrel,items">
-                     <mm:field name="items.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetItemsNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&u=<mm:field name="items.number"/>"><mm:field name="items.titel"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-						<mm:related path="posrel,documents">
-                     <mm:field name="documents.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetDocumentsNodes.contains(sID)){
-                        %><li><a href="<mm:field name="documents.url"/>"><mm:field name="documents.filename"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-						<mm:related path="contentrel,vacature">
-                     <mm:field name="vacature.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetVacatureNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&project=<mm:field name="vacature.number"/>"><mm:field name="vacature.titel"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-                  </ul>
-               </mm:node><%
-               bFirst = false;
-            }
-         %></mm:node>
-         <div align="right"><a href="#top"><img src="media/arrowup_zoek.gif" border="0" /></a></div>
-         <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
-      }
-   }
-%><br/>
+            				   String templateUrl = "index.jsp";
+
+				               %><mm:node number="<%=sPageID%>"><%
+            				      if (!bFirst) { %><br/><% } %>
+				                  <b><mm:field name="titel"/></b>
+            				      <ul style="margin:0px;margin-left:16px;">
+				                  <mm:related path="gebruikt,template">
+            				         <mm:field name="template.url" jspvar="dummy" vartype="String" write="false">
+                        				<% templateUrl = dummy; %>
+				                     </mm:field>
+            				      </mm:related>
+				                  <mm:related path="contentrel,artikel" fields="artikel.number">
+            				         <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
+				                     if(hsetArticlesNodes.contains(sID)){
+            				            %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&article=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
+				                     }
+            				         %></mm:field>
+				                  </mm:related>
+            				      <mm:related path="contentrel,teaser">
+				                     <mm:field name="teaser.number" jspvar="sID" vartype="String" write="false"><%
+            				         if(hsetTeaserNodes.contains(sID)){
+                        				%><li><a href="<%= templateUrl %>?p=<%=sPageID%>"><mm:field name="teaser.titel"/></a></li><%
+				                     }
+            				         %></mm:field>
+				                  </mm:related>
+										<mm:related path="posrel,producttypes" fields="producttypes.number">
+				                     <mm:field name="producttypes.number" jspvar="sID" vartype="String" write="false"><%
+            				         if(hsetProducctypesNodes.contains(sID)){
+				                        %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&pool=<mm:field name="producttypes.number"/>">*<mm:field name="producttypes.title"/>*</a></li><%
+            				         }
+				                     %></mm:field>
+            				      </mm:related>
+										<mm:related path="posrel,producttypes,posrel,products">
+            				         <mm:field name="products.number" jspvar="sID" vartype="String" write="false"><%
+				                     if(hsetProductsNodes.contains(sID)){
+            				            %><li><a href="<%= templateUrl %>?p=<%=sPageID%>&pool=<mm:field name="producttypes.number"/>&product=<mm:field name="products.number"/>"><mm:field name="products.titel"/></a></li><%
+				                     }
+            				         %></mm:field>
+				                  </mm:related>
+										<mm:related path="posrel,items">
+				                     <mm:field name="items.number" jspvar="sID" vartype="String" write="false"><%
+            				         if(hsetItemsNodes.contains(sID)){
+                        				%><li><a href="<%= templateUrl %>?p=<%=sPageID%>&u=<mm:field name="items.number"/>"><mm:field name="items.titel"/></a></li><%
+				                     }
+            				         %></mm:field>
+				                  </mm:related>
+										<mm:related path="posrel,documents">
+				                     <mm:field name="documents.number" jspvar="sID" vartype="String" write="false"><%
+            				         if(hsetDocumentsNodes.contains(sID)){
+                        				%><li><a href="<mm:field name="documents.url"/>"><mm:field name="documents.filename"/></a></li><%
+				                     }
+            				         %></mm:field>
+				                  </mm:related>
+										<mm:related path="contentrel,vacature">
+				                     <mm:field name="vacature.number" jspvar="sID" vartype="String" write="false"><%
+            				         if(hsetVacatureNodes.contains(sID)){
+                        				%><li><a href="<%= templateUrl %>?p=<%=sPageID%>&project=<mm:field name="vacature.number"/>"><mm:field name="vacature.titel"/></a></li><%
+				                     }
+				                     %></mm:field>
+            				      </mm:related>
+				                  </ul>
+            				   </mm:node><%
+				               bFirst = false;
+            				}
+				         %></mm:node>
+				         <div align="right"><a href="#top"><img src="media/arrowup_zoek.gif" border="0" /></a></div>
+				         <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
+				      }
+				   }
+				%><br/>
+				</td>
+	        <td><img src="media/spacer.gif" width="10" height="1"></td>
+   	   </tr>
+      </table>
 </div>
 </td>
 <td><% 
