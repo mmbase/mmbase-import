@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.72 2006-04-10 15:26:54 michiel Exp $
+ * @version $Id: Queries.java,v 1.73 2006-04-28 11:19:01 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -238,9 +238,9 @@ abstract public class Queries {
                 String fieldName = constraints.substring(posa + 1, posb);
                 int posc = fieldName.indexOf('.');
                 if (posc == -1) {
-                    fieldName = factory.getStorageIdentifier(fieldName).toString();
+                    fieldName = factory != null ? factory.getStorageIdentifier(fieldName).toString() : fieldName;
                 } else {
-                    fieldName = fieldName.substring(0, posc + 1) + factory.getStorageIdentifier(fieldName.substring(posc + 1));
+                    fieldName = fieldName.substring(0, posc + 1) + (factory !=  null ? factory.getStorageIdentifier(fieldName.substring(posc + 1)) : fieldName.substring(posc + 1));
                 }
                 result.append(constraints.substring(0, posa)).append(fieldName);
                 constraints = constraints.substring(posb + 1);
@@ -279,23 +279,26 @@ abstract public class Queries {
         StringBuffer result = new StringBuffer();
         //if there is a quote in the constraints posa will not be equals -1
 
-        int posa = constraints.indexOf('\'');
-        while (posa > -1) {
+        int quoteOpen = constraints.indexOf('\'');
+        while (quoteOpen > -1) {
             //keesj: posb can be the same a posa maybe the method should read indexOf("\"",posa) ?
-            int posb = constraints.indexOf('\'', 1);
-            if (posb == -1) {
-                posa = -1;
-            } else {
-                //keesj:part is now the first part of the constraints if there is a quote in the query
-                String part = constraints.substring(0, posa);
-
-                //append to the string buffer "part" the first part
-                result.append(convertClausePartToDBS(part)).append(constraints.substring(posa, posb + 1));
-
-                //keesj:obfucation contest?
-                constraints = constraints.substring(posb + 1);
-                posa = constraints.indexOf('\'');
+            int quoteClose = constraints.indexOf('\'', quoteOpen + 1);
+            if (quoteClose == -1) {
+                // unmatching quote?
+                log.warn("unbalanced quote in " + constraints);
+                break;
             }
+
+            //keesj:part is now the first part of the constraints if there is a quote in the query
+            String part = constraints.substring(0, quoteOpen);
+
+            //append to the string buffer "part" the first part
+            result.append(convertClausePartToDBS(part));
+            result.append(constraints.substring(quoteOpen, quoteClose + 1));
+
+            constraints = constraints.substring(quoteClose + 1);
+            quoteOpen = constraints.indexOf('\'');
+
         }
         result.append(convertClausePartToDBS(constraints));
         return result.toString();
@@ -1411,6 +1414,10 @@ abstract public class Queries {
         }
         // if all fields match - return 0 as if equal
         return result;
+    }
+
+    public static void main(String[] argv) {
+        System.out.println(convertClauseToDBS("(([cpsettings.status]='[A]' OR [cpsettings.status]='I') AND [users.account] != '') and (lower([users.account]) LIKE '%t[est%' OR lower([users.email]) LIKE '%te]st%' OR lower([users.firstname]) LIKE '%t[e]st%' OR lower([users.lastname]) LIKE '%]test%')"));
     }
 
 }
