@@ -222,6 +222,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("page","title:titel;subtitle:titel_fra");
       tmRenamingFields.put("paragraph","title:titel;body:tekst");
       tmRenamingFields.put("pijler","title:naam;subtitle:naam_eng");
+      tmRenamingFields.put("products","name:titel;description:omschrijving");
       tmRenamingFields.put("projects","name:titel;description:omschrijving");
       tmRenamingFields.put("providers","name:naam;address:bezoekadres;postalcode:bezoekadres_postcode;" +
       "city:plaatsnaam;country:land;phone:telefoonnummer;fax:faxnummer;description:omschrijving");
