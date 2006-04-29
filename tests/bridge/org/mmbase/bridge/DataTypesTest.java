@@ -116,14 +116,14 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {Boolean.TRUE, Boolean.FALSE, "true", "false", null},
                               new Object[] { "asjdlkf", "21", new Integer(10)}},
                 new Object[] {"integer_string",
-                              new Object[] {"1", "100", new Integer(10), new Integer(-1), "-1" , new Float(3.141593), "", null},
+                              new Object[] {"1", "100", new Integer(10), new Integer(-1), "-1" , null},
                               new Object[] { "asjdlkf"}},
                 new Object[] {"node",
                               new Object[] {node1, node2, "" + node1.getNumber(), new Integer(node1.getNumber()), new Integer(node2.getNumber()),  new Integer(-1), null},
                               new Object[] {"", "asjdlkf", new Integer(-2), new Integer(-100)}}
                 ,
                 new Object[] {"typedef",
-                              new Object[] {node1, new Integer(node1.getNumber()), new Integer(-1),  null},
+                              new Object[] {node1, new Integer(node1.getNumber()),  null},
                               new Object[] {"", "asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-2), new Integer(-100)}}
                 /*
                   XML not very well supported yet
@@ -303,14 +303,19 @@ public class DataTypesTest extends BridgeTest {
             Field field = nodeManager.getField((String)kase[0]);
             Object[] validValues = (Object[]) kase[1];
             for (int j = 0; j < validValues.length; j++) {
+                Node newNode = nodeManager.createNode();
                 try {
-                    Node newNode = nodeManager.createNode();
                     newNode.setValue(field.getName(), validValues[j]);
                     newNode.setValue(field.getName(), null);
                     newNode.setValue(field.getName(), validValues[j]);
                     newNode.commit(); // should not give exception
-                    if(field.getName().equals("handle")) {
-                        assertFalse(newNode.isNull("checksum"));
+                    if(field.getName().equals("handle") && validValues[j] != null) {
+                        assertFalse("Checksum is null", newNode.isNull("checksum"));
+                    }
+                    if (validValues[j] != null &&
+                        ! (field.getDataType() instanceof NodeDataType && validValues[j].equals(new Integer(-1))) // -1 casts to null for node-fields.
+                        ) {
+                        assertFalse("field " + field.getName() + " was null, after we set " + validValues[j] + " in it", newNode.isNull(field.getName()));
                     }
                     // all fields are nullable in 'datatypes' so, it must be possible to set field back to null.
                     newNode.setValue(field.getName(), null);
@@ -324,7 +329,7 @@ public class DataTypesTest extends BridgeTest {
                         assertTrue(newNode.isNull("checksum"));
                     }
                 } catch (Throwable t) {
-                    AssertionFailedError fail = new AssertionFailedError("During field " + field);
+                    AssertionFailedError fail = new AssertionFailedError("During field " + field + " of " + newNode);
                     fail.initCause(t);
                     throw fail;
                 }
