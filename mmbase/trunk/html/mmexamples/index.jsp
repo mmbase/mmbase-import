@@ -120,6 +120,17 @@
         <a href="<mm:url page="codings/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
+
+
+    <tr>
+      <td>DataTypes</td>
+      <td>
+        MMBase 1.8 has powerful support for datatypes.
+      </td>
+      <td class="link" >
+        <a href="<mm:url page="validation/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
+      </td>
+    </tr>
     
   </table>
   <div class="link">
