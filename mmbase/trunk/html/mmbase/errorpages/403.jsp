@@ -10,6 +10,7 @@
     <h1>403 Forbidden</h1>
     <h2><%=org.mmbase.Version.get()%></h2>
     <p>
+      &nbsp;
       <% String mesg = (String) request.getAttribute("org.mmbase.servlet.error.message");
          if (mesg != null) {
        %>
