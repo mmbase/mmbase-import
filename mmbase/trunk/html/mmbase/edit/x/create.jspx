@@ -1,23 +1,22 @@
-<html
-    xmlns="http://www.w3.org/1999/xhtml"
+<mm:content 
+    type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
-
-  <!-- 
-       Offers a form for one new MMBase node.
-       Also handles the form, and then redirects to change.jspx, because the node is existng then.
-       $Id: create.jspx,v 1.11 2006-04-27 17:09:06 michiel Exp $
-  -->
-
   <jsp:directive.page session="true" buffer="200kb" />
-  <mm:include page="head.jspx" />
-  <body>
-    <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
+  
+  <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
+
+    <!-- 
+         Offers a form for one new MMBase node.
+         Also handles the form, and then redirects to change.jspx, because the node is existng then.
+         $Id: create.jspx,v 1.12 2006-04-29 13:35:04 michiel Exp $
+    -->
+    <mm:include page="head.jspx" />
+    <body>
       <mm:cloud rank="basic user">
         <mm:import externid="nodemanager" required="true" />        
 
@@ -28,12 +27,12 @@
             <a href="${_}" class="back"><span class="navigate">back</span></a>
           </mm:link>
             <a href="javascript:document.getElementById('createform').submit();" class="ok"><span class="navigate">ok</span></a>
-          <jsp:text>New</jsp:text>
+          <jsp:text>New <mm:nodeinfo nodetype="$nodemanager" type="guitype" /></jsp:text>
         </h1>
         <mm:form id="createform">
           <input type="hidden" name="nodemager" value="${nodemanager}" />
           <input type="hidden" name="submitted" value="submitted" />
-          <table>
+          <table summary="fields of new node of type ${nodemanager}">
             <mm:fieldlist type="edit" nodetype="$nodemanager">
               <mm:index id="index" write="false" />
               <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
@@ -63,6 +62,6 @@
           </mm:compare>
         </mm:form>
       </mm:cloud>
-    </mm:content>
-  </body>
-</html>
+    </body>
+  </html>
+</mm:content>
