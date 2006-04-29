@@ -73,7 +73,7 @@
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${hsqldb.jar}" todir="${tests.lib}" />
+    <copy file="${hsqldb.jar}" todir="${tests.lib}" preseverlastmodified="true" />
 
 
     <available property="dummy" classname="dummy">
@@ -380,6 +380,7 @@ Build-compiler: ${build.compiler}
         <jvmarg value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
       </java>
     </parallel>
+    <antcall target="stop.database" />
   </target>
 
 
@@ -423,7 +424,6 @@ Build-compiler: ${build.compiler}
   <target name="run.clustering" depends="jar,init,mmbase">
     <ant target="install" dir="${mmbase.source.dir}/applications/clustering" />
     <antcall target="clean.database" />
-    <sleep seconds="5" />
     <parallel>
       <echo message="${tests.source.dir}/config" />
       <daemons>
@@ -463,6 +463,7 @@ Build-compiler: ${build.compiler}
             classpathref="run.rmmci.client">
           <arg value="org.mmbase.tests.Clustering" />
         </java>
+        <antcall target="stop.database" />
       </sequential>
     </parallel>
   </target>
@@ -487,9 +488,56 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <!-- Run the tests -->
   <!-- =================================================================== -->
-  <target name="run.all" description="Run all tests"
-          depends="run.dbsq,run.typerel,run.bridge,run.bridge.rmmci,run.util,run.clustering,run.releasestrategy">
-
+  <target name="run.all" description="Run all tests">
+    <echo message="========================================DBSQ========================================" />
+    <antcall target="run.dbsq" />
+    <sleep seconds="10" />
+    <echo message="========================================TYPEREL========================================" />
+    <antcall target="run.typerel" />
+    <sleep seconds="10" />
+    <echo message="========================================BRIDGE========================================" />
+    <antcall target="run.bridge" />
+    <sleep seconds="10" />
+    <echo message="========================================RMMCI========================================" />
+    <antcall target="run.bridge.rmmci" />
+    <sleep seconds="10" />
+    <echo message="========================================UTIL========================================" />
+    <antcall target="run.util" />
+    <sleep seconds="10" />
+    <echo message="========================================CLUSTERING========================================" />
+    <antcall target="run.clustering" />
+    <sleep seconds="10" />
+    <echo message="========================================RELEASESTRATEGY========================================" />
+    <antcall target="run.releasestrategy" />
   </target>
+
+  <target name="run.test">
+    <echo message="========================================RMMCI========================================" />
+    <antcall target="run.bridge.rmmci" />
+    <echo message="========================================CLUSTERING========================================" />
+    <sleep seconds="10" />
+    <antcall target="run.clustering" />
+  </target>
+
+  <target name="run.database">
+    <parallel>
+      <echo message="${tests.source.dir}/config" />
+      <daemons>
+        <java
+            classname="org.mmbase.tests.MMBaseTest"
+            fork="true"
+            classpathref="run.classpath.rmmci"
+            >
+          <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+          <jvmarg value="-Drmmci.port=1221" />
+          <jvmarg value="-Duser.dir=${tests.work.dir}" />
+        </java>
+      </daemons>
+    </parallel>
+    <sleep seconds="10" />
+    <antcall target="stop.database" />
+    <sleep seconds="10" />
+  </target>
+
 
 </project>
