@@ -73,7 +73,7 @@
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}"  preservelastmodified="true" />
-    <copy file="${hsqldb.jar}" todir="${tests.lib}" preseverlastmodified="true" />
+    <copy file="${hsqldb.jar}" todir="${tests.lib}" preservelastmodified="true" />
 
 
     <available property="dummy" classname="dummy">
