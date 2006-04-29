@@ -8,6 +8,7 @@
     <mm:url write="false" id="create" page="/mmbase/style/images/create.png" />
     <mm:url write="false" id="search" page="/mmbase/style/images/search.png" />
     <mm:url write="false" id="ok"     page="/mmbase/style/images/ok.png" />
+    <mm:url write="false" id="logout" page="/mmbase/style/images/reload.png" />
 
 @import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
 body { 
@@ -46,7 +47,7 @@ img {
 input.small, input.big, textarea { 
   width: 100%;
 }
-table.search thead, h1 {
+h1 {
   display: block;
   width: 100%;
   top: 0px;
@@ -54,8 +55,6 @@ table.search thead, h1 {
   border-bottom: solid black 1px;
   position: fixed;
   background-color: #ddd;
-}
-h1 { 
   font-size: medium;
   background-color: #ddd;
   margin-top: 0px;
@@ -96,6 +95,17 @@ a.search::before{
 }
 a.ok::before{
  content: url(${ok});
+}
+
+.logininfo {  
+
+  display: block;
+  position: fixed;
+  right: 0px;
+  top: 0px;
+}
+a.logout::before {
+ content: url(${logout});
 }
 
 
