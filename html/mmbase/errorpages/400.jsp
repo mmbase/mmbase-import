@@ -10,7 +10,8 @@
     <h1>400 Bad request</h1>
     <h2><%=org.mmbase.Version.get()%></h2>
     <p>
-      <% String mesg = (String) request.getAttribute("org.mmbase.servlet.error.message");
+      &nbsp;
+      <% String mesg = (String) request.getAttribute("org.mmbase.servlet.error.message");     
          if (mesg != null) {
        %>
       <%=mesg%>

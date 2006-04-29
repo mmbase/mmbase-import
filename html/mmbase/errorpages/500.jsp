@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page isErrorPage="true" import="org.mmbase.bridge.*,java.util.*" 
 %><% response.setStatus(500); 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
@@ -57,7 +58,7 @@ StringBuffer msg = new StringBuffer();
 }
      }
 
-     msg.append("status: ").append(status).append("\n\n");
+     msg.append("status: ").append(status).append("\n");
      String intro = "" + stack;
      while (! stack.isEmpty()) { 
          Throwable t = (Throwable) stack.pop();
@@ -88,7 +89,7 @@ log.error(ticket + ":\n" + msg);
   <mm:import id="title">MMBase - Error <%= status %></mm:import>
   <title><mm:write referid="title" /></title>
   <%@include file="meta.jsp" %>
-  <script language="javascript">
+  <script type="text/javascript" language="javascript">
     function show() {
     document.getElementById('error').style.display = 'block';
     document.getElementById('show').style.display = 'none';
@@ -106,14 +107,14 @@ log.error(ticket + ":\n" + msg);
   <% String referrer = request.getHeader("Referer");
      if (referrer != null) {
   %>
-  <p><a href="<%= referrer %>">back</a></p>
+  <p><a href="<%=org.mmbase.util.transformers.Xml.XMLAttributeEscape(referrer) %>">back</a></p>
   <% } %>
   <div id="show">   
-    <a href="javascript: show();">Show error</a>
+    <a href="javascript:show();">Show error</a>
   </div>
   <div id="error" style="background-color:yellow; display: none;">
-    <a href="javascript: hide();">Hide error</a>
-    <mm:import id="msg"><%=msg.toString()%></mm:import>
+    <a href="javascript:hide();">Hide error</a>
+    <mm:import id="msg"> <%=msg.toString()%></mm:import>
     <mm:write referid="msg" escape="p" />
   </div>
   

@@ -21,7 +21,7 @@
     <h1>503 This web-site is temporary unavailable</h1>
     <h2><%=org.mmbase.Version.get()%></h2>
     <p>
-      <em><%=new java.util.Date()%></em> - This web-site is currently unavailable. Please come <a href="<%=url%>">back</a> in a few minutes.
+      <em><%=new java.util.Date()%></em> - This web-site is currently unavailable. Please come <a href="<%=org.mmbase.util.transformers.Xml.XMLAttributeEscape(url)%>">back</a> in a few minutes.
     </p>
     <p>
       If you are the administrator of this site, and this message does not disappear, please check
