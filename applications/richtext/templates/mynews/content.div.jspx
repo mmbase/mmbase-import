@@ -28,9 +28,12 @@
                 </mm:relatednodes>
               </mm:relatednodescontainer>
               <h2><mm:field name="title" /></h2>
-              <p>
+              <p class="intro">
+                <mm:hasfield name="date">
+                  <mm:field name="date"><mm:time format=":LONG" /></mm:field>: 
+                </mm:hasfield>
                 <mm:field name="intro" escape="p-ommit-surrounding" />
-                <a class="navigate" href="${url}">read more &gt;</a>
+                <a class="navigate" href="${url}"> read more &gt;</a>
               </p>
             </div>
           </mm:relatednodes>

@@ -12,7 +12,7 @@ xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
 <mm:import id="B">#046</mm:import>
 -->
 <mm:import id="A">#ddd</mm:import>
-<mm:import id="B">#555</mm:import>
+<mm:import id="B">#888</mm:import>
 
 body { 
   margin: 0px;
@@ -30,7 +30,6 @@ img {
   border-bottom: solid 1px ${B};
   font-weight: bold;
 }
-
 #menu a {
   padding-left: 1ex;
   padding-right: 1ex;  
@@ -78,6 +77,9 @@ img {
 
 .path { 
   margin-top: 1ex;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 5px;
   background-color: ${B};
 }
 .path a:visited, .path a:link, .path a:hover { 
