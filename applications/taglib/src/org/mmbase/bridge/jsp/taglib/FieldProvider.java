@@ -17,19 +17,20 @@ import org.mmbase.bridge.Node;
  * to access a field defined in a tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldProvider.java,v 1.4 2005-11-23 10:29:39 michiel Exp $ 
+ * @version $Id: FieldProvider.java,v 1.5 2006-04-29 17:15:57 michiel Exp $
  */
 public interface FieldProvider extends TagIdentifier {
     // Since a field cannot exist alone, it must also implement NodeProvider.
-    // The get the value of a field, you always need a Node too. A 'Field' is only
+    // To get the value of a field, you always need a Node too. A 'Field' is only
     // a description.
-    
     /**
      * @return the field contained in the tag
      *
      */
-    public Field getFieldVar() throws JspTagException;	
+    public Field getFieldVar() throws JspTagException;
 
-    public Node getNodeVar() throws JspTagException;	
+    public Node getNodeVar() throws JspTagException;
 
+
+    
 }

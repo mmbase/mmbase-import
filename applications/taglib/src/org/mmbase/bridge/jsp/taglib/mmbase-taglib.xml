@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.355 2006-04-12 14:51:40 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.356 2006-04-29 17:15:57 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2605,6 +2605,18 @@ access the value of title:
     <example>
       <include base="examples.taglib" href="codesamples/listfunction.jsp" />
     </example>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The maximum number of times to iterate.</info>
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>How many items must be skipped before iterating</info>
+    </attribute>
   </tag>
 
   <tag>
