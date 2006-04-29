@@ -15,7 +15,7 @@ pngbehaviour.htc      Hackery to get png's working in IE, you may need this.
 
 Known CSS classes produced by mmbase code:
 
-mm_gui:               HTML elements produces by the gui-function
+mm_gui:               HTML elements produced by the gui-function
 mm_validate:          Input form entry produced by mm:fieldinfo
 mm_f_<fieldname>:     Input form entry for a field with this name
 mm_nm_<node manager>: Input form entry for a field of this nodemanager
@@ -30,8 +30,10 @@ mm_search:            Option list used by search on dates.
 mm_datetime_<element>:Used in date inputs.
 
 mm_form:              Form element produced by mm:form tag.
+mm_cloud:             Cloud-tag produces some output on failure to login, and uses this class on the
+                      elements (h2 and p)
 
 
 
 
-$Id: README,v 1.2 2006-04-29 13:45:51 michiel Exp $
+$Id: README,v 1.3 2006-04-29 19:42:41 michiel Exp $
