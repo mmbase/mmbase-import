@@ -21,13 +21,13 @@ import org.mmbase.module.tools.MMAdmin;
 
 /**
  * This class contains static methods for MMBase tests.
- * 
+ *
  * @author Michiel Meeuwissen
  */
 public abstract class MMBaseTest extends TestCase {
 
     static MMBase mmb;
-    
+
     public MMBaseTest() {
         super();
     }
@@ -47,12 +47,13 @@ public abstract class MMBaseTest extends TestCase {
         if (startDatabase) startDatabase();
         MMBaseContext.init();
         mmb = MMBase.getMMBase();
-        
+
         MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
         while (! mmadmin.getState()) {
             Thread.sleep(1000);
         }
-        System.out.println("Starting test");        
+        System.out.println("================================================================================");
+        System.out.println("Starting test");
     }
 
     static public void startDatabase() {
@@ -72,7 +73,9 @@ public abstract class MMBaseTest extends TestCase {
             } catch (SQLException sqe) {
                 Server server = new Server();
                 server.setSilent(true);
-                server.setDatabasePath(0, System.getProperty("user.dir") + File.separator + "data" + File.separator + "test");
+                String dbDir = System.getProperty("test.database.dir");
+                if (dbDir == null) dbDir = System.getProperty("user.dir") + File.separator + "data";
+                server.setDatabasePath(0, dbDir + File.separator + "test");
                 server.setDatabaseName(0, "test");
                 server.start();
                 try {
@@ -104,7 +107,7 @@ public abstract class MMBaseTest extends TestCase {
         try {
             startMMBase();
             while(!mmb.isShutdown()) {
-                
+
             }
         } catch (Exception e) {
         }
