@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.51 2006-04-10 15:04:17 michiel Exp $
+ * @version $Id: DataType.java,v 1.52 2006-04-29 19:41:09 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -332,13 +332,21 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
 
 
     /**
-     * Returns a DOM element describing this DataType.  
-     * @todo EXPERIMENTAL
+     * Returns a DOM element describing this DataType.
+     * @TODO EXPERIMENTAL.
      */
     public org.w3c.dom.Element toXml();
 
     /**
-     * A restriction controls the acceptable values of a DataType.
+     * Fills this datatype in another XML (for example in the xml of {@link #getOrigin}, to make one XML, fully describing the DataType).
+     * The implementation of this method is <em>unfinished</em>!
+     * @TODO EXPERIMENTAL
+     * @param element a 'datatype' element.
+     */
+    public void toXml(org.w3c.dom.Element element);
+
+    /**
+     * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType generally has several restrictions.
      */
     public interface Restriction extends Serializable {
 

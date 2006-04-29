@@ -10,11 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 /**
- * A NumberDataType, but provides getMin and getMax as double.
+ * DataType associated with {@link java.lang.Double}, as NumberDataType, but provides getMin and getMax as double.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DoubleDataType.java,v 1.6 2006-01-06 17:19:21 michiel Exp $
+ * @version $Id: DoubleDataType.java,v 1.7 2006-04-29 19:41:09 michiel Exp $
  * @since MMBase-1.8
  */
 

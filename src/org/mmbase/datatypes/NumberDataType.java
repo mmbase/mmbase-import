@@ -16,9 +16,10 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
+ * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.17 2006-04-11 21:53:10 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.18 2006-04-29 19:41:09 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType extends ComparableDataType {
