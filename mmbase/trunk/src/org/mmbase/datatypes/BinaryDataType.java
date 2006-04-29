@@ -11,12 +11,13 @@ package org.mmbase.datatypes;
 
 import org.mmbase.util.logging.*;
 import java.util.regex.Pattern;
+import org.apache.commons.fileupload.FileItem;
 
 /**
  * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.8 2006-03-31 16:45:37 pierre Exp $
+ * @version $Id: BinaryDataType.java,v 1.9 2006-04-29 19:37:06 michiel Exp $
  * @since MMBase-1.8
  */
 public class BinaryDataType extends AbstractLengthDataType {
@@ -43,22 +44,25 @@ public class BinaryDataType extends AbstractLengthDataType {
 
     //
     public long getLength(Object value) {
-        if (! (value instanceof byte[])) {
+        if (value instanceof byte[]) {
+            byte[] bytes = (byte[]) value;
+            if (log.isDebugEnabled()) {
+                StringBuffer buf = new StringBuffer("[");
+                for (int i = 0 ; i < bytes.length; i++) {
+                    buf.append((char) bytes[i]);
+                    if (i + 1 < bytes.length) {
+                        buf.append(", ");
+                    }
+            }
+                buf.append("]");
+                log.debug("Getting length of " + buf);
+            }
+            return bytes.length;
+        } else if (value instanceof FileItem) {
+            return ((FileItem) value).getSize();
+        } else {
             throw new RuntimeException("Value " + value + " of " + getName() + " is not a byte array but" + (value == null ? "null" : value.getClass().getName()));
         }
-        byte[] bytes = (byte[]) value;
-        if (log.isDebugEnabled()) {
-            StringBuffer buf = new StringBuffer("[");
-            for (int i = 0 ; i < bytes.length; i++) {
-                buf.append((char) bytes[i]);
-                if (i + 1 < bytes.length) {
-                    buf.append(", ");
-            }
-            }
-            buf.append("]");
-            log.debug("Getting length of " + buf);
-        }
-        return bytes.length;
     }
 
     /**
