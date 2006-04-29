@@ -18,12 +18,11 @@ import javax.servlet.jsp.jstl.core.LoopTagStatus;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-
 /**
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.50 2006-04-12 14:51:40 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.51 2006-04-29 12:45:43 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
@@ -37,6 +36,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     private  Attribute type = Attribute.NULL;
 
+    protected Attribute  add= Attribute.NULL;
+    protected Attribute  retain = Attribute.NULL;
+    protected Attribute  remove = Attribute.NULL;
     private  Attribute comparator = Attribute.NULL;
 
     public int size(){
@@ -125,6 +127,18 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     }
 
 
+    public void setAdd(String a) throws JspTagException {
+        add = getAttribute(a);
+    }
+
+    public void setRetain(String r) throws JspTagException {
+        retain = getAttribute(r);
+    }
+
+    public void setRemove(String r) throws JspTagException {
+        remove = getAttribute(r);
+    }
+
 
     public void setComparator(String c) throws JspTagException {
         comparator = getAttribute(c);
@@ -198,6 +212,31 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 }
             }
         }
+        if (add != Attribute.NULL) {
+            Object addObject = getObject(add.getString(this));
+            if (addObject instanceof Collection) {
+                returnList.addAll((Collection) addObject);
+            } else {
+                returnList.add(addObject);
+            }
+        }
+        if (retain != Attribute.NULL) {
+            Object retainObject = getObject(retain.getString(this));
+            if (retainObject instanceof Collection) {
+                returnList.retainAll((Collection) retainObject);
+            } else {
+                returnList.retainAll(Collections.singletonList(retainObject));
+            }
+        }
+        if (remove != Attribute.NULL) {
+            Object removeObject = getObject(remove.getString(this));
+            if (removeObject instanceof Collection) {
+                returnList.removeAll((Collection) removeObject);
+            } else {
+                returnList.remove(removeObject);
+            }
+        }
+
         ListSorter.sort(returnList, (String) comparator.getValue(this), this);
         fieldIterator = returnList.fieldIterator();
 
