@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspTagException;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.4 2006-04-12 07:16:25 michiel Exp $
+ * @version $Id: FormTag.java,v 1.5 2006-04-29 13:45:01 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -81,7 +81,7 @@ public class FormTag extends TransactionTag implements Writer {
             String id = getId();
             try {
                 pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") +
-                                           "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\">");
+                                           "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form\" >");
             } catch (java.io.IOException ioe) {
                 throw new TaglibException(ioe);
             }
