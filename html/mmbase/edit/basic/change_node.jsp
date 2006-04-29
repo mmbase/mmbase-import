@@ -74,9 +74,7 @@
        <td class="data" title="<mm:fieldinfo type="description"  escape="text/html/attribute" /> (<mm:fieldinfo type="datatype" />: <mm:fieldinfo type="datatypedescription" escape="text/html/attribute" />)"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
        <td class="listdata" colspan="2">
          <mm:fieldinfo type="$showtype" />
-         <mm:fieldinfo type="errors">
-           <mm:isnotempty>***</mm:isnotempty><mm:write escape="none" />
-         </mm:fieldinfo>
+         <mm:fieldinfo type="errors" />
        </td>
      </tr>
    </mm:fieldlist>
