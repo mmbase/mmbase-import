@@ -11,11 +11,11 @@ package org.mmbase.datatypes;
 import org.mmbase.util.Casting;
 
 /**
- * A NumberDataType, but provides getMin and getMax as long.
+ *  * DataType associated with {@link java.lang.Long},  NumberDataType, but provides getMin and getMax as long.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.8 2006-02-07 14:47:58 michiel Exp $
+ * @version $Id: LongDataType.java,v 1.9 2006-04-29 19:41:09 michiel Exp $
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {

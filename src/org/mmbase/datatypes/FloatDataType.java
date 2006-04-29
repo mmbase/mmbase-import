@@ -10,10 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 /**
- * @javadoc
+ * DataType associated with {@link java.lang.Float}, as NumberDataType, but provides getMin and getMax as float.
  *
  * @author Pierre van Rooden
- * @version $Id: FloatDataType.java,v 1.7 2006-04-10 15:23:55 michiel Exp $
+ * @version $Id: FloatDataType.java,v 1.8 2006-04-29 19:41:09 michiel Exp $
  * @since MMBase-1.8
  */
 public class FloatDataType extends NumberDataType {
