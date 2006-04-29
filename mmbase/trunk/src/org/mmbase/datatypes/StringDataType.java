@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.30 2006-04-28 08:22:38 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.31 2006-04-29 12:41:26 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -97,6 +97,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     }
     public static final Pattern BOOLEAN_PATTERN = Pattern.compile("\\A(1|0|true|false)\\z");
     public static final Pattern INTEGER_PATTERN = Pattern.compile("\\A-?[0-9]+\\z");
+    public static final Pattern NON_NEGATIVE_INTEGER_PATTERN = Pattern.compile("\\A[0-9]+\\z");
     public static final Pattern LONG_PATTERN    = INTEGER_PATTERN;
 
     protected void inheritRestrictions(BasicDataType origin) {
