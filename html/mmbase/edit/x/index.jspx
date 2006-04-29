@@ -1,23 +1,23 @@
-<html
-    xmlns="http://www.w3.org/1999/xhtml"
+<mm:content 
+    type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
-
-  <!-- 
-       Produces a search-tool, and the search result with links to create and change MMBase nodes.
-       $Id: index.jspx,v 1.9 2006-04-27 17:18:42 michiel Exp $
-  -->
   <jsp:directive.page session="true" buffer="200kb" />
+  
+  <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
 
-  <mm:include page="head.jspx" />
-  <body>
-    <mm:content type="application/xhtml+xml" language="client" expires="0" postprocessor="none">
+    <!-- 
+         Produces a search-tool, and the search result with links to create and change MMBase nodes.
+         $Id: index.jspx,v 1.10 2006-04-29 13:35:04 michiel Exp $
+    -->
+    
+    <mm:include page="head.jspx" />
+    <body>
       <mm:cloud rank="basic user">
         <mm:import externid="nodemanager">object</mm:import>
 
@@ -26,7 +26,7 @@
             <thead>
               <tr>
                 <th colspan="2">
-                  <a href="javascript:document.getElementById('searchform').submit();" class="search">
+                  <a href="javascript:void(0);" onclick="this.getElementsByTagName('input')[0].form.submit();"  class="search">
                     <span class="navigate">
                       <input type="submit"  name="ok" value="ok" />
                     </span>
@@ -54,7 +54,7 @@
             <tbody>
               <mm:fieldlist nodetype="$nodemanager" type="search">
                 <tr>
-                  <td><mm:fieldinfo type="guiname" /></td>
+                  <td><label for=""><mm:fieldinfo type="guiname" /></label></td>
                   <td><mm:fieldinfo type="searchinput" /></td>
                 </tr>
               </mm:fieldlist>
@@ -87,7 +87,7 @@
 
             <thead>
               <tr class="paging">
-                <th>${offset} - ${offset + pagesize lt size ? offset + pagesize : size} / ${size}</th>
+                <th colspan="2">${offset} - ${offset + pagesize lt size ? offset + pagesize : size} / ${size}</th>
                 <th colspan="100">
                   <mm:import id="paging">
                     <mm:previousbatches max="10">
@@ -111,7 +111,16 @@
               </tr>
 
               <tr class="head">
-                <th>#</th>
+                <th colspan="2">
+                  <!--
+                  <select>
+                    <option value="">&nbsp;</option>
+                    <option value="edit">edit</option>
+                    <option value="delete">delete</option>
+                  </select>
+                  -->
+                </th>
+                <th />
                 <mm:fieldlist nodetype="$nodemanager" type="list">
                   <th><mm:fieldinfo type="guiname" /></th>
                 </mm:fieldlist>
@@ -120,7 +129,7 @@
 
             <tfoot>
               <tr class="paging">
-                <th /><th colspan="100"><mm:write referid="paging" escape="none" /></th>
+                <th colspan="2" /><th colspan="100"><mm:write referid="paging" escape="none" /></th>
               </tr>
             </tfoot>
 
@@ -130,11 +139,14 @@
                 <mm:listnodes referid="result">
                   <mm:index id="index" write="false" />
                   <mm:link referids="_node@node,nodemanager" page="change.jspx">
-                    <tr onclick="document.location.href='${_}';"
-                        class="${index % 2 == 0 ? 'even' : 'odd'}">
-                      <td><a href="${_}"><mm:field name="number" /></a><jsp:text> </jsp:text><mm:nodeinfo type="gui" /></td>
+                    <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+                      <td><!-- <input type="checkbox" /> --></td>
+                      <td class="click"><a href="${_}"><mm:field name="number" /></a></td>
+                      <td class="click"><mm:nodeinfo type="gui" /></td>
                       <mm:fieldlist type="list" nodetype="$nodemanager">
-                        <td><mm:fieldinfo type="guivalue" /></td>
+                        <td  class="click">
+                          <mm:fieldinfo type="guivalue" />
+                        </td>
                       </mm:fieldlist>
                     </tr>
                   </mm:link>
@@ -144,6 +156,21 @@
           </mm:listnodescontainer>
         </table>
       </mm:cloud>
-    </mm:content>
-  </body>
-</html>
+
+
+      <script type="text/javascript">
+        window.addEventListener("load", function() {
+          var els = document.getElementById("searchresult").getElementsByTagName("td");
+          var pattern = new RegExp("\\bclick\\b");
+          for (var i = 0; i &amp;lt; els.length; i++) {
+            if ( pattern.test(els[i].className) ) {
+               els[i].addEventListener("click", function() {
+                  document.location.href = this.parentNode.cells[1].firstChild.href;
+               }, false);
+            }
+          }
+       }, false);
+      </script>
+    </body>
+  </html>
+</mm:content>
