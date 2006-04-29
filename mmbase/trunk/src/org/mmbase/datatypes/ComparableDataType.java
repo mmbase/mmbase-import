@@ -16,11 +16,11 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Comparable datatypes have values which are Comparable, so can be ordered, and therefore can have
- * a minimum and a maximum value.
+ * Comparable datatypes have values which are {@link java.lang.Comparable}, so can be ordered, and
+ * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.15 2006-04-10 17:31:18 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.16 2006-04-29 19:41:09 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {

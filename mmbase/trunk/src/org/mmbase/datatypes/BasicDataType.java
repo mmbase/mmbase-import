@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.51 2006-04-19 21:29:16 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.52 2006-04-29 19:41:09 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -337,17 +337,39 @@ s     */
         defaultValue = def;
     }
 
-    protected void fillDefaultValueXml() {
-        Element parent = toXml();
-        org.w3c.dom.NodeList nl  = parent.getElementsByTagName("default");
-        Element defaultElement;
-        if (nl.getLength() == 0) {
-            defaultElement = xml.getOwnerDocument().createElementNS(XMLNS, "default");
-            DocumentReader.appendChild(parent, defaultElement, "description,class,property");
-        } else {
-            defaultElement = (Element) nl.item(0);
+    public void toXml(Element parent) {
+        // id:
+        parent.setAttribute("id", getName());
+        // description:
+        // class
+        {
+            org.w3c.dom.NodeList nl  = parent.getElementsByTagName("class");
+            ((Element)(nl.item(0))).setAttribute("name", getClass().getName());
         }
-        defaultElement.setAttribute("value", Casting.toString(defaultValue));
+
+        // default value:
+        if (defaultValue != null) {
+            org.w3c.dom.NodeList nl  = parent.getElementsByTagName("default");
+            Element defaultElement;
+            if (nl.getLength() == 0) {
+                defaultElement = parent.getOwnerDocument().createElementNS(XMLNS, "default");
+                DocumentReader.appendChild(parent, defaultElement, "description,class,property");
+            } else {
+                defaultElement = (Element) nl.item(0);
+            }
+            defaultElement.setAttribute("value", Casting.toString(defaultValue));
+        }
+        if (getCommitProcessor() != EmptyCommitProcessor.getInstance()) {
+            org.w3c.dom.NodeList nl  = parent.getElementsByTagName("commitprocessor");
+            Element element;
+            if (nl.getLength() == 0) {
+                element = parent.getOwnerDocument().createElementNS(XMLNS, "commitprocessor");
+                DocumentReader.appendChild(parent, element, "description,class,property");
+            } else {
+                element = (Element) nl.item(0);
+            }
+            //element.setAttribute("value", Casting.toString(defaultValue));
+        }
 
     }
 
@@ -512,7 +534,7 @@ s     */
 
     public Element toXml() {
         if (xml == null) {
-            xml = DocumentReader.getDocumentBuilder().newDocument().createElementNS("http://www.mmbase.org/xmlns/datatypes", "datatype");
+            xml = DocumentReader.getDocumentBuilder().newDocument().createElementNS(XMLNS, "datatype");
             xml.getOwnerDocument().appendChild(xml);
         }
         return xml;
@@ -520,6 +542,18 @@ s     */
 
     public void setXml(Element element) {
         xml = DocumentReader.toDocument(element).getDocumentElement();
+        // remove 'specialization' childs (they don't say anything about this datatype itself)
+        org.w3c.dom.NodeList childNodes = xml.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            if (childNodes.item(i) instanceof Element) {
+                Element childElement = (Element) childNodes.item(i);
+                if (childElement.getLocalName().equals("specialization")
+                    ||childElement.getLocalName().equals("datatype")
+                    ) {
+                    xml.removeChild(childElement);
+                } 
+            }
+        }
     }
 
     public int compareTo(Object o) {
