@@ -17,22 +17,22 @@ import org.mmbase.util.logging.*;
 
 /**
  * Adds an extra parameter to the parent URL tag.
- * 
+ *
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.9 2006-04-10 12:51:38 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.10 2006-04-29 17:15:57 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag implements ParamHandler {
     private static final Logger log = Logging.getLoggerInstance(ParamTag.class);
 
     protected List       entries      = null;
-    
+
     private Attribute name    = Attribute.NULL;
     private Attribute value   = Attribute.NULL;
     private Attribute referid = Attribute.NULL;
     private ParamHandler paramHandler;
     private boolean handled;
-           
+
     public void setName(String n) throws JspTagException {
         name = getAttribute(n);
     }
@@ -63,7 +63,7 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
     public int doAfterBody() throws JspException {
         if (value == Attribute.NULL && referid == Attribute.NULL && entries == null) {
             if (bodyContent != null) {
-                // the value is the body context.      
+                // the value is the body context.
                 helper.setValueOnly(bodyContent.getString(), WriterHelper.IMPLICITLIST); // to deal with 'vartype' casting
                 paramHandler.addParameter(name.getString(this), helper.getValue());
                 handled = true;
@@ -86,7 +86,7 @@ public class ParamTag extends ContextReferrerTag implements ParamHandler {
                 paramHandler.addParameter(name.getString(this), entries);
                 entries = null;
             } else {
-                paramHandler.addParameter(name.getString(this), "");   
+                paramHandler.addParameter(name.getString(this), "");
             }
         }
         paramHandler = null;

@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.26 2006-04-12 14:51:40 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.27 2006-04-29 17:15:57 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -61,19 +61,19 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     }
 
 
-    public void setMax(String m) throws JspTagException {       
+    public void setMax(String m) throws JspTagException {
         max = getAttribute(m);
     }
 
-    public void setAdd(String a) throws JspTagException {       
+    public void setAdd(String a) throws JspTagException {
         add = getAttribute(a);
     }
 
-    public void setRetain(String r) throws JspTagException {       
+    public void setRetain(String r) throws JspTagException {
         retain = getAttribute(r);
     }
 
-    public void setRemove(String r) throws JspTagException {       
+    public void setRemove(String r) throws JspTagException {
         remove = getAttribute(r);
     }
 
@@ -114,7 +114,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             if (m > 0 && m < returnList.size()) {
                 returnList = returnList.subList(0, m);
             }
-        }        
+        }
     }
 
     /**
@@ -127,7 +127,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
 
         helper.overrideWrite(false); // default behavior is not to write to page
-        
+
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
             if (! (o instanceof Collection)) {
@@ -174,7 +174,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             }
         }
 
-        currentItemIndex = - 1;  // reset index        
+        currentItemIndex = - 1;  // reset index
 
         ListSorter.sort(returnList, (String) comparator.getValue(this), this);
         iterator = returnList.iterator();
