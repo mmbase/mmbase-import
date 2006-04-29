@@ -15,16 +15,20 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.Transaction;
 
+import org.mmbase.util.logging.*;
+
 /**
  * This tag can be used inside a transaction tag, to commit it. It also
  * serves as a baseclass for e.g. CancelTag
  *
- * @author Michiel Meeuwissen 
- * @version $Id: CommitTag.java,v 1.17 2005-01-30 16:46:39 nico Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: CommitTag.java,v 1.18 2006-04-29 17:15:20 michiel Exp $
  */
 
-public class CommitTag extends CloudReferrerTag { 
+public class CommitTag extends CloudReferrerTag {
     // perhaps it would be nicer to extend CloudReferrer to TransactionReferrer first.
+
+    private static final Logger log = Logging.getLoggerInstance(CommitTag.class);
 
     private Attribute transaction = Attribute.NULL;
     public void setTransaction(String t) throws JspTagException {
@@ -32,20 +36,15 @@ public class CommitTag extends CloudReferrerTag {
     }
 
     protected void doAction(Transaction t) {
+
         t.commit();
     }
 
     public int doStartTag() throws JspTagException{
-        // find the parent transaction:        
+        // find the parent transaction:
         TransactionTag tt = (TransactionTag)  findParentTag(TransactionTag.class, (String) transaction.getValue(this), true);
         Transaction trans = (Transaction) tt.getCloudVar();
         doAction(trans);
-        /*
-          why should we do this??
-        if (tt.getId() != null) {
-            getContextProvider().getContextContainer().unRegister(tt.getId());
-        }
-        */
-        return SKIP_BODY;    
-    }    
+        return SKIP_BODY;
+    }
 }
