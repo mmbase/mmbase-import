@@ -28,9 +28,7 @@
          <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
          <td class="listdata">
            <mm:fieldinfo type="input" />
-           <mm:fieldinfo type="errors">
-             <mm:isnotempty>***</mm:isnotempty><mm:write escape="none" />
-           </mm:fieldinfo>
+           <mm:fieldinfo type="errors" />
          </td>
        </tr>
     </mm:fieldlist>

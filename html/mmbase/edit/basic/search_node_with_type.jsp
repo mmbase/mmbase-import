@@ -210,6 +210,9 @@
             <mm:countrelations />
           </mm:hasrelations>
         </mm:maydelete>
+        <mm:maydelete inverse="true">
+          <mm:countrelations />
+        </mm:maydelete>
         &nbsp;
      </td>    
      <td class="navigate">
