@@ -29,7 +29,9 @@ mm_datetime:          A span containing the form_entries for a datetime value, p
 mm_search:            Option list used by search on dates.
 mm_datetime_<element>:Used in date inputs.
 
+mm_form:              Form element produced by mm:form tag.
 
 
 
-$Id: README,v 1.1 2006-04-27 17:08:18 michiel Exp $
+
+$Id: README,v 1.2 2006-04-29 13:45:51 michiel Exp $
