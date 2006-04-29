@@ -7,16 +7,17 @@
   <!--
       Returns XML describing a certain MMBase DataType.
       This can be used in (AJAX based) javascript validation of form entries.
-      $Id: datatype.jspx,v 1.2 2006-04-29 18:47:57 michiel Exp $      
+      $Id: datatype.jspx,v 1.3 2006-04-29 19:41:59 michiel Exp $      
       author: Michiel Meeuwissen
   -->
   <jsp:directive.page 
       import="org.mmbase.datatypes.*" 
       session="false" />
   
+  &lt;!-- EXPERIMENTAL, Produced XML is not yet complete and correct --&gt;
   <mm:import externid="datatype" jspvar="dt" vartype="string" />
   <mm:present referid="datatype">
-    <jsp:expression>org.mmbase.util.xml.XMLWriter.write(DataTypes.getSystemCollector().getDataType(dt).toXml(), false, true)</jsp:expression>
+    <jsp:expression>org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(DataTypes.getSystemCollector().getDataType(dt)), false, true)</jsp:expression>
   </mm:present>
   <mm:notpresent referid="datatype">
     <mm:import externid="field"       required="true" />
@@ -24,7 +25,7 @@
     <mm:cloud jspvar="cloud">
       <mm:fieldlist nodetype="$nodemanager" fields="$field" jspvar="field">
         <!-- following code (generating XML) must be delegated to BasicDataType -->
-        <jsp:expression>org.mmbase.util.xml.XMLWriter.write(field.getDataType().toXml(), false, true)</jsp:expression>
+        <jsp:expression>org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(field.getDataType()), false, true)</jsp:expression>
       </mm:fieldlist>
     </mm:cloud>
   </mm:notpresent>
