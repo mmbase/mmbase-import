@@ -45,7 +45,7 @@
         Small example of a news/magazine system
       </td>
       <td class="link" >
-        <a href="<mm:url page="mynews.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="mynews.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
 
@@ -55,7 +55,7 @@
         Small example of a yahoo-like system
       </td>
       <td class="link" >
-        <a href="<mm:url page="myyahoo.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="myyahoo.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
     
@@ -65,7 +65,7 @@
         A lot of different examples for the MMBase taglib.
       </td>
       <td class="link" >
-        <a href="<mm:url page="taglib/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />"  /></a>
+        <a href="<mm:url page="taglib/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />"  /></a>
       </td>
     </tr>
     
@@ -75,7 +75,7 @@
         All generic editors are of course very complex examples of jsp-pages.
       </td>
       <td class="link" >
-        <a href="<mm:url page="/mmbase/admin/editors/basic.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="/mmbase/admin/editors/basic.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
 
@@ -84,10 +84,10 @@
       <td>
         Real generic editors are often a bit pragmaticly ('dirty') implemented though. Here are very simple
         edit pages, which did no compromises whatsoever. This results in clean and easy-to-understand
-        JSPX-code. On the other hand they do e.g. not work in IE, and lack all kind of features.
+        JSPX-code. On the other hand they do e.g. not work in Internet Explorer, and lack all kind of features.
       </td>
       <td class="link" >
-        <a href="<mm:url page="/mmbase/edit/x" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="/mmbase/edit/x/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
     
@@ -106,7 +106,7 @@
         Different editwizard-examples.
       </td>
       <td class="link" >
-        <a href="<mm:url page="editwizard/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="editwizard/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
     
@@ -117,13 +117,13 @@
         Shows text in different encodings.
       </td>
       <td class="link" >
-        <a href="<mm:url page="codings/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="codings/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
     
   </table>
   <div class="link">
-    <a href="<mm:url page=".." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.gif" />" /></a>
+    <a href="<mm:url page=".." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.png" />" /></a>
   </div>
 </body>
 </html>
