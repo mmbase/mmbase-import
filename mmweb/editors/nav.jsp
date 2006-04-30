@@ -1,5 +1,4 @@
-<%@page   contentType="text/html;charset=utf-8"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="includes/settings.jsp" %>
 <mm:cloud name="mmbase" method="http" rank="basic user" jspvar="cloud">
 
@@ -11,7 +10,7 @@
 </head>
 <body bgcolor="#EFEFEF">
 <%	session.setAttribute("editor", cloud.getUser().getIdentifier());
-	String userconstraint="mmbaseusers.username='"+ cloud.getUser().getIdentifier()+"'";
+	String userconstraint="mmbaseusers.username='"+cloud.getUser().getIdentifier()+"'";
 %>
 
 <table cellpadding=0 cellspacing=0>
@@ -34,9 +33,10 @@
 		<mm:field name="editwizards.url" jspvar="editwizards_url" vartype="String" write="false">
 		<% 	editwizards_url = editwizards_url.trim();
 			if(editwizards_url.indexOf("list.jsp")==-1) { %>
-			<tr><td><a href="<mm:url referids="referrer" page="<%= editwizards_url %>" />" target="wizard"
+			<tr><td><a href="select.jsp" target="search"
+					onClick='parent.wizard.location.href="<mm:url referids="referrer" page="<%= editwizards_url %>" />"'
 				><mm:field name="editwizards.title" /></a></td></tr>
-		<% } else { // wizard.jsp
+		<% } else { 
 			%><mm:node element="editwizards"
 				><mm:related path="templates"
 					><mm:first><% editwizards_url += "&startnodes="; %></mm:first
@@ -47,7 +47,8 @@
 				></mm:related
 			></mm:node>
 			<tr><td>
-			<a href="<mm:url referids="referrer" page="<%= editwizards_url %>" />" target="wizard"
+			<a href="select.jsp?editwizard=<mm:field name="editwizards.number" />" target="search"
+					onClick='parent.wizard.location.href="<mm:url referids="referrer" page="<%= editwizards_url %>" />"' 
 				><mm:field name="editwizards.title" /></a>&nbsp;&nbsp;&nbsp;
 			</td></tr>
 		<% } %>

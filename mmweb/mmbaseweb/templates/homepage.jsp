@@ -101,14 +101,13 @@
 	</mm:related>
 	
 	<div style="margin-top:12px; z-index:2;">
-	<mm:list nodes="page_mmbasewebsites" path="pages,posrel,urls" searchdir="destination"
-	  fields="urls.number,urls.name,urls.url"
-	  orderby="urls.number" directions="DOWN" max="5">
+	<mm:related path="posrel,news" searchdir="destination"
+	  orderby="posrel.pos" directions="UP" max="9">
 	  <mm:first><h5>Latest websites build with MMBase</h5>
 	  <form name="sitesform" action="" method="post">
 	  <select name="news" style="width:240px;" onchange="javascript:postSiteForm();">
 	  </mm:first>
-		<option value="<mm:field name="urls.url" />"><mm:field name="urls.name" /></option>
+		<option value="<mm:field name="news.number" />"><mm:field name="news.title" /></option>
       <mm:last>
       </select> | <a href="javascript:postSiteForm();">go</a>
 	  </form>
@@ -116,20 +115,20 @@
 			<mm:param name="page">page_mmbasewebsites</mm:param>
 	  </mm:url>">More MMBase websites &raquo;&raquo;</a></p>
 	  </div>
-	  <script language="javascript" type="text/javascript">
+	  <script language="JavaScript" type="text/javascript">
 	  <%= "<!--" %>
 	  function postSiteForm() {
-		  //href = "index.jsp?portal=<mm:write referid="portal" />&amp;page=<mm:write referid="page" />";
+		  href = "index.jsp?portal=<mm:write referid="portal" />&amp;page=<mm:write referid="page" />";
 		  var news = document.sitesform.elements["news"].value;
 		  if (news != '') { 
-				  href = news;
+				  href += "&news=" + news;
 		  }
 		  document.location = href;
 	  }
 	  <%= "//-->" %>
 	  </script>
 	  </mm:last>
-	</mm:list>
+	</mm:related>
 	
 <%-- ### /articles ### --%>
   </td>

@@ -1,8 +1,0 @@
-<component name="projectgroup" templatepath="projectgroup" templatebar="education">
-  <scope name="component" referid="component">
-  </scope>
-  <scope name="providers" referid="provider">
-  </scope>
-  <scope name="educations" referid="education">
-  </scope>
-</component>
