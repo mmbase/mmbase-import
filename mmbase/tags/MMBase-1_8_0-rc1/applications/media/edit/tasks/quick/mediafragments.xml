@@ -1,0 +1,39 @@
+<!-- 
+    Itemize part 
+     Base for audio and video itemizition
+-->
+
+  <action type="delete" />
+
+	<action type="load">
+		<relation destination="&type;fragments"    role="posrel" />
+	</action>
+
+  <form-schema id="itemize">  
+    <title xml:lang="en">Itemization</title>
+    <title xml:lang="nl">Opknippen</title>
+    &items;      
+
+    <!-- seems to be needed to have the 'fragment' available (odd... becaue that is data isn't it)...-->
+    <list searchdir="source" role="posrel" destination="&type;fragments" minoccurs="1" maxoccurs="1" >
+      <title xml:lang="en">Base (source) stream</title>
+      <title xml:lang="nl">Basis (bron) stream</title>
+      <item>
+       <fieldset>
+        <field ftype="data" name="title" />
+        <field ftype="startwizard" inline="true" wizardname="tasks/base/&type;fragments" />
+       </fieldset>
+      </item>
+      <command name="search" nodepath="pools,parent,pools2,base,&type;fragments" fields="pools2.name,&type;fragments.title" orderby="&type;fragments.title" age="-1" >
+        <search-filter>
+          <name>Title</name>
+          <search-fields>&type;fragments.title|pools2.name</search-fields>
+        </search-filter>
+      </command>
+
+      <action type="create">
+        <relation destinationtype="&type;fragments" role="posrel" createdir="source" />
+      </action>
+    </list>
+
+  </form-schema>

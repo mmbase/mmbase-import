@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mmbasecontexts   exportsource="mmbase://www.mmbase.org/cloudcontextsecurity" timestamp="20020516170724">
+	<node number="516" owner="admin">
+		<name>import</name>
+		<description></description>
+	</node>
+
+	<node number="520" owner="admin">
+		<name>admin</name>
+		<description></description>
+	</node>
+
+
+  <!-- the security 'context', so these contextes cannot be deleted -->
+	<node number="518" owner="security">
+		<name>system</name>
+		<description></description>
+	</node>
+
+	<node number="1000" owner="security">
+		<name>default</name>
+		<description></description>
+	</node>
+
+	<node number="1001" owner="security">
+		<name>imagesmodule</name>
+		<description></description>
+	</node>
+
+	<node number="1002" owner="security">
+		<name>security</name>
+		<description></description>
+	</node>
+
+</mmbasecontexts>

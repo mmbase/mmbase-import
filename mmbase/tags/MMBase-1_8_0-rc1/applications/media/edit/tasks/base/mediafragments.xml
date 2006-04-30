@@ -1,0 +1,55 @@
+<!-- 
+  Base for audio and video fragments.
+  Included in audiofragments and videofragments.
+-->
+
+
+	<action type="create">
+		<object type="&type;fragments">
+      <field name="title">Basis fragment (met bronnen)</field>
+      <relation role="base" destination="{$origin}" />
+		</object>
+	</action>
+	
+	<action type="delete" />
+	
+	<action type="load">
+    <relation destination="&type;sources" role="related">
+      <object>
+        <relation destination="mediaproviders"   role="related">
+          <object />
+        </relation>
+      </object>
+    </relation>
+		<!-- relation destination="&type;fragments" role="parent" /-->
+	</action>
+      
+
+	<form-schema id="basics">
+		<title xml:lang="en">Source Editor</title>
+		<title xml:lang="nl">Bronnen-editor</title>
+    <field name="title" />
+    <field name="subtitle" />
+    <field name="intro" />
+    <list role="related" destination="&type;sources" minoccurs="1" >
+      <title xml:lang="en">Sources</title>       
+      <title xml:lang="nl">Bronnen</title>       
+      <item displaytype="&type;">
+         <field name="url">
+             <prompt xml:lang="en">Url (relative)</prompt>
+             <prompt xml:lang="nl">Url (relatief)</prompt>
+        </field>   
+       <field inline="true" ftype="startwizard" wizardname="tasks/base/&type;sources">
+        <prompt xml:lang="en">Other fields</prompt>
+        <prompt xml:lang="nl">Andere velden</prompt>
+      </field>
+      </item>
+
+      <command name="startwizard" wizardname="tasks/base/&type;sources" inline="true"  objectnumber="new" origin="{$origin}" />
+      <action type="create">
+        <relation  role="related">
+          <object type="&type;sources" />
+        </relation>
+      </action>
+    </list>
+  </form-schema>

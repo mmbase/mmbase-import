@@ -1,0 +1,38 @@
+
+Kies het VPRO Cijfer of wijzig een bestaande waarde.
+<P>
+Dit cijfer bepaald het kwalitatieve gehalte van hetgeen een TEASER naar verwijst. Het is tijdloos en zegt zowel iets over hoe interessant het is voor web consumptie als over het VPRO gehalte. Een aantal voorbeelden van TEASERS die verwijzen naar:
+<P>
+<TABLE CELLSPACING="2" CELLPADDING="2">
+<TR>
+    <TD VALIGN=top><B>Sites bij RTV-programma</B></TD>
+    <TD><B>1 - 7</B><BR>
+	1 = Eénmalige aankondiging bij een programma<BR>
+	3 = Eén persbericht over het programma met een link naar een winkelproduct (Koot & Bie)<BR>
+	4 = Per aflevering een nieuw persbericht (Lopende Zaken)<BR>
+	7 = Per aflevering uitgebreide tekst, afbeeldingen, url's, literatuurlijst enz. Kortom, interessant voor web-consumptie. (Noorderlicht, Buitenhof)
+	</TD>
+</TR>
+<TR>
+    <TD VALIGN=top><B>KAFT items</B></TD>
+    <TD><B>8 - 10</B><BR>
+	8 = Vermakelijke webitems zonder diepgravende inhoud (WIS Kwis)<BR>
+	10 = Groeiende sterk inhoudelijke web-documentaire
+	</TD>
+</TR>
+<TR>
+    <TD VALIGN=top><B>Winkelproducten</B></TD>
+    <TD><B>3 - 6</B><BR>
+	3 = Productaankondiging<BR>
+	6 = CD met audiofragment
+	</TD>
+</TR>
+<TR>
+    <TD VALIGN=top><B>VPRO Gidsartikelen</B></TD>
+    <TD><B>3 - 5</B><BR>
+	3 = Actualiteel onderwerp<BR>
+	4 = Tijdloos onderwerp (default)<BR>
+	5 = Artikel met afbeeldingen en url's.
+	</TD>
+</TR>
+</TABLE>

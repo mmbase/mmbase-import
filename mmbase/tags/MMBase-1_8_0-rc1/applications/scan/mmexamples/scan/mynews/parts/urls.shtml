@@ -1,0 +1,10 @@
+<LIST RELATIONS TYPE="urls" NODE="$PARAM1" FIELDS="url,description" VERSION="2.0">
+<LIF $ITEML=N0>
+<BR>
+<BR>
+<B>Urls</B><BR>
+</IF>
+<LISTLOOP>
+&nbsp;&nbsp;&nbsp;<A HREF="$ITEM1">$ITEM2</A><BR>
+</LISTLOOP>
+</LIST>

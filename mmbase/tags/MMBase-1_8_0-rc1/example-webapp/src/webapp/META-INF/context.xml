@@ -1,0 +1,45 @@
+<!--
+    Context configuration file for the mmbase example Web App
+    Tomcat 5.5
+-->
+<Context path="/example" docBase="example" debug="5" reloadable="true">
+
+	 <Logger className="org.apache.catalina.logger.FileLogger"
+		  prefix="localhost_example_log."
+		  suffix=".txt"
+		  timestamp="true"/>
+
+	<!--  Mail settings -->
+	 <Resource name="mail/Session"
+			auth="Container"
+			type="javax.mail.Session"
+			factory="org.apache.naming.factory.MailSessionFactory"
+			mail.smtp.host="mailserver.yourdomain.com" />
+
+	<!-- Database settings -->
+		<!-- HsqlDB -->
+	 <Resource name="jdbc/MMBase"
+			auth="Container"
+			type="javax.sql.DataSource"
+			factory="org.apache.commons.dbcp.BasicDataSourceFactory"
+			removeAbandoned="true"
+			removeAbandonedTimeout="60"
+			logAbandoned="true"
+			maxActive="10"
+			maxIdle="1"
+			maxWait="10000"
+			username="sa"
+			password=""
+			driverClassName="org.hsqldb.jdbcDriver"
+			url="jdbc:hsqldb:mmbase;shutdown=true"
+		/>
+
+		<!-- MySQL -->
+	<!--
+			username="mmbase"
+			password="mmbase2k"
+			driverClassName="com.mysql.jdbc.Driver"
+			url="jdbc:mysql://localhost:3306/mmbase?autoReconnect=true"
+	 -->
+
+</Context>

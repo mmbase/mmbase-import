@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <property name="from">Bugtracker &lt;bugtracker@mmbase.org&gt;</property>
+    <property name="defaultversion">1.7.0</property>
+  </properties>
+</util>

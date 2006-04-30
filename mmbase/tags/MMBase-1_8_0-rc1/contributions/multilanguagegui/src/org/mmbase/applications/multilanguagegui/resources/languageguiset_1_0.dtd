@@ -1,0 +1,12 @@
+<!--
+    languageguiset_1_0.dtd
+-->
+
+<!ELEMENT languageguiset (keyword*)>
+
+<!ELEMENT keyword (translation*)>
+<!ATTLIST keyword name CDATA #IMPLIED>
+
+<!ELEMENT translation (#PCDATA)>
+<!ATTLIST translation language CDATA #IMPLIED>
+<!ATTLIST translation value CDATA #IMPLIED>

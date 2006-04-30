@@ -1,0 +1,25 @@
+NatMM - install.txt
+Version: 06.04.12
+Author: H. Hangyi
+
+To install NatMM:
+1. download and install MMBase 1.7.4 (see server.xml for example configuration of Tomcat)
+2. clean the WEB-INF/config/applications folder
+3. create a NatMM build
+4. copy the files of NatMM build over the MMBase 1.7.4 webapp
+4.a. change settings in WEB-INF/config/modules/jdbc.xml
+4.b. change settings in WEB-INF/config/log/log4j.xml
+4.c. copy the builders from WEB-INF/config/applications/NatMM/builders/ to  WEB-INF/config/builders/
+4.d. if you want to use the templates in nmintra: 
+     copy the builders from WEB-INF/config/applications/NMIntra/builders/ to  WEB-INF/config/builders/
+4.e. change settings in WEB-INF/config/builders/images.xml (and style.xml, when using nmintra)
+
+Notes: 
+1. The NatMM application depends on an admin user with the alias users.admin. After installing you will first have
+to create this user.
+2. The NatMM application depends on a rubriek node with alias root. This is the root of your tree of websites. After
+installing you will first have to create this rubriek.
+
+Still to do: create application-data files to create a minimalistic website to be loaded into an empty database.
+
+
