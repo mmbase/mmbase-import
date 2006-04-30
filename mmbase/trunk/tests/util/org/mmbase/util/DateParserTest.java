@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DateParserTest.java,v 1.3 2006-03-28 23:55:30 michiel Exp $
+ * @verion $Id: DateParserTest.java,v 1.4 2006-04-30 10:16:26 michiel Exp $
  */
 public class DateParserTest extends TestCase {
 
@@ -47,31 +47,41 @@ public class DateParserTest extends TestCase {
     int IGN  = -100001;
     protected int[] getNow(int[] n) {
         Calendar cal = Calendar.getInstance();
+        if (n[0] != NULL && n[0] != IGN) cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) + n[0]);
+        if (n[1] != NULL && n[1] != IGN) cal.set(Calendar.MONTH,cal.get(Calendar.MONTH) + n[1]);
+        if (n[2] != NULL && n[2] != IGN) cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + n[2]);
+        if (n[3] != NULL && n[3] != IGN) cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + n[3]);
+        if (n[4] != NULL && n[4] != IGN) cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + n[4]);
+        if (n[5] != NULL && n[5] != IGN) cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) + n[5]);
+
         return new int[] {
-            n[0] == NULL ? 0 : (n[0] == IGN ? IGN : cal.get(Calendar.YEAR) + n[0]),
-            n[1] == NULL ? 0 : (n[1] == IGN ? IGN : cal.get(Calendar.MONTH) + n[1]),
-            n[2] == NULL ? 0 : (n[2] == IGN ? IGN : cal.get(Calendar.DAY_OF_MONTH) + n[2]),
-            n[3] == NULL ? 0 : (n[3] == IGN ? IGN : cal.get(Calendar.HOUR_OF_DAY) + n[3]),
-            n[4] == NULL ? 0 : (n[4] == IGN ? IGN : cal.get(Calendar.MINUTE) + n[4]),
-            n[5] == NULL ? 0 : (n[5] == IGN ? IGN : cal.get(Calendar.SECOND) + n[5])};
+            n[0] == NULL ? 0 : (n[0] == IGN ? IGN : cal.get(Calendar.YEAR)),
+            n[1] == NULL ? 0 : (n[1] == IGN ? IGN : cal.get(Calendar.MONTH)),
+            n[2] == NULL ? 0 : (n[2] == IGN ? IGN : cal.get(Calendar.DAY_OF_MONTH)),
+            n[3] == NULL ? 0 : (n[3] == IGN ? IGN : cal.get(Calendar.HOUR_OF_DAY)),
+            n[4] == NULL ? 0 : (n[4] == IGN ? IGN : cal.get(Calendar.MINUTE)),
+            n[5] == NULL ? 0 : (n[5] == IGN ? IGN : cal.get(Calendar.SECOND))};
     }
-    protected boolean compare(Date date, int[] fields) {
+    protected Collection compare(Date date, int[] fields) {
+        List result = new ArrayList();
         Calendar cal = Calendar.getInstance();
+        cal.setLenient(true);
         cal.setTime(date);
-        if (fields[0] != IGN && cal.get(Calendar.YEAR) != fields[0]) return false;
-        if (fields[1] != IGN && cal.get(Calendar.MONTH) != fields[1]) return false;
-        if (fields[2] != IGN && cal.get(Calendar.DAY_OF_MONTH) != fields[2]) return false;
-        if (fields[3] != IGN && cal.get(Calendar.HOUR_OF_DAY) != fields[3]) return false;
-        if (fields[4] != IGN && cal.get(Calendar.MINUTE) != fields[4]) return false;
-        if (fields[5] != IGN && cal.get(Calendar.SECOND) != fields[5]) return false;
-        return true;
+        if (fields[0] != IGN && cal.get(Calendar.YEAR) != fields[0]) result.add("year " + cal.get(Calendar.YEAR) + " != " + fields[0]);
+        if (fields[1] != IGN && cal.get(Calendar.MONTH) != fields[1]) result.add("month " + cal.get(Calendar.MONTH) + " != " + fields[1]);
+        if (fields[2] != IGN && cal.get(Calendar.DAY_OF_MONTH) != fields[2]) result.add("day of month " + cal.get(Calendar.DAY_OF_MONTH) + " != " + fields[2]);
+        if (fields[3] != IGN && cal.get(Calendar.HOUR_OF_DAY) != fields[3]) result.add("hour of day " + cal.get(Calendar.HOUR_OF_DAY) + " != " + fields[3]);
+        if (fields[4] != IGN && cal.get(Calendar.MINUTE) != fields[4]) result.add("minute " + cal.get(Calendar.MINUTE) + " != " + fields[4]);
+        if (fields[5] != IGN && cal.get(Calendar.SECOND) != fields[5]) result.add("second " + cal.get(Calendar.SECOND) + " != " + fields[5]);
+        return result;
 
     }
 
     protected void assertTrue(String date1, int[] date2) throws ParseException {
         Date  dyndate = DynamicDate.getInstance(date1);
         int[] r     = getNow(date2);
-        assertTrue(date1 + "->" + dyndate + " != " + new Date(r[0] - 1900, r[1], r[2], r[3], r[4], r[5]), compare(dyndate, r));
+        Collection result = compare(dyndate, r);
+        assertTrue(date1 + "->" + dyndate + " != " + new Date(r[0] - 1900, r[1], r[2], r[3], r[4], r[5]) + result, result.isEmpty());
     }
     public void testDay() throws ParseException {
         Date date = DynamicDate.getInstance("today");
