@@ -6,8 +6,7 @@
                         http://www.mmbase.org/xmlns/builder.xsd"                        
     name="caches" maintainer="mmbase.org" version="0" extends="object">
 
-  <classfile>ImageCaches</classfile>
-
+  <class>ImageCaches</class>
 
   <names>
     <singular xml:lang="en">Cached Image</singular>

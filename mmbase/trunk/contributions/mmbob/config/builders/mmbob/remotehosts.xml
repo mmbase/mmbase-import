@@ -52,7 +52,7 @@
           <search>2</search>
         </positions>
       </editor>
-      <datatype base="datatime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>lastupdatetime</name>
         <type key="false" notnull="true" size="1" state="persistent">INTEGER</type>
