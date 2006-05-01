@@ -6,13 +6,8 @@
                         http://www.mmbase.org/xmlns/builder.xsd"                        
     name="images" maintainer="mmbase.org" version="0" extends="object">
 
-  <classfile>Images</classfile>
+  <class>Images</class>
 
-  <properties>
-    <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
-    <property name="ImageConvert.ConverterCommand">convert</property>
-    <property name="ImageConvert.ConverterRoot"/>
-  </properties>
 
   <names>
     <singular xml:lang="eo">Bildo</singular>
@@ -34,6 +29,12 @@
     <description xml:lang="en">Images</description>
     <description xml:lang="fr">Images</description>
   </descriptions>
+
+  <properties>
+    <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
+    <property name="ImageConvert.ConverterCommand">convert</property>
+    <property name="ImageConvert.ConverterRoot"/>
+  </properties>
 
   <fieldlist>
 

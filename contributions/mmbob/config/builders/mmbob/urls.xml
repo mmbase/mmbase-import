@@ -6,7 +6,7 @@
                         http://www.mmbase.org/xmlns/builder.xsd"                        
     name="urls" maintainer="mmbase.org" version="0" extends="object">
 
-  <classfile>Urls</classfile>
+  <class>Urls</class>
 
   <names>
     <singular xml:lang="en">URL</singular>
