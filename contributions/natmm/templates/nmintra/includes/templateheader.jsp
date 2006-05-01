@@ -1,10 +1,6 @@
 <%@page language="java" contentType="text/html; charset=utf-8"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache" 
-%><%@taglib uri="http://mmapps.sourceforge.net/lucenemodule/taglib" prefix="lm"
-%><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
-%><%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"
 %><%@page import="java.util.*,java.text.*,java.io.*,org.mmbase.bridge.*,
 						org.mmbase.util.logging.Logger,org.mmbase.module.Module,
 						nl.mmatch.HtmlCleaner,nl.leocms.util.*,

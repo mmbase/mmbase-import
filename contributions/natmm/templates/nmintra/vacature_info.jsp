@@ -11,7 +11,7 @@ if(!articleId.equals("")) {
 
    String articleTemplate = "article.jsp" + templateQueryString;
 	response.sendRedirect(articleTemplate);
-   %><%--jsp:include page="<%= articleTemplate %>" /--%><%
+   %><%
 
 } else if(!projectId.equals("")) { 
 
