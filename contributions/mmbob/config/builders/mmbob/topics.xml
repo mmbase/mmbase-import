@@ -27,7 +27,6 @@
       <gui>
         <guiname xml:lang="en">Title</guiname>
         <guiname xml:lang="nl">Titel</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -36,6 +35,7 @@
           <search>1</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>title</name>
         <type notnull="true" size="255" state="persistent">STRING</type>
@@ -50,7 +50,6 @@
       <gui>
         <guiname xml:lang="en">Text</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
-        <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
@@ -59,6 +58,7 @@
           <search>2</search>
         </positions>
       </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>body</name>
         <type notnull="false" size="64000" state="persistent">STRING</type>

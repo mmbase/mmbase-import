@@ -22,7 +22,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">Subject</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -31,6 +30,7 @@
           <search>1</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>subject</name>
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
@@ -42,7 +42,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">Poster</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -51,6 +50,7 @@
           <search>2</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>poster</name>
         <type key="false" notnull="false" size="64" state="persistent">STRING</type>
@@ -62,7 +62,6 @@
       </descriptions>
       <gui>
          <guiname xml:lang="en">Mood</guiname>
-          <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
@@ -71,6 +70,7 @@
           <search>3</search>
         </positions>
       </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>mood</name>
         <type key="false" notnull="false" size="32" state="persistent">STRING</type>
@@ -82,7 +82,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">Text</guiname>
-        <guitype>field</guitype>
       </gui>
       <editor>
         <positions>
@@ -91,6 +90,7 @@
           <search>4</search>
         </positions>
       </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>body</name>
         <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
@@ -102,7 +102,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">createtime</guiname>
-        <guitype>eventtime</guitype>
       </gui>
       <editor>
         <positions>
@@ -111,6 +110,7 @@
           <search>8</search>
         </positions>
       </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>createtime</name>
         <type key="false" notnull="false" state="persistent">INTEGER</type>
@@ -122,7 +122,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">edittime</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
          <positions>
@@ -131,6 +130,7 @@
            <search>10</search>
          </positions>
        </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>edittime</name>
         <type key="false" notnull="false" state="persistent">INTEGER</type>
@@ -142,7 +142,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">viewstate</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
@@ -151,6 +150,7 @@
           <search>10</search>
         </positions>
       </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>viewstate</name>
         <type key="false" notnull="false" state="persistent">INTEGER</type>
@@ -162,7 +162,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">fullname</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
@@ -171,8 +170,9 @@
           <search>11</search>
         </positions>
       </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name">fullname</name>
+        <name>fullname</name>
         <type key="false" notnull="false" size="128" state="persistent">STRING</type>
       </db>
     </field>

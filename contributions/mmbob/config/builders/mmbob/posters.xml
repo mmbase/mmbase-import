@@ -196,7 +196,6 @@
       </descriptions>
       <gui>
         <guiname xml:lang="en">gender</guiname>
-        <guitype>string</guitype>
       </gui>
       <editor>
         <positions>

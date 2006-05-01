@@ -19,52 +19,6 @@
 
     <field>
       <descriptions>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="nl">Object</guiname>
-        <guiname xml:lang="us">Object</guiname>
-        <guiname xml:lang="en">Object</guiname>
-        <guiname xml:lang="fr">Objet</guiname>
-      </gui>
-      <editor>
-        <positions>
-          <input>-1</input>
-          <list>10</list>
-          <search>10</search>
-        </positions>
-      </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>number</name>
-        <type key="true" notnull="true" state="persistent">INTEGER</type>
-      </db>
-    </field>
-
-    <field>
-      <descriptions>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="nl">Eigenaar</guiname>
-        <guiname xml:lang="us">Owner</guiname>
-        <guiname xml:lang="en">Owner</guiname>
-        <guiname xml:lang="fr">Propri!ire</guiname>
-      </gui>
-      <editor>
-        <positions>
-          <input>-1</input>
-          <list>11</list>
-          <search>11</search>
-        </positions>
-      </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>owner</name>
-        <type key="false" notnull="false" size="12" state="persistent">STRING</type>
-      </db>
-    </field>
-
-    <field>
-      <descriptions>
        </descriptions>
        <gui>
          <guiname xml:lang="nl">Naam</guiname>

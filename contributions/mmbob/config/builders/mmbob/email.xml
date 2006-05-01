@@ -6,7 +6,8 @@
                         http://www.mmbase.org/xmlns/builder.xsd"                        
     name="email" maintainer="mmbase.org" version="0" extends="object">
 
-  <classfile>org.mmbase.applications.email.EmailBuilder</classfile>
+  <class>org.mmbase.applications.email.EmailBuilder</class>
+
   <names>
     <singular xml:lang="en">Email message</singular>
     <singular xml:lang="nl">Email boodschap</singular>
@@ -199,7 +200,6 @@
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Status</guiname>
         <guiname xml:lang="eo">Stato</guiname>
-        <guitype>integer</guitype>
         </gui>
         <editor>
           <positions>
@@ -224,7 +224,6 @@
         <guiname xml:lang="en">Send Time</guiname>
         <guiname xml:lang="nl">Verzendtijd</guiname>
         <guiname xml:lang="eo">Sendtempo</guiname>
-        <guitype>eventtime</guitype>
       </gui>
       <editor>
         <positions>
