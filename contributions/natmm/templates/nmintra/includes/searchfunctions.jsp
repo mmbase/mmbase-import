@@ -68,7 +68,12 @@
 	Iterator searchTermList = searchTermSet.iterator();
 	while(searchTermList.hasNext()) {
 		searchTerm = (String) searchTermList.next();
-		searchTermMap.put(new Integer(searchTerm.length()), searchTerm);
+		//Integer key = new Integer(searchTerm.length()*10);
+		int key = searchTerm.length()*10;
+		while (searchTermMap.containsKey(new Integer(key))){
+			key++;
+		}
+		searchTermMap.put(new Integer(key), searchTerm);
 	}
 	Vector searchTerms = new Vector(); // *** create resulting Vector from sortedMap ***
 	while(!searchTermMap.isEmpty()) {
