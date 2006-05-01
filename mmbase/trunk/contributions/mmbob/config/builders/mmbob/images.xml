@@ -1,168 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="object" maintainer="mmbase.org" name="images" version="0">
-	<status>active</status>
-        <classfile>Images</classfile>
-	<searchage>31</searchage>
-<properties>
-                <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
-                <property name="ImageConvert.ConverterCommand">convert</property>
-                <property name="ImageConvert.ConverterRoot"/>
- </properties>
-	<names>
-		<!-- singles per language as defined by ISO 639 -->
-		<singular xml:lang="eo">Bildo</singular>
-		<singular xml:lang="nl">Afbeelding</singular>
-		<singular xml:lang="it">Immagine</singular>
-		<singular xml:lang="en">Image</singular>
-		<singular xml:lang="fr">Image</singular>
-		<!-- singles per language as defined by ISO 639 -->
-		<plural xml:lang="eo">Bildoj</plural>
-		<plural xml:lang="nl">Afbeeldingen</plural>
-		<plural xml:lang="it">Immagini</plural>
-		<plural xml:lang="en">Images</plural>
-		<plural xml:lang="fr">Images</plural>
-	</names>
-	<!-- <descriptions> small description of the builder for human reading -->
-	<descriptions>
-		<description xml:lang="eo">Bildoj</description>
-		<description xml:lang="nl">Afbeeldingen</description>
-		<description xml:lang="it">Immagini</description>
-		<description xml:lang="en">Images</description>
-		<description xml:lang="fr">Images</description>
-	</descriptions>
-	<fieldlist>
-		<!-- POS 3 : <field> 'title'  -->
-		<field>
-			<descriptions>
-				<description xml:lang="nl">Titel van de afbeelding</description>
-				<description xml:lang="en">Title of the image</description>
-			</descriptions>
-			<gui>
-				<guiname xml:lang="eo">Titolo</guiname>
-				<guiname xml:lang="nl">Titel</guiname>
-				<guiname xml:lang="it">Titolo</guiname>
-				<guiname xml:lang="en">Title</guiname>
-				<guiname xml:lang="fr">Titre</guiname>
-				<guitype>string</guitype>
-			</gui>
-			<!-- editor related  -->
-			<editor>
-				<positions>
-					<!-- position in the input area of the editor -->
-					<input>1</input>
-					<!-- position in list area of the editor -->
-					<list>1</list>
-					<!-- position in search area of the editor -->
-					<search>1</search>
-				</positions>
-			</editor>
-			<!-- database related  -->
-			<db>
-				<!-- name of the field in the database -->
-				<name xml:lang="en">title</name>
-				<!-- MMBase datatype and demands on it -->
-				<type key="false" notnull="true" size="255" state="persistent">STRING</type>
-			</db>
-		</field>
-		<!-- POS 4 : <field> 'description'  -->
-		<field>
-			<descriptions>
-				<description xml:lang="nl">Omschrijving van de afbeelding</description>
-				<description xml:lang="en">Description of the image</description>
-			</descriptions>
-			<gui>
-				<guiname xml:lang="eo">Priskribo</guiname>
-				<guiname xml:lang="nl">Omschrijving</guiname>
-				<guiname xml:lang="it">Descrizione</guiname>
-				<guiname xml:lang="en">Description</guiname>
-				<guiname xml:lang="fr">Description</guiname>
-				<guitype>field</guitype>
-			</gui>
-			<!-- editor related  -->
-			<editor>
-				<positions>
-					<!-- position in the input area of the editor -->
-					<input>2</input>
-					<!-- position in list area of the editor -->
-					<list>3</list>
-					<!-- position in search area of the editor -->
-					<search>2</search>
-				</positions>
-			</editor>
-			<!-- database related  -->
-			<db>
-				<!-- name of the field in the database -->
-				<name xml:lang="en">description</name>
-				<!-- MMBase datatype and demands on it -->
-				<type key="false" notnull="true" size="1024" state="persistent">STRING</type>
-			</db>
-		</field>
-		<!-- POS 5 : <field> 'handle'  -->
-		<field>
-			<descriptions>
-				<description xml:lang="nl">De afbeelding zelf (binarie data)</description>
-				<description xml:lang="en">The image itself (binary data)</description>
-			</descriptions>
-			<gui>
-				<guiname xml:lang="eo">Bildo</guiname>
-				<guiname xml:lang="nl">Plaatje</guiname>
-				<guiname xml:lang="it">Immagine</guiname>
-				<guiname xml:lang="en">Image</guiname>
-				<guiname xml:lang="fr">Image</guiname>
-				<guitype>newimage</guitype>
-			</gui>
-			<!-- editor related  -->
-			<editor>
-				<positions>
-					<!-- position in the input area of the editor -->
-					<input>4</input>
-					<!-- position in list area of the editor -->
-					<list>2</list>
-					<!-- position in search area of the editor -->
-					<search>-1</search>
-				</positions>
-			</editor>
-			<!-- database related  -->
-			<db>
-				<!-- name of the field in the database -->
-				<name xml:lang="en">handle</name>
-				<!-- MMBase datatype and demands on it -->
-				<type key="false" notnull="true" size="16777215" state="persistent">BYTE</type>
-			</db>
-		</field>
-		<!-- POS 6 : <field> 'itype'  -->
-		<field>
-			<descriptions>
-				<description xml:lang="nl">Mimetype van de afbeelding</description>
-				<description xml:lang="en">Mimetype of the image</description>
-			</descriptions>
-			<gui>
-				<guiname xml:lang="eo">Bildotipo</guiname>
-				<guiname xml:lang="nl">PlaatjesType</guiname>
-				<guiname xml:lang="it">ImmagineTipo</guiname>
-				<guiname xml:lang="en">ImageType</guiname>
-				<guiname xml:lang="fr">ImageTapent</guiname>
-				<guitype>string</guitype>
-			</gui>
-			<!-- editor related  -->
-			<editor>
-				<positions>
-					<!-- position in the input area of the editor -->
-					<input>-1</input>
-					<!-- position in list area of the editor -->
-					<list>-1</list>
-					<!-- position in search area of the editor -->
-					<search>-1</search>
-				</positions>
-			</editor>
-			<!-- database related  -->
-			<db>
-				<!-- name of the field in the database -->
-				<name xml:lang="en">itype</name>
-				<!-- MMBase datatype and demands on it -->
-				<type key="false" notnull="true" size="32" state="persistent">STRING</type>
-			</db>
-		</field>
-	</fieldlist>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="images" maintainer="mmbase.org" version="0" extends="object">
+
+  <classfile>Images</classfile>
+
+  <properties>
+    <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
+    <property name="ImageConvert.ConverterCommand">convert</property>
+    <property name="ImageConvert.ConverterRoot"/>
+  </properties>
+
+  <names>
+    <singular xml:lang="eo">Bildo</singular>
+    <singular xml:lang="nl">Afbeelding</singular>
+    <singular xml:lang="it">Immagine</singular>
+    <singular xml:lang="en">Image</singular>
+    <singular xml:lang="fr">Image</singular>
+    <plural xml:lang="eo">Bildoj</plural>
+    <plural xml:lang="nl">Afbeeldingen</plural>
+    <plural xml:lang="it">Immagini</plural>
+    <plural xml:lang="en">Images</plural>
+    <plural xml:lang="fr">Images</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="eo">Bildoj</description>
+    <description xml:lang="nl">Afbeeldingen</description>
+    <description xml:lang="it">Immagini</description>
+    <description xml:lang="en">Images</description>
+    <description xml:lang="fr">Images</description>
+  </descriptions>
+
+  <fieldlist>
+
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Titel van de afbeelding</description>
+        <description xml:lang="en">Title of the image</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="eo">Titolo</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+        <guiname xml:lang="it">Titolo</guiname>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="fr">Titre</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>1</input>
+          <list>1</list>
+          <search>1</search>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>title</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Omschrijving van de afbeelding</description>
+        <description xml:lang="en">Description of the image</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="eo">Priskribo</guiname>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="it">Descrizione</guiname>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="fr">Description</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <list>3</list>
+          <search>2</search>
+        </positions>
+      </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>description</name>
+        <type key="false" notnull="true" size="1024" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="nl">De afbeelding zelf (binarie data)</description>
+        <description xml:lang="en">The image itself (binary data)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="eo">Bildo</guiname>
+        <guiname xml:lang="nl">Plaatje</guiname>
+        <guiname xml:lang="it">Immagine</guiname>
+        <guiname xml:lang="en">Image</guiname>
+        <guiname xml:lang="fr">Image</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>4</input>
+          <list>2</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>handle</name>
+        <type key="false" notnull="true" size="16777215" state="persistent">BYTE</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Mimetype van de afbeelding</description>
+        <description xml:lang="en">Mimetype of the image</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="eo">Bildotipo</guiname>
+        <guiname xml:lang="nl">PlaatjesType</guiname>
+        <guiname xml:lang="it">ImmagineTipo</guiname>
+        <guiname xml:lang="en">ImageType</guiname>
+        <guiname xml:lang="fr">ImageTapent</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>itype</name>
+        <type key="false" notnull="true" size="32" state="persistent">STRING</type>
+      </db>
+    </field>
+
+  </fieldlist>
 </builder>
