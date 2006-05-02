@@ -85,6 +85,9 @@ public class ExternalProfilesManager implements Runnable {
             } catch(Exception e) {
                 log.error("run(): ERROR: Exception in externalprofilemanager thread!");
                 log.error(Logging.stackTrace(e));
+	         try {
+			Thread.sleep(sleeptime);
+		} catch(Exception f3) {}
             }
         }
     }
@@ -128,6 +131,7 @@ public class ExternalProfilesManager implements Runnable {
 				while (i.hasNext()) {
 					ProfileEntry pe = (ProfileEntry)i.next();
 					ProfileEntryDef pd = pi.getProfileDef(pe.getName());
+					if (pd!=null) {
 					String external = pd.getExternal();
 					String externalname = pd.getExternalName();
 	                                ExternalProfileInterface ci = ExternalProfilesManager.getHandler(external);
@@ -152,11 +156,12 @@ public class ExternalProfilesManager implements Runnable {
 							}
 						}
 					}
+					}
 				}
 				checkqueue.remove(pi);
 			}
 	            	Thread.sleep(sleeptime);
-		} catch (InterruptedException f2){
+		} catch (Exception f2){
 			log.info("External profile sync error");
 			f2.printStackTrace();
 	            	try {

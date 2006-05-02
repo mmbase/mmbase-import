@@ -989,17 +989,19 @@ public class PostArea {
    }
 
 
-    public Vector searchPostings(String searchkey) {
+    public Vector searchPostings(String searchkey,int posterid) {
 	Vector results = new Vector();
-	return searchPostings(results,searchkey);
+	return searchPostings(results,searchkey,posterid);
     }
 
-   public Vector searchPostings(Vector results,String searchkey) {
+   public Vector searchPostings(Vector results,String searchkey,int posterid) {
+	// check if this area is searchable for this user (is he logged in)
+	if (posterid==-1 && getGuestReadModeType().equals("closed")) return results;
 	if (postthreads!=null) {
         	Enumeration e = postthreads.elements();
       	 	while (e.hasMoreElements()) {
             		PostThread thread = (PostThread) e.nextElement();
-	    		results = thread.searchPostings(results,searchkey);
+	    		results = thread.searchPostings(results,searchkey,posterid);
 		}
 	}
 	return results;
@@ -1034,6 +1036,7 @@ public class PostArea {
 
    private boolean checkConfig() {
         if (config==null) {
+		log.info("BLA="+getName()+" "+parent.getConfig());
 		config = parent.getConfig().addPostAreaConfig(getName());
         }
         return true;
