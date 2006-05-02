@@ -278,7 +278,7 @@
          	</positions>
          </editor>
          <db>
-         	<name>material_fr</name>
+         	<name>material_fra</name>
          	<type state="persistent" size="255" notnull="false" key="false">STRING</type>
          </db>
       </field>
