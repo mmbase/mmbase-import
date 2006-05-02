@@ -104,6 +104,7 @@ public class ProfileInfo {
 
    private void decodeXML() {
 	 if (xml!=null && !xml.equals("")) {
+	 try {
          DocumentReader reader = new DocumentReader(new InputSource(new StringReader(xml)),ProfileInfo.class);
          if(reader != null) {
                 for(Iterator ns = reader.getChildElements("profileinfo","entry");ns.hasNext(); ) {
@@ -139,6 +140,10 @@ public class ProfileInfo {
 			}
 		}
 	   }
+	}
+	} catch(Exception e) {
+		log.error("Decode problem with : "+xml);
+		e.printStackTrace();
 	}
 	}
   }
@@ -187,7 +192,7 @@ public class ProfileInfo {
 	Iterator pi=entries.values().iterator();
         while (pi.hasNext()) {
 		   ProfileEntry pe = (ProfileEntry)pi.next();
-		   body += "\t<entry name=\""+pe.getName()+"\">"+pe.getValue()+"</entry>\n";
+		   body += "\t<entry name=\""+pe.getName()+"\"><![CDATA["+pe.getValue()+"]]></entry>\n";
 	}
 	body += "</profileinfo>\n";
 	return body; 

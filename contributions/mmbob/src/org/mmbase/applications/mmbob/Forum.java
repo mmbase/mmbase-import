@@ -327,12 +327,12 @@ public class Forum {
         return posters.elements();
     }
 
-    public Vector searchPostings(String searchkey) {
+    public Vector searchPostings(String searchkey,int posterid) {
 	Vector results = new Vector();
         Enumeration e = postareas.elements();
         while (e.hasMoreElements()) {
             PostArea area = (PostArea) e.nextElement();
-	    results = area.searchPostings(results,searchkey);
+	    results = area.searchPostings(results,searchkey,posterid);
 	}
 	return results;
     }
@@ -1062,8 +1062,6 @@ public class Forum {
     public void childRemoved(Poster p) {
         posters.remove(new Integer(p.getId()));
 	posternames.remove(""+p.getAccount());
-	log.info("REM="+posters);
-	log.info("REM="+posternames);
 	onlineposters.remove(p);
 	newposters.remove(p);
         syncNode(ForumManager.SLOWSYNC);

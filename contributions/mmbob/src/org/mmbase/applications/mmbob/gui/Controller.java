@@ -644,6 +644,7 @@ public class Controller {
                 map.put("levelgui", p.getLevelGui());
                 map.put("levelimage", p.getLevelImage());
                 map.put("lastseen", new Integer(p.getLastSeen()));
+               	map.put("blocked", ""+p.isBlocked());
                 list.add(map);
             }
         }
@@ -679,6 +680,7 @@ public class Controller {
                 			map.put("level", p.getLevel());
                 			map.put("levelgui", p.getLevelGui());
                 			map.put("levelimage", p.getLevelImage());
+                			map.put("blocked", ""+p.isBlocked());
                 			map.put("lastseen", new Integer(p.getLastSeen()));
 					if (page!=0) {
 						map.put("prevpage",new Integer(page-1));
@@ -701,7 +703,8 @@ public class Controller {
     }
 
 
-    public List searchPostings(String forumid,String searchareaid,String searchpostthreadid,String searchkey,int page,int pagesize) {
+    public List searchPostings(String forumid,String searchareaid,String searchpostthreadid,String searchkey,int posterid,int page,int pagesize) {
+	log.info("SEARCH CALLED = "+posterid);
         long start = System.currentTimeMillis();
 	searchkey = searchkey.toLowerCase();
         List list = new ArrayList();
@@ -717,14 +720,14 @@ public class Controller {
 	                	PostArea a = f.getPostArea(searchareaid);
 				if (a!=null) {
 	                		PostThread t = a.getPostThread(searchpostthreadid);
-					e = t.searchPostings(searchkey).elements();
+					e = t.searchPostings(searchkey,posterid).elements();
 				}
 			} else {
 	                	PostArea a = f.getPostArea(searchareaid);
-				if (a!=null) e = a.searchPostings(searchkey).elements();
+				if (a!=null) e = a.searchPostings(searchkey,posterid).elements();
 			}
 		} else {
-            		e = f.searchPostings(searchkey).elements();
+            		e = f.searchPostings(searchkey,posterid).elements();
 		}
 		if (e!=null) {
             	while (e.hasMoreElements() && j<25) {
@@ -1205,6 +1208,64 @@ public class Controller {
                 Forum f = ForumManager.getForum(forumid);
                 if (f != null) {
                     Poster p = f.getPoster(posterid);
+                    if (p != null) {
+                        p.setFirstName(firstname);
+                        p.setLastName(lastname);
+                        p.setEmail(email);
+                        p.setGender(gender);
+                        p.setLocation(location);
+                        p.setPassword(newpassword);
+                        p.savePoster();
+                    } else {
+                        return "false";
+                    }
+                }
+                return "profilechanged";
+            } else {
+                log.info("newpassword and confirmpassword are not equal");
+                return "newpasswordnotequal";
+            }
+        }
+    }
+
+
+    /**
+     * Change values of a Poster
+     *
+     * @param forumid MMBase node number of the forum
+     * @param posterid MMBase node number of the poster
+     * @param firstname New Firstname of the poster
+     * @param lastname New lastname of the poster
+     * @param email New email address of the poster
+     * @param gender  New gender of the poster
+     * @param location ew location of the poster
+     * @return  Feedback regarding the success of edit action
+     */
+    public String editProfilePoster(String forumid, int posterid, int profileid, String firstname, String lastname, String email, String gender, String location, String newpassword, String newconfirmpassword) {
+	log.info("EDITPROFILEID");
+        if (newpassword.equals("")) {
+            log.info("newpassword is empty");
+            Forum f = ForumManager.getForum(forumid);
+            if (f != null) {
+                Poster p = f.getPoster(profileid);
+                if (p != null) {
+                    p.setFirstName(firstname);
+                    p.setLastName(lastname);
+                    p.setEmail(email);
+                    p.setGender(gender);
+                    p.setLocation(location);
+                    p.savePoster();
+                } else {
+                    return "false";
+                }
+            }
+            return "true";
+        } else {
+            if (newpassword.equals(newconfirmpassword)) {
+            log.info("newpassword equals newconfirmpassword");
+                Forum f = ForumManager.getForum(forumid);
+                if (f != null) {
+                    Poster p = f.getPoster(profileid);
                     if (p != null) {
                         p.setFirstName(firstname);
                         p.setLastName(lastname);
@@ -2690,7 +2751,7 @@ public class Controller {
 	return obj.toString();
     }
 
-    public List getProfileValues(String forumid, int posterid) {
+    public List getProfileValues(String forumid, int posterid,int guipos) {
         List list = new ArrayList();
         Forum f = ForumManager.getForum(forumid);
 	if (f!=null && posterid!=-1) {
@@ -2701,7 +2762,7 @@ public class Controller {
                 	   while (i.hasNext()) {
 				HashMap map = new HashMap();
                     		ProfileEntryDef pd = (ProfileEntryDef) i.next();
-				if (pd.getGuiPos()!=-1) {
+				if (pd.getGuiPos()>=guipos) {
 					map.put("name",pd.getName());
 					map.put("guiname",pd.getGuiName());
 					map.put("guipos",new Integer(pd.getGuiPos()));

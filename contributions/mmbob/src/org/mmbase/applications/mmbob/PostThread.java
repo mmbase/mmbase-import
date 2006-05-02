@@ -657,12 +657,12 @@ public class PostThread {
     }
 
 
-    public Vector searchPostings(String searchkey) {
+    public Vector searchPostings(String searchkey,int posterid) {
 	Vector results = new Vector();
-	return searchPostings(results,searchkey);
+	return searchPostings(results,searchkey,posterid);
     }
 
-   public Vector searchPostings(Vector results,String searchkey) {
+   public Vector searchPostings(Vector results,String searchkey,int posterid) {
 	if (postings!=null) {
         	Enumeration e = postings.elements();
         	while (e.hasMoreElements()) {
