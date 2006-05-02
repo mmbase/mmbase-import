@@ -83,7 +83,15 @@ String cardID = "-1";
    	      <jsp:param name="p" value="<%= paginaID %>" />
    	      <jsp:param name="r" value="<%= rubriekID %>" />
    	   </jsp:include>
-      <% } else { %>
+      <% } else { 
+         if(dossierID.equals("-1")) { 
+            %><mm:list nodes="<%= imgID %>" path="images,posrel,dossier,posrel,pagina" constraints="<%= "pagina.number == '" + paginaID + "'" %>" max="1">
+               <mm:field name="dossier.number" jspvar="dossier_number" vartype="String" write="false">
+                  <% dossierID = dossier_number; %>
+               </mm:field>
+            </mm:list>
+            <%
+         } %>
          <mm:import id="nopage_description" />
          <%@include file="includes/page_intro.jsp" %>
          <div style="margin:9px 0px 0px 0px">
