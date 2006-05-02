@@ -28,6 +28,7 @@
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/images_position.xml" />
+      <optionlist include="config/option_lists/shorty_role.xml" />
    </lists>
    <steps>
       <step form-schema="edit_artikel"/>
