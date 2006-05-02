@@ -21,6 +21,7 @@
    <list include="config/images/zoek_contentelement_posrel_images.xml" />
    <field name="reageer" ftype="enum"><prompt>stippellijn tussen paragrafen</prompt><optionlist select="ja_nee"/></field>
    <list include="config/paragraaf/zoek_artikel_posrel_paragraaf.xml" />
+   <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />
    <!-- list include="config/evenement/zoek_artikel_related_evenement.xml" / -->
    <!-- list include="config/formulier/zoek_artikel_related_formulier.xml" / -->
 </form-schema>
