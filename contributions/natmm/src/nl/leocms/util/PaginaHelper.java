@@ -38,22 +38,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import nl.mmatch.HtmlCleaner;
+import nl.mmatch.NatMMConfig;
 
 public class PaginaHelper {
    
-   public final static int MAX_NUMBER_LINKLIJST_ELEMENTS = 7;
-   public final static int MAX_NUMBER_DOSSIER_ELEMENTS = 7;
    /** Logger instance. */
    private static Logger log = Logging.getLoggerInstance(PaginaHelper.class.getName());
-
+   
+   public final static int MAX_NUMBER_LINKLIJST_ELEMENTS = 7;
+   public final static int MAX_NUMBER_DOSSIER_ELEMENTS = 7;
+   
    Cloud cloud;
-   /**
-     * @param cloud
-     */
+   public HashMap pathsFromPageToElements;
+   
    public PaginaHelper(Cloud cloud) {
-      super();
-    /*  assert(cloud != null); */
       this.cloud = cloud;
+      this.pathsFromPageToElements = new HashMap();
+      for(int f = 0; f < nl.mmatch.NatMMConfig.CONTENTELEMENTS.length; f++) {
+         pathsFromPageToElements.put(
+            nl.mmatch.NatMMConfig.CONTENTELEMENTS[f],
+            nl.mmatch.NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+      }
    }
 
    ////////////// general utilities /////////////
@@ -1061,6 +1066,7 @@ public class PaginaHelper {
         return null;
     }
 
+
    /**
      * Method finds an contentelement with an item name and a page Node.
      *
@@ -1069,37 +1075,183 @@ public class PaginaHelper {
      * @return contentelement Node
      */
    public Node getContentElementNode(Node page, String itemName) {
-      
+
       Node winner = null;
-      NodeIterator contentelementen = page.getRelatedNodes("contentelement", "contentrel", "DESTINATION").nodeIterator();
-      while (winner==null && contentelementen.hasNext()) {
-         Node contentElement = (Node) contentelementen.next();
-         if (HtmlCleaner.stripText(contentElement.getStringValue("titel")).equals(itemName)) {
-            winner = contentElement;
+      for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && winner==null;) {
+         
+         String objecttype = (String) it.next();
+         String currentPath = (String) pathsFromPageToElements.get(objecttype);
+         objecttype = objecttype.replaceAll("#","");
+         String titleField = (new ContentHelper(cloud)).getTitleField(objecttype);
+         if(titleField==null) {
+            log.error("No title field has been found for objecttype " + objecttype);
          }
-      }
-      if (winner==null) {
-         winner = getContentElementNode(page, itemName, "pagina,contentrel,provincies,pos4rel,natuurgebieden", "natuurgebieden");
-      }
-      if (winner==null) {
-         winner = getContentElementNode(page, itemName, "pagina,posrel,dossier,posrel,artikel", "artikel");
+         currentPath = currentPath.replaceAll("object",objecttype);
+            
+         NodeIterator objects = cloud.getList(
+            null,
+            currentPath,
+            objecttype + ".number," + objecttype + "." + titleField,
+            "pagina.number='" + page.getNumber() + "'",
+            null, null, "SOURCE", true).nodeIterator();
+         while (winner==null && objects.hasNext()) {
+            Node object = (Node) objects.next();
+            if (HtmlCleaner.stripText(object.getStringValue(objecttype + "." + titleField)).equals(itemName)) {
+               winner = cloud.getNode(object.getStringValue(objecttype + ".number"));
+            }
+         }
       }
       if (winner==null) {
          log.warn("Did not find a related contentelement with title " + itemName + " for page " + page.getStringValue("titel") + " (" + page.getNumber() + ")");
       }
       return winner;
    }
-   
-   public Node getContentElementNode(Node page, String itemName, String path, String type) {
-      Node winner = null;
-      NodeIterator contentelementen = cloud.getList(""+ page.getNumber(),path, type+".number,"+type+".titel", null, null, null, "DESTINATION", true).nodeIterator();
-      while (winner==null && contentelementen.hasNext()) {
-         Node contentElement = (Node) contentelementen.next();
-         if (HtmlCleaner.stripText(contentElement.getStringValue(type + ".titel")).equals(itemName)) {
-            winner = cloud.getNode(contentElement.getStringValue(type+".number"));
+
+    public HashMap findIDs(HashMap ids, String template, String defaultPage) {
+      
+      // ID can be used as a generic reference to nodes of different nodetypes
+      String ID =  (String) ids.get("object");
+      String rubriekID = (String) ids.get("rubriek");
+      String paginaID = (String) ids.get("pagina");
+      
+      if(!ID.equals("-1")) { // if ID is set, use it to set the ID of the related nodetype
+
+         String nType = cloud.getNode(ID).getNodeManager().getName();
+         if(nType.equals("rubriek")) {
+            ids.put("rubriek", ID);
+         } else if(nType.equals("pagina")) {
+            ids.put("pagina", ID);
+         } else {
+            for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext();) {
+               String objecttype = (String) it.next();
+               if(nType.equals(objecttype)) {
+                  ids.put(objecttype, ID);
+               }
+            }
+         }
+      } else { // if ID is not set, then set it
+      
+         if(!rubriekID.equals("-1")) {
+            ID = rubriekID;
+         } else if(!paginaID.equals("-1")) {
+            ID = paginaID;
+         } else {
+            for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && ID.equals("-1");) {
+               String objecttype = (String) it.next();         
+               ID = (String) ids.get(objecttype.replaceAll("#",""));
+            }
          }
       }
-      return winner;
-   }
 
+      // *** if the ID is still empty, it means that not one ID is provided in the URL
+      // *** set paginaID, rubriekID and ID from the template
+      if(ID.equals("-1")) { // *** get page from url
+         
+         NodeList nlPages = cloud.getList(ID,
+                                          "template,gebruikt,pagina,posrel,rubriek",
+                                          "rubriek.number,pagina.number",
+                                          "template.url='" + template + "'",
+                                          null, null, null, false);
+   
+          if (nlPages.size() > 0) {
+             paginaID = nlPages.getNode(0).getStringValue("pagina.number");
+             rubriekID = nlPages.getNode(0).getStringValue("rubriek.number");;
+             ID = rubriekID;
+          }
+          
+      } else {
+      
+         if(paginaID.equals("-1")) {
+            ids.put("rubriek", rubriekID);
+            paginaID = findPageByIDs(ids,template,defaultPage);
+         }
+         
+         // set the rubriekID on basis of the paginaID
+         if(!paginaID.equals("-1")&&rubriekID.equals("-1")) {
+             NodeList nlRubriek = cloud.getList(paginaID,
+                                             "pagina,posrel,rubriek",
+                                             "rubriek.number",
+                                             null,null, null, null, false);
+             if (nlRubriek.size() > 0) {
+                rubriekID = nlRubriek.getNode(0).getStringValue("rubriek.number");
+             }
+         }
+      }
+      
+      if(!paginaID.equals("-1")) {
+         // make sure paginaID is not an alias, otherwise constraints on paginaID won't work
+         paginaID = cloud.getNode(paginaID).getStringValue("number");
+      }
+      ids.put("object", ID);
+      ids.put("rubriek", rubriekID);
+      ids.put("pagina", paginaID);
+      return ids;
+   }
+   
+   
+   /**
+    * Find a page number based on nodes of different types
+    */
+   public String findPageByIDs(HashMap ids, String template, String defaultPage) {
+      String rubriekID =  (String) ids.get("rubriek");
+      String paginaID =  (String) ids.get("pagina");
+      log.debug("findPagesByIDs: rubriek = " + rubriekID + " pagina= " + paginaID + " template= " + template);
+
+      // use rubriekID to set paginaID
+      if (paginaID.equals("-1") && !rubriekID.equals("-1")) {
+
+         RubriekHelper h = new RubriekHelper(cloud);
+         paginaID = h.getFirstPage(rubriekID);
+         if (paginaID.equals("-1")) {
+            paginaID = defaultPage;
+         }
+      }
+
+      for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && paginaID.equals("-1");) {
+         String objecttype = (String) it.next();
+         String ID = (String) ids.get(objecttype.replaceAll("#",""));
+
+         if (!ID.equals("-1")) {
+            String currentPath = (String) pathsFromPageToElements.get(objecttype) + ",gebruikt,template";
+            log.debug("Checking " + ID + " with " + currentPath);
+            NodeList nlPages = cloud.getList(ID,
+                                             currentPath,
+                                             "pagina.number",
+                                             "template.url='" + template + "'",
+                                             null, null, null, false);
+
+            if (nlPages.size() > 0) {
+               paginaID = nlPages.getNode(0).getStringValue("pagina.number");
+               log.debug("Found " + paginaID);
+            }
+         }         
+      }
+      return paginaID;
+   }
+   
+   /**
+    * Check whether this node is of the specified type
+    */
+   public boolean isOfType(String ID, String nType) {
+      boolean isOfType = false;
+      if(!ID.equals("-1")) {
+          Node node = cloud.getNode(ID);
+          if(node!=null) {
+             isOfType = (node.getNodeManager().getName()).equals(nType);
+          }
+      }
+      return isOfType;
+   }
+   
+   public String getTemplate(HttpServletRequest request) {
+      String template =  request.getRequestURI();
+      if(template.indexOf("/") > -1){
+         template = template.substring(template.lastIndexOf("/")+1,template.length());
+      }
+      if(template.indexOf(".jsp") > -1){
+         template = template.substring(0,template.lastIndexOf(".jsp")+4);
+      }
+      return template;
+   }
+   
 }
