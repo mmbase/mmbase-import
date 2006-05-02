@@ -20,10 +20,7 @@
  */
 package nl.leocms.util;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -36,21 +33,21 @@ public class ContentHelper {
    /** MMbase logging system */
    private static Logger log = Logging.getLoggerInstance(ContentHelper.class.getName());
 
-   private Cloud mmbase;
+   private Cloud cloud;
    
    /**
-    * @param mmbase
+    * @param cloud
     */
-   public ContentHelper(Cloud mmbase) {
+   public ContentHelper(Cloud cloud) {
       super();
-      this.mmbase = mmbase;
+      this.cloud = cloud;
    }
    
    public String getNameWithOtype(String otype) {
       String nodes = "typedef";
       String where = "number='"+otype+"'";
       String showField = "typedef.name";
-      NodeList list = mmbase.getList("", nodes, showField, where, "", null, null, true );
+      NodeList list = cloud.getList("", nodes, showField, where, "", null, null, true );
       NodeIterator it = list.nodeIterator();
       if (it!=null) {
          while (it.hasNext()) {
@@ -65,7 +62,7 @@ public class ContentHelper {
       String nodes = "typedef";
       String where = "name='"+name+"'";
       String showField = "typedef.number";
-      NodeList list = mmbase.getList("", nodes, showField, where, "", null, null, true );
+      NodeList list = cloud.getList("", nodes, showField, where, "", null, null, true );
       NodeIterator it = list.nodeIterator();
       if (it!=null) {
          while (it.hasNext()) {
@@ -75,4 +72,16 @@ public class ContentHelper {
       }
       return "onbekend type";
    }
+   
+   public String getTitleField(String otype) {
+       NodeManager objectmanager = cloud.getNodeManager(otype);
+       String titleField = null;
+       String [] titleFields = { "titel", "naam", "title", "name" };
+       for(int f=0; f<titleFields.length && titleField==null; f++) { 
+          if(objectmanager.hasField(titleFields[f])) {
+            titleField = titleFields[f];
+          }
+       }
+       return titleField;
+    }
 }

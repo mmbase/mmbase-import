@@ -23,6 +23,7 @@ package nl.leocms.pagina;
 import java.util.*;
 
 import nl.leocms.util.PublishUtil;
+import nl.leocms.util.PaginaHelper;
 import nl.leocms.content.ContentUtil;
 
 import org.mmbase.util.logging.Logging;
@@ -123,29 +124,32 @@ public class PaginaUtil {
    }
 
 
-
-
    /**
-    * Returns all elements in the array
+    * Returns all nodes that are related to the page in a HashSet
     * @param page Node
-    * @return NodeList[]
+    * @return HashSet
     */
-
-   public NodeList[] doesPageContainContentElements(Node page) {
-
-      NodeList[] arrNodeList = new NodeList[3];
-      NodeList contentElements = page.getRelatedNodes("contentelement", "contentrel", "DESTINATION");
-      arrNodeList[0] = contentElements;
-
-
-      NodeList linkLijsten = cloud.getList(""+page.getNumber(),"pagina,posrel,linklijst,lijstcontentrel,contentelement", "contentelement.number", null, null, null, "DESTINATION", true);
-      arrNodeList[1] = linkLijsten;
-
-
-      NodeList dossiers = cloud.getList(""+page.getNumber(),"pagina,related,dossier,posrel,artikel", "artikel.number", null, null, null, "DESTINATION", true);
-      arrNodeList[2] = dossiers;
-
-      return arrNodeList;
+   public HashSet doesPageContainContentElements(Node page) {
+      
+      PaginaHelper ph = new PaginaHelper(cloud);
+      HashSet hsetResult = new HashSet();
+      for (Iterator it=ph.pathsFromPageToElements.keySet().iterator();it.hasNext();) {
+         String objecttype = (String) it.next();
+         if(objecttype.indexOf("#")==-1) {
+            String currentPath = (String) ph.pathsFromPageToElements.get(objecttype);
+            currentPath = currentPath.replaceAll("object",objecttype) + ",gebruikt,template";
+            NodeList objects = cloud.getList(null,
+                                 currentPath,
+                                 objecttype + ".number",
+                                 "pagina.number='" + page.getNumber() + "'",
+                                 null, null, null, false);
+            for(int c = 0; c< objects.size(); c++) {
+               Node object = cloud.getNode(objects.getNode(c).getStringValue(objecttype + ".number"));
+               hsetResult.add(object);
+            }
+         }
+      }
+      return hsetResult;
     }
 
 
