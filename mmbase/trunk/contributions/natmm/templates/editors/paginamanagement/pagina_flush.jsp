@@ -22,6 +22,7 @@ if ((refresh != null) && (refresh.equals("yes"))) {
    } else {
       referrer = request.getHeader("referer"); // html specs are wrong
    }
+   referrer += "&rnd=" + (int) (Math.random()*100000);
    session.setAttribute("preview","off"); 
    %>
    <cache:flush scope="application" group="<%= number %>" />
@@ -40,9 +41,10 @@ if ((refresh != null) && (refresh.equals("yes"))) {
    </h2>
    Weet u het zeker dat u deze pagina wilt publiceren?
    <form action="pagina_flush.jsp">
-      <input type="hidden" name="number" value="<%= number %>">
-      <input type="hidden" name="referrer" value="<%= referrer %>">
-      <input type="hidden" name="refresh" value="yes">
+      <input type="hidden" name="number" value="<%= number %>" />
+      <input type="hidden" name="referrer" value="<%= referrer %>" />
+      <input type="hidden" name="refresh" value="yes" />
+      <input type="hidden" name="rnd" value="<%= (int) (Math.random()*100000) %>" />
       <input type="submit" value="Publiceer pagina"/>
    </form>
    <%

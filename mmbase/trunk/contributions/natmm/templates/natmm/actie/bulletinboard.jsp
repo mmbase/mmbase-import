@@ -11,8 +11,6 @@ String titleID = request.getParameter("title"); if(titleID==null) { titleID = ""
 String textID = request.getParameter("text"); if(textID==null) { textID = ""; }
 String expiredateID = request.getParameter("ed"); if(expiredateID==null) { expiredateID = ""; }
 
-PaginaHelper ph = new PaginaHelper(cloud);
-
 if(nameID==null) { nameID = ""; }
 if(emailID==null) { emailID = ""; }
 if(titleID==null) { titleID = ""; }

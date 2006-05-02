@@ -1,5 +1,5 @@
 <%@page import="java.util.*" %>
-<%@page import="nl.leocms.pagina.*,nl.leocms.authorization.*, org.mmbase.bridge.*" %>
+<%@page import="nl.leocms.pagina.*,nl.leocms.util.ContentHelper,nl.leocms.authorization.*, org.mmbase.bridge.*" %>
 <%@include file="/taglibs.jsp" %>
 <html>
 <head>
@@ -17,8 +17,7 @@ input { width: 100px;}
    </script>
 </head>
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
-<% 
-
+<%
    PaginaUtil paginaUtil = new PaginaUtil(cloud);
    String number = request.getParameter("number");
    String remove = request.getParameter("remove");
@@ -35,10 +34,10 @@ input { width: 100px;}
       %>
       <body style="overflow:auto;" >
       <%
-   
+
          Node pageNode = cloud.getNode(number);
       %>
-   
+
       <h2>Pagina verwijderen</h2>
       <h3>Titel: <%= pageNode.getStringValue("titel") %></h3>
       <%
@@ -46,32 +45,23 @@ input { width: 100px;}
       AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud);
       UserRole role = authorizationHelper.getRoleForUserWithPagina(authorizationHelper.getUserNode(account), number);
 
-      NodeList[] arrNodeList = paginaUtil.doesPageContainContentElements(pageNode);
-      boolean containsContentElements = false;
-      for(int i=0; i< arrNodeList.length; i++) {
-         if(arrNodeList[0].size() > 0) {
-            containsContentElements = true;
-         }
-      }
-      if (containsContentElements){
+      HashSet hsetRelatedContentElements = paginaUtil.doesPageContainContentElements(pageNode);
+      if (hsetRelatedContentElements.size() > 0){
          %>
          <p>Deze pagina kan niet verwijderd worden, aangezien de pagina gebruik maakt van de volgende contentelementen.</p>
          <input type="button" value="Annuleren" onclick="window.close()"/>
          <table class="formcontent"  border="1" cellpadding="3" cellspacing="0">
          <%
-         for(int i=0; i<arrNodeList.length; i++) {
-
-            for(Iterator it = arrNodeList[i].iterator(); it.hasNext();){
-               Node node = (Node) it.next();
+            for(Iterator it = hsetRelatedContentElements.iterator(); it.hasNext();){
                // Use cloud.getNode(node.getNumber()) to get the node that is the extension of the contentelement.
-               // E.g. artikel or dossier instead of contentelement.
+               // E.g. artikel or dossier instead of contentelement
+               Node node = (Node) it.next();
+               String objecttype = cloud.getNode(node.getNumber()).getNodeManager().getName();
                %><tr>
-                  <td class="fieldname"><%= cloud.getNode(node.getNumber()).getNodeManager().getName() %></td>
-                  <td><%= node.getStringValue("titel") %></td>
+                  <td class="fieldname"><%= objecttype %></td>
+                  <td><%= node.getStringValue((new ContentHelper(cloud)).getTitleField(objecttype))%></td>
                </tr><%
             }
-
-         }
          %>
          </table>
          <br/><br/>
