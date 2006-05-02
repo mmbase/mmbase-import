@@ -25,6 +25,7 @@
    <relation destination="attachments" role="related"/>
    <relation destination="evenement" role="related"/>
    <relation destination="formulier" role="related"/>
+   <relation destination="shorty" role="rolerel"/>
    <relation destination="paragraaf" role="posrel" >
 		<object>
 	        <relation destination="images" role="posrel">

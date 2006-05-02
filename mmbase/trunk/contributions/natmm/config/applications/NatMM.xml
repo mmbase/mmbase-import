@@ -126,6 +126,7 @@
         <relation from="artikel" to="formulier" type="posrel" />
         <relation from="artikel" to="paragraaf" type="posrel" />
         <relation from="artikel" to="paragraaf" type="readmore" />
+        <relation from="artikel" to="shorty" type="rolerel" />
         <relation from="artikel" to="thema" type="maillijst" />
         <relation from="artikel" to="thema" type="related" />
         <relation from="artikel" to="vacature" type="related" />

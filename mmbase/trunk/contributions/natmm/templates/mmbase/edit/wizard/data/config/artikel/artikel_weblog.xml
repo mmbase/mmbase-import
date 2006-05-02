@@ -36,6 +36,7 @@
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/images_position_artikel_weblog.xml" />
       <optionlist include="config/option_lists/images_position.xml" />
+      <optionlist include="config/option_lists/shorty_role.xml" />
    </lists>
    <steps>
       <step form-schema="edit_artikel"/>
@@ -62,6 +63,7 @@
       <list include="config/attachments/zoek_contentelement_related_attachments.xml" />
       <field name="reageer" ftype="enum"><prompt>stippellijn tussen paragrafen</prompt><optionlist select="ja_nee"/></field>
       <list include="config/paragraaf/zoek_artikel_posrel_paragraaf.xml" />
+      <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />
       <!-- list include="config/evenement/zoek_artikel_related_evenement.xml" / -->
       <!-- list include="config/formulier/zoek_artikel_related_formulier.xml" / -->
    </form-schema>
