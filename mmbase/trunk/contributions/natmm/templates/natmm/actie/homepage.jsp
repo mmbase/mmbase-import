@@ -1,9 +1,6 @@
 <%@include file="../includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="../includes/top1_params.jsp" %>
-<%
-PaginaHelper ph = new PaginaHelper(cloud);
-%>
 <%@include file="../includes/top2_cacheparams.jsp" %>
 <% expireTime = 3600; // update every hour, because of changing content in rubrieken %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
