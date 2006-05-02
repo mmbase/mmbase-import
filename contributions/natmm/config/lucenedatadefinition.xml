@@ -105,7 +105,8 @@
 
 	<index name="natmmIndexProducts">
       <table name="products">
-            <field name="name">indexed.text</field>
+            <field name="titel">indexed.text</field>
+	    <field name="omschrijving">indexed.text</field>
       </table>
    </index>
    
