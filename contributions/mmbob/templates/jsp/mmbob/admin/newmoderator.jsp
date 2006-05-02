@@ -35,6 +35,12 @@
 </div>
                                                                                               
 <div class="bodypart">
+  <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+  <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+  <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+  <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+  </mm:nodefunction>
+  <mm:include page="../path.jsp?type=postarea2" referids="logoutmodetype,forumid,posterid,active_nick" />
 <mm:compare referid="adminmode" value="true">
 
 <!-- action check -->

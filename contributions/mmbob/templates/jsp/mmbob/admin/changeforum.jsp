@@ -202,7 +202,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 25px;" width="55%" align="center">
   <tr><th colspan="3">Theme settings for <mm:write referid="themename" /> ( <mm:write referid="themeid" /> ) </th></tr>
 
-	<tr><th>Background color</th><td>
+	<tr><th width="20%">Background color</th><td>
 	<mm:import id="sename" reset="true">default/body/background</mm:import><mm:include page="themeitemselect.jsp" referids="forumid,sub,themename,sename" />
 	</td></tr>
 	<tr><th>Font</th><td>
@@ -236,16 +236,25 @@
 		<mm:compare value="http">
 		<option>http
 		<option>entree
+		<option>entree-ng
 		<option>default
 		</mm:compare>
 		<mm:compare value="entree">
 		<option>entree
+		<option>entree-ng
 		<option>http
 		<option>default
 		</mm:compare>
 		<mm:compare value="default">
 		<option>default
 		<option>entree
+		<option>entree-ng
+		<option>default
+		</mm:compare>
+		<mm:compare value="entree-ng">
+		<option>default
+		<option>entree
+		<option>entree-ng
 		<option>default
 		</mm:compare>
 		</mm:field>

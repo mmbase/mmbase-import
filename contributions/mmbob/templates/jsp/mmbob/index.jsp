@@ -126,6 +126,38 @@
         <p />
       </mm:compare>
 
+
+     <mm:compare referid="loginsystemtype" value="entree-ng">
+        <th width="100">
+	</th>
+      <td align="left">
+        <form action="login/entree-ng.jsp?forumid=<mm:write referid="forumid" />" method="post">
+          <mm:present referid="loginfailed">
+            <br />
+            <center>
+              <h4>
+               <mm:write referid="loginfailedreason">
+                 <mm:compare value="account blocked">
+                   ** <mm:write referid="mlg.Account_disabled"/> **
+                 </mm:compare>
+                 <mm:compare value="account not valid">
+                   <center> ** Geen lid van dit forum ** </center>
+                 </mm:compare>
+                 <mm:compare value="password not valid">
+                   ** <mm:write referid="mlg.Wrong_password" /> **
+                 </mm:compare>
+               </mm:write>
+              </h4>
+            </center>
+            </mm:present>
+
+          <mm:notpresent referid="loginfailed">
+          </mm:notpresent>
+          <center><input type="submit" value="Inloggen via EntreeNG" /></center>
+        </form>
+        <p />
+      </mm:compare>
+
       </mm:compare>
       <mm:compare referid="posterid" value="-1" inverse="true">
         <th width="100">
@@ -307,7 +339,7 @@
                  </mm:url>"><mm:write referid="mlg.add_new_area" /></a><br />
 	<a href="<mm:url page="admin/profiles.jsp">
                   <mm:param name="forumid" value="$forumid" />
-                 </mm:url>">Profile managent</a>
+                 </mm:url>" target="_new">Profile management</a>
 	<p />
 	</td>
 	</tr>

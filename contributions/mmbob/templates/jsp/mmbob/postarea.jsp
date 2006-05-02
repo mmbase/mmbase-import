@@ -206,7 +206,7 @@
 </table>
 
 <mm:compare referid="isadministrator" value="true">
-        <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;margin-bottom : 20px;" width="95%" align="left">
+        <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;margin-bottom : 20px;" width="95%">
         <tr><th align="left"><mm:write referid="mlg.Admin_tasks"/></th></tr>
         <td align="left">
         <p />

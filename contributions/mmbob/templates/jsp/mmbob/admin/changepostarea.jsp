@@ -37,12 +37,19 @@
 </div>
                                                                                               
 <div class="bodypart">
+  <mm:nodefunction set="mmbob" name="getForumInfo" referids="forumid,posterid">
+  <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
+  <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
+  <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
+  </mm:nodefunction>
+  <mm:include page="../path.jsp?type=postarea2" referids="logoutmodetype,forumid,posterid,active_nick" />
+
 <mm:compare referid="isadministrator" value="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
   <tr><th colspan="3"><mm:write referid="mlg.Change_existing_area" /></th></tr>
 
   <mm:node number="$postareaid">
-  <form action="<mm:url page="postarea.jsp" referids="forumid,postareaid" />" method="post">
+  <form action="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />" method="post">
 	<tr><th><mm:write referid="mlg.Name"/></th><td colspan="2">
 	<input name="name" size="70" value="<mm:field name="name" />" style="width: 100%">
 	</td></tr>
@@ -70,7 +77,7 @@
 <mm:nodefunction set="mmbob" name="getPostAreaConfig" referids="forumid,posterid,postareaid">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%">
   <tr><th colspan="3">Postarea instellingen</th></tr>
-  <form action="<mm:url page="postarea.jsp">
+  <form action="<mm:url page="changepostarea.jsp">
         <mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 				</mm:url>" method="post">
