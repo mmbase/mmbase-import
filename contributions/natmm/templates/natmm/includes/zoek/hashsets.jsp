@@ -2,7 +2,7 @@
       Cloud cloud,
       org.mmbase.util.logging.Logger log,
       net.sf.mmapps.modules.lucenesearch.SearchConfig cf,
-      Query luceneQuery,
+      String sQuery,
       int index,
       String path,
       String rootRubriek,
@@ -12,40 +12,56 @@
    HashSet hsetNodes = new HashSet();
    try { 
       net.sf.mmapps.modules.lucenesearch.SearchIndex si = cf.getIndex(index);
+      Analyzer analyzer = si.getAnalyzer();
       IndexReader ir = IndexReader.open(si.getIndex());
-      IndexSearcher searcher = new IndexSearcher(ir); 
-      Hits hits = searcher.search(luceneQuery);
-      TreeSet includedEvents = new TreeSet();
-
-      for (int i = 0; i < hits.length(); i++) {
-         Document doc = hits.doc(i);
-         String docNumber = doc.get("node");
-         if(path!=null) {
-            NodeList list = cloud.getList(docNumber,path,"pagina.number",null,null,null,"SOURCE",true);
-            for(int j=0; j<list.size(); j++) {
-               String paginaNumber = list.getNode(j).getStringValue("pagina.number");
-               if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
-                  hsetPagesNodes.add(paginaNumber);
-                  hsetNodes.add(docNumber);
-               }
-            }
-         } else { // *** no path implies an Evenement ***
-            Node e = cloud.getNode(docNumber);
-            String sParent =  Evenement.findParentNumber(docNumber);
-            if(!includedEvents.contains(sParent) && Evenement.isOnInternet(e,nowSec)) {
-               String paginaNumber = cloud.getNode("agenda").getStringValue("number");
-               if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
-                  hsetNodes.add(docNumber);
-                  includedEvents.add(sParent);
-               }
-            }
-         }
+      QueryParser qp = new QueryParser("indexed.text", analyzer);
+      qp.setDefaultOperator(QueryParser.AND_OPERATOR);
+      org.apache.lucene.search.Query result = null;
+      SearchValidator sv = new SearchValidator();
+      String value = sv.validate(sQuery);
+      try {
+        result = qp.parse(value);
+      } catch (Exception e) {
+        log.error("Error parsing field 'indexed.text' with value '" + value + "'");
       }
+      if (result != null) {
+	BooleanQuery constructedQuery = new BooleanQuery();
+	constructedQuery.add(result, BooleanClause.Occur.MUST);
 
-      if(searcher!=null) { searcher.close(); }
-      if(ir!=null) { ir.close(); }
+        IndexSearcher searcher = new IndexSearcher(ir); 
+       	Hits hits = searcher.search(constructedQuery);
+      	TreeSet includedEvents = new TreeSet();
+
+        for (int i = 0; i < hits.length(); i++) {
+           Document doc = hits.doc(i);
+      	   String docNumber = doc.get("node");
+         	if(path!=null) {
+            	NodeList list = cloud.getList(docNumber,path,"pagina.number",null,null,null,"SOURCE",true);
+	            for(int j=0; j<list.size(); j++) {
+   	            String paginaNumber = list.getNode(j).getStringValue("pagina.number");
+      	         if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
+         	         hsetPagesNodes.add(paginaNumber);
+            	      hsetNodes.add(docNumber);
+               	}
+	            }
+   	      } else { // *** no path implies an Evenement ***
+      	      Node e = cloud.getNode(docNumber);
+         	   String sParent =  Evenement.findParentNumber(docNumber);
+            	if(!includedEvents.contains(sParent) && Evenement.isOnInternet(e,nowSec)) {
+               	String paginaNumber = cloud.getNode("agenda").getStringValue("number");
+	               if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
+   	               hsetNodes.add(docNumber);
+      	            includedEvents.add(sParent);
+         	      }
+            	}
+	         }
+   	   }
+
+      	if(searcher!=null) { searcher.close(); }
+	      if(ir!=null) { ir.close(); }
+		}
    } catch (Exception e) { 
-      log.error("lucene index " + index + " throws error on query " + luceneQuery); 
+      log.error("lucene index " + index + " throws error on query " + sQuery); 
    } 
    return hsetNodes;
 }
@@ -54,17 +70,7 @@
 
 boolean debug = false;
 
-String DOUBLESPACE = "  ";
-String SINGLESPACE = " ";
-String qStr = sQuery;
-while(qStr.indexOf(DOUBLESPACE)>-1) {
-   qStr = qStr.replaceAll(DOUBLESPACE,SINGLESPACE);
-}
-qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ")+ "*";
-%><!-- searching on <%= qStr %> --><% 
-Analyzer analyzer = new StopAnalyzer();
-String[] fields = { "indexed.text" };
-Query luceneQuery = MultiFieldQueryParser.parse(qStr, fields, analyzer);
+%><!-- searching on <%= sQuery %> --><% 
 
 net.sf.mmapps.modules.lucenesearch.LuceneManager lm  = mod.getLuceneManager();
 net.sf.mmapps.modules.lucenesearch.SearchConfig cf = lm.getConfig();
@@ -81,19 +87,19 @@ if((sCategory != null) && (!sCategory.equals(""))) {
 
 %><mm:log jspvar="log"><% 
 
-hsetArticlesNodes = addPages(cloud, log, cf, luceneQuery, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetArticlesNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetArtDossierNodes = addPages(cloud, log, cf, luceneQuery, 0, "artikel,posrel,dossier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetArtDossierNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,posrel,dossier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>artByDossierHits:<br/><%= hsetArtDossierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetNatuurgebiedenNodes = addPages(cloud, log, cf, luceneQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetNatuurgebiedenNodes = addPages(cloud, log, cf, sQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetFormulierNodes = addPages(cloud, log, cf, luceneQuery, 2, "formulier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetFormulierNodes = addPages(cloud, log, cf, sQuery, 2, "formulier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>formulierHits:<br/><%= hsetFormulierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetEvenementNodes = addPages(cloud, log, cf, luceneQuery, 3, null, rootID, nowSec, hsetPagesNodes);
+hsetEvenementNodes = addPages(cloud, log, cf, sQuery, 3, null, rootID, nowSec, hsetPagesNodes);
 if(hsetEvenementNodes.size()>0) { 
    %><mm:node number="agenda">
       <mm:field name="number" jspvar="agenda_number" vartype="String" write="false"><%
