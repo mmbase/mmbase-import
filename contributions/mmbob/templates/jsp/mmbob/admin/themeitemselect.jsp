@@ -18,6 +18,8 @@
 </form>
 </mm:compare>
 <mm:compare value="fontsize">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<tr><td>
 <form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post" />
 <input name="sname" value="<mm:write referid="sname" />" type="hidden" />
 <select name="svalue">
@@ -44,9 +46,22 @@
 <input type="hidden" name="action" value="changethemefontsize">
 <input type="submit" value="Save">
 </form>
+</td>
+<td>
+<form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post" />
+<input name="sname" value="<mm:write referid="sname" />" type="hidden" />
+<input name="svalue" size="4" value="<mm:write referid="oldvalue" />" />
+<input type="hidden" name="admincheck" value="true">
+<input type="hidden" name="action" value="changethemecolor">
+<input type="submit" value="Save">
 </form>
+</td>
+</tr>
+</table>
 </mm:compare>
 <mm:compare value="color">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<tr><td>
 <form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post" />
 <input name="sname" value="<mm:write referid="sname" />" type="hidden" />
 <select name="svalue">
@@ -61,19 +76,47 @@
 <input type="hidden" name="action" value="changethemecolor">
 <input type="submit" value="Save">
 </form>
+</td>
+<td>
+<form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post" />
+<input name="sname" value="<mm:write referid="sname" />" type="hidden" />
+<input name="svalue" size="8" value="<mm:write referid="oldvalue" />" />
+<input type="hidden" name="admincheck" value="true">
+<input type="hidden" name="action" value="changethemecolor">
+<input type="submit" value="Save">
+</form>
+</td>
+</tr>
+</table>
 </mm:compare>
 
 <mm:compare value="font">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<tr><td>
 <form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post" />
 <input name="sname" value="<mm:write referid="sname" />" type="hidden" />
 <select name="svalue">
 <option value="Verdana, Arial, Helvetica, sans-serif" <mm:compare referid="oldvalue" value="Verdana, Arial, Helvetica, sans-serif">selected<mm:import id="found">true</mm:import></mm:compare>>Veranda
 <option value="Techno, Arial, Helvetica, sans-serif" <mm:compare referid="oldvalue" value="Techno, Arial, Helvetica, sans-serif">selected<mm:import id="found">true</mm:import></mm:compare>>Techno
+<option value="Arial, Helvetica, sans-serif" <mm:compare referid="oldvalue" value="Arial, Helvetica, sans-serif">selected<mm:import id="found">true</mm:import></mm:compare>>Arial
+<option value="Helvetica, Arial, sans-serif" <mm:compare referid="oldvalue" value="Helvetica, Arial, sans-serif">selected<mm:import id="found">true</mm:import></mm:compare>>Helvetica
 </select>
 <input type="hidden" name="admincheck" value="true">
 <input type="hidden" name="action" value="changethemefont">
 <input type="submit" value="Save">
 </form>
+</td>
+<td>
+<form action="<mm:url page="changeforum.jsp" referids="forumid,sub" />" method="post" />
+<input name="sname" value="<mm:write referid="sname" />" type="hidden" />
+<input name="svalue" size="20" value="<mm:write referid="oldvalue" />" />
+<input type="hidden" name="admincheck" value="true">
+<input type="hidden" name="action" value="changethemecolor">
+<input type="submit" value="Save">
+</form>
+</td>
+</tr>
+</table>
 </mm:compare>
 
 </mm:function>

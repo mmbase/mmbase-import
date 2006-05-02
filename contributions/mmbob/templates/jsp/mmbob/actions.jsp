@@ -190,7 +190,8 @@
           <mm:write referid="newpassword" id="cwf$forumid" session="mmbobe" />
         </mm:compare>
 
-         <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid"> 
+	 <mm:import id="guipos" reset="true">0</mm:import>
+         <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos"> 
 		<mm:import id="pname" reset="true"><mm:field name="name" /></mm:import>
 		<mm:field name="type">
 		<mm:compare value="string">

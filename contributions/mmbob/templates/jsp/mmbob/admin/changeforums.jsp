@@ -25,7 +25,7 @@
 <mm:nodefunction set="mmbob" name="getForumsConfig">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%">
   <tr><th colspan="3">Login instellingen</th></tr>
-  <form action="<mm:url page="forums.jsp" />" method="post">
+  <form action="<mm:url page="../forums.jsp" />" method="post">
 	<input type="hidden" name="action" value="changeconfigs">
 	<tr><th>Login System</th>
 		<td colspan="2" align="left"><select name="loginsystemtype">

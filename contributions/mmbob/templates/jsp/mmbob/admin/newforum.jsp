@@ -43,9 +43,7 @@
 	<tr><th>Naam</th><td colspan="2">
 	<input name="name" size="70" value="" style="width: 100%">
 	</td></tr>
-	<tr><th>Taal</th><td colspan="2" align="left">
-	<input name="language" size="2" value="en">
-	</td></tr>
+	<input type="hidden" name="language" size="2" value="df">
 	<tr><th>Omschrijving</th><td colspan="2">
 	<textarea name="description" rows="5" style="width: 100%"></textarea>
 	</td></tr>
