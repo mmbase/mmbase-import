@@ -1,4 +1,9 @@
-html { font-size: 100%; }
+html { 
+   font-size: 100%; 
+}
+body {
+   background-color: #FFFFFF;
+}
 td {
 	font-family: Arial, Helvetica, sans-serif; 
 	color: #050080;
