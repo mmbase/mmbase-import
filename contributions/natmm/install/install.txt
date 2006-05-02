@@ -1,5 +1,5 @@
 NatMM - install.txt
-Version: 06.04.12
+Version: 06.05.01
 Author: H. Hangyi
 
 To install NatMM:
@@ -13,10 +13,17 @@ To install NatMM:
 4.d. if you want to use the templates in nmintra: 
      copy the builders from WEB-INF/config/applications/NMIntra/builders/ to  WEB-INF/config/builders/
 4.e. change settings in WEB-INF/config/builders/images.xml (and style.xml, when using nmintra)
+4.f. make sure to load the NatMM (and the NMIntra) applications. You can do this by change the setting
+     for auto-deploy in application file to true or by using the admin console (/mmbase/admin) to load
+     the application.
 
 Notes: 
 1. The NatMM application depends on an admin user with the alias users.admin. After installing you will first have
-to create this user.
+to create this user. You can do this by:
+1.a. changing the setting for "security active" from true to false
+1.b. restart Tomcat
+1.c. add the alias users.admin to the admin user
+1.d. changing the setting for "security active" from false to true
 2. The NatMM application depends on a rubriek node with alias root. This is the root of your tree of websites. After
 installing you will first have to create this rubriek.
 
