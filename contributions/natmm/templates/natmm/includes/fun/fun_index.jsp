@@ -18,6 +18,7 @@
 <table border="0" cellspacing="0" cellpadding="0">
 	<tr>
    <%
+   PaginaHelper pHelper = new PaginaHelper(cloud);
    int imgCnt= 0;
 	if(!dossierID.equals("-1")){%>
 		<mm:list nodes="<%=dossierID%>" path="dossier,posrel,images" fields="posrel.pos,images.number" orderby="posrel.pos">
@@ -27,10 +28,10 @@
 					<mm:list nodes="<%=paginaID%>" path="pagina,gebruikt,paginatemplate">
 						<mm:field name="paginatemplate.url">
 						<mm:compare value="ecard.jsp" >
-							<a href="<mm:write />?id=<%= images_number %>">
+							<a href="<%= pHelper.createItemUrl(images_number, paginaID, "" ,request.getRequestURI()) %>">
 						</mm:compare>
 						<mm:compare value="wallpaper.jsp">
-							<a href="javascript:OpenWindow('<mm:write />?id=<%= images_number %>','','toolbar=no,menubar=no,location=no,height=450,width=517');">
+							<a href="javascript:OpenWindow('<%= pHelper.createItemUrl(images_number, paginaID, "" ,request.getRequestURI()) %>','','toolbar=no,menubar=no,location=no,height=450,width=517');">
 						</mm:compare>
 						</mm:field>
 				    </mm:list>
