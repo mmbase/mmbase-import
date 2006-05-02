@@ -56,7 +56,6 @@ with(style2=new mm_style()){
 <% 
 
 RubriekHelper rubriekHelper = new RubriekHelper(cloud);
-PaginaHelper ph = new PaginaHelper(cloud);
 
 TreeMap [] lastTree = new TreeMap[10];
 lastTree[0] = new TreeMap();
