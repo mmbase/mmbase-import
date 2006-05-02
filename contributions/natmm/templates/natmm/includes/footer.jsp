@@ -4,11 +4,12 @@
    <tr>
    	<td class="footer" style="width:544px;text-align:center;">
       	&copy <%= Calendar.getInstance().get(Calendar.YEAR) %> Natuurmonumenten 
-      	<mm:list nodes="footer" path="rubriek,posrel,pagina,gebruikt,paginatemplate"
-      	      fields="pagina.number,pagina.titel,paginatemplate.url"
-      	      orderby="posrel.pos" directions="UP">   
-         	&nbsp;&nbsp;|&nbsp;&nbsp; 
-         	<a href="<mm:field name="paginatemplate.url" />?p=<mm:field name="pagina.number" />" class="footerlinks"><mm:field name="pagina.titel" /></a>
+      	<mm:list nodes="footer" path="rubriek,posrel,pagina"
+            fields="pagina.number,pagina.titel" orderby="posrel.pos" directions="UP">
+            <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
+         	  &nbsp;&nbsp;|&nbsp;&nbsp; 
+              <a href="<%= ph.createPaginaUrl(pagina_number, request.getRequestURI()) %>" class="footerlinks"><mm:field name="pagina.titel" /></a>
+            </mm:field>
          </mm:list>
    	</td>
    	<mm:node number="search_template" notfound="skipbody">
