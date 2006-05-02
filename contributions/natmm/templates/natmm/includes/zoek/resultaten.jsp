@@ -10,7 +10,8 @@
       org.apache.lucene.index.IndexReader,
       org.apache.lucene.analysis.*,
       org.apache.lucene.search.*,
-      org.apache.lucene.queryParser.MultiFieldQueryParser,
+		net.sf.mmapps.modules.lucenesearch.util.*,
+      org.apache.lucene.queryParser.QueryParser,
       org.apache.lucene.document.Document" %>
 <%
 String[] META_TAGS = {"dit", "is", "een", "test"};
