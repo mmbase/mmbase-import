@@ -210,7 +210,8 @@
             <input name="newlocation" type="text" size="25" value="<mm:field name="location" />"/>
           </span>
         </div>
-          <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid">
+	  <mm:import id="guipos">0</mm:import>
+          <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos">
         <div class="row">
           <span class="label"><mm:field name="guiname" /></span>
           <span class="formw">
@@ -261,7 +262,7 @@
 	</mm:compare>
         <mm:compare referid="loginsystemtype" value="entree">
 
-          <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid">
+          <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos">
         <div class="row">
           <span class="label"><mm:field name="guiname" /></span>
           <span class="formw">

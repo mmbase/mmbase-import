@@ -11,10 +11,8 @@
 <%-- grmbl....this way this file will be include twice, but it's needed here --%>
 <%-- TODO: fix this --%>
 <%@ include file="../thememanager/loadvars.jsp" %>
-
 <mm:locale language="$lang">
 <%@ include file="../loadtranslations.jsp" %>
-
 <mm:import id="adminmode">false</mm:import>
 <mm:import externid="admincheck" />
 <mm:present referid="admincheck">
@@ -182,31 +180,33 @@
 	<mm:import id="gender" externid="newgender" />
 	<mm:import id="location" externid="newlocation" />
 	<mm:import id="newpassword" externid="newpassword" />
+	<mm:import id="profileid" externid="profileid" />
 	<mm:import id="newconfirmpassword" externid="newconfirmpassword" />
-	<mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword"/></mm:import>
+	<mm:import id="feedback"><mm:function set="mmbob" name="editProfilePoster" referids="forumid,posterid,profileid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword"/></mm:import>
         <mm:write referid="feedback" session="feedback_message"/>
 
         <mm:compare referid="feedback" value="passwordchanged">
           <mm:write referid="newpassword" cookie="cwf$forumid" />
         </mm:compare>
 
-         <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid"> 
+          <mm:import id="guipos">-1</mm:import>
+         <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,profileid@posterid,guipos"> 
 		<mm:import id="pname" reset="true"><mm:field name="name" /></mm:import>
 		<mm:field name="type">
 		<mm:compare value="string">
 		<mm:import externid="$pname" id="pvalue" reset="true" />
-		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
+		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,profileid@posterid,pname,pvalue"/></mm:import>
 		</mm:compare>
 		<mm:compare value="field">
 		<mm:import externid="$pname" id="pvalue" reset="true" />
-		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
+		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,profileid@posterid,pname,pvalue"/></mm:import>
 		</mm:compare>
 		<mm:compare value="date">
 		<mm:import externid="birthday_day" />
 		<mm:import externid="birthday_month" />
 		<mm:import externid="birthday_year" />
 		<mm:import id="pvalue" reset="true"><mm:write referid="birthday_day" />-<mm:write referid="birthday_month" />-<mm:write referid="birthday_year" /></mm:import>
-		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,posterid,pname,pvalue"/></mm:import>
+		<mm:import id="fb2" reset="true"><mm:function set="mmbob" name="setProfileValue" referids="forumid,profileid@posterid,pname,pvalue"/></mm:import>
 		</mm:compare>
 		</mm:field>
 	 </mm:nodelistfunction>

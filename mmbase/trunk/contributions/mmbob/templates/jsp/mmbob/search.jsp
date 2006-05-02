@@ -173,7 +173,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
 	<mm:import id="page">1</mm:import>
 	<mm:import id="pagesize">10</mm:import>
-	<mm:nodelistfunction set="mmbob" name="searchPostings" referids="forumid,searchareaid,postthreadid@searchpostthreadid,searchkey,page,pagesize">
+	<mm:nodelistfunction set="mmbob" name="searchPostings" referids="forumid,searchareaid,postthreadid@searchpostthreadid,searchkey,posterid,page,pagesize">
            <mm:first>
 		<tr><th><mm:write referid="mlg.Area" /></th><th><mm:write referid="mlg.Topic" /></th><th>Poster</th></tr>
 		<mm:import id="resultfound">true</mm:import>
