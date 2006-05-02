@@ -1,9 +1,6 @@
 <%@include file="../includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="../includes/top1_params.jsp" %>
-<%
-PaginaHelper ph = new PaginaHelper(cloud);
-%>
 <%@include file="../includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="../includes/top4_head.jsp" %>
@@ -128,6 +125,15 @@ long oneDay = 24*60*60;
             %></mm:related
             ></mm:field>
          </mm:node>
+         <br/>
+         <br/>
+         <jsp:include page="../includes/shorty.jsp">
+            <jsp:param name="s" value="<%= artikelID %>" />
+            <jsp:param name="r" value="<%= rubriekID %>" />
+            <jsp:param name="rs" value="<%= styleSheet %>" />
+            <jsp:param name="sp" value="artikel,rolerel" />
+            <jsp:param name="sr" value="1" />
+         </jsp:include>
       </td>
       <td style="padding-right:10px;padding-left:10px;padding-bottom:10px;padding-top:10px;vertical-align:top;width:190px;">
          <jsp:include page="includes/nav.jsp">
@@ -140,6 +146,14 @@ long oneDay = 24*60*60;
             <jsp:param name="rs" value="<%= styleSheet %>" />
    	      <jsp:param name="sr" value="2" />
    	   </jsp:include>
+         <br/>
+         <jsp:include page="../includes/shorty.jsp">
+            <jsp:param name="s" value="<%= artikelID %>" />
+            <jsp:param name="r" value="<%= rubriekID %>" />
+            <jsp:param name="rs" value="<%= styleSheet %>" />
+            <jsp:param name="sp" value="artikel,rolerel" />
+            <jsp:param name="sr" value="2" />
+         </jsp:include>
       </td>
     </tr>
   </table>

@@ -1,9 +1,6 @@
 <%@include file="../includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="../includes/top1_params.jsp" %>
-<%
-PaginaHelper ph = new PaginaHelper(cloud);
-%>
 <%@include file="../includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="../includes/top4_head.jsp" %>
