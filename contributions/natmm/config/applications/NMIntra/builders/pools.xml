@@ -60,7 +60,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">naam_de</name>
+            <name xml:lang="nl">name_de</name>
             <type key="false" notnull="true" size="255" state="persistent">STRING</type>
          </db>
       </field>
@@ -82,7 +82,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">naam_fra</name>
+            <name xml:lang="nl">name_fra</name>
             <type key="false" notnull="true" size="255" state="persistent">STRING</type>
          </db>
       </field>
@@ -104,7 +104,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">naam_eng</name>
+            <name xml:lang="nl">name_eng</name>
             <type key="false" notnull="true" size="255" state="persistent">STRING</type>
          </db>
       </field>      
