@@ -7,7 +7,8 @@
 						net.sf.mmapps.modules.lucenesearch.LuceneModule,
 				      org.apache.lucene.index.IndexReader,
 				      org.apache.lucene.analysis.*,org.apache.lucene.search.*,
-				      org.apache.lucene.queryParser.MultiFieldQueryParser,
+						net.sf.mmapps.modules.lucenesearch.util.*,
+				      org.apache.lucene.queryParser.QueryParser,
 				      org.apache.lucene.document.Document" %><%! 
 						
 public String getParameter(String parameterStr, String queryStr) {
