@@ -1042,28 +1042,27 @@ public class PaginaHelper {
       }
 
     /**
-    * Checks if the given page object contains content elements or nonempty link lijsten.
+    * Returns the pagina to which this contentelement is related.
     *
-    * @param page
-    * @return
+    * @param contentElement
+    * @return page
     */
    private Node getPaginaNode(Node contentElement) {
-        NodeList paginas = contentElement.getRelatedNodes("pagina", "contentrel", "SOURCE");
-        if (paginas.size() > 0) {
-            return paginas.getNode(0);
-        }
-        NodeList natuurgebieden = cloud.getList(""+contentElement.getNumber(),"natuurgebieden,pos4rel,provincies,contentrel,pagina", "pagina.number", null, null, null, "SOURCE", true);
-        if (natuurgebieden.size() > 0) {
-            Cloud cloud = contentElement.getCloud();
-            return cloud.getNode(natuurgebieden.getNode(0).getStringValue("pagina.number"));
-        }
-        NodeList dossiers = cloud.getList(""+contentElement.getNumber(),"artikel,posrel,dossier,posrel,pagina", "pagina.number", null, null, null, "SOURCE", true);
-        if (dossiers.size() > 0) {
-           Cloud cloud = contentElement.getCloud();
-           return cloud.getNode(dossiers.getNode(0).getStringValue("pagina.number"));
-        }
-        log.warn("Did not find a related pagina for contentelement " + contentElement.getStringValue("titel") + " (" + contentElement.getNumber() + ")");
-        return null;
+      
+      Node page = null;      
+      for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && page==null;) {
+         String objecttype = (String) it.next();
+         String currentPath = (String) pathsFromPageToElements.get(objecttype);
+         NodeList nlPages = cloud.getList(""+contentElement.getNumber(),
+                                          currentPath,
+                                          "pagina.number",
+                                          null,null, null, null, true);
+
+         if (nlPages.size() > 0) {
+            page = cloud.getNode(nlPages.getNode(0).getStringValue("pagina.number"));
+         }
+      }
+      return page;
     }
 
 
