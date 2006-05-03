@@ -95,6 +95,10 @@ public class PostThread {
 	return subject;
    }
 
+   public void setSubject(String subject) {
+	this.subject = subject;
+   }
+
    public String getState(Poster ap) {
 	boolean isnew=true;
 	int lastsessionend=ap.getLastSessionEnd();
@@ -209,6 +213,10 @@ public class PostThread {
 
    public String getLastSubject() {
 	return lastpostsubject;
+   }
+
+   public void setLastSubject(String subject) {
+	lastpostsubject = subject;
    }
 
    public Iterator getPostings(int page,int pagecount) {

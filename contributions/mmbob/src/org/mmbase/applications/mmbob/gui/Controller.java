@@ -1242,7 +1242,6 @@ public class Controller {
      * @return  Feedback regarding the success of edit action
      */
     public String editProfilePoster(String forumid, int posterid, int profileid, String firstname, String lastname, String email, String gender, String location, String newpassword, String newconfirmpassword) {
-	log.info("EDITPROFILEID");
         if (newpassword.equals("")) {
             log.info("newpassword is empty");
             Forum f = ForumManager.getForum(forumid);
@@ -1900,6 +1899,21 @@ public class Controller {
                         p.setBody(body,imagecontext,false);
                         p.setEditTime((int) (System.currentTimeMillis() / 1000));
                         p.save();
+
+			// if its the first posting we should also change lastsubjects
+			log.info("EDITPOS="+p.getThreadPos());
+			if (p.getThreadPos()==0) {
+				// change PostThread
+				p.getParent().setLastSubject(p.getSubject());
+				p.getParent().setSubject(p.getSubject());
+				p.getParent().save();
+				// change PostArea
+				p.getParent().getParent().setLastSubject(p.getSubject());
+				p.getParent().getParent().save();
+				// change Forum
+				p.getParent().getParent().getParent().setLastSubject(p.getSubject());
+				p.getParent().getParent().getParent().save();
+			}
                         ap.signalSeen();
                     }
                 }

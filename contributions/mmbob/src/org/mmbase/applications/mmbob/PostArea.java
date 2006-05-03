@@ -302,6 +302,10 @@ public class PostArea {
         return lastpostsubject;
     }
 
+    public void setLastSubject(String subject) {
+        lastpostsubject = subject;
+    }
+
     /**
      * get all the postthreads in the postarea
      * @return all the postthreads
