@@ -86,7 +86,7 @@
 					<mm:param name="forumid" value="$forumid" />
 					<mm:param name="postareaid" value="$postareaid" />
 					<mm:param name="postthreadid" value="$postthreadid" />
-					<mm:param name="postingid" value="$postingid" />
+					<mm:param name="delpostingid" value="$postingid" />
 				</mm:url>" method="post">
   </mm:compare>
   <mm:compare referid="postcount" value="1" inverse="true">
@@ -94,7 +94,7 @@
 					<mm:param name="forumid" value="$forumid" />
 					<mm:param name="postareaid" value="$postareaid" />
 					<mm:param name="postthreadid" value="$postthreadid" />
-					<mm:param name="postingid" value="$postingid" />
+					<mm:param name="delpostingid" value="$postingid" />
 				</mm:url>" method="post">
   </mm:compare>
 
