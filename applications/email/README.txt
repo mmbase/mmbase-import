@@ -14,16 +14,17 @@ How to install:
 copy examples/* to our web-app/emailexamples/ (for example)
 
 setup your mailhosts in your application server for example
-in tomcat do (in this example its the ROOT app):
+in tomcat do (in this example its the ROOT app) inside the <Engine><Host> tag:
 
         <!-- Tomcat Root Context -->
           <Context path="" docBase="ROOT" debug="0">
 
-          <Resource name="mail/Session" auth="Container"
-                    type="javax.mail.Session"/>
-      <!-- You should use the following with Tomcat 5.5 and up  -->
+      <!-- You should use the following with Tomcat 5.5 and up  (active) -->
 	  <Resource name="mail/Session" auth="Container" type="javax.mail.Session" mail.smtp.host="smtp.xs4all.nl" /> 
-      <!-- for older then 5.5.0 tomcats
+      <!-- end of Tomcat 5.5 -->
+
+      <!-- for older then 5.5.0 tomcats (inactive)
+          <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
             <ResourceParams name="mail/Session">
             <parameter>
               <name>mail.smtp.host</name>
