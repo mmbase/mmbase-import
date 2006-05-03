@@ -245,6 +245,10 @@ public class Forum {
         return lastpostsubject;
     }
 
+    public void setLastSubject(String subject) {
+        lastpostsubject = subject;
+    }
+
     /**
      * "Save" the forum (add it to the syncQueue)
      *
