@@ -143,7 +143,6 @@ public class ProfileInfo {
 	}
 	} catch(Exception e) {
 		log.error("Decode problem with : "+xml);
-		e.printStackTrace();
 	}
 	}
   }
