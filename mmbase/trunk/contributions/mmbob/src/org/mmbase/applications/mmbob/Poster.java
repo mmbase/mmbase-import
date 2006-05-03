@@ -186,7 +186,7 @@ public class Poster {
 
     public String getNick() {
 	ProfileEntry pe = getProfileValue("nick");
-	if (pe!=null) {
+	if (pe!=null && !pe.getValue().equals("")) {
 		return pe.getValue();
 	}
 	return account;
