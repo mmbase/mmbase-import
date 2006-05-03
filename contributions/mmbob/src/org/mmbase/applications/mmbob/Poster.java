@@ -912,7 +912,6 @@ public class Poster {
     public void sendUpdateMail() {
 	if (!mailbody.equals("")) {
         SendMailInterface sendmail = (SendMailInterface) MMBase.getMMBase().getModule("sendmail");
-	log.info("Sending mail to : "+getEmail());
         if (sendmail != null && !getEmail().equals("")) {
 		String from = parent.getFromEmailAddress();
 		String to = getEmail();
