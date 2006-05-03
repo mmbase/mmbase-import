@@ -12,14 +12,15 @@
       <prompt xml:lang="nl">Positie</prompt>
       <prompt xml:lang="en">Positie</prompt>
     </field>
-    <field name="description" rows="8">
+    <field name="description" ftype="data" >
       <prompt xml:lang="nl">Omschrijving</prompt>
       <prompt xml:lang="en">Description</prompt>
     </field>
     <field ftype="image" name="title">
-      <prompt xml:lang="nl">Afbeelding</prompt>
+      <prompt xml:lang="nl">Afbeelding:</prompt>
       <prompt xml:lang="en">Image</prompt>
     </field>
+    <field wizardname="config/image/image" ftype="startwizard" />
   </item>
 
   <command name="startwizard" inline="true" wizardname="config/image/image" objectnumber="new" />
