@@ -32,6 +32,7 @@
       <mm:import id="logoutmodetype"><mm:field name="logoutmodetype" /></mm:import>
       <mm:import id="navigationmethod"><mm:field name="navigationmethod" /></mm:import>
       <mm:import id="loginsystemtype"><mm:field name="loginsystemtype" /></mm:import>
+      <mm:compare referid="loginsystemtype" value="entree-ng"><mm:import id="loginsystemtype" reset="true">entree</mm:import></mm:compare>
       <mm:import id="active_nick"><mm:field name="active_nick" /></mm:import>
 </mm:nodefunction>
 <head>
@@ -210,7 +211,7 @@
             <input name="newlocation" type="text" size="25" value="<mm:field name="location" />"/>
           </span>
         </div>
-	  <mm:import id="guipos">0</mm:import>
+	  <mm:import id="guipos" reset="true">0</mm:import>
           <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos">
         <div class="row">
           <span class="label"><mm:field name="guiname" /></span>
@@ -262,6 +263,7 @@
 	</mm:compare>
         <mm:compare referid="loginsystemtype" value="entree">
 
+	  <mm:import id="guipos" reset="true">0</mm:import>
           <mm:nodelistfunction set="mmbob" name="getProfileValues" referids="forumid,posterid,guipos">
         <div class="row">
           <span class="label"><mm:field name="guiname" /></span>

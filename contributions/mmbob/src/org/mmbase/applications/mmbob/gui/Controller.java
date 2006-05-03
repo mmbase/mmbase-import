@@ -2839,6 +2839,7 @@ public class Controller {
     }
 
     public String getBirthDateString(String name,String value) {
+	// very ugly need to be changed
 	String day = "1";
 	String month = "1";
 	String year = "1980";
