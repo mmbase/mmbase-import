@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@page import="java.util.*,nl.leocms.evenementen.Evenement" 
 %><%@include file="/taglibs.jsp" 
 %><mm:import externid="p" jspvar="parentId" id="parentId">-1</mm:import
@@ -15,6 +16,6 @@ if(eventId.indexOf("-")==-1) { //*** it has to be - because none-saved nodes hav
       %></mm:node
       ></mm:node
    ></mm:cloud
-   ><a href="SubscribeInitAction.eb?number=<%= eventId %>"><img src='<%= ticketIcon %>' align='absmiddle' border='0' alt='<%= altText %>'></a><%
+   ><a href="SubscribeInitAction.eb?number=<%= eventId %>"><img src='<%= ticketIcon %>' align='absmiddle' border='0' alt='<%= altText %>' onClick="javascript:saveCookie('ew','on',1);"></a><%
 } 
 %>

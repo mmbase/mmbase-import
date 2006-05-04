@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@page import="java.util.*" 
 %><%@include file="/taglibs.jsp"  
 %><mm:import externid="e" jspvar="eventId" id="eventId">-1</mm:import
