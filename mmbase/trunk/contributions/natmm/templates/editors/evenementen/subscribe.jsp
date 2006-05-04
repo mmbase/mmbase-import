@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@page import="nl.leocms.evenementen.forms.*,
    nl.leocms.evenementen.Evenement,
    nl.leocms.authorization.*,
@@ -33,6 +34,8 @@
 </style>
 <% if(actionId.indexOf("print")==-1) { %>
 <script language="javascript" src="../scripts/launchcenter.js">
+</script>
+<script language="javascript" src="../scripts/cookies.js">
 </script>
 <script language="javascript">
    var lastSelected = '';
@@ -89,6 +92,39 @@
    	return conf;
    }    
 </script>
+<script>
+      var root = window.addEventListener || window.attachEvent ? window : document.addEventListener ? document : null;
+		var WIN_CLOSE_MSG = "U hebt een wijziging ingevoerd zonder deze op te slaan. Weet u zeker dat u de aanmeldpagina wilt verlaten?";
+		
+      function warnOnEditwizardOpen() {
+      	if(readCookie('ew')!=null) {
+				return WIN_CLOSE_MSG;
+      	} 
+		}
+		
+		function ignore_modified(){
+			 if(readCookie('ew')==null) {
+			 	root.onbeforeunload = null;
+			 }
+		}
+		
+		function init(){
+		  if (typeof(root.onbeforeunload) != "undefined") { 
+		  		 root.onbeforeunload = warnOnEditwizardOpen; 
+		  }
+		  else return;
+		  for (var i = 0; oCurrForm = document.forms[i]; i++){	
+		  		if (oCurrForm.addEventListener) oCurrForm.addEventListener("submit", ignore_modified, false);
+			   else if (oCurrForm.attachEvent) oCurrForm.attachEvent("onsubmit", ignore_modified);
+		  }
+		}  
+
+	  	if (root){
+		  if (root.addEventListener) root.addEventListener("load", init, false);
+		  else if (root.attachEvent) root.attachEvent("onload", init);
+		}
+   </script>
+	
 <% } else { %>
 <style rel="stylesheet" type="text/css">
 	body,td {
@@ -502,7 +538,7 @@ DoubleDateNode ddn = new DoubleDateNode();
    				<html:option value="female">Mevr</html:option>
    			</html:select>
    		</td>
-         <td class="inputfield"><html:text property="firstName"style="width:50px;" tabindex="1" /></td>
+         <td class="inputfield"><html:text property="firstName" style="width:50px;" tabindex="1" /></td>
          <td><html:text property="initials" style="width:25px;" tabindex="2" /></td>
          <td><html:text property="suffix" style="width:45px;" tabindex="3"/></td>
          <td><html:text property="lastName" style="width:80px;" tabindex="4"/></td>
@@ -518,7 +554,10 @@ DoubleDateNode ddn = new DoubleDateNode();
             </html:select>
          </td>
          <td><html:image src="../img/add.gif" style="width:13px;" property="buttons.addParticipant"
-               onclick="<%= (!isGroupExcursion ? "checkMaxPerGroup()": "") %>" alt="Voeg toe aan de geselecteerde inschrijving" /></td>
+               onclick="<%= ((!isGroupExcursion ? "checkMaxPerGroup()": "") + ";deleteCookie('ew')") %>" alt="Voeg toe aan de geselecteerde inschrijving" /></td>
+					<script>
+						saveCookie('ew','on',1);
+					</script>
          <td>
             <bean:define id="phoneOnClickEvent" property="phoneOnClickEvent" name="SubscribeForm" scope="session" type="java.lang.String"/>
             <html:text property="privatePhone" style="width:80px;" tabindex="7" maxlength="11" onclick="<%= phoneOnClickEvent %>" />
@@ -613,9 +652,9 @@ DoubleDateNode ddn = new DoubleDateNode();
          </td>
          <td colspan="5">
             <nobr>
-               <html:submit property="action" value="<%= SubscribeForm.ADDRESS_ACTION %>" style="<%= extButtonStyle %>" />
-               <html:submit property="action" value="<%= SubscribeForm.SUBSCRIBE_ACTION %>" style="<%= buttonStyle %>" onclick="<%= (!isGroupExcursion ? "checkMaxPerGroup()": "") %>" />
-               <html:submit property="action" value="<%= SubscribeForm.CHANGE_ACTION %>" style="<%= buttonStyle %>" onclick="<%= (!isGroupExcursion ? "checkMaxPerGroup()": "") %>" />
+               <html:submit property="action" value="<%= SubscribeForm.ADDRESS_ACTION %>" style="<%= extButtonStyle %>" onclick="deleteCookie('ew')"/>
+               <html:submit property="action" value="<%= SubscribeForm.SUBSCRIBE_ACTION %>" style="<%= buttonStyle %>" onclick="<%= ((!isGroupExcursion ? "checkMaxPerGroup()": "") + ";deleteCookie('ew')") %>" />
+               <html:submit property="action" value="<%= SubscribeForm.CHANGE_ACTION %>" style="<%= buttonStyle %>" onclick="<%= ((!isGroupExcursion ? "checkMaxPerGroup()": "") + ";deleteCookie('ew')")%>" />
                
             </nobr>
          </td>

@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@page import="nl.leocms.evenementen.forms.SubscribeAction,java.util.*" %>
 <%@include file="/taglibs.jsp" %>
 <%@include file="calendar.jsp"  %>

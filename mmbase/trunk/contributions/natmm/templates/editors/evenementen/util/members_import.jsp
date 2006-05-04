@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@page import="java.util.*" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:cloud method="http" jspvar="cloud" rank="administrator">
