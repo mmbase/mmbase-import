@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud" method="http" rank="basic user">
 <mm:import externid="e">-1</mm:import>

@@ -1,3 +1,4 @@
+<%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@page import="com.finalist.tree.*,
    nl.leocms.authorization.forms.*,
    nl.leocms.evenementen.forms.*,
