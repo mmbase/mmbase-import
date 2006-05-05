@@ -16,6 +16,6 @@ if(eventId.indexOf("-")==-1) { //*** it has to be - because none-saved nodes hav
       %></mm:node
       ></mm:node
    ></mm:cloud
-   ><a href="SubscribeInitAction.eb?number=<%= eventId %>"><img src='<%= ticketIcon %>' align='absmiddle' border='0' alt='<%= altText %>' onClick="javascript:saveCookie('ew','on',1);"></a><%
+   ><a href="SubscribeInitAction.eb?number=<%= eventId %>"><img src='<%= ticketIcon %>' align='absmiddle' border='0' alt='<%= altText %>'></a><%
 } 
 %>

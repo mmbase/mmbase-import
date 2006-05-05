@@ -297,7 +297,7 @@ String evenementId = "";
       <td>
          <span class="notvalid"><html:errors bundle="LEOCMS" property="opslaan"/></span>
          <html:cancel value="Annuleren" style="<%= buttonStyle %>"/>&nbsp;
-         <html:submit property="action" value="Opslaan & beëindigen" style="<%= buttonStyle %>"/>&nbsp;
+         <html:submit property="action" value="Opslaan & be&euml;indigen" style="<%= buttonStyle %>"/>&nbsp;
          <html:submit property="action" value="Opslaan" style="<%= buttonStyle %>"/>
       </td>
    </tr>

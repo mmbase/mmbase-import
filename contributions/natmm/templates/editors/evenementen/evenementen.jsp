@@ -294,7 +294,6 @@ if(!provincieId.equals("")) {
 <title><% if(actionId.indexOf("print")>-1) { %>Print <% } %><%= soortId %></title>
 <script language="JavaScript" src="../../calendar/calendar.js"></script>
 <script language="javascript" src="../scripts/launchcenter.js"></script>
-<script language="javascript" src="../scripts/cookies.js"></script>
 <script>
   var newwin;
   var popupSource = 'begin';
@@ -696,7 +695,7 @@ while(events.size()>0&&iEventCtr<pageSize) {
                   
                   %><%@include file="event_parent_status.jsp" %><%
                   
-                 %><a href="SubscribeInitAction.eb?number=<%= event_number %>"><img src='<%= ticketIcon %>' align='absmiddle' border='0' alt='<%= altText %>' onClick="javascript:saveCookie('ew','on',1);"></a>
+                 %><a href="SubscribeInitAction.eb?number=<%= event_number %>"><img src='<%= ticketIcon %>' align='absmiddle' border='0' alt='<%= altText %>'></a>
             <% } else { %>
                   <%= iMaxNumber - iChildCurParticipants %>
                   <jsp:include page="subscribelink.jsp">
