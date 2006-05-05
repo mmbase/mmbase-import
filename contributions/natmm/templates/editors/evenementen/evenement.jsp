@@ -139,8 +139,10 @@ session.setAttribute("creatierubriek","natuurin_rubriek"); // ** to let editwiza
 String dateStyle = "width:40px;text-align:right;"; 
 String buttonStyle = "width:130px;"; 
 String evenementId = "";
+
+// the focus="name" works together with the onkeypress for the name field, to make sure the form is only posted once on [ENTER]-key
 %>
-<html:form action="/editors/evenementen/EvenementAction" scope="session">
+<html:form action="/editors/evenementen/EvenementAction" scope="session" focus="name">
 <html:hidden property="userId" value="<%= cloud.getUser().getIdentifier() %>" />
 <html:hidden property="node" />
 <html:hidden property="selectedEvent" />
@@ -155,7 +157,7 @@ String evenementId = "";
 </logic:notEqual>
 <table class="formcontent">
 <tr><td class="fieldname" style="width:90px;">Naam</td>
-    <td><html:text property="name" style="width:349px;" tabindex="1" />
+    <td><html:text property="name" style="width:349px;" tabindex="1" onkeypress="return event.keyCode!=13" />
         <span class="notvalid"><br><html:errors bundle="LEOCMS" property="naam" /></span></td></tr>       
 <tr><td class="fieldname" style="width:90px;">&nbsp;</td>
     <td><table class="formcontent" style="width:auto;">
@@ -186,9 +188,9 @@ String evenementId = "";
         -<html:text property="endYear" maxlength="4" style="<%= dateStyle %>" tabindex="11"/>
         <a href="javascript:popUpCalendar('end')" ><img src='../../calendar/show-calendar-on-button.gif' width='24' height='24' align='absmiddle' border='0' alt='Selecteer einddatum'></a>
         <span class="notvalid"><html:errors bundle="LEOCMS" property="eindtijd"/></span><br>
-        <html:submit property="action" value="Wis" style="<%= buttonStyle %>"/>&nbsp;
 		  <html:submit property="action" value="Voeg toe" style="<%= buttonStyle %>"/>&nbsp;
         <html:submit property="action" value="Wijzig" style="<%= buttonStyle %>"/>&nbsp;
+        <html:submit property="action" value="Wis" style="<%= buttonStyle %>"/>&nbsp;
     </td></tr>
 <tr><td class="fieldname" style="width:90px;height:20px">
       <% boolean bShowPastDates = false;
