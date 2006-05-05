@@ -33,10 +33,8 @@
    p { margin: 0px; }
 </style>
 <% if(actionId.indexOf("print")==-1) { %>
-<script language="javascript" src="../scripts/launchcenter.js">
-</script>
-<script language="javascript" src="../scripts/cookies.js">
-</script>
+<script language="javascript" src="../scripts/launchcenter.js"></script>
+<script language="javascript" src="../scripts/cookies.js"></script>
 <script language="javascript">
    var lastSelected = '';
    function populateInput(selectedParticipant,subscriptionNumber
@@ -93,38 +91,37 @@
    }    
 </script>
 <script>
-      var root = window.addEventListener || window.attachEvent ? window : document.addEventListener ? document : null;
-		var WIN_CLOSE_MSG = "U hebt een wijziging ingevoerd zonder deze op te slaan. Weet u zeker dat u de aanmeldpagina wilt verlaten?";
-		
-      function warnOnEditwizardOpen() {
-      	if(readCookie('ew')!=null) {
-				return WIN_CLOSE_MSG;
-      	} 
-		}
-		
-		function ignore_modified(){
-			 if(readCookie('ew')==null) {
-			 	root.onbeforeunload = null;
-			 }
-		}
-		
-		function init(){
-		  if (typeof(root.onbeforeunload) != "undefined") { 
-		  		 root.onbeforeunload = warnOnEditwizardOpen; 
-		  }
-		  else return;
-		  for (var i = 0; oCurrForm = document.forms[i]; i++){	
-		  		if (oCurrForm.addEventListener) oCurrForm.addEventListener("submit", ignore_modified, false);
-			   else if (oCurrForm.attachEvent) oCurrForm.attachEvent("onsubmit", ignore_modified);
-		  }
-		}  
+   var root = window.addEventListener || window.attachEvent ? window : document.addEventListener ? document : null;
+   var WIN_CLOSE_MSG = "U hebt een wijziging ingevoerd, zonder dat deze is opgeslagen in de CAD.";
+   
+   function warnOnEditwizardOpen() {
+      if(readCookie('ew')!=null) {
+         return WIN_CLOSE_MSG;
+      } 
+   }
+   
+   function ignore_modified(){
+       if(readCookie('ew')==null) {
+         root.onbeforeunload = null;
+       }
+   }
+   
+   function init(){
+     if (typeof(root.onbeforeunload) != "undefined") { 
+          root.onbeforeunload = warnOnEditwizardOpen; 
+     }
+     else return;
+     for (var i = 0; oCurrForm = document.forms[i]; i++){	
+         if (oCurrForm.addEventListener) oCurrForm.addEventListener("submit", ignore_modified, false);
+         else if (oCurrForm.attachEvent) oCurrForm.attachEvent("onsubmit", ignore_modified);
+     }
+   }  
 
-	  	if (root){
-		  if (root.addEventListener) root.addEventListener("load", init, false);
-		  else if (root.attachEvent) root.attachEvent("onload", init);
-		}
-   </script>
-	
+   if (root){
+     if (root.addEventListener) root.addEventListener("load", init, false);
+     else if (root.attachEvent) root.attachEvent("onload", init);
+   }
+</script>
 <% } else { %>
 <style rel="stylesheet" type="text/css">
 	body,td {
@@ -160,10 +157,22 @@ int iMaxNumber = 9999;
 
 String sHighLight = "style=\"background-color:#729DC2;\"";
 %>
+<bean:define id="nodenr" property="node" name="SubscribeForm" scope="session" type="java.lang.String"/>
+<bean:define id="parent_number" property="parent" name="SubscribeForm" scope="session" type="java.lang.String"/>
+<bean:define id="selectedParticipant"  property="selectedParticipant" name="SubscribeForm" scope="session" type="java.lang.String"/>
+<bean:define id="validateCounter" property="validateCounter" name="SubscribeForm" scope="session" type="java.lang.Integer"/>
 <!-- ******************************* FIND PARENT AND SUBSCRIPTIONS ******************************** -->
 <body style="overflow:auto;" id="body" onload="<%
    if(actionId.indexOf("print")==-1) { 
-      %>javascript:setSelected(<bean:write name="SubscribeForm" property="selectedParticipant" />);window.location='#form';<%
+       if(!selectedParticipant.equals("")) { 
+         %>javascript:setSelected(<%= selectedParticipant %>);<%
+       }
+       if(validateCounter.intValue()>0) { 
+         %>saveCookie('ew','on',1);<%
+       } else {
+         %>deleteCookie('ew');<%
+       }
+       %>window.location='#form';<%
    } else { 
       %>self.print();<%
    } %>">
@@ -172,9 +181,6 @@ String sHighLight = "style=\"background-color:#729DC2;\"";
 <html:hidden property="userId" value="<%= cloud.getUser().getIdentifier() %>" />
 <html:hidden property="selectedParticipant" />
 <html:hidden property="subscriptionNumber" />
-<bean:define id="validateCounter" property="validateCounter" name="SubscribeForm" scope="session" type="java.lang.Integer"/>
-<bean:define id="nodenr" property="node" name="SubscribeForm" scope="session" type="java.lang.String"/>
-<bean:define id="parent_number" property="parent" name="SubscribeForm" scope="session" type="java.lang.String"/>
 <%
 boolean isGroupExcursion = Evenement.isGroupExcursion(cloud,parent_number);
 boolean addressIsRequired = false;
@@ -555,9 +561,6 @@ DoubleDateNode ddn = new DoubleDateNode();
          </td>
          <td><html:image src="../img/add.gif" style="width:13px;" property="buttons.addParticipant"
                onclick="<%= ((!isGroupExcursion ? "checkMaxPerGroup()": "") + ";deleteCookie('ew')") %>" alt="Voeg toe aan de geselecteerde inschrijving" /></td>
-					<script>
-						saveCookie('ew','on',1);
-					</script>
          <td>
             <bean:define id="phoneOnClickEvent" property="phoneOnClickEvent" name="SubscribeForm" scope="session" type="java.lang.String"/>
             <html:text property="privatePhone" style="width:80px;" tabindex="7" maxlength="11" onclick="<%= phoneOnClickEvent %>" />
@@ -646,6 +649,9 @@ DoubleDateNode ddn = new DoubleDateNode();
                Negeer controle op postcode en telefoonnummer
                <html:radio property="skipValidation" style="width:14px;" value="Y" /> ja
                <html:radio property="skipValidation" style="width:14px;" value="N" /> nee
+               <script>
+						saveCookie('ew','on',1);
+					</script>
                <% 
             }
             %>
