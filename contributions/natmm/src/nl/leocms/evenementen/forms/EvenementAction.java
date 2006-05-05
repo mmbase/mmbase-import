@@ -34,7 +34,7 @@ import com.finalist.mmbase.util.CloudFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession; 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -52,16 +52,16 @@ import java.util.*;
  */
 public class EvenementAction extends Action {
    private static final Logger log = Logging.getLoggerInstance(EvenementAction.class);
-     
+
    private void removeObsoleteFormBean(ActionMapping mapping, HttpServletRequest request) {
       // *** Remove the obsolete form bean ***
       if (mapping.getAttribute() != null) {
          if ("request".equals(mapping.getScope()))
             request.removeAttribute(mapping.getAttribute());
          else {
-            HttpSession session = request.getSession(); 
+            HttpSession session = request.getSession();
             session.removeAttribute(mapping.getAttribute());
-         }   
+         }
       }
    }
 
@@ -77,30 +77,30 @@ public class EvenementAction extends Action {
     */
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         log.info("EvenementAction.execute()");
-        
-        EvenementForm evenementForm = (EvenementForm) form;  
+
+        EvenementForm evenementForm = (EvenementForm) form;
         ActionForward forwardAction = null;
         String action = evenementForm.getAction();
         if (isCancelled(request)) {
-            
+
             removeObsoleteFormBean(mapping, request);
             forwardAction = mapping.findForward("success");
-            
+
         } else if(evenementForm.getButtons().getShowPastDates().pressed()) {               // ****************** ShowPastDates *************
-           
+
            if(evenementForm.getShowPastDates().equals("true")) {
                evenementForm.setShowPastDates("false");
            } else {
                evenementForm.setShowPastDates("true");
            }
-           
-           forwardAction = mapping.findForward("continue"); 
-        
+
+           forwardAction = mapping.findForward("continue");
+
         } else if(action.indexOf("Opslaan")>-1) {                                            // ********** Opslaan ********
             // change history:
             // concurrent modification exception -> clone()
             // duplicated dates one not related to parent -> Iterators
-            
+
             // flush the coming events cache (see nl.mmatch.CSVReader)
             MMBaseContext mc = new MMBaseContext();
             ServletContext application = mc.getServletContext();
@@ -110,20 +110,20 @@ public class EvenementAction extends Action {
             log.info("newEvents = " + newEvents);
             TreeSet oldEvents = (TreeSet) evenementForm.getOldDates().clone();
             log.info("oldEvents = " + oldEvents);
-            
+
             Cloud cloud = CloudFactory.getCloud();
-            
+
             String nodeNumber = evenementForm.getNode();
             Node node = null;
             if (!nodeNumber.equals("")) {
                 node= cloud.getNode(nodeNumber);
             }
-            
+
             Iterator newEventsIt = newEvents.iterator();
             while(newEventsIt.hasNext()) {
                Evenement thisEvent = (Evenement) newEventsIt.next();
                Node thisEventNode = null;
-               if(!oldEvents.contains(thisEvent)) { 
+               if(!oldEvents.contains(thisEvent)) {
                   // *** this is a new node ***
                   thisEventNode = cloud.getNodeManager("evenement").createNode();
                   if(node==null) {
@@ -151,7 +151,7 @@ public class EvenementAction extends Action {
                } else {
                   // *** this is an already existing node ***
                   thisEventNode= cloud.getNode(thisEvent.getNumber());
-                  oldEvents.remove(thisEvent);  
+                  oldEvents.remove(thisEvent);
                }
                String titel = evenementForm.getName();
                titel = titel.substring(0,1).toUpperCase() + titel.substring(1);
@@ -160,25 +160,27 @@ public class EvenementAction extends Action {
                thisEventNode.setLongValue("einddatum",(thisEvent.getEnd().getTime())/1000);
                thisEventNode.setStringValue("isspare",thisEvent.getIsSpareDate());
                thisEventNode.setStringValue("isoninternet",thisEvent.getIsOnInternet());
-               thisEventNode.setStringValue("iscanceled",thisEvent.getIsCanceled());
+               if (!thisEventNode.getStringValue("iscanceled").equals(thisEvent.getIsCanceled())){
+                  thisEventNode.setStringValue("iscanceled",thisEvent.getIsCanceled());
+               }
                thisEventNode.setStringValue("dagomschrijving",evenementForm.selectedDays(thisEvent.getNumber()));
                thisEventNode.commit();
-               
+
                NodeList userList = cloud.getNodeManager("users").getList("account='"+evenementForm.getUserId()+"'",null,null);
                if (userList.size()!=0) {
                   userList.getNode(0).createRelation(thisEventNode,cloud.getRelationManager("schrijver")).commit();
-               }  
+               }
 
             }
-            
+
             // *** delete nodes not available in the user input from MMBase ***
             Iterator oldEventsIt = oldEvents.iterator();
             while(oldEventsIt.hasNext()) {
                Evenement thisEvent = (Evenement) oldEventsIt.next();
                Node oldEvent = cloud.getNode(thisEvent.getNumber());
                oldEvent.delete(true);
-            } 
-            
+            }
+
             if(action.equals("Opslaan")) {
                evenementForm.initDates("" + node.getNumber());
                forwardAction = mapping.findForward("continue");
@@ -186,15 +188,15 @@ public class EvenementAction extends Action {
                removeObsoleteFormBean(mapping, request);
                forwardAction = mapping.findForward("success");
             }
-        
+
         } else if(action.equals("Voeg toe")) {                                               // *** Voeg toe ***
-           
+
             Evenement newEvent = new Evenement(evenementForm.nextNewNodeNumber());
             evenementForm.update(newEvent);
             forwardAction = mapping.findForward("continue");
-            
+
          } else if(action.equals("Wijzig")) {                                                // *** Wijzig ***
-        
+
             TreeSet dates = evenementForm.getDates();
             String selectedEvent = evenementForm.getSelectedEvent();
             Iterator datesIterator = dates.iterator();
@@ -205,9 +207,9 @@ public class EvenementAction extends Action {
                }
             }
             forwardAction = mapping.findForward("continue");
-        
+
          } else if(action.equals("Wis")) {                                                   // *** Wis ***
-        
+
             evenementForm.setBeginYear("");
             evenementForm.setBeginMonth("");
             evenementForm.setBeginDay("");
@@ -222,23 +224,23 @@ public class EvenementAction extends Action {
             evenementForm.setIsOnInternet("false");
             evenementForm.setIsCanceled("false");
             forwardAction = mapping.findForward("continue");
-        
+
          } else if(action.equals("Verwijder selectie")) {                                    // *** Verwijder selectie ***
-        
+
             String [] selectedDates = evenementForm.getSelectedDates();
             TreeMap datesMap = evenementForm.getDatesMap();
             for(int i=0; i< selectedDates.length; i++) {
                if(datesMap.containsKey(selectedDates[i])) {
                   datesMap.remove(selectedDates[i]);
-                  // *** could also remove from selectedDaysOfWeek, but this is not necessary ***          
+                  // *** could also remove from selectedDaysOfWeek, but this is not necessary ***
                }
             }
-            evenementForm.setDates(new TreeSet(datesMap.values()));   
+            evenementForm.setDates(new TreeSet(datesMap.values()));
             evenementForm.setSelectedDates(null);
             forwardAction = mapping.findForward("continue");
-       
+
          } else if(action.equals("Activeer selectie")||action.equals("Annuleer selectie")) { // *** Annuleer / Activeer selectie ***
-       
+
             String [] selectedDates = evenementForm.getSelectedDates();
             TreeMap datesMap = evenementForm.getDatesMap();
             for(int i=0; i< selectedDates.length; i++) {
@@ -253,9 +255,9 @@ public class EvenementAction extends Action {
             }
             evenementForm.setSelectedDates(null);
             forwardAction = mapping.findForward("continue");
-       
+
          } else if(action.equals("Periode -> data")) {                                        // *** Periode -> data ***
-       
+
             String [] selectedDates = evenementForm.getSelectedDates();
             TreeMap datesMap = evenementForm.getDatesMap();
             for(int i=0; i< selectedDates.length; i++) {
@@ -266,8 +268,8 @@ public class EvenementAction extends Action {
             }
             evenementForm.setSelectedDates(null);
             forwardAction = mapping.findForward("continue");
-       
-        } 
-        return forwardAction; 
+
+        }
+        return forwardAction;
    }
 }

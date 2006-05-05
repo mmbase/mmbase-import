@@ -30,10 +30,10 @@ import nl.leocms.evenementen.*;
 
 /**
  * @todo javadoc
- * 
+ *
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ContentEvenement extends ContentElementBuilder {
    private static final Logger log = Logging.getLoggerInstance(ContentEvenement.class);
@@ -48,12 +48,12 @@ public class ContentEvenement extends ContentElementBuilder {
                , "posrel1.number,posrel1.pos,posrel2.pos", null, null, null, null, false).nodeIterator();
       if(iNodes.hasNext()) {
           Node nextNode = iNodes.nextNode();
-          int costs = nextNode.getIntValue("posrel1.pos"); 
+          int costs = nextNode.getIntValue("posrel1.pos");
           if(costs==-1) {
             int defaultCosts = nextNode.getIntValue("posrel2.pos");
             if(defaultCosts!=-1) {
                String costNodeNumber =  nextNode.getStringValue("posrel1.number");
-               Node costNode = cloud.getNode(costNodeNumber); 
+               Node costNode = cloud.getNode(costNodeNumber);
                costNode.setIntValue("pos",defaultCosts);
                costNode.commit();
             }
@@ -105,14 +105,14 @@ public class ContentEvenement extends ContentElementBuilder {
       }
       node.setValue("cur_aantal_deelnemers",iCurPart);
       // *** send email, if the event is canceled (does not work properly) ***
-      // if(node.getChanged().contains("iscanceled")
-      //      && node.getStringValue("iscanceled").equals("true")) {
-      //   (new EventNotifier()).isCanceledNotification(cloud, node.getStringValue("number"));
-      // }
+       if(node.getChanged().contains("iscanceled")
+            && node.getStringValue("iscanceled").equals("true")) {
+            (new EventNotifier()).isCanceledNotification(cloud, node.getStringValue("number"));
+         }
 
       boolean bSuperCommit = super.commit(node);
-         
+
       return bSuperCommit;
    }
-   
+
 }
