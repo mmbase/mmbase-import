@@ -2,7 +2,6 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
-<mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
@@ -132,7 +131,6 @@
 </html>
 
 </mm:locale>
-</mm:content>
 </mm:cloud>
 
 
