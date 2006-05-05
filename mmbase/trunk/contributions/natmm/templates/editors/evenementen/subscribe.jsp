@@ -718,6 +718,10 @@ DoubleDateNode ddn = new DoubleDateNode();
                   <logic:equal name="SubscribeForm" property="showAddress" value="true">
                      <% showAddress = true; %>
                   </logic:equal>
+                  <mm:field name="straatnaam"><mm:isnotempty><% showAddress = true; %></mm:isnotempty></mm:field>
+                  <mm:field name="huisnummer"><mm:isnotempty><% showAddress = true; %></mm:isnotempty></mm:field>
+                  <mm:field name="plaatsnaam"><mm:isnotempty><% showAddress = true; %></mm:isnotempty></mm:field>
+                  <mm:field name="land"><mm:isnotempty><% showAddress = true; %></mm:isnotempty></mm:field>
                   <% if(actionId.indexOf("print")>-1) { showAddress = true; } 
                   if(showAddress) { %>
                      <mm:remove referid="isfirst" 
