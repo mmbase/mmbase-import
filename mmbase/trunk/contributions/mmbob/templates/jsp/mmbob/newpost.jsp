@@ -2,7 +2,6 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
-<mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <mm:import externid="forumid" />
 <%@ include file="thememanager/loadvars.jsp" %>
 
@@ -14,7 +13,6 @@
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
 
-<mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
 
 <!-- action check -->
@@ -185,7 +183,6 @@
 <table><tr><th width="100"><%@ include file="includes/smilies.jsp" %></th></tr></table>
 </mm:compare></mm:field>
 </mm:nodefunction>
-
 </center></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"><mm:write referid="body" /></textarea>
 </td></tr>
 	<tr><th>&nbsp;</th><td>
@@ -219,7 +216,5 @@
 </body>
 </html>
 
-</mm:locale>
-</mm:content>
 </mm:cloud>
 
