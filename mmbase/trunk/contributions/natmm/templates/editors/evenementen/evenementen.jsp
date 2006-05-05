@@ -516,7 +516,7 @@ if(actionId.indexOf("print")==-1) {
    </tr>
    <tr>
    <!--0--><td></td>
-   <!--1--><td style="padding-top:3px;"><input type="text" name="titel" tabindex="1" value="<%= titelId %>" style="width:130px;"></td>
+   <!--1--><td style="padding-top:3px;"><input type="text" name="titel" tabindex="1" value="<%= titelId %>" style="width:130px;" onkeypress="return event.keyCode!=13"></td>
    <!--2--><td style="padding-top:3px;"><input type="text" name="natuurgebieden" tabindex="2" value="<%= natuurgebiedenId %>" style="width:130px;"></td>
    <!--3--><td colspan="4"><input type=hidden name="_hiddenDate" >
        <input type="text" name="beginDy" maxlength="2" tabindex="3" value="<%= beginDyId %>" style="width:40px;text-align:right;">
@@ -747,6 +747,15 @@ if(iEventCtr==0) {
 } %> 
 </table>
 </form>
+<script type="text/javascript" language="JavaScript">
+  <!--
+  // works together with the the onkeypress for the titel field, to make sure the form is only posted once on [ENTER]-key
+  var focusControl = document.forms["EvenementForm"].elements["titel"];
+  if (focusControl.type != "hidden") {
+     focusControl.focus();
+  }
+  // -->
+</script>
 <br/><br/>
 </body>
 </html>
