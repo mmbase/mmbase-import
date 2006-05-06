@@ -728,9 +728,9 @@ public class SubscribeAction extends Action {
                confirmUrl += "?action=confirm&s=" + thisSubscription.getStringValue("datum_inschrijving") + "_" + thisSubscription.getStringValue("number");
                Node thisParent = cloud.getNode(subscribeForm.getParent());
                sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl);
-               subscribeForm.resetNumbers();
                subscribeForm.setAction("promptforconfirmation");
             }
+            subscribeForm.resetNumbers();
             forwardAction = mapping.findForward("continue");
 
        } else if(subscribeForm.getButtons().getConfirmSubscription().pressed()) {               // ******************* Confirm *************************
