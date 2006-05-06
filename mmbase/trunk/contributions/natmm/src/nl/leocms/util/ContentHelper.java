@@ -73,15 +73,26 @@ public class ContentHelper {
       return "onbekend type";
    }
    
+   public String getTitleField(NodeManager objectmanager) {
+      String titleField = null;
+      String [] titleFields = { "titel", "naam", "title", "name" };
+      for(int f=0; f<titleFields.length && titleField==null; f++) { 
+         if(objectmanager.hasField(titleFields[f])) {
+           titleField = titleFields[f];
+         }
+      }
+      if(titleField==null) {
+         log.error("No title field has been found for objecttype " + objectmanager.getName());
+      }
+      return titleField;
+   }
+
    public String getTitleField(String otype) {
-       NodeManager objectmanager = cloud.getNodeManager(otype);
-       String titleField = null;
-       String [] titleFields = { "titel", "naam", "title", "name" };
-       for(int f=0; f<titleFields.length && titleField==null; f++) { 
-          if(objectmanager.hasField(titleFields[f])) {
-            titleField = titleFields[f];
-          }
-       }
-       return titleField;
-    }
+      return getTitleField(cloud.getNodeManager(otype));
+   }
+    
+   public String getTitleField(Node object) {
+      return getTitleField(object.getNodeManager());
+   }
+
 }

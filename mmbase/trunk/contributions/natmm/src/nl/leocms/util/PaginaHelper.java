@@ -179,10 +179,8 @@ public class PaginaHelper {
      * @param paginaNumber
      * @return
      */
-   public String getUrlPathToRootString(String itemNumber, String requestURI, boolean relative) {
+   public String getUrlPathToRootString(Node itemNode, Node paginaNode, String requestURI, boolean relative) {
       StringBuffer url = new StringBuffer();
-      Node itemNode = cloud.getNode(itemNumber); 
-      Node paginaNode = getPaginaNode(itemNode);
       Node rubriek = getRubriek(paginaNode);
       RubriekHelper rHelper = new RubriekHelper(cloud);
       url.append(
@@ -285,7 +283,7 @@ public class PaginaHelper {
             url = new StringBuffer(userURL);
          } else {
             url = new StringBuffer();
-            url.append(getUrlPathToRootString(itemNumber, requestURI, false));
+            url.append(getUrlPathToRootString(itemNode, paginaNode, requestURI, false));
             url.append('/');
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(itemNode.getLongValue("datumlaatstewijziging")*1000); // add lastmodifieddate
@@ -296,8 +294,8 @@ public class PaginaHelper {
             url.append(cal.get(Calendar.MONTH)+1);
             if(cal.get(Calendar.DAY_OF_MONTH)<10) { url.append('0'); }
             url.append(cal.get(Calendar.DAY_OF_MONTH));
-       
-            url.append(HtmlCleaner.forURL(HtmlCleaner.stripText(itemNode.getStringValue("titel"))));
+            String itemTitle = itemNode.getStringValue((new ContentHelper(cloud)).getTitleField(itemNode));
+            url.append(HtmlCleaner.forURL(HtmlCleaner.stripText(itemTitle)));
             url.append(UrlConverter.PAGE_EXTENSION);
             cache.putInCache(jspURL, url.toString());
          }
@@ -1082,9 +1080,6 @@ public class PaginaHelper {
          String currentPath = (String) pathsFromPageToElements.get(objecttype);
          objecttype = objecttype.replaceAll("#","");
          String titleField = (new ContentHelper(cloud)).getTitleField(objecttype);
-         if(titleField==null) {
-            log.error("No title field has been found for objecttype " + objecttype);
-         }
          currentPath = currentPath.replaceAll("object",objecttype);
             
          NodeIterator objects = cloud.getList(
