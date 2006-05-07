@@ -5,10 +5,7 @@
    nl.leocms.servlets.UrlConverter" %>
 <%@include file="/taglibs.jsp" %>
 <cache:flush scope="application"/>
-<%
-// names of rubrieken might get changed
-UrlConverter.getCache().flushAll(); 
-%>
+<% UrlConverter.getCache().flushAll(); %>
 <mm:cloud jspvar="cloud" rank="basic user">
 <%
    // todo: change this hardcode implementation to one based on the styles object.
