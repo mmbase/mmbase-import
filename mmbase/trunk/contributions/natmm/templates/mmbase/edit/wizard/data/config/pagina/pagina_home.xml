@@ -14,9 +14,6 @@
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/pages_title.xml" />
-      <optionlist include="config/option_lists/shorty_role2.xml" />
-      <optionlist include="config/option_lists/teaser_role.xml" />
-      <optionlist include="config/option_lists/teaser_size.xml" />
    </lists>
    <steps>
       <step form-schema="edit_pagina"/>
@@ -30,5 +27,7 @@
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
       <list include="config/panno/zoek_pagina_posrel_panno.xml" />
+      <list include="config/shorty/zoek_home_rolerel_shorty.xml" />
+      <list include="config/teaser/zoek_pagina_rolerel_teaser.xml" />
    </form-schema> 
 </wizard-schema>
