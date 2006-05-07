@@ -32,7 +32,7 @@ int listSize =0;
 		<tr>
 		   <td align="right" valign="top"><%= c %></td><td align="left" valign="top">|</td>
 		   <td align="left" valign="top"><a href="<mm:field name="natuurgebieden.number" jspvar="natuurgebieden_number" vartype="String" write="false"
-		      ><%= pHelper.createItemUrl(natuurgebieden_number, paginaID, null ,request.getRequestURI())
+		      ><%= pHelper.createItemUrl(natuurgebieden_number,paginaID,null,request.getContextPath())
 		      %></mm:field>" onMouseOver="MM_swapImage('dot<%=c%>','','media/images/ngb/<%=c%>w.gif',1)" onMouseOut="MM_swapImage('dot<%=c%>','','media/images/ngb/<%=c%>.gif',1)"><mm:field name="natuurgebieden.naam" /></a></td>
 		</tr>
 		<% if((listSize / 2) == locCnt -1) {%>

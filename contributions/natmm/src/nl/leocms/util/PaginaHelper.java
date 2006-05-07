@@ -103,7 +103,18 @@ public class PaginaHelper {
       log.debug(paginaNumber + "->" + breadcrumbs);
       return (breadcrumbs.size()>=2 ? (String) breadcrumbs.get(breadcrumbs.size()-2) : null);
    }
-
+   
+   /**
+    * Returns the subDir where the templates of this page can be found
+    * @param cloud
+    * @param paginaNumber
+    * @return subDir
+    */
+   public static String getSubDir(Cloud cloud, String paginaNumber) {
+      String rootRubriek = getRootRubriek(cloud,paginaNumber);
+      return RubriekHelper.getSubDir(cloud.getNode(rootRubriek));
+   }
+   
   /**
      * Retrieves the rubriek node related to the given pagina node.
      *
@@ -128,8 +139,6 @@ public class PaginaHelper {
      * @return pagina Node
      */
    public Node retrievePaginaNumber(String rubriekNumber, String pageName) {
-     /* assert rubriekNumber != null;
-      assert pageName != null; */
       Node rubriek = cloud.getNode(rubriekNumber);
       Iterator bl = rubriek.getRelatedNodes("pagina").iterator();
       
@@ -163,64 +172,62 @@ public class PaginaHelper {
    }
 
    // /////// methods to create the url of pagina's /////////
-   /**
-     * Creates the url for a pagina.
-     *  !! Only works for pagina objects that are related to a rubriek!!
-     * @param paginaNumber
-     * @return
-     */
-   public String createPaginaUrl(String paginaNumber, String requestURI) {
-      return createPaginaUrl(paginaNumber, requestURI, false);
-   }
 
    /**
-     * Creates the slash seperated string for a pagina.
+     * Creates the slash seperated string for an object
      *  !! Only works for pagina objects that are related to a rubriek!!
      * @param paginaNumber
      * @return
      */
-   public String getUrlPathToRootString(Node itemNode, Node paginaNode, String requestURI, boolean relative) {
+   public String getUrlPathToRootString(Node itemNode, Node paginaNode, String contextPath) {
       StringBuffer url = new StringBuffer();
-      Node rubriek = getRubriek(paginaNode);
-      RubriekHelper rHelper = new RubriekHelper(cloud);
-      url.append(
-         rHelper.getUrlPathToRootString(
-            rubriek.getIntValue("number"),
-            requestURI, relative));
+      url.append(getUrlPathToRootString(paginaNode,contextPath));
       url.append('/');
-      url.append(HtmlCleaner.stripText(paginaNode.getStringValue("titel")));
-      log.debug(url.toString());
+      Calendar cal = Calendar.getInstance();
+      cal.setTimeInMillis(itemNode.getLongValue("datumlaatstewijziging")*1000); // add lastmodifieddate
+      
+      if(cal.get(Calendar.YEAR)%100<10) { url.append('0'); }
+      url.append(cal.get(Calendar.YEAR)%100);
+      if(cal.get(Calendar.MONTH)+1<10) { url.append('0'); }
+      url.append(cal.get(Calendar.MONTH)+1);
+      if(cal.get(Calendar.DAY_OF_MONTH)<10) { url.append('0'); }
+      url.append(cal.get(Calendar.DAY_OF_MONTH));
+      String itemTitle = itemNode.getStringValue((new ContentHelper(cloud)).getTitleField(itemNode));
+      url.append(HtmlCleaner.forURL(HtmlCleaner.stripText(itemTitle)));
+      
       return url.toString();
    }
 
-   public String getPaginaUrlPathToRootString(String paginaNumber, String requestURI, boolean relative) {
+   /**
+     * Creates the slash seperated string for a pagina
+     *  !! Only works for pagina objects that are related to a rubriek!!
+     * @param paginaNumber
+     * @return
+     */
+   public String getUrlPathToRootString(Node paginaNode, String contextPath) {
       StringBuffer url = new StringBuffer();
-      Node paginaNode = cloud.getNode(paginaNumber);
       Node rubriek = getRubriek(paginaNode);
       RubriekHelper rHelper = new RubriekHelper(cloud);
-      url.append(rHelper.getUrlPathToRootString(rubriek.getIntValue("number"), requestURI, relative));
+      url.append(rHelper.getUrlPathToRootString(rubriek,contextPath));
       url.append('/');
       url.append(HtmlCleaner.stripText(paginaNode.getStringValue("titel")));
       log.debug("getPaginaUrlPathToRootString" + url.toString());
       return url.toString();
    }
-
-
+   
    /**
      * Creates the url for a pagina.
+     * The url consists of
+     * 1. contextPath
+     * 2. list of rubriek.name
+     * 3. pagina.titel
      *  !! Only works for pagina objects that are related to a rubriek!!
      * @param paginaNumber
      * @return
      */
-   public String createPaginaUrl(String paginaNumber, String requestURI, boolean relative) {
-      StringBuffer url = new StringBuffer();
-      Node paginaTemplate = getPaginaTemplate(paginaNumber);
-      if(paginaTemplate!=null) {
-         url.append(paginaTemplate.getStringValue("url"));   
-      } else {
-         url.append(UrlConverter.ROOT_TEMPLATE);
-      }
-      url.append('?');
+   public String createPaginaUrl(String paginaNumber, String contextPath) {
+      
+      StringBuffer url = getPaginaTemplate(paginaNumber, contextPath);
       url.append(UrlConverter.PAGE_PARAM);
       url.append('=');
       url.append(paginaNumber);
@@ -235,13 +242,13 @@ public class PaginaHelper {
             url = new StringBuffer(userURL);
          } else {
             url = new StringBuffer();
-            url.append(getPaginaUrlPathToRootString(paginaNumber, requestURI, relative));
+            url.append(getUrlPathToRootString(cloud.getNode(paginaNumber), contextPath));
             url.append(UrlConverter.PAGE_EXTENSION);
-            cache.putInCache(jspURL, url.toString());
+            cache.putURLEntry(jspURL, url.toString());
          }
       }
 
-      log.debug("createItemUrl " + url.toString());
+      log.debug("createPaginaUrl " + url.toString());
       return url.toString();
    }
 
@@ -252,22 +259,16 @@ public class PaginaHelper {
      * @param itemNumber
      * @return
      */
-   public String createItemUrl(String itemNumber, String pageNumber, String params, String requestURI) {
-      StringBuffer url = new StringBuffer();
+   public String createItemUrl(String itemNumber, String pageNumber, String params, String contextPath) {
       Node itemNode = cloud.getNode(itemNumber); 
       Node paginaNode = null;
       if(pageNumber!=null && !pageNumber.equals("-1")) {
          paginaNode = cloud.getNode(pageNumber); 
       } else {
          paginaNode = getPaginaNode(itemNode);
+         pageNumber = paginaNode.getStringValue("number");
       }
-      Node paginaTemplate = getPaginaTemplate(paginaNode.getStringValue("number"));
-      if(paginaTemplate!=null) {
-         url.append(paginaTemplate.getStringValue("url"));
-      } else {
-         url.append(UrlConverter.ROOT_TEMPLATE);
-      }
-      url.append('?');
+      StringBuffer url = getPaginaTemplate(pageNumber, contextPath);
 
       url.append(UrlConverter.ITEM_PARAM);
       url.append('=');
@@ -283,21 +284,9 @@ public class PaginaHelper {
             url = new StringBuffer(userURL);
          } else {
             url = new StringBuffer();
-            url.append(getUrlPathToRootString(itemNode, paginaNode, requestURI, false));
-            url.append('/');
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(itemNode.getLongValue("datumlaatstewijziging")*1000); // add lastmodifieddate
-            
-            if(cal.get(Calendar.YEAR)%100<10) { url.append('0'); }
-            url.append(cal.get(Calendar.YEAR)%100);
-            if(cal.get(Calendar.MONTH)+1<10) { url.append('0'); }
-            url.append(cal.get(Calendar.MONTH)+1);
-            if(cal.get(Calendar.DAY_OF_MONTH)<10) { url.append('0'); }
-            url.append(cal.get(Calendar.DAY_OF_MONTH));
-            String itemTitle = itemNode.getStringValue((new ContentHelper(cloud)).getTitleField(itemNode));
-            url.append(HtmlCleaner.forURL(HtmlCleaner.stripText(itemTitle)));
+            url.append(getUrlPathToRootString(itemNode, paginaNode, contextPath));
             url.append(UrlConverter.PAGE_EXTENSION);
-            cache.putInCache(jspURL, url.toString());
+            cache.putURLEntry(jspURL, url.toString());
          }
       }
 
@@ -379,25 +368,6 @@ public class PaginaHelper {
          }
       }
       return ewUrls;
-   }
-   
-   /**
-     * Creates the url for a pagina.
-     *  !! Only works for pagina objects that are related to a rubriek!!
-     * @param paginaNumber
-     * @return
-     */
-   public String getSiteStatCounterName(String rubriekNumber, String paginaNumber) {
-      Node paginaNode = cloud.getNode(paginaNumber);
-      boolean isContentPagina = paginaNode.getBooleanValue("contentpagina");
-      if (isContentPagina) {
-         // no sitestats for content pages
-         return null;
-      }
-      RubriekHelper rubriekHelper = new RubriekHelper(cloud);
-      String siteStatCounterName = rubriekHelper.getSiteStatCounterName(rubriekNumber, null);
-      siteStatCounterName += paginaNode.getStringValue("urlfragment");
-      return siteStatCounterName;
    }
 
    /**
@@ -550,6 +520,20 @@ public class PaginaHelper {
          return ptList.getNode(0);
       }
       return null;
+   }
+
+   public StringBuffer getPaginaTemplate(String paginaNumber, String contextPath) {
+      
+      StringBuffer url = new StringBuffer();
+      url.append(contextPath); // always start from the root
+      url.append("/");
+      url.append(getSubDir(cloud, paginaNumber));
+      Node paginaTemplate = getPaginaTemplate(paginaNumber);
+      if(paginaTemplate!=null) {
+         url.append(paginaTemplate.getStringValue("url"));   
+      }
+      url.append('?');
+      return url;
    }
 
    /**
@@ -735,7 +719,6 @@ public class PaginaHelper {
       if (contentrels.size() == 1) {
          String nr =
             contentrels.getNode(0).getStringValue("contentelement.number");
-         //System.out.println("numbertje: " + nr);
          return nr;
       }
       return null;
@@ -1007,7 +990,6 @@ public class PaginaHelper {
        */
       public String createUrlForContentElement(Node contentElement, String contextPath)
          throws MalformedURLException {
-        /* assert contentElement != null; */
          Node paginaNode = getPaginaNode(contentElement);
          NodeList remotePaginas = PublishManager.getPublishedNodes(paginaNode);
          if (remotePaginas.size() > 0) {
@@ -1018,8 +1000,7 @@ public class PaginaHelper {
                   Node rubriekNode = rubrieken.getNode(0);
                   
                   RubriekHelper rhelper = new RubriekHelper(cloud);
-                  String rubriekUrl = rhelper.getLiveUrlPathToRootString(rubriekNode, contextPath);
-                  StringBuffer ret = new StringBuffer(rubriekUrl);
+                  StringBuffer ret = rhelper.getUrlPathToRootString(rubriekNode,contextPath);
                   NodeList remoteContentList = PublishManager.getPublishedNodes(contentElement);
                   if (remoteContentList.size() > 0) {
                      Node contentPage = getContentPagina(contentElement);

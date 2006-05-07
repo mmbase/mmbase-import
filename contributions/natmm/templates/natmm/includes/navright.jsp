@@ -23,7 +23,7 @@ if(!lnRubriekID.equals(rubriekID)) {
                <mm:first inverse="true">
                <% 
       			if(!paginaID.equals(pagina_number)) { 
-      	         %><li><a href="<%= pHelper.createPaginaUrl(pagina_number, request.getRequestURI()) %>"><mm:field name="titel" /></a></li><%
+      	         %><li><a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>"><mm:field name="titel" /></a></li><%
       	      } else {
       	         %><li style="list-style-type:none;"><mm:field name="titel" /></li><%
       	      }
@@ -31,7 +31,7 @@ if(!lnRubriekID.equals(rubriekID)) {
       	      <%-- 
        		   <mm:related path="posrel,panno,posrel,images" fields="images.alt_tekst" max="1">
       			   <mm:node element="images">
-      		   	   <a href="<%= pHelper.createPaginaUrl(pagina_number, request.getRequestURI()) %>"><img src="<mm:image template="s(170!x45!)"/>" alt="<mm:field name="alt_tekst" />" border="0"></a>
+      		   	   <a href="<%= pHelper.createPaginaUrl(pagina_number,request.getContextPath()) %>"><img src="<mm:image template="s(170!x45!)"/>" alt="<mm:field name="alt_tekst" />" border="0"></a>
       			   </mm:node>
       			</mm:related>
       			--%>

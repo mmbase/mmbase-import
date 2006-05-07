@@ -78,7 +78,7 @@ while(!subObjects.isEmpty()) {
       	      %><span class="<%= pageClass %>">
       	            <mm:node number="<%= lnRubriekID %>"><mm:field name="naam" /></mm:node></span><% 
       	   } else { 
-      	      %><a href="<%= ph.createPaginaUrl(nextPage, request.getRequestURI()) %>" class="<%= pageClass %>">
+      	      %><a href="<%= ph.createPaginaUrl(nextPage,request.getContextPath()) %>" class="<%= pageClass %>">
                      <mm:node number="<%= nextObject %>"
             	         ><mm:field name="naam"
             	            ><mm:isnotempty><mm:write /></mm:isnotempty

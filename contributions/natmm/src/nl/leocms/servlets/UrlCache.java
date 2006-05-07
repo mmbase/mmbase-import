@@ -24,24 +24,34 @@ public class UrlCache {
     cacheURLToJSP.clear();
   }
 
-  public String getJSPEntry(String requestedURL) {
-    return (String)cacheURLToJSP.get(requestedURL);
-  }
-
-  public String getURLEntry(String requestedURL) {
-    return (String)cacheJSPToURL.get(requestedURL);
-  }
-
-  public void putInCache(String jspURL, String processedURL) {
-    cacheJSPToURL.put(jspURL, processedURL);
+  public void putJSPEntry(String jspURL, String processedURL) {
     cacheURLToJSP.put(processedURL, jspURL);
+  }
+
+  public String getJSPEntry(String processedURL) {
+    return (String)cacheURLToJSP.get(processedURL);
+  }
+
+  public void putURLEntry(String jspURL, String processedURL) {
+    cacheJSPToURL.put(jspURL, processedURL);
+  }
+
+  public String getURLEntry(String jspURL) {
+    return (String)cacheJSPToURL.get(jspURL);
   }
 
   public String toString() {
     StringBuffer sb = new StringBuffer();
+    sb.append("JSP to URL Cache\n");
     for (Iterator it=cacheJSPToURL.keySet().iterator();it.hasNext();) {
       String key = (String)it.next();
       String value = (String)cacheJSPToURL.get(key);
+      sb.append(key).append(" - ").append(value).append("\n");
+    }
+    sb.append("URL to JSP Cache\n");
+    for (Iterator it=cacheURLToJSP.keySet().iterator();it.hasNext();) {
+      String key = (String)it.next();
+      String value = (String)cacheURLToJSP.get(key);
       sb.append(key).append(" - ").append(value).append("\n");
     }
     return sb.toString();
