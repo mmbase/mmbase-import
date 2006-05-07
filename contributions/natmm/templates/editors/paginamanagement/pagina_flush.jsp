@@ -1,4 +1,5 @@
 <%@include file="../../taglibs.jsp"  %>
+<%@page import="nl.leocms.servlets.UrlConverter" %>
 <html>
 <head>
    <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
@@ -23,7 +24,8 @@ if ((refresh != null) && (refresh.equals("yes"))) {
       referrer = request.getHeader("referer"); // html specs are wrong
    }
    referrer += "&rnd=" + (int) (Math.random()*100000);
-   session.setAttribute("preview","off"); 
+   session.setAttribute("preview","off");
+   UrlConverter.getCache().flushAll();
    %>
    <cache:flush scope="application" group="<%= number %>" />
    <h2>
