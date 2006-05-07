@@ -114,7 +114,7 @@ while(depth>-1&&depth<10) {
                
                   String sObjectTitle = thisObject.getStringValue("titel");   
                   if(depth==1) { sObjectTitle = "&nbsp;&nbsp;" + sObjectTitle + "&nbsp;&nbsp;"; } 
-                  %>aI("text=<%= sObjectTitle %>;;url=<%= ph.createPaginaUrl(sThisObject, request.getRequestURI()) %>;separatorsize=1")
+                  %>aI("text=<%= sObjectTitle %>;;url=<%= ph.createPaginaUrl(sThisObject,request.getContextPath()) %>;separatorsize=1")
                   <%
                   // *** object not longer needed
                   lastTree[depth].remove(thisKey);
@@ -124,7 +124,7 @@ while(depth>-1&&depth<10) {
                   String nextPage =  rubriekHelper.getFirstPage(sThisObject);
                   String sObjectTitle = thisObject.getStringValue("naam");   
                   if(depth==1) { sObjectTitle = "&nbsp;&nbsp;" + sObjectTitle + "&nbsp;&nbsp;"; } 
-                  %>aI("text=<%= sObjectTitle %>;showmenu=r<%= sThisObject %>;url=<%= ph.createPaginaUrl(nextPage, request.getRequestURI()) %>;separatorsize=1")
+                  %>aI("text=<%= sObjectTitle %>;showmenu=r<%= sThisObject %>;url=<%= ph.createPaginaUrl(nextPage,request.getContextPath()) %>;separatorsize=1")
                   <%
                } 
             %></mm:nodeinfo

@@ -209,7 +209,7 @@ String overlappingEventError = null;
          } else {
            %>
            <td onclick="selectEvent(<%= events[i] %>)"  class="<%= styleClasses[style[i]] 
-               %>"><a href="<%= ph.createItemUrl("" + events[i], paginaID,null,request.getRequestURI()) 
+               %>"><a href="<%= ph.createItemUrl("" + events[i], paginaID,null,request.getContextPath()) 
                %>" class="hover"><%= (i<10 ? "&nbsp;" : "" ) + i %></a></td>
            <%
          } 

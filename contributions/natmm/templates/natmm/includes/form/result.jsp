@@ -13,7 +13,7 @@ if(referer!=null) {
    <body><%
 } 
 %>
-<mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon">
+<mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon" jspvar="cloud">
 <%
    String okSendTo = "Uw bericht is verstuurd naar";
    String okLink = "Naar de homepage";

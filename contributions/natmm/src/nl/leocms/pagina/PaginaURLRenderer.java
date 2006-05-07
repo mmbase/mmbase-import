@@ -72,7 +72,7 @@ public class PaginaURLRenderer extends TreeCellRendererAdapter implements TreeCe
          UserRole userRole = authHelper.getRoleForUserWithPagina(authHelper.getUserNode(this.username), "" + n.getNumber());    
          out.print("<span style='width:200px'>");
          if (userRole.getRol() >= Roles.SCHRIJVER) {
-            String url = paginaHelper.createPaginaUrl("" + n.getNumber(), contextPath);
+            String url = paginaHelper.createPaginaUrl("" + n.getNumber(),contextPath);
             out.println("<a href='" + url + "' target='" + targetFrame + "'>" + n.getStringValue("titel") + "</a>");
                
          }

@@ -80,7 +80,7 @@ if(!readmoreID.equals("")){
             <%
          }
          if(!targetPage.equals("")) {
-            readmoreURL = ph.createItemUrl(readmoreID, targetPage,null,request.getRequestURI());
+            readmoreURL = ph.createItemUrl(readmoreID, targetPage,null,request.getContextPath());
         } else { 
             // artikel is not linked to a page show it in the present page (but with artikel template)
             readmoreURL = "artikel.jsp?p=" + paginaID + "&a="+readmoreID;
@@ -92,7 +92,7 @@ if(!readmoreID.equals("")){
 		} else if(nType.equals("provincies")){ 
 		      readmoreURL = "natuurgebieden.jsp?prov="+readmoreID;
 		} else if(nType.equals("pagina")){ 
-            readmoreURL =  ph.createPaginaUrl(readmoreID, request.getRequestURI());
+            readmoreURL =  ph.createPaginaUrl(readmoreID,request.getContextPath());
 	   }						
 		validLink = true;
 		%>

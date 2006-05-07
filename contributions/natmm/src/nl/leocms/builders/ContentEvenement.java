@@ -33,7 +33,7 @@ import nl.leocms.evenementen.*;
  *
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class ContentEvenement extends ContentElementBuilder {
    private static final Logger log = Logging.getLoggerInstance(ContentEvenement.class);
@@ -104,7 +104,7 @@ public class ContentEvenement extends ContentElementBuilder {
          }
       }
       node.setValue("cur_aantal_deelnemers",iCurPart);
-      // *** send email, if the event is canceled (does not work properly) ***
+      // *** send email, if the event is canceled ***
        if(node.getChanged().contains("iscanceled")
             && node.getStringValue("iscanceled").equals("true")) {
             (new EventNotifier()).isCanceledNotification(cloud, node.getStringValue("number"));
