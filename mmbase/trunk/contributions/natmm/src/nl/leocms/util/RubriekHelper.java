@@ -162,54 +162,40 @@ public class RubriekHelper {
    }
 
    /**
-    * Creates a the url for the given rubriek ending with an '/'
+    * Returns the subDir where the templates of this rubriek can be found
+    * @param root the first rubriek of this subsite
+    * @return subDir
+    */
+   public static String getSubDir(Node root) {
+      String subDir = "";
+      if(root!=null) {
+         subDir = root.getStringValue("url_live");
+         if(!subDir.equals("")) { subDir += "/"; }
+      }
+      return subDir;
+   }
+
+   /**
+    * Creates a the url for the given rubriek starting with an '/'
     * @param rubriek
     * @return
     */
-   public StringBuffer getUrlPath(int rubriek) {
-        StringBuffer ret = new StringBuffer("");
-        Node pnode = cloud.getNode( rubriek );
-        List path = getPathToRoot( pnode);
-        int iFirstNode = (isFirstSubsite(path) ? 2 : 1);
-        for(int i=iFirstNode; i<path.size(); i++) {
+   public StringBuffer getUrlPathToRootString(Node rubriek, String contextPath) {
+      StringBuffer url = new StringBuffer("");
+      url.append(contextPath);
+      url.append("/");
+      List path = getPathToRoot(rubriek);
+      if(path.size()>1) {
+         int iFirstNode = (isFirstSubsite(path) ? 2 : 1);
+         for(int i=iFirstNode; i<path.size(); i++) {
             
             Node n = (Node) path.get(i);
-            if (i > iFirstNode) { ret.append('/'); }
-            ret.append(HtmlCleaner.stripText(n.getStringValue("naam")));
-        }
-        log.debug(ret.toString());
-        return ret;
-   }
-   
-
-   /**
-    * Creates a the url for the given rubriek ending with an '/'
-    * @param rubriek
-    * @return
-    */
-   public String getUrlPathToRootString(int rubriek, String requestURI, boolean relative) {
-        StringBuffer ret = getUrlPath(rubriek);
-        if (requestURI != null && !relative) {
-            ret = new StringBuffer(smartAppendContextPath(ret.toString(), requestURI));               
-        }
-        log.debug(ret.toString());
-        return ret.toString();
-   }
-   
-   /**
-    * @param ret
-    * @param contextPath
-    */
-   private String smartAppendContextPath(String in, String requestURI) {
-      StringBuffer ret = new StringBuffer("");
-      ret.append(requestURI.substring(0,requestURI.lastIndexOf("/")));
-      if(!in.equals("")) {
-         ret.append('/');
-         ret.append(in);
+            if (i > iFirstNode) { url.append('/'); }
+            url.append(HtmlCleaner.stripText(n.getStringValue("naam")));
+         }
       }
-      return ret.toString();     
+      return url;
    }
-
    
    /**
     * Creates a the url for the given rubriek ending with an '/'
@@ -227,50 +213,9 @@ public class RubriekHelper {
          return getSubsiteRubriek(rubriekParentNumber);
       } 
    }
-   
+
    /**
-    * Creates a the url for the given rubriek ending with an '/'
-    * @param rubriek
-    * @return
-    */
-   public String getSubsiteRubriekSitestatName(String rubriekNumber) {
-      Node rubriekNode = cloud.getNode(rubriekNumber);
-      int rubriekLevel = rubriekNode.getIntValue("level");
-      if (rubriekLevel == 1) {
-         return rubriekNode.getStringValue("sitestatname");
-      }
-      else {
-         NodeList nodeList = cloud.getList(rubriekNumber, "rubriek,parent,rubriek2", "rubriek2.number", null, null, null, "SOURCE", true);
-         String rubriekParentNumber = nodeList.getNode(0).getStringValue("rubriek2.number");
-         return getSubsiteRubriekSitestatName(rubriekParentNumber);
-      } 
-   }
-   
-   /**
-    * Creates a the url for the given rubriek ending with an '/'
-    * @param rubriek
-    * @return
-    */
-   public String getSiteStatCounterName(String rubriekNumber, String siteStatCounterName) {
-      Node rubriekNode = cloud.getNode(rubriekNumber);
-      int rubriekLevel = rubriekNode.getIntValue("level");
-      if (siteStatCounterName == null) {
-         siteStatCounterName = "";
-      }
-      if (rubriekLevel == 1) {
-         return siteStatCounterName;
-      }
-      else {
-         String url = rubriekNode.getStringValue("url");
-         url += "." + siteStatCounterName;
-         NodeList nodeList = cloud.getList(rubriekNumber, "rubriek,parent,rubriek2", "rubriek2.number", null, null, null, "SOURCE", true);
-         String rubriekParentNumber = nodeList.getNode(0).getStringValue("rubriek2.number");
-         return getSiteStatCounterName(rubriekParentNumber, url);
-      } 
-   }
-   
-   /**
-    * Creates a the url for the given rubriek ending with an '/'
+    * Returns the style to be used for this rubriek
     * @param rubriek
     * @return
     */
@@ -282,37 +227,6 @@ public class RubriekHelper {
       return "";
    }
 
-
-   /**
-    * Creates the url for the given rubriek ending with an '/'
-    * @param rubriek
-    * @param contextPath
-    * @return
-    */
-   public String getUrlPathToRootString(int rubriek, String contextPath) {
-      return getUrlPathToRootString(rubriek, contextPath, false);
-   }
-
-   public String getLiveUrlPathToRootString(Node rubriek, String contextPath) {
-      StringBuffer ret = new StringBuffer("");;      
-      List path = getPathToRoot( rubriek) ;
-      for (int i=0; i<path.size(); i++) {
-         // skip the root rubriek
-         Node n = (Node) path.get(i);
-         if (i == 1) {
-            // subsite determines the domain
-            ret.append(n.getStringValue("url_live"));
-            if (contextPath != null) {
-               ret = new StringBuffer(smartAppendContextPath(ret.toString(), contextPath));               
-            }
-         }
-         if (i > 1) {
-            ret.append('/');
-            ret.append(n.getStringValue("url"));
-         }
-      }
-      return ret.toString();      
-   }
    
    /**
     * Method that finds the Rubriek node using a rubriekpath as input.
@@ -390,7 +304,7 @@ public class RubriekHelper {
       String rubriekUrl;
       while (iter.hasNext()) {
          rubriek = (Node) iter.next();
-         rubriekUrl = getUrlPath(rubriek.getIntValue("number")).toString();
+         rubriekUrl = getUrlPathToRootString(rubriek,"").toString();
          if (path.indexOf(rubriekUrl)>-1) {
             rubriekNodeList.add(rubriek);
          }

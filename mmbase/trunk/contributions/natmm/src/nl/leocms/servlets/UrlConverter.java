@@ -44,14 +44,13 @@ import org.mmbase.module.core.MMBaseContext;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.3 2006-03-16 22:17:17 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.4 2006-05-07 22:06:46 henk Exp $
  */
 public final class UrlConverter {
    // some constants.
 
    public final static boolean URLCONVERSION = NatMMConfig.urlConversion;
    public final static String PAGE_EXTENSION = ".htm";
-   public final static String ROOT_TEMPLATE = "index.jsp";
    public static String PAGE_PARAM = "p";
    public static String RUBRIEK_PARAM = "r";
    public static String ITEM_PARAM = "id";
@@ -187,29 +186,20 @@ public final class UrlConverter {
          log.debug("No matching page found, interception stopped");
          return null;
       } else {
-         int pPos = rubriekenPad.indexOf(rh.getUrlPath(iRubriek).toString());
+         int pPos = rubriekenPad.indexOf(rh.getUrlPathToRootString(rubriek,"").toString());
          if(pPos>0) {
             rubriekenPad = rubriekenPad.substring(0,pPos);
          } else {
             rubriekenPad += "/";
          }
       }
+      log.debug("rubriekenPad = " + rubriekenPad);
 
       String pageNumber = page.getStringValue("number");
 
       StringBuffer forwardUrl = new StringBuffer("");
       forwardUrl.append(rubriekenPad);
-
-      Node paginaTemplate = pg.getPaginaTemplate(pageNumber);
-      if(paginaTemplate!=null) {
-         forwardUrl.append(paginaTemplate.getStringValue("url"));
-      } else {
-         forwardUrl.append(ROOT_TEMPLATE);
-      }
-
-      forwardUrl.append('?');
-
-      //if (params != null) { forwardUrl.append(params).append('&'); }
+      forwardUrl.append(pg.getPaginaTemplate(pageNumber,""));
 
       forwardUrl.append(RUBRIEK_PARAM);
       forwardUrl.append('=');
@@ -232,7 +222,7 @@ public final class UrlConverter {
          forwardUrl.append(itemNumber);
       }
 
-      cache.putInCache(forwardUrl.toString(),url);
+      cache.putJSPEntry(forwardUrl.toString(),url);
       if (params != null) { forwardUrl.append('&').append(params); }
 
       log.debug(forwardUrl);

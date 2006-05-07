@@ -28,10 +28,10 @@
 					<mm:list nodes="<%=paginaID%>" path="pagina,gebruikt,paginatemplate">
 						<mm:field name="paginatemplate.url">
 						<mm:compare value="ecard.jsp" >
-							<a href="<%= pHelper.createItemUrl(images_number, paginaID, "" ,request.getRequestURI()) %>">
+							<a href="<%= pHelper.createItemUrl(images_number, paginaID, "" ,request.getContextPath()) %>">
 						</mm:compare>
 						<mm:compare value="wallpaper.jsp">
-							<a href="javascript:OpenWindow('<%= pHelper.createItemUrl(images_number, paginaID, "" ,request.getRequestURI()) %>','','toolbar=no,menubar=no,location=no,height=450,width=517');">
+							<a href="javascript:OpenWindow('<%= pHelper.createItemUrl(images_number, paginaID, "" ,request.getContextPath()) %>','','toolbar=no,menubar=no,location=no,height=450,width=517');">
 						</mm:compare>
 						</mm:field>
 				    </mm:list>

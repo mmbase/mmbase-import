@@ -8,7 +8,7 @@
             fields="pagina.number,pagina.titel" orderby="posrel.pos" directions="UP">
             <mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false">
          	  &nbsp;&nbsp;|&nbsp;&nbsp; 
-              <a href="<%= ph.createPaginaUrl(pagina_number, request.getRequestURI()) %>" class="footerlinks"><mm:field name="pagina.titel" /></a>
+              <a href="<%= ph.createPaginaUrl(pagina_number,request.getContextPath()) %>" class="footerlinks"><mm:field name="pagina.titel" /></a>
             </mm:field>
          </mm:list>
    	</td>

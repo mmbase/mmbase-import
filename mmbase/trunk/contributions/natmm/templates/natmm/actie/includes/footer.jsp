@@ -10,7 +10,7 @@
          <mm:related path="posrel,pagina" fields="pagina.number,pagina.titel" orderby="posrel.pos" directions="UP">   
       	   &nbsp;&nbsp;|&nbsp;&nbsp; 
             <mm:field name="pagina.number" jspvar="pageNumber" vartype="String" write="false">
-      	      <a href="<%= ph.createPaginaUrl(pageNumber, request.getRequestURI()) %>" class="hover" style="color:828282;"><mm:field name="pagina.titel" /></a>
+      	      <a href="<%= ph.createPaginaUrl(pageNumber,request.getContextPath()) %>" class="hover" style="color:828282;"><mm:field name="pagina.titel" /></a>
             </mm:field>
          </mm:related>    
       </mm:node>

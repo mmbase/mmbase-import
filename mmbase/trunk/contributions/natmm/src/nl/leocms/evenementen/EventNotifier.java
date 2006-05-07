@@ -151,8 +151,27 @@ public class EventNotifier implements Runnable {
       return logMessage;
    }
 
-   public void isCanceledNotification(Cloud cloud, String sEvent) {      
-      int nEmailSend = sendEventNotification(cloud, cloud.getNode(sEvent), "Geannuleerde activiteit"," is geannuleerd.");  ;
+   public void isCanceledNotification(Cloud cloud, String sEvent) {
+      Node thisEvent = cloud.getNode(sEvent);
+      String fromEmailAddress = NatMMConfig.fromCADAddress;
+      String emailSubject = "Geannuleerde activiteit " + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue();
+      String eventMessage = " is geannuleerd.";
+      Node emailNode = cloud.getNodeManager("email").createNode();
+      emailNode.setValue("from", fromEmailAddress);
+      emailNode.setValue("to", NatMMConfig.toEmailAddress);
+      emailNode.setValue("subject", emailSubject);
+      emailNode.setValue("replyto", fromEmailAddress);
+      emailNode.setValue("body",
+                      "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
+                         + getEventMessage(thisEvent, eventMessage, "plain")
+                      + "</multipart>"
+                      + "<multipart id=\"htmltext\" alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">"
+                      + "<html>"
+                        + getEventMessage(thisEvent, eventMessage, "html") + "</html>"
+                      + "</multipart>");
+      emailNode.commit();
+      emailNode.getValue("mail(oneshotkeep)");
+      // int nEmailSend = sendEventNotification(cloud, cloud.getNode(sEvent), "Geannuleerde activiteit"," is geannuleerd.");
    }
 
 
