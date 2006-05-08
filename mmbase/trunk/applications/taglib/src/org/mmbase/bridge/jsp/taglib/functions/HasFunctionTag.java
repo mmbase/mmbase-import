@@ -14,16 +14,17 @@ import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.NotFoundException;
 
 import javax.servlet.jsp.JspTagException;
-
+import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasFunctionTag.java,v 1.1 2005-08-18 16:55:27 michiel Exp $
+ * @version $Id: HasFunctionTag.java,v 1.2 2006-05-08 21:43:46 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class HasFunctionTag extends AbstractFunctionTag implements Condition {
+    private static final Logger log = Logging.getLoggerInstance(HasFunctionTag.class);
 
     protected Attribute inverse = Attribute.NULL;
 
@@ -40,6 +41,9 @@ public class HasFunctionTag extends AbstractFunctionTag implements Condition {
             getFunction();
             found = true;
         } catch (NotFoundException nfe) {
+            found = false;
+        } catch (java.lang.reflect.UndeclaredThrowableException ute) {
+            // can happen on modules, which are proxies.
             found = false;
         }
         if (found != getInverse()) {
