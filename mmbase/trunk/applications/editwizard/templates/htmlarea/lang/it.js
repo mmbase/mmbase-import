@@ -49,6 +49,6 @@ HTMLArea.I18N = {
 
 	msg: {
 		"Path":         "Percorso",
-		"TEXT_MODE":    "Sei in MODALITA' TESTO. Usa il bottone [<>] per tornare alla modalità WYSIWYG."
+		"TEXT_MODE":    "Sei in MODALITA' TESTO. Usa il bottone [<>] per tornare alla modalitÃ  WYSIWYG."
 	}
 };

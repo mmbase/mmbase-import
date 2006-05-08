@@ -22,19 +22,19 @@ HTMLArea.I18N = {
 		bold:           "Paks",
 		italic:         "Kursiiv",
 		underline:      "Allakriipsutatud",
-		strikethrough:  "Läbikriipsutatud",
+		strikethrough:  "LÃ¤bikriipsutatud",
 		subscript:      "Allindeks",
-		superscript:    "Ülaindeks",
+		superscript:    "Ãœlaindeks",
 		justifyleft:    "Joonda vasakule",
 		justifycenter:  "Joonda keskele",
 		justifyright:   "Joonda paremale",
-		justifyfull:    "Rööpjoonda",
+		justifyfull:    "RÃ¶Ã¶pjoonda",
 		insertorderedlist:    "Nummerdus",
-		insertunorderedlist:  "Täpploend",
-		outdent:        "Vähenda taanet",
+		insertunorderedlist:  "TÃ¤pploend",
+		outdent:        "VÃ¤henda taanet",
 		indent:         "Suurenda taanet",
-		forecolor:      "Fondi värv",
-		hilitecolor:    "Tausta värv",
+		forecolor:      "Fondi vÃ¤rv",
+		hilitecolor:    "Tausta vÃ¤rv",
 		inserthorizontalrule: "Horisontaaljoon",
 		createlink:     "Lisa viit",
 		insertimage:    "Lisa pilt",
@@ -44,9 +44,9 @@ HTMLArea.I18N = {
 		about:          "Teave toimeti kohta",
 		showhelp:       "Spikker",
 		textindicator:  "Kirjastiil",
-		undo:           "Võta tagasi",
+		undo:           "VÃµta tagasi",
 		redo:           "Tee uuesti",
-		cut:            "Lõika",
+		cut:            "LÃµika",
 		copy:           "Kopeeri",
 		paste:          "Kleebi"
 	},
@@ -58,6 +58,6 @@ HTMLArea.I18N = {
 
 	msg: {
 		"Path":         "Path",
-		"TEXT_MODE":    "Sa oled tekstireziimis.  Kasuta nuppu [<>] lülitamaks tagasi WYSIWIG reziimi."
+		"TEXT_MODE":    "Sa oled tekstireziimis.  Kasuta nuppu [<>] lÃ¼litamaks tagasi WYSIWIG reziimi."
 	}
 };
