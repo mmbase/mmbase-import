@@ -27,54 +27,7 @@ title = "Edit " + ntype + " node";
 <table border="0" cellspacing="0" cellpadding="3">
 <tr>
   <td valign="top" width="20%">
-
 <%@ include file="inc_relations.jsp" %>
-	
-<!-- table about icons -->
-<br />
-<table border="0" cellpadding="0" cellspacing="0" align="center">
-  <tr align="left">
-    <td colspan="2">&nbsp;</td>
-    <td rowspan="3" nowrap="nowrap">&nbsp;<b class="title-ss">About the icons</b></td>
-    <td colspan="2">&nbsp;</td>
-  </tr><tr align="left">
-    <td bgcolor="#000000" colspan="2"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-    <td bgcolor="#000000" colspan="2"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-  </tr><tr align="left">
-    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-    <td width="20">&nbsp;</td>
-    <td width="20">&nbsp;</td>
-    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-  </tr><tr align="left">
-    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-    <td colspan="3"><!-- table in table --><table width="100%" border="0" cellspacing="0" cellpadding="4">
-		<tr>
-		  <td width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></td>
-		  <td colspan="2" nowrap="nowrap"> Search node to relate to </td>
-		</tr>
-		<tr>
-		  <td width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></td>
-		  <td colspan="2" nowrap="nowrap"> Create new node and relate </td>
-		</tr>
-		<tr>
-		  <td width="24"><img src="img/mmbase-relation-left.gif" alt="relation" width="21" height="20" border="0" /></td>
-		  <td colspan="2" nowrap="nowrap"> Edit relation </td>
-		</tr>
-		<tr>
-		  <td width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></td>
-		  <td colspan="2" nowrap="nowrap"> Edit node </td>
-		</tr>
-		<tr>
-		  <td width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></td>
-		  <td colspan="2" nowrap="nowrap"> Delete node </td>
-		</tr>
-	  </table><!-- end table in table --></td>
-    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-  </tr><tr>
-    <td colspan="5" bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-  </tr>
-</table>
-<!-- end about the icons -->
   </td>
   <td valign="top" width="80%">
   <!-- start edit form -->
