@@ -38,6 +38,11 @@ function toggle(targetId){
   <li>E-mail address to send mail to<br />
   Or Daniel gets all your precious files ;-)</li>
 </ul>
+<p>Note: Using Commons Fileupload has some weird quirks you need to remember
+when using it for your own pages. I do not know if they are native to Commons 
+Fileupload but just in case: your &lt;input type="file" /&gt; must start at 1 not 0. 
+So it needs to be &lt;input type="file" name="file1" /&gt;. And for some reason
+you can not submit to the some JSP, you must submit to a second page.</p>
 
 <form action="example7_process.jsp" method="post" enctype="multipart/form-data">
 <fieldset>
