@@ -183,14 +183,12 @@ public class RubriekHelper {
    public StringBuffer getUrlPathToRootString(Node rubriek, String contextPath) {
       StringBuffer url = new StringBuffer("");
       url.append(contextPath);
-      url.append("/");
       List path = getPathToRoot(rubriek);
       if(path.size()>1) {
          int iFirstNode = (isFirstSubsite(path) ? 2 : 1);
          for(int i=iFirstNode; i<path.size(); i++) {
-            
             Node n = (Node) path.get(i);
-            if (i > iFirstNode) { url.append('/'); }
+            url.append('/');
             url.append(HtmlCleaner.stripText(n.getStringValue("naam")));
          }
       }
