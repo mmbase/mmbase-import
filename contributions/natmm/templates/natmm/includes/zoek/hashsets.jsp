@@ -87,14 +87,16 @@ if((sCategory != null) && (!sCategory.equals(""))) {
 
 %><mm:log jspvar="log"><% 
 
+// this will lead to double results on the natuurgebieden, because artikel,rolerel,natuurgebieden,pos4rel,provincies is used to link routes
+hsetNatuurgebiedenNodes = addPages(cloud, log, cf, sQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetPagesNodes.remove("411"); // todo: this is a workaround, should be replaced by really integrating routes (in combi with PaginaHelper.pathsFromPageToElements)
+if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
+
 hsetArticlesNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
 
 hsetArtDossierNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,posrel,dossier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>artByDossierHits:<br/><%= hsetArtDossierNodes %><br/><%= hsetPagesNodes %><% } 
-
-hsetNatuurgebiedenNodes = addPages(cloud, log, cf, sQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
-if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
 
 hsetFormulierNodes = addPages(cloud, log, cf, sQuery, 2, "formulier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>formulierHits:<br/><%= hsetFormulierNodes %><br/><%= hsetPagesNodes %><% } 
