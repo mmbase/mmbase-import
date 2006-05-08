@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasFunctionTag.java,v 1.2 2006-05-08 21:43:46 michiel Exp $
+ * @version $Id: HasFunctionTag.java,v 1.3 2006-05-08 21:51:38 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -38,8 +38,7 @@ public class HasFunctionTag extends AbstractFunctionTag implements Condition {
     public int doStartTag() throws JspTagException {
         boolean found;
         try {
-            getFunction();
-            found = true;
+            found = getFunction() != null;
         } catch (NotFoundException nfe) {
             found = false;
         } catch (java.lang.reflect.UndeclaredThrowableException ute) {
