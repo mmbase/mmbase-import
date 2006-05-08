@@ -80,7 +80,7 @@ while (j.hasNext()) {
 
 <p>Latest builds from the HEAD branch that is to become the 1.8 release</p>
 <ul>
-<% Iterator l = getReleaseBuilds(2).iterator();
+<% Iterator l = getReleaseBuilds(3).iterator();
 while (l.hasNext()) {
   BuildInfo info = (BuildInfo) l.next(); %>
   <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
