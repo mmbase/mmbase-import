@@ -23,9 +23,9 @@ textarea
 h1	{font-size:22px}
 
 i,
-textarea		{ padding-left:3; }
-.imagebutton		{ cursor:pointer;/* xpadding:0; xmargin:0 1 1 0; */width:20; height:20; border-style:none; border-width:0; }
-.imagebutton_down	{ cursor:pointer;/* xpadding:0; xmargin:1 0 0 1; */width:20; height:20; border-style:none; border-width:0; }
+textarea		{ padding-left:3px; }
+.imagebutton		{ cursor:pointer;/* xpadding:0; xmargin:0 1 1 0; */width:20px; height:20px; border-style:none; border-width:0px; }
+.imagebutton_down	{ cursor:pointer;/* xpadding:0; xmargin:1 0 0 1; */width:20px; height:20px; border-style:none; border-width:0px; }
 
 .superhead	{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:20px; letter-spacing:0em; color:#000000; }
 .head		{ font-family:"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#000000; }
@@ -41,16 +41,16 @@ textarea		{ padding-left:3; }
 
 .submit_goto	{ background-color:#FFFFFF; border-width:0; cursor: pointer; padding:0; margin:0; font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#18248C; }
 
-.listcanvas	{ background-color:#ffffff; border-style:solid; border-width:3; border-color:#CCCCCC; padding:5; }
+.listcanvas	{ background-color:#ffffff; border-style:solid; border-width:3px; border-color:#CCCCCC; padding:5px; }
 
 .tooltip	{
 		  background-color:#FFFF88;
-		  border-style:solid; border-width:1; border-color:#000000;
-		  padding:3;
+		  border-style:solid; border-width:1px; border-color:#000000;
+		  padding:3px;
 		  position:absolute; top:0; left:0;
 		  visibility:visible;
 		  z-index:1001;
-		  width:250;
+		  width:250px;
 		  font-size:11px;
 		}
 		
@@ -59,7 +59,7 @@ input.submitbutton	{ background-color:#FFFFFF; color:#18248C; border-style:none;
 			}		
 
 .modaliframe	{
-		  width:402; height:302;
+		  width:402px; height:302px;
 		  background-color:#FFFFFF;
 		  z-index:3000;
 		}
