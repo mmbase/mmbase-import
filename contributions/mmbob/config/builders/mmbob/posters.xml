@@ -104,7 +104,7 @@
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name xml:lang="en">account</name>
-        <type key="false" notnull="true" size="12" state="persistent">STRING</type>
+        <type key="false" notnull="true" size="128" state="persistent">STRING</type>
       </db>
     </field>
 

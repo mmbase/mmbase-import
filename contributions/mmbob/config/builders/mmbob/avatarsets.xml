@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"                        
-    name="avatarsets" maintainer="mmbase.org" version="0" extends="object">
+    name="avatarsets" maintainer="mmbase.org" version="0" extends="imagesets">
 
   <names>
     <singular xml:lang="nl">Avatarverzameling</singular>
