@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.44 2006-03-21 15:02:37 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.45 2006-05-08 18:02:49 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -93,10 +93,7 @@ if (request.getParameter("logout") != null) {
     log.debug("logout parameter given, clearing session");
     session.removeAttribute(sessionKey);
     log.debug("Redirecting to " + refer);
-    if (! refer.startsWith("http:")) {
-        refer = response.encodeRedirectURL(request.getContextPath() + refer);
-    }
-   %>
+    %>
    <mm:redirect referids="loginsessionname" page="logout.jsp"><mm:param name="refer" value="<%=refer%>" /></mm:redirect>
   <%
     return;
