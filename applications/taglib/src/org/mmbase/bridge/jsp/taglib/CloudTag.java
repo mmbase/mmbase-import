@@ -38,11 +38,13 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.132 2006-04-29 17:13:08 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.133 2006-05-08 18:01:54 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
 
+
+    private static String INITIAL_REALM_PREFIX = "initial-";
 
     /**
      * Constants needed for the loginpage attribute functionality
@@ -288,13 +290,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         Cookie c = searchCookie();
         if (c == null) {
             c = new Cookie(REALM + getSessionName(), r);
-            String path = request.getContextPath();
-            if (path.equals("")) path = "/";
-            c.setPath(path);
-            c.setMaxAge((int) (60 * 60 * 24 * 365.25)); // let it live one year
         } else {
             c.setValue(r);
         }
+        String path = request.getContextPath();
+        if (path.equals("")) path = "/";
+        c.setPath(path);
+        c.setMaxAge((int) (60 * 60 * 24 * 365.25)); // one year
+
+
         if (cookies.length == 0) {
             cookies = new Cookie[1];
         }
@@ -328,18 +332,21 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private void removeRealm() throws JspTagException {
         log.debug("Removing realm");
         String currentRealm = getRealm();
-        if (! currentRealm.startsWith("JUST")) { // just authenticated, so don't unauthenticate now
+        if (currentRealm != null && ! currentRealm.startsWith(INITIAL_REALM_PREFIX)) { // just authenticated, so don't unauthenticate now
             String cookie = REALM + getSessionName();
             log.debug("removing cookie");
             if (cookies != null) {
                 for (int i = 0; i < cookies.length; i++) {
+                    String path = request.getContextPath();
+                    if (path.equals("")) path = "/";
                     if (cookies[i].getName().equals(cookie)) {
                         if (log.isDebugEnabled()) {
-                        log.debug("removing cookie with value " + cookies[i]);
+                            log.debug("removing cookie with value " + cookies[i]);
                         }
                         cookies[i].setValue("");
-                    cookies[i].setMaxAge(0); // remove
-                    response.addCookie(cookies[i]);
+                        cookies[i].setMaxAge(0); // remove
+                        cookies[i].setPath(path);
+                        response.addCookie(cookies[i]);
                     }
                 }
             }
@@ -399,7 +406,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
         if (realm == null) {
             realm = getRealmName();
-            if (!setRealm("JUST" + realm)) {
+            if (!setRealm(INITIAL_REALM_PREFIX + realm)) {
                 return SKIP_BODY;
             }
         } else {
@@ -843,9 +850,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             log.debug("no realm found, need to log on again");
             return denyHTTP("<h2 class=\"mm_cloud\">" + bundle.getString("cloudtag.again") + "</h2><p class=\"mm_cloud\">" + bundle.getString("cloudtag.logout") + "</p>");
         }
-        if (realm.startsWith("JUST")) {
-            realm = realm.substring(4);
-            setRealm(realm);
+        if (realm.startsWith(INITIAL_REALM_PREFIX)) {
+            realm = realm.substring(INITIAL_REALM_PREFIX.length());
+            if (! setRealm(realm)) {
+                return SKIP_BODY;
+            }
         }
         String mime_line = request.getHeader("Authorization");
         if (log.isDebugEnabled()) {
@@ -1245,10 +1254,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     public void setPageContext(PageContext pc) {
         super.setPageContext(pc);
-        request = (HttpServletRequest) pageContext.getRequest();
+        request =  (HttpServletRequest) pageContext.getRequest();
         response = (HttpServletResponse) pageContext.getResponse();
         if (log.isDebugEnabled()) {
-            log.debug("Got a " + response.getClass().getName());
+            log.debug("Got a " + response.getClass().getName() + " (commited: " + response.isCommitted() + ")");
         }
     }
 
