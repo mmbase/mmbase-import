@@ -22,10 +22,10 @@
     <select name="newstate"><option>published<option>concept<option>archived</select><br /><br />
 
     <b>Title</b><br />
-    <textarea name="newtitle" rows="5" style="width: 95%"></textarea><br /><br />
+    <input name="newtitle" style="width: 95%" /><br /><br />
 
     <b>Text</b><br />
-    <textarea name="newbody" rows="50" style="width: 95%"></textarea><br /><br />
+    <textarea name="newbody" rows="35" style="width: 95%"></textarea><br /><br />
   </td>
   <td valign="top" width="30%">
   </td>
