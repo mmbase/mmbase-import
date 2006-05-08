@@ -20,7 +20,7 @@
 		public String  docsLink = "";
 	}
 
-List  showDirs(File thisDir, String prefix, int max) throws IOException {
+List  showDirs(File thisDir, String prefix, int max, String start) throws IOException {
   List buildInfos = new ArrayList();
   File[] content = thisDir.listFiles(); 
   Arrays.sort(content, new DirSorter());
@@ -29,7 +29,7 @@ List  showDirs(File thisDir, String prefix, int max) throws IOException {
   for (int i=0; i< content.length ; i++) {
     BuildInfo info = new BuildInfo();
     File f = (File) content[i];
-    if (f.isDirectory() && (! f.getName().equals("last")) && (new File(f, "messages.log")).exists()) {
+    if (f.isDirectory() && f.getName().toLowerCase().startsWith(start) && (new File(f, "messages.log")).exists()) {
 	found ++;
 	if (found >= max) break;
        info.link = "/development/download/build_page.jsp?dir=" + prefix + "/" + f.getName();
@@ -67,15 +67,18 @@ List  showDirs(File thisDir, String prefix, int max) throws IOException {
 }
 
  List getHeadBuilds(int max) throws IOException{
-	return showDirs(new File("/home/mmweb/nightly/builds"), "head", max);
+	return showDirs(new File("/home/mmweb/nightly/builds"), "head", max, "20");
+ }
+ List getReleaseBuilds(int max) throws IOException{
+	return showDirs(new File("/home/mmweb/nightly/builds"), "head", max, "mmbase");
  }
 
  List getStableBuilds(int max) throws IOException{
-	return showDirs(new File("/home/mmweb/nightly/builds/stable"),"stable", max);
+	return showDirs(new File("/home/mmweb/nightly/builds/stable"),"stable", max, "20");
  }
 
  List getOccasionalBuilds(int max) throws IOException{
-	return showDirs(new File("/home/mmweb/nightly/builds/occasional"),"occasional", max);
+	return showDirs(new File("/home/mmweb/nightly/builds/occasional"),"occasional", max, "");
  }
 %>
 
