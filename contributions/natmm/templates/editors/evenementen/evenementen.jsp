@@ -20,6 +20,7 @@ String endDyIdFC = "";
 String endMnthIdFC = "";
 String endYrIdFC = "";
 String provincieIdFC = "";
+String evenement_typeIdFC = "";
 String afdelingIdFC = "";
 String offsetIdFC = "0";
 Cookie[] cookies = request.getCookies();
@@ -29,6 +30,7 @@ if(cookies!=null){
       String thisValue = cookies[c].getValue();
 	   if (thisName!=null&&thisValue!=null) {
 	      if(thisName.equals("provincieIdFC")) { provincieIdFC = thisValue; }
+			if(thisName.equals("evenement_typeIdFC")) { evenement_typeIdFC = thisValue; } 
 	      if(thisName.equals("afdelingIdFC")) { afdelingIdFC = thisValue; }
 	      if(thisName.equals("orderbyIdFC")) { orderbyIdFC = thisValue; }
 	      if(thisName.equals("directionIdFC")) { directionIdFC = thisValue; }
@@ -50,6 +52,7 @@ if(cookies!=null){
 <mm:import externid="delete" jspvar="deleteId" id="deleteId" /><% if(deleteId==null) { deleteId = ""; } %>
 <mm:import externid="docopy" jspvar="docopyId" id="docopyId" /><% if(docopyId==null) { docopyId = ""; } %>
 <mm:import externid="provincie" jspvar="provincieId" id="provincieId" /><% if(provincieId==null) { provincieId = provincieIdFC; } %>
+<mm:import externid="evenement_type" jspvar="evenement_typeId" id="evenement_typeId" /><% if(evenement_typeId==null) { evenement_typeId = evenement_typeIdFC; } %>
 <mm:import externid="afdeling" jspvar="afdelingId" id="afdelingId" /><% if(afdelingId==null) { afdelingId = afdelingIdFC; } %>
 <mm:import externid="orderby" jspvar="orderbyId" id="orderbyId"><%= orderbyIdFC %></mm:import><% if(orderbyId==null) { orderbyId = "titel"; } %>
 <mm:import externid="direction" jspvar="directionId" id="directionId"><%= directionIdFC %></mm:import>
@@ -67,6 +70,7 @@ if(cookies!=null){
 <%
 if(commandId.equals("Wis")) { // *** reset to default values ***
    provincieId = "";
+	evenement_typeId = "";
    afdelingId = "";
    orderbyId = "titel";
    directionId = "up";
@@ -104,6 +108,7 @@ action: <%= actionId %><br/>
 <%
 Cookie thisCookie = null;
 thisCookie = new Cookie("provincieIdFC", provincieId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
+thisCookie = new Cookie("evenement_typeIdFC", evenement_typeId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
 thisCookie = new Cookie("afdelingIdFC", afdelingId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
 thisCookie = new Cookie("orderbyIdFC", orderbyId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
 thisCookie = new Cookie("directionIdFC", directionId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
@@ -186,6 +191,7 @@ if(!docopyId.equals("")) {
     </jsp:include><%
    titelId = "Copy van";
    provincieId = "";
+	evenement_typeId = "";
    afdelingId = "";
 }
 
@@ -235,9 +241,9 @@ if(!provincieId.equals("")) {
    ><mm:field name="titel" jspvar="titel" vartype="String" write="false"
    ><mm:field name="begindatum" jspvar="begindatum" vartype="String" write="false"><%
    
-   String parent_number = Evenement.findParentNumber(event_number);
-   
-   // *** find the key for ordering ***
+	String parent_number = Evenement.findParentNumber(event_number);
+	
+	// *** find the key for ordering ***
    String key = "";
    if(orderbyId.equals("titel")) {
       key = titel;
@@ -262,6 +268,16 @@ if(!provincieId.equals("")) {
     
    // *** add extra restrictions ***
    boolean isValidEvent = true;
+	if (!evenement_typeId.equals("")) { 
+	isValidEvent = false;
+	%><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,related,evenement_type">
+			<mm:constraint field="evenement_type.number" operator="=" value="<%= evenement_typeId %>" />
+			<mm:list max="1"><%
+            isValidEvent = true;
+         %></mm:list
+      ></mm:listcontainer>
+	<%
+	}
    if(!natuurgebiedenId.equals("")||!afdelingId.equals("")||!allowedNatuurgebieden.equals("")) {
       isValidEvent = false;
       %><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,related,natuurgebieden"><%
@@ -414,6 +430,17 @@ if(!provincieId.equals("")) {
          	   <option value="" <% if(afdelingId.equals("")) { %>selected<% } %>>Alle afdelingen...
          	<% } %>
          </select>
+			<select name="evenement_type">
+      	<mm:listnodes type="evenement_type" orderby="naam">
+      	   <mm:field name="number" jspvar="evenement_type_number" vartype="String" write="false">
+      	      <option value="<%= evenement_type_number %>" <% 
+      	         if(evenement_type_number.equals(evenement_typeId)) {
+      	            %>selected<% } 
+      	         %>></mm:field><mm:field name="naam" />	   
+      	</mm:listnodes>
+      	<option value="-1" <% if(evenement_typeId.equals("-1")) { %>selected<% } %>>Geen type
+      	<option value="" <% if(evenement_typeId.equals("")) { %>selected<% } %>>Alle types...
+	      </select>
          <select name="provincie">
       	<mm:listnodes type="provincies" orderby="naam">
       	   <mm:field name="number" jspvar="provincie_number" vartype="String" write="false">
