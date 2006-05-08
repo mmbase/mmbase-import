@@ -46,8 +46,9 @@ public class EventNotifier implements Runnable {
                          + getEventMessage(thisEvent, eventMessage, "plain")
                       + "</multipart>"
                       + "<multipart id=\"htmltext\" alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">"
-                      + "<html>"
-                        + getEventMessage(thisEvent, eventMessage, "html") + "</html>"
+                        + "<html>"
+                           + getEventMessage(thisEvent, eventMessage, "html")
+                        + "</html>"
                       + "</multipart>");
       emailNode.commit();
        
@@ -224,8 +225,75 @@ public class EventNotifier implements Runnable {
       }
       logMessage += "\n<br>Number of 'fully booked' notifications send " + nEmailSend;
       return logMessage;
-   }  
-
+   }
+   
+   private boolean isFirstDayOfNewQuarter() {
+      Calendar cal = Calendar.getInstance();
+      int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+      int month = cal.get(Calendar.MONTH);
+      return (dayOfMonth==1)&&(month%3==0);
+   }
+   
+   private String getCheckAccountMessage(String type) {
+      String newline = "<br/>";
+      if(type.equals("plain")) { newline = "\n"; }
+      return "Dit bericht is verstuurd in het kader van de driemaandelijkse controle op de in de website gebruikte emailaddressen." + newline
+         + "Stuur alstublieft ter controle een reply op deze email naar" + newline + newline
+         + "Email:" + NatMMConfig.toEmailAddress + newline + newline
+         + "Bij voorbaat dank, de webmasters." + newline + newline;
+   }
+   
+   public String checkEmailAccounts(Cloud cloud) {
+      
+      TreeSet emailAccounts = new TreeSet();
+      emailAccounts.add(NatMMConfig.fromEmailAddress);
+      emailAccounts.add(NatMMConfig.fromCADAddress);
+      emailAccounts.add(NatMMConfig.infoEmailAddress);
+      emailAccounts.add(NatMMConfig.toSubscribeAddress);
+      NodeList nlFormulieren = cloud.getNodeManager("formulier").getList("emailadressen != ''",null,null);
+      for(int n=0; n<nlFormulieren.size(); n++) {
+         String thisEmailAddres =  nlFormulieren.getNode(n).getStringValue("emailadressen") + ";";
+         int semicolon = thisEmailAddres.indexOf(";");
+         while(semicolon>-1)
+         {
+            emailAccounts.add(thisEmailAddres.substring(0,semicolon));
+            thisEmailAddres = thisEmailAddres.substring(semicolon+1);
+            semicolon = thisEmailAddres.indexOf(";");
+         }
+      }
+      Node emailNode = cloud.getNodeManager("email").createNode();
+      emailNode.setValue("from", NatMMConfig.toEmailAddress);
+      emailNode.setValue("subject", "Controle op in de website gebruikte emailaddressen");
+      emailNode.setValue("replyto", NatMMConfig.toEmailAddress);
+      emailNode.setValue("body",
+             "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
+                + getCheckAccountMessage("plain")
+             + "</multipart>"
+             + "<multipart id=\"htmltext\" alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">"
+               + "<html>"
+                  + getCheckAccountMessage("html")
+               + "</html>"
+             + "</multipart>");
+      emailNode.commit();
+      
+      String logMessage = "";
+      int nEmailSend = 0;
+      while(!emailAccounts.isEmpty()) {
+        String emailAddress = (String) emailAccounts.first();
+        if(com.cfdev.mail.verify.EmailVerifier.validateEmailAddressSyntax(emailAddress)) {
+           emailNode.setValue("to", emailAddress);
+           emailNode.commit();
+           emailNode.getValue("mail(oneshot)");
+           logMessage += "\n<br>Send email to: " + emailAddress;
+           nEmailSend++;
+        } else {
+           logMessage += "\n<br>" + emailAddress +  " is not a valid email adres";
+        }
+        emailAccounts.remove(emailAddress);
+      }
+      return "\n<br>Number of emails for checking accounts is " + nEmailSend + logMessage;
+   }
+   
    public void updateEventDB() { 
    
       Cloud cloud = CloudFactory.getCloud();
@@ -248,6 +316,9 @@ public class EventNotifier implements Runnable {
          logMessage += notifyParticipants(cloud);
          logMessage += lessThanMin(cloud);
          logMessage += isFullyBooked(cloud);
+         if(isFirstDayOfNewQuarter()) {
+            logMessage += checkEmailAccounts(cloud);
+         }
       } else {
          logMessage += "\n<br>'" + requestUrl + "' does not match with '" + liveUrl + "' therefore no reminder emails send";
          log.info("'" + requestUrl + "' does not match with '" + liveUrl + "' therefore no reminder emails send");
