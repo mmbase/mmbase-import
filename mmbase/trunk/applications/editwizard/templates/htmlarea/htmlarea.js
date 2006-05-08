@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.10 2006-04-19 05:55:30 nklasens Exp $
+// $Id: htmlarea.js,v 1.11 2006-05-08 18:05:25 michiel Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
@@ -246,7 +246,7 @@ HTMLArea.Config = function () {
         for (var i in this.btnList) {
                 var btn = this.btnList[i];
                 btn[1] = _editor_url + this.imgURL + btn[1];
-                if (typeof HTMLArea.I18N.tooltips[i] != "undefined") {
+                if (HTMLArea.I18N && typeof HTMLArea.I18N.tooltips[i] != "undefined") {
                         btn[0] = HTMLArea.I18N.tooltips[i];
                 }
         }
@@ -607,7 +607,7 @@ HTMLArea.prototype._createStatusBar = function() {
         // creates a holder for the path view
         div = document.createElement("span");
         div.className = "statusBarTree";
-        div.innerHTML = HTMLArea.I18N.msg["Path"] + ": ";
+        div.innerHTML = HTMLArea.I18N ? HTMLArea.I18N.msg["Path"] + ": " : "Path: ";
         this._statusBarTree = div;
         this._statusBar.appendChild(div);
         if (!this.config.statusBar) {
@@ -1005,9 +1005,9 @@ HTMLArea.prototype.forceRedraw = function() {
 // focuses the iframe window.  returns a reference to the editor document.
 HTMLArea.prototype.focusEditor = function() {
         switch (this._editMode) {
-            case "wysiwyg" : this._iframe.contentWindow.focus(); break;
-            case "textmode": this._textArea.focus(); break;
-            default	   : alert("ERROR: mode " + this._editMode + " is not defined");
+	case "wysiwyg" : this._iframe.contentWindow.focus(); break;
+	case "textmode": this._textArea.focus(); break;
+	default	   : alert("ERROR: mode " + this._editMode + " is not defined");
         }
         return this._doc;
 };
@@ -1056,7 +1056,7 @@ HTMLArea.prototype.updateToolbar = function(noStatus) {
         if (!text) {
                 ancestors = this.getAllAncestors();
                 if (this.config.statusBar && !noStatus) {
-                        this._statusBarTree.innerHTML = HTMLArea.I18N.msg["Path"] + ": "; // clear
+                        this._statusBarTree.innerHTML = HTMLArea.I18N ? HTMLArea.I18N.msg["Path"] + ": " : "Path: "; // clear
                         for (var i = ancestors.length; --i >= 0;) {
                                 var el = ancestors[i];
                                 if (!el) {
