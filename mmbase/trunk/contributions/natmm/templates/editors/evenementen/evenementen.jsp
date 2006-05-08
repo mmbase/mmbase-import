@@ -388,16 +388,16 @@ if(!provincieId.equals("")) {
    onsubmit="clickedButton.disabled=true;">
 <input type="hidden" name="command" value="">
 <table class="formcontent">
+<tr><td colspan="4" style="text-align:center;color:red;font-weight:bold;" id="message"></td></tr>
 <tr><td><%  if((isAdmin||isChiefEditor)&&actionId.indexOf("print")==-1) { %>
             <a href="EvenementInitAction.eb"><img src="<mm:url page="<%= editwizard_location %>"/>/media/new.gif" border='0' alt='Maak een nieuwe activiteit' /></a>
         <% } %>
     </td>
     <td class="fieldname" style="padding-left:5px;vertical-align:middle;"><nobr><%= soortId.toUpperCase() %></nobr></td>
-    <td style="padding-left:25px;vertical-align:middle;"><%
+    <td style="padding-left:25px;vertical-align:middle;width:50%;"><%
       if(actionId.indexOf("print")==-1) {
          %><nobr><a href="evenementen.jsp?offset=0&orderby=<%= orderbyId %>&direction=<%= directionId %>&soort=<%= newSoort %><%= searchSetting %>">(<%= newSoort %>)</a></nobr><%
       } %></td>
-    <td style="width:50%;vertical-align:middle;color:red;font-weight:bold;padding-left:5px;padding-right:5px;" id="message"></td>
     <td style="vertical-align:bottom;"><% 
       if(actionId.indexOf("print")>-1) {
          %><a href="#" onClick="window.close()"><img src='../img/close.gif' align='absmiddle' border='0' alt='Sluit dit venster'></a><%
@@ -409,7 +409,7 @@ if(!provincieId.equals("")) {
 					 	 <img src='../img/icexcel.gif' align='absmiddle' border='0' alt='Download alle geselecteerde activiteiten'>
 				    </a>
 			 <% } %>	
-         <select name="afdeling">
+         <select name="afdeling" style="width:130px;">
             <% int iNumberOfDept = 0; %>
          	<mm:list nodes="<%= allowedNatuurgebieden %>" path="natuurgebieden,posrel,afdelingen" orderby="afdelingen.naam"
          	   fields="afdelingen.number" distinct="true">
@@ -419,9 +419,7 @@ if(!provincieId.equals("")) {
             	         if(afdeling_number.equals(afdelingId)) { 
             	            %>selected<% } 
       	         %>></mm:field
-                  ><mm:field name="naam" jspvar="afdeling_name" vartype="String" write="false"
-                     ><%= (afdeling_name.length()>23 ? afdeling_name.substring(0,20) + "..." : afdeling_name ) 
-                  %></mm:field>
+                  ><mm:field name="naam" />
                 </mm:node>
                 <% iNumberOfDept++; %>
          	</mm:list>
@@ -430,7 +428,7 @@ if(!provincieId.equals("")) {
          	   <option value="" <% if(afdelingId.equals("")) { %>selected<% } %>>Alle afdelingen...
          	<% } %>
          </select>
-			<select name="evenement_type">
+			<select name="evenement_type" style="width:130px;">
       	<mm:listnodes type="evenement_type" orderby="naam">
       	   <mm:field name="number" jspvar="evenement_type_number" vartype="String" write="false">
       	      <option value="<%= evenement_type_number %>" <% 
@@ -441,7 +439,7 @@ if(!provincieId.equals("")) {
       	<option value="-1" <% if(evenement_typeId.equals("-1")) { %>selected<% } %>>Geen type
       	<option value="" <% if(evenement_typeId.equals("")) { %>selected<% } %>>Alle types...
 	      </select>
-         <select name="provincie">
+         <select name="provincie" style="width:130px;">
       	<mm:listnodes type="provincies" orderby="naam">
       	   <mm:field name="number" jspvar="provincie_number" vartype="String" write="false">
       	      <option value="<%= provincie_number %>" <% 
@@ -451,7 +449,9 @@ if(!provincieId.equals("")) {
       	</mm:listnodes>
       	<option value="-1" <% if(provincieId.equals("-1")) { %>selected<% } %>>Geen provincie
       	<option value="" <% if(provincieId.equals("")) { %>selected<% } %>>Alle provincies...
-       </select></nobr><%
+       </select></nobr>
+       <table class="formcontent" style="width:150px;"><tr><td><input type="checkbox" name="no_group_events" style="width:12px;height:12px;" /></td><td>Geen groepsactiviteiten</td></tr></table>
+       <%
       } %>
     </td>
 </tr>
@@ -465,7 +465,7 @@ if(!provincieId.equals("")) {
       int lastEvent = pageSize*(thisOffset+1);
       if(lastEvent>listSize) { lastEvent = listSize; }
       %><td colspan="2">Gevonden <%= listSize %> <%= sSoort %><br> Getoond <%= pageSize*thisOffset %> - <%= lastEvent %></td>
-      <td colspan="3"><%
+      <td colspan="2"><%
          String sThisUrl = "evenementen.jsp?orderby=" +  orderbyId + "&direction=" + directionId + "&soort=" +  soortId + "&action=" +  actionId + searchSetting;
          if(thisOffset>0) { 
            %><a href="<%= sThisUrl %>&offset=<%= thisOffset-1 %>">&nbsp;<<&nbsp;</a>  <%
@@ -483,8 +483,9 @@ if(!provincieId.equals("")) {
          } 
       %></td><%
    } else {
-      %><td colspan="5">Gevonden <%= listSize %> <%= sSoort %> </td><%
-   } %></tr>
+      %><td colspan="4">Gevonden <%= listSize %> <%= sSoort %> </td><%
+   } %>
+</tr>
 </table>
 <% if(actionId.indexOf("print")>-1) { %>
    <table class="formcontent" style="width:auto;">
@@ -536,9 +537,9 @@ if(actionId.indexOf("print")==-1) {
             %>&beginMnth=<%= beginMnthId %>&endMnth=<%= Integer.parseInt(endMnthId)+1 %><%= searchSettingMinMonth %>">
             <img src="../img/next.gif" border='0' align='absmiddle' alt='Einddatum één maand vooruit'/></a>
        <% } %>
-       <input type="submit" name="button" value="Zoek" style="width:40px;margin-left:20px;" onclick="javascript:showMessage(this,'Uw zoekopdracht wordt uitgevoerd.<br>Een moment geduld a.u.b.');">
+       <input type="submit" name="button" value="Zoek" style="width:40px;margin-left:20px;" onclick="javascript:showMessage(this,'Uw zoekopdracht wordt uitgevoerd. Een moment geduld a.u.b.');">
        </td>
-   <!--6--><td><input type="submit" name="button" value="Wis" style="width:40px;" onclick="javascript:showMessage(this,'Het formulier wordt gewist.<br>Een moment geduld a.u.b.');"></td>
+   <!--6--><td><input type="submit" name="button" value="Wis" style="width:40px;" onclick="javascript:showMessage(this,'Het formulier wordt gewist. Een moment geduld a.u.b.');"></td>
    </tr>
    <tr>
    <!--0--><td></td>
