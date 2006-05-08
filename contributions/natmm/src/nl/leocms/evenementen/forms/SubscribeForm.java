@@ -522,7 +522,7 @@ public class SubscribeForm extends ActionForm {
    }
 
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
-      log.info("SubscribeForm.validate()");
+      log.info("SubscribeForm.validate(" + this.getAction() + ")");
       ActionErrors errors = new ActionErrors();
 
       Cloud cloud = CloudFactory.getCloud();
@@ -532,7 +532,7 @@ public class SubscribeForm extends ActionForm {
       }
 
       String action = this.getAction();
-      if(action==null){
+      if(this.getAction()==null){
 
          log.info("null action in SubscribeForm");
 
