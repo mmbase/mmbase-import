@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.11 2006-05-08 18:05:25 michiel Exp $
+// $Id: htmlarea.js,v 1.12 2006-05-08 19:26:47 michiel Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
@@ -487,7 +487,9 @@ HTMLArea.prototype._createToolbar = function () {
                         el = document.createElement("div");
                         el.appendChild(document.createTextNode("A"));
                         el.className = "indicator";
-                        el.title = HTMLArea.I18N.tooltips.textindicator;
+  	if (HTMLArea.I18N) {
+    el.title = HTMLArea.I18N.tooltips.textindicator;
+  	}
                         var obj = {
                                 name	: txt, // the button name (i.e. 'bold')
                                 element : el, // the UI element (DIV)
@@ -807,7 +809,7 @@ HTMLArea.prototype.setMode = function(mode) {
                 this._iframe.style.display = "none";
                 this._textArea.style.display = "block";
                 if (this.config.statusBar) {
-                        this._statusBar.innerHTML = HTMLArea.I18N.msg["TEXT_MODE"];
+                        this._statusBar.innerHTML = HTMLArea.I18N ? HTMLArea.I18N.msg["TEXT_MODE"] : "text mode";
                 }
                 break;
             case "wysiwyg":
@@ -831,7 +833,7 @@ HTMLArea.prototype.setMode = function(mode) {
                 }
                 if (this.config.statusBar) {
                         this._statusBar.innerHTML = '';
-                        this._statusBar.appendChild(document.createTextNode(HTMLArea.I18N.msg["Path"] + ": "));
+                        this._statusBar.appendChild(document.createTextNode(HTMLArea.I18N ? HTMLArea.I18N.msg["Path"] + ": " : "Path: "));
                         this._statusBar.appendChild(this._statusBarTree);
                 }
                 break;
@@ -1402,6 +1404,7 @@ HTMLArea.prototype._createLink = function(link) {
                 f_title  : link.title,
                 f_target : link.target
         };
+	alert("godverdomme");
         this._popupDialog("link.html", function(param) {
                 if (!param)
                         return false;
@@ -1423,7 +1426,7 @@ HTMLArea.prototype._createLink = function(link) {
                 a.title = param.f_title.trim();
                 editor.selectNodeContents(a);
                 editor.updateToolbar();
-        }, outparam);
+  }, outparam, "width=398,height=220");
 };
 
 // Called when the user clicks on "InsertImage" button.  If an image is already
@@ -1559,6 +1562,7 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
         var editor = this;	// for nested functions
         this.focusEditor();
         cmdID = cmdID.toLowerCase();
+	alert("cmd " + cmdID);
         switch (cmdID) {
             case "htmlmode" : this.setMode(); break;
             case "hilitecolor":
@@ -1571,6 +1575,7 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
                 }, HTMLArea._colorToRgb(this._doc.queryCommandValue(cmdID)));
                 break;
             case "createlink":
+		    alert("creating link");
                 this._createLink();
                 break;
             case "popupeditor":
@@ -2045,7 +2050,7 @@ HTMLArea.getHTML = function(root, outputRoot, editor) {
                 break;
             case 8: // Node.COMMENT_NODE
                 html = "<!--" + root.data + "-->";
-                break;		// skip comments, for now.
+                break;  // skip comments, for now.
         }
         // if the ONLY html code generated is a break or a
         // non-breaking-space, then declare the text-area empty.
@@ -2131,8 +2136,8 @@ HTMLArea._colorToRgb = function(v) {
 // receives an URL to the popup dialog and a function that receives one value;
 // this function will get called after the dialog is closed, with the return
 // value of the dialog.
-HTMLArea.prototype._popupDialog = function(url, action, init) {
-        Dialog(this.popupURL(url), action, init);
+HTMLArea.prototype._popupDialog = function(url, action, init, widthheight) {
+        Dialog(this.popupURL(url), action, init, widthheight);
 };
 
 // paths
