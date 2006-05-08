@@ -9,16 +9,16 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: dialog.js,v 1.2 2006-04-03 14:52:02 pierre Exp $
+// $Id: dialog.js,v 1.3 2006-05-08 19:26:47 michiel Exp $
 
 // Though "Dialog" looks like an object, it isn't really an object.  Instead
 // it's just namespace for protecting global symbols.
 
-function Dialog(url, action, init) {
+function Dialog(url, action, init, widthheight) {
 	if (typeof init == "undefined") {
 		init = window;	// pass this window object by default
 	}
-	Dialog._geckoOpenModal(url, action, init);
+	Dialog._geckoOpenModal(url, action, init, widthheight);
 };
 
 Dialog._parentEvent = function(ev) {
@@ -37,9 +37,12 @@ Dialog._modal = null;
 // the dialog will read it's args from this variable
 Dialog._arguments = null;
 
-Dialog._geckoOpenModal = function(url, action, init) {
+Dialog._geckoOpenModal = function(url, action, init, widthheight) {
+    if (! widthheight) {
+        widthheight = "width=10,height=10";
+    } 
 	var dlg = window.open(url, "hadialog",
-			      "toolbar=no,menubar=no,personalbar=no,width=10,height=10," +
+			      "toolbar=no,menubar=no,personalbar=no," + widthheight + "," +
 			      "scrollbars=no,resizable=yes");
 	Dialog._modal = dlg;
 	Dialog._arguments = init;

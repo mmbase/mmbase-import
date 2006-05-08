@@ -1,6 +1,8 @@
 // Code to customize the htmlarea toolbar for the editwizards (less buttons,
 // a createlink with a target dropdown and a validate button).
 // Author: Jaco de Groot.
+// Version : $Id: my-htmlarea.js,v 1.9 2006-05-08 19:26:47 michiel Exp $;
+
 
 function getToolTip(id, defaultValue) {
    if (typeof MyHTMLArea_I18N != "undefined") {
@@ -57,7 +59,7 @@ myCreateLinkAction = function(editor) {
   if (description == "") {
     var firstParent = true;
     parentElement = editor.getParentElement();
-    while (parentElement.nodeName.toLowerCase() != "a" && parentElement.nodeName.toLowerCase() != "body") {
+    while (parentElement && parentElement.nodeName.toLowerCase() != "a" && parentElement.nodeName.toLowerCase() != "body") {
       parentElement = parentElement.parentNode;
       firstParent = false;
     }
@@ -90,7 +92,7 @@ myCreateLinkAction = function(editor) {
   param["descriptionEditable"] = descriptionEditable;
   param["target"] = target;
   param["editExisting"] = editExisting;
-  editor._popupDialog("insert_link.html", popupDialogAction, param);
+  editor._popupDialog("insert_link.html", popupDialogAction, param, "width=398,height=220");
 }
 
 popupDialogAction = function(param) {
