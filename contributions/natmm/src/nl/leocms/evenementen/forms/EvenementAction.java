@@ -128,7 +128,7 @@ public class EvenementAction extends Action {
                   thisEventNode = cloud.getNodeManager("evenement").createNode();
                   if(node==null) {
                       thisEventNode.setStringValue("soort","parent");
-                      thisEventNode.setIntValue("reageer",24); // ** default closing time 24 hours before event
+                      thisEventNode.setIntValue("reageer",12); // ** default closing time 12 hours before event
                   } else {
                       thisEventNode.setStringValue("soort","child");
                   }
