@@ -5,7 +5,7 @@
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
- <mm:include page="entry/actions.jsp" />
+ <mm:include page="weblog/actions.jsp" />
 </mm:present>
 <!-- end action check -->
 
@@ -17,6 +17,9 @@
 </tr>
 <tr>
   <td width="70%">
+    <b>State</b><br />
+    <mm:node referid="weblogrelid"><mm:field name="state" /></mm:node><br /><br />
+
     <b>Title</b><br />
     <mm:field name="title" /><br /><br />
 
