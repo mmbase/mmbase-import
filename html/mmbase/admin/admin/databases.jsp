@@ -45,7 +45,7 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
 <tr><td>&nbsp;</td></tr>
 
 <% } %>
-
+<mm:hasfunction module="jdbc" name="POOLS">
 <tr>
   <th class="header" colspan="2">Pool Name</th>
   <th class="header">Size</th>
@@ -63,6 +63,12 @@ if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null
 </tr>
 </mm:nodelistfunction>
 <tr><td>&nbsp;</td></tr>
+</mm:hasfunction>
+<mm:hasfunction module="jdbc" name="POOL" inverse="true">
+  <tr>
+    <td>Function for database pool inspection not available</td>
+  </tr>
+</mm:hasfunction>
 
 <tr class="footer">
     <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
