@@ -7,7 +7,7 @@ String node_gui = "";		// GUI variable set in builder
 String path1 = "";
 %>
 
-<mm:import jspvar="nr" externid="nr" id="nr" />		<%-- the node we're going to edit --%>
+<mm:import jspvar="nr" externid="nr" id="nr" escape="text/html" />		<%-- the node we're going to edit --%>
 
 <mm:import externid="change" />
 <mm:import externid="alias_name" />

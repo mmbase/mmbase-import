@@ -1,5 +1,5 @@
 <hr noshade="noshade" />
-<div class="footer" align="left">Last updated: 11-05-2005</div>
+<div class="footer" align="left">Last updated: 08-05-2006</div>
 </div>
 </body>
 </html>
