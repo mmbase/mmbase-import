@@ -12,78 +12,108 @@
 <table width="230" border="0" cellspacing="0" cellpadding="3" class="table-left">
 <tr bgcolor="#CCCCCC">
   <td colspan="3" align="center"> List of <b><mm:write referid="conf_list" /></b> node types (<a href="config.jsp">configure</a>)</td> 
+</tr><tr bgcolor="#CCCCCC">
+  <td align="right">
+
+<mm:import from="cookie" id="conf_sort" externid="my_editors_sort">nu</mm:import>
+<mm:import externid="sort" jspvar="sort"><mm:write referid="conf_sort" /></mm:import>
+<mm:present referid="sort">
+  <mm:write cookie="my_editors_sort" referid="sort" />
+</mm:present>
+
+<%
+String nsort = sort;
+String gsort = sort;
+/*
+sort:
+nu = name up
+nd = name down
+gu = guiname up
+gd = guiname down
+*/
+if (sort.equals("nd") || sort.equals("gd")) nsort = "nu"; 
+if (sort.equals("nu") || sort.equals("gu")) nsort = "nd"; 
+if (sort.equals("gd") || sort.equals("nd")) gsort = "gu";
+if (sort.equals("gu") || sort.equals("nu")) gsort = "gd";
+%>  
+  sort by <a href="<mm:url page="index.jsp">
+    <mm:param name="sort"><%= nsort %></mm:param>
+  </mm:url>">name</a>
+  </td>
+  <td> <a href="<mm:url page="index.jsp">
+    <mm:param name="sort"><%= gsort %></mm:param>
+  </mm:url>">guiname</a> </td>
+  <td>&nbsp;</td>
 </tr>
 <% // Choose a node type
-String guiName = "";
-NodeManagerList l = wolk.getNodeManagers();
-java.util.Collections.sort(l);
 int j = 0;
-for (int i = 0; i < l.size(); i++) {
-	NodeManager nm = l.getNodeManager(i);
-	guiName = nm.getGUIName();
- 	if (nm.mayCreateNode() && !nm.hasField("dnumber") || conf_list.equals("all")) { // Are we allowed to create?
+Map nmMap = new HashMap();
+List nameList = new ArrayList();
+List nmNrList = new ArrayList();	// list to build menu
+
+NodeManagerList nml = wolk.getNodeManagers();
+Collections.sort(nml);
+if (sort.equals("gd")) Collections.reverse(nml);
+
+NodeManagerIterator nmi = nml.nodeManagerIterator();
+while (nmi.hasNext()) {
+	NodeManager nm = nmi.nextNodeManager();
+	String nmNr = String.valueOf(nm.getNumber());
+	String nmName = nm.getName();
+	
+	if (!nmNrList.contains(nmNr)) nmNrList.add(nmNr);
+	
+	if (!nameList.contains(nmName)) {
+		nameList.add(nmName);
+		nmMap.put(nmName, nmNr);
+	}
+}
+
+if (sort.equals("nd") || sort.equals("nu")) {	// we're sorting on Name (not GuiName)
+  	nmNrList.clear();
+  	
+	Collections.sort(nameList);
+	if (sort.equals("nd")) Collections.reverse(nameList);
+
+  	Iterator it = nameList.iterator();
+  	while (it.hasNext()) {
+		String name = (String)it.next();
+		String nmstr = (String)nmMap.get(name);
+		// out.println("nmstr: " + nmstr);
+	 	if (!nmNrList.contains(nmstr)) nmNrList.add(nmstr);
+	 	
+	}	
+}
+
+Iterator nrit = nmNrList.iterator();
+while (nrit.hasNext()) {
+ 	String nmstr = (String)nrit.next();
+ 	int nmnr = Integer.parseInt(nmstr);
+ 	NodeManager nm = wolk.getNodeManager(nmnr);
  	j++;
+ 	// if (!nm.hasField("dnumber") || conf_list.equals("all")) { // Are we allowed to create?
  	%>
 	<tr<%if (j % 2 == 0) { %> bgcolor="#FFFFFF"<% } %>>
-	  <td class="right"><b><%= nm.getName() %></b> </td>
-	  <td><a href="index.jsp?ntype=<%= nm.getName() %>" title="show nodes"><%= guiName %></a></td>
+	  <td class="right"><b><%= nm.getName() %></b></td>
+	  <td><a href="index.jsp?ntype=<%= nm.getName() %>" title="show nodes"><%= nm.getGUIName() %></a></td>
 	  <td nowrap="nowrap"> 
-	  	<a href="index.jsp?ntype=<%= nm.getName() %>" title="show recent nodes"><img src="img/mmbase-search.gif" alt="show recent nodes" width="21" height="20" border="0" /></a>
-	    <% if (nm.mayCreateNode()) { %><a href="new_object.jsp?ntype=<%= nm.getName() %>" title="new node"><img src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a><% } %>
+	  	<a href="index.jsp?ntype=<%= nm.getName() %>" title="show nodes"><img 
+	  	  src="img/mmbase-search.gif" alt="show recent nodes" width="21" height="20" border="0" /></a>
+	    <% 
+	    if (nm.mayCreateNode()) { 
+	    %><a href="new_object.jsp?ntype=<%= nm.getName() %>" title="new node"><img 
+	      src="img/mmbase-new.gif" alt="new node" width="21" height="20" border="0" /></a>
+	    <% 
+	      } 
+	    %>
 	  </td>
 	</tr>
 	<%
-	}
+	//} // all
 } 
 %>
 </table>
 <!-- /nodetypes -->
-<!-- table about icons -->
-<div align="center">
-<table border="0" cellpadding="0" cellspacing="0">
-  <tr align="left">
-    <td colspan="2">&nbsp;</td>
-    <td rowspan="3" nowrap="nowrap">&nbsp;<b class="title-ss">About the icons</b></td>
-    <td colspan="2">&nbsp;</td>
-  </tr><tr align="left">
-    <td bgcolor="#000000" colspan="2"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-    <td bgcolor="#000000" colspan="2"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-  </tr><tr align="left">
-    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-    <td width="20">&nbsp;</td>
-    <td width="20">&nbsp;</td>
-    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-  </tr><tr align="left">
-    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-    <td colspan="3">
-<!-- table in table -->
-  <table width="100%" border="0" cellspacing="0" cellpadding="4">
-	<tr>
-	  <td class="right" width="24"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></td>
-	  <td nowrap="nowrap"> Search node </td>
-	</tr>
-	<tr>
-	  <td class="right" width="24"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></td>
-	  <td nowrap="nowrap"> Create new node </td>
-	</tr>
-	<tr>
-	  <td class="right" width="24"><img src="img/mmbase-edit.gif" alt="edit" width="21" height="20" border="0" /></td>
-	  <td nowrap="nowrap"> Edit node </td>
-	</tr>
-	<tr>
-	  <td class="right" width="24"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></td>
-	  <td nowrap="nowrap"> Delete node </td>
-	</tr>
-  </table>
-<!-- end table in table -->
-    </td>
-    <td bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-  </tr><tr align="left">
-    <td colspan="5" bgcolor="#000000"><img src="img/spacer.gif" alt="" width="1" height="1" /></td>
-  </tr>
-</table>
-</div>
-<!-- /about the icons -->
 </td>
 <td valign="top" width="80%">
 
