@@ -1,6 +1,6 @@
 // danish version for htmlArea v3.0 - Alpha Release
 // - translated by rene<rene@laerke.net>
-// term´s and licenses are equal to htmlarea!
+// termÂ´s and licenses are equal to htmlarea!
 
 HTMLArea.I18N = {
 
@@ -13,26 +13,26 @@ HTMLArea.I18N = {
 		italic:         "Kursiv",
 		underline:      "Understregning",
 		strikethrough:  "Overstregning ",
-		subscript:      "Sænket skrift",
-		superscript:    "Hævet skrift",
+		subscript:      "SÃ¦nket skrift",
+		superscript:    "HÃ¦vet skrift",
 		justifyleft:    "Venstrejuster",
 		justifycenter:  "Centrer",
-		justifyright:   "Højrejuster",
+		justifyright:   "HÃ¸jrejuster",
 		justifyfull:    "Lige margener",
 		orderedlist:    "Opstilling med tal",
 		unorderedlist:  "Opstilling med punkttegn",
 		outdent:        "Formindsk indrykning",
-		indent:         "Forøg indrykning",
+		indent:         "ForÃ¸g indrykning",
 		forecolor:      "Skriftfarve",
 		backcolor:      "Baggrundsfarve",
 		horizontalrule: "Horisontal linie",
-		createlink:     "Indsæt hyperlink",
-		insertimage:    "Indsæt billede",
-		inserttable:    "Indsæt tabel",
+		createlink:     "IndsÃ¦t hyperlink",
+		insertimage:    "IndsÃ¦t billede",
+		inserttable:    "IndsÃ¦t tabel",
 		htmlmode:       "HTML visning",
 		popupeditor:    "Vis editor i popup",
 		about:          "Om htmlarea",
-		help:           "Hjælp",
+		help:           "HjÃ¦lp",
 		textindicator:  "Anvendt stil"
 	}
 };

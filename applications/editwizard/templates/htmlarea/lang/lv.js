@@ -12,35 +12,35 @@ HTMLArea.I18N = {
 
 	tooltips: {
 		bold:           "Trekniem burtiem",
-		italic:         "Kursîvâ",
-		underline:      "Pasvîtrots",
-		strikethrough:  "Pârsvîtrots",
+		italic:         "KursÃ®vÃ¢",
+		underline:      "PasvÃ®trots",
+		strikethrough:  "PÃ¢rsvÃ®trots",
 		subscript:      "Novietot zem rindas",
 		superscript:    "Novietot virs rindas",
-		justifyleft:    "Izlîdzinât pa kreisi",
-		justifycenter:  "Izlîdzinât centrâ",
-		justifyright:   "Izlîdzinât pa labi",
-		justifyfull:    "Izlîdzinât pa visu lapu",
-		orderedlist:    "Numurçts saraksts",
+		justifyleft:    "IzlÃ®dzinÃ¢t pa kreisi",
+		justifycenter:  "IzlÃ®dzinÃ¢t centrÃ¢",
+		justifyright:   "IzlÃ®dzinÃ¢t pa labi",
+		justifyfull:    "IzlÃ®dzinÃ¢t pa visu lapu",
+		orderedlist:    "NumurÃ§ts saraksts",
 		unorderedlist:  "Saraksts",
-		outdent:        "Samazinât atkâpi",
-		indent:         "Palielinât atkâpi",
-		forecolor:      "Burtu krâsa",
-		hilitecolor:    "Fona krâsa",
-		horizontalrule: "Horizontâla atdalîtâjsvîtra",
+		outdent:        "SamazinÃ¢t atkÃ¢pi",
+		indent:         "PalielinÃ¢t atkÃ¢pi",
+		forecolor:      "Burtu krÃ¢sa",
+		hilitecolor:    "Fona krÃ¢sa",
+		horizontalrule: "HorizontÃ¢la atdalÃ®tÃ¢jsvÃ®tra",
 		createlink:     "Ievietot hipersaiti",
-		insertimage:    "Ievietot attçlu",
+		insertimage:    "Ievietot attÃ§lu",
 		inserttable:    "Ievietot tabulu",
-		htmlmode:       "Skatît HTML kodu",
-		popupeditor:    "Palielinât Rediìçtâju",
-		about:          "Par ğo rediìçtâju",
-		showhelp:       "Rediìçtâja palîgs",
-		textindicator:  "Patreizçjais stils",
-		undo:           "Atcelt pçdçjo darbîbu",
-		redo:           "Atkârtot pçdçjo darbîbu",
-		cut:            "Izgriezt iezîmçto",
-		copy:           "Kopçt iezîmçto",
-		paste:          "Ievietot iezîmçto"
+		htmlmode:       "SkatÃ®t HTML kodu",
+		popupeditor:    "PalielinÃ¢t RediÃ¬Ã§tÃ¢ju",
+		about:          "Par Ã°o rediÃ¬Ã§tÃ¢ju",
+		showhelp:       "RediÃ¬Ã§tÃ¢ja palÃ®gs",
+		textindicator:  "PatreizÃ§jais stils",
+		undo:           "Atcelt pÃ§dÃ§jo darbÃ®bu",
+		redo:           "AtkÃ¢rtot pÃ§dÃ§jo darbÃ®bu",
+		cut:            "Izgriezt iezÃ®mÃ§to",
+		copy:           "KopÃ§t iezÃ®mÃ§to",
+		paste:          "Ievietot iezÃ®mÃ§to"
 	},
 
 	buttons: {
@@ -49,7 +49,7 @@ HTMLArea.I18N = {
 	},
 
 	msg: {
-		"Path":         "Ceïğ",
-		"TEXT_MODE":    "Jûs patlaban darbojaties TEKSTA REŞÎMÂ. Lai pârietu atpakaï uz GRAFISKO REŞÎMU (WYSIWIG), lietojiet [<>] pogu."
+		"Path":         "CeÃ¯Ã°",
+		"TEXT_MODE":    "JÃ»s patlaban darbojaties TEKSTA REÃÃMÃ‚. Lai pÃ¢rietu atpakaÃ¯ uz GRAFISKO REÃÃMU (WYSIWIG), lietojiet [<>] pogu."
 	}
 };

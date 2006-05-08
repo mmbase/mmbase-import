@@ -47,7 +47,7 @@ HTMLArea.I18N = {
 		undo:					"Ongedaan maken",
 		redo:					"Herhalen",
 		cut:					"Knippen",
-		copy:					"Kopiëren",
+		copy:					"KopiÃ«ren",
 		paste:					"Plakken",
 		lefttoright:			"Tekstrichting links naar rechts",
 		righttoleft:			"Tekstrichting rechts naar links"

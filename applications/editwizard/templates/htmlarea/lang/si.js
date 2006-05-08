@@ -20,44 +20,44 @@ HTMLArea.I18N = {
 
 	tooltips: {
 		bold:           "Krepko",
-		italic:         "Le¾eèe",
-		underline:      "Podèrtano",
-		strikethrough:  "Preèrtano",
+		italic:         "LeÂ¾eÃ¨e",
+		underline:      "PodÃ¨rtano",
+		strikethrough:  "PreÃ¨rtano",
 		subscript:      "Podpisano",
 		superscript:    "Nadpisano",
 		justifyleft:    "Poravnaj levo",
 		justifycenter:  "Na sredino",
 		justifyright:   "Poravnaj desno",
 		justifyfull:    "Porazdeli vsebino",
-		orderedlist:    "O¹tevilèevanje",
-		unorderedlist:  "Oznaèevanje",
-		outdent:        "Zmanj¹aj zamik",
-		indent:         "Poveèaj zamik",
+		orderedlist:    "OÂ¹tevilÃ¨evanje",
+		unorderedlist:  "OznaÃ¨evanje",
+		outdent:        "ZmanjÂ¹aj zamik",
+		indent:         "PoveÃ¨aj zamik",
 		forecolor:      "Barva pisave",
 		hilitecolor:    "Barva ozadja",
-		horizontalrule: "Vodoravna èrta",
+		horizontalrule: "Vodoravna Ã¨rta",
 		createlink:     "Vstavi hiperpovezavo",
 		insertimage:    "Vstavi sliko",
 		inserttable:    "Vstavi tabelo",
 		htmlmode:       "Preklopi na HTML kodo",
-		popupeditor:    "Poveèaj urejevalnik",
+		popupeditor:    "PoveÃ¨aj urejevalnik",
 		about:          "Vizitka za urejevalnik",
-		showhelp:       "Pomoè za urejevalnik",
+		showhelp:       "PomoÃ¨ za urejevalnik",
 		textindicator:  "Trenutni slog",
 		undo:           "Razveljavi zadnjo akcijo",
 		redo:           "Uveljavi zadnjo akcijo",
-		cut:            "Izre¾i",
+		cut:            "IzreÂ¾i",
 		copy:           "Kopiraj",
 		paste:          "Prilepi"
 	},
 
 	buttons: {
 		"ok":           "V redu",
-		"cancel":       "Preklièi"
+		"cancel":       "PrekliÃ¨i"
 	},
 
 	msg: {
 		"Path":         "Pot",
-		"TEXT_MODE":    "Si v tekstovnem naèinu.  Uporabi [<>] gumb za prklop nazaj na WYSIWYG."
+		"TEXT_MODE":    "Si v tekstovnem naÃ¨inu.  Uporabi [<>] gumb za prklop nazaj na WYSIWYG."
 	}
 };
