@@ -25,7 +25,7 @@
 			</select>
 		</td>
 		<td>
-			<input name="newversion" value="<%= org.mmbase.util.xml.UtilReader.get("bugtracker.xml").getProperties().getProperty("defaultversion", "1.7.0")%>" size="10">
+			<input name="newversion" value="<%= org.mmbase.util.xml.UtilReader.get("bugtracker.xml").getProperties().getProperty("defaultversion", "1.8.0")%>" size="10">
 		</td>
 </tr>
 </table>
