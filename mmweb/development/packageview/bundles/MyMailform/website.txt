@@ -1,4 +1,0 @@
-<tr>
-	<th>Website</th>
-	<td><a href="http://mmatch.xs4all.nl:8006/index.jsp?portal=157&page=315"><img src="images/arrow-right.gif"></a></td>
-</tr>

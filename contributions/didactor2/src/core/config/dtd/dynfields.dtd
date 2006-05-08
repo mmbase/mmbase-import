@@ -1,7 +1,0 @@
-<!--
-     dynfields.dtd
-       - DTD for values of Dynamic Fields
--->
-<!ELEMENT dynfields (field*)>
- <!ELEMENT field (#PCDATA)>
- <!ATTLIST field name CDATA #REQUIRED>

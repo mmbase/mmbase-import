@@ -1,6 +1,0 @@
-<component name="agenda" templatepath="agenda" templatebar="provider" barposition="40">
-  <scope name="component" referid="component">
-  </scope>
-  <scope name="providers" referid="provider">
-  </scope>
-</component>

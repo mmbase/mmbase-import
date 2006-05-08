@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<images exportsource="mmbase://www.didactor.org/version2.0" timestamp="20041224170724">
-  <node number="510000" owner="system" alias="progresstextbackground">
-    <handle file="progresstextbackground.png"></handle>
-    <title>Dummy plaatje (LATEN STAAN!)</title>
-    <description>dit plaatje is nodig als tekst template voor de progress info</description>
-  </node>
-</images>
