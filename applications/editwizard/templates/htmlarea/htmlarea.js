@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.12 2006-05-08 19:26:47 michiel Exp $
+// $Id: htmlarea.js,v 1.13 2006-05-08 20:19:54 michiel Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
@@ -653,7 +653,8 @@ HTMLArea.prototype.generate = function () {
                         f.__msh_prevOnSubmit.push(funcref);
                 }
                 f.onsubmit = function() {
-                        editor._textArea.value = editor.getHTML();
+			var html = editor.getHTML();
+                        editor._textArea.value = html;
                         var a = this.__msh_prevOnSubmit;
                         // call previous submit methods if they were there.
                         if (typeof a != "undefined") {
@@ -667,7 +668,8 @@ HTMLArea.prototype.generate = function () {
         // add a handler for the "back/forward" case -- on body.unload we save
         // the HTML content into the original textarea.
         window.onunload = function() {
-                editor._textArea.value = editor.getHTML();
+		var html = editor.getHTML();
+		editor._textArea.value = html;
         };
 
         // creates & appends the toolbar
@@ -1562,7 +1564,6 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
         var editor = this;	// for nested functions
         this.focusEditor();
         cmdID = cmdID.toLowerCase();
-	alert("cmd " + cmdID);
         switch (cmdID) {
             case "htmlmode" : this.setMode(); break;
             case "hilitecolor":
@@ -1737,7 +1738,11 @@ HTMLArea.prototype.getHTML = function() {
         switch (this._editMode) {
             case "wysiwyg"  :
                 if (!this.config.fullPage) {
-                        return HTMLArea.getHTML(this._doc.body, false, this);
+			var html = HTMLArea.getHTML(this._doc.body, false, this).trim();
+			// if the ONLY html code generated is a break or a
+			// non-breaking-space, then declare the text-area empty.
+			if (html=='&nbsp;' || html=='<br />') html = '';
+                        return html;
                 } else
                         return this.doctype + "\n" + HTMLArea.getHTML(this._doc.documentElement, true, this);
             case "textmode" : return this._textArea.value;
@@ -2052,9 +2057,8 @@ HTMLArea.getHTML = function(root, outputRoot, editor) {
                 html = "<!--" + root.data + "-->";
                 break;  // skip comments, for now.
         }
-        // if the ONLY html code generated is a break or a
-        // non-breaking-space, then declare the text-area empty.
-        if (html=='&nbsp;' || html=='<br />') html = '';
+
+
         return html;
 };
 
