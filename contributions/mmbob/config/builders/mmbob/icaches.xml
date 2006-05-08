@@ -1,36 +1,48 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" ?>
 <builder 
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"                        
-    name="caches" maintainer="mmbase.org" version="0" extends="object">
+    name="icaches" maintainer="www.mmbase.org" version="0" extends="object">
 
-  <class>ImageCaches</class>
+  <class>org.mmbase.module.builders.ImageCaches</class>
+  <searchage>14</searchage>
 
   <names>
-    <singular xml:lang="en">Cached Image</singular>
-    <singular xml:lang="nl">Gebufferd Plaatje</singular>
-    <singular xml:lang="fr">Image Antémémoire</singular>
-    <singular xml:lang="eo">Kaŝmemorita Bildo</singular>
-    <singular xml:lang="it">Immagine nella memoria nascosta</singular>
-    <plural xml:lang="en">Cached Images</plural>
-    <plural xml:lang="nl">Gebufferde Plaatjes</plural>
-    <plural xml:lang="fr">Images antémémoire</plural>
-    <plural xml:lang="eo">Kaŝmemoritaj Bildoj</plural>
-    <plural xml:lang="it">Immagini nella memoria nascosta</plural>
-  </names>
+     <singular xml:lang="en">Cached Image</singular>
+     <singular xml:lang="nl">Gebufferd Plaatje</singular>
+     <singular xml:lang="fr">Image Antémémoire</singular>
+     <singular xml:lang="eo">Kaŝmemorita Bildo</singular>
+     <singular xml:lang="it">Immagine nella memoria nascosta</singular>
 
+     <plural xml:lang="en">Cached Images</plural>
+     <plural xml:lang="nl">Gebufferde Plaatjes</plural>
+     <plural xml:lang="fr">Images antémémoire</plural>
+     <plural xml:lang="eo">Kaŝmemoritaj Bildoj</plural>
+     <plural xml:lang="it">Immagini nella memoria nascosta</plural>
+  </names>
   <descriptions>
-    <description xml:lang="en">Cache for rendered images</description>
-    <description xml:lang="nl">Buffer  voor bewerkte plaatjes</description>
-    <description xml:lang="fr">Cachant la table pour rendues des images</description>
-    <description xml:lang="eo">Kaŝmemoranta tabelo por konvertitaj bildoj</description>
-    <description xml:lang="it">Memoria nascosta per le immagini elaborate</description>
+     <description xml:lang="en">Cache for rendered images</description>
+     <description xml:lang="nl">Buffer  voor bewerkte plaatjes</description>
+     <description xml:lang="fr">Cachant la table pour rendues des images</description>
+     <description xml:lang="eo">Kaŝmemoranta tabelo por konvertitaj bildoj</description>
+     <description xml:lang="it">Memoria nascosta per le immagini elaborate</description>
   </descriptions>
 
-  <fieldlist>
+  
+  <properties>
+    <!--
+      READ THIS WHEN UPGRADING FROM 1.7.3 OR LOWER
+      LegacyCKey: If this property is true or missing (as in legacy icaches.xml), then icaches are also matched
+                  by the 'legacy' form (without plus-signs). This is a slight performance penalty which can be 
+                  avoided if icaches is clean (as in new installations), icached is cleaned, or if you don't mind.                  
+    -->
+    <property name="LegacyCKey">false</property>
+  </properties>
 
+
+  <fieldlist>
     <field>
       <descriptions>
         <description xml:lang="en">Unique key for accessing cached image</description>
@@ -46,15 +58,13 @@
       </gui>
       <editor>
         <positions>
-          <input>2</input>
-          <list>3</list>
-          <search>2</search>
+          <input>2</input><list>3</list><search>2</search>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>ckey</name>
-        <type key="true" notnull="false" size="255" state="persistent">STRING</type>
+        <type state="system" size="255" notnull="false" key="true">STRING</type>
       </db>
     </field>
 
@@ -72,15 +82,13 @@
       </gui>
       <editor>
         <positions>
-          <input>3</input>
-          <list>3</list>
-          <search>3</search>
+          <input>3</input><list>3</list><search>3</search>
         </positions>
       </editor>
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>id</name>
-        <type notnull="false" state="persistent">NODE</type>
+        <type state="persistent" notnull="false">NODE</type>
       </db>
     </field>
 
@@ -98,15 +106,38 @@
       </gui>
       <editor>
         <positions>
+          <input>4</input><list>2</list><search>-1</search>
+        </positions>
+      </editor>
+      <db>
+        <name>handle</name>
+        <type state="system" notnull="false">BINARY</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Mimetype of the image</description>
+        <description xml:lang="nl">Mimetype van de afbeelding</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">ImageType</guiname>
+        <guiname xml:lang="fr">ImageTapent</guiname>
+        <guiname xml:lang="nl">PlaatjesType</guiname>
+        <guiname xml:lang="eo">Bildotipo</guiname>
+        <guiname xml:lang="it">ImmagineTipo</guiname>
+      </gui>
+
+      <editor>
+        <positions>
           <input>4</input>
-          <list>2</list>
+          <list>-1</list>
           <search>-1</search>
         </positions>
       </editor>
-      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
-        <name>handle</name>
-        <type notnull="false" state="persistent">BYTE</type>
+        <name>itype</name>
+        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
@@ -124,17 +155,52 @@
       </gui>
       <editor>
         <positions>
-          <input>5</input>
-          <list>5</list>
-          <search>5</search>
+          <input>5</input><list>5</list><search>5</search>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filesize</name>
-        <type notnull="false" state="persistent">INTEGER</type>
+        <type state="system" notnull="false">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Width of the image in pixels</description>
+        <description xml:lang="nl">Breedte van het plaatje in pixels</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Width</guiname>
+        <guiname xml:lang="nl">Breedte</guiname>
+      </gui>
+
+      <editor>
+        <positions><input>6</input><list>-1</list><search>-1</search></positions>
+      </editor>
+      <db>
+        <name>width</name>
+        <type state="system" notnull="false">INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Height of the image in pixels</description>
+        <description xml:lang="nl">Hoogte van het plaatje in pixels</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Height</guiname>
+        <guiname xml:lang="nl">Hoogte</guiname>
+      </gui>
+
+      <editor>
+        <positions><input>7</input><list>-1</list><search>-1</search></positions>
+      </editor>
+      <db>
+        <name>height</name>
+        <type state="system" notnull="false">INTEGER</type>
       </db>
     </field>
 
   </fieldlist>
+
 </builder>

@@ -311,7 +311,7 @@
           <search>-1</search>
         </positions>
       </editor>
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>lastpostnumber</name>
         <type key="false" notnull="false" state="persistent">NODE</type>
