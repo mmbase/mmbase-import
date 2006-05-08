@@ -33,7 +33,7 @@ function toggle(targetId){
 </script>
 </head>
 <body>
-<div id="top">[<a href="index.jsp">back to my_editors</a>]</div>
+<div id="top">[<a href="<mm:url page="index.jsp" referids="ntype" />">back to my_editors</a>]</div>
 <mm:present referid="ntype">
 
 <mm:present referid="action">
