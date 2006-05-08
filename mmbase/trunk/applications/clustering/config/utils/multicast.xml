@@ -16,7 +16,7 @@
       queries sent, but not the number of replies.
     -->
   <properties>
-    <!-- Spawn a thread for every incoming message. -->
+    <!-- Use a thread (from a thread-pool) for every incoming message. -->
     <property name="spawnthreads">true</property>
     <!--
 	name="multicasthost" mmbase nodes in a cluster use multicast to talk to
