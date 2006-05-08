@@ -34,5 +34,19 @@ What is in it for you?
 8. Example templates (see natmm\templates\natmm and nmintra) 
    and the accompanying editwizards (see natmm\templates\mmbase\edit\wizard\data\config)
 
+What is the basic structure of NatMM?
+
+Underlying NatMM is the LeoCMS objectmodel, which each application in the NatMM application uses.
+This objectmodel can be found in config/application/LeoCMS.xml.
+
+Each website in the NatMM application, e.g. MySite, should consist of the following parts:
+1. a folder with templates e.g. templates/mysite
+2. a configuration file config/applications/MySite.xml and builders in config/applications/MySite/builders
+   IMPORTANT NOTE: in the NatMM application each builder should be stored in CVS only ONCE. So builders reused
+   from LeoCMS or any of the other applications should be copied to the config/applications/builders directory
+   before install.
+3. a java class with application specific settings in src/nl/mmatch/MySiteConfig.java
+4. editwizards in templates/mmbase/edit/wizard/data/config
+
 See install\install.txt for installation.
 See install\license.txt for the license.

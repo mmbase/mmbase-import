@@ -1,5 +1,5 @@
 NatMM - install.txt
-Version: 06.05.01
+Version: 06.05.08
 Author: H. Hangyi
 
 To install NatMM:
@@ -9,24 +9,23 @@ To install NatMM:
 4. copy the files of NatMM build over the MMBase 1.7.4 webapp
 4.a. change settings in WEB-INF/config/modules/jdbc.xml
 4.b. change settings in WEB-INF/config/log/log4j.xml
-4.c. copy the builders from WEB-INF/config/applications/NatMM/builders/ to  WEB-INF/config/builders/
-4.d. if you want to use the templates in nmintra: 
+4.c. copy the builders from WEB-INF/config/applications/LeoCMS/builders/ to  WEB-INF/config/builders/
+4.d. change settings in WEB-INF/config/builders/images.xml (and style.xml, when using nmintra)
+4.e. make sure to load the LeoCMS. You can do this by change the setting for auto-deploy in the
+     application file to true or by  using the admin console (/mmbase/admin) to load the application.
+4.d. install one of the applications on top of LeoCMS. For this copy all builders you need for
+     installing this application to WEB-INF/config/builders/
+     E.g. if you want to use the templates in nmintra: 
      copy the builders from WEB-INF/config/applications/NMIntra/builders/ to  WEB-INF/config/builders/
-4.e. change settings in WEB-INF/config/builders/images.xml (and style.xml, when using nmintra)
-4.f. make sure to load the NatMM (and the NMIntra) applications. You can do this by change the setting
-     for auto-deploy in application file to true or by using the admin console (/mmbase/admin) to load
-     the application.
 
-Notes: 
-1. The NatMM application depends on an admin user with the alias users.admin. After installing you will first have
-to create this user. You can do this by:
-1.a. changing the setting for "security active" from true to false
-1.b. restart Tomcat
-1.c. add the alias users.admin to the admin user
-1.d. changing the setting for "security active" from false to true
-2. The NatMM application depends on a rubriek node with alias root. This is the root of your tree of websites. After
-installing you will first have to create this rubriek.
+IMPORTANT NOTE: The NatMM depends on 
+a. an admin user with the alias users.admin and
+b. a rubriek node with alias root, this rubriek is the root of your tree of websites.
 
-Still to do: create application-data files to create a minimalistic website to be loaded into an empty database.
-
+These nodes are installed if you use the demo data files in the config/applications/LeoCMS directory. If you
+do not use these demo data files, you can create the admin user manually after installation by:
+1. change the setting for "security active" from true to false
+2. restart Tomcat
+3. add the alias users.admin to the admin user
+4. changing the setting for "security active" from false to true
 
