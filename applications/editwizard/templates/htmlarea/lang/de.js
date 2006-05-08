@@ -1,6 +1,6 @@
 // german version for htmlArea v3.0 - Alpha Release
 // - translated by AtK<atk@chello.at>
-// term´s and licenses are equal to htmlarea!
+// termÂ´s and licenses are equal to htmlarea!
 // translation improved by broxx<broxx@broxx.com>
 
 HTMLArea.I18N = {
@@ -23,7 +23,7 @@ HTMLArea.I18N = {
 		orderedlist:    "Nummerierung",
 		unorderedlist:  "Aufzaehlungszeichen",
 		outdent:        "Einzug verkleinern",
-		indent:         "Einzug vergrössern",
+		indent:         "Einzug vergrÃ¶ssern",
 		forecolor:      "Text Farbe",
 		hilitecolor:    "Hintergrund Farbe",
 		horizontalrule: "Horizontale Linie",
@@ -31,7 +31,7 @@ HTMLArea.I18N = {
 		insertimage:    "Bild einfuegen",
 		inserttable:    "Tabelle einfuegen",
 		htmlmode:       "HTML Modus",
-		popupeditor:    "Editor im Popup öffnen",
+		popupeditor:    "Editor im Popup Ã¶ffnen",
 		about:          "Ueber HtmlArea",
 		showhelp:       "Hilfe",
 		textindicator:  "derzeitiger Stil",

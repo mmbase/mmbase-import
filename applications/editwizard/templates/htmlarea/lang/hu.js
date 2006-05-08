@@ -1,7 +1,7 @@
 // I18N constants
 
 // LANG: "hu", ENCODING: UTF-8
-// Author: Miklós Somogyi, <somogyine@vnet.hu>
+// Author: MiklÃ³s Somogyi, <somogyine@vnet.hu>
 
 // FOR TRANSLATORS:
 //
@@ -19,45 +19,45 @@ HTMLArea.I18N = {
 	lang: "hu",
 
 	tooltips: {
-		bold:           "Félkövér",
-		italic:         "Dőlt",
-		underline:      "Aláhúzott",
-		strikethrough:  "Áthúzott",
-		subscript:      "Alsó index",
-		superscript:    "Felső index",
-		justifyleft:    "Balra zárt",
-		justifycenter:  "Középre zárt",
-		justifyright:   "Jobbra zárt",
-		justifyfull:    "Sorkizárt",
-		orderedlist:    "Számozott lista",
-		unorderedlist:  "Számozatlan lista",
-		outdent:        "Behúzás csökkentése",
-		indent:         "Behúzás növelése",
-		forecolor:      "Karakterszín",
-		hilitecolor:    "Háttérszín",
-		horizontalrule: "Elválasztó vonal",
-		createlink:     "Hiperhivatkozás beszúrása",
-		insertimage:    "Kép beszúrása",
-		inserttable:    "Táblázat beszúrása",
-		htmlmode:       "HTML forrás be/ki",
-		popupeditor:    "Szerkesztő külön ablakban",
-		about:          "Névjegy",
-		showhelp:       "Súgó",
-		textindicator:  "Aktuális stílus",
-		undo:           "Visszavonás",
-		redo:           "Újra végrehajtás",
-		cut:            "Kivágás",
-		copy:           "Másolás",
-		paste:          "Beillesztés"
+		bold:           "FÃ©lkÃ¶vÃ©r",
+		italic:         "DÅlt",
+		underline:      "AlÃ¡hÃºzott",
+		strikethrough:  "ÃthÃºzott",
+		subscript:      "AlsÃ³ index",
+		superscript:    "FelsÅ index",
+		justifyleft:    "Balra zÃ¡rt",
+		justifycenter:  "KÃ¶zÃ©pre zÃ¡rt",
+		justifyright:   "Jobbra zÃ¡rt",
+		justifyfull:    "SorkizÃ¡rt",
+		orderedlist:    "SzÃ¡mozott lista",
+		unorderedlist:  "SzÃ¡mozatlan lista",
+		outdent:        "BehÃºzÃ¡s csÃ¶kkentÃ©se",
+		indent:         "BehÃºzÃ¡s nÃ¶velÃ©se",
+		forecolor:      "KarakterszÃ­n",
+		hilitecolor:    "HÃ¡ttÃ©rszÃ­n",
+		horizontalrule: "ElvÃ¡lasztÃ³ vonal",
+		createlink:     "HiperhivatkozÃ¡s beszÃºrÃ¡sa",
+		insertimage:    "KÃ©p beszÃºrÃ¡sa",
+		inserttable:    "TÃ¡blÃ¡zat beszÃºrÃ¡sa",
+		htmlmode:       "HTML forrÃ¡s be/ki",
+		popupeditor:    "SzerkesztÅ kÃ¼lÃ¶n ablakban",
+		about:          "NÃ©vjegy",
+		showhelp:       "SÃºgÃ³",
+		textindicator:  "AktuÃ¡lis stÃ­lus",
+		undo:           "VisszavonÃ¡s",
+		redo:           "Ãjra vÃ©grehajtÃ¡s",
+		cut:            "KivÃ¡gÃ¡s",
+		copy:           "MÃ¡solÃ¡s",
+		paste:          "BeillesztÃ©s"
 	},
 
 	buttons: {
 		"ok":           "Rendben",
-		"cancel":       "Mégsem"
+		"cancel":       "MÃ©gsem"
 	},
 
 	msg: {
 		"Path":         "Hierarchia",
-		"TEXT_MODE":    "Forrás mód. Visszaváltás [<>] gomb"
+		"TEXT_MODE":    "ForrÃ¡s mÃ³d. VisszavÃ¡ltÃ¡s [<>] gomb"
 	}
 };

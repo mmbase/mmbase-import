@@ -1,7 +1,7 @@
 // Norwegian version for htmlArea v3.0 - pre1
 // - translated by ses<ses@online.no>
-// Additional translations by Håvard Wigtil <havardw@extend.no>
-// term´s and licenses are equal to htmlarea!
+// Additional translations by HÃ¥vard Wigtil <havardw@extend.no>
+// termÂ´s and licenses are equal to htmlarea!
 
 HTMLArea.I18N = {
 
@@ -15,15 +15,15 @@ HTMLArea.I18N = {
 		underline:            "Understreket",
 		strikethrough:        "Gjennomstreket",
 		subscript:            "Nedsenket",
-		superscript:          "Opphøyet",
+		superscript:          "OpphÃ¸yet",
 		justifyleft:          "Venstrejuster",
 		justifycenter:        "Midtjuster",
-		justifyright:         "Høyrejuster",
+		justifyright:         "HÃ¸yrejuster",
 		justifyfull:          "Blokkjuster",
 		insertorderedlist:    "Nummerert liste",
 		insertunorderedlist:  "Punktliste",
 		outdent:              "Reduser innrykk",
-		indent:               "Øke innrykk",
+		indent:               "Ã˜ke innrykk",
 		forecolor:            "Tekstfarge",
 		hilitecolor:          "Bakgrundsfarge",
 		inserthorizontalrule: "Vannrett linje",
@@ -34,14 +34,14 @@ HTMLArea.I18N = {
 		popupeditor:          "Vis i eget vindu",
 		about:                "Om denne editor",
 		showhelp:             "Hjelp",
-		textindicator:        "Nåværende stil",
+		textindicator:        "NÃ¥vÃ¦rende stil",
                 undo:                 "Angrer siste redigering",
-		redo:                 "Gjør om siste angring",
-		cut:                  "Klipp ut område",
-		copy:                 "Kopier område",
+		redo:                 "GjÃ¸r om siste angring",
+		cut:                  "Klipp ut omrÃ¥de",
+		copy:                 "Kopier omrÃ¥de",
 		paste:                "Lim inn",
-		lefttoright:          "Fra venstre mot høyre",
-		righttoleft:          "Fra høyre mot venstre"
+		lefttoright:          "Fra venstre mot hÃ¸yre",
+		righttoleft:          "Fra hÃ¸yre mot venstre"
 	},
     
 	buttons: {
@@ -51,14 +51,14 @@ HTMLArea.I18N = {
 
 	msg: {
 		"Path":         "Tekstvelger",
-		"TEXT_MODE":    "Du er i tekstmodus  Klikk på [<>] for å gå tilbake til WYSIWIG.",
+		"TEXT_MODE":    "Du er i tekstmodus  Klikk pÃ¥ [<>] for Ã¥ gÃ¥ tilbake til WYSIWIG.",
                 "IE-sucks-full-screen" :
 		// translate here
                 "Visning i eget vindu har kjente problemer med Internet Explorer, " + 
-                "på grunn av problemer med denne nettleseren. Mulige problemer er et uryddig " + 
+                "pÃ¥ grunn av problemer med denne nettleseren. Mulige problemer er et uryddig " + 
                 "skjermbilde, manglende editorfunksjoner og/eller at nettleseren crasher. Hvis du bruker Windows 95 eller Windows 98 " +
-                "er det også muligheter for at Windows will crashe.\n\n" +
-                "Trykk 'OK' hvis du vil bruke visning i eget vindu på tross av denne advarselen."
+                "er det ogsÃ¥ muligheter for at Windows will crashe.\n\n" +
+                "Trykk 'OK' hvis du vil bruke visning i eget vindu pÃ¥ tross av denne advarselen."
 	},
 
 	dialogs: {
@@ -69,11 +69,11 @@ HTMLArea.I18N = {
 		"OK"                                                : "OK",
 		"Other"                                             : "Annen",
 		"Same frame (_self)"                                : "Samme ramme (_self)",
-		"Target:"                                           : "Mål:",
+		"Target:"                                           : "MÃ¥l:",
 		"Title (tooltip):"                                  : "Tittel (tooltip):",
 		"Top frame (_top)"                                  : "Toppramme (_top)",
 		"URL:"                                              : "Adresse:",
-		"You must enter the URL where this link points to"  : "Du må skrive inn en adresse som denne lenken skal peke til"
+		"You must enter the URL where this link points to"  : "Du mÃ¥ skrive inn en adresse som denne lenken skal peke til"
 	}
 };
 
