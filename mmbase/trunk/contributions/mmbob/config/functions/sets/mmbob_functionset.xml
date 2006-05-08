@@ -828,6 +828,7 @@
 		<param name="searchareaid" type="String" description="MMBase node number of the forum" />
 		<param name="searchpostthreadid" type="String" description="MMBase node number of the forum">-1</param>
 		<param name="searchkey" type="String" description="searchkey" />
+		<param name="posterid" type="int" description="MMBase node number of the poster" />
 		<param name="page" type="int" description="page number" />
 		<param name="pagesize" type="int" description="size per page" />
 		<return type="NodeList"> 
@@ -1022,6 +1023,27 @@
 		<method>editPoster</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="posterid" type="int" description="MMBase node number of the poster" />
+		<param name="firstname" type="String" description="New Firstname of the poster" />
+		<param name="lastname" type="String" description="New lastname of the poster" />
+		<param name="email" type="String" description="New email address of the poster" />
+		<param name="gender" type="String" description="New gender of the poster" />
+		<param name="location" type="String" description="New location of the poster" />
+		<param name="newpassword" type="String" description="New Password for the poster" />
+		<param name="newconfirmpassword" type="String" description="New Confirm Password for the new poster" />
+		<return type="String"> 
+			<field name="feedback" type="String" description="Feedback of the edit action" />
+		</return> 
+	</function>
+
+
+	<function name="editProfilePoster">
+		<description>Change values of a Poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>editProfilePoster</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="MMBase node number of the poster" />
+		<param name="profileid" type="int" description="MMBase node number of the poster" />
 		<param name="firstname" type="String" description="New Firstname of the poster" />
 		<param name="lastname" type="String" description="New lastname of the poster" />
 		<param name="email" type="String" description="New email address of the poster" />
@@ -1357,6 +1379,7 @@
 		<method>getProfileValues</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
+		<param name="guipos" type="int" description="show from pos x and up" />
 		<return type="NodeList"> 
 		</return> 
 	</function>
