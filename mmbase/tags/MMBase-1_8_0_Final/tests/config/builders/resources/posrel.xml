@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="posrel" maintainer="www.mmbase.org" version="0" extends="insrel">
+  <status>active</status>
+  <class>org.mmbase.module.builders.PosRel</class>
+  <names>
+    <singular xml:lang="en">Position Relation</singular>
+    <singular xml:lang="fr">Placez La Relation</singular>
+    <singular xml:lang="nl">Positierelatie</singular>
+    <plural xml:lang="en">Position Relations</plural>
+    <plural xml:lang="fr">Placez La Relations</plural>
+    <plural xml:lang="nl">Positie Relaties</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="en">This relation has a position attribute</description>
+    <description xml:lang="fr">Cette relation a un attribut de position</description>
+    <description xml:lang="nl">Deze relatie heeft een positie attribuut</description>
+  </descriptions>
+  <fieldlist>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Position number, useful for ordering the relations</description>
+        <description xml:lang="nl">Postitie of volgordenummer, te gebruiken voor het sorteren van de relaties</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Position</guiname>
+        <guiname xml:lang="fr">Placent</guiname>
+        <guiname xml:lang="nl">Positie</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>3</input>
+          <list>3</list>
+          <search>3</search>
+        </positions>
+      </editor>
+      <db>
+        <name>pos</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>

@@ -1,0 +1,31 @@
+NatMM - install.txt
+Version: 06.05.08
+Author: H. Hangyi
+
+To install NatMM:
+1. download and install MMBase 1.7.4 (see server.xml for example configuration of Tomcat)
+2. clean the WEB-INF/config/applications folder
+3. create a NatMM build
+4. copy the files of NatMM build over the MMBase 1.7.4 webapp
+4.a. change settings in WEB-INF/config/modules/jdbc.xml
+4.b. change settings in WEB-INF/config/log/log4j.xml
+4.c. copy the builders from WEB-INF/config/applications/LeoCMS/builders/ to  WEB-INF/config/builders/
+4.d. change settings in WEB-INF/config/builders/images.xml (and style.xml, when using nmintra)
+4.e. make sure to load the LeoCMS. You can do this by change the setting for auto-deploy in the
+     application file to true or by  using the admin console (/mmbase/admin) to load the application.
+4.d. install one of the applications on top of LeoCMS. For this copy all builders you need for
+     installing this application to WEB-INF/config/builders/
+     E.g. if you want to use the templates in nmintra: 
+     copy the builders from WEB-INF/config/applications/NMIntra/builders/ to  WEB-INF/config/builders/
+
+IMPORTANT NOTE: The NatMM depends on 
+a. an admin user with the alias users.admin and
+b. a rubriek node with alias root, this rubriek is the root of your tree of websites.
+
+These nodes are installed if you use the demo data files in the config/applications/LeoCMS directory. If you
+do not use these demo data files, you can create the admin user manually after installation by:
+1. change the setting for "security active" from true to false
+2. restart Tomcat
+3. add the alias users.admin to the admin user
+4. changing the setting for "security active" from false to true
+

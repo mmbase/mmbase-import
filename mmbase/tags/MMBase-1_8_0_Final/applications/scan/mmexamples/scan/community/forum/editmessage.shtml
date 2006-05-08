@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<SECURE>
+<PROCESSOR MMBASE>
+<html xmlns="http://www.w3.org/TR/xhtml">
+<head>
+<title>MMBase Forum</title>
+<link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
+</head>
+<body class="basic">
+<table summary="forum threads" width="93%" cellspacing="1" cellpadding="3" border="0">
+<tr align="left">
+  <th class="header" colspan="2">Edit/Moderate a message</th>
+</tr>
+<tr>
+  <td class="multidata" colspan="2">
+<a name="post" />
+<form method="post" action="updatemessage.shtml?$PARAM1">
+<input type="hidden" name="PRC-VAR-PROCESSOR" value="communityprc" />
+<input type="checkbox" name="PRC-VAR-MESSAGE-CHATTERNAME" value="moderator" />Change original poster to 'moderator'
+<input type="hidden" name="PRC-VAR-MESSAGE-CHANNEL" value="$PARAM1" />
+<input type="hidden" name="PRC-CMD-MESSAGE-UPDATE" value="$PARAM2" />
+<input type="text" name="PRC-VAR-MESSAGE-SUBJECT" size="75" maxlength="80" value="$MOD-MMBASE-FIELD-$PARAM2-subject^" />
+<textarea name="PRC-VAR-MESSAGE-BODY" cols="75" rows="12" wrap="on">$MOD-MMBASE-FIELD-$PARAM2-body</textarea><br />
+<input type="submit" name="action" value="post message">
+</form>
+</mm:node>
+  &nbsp;
+ </td>
+</tr>
+<tr>
+<td class="data">ADMIN: Remove this message and all its descendants</td>
+<form action="removemessage.shtml?$PARAM1+$PARAM2" method="POST">
+ <td class="linkdata" >
+    <input type="submit" value="REMOVE" />
+ </td>
+</form>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td class="navigate"><a href="forum.shtml?$PARAM1" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
+<td class="data">Return to forum</td>
+</tr>
+
+</table>
+</mm:cloud>
+</body></html>

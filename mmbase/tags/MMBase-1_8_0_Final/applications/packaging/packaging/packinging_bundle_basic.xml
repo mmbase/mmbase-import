@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_bundle_basic PUBLIC "-//MMBase/DTD packaging_bundle_basic config 1.0//EN" "http://www.mmbase.org/dtd/packaging_bundle_basic_1_0.dtd">
+<packaging_bundle_basic>
+  <lastversion>4</lastversion>
+  <lastdate>Sun Nov 14 23:36:31 CET 2004</lastdate>
+  <name>Packaging System</name>
+  <maintainer>Submarine</maintainer>
+  <description>Packaging system installer, normally not used as it should be default installed in 1.8 and higher. This bundle can be used to test new versions and bugfixes.</description>
+  <license type="MPL" version="1.0" name="Mozzila Public License" />
+  <releasenotes></releasenotes>
+  <installationnotes></installationnotes>
+  <initiators>
+    <initiator name="Daniel Ockeloen" company="Submarine" />
+  </initiators>
+  <supporters>
+  </supporters>
+  <developers>
+    <developer name="Daniel Ockeloen" company="Submarine" />
+  </developers>
+  <contacts>
+    <contact name="Daniel Ockeloen" reason="Bugs Reports" mailto="daniel@submarine.nl" />
+  </contacts>
+  <neededpackages>
+    <package name="packaging html" type="display/html" maintainer="Submarine" version="5" included="true" />
+    <package name="packaging jars" type="java/jar" maintainer="Submarine" version="6" included="true" />
+    <package name="Packaging functions" type="function/set" maintainer="Submarine" version="2" included="true" />
+  </neededpackages>
+  <publishprovider name="Submarine Package Server" state="active" sharepassword="bla94" />
+</packaging_bundle_basic>

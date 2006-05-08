@@ -1,0 +1,55 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import id="richtypes" vartype="list">xmlnews,categories,blocks,content</mm:import>
+  <mm:import id="types" vartype="list">images,attachments</mm:import>
+
+  <jsp:directive.include file="wizard.imports.jspx" />
+  <mm:import externid="tab" />
+  <mm:import id="kupu_back"><mm:url referids="tab" absolute="server" page="" /></mm:import>
+  <mm:url write="false" id="wizardjsp" referids="kupu_back" page="/mmbase/kupu/mmbase/"><mm:param name="tools" value="related" /><mm:param name="link_nodetypes" value="urls,attachments,xmlnews,content" /></mm:url>
+  <mm:content type="application/xml">
+    <mm:cloud rank="basic user">      
+      <ul>
+        <mm:context>
+          <mm:stringlist id="list" referid="richtypes">
+            <mm:maycreate type="$_">
+              <li>
+                <mm:link referids="referrer,language,wizardjsp" page="${jsps}list.jsp">
+                  <mm:param name="wizard">lists/<mm:write writer="list" /></mm:param>
+                  <mm:param name="nodepath"><mm:write writer="list" /></mm:param>
+                  <mm:param name="orderby">number</mm:param>
+                  <mm:param name="directions">down</mm:param>
+                  <mm:param name="search">yes</mm:param>
+                  <a href="${_}">
+                    All <mm:nodeinfo nodetype="$list" type="plural_guitype" />                  
+                  </a>
+                </mm:link>
+              </li>
+            </mm:maycreate>
+          </mm:stringlist>
+        </mm:context>
+        <mm:context>
+          <mm:stringlist id="list" referid="types">
+            <mm:maycreate type="$_">
+              <li>
+                <mm:link referids="referrer,language" page="${jsps}list.jsp">
+                  <mm:param name="wizard">tasks/<mm:write writer="list" />/<mm:write writer="list" /></mm:param>
+                  <mm:param name="nodepath"><mm:write writer="list" /></mm:param>
+                  <mm:param name="orderby">number</mm:param>
+                  <mm:param name="directions">down</mm:param>
+                  <mm:param name="search">yes</mm:param>
+                  <a href="${_}">
+                    All <mm:nodeinfo nodetype="$list" type="plural_guitype" />                  
+                  </a>
+                </mm:link>
+              </li>
+            </mm:maycreate>
+          </mm:stringlist>
+        </mm:context>
+      </ul>
+    </mm:cloud>
+  </mm:content>
+</div>
