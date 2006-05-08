@@ -37,8 +37,7 @@
       </td></tr>
     </table>
     <hr />
-
-    <a href="<mm:url page=".." />">back</a>
+    <a class="navigate" href="../"><img alt="back" src="<mm:url page="/mmbase/style/images/back.png" />" /></a><br />
 </form>
 </body>
 </html>

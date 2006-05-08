@@ -31,8 +31,7 @@
   </td></tr>
   </table>
   <hr />
-
-  <a href="../">back</a>
+  <a class="navigate" href="../"><img alt="back" src="<mm:url page="/mmbase/style/images/back.png" />" /></a><br />
  </mm:cloud>
 </form>
 </body>

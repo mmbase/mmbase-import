@@ -10,7 +10,7 @@
 </head>
 <body>
 <form>
-<mm:cloud method="http">
+<mm:cloud rank="basic user" sessionname="" >
   <mm:write referid="language" jspvar="lang" vartype="string" >
     <h1>Editwizard - samples, '<%= new java.util.Locale(lang, "").getDisplayLanguage(java.util.Locale.US)%>' version</h1>
   </mm:write>
@@ -45,15 +45,16 @@
   </td></tr>
   </table>
   <hr />
-
-  <a href="../">back</a><br />
+  <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
+  <hr />
+  <a class="navigate" href="../"><img alt="back" src="<mm:url page="/mmbase/style/images/back.png" />" /></a><br />
   <a href="index.jsp?language=<%=java.util.Locale.getDefault().getLanguage()%>">default</a><br />
   <a href="index.jsp?language=en">english</a><br />
   <a href="index.jsp?language=nl">dutch</a><br />
   <a href="index.jsp?language=fr">french</a><br />
   <a href="index.jsp?language=it">italian</a><br />
   <a href="index.jsp?language=eo">esperanto</a><br />
-  <a href="mailto:mihxil@komputilo.org">Offer your help to improve/add support for your language</a><br />
+  <a href="mailto:editwizard@meeuw.org">Offer your help to improve/add support for your language</a><br />
 </mm:cloud>
 </form>
 </body>
