@@ -334,6 +334,10 @@ Java versions
 
 - J2SE 1.5.0_01
 
+- J2SE 1.5.0_06 (osx powerpc)
+
+- J2SE 1.5.0_06 (osx intel)
+
 
 -------------
 Java compilers
@@ -357,6 +361,7 @@ Application servers
 These are the applications servers on which MMBase was tested.
 
 - Tomcat 5.5.7
+- Tomcat 5.5.9 
 - Orion 2.0.3
 
 ---------
@@ -364,9 +369,11 @@ Databases
 ---------
 
 - Mysql 4.1.8
+- Mysql-standard-5.0.19-osx10.4-i686
 - Hsqldb 1.7.0RC2
 - Hsqldb 1.8.0
 - Postgresql
+- PostgreSQL 8.1.3
 - Informix
 
 
