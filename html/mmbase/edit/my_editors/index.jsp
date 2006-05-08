@@ -91,7 +91,7 @@ while (nrit.hasNext()) {
  	int nmnr = Integer.parseInt(nmstr);
  	NodeManager nm = wolk.getNodeManager(nmnr);
  	j++;
- 	// if (!nm.hasField("dnumber") || conf_list.equals("all")) { // Are we allowed to create?
+ 	if (!nm.hasField("dnumber") || conf_list.equals("all")) { // Are we allowed to create?
  	%>
 	<tr<%if (j % 2 == 0) { %> bgcolor="#FFFFFF"<% } %>>
 	  <td class="right"><b><%= nm.getName() %></b></td>
@@ -109,7 +109,7 @@ while (nrit.hasNext()) {
 	  </td>
 	</tr>
 	<%
-	//} // all
+	} // all
 } 
 %>
 </table>
