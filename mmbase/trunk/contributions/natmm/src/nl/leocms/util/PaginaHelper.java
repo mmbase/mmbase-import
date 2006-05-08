@@ -54,10 +54,17 @@ public class PaginaHelper {
    public PaginaHelper(Cloud cloud) {
       this.cloud = cloud;
       this.pathsFromPageToElements = new HashMap();
-      for(int f = 0; f < nl.mmatch.NatMMConfig.CONTENTELEMENTS.length; f++) {
-         pathsFromPageToElements.put(
-            nl.mmatch.NatMMConfig.CONTENTELEMENTS[f],
-            nl.mmatch.NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+      NodeManager versionManager = cloud.getNodeManager("versions");
+      NodeList nlInstalledApplications = versionManager.getList("type='application'", null, null);
+      for(int i=0; i < nlInstalledApplications.size(); i++) {
+         // todo: create a generic solution for this piece of code
+         if(nlInstalledApplications.getNode(i).getStringValue("name").equals("NatMM")) {
+            for(int f = 0; f < nl.mmatch.NatMMConfig.CONTENTELEMENTS.length; f++) {
+               pathsFromPageToElements.put(
+                  nl.mmatch.NatMMConfig.CONTENTELEMENTS[f],
+                  nl.mmatch.NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+            }
+         }
       }
    }
 
@@ -319,11 +326,17 @@ public class PaginaHelper {
             Node editwizardNode = editwizardNodes.getNode(e);
             String ewTitle = editwizardNode.getStringValue("description");
             String ewUrl = contextPath;
+            String ewNodePath = editwizardNode.getStringValue("nodepath");
             if(editwizardNode!=null) {
                String ewType = editwizardNode.getStringValue("type");
                if(ewType.equals("list")) {  // ** check whether the path is used at least once ***
-                  NodeList nl = cloud.getList(pageNumber, editwizardNode.getStringValue("nodepath"), "pagina.number", null, null, null, null, false);
-                  if(nl.size()>0) {
+                  NodeList nl = null;
+                  try { 
+                      nl = cloud.getList(pageNumber, ewNodePath, "pagina.number", null, null, null, null, false);
+                  } catch (Exception thisException) {
+                     log.error("The editwizard " + ewTitle + " could not be shown, because the path " + ewNodePath + " does not exist in the objectcloud.");
+                  }
+                  if(nl!=null && nl.size()>0) {
                      ewUrl += "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + editwizardNode.getStringValue("wizard");
                      String startnodes = editwizardNode.getStringValue("startnodes");
                      if(startnodes!=null&&!startnodes.equals("")) {
@@ -331,7 +344,7 @@ public class PaginaHelper {
                      } else {
                         ewUrl += "&startnodes=" + pageNumber;
                      }
-                     ewUrl += "&nodepath=" + editwizardNode.getStringValue("nodepath") 
+                     ewUrl += "&nodepath=" + ewNodePath 
                          + "&fields=" + editwizardNode.getStringValue("fields")      
                        //  + "&constraints=" + editwizardNode.getStringValue("constraints") *** empty constraint will result in don't panic ***
                        //  + "&age=" + editwizardNode.getStringValue("age")
