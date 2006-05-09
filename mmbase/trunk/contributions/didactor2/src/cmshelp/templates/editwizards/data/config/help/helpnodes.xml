@@ -72,7 +72,7 @@
 									</action>																	
 				</list>  
         <list role="childhnn" destination="helpnodes" minoccurs="0" maxoccurs="*">
-									<title>Bijbehorende Map</title>
+									<title>Bijbehorende map</title>
 									<!-- Show the 'item' in a list (the object) -->
 									<item>
 										<field name="name">
@@ -89,7 +89,7 @@
 									</action>																		
 				</list> 				
         <list role="related" destination="educations" minoccurs="0" maxoccurs="*">
-									<title>Bijbehorende Opleidingen</title>
+									<title>Bijbehorende opleidingen</title>
 									<!-- Show the 'item' in a list (the object) -->
 									<item>
 										<field name="name">
@@ -100,7 +100,7 @@
 									</item>	
 									<command name="startwizard" inline="true" wizardname="config/education/educations" objectnumber="new" />
 									<command name="search" nodepath="educations" fields="name" age="-1">
-										<prompt>Search Opleidingen</prompt>
+										<prompt>Search opleidingen</prompt>
 										<search-filter>
 											<name>name bevat</name>
 											<search-fields>name</search-fields>
@@ -116,7 +116,7 @@
 									</action>																	
 				</list> 		
         <list role="related" destination="roles" minoccurs="0" maxoccurs="*">
-									<title>Bijbehorende Rol</title>
+									<title>Bijbehorende rol</title>
 									<!-- Show the 'item' in a list (the object) -->
 									<item>
 										<field name="name">
@@ -127,7 +127,7 @@
 									</item>	
 									<command name="startwizard" inline="true" wizardname="config/role/roles" objectnumber="new" />
 									<command name="search" nodepath="roles" fields="name" age="-1">
-										<prompt>Search Rol</prompt>
+										<prompt>Search rol</prompt>
 										<search-filter>
 											<name>naam bevat</name>
 											<search-fields>name</search-fields>

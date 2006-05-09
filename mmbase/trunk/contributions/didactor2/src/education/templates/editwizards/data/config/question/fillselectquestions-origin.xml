@@ -7,7 +7,7 @@
 ]>
 <wizard-schema id="empty">
     <title xml:lang="en">Fill in the gaps Editor</title>
-    <title xml:lang="nl">Vul selecteer de hiaten in</title>
+    <title xml:lang="nl">Invul-selectievraag editor</title>
 
 
     <action type="create">
@@ -56,10 +56,10 @@
 
     <form-schema id="step1">
         <title xml:lang="en">Enter fill select in the gaps question</title>
-  		<title xml:lang="nl">Vul de hiaten in invoeren selecteer</title> 
+  		<title xml:lang="nl">Invul-selectievraag invoeren</title> 
         <field name="title" >
             <prompt xml:lang="en">Title</prompt>
-            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="nl">Invul-selectievraag titel</prompt>
         </field>
         
        
@@ -133,7 +133,7 @@
        
         <field name="textFirst" ftype="line" dtminlength="0">
             <prompt xml:lang="en">The first part of the sentence </prompt>
-            <prompt xml:lang="nl">Het eerste deel van de zin </prompt>
+            <prompt xml:lang="nl">Eerste deel van de zin </prompt>
         </field>
  
   
@@ -153,7 +153,7 @@
       
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="mcanswers">
             <title xml:lang="en">Related answers (not mandatory)</title>
-            <title xml:lang="nl">Bijbehorende antwoorden (niet verplicht)</title>
+            <title xml:lang="nl">Bijbehorende meerkeuzer antwoorden (niet verplicht)</title>
             <item>
                 <field name="text" ftype="line">
                     <prompt>Tekst</prompt>
@@ -206,7 +206,7 @@
  
         <field name="textSecond" ftype="line" dtminlength="0">
             <prompt xml:lang="en">The second part of the sentence </prompt>
-            <prompt xml:lang="nl">Het tweede deel van de zin </prompt>
+            <prompt xml:lang="nl">Tweede deel van de zin </prompt>
         </field>
         
   

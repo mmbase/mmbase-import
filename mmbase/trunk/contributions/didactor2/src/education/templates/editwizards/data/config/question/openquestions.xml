@@ -17,9 +17,9 @@
     </object>
   </action>
 
-
-  <action type="load">
-    <relation destination="openanswers" role="related" />
+<action type="load">
+    <relation destination="openanswers" role="related"/>
+     
     <relation destination="feedback" role="related" />
     &extra_loads;
   </action>
@@ -48,8 +48,8 @@
     <title xml:lang="nl">Open vraag invoeren</title>
     <title xml:lang="en">Enter open question</title>
     <field name="title" >
-      <prompt xml:lang="nl">Titel</prompt>
-      <prompt xml:lang="en">Title</prompt>
+      <prompt xml:lang="nl">Open vraag titel</prompt>
+      <prompt xml:lang="en">Open question title</prompt>
     </field>
     <field name="showtitle" ftype="enum">
       <prompt xml:lang="nl">Titel laten zien</prompt>
@@ -84,6 +84,7 @@
         </field>
       </item>
 
+	  
       <action type="create">
         <relation role="related">
           <object type="openanswers" />

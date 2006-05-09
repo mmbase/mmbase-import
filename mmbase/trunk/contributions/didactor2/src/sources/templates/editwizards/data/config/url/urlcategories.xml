@@ -29,11 +29,11 @@
         <title xml:lang="nl">Informatiebron invoeren</title>
         <title xml:lang="en">Enter informationsource</title>
         <field name="name" >
-            <prompt xml:lang="nl">Naam</prompt>
+            <prompt xml:lang="nl">Informatiebron titel</prompt>
             <prompt xml:lang="en">Name</prompt>
         </field>
-        <field name="description" >
-            <prompt xml:lang="nl">Beschrijving</prompt>
+        <field name="description" rows="8">
+            <prompt xml:lang="nl">Omschrijving</prompt>
             <prompt xml:lang="en">Description</prompt>
         </field>
         <list destination="urls" role="related">
@@ -59,15 +59,26 @@
 
             <command name="startwizard" inline="true" wizardname="config/url/urls" objectnumber="new" />
 
-            <command name="search" nodepath="urls" fields="name" age="-1" orderby="number" directions="down" >
+            <command name="search" nodepath="urls" fields="name,description,url" age="-1" orderby="number" directions="down" >
                 <prompt xml:lang="nl">Zoeken naar links</prompt>
                 <prompt xml:lang="en">Search for urls</prompt>
                 <search-filter>
-                    <name xml:lang="nl">Naam bevat</name>
-                    <name xml:lang="en">Name contains</name>
-                    <search-fields>name</search-fields>
-                </search-filter>
+		            <name xml:lang="nl">Titel bevat</name>
+		            <name xml:lang="en">Name contains</name>
+		            <search-fields>name</search-fields>
+		        </search-filter>
+		        <search-filter>
+		            <name xml:lang="nl">Omschrijving bevat</name>
+		            <name xml:lang="en">Description contains</name>
+		            <search-fields>description</search-fields>
+		        </search-filter>
+		        <search-filter>
+		            <name xml:lang="nl">Link bevat</name>
+		            <name xml:lang="en">Link contains</name>
+		            <search-fields>url</search-fields>
+		        </search-filter>
             </command>
+
         </list>
     </form-schema>
 </wizard-schema>

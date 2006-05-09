@@ -46,7 +46,7 @@
       <prompt xml:lang="en">Show title</prompt>
       <optionlist select="boolean" />
     </field>
-    <field name="description" ftype="line">
+    <field name="description" rows="8">
       <prompt xml:lang="nl">Omschrijving</prompt>
       <prompt xml:lang="en">Description</prompt>
     </field>

@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.1 2005-04-28 07:30:13 hhangyi Exp $
+  @version  $Id: wizard.css,v 1.2 2006-05-09 15:37:06 igeorgijev Exp $
 */ 
 
 @import url("base.css");
@@ -258,7 +258,7 @@ input.check  {
 }
 
 select.age                 {  width: 80;  }
-select.searchpossibilities {  width: 125; }
+select.searchpossibilities {  width: auto; }
 select.search              {  width: 175; }
 
 

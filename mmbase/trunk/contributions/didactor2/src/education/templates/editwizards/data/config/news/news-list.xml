@@ -4,7 +4,7 @@
     <title xml:lang="en">Related newsitems</title>
     <item>
         <field name="title" ftype="data">
-            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="nl">Nieuwsbericht titel</prompt>
             <prompt xml:lang="en">Title</prompt>
             <description xml:lang="nl">Titel van het nieuwsbericht</description>
             <description xml:lang="en">Title of the newsitem</description>
@@ -20,7 +20,7 @@
 
     <command name="startwizard" inline="true" wizardname="config/news/news" objectnumber="new" />
 
-    <command name="search" nodepath="news" fields="title" age="-1" orderby="number" directions="down" >
+    <command name="search" nodepath="news" fields="title,intro" age="-1" orderby="number" directions="down" >
         <prompt xml:lang="nl">Zoeken naar nieuwsberichten</prompt>
         <prompt xml:lang="en">Search newsitems</prompt>
         <search-filter>
@@ -28,5 +28,11 @@
             <name xml:lang="en">Title contains</name>
             <search-fields>title</search-fields>
         </search-filter>
+        <search-filter>
+            <name xml:lang="nl">Tekst bevat</name>
+            <name xml:lang="en">Text contains</name>
+            <search-fields>body</search-fields>
+        </search-filter>
+        
     </command>
 </list>

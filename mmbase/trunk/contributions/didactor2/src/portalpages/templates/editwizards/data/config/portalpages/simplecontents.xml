@@ -45,11 +45,11 @@
             <prompt>Offline Tijd</prompt>                     
         </field>           
 		    <list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
-									<title>Bijbehorende Afbeeldingen</title>
+									<title>Bijbehorende afbeeldingen</title>
 									<!-- Show the 'item' in a list (the object) -->
 									<item>
 										<field name="title">
-											<prompt>Afbeeldingen Titel</prompt>
+											<prompt>Afbeeldingen titel</prompt>
 											<description></description>
 										</field>
 										<field wizardname="config/image/image" ftype="startwizard" />

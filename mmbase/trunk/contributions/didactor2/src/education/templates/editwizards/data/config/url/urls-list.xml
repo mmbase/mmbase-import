@@ -21,18 +21,23 @@
         <relation destination="urls" role="related"/>
     </action>
 
-    <command name="search" nodepath="urls" fields="name" age="-1" orderby="number" directions="down" >
-        <prompt xml:lang="nl">Zoeken naar URLS</prompt>
-        <prompt xml:lang="en">Search URLS</prompt>
+    <command name="search" nodepath="urls" fields="url,name,description" age="-1" orderby="number" directions="down" >
+        <prompt xml:lang="nl">Zoeken naar link</prompt>
+        <prompt xml:lang="en">Search urls</prompt>
         <search-filter>
             <name xml:lang="nl">URL bevat</name>
             <name xml:lang="en">URL contains</name>
             <search-fields>url</search-fields>
         </search-filter>
         <search-filter>
-            <name xml:lang="nl">Naam bevat</name>
+            <name xml:lang="nl">Titel bevat</name>
             <name xml:lang="en">Name contains</name>
             <search-fields>name</search-fields>
         </search-filter>
+        <search-filter>
+            <name xml:lang="nl">Omschrijving bevat</name>
+            <name xml:lang="en">Description contains</name>
+            <search-fields>description</search-fields>
+        </search-filter> 
     </command>
 </list>

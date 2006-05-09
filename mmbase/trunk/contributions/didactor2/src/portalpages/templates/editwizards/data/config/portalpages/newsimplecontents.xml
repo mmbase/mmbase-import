@@ -46,7 +46,7 @@
             <prompt>Offline Tijd</prompt>                     
         </field>           
 		    <list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
-									<title>Bijbehorende Afbeeldingen</title>
+									<title>Bijbehorende afbeeldingen</title>
 									<!-- Show the 'item' in a list (the object) -->
 									<item>
 										<field name="title">

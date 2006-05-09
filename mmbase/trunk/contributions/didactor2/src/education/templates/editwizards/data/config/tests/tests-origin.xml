@@ -55,8 +55,8 @@
     <title xml:lang="en">Enter test</title>
 
     <field name="name" >
-      <prompt xml:lang="nl">Naam</prompt>
-      <prompt xml:lang="en">Name</prompt>
+      <prompt xml:lang="nl">Toets titel</prompt>
+      <prompt xml:lang="en">Test name</prompt>
     </field>
 
     <field name="showtitle" ftype="enum">
@@ -66,7 +66,7 @@
     </field>
 
     <field name="text" ftype="html" dtminlength="0">
-      <prompt xml:lang="nl">Tekst</prompt>
+      <prompt xml:lang="nl">Alinea tekst</prompt>
       <prompt xml:lang="en">Text</prompt>
     </field>
 
@@ -183,7 +183,7 @@
       </command>
 
       <command name="startwizard" inline="true" wizardname="config/question/dropquestions" objectnumber="new">
-        <prompt xml:lang="nl">Nieuwe drag en drop vraag</prompt>
+        <prompt xml:lang="nl">Nieuwe sleepvraag</prompt>
         <prompt xml:lang="en">New drag and drop question</prompt>
       </command>
 

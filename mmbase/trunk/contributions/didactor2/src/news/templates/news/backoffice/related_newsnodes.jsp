@@ -18,7 +18,7 @@
 					 </mm:last>
 					 <td></td>
 					 <td><img src="gfx/learnblock.gif" border="0" align="middle" id='img2_news_node"/>'/></td>
-					 <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/portalpages/simplecontents&objectnumber=<mm:field name="simplecontents.number"/>' title="edit" target="text"><mm:field name="simplecontents.title"/></a></nobr></td>
+					 <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/portalpages/simplecontents&objectnumber=<mm:field name="simplecontents.number"/>&path=<di:translate key="news.wordnews"/> > <%=newsname%>' title="edit" target="text"><mm:field name="simplecontents.title"/></a></nobr></td>
 				</tr>
 				</table> 
 		</mm:list>

@@ -19,7 +19,15 @@
 
 
     <action type="load">
-        <relation destination="openanswers" role="related" />
+	    <relation destination="openanswers" role="related">
+			<object>
+			  <relation destination="feedback" role="related">
+			    <object>
+			      <field name="name" />
+			    </object>
+			  </relation>
+			</object>
+		</relation>
         <relation destination="feedback" role="related" />
         <relation destination="attachments" role="related" />
         &extra_loads;
@@ -71,8 +79,16 @@
                     <prompt xml:lang="nl">Tekst</prompt>
                     <description>De antwoord tekst</description>
                 </field>
+                <list minoccurs="0" maxoccurs="*" role="related" destination="feedback">
+					   <title xml:lang="nl">Feedback</title>
+					   <title xml:lang="en">Feedback</title>
+					   <item>
+					     <field name="name"  ftype="data">
+					     </field>
+					   </item>
+			    </list>
             </item>
-
+			
             <action type="create">
                 <relation role="related">
                     <object type="openanswers" />

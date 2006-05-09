@@ -51,14 +51,14 @@
 									<!-- Show the 'item' in a list (the object) -->
 									<item>
 										<field name="title">
-											<prompt>Content Titel</prompt>
+											<prompt>Content titel</prompt>
 											<description></description>
 										</field>
 										<field wizardname="config/portalpages/simplecontents" ftype="startwizard" />
 									</item>	
 									<command name="startwizard" inline="true" wizardname="config/portalpages/simplecontents" objectnumber="new" />
 									<command name="search" nodepath="simplecontents" fields="title" age="-1">
-										<prompt>Search Content</prompt>
+										<prompt>Search content</prompt>
 										<search-filter>
 											<name>titel bevat</name>
 											<search-fields>title</search-fields>
@@ -74,15 +74,15 @@
 									</action>																	
 				</list> 
         <list role="childppnn" destination="portalpagesnodes" minoccurs="0" maxoccurs="*">
-									<title>Bijbehorende Map</title>
-									<!-- Show the 'item' in a list (the object) -->
+									<title>Bijbehorende map</title>
+									
 									<item>
 										<field name="name">
 											<prompt>Name</prompt>
 											<description>Here you can see the name of the related portal pages node</description>
 										</field>
 										<field wizardname="config/portalpages/portalpagesnodes" ftype="startwizard" />
-									</item>	
+									</item>
 									<command name="startwizard" inline="true" wizardname="config/portalpages/leafportalpagesnodes-origin" objectnumber="new" />
 									<action type="create">
 										<relation destinationtype="portalpagesnodes" role="childppnn" >

@@ -18,7 +18,7 @@
       String[] arrstrBuilders = {"config/question/mcquestions-origin",
                                 "config/question/openquestions-origin",
                                 "config/question/rankingquestions-origin",
-                                "config/couple/couplingquestions-origin",
+                                "config/question/couplingquestions-origin",
                                 "config/question/hotspotquestions-origin",
                                 "config/question/valuequestions-origin",
                                 "config/question/dropquestions-origin",
@@ -88,7 +88,11 @@
                   %>
 
                   <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-                  <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=<%= arrstrBuilders[f] %>&objectnumber=new&origin=<mm:field name="number"/>' title='<di:translate key="<%= arrstrDescriptionsIDs[f] %>"/>' target="text"><di:translate key="<%= arrstrNames[f] %>"/></a></nobr></td>
+                  <% 
+                  if(request.getParameter("testname") != null) {%>
+                   <mm:import id="newfromtreetestname" reset="true"><%=request.getParameter("testname")%></mm:import>
+                  <% } %>
+                  <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=<%= arrstrBuilders[f] %>&objectnumber=new&origin=<mm:field name="number"/>&path=<mm:write referid="newfromtreetestname"/>' title='<di:translate key="<%= arrstrDescriptionsIDs[f] %>"/>' target="text"><di:translate key="<%= arrstrNames[f] %>"/></a></nobr></td>
                </tr>
             </table>
          <%

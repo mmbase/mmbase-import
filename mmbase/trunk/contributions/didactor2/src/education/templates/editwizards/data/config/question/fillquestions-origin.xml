@@ -13,7 +13,7 @@
 
 <wizard-schema id="empty">
     <title xml:lang="en">Fill in the gaps Editor</title>
-    <title xml:lang="nl">Vul de hiaten in</title>
+    <title xml:lang="nl">Invulvraag editor</title>
 
 
     <action type="create">
@@ -62,7 +62,7 @@
 
     <form-schema id="step1">
         <title xml:lang="en">Enter fill in the gaps question</title>
-  		<title xml:lang="en">Vul de hiaten in invoeren</title>      
+  		<title xml:lang="en">Invulvraag editor</title>      
         <field name="title" >
             <prompt>Titel</prompt>
         </field>
@@ -70,7 +70,7 @@
        
     <!--  INSERT SELECT TITLE -->  
         <field name="showtitle" ftype="enum">
-           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="nl">Titel tonen</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
         </field>
@@ -139,7 +139,7 @@
        
         <field name="textFirst" ftype="line" dtminlength="0">
             <prompt xml:lang="en">The first part of the sentence </prompt>
-            <prompt xml:lang="nl">Het eerste deel van de zin </prompt>
+            <prompt xml:lang="nl">Eerste deel van de zin </prompt>
         </field>
  
  <!--  INSERT ANSWER -->  
@@ -187,7 +187,7 @@
  
         <field name="textSecond" ftype="line" dtminlength="0">
             <prompt xml:lang="en">The second part of the sentence </prompt>
-            <prompt xml:lang="nl">Het tweede deel van de zin </prompt>
+            <prompt xml:lang="nl">Tweede deel van de zin </prompt>
         </field>
         
   
