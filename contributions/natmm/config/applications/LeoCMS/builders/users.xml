@@ -31,6 +31,28 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
+            <guiname xml:lang="nl">Account</guiname>
+            <guiname xml:lang="en">Account</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>1</list>
+               <search>1</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">account</name>
+            <type key="false" notnull="false" size="32" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
             <guiname xml:lang="nl">Achternaam</guiname>
             <guiname xml:lang="en">LastName</guiname>
             <guitype>string</guitype>
@@ -199,28 +221,6 @@
          <db>
             <name xml:lang="nl">emailsignalering</name>
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
-         </db>
-      </field>
-      <field>
-         <descriptions>
-            <description xml:lang="nl"></description>
-            <description xml:lang="en"></description>
-         </descriptions>
-         <gui>
-            <guiname xml:lang="nl">Account</guiname>
-            <guiname xml:lang="en">Account</guiname>
-            <guitype>string</guitype>
-         </gui>
-         <editor>
-            <positions>
-               <input>12</input>
-               <list>12</list>
-               <search>12</search>
-            </positions>
-         </editor>
-         <db>
-            <name xml:lang="nl">account</name>
-            <type key="false" notnull="false" size="32" state="persistent">STRING</type>
          </db>
       </field>
       <field>
