@@ -4,9 +4,8 @@
 
    <mm:compare referid="objecttype" valueset="couplingquestions,dropquestions,hotspotquestions,mcquestions,openquestions,rankingquestions,valuequestions,fillquestions,fillselectquestions,opennumeralquestions,essayquestions,openvaluequestions" inverse="true">
    
-
-      <mm:compare referid="objecttype" valueset="learnblocks" inverse="true">
-         <table border="0" cellpadding="0" cellspacing="0">
+         <mm:compare referid="objecttype" valueset="learnblocks" inverse="true">
+         <table border="0" bordercolor="red" cellpadding="0" cellspacing="0">
             <tr>
                <mm:compare referid="the_last_parent" value="true" inverse="true">
                   <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
@@ -32,7 +31,8 @@
                <td><img src="gfx/edit_learnobject.gif" width="16" border="0" align="middle" /></td>
                <td>
                  <nobr>
-                   <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
+                 
+                   <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
                    <mm:present referid="pdfurl">
                      <mm:compare referid="objecttype" value="pages">
                        <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
@@ -59,12 +59,9 @@
             </div>
          </mm:compare>
 --%>
-
       </mm:compare>
 
-
-
-
+<!-- fascicle here -->
       <mm:compare referid="objecttype" valueset="learnblocks">
 
          <table border="0" cellpadding="0" cellspacing="0">
@@ -81,6 +78,7 @@
                <%@include file="tree_shift_child.jsp" %>
 
                <mm:compare referid="the_last_element" value="true" inverse="true">
+
                   <mm:compare referid="the_last_leaf_in_this_level" value="true">
                      <td><a href='javascript:clickNode("<%= learnobjects2_number %>")'><img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_<%= learnobjects2_number %>"/></a></td>
                   </mm:compare>
@@ -93,7 +91,8 @@
                </mm:compare>
                <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_<%= learnobjects2_number %>"/></td>
                <td>&nbsp;<nobr>
-                 <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
+               
+                 <a href='<mm:write referid="wizardjsp"/>&wizard=config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number"/>&path=<%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field></a>
                  <mm:present referid="pdfurl">
                    <mm:compare referid="objecttype" value="pages">
                      <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
@@ -113,8 +112,7 @@
                </nobr></td>
             </tr>
          </table>
-         <div id="<%= learnobjects2_number %>" style="display:none">
-
+         <div id="<%= learnobjects2_number %>"  style="display:none">
          <%
             //Teporaly increase the depth for next level of learnblock
             depth++;
@@ -138,13 +136,12 @@
          </mm:relatednodes>
 
          <%@include file="newfromtree.jsp" %>
-<%--
+ <%--
          <mm:compare referid="the_last_element" value="true">
                end1
             </div>
          </mm:compare>
 --%>
-
          <mm:import reset="true" id="the_last_element">false</mm:import>
          <%
             //Back to current level

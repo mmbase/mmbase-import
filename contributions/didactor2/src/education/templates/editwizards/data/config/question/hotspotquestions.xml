@@ -16,8 +16,16 @@
     </object>
   </action>
 
-  <action type="load">
-    <relation destination="hotspotanswers" role="related" />
+<action type="load">
+    <relation destination="hotspotanswers" role="related">
+      <object>
+        <relation destination="feedback" role="related">
+          <object>
+            <field name="name" />
+          </object>
+        </relation>
+      </object>
+     </relation>
     <relation destination="images" role="related" />
     <relation destination="feedback" role="related" />
     &extra_loads;
@@ -80,11 +88,20 @@
           <description xml:lang="nl">Hoogte in pixels</description>
           <description xml:lang="en">Height in pixels</description>
         </field>
+      
         <field name="correct" ftype="enum">
           <prompt xml:lang="nl">Correct</prompt>
           <prompt xml:lang="en">Correct</prompt>
           <optionlist select="boolean_inverse" />
         </field>
+        <list minoccurs="0" maxoccurs="*" role="related" destination="feedback">
+          <title xml:lang="nl">Feedback</title>
+          <title xml:lang="en">Feedback</title>
+          <item>
+            <field name="name"  ftype="data">
+            </field>
+          </item>
+        </list>
       </item>
 
       <action type="create">

@@ -18,7 +18,15 @@
   </action>
 
   <action type="load">
-    <relation destination="valueanswers" role="posrel" />
+    <relation destination="valueanswers" role="posrel">
+      <object>
+        <relation destination="feedback" role="related">
+          <object>
+            <field name="name" />
+          </object>
+        </relation>
+      </object>
+     </relation>
     <relation destination="feedback" role="related" />
     &extra_loads;
   </action>
@@ -65,6 +73,14 @@
           <prompt xml:lang="nl">Positie</prompt>
           <prompt xml:lang="en">Position</prompt>
         </field>
+        <list minoccurs="0" maxoccurs="*" role="related" destination="feedback">
+          <title xml:lang="nl">Feedback</title>
+          <title xml:lang="en">Feedback</title>
+          <item>
+            <field name="name"  ftype="data">
+            </field>
+          </item>
+       </list>
         <field wizardname="config/answer/valueanswers" ftype="startwizard"/>
       </item>
 

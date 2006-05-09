@@ -6,7 +6,7 @@
   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
-  <title xml:lang="nl">Drag en drop vraag Editor</title>
+  <title xml:lang="nl">Sleepvraag Editor</title>
   <title xml:lang="en">Drag and drop question Editor</title>
 
   <action type="create">
@@ -36,7 +36,7 @@
   </steps>
 
   <form-schema id="step1">
-    <title xml:lang="nl">Drag en drop vraag invoeren</title>
+    <title xml:lang="nl">Sleepvraag invoeren</title>
     <title xml:lang="en">Enter drag and drop question</title>
     <field name="title" >
       <prompt xml:lang="nl">Titel</prompt>
@@ -79,13 +79,12 @@
         </field>
       </item>
 
+
       <action type="create">
         <relation role="related" destinationtype="dropanswers"/>
       </action>
 
       <command name="startwizard" inline="true" wizardname="config/answer/dropanswers" objectnumber="new">
-        <prompt xml:lang="nl">Nieuwe combinatie</prompt>
-        <prompt xml:lang="en">New combination</prompt>
       </command>
     </list>
 

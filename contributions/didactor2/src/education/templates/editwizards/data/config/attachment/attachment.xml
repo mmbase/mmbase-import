@@ -38,11 +38,11 @@
         <title xml:lang="nl">Invoeren bestand</title>
         <title xml:lang="en">Enter file</title>
         <field name="title" dtminlength="1">
-            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="nl">Bijlage titel</prompt>
             <prompt xml:lang="en">Title</prompt>
         </field>
         <field name="showtitle" ftype="enum">
-           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="nl">Titel tonen</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
         </field>

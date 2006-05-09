@@ -34,8 +34,8 @@
         <title xml:lang="nl">Invoeren videofragment</title>
         <title xml:lang="en">Enter videofragment</title>
         <field name="title" dttype="string" dtminlength="2" >
-            <prompt xml:lang="nl">Titel</prompt>
-            <prompt xml:lang="en">Title</prompt>
+            <prompt xml:lang="nl">Video titel</prompt>
+            <prompt xml:lang="en">Video title</prompt>
         </field>
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
@@ -54,13 +54,13 @@
         </field>
         
         <field name="body" ftype="text" rows="8" >
-            <prompt xml:lang="nl">Tekst</prompt>
+            <prompt xml:lang="nl">Tekst videofragment</prompt>
             <prompt xml:lang="en">Text</prompt>
         </field>
 
         <field name="url" ftype="line" dttype="string" dtminlength="2">
-            <prompt xml:lang="nl">URL</prompt>
-            <prompt xml:lang="en">URL</prompt>
+            <prompt xml:lang="nl">URL videofragment</prompt>
+            <prompt xml:lang="en">URL videofragment</prompt>
             <description xml:lang="nl">URL die verwijst naar een video-fragment</description>
             <description xml:lang="en">URL that points to a video-fragment</description>
         </field>

@@ -1,6 +1,6 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="workgroups" role="related" minoccurs="0" maxoccurs="*" ordertype="number">
-    <title xml:lang="nl">Bijbehorende Werkgroepen</title>
+    <title xml:lang="nl">Bijbehorende werkgroepen</title>
     <title xml:lang="en">Related workgroups</title>
     <item>
         <field name="name" ftype="data">

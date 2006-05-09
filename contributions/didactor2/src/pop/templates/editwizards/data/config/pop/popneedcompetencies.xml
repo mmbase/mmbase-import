@@ -14,8 +14,6 @@
          </search-filter>
       </command>
       <command name="startwizard" inline="true" wizardname="config/competency/competencies" objectnumber="new">
-         <prompt xml:lang="nl">Nieuw</prompt>
-         <prompt xml:lang="en">New</prompt>
       </command>
       <action type="create">
          <relation destinationtype="competencies" role="needcomp">

@@ -1,8 +1,22 @@
-<%@ include file="settings.jsp"
+<%@ include file="settings.jsp"%>
+<mm:locale language="<%=ewconfig.language%>"><mm:cloud method="delegate" jspvar="cloud"><%@ page errorPage="exception.jsp"%>
+<!-- div for chowing current path -->
+<div>
+<% 
+String path="";
+if(request.getParameter("path") != null){
+	path=(String) request.getParameter("path");
+	session.setAttribute("path",path);
+}
+if(session.getAttribute("path") != null){
+	path=(String)session.getAttribute("path");	
+}
+%>
+<b><% out.println(path); %></b>
+</div>
 
-%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="delegate" jspvar="cloud"><%@ page errorPage="exception.jsp"
-
-%><mm:log jspvar="log"><%
+<mm:log jspvar="log">
+<%
 
     /**
 
@@ -12,7 +26,7 @@
 
      * @since    MMBase-1.6
 
-     * @version  $Id: wizard.jsp,v 1.2 2006-02-03 11:03:15 azemskov Exp $
+     * @version  $Id: wizard.jsp,v 1.3 2006-05-09 15:37:06 igeorgijev Exp $
 
      * @author   Kars Veling
 

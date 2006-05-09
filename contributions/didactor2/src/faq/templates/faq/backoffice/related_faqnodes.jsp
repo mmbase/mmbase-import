@@ -18,7 +18,7 @@
 					 </mm:last>
 					 <td></td>
 					 <td><img src="gfx/learnblock.gif" border="0" align="middle" id='img2_faq_node"/>'/></td>
-					 <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/faqitems&objectnumber=<mm:field name="faqitems.number"/>' title="edit" target="text"><mm:field name="faqitems.question"/></a></nobr></td>					                     			                     
+					 <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/faqitems&objectnumber=<mm:field name="faqitems.number"/>&path=FAQ > <%=faqname%>' title="edit" target="text"><mm:field name="faqitems.question"/></a></nobr></td>					                     			                     
 				</tr>
 				</table> 
 		</mm:list>

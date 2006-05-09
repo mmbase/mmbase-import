@@ -34,11 +34,11 @@
         <title xml:lang="nl">Invoeren audiofragment</title>
         <title xml:lang="en">Enter audiofragment</title>
         <field name="title" dttype="string" dtminlength="2" >
-            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="nl">Audiofragment titel</prompt>
             <prompt xml:lang="en">Title</prompt>
         </field>
         <field name="showtitle" ftype="enum">
-           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="nl">Titel tonen</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
         </field>
@@ -60,8 +60,8 @@
         </field>
 
         <field name="url" ftype="line" dttype="string" dtminlength="2">
-            <prompt xml:lang="nl">URL</prompt>
-            <prompt xml:lang="en">URL</prompt>
+            <prompt xml:lang="nl">URL audiofragment</prompt>
+            <prompt xml:lang="en">URL audiofragment</prompt>
             <description xml:lang="nl">Verwijst naar een audio-fragment</description>
             <description xml:lang="en">URL that points to an audio-fragment</description>
         </field>

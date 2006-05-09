@@ -5,7 +5,7 @@
 
     <item>
         <field ftype="data" name="title">
-            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="nl">Audiofragment Titel</prompt>
             <prompt xml:lang="en">Title</prompt>
         </field>
         <field name="subtitle" ftype="data">
@@ -13,8 +13,8 @@
             <prompt xml:lang="en">Subtitle</prompt>
         </field>
         <field name="url" ftype="data">
-            <prompt xml:lang="nl">URL</prompt>
-            <prompt xml:lang="en">URL</prompt>
+            <prompt xml:lang="nl">URL audiofragment</prompt>
+            <prompt xml:lang="en">URL audiofragment</prompt>
         </field>
         <field wizardname="config/audiotape/audiotapes" ftype="startwizard" />
    </item>
@@ -25,7 +25,7 @@
         <relation destination="audiotapes" role="related"/>
     </action>
 
-    <command name="search" nodepath="audiotapes" fields="title" age="-1" orderby="number" directions="down" >
+    <command name="search" nodepath="audiotapes" fields="title,intro" age="-1" orderby="number" directions="down" >
         <prompt xml:lang="nl">Zoeken naar Audiofragmenten</prompt>
         <prompt xml:lang="en">Search audiofragments</prompt>
         <search-filter>

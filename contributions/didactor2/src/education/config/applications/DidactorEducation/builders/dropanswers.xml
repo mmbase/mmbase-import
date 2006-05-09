@@ -7,10 +7,10 @@
 
   <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">Drag and drop Antwoord</singular>
+    <singular xml:lang="nl">Sleepvraag Antwoord</singular>
     <singular xml:lang="en">Drag and drop Answer</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Drag and drop Antwoorden</plural>
+    <plural xml:lang="nl">Sleepvraag Antwoorden</plural>
     <plural xml:lang="nl">Drag and drop Answers</plural>
   </names>
 
@@ -19,7 +19,7 @@
   -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">Het antwoord op een drag and drop vraag</description>
+    <description xml:lang="nl">Het antwoord op een sleepvraag vraag</description>
     <description xml:lang="en">The answer to a drag and drop question</description>
   </descriptions>
 

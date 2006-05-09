@@ -5,16 +5,16 @@
 
     <item>
         <field ftype="data" name="title">
-            <prompt xml:lang="nl">Titel</prompt>
-            <prompt xml:lang="en">Title</prompt>
+            <prompt xml:lang="nl">Video titel</prompt>
+            <prompt xml:lang="en">Video title</prompt>
         </field>
         <field name="subtitle" ftype="data">
             <prompt xml:lang="nl">Subtitel</prompt>
             <prompt xml:lang="en">Subtitle</prompt>
         </field>
         <field name="url" ftype="data">
-            <prompt xml:lang="nl">URL</prompt>
-            <prompt xml:lang="en">URL</prompt>
+            <prompt xml:lang="nl">URL videofragment</prompt>
+            <prompt xml:lang="en">URL videofragment</prompt>
         </field>
         <field wizardname="config/videotape/videotapes" ftype="startwizard" />
    </item>
@@ -25,7 +25,7 @@
         <relation destination="videotapes" role="related"/>
     </action>
 
-    <command name="search" nodepath="videotapes" fields="title" age="-1" orderby="number" directions="down" >
+    <command name="search" nodepath="videotapes" fields="title,intro,url" age="-1" orderby="number" directions="down" >
         <prompt xml:lang="nl">Zoeken naar Videofragmenten</prompt>
         <prompt xml:lang="en">Search videofragments</prompt>
         <search-filter>
@@ -34,9 +34,14 @@
             <search-fields>title</search-fields>
         </search-filter>
         <search-filter>
-            <name xml:lang="nl">Subtitel bevat</name>
-            <name xml:lang="nl">Subtitle contains</name>
-            <search-fields>subtitle</search-fields>
+            <name xml:lang="nl">Intro bevat</name>
+            <name xml:lang="en">Description contains</name>
+            <search-fields>intro</search-fields>
+        </search-filter>
+        <search-filter>
+            <name xml:lang="nl">Url bevat</name>
+            <name xml:lang="en">Url contains</name>
+            <search-fields>url</search-fields>
         </search-filter>
     </command>
 </list>

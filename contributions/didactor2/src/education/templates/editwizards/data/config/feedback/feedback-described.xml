@@ -9,7 +9,7 @@
       <description xml:lang="nl">Naam van het feedback</description>
       <description xml:lang="en">Name of the feedback</description>
     </field>
-    <field fdatapath="field[@name='description']" ftype="line">
+    <field fdatapath="field[@name='description']" rows="8">
       <prompt xml:lang="nl">Omschrijving van de link</prompt>
       <prompt xml:lang="en">Description of the link</prompt>
     </field> 
@@ -21,8 +21,6 @@
   </action>
 
   <command name="startwizard" inline="true" wizardname="config/feedback/feedback" objectnumber="new">
-    <prompt xml:lang="nl">Nieuw feedback</prompt>
-    <prompt xml:lang="en">New feedback</prompt>
   </command>
 
   <command name="search" nodepath="feedback" fields="name" age="-1" orderby="number" directions="down" >

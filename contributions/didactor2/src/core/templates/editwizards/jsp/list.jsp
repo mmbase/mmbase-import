@@ -6,14 +6,20 @@
 <%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"%>
 <%@ page import="org.w3c.dom.Document"%>
 
-
+<% 
+String path="";
+if(request.getParameter("path") != null){
+	path=(String) request.getParameter("path");
+	session.setAttribute("path",path);
+}
+%>
 
 <%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.8 2006-03-22 08:31:10 hhangyi Exp $
+     * @version  $Id: list.jsp,v 1.9 2006-05-09 15:37:06 igeorgijev Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -190,7 +196,7 @@ int end = len + start;
 if (end > resultsSize) end = resultsSize;
 
 // place all objects
-String s = "<list count=\"" + results.size() + "\" />";
+String s = "<list count=\"" + resultsSize + "\" />";
 Document doc = Utils.parseXML(s);
 
 log.trace("Create document");
@@ -278,7 +284,7 @@ for (int i=0; i < results.size(); i++)
          <%@include file="/education/wizards/whichimage.jsp"%>
       </mm:node>
       <%
-       sURL = "<a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' title='" + sAltText + "' alt='" + sAltText + "'></a>";
+      sURL = "<a href='" + sPathPrefix + "metaedit.jsp?number=" + item.getNumber() + "&path= "+session.getAttribute("path")+"' target='text'><img id='img_" + item.getNumber() + "' src='" + sPathPrefix + imageName + "' border='0' title='" + sAltText + "' alt='" + sAltText + "'></a>";
        addField(obj, "metadata", sURL, "string");
     }
     if (listConfig.multilevel) {

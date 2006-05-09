@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.2 2005-03-24 12:44:36 jdiepenmaat Exp $
+  @version  $Id: wizard.css,v 1.3 2006-05-09 15:37:05 igeorgijev Exp $
 
 body
 table.head
@@ -146,7 +146,8 @@ tr.fieldcanvas-edit  {
 tr.fieldcanvas-edit  {
         cursor: default;
 }
-td.fieldprompt  {         
+td.fieldprompt  {  
+	    white-space:nowrap;   
         font-weight: 600;
         text-align: left;
         vertical-align: top;
@@ -301,7 +302,7 @@ textarea.input  {
 }
 
 textarea.input { 
-    height: 50em;
+    height: 13em;
 }
     
 

@@ -105,7 +105,7 @@
 <% int metatreeCount = 0; %>
 <% int comptreeCount = 0; %>
 
-
+<% session.removeAttribute("path"); %>
 
 <mm:compare referid="mode" value="components">
    <% //----------------------- Components come from here ----------------------- %>
@@ -256,7 +256,7 @@
                      <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                      <mm:import id="template" reset="true"><mm:write referid="listjsp"/>&wizard=<%= arrstrContentMetadataConfig[f][1] %>&nodepath=<%= arrstrContentMetadataConfig[f][2] %>&searchfields=<%= arrstrContentMetadataConfig[f][3] %>&fields=<%= arrstrContentMetadataConfig[f][3] %>&search=yes&orderby=<%= arrstrContentMetadataConfig[f][3] %>&metadata=yes<mm:write referid="forbidtemplate" escape="text/plain" /></mm:import>
-                     <td><nobr>&nbsp;<a href='<mm:write referid="template" escape="text/plain" />' title='<di:translate key="education.edit" /> <%= arrstrContentMetadataConfig[f][0] %>' target="text"><%= arrstrContentMetadataConfig[f][0] %></a></nobr></td>
+                     <td><nobr>&nbsp;<a href='<mm:write referid="template" escape="text/plain" />&path=' title='<di:translate key="education.edit" /> <%= arrstrContentMetadataConfig[f][0] %>' target="text"><%= arrstrContentMetadataConfig[f][0] %></a></nobr></td>
                   </tr>
                </table>
                <%
@@ -267,7 +267,7 @@
                      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                      <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
                      <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-                     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/provider/providers&nodepath=providers&searchfields=name&fields=name&orderby=name' target="text">Content paginas (CMS)</a></nobr></td>
+                     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/provider/providers&nodepath=providers&searchfields=name&fields=name&orderby=name&path=' target="text">Content paginas (CMS)</a></nobr></td>
                   </tr>
                </table>
                 <% //////////////////////////////////////////////// CMS ///////////////////////////////////////////////// %>
@@ -513,11 +513,12 @@
                   </mm:islessthan>
 
                <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=new' title='<di:translate key="education.createnewtestdescription" />' target="text"><di:translate key="education.createnewtest" /></a></nobr></td>
+               <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=new&path= ' title='<di:translate key="education.createnewtestdescription" />' target="text"><di:translate key="education.createnewtest" /></a></nobr></td>
             </tr>
          </table>
 
          <mm:listnodes type="tests" orderby="tests.name">
+         <mm:import id="testname" jspvar="testname" reset="true"><mm:field name="name"/></mm:import>
             <%@include file="whichimage.jsp"%>
             <mm:field name="number" id="tnumber" write="false" />
             <table border="0" cellpadding="0" cellspacing="0">
@@ -533,9 +534,10 @@
                      </mm:last>
 
                   <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_<mm:field name="number"/>'/></td>
-                 <td><nobr>
-                     <a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=<mm:field name="number" />' title='<di:translate key="education.treattest" />' target="text"><mm:field name="name" /></a>
 
+                 <td><nobr>
+                     <a href='<mm:write referid="wizardjsp"/>&wizard=config/tests/tests&objectnumber=<mm:field name="number" />&path=<mm:write referid="testname"/>' title='<di:translate key="education.treattest" />' target="text"><mm:field name="name" /></a>
+                     
                      <mm:node number="component.metadata" notfound="skip">
                         <a href="metaedit.jsp?number=<mm:write referid="tnumber" />" target="text"><img id="img_<mm:write referid="tnumber" />" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>"></a>
                      </mm:node>
@@ -557,6 +559,7 @@
                            <jsp:param name="node" value="<%= sID %>" />
                            <jsp:param name="wizardjsp" value="<%= sWizardjsp %>" />
                            <jsp:param name="the_last_parent" value="<%= sTheLastParent %>" />
+                           <jsp:param name="testname" value="<%=testname%>" />
                         </jsp:include>
                      </mm:write>
                   </mm:write>
@@ -617,10 +620,10 @@
                                   <mm:import id="mark_error" reset="true"></mm:import>
                                </mm:relatednodes>
 
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/mcquestions&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/mcquestions&objectnumber=<mm:field name="number"/>&path=' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty></a></nobr></td>
                             </mm:compare>
                             <mm:compare referid="type_of_node" valueset="couplingquestions,dropquestions,hotspotquestions,openquestions,rankingquestions,valuequestions,fillquestions,fillselectquestions,essayquestions">
-                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/<mm:write referid="type_of_node"/>&objectnumber=<mm:field name="number"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
+                               <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/question/<mm:write referid="type_of_node"/>&objectnumber=<mm:field name="number"/>&path=<mm:write referid="testname"/>' title='<di:translate key="education.edit" /> <%= dummyName.toLowerCase() %>' target="text"><mm:field name="title" /></a></nobr></td>
                             </mm:compare>
                         </mm:nodeinfo>
                      </tr>
@@ -668,7 +671,7 @@
                </mm:islessthan>
 
                <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations-origin&objectnumber=new&origin=<mm:write referid="user"/>" title="<di:translate key="education.createneweducationdescription" />" target="text"><di:translate key="education.createneweducation" /></a></nobr></td>
+               <td><nobr>&nbsp;<a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations-origin&objectnumber=new&origin=<mm:write referid="user"/>&path=" title="<di:translate key="education.createneweducationdescription" />" target="text"><di:translate key="education.createneweducation" /></a></nobr></td>
             </tr>
          </table>
 
@@ -700,7 +703,9 @@
                      <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/></td>
                      <td>
                        <nobr>
-                         <a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations&objectnumber=<mm:field name="number" />" title="<di:translate key="education.editeducation" />" target="text"><mm:field name="name" /></a>
+                         <a href="<mm:write referid="wizardjsp"/>&wizard=config/education/educations&objectnumber=<mm:field name="number" />&path=" title="<di:translate key="education.editeducation" />" target="text"><mm:field name="name" /></a>
+                         <mm:import id="eduname" jspvar="eduname"><mm:field name="name" /></mm:import>
+                         <% session.setAttribute("eduname",eduname); %>
                          <mm:present referid="pdfurl">
                            <a href="<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>" target="text"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
                          </mm:present>
@@ -751,7 +756,7 @@
                            <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                         </mm:islessthan>
                         <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                        <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>' title="<di:translate key="education.createnewlearnblockdescription" />" target="text"><di:translate key="education.createnewlearnblock" /></a></nobr></td>
+                        <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=config/learnblocks/learnblocks-origin&objectnumber=new&origin=<mm:field name="number"/>&path=<%=eduname %>' title="<di:translate key="education.createnewlearnblockdescription" />" target="text"><di:translate key="education.createnewlearnblock" /></a></nobr></td>
                      </tr>
                   </table>
 

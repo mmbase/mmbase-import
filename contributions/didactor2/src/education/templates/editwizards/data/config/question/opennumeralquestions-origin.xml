@@ -53,7 +53,7 @@
         </field> 
         
         <!--  INSERT DESCRIPTION --> 
-        <field name="description" ftype="html" dtminlength="0">
+        <field name="description" rows="8" ftype="html" dtminlength="0">
             <prompt>Description</prompt>
         </field>
         <!-- END INSERT DESCRIPTION -->

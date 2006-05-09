@@ -16,8 +16,7 @@
     </action>
 
     <command name="startwizard" inline="true" wizardname="config/tips/tips" objectnumber="new">
-      <prompt>Nieuwe tips 
-      </prompt>
+      <prompt></prompt>
     </command>
      <command name="search" nodepath="tips" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar tips</prompt>
