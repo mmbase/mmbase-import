@@ -4,20 +4,17 @@
 <builder version="1" name="style" maintainer="ilse.nl" extends="images">
     <searchage>9999</searchage>
     <names>
-        <singular xml:lang="nl">style</singular>
-        <singular xml:lang="fr">style</singular>
-        <singular xml:lang="en">style</singular>
-        <singular xml:lang="us">style</singular>
-        <plural xml:lang="nl">styles</plural>
-        <plural xml:lang="fr">styles</plural>
-        <plural xml:lang="en">styles</plural>
-        <plural xml:lang="us">styles</plural>
+        <singular xml:lang="nl">Style</singular>
+        <singular xml:lang="fr">Style</singular>
+        <singular xml:lang="en">Style</singular>
+        <plural xml:lang="nl">Styles</plural>
+        <plural xml:lang="fr">Styles</plural>
+        <plural xml:lang="en">Styles</plural>
     </names>
     <descriptions>
         <description xml:lang="nl">Styles</description>
         <description xml:lang="fr">Styles</description>
         <description xml:lang="en">Styles</description>
-        <description xml:lang="us">Styles</description>
     </descriptions>
     <properties>
        <!-- <property name="ImageConvert.ConverterRoot">c:/apps/imagemagick/</property> -->
