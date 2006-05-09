@@ -242,7 +242,7 @@
          </editor>
          <db>
             <name xml:lang="nl">password</name>
-            <type key="false" notnull="false" size="15" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="32" state="persistent">STRING</type>
          </db>
       </field>
       <field>
