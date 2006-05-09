@@ -1,4 +1,6 @@
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
+%><mm:cloud jspvar="cloud"
+><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" %><% 
 
 String sPageRef = (String) session.getAttribute("pageref");

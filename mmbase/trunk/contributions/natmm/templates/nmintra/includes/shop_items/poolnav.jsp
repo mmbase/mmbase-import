@@ -4,7 +4,7 @@
 <tr><td class="internalnav">Overige producten onder <mm:node number="<%= pageId %>"><mm:field name="titel" /></mm:node></td></tr>
 <tr><form name="selectform" method="post" action=""><td>
 	<select name="shop_item" onChange="javascript:postIt();" style="width:180px;height:16px;">
-	<mm:list nodes="<%= pageId %>" path="pagina,posrel,items"
+	<mm:list nodes="<%= pageId %>" path="pagina,posrel,items" fields="items.number,items.titel"
 		orderby="items.titel" directions="UP"
 		><option value="<mm:field name="items.number" />"><mm:field name="items.titel" />
 	</mm:list

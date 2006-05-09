@@ -30,7 +30,7 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
         ><mm:setfield name="intro"><%= introupdateId %></mm:setfield
         ><mm:setfield name="description"><%= descrupdateId %></mm:setfield
     ></mm:createnode
-    ><%@include file="../includes/peoplefindertexts.jsp" %><%
+    ><%@include file="texts.jsp" %><%
      if(emailId.indexOf("@")==-1) {
           messageBody = "Het emailadres wat je hebt opgegeven is geen geldig emailadres. Gebruik de onderstaande link om terug te gaan naar het formulier"
             + " en alsnog een geldig emailadres in te vullen.";
@@ -75,7 +75,7 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
     }
 
     messageTitle = "Bevestiging wijzigingen persoonsgegevens";
-    %><%@include file="../includes/showmessage.jsp" %><%
+    %><%@include file="../showmessage.jsp" %><%
 
 } else { // *** changes are confirmed ***
     
@@ -97,7 +97,7 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
             ><mm:field name="description" jspvar="dummy" vartype="String" write="false"><% descrupdateId = dummy; %></mm:field
             ><mm:deletenode 
         /></mm:node
-        ><%@include file="../includes/peoplefindertexts.jsp" %><% 
+        ><%@include file="texts.jsp" %><% 
 
             if(!pzText.equals("")) { 
                 %><mm:createnode type="email" id="thismail" 
@@ -154,13 +154,13 @@ if(date.equals("")) { // *** send an email to ask confirmation ***
                     messageBody += "<br><br><br>Afhankelijk van de bezetting en hoeveelheid werk op deze afdelingen zullen je wijzigingen "
                     + "binnen <b>&eacute;&eacute;n tot vijf werkdagen</b> op het Intranet zichtbaar zijn."; 
             }
-            %><%@include file="../includes/showmessage.jsp" 
+            %><%@include file="../showmessage.jsp" 
     %></mm:list
     ><mm:notpresent referid="updatefound"><%
         messageTitle = "Geen wijzigingen die bevestigd kunnen worden";
         messageBody = "Op dit moment bevat het Intranet geen wijzigigen die bevestigd kunnen worden. " 
                 + "Als je de wijzigingen reeds hebt bevestigd heb je hiervan per email een bevestiging ontvangen. "
                 + "Zo niet, dan kun je contact opnemen met <a href=\"mailto:" + defaultFromAddress + "\">" + defaultFromAddress + "</a>.";
-        %><%@include file="../includes/showmessage.jsp" 
+        %><%@include file="../showmessage.jsp" 
     %></mm:notpresent><%
 } %>

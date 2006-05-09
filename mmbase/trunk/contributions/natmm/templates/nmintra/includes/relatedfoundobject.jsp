@@ -11,7 +11,7 @@ if(!pageId.equals("")) {
 
     %><%@include file="../includes/getbreadcrumbs.jsp" %><%
   
-    if(!nodeHref.equals("")&&(isPreview)) {
+    if(!nodeHref.equals("")) {
         %><p><%
         if(thisPath.equals("documents")) { nodeUrl = thisNode.getStringValue("url"); } 
         if(!titleStr.equals("")) { 

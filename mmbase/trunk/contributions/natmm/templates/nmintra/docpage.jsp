@@ -1,6 +1,6 @@
-<%@include file="includes/templateheader.jsp"
-%><mm:cloud jspvar="cloud" 
-><%@include file="includes/header.jsp" 
+<%@include file="/taglibs.jsp" 
+%><mm:cloud jspvar="cloud"
+><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" 
 %><% 
 // if there are no documents related to this page, find the document which filename is equal to the page title (=subtreeDoc)
@@ -11,9 +11,7 @@
    </mm:related>
    <mm:notpresent referid="page_contains_document">
       <mm:listnodes type="documents" constraints="<%= "filename LIKE '%" + thisPage.getStringValue("title") + "%'" %>" jspvar="subtreeDoc">
-      <%
-      nl.mmatch.documents.DirReader.mergeSubtree(cloud,thisPage,subtreeDoc);
-      %>
+      <% nl.leocms.util.tools.documents.DirReader.mergeSubtree(cloud,thisPage,subtreeDoc); %>
       </mm:listnodes>
    </mm:notpresent>
 </mm:node>
@@ -37,6 +35,7 @@ int listSize = 0;
 if(lastPage>listSize) { lastPage = listSize; }
 int numberOfPages = (listSize-1)/pageSize+1;
 %>
+<%@include file="includes/header.jsp" %>
 <td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "";
     %><%@include file="includes/rightbartitle.jsp" 

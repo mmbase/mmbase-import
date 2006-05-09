@@ -24,6 +24,7 @@ public class NMIntraToNatMMigrator {
   public static void run() throws Exception{
 
       log.info("NMIntraToNatMMigrator.run()");
+      log.info("Importing files from " + sFolder);
       TreeMap tmAllData = new TreeMap();
 
       log.info("deleting data that we do not want to migrate");

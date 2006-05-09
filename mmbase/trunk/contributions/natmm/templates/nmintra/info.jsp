@@ -1,7 +1,7 @@
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
+%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
+><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
 %><%
 String sTemplateUrl = "info.jsp";
 if(!articleId.equals("")) { 
@@ -87,7 +87,8 @@ if(!articleId.equals("")) {
 		orderby="artikel.embargo" searchdir="destination" max="1"><%
          hasPools = true;
       %></mm:list
-      ><td><%@include file="includes/pagetitle.jsp" %></td>
+      ><%@include file="includes/header.jsp" 
+      %><td><%@include file="includes/pagetitle.jsp" %></td>
       <td><%
          String rightBarTitle = "";
          if(isArchive) {

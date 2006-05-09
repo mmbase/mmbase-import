@@ -1,7 +1,4 @@
-<%@page language="java" contentType="text/html; charset=utf-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache" 
-%>
+<%@include file="/taglibs.jsp" %>
 <mm:import externid="e" jspvar="employeeId"/>
 <mm:import externid="tp" jspvar="thisPrograms"/>
 <mm:import externid="it" jspvar="imageTemplate"/>
@@ -80,14 +77,14 @@
             ><% imageTemplate = "+s(110)"; 
                 %><a href="javascript:launchCenter('imageview.jsp?image=<mm:field name="images.number" 
                     />', 'popup_<mm:field name="images.number" 
-                    />', 600, 800, ',scrollbars,resizable=yes')"><img src=<%@include file="../includes/imagessource.jsp" 
+                    />', 600, 800, ',scrollbars,resizable=yes')"><img src=<%@include file="../imagessource.jsp" 
                     %> alt="" border="0"></a>
                 <% imageExists = true; 
         %></mm:list><%
         if(!imageExists) { 
             %><mm:list nodes="<%= pageId %>" path="pagina,posrel,images" constraints="posrel.pos='2'"
                 ><% imageTemplate = "+s(110)"; 
-                    %><img src=<%@include file="../includes/imagessource.jsp" %> alt="" border="0">
+                    %><img src=<%@include file="../imagessource.jsp" %> alt="" border="0">
             </mm:list><%
         }%><br><%
         if(!postingStr.equals("|action=print")) {

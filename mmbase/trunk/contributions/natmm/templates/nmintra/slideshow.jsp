@@ -15,7 +15,7 @@ int thisImageNumber = 1;
 %><% pageUrl = "slideshow.jsp?p=" + pageId + "&u=" + shop_itemId + "&o=" + offsetId + "&i="; 
 %><html>
 <head>
-<title><mm:node number="<%= websiteId %>"><mm:field name="naam" /></mm:node
+<title><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
 	><mm:node number="<%= pageId %>"> -	<mm:field name="titel" /></mm:node
 	><mm:node number="<%= shop_itemId %>" notfound="skipbody"> -	<mm:field name="title" /></mm:node
 	><mm:node number="<%= thisImage %>"> -	<mm:field name="title" /></mm:node>

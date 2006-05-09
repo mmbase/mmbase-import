@@ -1,7 +1,10 @@
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
-%><%@include file="includes/calendar.jsp" %><%
+><%@include file="includes/templateheader.jsp" 
+%><%@include file="includes/calendar.jsp"
+%>
+<%@include file="includes/header.jsp" %> 
+<%
 
 // using the "project" request parameter for vacatures
 // this template gives an overview of vacatures

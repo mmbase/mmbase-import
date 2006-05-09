@@ -1,7 +1,8 @@
-<%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+><%@include file="includes/templateheader.jsp" 
+%><%@include file="includes/calendar.jsp" 
+%><%@include file="includes/header.jsp" 
 %><td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
 </tr>
 <tr>

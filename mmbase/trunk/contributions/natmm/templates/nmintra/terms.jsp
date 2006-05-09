@@ -1,7 +1,7 @@
-<%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+><%@include file="includes/templateheader.jsp" 
+%><%@include file="includes/calendar.jsp" 
 %><% 
 
       String termConstraint = "";
@@ -20,7 +20,8 @@
                   projectArchive = page_number; 
                %></mm:field
             ></mm:list
-      ><td><%@include file="includes/pagetitle.jsp" %></td>
+      ><%@include file="includes/header.jsp" %> 
+      <td><%@include file="includes/pagetitle.jsp" %></td>
       <td><%
          String rightBarTitle = "";
          rightBarTitle = "Zoek&nbsp;in&nbsp;begrippenlijst";

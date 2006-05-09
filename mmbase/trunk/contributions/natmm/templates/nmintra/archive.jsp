@@ -1,8 +1,9 @@
-<%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
-%><%@include file="includes/searchfunctions.jsp" %><%
+><%@include file="includes/templateheader.jsp" 
+%><%@include file="includes/calendar.jsp" 
+%><%@include file="includes/header.jsp" 
+%><%
    String sTemplateUrl = "archief.jsp";
 	if(!projectId.equals("")) {
 		%><%@include file="includes/projectoverview.jsp" %><%
@@ -93,7 +94,8 @@
           groupConstraint = " readmore2.readmore = '" + groupId + "'";
       }
 
-      %><td><%@include file="includes/pagetitle.jsp" %></td>
+      %><%@include file="includes/searchfunctions.jsp" %>
+      <td><%@include file="includes/pagetitle.jsp" %></td>
       <td><%
          String rightBarTitle = "";
          rightBarTitle = "Zoek&nbsp;in&nbsp;archief";

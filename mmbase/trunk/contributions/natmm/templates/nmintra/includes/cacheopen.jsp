@@ -9,7 +9,6 @@
          ||!postingStr.equals("|")
          ||!termSearchId.equals("")
          ||!emailId.equals("")
-         ||isPreview
       ) { expireTime = 0; }
     
 %><%@include file="../includes/cachekey.jsp"

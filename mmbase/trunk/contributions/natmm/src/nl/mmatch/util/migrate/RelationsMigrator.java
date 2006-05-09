@@ -25,7 +25,8 @@ public class RelationsMigrator {
    public static void run() throws Exception{
 
       log.info("RelationsMigrator.run()");
-
+      log.info("Importing files from " + sFolder);
+      
       NMIntraToNatMMigrator mmm = new NMIntraToNatMMigrator();
       mmm.run();
 

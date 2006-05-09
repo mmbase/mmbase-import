@@ -54,7 +54,7 @@ public TreeSet unify(TreeSet ts1, TreeSet ts2){
 	while(shop_itemsIterator.size()>0) { 
 		String thisShop_item = (String) shop_itemsIterator.firstKey();
 		String numberOfItems = (String) shop_itemsIterator.get(thisShop_item);
-	   %><%@include file="../includes/shoppingcartresponse.jsp" %><%
+	   %><%@include file="response.jsp" %><%
 		shop_itemsIterator.remove(thisShop_item);
    }
 
@@ -71,7 +71,7 @@ emails =
 	
    if(isValidAnswer) {
 		
-		%><%@include file="../includes/shoppingcartsavestats.jsp" 
+		%><%@include file="savestats.jsp" 
 		
 		%><mm:createnode type="email" id="productorder_email"
         ><mm:setfield name="from"><%=  shopEmailAddress  %></mm:setfield
@@ -201,7 +201,7 @@ emails =
       String formMessageHref = "shoppingcart.jsp";
       String formMessageLinktext = okLink;
       
-      %><jsp:include page="../includes/formmessage.jsp">
+      %><jsp:include page="../formmessage.jsp">
             <jsp:param name="ft" value="<%= formTitle %>" />
             <jsp:param name="fm" value="<%= formMessage %>" />
             <jsp:param name="fmh" value="<%= formMessageHref %>" />
@@ -215,7 +215,7 @@ emails =
 		String formMessage = warningMessage;
 		String formMessageHref = "javascript:history.go(-1)";
 		String formMessageLinktext = warningLink;
-		%><jsp:include page="../includes/formmessage.jsp">
+		%><jsp:include page="../formmessage.jsp">
             <jsp:param name="ft" value="<%= formTitle %>" />
             <jsp:param name="fm" value="<%= formMessage %>" />
             <jsp:param name="fmh" value="<%= formMessageHref %>" />

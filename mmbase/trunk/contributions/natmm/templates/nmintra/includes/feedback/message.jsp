@@ -1,6 +1,6 @@
 <%@include file="../includes/templateheader.jsp" %>
 <%@include file="../includes/calendar.jsp" %>
-<%@include file="../includes/feedbackformscript.jsp" %>
+<%@include file="../includes/feedback/script.jsp" %>
 <%@include file="../includes/getresponse.jsp" %>
 <% String formTitle = request.getParameter("ft"); 
 	String formMessage = request.getParameter("fm"); 

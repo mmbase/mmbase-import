@@ -1,7 +1,6 @@
-<%@include file="includes/templateheader.jsp" 
-%><%@ page import="org.mmbase.bridge.*" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" 
 %><%@include file="includes/searchfunctions.jsp" %><%
 
@@ -17,6 +16,7 @@ String thisPrograms = "";
 if(!thisPrograms.equals("")) {
     thisPrograms = thisPrograms.substring(1);
 } 
+%><%@include file="includes/header.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "Zoek een collega"; 
 %><%@include file="includes/rightbartitle.jsp" 
@@ -59,10 +59,10 @@ if(!thisPrograms.equals("")) {
     }
 
     if(action.equals("commit")) { // *** commit the changes ***
-            %><%@include file="includes/peoplefindercommit.jsp" %><%
+            %><%@include file="includes/peoplefinder/commit.jsp" %><%
     } else if(!employeeId.equals("")) { // *** there is an employee selected ***
         if(action.equals("change")) { // *** show form to update info ***
-            %><%@include file="includes/peoplefinderupdate.jsp" %><%
+            %><%@include file="includes/peoplefinder/update.jsp" %><%
         } else { // *** just show the info on the employee ***
             %><%-- <jsp:include page="includes/shorty.jsp">
 					      <jsp:param name="s" value="<%= paginaID %>" />
@@ -70,7 +70,7 @@ if(!thisPrograms.equals("")) {
 				         <jsp:param name="rs" value="<%= styleSheet %>" />
 					      <jsp:param name="sr" value="1" />
 					   </jsp:include>  --%>
-				<jsp:include page="includes/peoplefindertable.jsp">
+				<jsp:include page="includes/peoplefinder/table.jsp">
 					<jsp:param name="e" value="<%= employeeId %>" />
 					<jsp:param name="tp" value="<%= thisPrograms %>" />
 					<jsp:param name="it" value="<%= imageTemplate %>" />
@@ -106,9 +106,9 @@ if(!thisPrograms.equals("")) {
 </td>
 <td valign="top"><%
     if(action.equals("")) {
-        %><%@include file="includes/peoplefinderform.jsp" 
+        %><%@include file="includes/peoplefinder/form.jsp" 
         %><%@include file="includes/whiteline.jsp" 
-        %><%@include file="includes/peoplefinderresult.jsp" %><%
+        %><%@include file="includes/peoplefinder/result.jsp" %><%
     } %></td>
 <%@include file="includes/footer.jsp" %>
 </mm:cloud>

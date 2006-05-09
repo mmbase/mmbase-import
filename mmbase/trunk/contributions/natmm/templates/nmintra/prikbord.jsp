@@ -1,6 +1,6 @@
+<%@include file="/taglibs.jsp" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" 
 
 %><% if(!emailId.equals("")) {
@@ -60,7 +60,8 @@ int period = -31;
     %></mm:field
 ></mm:list
 
-><td><%@include file="includes/pagetitle.jsp" %></td>
+><%@include file="includes/header.jsp" %> 
+<td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "Plaats uw bericht"; 
 %><%@include file="includes/rightbartitle.jsp" 
 %></td>
