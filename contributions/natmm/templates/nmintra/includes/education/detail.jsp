@@ -121,7 +121,7 @@
                } 
                %>
          	</mm:field>	
-            <%@include file="../includes/attachment.jsp" %>
+            <%@include file="../attachment.jsp" %>
 			</td>
    	</tr>
 		<mm:field name="subscribe">

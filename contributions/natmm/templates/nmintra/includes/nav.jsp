@@ -37,22 +37,15 @@ boolean bIsFirst = false;
 <tr>
     <td><img src="media/spacer.gif" width="158" height="25"></td>
 </tr>
-
-<% RubriekHelper rubriekHelper = new RubriekHelper(cloud);
-PaginaHelper ph = new PaginaHelper(cloud); %>
-<mm:list nodes="<%= websiteId %>" path="rubriek,posrel,pagina" constraints="posrel.pos='1'"
-    ><mm:field name="pagina.number" jspvar="page_number" vartype="String" write="false"><%
-    if(isPreview) {
-        String rubriek_number = "";
-        if(pageId.equals("")) { pageId = page_number; }
-        %><tr><td style="padding-left:19px;padding-bottom:7px;">
-            <a href=<%= ph.createPaginaUrl(page_number, request.getRequestURI()) %> class="menuItem<mm:field name="pagina.number"><mm:compare value="<%= pageId %>">Active</mm:compare></mm:field
-                    >"><mm:field name="pagina.titel" /></a>
-        </td></tr><%
-    }
-    %></mm:field
+<mm:list nodes="<%= rootId %>" path="rubriek,posrel,pagina" constraints="posrel.pos='1'"
+    ><mm:field name="pagina.number" jspvar="page_number" vartype="String" write="false">
+      <tr><td style="padding-left:19px;padding-bottom:7px;">
+         <a href="<%= ph.createPaginaUrl(page_number,request.getContextPath()) %>" class="menuItem<mm:field name="pagina.number"><mm:compare value="<%= pageId %>">Active</mm:compare></mm:field
+                 >"><mm:field name="pagina.titel" /></a>
+      </td></tr>
+   </mm:field
 ></mm:list
-><mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2"
+><mm:list nodes="<%= rootId %>" path="rubriek1,parent,rubriek2"
     orderby="parent.pos" directions="UP"
     ><mm:field name="rubriek2.number" jspvar="rubriek_number" vartype="String" write="false"><%
 	    // *** list the rubrieks ***

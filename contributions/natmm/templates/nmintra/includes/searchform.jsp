@@ -16,7 +16,7 @@
  	   <tr><td>
 		  			<select name="categorie" class="<%= cssClassName %>" style="width:172px;" />
                   <option value="">Alles</option>
-                  <mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2" orderby="parent.pos">
+                  <mm:list nodes="<%= rootId %>" path="rubriek1,parent,rubriek2" orderby="parent.pos">
                      <mm:field name="rubriek2.number" jspvar="sCategoryNumber" vartype="String">
                      <mm:field name="rubriek2.naam" jspvar="sCategoryName" vartype="String">
                         <option value="<%= sCategoryNumber %>" <%

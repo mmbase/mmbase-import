@@ -1,7 +1,7 @@
 <%@page import="org.mmbase.util.logging.*" %>
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" 
 %><%@include file="includes/searchfunctions.jsp" 
 %><mm:import jspvar="paginaID" externid="p">-1</mm:import>
@@ -84,6 +84,7 @@
       %><%@include file="includes/hashsets.jsp" %><%
    }
    %>
+   <%@include file="includes/header.jsp" %>
 	<td><%@include file="includes/pagetitle.jsp" %></td>
 	<td><% String rightBarTitle = "Uitgebreid Zoeken";
 	    if(actionId.equals("adv_search")) { %><%@include file="includes/rightbartitle.jsp" 

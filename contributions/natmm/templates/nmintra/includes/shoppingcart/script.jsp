@@ -22,7 +22,7 @@ function changeIt(url) {
 			><% thisPool = dummy; 
 		%></mm:field
 		
-		><%@include file="../includes/shoppingcartnordered.jsp" %><%
+		><%@include file="nordered.jsp" %><%
 		for(int i =0; i< numberOrdered; i++) {
 		%><mm:related path="posrel,formulierveld"
 			orderby="posrel.pos" directions="UP"

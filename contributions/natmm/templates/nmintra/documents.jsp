@@ -1,7 +1,7 @@
-<%@page import="com.finalist.tree.*,nl.mmatch.documents.*" %>
-<%@include file="includes/templateheader.jsp" 
-%><mm:cloud jspvar="cloud" 
-><%@include file="includes/header.jsp" 
+<%@page import="com.finalist.tree.*,nl.leocms.util.tools.documents.*" %>
+<%@include file="/taglibs.jsp" 
+%><mm:cloud jspvar="cloud"
+><%@include file="includes/templateheader.jsp" 
 %><%
 // ** check whether documents root exists
 // ** if there are no documents of type "file" related to this page: add all documents under the documents_root to this page
@@ -10,7 +10,7 @@
    <mm:import id="root_document_exists" />
 </mm:node>
 <mm:notpresent referid="root_document_exists">
-   <% (new nl.mmatch.documents.DirReader()).run(); %>
+   <% (new DirReader()).run(); %>
 </mm:notpresent>
 <mm:node number="<%= pageId %>" jspvar="thisPage">
    <mm:related path="posrel,documents" max="1" constraints="documents.type='file'">
@@ -18,11 +18,12 @@
    </mm:related>
    <mm:notpresent referid="page_contains_file">
       <mm:node number="documents_root" jspvar="subtreeDoc">
-            <% nl.mmatch.documents.DirReader.mergeSubtree(cloud,thisPage,subtreeDoc); %>
+            <% DirReader.mergeSubtree(cloud,thisPage,subtreeDoc); %>
       </mm:node>
    </mm:notpresent> 
 </mm:node>
-<td>
+<%@include file="includes/header.jsp" %>
+   <td>
       <%@include file="includes/pagetitle.jsp" %>
    </td>
    <td><%

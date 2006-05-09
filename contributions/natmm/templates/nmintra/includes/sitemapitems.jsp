@@ -1,4 +1,4 @@
-<mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2"
+<mm:list nodes="<%= rootId %>" path="rubriek1,parent,rubriek2"
 	orderby="parent.pos" directions="UP"
     ><mm:field name="parent.pos" jspvar="parent_pos" vartype="String" write="false"
 	><% if(((Integer.parseInt(parent_pos)-1) % numberOfColumns) == (colNumber-1)){ 

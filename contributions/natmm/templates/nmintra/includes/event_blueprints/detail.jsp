@@ -11,7 +11,7 @@
 		<% } %>
 	</mm:field>
    <mm:related path="posrel,paragraph" orderby="posrel.pos" directions="UP">
-      <%@include file="../includes/relatedparagraph.jsp" %>
+      <%@include file="../relatedparagraph.jsp" %>
    </mm:related>
    <table cellpadding="5" cellspacing="0" style="border:solid #000000 1px;border-collapse:collapse;width:100%;">
       <%

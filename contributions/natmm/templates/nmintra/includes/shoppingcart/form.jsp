@@ -69,9 +69,9 @@ if(bShowPrices) {
    		         ></mm:node
    		      ></mm:list><br/><br/><% 
    	     } 
-   	     %><%@include file="../includes/shoppingcartnordered.jsp" %><%
+   	     %><%@include file="nordered.jsp" %><%
    	     for(int i =0; i< numberOrdered; i++) {
-   	         %><%@include file="../includes/shoppingcartquestions.jsp" %><%
+   	         %><%@include file="questions.jsp" %><%
            }
          %></td></tr>
        </mm:node

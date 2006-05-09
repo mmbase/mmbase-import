@@ -1,6 +1,7 @@
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+><%@include file="includes/templateheader.jsp" 
+%><%@include file="includes/header.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "";
 %><%@include file="includes/rightbartitle.jsp" 

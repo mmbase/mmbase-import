@@ -1,4 +1,6 @@
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
+%><mm:cloud jspvar="cloud"
+><%@include file="includes/templateheader.jsp" 
 %><%
 int screenWidth = 750;
 int screenHeight = 430;
@@ -21,8 +23,7 @@ if(cookies!=null){
   }
 }  
 */
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+%><%@include file="includes/header.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "";
     %><%@include file="includes/rightbartitle.jsp" 

@@ -1,4 +1,4 @@
-<%@include file="../includes/relatedteaser.jsp" %><%
+<%@include file="../relatedteaser.jsp" %><%
 
 // *** are there locations which can be shown ? ***
 HashSet locations = new HashSet();

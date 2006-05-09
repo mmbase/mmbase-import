@@ -13,7 +13,7 @@ String action = getResponseVal("action",postingStr);
 
 %><html>
     <head>
-        <title><mm:node number="<%= websiteId %>" notfound="skipbody"><mm:field name="naam" /></mm:node
+        <title><mm:node number="<%= rootId %>" notfound="skipbody"><mm:field name="naam" /></mm:node
         > - <mm:node number="<%= pageId %>" notfound="skipbody"><mm:field name="titel" /></mm:node></title>
         <meta http-equiv="imagetoolbar" content="no">
         <link rel="stylesheet" type="text/css" href="css/website.css">

@@ -1,6 +1,6 @@
 <%@include file="/taglibs.jsp" %>
 <%@page import = "nl.leocms.evenementen.forms.*,org.mmbase.bridge.Node" %>
-<mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon" jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <% 
 String confirmID = request.getParameter("s");
 boolean subscriptionConfirmed = false;

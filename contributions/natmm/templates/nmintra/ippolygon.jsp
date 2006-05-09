@@ -1,7 +1,7 @@
-<%@include file="includes/templateheader.jsp" 
-%><%@ page import="org.mmbase.bridge.*" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+><%@include file="includes/templateheader.jsp" 
+%><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" %><% 
 if(!articleId.equals("")) {
    %><mm:node number="<%= articleId %>"><mm:import id="extratext"> - <mm:field name="titel" /></mm:import></mm:node><%

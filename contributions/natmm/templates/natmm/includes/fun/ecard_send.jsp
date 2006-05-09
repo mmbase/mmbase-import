@@ -8,7 +8,7 @@
 <mm:import jspvar="fromname" externid="fromname">-</mm:import>
 <mm:import jspvar="fromemail" externid="fromemail">-</mm:import>
 <mm:import jspvar="body" externid="body">-</mm:import>
-<mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon" jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%
 boolean sendOK = false;
 Random rand = new Random();

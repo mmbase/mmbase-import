@@ -198,13 +198,13 @@
 	     }
         String messageLinkParam = "target=\"_top\"";
 
-        %><%@include file="../includes/showmessage.jsp" %><%
+        %><%@include file="../showmessage.jsp" %><%
     } else { 
         String messageTitle = subjectText;
         String messageBody = warningMessage + "</ul>";
         String messageHref = "javascript:history.go(-1)";
         String messageLinktext = "terug naar het formulier";
         String messageLinkParam = "";
-    %><%@include file="../includes/showmessage.jsp" %><% 
+    %><%@include file="../showmessage.jsp" %><% 
     } 
 %></mm:list>

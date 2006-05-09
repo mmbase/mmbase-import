@@ -28,7 +28,7 @@ function startPhone() {
 <td rowspan="3"><a href="http://www.natuurmonumenten.nl" target="_blank"><img src="media/<%= logoName %>_logojub.gif" border="0" title=""></a></td>
 <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
 <%-- *************************************** natuurmonumenten intranet ******************************* --%>
-<td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">Natuurmonumenten <a href="index.jsp" target="_top"><span class="red"><mm:node number="<%= websiteId %>"
+<td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">Natuurmonumenten <a href="index.jsp" target="_top"><span class="red"><mm:node number="<%= rootId %>"
             ><mm:field name="naam" jspvar="website_title" vartype="String" write="false"
                 ><%= website_title.toUpperCase()
             %></mm:field

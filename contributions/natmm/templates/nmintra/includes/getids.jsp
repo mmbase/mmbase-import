@@ -1,9 +1,9 @@
 <%
 
 // *** translate alias back to numbers ***
-%><mm:node number="<%= websiteId %>" notfound="skipbody"
+%><mm:node number="<%= rootId %>" notfound="skipbody"
     ><mm:field name="number" jspvar="website_number" vartype="String" write="false"><%
-        websiteId = website_number; 
+        rootId = website_number; 
     %></mm:field
 ></mm:node
 
@@ -28,15 +28,15 @@ if(pageId.equals("")&&!shop_itemId.equals("-1")) { // try the shop_item detail p
     ></mm:list><% 
 }
 
-// *** if no websiteId is defined try to find one ***
-if(websiteId.equals("")&&!pageId.equals("")){ 
+// *** if no rootId is defined try to find one ***
+if(rootId.equals("")&&!pageId.equals("")){ 
 
     boolean websiteExists = false;
 
     // normal page 
     %><mm:list nodes="<%= pageId %>" path="pagina,posrel,rubriek1,parent,rubriek2" fields="rubriek2.number" ><%--constraints="posrel.pos='1'"
         --%><mm:field name="rubriek2.number" jspvar="dummy" vartype="String" write="false"><%
-            websiteId = dummy; 
+            rootId = dummy; 
         %></mm:field
         ><mm:field name="rubriek1.number" jspvar="dummy" vartype="String" write="false"><%
             rubriekId = dummy; 
@@ -48,7 +48,7 @@ if(websiteId.equals("")&&!pageId.equals("")){
     if(!websiteExists) { 
     %><mm:list nodes="<%= pageId %>" path="pagina,posrel,rubriek" fields="rubriek.number"
         ><mm:field name="rubriek.number" jspvar="dummy" vartype="String" write="false"><%
-            websiteId = dummy; 
+            rootId = dummy; 
         %></mm:field><%
             websiteExists = true; 
     %></mm:list><%
@@ -57,7 +57,7 @@ if(websiteId.equals("")&&!pageId.equals("")){
 } 
 
 // *** still no website found? last resort take the intranet ***
-if(websiteId.equals("")) { websiteId = "home"; } 
+if(rootId.equals("")) { rootId = "home"; } 
 
 if(pageId.equals("")) {
     if(!rubriekId.equals("")){ // *** if page is not defined, take rubriekpage if possible ***
@@ -70,7 +70,7 @@ if(pageId.equals("")) {
        ></mm:node><% 
     } 
     if(pageId.equals("")){ // *** still no page, take the first page under the first rubriek ***
-      %><mm:node number="<%= websiteId %>" notfound="skipbody"
+      %><mm:node number="<%= rootId %>" notfound="skipbody"
          ><mm:related path="parent,rubriek,posrel,pagina" fields="pagina.number"
                orderby="parent.pos,posrel.pos" directions="UP" max="1"
              ><mm:field name="pagina.number" jspvar="dummy" vartype="String" write="false"><%
@@ -85,7 +85,7 @@ if(pageId.equals("")) {
 
 if(rubriekId.equals("")&&!pageId.equals("")){ 
 
-    %><mm:list nodes="<%= websiteId %>" path="rubriek,posrel,pagina" 
+    %><mm:list nodes="<%= rootId %>" path="rubriek,posrel,pagina" 
         constraints="<%= "pagina.number='" + pageId + "'"%>"
         ><mm:field name="rubriek.number" jspvar="dummy" vartype="String" write="false"><%
             rubriekId = dummy; 
@@ -93,7 +93,7 @@ if(rubriekId.equals("")&&!pageId.equals("")){
     ></mm:list><% 
     
     if(rubriekId.equals("")) { 
-      %><mm:list nodes="<%= websiteId %>" path="rubriek1,parent,rubriek2,posrel,pagina" 
+      %><mm:list nodes="<%= rootId %>" path="rubriek1,parent,rubriek2,posrel,pagina" 
            constraints="<%= "pagina.number='" + pageId + "'"%>"
            ><mm:field name="rubriek2.number" jspvar="dummy" vartype="String" write="false"><%
                rubriekId = dummy; 
