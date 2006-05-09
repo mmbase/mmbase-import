@@ -16,12 +16,11 @@
    ></mm:list
    ><%@include file="../includes/cacheopen.jsp" 
    %><%--cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application"
-   --%><%@include file="../includes/templatesettings.jsp" 
-   %><html>
+   --%>
+   <html>
      <head>
          <link rel="stylesheet" type="text/css" href="css/website.css">
-         <title><% if(isPreview) { %>PREVIEW: <% } 
-             %><mm:node number="<%= websiteId %>" notfound="skipbody"><mm:field name="naam" /></mm:node
+         <title><mm:node number="<%= rootId %>" notfound="skipbody"><mm:field name="naam" /></mm:node
              > - <mm:node number="<%= pageId %>" notfound="skipbody"><mm:field name="titel" /></mm:node></title>
          <meta http-equiv="imagetoolbar" content="no">
          <script language="javascript" src="scripts/launchcenter.js"></script>

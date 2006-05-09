@@ -5,7 +5,7 @@
 		<td style="padding-left:3px;padding-right:3px;">
 			<strong><mm:field name="title" /></strong><br>
 			<mm:field name="intro" jspvar="articles_intro" vartype="String" write="false"
-					><mm:isnotempty><span class="black"><%@include file="../includes/cleanarticlesintro.jsp" %></span></mm:isnotempty
+					><mm:isnotempty><span class="black"><%@include file="../cleanarticlesintro.jsp" %></span></mm:isnotempty
 			></mm:field>
 		</td>
 	</tr>
@@ -27,10 +27,10 @@
 		></mm:field>
 		</td>
 		<td class="middle" style="padding-right:3px;">
-		<%@include file="../includes/relatedprice.jsp" %>
+		<%@include file="price.jsp" %>
 		</td>
 	</tr>
-	<tr><%@include file="../includes/relatedshoppingcart.jsp"%></tr>
+	<tr><%@include file="shoppingcart.jsp"%></tr>
 	<tr><td class="titlebar" colspan="2"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr>
 </table>
 <table width="100%" cellspacing="0" cellpadding="0"><%--
@@ -49,10 +49,10 @@
 				 Deze actie loopt <%
 					if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
 						%> van <%
-						timestr = startdate; %><%@include file="../includes/timestring.jsp" %><%
+						timestr = startdate; %><%@include file="timestring.jsp" %><%
 					} 
 					%> tot en met <%
-					timestr = enddate; %><%@include file="../includes/timestring.jsp" %>.
+					timestr = enddate; %><%@include file="timestring.jsp" %>.
 				</tr></td>
 				<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
 				<tr><td class="titlebar"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td></tr><%
@@ -89,10 +89,10 @@
 			></mm:field> Deze actie loopt <%
 				if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
 					%> van <%
-					timestr = startdate; %><%@include file="../includes/timestring.jsp" %><%
+					timestr = startdate; %><%@include file="timestring.jsp" %><%
 				} 
 				%> tot en met <%
-				timestr = enddate; %><%@include file="../includes/timestring.jsp" 
+				timestr = enddate; %><%@include file="timestring.jsp" 
 			%>.			
 			</tr></td>
 			<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
@@ -121,10 +121,10 @@
 			Deze actie loopt <%
 				if(Long.parseLong(startdate)>=nowSec) { // only show startdate if discount is not started
 					%> van <%
-					timestr = startdate; %><%@include file="../includes/timestring.jsp" %><%
+					timestr = startdate; %><%@include file="timestring.jsp" %><%
 				} 
 				%> tot en met <%
-				timestr = enddate; %><%@include file="../includes/timestring.jsp" 
+				timestr = enddate; %><%@include file="timestring.jsp" 
 			%>.			
 			</tr></td>
 			<tr><td><img src="media/spacer.gif" height="4" width="1" border="0" alt=""></td></tr>
@@ -160,7 +160,7 @@
 	      /><mm:related path="posrel1,producttypes,posrel1,pagina" max="1"
 	         ><li><a href="producttypes.jsp?p=<mm:field name="pagina.number" 
 		         />&pool=<mm:field name="producttypes.number" />&product=<mm:write referid="products_number" 
-		            />"><%@include file="../includes/cleanarticlesintro.jsp" %></a><br>
+		            />"><%@include file="../cleanarticlesintro.jsp" %></a><br>
 		   </mm:related
 		   ></mm:field
 		></mm:node
@@ -227,7 +227,7 @@
 		%><td class="thumbnailparent" width="<%= 100/numberInRow %>%">
 				<table cellspacing="0" cellpadding="0" class="thumbnail">
 					<tr><td class="thumbnail">
-						<%@include file="../includes/splitimagelist.jsp" 
+						<%@include file="../splitimagelist.jsp" 
 						%><a href="#" onClick="javascript:launchCenter('<%= slideshowUrl %>&i=<%= imageId %>', 'center', 550, 740);setTimeout('newwin.focus();',250);">
 						<mm:listnodes type="images" constraints="<%= "number='" + thisImage + "'" %>">
 							<img src="<mm:image template="s(32x54)" />" border="0" alt="">

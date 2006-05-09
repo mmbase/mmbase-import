@@ -1,7 +1,7 @@
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
-%><%@include file="includes/calendar.jsp" %><%
+><%@include file="includes/templateheader.jsp" 
+%><%
 String sTemplateUrl = "homepage.jsp";
 if(!articleId.equals("")) { 
     String articleTemplate = "article.jsp" + templateQueryString;
@@ -39,7 +39,9 @@ if(!articleId.equals("")) {
 		orderby="artikel.embargo" searchdir="destination" max="1"><%
       hasPools = true;
    %></mm:list
-   ><%@include file="includes/movetoarchive.jsp" %>
+   ><%-- @include file="includes/movetoarchive.jsp" --%>
+   <%@include file="includes/header.jsp" 
+   %><%@include file="includes/calendar.jsp" %>
    <td><%@include file="includes/pagetitle.jsp" %></td>
    <td><% 
       String rightBarTitle = "";

@@ -1,6 +1,6 @@
 <%@page import="nl.leocms.evenementen.forms.SubscribeForm,nl.mmatch.NatMMConfig" %>
 <%@include file="../includes/top0.jsp" %>
-<mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon" jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="../includes/top1_params.jsp" %>
 <%@include file="../includes/top2_cacheparams.jsp" %>
 <% 

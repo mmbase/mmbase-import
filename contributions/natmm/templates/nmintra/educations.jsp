@@ -1,13 +1,14 @@
 <%-- hh: see the template event_blueprints.jsp for a more compact implementation --%>
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
+%><mm:cloud jspvar="cloud"
+><%@include file="includes/templateheader.jsp" 
 %><%! 
 public String searchResults(TreeSet searchResultList) {
 	String searchResults = searchResultList.toString();
 	searchResults = searchResults.substring(1,searchResults.length()-1);
 	return searchResults;
 }
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+%><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" 
 %><td><%@include file="includes/pagetitle.jsp" %></td>
   <td><% 
@@ -56,7 +57,7 @@ public String searchResults(TreeSet searchResultList) {
    			searchConstraint = "(keywords.number = '" + keywordId + "')"; 	   
             %>
    			<mm:list path="educations,related,keywords" constraints="<%= searchConstraint %>">
-   				<%@include file="includes/edusearcheducations.jsp" %>
+   				<%@include file="includes/education/searcheducations.jsp" %>
    			</mm:list>
    	      <%
    	      sEducations = searchResults(educations);
@@ -68,7 +69,7 @@ public String searchResults(TreeSet searchResultList) {
    			searchConstraint = "(education_pools.number = '" + poolId + "')";
             %>
    			<mm:list nodes="<%= sEducations %>" path="educations,posrel,education_pools" constraints="<%= searchConstraint %>">
-   				<%@include file="includes/edusearcheducations.jsp" %>
+   				<%@include file="includes/education/searcheducations.jsp" %>
    			</mm:list>
    	      <%
    	      sEducations = searchResults(educations);
@@ -80,7 +81,7 @@ public String searchResults(TreeSet searchResultList) {
    			searchConstraint = "(providers.number = '" + providerId + "')";
             %>
    			<mm:list nodes="<%= sEducations %>" path="educations,related,providers" constraints="<%= searchConstraint %>">
-   				<%@include file="includes/edusearcheducations.jsp" %>
+   				<%@include file="includes/education/searcheducations.jsp" %>
    			</mm:list>
    	      <%
    	      sEducations = searchResults(educations);
@@ -92,7 +93,7 @@ public String searchResults(TreeSet searchResultList) {
    			searchConstraint = "(competencies.number = '" + competenceId + "')";
             %>
    			<mm:list nodes="<%= sEducations %>" path="educations,posrel,competencies" constraints="<%= searchConstraint %>">
-   				<%@include file="includes/edusearcheducations.jsp" %>
+   				<%@include file="includes/education/searcheducations.jsp" %>
    			</mm:list>
    	      <%
    	      sEducations = searchResults(educations);
@@ -188,7 +189,7 @@ public String searchResults(TreeSet searchResultList) {
       } 
 		
 		if (actionId.equals("feedback")){
-         %><jsp:include page="includes/feedbackform.jsp">
+         %><jsp:include page="includes/feedback/form.jsp">
             <jsp:param name="object" value="<%= educationId %>" />
             <jsp:param name="field" value="titel" />
             <jsp:param name="ntype" value="opleiding" />
@@ -199,12 +200,12 @@ public String searchResults(TreeSet searchResultList) {
 
 	   	if(!educationId.equals("")) {
 
-			   %><%@include file="includes/educationdetail.jsp" %><%
+			   %><%@include file="includes/education/detail.jsp" %><%
 
 			} else { 
 			   if(bSearchIsOn) {
                %>
-				   <%@include file="includes/edusearchresults.jsp"%>
+				   <%@include file="includes/education/searchresults.jsp"%>
                <%
 			   } else { 
 		 			String startnodeId = articleId;
@@ -233,7 +234,7 @@ public String searchResults(TreeSet searchResultList) {
    <% 
    if(!action.equals("print")) { 
       %>
-      <%@include file="includes/edusearchform.jsp" %>
+      <%@include file="includes/education/searchform.jsp" %>
       <table cellpadding="0" cellspacing="0" width="100%";>
       <tr>
          <td style="text-align:right;padding-left:19px;padding-right:9px;">

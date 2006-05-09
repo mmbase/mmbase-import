@@ -1,6 +1,7 @@
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><mm:log jspvar="log"
+><%@include file="includes/templateheader.jsp" 
+%><mm:log jspvar="log"
 ><%@include file="includes/metadatafunctions.jsp" 
 %><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" 
@@ -69,7 +70,7 @@
 		if(departmentId.equals("")&&departments.size()==1) { departmentId = (String) departments.getNode(0).getStringValue("afdelingen.number"); }
 
 		if (actionId.equals("feedback")){
-         %><jsp:include page="includes/feedbackform.jsp">
+         %><jsp:include page="includes/feedback/form.jsp">
             <jsp:param name="object" value="<%= eventId %>" />
             <jsp:param name="field" value="naam" />
             <jsp:param name="ntype" value="activiteit" />
@@ -80,12 +81,12 @@
 
 	   	if(!eventId.equals("")) {
 
-			   %><%@include file="includes/eventdetail.jsp" %><%
+			   %><%@include file="includes/event_blueprints/detail.jsp" %><%
 
 			} else { 
 			   if(bSearchIsOn) {
                %>
-				   <%@include file="includes/eventsearchresults.jsp" %>
+				   <%@include file="includes/event_blueprints/searchresults.jsp" %>
                <%
 			   } else { 
 		 			String startnodeId = articleId;
@@ -111,7 +112,7 @@
 </div>
 </td>
 <td>
-   <%@include file="includes/eventsearchform.jsp" %>
+   <%@include file="includes/event_blueprints/searchform.jsp" %>
 </td>
 </mm:log
 ><%@include file="includes/footer.jsp" 

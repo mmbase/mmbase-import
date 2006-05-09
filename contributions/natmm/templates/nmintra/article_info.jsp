@@ -1,6 +1,6 @@
+<%@include file="/taglibs.jsp" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" %><%
 
 // this is a special version of the article template which includes news
@@ -15,6 +15,7 @@ if(!articleId.equals("")) {
 
 } else {  
 
+   %><%@include file="includes/header.jsp" 
    %><td><%@include file="includes/pagetitle.jsp" %></td>
      <td><% String rightBarTitle = "Gesignaleerd";
             %><%@include file="includes/rightbartitle.jsp" 

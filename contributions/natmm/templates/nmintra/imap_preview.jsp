@@ -1,8 +1,6 @@
 <%@include file="includes/templateheader.jsp" 
 %><mm:cloud
-><%
-isPreview = true;
-%><head>
+><head>
 <title></title>
 <meta http-equiv="imagetoolbar" content="no">
 </head>

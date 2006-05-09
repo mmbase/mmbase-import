@@ -1,10 +1,10 @@
-<%@include file="includes/templateheader.jsp" 
+<%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
-><%@include file="includes/header.jsp" 
+><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" 
 
-
-%><td><table border="0" cellpadding="0" cellspacing="0">
+%><%@include file="includes/header.jsp" %>
+<td><table border="0" cellpadding="0" cellspacing="0">
     <tr>
         <%-- <td><img src="media/rdcorner.gif" style="filter:alpha(opacity=75)"></td> --%>
         <td class="transperant" style="width:100%;"><img src="media/spacer.gif" width="1" height="6"><br>
@@ -35,14 +35,14 @@
     
     } else {
         
-        %><%@include file="includes/relatedprodlocspecs.jsp" %>
+        %><%@include file="includes/producttypes/prodlocspecs.jsp" %>
         <mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel"
             orderby="contentrel.pos" directions="UP" fields="artikel.number,artikel.titel"
             ><mm:first><div class="pagesubheader" style="margin-top:10px;">Klik hier voor informatie over:</div></mm:first
             ><div style="margin-top:10px;"><li><a href="producttypes.jsp<%= templateQueryString %>&article=<mm:field name="artikel.number" 
                 />"><mm:field name="artikel.titel" /></a></div>
         </mm:list>
-        <%@include file="includes/relatedproducttypes.jsp" %><% 
+        <%@include file="includes/producttypes/producttypes.jsp" %><% 
     } 
     %><%@include file="includes/pageowner.jsp" 
     %></td>

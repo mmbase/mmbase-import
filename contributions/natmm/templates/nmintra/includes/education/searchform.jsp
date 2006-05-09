@@ -1,15 +1,22 @@
-<%@include file="../includes/whiteline.jsp" %>
+<%@include file="../whiteline.jsp" %>
 <table cellpadding="0" cellspacing="0" border="0" style="width:190px;" align="center">
 <tr>
 <td>
    <form name="form1">
-      <%= getSelect(cloud,log,"Type activiteit",cssClassName,eTypeId,eventTypes,"evenement_type","naam",searchUrl,"evt") %>
-      <%= getSelect(cloud,log,"Doelgroep",cssClassName,pCategorieId,participantsCategories,"deelnemers_categorie","naam",searchUrl,"pc") %>
-      <%= getSelect(cloud,log,"Leeftijd",cssClassName,pAgeId,participantsAges,"deelnemers_age","name",searchUrl,"pa") %>
-      <%= getSelect(cloud,log,"Type terrein",cssClassName,nReserveId,natureReserveTypes,"natuurgebieden_type","name",searchUrl,"nr") %>
-      <%= getSelect(cloud,log,"Tijdsduur",cssClassName,eDistanceId,evenementDistances,"evenement_distance","name",searchUrl,"evl") %>
-      <%= getSelect(cloud,log,"Afstand",cssClassName,eDurationId,evenementDurations,"evenement_duration","name",searchUrl,"evd") %>
-      <%= getSelect(cloud,log,"Bezoekerscentrum",cssClassName,departmentId,departments,"afdelingen","naam",searchUrl,"afdelingen") %>
+      <%@include file="selectkeyword.jsp"%>
+      <%@include file="selectpool.jsp"%>
+      <% 
+      String providerConstraint = "educations.edutype='intern'"; 
+      String providerTitle = "Interne themadag of -training";
+      %>
+      <%@include file="selectprovider.jsp"%>
+      <% 
+      providerConstraint = "educations.edutype!='intern'"; 
+      providerTitle = "Opleidingsinstituut";
+      %>
+      <%@include file="selectprovider.jsp"%>
+      <% // @include file="includes/eduselectcompetencetypes.jsp" %>
+      <%@include file="selectcompetencies.jsp"%>
    </form>
    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
    	<tr>
@@ -21,10 +28,12 @@
    		</td>
       </tr>
    </table>
+   <br/>
+   <a href="educations.jsp?p=competenties" style="color:#FFFFFF;">Wat zijn competenties?</a>
 </td>
 </tr>
 </table>
-<%@include file="../includes/whiteline.jsp" %>
+<%@include file="../whiteline.jsp" %>
 <script language="JavaScript" type="text/javascript">
 <%= "<!--" %>
 function MM_goToURL() { //v3.0
@@ -36,7 +45,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
   if (restore) selObj.selectedIndex=0;
 }
 function clearForm() {
-  document.location = "<%= localPath %>event_blueprints.jsp?p=<%= pageId %>&evt=&pc=&pa=&nr=&evl=&evd=&department="; 
+  document.location = "educations.jsp?p=<%= pageId %>&h=&k=&j=&t=&u="; 
   return false; 
 }
 <%= "//-->" %>

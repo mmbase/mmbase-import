@@ -1,15 +1,16 @@
-<%@page language="java" contentType="text/html; charset=utf-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache" 
-%><%@page import="java.util.*,java.text.*,java.io.*,org.mmbase.bridge.*,
-						org.mmbase.util.logging.Logger,org.mmbase.module.Module,
-						nl.mmatch.HtmlCleaner,nl.leocms.util.*,
-						net.sf.mmapps.modules.lucenesearch.LuceneModule,
-				      org.apache.lucene.index.IndexReader,
-				      org.apache.lucene.analysis.*,org.apache.lucene.search.*,
-						net.sf.mmapps.modules.lucenesearch.util.*,
-				      org.apache.lucene.queryParser.QueryParser,
-				      org.apache.lucene.document.Document" %><%! 
+<base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
+<%@page import="
+   java.text.*,
+   java.io.*,
+   org.mmbase.bridge.*,
+	org.mmbase.util.logging.Logger,org.mmbase.module.Module,
+	net.sf.mmapps.modules.lucenesearch.LuceneModule,
+	net.sf.mmapps.modules.lucenesearch.util.*,
+	org.apache.lucene.index.IndexReader,
+	org.apache.lucene.analysis.*,
+   org.apache.lucene.search.*,
+	org.apache.lucene.queryParser.QueryParser,
+	org.apache.lucene.document.Document" %><%! 
 						
 public String getParameter(String parameterStr, String queryStr) {
     String parameterValue = null;
@@ -18,52 +19,20 @@ public String getParameter(String parameterStr, String queryStr) {
     if(qpos>-1) {
         int vstart = queryStr.indexOf("=",qpos)+1;
         int vend = queryStr.indexOf("&",vstart);
-        parameterValue = org.w3c.jigsaw.http.Request.unescape(queryStr.substring(vstart,vend));
+        parameterValue = queryStr.substring(vstart,vend);
     }
     return parameterValue;
 }
-
-/*public TreeSet grantedGroups(Cloud cloud, String nodeId, TreeSet granted) {
-    // *** return all the granted groups of this node ***
-    if(nodeId!=null&&!nodeId.equals("")) {
-        NodeList relatedGroup = cloud.getNode(nodeId).getRelatedNodes("groups","authrel",null);
-        for(int i=0; i<relatedGroup.size(); i++) {
-            granted.add("" + relatedGroup.getNode(i).getNumber());
-        }
-    }
-    return granted;
-}*/
-
-/*public boolean isVisible(Cloud cloud, String siteId, String rubriekId, String pageId, String thisGroup, JspWriter out) {
-   // *** is this site,rubriek,page visible for this group
-   boolean isVisible = true;
-   /*try { 
-    // out.print("\n<!-- isVisible(cloud," + siteId + ", " + rubriekId + ", " + pageId + ", " + thisGroup + ",out) -->");
-    TreeSet granted = new TreeSet();
-    granted.addAll(grantedGroups(cloud,pageId,granted));
-    granted.addAll(grantedGroups(cloud,rubriekId,granted));
-    granted.addAll(grantedGroups(cloud,siteId,granted));
-    // out.print("\n<!-- granted groups: " + granted + " /  ");
-    if(granted.size()>0) {  // *** authorisation on this breadcrum path has been set ***
-        if(thisGroup.equals("")) {
-            isVisible = false;
-        } else {
-            // *** let see if this group belongs to the granted ***
-		      // out.print(thisGroup + " ");          
-            isVisible = granted.contains(thisGroup);
-        }
-    }
-    // out.println("-->");
- } catch (Exception e) { }
- return isVisible;
-} */
 %><%@include file="../globals.jsp" 
 %><%
-String websiteId = "home";
+
 String rubriekId = "";
 String pageId = request.getParameter("p"); if(pageId==null){ pageId = ""; }
 String refererId = request.getParameter("referer"); if(refererId==null){ refererId = ""; }
 String articleId = request.getParameter("article"); if(articleId==null){ articleId = ""; }
+PaginaHelper ph = new PaginaHelper(cloud);
+String rootId = ph.getRootRubriek(cloud, pageId);
+
 //String visitorGroup = request.getParameter("vg"); if(visitorGroup==null){ visitorGroup = ""; }
 
 // IntraShop
@@ -175,49 +144,4 @@ String emailHelpText = "<br><br>N.B. Op sommige computers binnen Natuurmonumente
                     + "<br>2.kopieer de bovenstaande link uit deze email naar de adres balk van Internet Explorer"
                     + "<br>3.druk op de \"Enter\" toets";
 
-%>
-<%-- Alternative code for authentication on departments
-<%! 
-public TreeSet grantedDept(Cloud cloud, String nodeId, TreeSet granted) {
-    // *** return all the granted departments of this node ***
-    if(nodeId!=null&&!nodeId.equals("")) {
-        NodeList relatedDept = cloud.getNode(nodeId).getRelatedNodes("departments","authrel",null);
-        for(int i=0; i<relatedDept.size(); i++) {
-            granted.add("" + relatedDept.getNode(i).getNumber());
-        }
-    }
-    return granted;
-}
-
-public boolean isVisible(Cloud cloud, String siteId, String rubriekId, String pageId, String thisDept, JspWriter out) {
-    // *** is this site,pijler,page visible for this department
-        boolean isVisible = true;
-
- try { 
-    TreeSet granted = new TreeSet();
-    granted.addAll(grantedDept(cloud,pageId,granted));
-    granted.addAll(grantedDept(cloud,rubriekId,granted));
-    granted.addAll(grantedDept(cloud,siteId,granted));
-    // out.print("<!-- granted for: " + siteId + ", " + rubriekId + ", " + pageId + ", " + granted + ": ");
-    if(granted.size()>0) {  // *** authorisation on this breadcrum path has been set ***
-        if(thisDept.equals("")) {
-            isVisible = false;
-        } else {
-            NodeList ancestors = cloud.getNode(thisDept).getRelatedNodes("departments","readmore","destination");        
-            while(!granted.contains(thisDept)&&ancestors.size()>0) {
-                Node parent = ancestors.getNode(0);
-		    // out.print(thisDept + " ");
-                thisDept = "" + parent.getNumber();
-                ancestors = parent.getRelatedNodes("departments","readmore","destination");
-            }
-            // *** let see if the department or one of its ancestors belongs to the granted ***
-		// out.print(thisDept + " ");          
-            isVisible = granted.contains(thisDept);
-        }
-    }
-    // out.println("-->");
- } catch (Exception e) { }
- return isVisible;
-}
-%>
---%>
+%><%@include file="../includes/templatesettings.jsp"  %>

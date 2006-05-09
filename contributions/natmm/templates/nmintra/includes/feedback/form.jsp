@@ -1,6 +1,6 @@
 <%@include file="../includes/templateheader.jsp" %>
 <%@include file="../includes/calendar.jsp" %>
-<%@include file="../includes/feedbackformscript.jsp" %>
+<%@include file="../includes/feedback/script.jsp" %>
 <%@include file="../includes/getresponse.jsp" %>
 <mm:import externid="object" jspvar="objectId">-1</mm:import>
 <mm:import externid="field" jspvar="fieldId">titel</mm:import>

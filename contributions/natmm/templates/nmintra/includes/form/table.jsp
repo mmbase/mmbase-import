@@ -6,7 +6,7 @@
 		<td><img src="media/spacer.gif" width="10" height="1"></td>
 		<td colspan="3"><img src="media/spacer.gif" width="400" height="1">
       <div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a></div>
-		<%@include file="../includes/relatedteaser.jsp" %></td>
+		<%@include file="../relatedteaser.jsp" %></td>
 	</tr>		
 	<mm:list nodes="<%= pageId %>" path="pagina,posrel,formulier" 
 		fields="formulier.number,formulier.titel,formulier.titel_fra,formulier.omschrijving" 

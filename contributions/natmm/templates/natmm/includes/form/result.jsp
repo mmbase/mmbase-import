@@ -13,7 +13,7 @@ if(referer!=null) {
    <body><%
 } 
 %>
-<mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon" jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%
    String okSendTo = "Uw bericht is verstuurd naar";
    String okLink = "Naar de homepage";
@@ -149,7 +149,6 @@ if(referer!=null) {
                      &&com.cfdev.mail.verify.EmailVerifier.validateEmailAddressSyntax(answerValue)) {
                      defaultEmailAddress = answerValue;
                   }
-                            
                }
             %></mm:node>
          </mm:related><%
@@ -196,7 +195,7 @@ if(isValidAnswer)
          semicolon = thisEmailAddres.indexOf(";");
          %><mm:node referid="mail1">
                <mm:setfield name="to"><%= nextEmailAddress %></mm:setfield>
-               <mm:field name="mail(oneshot)"/>
+               <mm:field name="mail(oneshotkeep)"/>
             </mm:node><%
       }
 

@@ -2,7 +2,7 @@
 // **************** people finder: right bar with the form *****************
 
 if(!action.equals("print")) { 
-    %><%@include file="../includes/whiteline.jsp" 
+    %><%@include file="../whiteline.jsp" 
     %><form method="POST" action="smoelenboek.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt('submit');">
         <input type="hidden" name="name" value="<%= nameId %>">
     <table cellpadding="0" cellspacing="0"  align="center">

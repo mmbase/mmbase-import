@@ -1,9 +1,31 @@
-<%  String formScript = "function changeIt(url) {"
+<%@include file="/taglibs.jsp" 
+%><mm:cloud jspvar="cloud"
+><%@include file="../templateheader.jsp" 
+%><%@include file="../calendar.jsp"
+%><%  
+
+String memberId = (String) session.getAttribute("memberid");
+if(memberId==null) { memberId = ""; }
+
+int shippingCosts = 0;
+int totalSum = 0;
+int donation = 0;
+
+String donationStr = (String) session.getAttribute("donation"); 
+if(donationStr!=null) { 
+   try { donation = Integer.parseInt(donationStr); 
+   } catch(Exception e) { } 
+}
+
+TreeMap shop_items = (TreeMap) session.getAttribute("shop_items");
+TreeMap shop_itemsIterator = (TreeMap) shop_items.clone();
+
+String formScript = "function changeIt(url) {"
 				+ "\nvar href = \"&pst=\";";
-	 if(bShowPrices&&bMemberDiscount) {
-			formScript += "\nvar valM = document.shoppingcart.elements[\"memberid\"].value;"
-				+ "\nhref += \"|valM=\" + escape(valM);";
-   }
+ if(bShowPrices&&bMemberDiscount) {
+      formScript += "\nvar valM = document.shoppingcart.elements[\"memberid\"].value;"
+         + "\nhref += \"|valM=\" + escape(valM);";
+}
 				
 // ************************** the membershipshorm ***************************
 %><table width="100%" cellspacing="0" cellpadding="0">
@@ -18,11 +40,11 @@
 			articleConstraint = "contentrel.pos='0'"; 
 		} 
 	%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" constraints="<%= articleConstraint %>"
-		><%@include file="../includes/relatedarticle.jsp" 
+		><%@include file="../relatedarticle.jsp" 
 	%></mm:list><br>
 	<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>
 	<% if(bShowPrices&&bMemberDiscount) { 
-	   %><jsp:include page="../includes/membershipsform.jsp.jsp">
+	   %><jsp:include page="membershipsform.jsp.jsp">
             <jsp:param name="mi" value="<%= memberId %>" />
             <jsp:param name="pu" value="<%= pageUrl %>" />
          </jsp:include><br>
@@ -30,7 +52,7 @@
 	} %>
 	</td>
 	<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
-	<td width="180"><%@include file="../includes/relatedshoplinks.jsp"%></td>
+	<td width="180"><%@include file="shoplinks.jsp"%></td>
 </tr>
 </table>
 <% 
@@ -73,8 +95,8 @@ if(bShowPrices&&bExtraCosts) {
 				+ "if(val" + thisShop_item + "!='') { href += \"|valP" + thisShop_item + "=\" + escape(val" + thisShop_item + "); } \n"; 
 		
 		%><mm:node number="<%= thisShop_item %>" notfound="skipbody"
-		><%@include file="../includes/getprice.jsp"
-		%><%@include file="../includes/getdiscount.jsp" 
+		><%@include file="getprice.jsp"
+		%><%@include file="getdiscount.jsp" 
 		%><tr>
 			<td class="cart<%= rowParity %>" style="text-align:left;padding-right:0px;padding-left:5px;">
 				<a href="javascript:changeIt('<mm:url page="<%= pageUrl + "&u=" + thisShop_item %>" 
@@ -154,7 +176,7 @@ if(bShowPrices&&bExtraCosts) { %>
 	<td><img src="media/spacer.gif" width="1" height="1" border="0" alt=""></td>
 </tr>
 <% } %>
-<%@include file="../includes/getgeneraldiscount.jsp" %><%
+<%@include file="getgeneraldiscount.jsp" %><%
 
 // ************************** general discounts ***************************
 if(generaldiscount>0) {
@@ -249,7 +271,7 @@ if(bShowPrices) {
 	<tr>
 		<td width="80%"><img src="media/spacer.gif" height="1" width="1" border="0" alt=""></td>
 		<td width="8"><img src="media/spacer.gif" height="1" width="8" border="0" alt=""></td>
-		<td width="180"><%@include file="../includes/relatedshoplinks.jsp"%></td>
+		<td width="180"><%@include file="shoplinks.jsp"%></td>
 	</tr>
 </form>
 </table><%
@@ -264,6 +286,8 @@ if(bShowPrices) {
 }
 formScript += "if(url!=null) { document.location =  url + href; return false; } else { return href; }"
 		+ "\n}";
+
+session.setAttribute("totalcosts","" + totalSum);
 %>
 <script language="javascript" type="text/javascript">
 <%= "<!--" %>
@@ -283,4 +307,5 @@ function useEnterKey()
    }
 } 
 <%= "//-->" %>
-</script> 
+</script>
+</mm:cloud>

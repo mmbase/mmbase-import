@@ -119,6 +119,9 @@ public class PaginaHelper {
     */
    public static String getSubDir(Cloud cloud, String paginaNumber) {
       String rootRubriek = getRootRubriek(cloud,paginaNumber);
+      if(rootRubriek==null) {
+         log.error("Pagina " + paginaNumber + " does not have a root rubriek.");
+      }
       return RubriekHelper.getSubDir(cloud.getNode(rootRubriek));
    }
    
