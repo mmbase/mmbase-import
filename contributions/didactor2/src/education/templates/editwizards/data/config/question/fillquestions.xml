@@ -13,7 +13,7 @@
 
 <wizard-schema id="empty">
     <title xml:lang="en">Fill in the gaps Editor</title>
-    <title xml:lang="nl">Vul de hiaten in</title>
+    <title xml:lang="nl">Invulvraag editor</title>
 
 
     <action type="create">
@@ -25,13 +25,20 @@
        </object>
     </action>
 
-
-    <action type="load">
-        <relation destination="openanswers" role="related" />
-        <relation destination="feedback" role="related" />
-        <relation destination="images" role="posrel" />
-        <relation destination="attachments" role="related" />
-        &extra_loads;
+	<action type="load">
+		<relation destination="openanswers" role="related">
+		 <object>
+		   <relation destination="feedback" role="related">
+		     <object>
+		       <field name="name" />
+		     </object>
+		   </relation>
+		 </object>
+		</relation>
+		<relation destination="feedback" role="related" />
+		<relation destination="images" role="posrel" />
+		<relation destination="attachments" role="related" />
+		&extra_loads;
     </action>
 
     <action type="delete" />
@@ -44,15 +51,15 @@
          <optionlist name="imagepos">
             <option id="0">
             	<prompt xml:lang="nl">Boven</prompt>
-            	<prompt xml:lang="en">Above</prompt>
+            	<prompt xml:lang="en"> (Above)</prompt>
             </option>
             <option id="1">
             	<prompt xml:lang="nl">Onder</prompt>
-            	<prompt xml:lang="en">Under</prompt>
+            	<prompt xml:lang="en"> (Under)</prompt>
             </option>
             <option id="2">
             	<prompt xml:lang="nl">Naast</prompt>
-            	<prompt xml:lang="en">Next to</prompt>
+            	<prompt xml:lang="en"> (Next to)</prompt>
             </option>
         </optionlist>    
     </lists>
@@ -64,16 +71,16 @@
 
     <form-schema id="step1">
         <title xml:lang="en">Enter fill in the gaps question</title>
-  		<title xml:lang="nl">Vul de hiaten in invoeren</title>      
+  		<title xml:lang="nl">Invulvraag editor</title>      
         <field name="title" >
-            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="nl">Invulvraag titel</prompt>
             <prompt xml:lang="en">Title</prompt>
         </field>
         
        
     <!--  INSERT SELECT TITLE -->  
         <field name="showtitle" ftype="enum">
-           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="nl">Titel tonen</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
         </field>
@@ -105,12 +112,12 @@
     <!--  INSERT IMAGE -->     
        
    <list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
-             <title xml:lang="nl">Bijbehorende Afbeeldingen</title>
+             <title xml:lang="nl">Bijbehorende afbeeldingen</title>
              <title xml:lang="en">Associated images</title>
              <!-- Show the 'item' in a list (the object) -->
              <item>
                      <field name="title">
-                             <prompt xml:lang="nl">Afbeeldingen Titel</prompt>
+                             <prompt xml:lang="nl">Afbeeldingen titel</prompt>
                              <prompt xml:lang="en">Title of the image</prompt>
                              <description></description>
                      </field>
@@ -141,7 +148,7 @@
  	 
        
         <field name="textFirst" ftype="line" dtminlength="0">
-	        <prompt xml:lang="nl">Het eerste deel van de zin </prompt>
+	        <prompt xml:lang="nl">Eerste deel van de zin </prompt>
             <prompt xml:lang="en">The first part of the sentence </prompt>
         </field>
  
@@ -156,8 +163,16 @@
                     <prompt xml:lang="en">Text</prompt>
                     <description>De antwoord tekst</description>
                 </field>
+                <list minoccurs="0" maxoccurs="*" role="related" destination="feedback">
+		  	          <title xml:lang="nl">Feedback</title>
+			          <title xml:lang="en">Feedback</title>
+			          <item>
+			            <field name="name"  ftype="data">
+			            </field>
+			          </item>
+	           </list>
             </item>
-
+			
             <action type="create">
                 <relation role="related">
                     <object type="openanswers" />
@@ -190,7 +205,7 @@
  
  
         <field name="textSecond" ftype="line" dtminlength="0">
-        	<prompt xml:lang="nl">Het tweede deel van de zin</prompt>
+        	<prompt xml:lang="nl">Tweede deel van de zin</prompt>
             <prompt xml:lang="en">The second part of the sentence </prompt>
         </field>
         

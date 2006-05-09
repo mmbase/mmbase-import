@@ -10,7 +10,7 @@
       <description xml:lang="nl">Naam van de flashpagina</description>
       <description xml:lang="en">Name of the flashpage</description>
     </field>
-    <field fdatapath="field[@name='description']" ftype="line">
+    <field fdatapath="field[@name='description']" rows="8">
       <prompt xml:lang="nl">Omschrijving van de link</prompt>
       <prompt xml:lang="en">Description of the link</prompt>
     </field> 
@@ -22,8 +22,6 @@
   </action>
 
   <command name="startwizard" inline="true" wizardname="config/flashpages/flashpages" objectnumber="new">
-    <prompt xml:lang="nl">Nieuwe flash pagina</prompt>
-    <prompt xml:lang="en">New flashpage</prompt>
   </command>
 
   <command name="search" nodepath="flashpages" fields="name" age="-1" orderby="number" directions="down" >

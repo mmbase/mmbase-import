@@ -8,7 +8,7 @@
 // Version 3.0 developed by Mihai Bazon for InteractiveTools.
 //	     http://students.infoiasi.ro/~mishoo
 //
-// $Id: htmlarea.js,v 1.1 2004-11-01 12:52:42 jdiepenmaat Exp $
+// $Id: htmlarea.js,v 1.2 2006-05-09 15:37:06 igeorgijev Exp $
 
 // Creates a new HTMLArea object.  Tries to replace the textarea with the given
 // ID with it.
@@ -603,7 +603,7 @@ HTMLArea.prototype.generate = function () {
         }
 
         // size the IFRAME according to user's prefs or initial textarea
-        var height = (this.config.height == "auto" ? (this._ta_size.h + "px") : this.config.height);
+        var height = (this.config.height == "210px" ? (this._ta_size.h + "px") : "210px");
         height = parseInt(height);
         var width = (this.config.width == "auto" ? (this._ta_size.w + "px") : this.config.width);
         width = parseInt(width);

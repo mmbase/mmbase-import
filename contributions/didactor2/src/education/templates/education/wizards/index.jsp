@@ -106,7 +106,7 @@
 </script>
 
 
-<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+<table cellpadding="0" cellspacing="0" border="0" width="100%" height="89%">
    <tr class="navigationbar">
       <td colspan="2" class="titlebar">
          <img src="<mm:treefile page="/gfx/icon_agenda.gif" objectlist="$includePath" referids="$referids"/>" title="<di:translate key="education.editwizards" />" alt="<di:translate key="education.editwizards" />" />
@@ -115,7 +115,7 @@
    </tr>
    <tr>
       <td style="width:20%">
-         <div id="left_menu" style="overflow:scroll; width:100%; height:100%" >
+         <div id="left_menu" style="overflow:auto; width:100%; height:100%" >
              <mm:treeinclude page="/education/wizards/code.jsp" objectlist="$includePath" />
          </div>
       </td>

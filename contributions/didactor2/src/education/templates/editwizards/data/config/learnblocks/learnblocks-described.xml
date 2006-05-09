@@ -4,12 +4,12 @@
   <title xml:lang="en">Related learnblocks</title>
   <item>
     <field name="name" ftype="data">
-      <prompt xml:lang="nl">Naam</prompt>
-      <prompt xml:lang="en">Name</prompt>
+      <prompt xml:lang="nl">Leerblok titel</prompt>
+      <prompt xml:lang="en">Learnblock Name</prompt>
       <description xml:lang="nl">Naam van het leerblok</description>
       <description xml:lang="en">Name of the learnblock</description>
     </field>
-    <field fdatapath="field[@name='description']" ftype="line">
+    <field fdatapath="field[@name='description']" rows="8">
       <prompt xml:lang="nl">Omschrijving van de link</prompt>
       <prompt xml:lang="en">Description of the link</prompt>
     </field> 
@@ -21,18 +21,21 @@
   </action>
 
   <command name="startwizard" inline="true" wizardname="config/learnblocks/learnblocks" objectnumber="new">
-    <prompt xml:lang="nl">Nieuw leerblok</prompt>
-    <prompt xml:lang="en">New learnblock</prompt>
   </command>
 
-  <command name="search" nodepath="learnblocks" fields="name" age="-1" orderby="number" directions="down" >
-    <prompt xml:lang="nl">Zoeken naar leerblokken</prompt>
-    <prompt xml:lang="en">Search for learnblocks</prompt>
-    <search-filter>
-      <name xml:lang="nl">Naam bevat</name>
-      <name xml:lang="en">Name contains</name>
-      <search-fields>name</search-fields>
-    </search-filter>
-  </command>
+  <command name="search" nodepath="learnobjects,learnblocks" fields="learnobjects.name,learnblocks.intro" age="-1" orderby="learnobjects.number,learnblocks.number" directions="down,down" >
+        <prompt xml:lang="nl">Zoeken naar leerobjecten</prompt>
+        <prompt xml:lang="en">Search for learnobjects</prompt>
+        <search-filter>
+          <name xml:lang="nl">Titel bevat</name>
+          <name xml:lang="en">Name contains</name>
+          <search-fields>learnobjects.name</search-fields>
+        </search-filter>
+        <search-filter>
+          <name xml:lang="nl">Tekst bevat</name>
+          <name xml:lang="en">Text contains</name>
+          <search-fields>learnblocks.intro</search-fields>
+        </search-filter>
+      </command>
 </list>
 

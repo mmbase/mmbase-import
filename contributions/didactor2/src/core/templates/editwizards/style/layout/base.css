@@ -4,7 +4,7 @@
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
   @author Nico Klasens
-  @version  $Id: base.css,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
+  @version  $Id: base.css,v 1.2 2006-05-09 15:37:05 igeorgijev Exp $
 */
 body  {         
   font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
@@ -170,5 +170,5 @@ input.search  {
 } 
 
 select.age                 {  width: 80;  }
-select.searchpossibilities {  width: 125; }
+select.searchpossibilities {  width: auto; }
 select.search              {  width: 175; }

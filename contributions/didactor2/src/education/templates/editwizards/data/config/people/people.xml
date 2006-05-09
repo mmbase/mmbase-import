@@ -7,8 +7,8 @@
    <!ENTITY extra_lists SYSTEM "extra_lists.xml">
 ]>
 <wizard-schema id="empty">
-  <title xml:lang="nl">Personen Editor</title>
-  <title xml:lang="en">People Editor</title>
+  <title xml:lang="nl">Personen editor</title>
+  <title xml:lang="en">People editor</title>
 
   <action type="create">
     <object type="people"/>
@@ -101,7 +101,7 @@
       <prompt xml:lang="nl">Opmerkingen</prompt>
       <prompt xml:lang="en">Remarks</prompt>
     </field>
-    <field name="description" ftype="text" dtminlength="0">
+    <field name="description" rows="8" ftype="text" dtminlength="0">
       <prompt xml:lang="nl">Omschrijving</prompt>
       <prompt xml:lang="en">Description</prompt>
     </field>

@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.4 2005-10-24 13:58:11 jverelst Exp $
+    @version $Id: wizard.xsl,v 1.5 2006-05-09 15:37:05 igeorgijev Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1195,6 +1195,7 @@
               <a href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);">
                 <xsl:call-template name="prompt_add_wizard"/>
               </a>
+              <span>&#160;&#160;&#160;&#160;</span>
             </xsl:if>
             <xsl:if test="not(@inline=&apos;true&apos;)">
               <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name=&apos;add-item&apos;]/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
@@ -1291,13 +1292,54 @@
 
   <xsl:template name="listsearch-fields-default">
     <!-- always search on owner and number too -->
-    <option value="number" searchtype="equals">
-      <xsl:call-template name="prompt_search_number"/>
-    </option>
-    <option value="owner" searchtype="like">
-      <xsl:call-template name="prompt_search_owner"/>
-    </option>
+    <xsl:choose>
+       <xsl:when test="(@nodepath!=&apos;audiotapes&apos;)=
+                       (@nodepath!=&apos;providers&apos;)=
+                       (@nodepath!=&apos;images&apos;)=
+                       (@nodepath!=&apos;attachments&apos;)=
+                       (@nodepath!=&apos;videotapes&apos;)=
+                       (@nodepath!=&apos;classes&apos;)=
+                       (@nodepath!=&apos;tests&apos;)=
+                       (@nodepath!=&apos;people&apos;)=
+                       (@nodepath!=&apos;learnblocks&apos;)=
+                       (@nodepath!=&apos;urls&apos;)=                      
+                       (@nodepath!=&apos;competencetypes,competencies&apos;)=
+                       (@nodepath!=&apos;questions&apos;)=
+                       (@nodepath!=&apos;metadata,questions&apos;)= 
+                       (@nodepath!=&apos;mcanswers,feedback&apos;)=
+                       (@nodepath!=&apos;feedback&apos;)=
+                       (@nodepath!=&apos;learnobjects,learnblocks&apos;)=
+                       (@nodepath!=&apos;news&apos;)">      
+         <option value="number" searchtype="equals">
+            <xsl:call-template name="prompt_search_number"/>
+         </option>
+      </xsl:when>
+    </xsl:choose>   
+    <xsl:choose>
+       <xsl:when test="(@nodepath!=&apos;audiotapes&apos;)=
+                       (@nodepath!=&apos;providers&apos;)=
+                       (@nodepath!=&apos;images&apos;)=
+                       (@nodepath!=&apos;attachments&apos;)=
+                       (@nodepath!=&apos;videotapes&apos;)=
+                       (@nodepath!=&apos;classes&apos;)=
+                       (@nodepath!=&apos;tests&apos;)=
+                       (@nodepath!=&apos;people&apos;)=
+                       (@nodepath!=&apos;learnblocks&apos;)=
+                       (@nodepath!=&apos;urls&apos;)=
+                       (@nodepath!=&apos;competencetypes,competencies&apos;)=
+                       (@nodepath!=&apos;questions&apos;)=
+                       (@nodepath!=&apos;metadata,questions&apos;)=
+                       (@nodepath!=&apos;mcanswers,feedback&apos;)=   
+                       (@nodepath!=&apos;feedback&apos;)=   
+                       (@nodepath!=&apos;learnobjects,learnblocks&apos;)=       
+                       (@nodepath!=&apos;news&apos;)"> 
+          <option value="owner" searchtype="like">
+              <xsl:call-template name="prompt_search_owner"/>
+          </option>
+       </xsl:when>
+    </xsl:choose> 
   </xsl:template>
+
 
   <xsl:template name="listitems">
     <xsl:if test="item">

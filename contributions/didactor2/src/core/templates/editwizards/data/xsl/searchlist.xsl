@@ -13,7 +13,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.5 2005-06-16 11:57:10 jdiepenmaat Exp $
+    @version $Id: searchlist.xsl,v 1.6 2006-05-09 15:37:05 igeorgijev Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -102,33 +102,51 @@
                 did="{@number}"
               />
               </td>
-              <td width="30%">
-                <xsl:value-of select="util:nodeManagerGUIName($cloud,@number,1)"/>
-              </td>
+              
+              <xsl:choose>
+                <xsl:when test="(@type!=&apos;images&apos;)=
+                                (@type!=&apos;attachments&apos;)=
+                                (@type!=&apos;audiotapes&apos;)=
+                                (@type!=&apos;videotapes&apos;)=
+                                (@type!=&apos;providers&apos;)=
+                                (@type!=&apos;learnblocks&apos;)=
+                                (@type!=&apos;urls&apos;)=
+                                (@type!=&apos;competencies&apos;)=
+                                (@type!=&apos;questions&apos;)=
+                                (@type!=&apos;metadata&apos;)=
+                                (@type!=&apos;mcanswers&apos;)=
+                                (@type!=&apos;feedback&apos;)=
+                                (@type!=&apos;news&apos;)">               
+                    <td width="30%">
+                       <xsl:value-of select="util:nodeManagerGUIName($cloud,@number,1)"/>
+                    </td>               
+                </xsl:when>
+              </xsl:choose>
+                           
               <xsl:choose>
                 <xsl:when test="@type=&apos;images&apos;">
-                  <td>
+                  <td>              
                     <img
                       src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $listimagesize, &apos;))&apos;))}"
                       hspace="0"
                       vspace="0"
                       border="0"
-                      title="{field[@name=&apos;description&apos;]}" />
-                    <br />
-                    <a
-                      href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
-                      target="_new">
-                      <xsl:call-template name="prompt_image_full" />
-                    </a>
+                      ondblclick="javascript:window.open('{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}')"
+                      title="{field[@name=&apos;description&apos;]}"
+                      alt="{field[1]}" />
+                    <br />                   
+                      <b>
+                      <xsl:value-of select="field[1]" />.<xsl:value-of select="field[3]" />                        
+                      </b>                   
                   </td>
-                  <td>
-                    <b>
-                      <xsl:value-of select="field[1]" />
-                    </b>
-                    <br />
-                    <xsl:value-of select="field[2]" />
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
                   </td>
+                  <td width="30%">
+                    <xsl:value-of select="field[2]"/>
+                 </td>
                 </xsl:when>
+                <!-- audio parts -->
                 <xsl:when test="@type=&apos;audioparts&apos;">
                   <td>
                     <a href="{$ew_context}/rastreams.db?{@number}">
@@ -137,6 +155,7 @@
                   </td>
                   <xsl:apply-templates select="field" />
                 </xsl:when>
+                <!-- video parts -->
                 <xsl:when test="@type=&apos;videoparts&apos;">
                   <td>
                     <a href="{$ew_context}/rmstreams.db?{@number}">
@@ -145,6 +164,79 @@
                   </td>
                   <xsl:apply-templates select="field" />
                 </xsl:when>
+                <!-- attachments -->
+                <xsl:when test="@type=&apos;attachments&apos;">
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
+                  </td>
+                  <td>                                       
+                    <xsl:value-of select="field[2]" />
+                  </td>
+                  <td>                                       
+                    <xsl:value-of select="field[3]" />
+                  </td>               
+                </xsl:when>
+                
+                <!-- audiotapes -->
+                <xsl:when test="@type=&apos;audiotapes&apos;">
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
+                  </td>
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
+                  </td>
+                  <td>                                       
+                    <xsl:value-of select="field[2]" />
+                  </td>               
+                </xsl:when>
+                
+                <!-- videotapes -->
+                <xsl:when test="@type=&apos;videotapes&apos;">
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
+                  </td>
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
+                  </td>
+                  <td>                                       
+                    <xsl:value-of select="field[2]" />
+                  </td>               
+                </xsl:when>
+                
+                <!-- news -->
+                <xsl:when test="@type=&apos;news&apos;">                 
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
+                  </td>
+                  <td>                                       
+                    <xsl:value-of select="field[2]" />
+                  </td>               
+                </xsl:when>
+                
+                <!-- questions -->
+                <xsl:when test="@type=&apos;questions&apos;">                 
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
+                  </td>
+                  <td width="30%">
+                       <xsl:value-of select="util:nodeManagerGUIName($cloud,@number,1)"/>
+                    </td>
+                  <td>                                       
+                    <xsl:value-of select="field[2]" />
+                  </td>               
+                </xsl:when>
+                
+                <!-- feedback -->
+                <xsl:when test="@type=&apos;feedback&apos;">                 
+                  <td>                                       
+                    <xsl:value-of select="field[1]" />
+                  </td>
+                  <td>                                       
+                    <xsl:value-of select="field[2]" />
+                  </td>               
+                </xsl:when>
+                
+                               
                 <xsl:otherwise>
                   <xsl:apply-templates select="field" />
                 </xsl:otherwise>
@@ -157,6 +249,7 @@
       <xsl:call-template name="searchnavigation" />
     </form>
   </xsl:template>
+
 
   <xsl:template name="searchnavigation">
     <div id="searchnavigation" class="searchnavigation">
@@ -229,16 +322,18 @@
   </xsl:template>
 
   <xsl:template match="page">
-    <a class="pagenav" title="{$tooltip_goto}{position()}" href="javascript:browseTo({@start});">
+   <a class="pagenav" title="{$tooltip_goto}{position()}" href="javascript:browseTo({@start});">
       <xsl:value-of select="position()" />
     </a>
-    <xsl:text />
+    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   </xsl:template>
 
   <xsl:template match="page[@current=&apos;true&apos;]">
     <span class="pagenav-current">
       <xsl:value-of select="position()" />
-      <xsl:text></xsl:text>
+      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text> 
+      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>   
     </span>
   </xsl:template>
 

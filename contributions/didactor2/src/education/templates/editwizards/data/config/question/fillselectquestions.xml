@@ -6,8 +6,8 @@
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
-    <title xml:lang="en">Fill in the gaps Editor</title>
-    <title xml:lang="nl">Vul selecteer de hiaten in</title>
+    <title xml:lang="en">Fill select editor</title>
+    <title xml:lang="nl">Invul-selectievraag editor</title>
 
 
     <action type="create">
@@ -20,12 +20,19 @@
        </object>
     </action>
 
-
-    <action type="load">
+	<action type="load">
+		<relation destination="mcanswers" role="posrel">
+		 <object>
+		   <relation destination="feedback" role="related">
+		     <object>
+		       <field name="name" />
+		     </object>
+		   </relation>
+		 </object>
+		</relation>
         <relation destination="feedback" role="related" />
         <relation destination="images" role="posrel" />
         <relation destination="attachments" role="related" />
-        <relation destination="mcanswers" role="posrel" />
         &extra_loads;
     </action>
 
@@ -39,15 +46,15 @@
 		<optionlist name="imagepos">
             <option id="0">
 				<prompt xml:lang="nl">Boven</prompt>
-				<prompt xml:lang="en">Above</prompt>
+				<prompt xml:lang="en"> (Above)</prompt>
 			</option>
             <option id="1">
             	<prompt xml:lang="nl">Onder</prompt>
-            	<prompt xml:lang="en">Under</prompt>
+            	<prompt xml:lang="en"> (Under)</prompt>
             </option>
             <option id="2">
             	<prompt xml:lang="nl">Naast</prompt>
-            	<prompt xml:lang="en">Next</prompt>
+            	<prompt xml:lang="en"> (Next)</prompt>
             </option>
         </optionlist>      
         <optionlist include="config/option_list/boolean_inverse.xml" /> 
@@ -64,16 +71,16 @@
 
     <form-schema id="step1">
         <title xml:lang="en">Enter fill select in the gaps question</title>
-  		<title xml:lang="nl">Vul de hiaten in invoeren selecteer</title> 
+  		<title xml:lang="nl">Invul-selectievraag invoeren</title> 
         <field name="title" >
             <prompt xml:lang="en">Title</prompt>
-            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="nl">Invul-selectievraag titel</prompt>
         </field>
         
        
     <!--  INSERT SELECT TITLE -->  
         <field name="showtitle" ftype="enum">
-           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="nl">Titel tonen</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
         </field>
@@ -105,7 +112,7 @@
     <!--  INSERT IMAGE -->     
        
    <list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
-             <title xml:lang="nl">Related images</title>
+             <title xml:lang="en">Related images</title>
              <title xml:lang="nl">Bijbehorende afbeeldingen</title>
              <!-- Show the 'item' in a list (the object) -->
              <item>
@@ -141,7 +148,7 @@
  	 
        
         <field name="textFirst" ftype="line" dtminlength="0">
-	        <prompt xml:lang="nl">Het eerste deel van de zin </prompt>
+	        <prompt xml:lang="nl">Eerste deel van de zin </prompt>
             <prompt xml:lang="en">The first part of the sentence </prompt>
         </field>
  
@@ -163,7 +170,7 @@
       
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="mcanswers">
             <title xml:lang="en">Related answers (not mandatory)</title>
-            <title xml:lang="nl">Bijbehorende antwoorden (niet verplicht)</title>
+            <title xml:lang="nl">Bijbehorende meerkeuzer antwoorden (niet verplicht)</title>
             <item>
                 <field name="text" ftype="line">
                     <prompt xml:lang="nl">Tekst</prompt>
@@ -177,8 +184,16 @@
                     <optionlist select="boolean_inverse" />
                 </field>
                 <field wizardname="config/answer/mcanswers" ftype="startwizard"/>
+                <list minoccurs="0" maxoccurs="*" role="related" destination="feedback">
+		  	          <title xml:lang="nl">Feedback</title>
+			          <title xml:lang="en">Feedback</title>
+			          <item>
+			            <field name="name"  ftype="data">
+			            </field>
+			          </item>
+	           </list>
             </item>
-
+			
             <action type="create">
                 <relation role="posrel" destinationtype="mcanswers">
                   <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
@@ -205,8 +220,6 @@
 
 
             <command name="startwizard" inline="true" wizardname="config/answer/mcanswers" objectnumber="new">
-                <prompt xml:lang="nl">Nieuwe Multiple Choice antwoord</prompt>
-                <prompt xml:lang="en">New Multiple Choice answer</prompt>
             </command>
 
         </list>     
@@ -218,7 +231,7 @@
  
  
         <field name="textSecond" ftype="line" dtminlength="0">
-			<prompt xml:lang="nl">Het tweede deel van de zin </prompt>
+			<prompt xml:lang="nl">Tweede deel van de zin </prompt>
             <prompt xml:lang="en">The second part of the sentence </prompt>
         </field>
         

@@ -42,8 +42,8 @@
     </field>
     
     <list destination="videotapes" role="related" minoccurs="0" maxoccurs="1">
-      <title xml:lang="nl">Bijbehorende Video</title>
-      <title xml:lang="en">Related Video</title>
+      <title xml:lang="nl">Bijbehorende video</title>
+      <title xml:lang="en">Related video</title>
       <item>
         <field name="title" ftype="data">
           <prompt xml:lang="nl">Titel</prompt>
@@ -55,14 +55,24 @@
       <action type="create">
         <relation destination="videotapes" role="related"/>
       </action>
-      <command name="search" nodepath="videotapes" fields="title" age="-1" orderby="number" directions="down" >
+      <command name="search" nodepath="videotapes" fields="title,intro,url" age="-1" orderby="number" directions="down" >
         <prompt xml:lang="nl">Zoeken naar Videofragmenten</prompt>
         <prompt xml:lang="en">Search videofragments</prompt>
         <search-filter>
             <name xml:lang="nl">Titel bevat</name>
             <name xml:lang="en">Title contains</name>
             <search-fields>title</search-fields>
-        </search-filter>        
+        </search-filter>
+        <search-filter>
+            <name xml:lang="nl">Intro bevat</name>
+            <name xml:lang="en">Description contains</name>
+            <search-fields>intro</search-fields>
+        </search-filter>
+        <search-filter>
+            <name xml:lang="nl">Url bevat</name>
+            <name xml:lang="en">Url contains</name>
+            <search-fields>url</search-fields>
+        </search-filter>      
       </command>
     </list>
     
@@ -77,7 +87,7 @@
         <field wizardname="config/attachment/attachment" ftype="startwizard" />
       </item>
       <command name="startwizard" inline="true" wizardname="config/attachment/attachment" objectnumber="new" />
-      <command name="search" nodepath="attachments" fields="title" age="-1" orderby="number" directions="down" >
+      <command name="search" nodepath="attachments" fields="title,filename,description" age="-1" orderby="number" directions="down" >
         <prompt xml:lang="nl">Zoeken naar bestand</prompt>
         <prompt xml:lang="en">Search files</prompt>
         <search-filter>
@@ -86,9 +96,14 @@
             <search-fields>title</search-fields>
         </search-filter>
         <search-filter>
-            <name xml:lang="nl">Omschrijving bevat</name>
-            <name xml:lang="en">Description contains</name>
-            <search-fields>description</search-fields>
+	      <name xml:lang="nl">Omschrijving bevat</name>
+	      <name xml:lang="en">Description contains</name>
+	      <search-fields>description</search-fields>
+	    </search-filter>
+        <search-filter>
+            <name xml:lang="nl">Bestandsnaam bevat</name>
+            <name xml:lang="en">File name contains</name>
+            <search-fields>filename</search-fields>
         </search-filter>
       </command>
       <action type="create">

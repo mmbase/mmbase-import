@@ -54,18 +54,18 @@
     <title xml:lang="en">Enter test</title>
 
     <field name="name" >
-      <prompt xml:lang="nl">Naam</prompt>
-      <prompt xml:lang="en">Name</prompt>
+      <prompt xml:lang="nl">Toets titel</prompt>
+      <prompt xml:lang="en">Test name</prompt>
     </field>
 
     <field name="showtitle" ftype="enum">
-      <prompt xml:lang="nl">Titel laten zien</prompt>
+      <prompt xml:lang="nl">Titel tonen</prompt>
       <prompt xml:lang="en">Show title</prompt>
       <optionlist select="boolean" />
     </field>
 
     <field name="text" ftype="html" dtminlength="0">
-      <prompt xml:lang="nl">Tekst</prompt>
+      <prompt xml:lang="nl">Alinea tekst</prompt>
       <prompt xml:lang="en">Text</prompt>
     </field>
 
@@ -124,7 +124,7 @@
       <title xml:lang="en">Related questions</title>
       <item>
         <field name="title" ftype="data">
-          <prompt xml:lang="nl">Titel</prompt>
+          <prompt xml:lang="nl">Meerkeuzevraag titel</prompt>
           <prompt xml:lang="en">Title</prompt>
           <description xml:lang="nl">Titel van de vraag</description>
           <description xml:lang="en">Title of the question</description>
@@ -141,18 +141,28 @@
         </relation>
       </action>
 
-      <command name="search" nodepath="questions" fields="title" age="-1" orderby="number" directions="down" >
+      <command name="search" nodepath="questions" fields="title,text" age="-1" orderby="number" directions="down" >
         <prompt xml:lang="nl">Zoeken naar vragen</prompt>
         <prompt xml:lang="en">Search questions</prompt>
         <search-filter>
-          <name xml:lang="nl">Titel bevat</name>
+          <name xml:lang="nl">Vraag titel</name>
           <name xml:lang="en">Title contains</name>
           <search-fields>title</search-fields>
+        </search-filter>
+        <search-filter>
+          <name xml:lang="nl">Vraag type</name>
+          <name xml:lang="en">Type contains</name>
+          <search-fields>otype</search-fields>
+        </search-filter>
+        <search-filter>
+          <name xml:lang="nl">Vraag tekst</name>
+          <name xml:lang="en">Text contains</name>
+          <search-fields>text</search-fields>
         </search-filter>
       </command>
 
       <command name="startwizard" inline="true" wizardname="config/question/mcquestions" objectnumber="new">
-        <prompt xml:lang="nl">Nieuwe Multiple Choice vraag</prompt>
+        <prompt xml:lang="nl">Nieuwe meerkeuze vraag</prompt>
         <prompt xml:lang="en">New Multiple Choice question</prompt>
       </command>
 
@@ -182,7 +192,7 @@
       </command>
 
       <command name="startwizard" inline="true" wizardname="config/question/dropquestions" objectnumber="new">
-        <prompt xml:lang="nl">Nieuwe drag en drop vraag</prompt>
+        <prompt xml:lang="nl">Nieuwe sleepvraag</prompt>
         <prompt xml:lang="en">New drag and drop question</prompt>
       </command>
 

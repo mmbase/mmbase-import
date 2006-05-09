@@ -11,12 +11,24 @@
             </action>
 
 
-             <command name="search" nodepath="metadata,questions" fields="questions.title,metadata.value" age="-1" orderby="questions.number" directions="down" >
+             <command name="search" nodepath="metadata,questions" fields="questions.title,questions.text,metadata.value" age="-1" orderby="questions.number" directions="down" >
                 <prompt xml:lang="nl">Zoeken naar vragen op metadata</prompt>
                 <prompt xml:lang="en">Search on questions by metadata</prompt>
-                <search-filter>
-                    <name>Metadata bevat</name>
+                <search-filter>          
+                    <name xml:lang="nl">Metadata titel</name>
+                    <name xml:lang="en">Metadata contains</name>
                     <search-fields>metadata.value</search-fields>
                 </search-filter>
+                <search-filter>
+                    <name xml:lang="nl">Metadata type</name>
+                    <name xml:lang="en">Metadata type</name>
+                    <search-fields>questions.title</search-fields>
+                </search-filter> 
+                <search-filter>
+                    <name xml:lang="nl">Metadata omschrijving</name>
+                    <name xml:lang="en">Metadata description</name>
+                    <search-fields>questions.text</search-fields>
+                </search-filter>              
            </command>
+
         </list>

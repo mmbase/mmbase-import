@@ -20,7 +20,7 @@
      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
      <td><a href='javascript:clickNode("faq_root")'><img src="gfx/tree_plus.gif" border="0" align="middle" id='img_faq_root'/></a></td>
      <td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_faq_root'/></td>			               
-     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/faq/rootfaqnodes&origin=<mm:write referid="faqcontainernode"/>&nodepath=faqnodes&fields=name&metadata=yes' title="FAQ" target="text">FAQ</a></nobr></td> 
+     <td><nobr>&nbsp;<a href='<mm:write referid="listjsp"/>&wizard=config/faq/rootfaqnodes&origin=<mm:write referid="faqcontainernode"/>&nodepath=faqnodes&fields=name&metadata=yes&path=FAQ' title="FAQ" target="text">FAQ</a></nobr></td> 
   </tr>
 </table>
 <div id="faq_root" style="display:none"> 
@@ -43,7 +43,7 @@
 			         <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
 			      </mm:compare>
 			      <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-			      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/rootfaqnodes&origin=<mm:write referid="faqcontainernode"/>&objectnumber=new' title="nieuwe FAQ" target="text">nieuwe FAQ</a></nobr></td>
+			      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/rootfaqnodes&origin=<mm:write referid="faqcontainernode"/>&objectnumber=new&path=FAQ' title="nieuwe FAQ" target="text">nieuwe FAQ</a></nobr></td>
 			   </tr>
 			</table>    
 	   <mm:listnodes type="faqcontainers">
@@ -78,11 +78,12 @@
 												</mm:node> 									
 												<td><a href='javascript:clickNodePortal("faq_node_<%=nb%>")'><img src="gfx/adds/tree_plus.gif" border="0" align="middle" id='img_faq_node_<%=nb%>'/></a></td>
 												<td><img src="gfx/folder_closed.gif" border="0" align="middle" id='img2_faq_node_<%=nb%>'/></td>
-												<td><a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/faqnodes&objectnumber=<mm:field name="number"/>' title="edit" target="text"><mm:field name="name"/></a></td>																								
+												<td><a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/faqnodes&objectnumber=<mm:field name="number"/>&path=FAQ > <mm:field name="name"/>' title="edit" target="text"><mm:field name="name"/></a></td>																								
 										</tr>	
 										</table>	
 										<div id='faq_node_<%=nb%>' style="display:none">							
 												<mm:node number="$this">
+												<mm:import id="faqname" jspvar="faqname" reset="true"><mm:field name="name"/></mm:import>
 														<mm:listcontainer path="faqnodes,related,faqitems">
 														<mm:constraint operator="equal" field="faqnodes.number" referid="this"/>													    		
 																<mm:list>
@@ -106,7 +107,7 @@
 														         <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
 														      <%}%>														      
 														      <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-														      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/newfaqitems&origin=<mm:write referid="this"/>&objectnumber=new' title="nieuwe FAQ item" target="text">nieuwe FAQ item</a></nobr></td>
+														      <td><nobr>&nbsp;<a href='<mm:write referid="wizardjsp"/>&wizard=config/faq/newfaqitems&origin=<mm:write referid="this"/>&objectnumber=new&path=FAQ > <mm:field name="name"/>' title="nieuwe FAQ item" target="text">nieuwe FAQ item</a></nobr></td>
 														   </tr>
 														</table> 																																																																													
 												    <%levelTwoLast = false; %>

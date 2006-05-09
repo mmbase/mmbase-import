@@ -6,7 +6,7 @@
   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
-  <title xml:lang="nl">Multiple Choice Editor</title>
+  <title xml:lang="nl">Meerkeuze vraag editor</title>
   <title xml:lang="en">Multiple Choice Editor</title>
 
   <action type="create">
@@ -54,7 +54,7 @@
     <title xml:lang="nl">Multiple Choice vraag invoeren</title>
     <title xml:lang="en">Enter multiple choice question</title>
     <field name="title" >
-      <prompt xml:lang="nl">Titel</prompt>
+      <prompt xml:lang="nl">Meerkeuzevraag titel</prompt>
       <prompt xml:lang="en">Title</prompt>
     </field>
     <field name="showtitle" ftype="enum">
@@ -78,7 +78,7 @@
     </field>
 
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="mcanswers">
-      <title xml:lang="nl">Bijbehorende Multiple-Choice antwoorden</title>
+      <title xml:lang="nl">Bijbehorende antwoorden</title>
       <title xml:lang="en">Related Multiple-Choice answers</title>
       <item>
         <field name="text" ftype="line">
@@ -105,19 +105,24 @@
         </relation>
       </action>
 
-      <command name="search" nodepath="mcanswers" fields="text" age="-1" orderby="number" directions="down">
+      <command name="search" nodepath="mcanswers,feedback" fields="mcanswers.text,feedback.text" age="-1" orderby="mcanswers.number,feedback.number" directions="down,down">
         <prompt xml:lang="nl">Zoeken naar Antwoorden</prompt>
         <prompt xml:lang="en">Search for answers</prompt>
         <search-filter>
-          <name xml:lang="nl">Tekst bevat</name>
+          <name xml:lang="nl">Antwoord tekst bevat</name>
           <name xml:lang="en">Text contains</name>
-          <search-fields>text</search-fields>
+          <search-fields>mcanswers.text</search-fields>
+        </search-filter>
+        <search-filter>
+          <name xml:lang="nl">Feedback bevat</name>
+          <name xml:lang="en">Feedback contains</name>
+          <search-fields>feedback.text</search-fields>
         </search-filter>
       </command>
 
+
       <command name="startwizard" inline="true" wizardname="config/answer/mcanswers" objectnumber="new">
-        <prompt xml:lang="nl">Nieuwe Multiple Choice antwoord</prompt>
-        <prompt xml:lang="en">New Multiple Choice answer</prompt>
+        
       </command>
 
     </list>

@@ -1,6 +1,6 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list destination="people" role="rolerel" minoccurs="0" maxoccurs="*">
-  <title xml:lang="nl">Bijbehorende Personen</title>
+  <title xml:lang="nl">Bijbehorende personen</title>
   <title xml:lang="en">Related people</title>
   <item>
     <field name="firstname" ftype="data">

@@ -54,9 +54,7 @@
           <search-fields>name</search-fields>
         </search-filter>
       </command>
-      <command name="startwizard" inline="true" wizardname="config/tests/tests" objectnumber="new">
-        <prompt xml:lang="nl">Nieuw</prompt>
-        <prompt xml:lang="en">New</prompt>        
+      <command name="startwizard" inline="true" wizardname="config/tests/tests" objectnumber="new">        
       </command>
 
       <action type="create">

@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
+ * @version  $Id: editwizard.jsp,v 1.2 2006-05-09 15:37:06 igeorgijev Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -387,6 +387,7 @@ function restoreScroll() {
     var st = readCookie_general(wizardinstance, id, 0);
     if (st != 0) {
         document.getElementById("editform").scrollTop = st;
+        self.focus();
     } else {
         setFocusOnFirstInput();
     }
