@@ -3,7 +3,7 @@
 <!-- postareas -->
 <builder version="0" name="postareas" maintainer="mmbase.org" extends="object">
     <classfile>Dummy</classfile>
-    <searchage>1000</searchage>
+    <searchage>9999</searchage>
     <names>
         <singular xml:lang="en">PostArea</singular>
         <plural xml:lang="en">PostAreas</plural>

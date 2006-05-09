@@ -3,14 +3,14 @@
 <!-- kb_identifiable -->
 <builder version="1" name="kb_identifiable" maintainer="ernst.bunders" extends="kb_displayable">
     <classfile>Dummy</classfile>
-    <searchage>1000</searchage>
+    <searchage>9999</searchage>
     <names>
-        <singular xml:lang="en">kbase identifiable</singular>
-        <plural xml:lang="en">kbase identifiable</plural>
+        <singular xml:lang="en">KbaseIdentifiable</singular>
+        <plural xml:lang="en">KbaseIdentifiable</plural>
     </names>
     <descriptions>
-        <description xml:lang="nl">om een persoon met een object te associeren</description>
-        <description xml:lang="en">to associate a person with an object</description>
+        <description xml:lang="nl">Om een persoon met een object te associeren</description>
+        <description xml:lang="en">To associate a person with an object</description>
     </descriptions>
     <properties>
         <property name="max-nodes-from-query">1000</property>

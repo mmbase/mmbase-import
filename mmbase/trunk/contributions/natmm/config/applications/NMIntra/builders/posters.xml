@@ -3,7 +3,7 @@
 <!-- posters -->
 <builder version="0" name="posters" maintainer="mmbase.org" extends="object">
     <classfile>Dummy</classfile>
-    <searchage>7</searchage>
+    <searchage>9999</searchage>
     <names>
         <singular xml:lang="en">Poster</singular>
         <plural xml:lang="en">Posters</plural>
