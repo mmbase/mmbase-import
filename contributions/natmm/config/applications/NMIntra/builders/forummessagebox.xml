@@ -3,7 +3,7 @@
 <!-- forummessagebox -->
 <builder version="0" name="forummessagebox" maintainer="mmbase.org" extends="object">
     <classfile>Dummy</classfile>
-    <searchage>1000</searchage>
+    <searchage>9999</searchage>
     <names>
         <singular xml:lang="en">Forum private message box</singular>
         <plural xml:lang="en">Forum private message boxes</plural>

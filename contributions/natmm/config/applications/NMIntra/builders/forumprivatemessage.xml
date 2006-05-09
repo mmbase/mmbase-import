@@ -2,7 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <!-- forumprivatemessage -->
 <builder version="0" name="forumprivatemessage" maintainer="mmbase.org" extends="object">
-    <searchage>14</searchage>
+    <searchage>9999</searchage>
     <names>
         <singular xml:lang="en">Forum private message</singular>
         <plural xml:lang="en">Forum private messages</plural>

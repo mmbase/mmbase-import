@@ -2,7 +2,7 @@
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <!-- postthreads -->
 <builder version="0" name="postthreads" maintainer="submarine.nl" extends="object">
-    <searchage>14</searchage>
+    <searchage>9999</searchage>
     <names>
         <singular xml:lang="en">PostThread</singular>
         <plural xml:lang="en">PostThreads</plural>
