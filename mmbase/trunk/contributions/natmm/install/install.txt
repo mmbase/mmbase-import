@@ -12,7 +12,9 @@ To install NatMM:
 4.c. copy the builders from WEB-INF/config/applications/LeoCMS/builders/ to  WEB-INF/config/builders/
 4.d. change settings in WEB-INF/config/builders/images.xml (and style.xml, when using nmintra)
 4.e. make sure to load the LeoCMS. You can do this by change the setting for auto-deploy in the
-     application file to true or by  using the admin console (/mmbase/admin) to load the application.
+     application file to true or by using the admin console (/mmbase/admin) to load the application. 
+     The auto-deploy of LeoCMS is set to false to make sure that the demo-data from the LeoCMS application
+     is not loaded into already existing databases containing the LeoCMS object model.
 4.d. install one of the applications on top of LeoCMS. For this copy all builders you need for
      installing this application to WEB-INF/config/builders/
      E.g. if you want to use the templates in nmintra: 
