@@ -21,7 +21,7 @@ import java.text.Collator;
  * A helper class for Lists, to implement an attribute 'comparator'
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListSorter.java,v 1.7 2006-04-12 14:51:40 michiel Exp $
+ * @version $Id: ListSorter.java,v 1.8 2006-05-10 12:57:20 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ListSorter  {
@@ -62,6 +62,7 @@ public class  ListSorter  {
                         throw new TaglibException("Don't know how to instantiate non-static inner class: " + comparator + " (make it static please)");
                     }
                     Comparator comp = (Comparator) claz.newInstance();
+                    init(comp, pageContext);
                     Collections.sort(list, comp);
                 } catch (Exception e) {
                     throw new TaglibException(e);
@@ -71,4 +72,17 @@ public class  ListSorter  {
         return list;
 
     }
+
+    private static final Class[] PAGE_CONTEXT_ARRAY = { PageContext.class };
+
+    private static void init(Comparator comp, PageContext pageContext) {
+        try {
+            java.lang.reflect.Method initMethod = comp.getClass().getMethod("init" , PAGE_CONTEXT_ARRAY);
+            initMethod.invoke(comp, new Object[] { pageContext });
+        } catch(Exception e){
+            // never mind
+        }
+    }
+
+
 }
