@@ -47,15 +47,15 @@ public class SubscribeForm extends ActionForm {
    private static final Logger log = Logging.getLoggerInstance(EvenementForm.class);
    public static String initPhone = "0..-....";
    public static String cashPaymentType = "Contant";
-   
+
    // backoffice subscriptions from /editors/evenementen/subscribe.jsp
-   public static String CHANGE_ACTION           = "Wijzig"; 
-   public static String SUBSCRIBE_ACTION        = "Meld aan"; 
+   public static String CHANGE_ACTION           = "Wijzig";
+   public static String SUBSCRIBE_ACTION        = "Meld aan";
    public static String NEW_SUBSCRIPTION_ACTION = "Nieuwe aanmelding";
    public static String ADDRESS_ACTION          = "Adres en betalingswijze";
 
    // website subscriptions from /natmm/includes/events/subscribe.jsp
-   public static String TO_AGENDA_ACTION        = "Naar agenda";  
+   public static String TO_AGENDA_ACTION        = "Naar agenda";
    public static String CANCEL_ACTION           = "Annuleer";
    public static String OTHER_DATES_ACTION      = "andere data";
    public static String SELECT_DATE_ACTION      = "select_date";
@@ -114,7 +114,7 @@ public class SubscribeForm extends ActionForm {
 
    public String getSkipValidation() {
       if(skipValidation==null) { skipValidation = "N"; }
-      return skipValidation; 
+      return skipValidation;
    }
    public void setSkipValidation(String skipValidation) { this.skipValidation = skipValidation;  }
 
@@ -183,7 +183,7 @@ public class SubscribeForm extends ActionForm {
       int charPos = 0;
       while(charPos < memberId.length()){
          char c = memberId.charAt(charPos);
-         if( c<'0' || c>'9' ) { 
+         if( c<'0' || c>'9' ) {
             memberId = memberId.substring(0,charPos) + memberId.substring(charPos+1);
          } else {
             charPos++;
@@ -251,7 +251,7 @@ public class SubscribeForm extends ActionForm {
    public void setGender(String gender) {this.gender = gender;}
 
    public String getPaymentType() { return paymentType; }
-   public void setPaymentType(String paymentType) { 
+   public void setPaymentType(String paymentType) {
       if(paymentType==null||paymentType.equals("")) {
          paymentType = cashPaymentType;
       }
@@ -299,7 +299,7 @@ public class SubscribeForm extends ActionForm {
       this.action = "startsubscription";
       this.validateCounter = 0;
       this.skipValidation = "N";
-      
+
       Node thisEvent = CloudFactory.getCloud().getNode(this.getNode());
       if(thisEvent.getStringValue("adres_verplicht").equals("1")) {
          this.showAddress = "true";
@@ -331,7 +331,7 @@ public class SubscribeForm extends ActionForm {
    }
 
    public Node createParticipant(Cloud cloud, String action, Node thisEvent, Node thisSubscription, String thisCategory, String thisNumber) {
- 
+
       Node thisParticipant = null;
       if(action.equals(CHANGE_ACTION)) {
         try {
@@ -358,7 +358,7 @@ public class SubscribeForm extends ActionForm {
       thisParticipant.setStringValue("land",getCountry());
       thisParticipant.setStringValue("postcode",getZipCode());
       thisParticipant.setStringValue("lidnummer",getMemberId());
-      thisParticipant.setStringValue("gender",getGender());     
+      thisParticipant.setStringValue("gender",getGender());
       thisParticipant.commit();
 
       NodeList userList = cloud.getNodeManager("users").getList("account='"+userId+"'",null,null);
@@ -385,13 +385,13 @@ public class SubscribeForm extends ActionForm {
          NodeList dcl = cloud.getList( sParent
                                        ,"evenement,posrel,deelnemers_categorie"
                                        ,"posrel.pos"
-                                       ,"deelnemers_categorie.number='"+ thisCategory+ "'",null,null,null,false);        
+                                       ,"deelnemers_categorie.number='"+ thisCategory+ "'",null,null,null,false);
          if(dcl.size()>0) {
             costs = dcl.getNode(0).getIntValue("posrel.pos");
             // if these are members of a group_excursion, but not the main group excursion participant: set costs to zero
             if(Evenement.isGroupExcursion(cloud,sParent)
                && (costs==SubscribeAction.GROUP_EXCURSION_COSTS || costs==SubscribeAction.DEFAULT_COSTS )) {
-                     costs = 0; 
+                     costs = 0;
             }
          }
          costs = costs * Integer.parseInt(thisNumber);
@@ -403,7 +403,7 @@ public class SubscribeForm extends ActionForm {
       thisRel.commit();
 
       // *** update deelnemers,related,deelnemers_categorie
-      if(!Evenement.isGroupBooking(cloud,thisParticipant.getStringValue("number"))) { 
+      if(!Evenement.isGroupBooking(cloud,thisParticipant.getStringValue("number"))) {
 
          thisParticipant.setStringValue("bron",thisNumber);
          thisParticipant.commit();
@@ -521,6 +521,19 @@ public class SubscribeForm extends ActionForm {
       return emailMessage;
    }
 
+   public boolean hasDeelnemersCategorieRelated(Cloud cloud){
+      Node thisEvent = CloudFactory.getCloud().getNode(this.getNode());
+      String sParent = Evenement.findParentNumber(thisEvent.getStringValue("number"));
+      NodeList nl = cloud.getList(sParent,"evenement,posrel,deelnemers_categorie",
+      null,null,null,null,null,false);
+         if(nl.size()>0) {
+            return true;
+         } else {
+            return false;
+         }
+
+   }
+
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
       log.info("SubscribeForm.validate(" + this.getAction() + ")");
       ActionErrors errors = new ActionErrors();
@@ -540,9 +553,14 @@ public class SubscribeForm extends ActionForm {
 
          errors.add("warning",new ActionError("evenementen.noselection.change"));
 
-      } else if(this.getButtons().getAddParticipant().pressed()&&this.getSelectedParticipant().equals("")) {       // *** Add ***
+      } else if(this.getButtons().getAddParticipant().pressed()&&this.getSelectedParticipant().equals("")){        // *** Add ***
 
          errors.add("warning",new ActionError("evenementen.noselection.add"));
+
+         if ((hasDeelnemersCategorieRelated(cloud))&&(this.getParticipantsCategory().equals("-1"))) {
+
+            errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
+         }
 
       } else if(this.getButtons().getConfirmSubscription().pressed()) {                                            // *** Confirm ***
 
@@ -558,10 +576,14 @@ public class SubscribeForm extends ActionForm {
       }
 
       if(this.getAction().equals(SUBSCRIBE_ACTION)||this.getAction().equals(CHANGE_ACTION)) {                       // *** Meld aan / Wijzig ***
-         
+
          if(this.getLastName().equals("")) {
             errors.add("warning",new ActionError("evenementen.required.lastname"));
          }
+
+         if(this.getParticipantsCategory().equals("-1")&&(hasDeelnemersCategorieRelated(cloud))){
+               errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
+            }
 
          String memberIdMessage = getMemberIdMessage(memberId,this.getZipCode());
          if(!memberIdMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {                // *** check whether member info can be found in application attribute ***
@@ -592,11 +614,13 @@ public class SubscribeForm extends ActionForm {
          if(!emailMessage.equals("")){
             errors.add("warning",new ActionError(emailMessage));
          }
+
          if(this.getTicketOffice().equals("website")) {
 
             if(this.getFirstName().equals("")&&this.getInitials().equals("")) {
                errors.add("warning",new ActionError("evenementen.required.initials_or_firstname"));
             }
+
             if(this.getPrivatePhone().equals(initPhone)) {
                 errors.add("warning",new ActionError("evenementen.required.phone"));
             }
@@ -627,7 +651,7 @@ public class SubscribeForm extends ActionForm {
                }
             }
          } else {
-   
+
             if(cloud.getNode(parent).getStringValue("adres_verplicht").equals("1")) {
                if(this.getStreetName().equals("")) {
                   errors.add("warning",new ActionError("evenementen.required.streetname"));
