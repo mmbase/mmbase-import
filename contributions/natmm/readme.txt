@@ -21,7 +21,7 @@ What is in it for you?
    (d) content-library,
    (e) url-rewriting for Google friendly urls, 
    (f) versioning
-   and much more. LeoCMS has been build by Finalist.
+   and much more. The original version of LeoCMS was build by Finalist.
 2. The event-database in use at www.natuurmonumenten.nl. For the event-database both a back-office booking system
    and booking on the website is implemented (Struts). The event-database contains export to Excel and functionality to 
    generate statistics. See templates/natmm/doc/DatamodelCAD.doc for the datamodel and the GebruikershandleidingCAD*.doc

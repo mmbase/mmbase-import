@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
-<application name="LeoCMS" maintainer="mmbase.org" version="1" auto-deploy="true">
+<application name="LeoCMS" maintainer="mmbase.org" version="1" auto-deploy="false">
    <neededbuilderlist>
       <!-- relations -->
       <builder version="0" maintainer="mmbase.org">childrel</builder>
