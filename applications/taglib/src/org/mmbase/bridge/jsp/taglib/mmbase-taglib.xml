@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.356 2006-04-29 17:15:57 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.357 2006-05-11 16:32:39 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -364,6 +364,9 @@ version: $Id: mmbase-taglib.xml,v 1.356 2006-04-29 17:15:57 michiel Exp $
           Give the class name of a class that implements the <code>java.util.Comparator</code> interface. Give
           either a fully qualified name, or a single name. When it is a single name the
           class must be defined as a static inner class in the jsp (see example)
+        </p>
+        <p>
+          The Comparator may have a method init(PageContext), which will be called first if it has (since 1.8.1).
         </p>
       </info>
       <since>MMBase-1.7</since>
