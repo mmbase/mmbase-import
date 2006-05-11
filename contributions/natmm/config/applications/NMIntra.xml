@@ -176,10 +176,11 @@
       <relation from="medewerkers" to="programs" type="readmore"/>
       <relation from="menu" to="editwizards" type="posrel"/>
       <relation from="organisatie" to="organisatie_type" type="posrel"/>
-      <relation from="pagina" to="contentelement" type="contentrel"/> <!-- ads, artikel, medewerkers, vacature -->
+      <relation from="pagina" to="ads" type="contentrel"/>
       <relation from="pagina" to="artikel" type="readmore"/>
       <relation from="pagina" to="attachments" type="posrel"/> 
       <relation from="pagina" to="contentblocks" type="readmore"/> 
+      <relation from="pagina" to="contentelement" type="contentrel"/> <!-- artikel, medewerkers, vacature -->
       <relation from="pagina" to="discounts" type="posrel"/>
       <relation from="pagina" to="documents" type="posrel"/>
       <relation from="pagina" to="formulier" type="posrel"/>
