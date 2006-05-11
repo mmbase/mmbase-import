@@ -26,7 +26,7 @@ public class RelationsMigrator {
 
       log.info("RelationsMigrator.run()");
       log.info("Importing files from " + sFolder);
-      
+
       NMIntraToNatMMigrator mmm = new NMIntraToNatMMigrator();
       mmm.run();
 
@@ -160,19 +160,19 @@ public class RelationsMigrator {
       sPosrelContent = sResultRel[0];
       sContentrelContent += sResultRel[1];
 
-      log.info("changing relation page-posrel-items to pagina-contentrel-shorty");
+      log.info("changing relation page-posrel-items to pagina-rolerel-shorty");
       ArrayList alShorty = getNodes(sFolder + "shorty.xml");
       sResultRel = mmm.movingRelations(alPagina, alShorty, sPosrelContent,
-                                   "posrel", "contentrel");
+                                   "posrel", "rolerel");
       sPosrelContent = sResultRel[0];
-      sContentrelContent += sResultRel[1];
+      String sRolerelAdd = sResultRel[1];
 
-      log.info("changing relation page-posrel-teasers to pagina-contentrel-teaser");
+      log.info("changing relation page-posrel-teasers to pagina-rolerel-teaser");
       ArrayList alTeaser = getNodes(sFolder + "teaser.xml");
       sResultRel = mmm.movingRelations(alPagina, alTeaser, sPosrelContent,
-                                   "posrel", "contentrel");
+                                   "posrel", "rolerel");
       sPosrelContent = sResultRel[0];
-      sContentrelContent += sResultRel[1];
+      sRolerelAdd += sResultRel[1];
 
       log.info("changing relation page-posrel-vacature to pagina-contentrel-vacature");
       ArrayList alVacature = getNodes(sFolder + "vacature.xml");
@@ -187,11 +187,18 @@ public class RelationsMigrator {
       sPosrelContent = sResultParRel[0];
       String sParentContent = sResultParRel[1];
 
+      log.info("changing relation pagina-posrel-ads to pagina-contentrel-ads");
+      ArrayList alAds = getNodes(sFolder + "ads.xml");
+      String [] sResultPosRel = mmm.movingRelations(alPagina, alAds, sPosrelContent,
+                                   "posrel", "contentrel");
+      sPosrelContent = sResultPosRel[0];
+      sContentrelContent += sResultPosRel[1];
+
       log.info("changing relation page-posrel-employees-related-mmbaseuser to pagina-rolerel-user");
       sResultRel = mmm.movingRelations(alPagina, alMedewerkers, sPosrelContent,
                                    "posrel", "rolerel");
       sPosrelContent = sResultRel[0];
-      String sRolerelAdd = sResultRel[1];
+      sRolerelAdd += sResultRel[1];
 
       iBegPosIndex = sRolerelAdd.indexOf("<pos>");
       while (iBegPosIndex>-1){
