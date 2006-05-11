@@ -21,6 +21,7 @@ String endMnthIdFC = "";
 String endYrIdFC = "";
 String provincieIdFC = "";
 String evenement_typeIdFC = "";
+String no_group_eventsIdFC = "off";
 String afdelingIdFC = "";
 String offsetIdFC = "0";
 Cookie[] cookies = request.getCookies();
@@ -31,6 +32,7 @@ if(cookies!=null){
 	   if (thisName!=null&&thisValue!=null) {
 	      if(thisName.equals("provincieIdFC")) { provincieIdFC = thisValue; }
 			if(thisName.equals("evenement_typeIdFC")) { evenement_typeIdFC = thisValue; } 
+			if(thisName.equals("no_group_eventsIdFC")) { no_group_eventsIdFC = thisValue; } 
 	      if(thisName.equals("afdelingIdFC")) { afdelingIdFC = thisValue; }
 	      if(thisName.equals("orderbyIdFC")) { orderbyIdFC = thisValue; }
 	      if(thisName.equals("directionIdFC")) { directionIdFC = thisValue; }
@@ -53,6 +55,7 @@ if(cookies!=null){
 <mm:import externid="docopy" jspvar="docopyId" id="docopyId" /><% if(docopyId==null) { docopyId = ""; } %>
 <mm:import externid="provincie" jspvar="provincieId" id="provincieId" /><% if(provincieId==null) { provincieId = provincieIdFC; } %>
 <mm:import externid="evenement_type" jspvar="evenement_typeId" id="evenement_typeId" /><% if(evenement_typeId==null) { evenement_typeId = evenement_typeIdFC; } %>
+<mm:import externid="no_group_events" jspvar="no_group_eventsId" id="no_group_eventsId" /><% if(no_group_eventsId==null) { no_group_eventsId = ""; } %>
 <mm:import externid="afdeling" jspvar="afdelingId" id="afdelingId" /><% if(afdelingId==null) { afdelingId = afdelingIdFC; } %>
 <mm:import externid="orderby" jspvar="orderbyId" id="orderbyId"><%= orderbyIdFC %></mm:import><% if(orderbyId==null) { orderbyId = "titel"; } %>
 <mm:import externid="direction" jspvar="directionId" id="directionId"><%= directionIdFC %></mm:import>
@@ -71,6 +74,7 @@ if(cookies!=null){
 if(commandId.equals("Wis")) { // *** reset to default values ***
    provincieId = "";
 	evenement_typeId = "";
+	no_group_eventsId = "";
    afdelingId = "";
    orderbyId = "titel";
    directionId = "up";
@@ -109,6 +113,7 @@ action: <%= actionId %><br/>
 Cookie thisCookie = null;
 thisCookie = new Cookie("provincieIdFC", provincieId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
 thisCookie = new Cookie("evenement_typeIdFC", evenement_typeId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
+thisCookie = new Cookie("no_group_eventsIdFC", no_group_eventsId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
 thisCookie = new Cookie("afdelingIdFC", afdelingId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
 thisCookie = new Cookie("orderbyIdFC", orderbyId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
 thisCookie = new Cookie("directionIdFC", directionId ); thisCookie.setMaxAge(maxAge); response.addCookie(thisCookie); 
@@ -278,6 +283,16 @@ if(!provincieId.equals("")) {
       ></mm:listcontainer>
 	<%
 	}
+	if (no_group_eventsId.equals("on")){
+	isValidEvent = true; 
+	%><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,posrel,deelnemers_categorie">
+			<mm:constraint field="deelnemers_categorie.groepsactiviteit" operator="=" value="1" />
+			<mm:list max="1"><% 
+            isValidEvent = false;
+         %></mm:list
+      ></mm:listcontainer>
+	<%
+	}
    if(!natuurgebiedenId.equals("")||!afdelingId.equals("")||!allowedNatuurgebieden.equals("")) {
       isValidEvent = false;
       %><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,related,natuurgebieden"><%
@@ -369,6 +384,7 @@ if(!provincieId.equals("")) {
       clickedButton=obj;
       document.EvenementForm.command.value = clickedButton.value;
    }
+	
 </script>
 <% if(actionId.indexOf("print")>-1) { %>
 <style rel="stylesheet" type="text/css">
@@ -450,7 +466,9 @@ if(!provincieId.equals("")) {
       	<option value="-1" <% if(provincieId.equals("-1")) { %>selected<% } %>>Geen provincie
       	<option value="" <% if(provincieId.equals("")) { %>selected<% } %>>Alle provincies...
        </select></nobr>
-       <table class="formcontent" style="width:150px;"><tr><td><input type="checkbox" name="no_group_events" style="width:12px;height:12px;" /></td><td>Geen groepsactiviteiten</td></tr></table>
+       <table class="formcontent" style="width:150px;"><tr><td>
+		 	 <input type="checkbox" name="no_group_events" style="width:12px;height:12px;" <% if(no_group_eventsId.equals("on")){%>checked <% } %>/> 
+ 		 </td><td>Geen groepsactiviteiten</td></tr></table>
        <%
       } %>
     </td>
