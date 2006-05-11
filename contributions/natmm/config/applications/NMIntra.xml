@@ -176,8 +176,7 @@
       <relation from="medewerkers" to="programs" type="readmore"/>
       <relation from="menu" to="editwizards" type="posrel"/>
       <relation from="organisatie" to="organisatie_type" type="posrel"/>
-      <relation from="pagina" to="ads" type="posrel"/>
-      <relation from="pagina" to="artikel" type="contentrel"/>
+      <relation from="pagina" to="contentelement" type="contentrel"/> <!-- ads, artikel, medewerkers, vacature -->
       <relation from="pagina" to="artikel" type="readmore"/>
       <relation from="pagina" to="attachments" type="posrel"/> 
       <relation from="pagina" to="contentblocks" type="readmore"/> 
@@ -188,18 +187,15 @@
       <relation from="pagina" to="images" type="posrel"/> 
       <relation from="pagina" to="items" type="posrel"/>
       <relation from="pagina" to="link" type="posrel"/> 
-      <relation from="pagina" to="medewerkers" type="contentrel"/> 
       <relation from="pagina" to="mmevents" type="posrel"/>
       <relation from="pagina" to="pagina" type="discountrel"/> 
       <relation from="pagina" to="pagina" type="readmore"/>
-      <relation from="pagina" to="pagina" type="related"/>
       <relation from="pagina" to="paginatemplate" type="gebruikt"/>
       <relation from="pagina" to="producttypes" type="posrel"/>
       <relation from="pagina" to="programs" type="posrel"/>
-      <relation from="pagina" to="shorty" type="contentrel"/>
-      <relation from="pagina" to="teaser" type="contentrel"/>
+      <relation from="pagina" to="shorty" type="rolerel"/>
+      <relation from="pagina" to="teaser" type="rolerel"/>
       <relation from="pagina" to="users" type="rolerel"/>
-      <relation from="pagina" to="vacature" type="contentrel"/> 
       <relation from="paginatemplate" to="editwizards" type="related"/> 
       <relation from="paragraaf" to="attachments" type="posrel"/> 
       <relation from="paragraaf" to="images" type="posrel"/> 
