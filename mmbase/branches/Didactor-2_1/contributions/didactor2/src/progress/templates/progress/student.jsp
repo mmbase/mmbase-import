@@ -258,6 +258,7 @@
                             </mm:islessthan>
       
                             <mm:isgreaterthan value="0">
+                              <mm:import id="amount"><mm:field name="questionamount" /></mm:import>
                               <mm:write />
                             </mm:isgreaterthan>
                           </mm:field>
