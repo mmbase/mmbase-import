@@ -183,7 +183,15 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                   <mm:related path="contentrel,provincies,pos4rel,natuurgebieden" fields="natuurgebieden.number">
                      <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
                      if(hsetNatuurgebiedenNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
+                        String sAddUrl = "";
+								if (templateUrl.equals("routes.jsp")){
+									%><mm:list nodes="<%= sID %>" path="natuurgebieden,rolerel,artikel">
+											<mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false">
+												<% sAddUrl = "&a=" + artikel_number; %>
+											</mm:field>
+									</mm:list>
+							<% } %>	
+								<li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/><%= sAddUrl %>"><mm:field name="natuurgebieden.naam"/></a></li><%
                      }
                      %></mm:field>
                   </mm:related><% 

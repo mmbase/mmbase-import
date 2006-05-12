@@ -41,8 +41,8 @@
       <mm:import jspvar="rl_5" externid="rl_5" id="rl_5"></mm:import>
       <mm:import jspvar="routeLengte" externid="rl">-1</mm:import>
    	<td style="vertical-align:top;width:374px;padding:10px;padding-top:0px;">
-   	<%
-   	if(!artikelID.equals("-1")) { // *** this can be reached from a shorty or teaser *** 
+   	<% 
+			if(!artikelID.equals("-1")) { // *** this can be reached from a shorty or teaser *** 
    	   %><jsp:include page="includes/artikel_12_column.jsp">
             <jsp:param name="r" value="<%= rubriekID %>" />
             <jsp:param name="rs" value="<%= styleSheet %>" />
@@ -79,36 +79,27 @@
       		<mm:present referid="rl_4"><%searchConVar += " OR artikel.titel_fra LIKE '%4;%'"; %></mm:present>				
       		<mm:present referid="rl_5"><%searchConVar += " OR artikel.titel_fra LIKE '%5;%'"; %></mm:present>
       		<%	searchConVar += ")";
+					searchConVar += " AND (artikel.embargo < '" + nowSec + "') AND (artikel.sms='0' OR artikel.verloopdatum > '" + nowSec + "' )";
          } else if(request.getParameter("natuurgebied") != null) {
             searchConVar = "natuurgebieden.number='" +request.getParameter("natuurgebied") + "'";
             searchPath = "natuurgebieden,rolerel,artikel";
          }
-         %>
+	      %>
    		<table width="100%">
       		<mm:list nodes="<%= provID %>" 
       				path="<%= searchPath %>"
       				distinct="true" 
       				fields="artikel.titel,artikel.number,artikel.type"
       				constraints="<%= searchConVar %>"
-      				orderby="artikel.titel">
-      			   <mm:field name="artikel.titel" jspvar="title" vartype="String" write="false">
-                  <% int dPos = title.indexOf(".");
-                     String sTNumber = "";
-                     String sTName = title;
-                     if(dPos>-1) {
-                        sTNumber = title.substring(0,dPos).trim();
-                        sTName = title.substring(dPos+1).trim();
-                     }
-                  %>                   
-      				<tr><td style="vertical-align:top;"><%= sTNumber %>&nbsp;|</td> 
+      				orderby="artikel.status">
+      				<tr><td style="vertical-align:top;"><mm:field name="artikel.status"/>&nbsp;|</td> 
                       <td style="vertical-align:top;">
                         <a class="maincolor_link" href="javascript:OpenWindow('route_pop.jsp?a=<mm:field name="artikel.number"
       				         />&rs=<%=styleSheet%>','route','width=600,height=800,location=no,directories=no,status=no,toolbars=no,scrollbars=yes')">
-                           <%= sTName %></a></td>
+                           <mm:field name="artikel.titel"/></a></td>
                       <td style="vertical-align:top;">|&nbsp;<mm:field name="artikel.type" /></td></tr>
       				<tr><td colspan="3"><table class="dotline"><tr><td height="3"></td></tr></table></td></tr>
       				<% foundRoute =true; %>
-      			</mm:field>
       		</mm:list>
       		<% if(!foundRoute){%>
          		<tr><td>Er is helaas geen route gevonden met de door u opgegeven criteria. <br>

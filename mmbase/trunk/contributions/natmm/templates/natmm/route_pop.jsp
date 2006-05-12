@@ -65,7 +65,7 @@ if(!artikelID.equals("-1")) {
       }
       }
       </script>
-    	<title>Natuurmonumenten: <mm:field name="titel" /></title>
+    	<title>Natuurmonumenten: <mm:field name="status"/>. <mm:field name="titel" /></title>
    </head>
    <body leftmargin="0" topmargin="0" rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
    <a name="top" id="top"></a>
@@ -83,7 +83,7 @@ if(!artikelID.equals("-1")) {
             <tr></tr> <!-- do not delete this <tr></tr>, it will ruin the layout -->
             <tr>
                 <td>
-                   <span class="colortitle"><mm:field name="titel" jspvar="title" vartype="String" write="false"><%= title.replace('.','|') %></mm:field></span>
+                   <span class="colortitle"><mm:field name="status"/>| <mm:field name="titel"/></span>
                    | <mm:field name="type" />
                 </td>
                 <td align="right" valign="bottom">

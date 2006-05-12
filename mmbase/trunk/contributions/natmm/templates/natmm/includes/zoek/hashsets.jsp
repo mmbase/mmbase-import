@@ -40,8 +40,8 @@
 	            for(int j=0; j<list.size(); j++) {
    	            String paginaNumber = list.getNode(j).getStringValue("pagina.number");
       	         if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
-         	         hsetPagesNodes.add(paginaNumber);
-            	      hsetNodes.add(docNumber);
+	         	         hsetPagesNodes.add(paginaNumber);
+   	         	      hsetNodes.add(docNumber);
                	}
 	            }
    	      } else { // *** no path implies an Evenement ***
@@ -85,11 +85,10 @@ if((sCategory != null) && (!sCategory.equals(""))) {
    </mm:list><%
 }
 
-%><mm:log jspvar="log"><% 
+%><mm:log jspvar="log"><%
 
 // this will lead to double results on the natuurgebieden, because artikel,rolerel,natuurgebieden,pos4rel,provincies is used to link routes
 hsetNatuurgebiedenNodes = addPages(cloud, log, cf, sQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
-hsetPagesNodes.remove("411"); // todo: this is a workaround, should be replaced by really integrating routes (in combi with PaginaHelper.pathsFromPageToElements)
 if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
 
 hsetArticlesNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
