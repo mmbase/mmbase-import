@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.157 2006-04-10 09:03:06 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.158 2006-05-12 11:16:04 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -750,7 +750,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected File checkFile(File binaryFile, MMObjectNode node, CoreField field) {
         String fieldName = field.getName();
         if (!binaryFile.canRead()) {
-            String desc = "while it should contain the byte data for node '" + node.getNumber() + "' field '" + fieldName + "'. Returning null.";
+            String desc = "while it should contain the byte array data for node '" + node.getNumber() + "' field '" + fieldName + "'. Returning null.";
             if (!binaryFile.exists()) {
                 // try legacy
                 File legacy = getLegacyBinaryFile(node, fieldName);
@@ -1221,6 +1221,9 @@ public class DatabaseStorageManager implements StorageManager {
                 nodeNumber = ((MMObjectNode) nodeValue).getNumber();
             } else {
                 nodeNumber = Casting.toInt(nodeValue);
+            }
+            if (nodeNumber < 0) {
+                throw new StorageException("Node number " + nodeNumber + "(from " + nodeValue.getClass() + " " + nodeValue + ") is not valid for field '" + field.getName() + "' of node " + node.getNumber());
             }
             // retrieve node as a numeric value
             statement.setInt(index, nodeNumber);
