@@ -31,6 +31,7 @@
       <step form-schema="edit_artikel"/>
    </steps>
    <form-schema id="edit_artikel">
+      <field name="status" ftype="line"><prompt>nummer</prompt></field>
       <field name="titel" ftype="line"><prompt>titel</prompt></field>
       <field name="titel_zichtbaar" ftype="enum"><prompt>titel zichtbaar</prompt><optionlist select="ja_nee"/></field>
       <field name="titel_fra" ftype="enum"><prompt>lengte in kilometers</prompt><optionlist select="route_length"/></field>
@@ -42,15 +43,16 @@
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
       <!-- field name="begindatum"><prompt>datum getoond op website</prompt></field -->
       <!-- field name="einddatum"><prompt>einddatum</prompt></field -->
-      <!-- field name="embargo"><prompt>verschijnt op website vanaf</prompt></field -->
-      <!-- field name="verloopdatum"><prompt>verwijdert van website op</prompt></field -->
-      <!-- field name="sms" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field -->
+      <field name="embargo"><prompt>verschijnt op website vanaf</prompt></field>
+      <field name="verloopdatum"><prompt>verwijdert van website op</prompt></field>
+      <field name="sms" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field>
       <!-- field name="status"><prompt>status</prompt></field -->
       <!-- is in use for routes: field name="type" ftype="line"><prompt>type</prompt></field -->
       <field name="intro" ftype="html" rows="14"><prompt>intro</prompt></field>
       <field name="tekst" ftype="html" rows="20"><prompt>tekst</prompt></field>
       <!-- list include="config/artikel/zoek_artikel_unidirectionalrelated_artikel.xml" / -->
-      <list include="config/images/zoek_contentelement_posrel_images.xml" />
+      <!-- list include="config/images/zoek_contentelement_posrel_images.xml" / -->
+      <list include="config/natuurgebieden/zoek_artikel_rolerel_natuurgebieden.xml" />
       <field name="reageer" ftype="enum"><prompt>stippellijn tussen paragrafen</prompt><optionlist select="ja_nee"/></field>
       <list include="config/paragraaf/zoek_artikel_posrel_paragraaf.xml" />
       <!-- list include="config/evenement/zoek_artikel_related_evenement.xml" / -->

@@ -5,6 +5,9 @@
 <input type="hidden" name="searchIsOn" value="true">
 <% 
 if (searchIsOn) {
+   Date start = new Date();
+   String queryLog = "";
+   
    String contentElementConstraint = "";
    StringTokenizer st = new StringTokenizer(selectedTypes,",",false);
    if (st.countTokens() > 0 && (allTypesSelected==false)) {
@@ -45,9 +48,7 @@ if (searchIsOn) {
    if (pageNo != 0) {
       // todo: include other possible paths between contentelements and pagina
       String nodes = Integer.toString(pageNo);
-      String path = "pagina,contentrel,contentelement";
-      String showField = "contentelement.number";
-      NodeList list = cloud.getList(nodes, path, showField, "", "", null, null, true );
+      NodeList list = cloud.getList(nodes, "pagina,contentrel,contentelement", "contentelement.number", "", "", null, null, true );
 
       // The where clause is outside the if, because we have to create a 
       // where clause when a page is selected
@@ -66,6 +67,7 @@ if (searchIsOn) {
    StringBuffer sbObjects = new StringBuffer();
    String objects = "";
    if(contentElementConstraint!=null && !"".equals(contentElementConstraint)) {
+      queryLog += ", using cc=" +  contentElementConstraint; 
       NodeList nlObjects = cloud.getList("",
                                  "contentelement",
                                  "contentelement.number",
@@ -80,6 +82,7 @@ if (searchIsOn) {
 
    if(!objects.equals("") && !OPTION_ALLE.equals(auteur)) {
       // todo: this does not seem to work
+      queryLog += ", using  users.number=" +  auteur;
       NodeList nlObjects = cloud.getList(objects,
                                  "contentelement,schrijver,users",
                                  "contentelement.number",
@@ -129,6 +132,7 @@ if (searchIsOn) {
    //    -contentelement.titel, contentelement.otype, contentelement.creatiedatum, contentelement.datumlaatstewijziging
    //    -rubriek.naam
    if(!objects.equals("")) {
+      queryLog += ", using path=" +  path + " and rc=" + rubriekConstraint;
       %>
       <mm:list nodes="<%= objects %>" path="<%=path%>" orderby="<%=orderColumn%>" constraints="<%=rubriekConstraint%>" max="250" id="contentresults">
          <mm:first>
@@ -203,7 +207,7 @@ if (searchIsOn) {
          <p><b>Er zijn <mm:size/> content elementen gevonden</b></p>
          <table border="0" cellpadding="0" cellspacing="0" width="876" height="73">
             <tr>
-               <td align="left"">
+               <td align="left">
                  <mm:write referid="itemCountsString" /><br>
                </td>
                <td align="right">
@@ -223,56 +227,63 @@ if (searchIsOn) {
                <th style="width:50;height:13;vertical-align:bottom;text-align:left;">Versie</th>
             </tr>
        </mm:first>
-       <% if( (counter > (curPage-1)*AMOUNT_OF_RESULTS ) && (counter < curPage*AMOUNT_OF_RESULTS+1) ) { 
-         String contentTypeName = "";
-         String usedIn = "";            
+       <% 
+         if( (counter > (curPage-1)*AMOUNT_OF_RESULTS ) && (counter < curPage*AMOUNT_OF_RESULTS+1) ) { 
+         String thisType = "";
+         String usedIn = "";
          %>
          <mm:node element="contentelement">
              <mm:field name="otype" jspvar="otype" vartype="String" >
-               <% contentTypeName = (String) contentHelper.getNameWithOtype(otype); %>
+               <% thisType = (String) contentHelper.getNameWithOtype(otype); %>
              </mm:field><%
-            for(int ct=0; ct < cTypes.size(); ct++) {
-                  String thisType = ((String) cTypes.get(ct)).toLowerCase();
-                  if(!(contentTypeName.equals("artikel")&&(thisType.equals("paragraaf")||thisType.equals("images")))
-                     &&!(contentTypeName.equals("evenement")&&thisType.equals("evenement"))) {
-                     %><mm:relatednodescontainer path="<%= thisType %>">
+             for(int ct=0; ct < cTypes.size(); ct++) {
+               String relatedType = ((String) cTypes.get(ct)).toLowerCase();
+               if(   !(thisType.equals("artikel")&&(relatedType.equals("paragraaf")||relatedType.equals("images")))
+                  && !(thisType.equals("evenement")&&relatedType.equals("evenement"))) {
+                  NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
+                  if(thisTypeNodeManager.getAllowedRelations(relatedType,null,null).size()>0) {
+                     %><mm:relatednodescontainer path="<%= relatedType %>">
                            <mm:size id="size" write="false" jspvar="size" vartype="String">
                            <mm:compare referid="size" value="0" inverse="true">
-                              <% usedIn += "\n" + size + " "+  thisType; %>
+                              <% usedIn += "\n" + size + " "+ relatedType; %>
                            </mm:compare>
                            </mm:size>
-                       </mm:relatednodescontainer><mm:remove referid="size" /><% 
+                       </mm:relatednodescontainer>
+                       <mm:remove referid="size" /><%
                   }
+               }
             }
             // todo: not used content elements can not be opened in the editwizard
-            usedIn = (usedIn.equals("") ? "style=\"color:red;\" title=\"Dit " + contentTypeName + " is niet in gebruik.\"" : "title=\"Gebruikt in: " +  usedIn + "\"" );
+            usedIn = (usedIn.equals("") ? "style=\"color:red;\" title=\"Dit " + thisType + " is niet in gebruik.\"" : "title=\"Gebruikt in: " +  usedIn + "\"" );
             %>
          </mm:node>
          <tr height="11">
             <td valign="top">
-            <% if ("administrator".equalsIgnoreCase(cloud.getUser().getRank())) {%>
-               <img src="../img/remove.gif" alt="Verwijder object" class="button"
-                   onclick="javascript:doDelete('<mm:field name="contentelement.number"/>');">
-            <%
-                 }
-                 String cModus = (String) session.getAttribute("contentmodus");
-               if ((!popup) && (cModus != null) && (cModus.equals("on"))) {
-            %>
-                <a href="../paginamanagement/frames.jsp?contentnodenumber=<mm:field name="contentelement.number"/>">
-                    <img src="../img/multiple.gif" alt="Voeg contentelement toe op meerdere plaatsen" border="0">
-               </a>
-            <%
+               <% 
+               if ("administrator".equalsIgnoreCase(cloud.getUser().getRank())) {
+                  %>
+                  <img src="../img/remove.gif" alt="Verwijder object" class="button"
+                      onclick="javascript:doDelete('<mm:field name="contentelement.number"/>');">
+                  <%
                }
-              %>
-               <img src="../img/edit_w.gif" alt="Content element aanpassen" class="button" onClick="javascript:doForward(<mm:field name="contentelement.number" write="true"/>,'<%= contentTypeName %>');">
+               String cModus = (String) session.getAttribute("contentmodus");
+               if ((!popup) && (cModus != null) && (cModus.equals("on"))) {
+                  %>
+                   <a href="../paginamanagement/frames.jsp?contentnodenumber=<mm:field name="contentelement.number"/>">
+                       <img src="../img/multiple.gif" alt="Voeg contentelement toe op meerdere plaatsen" border="0">
+                  </a>
+                  <%
+               }
+               %>
+               <img src="../img/edit_w.gif" alt="Content element aanpassen" class="button" onClick="javascript:doForward(<mm:field name="contentelement.number" write="true"/>,'<%= thisType %>');">
             </td>
             <td valign="top">
-                <%= contentTypeName %>
+                <%= thisType %>
             </td>
             <td valign="top">
               <% 
               if (!filterProductlinks) { %>
-                 <a href="#" onClick="javascript:doForward(<mm:field name="contentelement.number" write="true"/>,'<%= contentTypeName %>');" <%= usedIn %>>
+                 <a href="#" onClick="javascript:doForward(<mm:field name="contentelement.number" write="true"/>,'<%= thisType %>');" <%= usedIn %>>
                      <mm:field name="contentelement.titel"/>
                  </a>
                  <% 
@@ -285,7 +296,7 @@ if (searchIsOn) {
                   <%
                   if (showLine) {
                      %>
-                      <a href="#" onClick="javascript:doForward(<mm:field name="contentelement.number" write="true"/>,'<%= contentTypeName %>');" <%= usedIn %>>
+                      <a href="#" onClick="javascript:doForward(<mm:field name="contentelement.number" write="true"/>,'<%= thisType %>');" <%= usedIn %>>
                         <mm:field name="contentelement.titel" />
                      </a>
                      <%  
@@ -317,15 +328,15 @@ if (searchIsOn) {
                   <mm:list nodes="<%= contentElementNumber %>" path="contentelement,creatierubriek,rubriek" max="1">
                      <mm:field name="rubriek.number" jspvar="rubriekNodeNumber" vartype="String" write="false">
                         <%
-                           AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud);
-                           Node userNode = authorizationHelper.getUserNode(cloud.getUser().getIdentifier());
+                        AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud);
+                        Node userNode = authorizationHelper.getUserNode(cloud.getUser().getIdentifier());
 
-                           UserRole userRole = authorizationHelper.getRoleForUser(userNode, cloud.getNode(rubriekNodeNumber));
-                           if (userRole.getRol() > Roles.REDACTEUR) {
-                        %>
-                        <a href="version.jsp?node=<mm:field name='contentelement.number'/>"><img border="0" src="../img/versions.gif" width="16" height="16"></a>
-                        <%
-                           }
+                        UserRole userRole = authorizationHelper.getRoleForUser(userNode, cloud.getNode(rubriekNodeNumber));
+                        if (userRole.getRol() > Roles.REDACTEUR) {
+                           %>
+                           <a href="version.jsp?node=<mm:field name='contentelement.number'/>"><img border="0" src="../img/versions.gif" width="16" height="16"></a>
+                           <%
+                        }
                         %>
                      </mm:field>
                   </mm:list>
@@ -344,10 +355,13 @@ if (searchIsOn) {
          </table>
       </mm:last>
    </mm:list>
-   <% if (!foundResults) { %>
-      <p><b>Er zijn geen content elementen gevonden</b></p>
    <% 
+   if (!foundResults) {
+      %>
+      <p><b>Er zijn geen content elementen gevonden</b></p>
+      <%
    }
-   
+   Date end = new Date();
+   log.info("Search for " + cloud.getUser().getIdentifier() + " took " + (end.getTime()-start.getTime())/1000 + " sec " + queryLog);  
 } // searchIsOn
 %>

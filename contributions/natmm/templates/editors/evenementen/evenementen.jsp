@@ -94,6 +94,8 @@ command: <%= commandId %><br/>
 delete: <%= deleteId %><br/>
 docopy: <%= docopyId %><br/>
 provincie: <%= provincieId %><br/>
+evenement_type: <%= evenement_typeId %><br/>
+no_group_events: <%= no_group_eventsId %><br/>
 afdeling: <%= afdelingId %><br/>
 orderby: <%= orderbyId %><br/>
 direction: <%= directionId %><br/>
@@ -271,29 +273,30 @@ if(!provincieId.equals("")) {
    int i =0;
    while(events.containsKey(key)) { key = tmpKey + i; i++; }
     
-   // *** add extra restrictions ***
+   // *** add extra restrictions, the sequence of if-statements works as an AND on isValidEvent ***
    boolean isValidEvent = true;
 	if (!evenement_typeId.equals("")) { 
-	isValidEvent = false;
-	%><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,related,evenement_type">
-			<mm:constraint field="evenement_type.number" operator="=" value="<%= evenement_typeId %>" />
-			<mm:list max="1"><%
-            isValidEvent = true;
-         %></mm:list
-      ></mm:listcontainer>
-	<%
+      isValidEvent = false;
+      %><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,related,evenement_type">
+            <mm:constraint field="evenement_type.number" operator="=" value="<%= evenement_typeId %>" />
+            <mm:list max="1"><%
+               isValidEvent = true;
+            %></mm:list
+         ></mm:listcontainer>
+      <%
 	}
-	if (no_group_eventsId.equals("on")){
-	isValidEvent = true; 
-	%><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,posrel,deelnemers_categorie">
-			<mm:constraint field="deelnemers_categorie.groepsactiviteit" operator="=" value="1" />
-			<mm:list max="1"><% 
-            isValidEvent = false;
-         %></mm:list
-      ></mm:listcontainer>
-	<%
+	if (isValidEvent && no_group_eventsId.equals("on")){
+      // at least one deelnemers_categorie.groepsactiviteit implies a group event
+      isValidEvent = true;
+      %><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,posrel,deelnemers_categorie">
+            <mm:constraint field="deelnemers_categorie.groepsactiviteit" operator="=" value="1" />
+            <mm:list max="1"><% 
+               isValidEvent = false;
+            %></mm:list
+         ></mm:listcontainer>
+      <%
 	}
-   if(!natuurgebiedenId.equals("")||!afdelingId.equals("")||!allowedNatuurgebieden.equals("")) {
+   if(isValidEvent && (!natuurgebiedenId.equals("")||!afdelingId.equals("")||!allowedNatuurgebieden.equals(""))) {
       isValidEvent = false;
       %><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,related,natuurgebieden"><%
          if(!natuurgebiedenId.equals("")) { 

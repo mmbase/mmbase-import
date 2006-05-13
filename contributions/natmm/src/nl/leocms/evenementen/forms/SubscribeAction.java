@@ -724,7 +724,7 @@ public class SubscribeAction extends Action {
                      thisParticipant = subscribeForm.createParticipant(cloud,action,thisEvent,thisSubscription,"-1",subscribeForm.getParticipantsPerCat(0));
                }
 
-               String confirmUrl = NatMMConfig.liveUrl + "/events.jsp";
+               String confirmUrl = NatMMConfig.liveUrl[0] + "/events.jsp";
                confirmUrl += "?action=confirm&s=" + thisSubscription.getStringValue("datum_inschrijving") + "_" + thisSubscription.getStringValue("number");
                Node thisParent = cloud.getNode(subscribeForm.getParent());
                sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl);
