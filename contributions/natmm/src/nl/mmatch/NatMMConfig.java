@@ -33,7 +33,7 @@ public class NatMMConfig {
     public static String infoEmailAddress = "info@ledenservice.nl";
 
     public static String toEmailAddress = "hangyi@xs4all.nl";
-    public static String liveUrl = "http://www.natuurmonumenten.nl/";
+    public static String [] liveUrl = { "http://www.natuurmonumenten.nl/", "http://www.prod.natuurmm.asp4all.nl/" };
     public static String tmpMemberId = "9002162";
     public static boolean urlConversion = false;
 

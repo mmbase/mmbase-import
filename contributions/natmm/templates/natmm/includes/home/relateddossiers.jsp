@@ -72,8 +72,7 @@ String objectID = request.getParameter("o");
 		<mm:field name="evenement.number" jspvar="evenement_number" vartype="String" write="false">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td style="text-align:left;vertical-align:middle;"><a href="events.jsp?p=agenda&id=<%= Evenement.getNextOccurence(evenement_number) %>" class="hover"><mm:field name="evenement.titel" /></a></td>
-					<%-- <td width="80" align="right" valign="middle"><a href="events.jsp?p=agenda&id=<%= Evenement.getNextOccurence(evenement_number) %>" class="hp_leesverder">Lees verder &raquo;</a></td> --%>
+					<td style="text-align:left;vertical-align:middle;"><a href="events.jsp?p=agenda&e=<%= Evenement.getNextOccurence(evenement_number) %>" class="hover"><mm:field name="evenement.titel" /></a></td>
 				</tr>
 			</table>
 			<table class="dotline" style="margin-top:2px;margin-bottom:2px;"><tr><td height="3"></td></tr></table>			

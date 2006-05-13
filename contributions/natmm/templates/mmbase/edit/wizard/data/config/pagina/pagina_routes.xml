@@ -37,6 +37,6 @@
       <list include="config/panno/zoek_pagina_posrel_panno.xml" />
       <list include="config/shorty/zoek_pagina_rolerel_shorty.xml" />
       <list include="config/teaser/zoek_pagina_rolerel_teaser.xml" />
-      <list include="config/formulier/zoek_pagina_posrel_formulier.xml" />
+      <!-- list include="config/formulier/zoek_pagina_posrel_formulier.xml" / -->
    </form-schema> 
 </wizard-schema>

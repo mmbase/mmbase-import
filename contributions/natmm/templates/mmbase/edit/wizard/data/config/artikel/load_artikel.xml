@@ -21,6 +21,7 @@
    <field name="tekst"/>
    <field name="sms"/>
    <relation destination="artikel" role="related"/>
+   <relation destination="natuurgebieden" role="rolerel"/>
    <relation destination="images" role="posrel"/>
    <relation destination="attachments" role="related"/>
    <relation destination="evenement" role="related"/>

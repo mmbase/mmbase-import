@@ -553,12 +553,13 @@ public class SubscribeForm extends ActionForm {
 
          errors.add("warning",new ActionError("evenementen.noselection.change"));
 
-      } else if(this.getButtons().getAddParticipant().pressed()&&this.getSelectedParticipant().equals("")){        // *** Add ***
-
-         errors.add("warning",new ActionError("evenementen.noselection.add"));
+      } else if(this.getButtons().getAddParticipant().pressed()) {                                                // *** Add ***
+      
+         if(this.getSelectedParticipant().equals("")){
+            errors.add("warning",new ActionError("evenementen.noselection.add"));
+         }
 
          if ((hasDeelnemersCategorieRelated(cloud))&&(this.getParticipantsCategory().equals("-1"))) {
-
             errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
          }
 
@@ -583,7 +584,7 @@ public class SubscribeForm extends ActionForm {
 
          if(this.getParticipantsCategory().equals("-1")&&(hasDeelnemersCategorieRelated(cloud))){
                errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
-            }
+         }
 
          String memberIdMessage = getMemberIdMessage(memberId,this.getZipCode());
          if(!memberIdMessage.equals("")&&!memberIdMessage.equals("evenementen.members.nozipcode")) {                // *** check whether member info can be found in application attribute ***

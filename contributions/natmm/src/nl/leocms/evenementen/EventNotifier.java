@@ -306,13 +306,19 @@ public class EventNotifier implements Runnable {
 
       String toEmailAddress = NatMMConfig.toEmailAddress;
       String fromEmailAddress = NatMMConfig.fromEmailAddress; 
-      String liveUrl = NatMMConfig.liveUrl;
 
       log.info("Started updateEventDB");
       String logMessage =  "\n<br>Started updateEventDB " + new Date();
 
       // use liveUrl to make sure that notifications are only send from live server
-      if(requestUrl.indexOf(liveUrl)>-1) {
+      boolean isProduction = false;
+      String liveUrls = "";
+      for(int i=0; i<NatMMConfig.liveUrl.length; i++) {
+         isProduction = isProduction || (requestUrl.indexOf(NatMMConfig.liveUrl[i])>-1);
+         if(!liveUrls.equals("")) { liveUrls += ", "; }
+         liveUrls += "'" + NatMMConfig.liveUrl[i] + "'";
+      }
+      if(isProduction) {
          logMessage += notifyParticipants(cloud);
          logMessage += lessThanMin(cloud);
          logMessage += isFullyBooked(cloud);
@@ -320,8 +326,8 @@ public class EventNotifier implements Runnable {
             logMessage += checkEmailAccounts(cloud);
          }
       } else {
-         logMessage += "\n<br>'" + requestUrl + "' does not match with '" + liveUrl + "' therefore no reminder emails send";
-         log.info("'" + requestUrl + "' does not match with '" + liveUrl + "' therefore no reminder emails send");
+         logMessage += "\n<br>'" + requestUrl + "' does not match with " + liveUrls + " therefore no reminder emails send";
+         log.info("'" + requestUrl + "' does not match with " + liveUrls + " therefore no reminder emails send");
       }
 
       updateAppAttributes(cloud);
