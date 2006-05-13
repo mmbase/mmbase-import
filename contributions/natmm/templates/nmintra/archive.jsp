@@ -8,8 +8,8 @@
 	if(!projectId.equals("")) {
 		%><%@include file="includes/projectoverview.jsp" %><%
 	} else {
-
-      int thisOffset = 0;
+      int objectPerPage = 10;
+      int thisOffset = 1;
       try{
           if(!offsetId.equals("")){
               thisOffset = Integer.parseInt(offsetId);
@@ -164,7 +164,7 @@
 					searchResults = searchResults(searchResultSet);
 					searchResultSet = new TreeSet();
 				}
-                %><%@include file="includes/offsetlinks.jsp" %><%
+                %><%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
                    %><mm:list nodes="<%= searchResults %>" path="projects" orderby="projects.titel" directions="UP" 
                        offset="<%= "" + thisOffset*10 %>" max="10" distinct="true" fields="projects.number"
@@ -207,7 +207,6 @@
 				>Dit archief bevat geen projecten.
 			  </mm:notpresent><%
                }
-               %><%@include file="includes/offsetlinks.jsp" 
                %></td>
         <td><img src="media/spacer.gif" width="10" height="1"></td>
       </tr>
