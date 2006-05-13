@@ -97,12 +97,13 @@ if(artikelID != null) {
 		   </mm:list><%
       } %>
 		<mm:list nodes="<%=natuurgebiedID%>" path="natuurgebieden,rolerel,artikel"
-		          fields="artikel.number" distinct="true" orderby="artikel.titel">
+		          fields="artikel.number" distinct="true" orderby="artikel.titel"
+                constraints="<%= "(artikel.embargo < '" + nowSec + "') AND (artikel.sms='0' OR artikel.verloopdatum > '" + nowSec + "' )" %>">
 				<mm:first>
 					<span class="colortitle">Routes</span><br>
 					<ul>
 				</mm:first>
-						<li><a href="routes.jsp?natuurgebied=<%=natuurgebiedID%>">
+						<li><a href="routes.jsp?n=<%=natuurgebiedID%>">
 		               <mm:field name="artikel.titel" /></a></li>
 				<mm:last>
       			</ul>

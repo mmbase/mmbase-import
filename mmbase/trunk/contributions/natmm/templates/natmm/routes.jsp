@@ -42,7 +42,8 @@
       <mm:import jspvar="routeLengte" externid="rl">-1</mm:import>
    	<td style="vertical-align:top;width:374px;padding:10px;padding-top:0px;">
    	<% 
-			if(!artikelID.equals("-1")) { // *** this can be reached from a shorty or teaser *** 
+      if(!artikelID.equals("-1")) { 
+         // *** this can be reached from a shorty or teaser *** 
    	   %><jsp:include page="includes/artikel_12_column.jsp">
             <jsp:param name="r" value="<%= rubriekID %>" />
             <jsp:param name="rs" value="<%= styleSheet %>" />
@@ -52,7 +53,8 @@
             <jsp:param name="a" value="<%= artikelID %>" />
             <jsp:param name="showdate" value="true" />
          </jsp:include><%
-   	} else { %>
+   	} else { 
+         %>
          <%@include file="includes/page_intro.jsp" %>
       	<jsp:include page="includes/shorty.jsp">
    	      <jsp:param name="s" value="<%= paginaID %>" />
@@ -79,11 +81,15 @@
       		<mm:present referid="rl_4"><%searchConVar += " OR artikel.titel_fra LIKE '%4;%'"; %></mm:present>				
       		<mm:present referid="rl_5"><%searchConVar += " OR artikel.titel_fra LIKE '%5;%'"; %></mm:present>
       		<%	searchConVar += ")";
-					searchConVar += " AND (artikel.embargo < '" + nowSec + "') AND (artikel.sms='0' OR artikel.verloopdatum > '" + nowSec + "' )";
-         } else if(request.getParameter("natuurgebied") != null) {
-            searchConVar = "natuurgebieden.number='" +request.getParameter("natuurgebied") + "'";
+         } else if(!natuurgebiedID.equals("-1")) {
+            // This is to catch the jumps from natuurgebieden.jsp and zoek.jsp.
+            searchConVar = "natuurgebieden.number='" + natuurgebiedID + "'";
             searchPath = "natuurgebieden,rolerel,artikel";
          }
+         if(!searchConVar.equals("")) {
+            searchConVar += " AND ";
+         }
+   		searchConVar += " (artikel.embargo < '" + nowSec + "') AND (artikel.sms='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 	      %>
    		<table width="100%">
       		<mm:list nodes="<%= provID %>" 
@@ -94,8 +100,8 @@
       				orderby="artikel.status">
       				<tr><td style="vertical-align:top;"><mm:field name="artikel.status"/>&nbsp;|</td> 
                       <td style="vertical-align:top;">
-                        <a class="maincolor_link" href="javascript:OpenWindow('route_pop.jsp?a=<mm:field name="artikel.number"
-      				         />&rs=<%=styleSheet%>','route','width=600,height=800,location=no,directories=no,status=no,toolbars=no,scrollbars=yes')">
+                        <a class="maincolor_link" href="#" onclick="javascript:launchCenter('route_pop.jsp?a=<mm:field name="artikel.number"
+      				         />&rs=<%=styleSheet%>', 'route', 600, 800,'location=no,directories=no,status=no,toolbars=no,scrollbars=yes,resizable=yes');setTimeout('newwin.focus();',250);">
                            <mm:field name="artikel.titel"/></a></td>
                       <td style="vertical-align:top;">|&nbsp;<mm:field name="artikel.type" /></td></tr>
       				<tr><td colspan="3"><table class="dotline"><tr><td height="3"></td></tr></table></td></tr>
@@ -140,6 +146,7 @@
          			<tr>
          				<td width="1" background="media/v_dotline.gif"></td>
          				<td width="115" height="134" valign="top">
+                        <% // in some situations the map gives a js error, maybe it assumes to be in the root or something like this %>
          					<jsp:include page="includes/natuurgebieden/map.jsp" flush="true">
          						<jsp:param name="prov" value="<%=provID%>"/>
          						<jsp:param name="mapAction" value="form"/>
@@ -156,18 +163,15 @@
          <span class="colortitle">Kies een provincie</span><br>
          &nbsp;<select name="prov" style="width:130px" onchange="selectLayer(this.value)">
             <option value="-1">Alle provincies</option>
-            <option <%if(provID.equals("prov_gr")){%>selected<% } %> value="prov_gr">Groningen</option>
-            <option <%if(provID.equals("prov_dr")){%>selected<% } %> value="prov_dr">Drenthe</option>
-            <option <%if(provID.equals("prov_fr")){%>selected<% } %> value="prov_fr">Friesland</option>
-            <option <%if(provID.equals("prov_nh")){%>selected<% } %> value="prov_nh">Noord-Holland</option>
-            <option <%if(provID.equals("prov_fl")){%>selected<% } %> value="prov_fl">Flevoland</option>
-            <option <%if(provID.equals("prov_ov")){%>selected<% } %> value="prov_ov">Overijssel</option>
-            <option <%if(provID.equals("prov_ge")){%>selected<% } %> value="prov_ge">Gelderland</option>
-            <option <%if(provID.equals("prov_ut")){%>selected<% } %> value="prov_ut">Utrecht</option>
-            <option <%if(provID.equals("prov_nb")){%>selected<% } %> value="prov_nb">Noord-Brabant</option>
-            <option <%if(provID.equals("prov_zu")){%>selected<% } %> value="prov_zu">Zuid-Holland</option>
-            <option <%if(provID.equals("prov_li")){%>selected<% } %> value="prov_li">Limburg</option>
-            <option <%if(provID.equals("prov_ze")){%>selected<% } %> value="prov_ze">Zeeland</option>
+            <% 
+            String [] provAlias = { "prov_gr",  "prov_dr", "prov_fr",   "prov_nh",       "prov_fl",   "prov_ov",    "prov_ge",    "prov_ut", "prov_nb",       "prov_zu",      "prov_li", "prov_ze" };
+            String [] provName = { "Groningen", "Drenthe", "Friesland", "Noord-Holland", "Flevoland", "Overijssel", "Gelderland", "Utrecht", "Noord-Brabant", "Zuid-Holland", "Limburg", "Zeeland" };
+            for(int i=0; i<provAlias.length; i++) {
+               %>
+               <option <%= (provID.equals(provAlias[i]) ? "selected": "") %> value="<%= provAlias[i] %>"><%= provName[i] %></option>
+               <%
+            }
+            %>            
          </select><br><br>
          <div align="right"><input type="submit" value="ZOEK ROUTE" class="submit_image" style="width:130;"  /></div>
    	</form>
