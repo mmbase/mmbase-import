@@ -1,24 +1,23 @@
-<%@page import="org.mmbase.util.logging.*" %>
+<%@page import="org.mmbase.util.logging.*,nl.leocms.util.tools.SearchUtil" %>
 <%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
 ><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" 
-%><%@include file="includes/searchfunctions.jsp" 
 %><mm:import jspvar="paginaID" externid="p">-1</mm:import>
    <% 
-
-   //String rootID = "home";
+   SearchUtil su = new SearchUtil();
+   
    String sQuery = request.getParameter("search");
 	if(sQuery==null) { sQuery = ""; }
    String sMeta = request.getParameter("trefwoord");
    String sCategory = request.getParameter("categorie");
 	if(sCategory==null) { sCategory = ""; }
 	String sPool = request.getParameter("pool");
-	if (sPool==null) {sPool = ""; }
+	if (sPool==null) { sPool = ""; }
 	String sArchieve = request.getParameter("archive");
 	String sAdv = request.getParameter("adv");
-	if (sAdv==null) {sAdv = ""; }
-	if (sArchieve==null) {sArchieve = "nee";}
+	if (sAdv==null) { sAdv = ""; }
+	if (sArchieve==null) { sArchieve = "nee"; }
 	int fromDay = 0; int fromMonth = 0; int fromYear = 0;
    int toDay = 0; int toMonth = 0; int toYear = 0;
    int thisDay = cal.get(Calendar.DAY_OF_MONTH);
@@ -167,7 +166,7 @@
             				            %><mm:field name="artikel.titel" jspvar="titel" vartype="String" write="false">
 													<% titleStr = titel; %>
 													<li><a href="<%= templateUrl %>?p=<%=sPageID%>&article=<mm:field name="artikel.number"/>">
-														<span class="normal" style="text-decoration:underline;"><%= highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
+														<span class="normal" style="text-decoration:underline;"><%= su.highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
 												</mm:field>
 												<mm:field name="artikel.intro" jspvar="dummy" vartype="String" write="false">
  												  <% textStr = dummy; %>
@@ -192,7 +191,7 @@
 														</mm:field>
 													</mm:related>
 												</mm:node>
-												<br/><%= highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
+												<br/><%= su.highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
 										<% }
             				         %></mm:field>
 				                  </mm:related>
@@ -201,12 +200,12 @@
             				         if(hsetTeaserNodes.contains(sID)){
                         				%><mm:field name="teaser.titel" jspvar="titel" vartype="String" write="false">
 														<li><a href="<%= templateUrl %>?p=<%=sPageID%>">
-															<span class="normal" style="text-decoration:underline;"><%= highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
+															<span class="normal" style="text-decoration:underline;"><%= su.highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
 												</mm:field>	
 												<mm:field name="teaser.omschrijving" jspvar="dummy" vartype="String" write="false">
  												  <% textStr = dummy; %>
 												</mm:field>
-												<br/><%= highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
+												<br/><%= su.highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
 										<% }
             				         %></mm:field>
 				                  </mm:related>
@@ -215,7 +214,7 @@
             				         if(hsetProducctypesNodes.contains(sID)){
 				                        %><mm:field name="producttypes.titel" jspvar="titel" vartype="String" write="false">
 													<li><a href="<%= templateUrl %>?p=<%=sPageID%>&pool=<mm:field name="producttypes.number"/>">
-														<span class="normal" style="text-decoration:underline;"><%= highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
+														<span class="normal" style="text-decoration:underline;"><%= su.highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
 													</mm:field>	
 										<%	}
 				                     %></mm:field>
@@ -225,12 +224,12 @@
 				                     if(hsetProductsNodes.contains(sID)){
             				            %><mm:field name="products.titel" jspvar="titel" vartype="String" write="false">
 														<li><a href="<%= templateUrl %>?p=<%=sPageID%>&pool=<mm:field name="producttypes.number"/>&product=<mm:field name="products.number"/>">
-															<span class="normal" style="text-decoration:underline;"><%= highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
+															<span class="normal" style="text-decoration:underline;"><%= su.highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
 												</mm:field>	
 												<mm:field name="products.omschrijving" jspvar="dummy" vartype="String" write="false">
  												  <% textStr = dummy; %>
 												</mm:field>
-												<br/><%= highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
+												<br/><%= su.highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
 										<% }
             				         %></mm:field>
 				                  </mm:related>
@@ -239,7 +238,7 @@
             				         if(hsetItemsNodes.contains(sID)){
                         				%><mm:field name="items.titel" jspvar="titel" vartype="String" write="false">
 													<li><a href="<%= templateUrl %>?p=<%=sPageID%>&u=<mm:field name="items.number"/>">
-													<span class="normal" style="text-decoration:underline;"><%= highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
+													<span class="normal" style="text-decoration:underline;"><%= su.highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
 												</mm:field>	
 												<mm:field name="items.intro" jspvar="dummy" vartype="String" write="false">
  												  <% textStr = dummy; %>
@@ -248,7 +247,7 @@
  												  <% if (!textStr.equals("")) { textStr += " "; }
 													  textStr += dummy; %>
 												</mm:field>
-												<br/><%= highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
+												<br/><%= su.highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
 										<% }
             				         %></mm:field>
 				                  </mm:related>
@@ -257,7 +256,7 @@
             				         if(hsetDocumentsNodes.contains(sID)){
                         				%><mm:field name="documents.filename" jspvar="titel" vartype="String" write="false">
 														<li><a href="<mm:field name="documents.url"/>">
-															<span class="normal" style="text-decoration:underline;"><%= highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
+															<span class="normal" style="text-decoration:underline;"><%= su.highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
 													</mm:field>		
 										<% }
             				         %></mm:field>
@@ -267,7 +266,7 @@
             				         if(hsetVacatureNodes.contains(sID)){
                         				%><mm:field name="vacature.titel" jspvar="titel" vartype="String" write="false">
 													<li><a href="<%= templateUrl %>?p=<%=sPageID%>&project=<mm:field name="vacature.number"/>">
-														<span class="normal" style="text-decoration:underline;"><%= highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
+														<span class="normal" style="text-decoration:underline;"><%= su.highlightSearchTerms(titel,defaultSearchTerms,"b") %></span></a></li>
 													</mm:field>	
 												<% LinkedList ll = new LinkedList();
 												   ll.add("vacature.functienaam"); 
@@ -291,7 +290,7 @@
 															  } %>
 														</mm:field>
 												<%	} %>
-												<br/><%= highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
+												<br/><%= su.highlightSearchTerms(textStr,defaultSearchTerms,"b") %>
 										<% }
 				                     %></mm:field>
             				      </mm:related>

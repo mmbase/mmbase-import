@@ -16,7 +16,8 @@ if(!articleId.equals("")) {
 
 } else {  
       
-      int thisOffset = 0;
+      int objectPerPage = 10;
+      int thisOffset = 1;
       try{
           if(!offsetId.equals("")){
               thisOffset = Integer.parseInt(offsetId);
@@ -127,15 +128,19 @@ if(!articleId.equals("")) {
                 String extTemplateQueryString = templateQueryString; 
                 if(!periodId.equals("")){ extTemplateQueryString += "&d=" + periodId; }
                 int listSize = 0; 
-                %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
+                %>
+                <%--
+                <%= articlePath %><br/>
+                <%= articleConstraint %><br/>
+                --%>
+                <mm:list nodes="<%= pageId %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
 				         orderby="artikel.embargo" searchdir="destination"
                   ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
                 ></mm:list
-                ><%@include file="includes/offsetlinks.jsp" %><%
+                ><%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
-                   %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" 
-                          orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
-                       offset="<%= "" + thisOffset*10 %>" max="10" constraints="<%= articleConstraint %>"><%
+                   %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
+                       offset="<%= "" + (thisOffset-1)*10 %>" max="<%= "" + objectPerPage %>" constraints="<%= articleConstraint %>"><%
                        String titleClass = "pageheader"; 
                        String readmoreUrl = "info.jsp";
                        if(isIPage) readmoreUrl = "ipage.jsp";
@@ -155,7 +160,6 @@ if(!articleId.equals("")) {
 								Dit archief bevat geen artikelen.
 						  </mm:notpresent><%
                }
-               %><%@include file="includes/offsetlinks.jsp" 
                %><%@include file="includes/pageowner.jsp" 
         %></td>
         <td><img src="media/spacer.gif" width="10" height="1"></td>
@@ -164,7 +168,7 @@ if(!articleId.equals("")) {
       </div>
       </td><td><%
       // *************************************** right bar *******************************
-      %><%@include file="includes/relatedpools.jsp" %></td><%
+      %><%@include file="includes/info/relatedpools.jsp" %></td><%
 } 
 %><%@include file="includes/footer.jsp" 
 %></mm:cloud>

@@ -11,14 +11,7 @@
    </style>
    </head>
    <body style="width:100%;padding:5px;">
-	1. Adding alias users.admin to users node with account admin.<br/>
-	2. Changing templates.url from templates/*.jsp to *.jsp<br/>
-   Processing...<br/>
-	<mm:listnodes type="users" constraints="users.account = 'admin'">
-      <mm:setfield name="rank">administrator</mm:setfield>
-      <mm:setfield name="password">admin2k</mm:setfield>
-		<mm:createalias>users.admin</mm:createalias>
-	</mm:listnodes>
+	Changing templates.url from templates/*.jsp to *.jsp<br/>
 	<mm:listnodes type="paginatemplate">
 		<mm:field name="url" jspvar="url" vartype="String" write="false">
 			<mm:setfield name="url"><%= url.substring(10) %></mm:setfield>

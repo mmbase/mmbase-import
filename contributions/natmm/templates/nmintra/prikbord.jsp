@@ -14,7 +14,7 @@
                     ><mm:setfield name="email"><%= emailId %></mm:setfield
                     ><mm:setfield name="expiredate"><%= expireDate %></mm:setfield
                 ></mm:createnode
-                ><mm:createrelation role="posrel" source="this_post" destination="this_page" 
+                ><mm:createrelation role="contentrel" source="this_post" destination="this_page" 
                 /><mm:field name="titel" jspvar="page_title"  vartype="String" write="false"
                     ><mm:createnode type="email" id="thismail"
                         ><mm:setfield name="subject"><%= "Bevestigen plaatsing advertentie op " + page_title %></mm:setfield
@@ -92,14 +92,14 @@ int period = -31;
 
 cal.add(Calendar.DATE,period);
 String ads_constraints = "ads.expiredate <= " +(cal.getTime().getTime()/1000);
-%><mm:list nodes="<%= pageId %>" path="pagina,posrel,ads" constraints="<%= ads_constraints %>" 
-    ><mm:node element="posrel" id="thisrelation" 
+%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,ads" constraints="<%= ads_constraints %>" 
+    ><mm:node element="contentrel" id="thisrelation" 
     /><mm:deletenode referid="thisrelation"
     /><mm:remove referid="thisrelation" 
 /></mm:list><%
 
 ads_constraints = "ads.expiredate > " + (cal.getTime().getTime()/1000);
-%><mm:list nodes="<%= pageId %>" path="pagina,posrel,ads"
+%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,ads"
         constraints="<%= ads_constraints %>" orderby="ads.expiredate" directions="DOWN"
 ><mm:first
 ><table cellspacing="0" cellpadding="0" border="0" width="100%"></mm:first

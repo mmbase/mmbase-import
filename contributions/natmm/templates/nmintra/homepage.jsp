@@ -8,8 +8,10 @@ if(!articleId.equals("")) {
 
     %><% response.sendRedirect(articleTemplate); %><%--jsp:include page="<%= articleTemplate %>" /--%><%
 
-} else {  
-   int thisOffset = 0;
+} else {
+
+   int objectPerPage = 10;
+   int thisOffset = 1;
    try{
        if(!offsetId.equals("")){
            thisOffset = Integer.parseInt(offsetId);
@@ -81,7 +83,7 @@ if(!articleId.equals("")) {
 				orderby="artikel.embargo" searchdir="destination" 
                   ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
                 ></mm:list
-                ><%@include file="includes/offsetlinks.jsp" %><%
+                ><%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
                    %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" 
                           orderby="artikel.embargo" directions="DOWN" 
@@ -99,7 +101,7 @@ if(!articleId.equals("")) {
                } else {
                   %>Er zijn geen artikelen gevonden, die voldoen aan uw selectie criteria.<%
                } 
-               %><%@include file="includes/offsetlinks.jsp" %>
+               %>
        </td></tr>
    </table>
    </td></tr>
@@ -108,7 +110,7 @@ if(!articleId.equals("")) {
    </td><% 
    
    // *************************************** right bar *******************************
-   %><td><%@include file="includes/relatedpools.jsp" 
+   %><td><%@include file="includes/info/relatedpools.jsp" 
        %><%@include file="includes/itemurls.jsp" 
        %><%@include file="includes/whiteline.jsp" 
        %><%@include file="includes/tickertape.jsp" 
