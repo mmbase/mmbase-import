@@ -14,12 +14,6 @@ import java.io.*;
 
 import org.mmbase.module.Module;
 import org.mmbase.module.sessionInfo;
-import org.mmbase.module.sessionsInterface;
-
-import org.mmbase.module.TransactionHandlerInterface;
-
-import org.mmbase.util.scanpage;
-
 
 import org.mmbase.util.logging.*;
 
@@ -33,10 +27,10 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.8 2003-03-07 08:50:03 pierre Exp $
+ * @version $Id: TransactionHandler.java,v 1.9 2006-05-14 22:01:15 andre Exp $
  */
 
-public class TransactionHandler extends Module implements TransactionHandlerInterface {
+public class TransactionHandler extends Module  {
    /** Logger instance. */
    private static Logger log = Logging.getLoggerInstance(TransactionHandler.class.getName());
 
@@ -44,7 +38,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
    private static String version="1.12.2001";
 
    /** Sessions module. */
-   private static sessionsInterface sessions;
+//   private static sessionsInterface sessions;
 
    /** Hashtable to store a UserTransactionInfo object for each user. */
    private static Hashtable transactionsPerUser = new Hashtable();
@@ -77,78 +71,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
     */
    public void init(){
       log.service("Module TransactionHandler ("+version+") started.");
-      sessions = (sessionsInterface)Module.getModule("SESSION");
-   }
-
-   /**
-    * special version of handleTransaction for SCAN PAGES
-    * this version can be removed if scan is not supported anymore
-    *
-    * parses transactions xml file delivered by the reader and executes the TCP commands.
-    * @param template  the template containing the TCP commands
-    * @param session   the session variables of a user
-    * @param sp        the scanpage
-    */
-   public void handleTransaction(String template, sessionInfo session, scanpage sp) {
-      UserTransactionInfo uti;
-      TransactionsParser parser = null;
-
-      // Add header to xml file.
-      // The class org.mmbase.module.gui.html.scanparser recognizes the xml file
-      // because of the <trtansactions> tag. The header is already down the drain.
-      // So it sends the file without header and it has to be added again.
-      // The default utf8 encoding header is added.
-      String xmlTransactions = xmlHeader + template;
-
-      log.service("TransactionHandler processing TCP from scanpage");
-      if (log.isDebugEnabled()) {
-         log.trace("Received template (with added xml header) is:");
-         log.trace(xmlTransactions);
-      }
-
-      // Get user transactions info object.
-      if (session == null) {
-         uti = new UserTransactionInfo();
-         uti.user = new User("automaticUser");
-      } else {
-         //get user info
-         String user = session.getCookie();
-         uti = userInfo(user);
-      }
-
-      if (log.isDebugEnabled()) {
-         log.debug("Transactions started..");
-      }
-
-      // Parse template.
-      try {
-         // Create InputSource.
-         StringReader in = new StringReader(xmlTransactions);
-
-         // Parse.
-         parser = new TransactionsParser(uti);
-         parser.parse(in);
-      } catch (Exception e) {
-         log.error("TransactionError :" + e.toString());
-         log.error("ExceptionPage "+(parser != null? parser.getExceptionPage(): ""));
-
-         if (session != null) {
-            // Register the exception
-            sessions.setValue(session, "TRANSACTIONERROR", e.toString());
-         }
-
-         if (sp != null) {
-            // set jump to exception page
-            try {
-               sp.res.sendError(302,"OK");
-            } catch (IOException e2) {
-            }
-            if (parser != null) {
-               sp.res.setHeader("Location",parser.getExceptionPage());
-            }
-         }
-      }
-      log.warn("Transaction stopped at : " + getTime());
+      // sessions = (sessionsInterface)Module.getModule("SESSION");
    }
 
    private String getTime() {
