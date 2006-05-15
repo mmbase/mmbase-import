@@ -14,21 +14,21 @@
    </head>
    <body style="width:100%;padding:5px;">
    Changes made in this update:<br/>
-   1. The number of route is moved from artikel.titel to artikel.status<br/>  
-   <mm:list nodes="routes" path="pagina,contentrel,provincies,pos4rel,natuurgebieden,rolerel,artikel" orderby="artikel.titel">
-		<mm:node element="artikel">
-			<mm:field name="titel" jspvar="title" vartype="String" write="false">
-   	      <% int dPos = title.indexOf(".");
-      	      String sTNumber = "";
-         	   String sTName = title;
-            	if(dPos>-1) {
-	               sTNumber = title.substring(0,dPos).trim();
-   	            sTName = title.substring(dPos+1).trim();
-      	       } %>
-				<mm:setfield name="titel"><%= sTName %></mm:setfield>
-				<mm:setfield name="status"><%= sTNumber %></mm:setfield>
-			</mm:field>				
-		</mm:node>	
+   1. The number of route is moved from artikel.titel to artikel.status<br/>
+   <mm:list nodes="routes" path="pagina,contentrel,provincies,pos4rel,natuurgebieden,rolerel,artikel"  orderby="artikel.titel" fields="artikel.number">
+      <mm:node element="artikel">
+         <mm:field name="titel" jspvar="title" vartype="String" write="false">
+            <% int dPos = title.indexOf(".");
+               if(dPos>-1) {
+                  String sTNumber = title.substring(0,dPos).trim();
+                  String sTName = title.substring(dPos+1).trim();
+                  %>
+                  <mm:setfield name="titel"><%= sTName %></mm:setfield>
+                  <mm:setfield name="status"><%= sTNumber %></mm:setfield>
+                  <%
+                } %>
+         </mm:field>
+      </mm:node>
    </mm:list>
 	Done.
 	</body>
