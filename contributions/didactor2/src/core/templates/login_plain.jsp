@@ -1,6 +1,7 @@
 <%@page session="true" language="java" contentType="text/html; charset=UTF-8" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+
 <mm:content postprocessor="reducespace">
 <mm:cloud jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
@@ -31,8 +32,24 @@
     <title>Didactor</title>
     <link rel="stylesheet" type="text/css" href="<mm:treefile page="/css/loginpage.css" objectlist="$includePath" referids="$referids" />" />
     <mm:write referid="extraheader" escape="none" />
+    <script language="javascript">
+    <!--   
+      function setFocusOnFirstInput() {
+        var form = document.forms[0];
+        for (var i=0; i < form.elements.length; i++) {
+          var elem = form.elements[i];
+          // find first editable field
+          var hidden = elem.getAttribute("type"); //.toLowerCase();
+          if (hidden != "hidden") {
+            elem.focus();
+            break;
+          }
+        }
+	   }
+    //-->      
+    </script>    
     </head>
-   <body >
+   <body onload="setFocusOnFirstInput()">
    <script>
       try
       {<% //Prevent from loading /login.jsp in frame %>

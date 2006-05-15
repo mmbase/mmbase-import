@@ -8,6 +8,7 @@
 
   <property file="my.properties"/>
   <property file="build.properties"/>
+  <property file="configure.properties"/>
 
   <target name="create.dirs">
     <mkdir dir="${build.dir}" />
@@ -22,6 +23,7 @@
     <echo message="Building components: ${components}" />
     <delete file="${build.dir}/webapp/WEB-INF/taglib.tld" />
     <delete file="${build.dir}/webapp/WEB-INF/web.xml" />
+  	
     <foreach list="${components}" target="build.component" inheritall="true" param="component" />
     <foreach list="${providers}" target="build.provider" inheritall="true" param="provider" />
     <replace file="${build.dir}/webapp/WEB-INF/web.xml"
@@ -154,7 +156,8 @@
 
         <copy todir="${build.dir}/classes/${component}">
           <fileset dir="src/${component}/java">
-           <include name="**/*.properties" />
+            <include name="**/*.properties" />
+            <include name="**/*.xml" />
             <exclude name="**/*.java"/>
           </fileset>
         </copy>
@@ -164,6 +167,32 @@
                deprecation="on"
                debug="yes"
                classpathref="classpath" />
+      	
+        <if>
+          <available file="src/${component}/java/hibernate.cfg.xml" type="file"/>
+          <then>
+            <!-- hibernate configuration -->
+            <replace file="${build.dir}/classes/core/hibernate.cfg.xml"
+                     token="$${jdbc.driver}"
+                     value="${jdbc.driver}"/>
+            <replace file="${build.dir}/classes/core/hibernate.cfg.xml"
+                     token="$${jdbc.host}"
+                     value="${jdbc.host}"/>
+            <replace file="${build.dir}/classes/core/hibernate.cfg.xml"
+                     token="$${jdbc.port}"
+                     value="${jdbc.port}"/>
+            <replace file="${build.dir}/classes/core/hibernate.cfg.xml"
+                     token="$${jdbc.database}"
+                     value="${jdbc.database}"/>
+            <replace file="${build.dir}/classes/core/hibernate.cfg.xml"
+                     token="$${jdbc.user}"
+                     value="${jdbc.user}"/>
+            <replace file="${build.dir}/classes/core/hibernate.cfg.xml"
+                     token="$${jdbc.password}"
+                     value="${jdbc.password}"/>
+          </then>
+        </if>
+      	
         <jar jarfile="${build.dir}/webapp/WEB-INF/lib//didactor-${component}.jar"
              includes="**"
              basedir="${build.dir}/classes/${component}" />

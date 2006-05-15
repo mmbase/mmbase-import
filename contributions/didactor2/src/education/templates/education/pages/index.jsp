@@ -2,13 +2,17 @@
 
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
+<%@taglib uri="http://www.didactor.nl/reports-taglib_1.0" prefix="rep" %>
+
 <mm:content postprocessor="reducespace">
 
 <mm:cloud method="delegate" jspvar="cloud">
 
 
 
-<mm:import externid="learnobject" required="true"/>
+<mm:import externid="learnobject" jspvar="learnobject" required="true"/>
+
+<rep:event eventtype="<%= nl.didactor.reports.data.EventType.VISIT_PAGE + "" %>" eventvalue="<%= learnobject + "" %>" note="visit page"/>
 
 
 

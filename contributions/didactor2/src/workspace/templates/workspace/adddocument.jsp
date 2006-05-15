@@ -3,6 +3,7 @@
 --%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.1" prefix="mm" %>
+<%@taglib uri="http://www.didactor.nl/reports-taglib_1.0" prefix="rep" %>
 
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
@@ -145,6 +146,9 @@
       <% long currentDate = System.currentTimeMillis() / 1000; %>
       <mm:setfield name="date"><%=currentDate%></mm:setfield>
     </mm:createnode>
+
+    <mm:import id="docId" jspvar="docId"><mm:write referid="currentitem" /></mm:import>    
+    <rep:event eventtype="<%= nl.didactor.reports.data.EventType.ADD_DOCUMENT + "" %>" eventvalue="<%= docId %>" note="add document" />
 
     <%-- related uploaded attachment to the current folder --%>
     <mm:createrelation role="related" source="mycurrentfolder" destination="myattachements"/>
