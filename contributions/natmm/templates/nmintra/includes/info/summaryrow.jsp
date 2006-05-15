@@ -23,7 +23,7 @@
     <mm:first>
     <td rowspan="<mm:size/>">
     <a href="<mm:attachment />" target="_blank"><div class="pageheader"><%= article_title %></div>
-    <%@include file="../includes/poolanddate.jsp" %>
+    <%@include file="../poolanddate.jsp" %>
     <span class="normal"><%= article_introduction %></span></a>
     <mm:import id="attachmentfound" />
     </td>

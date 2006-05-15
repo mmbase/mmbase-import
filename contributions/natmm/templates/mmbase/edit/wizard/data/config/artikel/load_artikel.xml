@@ -11,6 +11,7 @@
    <field name="datumlaatstewijziging"/>
    <field name="embargo"/>
    <field name="verloopdatum"/>
+   <field name="use_verloopdatum"/>
    <field name="reageer"/>
    <field name="status"/>
    <field name="ondertitel"/>
@@ -19,7 +20,6 @@
    <field name="type"/>
    <field name="intro"/>
    <field name="tekst"/>
-   <field name="sms"/>
    <relation destination="artikel" role="related"/>
    <relation destination="natuurgebieden" role="rolerel"/>
    <relation destination="images" role="posrel"/>

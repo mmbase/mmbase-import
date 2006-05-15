@@ -195,6 +195,28 @@
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
+		<field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">GebruikVerloopdatum</guiname>
+            <guiname xml:lang="en">UsePerishDate</guiname>
+            <guitype>integer</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>13</input>
+               <list>-1</list>
+               <search>13</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">use_verloopdatum</name>
+            <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
+         </db>
+      </field>
       <field>
          <descriptions>
             <description xml:lang="nl"></description>
@@ -207,9 +229,9 @@
          </gui>
          <editor>
             <positions>
-               <input>6</input>
-               <list>6</list>
-               <search>6</search>
+               <input>14</input>
+               <list>14</list>
+               <search>14</search>
             </positions>
          </editor>
          <db>
@@ -229,7 +251,7 @@
          </gui>
          <editor>
             <positions>
-               <input>13</input>
+               <input>15</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -251,7 +273,7 @@
          </gui>
          <editor>
             <positions>
-               <input>14</input>
+               <input>16</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -273,7 +295,7 @@
          </gui>
          <editor>
             <positions>
-               <input>15</input>
+               <input>17</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -295,7 +317,7 @@
          </gui>
          <editor>
             <positions>
-               <input>16</input>
+               <input>18</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -317,7 +339,7 @@
          </gui>
          <editor>
             <positions>
-               <input>17</input>
+               <input>19</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -339,7 +361,7 @@
          </gui>
          <editor>
             <positions>
-               <input>18</input>
+               <input>20</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -361,7 +383,7 @@
          </gui>
          <editor>
             <positions>
-               <input>19</input>
+               <input>21</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -383,7 +405,7 @@
          </gui>
          <editor>
             <positions>
-               <input>20</input>
+               <input>22</input>
                <list>-1</list>
                <search>-1</search>
             </positions>

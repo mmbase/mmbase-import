@@ -1,6 +1,6 @@
 <% 
 // **************** people finder: right bar with the form *****************
-    %><%@include file="../includes/whiteline.jsp" 
+    %><%@include file="../whiteline.jsp" 
     %><form method="POST" name="advsearchform" action="search.jsp<%= templateQueryString %>" onSubmit="return postIt('submit');">
     <table cellpadding="0" cellspacing="0"  align="center">
       <tr>
@@ -42,12 +42,12 @@
 			</td>
 		</tr>
 		<tr>
-         <td class="bold"><span class="light_<%= cssClassName %>">Doorzoek archiev</span></td>
+         <td class="bold"><span class="light_<%= cssClassName %>">Doorzoek archief</span></td>
       </tr>
 		<tr><td>
 				<select name="archive" class="<%= cssClassName %>" style="width:172px;">
-					<option value="ja" <% if (sArchieve.equals("ja")) {%> SELECTED <%} %>>ja</option>
-					<option value="nee" <% if (sArchieve.equals("nee")) {%> SELECTED <%} %>>nee</option>
+					<option value="ja" <% if (sArchive.equals("ja")) {%> SELECTED <%} %>>ja</option>
+					<option value="nee" <% if (sArchive.equals("nee")) {%> SELECTED <%} %>>nee</option>
 			</td>
 		</tr>
 		<tr><td>

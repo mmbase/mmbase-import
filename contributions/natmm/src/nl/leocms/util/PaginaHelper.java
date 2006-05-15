@@ -54,24 +54,21 @@ public class PaginaHelper {
    public PaginaHelper(Cloud cloud) {
       this.cloud = cloud;
       this.pathsFromPageToElements = new HashMap();
-      NodeManager versionManager = cloud.getNodeManager("versions");
-      NodeList nlInstalledApplications = versionManager.getList("type='application'", null, null);
-      for(int i=0; i < nlInstalledApplications.size(); i++) {
-         // todo: create a generic solution for this piece of code
-         if(nlInstalledApplications.getNode(i).getStringValue("name").equals("NatMM")) {
-            for(int f = 0; f < nl.mmatch.NatMMConfig.CONTENTELEMENTS.length; f++) {
-               pathsFromPageToElements.put(
-                  nl.mmatch.NatMMConfig.CONTENTELEMENTS[f],
-                  nl.mmatch.NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
-            }
-         }
-         if(nlInstalledApplications.getNode(i).getStringValue("name").equals("NMIntra")) {
-            for(int f = 0; f < nl.mmatch.NMIntraConfig.CONTENTELEMENTS.length; f++) {
-               pathsFromPageToElements.put(
-                  nl.mmatch.NMIntraConfig.CONTENTELEMENTS[f],
-                  nl.mmatch.NMIntraConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
-            }
-         }
+		ApplicationHelper ap = new ApplicationHelper();
+		// todo: create a more generic version for this piece of code
+		if(ap.isInstalled(cloud,"NatMM")) {
+			for(int f = 0; f < nl.mmatch.NatMMConfig.CONTENTELEMENTS.length; f++) {
+				pathsFromPageToElements.put(
+					nl.mmatch.NatMMConfig.CONTENTELEMENTS[f],
+					nl.mmatch.NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+			}
+		}
+		if(ap.isInstalled(cloud,"NMIntra")) {
+			for(int f = 0; f < nl.mmatch.NMIntraConfig.CONTENTELEMENTS.length; f++) {
+				pathsFromPageToElements.put(
+					nl.mmatch.NMIntraConfig.CONTENTELEMENTS[f],
+					nl.mmatch.NMIntraConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+			}
       }
    }
 

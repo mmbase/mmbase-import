@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.5 $, $Date: 2006-05-15 12:47:50 $
+ * @version $Revision: 1.6 $, $Date: 2006-05-15 21:16:43 $
  *
  */
 
@@ -232,10 +232,15 @@ public class Evenement extends DoubleDateNode {
    }
 
    public boolean hasBooking() {
-      Cloud cloud = CloudFactory.getCloud();
-      Node thisEvent = cloud.getNode(this.getNumber());
-      NodeList bookingList = thisEvent.getRelatedNodes("inschrijvingen","posrel","destination");
-      return (bookingList.size()>0);
+      boolean hasBooking = false;
+      // negative numbers implies virtual events
+      if(this.getNumber().indexOf("-")==-1) {
+         Cloud cloud = CloudFactory.getCloud();
+         Node thisEvent = cloud.getNode(this.getNumber());
+         NodeList bookingList = thisEvent.getRelatedNodes("inschrijvingen","posrel","destination");
+         hasBooking = (bookingList.size()>0);
+      }
+      return hasBooking;
    }
 
    public static boolean isFullyBooked(Node parentEvent, Node childEvent) {
