@@ -64,7 +64,6 @@ if (searchIsOn) {
       contentElementConstraint += ") ";
    }
 
-   StringBuffer sbObjects = new StringBuffer();
    String objects = "";
    if(contentElementConstraint!=null && !"".equals(contentElementConstraint)) {
       queryLog += ", using cc=" +  contentElementConstraint; 
@@ -73,6 +72,7 @@ if (searchIsOn) {
                                  "contentelement.number",
                                  contentElementConstraint,
                                  "contentelement.datumlaatstewijziging","DOWN",null,true);
+      StringBuffer sbObjects = new StringBuffer();
       for(int n=0; n<nlObjects.size(); n++) {
          if(n>0) { sbObjects.append(','); }
          sbObjects.append(nlObjects.getNode(n).getStringValue("contentelement.number"));
@@ -81,13 +81,13 @@ if (searchIsOn) {
    }
 
    if(!objects.equals("") && !OPTION_ALLE.equals(auteur)) {
-      // todo: this does not seem to work
       queryLog += ", using  users.number=" +  auteur;
       NodeList nlObjects = cloud.getList(objects,
                                  "contentelement,schrijver,users",
                                  "contentelement.number",
                                  "users.number="+auteur,
                                  "contentelement.datumlaatstewijziging","DOWN",null,true);
+      StringBuffer sbObjects = new StringBuffer();
       for(int n=0; n<nlObjects.size(); n++) {
          if(n>0) { sbObjects.append(','); }
          sbObjects.append(nlObjects.getNode(n).getStringValue("contentelement.number"));
