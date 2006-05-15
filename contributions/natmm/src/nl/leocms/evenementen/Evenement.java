@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.3 $, $Date: 2006-04-24 07:38:30 $
+ * @version $Revision: 1.4 $, $Date: 2006-05-15 11:32:46 $
  *
  */
 
@@ -86,10 +86,14 @@ public class Evenement extends DoubleDateNode {
    }
 
    public boolean hasChild() {
-      Cloud cloud = CloudFactory.getCloud();
-      Node thisEvent = cloud.getNode(this.getNumber());
-      NodeList evenementList = thisEvent.getRelatedNodes("evenement","partrel","destination");
-      return (evenementList.size()>0);
+      boolean hasChild = false;
+      if(this.getNumber()>0) {
+         Cloud cloud = CloudFactory.getCloud();
+         Node thisEvent = cloud.getNode(this.getNumber());
+         NodeList evenementList = thisEvent.getRelatedNodes("evenement","partrel","destination");
+         hasChild = (evenementList.size()>0);
+      }
+      return hasChild; 
    }
 
 
