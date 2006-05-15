@@ -89,7 +89,7 @@
          if(!searchConVar.equals("")) {
             searchConVar += " AND ";
          }
-   		searchConVar += " (artikel.embargo < '" + nowSec + "') AND (artikel.sms='0' OR artikel.verloopdatum > '" + nowSec + "' )";
+   		searchConVar += " (artikel.embargo < '" + nowSec + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
 	      %>
    		<table width="100%">
       		<mm:list nodes="<%= provID %>" 
