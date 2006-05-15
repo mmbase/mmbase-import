@@ -981,11 +981,6 @@
                                 <a href="<mm:treefile page="/reports/index.jsp" objectlist="$includePath" referids="$referids" ><mm:param name="documentId"><mm:write referid="docId"/></mm:param><mm:param name="showDocument">true</mm:param></mm:treefile>"/>
                                    <mm:field name="title" write="true"/>
                                 </a>
-  <!-- 
-                                <a href=javascript:void(window.open('<mm:treefile page="/reports/showDocument.jsp" objectlist="$includePath" referids="$referids" ><mm:param name="documentId"><mm:write referid="docId"/></mm:param></mm:treefile>','Document_view','toolbar=no,menubar=no,top=100,left=100,width=640,height=480,resizable=yes'));>
-                                  <mm:field name="title" write="true"/> 
-                                </a>
-   -->                              
                                  
                               </mm:listnodes>
                               <br>
