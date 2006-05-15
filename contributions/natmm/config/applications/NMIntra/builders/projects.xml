@@ -60,7 +60,7 @@
             <gui>
                 <guiname xml:lang="nl">Goal</guiname>
                 <guiname xml:lang="en">Goal</guiname>
-                <guitype>string</guitype>
+                <guitype>field</guitype>
             </gui>
             <editor>
                 <positions>
