@@ -68,8 +68,8 @@ public class PaginaHelper {
          if(nlInstalledApplications.getNode(i).getStringValue("name").equals("NMIntra")) {
             for(int f = 0; f < nl.mmatch.NMIntraConfig.CONTENTELEMENTS.length; f++) {
                pathsFromPageToElements.put(
-                  nl.mmatch.NatMMConfig.CONTENTELEMENTS[f],
-                  nl.mmatch.NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+                  nl.mmatch.NMIntraConfig.CONTENTELEMENTS[f],
+                  nl.mmatch.NMIntraConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
             }
          }
       }
