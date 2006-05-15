@@ -165,7 +165,7 @@
           </mm:compare>
         </mm:listnodes>
           
-          <br>
+          <br><br>
           <form>
              <input type="button" class="formbutton" id="goback" value="<di:translate key="core.back" />" onClick="history.back()"/><br/>
           </form>
