@@ -423,7 +423,7 @@ if(!provincieId.equals("")) {
       } else {
          %><nobr><a href="<%= "evenementen.jsp?action=print&orderby=" + orderbyId + "&direction=" + directionId + "&soort=" +  soortId + "&offset=" +  offsetId + searchSetting 
              %>" target="_blank"><img src='../img/print.gif' align='absmiddle' border='0' alt='Print het overzicht'></a>
-         <% if (soortId.equals("activiteiten")) { %>	
+         <% if (soortId.equals("activiteiten")&&(events.size()>0)) { %>	
 			 	    <a href="#" onClick="javascript:launchCenter('download_popup.jsp?type=ad', 'center', 300, 400, 'resizable=1');setTimeout('newwin.focus();',250);">
 					 	 <img src='../img/icexcel.gif' align='absmiddle' border='0' alt='Download alle geselecteerde activiteiten'>
 				    </a>
