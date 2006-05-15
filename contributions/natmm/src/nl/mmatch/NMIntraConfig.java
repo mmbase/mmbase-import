@@ -14,7 +14,6 @@ public class NMIntraConfig {
       "ads",
       "artikel",
       "medewerkers",
-      "vacature",
       "artikel#",
       "documents",
       "formulier",
@@ -28,7 +27,6 @@ public class NMIntraConfig {
       "object,contentrel,pagina",                     // ads
       "object,contentrel,pagina",                     // artikel
       "object,contentrel,pagina",                     // medewerkers
-      "object,contentrel,pagina",                     // vacature
       "object,readmore,pagina",                       // artikel (ippolygon.jsp)
       "object,posrel,pagina",                         // documents
       "object,posrel,pagina",                         // formulier
