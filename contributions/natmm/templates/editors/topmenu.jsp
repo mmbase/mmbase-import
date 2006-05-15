@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<%@page import="nl.leocms.util.PropertiesUtil" %>
+<%@page import="nl.leocms.util.PropertiesUtil,nl.leocms.util.ApplicationHelper" %>
 <mm:cloud jspvar='cloud' rank='basic user'>
 <html>
 <head>
@@ -30,6 +30,8 @@
 <mm:import id="debug">false</mm:import>
 
 <%
+	ApplicationHelper ap = new ApplicationHelper();
+	
    String contentModusProperty = PropertiesUtil.getProperty("content.modus");
    if ((contentModusProperty != null) && (contentModusProperty.equals("on"))) {
       session.setAttribute("contentmodus", contentModusProperty);
@@ -87,7 +89,7 @@ if(rubriekID.equals("naardermeer")) {
    --%>
    <td class="fieldname"><a href="/index.jsp" target="_blank" class='menu'>Website</a></td>
    <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td>
-   <% if(isAdmin) {
+   <% if(isAdmin&&ap.isInstalled(cloud,"NatMM")) {
       %>
       <td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class='menu'>Activiteiten</a></td>
       <% 
