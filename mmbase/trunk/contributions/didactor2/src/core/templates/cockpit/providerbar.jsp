@@ -54,18 +54,32 @@ keepalive();
       </mm:related>
     </mm:relatedcontainer>
   </mm:node>
+
   <%
     Iterator i = tm.values().iterator();
     while (i.hasNext()) {
         Component c = (Component)i.next();
   %>
     <mm:import id="componentname" reset="true"><%=c.getName()%></mm:import>
-    <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
-      <mm:param name="name"><%=c.getName()%></mm:param>
-      <mm:param name="number"><%=c.getNumber()%></mm:param>
-      <mm:param name="type">div</mm:param>
-      <mm:param name="scope">provider</mm:param>
-    </mm:treeinclude>
+    <mm:compare referid="componentname" value="reports">
+      <di:hasrole role="student" inverse="true">
+        <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
+          <mm:param name="name"><%=c.getName()%></mm:param>
+          <mm:param name="number"><%=c.getNumber()%></mm:param>
+          <mm:param name="type">div</mm:param>
+          <mm:param name="scope">provider</mm:param>
+        </mm:treeinclude>
+      </di:hasrole>
+    </mm:compare>
+    <mm:compare referid="componentname" value="reports" inverse="true">
+      <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
+        <mm:param name="name"><%=c.getName()%></mm:param>
+        <mm:param name="number"><%=c.getNumber()%></mm:param>
+        <mm:param name="type">div</mm:param>
+        <mm:param name="scope">provider</mm:param>
+      </mm:treeinclude>
+    </mm:compare>
+  	
   <% } %>
   
   <%-- If the user has the rights, then always show the management link. That allows us to enable/disable components after

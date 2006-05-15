@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/address/java"/>
+	<classpathentry kind="src" path="src/reports/java"/>
 	<classpathentry kind="src" path="src/aselect/java"/>
 	<classpathentry kind="src" path="src/faq/java"/>
 	<classpathentry kind="src" path="src/news/java"/>
@@ -49,7 +50,6 @@
 	<classpathentry kind="lib" path="src/core/lib/mmbase-editwizard.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/mmbase-eo.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/mmbase-taglib.jar"/>
-	<classpathentry kind="lib" path="src/core/lib/mysql-connector-java-3.0.6-stable-bin.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/nanoxml-lite-2.2.1.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/oscache.jar"/>
 	<classpathentry kind="lib" path="src/core/lib/pg72jdbc2.jar"/>
@@ -66,5 +66,27 @@
 	<classpathentry kind="lib" path="src/rmmci/lib/mmbase-rmmci.jar"/>
 	<classpathentry kind="lib" path="src/rmmci/lib/mmbase-rmmci-server.jar"/>
 	<classpathentry kind="lib" path="src/scorm/lib/jdom.jar"/>
-	<classpathentry kind="output" path="build"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-aop.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-beans.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-context.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-core.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-dao.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-jdbc.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-mock.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-orm.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-remoting.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-support.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-web.jar"/>
+	<classpathentry kind="lib" path="src/reports/lib/spring-webmvc.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/antlr-2.7.6rc1.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/asm.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/cglib-2.1.3.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/ehcache-1.1.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/hibernate3.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/jta.jar"/>
+	<classpathentry kind="lib" path="src/core/lib/mysql-connector-java-3.1.12-bin.jar"/>
+	<classpathentry kind="output" path="classes"/>
 </classpath>
