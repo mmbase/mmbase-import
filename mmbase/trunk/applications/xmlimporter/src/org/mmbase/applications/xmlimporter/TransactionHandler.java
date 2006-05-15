@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.9 2006-05-14 22:01:15 andre Exp $
+ * @version $Id: TransactionHandler.java,v 1.10 2006-05-15 10:14:34 andre Exp $
  */
 
 public class TransactionHandler extends Module  {
@@ -36,9 +36,6 @@ public class TransactionHandler extends Module  {
 
    /** Current version number. */
    private static String version="1.12.2001";
-
-   /** Sessions module. */
-//   private static sessionsInterface sessions;
 
    /** Hashtable to store a UserTransactionInfo object for each user. */
    private static Hashtable transactionsPerUser = new Hashtable();
@@ -71,7 +68,6 @@ public class TransactionHandler extends Module  {
     */
    public void init(){
       log.service("Module TransactionHandler ("+version+") started.");
-      // sessions = (sessionsInterface)Module.getModule("SESSION");
    }
 
    private String getTime() {
