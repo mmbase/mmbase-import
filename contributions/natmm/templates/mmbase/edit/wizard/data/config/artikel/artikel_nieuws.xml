@@ -26,7 +26,7 @@
       <object type="artikel">
            <field name="type">0</field>
            <field name="titel_zichtbaar">1</field>
-           <field name="sms">1</field> <!-- use verloopdatum -->
+           <field name="use_verloopdatum">1</field>
            <relation destination="$origin" role="contentrel"/>
       </object>
    </action>

@@ -1,6 +1,7 @@
 <%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
 ><%@include file="includes/templateheader.jsp" 
+%><%@include file="includes/calendar.jsp" 
 %><%
 String sTemplateUrl = "homepage.jsp";
 if(!articleId.equals("")) { 
@@ -34,17 +35,15 @@ if(!articleId.equals("")) {
    int thisDay = 0; int thisMonth = 0; int thisYear = 0; int startYear = 0;
    long fromTime = 0; long toTime = 0;
    boolean checkOnPeriod = false;
-   boolean periodExceedsMonth = true;
    
    boolean hasPools = false; 
    %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel,posrel,pools"
 		orderby="artikel.embargo" searchdir="destination" max="1"><%
       hasPools = true;
    %></mm:list
-   ><%-- @include file="includes/movetoarchive.jsp" --%>
+   ><%@include file="includes/info/movetoarchive.jsp" %>
    <%@include file="includes/header.jsp" 
-   %><%@include file="includes/calendar.jsp" %>
-   <td><%@include file="includes/pagetitle.jsp" %></td>
+   %><td><%@include file="includes/pagetitle.jsp" %></td>
    <td><% 
       String rightBarTitle = "";
       if(hasPools) { 
@@ -95,7 +94,7 @@ if(!articleId.equals("")) {
                            readmoreUrl += "?p=" + pageId + "&article=" + article_number; 
                        %></mm:field
                        ><mm:field name="pagina.titel_fra" jspvar="showExpireDate" vartype="String" write="false"
-                           ><%@include file="includes/summaryrow.jsp" 
+                           ><%@include file="includes/info/summaryrow.jsp" 
                        %></mm:field
                      ></mm:list><%
                } else {

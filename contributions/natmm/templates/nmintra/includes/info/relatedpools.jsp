@@ -1,6 +1,6 @@
 <%
 if(hasPools||isArchive) { 
-   %><%@include file="../includes/whiteline.jsp" %>
+   %><%@include file="../whiteline.jsp" %>
    <table cellpadding="0" cellspacing="0"  align="center" border="0">
    <form method="POST" name="infoform" action="<%= sTemplateUrl %><%= templateQueryString %>" onSubmit="return postIt();"><% 
    if(isArchive) { 
@@ -128,7 +128,7 @@ if (lastpool.equals("")){
 if(hasPools||isArchive) { %>
    </form>
    </table>
-   <%@include file="../includes/whiteline.jsp" %>
+   <%@include file="../whiteline.jsp" %>
    <script language="JavaScript" type="text/javascript">
    <%= "<!--" %>
    function postIt() {

@@ -1,17 +1,6 @@
 <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
-<%@page import="
-   java.text.*,
-   java.io.*,
-   org.mmbase.bridge.*,
-	org.mmbase.util.logging.Logger,org.mmbase.module.Module,
-	net.sf.mmapps.modules.lucenesearch.LuceneModule,
-	net.sf.mmapps.modules.lucenesearch.util.*,
-	org.apache.lucene.index.IndexReader,
-	org.apache.lucene.analysis.*,
-   org.apache.lucene.search.*,
-	org.apache.lucene.queryParser.QueryParser,
-	org.apache.lucene.document.Document" %><%! 
-						
+<%@page import="java.text.*,java.io.*,org.mmbase.bridge.*" %><%! 
+
 public String getParameter(String parameterStr, String queryStr) {
     String parameterValue = null;
     int qpos = queryStr.indexOf("&" + parameterStr + "=");

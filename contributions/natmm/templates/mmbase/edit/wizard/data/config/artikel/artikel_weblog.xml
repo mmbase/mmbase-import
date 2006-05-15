@@ -26,7 +26,7 @@
       <object type="artikel">
            <field name="type">0</field>
            <field name="titel_zichtbaar">1</field>
-           <field name="sms">1</field> <!-- use verloopdatum -->
+           <field name="use_verloopdatum">1</field> <!-- use verloopdatum -->
            <relation destination="$origin" role="contentrel"/>
       </object>
    </action>
@@ -53,7 +53,7 @@
       <!-- field name="einddatum"><prompt>einddatum</prompt></field -->
       <!-- field name="embargo"><prompt>verschijnt op website vanaf</prompt></field -->
       <!-- field name="verloopdatum"><prompt>verwijdert van website op</prompt></field -->
-      <!-- field name="sms" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field-->
+      <!-- field name="use_verloopdatum" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field-->
       <!-- field name="status"><prompt>status</prompt></field -->
       <!-- is in use for routes: field name="type" ftype="line"><prompt>type</prompt></field -->
       <field name="intro" ftype="html" rows="14"><prompt>quote (vette tekst)</prompt></field>

@@ -57,7 +57,7 @@ if(!articleId.equals("")) {
          %></mm:write
       ></mm:aliaslist
    ></mm:node
-   ><%@include file="includes/movetoarchive.jsp" 
+   ><%@include file="includes/info/movetoarchive.jsp" 
    %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" 
         orderby="artikel.embargo" directions="DOWN" searchdir="destination" 
         ><mm:last inverse="true"
