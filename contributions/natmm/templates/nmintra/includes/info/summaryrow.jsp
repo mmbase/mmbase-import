@@ -34,7 +34,7 @@
 <mm:notpresent referid="attachmentfound">
    <a href="<%= readmoreUrl %><% if(!postingStr.equals("")) { %>&pst=|action=noprint<% } 
        %>"><div class="pageheader"><%= article_title %></div>
-   <%@include file="../includes/poolanddate.jsp" %><%
+   <%@include file="../poolanddate.jsp" %><%
    String summary = ""; 
    if(article_introduction!=null) {
            summary = article_introduction; 

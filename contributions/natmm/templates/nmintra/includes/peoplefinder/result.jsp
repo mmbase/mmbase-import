@@ -18,7 +18,7 @@ if(!action.equals("print")) {
         if(!firstnameId.equals("")) {
             employeeConstraint += " AND ";
             if(!nameId.equals("")) employeeConstraint += " ( ";
-            employeeConstraint += "( UPPER(medewerkers.firstname) LIKE '%" + superSearchString(firstnameId) + "%')";
+            employeeConstraint += "( UPPER(medewerkers.firstname) LIKE '%" + firstnameId.toUpperCase() + "%')";
         }
         if(!lastnameId.equals("")) {
             if(!nameId.equals("")) { 
@@ -26,46 +26,23 @@ if(!action.equals("print")) {
             } else {
                  employeeConstraint += " AND ";
             }
-            employeeConstraint += "( UPPER(medewerkers.lastname) LIKE '%" + superSearchString(lastnameId) + "%')";
+            employeeConstraint += "( UPPER(medewerkers.lastname) LIKE '%" + lastnameId.toUpperCase() + "%')";
             if(!nameId.equals("")) employeeConstraint += " ) ";
         }
         if(!descriptionId.equals("")) {
-            employeeConstraint += " AND ( UPPER(medewerkers.omschrijving) LIKE '%" + superSearchString(descriptionId) + "%')";
+            employeeConstraint += " AND ( UPPER(medewerkers.omschrijving) LIKE '%" + descriptionId.toUpperCase() + "%')";
         }
        
-        
         // ****** start the search by including all employees, which fit the employeeConstraint ****** 
         TreeSet searchResultSet = new TreeSet();
-        String searchResults = "";
-        String subFirstnameId = subSearchString(firstnameId);
-        String subLastnameId = subSearchString(lastnameId);
-        String subDescriptionId = subSearchString(descriptionId);
-        
+		  SearchUtil su = new SearchUtil();
+        String searchResults = "";        
         %><mm:list nodes="" path="medewerkers" constraints="<%= employeeConstraint %>"
-            ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"
-            ><mm:field name="medewerkers.firstname" jspvar="employees_firstname" vartype="String" write="false"
-            ><mm:field name="medewerkers.lastname" jspvar="employees_lastname" vartype="String" write="false"
-            ><mm:field name="medewerkers.omschrijving" jspvar="employees_description" vartype="String" write="false"><%
-                boolean passedOnSubTest = true;
-                boolean firstnameMatches = firstnameId.equals("")||subSearchString(employees_firstname).indexOf(subFirstnameId)>-1;
-                boolean lastnameMatches = lastnameId.equals("")||subSearchString(employees_lastname).indexOf(subLastnameId)>-1;
-                if(!nameId.equals("")) { 
-                    passedOnSubTest = firstnameMatches || lastnameMatches;
-                } else {
-                    passedOnSubTest = firstnameMatches && lastnameMatches;
-                } 
-                if(!descriptionId.equals("")&&subSearchString(employees_description).indexOf(subDescriptionId)==-1) {
-                    passedOnSubTest = false;
-                }
-                if(passedOnSubTest) {
-                    searchResultSet.add(employees_number);
-                }
+            ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"><%
+            	searchResultSet.add(employees_number);
             %></mm:field
-            ></mm:field
-            ></mm:field
-            ></mm:field
         ></mm:list><%
-        searchResults = searchResults(searchResultSet);
+        searchResults = su.searchResults(searchResultSet);
         debugStr += employeeConstraint + " : " + searchResults + "\n";
 
         if(!departmentId.equals("default")&&!searchResults.equals("")){ // ****** add the department to the search ****** 
@@ -76,7 +53,7 @@ if(!action.equals("print")) {
 			searchResultSet.add(employees_number);
                 %></mm:field
             ></mm:list><%
-            searchResults = searchResults(searchResultSet);
+            searchResults = su.searchResults(searchResultSet);
             debugStr += departmentConstraint + " : " + searchResults + "\n";
         }
         
@@ -89,7 +66,7 @@ if(!action.equals("print")) {
 				   searchResultSet.add(employees_number);
                     %></mm:field
                 ></mm:list><%
-                searchResults = searchResults(searchResultSet);
+                searchResults = su.searchResults(searchResultSet);
                 debugStr += locationConstraint + " : " + searchResults + "\n";
             }
         } else {
@@ -106,7 +83,7 @@ if(!action.equals("print")) {
                         }
                     %></mm:field
                 ></mm:list><%
-                searchResults = searchResults(searchResultSet);
+                searchResults = su.searchResults(searchResultSet);
                 debugStr += "programs " + thisPrograms + " : " + searchResults + "\n";
             }        
         }
