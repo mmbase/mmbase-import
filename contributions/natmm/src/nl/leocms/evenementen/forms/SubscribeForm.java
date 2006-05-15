@@ -535,8 +535,13 @@ public class SubscribeForm extends ActionForm {
    }
 
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+
       log.info("SubscribeForm.validate(" + this.getAction() + ")");
       ActionErrors errors = new ActionErrors();
+
+      if (this.getButtons().getGoBack().pressed()){
+         return errors;
+      }
 
       Cloud cloud = CloudFactory.getCloud();
 
@@ -554,7 +559,7 @@ public class SubscribeForm extends ActionForm {
          errors.add("warning",new ActionError("evenementen.noselection.change"));
 
       } else if(this.getButtons().getAddParticipant().pressed()) {                                                // *** Add ***
-      
+
          if(this.getSelectedParticipant().equals("")){
             errors.add("warning",new ActionError("evenementen.noselection.add"));
          }
@@ -679,6 +684,7 @@ public class SubscribeForm extends ActionForm {
             validateCounter++;
          }
       }
+
       return errors;
    }
 }
