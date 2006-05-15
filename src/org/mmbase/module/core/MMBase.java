@@ -45,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.192 2006-04-18 13:06:41 michiel Exp $
+ * @version $Id: MMBase.java,v 1.193 2006-05-15 17:28:23 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -138,6 +138,12 @@ public class MMBase extends ProcessorModule {
     private Map mmobjs = new ConcurrentHashMap();
 
     private CloudModel cm;
+
+    /**
+     * Determines whether MMBase is in development mode. 
+     * @see #inDevelopment()
+     */
+    private boolean inDevelopment = false;
 
     /**
      * Name of the machine used in the mmbase cluster.
@@ -279,6 +285,10 @@ public class MMBase extends ProcessorModule {
         log.info("MMBase default locale : " + locale);
         org.mmbase.util.LocalizedString.setDefault(locale);
 
+        tmp = getInitParameter("DEVELOPMENT");
+        if (tmp != null && !tmp.equals("")) {
+            inDevelopment = "true".equals(tmp);
+        }
 
         tmp = getInitParameter("ENCODING");
         if (tmp != null && !tmp.equals("")) {
@@ -411,6 +421,19 @@ public class MMBase extends ProcessorModule {
      */
     public boolean isShutdown() {
         return  mmbaseState == STATE_SHUT_DOWN;
+    }
+   
+    /**
+     * Returns <code>true</code> when MMBase is in development mode.
+     * This can be used to determine behavior with regards to common errors,
+     * such as whether or not to throw an exception when a non-existing field 
+     * in a buidler is referenced.
+     * The value for this property ('true' or 'false') can be set in the "development" 
+     * property in the mmbaseroot.xml configuration file.
+     * The default value is <code>false</code>.
+     */
+    public boolean inDevelopment() {
+        return inDevelopment;
     }
 
     /**
