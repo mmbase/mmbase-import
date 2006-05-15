@@ -1,8 +1,9 @@
-<%@include file="/taglibs.jsp" 
+<%@page import="nl.leocms.util.tools.SearchUtil" 
+%><%@include file="/taglibs.jsp" 
 %><mm:cloud jspvar="cloud"
 ><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" 
-%><%@include file="includes/searchfunctions.jsp" %><%
+%><%
 
 postingStr += "|";
 String action = getResponseVal("action",postingStr);
