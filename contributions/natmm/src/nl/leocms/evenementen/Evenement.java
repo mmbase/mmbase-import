@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.4 $, $Date: 2006-05-15 11:32:46 $
+ * @version $Revision: 1.5 $, $Date: 2006-05-15 12:47:50 $
  *
  */
 
@@ -87,7 +87,8 @@ public class Evenement extends DoubleDateNode {
 
    public boolean hasChild() {
       boolean hasChild = false;
-      if(this.getNumber()>0) {
+      // negative numbers implies virtual events
+      if(this.getNumber().indexOf("-")==-1) {
          Cloud cloud = CloudFactory.getCloud();
          Node thisEvent = cloud.getNode(this.getNumber());
          NodeList evenementList = thisEvent.getRelatedNodes("evenement","partrel","destination");
