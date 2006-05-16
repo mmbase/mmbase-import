@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.9 2005-03-01 14:09:57 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.10 2006-05-16 17:18:33 michiel Exp $
  */
 
 public class Authenticate extends Authentication {
@@ -61,7 +61,9 @@ public class Authenticate extends Authentication {
      * {@inheritDoc}
      */
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
-        log.trace("login-module: '" + moduleName + "'");
+        if (log.isTraceEnabled()) {
+            log.trace("login-module: '" + moduleName + "'");
+        }
         if("anonymous".equals(moduleName)) {
             log.debug("[anonymous login]");
             return new User("anonymous", Rank.ANONYMOUS, validKey, "anonymous");
@@ -77,7 +79,7 @@ public class Authenticate extends Authentication {
             if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
             if(userName.equals("anonymous")) throw new org.mmbase.security.SecurityException("'anonymous' is not allowed to do a login");
             if(password == null) throw new org.mmbase.security.SecurityException("expected the property 'password' with login");
-            
+
             if(builder.exists(userName, password)) {
                 return new User(userName, getRank(userName), validKey, "name/password");
             } else {
@@ -90,8 +92,9 @@ public class Authenticate extends Authentication {
                 throw new SecurityException("Class authentication failed  (class not authorized)");
             }
             String userName = (String) li.getMap().get("username");
-            if(userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
-            if(builder.exists(userName, null)) {
+            if (userName == null && "administrator".equals(li.getMap().get("rank"))) userName = "admin";
+            if (userName == null) throw new org.mmbase.security.SecurityException("expected the property 'username' with login");
+            if (userName.equals("admin") || builder.exists(userName, null)) {
                 return new User(userName, getRank(userName), validKey, "class");
             } else {
                 return null;
