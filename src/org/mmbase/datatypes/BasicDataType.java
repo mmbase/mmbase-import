@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.52 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.53 2006-05-16 21:11:05 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -337,37 +337,52 @@ s     */
         defaultValue = def;
     }
 
-    public void toXml(Element parent) {
-        // id:
-        parent.setAttribute("id", getName());
-        // description:
-        // class
-        {
-            org.w3c.dom.NodeList nl  = parent.getElementsByTagName("class");
-            ((Element)(nl.item(0))).setAttribute("name", getClass().getName());
-        }
-
-        // default value:
-        if (defaultValue != null) {
-            org.w3c.dom.NodeList nl  = parent.getElementsByTagName("default");
-            Element defaultElement;
-            if (nl.getLength() == 0) {
-                defaultElement = parent.getOwnerDocument().createElementNS(XMLNS, "default");
-                DocumentReader.appendChild(parent, defaultElement, "description,class,property");
-            } else {
-                defaultElement = (Element) nl.item(0);
+    protected Element getElement(Element parent, String name, String path) {
+        return getElement(parent, name, name, path);
+    }    
+    protected Element getElement(Element parent, String pattern, String name, String path) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\\A" + pattern + "\\z");
+        org.w3c.dom.NodeList nl  = parent.getChildNodes();
+        Element el = null;
+        for (int i = 0; i < nl.getLength(); i++) {
+            org.w3c.dom.Node child = nl.item(i);
+            if (child instanceof Element) {
+                if (p.matcher(child.getNodeName()).matches()) {
+                    el = (Element) child;
+                    break;
+                }
             }
-            defaultElement.setAttribute("value", Casting.toString(defaultValue));
         }
+        if (el == null) {
+            el = parent.getOwnerDocument().createElementNS(XMLNS, name);
+            DocumentReader.appendChild(parent, el, path);
+        }
+        return el;
+    }
+
+    public void toXml(Element parent) {
+        parent.setAttribute("id", getName());
+        description.toXml("description", XMLNS, parent, "description");
+        getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
+        getElement(parent, "default",  "description,class,property,default").setAttribute("value", Casting.toString(defaultValue));
+        getElement(parent, "unique",   "description,class,property,default,unique").setAttribute("value", "" + uniqueRestriction.isUnique());
+        getElement(parent, "required", "description,class,property,default,unique,required").setAttribute("value", "" + requiredRestriction.isRequired());
+
+        Element enum = getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
+        /// set this here...
+
         if (getCommitProcessor() != EmptyCommitProcessor.getInstance()) {
             org.w3c.dom.NodeList nl  = parent.getElementsByTagName("commitprocessor");
             Element element;
             if (nl.getLength() == 0) {
                 element = parent.getOwnerDocument().createElementNS(XMLNS, "commitprocessor");
+                Element clazz = parent.getOwnerDocument().createElementNS(XMLNS, "class");
                 DocumentReader.appendChild(parent, element, "description,class,property");
+                element.appendChild(clazz);
             } else {
                 element = (Element) nl.item(0);
             }
+            
             //element.setAttribute("value", Casting.toString(defaultValue));
         }
 

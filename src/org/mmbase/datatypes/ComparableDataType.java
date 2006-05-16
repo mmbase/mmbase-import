@@ -12,7 +12,7 @@ package org.mmbase.datatypes;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.16 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.17 2006-05-16 21:11:05 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -123,6 +123,23 @@ public abstract class ComparableDataType extends BasicDataType {
         checkType(value);
         if (inclusive != maxRestriction.isInclusive()) maxRestriction = new MaxRestriction(inclusive);
         maxRestriction.setValue((java.io.Serializable) value);
+    }
+
+    
+    public void toXml(org.w3c.dom.Element parent) {
+        super.toXml(parent);
+        /* TODO
+        if (minRestriction.isInclusive()) {
+            getElement(parent, "min", "description,class,property,default,unique,required,minInclusive").setAttribute("value", Casting.toString(minRestriction.getValue()));
+        } else {
+            getElement(parent, "min", "description,class,property,default,unique,required,minExclusive").setAttribute("value", Casting.toString(minRestriction.getValue()));
+        }
+        if (maxRestriction.isInclusive()) {
+            getElement(parent, "re", "description,class,property,default,unique,required,minInclusive").setAttribute("value", Casting.toString(maxRestriction.getValue()));
+        } else {
+            getElement(parent, "reed", "description,class,property,default,unique,required,minExclusive").setAttribute("value", Casting.toString(maxRestriction.getValue()));
+        }
+        */
     }
 
 

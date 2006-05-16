@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.31 2006-04-29 12:41:26 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.32 2006-05-16 21:11:05 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -215,6 +215,7 @@ public class StringDataType extends ComparableDataType implements LengthDataType
         getPatternRestriction().setValue(value);
     }
 
+    
     /**
      * Whether or not the data represents sensitive information, in which case e.g. an input
      * interface may present asterisks in stead of letters.
@@ -225,6 +226,14 @@ public class StringDataType extends ComparableDataType implements LengthDataType
     public void setPassword(boolean pw) {
         edit();
         isPassword = pw;
+    }
+
+    public void toXml(org.w3c.dom.Element parent) {
+        super.toXml(parent);
+        getElement(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength").setAttribute("value", Casting.toString(minLengthRestriction.getValue()));
+        getElement(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength").setAttribute("value", Casting.toString(maxLengthRestriction.getValue()));
+        getElement(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength,length,pattern").setAttribute("value", Casting.toString(patternRestriction.getPattern().pattern()));
+
     }
 
     protected Collection validateCastedValue(Collection errors, Object castedValue, Object value, Node node, Field field) {
