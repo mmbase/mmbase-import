@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.27 2006-05-16 21:37:21 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.28 2006-05-16 22:13:55 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -322,17 +322,18 @@ public class DocumentReader  {
         DocumentBuilder documentBuilder = getDocumentBuilder(false, null, null);
         DOMImplementation impl = documentBuilder.getDOMImplementation();
         Document document = impl.createDocument(element.getNamespaceURI(), element.getLocalName(), null);
-        Element copy = (Element) document.importNode(element, true);
         Element dest = document.getDocumentElement();
+        Element copy = (Element) document.importNode(element, false);
         NamedNodeMap attributes = copy.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             Attr attribute = (Attr) (attributes.item(i).cloneNode(true));
             dest.setAttributeNode(attribute);
 
         }
-        NodeList childs = copy.getElementsByTagName("*");
+        NodeList childs = element.getChildNodes();
         for (int i = 0; i < childs.getLength() ; i++) {
-            dest.appendChild(childs.item(i));
+            Node child = document.importNode(childs.item(i), true);
+            dest.appendChild(child);
         }
         document.normalize();
         return document;
