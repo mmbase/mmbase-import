@@ -12,7 +12,7 @@
 	//String sBronValue = request.getParameter("bron");
 	boolean bNewNode = true;
 	if(eParamsNames != null){ %>
-		<mm:cloud logon="<%=nl.mmatch.NatMMConfig.adminAccount%>" pwd="<%=nl.mmatch.NatMMConfig.adminPassword%>" method="pagelogon" jspvar="cloud">
+		<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 			<% String vacatureConstraint = "vacature.bron = '" + request.getParameter("bron") + "'"; %>
 			<mm:listnodes type="vacature" constraints="<%= vacatureConstraint %>">
 			<%	bNewNode = false;
