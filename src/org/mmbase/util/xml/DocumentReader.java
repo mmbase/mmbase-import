@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.24 2006-04-10 15:35:30 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.25 2006-05-16 18:49:12 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -325,6 +325,11 @@ public class DocumentReader  {
         return document;
     }
 
+
+    /**
+     * 
+     * @since MMBase-1.8
+     */
     static public void appendChild(Element parent, Element newChild, String path) {
         String[] p = path.split(",");
         int i = 0;
@@ -335,6 +340,7 @@ public class DocumentReader  {
             Element child = (Element) childs.item(j);
             if (child.getTagName().equals(p[i])) {
                 j++;
+                refChild = childs.item(j);
             } else {
                 i++;
             }
