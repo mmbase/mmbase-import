@@ -34,6 +34,7 @@ public class UtilTests {
         suite.addTestSuite(DateParserTest.class);
         suite.addTestSuite(org.mmbase.util.transformers.XmlFieldTest.class);
         suite.addTestSuite(LocalizedEntryListFactoryTest.class);
+        suite.addTestSuite(org.mmbase.util.xml.DocumentReaderTest.class);
         return suite;
     }
 }
