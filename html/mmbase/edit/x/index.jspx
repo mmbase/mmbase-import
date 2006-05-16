@@ -7,22 +7,21 @@
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
-  <jsp:directive.page session="true" buffer="200kb" />
-  
+  <jsp:directive.page session="true" buffer="200kb" />  
   <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
 
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.11 2006-04-29 17:16:30 michiel Exp $
+         $Id: index.jspx,v 1.12 2006-05-16 18:08:48 michiel Exp $
     -->
-    
-    <mm:include page="head.jspx" />
-    <body>
-      <mm:import externid="logout" />
-      <mm:present referid="logout"><mm:cloud method="logout" /></mm:present>
-      <mm:cloud rank="basic user">
+    <mm:import externid="logout" />
+    <mm:present referid="logout"><mm:cloud method="logout" /></mm:present>
+    <mm:cloud rank="basic user">
+      
+      <mm:include page="head.jspx" />
+      <body>
         <mm:import externid="nodemanager">object</mm:import>
-
+        
         <form id="searchform" action="." method="post">
           <h1>
             <a href="javascript:void(0);" onclick="this.getElementsByTagName('input')[0].form.submit();"  class="search">
@@ -30,9 +29,11 @@
                 <input type="submit"  name="ok" value="ok" />
               </span>
             </a>
-            <mm:link referids="nodemanager" page="create.jspx">
-              <a href="${_}" class="create"><span class="navigate">create</span></a>
-            </mm:link>
+            <mm:maycreate type="$nodemanager">
+              <mm:link referids="nodemanager" page="create.jspx">
+                <a href="${_}" class="create"><span class="navigate">create</span></a>
+              </mm:link>
+            </mm:maycreate>
             <select name="nodemanager" onchange="this.form.submit();">
               <mm:listnodes type="typedef" comparator="NATURAL">
                 <mm:hasnodemanager name="${_node.name}">
@@ -161,11 +162,8 @@
             </c:if>
           </mm:listnodescontainer>
         </table>
-      </mm:cloud>
-
-
-      <script type="text/javascript">
-        window.addEventListener("load", function() {
+        <script type="text/javascript">
+          window.addEventListener("load", function() {
           var els = document.getElementById("searchresult").getElementsByTagName("td");
           var pattern = new RegExp("\\bclick\\b");
           for (var i = 0; i &amp;lt; els.length; i++) {
@@ -178,5 +176,7 @@
        }, false);
       </script>
     </body>
+  </mm:cloud>
+
   </html>
 </mm:content>
