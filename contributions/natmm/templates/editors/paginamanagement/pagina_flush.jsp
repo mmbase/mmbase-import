@@ -2,14 +2,14 @@
 <%@page import="nl.leocms.servlets.UrlConverter" %>
 <html>
 <head>
-   <link href="<mm:url page="<%= editwizard_location %>"/>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
-   <link href="<mm:url page="<%= editwizard_location %>"/>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
+   <link href="<%= editwizard_location %>/style/color/wizard.css" type="text/css" rel="stylesheet"/>
+   <link href="<%= editwizard_location %>/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
    <title>Publiceer pagina</title>
    <style>
    input { width: 110px; padding-left: 3px; padding-right: 3px; }
    </style>
 </head>
-<mm:cloud jspvar="cloud" rank="basic user" method='http'>
+<mm:cloud jspvar="cloud">
 <%
 String number = request.getParameter("number");
 String refresh = request.getParameter("refresh");
