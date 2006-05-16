@@ -126,7 +126,15 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="description" type="xsd:string" />
+  <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
 
 
   <xsd:simpleType name="type_database">
