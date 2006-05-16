@@ -13,19 +13,26 @@ import org.mmbase.security.*;
 import org.mmbase.bridge.Query;
 
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBase;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import java.util.*;
+
 /**
- * Security from within MMBase
- * @javadoc
+ * Simple authorization implemenation for 'cloud' security implemenation based only on an mmbasusers
+ * builder. Read-rights on everything for everybody. User named 'admin' has rank administrator and
+ * may do everything. Normal users have no rights on a limited set of 'admin' builders. Normal users may do everything on their 'own' nodes, and 
+ * on nodes with the owner field '[shared]'.
+ *
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.14 2004-03-08 17:42:30 michiel Exp $
+ * @version $Id: Verify.java,v 1.15 2006-05-16 18:07:20 michiel Exp $
  */
 public class Verify extends Authorization {
-    private static Logger   log=Logging.getLoggerInstance(Verify.class);
-    private java.util.Set adminBuilders = new java.util.HashSet();
+    private static final Logger log = Logging.getLoggerInstance(Verify.class);
+    private static final Set adminBuilders = new HashSet();
 
     protected void load() {
 	adminBuilders.add("typedef");
@@ -55,13 +62,13 @@ public class Verify extends Authorization {
 
     public boolean check(UserContext user, int nodeid, Operation operation) {
 	/*
-	  well the following rulez apply.....
+	  well the following rules apply.....
 	  - everyone may read everything
 	  - anonymous may do nothing further..
 	  - basic user do anything to nodes which belong to him...
 	  - may see/change it's own mmbase-user builder-node
 	  - admin may do everything....
-	*/    
+	*/
 	// everyone may read everything....
 	if(operation == Operation.READ) return true;
 
@@ -72,12 +79,14 @@ public class Verify extends Authorization {
 	if(operation == Operation.CHANGE_RELATION) return true;
 
 	MMObjectNode node = getMMNode(nodeid);
-	log.debug("[node #"+nodeid+"] check by ["+user.getIdentifier()+"] for operation ["+operation+"]");
 
 	String username = user.getIdentifier();
 	String builder = node.getName();
 	Rank rank = user.getRank();
-	
+        if (log.isDebugEnabled()) {
+            log.debug("[node #" + nodeid + "] check by [" + user.getIdentifier() + "] (" + rank + ")for operation [" + operation + "]");
+        }
+
 	// which situation do we have? security or not security objects..
 	// onlything that we have to lookout for are:
 	//- we are creating a new user
@@ -86,12 +95,11 @@ public class Verify extends Authorization {
 	    // look at our node..
 	    if(node.getStringValue("username").equals(username)){
 		if(operation == Operation.WRITE) return true;
-		if(operation == Operation.DELETE) return false;		
+		if(operation == Operation.DELETE) return false;
 	    }
 	    // further nothing allowed, unless we are the admin..
 	    return rank == Rank.ADMIN;
-	}
-	else if(operation != Operation.CREATE && adminBuilders.contains(builder)) {
+	} else if(operation != Operation.CREATE && adminBuilders.contains(builder)) {
 	    // most core builders cant be used by basic users...
 	    return rank == Rank.ADMIN;
 	}
@@ -110,7 +118,7 @@ public class Verify extends Authorization {
 		return true;
 	    }
 
-	    // change context and change node itselve only allowed for the owner...	    
+	    // change context and change node itselve only allowed for the owner...
 	    if(operation == Operation.WRITE || operation == Operation.CHANGE_CONTEXT || operation == Operation.DELETE) {
 		// look if this is a valid context...
 		String context = node.getStringValue("owner");
@@ -119,7 +127,7 @@ public class Verify extends Authorization {
 		    return true;
 		}
 		return context.equals(username) || context.equals(SHARED_CONTEXT_ID);
-	    }	    
+	    }
 	    // basic users may do everything further...
 	    return true;
 	}
@@ -141,15 +149,12 @@ public class Verify extends Authorization {
 	MMObjectNode node = getMMNode(nodeid);
 	return node.getStringValue("owner");
     }
-    
+
     public void setContext(UserContext user, int nodeid, String context) throws org.mmbase.security.SecurityException {
 	// check if is a valid context for us..
 	if(!getPossibleContexts(user, nodeid).contains(context)) {
-	    String msg = "could not set the context to "+context+" for node #"+nodeid+" by user: " +user;
-	    log.error(msg);
-	    throw new org.mmbase.security.SecurityException(msg);
+	    throw new org.mmbase.security.SecurityException("could not set the context to " + context + " for node #" + nodeid + " by user: " + user);
 	}
-    
 	// check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
 	verify(user, nodeid, Operation.CHANGE_CONTEXT);
 
@@ -160,35 +165,32 @@ public class Verify extends Authorization {
 	log.info("[node #"+nodeid+"] context set ["+user.getIdentifier()+"]");
     }
 
-    public java.util.Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
+    public Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
 	// retrieve all the users....
-	org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("mmbaseroot");
-	builder =  (UserBuilder)mmb.getMMObject("mmbaseusers");
-	java.util.Enumeration e = builder.search(null);
-	java.util.HashSet contexts = new java.util.HashSet();
+	MMBase mmb = MMBase.getMMBase();
+	UserBuilder builder =  (UserBuilder) mmb.getBuilder("mmbaseusers");
+	Enumeration e = builder.search(null);
+	Set contexts = new HashSet();
 	while(e.hasMoreElements()) {
 	    contexts.add(((MMObjectNode) e.nextElement()).getStringValue("username"));
 	}
 	contexts.add(SHARED_CONTEXT_ID);
+        contexts.add(builder.getNode(nodeid).getStringValue("owner"));
 	return contexts;
     }
 
-    private static org.mmbase.module.core.MMObjectBuilder builder = null;
+    private static MMObjectBuilder builder = null;
     private MMObjectNode getMMNode(int n) {
 	if(builder == null) {
-	    org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("mmbaseroot");
-	    builder =  mmb.getMMObject("typedef");
+            MMBase mmb = MMBase.getMMBase();
+	    builder =  mmb.getBuilder("typedef");
 	    if(builder == null) {
-		String msg = "builder typedef not found";
-		log.error(msg);
-		throw new org.mmbase.security.SecurityException(msg);
+		throw new org.mmbase.security.SecurityException("builder typedef not found");
 	    }
 	}
 	MMObjectNode node = builder.getNode(n);
 	if(node == null) {
-	    String msg = "node not found";
-	    log.error(msg);
-	    throw new org.mmbase.security.SecurityException(msg);
+	    throw new org.mmbase.security.SecurityException("node not found");
 	}
 	return node;
     }

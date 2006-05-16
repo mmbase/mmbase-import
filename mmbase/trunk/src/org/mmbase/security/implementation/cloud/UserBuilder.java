@@ -16,13 +16,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Security from within MMBase
- * @javadoc
+ * Security from within MMBase. The mmbaseusers builder used to store nothing more than name/password combination. 
+ *
  * @author Eduard Witteveen
- * @version $Id: UserBuilder.java,v 1.8 2005-10-07 18:55:17 michiel Exp $
+ * @version $Id: UserBuilder.java,v 1.9 2006-05-16 18:07:20 michiel Exp $
  */
 public class UserBuilder extends MMObjectBuilder {
-    private static Logger log=Logging.getLoggerInstance(UserBuilder.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(UserBuilder.class);
+
     private org.mmbase.util.Encode encoder = null;
 
     /**
@@ -40,42 +41,16 @@ public class UserBuilder extends MMObjectBuilder {
         return super.init();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean setValue(MMObjectNode node, String fieldname, Object originalValue) {
-        // the field with the name bar may not be changed.....
-        if(fieldname.equals("username")) {
-            Object newValue = node.getValues().get(fieldname);
-            if(originalValue != null && !originalValue.equals(newValue)) {
-                // restore the original value...
-                node.setValue(fieldname, originalValue);
-                return false;
-            }
-        } else if(fieldname.equals("password")) {
-            Object newValue = node.getValues().get(fieldname);
-            if(originalValue!=null && !originalValue.equals(newValue)) {
-                // encode the new value...
-                node.setValue(fieldname, encode((String)newValue));
-            }
-        }
-        return true;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setDefaults(MMObjectNode node) {
-        // set it to '""' so that we know the difference
-        node.setValue("password","");
-    }
 
     /**
      * Checks whether the given username/password combination exists and is correct.
      * If password is null, then only the existence of the user is checked.
      */
     boolean exists(String username, String password) {
-        log.trace("username: '"+username+"' password: '"+password+"'");
+        if (log.isTraceEnabled()) {
+            log.trace("username: '" + username + "' password: '" + password + "'");
+        }
         java.util.Enumeration e = search("WHERE username = '"+username+"' ");
         while(e.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode) e.nextElement();
@@ -87,7 +62,9 @@ public class UserBuilder extends MMObjectBuilder {
                 log.trace("username: '"+username+"' found in node #" + node.getNumber()+" --> PASSWORDS NOT EQUAL");
             }
         }
-        log.trace("username: '"+username+"' --> USERNAME NOT CORRECT");
+        if (log.isTraceEnabled()) {
+            log.trace("username: '"+username+"' --> USERNAME NOT CORRECT");
+        }
         return false;
     }
 
