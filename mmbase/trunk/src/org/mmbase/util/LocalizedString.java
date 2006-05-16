@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import java.util.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.*;
 
 /**
@@ -31,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.21 2006-02-10 14:13:48 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.22 2006-05-16 21:09:59 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -249,6 +250,35 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         return loc;
     }
 
+
+    /**
+     * This utility determines value of an xml:lang attribute.
+     * @since MMBase-1.8.1
+     */
+    public static String getXmlLang(Locale locale) {
+        if (locale == null) return null;
+        StringBuffer lang = new StringBuffer(locale.getLanguage());
+        String country = locale.getCountry();
+        if (country.length() > 0) {
+            lang.append("-").append(country);
+            String variant = locale.getVariant();
+            if (variant != null && variant.length() > 0) {
+                lang.append("-").append(variant);
+            }
+        }
+        return lang.toString();
+    }
+    /**
+     * This utility takes care of setting the xml:lang attribute on an element.
+     * @since MMBase-1.8.1
+     */
+    public static void setXmlLang(Element element, Locale locale) {
+        String xmlLang = getXmlLang(locale);
+        if (xmlLang != null) {
+            element.setAttribute("xml:lang", xmlLang);
+        }
+    }
+
     /**
      * Given a certain tagname, and a DOM parent element, it configures this LocalizedString, using
      * subtags with this tagname with 'xml:lang' attributes. This boils down to repeative calls to {@link #set(String, Locale)}.
@@ -261,9 +291,45 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
                 Element childElement = (Element) childNodes.item(k);
                 if (tagName.equals(childElement.getLocalName())) {
                     Locale locale = getLocale(childElement);
-                    String description = org.mmbase.util.xml.DocumentReader.getNodeTextValue(childElement);
+                    String description = DocumentReader.getNodeTextValue(childElement);
                     set(description, locale);
                 }
+            }
+        }
+    }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    public void toXml(final String tagName, final String ns, final Element element, final String path) {
+        if (values != null) {
+            // what there is already:
+            org.w3c.dom.NodeList nl  = element.getElementsByTagName(tagName);
+            Iterator i = values.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Locale loc   = (Locale) entry.getKey();
+                String value = (String) entry.getValue();
+                String xmlLang = getXmlLang(loc);
+                // look if such an element is available
+                Element child = null;
+                for (int j = 0; j < nl.getLength(); j++) {
+                    Element cand = (Element) nl.item(j);
+                    if (cand.getAttribute("xml:lang").equals(xmlLang)) {
+                        child = cand;
+                        break;
+                    }
+                }
+                if (child == null) {
+                    if (ns != null) {
+                        child = element.getOwnerDocument().createElementNS(ns, tagName);
+                    } else {
+                        child = element.getOwnerDocument().createElement(tagName);
+                    }
+                    DocumentReader.appendChild(element, child, path);
+                    setXmlLang(child, loc);
+                }
+                DocumentReader.setNodeTextValue(child, value);
             }
         }
     }
