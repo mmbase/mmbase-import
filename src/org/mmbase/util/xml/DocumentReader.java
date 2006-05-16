@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.26 2006-05-16 21:08:31 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.27 2006-05-16 21:37:21 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -351,24 +351,28 @@ public class DocumentReader  {
         String[] p = path.split(",");
         int i = 0;
         Node refChild = null;
-        NodeList childs = parent.getElementsByTagName("*");
+        NodeList childs = parent.getChildNodes();
         int j = 0;
         Pattern pattern = null; 
         if (p.length > 0) pattern = Pattern.compile("\\A" + p[i] + "\\z");
         boolean matching = false;
         while (j < childs.getLength() && i < p.length) {
-            Element child = (Element) childs.item(j);
-            if (pattern.matcher(child.getTagName()).matches()) {
-                j++;
-                refChild = childs.item(j);
-                matching = true;
-            } else {
-                if (! matching) { // append at the beginning, because actual child list does not start llike path
+            if (childs.item(j) instanceof Element) {
+                Element child = (Element) childs.item(j);
+                if (pattern.matcher(child.getTagName()).matches()) {
+                    j++;
                     refChild = childs.item(j);
-                    break;
+                    matching = true;
+                } else {
+                    if (! matching) { // append at the beginning, because actual child list does not start llike path
+                        refChild = childs.item(j);
+                        break;
+                    }
+                    i++;
+                    pattern = i < p.length ? Pattern.compile("\\A" + p[i] + "\\z") : null;
                 }
-                i++;
-                pattern = i < p.length ? Pattern.compile("\\A" + p[i] + "\\z") : null;
+            } else {
+                j++;
             }
         }
         parent.insertBefore(newChild, refChild);
