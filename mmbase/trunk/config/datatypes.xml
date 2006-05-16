@@ -4,17 +4,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
   
-  <!-- @version $Id: datatypes.xml,v 1.37 2006-04-25 20:03:20 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.38 2006-05-16 21:13:03 michiel Exp $ -->
 
   <datatype id="xml">
-    <description>
+    <description xml:lang="en">
       XML fields can be used for 'richtext' fields, or other fields which are (supposed to be) valid
       XML.
     </description>
     <class name="org.mmbase.datatypes.XmlDataType" />
 
     <specialization id="html">
-      <description>
+      <description xml:lang="en">
         Principally, HTML could be valid XML.
       </description>
       <setprocessor type="string">
@@ -26,7 +26,7 @@
     </specialization>
 
     <specialization id="xmlfield">
-      <description>
+      <description xml:lang="en">
         Adds processor to getting and setting as String, so that it looks like plain text then.
       </description>
       <setprocessor type="string">
@@ -42,13 +42,13 @@
 
 
   <datatype id="string">
-    <description>
+    <description xml:lang="en">
       String fields contain text.
     </description>
     <class name="org.mmbase.datatypes.StringDataType" />
 
     <specialization id="lastmodifier">
-      <description>
+      <description xml:lang="en">
         A ready-only field, which contains the user id of the last user that changed the node to which the field belongs.
       </description>
       <unique value="false" />
@@ -62,7 +62,7 @@
     </specialization>
 
     <specialization id="creator">
-      <description>
+      <description xml:lang="en">
         A ready-only field, which contains the user id of the user that created the node to wich the field belongs.
       </description>
       <unique value="false" />
@@ -76,7 +76,7 @@
     </specialization>
 
     <specialization id="md5password">
-      <description>
+      <description xml:lang="en">
         In the database an MD5 of the value which is set into this field is set. If you try to get
         this value as a String, the empty String is returned.
       </description>
@@ -91,7 +91,7 @@
     </specialization>
 
     <specialization id="confirmpassword">
-      <description>
+      <description xml:lang="en">
         This is a field datatype that of which the value is only valid, if it is equal to the value
         of another field in this node. The other field's name is default 'password' but it can be
         changed by overriding the property 'field'.
@@ -106,7 +106,7 @@
     </specialization>
 
     <specialization id="lowercaseuppercase">
-      <description>
+      <description xml:lang="en">
         Silly example (also used to test) Strings are stored all lowercase, but showed all uppercase
       </description>
       <setprocessor>
@@ -118,7 +118,7 @@
     </specialization>
 
     <specialization id="dutch-zipcode">
-      <description>
+      <description xml:lang="en">
         The valid values of such a field, are zip-codes as they are used in the Netherlands.
       </description>
       <pattern value="(?i)\A[0-9]{4}\s*[A-Z]{2}\z" />
@@ -128,7 +128,7 @@
     </specialization>
 
     <specialization id="emailaddress">
-      <description>
+      <description xml:lang="en">
         The valid values of such a field must be a valid email address. The current implemenation is by a rather simple regular expression.
       </description>
       <pattern value="(?i)\A[A-Z0-9_\-\+\&amp;\*\#]+([\.-]?[A-Z0-9_\-\+\&amp;\*\#])*@([A-Z0-9_-]{2,}[\.]{1})+([A-Z]{2,})\z" />
@@ -138,14 +138,14 @@
     </specialization>
 
     <specialization id="field">
-      <description>
+      <description xml:lang="en">
         Mainly supplied for backwards compatibility. A String without further restrications. Practicly this will result in textarea form entries.
       </description>
       <pattern value="(?s)\A.*\z" />
     </specialization>
 
     <specialization id="line">
-      <description>
+      <description xml:lang="en">
         A String that may not contain newlines (though this is not enforced). Practicly this will result in 'input type="text"' form entries.
       </description>
       <!-- no new lines -->
@@ -153,7 +153,7 @@
     </specialization>
 
     <specialization id="eline">
-      <description>
+      <description xml:lang="en">
         A String that may not contain newlines (this is enforced). Practicly this will result in 'input type="text"' form entries.
       </description>
       <!-- enforced line -->
@@ -162,14 +162,14 @@
 
 
     <specialization id="owner">
-      <description>
+      <description xml:lang="en">
         The values of this field are restricted to the possible 'security contexts' of the current user as defined by the MMBase Security implementation.
       </description>
       <class name="org.mmbase.datatypes.SecurityContextDataType" />
     </specialization>
 
     <specialization id="whitespacereplacer">
-      <description>
+      <description xml:lang="en">
         If you set a value in a field with this datatype, then all occurences of one or more
         whitespace characters are replaced by one space before the value is committed to the
         database.
@@ -185,7 +185,7 @@
     </specialization>
 
     <specialization id="whitespacecollapser">
-      <description>
+      <description xml:lang="en">
         If you set a value in a field with this datatype, then all occurences of one or more
         whitespace characters are removed before the value is committed to the
         database.
@@ -201,7 +201,7 @@
     </specialization>
 
     <specialization id="checksum">
-      <description>
+      <description xml:lang="en">
         The default 'checksum' datatype checksums the 'handle' field, but you can of course define
         your own (anonymously in the builder xml e.g.) for other fields. This is a read-only field
         which is automaticly filled on commit of the node.  If you define this field as unique, then
@@ -215,7 +215,7 @@
     </specialization>
 
     <specialization id="filename">
-      <description>
+      <description xml:lang="en">
         A filename field removes directory information on set.
       </description>
       <pattern enforce="never" value="\A[^\n\r]*\z" />
@@ -225,7 +225,7 @@
     </specialization>
 
     <specialization id="iso639">
-      <description>
+      <description xml:lang="en">
         ISO 639 language 2-letter codes (sorted alphabeticly on the name of the language in the current locale)
       </description>
       <pattern value="\A..\z" />
@@ -241,7 +241,7 @@
   </datatype>
 
   <datatype id="datetime">
-    <description>
+    <description xml:lang="en">
       DateTime fields contain absolute points in time. TODO: say something about timezones
       here. Getting it as a String results in a formatted datetime according to the locale (of the
       cloud e.g.).
@@ -260,7 +260,7 @@
     </getprocessor>
 
     <specialization id="created">
-      <description>
+      <description xml:lang="en">
         Read-only date-time field that contains the time of creation of the node.
       </description>
       <default value="now" />
@@ -277,7 +277,7 @@
     </specialization>
 
     <specialization id="lastmodified">
-      <description>
+      <description xml:lang="en">
         Read-only date-time field that contains the most recent time at which this node was changed .
       </description>
       <setprocessor>
@@ -290,7 +290,7 @@
 
 
     <specialization id="time">
-      <description>
+      <description xml:lang="en">
         A date-time field that ignores the date part. Actually this is stored as a time on
         1970-01-01, but you can use this to indicate an hour of any day. Generic editors will not
         offer to edit the date parts of the date-time.
@@ -300,7 +300,7 @@
     </specialization>
 
     <specialization id="date">
-      <description>
+      <description xml:lang="en">
         A date-time field that ignores the time part.
       </description>
       <default value="today" />
@@ -310,10 +310,10 @@
       <pattern xml:lang="en" value="dd MMMM yyyy" />
 
       <specialization id="20th-century">
-        <description>
+        <description xml:lang="en">
           A specialization of 'date', so it ignores the time part. The only allowed values are dates which are in the 20th century.
         </description>
-        <description>
+        <description xml:lang="en">
           Silly example (also used to test)
           Allow only dates from the previous century..
         </description>
@@ -322,7 +322,7 @@
       </specialization>
 
       <specialization id="20th-century-pedantic">
-        <description>
+        <description xml:lang="en">
           Pedantic version of 20th-century. Dates in the year 1900 are rejected, dates in the year 2000 are accepted.
         </description>
         <minInclusive value="1901-01-01"  />
@@ -330,7 +330,7 @@
       </specialization>
 
       <specialization id="birthdate">
-        <description>
+        <description xml:lang="en">
           DataType specialized for storing birthdates. So, no times. Defaults to 30 years ago. No future dates are accepted.
         </description>
         <default value="today- 30 year" />
@@ -338,7 +338,7 @@
       </specialization>
 
       <specialization id="living-birthdate">
-        <description>
+        <description xml:lang="en">
           DataType specialized for storing birthdates for people currently alive. Minimal value 140
           years ago. Because this gives limited number of possible years, a dropdown for the year
           field becomes possible.
@@ -349,7 +349,7 @@
       </specialization>
 
       <specialization id="weeknumbers">
-        <description>
+        <description xml:lang="en">
           Exotic specialization of 'date'. It will allow entering dates using the week-number and
           the name of the day. In controdiction to a more conventional notation with month and day of
           the month.
@@ -362,12 +362,12 @@
   </datatype>
 
   <datatype id="long">
-    <description>
+    <description xml:lang="en">
       Longs can contain very big (positive and negative) integer numbers.
     </description>
     <class name="org.mmbase.datatypes.LongDataType" />
     <specialization id="duration">
-      <description>
+      <description xml:lang="en">
         Durations are positive longs, which present a number of seconds. (for other units, we may have to introduce other datatypes).
       </description>
       <minInclusive value="0" />
@@ -376,7 +376,7 @@
   </datatype>
 
   <datatype id="boolean">
-    <description>
+    <description xml:lang="en">
       Boolean fields can always contain only two possible values which could be interpreted in several ways (defaults to 'true' and 'false').
     </description>
     <class name="org.mmbase.datatypes.BooleanDataType" />
@@ -384,7 +384,7 @@
       <entry basename="org.mmbase.datatypes.resources.boolean.truefalse" />
     </enumeration>
     <specialization id="yesno">
-      <description>
+      <description xml:lang="en">
         Boolean interpreted as yes/no
       </description>
       <enumeration>
@@ -392,7 +392,7 @@
       </enumeration>
     </specialization>
     <specialization id="onoff">
-      <description>
+      <description xml:lang="en">
         Boolean interpreted as on/off
       </description>
       <enumeration>
@@ -402,13 +402,13 @@
   </datatype>
 
   <datatype id="integer">
-    <description>
+    <description xml:lang="en">
       Not so very big integer numbers. Common base for all kind of enumerations.
     </description>
     <class name="org.mmbase.datatypes.IntegerDataType" />
 
     <specialization id="dirs">
-      <description>
+      <description xml:lang="en">
         Enumeration for the 'dir' field of certain MMBase system builders.
       </description>
       <enumeration>
@@ -416,7 +416,7 @@
       </enumeration>
     </specialization>
     <specialization id="spells">
-      <description>
+      <description xml:lang="en">
         Demo-enumeration for wizards.
       </description>
       <!-- example to test -->
@@ -431,7 +431,7 @@
       </enumeration>
     </specialization>
     <specialization id="ordinals">
-      <description>
+      <description xml:lang="en">
         'first', 'second' etc. Implemented by a drop-down, so don't expect 'twothousandeth' to work.
       </description>
       <enumeration>
@@ -440,7 +440,7 @@
     </specialization>
 
     <specialization id="filesize">
-      <description>
+      <description xml:lang="en">
         Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'kb' etc.
       </description>
       <getprocessor type="string">
@@ -449,7 +449,7 @@
     </specialization>
 
     <specialization id="byte">
-      <description>
+      <description xml:lang="en">
         The values 0 - 255 are possible.
       </description>
       <minInclusive value="0"  />
@@ -458,12 +458,12 @@
   </datatype>
 
   <datatype id="float">
-    <description>
+    <description xml:lang="en">
       Floating point numbers.
     </description>
     <class name="org.mmbase.datatypes.FloatDataType" />
     <specialization id="scale1-10">
-      <description>
+      <description xml:lang="en">
         A scale from 1 to 10.
       </description>
       <minInclusive value="1.0"  />
@@ -472,26 +472,26 @@
   </datatype>
 
   <datatype id="double">
-    <description>
+    <description xml:lang="en">
       Double precision floating point numbers.
     </description>
     <class name="org.mmbase.datatypes.DoubleDataType" />
   </datatype>
 
   <datatype id="binary">    
-    <description>
+    <description xml:lang="en">
       Blobs. Images, attachments, those kind of things.
     </description>
     <class name="org.mmbase.datatypes.BinaryDataType" />
   </datatype>
 
   <datatype id="node">
-    <description>
+    <description xml:lang="en">
       Reference to an MMBase node.
     </description>
     <class name="org.mmbase.datatypes.NodeDataType" />
     <specialization id="typedef">
-      <description>
+      <description xml:lang="en">
         Reference to an MMBase node of the type 'typedef'.
       </description>
       <enumeration>
@@ -499,7 +499,7 @@
       </enumeration>
     </specialization>
     <specialization id="reldef">
-      <description>
+      <description xml:lang="en">
         Reference to an MMBase node of the type 'reldef'.
       </description>
       <enumeration>
@@ -508,7 +508,7 @@
     </specialization>
 
     <specialization id="nodenumber">
-      <description>
+      <description xml:lang="en">
         Just a node-field, but  getting it as a String returns the node-number, rather then some odd toString of a Node object.
       </description>
       <getprocessor type="string">
