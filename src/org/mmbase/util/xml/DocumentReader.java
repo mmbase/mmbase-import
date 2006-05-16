@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
@@ -39,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.25 2006-05-16 18:49:12 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.26 2006-05-16 21:08:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -282,6 +283,18 @@ public class DocumentReader  {
     }
 
     /**
+     * @since MMBase-1.8.1
+     */
+    public static void setNodeTextValue(Node n, String value) {
+        NodeList textNodes = n.getChildNodes();
+        for (int j = 0; j < textNodes.getLength(); j++) {
+            n.removeChild(textNodes.item(j));
+        }
+        Text text = n.getOwnerDocument().createTextNode(value);
+        n.appendChild(text);
+    }
+
+    /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
      * passed namespace
      */
@@ -327,6 +340,10 @@ public class DocumentReader  {
 
 
     /**
+     * Appends a child to a parent at the right position. The right position is defined by a comma
+     * separated list of regular expressions.  If the the child matches the last element of the
+     * path, then the child is appended after similer childs, if not, then it will be appended
+     * before them.
      * 
      * @since MMBase-1.8
      */
@@ -336,13 +353,22 @@ public class DocumentReader  {
         Node refChild = null;
         NodeList childs = parent.getElementsByTagName("*");
         int j = 0;
+        Pattern pattern = null; 
+        if (p.length > 0) pattern = Pattern.compile("\\A" + p[i] + "\\z");
+        boolean matching = false;
         while (j < childs.getLength() && i < p.length) {
             Element child = (Element) childs.item(j);
-            if (child.getTagName().equals(p[i])) {
+            if (pattern.matcher(child.getTagName()).matches()) {
                 j++;
                 refChild = childs.item(j);
+                matching = true;
             } else {
+                if (! matching) { // append at the beginning, because actual child list does not start llike path
+                    refChild = childs.item(j);
+                    break;
+                }
                 i++;
+                pattern = i < p.length ? Pattern.compile("\\A" + p[i] + "\\z") : null;
             }
         }
         parent.insertBefore(newChild, refChild);
