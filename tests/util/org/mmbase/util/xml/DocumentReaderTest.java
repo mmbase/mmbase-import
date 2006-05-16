@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DocumentReaderTest.java,v 1.2 2006-05-16 21:07:47 michiel Exp $
+ * @verion $Id: DocumentReaderTest.java,v 1.3 2006-05-16 22:12:30 michiel Exp $
  */
 public class DocumentReaderTest extends TestCase {
 
@@ -104,5 +104,24 @@ public class DocumentReaderTest extends TestCase {
         DocumentReader.appendChild(parent, c, "(x|y),c");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><c/><q/></a>");
+    }
+
+    private void testToDocument(String s) {
+        Element parent1 =  getElement(s);
+        Element parent2 = DocumentReader.toDocument(parent1).getDocumentElement();
+        String res1 = XMLWriter.write(parent1, false, true);
+        String res2 = XMLWriter.write(parent2, false, true);
+        assertTrue(res1 + "!=" + res2, res1.equals(res2));
+    }
+    public void testToDocument() {
+        String[] cases = { "<a><b /></a>", 
+                           "<a xml:lang='nl'><b /></a>",
+                           "<a xml:lang='nl' c='d'><b /></a>",
+                           "<a xml:lang='nl' c='d'><b /><b /></a>",
+                           "<a xml:lang='nl' c='d'><b /><!-- hoi --><b /></a>",
+                           "<a xml:lang='nl'><b>abc</b><b c='d'>hoi<c/></b></a>"};
+        for (int i = 0 ; i < cases.length; i ++) {
+            testToDocument(cases[i]);
+        }
     }
 }
