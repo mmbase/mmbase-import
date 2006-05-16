@@ -40,11 +40,15 @@
 					<mm:createrelation source="vacature_page" destination="this_vacature" role="contentrel" />
 			<% }%>
 		</mm:cloud>
-      <h3>Uw vacature is gepubliceerd op www.natuurmonumenten.nl</h3>
-      Vergeet niet eventueele bijlagen handmatig toe te voegen.<br/><br/>
+      <h3>Uw vacature op www.natuurmonumenten.nl geplaatst</h3>
+      Vergeet niet:
+		<ul>
+			<li>eventueele bijlagen handmatig toe te voegen</li>
+			<li>de vacature pagina te publiceren (klik op het gekleurde blokje rechtsbovenin de pagina hieronder)</li>
+		</ul>
       <a href="<%= request.getParameter("ref") %>">Terug naar het overzicht vacatures</a>
       <br/><br/>
-      <iframe src="<%= NatMMConfig.liveUrl[0] + "vacatures.jsp?p=vacatures&refresh=on" %>" style="padding:0px;width:780px;height:400px;"></iframe>
+      <iframe src="<%= NatMMConfig.liveUrl[0] + "vacatures.jsp?p=vacatures&preview=on" %>" style="padding:0px;width:780px;height:400px;"></iframe>
 <%	} else { %>
 		<h3 color="red"><b>Uw vacature is niet gepubliceerd op www.natuurmonumenten.nl!</h3>
       <br/>
