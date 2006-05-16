@@ -7,7 +7,7 @@
   <!--
       Returns XML describing a certain MMBase DataType.
       This can be used in (AJAX based) javascript validation of form entries.
-      $Id: datatype.jspx,v 1.3 2006-04-29 19:41:59 michiel Exp $      
+      $Id: datatype.jspx,v 1.4 2006-05-16 21:11:48 michiel Exp $      
       author: Michiel Meeuwissen
   -->
   <jsp:directive.page 
@@ -16,8 +16,9 @@
   
   &lt;!-- EXPERIMENTAL, Produced XML is not yet complete and correct --&gt;
   <mm:import externid="datatype" jspvar="dt" vartype="string" />
+  <jsp:scriptlet>DataType dataType = null;</jsp:scriptlet>
   <mm:present referid="datatype">
-    <jsp:expression>org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(DataTypes.getSystemCollector().getDataType(dt)), false, true)</jsp:expression>
+    <jsp:scriptlet>dataType = DataTypes.getSystemCollector().getDataType(dt);</jsp:scriptlet>
   </mm:present>
   <mm:notpresent referid="datatype">
     <mm:import externid="field"       required="true" />
@@ -25,8 +26,21 @@
     <mm:cloud jspvar="cloud">
       <mm:fieldlist nodetype="$nodemanager" fields="$field" jspvar="field">
         <!-- following code (generating XML) must be delegated to BasicDataType -->
-        <jsp:expression>org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(field.getDataType()), false, true)</jsp:expression>
+        <jsp:scriptlet>dataType = field.getDataType();</jsp:scriptlet>
       </mm:fieldlist>
     </mm:cloud>
   </mm:notpresent>
+
+  <jsp:scriptlet>
+    if (dataType == null) {
+      response.setStatus(404); 
+  </jsp:scriptlet>
+  <notfound />
+  <jsp:scriptlet>
+    } else {
+  </jsp:scriptlet>
+  <jsp:expression>org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(dataType), false, true)</jsp:expression>      
+  <jsp:scriptlet>
+    }
+  </jsp:scriptlet>
 </mm:content>
