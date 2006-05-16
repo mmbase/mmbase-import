@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DocumentReaderTest.java,v 1.1 2006-05-16 18:48:28 michiel Exp $
+ * @verion $Id: DocumentReaderTest.java,v 1.2 2006-05-16 21:07:47 michiel Exp $
  */
 public class DocumentReaderTest extends TestCase {
 
@@ -90,5 +90,19 @@ public class DocumentReaderTest extends TestCase {
         DocumentReader.appendChild(parent, c, "b,c");
         String res = XMLWriter.write(parent, false, true);
         assertEquals(res, res, "<a><b/><b/><c id=\"t\"/><c/><d/></a>");
+    }
+    public void testAppendChild9() {
+        Element parent =  getElement("<a><x /></a>");
+        Element c = parent.getOwnerDocument().createElement("c");
+        DocumentReader.appendChild(parent, c, "(x|y),c");
+        String res = XMLWriter.write(parent, false, true);
+        assertEquals(res, res, "<a><x/><c/></a>");
+    }
+    public void testAppendChild10() {
+        Element parent =  getElement("<a><q /></a>");
+        Element c = parent.getOwnerDocument().createElement("c");
+        DocumentReader.appendChild(parent, c, "(x|y),c");
+        String res = XMLWriter.write(parent, false, true);
+        assertEquals(res, res, "<a><c/><q/></a>");
     }
 }
