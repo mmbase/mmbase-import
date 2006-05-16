@@ -20,11 +20,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Very simply security from within MMBase. You might want to look at Cloud Context Security which offers a much more powefull implementation.
+ * Very simply security from within MMBase. You might want to look at Cloud Context Security which offers a much more powerfull implementation.
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.10 2006-05-16 17:18:33 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.11 2006-05-16 18:07:20 michiel Exp $
  */
 
 public class Authenticate extends Authentication {
