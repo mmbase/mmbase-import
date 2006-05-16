@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.20 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.21 2006-05-16 21:11:05 michiel Exp $
  */
 
 public class DataTypes {
@@ -285,18 +285,23 @@ public class DataTypes {
 
 
     /**
-     * Returns an XML completely describing the given DataType.
+     * Returns a new XML completely describing the given DataType.
      * This means that the XML will <em>not</em> have a base attribute.
      */
     public static Document toXml(DataType dataType) {
+        // create an inheritance stack
         List stack = new ArrayList();
         stack.add(dataType);
         while (dataType.getOrigin() != null) {
             dataType = dataType.getOrigin();
             stack.add(0, dataType);
         }
-        Iterator i = stack.iterator();
+
+        // new XML
         Document doc = DocumentReader.getDocumentBuilder().newDocument();
+
+        // iterate the stack to completely resolve everything.
+        Iterator i = stack.iterator();
         dataType = (DataType) i.next();
         Element e = (Element) doc.importNode(dataType.toXml(), true);
         doc.appendChild(e);
