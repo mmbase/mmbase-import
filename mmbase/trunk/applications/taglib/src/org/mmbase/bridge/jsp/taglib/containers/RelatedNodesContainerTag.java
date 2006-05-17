@@ -15,6 +15,7 @@ import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.CloudProvider;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
@@ -25,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.12 2005-11-23 10:27:36 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.13 2006-05-17 19:15:09 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -57,7 +58,12 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
             }
         } else {
             Node node = getNode();
-            Cloud cloud = getCloudVar();
+            Cloud cloud;
+            {
+                // prefer cloud of current page, otherwise of node
+                CloudProvider cloudProvider = findCloudProvider(false);
+                cloud = cloudProvider != null ? cloudProvider.getCloudVar() : node.getCloud();
+            }
             query = cloud.createNodeQuery();
 
             Step step = query.addStep(node.getNodeManager());
