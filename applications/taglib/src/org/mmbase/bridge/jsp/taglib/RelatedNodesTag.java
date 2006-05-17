@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.37 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.38 2006-05-17 19:15:09 michiel Exp $
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
 
@@ -94,7 +94,6 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         RelatedNodesContainerTag c = (RelatedNodesContainerTag) findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
 
         NodeQuery query;
-        Cloud cloud = getCloudVar();
         if (type != Attribute.NULL || path != Attribute.NULL || c == null || parentNodeId != Attribute.NULL) {
 
             // obtain a reference to the node through a parent tag
@@ -102,7 +101,12 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (parentNode == null) {
                 throw new TaglibException("Could not find parent node!!");
             }
-            
+            Cloud cloud;
+            {
+                // prefer cloud of current page, otherwise of node
+                CloudProvider cloudProvider = findCloudProvider(false);
+                cloud = cloudProvider != null ? cloudProvider.getCloudVar() : parentNode.getCloud();
+            }
             query = cloud.createNodeQuery();
             Step step1 = query.addStep(parentNode.getNodeManager());
             query.setAlias(step1, parentNode.getNodeManager().getName() + "0");
