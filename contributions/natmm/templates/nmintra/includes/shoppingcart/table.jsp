@@ -39,7 +39,7 @@ String formScript = "function changeIt(url) {"
 		if(shop_itemsIterator.size()==0) {
 			articleConstraint = "contentrel.pos='0'"; 
 		} 
-	%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" constraints="<%= articleConstraint %>"
+	%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" constraints="<%= articleConstraint %>"
 		><%@include file="../relatedarticle.jsp" 
 	%></mm:list><br>
 	<img src="media/spacer.gif" width="1" height="11" border="0" alt=""><br>

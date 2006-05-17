@@ -36,7 +36,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
   if (restore) selObj.selectedIndex=0;
 }
 function clearForm() {
-  document.location = "<%= localPath %>event_blueprints.jsp?p=<%= pageId %>&evt=&pc=&pa=&nr=&evl=&evd=&department="; 
+  document.location = "<%= localPath %>event_blueprints.jsp?p=<%= paginaID %>&evt=&pc=&pa=&nr=&evl=&evd=&department="; 
   return false; 
 }
 <%= "//-->" %>

@@ -1,5 +1,5 @@
 <% LinkedList shop_items = new LinkedList();
-%><mm:list nodes="<%= pageId %>" path="pagina,posrel,items" fields="items.number,items.titel"
+%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,items" fields="items.number,items.titel"
 	orderby="posrel.pos,items.titel" directions="UP,UP"
 ><mm:field name="items.number" jspvar="shop_items_number" vartype="String" write="false"
 	><% shop_items.add(shop_items_number);
@@ -8,14 +8,14 @@
 
 while(shop_items.size()>0) {
 	String leftShop_itemNumber = (String) shop_items.removeFirst(); 
-	String leftShop_itemHref = pageUrl + "?p=" + pageId + "&u=" + leftShop_itemNumber; 
+	String leftShop_itemHref = pageUrl + "?p=" + paginaID + "&u=" + leftShop_itemNumber; 
 	
 	String rightShop_itemNumber = "";
 	String rightShop_itemHref = "";
 	boolean rightShop_itemExists = false;
 	if(shop_items.size()>0) { 
 		rightShop_itemNumber = (String) shop_items.removeFirst();
-		rightShop_itemHref =  pageUrl + "&p=" + pageId + "&u=" + rightShop_itemNumber; 
+		rightShop_itemHref =  pageUrl + "&p=" + paginaID + "&u=" + rightShop_itemNumber; 
 		rightShop_itemExists = true;
 	} 
 	%><table width="100%" cellspacing="0" cellpadding="0">

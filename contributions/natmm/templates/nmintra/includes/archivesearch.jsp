@@ -1,6 +1,6 @@
 <%@include file="../includes/whiteline.jsp" %>
 <table cellpadding="0" cellspacing="0"  align="center" border="0">
-<form method="POST" name="infoform" action="archive.jsp<%= templateQueryString %>" onSubmit="return postIt();">
+<form method="POST" name="infoform" action="<%= requestURL %>archive.jsp<%= templateQueryString %>" onSubmit="return postIt();">
 <tr><td class="bold"><span class="light_<%= cssClassName %>">Naam van het project</span></td></tr>
 <tr><td><input type="text" name="projectname" class="<%= cssClassName %>" style="width:172px;" value="<%= projectNameId %>"></td></tr>
 <mm:list path="projects,posrel,projecttypes" orderby="projecttypes.name" directions="UP" 

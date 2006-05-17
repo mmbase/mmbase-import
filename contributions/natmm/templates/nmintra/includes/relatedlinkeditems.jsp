@@ -1,4 +1,4 @@
-<mm:list nodes="<%= pageId %>" path="<%= "pagina1,readmore," + targetObject %>" searchdir="destination" orderby="<%= targetObject + ".titel" %>"
+<mm:list nodes="<%= paginaID %>" path="<%= "pagina1,readmore," + targetObject %>" searchdir="destination" orderby="<%= targetObject + ".titel" %>"
 	><mm:field name="dreadmore.readmore" jspvar="coordinates" vartype="String" write="false"
 	   ><a href="<mm:field name="<%= targetObject + ".number" %>" jspvar="number" vartype="String" write="false"><%
    			 if(targetObject.equals("pagina2")) { // *** jump to another page ***

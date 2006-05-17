@@ -8,11 +8,12 @@
 	org.apache.lucene.queryParser.QueryParser,
 	org.apache.lucene.document.Document,
    nl.leocms.util.tools.SearchUtil" %>
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-%><% 
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<%@include file="includes/calendar.jsp" %>
+<% 
    
    String sQuery = request.getParameter("search");
 	if(sQuery==null) { sQuery = ""; }

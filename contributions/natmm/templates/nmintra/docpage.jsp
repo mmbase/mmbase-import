@@ -1,11 +1,13 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-%><% 
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp" %>
+<% 
 // if there are no documents related to this page, find the document which filename is equal to the page title (=subtreeDoc)
 // and add all documents under the subtreeDoc to this page
-%><mm:node number="<%= pageId %>" jspvar="thisPage">
+%><mm:node number="<%= paginaID %>" jspvar="thisPage">
    <mm:related path="posrel,documents" max="1" constraints="documents.type='file'">
       <mm:import id="page_contains_document" />
    </mm:related>
@@ -29,7 +31,7 @@ try{
 int pageSize = 20; 
 int lastPage = (thisOffset+1)*pageSize;
 int listSize = 0; 
-%><mm:list nodes="<%= pageId %>" path="pagina,posrel,documents"
+%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,documents"
    ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
 ></mm:list><% 
 if(lastPage>listSize) { lastPage = listSize; }
@@ -125,4 +127,5 @@ if(listSize>pageSize) {
 // *********************************** right bar *******************************
 %><img src="media/spacer.gif" width="10" height="1"></td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

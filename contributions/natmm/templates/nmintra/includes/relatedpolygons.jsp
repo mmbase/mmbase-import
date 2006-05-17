@@ -1,4 +1,4 @@
-<mm:list nodes="<%= pageId %>" path="<%= "pagina1,readmore," + targetObject %>" searchdir="destination"
+<mm:list nodes="<%= paginaID %>" path="<%= "pagina1,readmore," + targetObject %>" searchdir="destination"
 	><mm:field name="readmore.readmore" jspvar="coordinates" vartype="String" write="false"><%
 	   coordinates += "+"; 
 	   int pPos = coordinates.indexOf("+");

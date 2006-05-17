@@ -15,7 +15,7 @@ public String getParameter(String parameterStr, String queryStr) {
 %>
 <mm:import jspvar="ID" externid="id">-1</mm:import>
 <mm:import jspvar="rubriekId" externid="r">-1</mm:import>
-<mm:import jspvar="pageId" externid="p">-1</mm:import>
+<mm:import jspvar="paginaID" externid="p">-1</mm:import>
 <mm:import jspvar="articleId" externid="article">-1</mm:import>
 <mm:import jspvar="shop_itemId" externid="u">-1</mm:import>
 <mm:import jspvar="employeeId" externid="employee">-1</mm:import>
@@ -29,7 +29,7 @@ String path = ph.getTemplate(request);
 HashMap ids = new HashMap();
 ids.put("object", ID);
 ids.put("rubriek", rubriekId);
-ids.put("pagina", pageId);
+ids.put("pagina", paginaID);
 ids.put("artikel", articleId);
 ids.put("items", shop_itemId);
 ids.put("medewerkers", employeeId);
@@ -38,7 +38,7 @@ ids = ph.findIDs(ids, path, "thuispagina");
 
 ID = (String) ids.get("object");
 rubriekId = (String) ids.get("rubriek");
-pageId = (String) ids.get("pagina");
+paginaID = (String) ids.get("pagina");
 articleId = (String) ids.get("artikel");
 shop_itemId = (String) ids.get("items");
 employeeId = (String) ids.get("medewerkers");
@@ -46,7 +46,7 @@ employeeId = (String) ids.get("medewerkers");
 String refererId = request.getParameter("referer"); if(refererId==null){ refererId = "-1"; }
 
 // *** find the root rubriek the present page is related to
-Vector breadcrumbs = ph.getBreadCrumbs(cloud, pageId);
+Vector breadcrumbs = ph.getBreadCrumbs(cloud, paginaID);
 String rootId = (String) breadcrumbs.get(breadcrumbs.size()-2);
 
 String cssClassName = "";
@@ -149,17 +149,13 @@ String eDistanceId = request.getParameter("evl"); if(eDistanceId==null){ eDistan
 String eDurationId = request.getParameter("evd"); if(eDurationId==null){ eDurationId = ""; }
 
 // globals
-int expireTime = 0;
-String cacheKey = "";
-String templateTitle = "";
 String uri = request.getRequestURI();
-boolean isPreview = ((uri.indexOf("/dev/")!=-1)||(uri.indexOf("/editors/")!=-1));
 String infopageClass = "infopage";
 boolean isIPage = (uri.indexOf("ipage.jsp")!=-1);
 if(isIPage) { infopageClass = "ipage"; }
 
 String templateQueryString = "";
-if(!pageId.equals("-1")){ templateQueryString += "?p=" + pageId; } 
+if(!paginaID.equals("-1")){ templateQueryString += "?p=" + paginaID; } 
 if(!articleId.equals("-1")){ templateQueryString += "&article=" + articleId; }
 if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
 if(!projectId.equals("")){ templateQueryString += "&project=" + projectId; }
@@ -171,14 +167,9 @@ requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")) + "/";
 String imageTemplate = "";
 
 // email addresses
-boolean isProduction = false;
 String defaultFromAddress = "intranet@natuurmonumenten.nl";
 String defaultPZAddress = "A.deBeer@Natuurmonumenten.nl";
 String defaultFZAddress = "C.Koumans@natuurmonumenten.nl";
-if(!isProduction) {
-    defaultPZAddress = "hangyi@xs4all.nl";
-    defaultFZAddress = "hangyi@xs4all.nl";
-}
 
 String emailHelpText = "<br><br>N.B. Op sommige computers binnen Natuurmonumenten is het niet mogelijk om direct op een link in de email te klikken."
                     + "<br>Als dit bij jou het geval is moet je de volgende handelingen uitvoeren:"

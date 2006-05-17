@@ -1,8 +1,10 @@
 <%-- hh: see the template event_blueprints.jsp for a more compact implementation --%>
-<%@include file="/taglibs.jsp" 
-%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%! 
+<%@include file="/taglibs.jsp" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%! 
 public String searchResults(TreeSet searchResultList) {
 	String searchResults = searchResultList.toString();
 	searchResults = searchResults.substring(1,searchResults.length()-1);
@@ -212,7 +214,7 @@ public String searchResults(TreeSet searchResultList) {
 			   	String articlePath = "artikel";
 				   String articleOrderby = "";
 				   if(articleId.equals("-1")) { 
-				      startnodeId = pageId;
+				      startnodeId = paginaID;
 				  	   articlePath = "pagina,contentrel,artikel";
 				   	articleOrderby = "contentrel.pos";
 			   	} %>
@@ -245,7 +247,7 @@ public String searchResults(TreeSet searchResultList) {
       <%@include file="includes/whiteline.jsp" %>
       <div class="smoelenboeklist" style="height:176px;">
       <table cellpadding="0" cellspacing="0">
-      <mm:list nodes="<%= pageId %>" path="pagina,contentrel,shorty">
+      <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,shorty">
          <tr>
              <td style="padding-left:20px;">
              <mm:node element="shorty"
@@ -263,4 +265,5 @@ public String searchResults(TreeSet searchResultList) {
    %>
 </td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

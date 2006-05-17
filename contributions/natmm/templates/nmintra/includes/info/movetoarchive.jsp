@@ -1,9 +1,9 @@
 <%
 if(!isArchive) { 
   long month_time = 31*24*60*60;
-  %><mm:list nodes="<%= pageId %>" path="pagina1,readmore,pagina2"
+  %><mm:list nodes="<%= paginaID %>" path="pagina1,readmore,pagina2"
       ><mm:node element="pagina2" id="archive"
-      ><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" 
+      ><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" 
 	    orderby="artikel.embargo" searchdir="destination" 
           constraints="<%= "( artikel.embargo < " + (nowSec-month_time) + ")"
                  + " OR ( (artikel.verloopdatum != '0') AND (artikel.verloopdatum < " + nowSec + "))"        

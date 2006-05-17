@@ -1,7 +1,10 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<% if(!termSearchId.equals("")) { expireTime = 0; } %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp" 
 %><% 
 
       String termConstraint = "";
@@ -151,5 +154,6 @@
       // *************************************** right bar *******************************
       %><%@include file="includes/termsearch.jsp" 
       %></td>
-		<%@include file="includes/footer.jsp" %>
-		</mm:cloud>
+<%@include file="includes/footer.jsp" %>
+</cache:cache>
+</mm:cloud>

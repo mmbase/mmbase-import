@@ -1,7 +1,9 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp" 
 
 %><%@include file="includes/header.jsp" %>
 <td><table border="0" cellpadding="0" cellspacing="0">
@@ -9,7 +11,7 @@
         <%-- <td><img src="media/rdcorner.gif" style="filter:alpha(opacity=75)"></td> --%>
         <td class="transperant" style="width:100%;"><img src="media/spacer.gif" width="1" height="6"><br>
         <div align="right"><span class="pageheader"><span class="dark_<%= cssClassName 
-                %>"><mm:node number="<%= pageId %>">Het dienstenpakket van de afdeling <mm:field name="titel"/></mm:node
+                %>"><mm:node number="<%= paginaID %>">Het dienstenpakket van de afdeling <mm:field name="titel"/></mm:node
             ></span></span>
 			</div></td>
         <td class="transperant"><img src="media/spacer.gif" width="10" height="28"></td>
@@ -36,7 +38,7 @@
     } else {
         
         %><%@include file="includes/producttypes/prodlocspecs.jsp" %>
-        <mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel"
+        <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel"
             orderby="contentrel.pos" directions="UP" fields="artikel.number,artikel.titel"
             ><mm:first><div class="pagesubheader" style="margin-top:10px;">Klik hier voor informatie over:</div></mm:first
             ><div style="margin-top:10px;"><li><a href="producttypes.jsp<%= templateQueryString %>&article=<mm:field name="artikel.number" 
@@ -50,9 +52,10 @@
 </table>
 </div>
 </td>
-<td><%-- 
+<td><%
 
-*********************************** right bar *******************************
---%><img src="media/spacer.gif" width="10" height="1"></td>
+// *********************************** right bar *******************************
+%><img src="media/spacer.gif" width="10" height="1"></td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

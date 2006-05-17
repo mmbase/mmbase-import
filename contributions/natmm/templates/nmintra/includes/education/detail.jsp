@@ -132,14 +132,14 @@
 		</mm:field>
    </table>
 	<br/>
-	<mm:list nodes="<%= pageId %>" path="pagina,rolerel,users" orderby="rolerel.pos">
+	<mm:list nodes="<%= paginaID %>" path="pagina,rolerel,users" orderby="rolerel.pos">
       <mm:first>Een link die niet klopt? email</mm:first>
       <mm:first inverse="true"> of </mm:first>
       <a href="mailto:<mm:field name="users.emailadres" />"><mm:field name="users.emailadres" /></a>
       <mm:last><br/><br/></mm:last>
 	</mm:list>
    <a name="feedback"></a>
-	Deze cursus gevolgd? <a href="educations.jsp?p=<%= pageId %>&e=<%= educationId %>&t=feedback">geef uw mening</a><br/><br/>
+	Deze cursus gevolgd? <a href="educations.jsp?p=<%= paginaID %>&e=<%= educationId %>&t=feedback">geef uw mening</a><br/><br/>
 	<mm:relatednodes type="feedback">
       <mm:first>
      		Feedback van collega's op deze cursus: <br/><br/>

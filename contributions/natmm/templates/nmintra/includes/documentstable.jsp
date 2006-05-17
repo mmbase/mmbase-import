@@ -1,5 +1,5 @@
 <table cellpadding="0" cellspacing="0" border="0">
-	<mm:list nodes="<%= pageId %>" path="pagina,posrel,documents" fields="documents.filename"
+	<mm:list nodes="<%= paginaID %>" path="pagina,posrel,documents" fields="documents.filename"
 		orderby="posrel.pos,posrel.number" directions="UP,DOWN" offset="<%= "" + thisOffset*pageSize %>" max="<%= "" +  pageSize %>"
 	><mm:field name="posrel.pos" jspvar="posrel_pos" vartype="String" write="false"><%	
    if(posrel_pos==null || posrel_pos.equals("")) posrel_pos = "1";

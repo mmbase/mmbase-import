@@ -1,12 +1,13 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><mm:log jspvar="log"
-><%@include file="includes/metadatafunctions.jsp" 
-%><%@include file="includes/header.jsp" 
-%><%@include file="includes/calendar.jsp" 
-
-%><td><%@include file="includes/pagetitle.jsp" %></td>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<mm:log jspvar="log">
+<%@include file="includes/metadatafunctions.jsp" %>
+<%@include file="includes/header.jsp" %>
+<%@include file="includes/calendar.jsp" %>
+<td><%@include file="includes/pagetitle.jsp" %></td>
   <td><% 
       String rightBarTitle = "Zoek een activiteit";
       %><%@include file="includes/rightbartitle.jsp" %>
@@ -32,7 +33,7 @@
       if(request.getRequestURI().indexOf("/editors/")!=-1) {
          localPath = "/dev/";
       }
-      String searchUrl = localPath + "event_blueprints.jsp?p=" + pageId
+      String searchUrl = localPath + "event_blueprints.jsp?p=" + paginaID
                    + "&evt=" + eTypeId
                    + "&pc=" + pCategorieId
                    + "&pa=" + pAgeId
@@ -93,7 +94,7 @@
 			   	String articlePath = "artikel";
 				   String articleOrderby = "";
 				   if(articleId.equals("-1")) { 
-				      startnodeId = pageId;
+				      startnodeId = paginaID;
 				  	   articlePath = "pagina,contentrel,artikel";
 				   	articleOrderby = "contentrel.pos";
 			   	} %>
@@ -114,6 +115,7 @@
 <td>
    <%@include file="includes/event_blueprints/searchform.jsp" %>
 </td>
-</mm:log
-><%@include file="includes/footer.jsp" 
-%></mm:cloud>
+</mm:log>
+<%@include file="includes/footer.jsp" %>
+</cache:cache>
+</mm:cloud>

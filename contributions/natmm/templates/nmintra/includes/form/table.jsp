@@ -8,7 +8,7 @@
       <div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a></div>
 		<%@include file="../relatedteaser.jsp" %></td>
 	</tr>		
-	<mm:list nodes="<%= pageId %>" path="pagina,posrel,formulier" 
+	<mm:list nodes="<%= paginaID %>" path="pagina,posrel,formulier" 
 		fields="formulier.number,formulier.titel,formulier.titel_fra,formulier.omschrijving" 
 		orderby="posrel.pos" directions="UP">
 	<tr>
