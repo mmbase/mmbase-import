@@ -10,7 +10,7 @@
 	   	/></div></mm:compare
 		></mm:field
 	 ><mm:field name="titel_fra"><div class="pagesubheader" align="center"><mm:write /></div></mm:field
-    ><mm:list nodes="<%= pageId %>" path="pagina,gebruikt,paginatemplate"
+    ><mm:list nodes="<%= paginaID %>" path="pagina,gebruikt,paginatemplate"
         ><mm:field name="pagina.titel_fra" jspvar="showExpireDate" vartype="String" write="false"
         ><mm:field name="paginatemplate.url" jspvar="template" vartype="String" write="false"><%
             if(template.indexOf("info.jsp")>-1||template.indexOf("calendar.jsp")>-1||template.indexOf("newsletter.jsp")>-1) {

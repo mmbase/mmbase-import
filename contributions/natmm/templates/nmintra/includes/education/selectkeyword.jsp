@@ -15,10 +15,10 @@ if(!keywordId.equals("")) { // a keyword has been selected
 } else {
    %>
 	<select name="menu1" class="<%= cssClassName %>" style="width:180px;" onChange="MM_jumpMenu('parent',this,0)">
-      <option value='educations.jsp?p=<%= pageId %>&pool=<%= poolId %>&pr=<%= providerId %>&c=<%= competenceId %>'>Selecteer</option>
+      <option value='educations.jsp?p=<%= paginaID %>&pool=<%= poolId %>&pr=<%= providerId %>&c=<%= competenceId %>'>Selecteer</option>
       <% String sKeywords = searchResults(keywords); %>
       <mm:list nodes="<%= sKeywords %>" path="keywords" orderby="keywords.word" directions="UP">
-         <option value='<%= localPath %>educations.jsp?p=<%= pageId %>&k=<mm:field name="keywords.number" />&pool=<%= poolId %>&pr=<%= providerId %>&c=<%= competenceId %>'><mm:field name="keywords.word" /></option>
+         <option value='<%= localPath %>educations.jsp?p=<%= paginaID %>&k=<mm:field name="keywords.number" />&pool=<%= poolId %>&pr=<%= providerId %>&c=<%= competenceId %>'><mm:field name="keywords.word" /></option>
       </mm:list>
 	</select>
 	<br>

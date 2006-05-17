@@ -1,6 +1,6 @@
 <%@include file="../includes/whiteline.jsp" %>
 <table cellpadding="0" cellspacing="0"  align="center" border="0">
-   <form method="POST" name="infoform" action="terms.jsp<%= templateQueryString %>" onSubmit="return postIt();">
+   <form method="POST" name="infoform" action="<%= requestURL %>terms.jsp<%= templateQueryString %>" onSubmit="return postIt();">
    <tr><td><input type="text" name="termsearch" class="<%= cssClassName %>" style="width:172px;margin-top:16px;" value="<%= termSearchId %>"></td></tr>
    <tr><td>
       <div align="right"><input type="submit" name="submit" value="Zoek" class="<%= cssClassName 

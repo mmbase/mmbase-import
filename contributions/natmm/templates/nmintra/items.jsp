@@ -1,7 +1,9 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%
 
 int thisOffset = 0;
 try{
@@ -61,14 +63,13 @@ try{
         </table>
         </td>
     </tr>
-</table><%-- 
-        
-        
-        show navigation to other pages if there are more than 10 articles
-        --%><%  int listSize = 0; 
-        %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,shorty"
-            ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
-        ></mm:list><% if(listSize>10) { 
+</table><%
+
+// show navigation to other pages if there are more than 10 articles
+int listSize = 0; 
+%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,shorty"
+	><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
+></mm:list><% if(listSize>10) { 
 %><table cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
         <td><img src="media/spacer.gif" width="10" height="1"></td>
@@ -102,9 +103,10 @@ try{
 </table>
 </div>
 </td>
-<td><%-- 
+<td><%
 
-*********************************** right bar *******************************
---%><img src="media/spacer.gif" width="10" height="1"></td>
-<%@include file="includes/footer.jsp" 
-%></mm:cloud>
+// *********************************** right bar *******************************
+%><img src="media/spacer.gif" width="10" height="1"></td>
+<%@include file="includes/footer.jsp" %>
+</cache:cache>
+</mm:cloud>

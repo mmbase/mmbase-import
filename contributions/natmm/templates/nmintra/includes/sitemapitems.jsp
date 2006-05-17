@@ -24,10 +24,10 @@
 				%><tr><td><a href=<%@include file="..\includes\pageurl.jsp" 
 					%>><span class="normal"><mm:field name="pagina.titel" /></span></a></td></tr><% 
 			} %></mm:field
-			><%--
+			><%
 			
-			lets look whether there are subpages under this page
-			--%><mm:first
+			// lets look whether there are subpages under this page
+			%><mm:first
 				><mm:list nodes="<%= rubriek_number %>" path="rubriek1,parent,rubriek2,posrel,pagina"
 				orderby="parent.pos,posrel.pos" directions="UP,UP"
 				fields="pagina.titel,pagina.number"

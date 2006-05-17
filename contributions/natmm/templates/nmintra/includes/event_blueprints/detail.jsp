@@ -50,7 +50,7 @@
    } %>
    <br/>
    <span class="black">
-   <mm:list nodes="<%= pageId %>" path="pagina,rolerel,users" orderby="rolerel.pos">
+   <mm:list nodes="<%= paginaID %>" path="pagina,rolerel,users" orderby="rolerel.pos">
       <mm:first>Een link die niet klopt? email</mm:first>
       <mm:first inverse="true"> of </mm:first>
       <a href="mailto:<mm:field name="users.emailadres" />"><mm:field name="users.emailadres" /></a>
@@ -59,7 +59,7 @@
    <br/>
    <a name="feedback"></a>
 	Ervaring met deze activiteit?
-   <a href="event_blueprints.jsp?&p=<%= pageId %>&ev=<%= eventId %>&t=feedback">geef uw feedback</a><br/><br/>
+   <a href="event_blueprints.jsp?&p=<%= paginaID %>&ev=<%= eventId %>&t=feedback">geef uw feedback</a><br/><br/>
 	<mm:relatednodes type="feedback">
       <mm:first>
      		Feedback van collega's op deze activiteit: <br/><br/>

@@ -1,7 +1,9 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%
 int screenWidth = 750;
 int screenHeight = 430;
 
@@ -32,7 +34,7 @@ if(cookies!=null){
 <tr>
 <td class="transperant">
 <div class="<%= infopageClass %>">
-    <mm:list nodes="<%= pageId %>" path="pagina,posrel,link" max="1"
+    <mm:list nodes="<%= paginaID %>" path="pagina,posrel,link" max="1"
         ><body onload="javascript:launchCenter('<mm:field name="link.url"
             />', 'popup', <%= screenHeight %>,  <%= screenWidth %>, ',left=0,top=0,scrollbars,resizable=yes<mm:present referid="newwin">,toolbar=yes,menubar=yes</mm:present>');setTimeout('newwin.focus();',250)"></body>
         <table border="0" cellpadding="0" cellspacing="0">
@@ -47,9 +49,10 @@ if(cookies!=null){
     ><mm:remove referid="urlexists"/>
 </div>
 </td>
-<td><%-- 
+<td><%
 
-*********************************** right bar *******************************
---%><img src="media/spacer.gif" width="10" height="1"></td>
+// *********************************** right bar *******************************
+%><img src="media/spacer.gif" width="10" height="1"></td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

@@ -8,7 +8,7 @@
     Vector questions = new Vector();
     Vector answers = new Vector();
     String username =  ""; 
-%><mm:list nodes="<%= pageId %>" path="pagina,posrel,formulier" 
+%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,formulier" 
     fields="formulier.number,formulier.titel,formulier.emailadressen" 
     orderby="posrel.pos" directions="UP"
 

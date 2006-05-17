@@ -1,60 +1,57 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
-<%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-
-%><% if(!emailId.equals("")) {
-        if(postingStr.equals("")) {
-            int expireDate = (int) Math.floor(Math.random()*70000);
-            String commitLink = HttpUtils.getRequestURL(request) + templateQueryString + "&email=" + emailId + "&pst=" + expireDate;
-            %><mm:node number="<%= pageId %>" id="this_page" 
-                ><mm:createnode type="ads" id="this_post"
-                    ><mm:setfield name="title"><%= titleId %></mm:setfield
-                    ><mm:setfield name="text"><%= textId %></mm:setfield
-                    ><mm:setfield name="email"><%= emailId %></mm:setfield
-                    ><mm:setfield name="expiredate"><%= expireDate %></mm:setfield
-                ></mm:createnode
-                ><mm:createrelation role="contentrel" source="this_post" destination="this_page" 
-                /><mm:field name="titel" jspvar="page_title"  vartype="String" write="false"
-                    ><mm:createnode type="email" id="thismail"
-                        ><mm:setfield name="subject"><%= "Bevestigen plaatsing advertentie op " + page_title %></mm:setfield
-                        ><mm:setfield name="from"><%= defaultFromAddress %></mm:setfield
-                        ><mm:setfield name="to"><%= emailId %></mm:setfield
-                        ><mm:setfield name="replyto"><%= defaultFromAddress %></mm:setfield
-                        ><mm:setfield name="body">
-                            <multipart id="plaintext" type="text/plain" encoding="UTF-8">
-                            </multipart>
-                            <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-                            <%= "<html>" + "Je hebt het volgende bericht verstuurd naar " + page_title + "<br><br>" 
-                                + titleId + "<br><br>" + textId + "<br><br>"
-                                + "Klik op de onderstaande link om de plaatsing van je advertentie op " 
-                                + page_title  + " te bevestigen.<br><br>"
-                                + "<a href=\"" + commitLink + "\">" + commitLink + "</a>"
-                                + emailHelpText
-                                + "</html>" %>
-                            </multipart>
-                        </mm:setfield
-                    ></mm:createnode
-                    ><mm:node referid="thismail"
-                        ><mm:field name="mail(oneshot)" 
-                    /></mm:node
-                    ><mm:remove referid="thismail" 
-                /></mm:field
-            ></mm:node><%
-        } else {
-            templateTitle = "prikbord";
-            %><mm:list path="ads" constraints="<%= "ads.email='" + emailId + "' AND ads.expiredate='" + postingStr + "'" %>"
-                ><mm:node element="ads"
-                    ><mm:setfield name="expiredate"><%= nowSec %></mm:setfield
-                    ><%@include file="includes/cachekey.jsp"
-                    %><cache:flush key="<%= cacheKey %>" scope="application" 
-                /></mm:node
-            ></mm:list><%
-        }
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<%@include file="includes/calendar.jsp" %><% 
+if(!emailId.equals("")) {
+	if(postingStr.equals("")) {
+		int expireDate = (int) Math.floor(Math.random()*70000);
+		String commitLink = HttpUtils.getRequestURL(request) + templateQueryString + "&email=" + emailId + "&pst=" + expireDate;
+		%><mm:node number="<%= paginaID %>" id="this_page" 
+			 ><mm:createnode type="ads" id="this_post"
+				  ><mm:setfield name="title"><%= titleId %></mm:setfield
+				  ><mm:setfield name="text"><%= textId %></mm:setfield
+				  ><mm:setfield name="email"><%= emailId %></mm:setfield
+				  ><mm:setfield name="expiredate"><%= expireDate %></mm:setfield
+			 ></mm:createnode
+			 ><mm:createrelation role="contentrel" source="this_post" destination="this_page" 
+			 /><mm:field name="titel" jspvar="page_title"  vartype="String" write="false"
+				  ><mm:createnode type="email" id="thismail"
+						><mm:setfield name="subject"><%= "Bevestigen plaatsing advertentie op " + page_title %></mm:setfield
+						><mm:setfield name="from"><%= defaultFromAddress %></mm:setfield
+						><mm:setfield name="to"><%= emailId %></mm:setfield
+						><mm:setfield name="replyto"><%= defaultFromAddress %></mm:setfield
+						><mm:setfield name="body">
+							 <multipart id="plaintext" type="text/plain" encoding="UTF-8">
+							 </multipart>
+							 <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
+							 <%= "<html>" + "Je hebt het volgende bericht verstuurd naar " + page_title + "<br><br>" 
+								  + titleId + "<br><br>" + textId + "<br><br>"
+								  + "Klik op de onderstaande link om de plaatsing van je advertentie op " 
+								  + page_title  + " te bevestigen.<br><br>"
+								  + "<a href=\"" + commitLink + "\">" + commitLink + "</a>"
+								  + emailHelpText
+								  + "</html>" %>
+							 </multipart>
+						</mm:setfield
+				  ></mm:createnode
+				  ><mm:node referid="thismail"
+						><mm:field name="mail(oneshot)" 
+				  /></mm:node
+				  ><mm:remove referid="thismail" 
+			 /></mm:field
+		></mm:node><%
+	} else {
+		%><mm:list path="ads" constraints="<%= "ads.email='" + emailId + "' AND ads.expiredate='" + postingStr + "'" %>"
+			 ><mm:node element="ads"
+				  ><mm:setfield name="expiredate"><%= nowSec %></mm:setfield
+			 ></mm:node
+		></mm:list><%
+	}
 }
 
 int period = -31;
-%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,teaser" constraints="contentrel.pos='5'"
+%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,teaser" constraints="contentrel.pos='5'"
     ><mm:field name="teaser.titel" jspvar="teaser_title" vartype="Integer" write="false"
         ><% period = -teaser_title.intValue(); 
     %></mm:field
@@ -80,7 +77,7 @@ int period = -31;
 } else { 
 
 %><table border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tr><td style="padding:10px;padding-top:18px;"><mm:node number="<%= pageId %>"
+    <tr><td style="padding:10px;padding-top:18px;"><mm:node number="<%= paginaID %>"
             ><mm:related path="contentrel,teaser" constraints="contentrel.pos='3'"
             ><p><div class="pageheader"><mm:field name="teaser.titel" /></div>
             <mm:field name="teaser.omschrijving" /></p>
@@ -92,14 +89,14 @@ int period = -31;
 
 cal.add(Calendar.DATE,period);
 String ads_constraints = "ads.expiredate <= " +(cal.getTime().getTime()/1000);
-%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,ads" constraints="<%= ads_constraints %>" 
+%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,ads" constraints="<%= ads_constraints %>" 
     ><mm:node element="contentrel" id="thisrelation" 
     /><mm:deletenode referid="thisrelation"
     /><mm:remove referid="thisrelation" 
 /></mm:list><%
 
 ads_constraints = "ads.expiredate > " + (cal.getTime().getTime()/1000);
-%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,ads"
+%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,ads"
         constraints="<%= ads_constraints %>" orderby="ads.expiredate" directions="DOWN"
 ><mm:first
 ><table cellspacing="0" cellpadding="0" border="0" width="100%"></mm:first
@@ -125,10 +122,10 @@ ads_constraints = "ads.expiredate > " + (cal.getTime().getTime()/1000);
 } 
 
 %></div>
-</td><%-- 
+</td><%
 
-*************************************** right bar with the form *******************************
---%><td><%@include file="includes/whiteline.jsp" 
+// *************************************** right bar with the form *******************************
+%><td><%@include file="includes/whiteline.jsp" 
     %><form name="prikbord" method="post" onSubmit="return postIt(this);">
 <table cellspacing="0" cellpadding="0" border="0" align="center">
     <tr>
@@ -160,7 +157,7 @@ ads_constraints = "ads.expiredate > " + (cal.getTime().getTime()/1000);
 <script>
 <%= "<!--" %>
 function postIt(el) {
-    var href = "prikbord.jsp<%= templateQueryString %>"; 
+    var href = "<%= requestURL %>prikbord.jsp<%= templateQueryString %>"; 
     var text = escape(document.prikbord.elements["text"].value);
     var title = escape(document.prikbord.elements["title"].value);
     var email = escape(document.prikbord.elements["email"].value);

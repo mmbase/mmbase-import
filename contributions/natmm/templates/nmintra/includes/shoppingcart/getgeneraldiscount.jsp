@@ -11,7 +11,7 @@ Discounts are given in two includes:
 *************** 5,6,7,8: general discounts ********************** 
 --%><%
 int generaldiscount = 0;
-%><mm:list nodes="<%= pageId %>" path="pagina,posrel,discounts"
+%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,discounts"
 ><mm:field name="discounts.startdate" jspvar="startdate" vartype="String" write="false"
 ><mm:field name="discounts.enddate" jspvar="enddate" vartype="String" write="false"><%
 if(Long.parseLong(startdate)<=nowSec && nowSec<=Long.parseLong(enddate)) { 

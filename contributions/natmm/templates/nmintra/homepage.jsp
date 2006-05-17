@@ -1,13 +1,14 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-%><%
-String sTemplateUrl = "homepage.jsp";
-if(!articleId.equals("-1")) { 
-    String articleTemplate = "article.jsp" + templateQueryString;
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp" %>
+<%
+if(!articleId.equals("-1")) {
 
-    %><% response.sendRedirect(articleTemplate); %><%--jsp:include page="<%= articleTemplate %>" /--%><%
+    String articleTemplate = "article.jsp" + templateQueryString;
+    %><% response.sendRedirect(articleTemplate); %><%
 
 } else {
 
@@ -26,7 +27,6 @@ if(!articleId.equals("-1")) {
        poolId = ""; 
    }
    
-   templateTitle = "home"; 
    String archiefId = "archief";
    boolean isArchive = false;
    
@@ -37,7 +37,7 @@ if(!articleId.equals("-1")) {
    boolean checkOnPeriod = false;
    
    boolean hasPools = false; 
-   %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel,posrel,pools"
+   %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,pools"
 		orderby="artikel.embargo" searchdir="destination" max="1"><%
       hasPools = true;
    %></mm:list
@@ -49,7 +49,7 @@ if(!articleId.equals("-1")) {
       if(hasPools) { 
          rightBarTitle = "Selecteer&nbsp;categorie"; 
       } else {
-         %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,shorty"
+         %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,shorty"
             ><mm:field name="shorty.titel" jspvar="items_name" vartype="String" write="false"><%
                rightBarTitle = items_name;
             %></mm:field
@@ -76,22 +76,23 @@ if(!articleId.equals("-1")) {
                     articleConstraint = "( pools.number = '" + thisPool + "' )";
                     articlePath += ",posrel,pools";
                 }
-                String extTemplateQueryString = templateQueryString; 
+					 String sTemplateUrl = "homepage.jsp";
+                String extTemplateQueryString = templateQueryString;
                 int listSize = 0; 
-                %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
-				orderby="artikel.embargo" searchdir="destination" 
+                %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
+					 		orderby="artikel.embargo" searchdir="destination" 
                   ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
                 ></mm:list
                 ><%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
-                   %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" 
+                   %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" 
                           orderby="artikel.embargo" directions="DOWN" 
                        offset="<%= "" + thisOffset*10 %>" max="10" constraints="<%= articleConstraint %>"><%
                        String titleClass = "pageheader"; 
                        String readmoreUrl = "homepage.jsp";
                        if(isIPage) readmoreUrl = "ipage.jsp";
                        %><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
-                           readmoreUrl += "?p=" + pageId + "&article=" + article_number; 
+                           readmoreUrl += "?p=" + paginaID + "&article=" + article_number; 
                        %></mm:field
                        ><mm:field name="pagina.titel_fra" jspvar="showExpireDate" vartype="String" write="false"
                            ><%@include file="includes/info/summaryrow.jsp" 
@@ -117,4 +118,6 @@ if(!articleId.equals("-1")) {
 	<%@include file="includes/footer.jsp" %>
 	<%
 } 
-%></mm:cloud>
+%>
+</cache:cache>
+</mm:cloud>

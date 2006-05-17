@@ -45,7 +45,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
   if (restore) selObj.selectedIndex=0;
 }
 function clearForm() {
-  document.location = "educations.jsp?p=<%= pageId %>&h=&k=&j=&t=&u="; 
+  document.location = "educations.jsp?p=<%= paginaID %>&h=&k=&j=&t=&u="; 
   return false; 
 }
 <%= "//-->" %>

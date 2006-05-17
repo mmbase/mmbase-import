@@ -1,15 +1,16 @@
-<%@page import="nl.leocms.util.tools.SearchUtil" 
-%><%@include file="/taglibs.jsp" 
-%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-%><%
+<%@page import="nl.leocms.util.tools.SearchUtil" %>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<%@include file="includes/calendar.jsp" %>
+<%
 
 postingStr += "|";
 String action = getResponseVal("action",postingStr);
 
 String thisPrograms = "";
-%><mm:list nodes="<%= pageId %>" path="pagina,posrel,programs"
+%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,programs"
     ><mm:field name="programs.number" jspvar="programs_number" vartype="String" write="false"><%
         thisPrograms += "," + programs_number;
     %></mm:field
@@ -65,17 +66,12 @@ if(!thisPrograms.equals("")) {
         if(action.equals("change")) { // *** show form to update info ***
             %><%@include file="includes/peoplefinder/update.jsp" %><%
         } else { // *** just show the info on the employee ***
-            %><%-- <jsp:include page="includes/shorty.jsp">
-					      <jsp:param name="s" value="<%= paginaID %>" />
-				         <jsp:param name="r" value="<%= rubriekID %>" />
-				         <jsp:param name="rs" value="<%= styleSheet %>" />
-					      <jsp:param name="sr" value="1" />
-					   </jsp:include>  --%>
+            %>
 				<jsp:include page="includes/peoplefinder/table.jsp">
 					<jsp:param name="e" value="<%= employeeId %>" />
 					<jsp:param name="tp" value="<%= thisPrograms %>" />
 					<jsp:param name="it" value="<%= imageTemplate %>" />
-					<jsp:param name="p" value="<%= pageId %>" />
+					<jsp:param name="p" value="<%= paginaID %>" />
 					<jsp:param name="ps" value="<%= postingStr %>" />
 					<jsp:param name="tqs" value="<%= templateQueryString %>" />
 					<jsp:param name="d" value="<%= departmentId %>" />
@@ -89,7 +85,7 @@ if(!thisPrograms.equals("")) {
 
         %><table border="0" cellpadding="0" cellspacing="0" style="width:100%;padding-top:20px;"> 
             <tr>
-                <td><mm:list nodes="<%= pageId %>" path="pagina,posrel,images" 
+                <td><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" 
                         constraints="posrel.pos='1'"
                         ><% imageTemplate = "s(300)"; 
                         %><div align="center"><img src=<%@include file="includes/imagessource.jsp" %> width="100%" alt="" border="0" ></div>

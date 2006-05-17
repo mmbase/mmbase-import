@@ -2,7 +2,7 @@
 <mm:import externid="e" jspvar="employeeId"/>
 <mm:import externid="tp" jspvar="thisPrograms"/>
 <mm:import externid="it" jspvar="imageTemplate"/>
-<mm:import externid="p" jspvar="pageId"/>
+<mm:import externid="p" jspvar="paginaID"/>
 <mm:import externid="ps" jspvar="postingStr"/>
 <mm:import externid="tqs" jspvar="templateQueryString"/>
 <mm:import externid="d" jspvar="departmentId"/>
@@ -82,7 +82,7 @@
                 <% imageExists = true; 
         %></mm:list><%
         if(!imageExists) { 
-            %><mm:list nodes="<%= pageId %>" path="pagina,posrel,images" constraints="posrel.pos='2'"
+            %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" constraints="posrel.pos='2'"
                 ><% imageTemplate = "+s(110)"; 
                     %><img src=<%@include file="../imagessource.jsp" %> alt="" border="0">
             </mm:list><%

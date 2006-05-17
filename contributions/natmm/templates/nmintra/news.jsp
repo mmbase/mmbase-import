@@ -1,10 +1,11 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-
-%><%@include file="includes/header.jsp" 
-   %><td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp" %>
+<%@include file="includes/header.jsp" %>
+<td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
 </tr>
 <tr>
    <td class="transperant" colspan="2">
@@ -16,7 +17,7 @@
                     templateQueryString %>&pst=|action=print">print</a></div><%
     } 
     if(articleId.equals("-1")) { 
-     %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" orderby="posrel.pos" directions="UP" fields="artikel.number"
+     %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="posrel.pos" directions="UP" fields="artikel.number"
          ><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><% 
             articleId = article_number; 
          %></mm:field
@@ -34,4 +35,5 @@
 </div>
 </td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

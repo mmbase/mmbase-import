@@ -4,7 +4,7 @@
       <%--&nbsp;<a href="javascript:history.go(-1);"><img src="media/back.gif" border="0" alt=""> --%></a><br><%--
 if(!shop_itemId.equals("-1")) { // *********** to shop_items page and mail a friend *******************
 		
-		%><a href="<mm:url page="<%= pageUrl + "&page=" + pageId %>" />" class="subtitle">Meer <mm:node number="<%= pageId %>"><mm:field name="title" /></mm:node></a><br><%
+		%><a href="<mm:url page="<%= pageUrl + "&page=" + paginaID %>" />" class="subtitle">Meer <mm:node number="<%= paginaID %>"><mm:field name="title" /></mm:node></a><br><%
 		String url = HttpUtils.getRequestURL(request).substring(0); // find the last slash
 		int slash = url.lastIndexOf("/");
 		url = url.substring(0,slash+1);

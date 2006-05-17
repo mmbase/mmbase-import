@@ -201,7 +201,7 @@
 		%></mm:field
 	></mm:list><%
 	
-	String slideshowUrl = "slideshow.jsp?p=" + pageId + "&u=" +  shop_itemId + "&offset=" +  offsetId;
+	String slideshowUrl = "slideshow.jsp?p=" + paginaID + "&u=" +  shop_itemId + "&offset=" +  offsetId;
 
 	String previousImage = "-1";
 	String nextImage = "-1";

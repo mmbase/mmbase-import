@@ -1,8 +1,10 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/header.jsp" 
-%><td><%@include file="includes/pagetitle.jsp" %></td>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/header.jsp" %>
+<td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "Zoek een collega"; 
 %><%@include file="includes/rightbartitle.jsp" 
 %></td>
@@ -14,7 +16,7 @@
     <td style="padding:10px;padding-top:18px;width:100%" width="100%">
     <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
     <tr>
-        <td width="100%"><mm:list nodes="<%= pageId %>" path="pagina,posrel,images" 
+        <td width="100%"><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" 
             constraints="posrel.pos='1'"> <%--default image is related to this page with 1 pos--%>
             <% imageTemplate = "s(300)"; 
             %><div align="center"><img src=<%@include file="includes/imagessource.jsp" %> alt="" border="0" ></div>
@@ -59,7 +61,7 @@ if(!programId.equals("default")) {
     employeePath += ",readmore,locations";
 }
 String defaultThumb = "";
-%><mm:list nodes="<%= pageId %>" path="pagina,posrel,images" constraints="posrel.pos='2'" max="1"
+%><mm:list nodes="<%= paginaID %>" path="pagina,posrel,images" constraints="posrel.pos='2'" max="1"
 ><mm:field name="images.number" jspvar="images_number" vartype="String" write="false"
     ><% defaultThumb = images_number; 
 %></mm:field
@@ -119,7 +121,7 @@ if(employeeFound) {
 // *************************************** right bar with the form *******************************
 %><td valign="top">
     <%@include file="includes/whiteline.jsp" 
-    %><form method="POST" action="thumbs.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt(this);">
+    %><form method="POST" action="<%= requestURL %>thumbs.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt(this);">
 <table cellpadding="0" cellspacing="0"  align="center">
     <tr><td><select name="department" class="<%=  cssClassName %>" style="width:195px;">
         <option value="default" <%  if(departmentId.equals("default")) { %>SELECTED<% } 
@@ -167,4 +169,5 @@ function postIt(el) {
 <%@include file="includes/whiteline.jsp" %>
 </td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

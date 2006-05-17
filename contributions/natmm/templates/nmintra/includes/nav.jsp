@@ -1,22 +1,22 @@
 <% 
 // *** referer is used to open navigation on a page which is not visible in the navigation ***
-String tmp_pageId = pageId;
+String tmp_paginaID = paginaID;
 if(!refererId.equals("")) { 
    boolean pageIsVisible = false;
-   %><mm:list nodes="<%= rubriekId %>" path="rubriek,posrel,pagina" max="1" constraints="<%= "pagina.number='" + pageId + "'" %>"><%
+   %><mm:list nodes="<%= rubriekId %>" path="rubriek,posrel,pagina" max="1" constraints="<%= "pagina.number='" + paginaID + "'" %>"><%
       pageIsVisible = true;
    %></mm:list><%
    if(!pageIsVisible) { 
-      %><mm:list nodes="<%= rubriekId %>" path="rubriek1,parent,rubriek2,posrel,pagina" max="1" constraints="<%= "pagina.number='" + pageId + "'" %>"><%
+      %><mm:list nodes="<%= rubriekId %>" path="rubriek1,parent,rubriek2,posrel,pagina" max="1" constraints="<%= "pagina.number='" + paginaID + "'" %>"><%
          pageIsVisible = true;
       %></mm:list><%
    }
-   if(!pageIsVisible) { pageId = refererId; }
+   if(!pageIsVisible) { paginaID = refererId; }
 }
 // *** page: translate alias back into number ***
-%><mm:node number="<%= pageId %>" notfound="skipbody"
+%><mm:node number="<%= paginaID %>" notfound="skipbody"
     ><mm:field name="number" jspvar="page_number" vartype="String" write="false"><%
-        pageId = page_number; 
+        paginaID = page_number; 
     %></mm:field
 ></mm:node><%
 // *** rubriek: translate alias back into number ***
@@ -40,7 +40,7 @@ boolean bIsFirst = false;
 <mm:list nodes="<%= rootId %>" path="rubriek,posrel,pagina" constraints="posrel.pos='1'"
     ><mm:field name="pagina.number" jspvar="page_number" vartype="String" write="false">
       <tr><td style="padding-left:19px;padding-bottom:7px;">
-         <a href="<%= ph.createPaginaUrl(page_number,request.getContextPath()) %>" class="menuItem<mm:field name="pagina.number"><mm:compare value="<%= pageId %>">Active</mm:compare></mm:field
+         <a href="<%= ph.createPaginaUrl(page_number,request.getContextPath()) %>" class="menuItem<mm:field name="pagina.number"><mm:compare value="<%= paginaID %>">Active</mm:compare></mm:field
                  >"><mm:field name="pagina.titel" /></a>
       </td></tr>
    </mm:field
@@ -55,6 +55,6 @@ boolean bIsFirst = false;
         </td>
     </tr>
 </table></div>
-<% // *** reset pageId to original value, if referer is used ***
-if(!refererId.equals("")) { pageId = tmp_pageId; }
+<% // *** reset paginaID to original value, if referer is used ***
+if(!refererId.equals("")) { paginaID = tmp_paginaID; }
 %>

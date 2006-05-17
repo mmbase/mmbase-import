@@ -41,7 +41,7 @@ if(!postingStr.equals("")){
 	if (bAllFieldsOk) {
 		String messageTitle = "Bedankt voor uw feedback!";
 		String messageBody = "Uw feedback zal binnen een dag worden toegevoegd aan de " + ntypeId;
-		String messageHref = sUrl + "?p=" + pageId + "&" + paramId + "=" + objectId;
+		String messageHref = sUrl + "?p=" + paginaID + "&" + paramId + "=" + objectId;
 		String messageLinktext = "terug naar de " + ntypeId;
 		String messageLinkParam = "target=\"_top\"";
 		ArrayList al = new ArrayList();
