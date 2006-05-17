@@ -73,7 +73,7 @@ public class ExcelWriter {
 
       String fileName = "alle_data_met_aanmeldingen_voor_activiteit_" + sParentEvent + ".xls";
       WritableWorkbook workbook = Workbook.createWorkbook(new File(NatMMConfig.tempDir + fileName));
-      
+
       NodeList nl = ev.getSortedList(cloud, sParentEvent);
       NodeList nls = cloud.getList(sParentEvent,"evenement,partrel,evenement1,posrel,inschrijvingen","evenement1.number,evenement1.begindatum",null,"evenement1.begindatum","UP",null,true);
       boolean bOneDateWithoutSubscriptions = (nl.size()!= nls.size());
@@ -177,7 +177,7 @@ public class ExcelWriter {
    }
 
    public int writeStrings1(Cloud cloud, HtmlCleaner hc, LinkedList llXlsData, int counter, Node nParentNode) {
-      // Bijzonderheden, Activiteitstype, Natuurgebied, Provincie, Extra info     
+      // Bijzonderheden, Activiteitstype, Natuurgebied, Provincie, Extra info
       String sParentNumber = nParentNode.getStringValue("number");
       llXlsData.add(new Label(0,counter,"Bijzonderheden"));
       String sText = hc.cleanText(nParentNode.getStringValue("tekst"),"<",">","");
@@ -346,7 +346,7 @@ public class ExcelWriter {
          int iNumberPerParticipant = 1;
          int iParticipantsInCat = 0;
          iNumberPerParticipant = nl5.getNode(i).getIntValue("deelnemers_categorie.aantal_per_deelnemer");
-         NodeList nl51 = cloud.getList(nl5.getNode(i).getStringValue("number"),"deelnemers_categorie,related,deelnemers,posrel,inschrijvingen,posrel,evenement","deelnemers.bron","evenement.number LIKE '" + sEvenementNumber + "'",null,null,null,false);
+         NodeList nl51 = cloud.getList(nl5.getNode(i).getStringValue("deelnemers_categorie.number"),"deelnemers_categorie,related,deelnemers,posrel,inschrijvingen,posrel,evenement","deelnemers.bron","evenement.number LIKE '" + sEvenementNumber + "'",null,null,null,false);
          for (int j = 0; j < nl51.size(); j++){
             iParticipantsInCat += nl51.getNode(j).getIntValue("deelnemers.bron");
          }
