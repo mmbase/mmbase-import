@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
  * ChangePasswordAction
  *
  * @author Ronald Kramp
- * @version $Revision: 1.3 $, $Date: 2006-03-16 22:17:17 $
+ * @version $Revision: 1.4 $, $Date: 2006-05-17 21:18:54 $
  *
  * @struts:action name="ChangePasswordForm"
  *                path="/editors/usermanagement/ChangePasswordAction"
@@ -77,7 +77,7 @@ public class ChangePasswordAction extends Action {
          userNode.setIntValue("gracelogins", 3);
          userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + PASSWORD_LIFETIME );
          userNode.commit();
-         // only change admin password by real admins
+         // use admin password for cloud.default and cloud.remote
          if (userNode.getStringValue("account").equals("admin")) {
             Util.updateAdminPassword(changePasswordForm.getNewpassword());
          }
