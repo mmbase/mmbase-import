@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.75 2006-03-28 17:38:56 michiel Exp $
+ * @version $Id: Module.java,v 1.76 2006-05-17 15:21:37 nklasens Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -352,7 +352,6 @@ public abstract class Module extends FunctionProvider {
      */
     public static Module getModule(String name, boolean startOnLoad) {
         // are the modules loaded yet ? if not load them
-        if (modules == null) {
             synchronized(Module.class) {
                 if (modules == null) { // still null after obtaining lock
                     log.service("Loading MMBase modules...");
@@ -365,7 +364,6 @@ public abstract class Module extends FunctionProvider {
                     new ModuleProbe().start();
                 }
             }
-        }
         // try to obtain the ref to the wanted module
         Module obj = (Module) modules.get(name.toLowerCase());
         if (obj == null) { // try case sensitivily as well?
