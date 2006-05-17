@@ -94,5 +94,19 @@ public class ContentHelper {
    public String getTitleField(Node object) {
       return getTitleField(object.getNodeManager());
    }
-
+	
+	/*
+	* return a comma seperated list of owners of this contentelement
+	*/
+	public String getOwners(String objectNumber) {
+		StringBuffer sbOwners = new StringBuffer();
+		NodeList owners = cloud.getList(objectNumber, "object,rolerel,users", "users.number", null, "rolerel.pos", "UP", null, true );
+		for(int u=0; u<owners.size(); u++) {
+			if(u>0) {
+				sbOwners.append(',');
+			}
+			sbOwners.append(owners.getNode(u).getStringValue("users.number"));
+      }
+      return sbOwners.toString();
+	}
 }
