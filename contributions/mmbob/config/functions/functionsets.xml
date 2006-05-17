@@ -4,10 +4,10 @@
         <!-- this is very wrong, but since the function/thememanager/packaging -->
         <!-- are installed at the same time we do it like this. since i don't -->
         <!-- know how to merge with 'ant install' -->
-        <functionset name="thememanager" file="sets/thememanager_functionset.xml" />
-        <functionset name="mmpm" file="sets/mmpm_functionset.xml" />
-        <functionset name="mmpb" file="sets/mmpb_functionset.xml" />
-        <functionset name="mmbob" file="sets/mmbob_functionset.xml" />
+        <functionset name="thememanager" resource="sets/thememanager_functionset.xml" />
+        <functionset name="mmpm" resource="sets/mmpm_functionset.xml" />
+        <functionset name="mmpb" resource="sets/mmpb_functionset.xml" />
+        <functionset name="mmbob" resource="sets/mmbob_functionset.xml" />
 
         <!-- commented out the mmfunctions_functionset.xml it's not needed (yet) -->
         <!--functionset name="mmfunctions" file="sets/mmfunctions_functionset.xml" /-->
