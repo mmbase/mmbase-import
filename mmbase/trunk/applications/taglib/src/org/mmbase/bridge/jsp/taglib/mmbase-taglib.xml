@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.357 2006-05-11 16:32:39 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.358 2006-05-17 08:48:33 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -7296,7 +7296,7 @@ The 0 is just counter, which starts at 0 on every page.
   <tag>
     <name>tree</name>
     <type>mmbase.tree.list</type>
-    <extends>queryreferrer</extends>
+    <extends>querycontainerreferrer</extends>
     <extends>nodeprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
@@ -7389,7 +7389,7 @@ The 0 is just counter, which starts at 0 on every page.
   <tag>
     <name>treecontainer</name>
     <type>mmbase.tree.list</type>
-    <extends>queryreferrer</extends>
+    <extends>querycontainerreferrer</extends>
     <extends>contextreader</extends>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag</tagclass>
@@ -7404,7 +7404,7 @@ The 0 is just counter, which starts at 0 on every page.
       <p>
         Just as for example in the relatednodescontainer the attributes define how the `starting'
         query must be extended. The essential difference for `trees' though, is that it will happen
-        <em>recursively</em>. So the surrounding queryreferrer tags like `mm:constraint' will work
+        <em>recursively</em>. So the surrounding querycontainerreferrer tags like `mm:constraint' will work
         only on a kind of `template' query, and will then be applied repeatedly.
       </p>
       <p>
@@ -7413,7 +7413,7 @@ The 0 is just counter, which starts at 0 on every page.
       </p>
     </info>
     <see type="tree" />
-    <see tag="queryreferrer" />
+    <see tag="querycontainerreferrer" />
     <since>MMBase-1.7.1</since>
     <attribute>
       <name>type</name>
@@ -7504,7 +7504,7 @@ The 0 is just counter, which starts at 0 on every page.
       </p>
     </info>
     <see type="tree" />
-    <see tag="queryreferrer" />
+    <see tag="querycontainerreferrer" />
     <attribute>
       <name>on</name>
       <required>false</required>
