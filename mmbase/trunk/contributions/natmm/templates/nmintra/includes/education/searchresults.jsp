@@ -21,7 +21,7 @@ if(lastPage>listSize) { lastPage = listSize; }
 		offset="<%= "" + thisOffset*pageSize %>" max="<%= "" + pageSize %>">
    <mm:node element="educations" jspvar="tE">	 
 	   <%
-      String sUrl = "educations.jsp?p="+pageId+"&e="+tE.getStringValue("number")+"&k="+keywordId+"&pool="+poolId+"&pr="+providerId+"&c="+competenceId;
+      String sUrl = "educations.jsp?p="+paginaID+"&e="+tE.getStringValue("number")+"&k="+keywordId+"&pool="+poolId+"&pr="+providerId+"&c="+competenceId;
       String sProvider = "Intern"; 
 	   String sSubsidie = "";	
       %>
@@ -61,7 +61,7 @@ if(listSize>pageSize) {
    // 61/15 = 4 but should be 5. So (61-1)/15+1 = 60/15 + 1 = 4 + 1 = 5
    // 60 also holds (60-1)/15+1 = 59/15 + 1 = 3 + 1 = 4
    int numberOfPages = (listSize-1)/pageSize+1;
-   String url = "educations.jsp?p=" + pageId
+   String url = "educations.jsp?p=" + paginaID
                + "&pool=" + poolId
                + "&pr=" + providerId
                + "&k=" + keywordId

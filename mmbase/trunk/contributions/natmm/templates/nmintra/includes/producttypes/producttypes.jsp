@@ -1,9 +1,9 @@
-<div class="pageheader" style="margin-top:15px;"><mm:node number="<%= pageId %>"><mm:field name="titel"/></mm:node> Dienstenniveau</div>
+<div class="pageheader" style="margin-top:15px;"><mm:node number="<%= paginaID %>"><mm:field name="titel"/></mm:node> Dienstenniveau</div>
 <div class="pagesubheader" style="margin-top:10px;">Kies een productgroep om de diensten en het dienstenniveau over op te vragen</div>
 <form name="producttypeform" method="post" action="">
      <select name="producttype" onChange="javascript:postPG();" style="width:300px;">
      <option value="" >...
-        <mm:list nodes="<%= pageId %>" path="pagina,posrel,producttypes"
+        <mm:list nodes="<%= paginaID %>" path="pagina,posrel,producttypes"
             orderby="producttypes.title" directions="UP" fields="producttypes.number,producttypes.title"
             ><mm:field name="producttypes.number" jspvar="producttypes_number" vartype="String" write="false"
                 ><option <% if(producttypes_number.equals(poolId)) { %>SELECTED<% } %>                   
@@ -22,7 +22,7 @@ function postPG() {
 </script><%
 
 if(!poolId.equals("")) { // *** use mm:list to only show producttypes related to this page ***
-    %><mm:list nodes="<%= pageId %>" path="pagina,posrel,producttypes" 
+    %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,producttypes" 
         constraints="<%= "producttypes.number = '" + poolId  + "'" %>" max="1"
     ><div class="pagesubheader">Kies een product/dienst om het dienstenniveau over op te vragen</div>
     <form name="productform" method="post" action="">

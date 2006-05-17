@@ -2,7 +2,7 @@
 String editorname = (String) session.getAttribute("editor");
 String rootId = (String) session.getAttribute("website");
 String rubriekId = (String) session.getAttribute("r");
-String pageId = (String) session.getAttribute("page");
+String paginaID = (String) session.getAttribute("page");
 if(editorname!=null) {
     String userconstraint="users.account='" + editorname + "'";    
     %><mm:notpresent referid="isowner"
@@ -20,7 +20,7 @@ if(editorname!=null) {
         }
     %></mm:notpresent
     ><mm:notpresent referid="isowner"
-        ><mm:list nodes="<%= pageId %>" path="pagina,rolerel,users" 
+        ><mm:list nodes="<%= paginaID %>" path="pagina,rolerel,users" 
             constraints="<%= userconstraint %>" max="1"
             ><mm:import id="isowner"
         /></mm:list

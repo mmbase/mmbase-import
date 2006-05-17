@@ -1,7 +1,8 @@
-<%-- ********************* create the javascript for posting the values *******************
-avantlab: variables allShop_items, thisPool must be defined.
+<%
+// ********************* create the javascript for posting the values *******************
+// pre-condition: variables allShop_items, thisPool must be defined.
 
---%><% if(true) { 
+if(true) { 
 %><script language="JavaScript">
 <%= "<!--" %>
 var needToConfirm = true;

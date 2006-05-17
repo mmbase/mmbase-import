@@ -2,7 +2,7 @@
 if(hasPools||isArchive) { 
    %><%@include file="../whiteline.jsp" %>
    <table cellpadding="0" cellspacing="0"  align="center" border="0">
-   <form method="POST" name="infoform" action="<%= sTemplateUrl %><%= templateQueryString %>" onSubmit="return postIt();"><% 
+   <form method="POST" name="infoform" action="<%= requestURL %><%= sTemplateUrl %><%= templateQueryString %>" onSubmit="return postIt();"><% 
    if(isArchive) { 
       %>
       <tr>
@@ -11,16 +11,16 @@ if(hasPools||isArchive) {
       <tr>
          <td class="bold"><input type="text" name="termsearch" value="<%= termSearchId %>" class="<%= cssClassName %>" style="width:170px;" /></td>
       </tr>
-      <tr>
-         <td class="bold"><span class="light_<%= cssClassName %>">Categorie</span></td>
-      </tr>
       <%
    }
 }
 String lastpool=""; 
-%><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel,posrel,pools" orderby="pools.name" directions="UP"
+%><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,pools" orderby="pools.name" directions="UP"
      ><mm:first
-         ><tr><td>
+         ><tr>
+         	<td class="bold"><span class="light_<%= cssClassName %>">Categorie</span></td>
+			</tr>
+			<tr><td>
          <select name="pool" class="<%= cssClassName %>" style="width:172px;" <% if(!isArchive) { %>onChange="javascript:postIt();"<% } %>>
      </mm:first
      ><mm:field name="pools.number" jspvar="thispool" vartype="String" write="false"><%

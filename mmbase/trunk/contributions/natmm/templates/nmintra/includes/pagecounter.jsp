@@ -53,11 +53,11 @@
 	}
 	%><%--
 	
-	add one to the pageCounter for pageId, check if page exists 
-	--%><mm:node number="<%= pageId %>" notfound="skipbody"
-	><%	Integer pageCount = (Integer) pageCounter.get(pageId);
+	add one to the pageCounter for paginaID, check if page exists 
+	--%><mm:node number="<%= paginaID %>" notfound="skipbody"
+	><%	Integer pageCount = (Integer) pageCounter.get(paginaID);
 		if(pageCount==null) pageCount = new Integer(0);
-		pageCounter.put(pageId,new Integer(pageCount.intValue()+1));
+		pageCounter.put(paginaID,new Integer(pageCount.intValue()+1));
 		
 		String thisSession =  request.getSession().toString();
 		if(!visitorsSessions.contains(thisSession)) {

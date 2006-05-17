@@ -1,4 +1,4 @@
-<form method="POST" action="smoelenboek.jsp<%= templateQueryString %>" name="whoiswhoupdate" onSubmit="return updateIt(this);">
+<form method="POST" action="<%= requestURL %>smoelenboek.jsp<%= templateQueryString %>" name="whoiswhoupdate" onSubmit="return updateIt(this);">
 <mm:node number="<%= employeeId %>">
     <table border="0" cellpadding="0" cellspacing="0">
     <tr><td colspan="2"><h4>Vul hier de correcte gegevens in (*)</h4></td></tr>

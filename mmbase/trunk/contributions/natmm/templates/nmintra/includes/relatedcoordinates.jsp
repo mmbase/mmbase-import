@@ -1,4 +1,4 @@
-<mm:list nodes="<%= pageId %>" path="<%= "pagina1,posrel,images,pos4rel," + targetObject %>" 
+<mm:list nodes="<%= paginaID %>" path="<%= "pagina1,posrel,images,pos4rel," + targetObject %>" 
 	><mm:field name="pos4rel.pos1" jspvar="x1" vartype="Integer" write="false"
 	><mm:field name="pos4rel.pos2" jspvar="y1" vartype="Integer" write="false"
 	><mm:field name="pos4rel.pos3" jspvar="x2" vartype="Integer" write="false"

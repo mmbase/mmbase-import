@@ -1,11 +1,11 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/header.jsp" 
-%><%@include file="includes/calendar.jsp" 
-
-
-%><td <% if(cssClassName.equals("bibliotheek")) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/header.jsp" %>
+<%@include file="includes/calendar.jsp" %>
+<td <% if(cssClassName.equals("bibliotheek")) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
 <% if(!cssClassName.equals("bibliotheek")) { 
    %><td><% String rightBarTitle = "";
    %><%@include file="includes/rightbartitle.jsp" 
@@ -26,14 +26,14 @@
       String articlePath = "artikel";
       String articleOrderby = "";
       if(articleId.equals("-1")) { 
-      startnodeId = pageId;
+      startnodeId = paginaID;
       articlePath = "pagina,contentrel,artikel";
       articleOrderby = "contentrel.pos";
       }
       %><mm:list nodes="<%= startnodeId %>"  path="<%= articlePath %>" orderby="<%= articleOrderby %>"
          ><%@include file="includes/relatedarticle.jsp" 
       %></mm:list>
-      <mm:node number="<%= pageId %>">
+      <mm:node number="<%= paginaID %>">
          <%@include file="includes/relatedcompetencies.jsp" %>
       </mm:node>
       <%@include file="includes/pageowner.jsp" 
@@ -46,5 +46,7 @@
    %><td><%
    // *********************************** right bar *******************************
    %><img src="media/spacer.gif" width="10" height="1"></td><%
-} %><%@include file="includes/footer.jsp" 
-%></mm:cloud>
+} %>
+<%@include file="includes/footer.jsp" %>
+</cache:cache>
+</mm:cloud>

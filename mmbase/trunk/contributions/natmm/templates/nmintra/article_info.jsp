@@ -1,7 +1,10 @@
 <%@include file="/taglibs.jsp" %>
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
-<%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" %><%
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp" %>
+<%
 
 // this is a special version of the article template which includes news
 // - the title of the page is Gesignaleerd
@@ -26,7 +29,7 @@ if(!articleId.equals("-1")) {
    <div class="<%= infopageClass %>">
    <table border="0" cellpadding="0" cellspacing="0">
        <tr><td style="padding:10px;padding-top:18px;">
-       <mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" fields="artikel.number"  constraints="contentrel.pos='0'"
+       <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" fields="artikel.number"  constraints="contentrel.pos='0'"
                 orderby="artikel.embargo" directions="UP" searchdir="destination" max="1"
             ><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
                articleId = article_number; 
@@ -50,7 +53,7 @@ if(!articleId.equals("-1")) {
    
    // *** delete expired articles from this page (if it is not the archive) ***
    boolean isArchive = false;
-   %><mm:node number="<%= pageId %>"
+   %><mm:node number="<%= paginaID %>"
       ><mm:aliaslist
          ><mm:write  jspvar="alias" vartype="String" write="false"><%
             isArchive = (alias.indexOf("archief") > -1); 
@@ -58,7 +61,7 @@ if(!articleId.equals("-1")) {
       ></mm:aliaslist
    ></mm:node
    ><%@include file="includes/info/movetoarchive.jsp" 
-   %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" 
+   %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" 
         orderby="artikel.embargo" directions="DOWN" searchdir="destination" 
         ><mm:last inverse="true"
             ><mm:remove referid="this_article"
@@ -71,5 +74,7 @@ if(!articleId.equals("-1")) {
    </div>
    </td><%
 } 
-%><%@include file="includes/footer.jsp" 
-%></mm:cloud>
+%>
+<%@include file="includes/footer.jsp" %>
+</cache:cache>
+</mm:cloud>

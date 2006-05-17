@@ -3,7 +3,7 @@
         <%-- <td><img src="media/lucorner.gif" style="filter:alpha(opacity=75)"></td> --%>
         <td style="padding-right:10px;"><img src="media/spacer.gif" width="241" height="6"><br>
         <div align="right"><span class="pageheader"><% 
-            if(templateTitle.indexOf("home")==-1) { 
+            if(path.indexOf("home")==-1) { 
                 %><span class="light_<%= cssClassName %>"><% 
             } else {
                 %><span style="color:#FFFFFF;"><%

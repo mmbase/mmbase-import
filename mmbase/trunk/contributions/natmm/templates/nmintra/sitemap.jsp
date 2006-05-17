@@ -1,9 +1,10 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/header.jsp" 
-
-%><td><%@include file="includes/pagetitle.jsp" %></td>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/header.jsp" %>
+<td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "";
 %><%@include file="includes/rightbartitle.jsp" 
 %></td>
@@ -40,9 +41,10 @@
 </tr>
 </table>
 </div>
-</td><%-- 
+</td><% 
 
-*************************************** right bar *******************************
---%><td>&nbsp;</td>
+// *************************************** right bar *******************************
+%><td>&nbsp;</td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

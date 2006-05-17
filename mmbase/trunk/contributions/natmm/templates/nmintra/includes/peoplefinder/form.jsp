@@ -3,7 +3,7 @@
 
 if(!action.equals("print")) { 
     %><%@include file="../whiteline.jsp" 
-    %><form method="POST" action="smoelenboek.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt('submit');">
+    %><form method="POST" action="<%= requestURL %>smoelenboek.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt('submit');">
         <input type="hidden" name="name" value="<%= nameId %>">
     <table cellpadding="0" cellspacing="0"  align="center">
         <tr><td class="bold">&nbsp;<span class="light_<%= cssClassName %>">Voornaam:</span></td>

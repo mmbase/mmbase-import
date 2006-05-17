@@ -1,5 +1,5 @@
 <% if(hasPools ) { 
-   %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,shorty"
+   %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,shorty"
       ><mm:field name="shorty.titel" jspvar="items_name" vartype="String" write="false"><%
          rightBarTitle = items_name;
          %><%@include file="../includes/rightbartitle.jsp" 
@@ -7,7 +7,7 @@
    ></mm:list><% 
 } else {
    %><%@include file="../includes/whiteline.jsp" %><%
-} %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,shorty"
+} %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,shorty"
     ><table border="0" cellpadding="0" cellspacing="0">
 <tr><td><img src="media/spacer.gif" width="20" height="10"></td>
     <td><img src="media/spacer.gif" width="230" height="10"></td>

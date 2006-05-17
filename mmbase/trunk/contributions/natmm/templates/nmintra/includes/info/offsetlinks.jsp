@@ -46,11 +46,11 @@ if(listSize>objectPerPage) {
    }
    if (pagesCount > 5) {
       %>
-      <form name="myform" action="<%= sTemplateUrl  %><%=  extTemplateQueryString  %>" method="post" style="padding:0px;margin:0px;margin-bottom:10px;">
+      <form name="myform" action="<%= requestURL %><%= sTemplateUrl  %><%=  extTemplateQueryString  %>" method="post" style="padding:0px;margin:0px;">
         Ga naar pgn: <input name="offset" style="width:23px;height:17px;font-size:12px;">
         <a href="#" onclick="myform.submit(); return false;">Zoek ></a>
       </form>
       <% 
    } 
 }
-%>
+%><br/>

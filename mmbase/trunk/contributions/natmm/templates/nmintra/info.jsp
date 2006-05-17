@@ -1,10 +1,11 @@
 <%@page import="nl.leocms.util.tools.SearchUtil" %>
-<%@include file="/taglibs.jsp" 
-%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-%><%
-String sTemplateUrl = "info.jsp";
+<%@include file="/taglibs.jsp" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/calendar.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%
 if(!articleId.equals("-1")) { 
    String articleTemplate = "article.jsp" + templateQueryString;
    %>
@@ -43,7 +44,7 @@ if(!articleId.equals("-1")) {
       boolean checkOnPeriod = (fromTime<toTime);
       // *** delete expired articles from this page (if it is not the archive) ***
       boolean isArchive = false;
-      %><mm:node number="<%= pageId %>"
+      %><mm:node number="<%= paginaID %>"
          ><mm:aliaslist
             ><mm:write  jspvar="alias" vartype="String" write="false"><%
 	            isArchive = (alias.indexOf("archief") > -1); 
@@ -52,7 +53,7 @@ if(!articleId.equals("-1")) {
       ></mm:node
       ><%@include file="includes/info/movetoarchive.jsp" %><%
       boolean hasPools = false;
-      %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel,posrel,pools"
+      %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,pools"
 		orderby="artikel.embargo" searchdir="destination" max="1"><%
          hasPools = true;
       %></mm:list
@@ -93,6 +94,7 @@ if(!articleId.equals("-1")) {
                   }
                   articleConstraint += ")";
                 }
+					 String sTemplateUrl = "info.jsp";
                 String extTemplateQueryString = templateQueryString; 
                 if(!periodId.equals("")){ extTemplateQueryString += "&d=" + periodId; }
                 int listSize = 0; 
@@ -101,26 +103,26 @@ if(!articleId.equals("-1")) {
                 <%= articlePath %><br/>
                 <%= articleConstraint %><br/>
                 --%>
-                <mm:list nodes="<%= pageId %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
+                <mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
 				         orderby="artikel.embargo" searchdir="destination"
                   ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
                 ></mm:list
                 ><%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
-                   %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
+                   %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" orderby="artikel.embargo" searchdir="destination" directions="DOWN" 
                        offset="<%= "" + (thisOffset-1)*10 %>" max="<%= "" + objectPerPage %>" constraints="<%= articleConstraint %>"><%
                        String titleClass = "pageheader"; 
                        String readmoreUrl = "info.jsp";
                        if(isIPage) readmoreUrl = "ipage.jsp";
                        %><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><%
-                           readmoreUrl += "?p=" + pageId + "&article=" + article_number; 
+                           readmoreUrl += "?p=" + paginaID + "&article=" + article_number; 
                        %></mm:field
                        ><mm:field name="pagina.titel_fra" jspvar="showExpireDate" vartype="String" write="false"
                            ><%@include file="includes/info/summaryrow.jsp" 
                        %></mm:field
                      ></mm:list><%
                } else { 
-                  %><mm:list nodes="<%= pageId %>" path="<%= articlePath %>" max="1">
+                  %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" max="1">
 								Er zijn geen artikelen gevonden, die voldoen aan uw selectie criteria.
 								<mm:import id="pagehasarticles" />
 				        </mm:list>
@@ -138,5 +140,7 @@ if(!articleId.equals("-1")) {
       // *************************************** right bar *******************************
       %><%@include file="includes/info/relatedpools.jsp" %></td><%
 } 
-%><%@include file="includes/footer.jsp" 
-%></mm:cloud>
+%>
+<%@include file="includes/footer.jsp" %>
+</cache:cache>
+</mm:cloud>

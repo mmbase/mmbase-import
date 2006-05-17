@@ -1,9 +1,11 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-%><%@include file="includes/header.jsp" 
-%><td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp" %>
+<%@include file="includes/header.jsp" %>
+<td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
 </tr>
 <tr>
 <td colspan="2" class="transperant" valign="top">
@@ -12,7 +14,7 @@
 <tr><td style="padding:10px;padding-top:18px;"><%
 // like templateQueryString from templatesettings.jsp, but w/o articleId
 templateQueryString = ""; 
-if(!pageId.equals("-1")){ templateQueryString += "?p=" + pageId; } 
+if(!paginaID.equals("-1")){ templateQueryString += "?p=" + paginaID; } 
 if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
    
 if(!articleId.equals("-1")) { 
@@ -24,7 +26,7 @@ if(!articleId.equals("-1")) {
     %></mm:list><%
     
 } else {  
-   %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,teaser" constraints="contentrel.pos='3'"
+   %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,teaser" constraints="contentrel.pos='3'"
     ><p><div class="pageheader"><mm:field name="teaser.titel" /></div>
     <mm:field name="teaser.omschrijving" /></p>
    </mm:list><%
@@ -40,7 +42,7 @@ if(!articleId.equals("-1")) {
    String thisCalendar = "";
    String dateType = "";
 
-   %><mm:node number="<%= pageId %>"
+   %><mm:node number="<%= paginaID %>"
       ><mm:field name="titel_fra" jspvar="dummy" vartype="String" write="false"><%
          dateType = dummy;
       %></mm:field
@@ -145,4 +147,5 @@ if(!articleId.equals("-1")) {
 </div>
 </td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

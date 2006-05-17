@@ -1,10 +1,12 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-
-%><%@include file="includes/header.jsp" 
-%><td><%@include file="includes/pagetitle.jsp" %></td>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<% if(!postingStr.equals("|")) { expireTime = 0; } %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey + "~" + session.getAttribute("pagerefminone") %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp" %>
+<%@include file="includes/header.jsp" %>
+<td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "";
     %><%@include file="includes/rightbartitle.jsp" 
 %></td>
@@ -35,7 +37,7 @@
 					<% sWvjePageId = number; %>
 				</mm:field>
 			</mm:list>
-		<% if(pageId.equals(sWvjePageId)) {
+		<% if(paginaID.equals(sWvjePageId)) {
             sDefaultText = "Het volgende wil ik melden over de rubriek ";
             %>
             <mm:node number="<%= sPageRefMinOne %>" jspvar="lastPage" notfound="skipbody">
@@ -48,29 +50,26 @@
             </mm:node>
             <%
          } 
-         %><% templateTitle = "formscript"; 
-         %><%@include file="includes/cacheopen.jsp" 
-         %><cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application"
-         ><%@include file="includes/form/script.jsp" 
-         %></cache:cache><%
+         %>
+			<%@include file="includes/form/script.jsp" %>
+			<%
          
          if(!postingStr.equals("")){
              postingStr += "|";
              %><%@include file="includes/form/result.jsp" %><% 
          } else {
-             templateTitle = "formtable_" + session.getAttribute("pagerefminone"); 
-             %><%@include file="includes/cacheopen.jsp" 
-             %><cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application"
-             ><%@include file="includes/form/table.jsp" 
-             %></cache:cache><%
+             %>
+				 <%@include file="includes/form/table.jsp" %>
+             <%
          } %></td>
     <td><img src="media/spacer.gif" width="10" height="1"></td>
 </tr>
 </table>
 </div>
-</td><%-- 
+</td><%
 
-*************************************** right bar *******************************
---%><td>&nbsp;</td>
+// *************************************** right bar *******************************
+%><td>&nbsp;</td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

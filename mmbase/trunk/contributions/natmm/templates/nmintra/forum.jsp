@@ -1,10 +1,12 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/header.jsp" 
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/header.jsp" 
 %><td colspan="2" rowspan="2">
 <% String forumId = ""; %>
-<mm:node number="<%= pageId %>" id="this_page">
+<mm:node number="<%= paginaID %>" id="this_page">
     <mm:relatednodes type="forums" max="1">
         <mm:field name="number" jspvar="dummy"  vartype="String" write="false"><% forumId = dummy; %></mm:field>
     </mm:relatednodes>
@@ -24,4 +26,5 @@
 <% } %>
 </td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

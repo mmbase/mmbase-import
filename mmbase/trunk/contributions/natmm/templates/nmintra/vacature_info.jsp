@@ -1,8 +1,9 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp"
-%>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/calendar.jsp"%>
 <%@include file="includes/header.jsp" %> 
 <%
 
@@ -115,17 +116,17 @@ if(!articleId.equals("-1")) {
        <tr><td style="padding:10px;padding-top:18px;">
        <%@include file="includes/relatedteaser.jsp" %>
        <% // delete the expired vacatures %>
-       <mm:list nodes="<%= pageId %>" path="pagina,contentrel,vacature" fields="vacature.number" orderby="vacature.embargo" directions="DOWN"
+       <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number" orderby="vacature.embargo" directions="DOWN"
                 constraints="<%= "vacature.verloopdatum < '" + nowSec + "'" %>"> 
             ><mm:deletenode element="contentrel" />
        </mm:list>
        <% // show vacatures the vacatures that passed their embargo %>
-       <mm:list nodes="<%= pageId %>" path="pagina,contentrel,vacature" fields="vacature.number"
+       <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,vacature" fields="vacature.number"
                 orderby="vacature.embargo" directions="DOWN" constraints="<%= "vacature.embargo <= '" + nowSec + "'" %>"
             ><mm:node element="vacature"><%
                if(isIPage) { readmoreUrl = "ipage.jsp"; }
                %><mm:field name="number" jspvar="vacature_number" vartype="String" write="false"><%
-                  readmoreUrl += "?p=" + pageId + "&project=" + vacature_number; 
+                  readmoreUrl += "?p=" + paginaID + "&project=" + vacature_number; 
                %></mm:field>
                <div class="pageheader"><a href="<%= readmoreUrl %>" style="text-decoration:underline"><mm:field name="titel" /></a></div>
                <div class="black" style="margin-bottom:10px;">
@@ -155,7 +156,7 @@ if(!articleId.equals("-1")) {
          <tr>
             <td style="padding-bottom:10px;padding-left:19px;padding-right:9px;">
             <% // show the last three news articles related to the pools that are related to this page %>
-            <mm:list nodes="<%= pageId %>" path="pagina,posrel,pools">
+            <mm:list nodes="<%= paginaID %>" path="pagina,posrel,pools">
       		<mm:node element="pools">
                   <mm:related path="posrel,artikel" orderby="artikel.embargo" directions="DOWN" max="3"
                        ><mm:remove referid="this_article"
@@ -180,7 +181,7 @@ if(!articleId.equals("-1")) {
          </tr>
          <tr>
             <td style="padding-bottom:10px;padding-left:19px;padding-right:9px;">
-             <mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" orderby="contentrel.pos"
+             <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="contentrel.pos"
                  ><mm:remove referid="this_article"
                  /><mm:node element="artikel" id="this_article"
                  /><%@include file="includes/relatedsummaries.jsp" 
@@ -193,4 +194,5 @@ if(!articleId.equals("-1")) {
 } 
 %>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

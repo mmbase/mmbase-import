@@ -1,9 +1,8 @@
-<%@include file="includes/templateheader.jsp" 
-%><mm:cloud
-><%@include file="includes/cacheopen.jsp" %>
-<% cacheKey = cacheKey + "~" + imageId; %>
-<cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" >
-<!-- <%= new java.util.Date() %> -->
+<%@include file="/taglibs.jsp" %>
+<mm:cloud>
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <% 
 String previousImage = "-1";
 String nextImage = "-1";
@@ -12,11 +11,11 @@ String otherImages = "";
 int totalNumberOfImages = 1;
 int thisImageNumber = 1;
 %><%@include file="includes/splitimagelist.jsp" 
-%><% pageUrl = "slideshow.jsp?p=" + pageId + "&u=" + shop_itemId + "&o=" + offsetId + "&i="; 
+%><% pageUrl = "slideshow.jsp?p=" + paginaID + "&u=" + shop_itemId + "&o=" + offsetId + "&i="; 
 %><html>
 <head>
 <title><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
-	><mm:node number="<%= pageId %>"> -	<mm:field name="titel" /></mm:node
+	><mm:node number="<%= paginaID %>"> -	<mm:field name="titel" /></mm:node
 	><mm:node number="<%= shop_itemId %>" notfound="skipbody"> -	<mm:field name="title" /></mm:node
 	><mm:node number="<%= thisImage %>"> -	<mm:field name="title" /></mm:node>
 </title>

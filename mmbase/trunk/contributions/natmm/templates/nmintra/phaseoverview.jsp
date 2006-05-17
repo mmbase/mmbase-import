@@ -1,9 +1,10 @@
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/searchfunctions.jsp" 
-
-%><%@include file="includes/header.jsp" %>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
+<%@include file="includes/searchfunctions.jsp" %>
+<%@include file="includes/header.jsp" %>
 <td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
 </tr>
 <tr>
@@ -11,7 +12,7 @@
 <div class="<%= infopageClass %>">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr><td>
-<mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" orderby="contentrel.pos" directions="UP"
+<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="contentrel.pos" directions="UP"
 	><mm:node element="artikel"
       ><div class="pageheader" style="padding-left:10px;">
          <mm:field name="titel"/>
@@ -28,7 +29,7 @@
 		</mm:related
 	></mm:node
 ></mm:list>
-<mm:node number="<%= pageId %>">
+<mm:node number="<%= paginaID %>">
    <%@include file="includes/contentblocks.jsp" %>
 </mm:node>
 </div>
@@ -36,4 +37,5 @@
 </table>
 </td>
 <%@include file="includes/footer.jsp" %>
+</cache:cache>
 </mm:cloud>

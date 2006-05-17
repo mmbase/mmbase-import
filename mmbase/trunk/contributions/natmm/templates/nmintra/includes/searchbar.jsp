@@ -24,10 +24,10 @@ function startPhone() {
 }
 //-->
 </script><tr>
-<%-- *************************************** natuurmonumenten logo ******************************* --%>
+<% // *************************************** natuurmonumenten logo ******************************* %>
 <td rowspan="3"><a href="http://www.natuurmonumenten.nl" target="_blank"><img src="media/<%= logoName %>_logo.gif" border="0" title=""></a></td>
 <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
-<%-- *************************************** natuurmonumenten intranet ******************************* --%>
+<% // *************************************** natuurmonumenten intranet ******************************* %>
 <td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">Natuurmonumenten <a href="index.jsp" target="_top"><span class="red"><mm:node number="<%= rootId %>"
             ><mm:field name="naam" jspvar="website_title" vartype="String" write="false"
                 ><%= website_title.toUpperCase()
@@ -37,31 +37,53 @@ function startPhone() {
 </tr>
 <tr>
 <td style="width:70%;">
-<%-- *************************************** zoek box ******************************* --%>
-<table border=0 cellspacing="0" cellpadding="0">
-    <form name="searchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return startSearch();">
-    <tr>
-    <td><input type="text" name="search" value="<% if(searchId.equals("")){ %>ik zoek op ...<% } else { %><%= searchId %><% } 
-        %>" class="<%= cssClassName %>" style="text-align:left;width:110px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
-    <td><img src="media/spacer.gif" width="7" height="1"></td>
-    <td><img src="media/spacer.gif" width="7" height="1"></td>
-    <td><img src="media/spacer.gif" width="1" height="1"><br>
-        <input type="submit" name="Submit" value="Zoek" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;"></td>
-	 <td><img src="media/spacer.gif" width="7" height="1"></td>
-    <td><img src="media/spacer.gif" width="7" height="1"></td>
-    <td><img src="media/spacer.gif" width="1" height="1"><br>
-	 	  <input type="hidden" name="adv">
-        <input type="submit" name="AdvSubmit" value="Uitgebreid Zoeken" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;width:110px;" onClick="document.searchform.adv.value='adv_search';"></td>
-    </tr>
-    </form>
+<% // *************************************** zoek box ******************************* %>
+<table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+	<form name="searchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return startSearch();">
+	<tr>
+	<td><input type="text" name="search" value="<% if(searchId.equals("")){ %>ik zoek op ...<% } else { %><%= searchId %><% } 
+	  %>" class="<%= cssClassName %>" style="text-align:left;width:110px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
+	<td style="padding-left:3px;padding-top:1px;">
+	  <input type="submit" name="Submit" value="Zoek" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;"></td>
+	<td style="padding-left:3px;padding-top:1px;">
+	  <input type="hidden" name="adv">
+	  <input type="submit" name="AdvSubmit" value="Uitgebreid Zoeken" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;width:110px;" onClick="document.searchform.adv.value='adv_search';"></td>
+	<td style="width:80%;text-align:right;">
+	<%
+	String owners = ph.getOwners(cloud,paginaID,breadcrumbs);
+	String ownersEmail = "";
+	if(!owners.equals("")) {
+		%>
+		<mm:list nodes="<%= owners %>" path="users" fields="users.emailadres">
+			<mm:field name="users.emailadres" jspvar="users_email" vartype="String" write="false">
+				<%
+				ownersEmail += (ownersEmail.equals("") ? "" : ";") + users_email;
+				%>
+			</mm:field>
+		</mm:list>
+		<%
+		if(!ownersEmail.equals("")) { 
+			%>
+			<a href="mailto:<%= ownersEmail %>?subject=Betreft <% 
+						%><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
+						> - <mm:node number="<%= paginaID %>"><mm:field name="titel" /></mm:node
+						>" title="Email de beheerder van deze pagina">
+				<img src="media/email.gif" alt="Email de beheerder van deze pagina" border="0">
+			</a>
+			<%
+		}
+	} %>
+	</td>
+	</tr>
+	</form>
 </table>
 </td>
 <td style="padding-right:10px;width:251px;">
-<%-- *************************************** phone box ******************************* --%>
+<% // *************************************** phone box ******************************* %>
 <table border=0 cellspacing="0" cellpadding="0" align="right">
-	  <form name="phoneform" action="smoelenboek.jsp?p=wieiswie" onSubmit="return startPhone();">
+	  <form name="phoneform" action="<%= requestURL %>smoelenboek.jsp?p=wieiswie" onSubmit="return startPhone();">
 	  <tr>
-	  <td><img src="media/telefoon.gif"></td>
+	  <td><img src="media/telefoon.gif" alt="Zoeken in het smoelenboek" onclick="startPhone();"></td>
 	  <td><input type="text" name="name" value="<% if(nameId.equals("")){ %><%= nameEntry %><% } else { %><%= nameId %><% } 
 			%>" class="<%= cssClassName %>" style="text-align:left;width:166px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
 	  <td><img src="media/spacer.gif" width="7" height="1"></td>

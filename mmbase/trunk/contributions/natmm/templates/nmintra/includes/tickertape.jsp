@@ -3,7 +3,7 @@
 	String teaser_number = "";
 
 // ** try to find the teaser with valid publication and expiration date 
-%><mm:list nodes="<%= pageId %>"
+%><mm:list nodes="<%= paginaID %>"
 	path="pagina,contentrel,teaser"
 	fields="teaser.titel" constraints="<%= teaserConstraint %>"
 	><mm:field name="teaser.number" jspvar="dummy" vartype="String" write="false"
@@ -14,7 +14,7 @@
 if(teaser_number.equals("")) { 
 
    // ** no teaser with valid publication and expiration date, just take one
-   %><mm:list nodes="<%= pageId %>"
+   %><mm:list nodes="<%= paginaID %>"
    	path="pagina,contentrel,teaser"
    	fields="teaser.titel" constraints="contentrel.pos = '2'"
    	><mm:field name="teaser.number" jspvar="dummy" vartype="String" write="false"

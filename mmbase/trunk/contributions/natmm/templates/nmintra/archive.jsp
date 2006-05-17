@@ -5,7 +5,6 @@
 %><%@include file="includes/calendar.jsp" 
 %><%@include file="includes/header.jsp" 
 %><%
-String sTemplateUrl = "archief.jsp";
 if(!projectId.equals("")) {
    %><%@include file="includes/projectoverview.jsp" %><%
 } else {
@@ -18,6 +17,7 @@ if(!projectId.equals("")) {
        }
    } catch(Exception e) {} 
    
+   String sTemplateUrl = "archive.jsp";
    String extTemplateQueryString = templateQueryString; 
    String allConstraint = "";
    String employeeConstraint = "";
@@ -133,7 +133,7 @@ if(!projectId.equals("")) {
                  ><mm:node element="projects"><%
                  String readmoreUrl = "archive.jsp";
                  if(isIPage) readmoreUrl = "ipage.jsp";
-                 readmoreUrl += "?p=" + pageId + "&project=";
+                 readmoreUrl += "?p=" + paginaID + "&project=";
                  %><mm:field name="number" jspvar="project_number" vartype="String" write="false"><%
                      readmoreUrl += project_number; 
                  %></mm:field
