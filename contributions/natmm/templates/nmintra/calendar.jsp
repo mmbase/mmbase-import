@@ -12,10 +12,10 @@
 <tr><td style="padding:10px;padding-top:18px;"><%
 // like templateQueryString from templatesettings.jsp, but w/o articleId
 templateQueryString = ""; 
-if(!pageId.equals("")){ templateQueryString += "?p=" + pageId; } 
+if(!pageId.equals("-1")){ templateQueryString += "?p=" + pageId; } 
 if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
    
-if(!articleId.equals("")) { 
+if(!articleId.equals("-1")) { 
         
     %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
                     templateQueryString %>&pst=|action=print">print</a></div>

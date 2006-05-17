@@ -4,7 +4,7 @@
 %><%@include file="includes/header.jsp" 
 %><%@include file="includes/searchfunctions.jsp" 
 %><%
-if(!articleId.equals("")) { 
+if(!articleId.equals("-1")) { 
     String articleTemplate = "article.jsp" + templateQueryString;
 
     %><jsp:include page="<%= articleTemplate %>" /><%

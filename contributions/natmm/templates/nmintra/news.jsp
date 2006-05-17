@@ -15,14 +15,14 @@
         %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
                     templateQueryString %>&pst=|action=print">print</a></div><%
     } 
-    if(articleId.equals("")) { 
+    if(articleId.equals("-1")) { 
      %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel" orderby="posrel.pos" directions="UP" fields="artikel.number"
          ><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><% 
             articleId = article_number; 
          %></mm:field
       ></mm:list><%
     }
-    if(!articleId.equals("")) { 
+    if(!articleId.equals("-1")) { 
         %><mm:list nodes="<%= articleId %>" path="artikel"
             ><%@include file="includes/relatednews.jsp" 
         %></mm:list><%

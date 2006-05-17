@@ -1,13 +1,6 @@
 <%@include file="includes/templateheader.jsp" 
-%><% 
-
-if(editorsName.indexOf(request.getServerName())>-1&&!isPreview) { // *** redirect to website servername ***
-    response.sendRedirect("http://" + websiteName + request.getServletPath()+"?"+request.getQueryString());
-} else {
-
 %><mm:cloud
-><%@include file="includes/getids.jsp" 
-%><%@include file="includes/getresponse.jsp" %><%
+><%@include file="includes/getresponse.jsp" %><%
 postingStr += "|";
 String action = getResponseVal("action",postingStr);
 
@@ -24,7 +17,7 @@ String action = getResponseVal("action",postingStr);
     <body scroll="auto" <% if(!action.equals("noprint")) { %>onLoad="self.print();"<% } %>>
     <table border="0" cellpadding="0" cellspacing="0"><tr><% 
     
-if(!pageId.equals("")) { 
+if(!pageId.equals("-1")) { 
     
     %><% String template_url = ""; 
     %><mm:list nodes="<%= pageId %>" path="pagina,paginatemplate" fields="paginatemplate.url,paginatemplate.naam"
@@ -52,7 +45,4 @@ if(!pageId.equals("")) {
     </tr></table>
 </body>
 </html>
-</mm:cloud><%
-
-}
-%>
+</mm:cloud>

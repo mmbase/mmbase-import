@@ -20,7 +20,7 @@ if(!refererId.equals("")) {
     %></mm:field
 ></mm:node><%
 // *** rubriek: translate alias back into number ***
-if(!rubriekId.equals("")) { 
+if(!rubriekId.equals("-1")) { 
     %><mm:node number="<%= rubriekId %>"
         ><mm:field name="number" jspvar="rubriek_number" vartype="String" write="false"><%
             rubriekId = rubriek_number; 

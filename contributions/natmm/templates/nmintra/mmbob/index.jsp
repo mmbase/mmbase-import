@@ -18,8 +18,6 @@
     </table>
 </mm:compare>
 
-<%@include file="../globals.jsp" %>
-
 <mm:compare referid="forumid" value="unknown" inverse="true"><% 
 
 // Step 1: user comes with username: use username to check if user is poster if not create a poster for this forum
@@ -56,7 +54,7 @@
 }
 // Step 2: redirect user to MMBase-authenticated area of the website
 if(websiteName.indexOf(request.getServerName())>-1) { 
-  response.sendRedirect("http://" +editorsName+ "/mmbob/login.jsp?forumid="+forumid+"&account="+username+"&password="+username); 
+//  response.sendRedirect("http://" +editorsName+ "/mmbob/login.jsp?forumid="+forumid+"&account="+username+"&password="+username); 
 }
 // Step 3: user has arrived on MMBase-authenticated area of the website
 %>
