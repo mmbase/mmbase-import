@@ -108,7 +108,21 @@ public class PaginaHelper {
       }
       return breadcrumbs;
    }
-   
+  
+	public static String getOwners(Cloud cloud, String paginaNumber, Vector breadcrumbs) {
+		ContentHelper ch = new ContentHelper(cloud);
+		String owners = ch.getOwners(paginaNumber);
+		for(int r=0; r<breadcrumbs.size() && owners.equals(""); r++) {
+			owners = ch.getOwners((String) breadcrumbs.get(r));
+		}
+		return owners;
+	}
+	
+	public static String getOwners(Cloud cloud, String paginaNumber) {
+		Vector bc = getBreadCrumbs(cloud,paginaNumber); 
+		return getOwners(cloud,paginaNumber,bc);
+	}
+	
    public static String getRootRubriek(Cloud cloud, String paginaNumber) {
       Vector breadcrumbs = getBreadCrumbs(cloud, paginaNumber);
       log.debug(paginaNumber + "->" + breadcrumbs);
@@ -1132,17 +1146,20 @@ public class PaginaHelper {
             ID = paginaID;
          } else {
             for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && ID.equals("-1");) {
-               String objecttype = (String) it.next();         
-               ID = (String) ids.get(objecttype.replaceAll("#",""));
+               String objecttype = (String) it.next();
+					ID = (String) ids.get(objecttype.replaceAll("#",""));
+					if(ID==null) { 
+						log.info("Objecttype " + objecttype + " is not found in the list of IDs supplied to findIDs");
+						ID = "-1";
+					}
             }
          }
       }
 
-      // *** if the ID is still empty, it means that not one ID is provided in the URL
-      // *** set paginaID, rubriekID and ID from the template
-      if(ID.equals("-1")) { // *** get page from url
-         
-         NodeList nlPages = cloud.getList(ID,
+      if(ID.equals("-1")) { 
+			// if the ID is still empty, it means that not one ID is provided in the URL
+			// set paginaID, rubriekID and ID from the template
+         NodeList nlPages = cloud.getList("",
                                           "template,gebruikt,pagina,posrel,rubriek",
                                           "rubriek.number,pagina.number",
                                           "template.url='" + template + "'",
@@ -1154,24 +1171,24 @@ public class PaginaHelper {
              ID = rubriekID;
           }
           
-      } else {
-      
-         if(paginaID.equals("-1")) {
-            ids.put("rubriek", rubriekID);
-            paginaID = findPageByIDs(ids,template,defaultPage);
-         }
-         
-         // set the rubriekID on basis of the paginaID
-         if(!paginaID.equals("-1")&&rubriekID.equals("-1")) {
-             NodeList nlRubriek = cloud.getList(paginaID,
-                                             "pagina,posrel,rubriek",
-                                             "rubriek.number",
-                                             null,null, null, null, false);
-             if (nlRubriek.size() > 0) {
-                rubriekID = nlRubriek.getNode(0).getStringValue("rubriek.number");
-             }
-         }
       }
+      
+		if(paginaID.equals("-1")) {
+			// update the rubriekID
+			ids.put("rubriek", rubriekID);  
+			paginaID = findPageByIDs(ids,template,defaultPage);
+		}
+		
+		// set the rubriekID on basis of the paginaID
+		if(!paginaID.equals("-1")&&rubriekID.equals("-1")) {
+			 NodeList nlRubriek = cloud.getList(paginaID,
+														"pagina,posrel,rubriek",
+														"rubriek.number",
+														null,null, null, null, false);
+			 if (nlRubriek.size() > 0) {
+				 rubriekID = nlRubriek.getNode(0).getStringValue("rubriek.number");
+			 }
+		}
       
       if(!paginaID.equals("-1")) {
          // make sure paginaID is not an alias, otherwise constraints on paginaID won't work
@@ -1190,22 +1207,22 @@ public class PaginaHelper {
    public String findPageByIDs(HashMap ids, String template, String defaultPage) {
       String rubriekID =  (String) ids.get("rubriek");
       String paginaID =  (String) ids.get("pagina");
-      log.debug("findPagesByIDs: rubriek = " + rubriekID + " pagina= " + paginaID + " template= " + template);
+      log.info("findPagesByIDs: rubriek = " + rubriekID + " pagina= " + paginaID + " template= " + template);
 
       // use rubriekID to set paginaID
       if (paginaID.equals("-1") && !rubriekID.equals("-1")) {
 
          RubriekHelper h = new RubriekHelper(cloud);
          paginaID = h.getFirstPage(rubriekID);
-         if (paginaID.equals("-1")) {
-            paginaID = defaultPage;
-         }
       }
-
+		// use template and ID to set paginaID
       for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && paginaID.equals("-1");) {
          String objecttype = (String) it.next();
          String ID = (String) ids.get(objecttype.replaceAll("#",""));
-
+			if(ID==null) { 
+				log.info("Objecttype " + objecttype + " is not found in the list of IDs supplied to findPageByIDs");
+				ID = "-1";
+			}
          if (!ID.equals("-1")) {
             String currentPath = (String) pathsFromPageToElements.get(objecttype) + ",gebruikt,template";
             log.debug("Checking " + ID + " with " + currentPath);
@@ -1219,8 +1236,13 @@ public class PaginaHelper {
                paginaID = nlPages.getNode(0).getStringValue("pagina.number");
                log.debug("Found " + paginaID);
             }
-         }         
+         }
+
       }
+		// if nothing else helps use defaultPage
+		if (paginaID.equals("-1")) {
+			paginaID = defaultPage;
+		}
       return paginaID;
    }
    
