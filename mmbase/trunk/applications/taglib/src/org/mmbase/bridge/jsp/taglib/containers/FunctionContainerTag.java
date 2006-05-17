@@ -15,18 +15,20 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.Entry;
 import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Referids;
 
 /**
  * Function Container can be used around Function (-like) Tags.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.13 2005-05-04 22:24:51 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.14 2006-05-17 13:26:07 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
 
-    private   List parameters;
+    private  List parameters ;
 
     // javadoc inherited (from ParamHandler)
     public void addParameter(String key, Object value) throws JspTagException {
@@ -45,6 +47,9 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
 
     public int doStartTag() throws JspTagException {
         parameters = new ArrayList();
+        if (referids != Attribute.NULL) {
+            parameters.addAll(Referids.getReferids(referids, this).entrySet());
+        }
         return EVAL_BODY;
     }
 
