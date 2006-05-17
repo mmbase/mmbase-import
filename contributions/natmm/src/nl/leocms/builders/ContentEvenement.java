@@ -24,6 +24,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.NodeList;
 import com.finalist.mmbase.util.CloudFactory;
 import org.mmbase.util.logging.*;
 import nl.leocms.evenementen.*;
@@ -33,7 +34,7 @@ import nl.leocms.evenementen.*;
  *
  * @author Nico Klasens (Finalist IT Group)
  * @created 21-nov-2003
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class ContentEvenement extends ContentElementBuilder {
    private static final Logger log = Logging.getLoggerInstance(ContentEvenement.class);
@@ -92,16 +93,32 @@ public class ContentEvenement extends ContentElementBuilder {
       boolean isGroupExcursion = Evenement.isGroupExcursion(cloud,sParent);
       int iCurPart = 0;
       iNodes= cloud.getList(node.getStringValue("number")
-               , "evenement,posrel,inschrijvingen,posrel,deelnemers,related,deelnemers_categorie"
-               , "deelnemers.bron,deelnemers_categorie.aantal_per_deelnemer,deelnemers_categorie.groepsactiviteit"
+               , "evenement,posrel,inschrijvingen,posrel,deelnemers"
+               , "deelnemers.bron,deelnemers.number"
                , null, null, null, null, false).nodeIterator();
       while(iNodes.hasNext()) {
          Node nextNode = iNodes.nextNode();
-         boolean isGroupBooking = nextNode.getStringValue("deelnemers_categorie.groepsactiviteit").equals("1");
-         // for group excursions only count the group booking
-         if(!isGroupExcursion||isGroupBooking) {
-            iCurPart += nextNode.getIntValue("deelnemers.bron")*nextNode.getIntValue("deelnemers_categorie.aantal_per_deelnemer");
+         NodeList nl = cloud.getList(nextNode.getStringValue("deelnemers.number"),"deelnemers,related,deelnemers_categorie"
+                                     ,"deelnemers_categorie.aantal_per_deelnemer,deelnemers_categorie.groepsactiviteit"
+                                     ,null, null, null, null, false);
+         if (nl.size()==0){
+            if (!isGroupExcursion) {
+               iCurPart += nextNode.getIntValue("deelnemers.bron");
+            }
+         } else {
+            NodeIterator ni = nl.nodeIterator();
+            while (ni.hasNext()) {
+               Node n = ni.nextNode();
+               boolean isGroupBooking = n.getStringValue(
+                  "deelnemers_categorie.groepsactiviteit").equals("1");
+               // for group excursions only count the group booking
+               if (!isGroupExcursion || isGroupBooking) {
+                  iCurPart += n.getIntValue("deelnemers.bron") *
+                     n.getIntValue("deelnemers_categorie.aantal_per_deelnemer");
+               }
+            }
          }
+
       }
       node.setValue("cur_aantal_deelnemers",iCurPart);
       // *** send email, if the event is canceled ***
