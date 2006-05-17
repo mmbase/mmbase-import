@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * Interface designed to make it possible for child tags to access a node defined in a tag
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeProvider.java,v 1.11 2005-11-23 10:29:39 michiel Exp $ 
+ * @version $Id: NodeProvider.java,v 1.12 2006-05-17 19:14:35 michiel Exp $ 
  */
 
 public interface NodeProvider extends TagIdentifier, FunctionContainerOrNodeProvider {
@@ -48,6 +48,6 @@ public interface NodeProvider extends TagIdentifier, FunctionContainerOrNodeProv
      * Whether the node must be commited after the body of the tag if any changes occured
      * @since MMBase-1.8
      */
-    public void setCommitonclose(String c) throws JspTagException;
+    void setCommitonclose(String c) throws JspTagException;
 
 }
