@@ -521,17 +521,18 @@ public class SubscribeForm extends ActionForm {
       return emailMessage;
    }
 
-   public boolean hasDeelnemersCategorieRelated(Cloud cloud){
-      Node thisEvent = CloudFactory.getCloud().getNode(this.getNode());
-      String sParent = Evenement.findParentNumber(thisEvent.getStringValue("number"));
-      NodeList nl = cloud.getList(sParent,"evenement,posrel,deelnemers_categorie",
-      null,null,null,null,null,false);
-         if(nl.size()>0) {
-            return true;
-         } else {
-            return false;
-         }
-
+   public boolean participantsCategoryIsSet(Cloud cloud, String sParent, String sParticipantsCategory) {
+		boolean pcIsNotSet = sParticipantsCategory.equals("-1");
+		if(pcIsNotSet) {
+			NodeList nl = cloud.getList(sParent,
+				"evenement,posrel,deelnemers_categorie",
+      		null,null,null,null,null,false);
+			pcIsNotSet = (nl.size()>0); // no related deelnemers_categorie also means that pc is set
+			if(pcIsNotSet) {
+				 pcIsNotSet = !Evenement.isGroupExcursion(cloud,parent); // groups excursion also means pc is set
+			}
+		}
+		return !pcIsNotSet;
    }
 
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
@@ -564,7 +565,7 @@ public class SubscribeForm extends ActionForm {
             errors.add("warning",new ActionError("evenementen.noselection.add"));
          }
 
-         if ((hasDeelnemersCategorieRelated(cloud))&&(this.getParticipantsCategory().equals("-1"))) {
+         if(!this.participantsCategoryIsSet(cloud, this.getParent(), this.getParticipantsCategory())) {
             errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
          }
 
@@ -587,8 +588,8 @@ public class SubscribeForm extends ActionForm {
             errors.add("warning",new ActionError("evenementen.required.lastname"));
          }
 
-         if(this.getParticipantsCategory().equals("-1")&&(hasDeelnemersCategorieRelated(cloud))){
-               errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
+         if(!this.participantsCategoryIsSet(cloud, this.getParent(), this.getParticipantsCategory())) {
+				errors.add("warning",new ActionError("evenementen.nodeelnemercategorie.add"));
          }
 
          String memberIdMessage = getMemberIdMessage(memberId,this.getZipCode());
