@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.7 2005-12-27 15:48:21 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.8 2006-05-17 11:30:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public class QueryReader {
@@ -397,6 +397,7 @@ public class QueryReader {
                 path = relateFrom + "," + path;
             }
 
+
             QueryDefinition queryDefinition = configurer.getQueryDefinition();
             queryDefinition.isMultiLevel = !path.equals(element);
 
@@ -405,7 +406,7 @@ public class QueryReader {
             }
             if (queryDefinition.isMultiLevel) {
                 queryDefinition.query = cloud.createQuery();
-                Queries.addPath(queryDefinition.query,path, searchDirs);
+                Queries.addPath(queryDefinition.query, path, searchDirs);
             } else {
                 queryDefinition.query = queryDefinition.elementManager.createQuery();
             }
@@ -413,6 +414,11 @@ public class QueryReader {
                 queryDefinition.elementStep = queryDefinition.query.getStep(element);
             }
             if (queryDefinition.fields == null) queryDefinition.fields = new ArrayList();
+
+            if (hasAttribute(queryElement, "startnodes")) {
+                String startNodes = getAttribute(queryElement, "startnodes");
+                Queries.addStartNodes(queryDefinition.query, startNodes);
+            }
 
             // custom configurations to the query
             queryDefinition.configure(queryElement);
