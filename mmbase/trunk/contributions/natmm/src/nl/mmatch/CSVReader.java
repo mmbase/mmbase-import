@@ -24,7 +24,7 @@ public class CSVReader implements Runnable {
 
     private BufferedReader getBufferedReader(String sFileName) throws FileNotFoundException, UnsupportedEncodingException {
       FileInputStream fin = new FileInputStream(sFileName);
-      InputStreamReader isr = new InputStreamReader(fin,"UTF-8");
+      InputStreamReader isr = new InputStreamReader(fin,"ISO-8859-1");
       return new BufferedReader(isr);
     }
 
@@ -38,7 +38,7 @@ public class CSVReader implements Runnable {
                 try {
                     int count;
                     byte data[] = new byte[BUFFER];
-                    
+
                     ZipEntry entry = (ZipEntry) entries.nextElement();
                     InputStream zis = zFile.getInputStream(entry);
 
@@ -46,7 +46,7 @@ public class CSVReader implements Runnable {
                     if(dataFile.indexOf("/")>-1) dataFile = dataFile.substring(dataFile.lastIndexOf("/")+1);
                     dataFile = HtmlCleaner.stripText(dataFile);
                     dataFiles.add(dataFile);
-                    
+
                     BufferedOutputStream dest = new BufferedOutputStream(new FileOutputStream(zipDestination + dataFile), BUFFER);
                     while ((count = zis.read(data)) > 0) {
                         dest.write(data, 0, count);
@@ -69,10 +69,10 @@ public class CSVReader implements Runnable {
                &&  !(('A'<=c)&&(c<='Z'))
                &&  !(('0'<=c)&&(c<='9'))
                &&  !(c=='-')
-               &&  !(c=='_') 
+               &&  !(c=='_')
                &&  !(c=='.')
                &&  !(c==' ')
-               ) { 
+               ) {
                    searchText = searchText.substring(0,charPos) + "%" + searchText.substring(charPos+1);
                }
         }
@@ -91,18 +91,18 @@ public class CSVReader implements Runnable {
         return value;
     }
     private Date lastModifiedDate(String dataFile) {
-      return new Date( (new File(dataFile)).lastModified() ); 
+      return new Date( (new File(dataFile)).lastModified() );
     }
     private String getShowInfo(String value) {
         String showInfo = "0";
         if(value.equals("0")) showInfo = "1";
         return showInfo;
-    } 
+    }
     private String getReadmoreJobs(String value) {
         String readmoreJobs = "0";
         if(value.equals("1")) readmoreJobs = "1";
         return readmoreJobs;
-    } 
+    }
     private Integer getDate(String thisDate, int defaultYear) {
         int thisDay = 1;
         int thisMonth = 0;
@@ -128,7 +128,7 @@ public class CSVReader implements Runnable {
             thisYear = (new Integer(thisDate)).intValue();
         } catch (Exception e) { }
         return new Integer(thisYear);
-    } 
+    }
     private Date parseDate(String thisDate, int defaultYear) {
         int thisDay = 1;
         int thisMonth = 0;
@@ -146,7 +146,7 @@ public class CSVReader implements Runnable {
         Calendar cal = Calendar.getInstance();
         cal.set(thisYear,thisMonth,thisDay);
         return cal.getTime();
-    } 
+    }
     private String getGender(String value) {
         String gender = "0";
         if(value.toUpperCase().equals("M")) gender = "1";
@@ -163,7 +163,7 @@ public class CSVReader implements Runnable {
         String firstName = (String) thisPerson.get(firstname);
         if(firstName!=null&&firstName.length()>0) {
             firstName = firstName.replace('\'',' ').replace('\\',' ').trim();
-            alias += firstName.substring(0,1);    
+            alias += firstName.substring(0,1);
         }
         return alias;
     }
@@ -283,7 +283,7 @@ public class CSVReader implements Runnable {
         for(int d=0; d<departmentList.size(); d++) {
             Node departmentNode = departmentList.getNode(d);
             String departments_number = "" + departmentNode.getNumber();
-            if(deptWithEmployees.contains(departments_number)) { 
+            if(deptWithEmployees.contains(departments_number)) {
                 String descendants = departments.get(departments_number).toString();
                 departmentNode.setValue("importstatus",descendants.substring(1,descendants.length()-1));
             } else {
@@ -312,10 +312,10 @@ public class CSVReader implements Runnable {
         if(!relatedNodeKeyValue.equals("")) {
             // *** find the destination ***
             NodeManager relatedNodeNM = cloud.getNodeManager(relatedNode);
-            NodeList constrainedList = relatedNodeNM.getList(relatedNodeKeyField 
+            NodeList constrainedList = relatedNodeNM.getList(relatedNodeKeyField
                         + " LIKE '" + superSearchString(relatedNodeKeyValue) + "'",null,null);
             if(constrainedList.size()>0) {
-                destination = constrainedList.getNode(0); 
+                destination = constrainedList.getNode(0);
             } else {
                 destination = relatedNodeNM.createNode();
                 destination.setValue(relatedNodeKeyField,relatedNodeKeyValue);
@@ -330,13 +330,13 @@ public class CSVReader implements Runnable {
                     if(relation.getSource().getNumber()==destination.getNumber()
                             ||relation.getDestination().getNumber()==destination.getNumber()) {
                         thisRelation = relation;
-                    } 
+                    }
                 }
             }
             if(thisRelation==null){ // *** create the relation ***
                 thisRelation = sourceNode.createRelation(destination,cloud.getRelationManager(relatedRole));
             }
-            if(!relatedRoleField.equals("")) { 
+            if(!relatedRoleField.equals("")) {
                 thisRelation.setValue(relatedRoleField, thisPerson.get(relatedRoleValue));
             }
             thisRelation.setValue("readmore2", "active");
@@ -349,7 +349,7 @@ public class CSVReader implements Runnable {
         if(personsNode==null) {
             String aliasFB = ((String) thisPerson.get("ALIAS")).toUpperCase();
             personsNode = getNode(cloud, "medewerkers", "externid='' AND UPPER(account) LIKE '" + superSearchString(aliasFB) + "'");
-            if(personsNode==null) { 
+            if(personsNode==null) {
                 // *** aliasses are set by telefoonboek.jsp so maybe the firstname does not match with Beaufort ***
                 int aliasLength = aliasFB.length();
                 if(aliasLength>0) {
@@ -382,7 +382,7 @@ public class CSVReader implements Runnable {
         personsNode.commit();
         return personsNode;
     }
-    
+
     private String updateOrg(Cloud cloud, String orgFile){
         String logMessage = "";
         TreeMap thisTree = new TreeMap();
@@ -393,7 +393,7 @@ public class CSVReader implements Runnable {
             if(nextLine.indexOf("DPIB015_SL")==-1) log.info("expecting DPIB015_SL ... on first line of " + orgFile);
             nextLine = dataFileReader.readLine();
             if(nextLine.indexOf("-----|")==-1) log.info("expecting -----| ... on second line of " + orgFile);
-           
+
             Node thisNode = null;
             Node relatedNode = null;
             String [] labels = { "DPIB015_SL", "OE_HOGER_N", "OE_KORT", "OE_VOL_NM" };
@@ -438,14 +438,14 @@ public class CSVReader implements Runnable {
        logMessage += "\n<br>Organisational structure is read from: " + orgFile + " (lm=" + lastModifiedDate(orgFile) + ")";
        return logMessage;
     }
-   
+
     private TreeMap getEmails(String emailFile){
      // *** read the email input file ***
      TreeMap emails = new TreeMap();
      try {
       BufferedReader dataFileReader = getBufferedReader(emailFile);
       String nextLine = dataFileReader.readLine();
-    
+
       while(nextLine!=null) {
           String alias = getValue(nextLine,"Mailbox,",",");
           String email = getValue(nextLine,",SMTP:","%X400:");
@@ -463,18 +463,18 @@ public class CSVReader implements Runnable {
       log.info(e);
     }
     return emails;
-   } 
-   
+   }
+
    private String updatePersons(Cloud cloud, TreeMap emails, String dataFile){
-    String logMessage = "";  
-    try { 
+    String logMessage = "";
+    try {
       // *** read the person input file ***
       BufferedReader dataFileReader = getBufferedReader(dataFile);
       String nextLine = dataFileReader.readLine();
       if(nextLine.indexOf("PERS_NR")==-1) log.info("expecting PERS_NR ... on first line of " + dataFile);
       nextLine = dataFileReader.readLine();
       if(nextLine.indexOf("-----|")==-1) log.info("expecting -----| ... on second line of " + dataFile);
-      
+
       TreeMap thisPerson = new TreeMap();
       Node personsNode = null;
       String lastId = "";
@@ -485,7 +485,7 @@ public class CSVReader implements Runnable {
           "FUNC_EXT", "KOSTEN", "K_S_WAARDE", "K_OF_S_OMSCHRIJVING" };
       int persons=0;
       int entries=0;
-      int noemails=0;            
+      int noemails=0;
       nextLine = dataFileReader.readLine();
       while(nextLine!=null&&!nextLine.trim().equals("")) {
           nextLine += "|";
@@ -500,17 +500,17 @@ public class CSVReader implements Runnable {
               } else {
                   log.info("Line ends before last label for person " + thisPerson.get("PERS_NR") + " in " + dataFile);
               }
-              thisPerson.put(labels[v],value);                   
+              thisPerson.put(labels[v],value);
               v++;
           }
-          
+
           // *** if SOFI_NR is empty use PERS_NR ***
           if(thisPerson.get("SOFI_NR").equals("")) {
                thisPerson.put("SOFI_NR",thisPerson.get("PERS_NR"));
           }
 
           thisPerson.put("ALIAS",createAlias(thisPerson,"E_NAAM","E_ROEPNAAM"));
-          
+
           String thisPersonStr = (String) thisPerson.get("E_ROEPNAAM");
           if(!thisPerson.get("E_VRVG").equals("")) {
               thisPersonStr += " " + thisPerson.get("E_VRVG");
@@ -522,7 +522,7 @@ public class CSVReader implements Runnable {
           String departmentStr = (String) thisPerson.get("K_OF_S_OMSCHRIJVING");
           departmentStr = departmentStr.replaceAll("BC ","Bezoekerscentrum ");
           thisPerson.put("K_OF_S_OMSCHRIJVING",departmentStr);
-          
+
           // *** use the info to update the next person ***
           if(!lastId.equals(thisPerson.get("SOFI_NR"))) {
               personsNode = updatePerson(cloud,thisPerson,thisPersonStr);
@@ -573,22 +573,22 @@ public class CSVReader implements Runnable {
               }
           }
           lastId = (String) thisPerson.get("SOFI_NR");
-      
+
           nextLine = dataFileReader.readLine();
           entries++;
       }
       dataFileReader.close();
       logMessage += "\n<br>Number of NM employees loaded from: " + dataFile + " (lm=" + lastModifiedDate(dataFile) + ") is " + persons + " (number of entries is " + entries + ")"
          + "\n<br>Number of email addresses parsed: " + emails.size()
-         + "\n<br>Number of persons for which no email address could be found: " + noemails;        
+         + "\n<br>Number of persons for which no email address could be found: " + noemails;
     } catch(Exception e) {
       log.info(e);
     }
     return logMessage;
-   } 
-   
+   }
+
    private String updateNMV(Cloud cloud, String dataFile){
-    String logMessage = "";  
+    String logMessage = "";
     // *** read the person input file ***
     try {
       BufferedReader dataFileReader = getBufferedReader(dataFile);
@@ -598,19 +598,19 @@ public class CSVReader implements Runnable {
       if(nextLine.indexOf("Voornaam")==-1) log.info("expecting Voornaam ... on second line of " + dataFile);
       nextLine = dataFileReader.readLine();
       if(nextLine.indexOf("+-----")==-1) log.info("expecting +----- ... on third line of " + dataFile);
-      
+
       TreeMap thisPerson = new TreeMap();
       Node personsNode = null;
       String lastId = "";
       // *** GENDER has label G in the datafile, duplicate label G ***
-      
-      // nmvFile: 
+
+      // nmvFile:
       //   "Voornaam", "Voorletters", "Voorvoegsel", "Achternaam", "Geslacht",
       //   "Telefoon", "TelefoonMobiel", "MailPrive", "Geboortedatum", "Beheereenheid"
       // dataFile:
       //   "PERS_NR", "OBJECT_ID", "SOFI_NR", "E_NAAM", "E_VRVG", "P_NAAM", "P_VRVG", "G", "GBRK_OMS",
       //   "GBRK_EXT", "GENDER", "E_TITUL", "E_VRLT", "E_ROEPNAAM", "OE_HIER_SL", "PRIMFUNC_K", "FUNC_OMS",
-      //   "FUNC_EXT", "KOSTEN", "K_S_WAARDE", "K_OF_S_OMSCHRIJVING"  
+      //   "FUNC_EXT", "KOSTEN", "K_S_WAARDE", "K_OF_S_OMSCHRIJVING"
       String [] labels = {
          "E_ROEPNAAM", "E_VRLT", "E_VRVG", "E_NAAM", "GENDER",
          "Telefoon", "TelefoonMobiel", "MailPrive", "Geboortedatum", "K_S_WAARDE",
@@ -619,10 +619,10 @@ public class CSVReader implements Runnable {
          "FUNC_EXT", "KOSTEN", "K_OF_S_OMSCHRIJVING" };
       int persons=0;
       int entries=0;
-      int noemails=0;            
+      int noemails=0;
       nextLine = dataFileReader.readLine();
       while(nextLine!=null&&nextLine.indexOf("+-----")==-1) {
-          
+
           nextLine = nextLine.substring(1); // skip first '|'
           thisPerson.clear();
           int v = 0;
@@ -645,17 +645,17 @@ public class CSVReader implements Runnable {
           }
           thisPerson.put("ALIAS",createAlias(thisPerson,"E_NAAM","E_ROEPNAAM"));
           // *** can we use something different, people get duplicated if there name changes ? ***
-          thisPerson.put("SOFI_NR","NMV_" + thisPerson.get("ALIAS")); 
-          
+          thisPerson.put("SOFI_NR","NMV_" + thisPerson.get("ALIAS"));
+
           String thisPersonStr = (String) thisPerson.get("E_ROEPNAAM");
           if(!thisPerson.get("E_VRVG").equals("")) {
               thisPersonStr += " " + thisPerson.get("E_VRVG");
           }
           thisPersonStr += " " + thisPerson.get("E_NAAM") + " (" + thisPerson.get("SOFI_NR") + ")";
-          
+
           // *** use the info to update the next person ***
           if(!lastId.equals(thisPerson.get("SOFI_NR"))) {
-            
+
               personsNode = updatePerson(cloud,thisPerson,thisPersonStr);
 
               // *** update email address (if allowed)
@@ -668,7 +668,7 @@ public class CSVReader implements Runnable {
               }
               personsNode.setValue("companyphone", thisPerson.get("Telefoon") );
               personsNode.setValue("cellularphone", thisPerson.get("TelefoonMobiel") );
-              // *** not used in CAD: personsNode.setValue("dayofbirth", thisPerson.get("Geboortedatum") ); 
+              // *** not used in CAD: personsNode.setValue("dayofbirth", thisPerson.get("Geboortedatum") );
               personsNode.commit();
               persons++;
           }
@@ -681,9 +681,9 @@ public class CSVReader implements Runnable {
                  destination.commit();
              }
           }
- 
+
           lastId = (String) thisPerson.get("SOFI_NR");
-      
+
           nextLine = dataFileReader.readLine();
           entries++;
       }
@@ -693,7 +693,7 @@ public class CSVReader implements Runnable {
       log.info(e);
     }
     return logMessage;
-   } 
+   }
 
    public static String getAddress(TreeMap zipCodeMap, String zipCode) {
       String address = null;
@@ -707,7 +707,7 @@ public class CSVReader implements Runnable {
       String address = getAddress(zipCodeMap,zipCode);
       return (address!=null ? address.substring(0,address.indexOf(";")) : street );
    }
-   
+
    public static String getCity(TreeMap zipCodeMap, String zipCode, String city) {
       String address = getAddress(zipCodeMap,zipCode);
       return (address!=null ? address.substring(address.lastIndexOf(";")+1) : city );
@@ -740,7 +740,7 @@ public class CSVReader implements Runnable {
    public String loadZipCodes(ServletContext application, String dataFile, String temp){
       // *** the zipcode table should be loaded in such a way that ***
       // *** based on zipcode and housenumber the related streetname and city can be found ***
-      
+
       String logMessage = "\n<br>Warning the following lines in " + dataFile + " do not contain a valid zipcode, housenumber_low, house_number_high, code, streetname, city";
 
       TreeMap zipCodeMap = new TreeMap();      // ** mapping of zipcodes to vector of streetname;housenumber_low;house_number_high;code;city
@@ -752,27 +752,27 @@ public class CSVReader implements Runnable {
       String sHouseNumberHigh = "";
       String sCode = "";
       String sCity = "";
-      
+
       try {
-        
+
         Vector files = new Vector();
-        files = unZip(dataFile,temp); 
+        files = unZip(dataFile,temp);
 
         if(files.size()>0) {
-        
+
            BufferedReader dataFileReader = getBufferedReader(temp + "/" + (String) files.get(0));
            nextLine = dataFileReader.readLine();
            int zipcodes = 0;
            int errors = 0;
            while(nextLine!=null) {
-              
+
               sZipCode = "";
               sStreetName = "";
               sHouseNumberLow = "";
               sHouseNumberHigh = "";
               sCode = "";
               sCity = "";
-              
+
               try {
                 sZipCode = nextLine.substring(0,6);
                 sHouseNumberHigh = nextLine.substring(6,12).trim();
@@ -805,7 +805,7 @@ public class CSVReader implements Runnable {
            application.setAttribute("zipCodeMap",zipCodeMap);
            logMessage += "\n<br>Number of persons loaded from: " + dataFile + " (lm=" + lastModifiedDate(dataFile) + ") is " + zipcodes + " (number of errors " + errors + ")";
          }
-      
+
       } catch(Exception e) {
         log.info("Error in reading " + dataFile + " on zipcode " + sZipCode);
         log.info("In line: " + nextLine);
@@ -817,7 +817,7 @@ public class CSVReader implements Runnable {
    public String loadNMMembers(ServletContext application, String dataFile, String temp){
       // *** the NM Members table should be loaded in such a way that ***
       // *** based on a memberid the related zipcode can be found and compared with the zipcode entered by the user ***
-      
+
       String logMessage = "\n<br>Warning the following lines in " + dataFile + " do not contain a valid memberid, zipcode, housenumber, houseextension, lastname";
 
       TreeMap zipCodeTable = new TreeMap();      // ** mapping of memberids to zipcodes
@@ -833,32 +833,32 @@ public class CSVReader implements Runnable {
       String sHouseNumber = "";
       String sHouseExt = "";
       String sLastName = "";
-      
+
       try {
-        
+
         Vector files = new Vector();
-        files = unZip(dataFile,temp); 
+        files = unZip(dataFile,temp);
 
         if(files.size()>0) {
-        
+
            BufferedReader dataFileReader = getBufferedReader(temp + "/" + (String) files.get(0));
            nextLine = dataFileReader.readLine();
            int persons = 0;
            int errors = 0;
            while(nextLine!=null) {
-              
+
               persons++;
               sMemberId = "";
               sZipCode = "";
               sHouseNumber = "";
               sHouseExt = "";
               sLastName = "";
-              
+
               try {
                 sMemberId = nextLine.substring(0,7);
                 // delete trailing zero's
                 while(!sMemberId.equals("")&&sMemberId.charAt(0)=='0') { sMemberId = sMemberId.substring(1); }
-                
+
                 sZipCode = nextLine.substring(7,13).trim();
                 sHouseNumber = nextLine.substring(13,19).trim();
                 sHouseExt = nextLine.substring(19,25).trim();
@@ -904,7 +904,7 @@ public class CSVReader implements Runnable {
            application.setAttribute("invLastNameTable",invLastNameTable);
            logMessage += "\n<br>Number of persons loaded from: " + dataFile + " (lm=" + lastModifiedDate(dataFile) + ") is " + persons + " (number of errors " + errors + ")";
          }
-      
+
       } catch(Exception e) {
         log.info("Error in reading " + dataFile + " on memberid " + sMemberId + " & zipcode " + sZipCode);
         log.info("In line: " + nextLine);
@@ -912,73 +912,79 @@ public class CSVReader implements Runnable {
       }
       return logMessage;
    }
-     
+
    private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
 
-   public void readCSV(int importType) { 
-        
+   public void readCSV(int importType) {
+
         // HashMap user = new HashMap();
         // user.put("username","admin");
         // user.put("password","");
         // Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase","name/password",user);
-        
+
         Cloud cloud = CloudFactory.getCloud();
         MMBaseContext mc = new MMBaseContext();
         ServletContext application = mc.getServletContext();
         String requestUrl = (String) application.getAttribute("request_url");
         if(requestUrl==null) { requestUrl = "www.natuurmonumenten.nl"; }
- 
+
         String logSubject = "Log import " +  requestUrl;
-       
+
         String toEmailAddress = NatMMConfig.toEmailAddress;
-        String fromEmailAddress = NatMMConfig.fromEmailAddress; 
+        String fromEmailAddress = NatMMConfig.fromEmailAddress;
         String root = NatMMConfig.rootDir;
         String incoming = NatMMConfig.incomingDir;
-        String temp = NatMMConfig.tempDir;;
-        
-        String dataFile = root + "beauexport.csv";
-	     String nmvFile = root + "nmv_vrijwilligers.csv";
-        String emailFile = root + "mbexport.csv";
-        String orgFile = root + "orgschemaexport.csv";
+        String temp = NatMMConfig.tempDir;
+
+        String beauZip = incoming + "beaudata.zip"; // will be unzipped to temp
+        String dataFile = temp + "beauexport.csv";
+        String emailFile = temp + "mbexport.csv";
+        String orgFile = temp + "orgschemaexport.csv";
+        String nmvZip = incoming + "nmvdata.zip"; // will be unzipped to temp
+        String nmvFile = temp + "nmvexport.csv";
         String membersFile = incoming + "lrscad.zip";
         String zipCodeFile = root + "lrspos.zip";
+
+        Vector files = new Vector();
+        files.addAll(unZip(beauZip,temp));
+        files.addAll(unZip(nmvZip,temp));
 
         String fileList = "";
         if(importType==ONLY_MEMBERLOAD) {
              fileList = membersFile;
-        } else if(importType==ONLY_ZIPCODELOAD) { 
+        } else if(importType==ONLY_ZIPCODELOAD) {
              fileList = zipCodeFile;
         } else {
            fileList += membersFile+"\n"+zipCodeFile+"\n"+dataFile+"\n"+nmvFile+"\n"+emailFile+"\n"+orgFile;
         }
-            
+
         try {
-            
+
             log.info("Started import of: " + fileList);
-            
+
             String logMessage =  "\n<br>Started at " + new Date() + " import for " +  requestUrl;
-            
-            if(importType==FULL_IMPORT) { 
+
+            if(importType==FULL_IMPORT) {
                // *** start with marking all relations as inactive ***
                String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
                String [] employeeFields = {"importstatus","inactive"};
                String [] departmentRelations = {"posrel","afdelingen"};
                // the importstatus field of afdelingen can be 'inactive' or comma seperated list of descendants
-               String [] departmentFields = {"importstatus","inactive"}; 
+               String [] departmentFields = {"importstatus","inactive"};
                int nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
                nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
-               
-               
+
+
                TreeMap emails = getEmails(emailFile);
                logMessage += "\n<br>Emails are imported from: " + emailFile + " (lm=" + lastModifiedDate(emailFile) + ")";
                logMessage += updateOrg(cloud,orgFile);
                logMessage += updatePersons(cloud, emails, dataFile);
                logMessage += updateNMV(cloud, nmvFile);
-               
+
                // *** finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
                employeeFields[1] = "-1"; // *** prevent employees from being deleted ***
                departmentFields[1] = "-1";  // *** prevent departments from being deleted ***
-               int nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);  
+               int nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
                nodesDeleted += deleteNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
                int numberOfEmptyDept = updateDepartments(cloud);
                logMessage +=  "\n<br>Number of nodes and relations marked as inactive before update: " + nodesMarked
@@ -988,13 +994,13 @@ public class CSVReader implements Runnable {
             if(importType==FULL_IMPORT || importType==ONLY_MEMBERLOAD) {
                logMessage += loadNMMembers(application,membersFile,temp);
             }
-            if(importType==FULL_IMPORT || importType==ONLY_ZIPCODELOAD) { 
+            if(importType==FULL_IMPORT || importType==ONLY_ZIPCODELOAD) {
                logMessage += loadZipCodes(application,zipCodeFile,temp);
             }
-        
-                           
+
+
             logMessage += "\n<br>Finished import at " + new Date();
-            
+
             Node emailNode = cloud.getNodeManager("email").createNode();
             emailNode.setValue("to", toEmailAddress);
             emailNode.setValue("from", fromEmailAddress);
@@ -1006,18 +1012,18 @@ public class CSVReader implements Runnable {
                             + "</multipart>");
             emailNode.commit();
             emailNode.getValue("mail(oneshot)");
-            
+
             log.info("Finished import of: " + fileList);
-            
+
             // log.info(thisPerson);
             // log.info(logMessage);
             // log.info(emails);
-            
+
         } catch(Exception e) {
             log.info(e);
         }
     }
-    
+
     private Thread getKicker(){
        Thread  kicker = Thread.currentThread();
        if(kicker.getName().indexOf("CSVReaderThread")==-1) {
@@ -1026,22 +1032,22 @@ public class CSVReader implements Runnable {
        }
        return kicker;
     }
-    
+
     public CSVReader() {
       this.importType = FULL_IMPORT;
       Thread kicker = getKicker();
       log.info("CSVReader(): " + kicker);
     }
-    
+
     public CSVReader(int importType) {
       this.importType = importType;
       Thread kicker = getKicker();
       log.info("CSVReader(" + importType + "): " + kicker);
     }
-       
+
     public void run () {
       Thread kicker = getKicker();
-      log.info("run(): " + kicker); 
+      log.info("run(): " + kicker);
       readCSV(this.importType);
     }
 }
