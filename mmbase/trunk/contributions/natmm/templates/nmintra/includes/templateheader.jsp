@@ -12,21 +12,62 @@ public String getParameter(String parameterStr, String queryStr) {
     }
     return parameterValue;
 }
-%><%@include file="../globals.jsp" 
-%><%
+%>
+<mm:import jspvar="ID" externid="id">-1</mm:import>
+<mm:import jspvar="rubriekId" externid="r">-1</mm:import>
+<mm:import jspvar="pageId" externid="p">-1</mm:import>
+<mm:import jspvar="articleId" externid="article">-1</mm:import>
+<mm:import jspvar="shop_itemId" externid="u">-1</mm:import>
+<mm:import jspvar="employeeId" externid="employee">-1</mm:import>
+<%
 
-String rubriekId = "";
-String pageId = request.getParameter("p"); if(pageId==null){ pageId = ""; }
-String refererId = request.getParameter("referer"); if(refererId==null){ refererId = ""; }
-String articleId = request.getParameter("article"); if(articleId==null){ articleId = ""; }
 PaginaHelper ph = new PaginaHelper(cloud);
-String rootId = ph.getRootRubriek(cloud, pageId);
+String path = ph.getTemplate(request);
+
+// Id finding for the following request parameters (only the object types in nl.mmatch.NMIntraConfig can be used)
+
+HashMap ids = new HashMap();
+ids.put("object", ID);
+ids.put("rubriek", rubriekId);
+ids.put("pagina", pageId);
+ids.put("artikel", articleId);
+ids.put("items", shop_itemId);
+ids.put("medewerkers", employeeId);
+
+ids = ph.findIDs(ids, path, "thuispagina");
+
+ID = (String) ids.get("object");
+rubriekId = (String) ids.get("rubriek");
+pageId = (String) ids.get("pagina");
+articleId = (String) ids.get("artikel");
+shop_itemId = (String) ids.get("items");
+employeeId = (String) ids.get("medewerkers");
+
+String refererId = request.getParameter("referer"); if(refererId==null){ refererId = "-1"; }
+
+// *** find the root rubriek the present page is related to
+Vector breadcrumbs = ph.getBreadCrumbs(cloud, pageId);
+String rootId = (String) breadcrumbs.get(breadcrumbs.size()-2);
+
+String cssClassName = "";
+String logoName = "nm";
+for(int r=0; r<breadcrumbs.size() && cssClassName.equals(""); r++ ) {
+	%><mm:list nodes="<%= (String) breadcrumbs.get(r) %>" path="rubriek,related,style" fields="style.number" max="1"
+        ><mm:node element="style" jspvar="thisStyle"><%
+		  	if(thisStyle.getStringValue("title")!=null && !thisStyle.getStringValue("title").equals("")) { 
+				cssClassName = thisStyle.getStringValue("title");
+			}
+		  	if(thisStyle.getStringValue("style_par1")!=null && !thisStyle.getStringValue("style_par1").equals("")) {
+				logoName= thisStyle.getStringValue("style_par1"); 
+		   }
+			%></mm:node
+    ></mm:list><% 
+}
 
 //String visitorGroup = request.getParameter("vg"); if(visitorGroup==null){ visitorGroup = ""; }
 
 // IntraShop
 String imageId = request.getParameter("i"); 
-String shop_itemId = request.getParameter("u"); if((shop_itemId==null) || (shop_itemId.equals(""))) { shop_itemId="-1"; }
 String actionId = request.getParameter("t"); if (actionId==null) {actionId=""; }
 String pageUrl = "";
 String totalitemsId = (String) session.getAttribute("totalitems");
@@ -44,7 +85,6 @@ boolean bExtraCosts = false;
 String projectId = request.getParameter("project"); if(projectId==null){ projectId = ""; }
 String typeId = request.getParameter("type"); if(typeId==null) { typeId="-1"; }
 String groupId = request.getParameter("group"); if(groupId==null) { groupId="-1"; }
-String medewerkerId = request.getParameter("medewerker"); if(medewerkerId==null) { medewerkerId=""; }
 String projectNameId = request.getParameter("projectname"); if(projectNameId==null) { projectNameId=""; }
 String abcId = request.getParameter("abc"); if(abcId==null) { abcId=""; }
 String termSearchId = request.getParameter("termsearch"); if(termSearchId==null) { termSearchId=""; }
@@ -59,7 +99,6 @@ String productId = request.getParameter("product"); if(productId==null){ product
 String locationId = request.getParameter("location"); if(locationId==null){ locationId=""; }
 
 // smoelenboek
-String employeeId = request.getParameter("employee"); if(employeeId==null) { employeeId=""; }
 String departmentId = request.getParameter("department"); if(departmentId==null){ departmentId="default"; }
 String programId = request.getParameter("program"); if(programId==null){ programId="default"; }
 String descriptionId = request.getParameter("description"); if(descriptionId==null) { descriptionId=""; }
@@ -94,10 +133,10 @@ String categoryId = request.getParameter("category"); if(categoryId==null){ cate
 String postingStr = request.getParameter("pst"); if(postingStr==null) { postingStr=""; }
 
 //IntraEducations
+String educationId = request.getParameter("e"); if(educationId==null){ educationId = ""; }
 String keywordId = request.getParameter("k"); if(keywordId==null){ keywordId = ""; }
 String providerId = request.getParameter("pr"); if(providerId==null){ providerId = ""; }
 String competenceId = request.getParameter("c"); if(competenceId==null){ competenceId = ""; }
-String educationId = request.getParameter("e"); if(educationId==null){ educationId = ""; }
 String educationNameId = request.getParameter("en"); if(educationNameId==null) { educationNameId = ""; }
 
 //IntraEvents
@@ -119,7 +158,20 @@ String infopageClass = "infopage";
 boolean isIPage = (uri.indexOf("ipage.jsp")!=-1);
 if(isIPage) { infopageClass = "ipage"; }
 
+String templateQueryString = "";
+if(!pageId.equals("-1")){ templateQueryString += "?p=" + pageId; } 
+if(!articleId.equals("-1")){ templateQueryString += "&article=" + articleId; }
+if(!categoryId.equals("")){ templateQueryString += "&category=" + categoryId; }
+if(!projectId.equals("")){ templateQueryString += "&project=" + projectId; }
+if(!educationId.equals("")){ templateQueryString += "&e=" + educationId; }
+
+String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
+requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")) + "/";
+
+String imageTemplate = "";
+
 // email addresses
+boolean isProduction = false;
 String defaultFromAddress = "intranet@natuurmonumenten.nl";
 String defaultPZAddress = "A.deBeer@Natuurmonumenten.nl";
 String defaultFZAddress = "C.Koumans@natuurmonumenten.nl";
@@ -127,10 +179,12 @@ if(!isProduction) {
     defaultPZAddress = "hangyi@xs4all.nl";
     defaultFZAddress = "hangyi@xs4all.nl";
 }
+
 String emailHelpText = "<br><br>N.B. Op sommige computers binnen Natuurmonumenten is het niet mogelijk om direct op een link in de email te klikken."
                     + "<br>Als dit bij jou het geval is moet je de volgende handelingen uitvoeren:"
                     + "<br>1.open het programma Internet Explorer"
                     + "<br>2.kopieer de bovenstaande link uit deze email naar de adres balk van Internet Explorer"
                     + "<br>3.druk op de \"Enter\" toets";
 
-%><%@include file="../includes/templatesettings.jsp"  %>
+%>
+

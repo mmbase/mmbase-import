@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "xhtml1-strict.dtd">
 --%>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
-<mm:cloud sessionname="forum" username="admin" password="<%= nl.mmatch.util.NMIntraConfig.adminPassword %>">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 
 <mm:import externid="selectedavatar"/>
 <mm:import externid="pathtype">poster_index</mm:import>

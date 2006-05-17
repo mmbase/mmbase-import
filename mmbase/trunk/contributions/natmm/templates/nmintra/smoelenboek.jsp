@@ -1,6 +1,6 @@
 <%@page import="nl.leocms.util.tools.SearchUtil" 
 %><%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
+%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
 ><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" 
 %><%
@@ -61,7 +61,7 @@ if(!thisPrograms.equals("")) {
 
     if(action.equals("commit")) { // *** commit the changes ***
             %><%@include file="includes/peoplefinder/commit.jsp" %><%
-    } else if(!employeeId.equals("")) { // *** there is an employee selected ***
+    } else if(!employeeId.equals("-1")) { // *** there is an employee selected ***
         if(action.equals("change")) { // *** show form to update info ***
             %><%@include file="includes/peoplefinder/update.jsp" %><%
         } else { // *** just show the info on the employee ***

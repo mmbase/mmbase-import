@@ -26,12 +26,12 @@
 		Date sdd = new Date();
 		scal.setTime(sdd);
 		scal.add(Calendar.DATE,-1); 
-		long yesterday = (scal.getTime().getTime()/1000);	
+		long yesterday = (scal.getTime().getTime()/1000);
 		%><mm:transaction id="add_pagecount" name="my_trans" commitonclose="true"
-		><mm:createnode type="mmevents" id="this_event"
+		><%-- <mm:createnode type="mmevents" id="this_event"
 			><mm:setfield name="name"><%= visitorsCounter %></mm:setfield
 			><mm:setfield name="start"><%= yesterday %></mm:setfield
-	><%	Enumeration pages = pageCounter.keys(); 
+	> --%><%	Enumeration pages = pageCounter.keys(); 
 		while(pages.hasMoreElements()) { 
 			String thisPage = (String) pages.nextElement(); 
 			Integer thisPageCount = (Integer) pageCounter.get(thisPage); 

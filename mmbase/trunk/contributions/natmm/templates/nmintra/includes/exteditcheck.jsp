@@ -12,7 +12,7 @@ if(editorname!=null) {
         /></mm:list
     ></mm:notpresent
     ><mm:notpresent referid="isowner"><%
-        if(!rubriekId.equals("")) { 
+        if(!rubriekId.equals("-1")) { 
             %><mm:list nodes="<%= rubriekId %>" path="rubriek,rolerel,users" 
                 constraints="<%= userconstraint %>" max="1"
                 ><mm:import id="isowner"

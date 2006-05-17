@@ -28,7 +28,7 @@
         %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
                     templateQueryString %>&pool=<%= poolId %>&product=<%= productId %>&pst=|action=print">print</a></div><%
     } 
-    if(!articleId.equals("")) { 
+    if(!articleId.equals("-1")) { 
         %><mm:list nodes="<%= articleId %>" path="artikel"
             ><%@include file="includes/relatedarticle.jsp"
         %></mm:list><%

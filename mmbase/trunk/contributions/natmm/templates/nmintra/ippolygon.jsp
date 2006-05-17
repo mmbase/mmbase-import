@@ -3,7 +3,7 @@
 ><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/header.jsp" 
 %><%@include file="includes/calendar.jsp" %><% 
-if(!articleId.equals("")) {
+if(!articleId.equals("-1")) {
    %><mm:node number="<%= articleId %>"><mm:import id="extratext"> - <mm:field name="titel" /></mm:import></mm:node><%
 } 
 %><td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
@@ -11,7 +11,7 @@ if(!articleId.equals("")) {
 <td colspan="2" class="transperant" valign="top">
       <div class="<%= infopageClass %>">
       <%
-         if(articleId.equals("")) { 
+         if(articleId.equals("-1")) { 
            %><mm:list nodes="<%= pageId %>" path="pagina,contentrel,artikel">
                <mm:field name="artikel.titel" jspvar="title" vartype="String" write="false"
                ><br/><br/>

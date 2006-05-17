@@ -5,7 +5,7 @@
 %><%@include file="includes/calendar.jsp" 
 %><%
 String sTemplateUrl = "info.jsp";
-if(!articleId.equals("")) { 
+if(!articleId.equals("-1")) { 
    String articleTemplate = "article.jsp" + templateQueryString;
    %>
    <mm:present referid="newsletter_layout">

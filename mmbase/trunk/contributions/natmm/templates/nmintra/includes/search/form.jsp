@@ -1,7 +1,7 @@
 <% 
 // **************** people finder: right bar with the form *****************
     %><%@include file="../whiteline.jsp" 
-    %><form method="POST" name="advsearchform" action="search.jsp<%= templateQueryString %>" onSubmit="return postIt('submit');">
+    %><form method="POST" name="advsearchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return postIt('submit');">
     <table cellpadding="0" cellspacing="0"  align="center">
       <tr>
          <td class="bold"><span class="light_<%= cssClassName %>">Zoekterm</span></td>

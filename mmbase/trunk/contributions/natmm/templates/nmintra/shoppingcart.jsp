@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
+%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
 ><%@include file="includes/templateheader.jsp" 
 %><%@include file="includes/calendar.jsp" %>
 <%@include file="includes/header.jsp" %>

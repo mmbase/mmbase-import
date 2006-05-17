@@ -51,8 +51,8 @@ if(!projectId.equals("")) {
        allConstraint += " afdelingen.number = '" + departmentId + "'";
        allPath += ",readmore,afdelingen";
    }
-   if(!medewerkerId.equals("")) {
-       extTemplateQueryString += "&medewerker=" + medewerkerId;
+   if(!employeeId.equals("-1")) {
+       extTemplateQueryString += "&employee=" + employeeId;
    }
    if(!typeId.equals("-1")) {
        extTemplateQueryString += "&type=" + typeId;
@@ -85,19 +85,13 @@ if(!projectId.equals("")) {
       searchResults = su.searchResults(searchResultSet); 
       searchResultSet = new TreeSet();
    }
-   if(!medewerkerId.equals("")) {
+   if(!employeeId.equals("")) {
       %><mm:list nodes="<%= searchResults %>" path="projects,readmore,medewerkers"
-         ><mm:field name="projects.number" jspvar="projects_number" vartype="String" write="false"
-         ><mm:field name="medewerkers.firstname" jspvar="employee_firstname" vartype="String" write="false"
-         ><mm:field name="medewerkers.lastname" jspvar="employee_lastname" vartype="String" write="false"
-            ><% String employeeName = employee_firstname + " " + employee_lastname;
-               if (employeeName.indexOf(medewerkerId)!=-1) {
-                  searchResultSet.add(projects_number);
-               }
+         constraints="<%= "medewerkers.number= '" + employeeId + "'" %>"
+         ><mm:field name="projects.number" jspvar="projects_number" vartype="String" write="false"><%
+            searchResultSet.add(projects_number);
          %></mm:field
-         ></mm:field
-         ></mm:field
-         ></mm:list><%
+      ></mm:list><%
       listSize = searchResultSet.size();
       searchResults = su.searchResults(searchResultSet);
       searchResultSet = new TreeSet();

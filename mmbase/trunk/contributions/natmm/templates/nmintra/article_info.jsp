@@ -8,7 +8,7 @@
 // - articles are saved to the archive page connected to this page by a dreadmore relation
 // - the archive page should have an alias with %archief%
 String readmoreUrl = "article_info.jsp";
-if(!articleId.equals("")) { 
+if(!articleId.equals("-1")) { 
     String articleTemplate = "article.jsp" + templateQueryString;
 	 response.sendRedirect(articleTemplate);
     %><%--jsp:include page="<%= articleTemplate %>" /--%><%
