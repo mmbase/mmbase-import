@@ -31,8 +31,25 @@
      </select>
 </td></tr> --%>
 <tr><td class="bold"><span class="light_<%= cssClassName %>">Medewerker</span></td></tr>
-<tr><td><input type="text" name="medewerker" class="<%= cssClassName %>" style="width:172px;"  value="<%= medewerkerId %>"></td></tr>
-<mm:list path="projects,readmore,afdelingen" orderby="afdelingen.naam" directions="UP" 
+<mm:list path="projects,readmore,medewerkers" orderby="medewerkers.lastname" directions="UP" 
+     distinct="yes" fields="medewerkers.number"
+     ><mm:first
+       ><tr><td class="bold"><span class="light_<%= cssClassName %>">Medewerker</span></td></tr>
+         <tr><td>
+         <select name="employee" class="<%= cssClassName %>" style="width:172px;">
+     </mm:first>
+     <mm:field name="medewerkers.number" jspvar="thisemployee" vartype="String" write="false"
+         ><option value="<%= thisemployee %>" <% if(employeeId.equals(thisemployee)) { %> selected <% } 
+             %>><mm:field name="medewerkers.titel" /></option>
+     </mm:field
+     ><mm:last
+         ><option value="default" <% if (employeeId.equals("default")) { %> selected <% } %>>Alles</option>
+         </select>
+         </td></tr>
+     <mm:import id="employeefound" 
+     /></mm:last
+></mm:list
+><mm:list path="projects,readmore,afdelingen" orderby="afdelingen.naam" directions="UP" 
      distinct="yes" fields="afdelingen.number"
      ><mm:first
          ><tr><td class="bold"><span class="light_<%= cssClassName %>">Afdeling</span></td></tr>

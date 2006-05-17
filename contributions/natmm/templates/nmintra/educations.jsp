@@ -1,6 +1,6 @@
 <%-- hh: see the template event_blueprints.jsp for a more compact implementation --%>
 <%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
+%><mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud"
 ><%@include file="includes/templateheader.jsp" 
 %><%! 
 public String searchResults(TreeSet searchResultList) {
@@ -211,7 +211,7 @@ public String searchResults(TreeSet searchResultList) {
 		 			String startnodeId = articleId;
 			   	String articlePath = "artikel";
 				   String articleOrderby = "";
-				   if(articleId.equals("")) { 
+				   if(articleId.equals("-1")) { 
 				      startnodeId = pageId;
 				  	   articlePath = "pagina,contentrel,artikel";
 				   	articleOrderby = "contentrel.pos";

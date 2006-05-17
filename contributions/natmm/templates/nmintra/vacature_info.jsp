@@ -10,7 +10,7 @@
 // this template gives an overview of vacatures
 // - the title of the page is P&O nieuws
 String readmoreUrl = "vacature_info.jsp";
-if(!articleId.equals("")) { 
+if(!articleId.equals("-1")) { 
 
    String articleTemplate = "article.jsp" + templateQueryString;
 	response.sendRedirect(articleTemplate);

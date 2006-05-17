@@ -4,7 +4,7 @@
 %><%@include file="includes/calendar.jsp" 
 %><%
 String sTemplateUrl = "homepage.jsp";
-if(!articleId.equals("")) { 
+if(!articleId.equals("-1")) { 
     String articleTemplate = "article.jsp" + templateQueryString;
 
     %><% response.sendRedirect(articleTemplate); %><%--jsp:include page="<%= articleTemplate %>" /--%><%
@@ -113,7 +113,8 @@ if(!articleId.equals("")) {
        %><%@include file="includes/itemurls.jsp" 
        %><%@include file="includes/whiteline.jsp" 
        %><%@include file="includes/tickertape.jsp" 
-   %></td><%
+   %></td>
+	<%@include file="includes/footer.jsp" %>
+	<%
 } 
-%><%@include file="includes/footer.jsp" 
 %></mm:cloud>

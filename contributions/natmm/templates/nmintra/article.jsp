@@ -25,7 +25,7 @@
       String startnodeId = articleId;
       String articlePath = "artikel";
       String articleOrderby = "";
-      if(articleId.equals("")) { 
+      if(articleId.equals("-1")) { 
       startnodeId = pageId;
       articlePath = "pagina,contentrel,artikel";
       articleOrderby = "contentrel.pos";

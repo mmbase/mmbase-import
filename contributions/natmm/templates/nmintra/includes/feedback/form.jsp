@@ -1,20 +1,21 @@
-<%@include file="../includes/templateheader.jsp" %>
-<%@include file="../includes/calendar.jsp" %>
-<%@include file="../includes/feedback/script.jsp" %>
-<%@include file="../includes/getresponse.jsp" %>
+<%@include file="/taglibs.jsp" %>
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
+<%@include file="../templateheader.jsp" %>
+<%@include file="../calendar.jsp" %>
+<%@include file="script.jsp" %>
+<%@include file="../getresponse.jsp" %>
 <mm:import externid="object" jspvar="objectId">-1</mm:import>
 <mm:import externid="field" jspvar="fieldId">titel</mm:import>
 <mm:import externid="param" jspvar="paramId">o</mm:import>
 <mm:import externid="ntype" jspvar="ntypeId">object</mm:import>
 <mm:import externid="by" jspvar="byId">de organisator</mm:import>
-<% String sUrl = "";
-	if (ntypeId.equals("opleiding")) { 
-		sUrl = "educations.jsp"; 
-	} else {
-		sUrl = "event_blueprints.jsp";
-	} %>
-<mm:cloud>
-<% 
+<%
+String sUrl = "";
+if (ntypeId.equals("opleiding")) { 
+	sUrl = "educations.jsp"; 
+} else {
+	sUrl = "event_blueprints.jsp";
+} 
 if(!postingStr.equals("")){
    postingStr += "|";
 	boolean bAllFieldsOk = true;
@@ -61,15 +62,14 @@ if(!postingStr.equals("")){
 		</mm:createnode>
 		<mm:node number="<%= objectId %>" id="education"/>
 		<mm:createrelation role="related" source="education" destination="feedback" />
-	
-		<%@include file="../includes/showmessage.jsp"%><%
+		<%@include file="../showmessage.jsp" %><%
 	} else {
 		String messageTitle = "Uw mening kon helaas nog niet worden verwerkt";
 		String messageBody = warningMessage + "</ul>";
 		String messageHref = "javascript:history.go(-1)";
 		String messageLinktext = "terug naar het formulier";
 		String messageLinkParam = ""; %>
-		<%@include file="../includes/showmessage.jsp"%><%
+		<%@include file="../showmessage.jsp" %><%
 	}	
 
 } else {
