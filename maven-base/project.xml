@@ -313,7 +313,7 @@ See http://www.MMBase.org/license
         </dependency>
     </dependencies>
     <build>
-        <nagEmailAddress>maven@keesj.dds.nl</nagEmailAddress>
+        <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
         <sourceDirectory>${basedir}/src</sourceDirectory>
         <sourceModifications>
             <sourceModification>
@@ -353,6 +353,13 @@ See http://www.MMBase.org/license
                     <include>**/*.properties</include>
                 </includes>
                 <filtering>false</filtering>
+            </resource>
+            <resource>
+                <targetPath>org/mmbase/config</targetPath>
+                <directory>config</directory>
+                <excludes>
+                    <exclude>"**/CVS"</exclude>
+                </excludes>
             </resource>
         </resources>
         <!-- Unit test cases -->
