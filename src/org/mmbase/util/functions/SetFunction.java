@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.11 2005-10-28 15:07:45 simon Exp $
+ * @version $Id: SetFunction.java,v 1.12 2006-05-17 12:34:55 johannes Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -116,5 +116,8 @@ class SetFunction extends AbstractFunction {
         }
         if (returnType == null) returnType = new ReturnType(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName());
 
+        if (!functionMethod.getReturnType().getName().equals(returnType.getDataType().getTypeAsClass().getName())) {
+            log.warn("Return value of function " + className + "." + methodName + "(" + returnType.getDataType().getTypeAsClass().getName() + ") does not match method return type as specified in XML: (" + functionMethod.getReturnType().getName() + ")");
+        }
     }
 }
