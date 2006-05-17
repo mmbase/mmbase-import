@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.Locale;
-import java.util.Collection;
+import java.util.*;
+
 import org.mmbase.security.UserContext;
 import org.mmbase.util.functions.Function;
 
@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.56 2005-10-04 19:26:27 michiel Exp $
+ * @version $Id: Cloud.java,v 1.57 2006-05-17 15:20:38 nklasens Exp $
  */
 public interface Cloud {
 
@@ -584,6 +584,12 @@ public interface Cloud {
      */
     public void setProperty(Object key, Object value);
 
+    /**
+     * Retrieves all properties previously set for this cloud.
+     * @since MMBase-1.8
+     */
+    public Map getProperties();
+    
     /**
      * Returns all Function objects from a function set.
      * Function sets group functions by name, and are configured in the functionset.xml configuration file.
