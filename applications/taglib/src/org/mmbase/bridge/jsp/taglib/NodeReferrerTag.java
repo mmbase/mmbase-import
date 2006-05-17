@@ -11,6 +11,8 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
+import java.util.Locale;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 
@@ -26,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.23 2006-02-10 18:04:26 michiel Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.24 2006-05-17 19:15:09 michiel Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
@@ -94,6 +96,27 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
             p.setIfDefined(Parameter.USER, cloud.getUser());
             
         }
+    }
+
+    public Locale getLocale() throws JspTagException {
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+        if (localeTag != null) {
+            Locale locale = localeTag.getLocale();
+            if (locale != null) {
+                return locale;
+            }
+        }
+        CloudProvider cp = findCloudProvider(false);
+        if (cp != null) {
+            return  getCloudVar().getLocale();
+        }
+        NodeProvider np = findNodeProvider(false);
+        if (np != null) {
+            return  np.getNodeVar().getCloud().getLocale();
+        }
+        Locale loc = (Locale) pageContext.getAttribute(LocaleTag.KEY, PageContext.PAGE_SCOPE);
+        if (loc != null) return loc;
+        return getCloudContext().getDefaultLocale();
     }
 
 }
