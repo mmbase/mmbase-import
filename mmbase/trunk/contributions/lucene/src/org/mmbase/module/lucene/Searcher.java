@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.22 2006-04-21 14:31:35 michiel Exp $
+ * @version $Id: Searcher.java,v 1.23 2006-05-17 20:02:51 michiel Exp $
  * @TODO  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher {
@@ -68,11 +68,19 @@ public class Searcher {
         Sort sort = null;
         if (sortFields != null && sortFields.length > 0) {
             if (sortFields.length == 1 && sortFields[0].equals("RELEVANCE")) {
-                sort = null;
+                sort = Sort.RELEVANCE;
             } else if (sortFields.length == 1 && sortFields[0].equals("INDEXORDER")) {
                 sort = Sort.INDEXORDER;
             } else {
-                sort = new Sort(sortFields);
+                SortField[] sorts = new SortField[sortFields.length];
+                for (int i = 0; i < sortFields.length; i++) {
+                    if (sortFields[i].startsWith("REVERSE:")) {
+                        sorts[i] = new SortField(sortFields[i].substring("REVERSE:".length()), true);
+                    } else {
+                        sorts[i] = new SortField(sortFields[i]);
+                    }
+                }
+                sort = new Sort(sorts);
             }
         }
         return search(cloud, value, null, sort, new StopAnalyzer(), extraQuery, allIndexedFields, offset, max);
@@ -90,7 +98,7 @@ public class Searcher {
         }
 
         List list = new LinkedList();
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.trace("Searching '" + value + "' in index " + index + " for " + sort + " " + analyzer + " " + extraQuery + " " + fields + " " + offset + " " + max);
         }
         if (value != null && !value.equals("")) {
