@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.7 $, $Date: 2006-04-03 19:23:11 $
+ * @version $Revision: 1.8 $, $Date: 2006-05-17 21:18:54 $
  *
  * @struts:action name="UserForm"
  *                path="/editors/usermanagement/UserAction"
@@ -103,7 +103,7 @@ public class UserAction extends Action {
                userNode.setStringValue("password", userForm.getPassword());
                userNode.setIntValue("gracelogins", 3);
                userNode.setLongValue("expiredate", System.currentTimeMillis() / 1000 + ChangePasswordAction.PASSWORD_LIFETIME );
-               // only change admin password by real admins
+               // use admin password for cloud.default and cloud.remote
                if ("admin".equals(userNode.getStringValue("account"))) {
                   Util.updateAdminPassword(userForm.getPassword());
                }
@@ -123,6 +123,9 @@ public class UserAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/04/03 19:23:11  henk
+ * New version A6-A9
+ *
  * Revision 1.6  2006/03/31 12:04:38  henk
  * New version of A6-A9 site
  *

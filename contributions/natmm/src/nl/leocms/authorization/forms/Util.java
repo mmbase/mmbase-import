@@ -73,7 +73,6 @@ public class Util {
       Node defCloud = remoteCloud.getNode("cloud.default");
       defCloud.setStringValue("password",password);
       defCloud.commit();
-      */      
       
       Cloud localCloud = CloudFactory.getCloud();
       Node node = localCloud.getNode("cloud.remote");
@@ -82,7 +81,7 @@ public class Util {
       node = localCloud.getNode("cloud.default");
       node.setStringValue("password",password);
       node.commit();
-
+		*/
       
    }
 
