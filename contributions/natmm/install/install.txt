@@ -1,5 +1,5 @@
 NatMM - install.txt
-Version: 06.05.08
+Version: 06.05.18
 Author: H. Hangyi
 
 To install NatMM:
@@ -31,3 +31,21 @@ do not use these demo data files, you can create the admin user manually after i
 3. add the alias users.admin to the admin user
 4. changing the setting for "security active" from false to true
 
+After installation the editors of LeoCMS can be found at:
+
+http://localhost:8080/<your_webapp>/editors
+
+When clicking "Pagina-editor" you will get the website tree, which is the main entrance for editors to edit the content.
+The directory /templates/natmm/doc contains documentation (in Dutch) unfortunately on how to work with the editors.
+
+Note the link "Naar archiefkast" at the top of the left column in the "Pagina-editor", this links brings
+the user to the special purpose editors selected for him. See the config/applications/NatMM/editwizards.xml file
+for a full list of possible editors in LeoCMS.
+
+IMPORTANT NOTE: The NatMM makes use of OSCache for caching.
+Items cached are:
+1. the templates, you can use /editors/paginamanagement/flushlink.jsp to provide preview and publish functionality
+2. the website tree, you see when click "Pagina-editor"
+3. the converted urls (see nl.leocms.servlets.UrlCache)
+There is a special editor you can use to flush all pages. It is /editors/util/flush_cache.jsp. So when you
+expect something to change and it doesn't: use this page to make sure the entire cache is flushed.
