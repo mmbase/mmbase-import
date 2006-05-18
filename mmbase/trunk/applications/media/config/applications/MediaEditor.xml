@@ -6,8 +6,8 @@
   <!-- adds pooling, publishtimes, intro's and security to Media app (features used by media-editor) -->
 
   <requirements>
-    <requires name="Media" maintainer="mmbase.org" version="1" />
-    <requires name="MediaExampleData" maintainer="mmbase.org" version="1" />
+    <requires name="Media" maintainer="mediaproject.mmbase.org" version="1" />
+    <requires name="MediaExampleData" maintainer="mediaproject.mmbase.org" version="1" />
     <requires name="Security" maintainer="mmbase://security.mmbase.org/" version="1" /><!-- cloud context security -->
   </requirements>
 
