@@ -1,8 +1,8 @@
 NatMM - readme.txt
-Version: 06.04.24
+Version: 06.05.18
 Author: H. Hangyi
 
-NatMM is an MMBase application which is based on LeoCMS, which is specially geared for the use in
+NatMM is an MMBase application which is based on LeoCMS, which is specially geared for use in
 small to medium size organisations. I.e. organisations for which simplicity and ease of publishing, is
 more important than workflow, staging and live clouds, etc.
 
@@ -46,7 +46,35 @@ Each website in the NatMM application, e.g. MySite, should consist of the follow
    from LeoCMS or any of the other applications should be copied to the config/applications/builders directory
    before install.
 3. a java class with application specific settings in src/nl/mmatch/MySiteConfig.java
+   Important information provided by MySiteConfig.java is  CONTENTELEMENTS and PATHS_FROM_PAGE_TO_ELEMENTS.
+   These arrays tell LeoCMS how content is related to the pages in the MySite application. This information 
+   is used in several places:
+   a. to find the page if you only provide the id of a contentelement in the url
+      (see nl.leocms.util.PaginaHelper.findIDs )
+   b. to do url-rewriting
+      (see see nl.leocms.util.PaginaHelper.createItemUrl and nl.leocms.servlets.UrlConverter.convertUrl )
+   c. to see if a page still contains contentelements
+      (see nl.leocms.pagina.PaginaUtil.doesPageContainContentElements)
 4. editwizards in templates/mmbase/edit/wizard/data/config
+
+How to add your own application to NatMM?
+
+To add your own application to NatMM you should do the following:
+1. install LeoCMS (see install.txt)
+2. add paginatemplate nodes to MMBase (use /mmbase/edit/my_editors for this)
+3. enter rubrieken and paginas by using the Pagina-editor and relate the pages to the paginatemplates created in step 2
+4. add the objects and relations you need in your application. Deploying an application config file like NatMM.xml
+   is the easiest way to do this. Read the MMBase documentation if you need more information on this topic.
+5. implement the jsp-templates that correspond to the paginatemplate nodes created in step 2
+   (e.g. in a subfolder templates/mysite). Please adhere to the coding-standards as much as possible.
+6. add MySiteConfig.java to make sure the editors and url-rewriting work properly
+
+The current verion of NatMM is tested with MMBase 1.7.4 / JDK 1.4 and 1.5 / MySQL 5.1.
+The migration of NatMM to MMBase 1.8.x is planned for Q4, 2006.
 
 See install\install.txt for installation.
 See install\license.txt for the license.
+
+In case you find issues in the NatMM version of LeoCMS, you can post them in http://www.mmbase.org/bug
+Please make sure you select 'Contrib: NatMM' as Area. Thanks a lot for your contribution!
+
