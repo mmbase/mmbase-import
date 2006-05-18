@@ -203,12 +203,10 @@ public class RubriekHelper {
    public String getSubsiteRubriek(String rubriekNumber) {
       Node rubriekNode = cloud.getNode(rubriekNumber);
       int rubriekLevel = rubriekNode.getIntValue("level");
-      if (rubriekLevel == 1) {
-         return rubriekNode.getStringValue("number");
-      } else {
-         NodeList nodeList = cloud.getList(rubriekNumber, "rubriek,parent,rubriek2", "rubriek2.number", null, null, null, "SOURCE", true);
-         String rubriekParentNumber = nodeList.getNode(0).getStringValue("rubriek2.number");
-         return getSubsiteRubriek(rubriekParentNumber);
+      if (rubriekLevel == 0 || rubriekLevel == 1) {
+         return rubriekNumber;
+      } else {         
+         return (new PaginaHelper(cloud)).getRootRubriek(cloud,rubriekNumber);
       } 
    }
 
