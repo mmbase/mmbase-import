@@ -33,7 +33,7 @@
         <html:text property="username" size='15' maxlength='15'/> <span class="notvalid"><html:errors bundle="LEOCMS" property="username"/>
     </logic:equal>
     <logic:notEqual name="UserForm" property="nodeNumber" value="-1">
-        <bean:define name="UserForm" id="username" property="username"/> 
+        <bean:define name="UserForm" id="username" type="nl.leocms.authorization.forms.UserForm"/> 
         <cache:flush scope="application" key="<%= "pagina_all_" + username %>" />
         <%= username %>
     </logic:notEqual>
