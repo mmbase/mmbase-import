@@ -152,6 +152,16 @@
   -->
   <property name="timezone"></property>
 
+
+  <!--
+      MMBase in 'development mode' is more strict. Most noticably this has an influence on 
+      whether you can request the value of non-existing fields without an exception.
+
+      Wikll fall back to 'false' if the property is missing altogether. The behaviour is more like
+      in MMBase < 1.8 then.
+  -->
+  <property name="development">true</property>
+
   <!--
   name="xmlbuilderwriterdir"
   If specified, MMBase will write xml configuration files  to this directory when loading builders.
