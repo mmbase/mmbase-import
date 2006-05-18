@@ -5,7 +5,7 @@
   <articleinfo>
         <title>Media project documentation</title>
         <date>2002-12-17</date>
-        <edition>$Id: index.xml,v 1.8 2005-12-10 14:21:27 johannes Exp $</edition>
+        <edition>$Id: index.xml,v 1.9 2006-05-18 16:54:21 michiel Exp $</edition>
         <authorgroup>
             <author>
                 <firstname>Michiel</firstname>
@@ -283,23 +283,12 @@ Now we can use the following function calls to generate URLs for 'smallband', 'b
     </para>
     </section>
     <section id="installation">
-        <title>Installation</title>
-        <para>
-            The Media project requires a MMBase 1.7 installation, or newer.
-            The MMBase media project can be found in the MMBase application repository. The repository can be access in the following way:
-            Set the CVSROOT environment variable to :pserver:guest@www.mmbase.org:/usr/local/cvs. Checkout the cvs application module with cvs co applications (password is 'guest').                         
-        </para>
-        <para>
-            After checking out the MMBase application module you have to create a jar file of the Media project. This can be done in the following way:
-            <programlisting>goto the directory /applications/media/.
-use ant jar to generate the Media project jar.
-create a symbolic link from /WEB-INF/lib/mmmedia.jar to /applications/media/build/mmmedia.jar, or copy the jar.
-create a symbolic link from /mmbase/config/media to /applications/media/config/media, or copy the configuration files.</programlisting>
-            
-            At this point your MMBase installation is able to use the Media project. Make sure you read the complete Media project documentation so you are aware of how to use and configure Filters, and URL Composers.
-        </para>
-        <para>
-            If you have any questions/comments, regarding to the media project, please sent an email to the developers mailing list (www.mmbase.org/contact).
-        </para>
+      <title>Installation</title>
+      <para>
+        See README.txt as shipped in the mmbase-media.zip.
+      </para>
+      <para>
+        If you have any questions/comments, regarding to the media project, please sent an email to the developers mailing list (www.mmbase.org/contact).
+      </para>
     </section>
 </article>
