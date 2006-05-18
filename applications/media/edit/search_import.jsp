@@ -44,7 +44,7 @@
     </mm:url>
     
     <mm:size id="size" write="false" />
-    <mm:write value="${+$size/$pagelength + 1}" vartype="integer" id="lastpage" write="false" />
+    <mm:write value="$[+$size/$pagelength + 1]" vartype="integer" id="lastpage" write="false" />
     
     <mm:maxnumber value="$pagelength" />
     <mm:offset    value="$diroffset" />
@@ -53,7 +53,7 @@
 
   
     <table style="width: 100%">  
-        <tr><th colspan="100"><mm:write referid="size"><mm:write /> <mm:compare value="1">directory</mm:compare><mm:compare value="1" inverse="true">directories</mm:compare></mm:write> (<mm:write referid="diroffset" /> -  <mm:size id="actualsize" write="false" /> <mm:write value="${+ $diroffset + $actualsize}" vartype="integer" />) </th></tr>
+        <tr><th colspan="100"><mm:write referid="size"><mm:write /> <mm:compare value="1">directory</mm:compare><mm:compare value="1" inverse="true">directories</mm:compare></mm:write> (<mm:write referid="diroffset" /> -  <mm:size id="actualsize" write="false" /> <mm:write value="$[+ $diroffset + $actualsize]" vartype="integer" />) </th></tr>
       <mm:import id="paging">
         <tr>
           <td colspan="100">
@@ -131,7 +131,7 @@
 
       <mm:maxnumber value="$pagelength" />
       <mm:offset    value="$offset" />
-      <mm:write value="${+$size/$pagelength + 1}" vartype="integer" id="lastpage" write="false" />
+      <mm:write value="$[+$size/$pagelength + 1]" vartype="integer" id="lastpage" write="false" />
 
 
 
@@ -151,7 +151,7 @@
         
 
       <table style="width: 100%">  
-        <tr><th colspan="100"><mm:write referid="size"><mm:write /> <mm:compare value="1">resultaat</mm:compare><mm:compare value="1" inverse="true">resultaten</mm:compare></mm:write> (<mm:write referid="offset" /> -  <mm:size id="actualsize" write="false" /> <mm:write value="${+ $offset + $actualsize}" vartype="integer" />) </th></tr>
+        <tr><th colspan="100"><mm:write referid="size"><mm:write /> <mm:compare value="1">resultaat</mm:compare><mm:compare value="1" inverse="true">resultaten</mm:compare></mm:write> (<mm:write referid="offset" /> -  <mm:size id="actualsize" write="false" /> <mm:write value="$[+ $offset + $actualsize]" vartype="integer" />) </th></tr>
 <mm:import id="paging">
         <tr>
           <td colspan="100">

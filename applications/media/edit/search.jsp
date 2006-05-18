@@ -18,7 +18,7 @@
     <mm:import id="user"><%=cloud.getUser().getIdentifier()%></mm:import>
       <select name="mediaeditors_origin_<mm:write referid="user" />">
         <mm:node number="media.allstreams">
-          <mm:relatednodes id="origin" directions="destination" role="parent" type="pools" orderby="pools.name">            
+          <mm:relatednodes id="origin" directions="down" role="parent" type="pools" orderby="pools.name">            
             <option value="<mm:field name="number" />"><mm:field name="name" /></option>
           </mm:relatednodes>
         </mm:node>

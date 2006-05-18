@@ -35,8 +35,8 @@
       </a>
     </p>
     <h1><%=m.getString("category")%></h1>   
-      <mm:relatedcontainer searchdirs="destination,destination" path="parent,pools1,parent,pools2">
-        <mm:sortorder field="pools1.name" />
+    <mm:relatedcontainer searchdirs="destination,destination" path="parent,pools1,parent,pools2">
+      <mm:sortorder field="pools1.name" />
         <mm:sortorder field="pools2.name" />
         <mm:write referid="config.mediaeditors_origin">
           <mm:isnotempty>
