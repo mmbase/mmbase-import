@@ -9,4 +9,10 @@
 	<node number="465" owner="admin" snumber="417" dnumber="392" rtype="gebruikt" dir="bidirectional">
 	</node>
 
+	<node number="1001" owner="admin" snumber="417" dnumber="384" rtype="gebruikt" dir="bidirectional">
+	</node>
+
+	<node number="1002" owner="admin" snumber="417" dnumber="394" rtype="gebruikt" dir="bidirectional">
+	</node>
+
 </insrel>
