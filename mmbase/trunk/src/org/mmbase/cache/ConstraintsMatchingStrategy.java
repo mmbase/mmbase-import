@@ -185,13 +185,14 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                             matcher.nodeMatchesConstraint(oldValues, event) || // used to match
                             matcher.nodeMatchesConstraint(newValues, event); // still matches
 
-                        // It may be important to check whether the changed fields of the are
-                        // present in the field-list of the query. If it is not, and usedToMatch &&
-                        // stillMaches, then we can still return false.  Also, it is important to
-                        // check if there is a sort-order on the changed field, because even if the
-                        // field itself is not in the result, and it matches the constraint before
-                        // and after the event, it can still change the order of the result, if
-                        // there is a sortorder on it.
+                        // It may be important to check whether the changed fields of the node are
+                        // present in the field-list of the query. If they are not, and usedToMatch
+                        // && stillMaches, then we can still return false, if at least there is no
+                        // sort-order on a changed field, because even if the field itself is not in
+                        // the result, and it matches the constraint before and after the event, it
+                        // can still change the order of the result then.
+                        // If we can garantuee that field-values alway come from the node-cache (which we cannot, at the moment), 
+                        // then things may become a bit different.
 
                         if (log.isDebugEnabled()) {
                             boolean usedToMatch = matcher.nodeMatchesConstraint(oldValues, event);
@@ -450,7 +451,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
      */
     private static abstract class FieldCompareConstraintMatcher extends AbstractConstraintMatcher {
 
-        protected abstract FieldCompareConstraint getConstraint();
+        protected abstract int getOperator();
 
         protected boolean valueMatches(final Class fieldType, Object constraintValue, Object valueToCompare, final boolean isCaseSensitive) throws FieldComparisonException {
             if (log.isDebugEnabled()) {
@@ -458,9 +459,10 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             }
             if (constraintValue == null) return valueToCompare == null;
 
-            FieldCompareConstraint wrappedFieldCompareConstraint = getConstraint();
+            int operator =  getOperator();
+            {
 
-            int operator = wrappedFieldCompareConstraint.getOperator();
+            }
 
             if (fieldType.equals(Boolean.class)) {
                 log.debug("**> type: boolean");
@@ -715,30 +717,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             return stringToCompare.matches(sb.toString());
         }
 
-    }
-
-
-
-
-
-
-    private static class BasicFieldValueConstraintMatcher extends FieldCompareConstraintMatcher {
-        private final Class fieldTypeClass;
-
-        protected final StepField stepField;
-        protected final BasicFieldValueConstraint wrappedFieldValueConstraint;
-
-        public BasicFieldValueConstraintMatcher(BasicFieldValueConstraint constraint)  {
+        protected Class getFieldTypeClass(StepField stepField) {
             MMBase mmbase = MMBase.getMMBase();
-            stepField = constraint.getField();
-            if (log.isDebugEnabled()) {
-                log.debug("** builder: " + stepField.getStep().getTableName()+". field: " + stepField.getFieldName());
-            }
-
             // why it this checked anyway?
             CoreField field = mmbase.getBuilder(stepField.getStep().getTableName()).getField(stepField.getFieldName());
             DataType fieldType = field.getDataType();
-            fieldTypeClass = fieldType.getTypeAsClass();
+            Class fieldTypeClass = fieldType.getTypeAsClass();
             if( fieldTypeClass.equals(Boolean.class) ||
                 fieldTypeClass.equals(Date.class) ||
                 fieldTypeClass.equals(Integer.class) ||
@@ -751,14 +735,33 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
                 if (log.isDebugEnabled()) {
                     log.debug("** found field type: " + fieldTypeClass.getName());
                 }
-                wrappedFieldValueConstraint = constraint;
             } else {
                 throw new RuntimeException("Field type " + fieldTypeClass + " is not supported");
             }
+            return fieldTypeClass;
         }
 
-        protected FieldCompareConstraint getConstraint() {
-            return wrappedFieldValueConstraint;
+    }
+
+
+
+    private static class BasicFieldValueConstraintMatcher extends FieldCompareConstraintMatcher {
+        private final Class fieldTypeClass;
+        protected final StepField stepField;
+        protected final BasicFieldValueConstraint wrappedFieldValueConstraint;
+
+        public BasicFieldValueConstraintMatcher(BasicFieldValueConstraint constraint)  {
+            stepField = constraint.getField();
+            if (log.isDebugEnabled()) {
+                log.debug("** builder: " + stepField.getStep().getTableName()+". field: " + stepField.getFieldName());
+            }
+            fieldTypeClass = getFieldTypeClass(stepField);
+            wrappedFieldValueConstraint = constraint;
+
+        }
+
+        protected int getOperator() {
+            return wrappedFieldValueConstraint.getOperator();
         }
         /**
          * Check the values to see if the node's value matches the constraint.
@@ -800,6 +803,58 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             super(string);
         }
     }
+
+    /**
+     * @since MMBase-1.8.1
+     */
+    private static class BasicFieldValueInConstraintMatcher extends FieldCompareConstraintMatcher {
+        private final Class fieldTypeClass;
+        protected final StepField stepField;
+        protected final BasicFieldValueInConstraint wrappedFieldValueInConstraint;
+
+        public BasicFieldValueInConstraintMatcher(BasicFieldValueInConstraint constraint)  {
+            stepField = constraint.getField();
+            fieldTypeClass = getFieldTypeClass(stepField);
+            wrappedFieldValueInConstraint = constraint;
+        } 
+
+        protected int getOperator() {
+            return FieldCompareConstraint.EQUAL;
+        }
+
+        /**
+         * Check the values to see if the node's value matches the constraint.
+         */
+        public boolean nodeMatchesConstraint(Map valuesToMatch, NodeEvent event) throws FieldComparisonException {
+            log.debug("**method: nodeMatchesConstraint");
+            SortedSet values = wrappedFieldValueInConstraint.getValues();
+            boolean matches = false;
+            Iterator i = values.iterator();
+            while (i.hasNext() && !matches) {
+                Object value = i.next();
+                matches = valueMatches(fieldTypeClass,
+                                       value,
+                                       valuesToMatch.get(stepField.getFieldName()),
+                                       wrappedFieldValueInConstraint.isCaseSensitive());
+            }
+            return  matches != wrappedFieldValueInConstraint.isInverse();
+        }
+
+        public String toString(){
+            return "Field Value IN Matcher.  operator: " + 
+                ", value: " + wrappedFieldValueInConstraint.getValues().toString() + ", step: " +stepField.getStep().getTableName() +
+                ", field name: " + stepField.getFieldName();
+        }
+
+
+
+        public boolean eventApplies(Map valuesToMatch, NodeEvent event) {
+            return
+                wrappedFieldValueInConstraint.getField().getStep().getTableName().equals(event.getBuilderName()) &&
+                valuesToMatch.containsKey(wrappedFieldValueInConstraint.getField().getFieldName());
+        }
+    }
+
 
     private void logResult(String comment, SearchQuery query, Event event, MMObjectNode node){
         if(log.isDebugEnabled()){
