@@ -363,4 +363,43 @@ public class ConstraintMatcherTest extends BridgeTest {
     }
 
 
+    public void testBasicFieldValueInConstraintMatcher() {
+        Query query = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", null, null, null, null, false);
+        Set values = new HashSet();
+        values.add(new Integer(0));
+        values.add(new Integer(1));
+        query.setConstraint(Queries.createConstraint(query, "datatypes.number", Queries.getOperator("IN"), values, null, false));
+
+
+        {
+            // will match
+            NodeEvent event = new NodeEvent(null, "datatypes", 10, 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(2) } }), 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(1) } }), Event.TYPE_CHANGE);
+            assertTrue(matchingStrategy.evaluate(event, query, null).shouldRelease());
+        }
+
+        {
+            // never matches
+            NodeEvent event = new NodeEvent(null, "datatypes", 10, 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(2) } }), 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(3) } }), Event.TYPE_CHANGE);
+            assertFalse(matchingStrategy.evaluate(event, query, null).shouldRelease());
+        }
+        {
+            // did match
+            NodeEvent event = new NodeEvent(null, "datatypes", 10, 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(1) } }), 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(2) } }), Event.TYPE_CHANGE);
+            assertTrue(matchingStrategy.evaluate(event, query, null).shouldRelease());
+        }
+        {
+            // still matches
+            NodeEvent event = new NodeEvent(null, "datatypes", 10, 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(1) } }), 
+                                            createMap(new Object[][] { { new String("integer"), new Integer(0) } }), Event.TYPE_CHANGE);
+            assertTrue(matchingStrategy.evaluate(event, query, null).shouldRelease());
+        }
+    }
+
 }
