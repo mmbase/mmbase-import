@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.76 2006-04-01 14:59:51 nklasens Exp $
+ * @version $Id: UrlTag.java,v 1.77 2006-05-18 17:05:05 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -143,6 +143,41 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     /**
+     * @since MMBase-1.8.1
+     */
+    protected boolean useAbsoluteAttribute(StringBuffer show, String page) throws JspTagException {
+        String abs = absolute.getString(this);
+        if ("".equals(abs) || "false".equals(abs)) return false;
+        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
+
+        if (abs.equals("true")) {
+            show.append(req.getScheme()).append("://");
+            show.append(req.getServerName());
+            int port = req.getServerPort();
+            show.append(port == 80 ? "" : ":" + port);
+        } else if (abs.equals("server")) {
+            //show.append("/");
+        } else {
+            throw new JspTagException("Unknown value for 'absolute' attribute '" + abs + "' (must be either 'true', 'false' or 'server')");
+        }
+        show.append(req.getContextPath());
+        char firstChar = page.charAt(0);
+        try {
+            URI uri;
+            if (firstChar != '/') {
+                uri = new URI("servlet", req.getServletPath() + "/../" + page, null);
+            } else {
+                uri = new URI("servlet", page, null);
+            }
+            uri = uri.normalize(); // resolves .. and so one
+            show.append(uri.getSchemeSpecificPart());
+        } catch (URISyntaxException  use) {
+            throw new TaglibException(use.getMessage(), use);
+        }
+        return true;
+    }
+
+    /**
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
     protected String getUrl(boolean writeamp, boolean encodeUrl) throws JspTagException {
@@ -156,12 +191,13 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             if (writeamp) {
                 url = url.replaceAll("&", "&amp;");
             }
-            show.append(url);
+            if (! useAbsoluteAttribute(show, url)) {
+                show.append(url);
+            }
         } else {
             String page = getPage();
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
             if (page.equals("")) { // means _this_ page
-
                 String requestURI = req.getRequestURI();
                 if (requestURI.endsWith("/")) {
                     page = ".";
@@ -170,34 +206,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 }
 
             }
-            String abs = absolute.getString(this);
-            if (abs.equals("")) abs = "false";
-            if (! abs.equals("false")) {
-                if (abs.equals("true")) {
-                    show.append(req.getScheme()).append("://");
-                    show.append(req.getServerName());
-                    int port = req.getServerPort();
-                    show.append(port == 80 ? "" : ":" + port);
-                } else if (abs.equals("server")) {
-                    //show.append("/");
-                } else {
-                    throw new JspTagException("Unknown value for 'absolute' attribute '" + abs + "' (must be either 'true', 'false' or 'server')");
-                }
-                show.append(req.getContextPath());
-                char firstChar = page.charAt(0);
-                try {
-                    URI uri;
-                    if (firstChar != '/') {
-                        uri = new URI("servlet", req.getServletPath() + "/../" + page, null);
-                    } else {
-                        uri = new URI("servlet", page, null);
-                    }
-                    uri = uri.normalize(); // resolves .. and so one
-                    show.append(uri.getSchemeSpecificPart());
-                } catch (URISyntaxException  use) {
-                    throw new TaglibException(use.getMessage(), use);
-                }
-            } else {
+            if (!useAbsoluteAttribute(show, page)) {
                 if (doMakeRelative()) {
                     show.append(page);
                     page = "";
