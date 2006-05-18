@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * PaginaAction
  *
  * @author Gerard van de Weerd
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-05-18 13:04:23 $
  *
  * @struts:action name="PaginaForm"
  *                path="/editors/paginamanagement/PaginaAction"
@@ -172,6 +172,7 @@ public class PaginaAction extends Action {
             null, null, null, "destination", true);
       
       if (paginaTemplateList.size() > 0) {
+         
          String tempPaginaTemplateNodeNumber = paginaTemplateList.getNode(0).getStringValue("paginatemplate.number");
          if (!paginaTemplateNodeNumber.equals(tempPaginaTemplateNodeNumber)) {
             //remove relation
@@ -182,9 +183,9 @@ public class PaginaAction extends Action {
             Relation gebruiktRel = gebruiktRelMan.createRelation(paginaNode, cloud.getNode(paginaTemplateNodeNumber));
             gebruiktRel.commit();
          }
-      }
-      else {
-         // create new relation
+         
+      } else if(paginaTemplateNodeNumber!=null) {
+         // create new relation            
          RelationManager gebruiktRelMan = cloud.getRelationManager("gebruikt");
          Relation gebruiktRel = gebruiktRelMan.createRelation(paginaNode, cloud.getNode(paginaTemplateNodeNumber));
          gebruiktRel.commit();
