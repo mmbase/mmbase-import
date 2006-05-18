@@ -43,9 +43,9 @@ public class Util {
    
    public static Map buildRolesFromRequest(HttpServletRequest request) {
       Map rollen = new HashMap();
-      Enumeration enum = request.getParameterNames();
-      while (enum.hasMoreElements()) {
-         String name= (String) enum.nextElement();
+      Enumeration pNames = request.getParameterNames();
+      while (pNames.hasMoreElements()) {
+         String name= (String) pNames.nextElement();
          if (name.startsWith("rol_")) {
             String rol = request.getParameter(name);
             if (!rol.equals("-1")) {
