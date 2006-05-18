@@ -1,32 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<editwizards exportsource="mmbase://127.0.0.1/test/v1" timestamp="20060508130637">
-	<node number="118" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_artikel</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>artikel pagina</name>
-	</node>
-
-	<node number="120" owner="admin">
+<editwizards exportsource="mmbase://127.0.0.1/test/v1" timestamp="20060518142749">
+	<node number="326" owner="admin">
 		<searchfields>titel,emailadressen</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -52,7 +26,7 @@
 		<name>formulier</name>
 	</node>
 
-	<node number="122" owner="admin">
+	<node number="328" owner="admin">
 		<searchfields>titel,metatags,omschrijving</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -78,7 +52,7 @@
 		<name>artikel</name>
 	</node>
 
-	<node number="124" owner="admin">
+	<node number="330" owner="admin">
 		<searchfields>titel,metatags,filename</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -104,7 +78,7 @@
 		<name>bijlage</name>
 	</node>
 
-	<node number="126" owner="admin">
+	<node number="332" owner="admin">
 		<searchfields>title,metatags,titel_fra,alt_tekst,bron</searchfields>
 		<pagelength>25</pagelength>
 		<searchtype></searchtype>
@@ -130,7 +104,7 @@
 		<name>afbeelding</name>
 	</node>
 
-	<node number="128" owner="admin">
+	<node number="334" owner="admin">
 		<searchfields>titel,metatags,url</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -156,7 +130,7 @@
 		<name>link</name>
 	</node>
 
-	<node number="130" owner="admin">
+	<node number="336" owner="admin">
 		<searchfields>titel,omschrijving,metatags</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -182,7 +156,7 @@
 		<name>shorty</name>
 	</node>
 
-	<node number="132" owner="admin">
+	<node number="338" owner="admin">
 		<searchfields>titel,metatags</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -208,7 +182,7 @@
 		<name>teaser</name>
 	</node>
 
-	<node number="134" owner="admin">
+	<node number="340" owner="admin">
 		<searchfields>name,url</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -234,397 +208,7 @@
 		<name>jumpers</name>
 	</node>
 
-	<node number="136" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_index</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>homepage pagina</name>
-	</node>
-
-	<node number="138" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_links</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>links pagina</name>
-	</node>
-
-	<node number="140" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_form</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>formulier pagina</name>
-	</node>
-
-	<node number="142" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_events</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>agenda pagina</name>
-	</node>
-
-	<node number="144" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_ecard</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>fun pagina</name>
-	</node>
-
-	<node number="146" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_natuurgebieden</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>natuurgebieden pagina</name>
-	</node>
-
-	<node number="148" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_bezoekerscentra</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>bezoekerscentra pagina</name>
-	</node>
-
-	<node number="150" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_nieuws</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>nieuws pagina</name>
-	</node>
-
-	<node number="152" owner="admin">
-		<searchfields>artikel.titel,artikel.type</searchfields>
-		<pagelength>50</pagelength>
-		<searchtype></searchtype>
-		<type>list</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby>artikel.titel</orderby>
-		<nodepath>pagina,contentrel,provincies,posrel,natuurgebieden,rolerel,artikel</nodepath>
-		<search>yes</search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields>artikel.titel,artikel.type,artikel.titel_fra</fields>
-		<constraints></constraints>
-		<description>Bewerk routes</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>100</maxpagecount>
-		<wizard>config/artikel/artikel_route</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>routes (list)</name>
-	</node>
-
-	<node number="154" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_vragen</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>vragen pagina</name>
-	</node>
-
-	<node number="156" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_zoek</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>zoek pagina</name>
-	</node>
-
-	<node number="158" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_routes</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>routes pagina</name>
-	</node>
-
-	<node number="160" owner="admin">
-		<searchfields>artikel.titel</searchfields>
-		<pagelength>50</pagelength>
-		<searchtype></searchtype>
-		<type>list</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby>artikel.begindatum</orderby>
-		<nodepath>pagina,contentrel,artikel</nodepath>
-		<search>yes</search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions>down</directions>
-		<age>-1</age>
-		<fields>artikel.titel,artikel.begindatum,artikel.embargo,artikel.verloopdatum,artikel.sms</fields>
-		<constraints></constraints>
-		<description>Bewerk de nieuws artikelen van deze pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/artikel/artikel_nieuws</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>nieuws (list)</name>
-	</node>
-
-	<node number="162" owner="admin">
-		<searchfields>natuurgebieden.naam,natuurgebieden.bron</searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type>list</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby>natuurgebieden.naam</orderby>
-		<nodepath>pagina,contentrel,provincies,pos4rel,natuurgebieden</nodepath>
-		<search>yes</search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions>UP</directions>
-		<age>-1</age>
-		<fields>natuurgebieden.naam,natuurgebieden.bron,pos4rel.pos1,pos4rel.pos2</fields>
-		<constraints></constraints>
-		<description>Bekijk de lijst met natuurgebieden voor deze pagina</description>
-		<m_distinct>0</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/natuurgebieden/natuurgebieden</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>natuurgebieden (list)</name>
-	</node>
-
-	<node number="164" owner="admin">
-		<searchfields>panno.omschrijving,panno.titel</searchfields>
-		<pagelength>50</pagelength>
-		<searchtype></searchtype>
-		<type>list</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby>panno.embargo</orderby>
-		<nodepath>pagina,posrel,panno</nodepath>
-		<search>yes</search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions>DOWN</directions>
-		<age>-1</age>
-		<fields>panno.omschrijving,panno.titel,panno.embargo,panno.verloopdatum</fields>
-		<constraints></constraints>
-		<description>Plan de panos op deze pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/panno/panno_origin</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>pano (list)</name>
-	</node>
-
-	<node number="166" owner="admin">
+	<node number="372" owner="admin">
 		<searchfields>label,label_fra</searchfields>
 		<pagelength>50</pagelength>
 		<searchtype></searchtype>
@@ -650,7 +234,7 @@
 		<name>vraag</name>
 	</node>
 
-	<node number="168" owner="admin">
+	<node number="374" owner="admin">
 		<searchfields>titel,metatags</searchfields>
 		<pagelength>50</pagelength>
 		<searchtype></searchtype>
@@ -676,7 +260,7 @@
 		<name>pano</name>
 	</node>
 
-	<node number="170" owner="admin">
+	<node number="376" owner="admin">
 		<searchfields>name</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -702,59 +286,7 @@
 		<name>categorieën</name>
 	</node>
 
-	<node number="172" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type></type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description></description>
-		<m_distinct>0</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_people</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>smoelenboek pagina</name>
-	</node>
-
-	<node number="174" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type>wizard</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description></description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_vacature</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>vacature pagina</name>
-	</node>
-
-	<node number="176" owner="admin">
+	<node number="382" owner="admin">
 		<searchfields>titel</searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -780,7 +312,7 @@
 		<name>vacatures</name>
 	</node>
 
-	<node number="178" owner="admin">
+	<node number="384" owner="admin">
 		<searchfields></searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -806,7 +338,7 @@
 		<name>gebruikers</name>
 	</node>
 
-	<node number="180" owner="admin">
+	<node number="386" owner="admin">
 		<searchfields></searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -832,7 +364,7 @@
 		<name>taken</name>
 	</node>
 
-	<node number="182" owner="admin">
+	<node number="388" owner="admin">
 		<searchfields></searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -858,7 +390,7 @@
 		<name>link validatie</name>
 	</node>
 
-	<node number="184" owner="admin">
+	<node number="390" owner="admin">
 		<searchfields></searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -884,7 +416,7 @@
 		<name>externe links</name>
 	</node>
 
-	<node number="186" owner="admin">
+	<node number="392" owner="admin">
 		<searchfields></searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -910,7 +442,7 @@
 		<name>alle pagina's publiceren</name>
 	</node>
 
-	<node number="188" owner="admin">
+	<node number="394" owner="admin">
 		<searchfields></searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -936,7 +468,7 @@
 		<name>email gebruikers</name>
 	</node>
 
-	<node number="190" owner="admin">
+	<node number="396" owner="admin">
 		<searchfields></searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -962,7 +494,7 @@
 		<name>exporteer categorieën</name>
 	</node>
 
-	<node number="192" owner="admin">
+	<node number="398" owner="admin">
 		<searchfields></searchfields>
 		<pagelength>-1</pagelength>
 		<searchtype></searchtype>
@@ -986,162 +518,6 @@
 		<origin></origin>
 		<title></title>
 		<name>formulier statistieken</name>
-	</node>
-
-	<node number="194" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type>wizard</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description>Bewerk deze pagina</description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_weblog</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>weblog pagina</name>
-	</node>
-
-	<node number="196" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type>wizard</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description></description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_home</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>home pagina (actiesite)</name>
-	</node>
-
-	<node number="198" owner="admin">
-		<searchfields>ads.title,ads.name,ads.email</searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type>list</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby>ads.postdate</orderby>
-		<nodepath>pagina,contentrel,ads</nodepath>
-		<search>yes</search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions>DOWN</directions>
-		<age>-1</age>
-		<fields>ads.title,ads.name,ads.email,ads.postdate,ads.expiredate</fields>
-		<constraints></constraints>
-		<description></description>
-		<m_distinct>0</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/ads/ads</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>berichten</name>
-	</node>
-
-	<node number="200" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type>wizard</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description></description>
-		<m_distinct>0</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_calendar</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>Calendar</name>
-	</node>
-
-	<node number="202" owner="admin">
-		<searchfields>artikel.titel</searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type>list</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby>artikel.begindatum</orderby>
-		<nodepath>pagina,contentrel,artikel</nodepath>
-		<search>yes</search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions>DOWN</directions>
-		<age>-1</age>
-		<fields>artikel.titel,artikel.begindatum</fields>
-		<constraints></constraints>
-		<description></description>
-		<m_distinct>0</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/artikel/artikel_weblog</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>weblog artikel</name>
-	</node>
-
-	<node number="204" owner="admin">
-		<searchfields></searchfields>
-		<pagelength>-1</pagelength>
-		<searchtype></searchtype>
-		<type>wizard</type>
-		<searchdir></searchdir>
-		<startnodes></startnodes>
-		<orderby></orderby>
-		<nodepath></nodepath>
-		<search></search>
-		<objectnumber></objectnumber>
-		<maxupload>-1</maxupload>
-		<directions></directions>
-		<age>-1</age>
-		<fields></fields>
-		<constraints></constraints>
-		<description></description>
-		<m_distinct>1</m_distinct>
-		<maxpagecount>-1</maxpagecount>
-		<wizard>config/pagina/pagina_bullitenboard</wizard>
-		<searchvalue></searchvalue>
-		<origin></origin>
-		<title></title>
-		<name>bulletinboard (actiesite)</name>
 	</node>
 
 </editwizards>
