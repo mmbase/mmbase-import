@@ -399,7 +399,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                <% try { iNumberPerParticipant = dummy.intValue(); } catch (Exception e) {} %>
             </mm:field>
             <mm:related path="related,deelnemers,posrel,inschrijvingen,posrel,evenement"
-               constraints="<%= "evenement.number LIKE '" + nodenr + "'" %>">
+               constraints="<%= "evenement.number = '" + nodenr + "'" %>">
                <mm:field name="deelnemers.bron" jspvar="dummy" vartype="Integer" write="false">
                   <% try { iParticipantsInCat += dummy.intValue(); } catch (Exception e) {}  %>
                </mm:field>
