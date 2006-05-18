@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Edwin van der Elst
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-05-18 13:03:35 $
  * 
  * @struts:action path="/workflow/WorkflowAction" scope="request"
  * validate="false"
@@ -69,9 +69,9 @@ public class WorkflowAction extends Action {
       Cloud c = CloudFactory2.getCloud(request);
       
       List nodes = new ArrayList();
-      Enumeration enum = request.getParameterNames();
-      while (enum.hasMoreElements()) {
-         String name = (String) enum.nextElement();
+      Enumeration pNames = request.getParameterNames();
+      while (pNames.hasMoreElements()) {
+         String name = (String) pNames.nextElement();
          if (name.startsWith("check_")) {
             int lastUScore = name.lastIndexOf("_");
             Node n = c.getNode(Integer.parseInt(name.substring(lastUScore + 1)));
@@ -121,6 +121,9 @@ public class WorkflowAction extends Action {
 
 /**
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/03/08 22:23:51  henk
+ * Changed log4j into MMBase logging
+ *
  * Revision 1.1  2006/03/05 21:43:59  henk
  * First version of the NatMM contribution.
  *
