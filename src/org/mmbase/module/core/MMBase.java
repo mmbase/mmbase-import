@@ -45,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.193 2006-05-15 17:28:23 pierre Exp $
+ * @version $Id: MMBase.java,v 1.194 2006-05-18 10:53:32 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -142,6 +142,7 @@ public class MMBase extends ProcessorModule {
     /**
      * Determines whether MMBase is in development mode. 
      * @see #inDevelopment()
+     * @since MMBase-1.8.1
      */
     private boolean inDevelopment = false;
 
@@ -431,6 +432,7 @@ public class MMBase extends ProcessorModule {
      * The value for this property ('true' or 'false') can be set in the "development" 
      * property in the mmbaseroot.xml configuration file.
      * The default value is <code>false</code>.
+     * @since MMBase-1.8.1
      */
     public boolean inDevelopment() {
         return inDevelopment;
