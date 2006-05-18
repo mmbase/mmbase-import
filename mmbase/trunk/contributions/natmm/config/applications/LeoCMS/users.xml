@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<users exportsource="mmbase://127.0.0.1/test/v1" timestamp="20060508130637">
-	<node number="753" owner="system" alias="users.admin">
+<users exportsource="mmbase://127.0.0.1/test/v1" timestamp="20060518142749">
+	<node number="417" owner="system" alias="users.admin">
 		<originalrank></originalrank>
 		<notitie></notitie>
 		<password>admin2k</password>
