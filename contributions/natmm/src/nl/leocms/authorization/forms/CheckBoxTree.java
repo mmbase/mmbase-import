@@ -74,9 +74,9 @@ public class CheckBoxTree{
     //Map editwizards = new HashMap();
     ArrayList alMenus = new ArrayList();
     ArrayList alEditwizards = new ArrayList();
-    Enumeration enum = request.getParameterNames();
-    while (enum.hasMoreElements()) {
-      String name = (String) enum.nextElement();
+    Enumeration pNames = request.getParameterNames();
+    while (pNames.hasMoreElements()) {
+      String name = (String) pNames.nextElement();
       if (name.startsWith("menu_")) {
         String rol = request.getParameter(name);
         if (!rol.equals("-1")) {
