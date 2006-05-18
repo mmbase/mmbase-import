@@ -364,11 +364,11 @@ public class ConstraintMatcherTest extends BridgeTest {
 
 
     public void testBasicFieldValueInConstraintMatcher() {
-        Query query = Queries.createQuery(cloud, null, "datatypes", "datatypes.number", null, null, null, null, false);
+        Query query = Queries.createQuery(cloud, null, "datatypes", "datatypes.number,datatypes.integer", null, null, null, null, false);
         Set values = new HashSet();
         values.add(new Integer(0));
         values.add(new Integer(1));
-        query.setConstraint(Queries.createConstraint(query, "datatypes.number", Queries.getOperator("IN"), values, null, false));
+        query.setConstraint(Queries.createConstraint(query, "datatypes.integer", Queries.getOperator("IN"), values, null, false));
 
 
         {
