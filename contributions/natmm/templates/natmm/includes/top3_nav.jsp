@@ -57,30 +57,30 @@ with(style2=new mm_style()){
 
 RubriekHelper rubriekHelper = new RubriekHelper(cloud);
 
-TreeMap [] lastTree = new TreeMap[10];
-lastTree[0] = new TreeMap();
-lastTree[0].put(new Integer(0),rootID);
+TreeMap [] nodesAtLevel = new TreeMap[10];
+nodesAtLevel[0] = new TreeMap();
+nodesAtLevel[0].put(new Integer(0),rootID);
 
 int depth = 0;
 
-// invariant: depth = level of present leafs, where root has level 0
+// invariant: depth = level of present leafs (root has level 0)
 while(depth>-1&&depth<10) { 
    
    String lastSubObject = "";
-   if(lastTree[depth].isEmpty()) {
+   if(nodesAtLevel[depth].isEmpty()) {
    
       // *** if this level is empty, try one level back ***
       depth--; 
    }
-   if(depth>-1&&!lastTree[depth].isEmpty()) {
+   if(depth>-1&&!nodesAtLevel[depth].isEmpty()) {
    
       // *** take next rubriek of highest level ***
-      Integer firstKey = (Integer) lastTree[depth].firstKey();
-      lastSubObject =  (String) lastTree[depth].get(firstKey);
-      lastTree[depth].remove(firstKey);
+      Integer firstKey = (Integer) nodesAtLevel[depth].firstKey();
+      lastSubObject =  (String) nodesAtLevel[depth].get(firstKey);
+      nodesAtLevel[depth].remove(firstKey);
       depth++;
       
-      lastTree[depth] = (TreeMap) rubriekHelper.getSubObjects(lastSubObject);
+      nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(lastSubObject);
       if(depth==1) { 
          %>
          with(milonic=new menuname("mainmenu")){
@@ -101,15 +101,16 @@ while(depth>-1&&depth<10) {
       }
       
       // *** show all subObjects, both pages and rubrieken
-      TreeMap thisSubObjects = (TreeMap) lastTree[depth].clone();
+      TreeMap thisSubObjects = (TreeMap) nodesAtLevel[depth].clone();
       while(!thisSubObjects.isEmpty()) { 
       
          Integer thisKey = (Integer) thisSubObjects.firstKey();
          String sThisObject = (String) thisSubObjects.get(thisKey);
+         thisSubObjects.remove(thisKey);
+			
          %><mm:node number="<%= sThisObject %>" jspvar="thisObject"
             ><mm:nodeinfo  type="type" write="false" jspvar="nType" vartype="String"><%
                
-             
                if(nType.equals("pagina")){ // *** show page
                
                   String sObjectTitle = thisObject.getStringValue("titel");   
@@ -117,7 +118,7 @@ while(depth>-1&&depth<10) {
                   %>aI("text=<%= sObjectTitle %>;;url=<%= ph.createPaginaUrl(sThisObject,request.getContextPath()) %>;separatorsize=1")
                   <%
                   // *** object not longer needed
-                  lastTree[depth].remove(thisKey);
+                  nodesAtLevel[depth].remove(thisKey);
                   
                } else { // *** show rubriek, which is a link to the first page in the rubriek
                   
@@ -129,13 +130,11 @@ while(depth>-1&&depth<10) {
                } 
             %></mm:nodeinfo
          ></mm:node><%
-         
-         thisSubObjects.remove(thisKey);
-      } 
+      }
    %>
    }
-   <%   
-   } 
+   <%
+   }
 } 
 %>
 
