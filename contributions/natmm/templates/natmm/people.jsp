@@ -39,7 +39,7 @@
                <jsp:param name="sr" value="1" />
             </jsp:include>
             <div style="margin-top:8px;margin-bottom:8px;">
-               <a href="javascript:history.go(-1);"><img src="media/buttonleft_<%= style1[iRubriekStyle] %>.gif" border="0"/></a>
+               <a href="javascript:history.go(-1);"><img src="media/buttonleft_<%= nl.mmatch.NatMMConfig.style1[iRubriekStyle] %>.gif" border="0"/></a>
                <a href="javascript:history.go(-1);">Terug naar Smoelenboek</a>
             </div>
       <% } %>

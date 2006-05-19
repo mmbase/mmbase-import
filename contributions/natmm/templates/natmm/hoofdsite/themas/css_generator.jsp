@@ -1,15 +1,18 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <%@include file="/taglibs.jsp" %>
-<%@include file="../../includes/request_parameters.jsp" %>
+<html>
+<head>
+</head>
+<body style="background-color:#FFFFFF;">
 <%= new Date() %>
 <table>
-<% for(int i=0; i< style1.length; i++ ) { %>
+<% for(int i=0; i< nl.mmatch.NatMMConfig.style1.length; i++ ) { %>
       <tr>
-         <td><%= style1[i] %></td>
-         <td style="background-color:<%= color1[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= color1[i] %></td>
-         <td style="background-color:<%= color2[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= color2[i] %></td>
-         <td style="background-color:<%= color3[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= color3[i] %></td>
+         <td><%= nl.mmatch.NatMMConfig.style1[i] %></td>
+         <td style="background-color:<%= nl.mmatch.NatMMConfig.color1[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= nl.mmatch.NatMMConfig.color1[i] %></td>
+         <td style="background-color:<%= nl.mmatch.NatMMConfig.color2[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= nl.mmatch.NatMMConfig.color2[i] %></td>
+         <td style="background-color:<%= nl.mmatch.NatMMConfig.color3[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= nl.mmatch.NatMMConfig.color3[i] %></td>
       </tr>
 <% } %>
 </table>
@@ -25,16 +28,16 @@ if(root!=null) {
    BufferedReader srcFileReader = null;
    BufferedWriter destFileWriter = null;
    
-   for(int i= 0; i< style1.length;i++) {
+   for(int i= 0; i< nl.mmatch.NatMMConfig.style1.length;i++) {
       srcFileReader = new BufferedReader(new FileReader(sourceFile));
-      destFileWriter  = new BufferedWriter(new FileWriter(root + style1[i] + ".css"));
+      destFileWriter  = new BufferedWriter(new FileWriter(root + nl.mmatch.NatMMConfig.style1[i] + ".css"));
    
       String nextLine = srcFileReader.readLine();
       while(nextLine!=null) {
-         nextLine = nextLine.replaceAll("<style1>",style1[i]);
-         nextLine = nextLine.replaceAll("<color1>",color1[i]);
-         nextLine = nextLine.replaceAll("<color2>",color2[i]);   
-         nextLine = nextLine.replaceAll("<color3>",color3[i]);   
+         nextLine = nextLine.replaceAll("<style1>",nl.mmatch.NatMMConfig.style1[i]);
+         nextLine = nextLine.replaceAll("<color1>",nl.mmatch.NatMMConfig.color1[i]);
+         nextLine = nextLine.replaceAll("<color2>",nl.mmatch.NatMMConfig.color2[i]);   
+         nextLine = nextLine.replaceAll("<color3>",nl.mmatch.NatMMConfig.color3[i]);   
          destFileWriter.write(nextLine + "\n");
          nextLine = srcFileReader.readLine();
       }
@@ -66,3 +69,5 @@ if(root!=null) {
    %>The directory hoofdsite themas could not be found.<%
 }
 %>
+</body>
+</html>

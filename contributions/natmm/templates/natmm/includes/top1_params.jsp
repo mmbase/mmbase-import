@@ -31,9 +31,9 @@ Vector breadcrumbs = new Vector();
 String lnRubriekID = "";
 String rootID = "";
 
-int iRubriekStyle = PARENT_STYLE;
+int iRubriekStyle = nl.mmatch.NatMMConfig.PARENT_STYLE;
 String styleSheet = "hoofdsite/themas/default.css"; 
-int iRubriekLayout = PARENT_LAYOUT;
+int iRubriekLayout = nl.mmatch.NatMMConfig.PARENT_LAYOUT;
 String lnLogoID = "-1";
 String rnImageID = "-1";
 
@@ -65,13 +65,13 @@ if(!ph.isOfType(rubriekID,"rubriek")||!ph.isOfType(paginaID, "pagina")) {
    for(int r=0; r<breadcrumbs.size(); r++) {
       %><mm:node number="<%= (String) breadcrumbs.get(r) %>" jspvar="thisRubriek"><%
  
-            if(iRubriekLayout==PARENT_LAYOUT) {
+            if(iRubriekLayout==nl.mmatch.NatMMConfig.PARENT_LAYOUT) {
                try { iRubriekLayout = thisRubriek.getIntValue("naam_fra"); } catch (Exception e) {}
             }
-            if(iRubriekStyle==PARENT_STYLE){
+            if(iRubriekStyle==nl.mmatch.NatMMConfig.PARENT_STYLE){
                styleSheet = thisRubriek.getStringValue("style");
-            	for(int s = 0; s< style1.length; s++) {
-                  if(styleSheet.indexOf(style1[s])>-1) { iRubriekStyle = s; } 
+            	for(int s = 0; s< nl.mmatch.NatMMConfig.style1.length; s++) {
+                  if(styleSheet.indexOf(nl.mmatch.NatMMConfig.style1[s])>-1) { iRubriekStyle = s; } 
                }
             } 
             if(lnLogoID.equals("-1")) {
@@ -91,8 +91,8 @@ if(!ph.isOfType(rubriekID,"rubriek")||!ph.isOfType(paginaID, "pagina")) {
       %></mm:node><%
    }
 
-   if(iRubriekLayout==PARENT_LAYOUT) { iRubriekLayout = DEFAULT_LAYOUT; }
-   if(iRubriekStyle==PARENT_STYLE) { iRubriekStyle = DEFAULT_STYLE; }
+   if(iRubriekLayout==nl.mmatch.NatMMConfig.PARENT_LAYOUT) { iRubriekLayout = nl.mmatch.NatMMConfig.DEFAULT_LAYOUT; }
+   if(iRubriekStyle==nl.mmatch.NatMMConfig.PARENT_STYLE) { iRubriekStyle = nl.mmatch.NatMMConfig.DEFAULT_STYLE; }
 } 
 
 String shortyRol = "0";
