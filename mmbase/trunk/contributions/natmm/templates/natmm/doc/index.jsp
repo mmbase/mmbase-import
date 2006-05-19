@@ -18,7 +18,7 @@
             <th style="width:20%;">Document</th></tr>
 
         <tr><td style="width:80%;">het werken met de MMBase <b>editwizards</b></td>
-            <td style="width:20%;"><a href="GebruikershandleidingEditwizards.doc" title="GebruikershandleidingEditwizards.doc">GebruikershandleidingEditwizards.doc</a></td></tr>
+            <td style="width:20%;"><a href="GebruikershandleidingEditors.doc" title="GebruikershandleidingEditors.doc">GebruikershandleidingEditors.doc</a></td></tr>
 
         <tr><td style="width:80%;">het werken met <b>www.natuurmonumenten.nl (inclusief Naardermeer, A6-A9, etc.)</b></td>
             <td style="width:20%;"><a href="GebruikershandleidingNatMM.doc" title="GebruikershandleidingNatMM.doc">GebruikershandleidingNatMM.doc</a></td></tr>
