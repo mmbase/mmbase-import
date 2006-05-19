@@ -73,7 +73,6 @@ if(referer!=null) {
                String formulierveld_label = HtmlCleaner.cleanText(thisField.getStringValue("label"),"<",">");
                String formulierveld_type =  thisField.getStringValue("type");
                boolean isRequired = thisField.getStringValue("verplicht").equals("1");
-               
                String formulierveld_warning = "U bent vergeten '" +  formulierveld_label + "' in te vullen";
                String omschrijving = thisField.getStringValue("omschrijving");
                if(omschrijving!=null&&!HtmlCleaner.cleanText(omschrijving,"<",">","").trim().equals("")) {
@@ -120,11 +119,22 @@ if(referer!=null) {
                   ><mm:field name="formulierveldantwoord.number" jspvar="formulierveldantwoord_number" vartype="String" write="false"><%   
                         String answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_" + formulierveldantwoord_number,postingStr);
                         if(!answerValue.equals("")) {
-                           hasSelected = true;
-                           responseText += ", " + answerValue;
+									if (hasSelected){
+										responseText += ", ";
+									}
+                           responseText += answerValue;
+									hasSelected = true;
                         }
                      %></mm:field
                   ></mm:related><%
+						String answer_else_Value = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_else",postingStr);
+						if (!answer_else_Value.equals("")){
+							if (hasSelected){
+								responseText += ", ";
+							}
+							responseText += answer_else_Value;
+							hasSelected = true;
+						}
                   if(!hasSelected) {
                      responseText += noAnswer;
                      if(isRequired) {

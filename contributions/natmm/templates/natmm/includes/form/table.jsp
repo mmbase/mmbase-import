@@ -32,6 +32,7 @@ String p = request.getParameter("p");
               }
               formulierveld_label = formulierveld_label.substring(0,1).toUpperCase()+formulierveld_label.substring(1);
               String formulierveld_type = thisFormField.getStringValue("type");
+				  String formulierveld_else = thisFormField.getStringValue("label_eng");
               boolean isRequired = thisFormField.getStringValue("verplicht").equals("1");
               %>
               <mm:first><table cellspacing="0" cellpadding="0" border="0" style="width:354px;margin-bottom:10px;margin-top:3px;"></mm:first>
@@ -163,15 +164,27 @@ String p = request.getParameter("p");
                   <td class="maincolor" style="width:177px;padding:0px;padding-right:1px;vertical-align:top;text-align:right;<% if(!isIE) { %>padding-top:1px;<% } %>"><%
                      %><input type="text" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_day" style="width:43px;border:0;" onkeypress="return handleEnter(this, event)"><%
                      %><select name="q<%= thisFormNumber %>_<%= formulierveld_number %>_month" style="width:89px;font-size:9px;">
-                       <option>...<%
+                       <option value="">...<%
                        for(int m = 0; m < 12; m++) { %><option value="<%= months_lcase[m] %>"><%= months_lcase[m] %><% }
                        %></select><%
                      %><input type="text" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_year" style="width:43px;border:0;" onkeypress="return handleEnter(this, event)"><%
                   %></td>
                  <%
               }
-              %>
+              
+				  if (formulierveld_else.equals("1")) { 
+				  		if (formulierveld_type.equals("3")){ %>
+							</tr><tr><td colspan="2" style="height:7px;"></td>
+						<% } %>
+				  		</tr>
+						<tr>
+					  		<td class="maincolor" style="width:177px;padding:5px;line-height:0.80em;" colspan="2">Anders</td>
+						</tr>
+				      <tr>
+                    <td colspan="2" class="maincolor" style="<% if(!isIE) { %>padding-right:2px;<% } %>"><textarea rows="4" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_else" wrap="physical" style="width:100%;margin-left:1px;margin-right:1px;border:0;"></textarea></td>
+				  <%}%>
               </tr>     
+				  
               <mm:last><%
                     if(iNumberOfPools == iCounterOfPools)
                     {
