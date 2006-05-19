@@ -80,6 +80,16 @@
   </function>
 
 
+  <function name="hasChanged">
+    <description>has there been a assignment change</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>hasChanged</method>
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
   <function name="getThemeInfo">
     <description>Provide the info on a theme</description>
     <type>class</type>
