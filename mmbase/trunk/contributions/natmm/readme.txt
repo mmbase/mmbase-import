@@ -1,5 +1,5 @@
 NatMM - readme.txt
-Version: 06.05.18
+Version: 06.05.19
 Author: H. Hangyi
 
 NatMM is an MMBase application which is based on LeoCMS, which is specially geared for use in
@@ -56,10 +56,11 @@ Each website in the NatMM application, e.g. MySite, should consist of the follow
    c. to see if a page still contains contentelements
       (see nl.leocms.pagina.PaginaUtil.doesPageContainContentElements)
 4. editwizards in templates/mmbase/edit/wizard/data/config
+5. user manuals and technical documentaion in templates/mysite/doc
 
 How to add your own application to NatMM?
 
-To add your own application to NatMM you should do the following:
+The minimal steps you have to carry out to add your own application to NatMM are:
 1. install LeoCMS (see install.txt)
 2. add paginatemplate nodes to MMBase (use /mmbase/edit/my_editors for this)
 3. enter rubrieken and paginas by using the Pagina-editor and relate the pages to the paginatemplates created in step 2
@@ -67,6 +68,11 @@ To add your own application to NatMM you should do the following:
    is the easiest way to do this. Read the MMBase documentation if you need more information on this topic.
 5. implement the jsp-templates that correspond to the paginatemplate nodes created in step 2
    (e.g. in a subfolder templates/mysite). Please adhere to the coding-standards as much as possible.
+	
+	One of the most complex parts of your templates will probably the navigation. Because NatMM allows
+	for a website tree of any depth, your navigation should also take this into account. 
+	See templates/nmintra/include/nav.jsp and templates/natmm/includes/top3_nav.jsp for examples on how to do this.
+	
 6. add MySiteConfig.java to make sure the editors and url-rewriting work properly
 
 The current verion of NatMM is tested with MMBase 1.7.4 / JDK 1.4 and 1.5 / MySQL 5.1.
