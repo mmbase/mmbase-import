@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.15 2006-03-03 14:47:44 michiel Exp $
+ * @version $Id: NodeProviderHelper.java,v 1.16 2006-05-19 16:50:50 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -184,10 +184,11 @@ public class NodeProviderHelper implements NodeProvider {
         }
         if (_Stack != null) {
             Object pop = _Stack.pop();
+            PageContext pageContext = thisTag.getPageContext();
             if (_Stack.empty()) {
-                thisTag.getPageContext().removeAttribute(_NODE);
+                pageContext.removeAttribute(_NODE);
             } else {
-                thisTag.getPageContext().setAttribute(_NODE, _Stack.peek());
+                pageContext.setAttribute(_NODE, org.mmbase.util.Casting.wrap(_Stack.peek(), (org.mmbase.util.transformers.CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)));
             }
             _Stack = null;
         }
