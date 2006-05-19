@@ -30,7 +30,7 @@
     int numberOfColumns = 2;
     int colNumber = 1; 
     while(colNumber<=numberOfColumns) { 
-        %><td><%@include file="includes/sitemapitems.jsp" %></td><%
+        %><td><%@include file="includes/sitemap/sitemapitems.jsp" %></td><%
         if(colNumber<numberOfColumns) { 
             %><td><img src="media/spacer.gif" width="10" height="1"></td><% 
         } colNumber++; 
