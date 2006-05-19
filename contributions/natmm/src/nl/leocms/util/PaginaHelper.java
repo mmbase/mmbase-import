@@ -1207,7 +1207,7 @@ public class PaginaHelper {
    public String findPageByIDs(HashMap ids, String template, String defaultPage) {
       String rubriekID =  (String) ids.get("rubriek");
       String paginaID =  (String) ids.get("pagina");
-      log.info("findPagesByIDs: rubriek = " + rubriekID + " pagina= " + paginaID + " template= " + template);
+      log.debug("findPagesByIDs: rubriek = " + rubriekID + " pagina= " + paginaID + " template= " + template);
 
       // use rubriekID to set paginaID
       if (paginaID.equals("-1") && !rubriekID.equals("-1")) {
@@ -1220,24 +1220,29 @@ public class PaginaHelper {
          String objecttype = (String) it.next();
          String ID = (String) ids.get(objecttype.replaceAll("#",""));
 			if(ID==null) { 
-				log.info("Objecttype " + objecttype + " is not found in the list of IDs supplied to findPageByIDs");
+				log.warn("Objecttype " + objecttype + " is not found in the list of IDs supplied to findPageByIDs");
 				ID = "-1";
 			}
          if (!ID.equals("-1")) {
-            String currentPath = (String) pathsFromPageToElements.get(objecttype) + ",gebruikt,template";
-            log.debug("Checking " + ID + " with " + currentPath);
-            NodeList nlPages = cloud.getList(ID,
-                                             currentPath,
-                                             "pagina.number",
-                                             "template.url='" + template + "'",
-                                             null, null, null, false);
-
-            if (nlPages.size() > 0) {
-               paginaID = nlPages.getNode(0).getStringValue("pagina.number");
-               log.debug("Found " + paginaID);
-            }
+				// split list in two parts to prevent joints over many tables
+				NodeList nlPages = cloud.getList("",
+															"pagina,gebruikt,template",
+															"pagina.number",
+															"template.url='" + template + "'",
+															null, null, null, false);
+				for(int p = 0; p < nlPages.size() && paginaID.equals("-1"); p++) {
+					String currentPath = (String) pathsFromPageToElements.get(objecttype);
+					NodeList nlPathsToPage = cloud.getList(ID,
+															currentPath,
+															"pagina.number",
+															"pagina.number='" + nlPages.getNode(p).getStringValue("pagina.number") + "'",
+															null, null, null, false);
+					if (nlPathsToPage.size() > 0) {
+						paginaID = nlPages.getNode(0).getStringValue("pagina.number");
+						log.debug("found " + paginaID);
+					}					
+				}
          }
-
       }
 		// if nothing else helps use defaultPage
 		if (paginaID.equals("-1")) {
