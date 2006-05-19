@@ -52,7 +52,7 @@
    if(!previousImage.equals("-1")&&!nextImage.equals("-1")) { 
       pageText += "<td style=\"text-align:center;\"><a href=\"" + 
       pageUrl + "&i=" + previousImage + 
-      "\"><img src=\"../media/back_" + style1[iRubriekStyle] + ".gif\" border=\"0\" alt=\"\"></a></td><td style=\"text-align:center;\">&nbsp;<a class=\"nav\" href=\"" + 
+      "\"><img src=\"../media/back_" + nl.mmatch.NatMMConfig.style1[iRubriekStyle] + ".gif\" border=\"0\" alt=\"\"></a></td><td style=\"text-align:center;\">&nbsp;<a class=\"nav\" href=\"" + 
       pageUrl + "&i=" + previousImage + "\">vorige</a></td>"; 
    }
    pageText += "<td>&nbsp; | &nbsp;</td>";
@@ -60,7 +60,7 @@
       pageText += "<td style=\"text-align:center;\"><a class=\"nav\" href=\"" + 
       pageUrl + "&i=" + nextImage + "\">volgende</a>&nbsp;</td>" + "<td style=\"text-align:center;\"><a href=\"" + 
       pageUrl + "&i=" + nextImage + 
-      "\"><img src=\"../media/submit_" + style1[iRubriekStyle] + ".gif\" border=\"0\" alt=\"\"></a></td>"; 
+      "\"><img src=\"../media/submit_" + nl.mmatch.NatMMConfig.style1[iRubriekStyle] + ".gif\" border=\"0\" alt=\"\"></a></td>"; 
    }
    pageText += "</td></tr></table>"; %>
    <title><%= pageTitle %></title>

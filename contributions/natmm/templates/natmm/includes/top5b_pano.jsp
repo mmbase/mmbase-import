@@ -36,7 +36,7 @@ if(shortyCnt!=1) {
 // tX, tY, bX, bY
 String panoTemplate = "s(744)+part(0,0,744,138)";  // only part(..) gives problem with lots of small images
 int pHeight = 138;
-if(iRubriekLayout==SUBSITE3_LAYOUT) {
+if(iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE3_LAYOUT) {
    if(path.equals("homepage.jsp")) { 
       panoTemplate =""; // panoTemplate = "part(0,0,744,398)";
       pHeight = 398;
@@ -44,7 +44,7 @@ if(iRubriekLayout==SUBSITE3_LAYOUT) {
       panoTemplate = "";
       pHeight = 171;
    }
-} else if( iRubriekLayout==SUBSITE1_LAYOUT || iRubriekLayout==SUBSITE2_LAYOUT ) {
+} else if( iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE1_LAYOUT || iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE2_LAYOUT ) {
    panoTemplate = "s(744)+part(0,0,744,75)";
    pHeight = 75;
 } else if(path.equals("index.jsp")) {
@@ -60,7 +60,7 @@ if(iRubriekLayout==SUBSITE3_LAYOUT) {
    	<mm:node number="<%= shortyID[i] %>">
    	<mm:field name="titel_zichtbaar">
       <mm:compare value="1">
-   	<div style="position:relative;left:10px;top:<%= (iRubriekLayout==SUBSITE1_LAYOUT ? "8" : "85") %>px;">
+   	<div style="position:relative;left:10px;top:<%= (iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE1_LAYOUT ? "8" : "85") %>px;">
       	<div style="visibility:visible;position:absolute;top:0px;left:0px;">
          	<table width="169" cellspacing="0" cellpadding="0">
          	<tr>

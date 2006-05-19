@@ -103,10 +103,10 @@ try{
               In archief: <%= objectCount %> <mm:field name="titel.fr"/> [<%= pagesCount %> pgn]
              <div style="padding-top:10px;">
                <% if (thisOffset == 1) { %>
-                    <img src="../media/arrowleft_<%= style1[iRubriekStyle] %>.gif" border="0">
+                    <img src="../media/arrowleft_<%= nl.mmatch.NatMMConfig.style1[iRubriekStyle] %>.gif" border="0">
                <% } else { %>
                     <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset-1),request.getContextPath()) %>"
-                      ><img src="../media/arrowleft_<%= style1[iRubriekStyle] %>.gif" border="0"></a>
+                      ><img src="../media/arrowleft_<%= nl.mmatch.NatMMConfig.style1[iRubriekStyle] %>.gif" border="0"></a>
                     <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset=1",request.getContextPath()) %>">1</a>
                <% } 
                   if (thisOffset > 3) { %>
@@ -123,11 +123,11 @@ try{
                     &hellip;                     
                <% } 
                   if (thisOffset == pagesCount) { %>
-                    <img src="../media/arrowright_<%= style1[iRubriekStyle] %>.gif" border="0">
+                    <img src="../media/arrowright_<%= nl.mmatch.NatMMConfig.style1[iRubriekStyle] %>.gif" border="0">
                <% } else { %>
                     <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+pagesCount,request.getContextPath()) %>"><%= pagesCount %></a>
                     <a href="<%= ph.createItemUrl(artikelID, paginaID,"offset="+(thisOffset+1),request.getContextPath()) %>"
-                      ><img src="../media/arrowright_<%= style1[iRubriekStyle] %>.gif" border="0"></a>
+                      ><img src="../media/arrowright_<%= nl.mmatch.NatMMConfig.style1[iRubriekStyle] %>.gif" border="0"></a>
                <% } %>
              </div>
              <% if (pagesCount > 5) { %>

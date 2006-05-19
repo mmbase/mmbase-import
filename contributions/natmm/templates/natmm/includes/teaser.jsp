@@ -96,7 +96,11 @@ for (int i =0; i<shortyCnt;i++){
                <tr><td colspan="3" style="width:<%=iImageWidth+2%>px;"><table class="dotline"><tr><td style="height:3px;"></td></tr></table></td></tr>
                <tr><td colspan="3" style="width:<%=iImageWidth+2%>px;height:6px;text-align:right;"><%
                   if(validLink){ 
-                     %><div style="position:relative;left:-20px;top:6px;"><div style="visibility:visible;position:absolute;top:0px;left:0px;"><a href="<%= readmoreURL %>"><img src="media/submit_<%= style1[iRubriekStyle] %>.gif" border="0" alt="<%= altTXT %>" /></a></div></div><%
+                     %><div style="position:relative;left:-20px;top:6px;"><%
+								%><div style="visibility:visible;position:absolute;top:0px;left:0px;"><%
+									%><a href="<%= readmoreURL %>"><img src="media/submit_<%= nl.mmatch.NatMMConfig.style1[iRubriekStyle] %>.gif" border="0" alt="<%= altTXT %>" /></a><%
+								%></div><%
+							%></div><%
                   }
                   %></td></tr>
                <tr><td colspan="3" class="maincolor" style="height:1px;"></td></tr>
