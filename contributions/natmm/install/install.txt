@@ -36,7 +36,7 @@ After installation the editors of LeoCMS can be found at:
 http://localhost:8080/<your_webapp>/editors
 
 When clicking "Pagina-editor" you will get the website tree, which is the main entrance for editors to edit the content.
-The directory /templates/natmm/doc contains documentation (in Dutch) unfortunately on how to work with the editors.
+Have a look at the user-manual /templates/doc/GebruikershandleidingEditors.doc (in Dutch unfortunately) to get an idea on how to work with the editors.
 
 Note the link "Naar archiefkast" at the top of the left column in the "Pagina-editor", this links brings
 the user to the special purpose editors selected for him. See the config/applications/NatMM/editwizards.xml file
