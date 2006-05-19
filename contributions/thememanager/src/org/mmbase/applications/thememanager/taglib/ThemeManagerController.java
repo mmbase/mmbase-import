@@ -32,7 +32,9 @@ public class ThemeManagerController extends ThemeManager {
 	private static Logger log = Logging.getLoggerInstance(ThemeManagerController.class);
 	private static HashMap types;
 
+
 	public static List getAssignedList() {
+		log.info("get assignedlist");
                 List list = new ArrayList();
 
 		HashMap m=getAssigned();
@@ -50,6 +52,7 @@ public class ThemeManagerController extends ThemeManager {
 
 
 	public static List getThemesList() {
+		log.info("get themeslist");
                 List list = new ArrayList();
 
 		HashMap m=getThemes();
@@ -108,7 +111,6 @@ public class ThemeManagerController extends ThemeManager {
 
 
 	public static List getThemeImageSetsList(String id) {
-        	log.debug(" AAAid =" + id);
         	return getThemeImageSetsList(id,"");
     	}
 
@@ -386,4 +388,12 @@ public class ThemeManagerController extends ThemeManager {
 		types.put("font-family","font");
 		types.put("font-size","fontsize");
         }
+
+        public boolean hasChanged() {
+		if (haschanged) {
+			haschanged=false;
+			return true;
+		} 
+		return false;
+	}
 }

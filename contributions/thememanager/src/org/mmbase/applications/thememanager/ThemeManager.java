@@ -45,6 +45,8 @@ public class ThemeManager {
     private static HashMap themes;
     private static HashMap assigned;
 
+    public static boolean haschanged=false;
+
     private static void init() { 
 	readThemes();
 	readAssigned();
@@ -239,6 +241,7 @@ public class ThemeManager {
 
 
    public static String getThemeImage(String context, String id,String imagesetid,String imageid) {
+       	log.info(" getthemeimage =" + imageid);
 	String themeid=(String)assigned.get(id);
 	if (themeid!=null) {
 	Theme th=(Theme)themes.get(themeid);
@@ -290,6 +293,7 @@ public class ThemeManager {
    public static boolean changeAssign(String id,String newtheme) {
 	  assigned.put(id,newtheme); 
 	  AssignedFileWriter.write();
+	  haschanged = true;
           return true;
    }
 
@@ -297,6 +301,7 @@ public class ThemeManager {
    public static boolean addAssign(String newid,String newtheme) {
 	  assigned.put(newid,newtheme); 
 	  AssignedFileWriter.write();
+	  haschanged = true;
           return true;
    }
 
@@ -304,6 +309,7 @@ public class ThemeManager {
    public static boolean removeAssign(String removeid) {
 	  assigned.remove(removeid); 
 	  AssignedFileWriter.write();
+	  haschanged = true;
           return true;
    }
 
