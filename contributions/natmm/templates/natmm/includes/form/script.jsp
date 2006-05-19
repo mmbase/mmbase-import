@@ -13,9 +13,9 @@ if(searchtype != 'clear' ) {
             <%
             String formulierveld_type = thisFormField.getStringValue("type");
             String formulierveld_number = thisFormField.getStringValue("number");
+				String formulierveld_else = thisFormField.getStringValue("label_eng");
             if(formulierveld_type.equals("6")) { // *** date ***
-            %>
-               var answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_day"].value);
+            %> var answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_day"].value);
                if(answer != '') {
                   href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_day=" + answer;
                }
@@ -29,31 +29,62 @@ if(searchtype != 'clear' ) {
             }
             <%
             } else if(formulierveld_type.equals("5")) { // *** check boxes ***
-               %><mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
+               %> var else_answer = '';<% 
+					if (formulierveld_else.equals("1")){
+						 %>else_answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
+					} %>
+						if (else_answer != ''){
+							href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_else=" + else_answer;
+						}
+						<mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
                   var answer = document.emailform.q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number" />;
                   if(answer.checked) {
-                     href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number" />=" + answer.value;
-                  }
+  	                  href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number" />=" + answer.value;
+						}
                </mm:related><%
             } else if(formulierveld_type.equals("4")) { // *** radio buttons ***
             %> var answer = document.emailform.q<%= thisFormNumber %>_<%= formulierveld_number %>;
+					var flag = false;
                for (var i=0; i < answer.length; i++){
                   if(answer[i].checked) {
                      var rad_val = answer[i].value;
                      if(rad_val != '') {
                         href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>=" + rad_val;
+								flag = true;
                      }
                   }
                }
+					var else_answer = '';<% 
+   				if (formulierveld_else.equals("1")) {
+						%>else_answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
+					} %>
+					if (else_answer != '') {
+						if (flag){
+							href += ", " + else_answer;
+						} else {
+							href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>=" + else_answer;
+						}
+					}
             <% }
 
             else if(formulierveld_type.equals("1")||formulierveld_type.equals("2")||formulierveld_type.equals("3")) {
             // *** textarea, textline, dropdown ***
-            %>
-               var answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>"].value);
-               if(answer != '') {
-                  href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>=" + answer;
-               }
+             %>var answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>"].value);
+					var else_answer = '';<% 
+   				if (formulierveld_else.equals("1")) {
+						%>else_answer = escape(document.emailform.elements["q<%= thisFormNumber %>_<%= formulierveld_number %>_else"].value);<% 
+					} %>
+					if ((else_answer != '') || (answer != '')){
+						href += "|q<%= thisFormNumber %>_<%= formulierveld_number %>=";
+						if (answer != ''){
+							href += answer;
+							if (else_answer != ''){
+								href += ", " + else_answer;
+							}
+						} else {
+							href += else_answer;
+						}
+					}
             <% }
          %></mm:node
       ></mm:related
