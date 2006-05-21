@@ -11,7 +11,7 @@
     <method>removeKeyword</method>
     <param name="setname" type="String" description="Name of the functionset" />
     <param name="keyword" type="String" description="The keyword we want to remove" />
-    <return type="Node"> 
+    <return type="Boolean"> 
     </return> 
   </function>
 
@@ -35,7 +35,7 @@
     <class>org.mmbase.applications.multilanguagegui.MultiLanguageGui</class>
     <method>getLanguagesInSet</method>
     <param name="setname" type="String" description="Name of the language set" />
-    <return type="java.util.Map"> 
+    <return type="java.util.List"> 
       <field name="name" type="String" description="Langauge code of the translation" />
     </return> 
   </function>
@@ -62,7 +62,7 @@
     <param name="keyword" type="String" description="Keyword we want within the languageset" />
     <param name="lang" type="String" description="Language code of the translation we we want" />
     <param name="value" type="String" description="New value of the translation" />
-    <return type="Node"> 
+    <return type="Boolean"> 
     </return> 
   </function>
 
@@ -75,7 +75,7 @@
     <param name="keyword" type="String" description="Keyword we want within the languageset" />
     <param name="lang" type="String" description="language code of the translation we we want" />
     <param name="value" type="String" description="Translation of the keyword for this language code" />
-    <return type="Node"> 
+    <return type="Boolean"> 
     </return> 
   </function>
 
@@ -86,7 +86,7 @@
     <method>addKeyword</method>
     <param name="setname" type="String" description="Name of the language set" />
     <param name="keyword" type="String" description="The new keyword we want to add to the set" />
-    <return type="Node"> 
+    <return type="Boolean"> 
     </return> 
   </function>
 
@@ -97,7 +97,7 @@
     <class>org.mmbase.applications.multilanguagegui.MultiLanguageGui</class>
     <method>addSet</method>
     <param name="setname" type="String" description="Name of the language set" />
-    <return type="Node"> 
+    <return type="Boolean"> 
     </return> 
   </function>
 
@@ -109,7 +109,7 @@
     <param name="setname" type="String" description="Name of the language set" />
     <param name="keyword" type="String" description="Keyword we want within the languageset" />
     <param name="lang" type="String" description="The language code of the translation we want to remove" />
-    <return type="Node"> 
+    <return type="Boolean"> 
     </return> 
   </function>
 
