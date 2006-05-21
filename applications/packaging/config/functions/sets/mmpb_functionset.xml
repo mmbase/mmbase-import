@@ -26,7 +26,7 @@
     <class>org.mmbase.applications.packaging.projects.gui.Controller</class>
     <method>getProjectInfo</method>
     <param name="name" type="String" description="" />
-    <return type="NodeList">
+    <return type="org.mmbase.module.core.MMObjectNode">
       <field name="name" type="String" description="" />
     </return>
   </function>
@@ -103,7 +103,7 @@
     <param name="target" type="String" description="" />
     <param name="newname" type="String" description="" />
     <param name="newvalue" type="String" description="" />
-    <return type="String">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -117,7 +117,7 @@
     <param name="project" type="String" description="" />
     <param name="newname" type="String" description="" />
     <param name="newpath" type="String" description="" />
-    <return type="String">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -545,7 +545,7 @@
     <method>haveTargetLog</method>
     <param name="project" type="String" description="" />
     <param name="target" type="String" description="" />
-    <return type="Node">
+    <return type="java.util.List">
       <field name="log" type="String" description="" />
     </return>
   </function>
@@ -559,7 +559,7 @@
     <method>getProjectTargetInfo</method>
     <param name="project" type="String" description="" />
     <param name="target" type="String" description="" />
-    <return type="Node">
+    <return type="org.mmbase.module.core.MMObjectNode">
       <field name="name" type="String" description="" />
     </return>
   </function>
@@ -573,7 +573,7 @@
     <method>getTypeInfo</method>
     <param name="project" type="String" description="" />
     <param name="target" type="String" description="" />
-    <return type="Node">
+    <return type="org.mmbase.module.core.MMObjectNode">
       <field name="name" type="String" description="" />
     </return>
   </function>
@@ -895,7 +895,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="language" type="String" description="" />
-    <return type="node">
+    <return type="org.mmbase.module.core.MMObjectNode">
     </return>
   </function>
 
@@ -926,7 +926,7 @@
     <param name="builder" type="String" description="" />
     <param name="language" type="String" description="" />
     <param name="field" type="String" description="" />
-    <return type="Node">
+    <return type="org.mmbase.module.core.MMObjectNode">
     </return>
   </function>
 
@@ -940,7 +940,7 @@
     <param name="builder" type="String" description="" />
     <param name="language" type="String" description="" />
     <param name="newdescription" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -987,7 +987,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="oldfield" type="String" description="" />
-    <return type="boolean">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1055,7 +1055,7 @@
     <param name="builder" type="String" description="" />
     <param name="language" type="String" description="" />
     <param name="newname" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1070,7 +1070,7 @@
     <param name="builder" type="String" description="" />
     <param name="language" type="String" description="" />
     <param name="newname" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1084,7 +1084,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="newstatus" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1098,7 +1098,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="newsearchage" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1112,7 +1112,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="newname" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1125,7 +1125,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="newmaintainer" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1138,7 +1138,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="newversion" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1151,7 +1151,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="newextends" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 
@@ -1165,7 +1165,7 @@
     <param name="modelfilename" type="String" description="" />
     <param name="builder" type="String" description="" />
     <param name="newclassname" type="String" description="" />
-    <return type="NodeList">
+    <return type="Boolean">
     </return>
   </function>
 

@@ -41,7 +41,7 @@
     <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
     <method>getAssignInfo</method>
     <param name="id" type="String" description="the id of assign" />
-    <return type="Node"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
@@ -64,7 +64,7 @@
     <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
     <method>getCSSValue</method>
     <param name="sname" type="String" description="path/name of the property" />
-    <return type="Boolean"> 
+    <return type="String"> 
     </return> 
   </function>
 
@@ -96,7 +96,7 @@
     <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
     <method>getThemeInfo</method>
     <param name="id" type="String" description="the id of theme" />
-    <return type="Node"> 
+    <return type="java.util.Map"> 
     </return> 
   </function>
 
