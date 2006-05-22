@@ -140,7 +140,8 @@ public class PaginaHelper {
    public static String getSubDir(Cloud cloud, String paginaNumber) {
       String rootRubriek = getRootRubriek(cloud,paginaNumber);
       if(rootRubriek==null) {
-         log.error("Pagina " + paginaNumber + " does not have a root rubriek.");
+         log.error("Pagina " + paginaNumber + " does not have a root rubriek. Setting root rubriek to 'root'");
+			rootRubriek = "root";
       }
       return RubriekHelper.getSubDir(cloud.getNode(rootRubriek));
    }
@@ -237,9 +238,13 @@ public class PaginaHelper {
    public String getUrlPathToRootString(Node paginaNode, String contextPath) {
       StringBuffer url = new StringBuffer();
       Node rubriek = getRubriek(paginaNode);
-      RubriekHelper rHelper = new RubriekHelper(cloud);
-      url.append(rHelper.getUrlPathToRootString(rubriek,contextPath));
-      url.append('/');
+		if(rubriek==null) {
+			log.error("pagina "  + paginaNode.getStringValue("titel") + " (" + paginaNode.getStringValue("number") + ") is not related to a rubriek.");
+		} else {
+			RubriekHelper rHelper = new RubriekHelper(cloud);
+			url.append(rHelper.getUrlPathToRootString(rubriek,contextPath));
+			url.append('/');
+		}
       url.append(HtmlCleaner.stripText(paginaNode.getStringValue("titel")));
       log.debug("getPaginaUrlPathToRootString" + url.toString());
       return url.toString();
