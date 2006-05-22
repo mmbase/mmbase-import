@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.11 2006-04-25 22:35:06 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.12 2006-05-22 08:54:14 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -12,6 +12,7 @@
     xmlns:taglib="org.mmbase.bridge.jsp.taglib.functions.Functions"
     xmlns:o="http://www.mmbase.org/xmlns/objects"
     xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     exclude-result-prefixes="node mmxf o taglib"
     version="1.0" >
 
@@ -85,6 +86,8 @@
         <xsl:apply-templates  />
       </xsl:when>
       <xsl:otherwise><!-- null -->
+        <!-- make sure not to spit out something empty, because that may confuse certain browers -->
+        <jsp:text><xsl:text> </xsl:text></jsp:text>
       </xsl:otherwise>
     </xsl:choose>
 
