@@ -49,8 +49,8 @@ if(!articleId.equals("-1")) {
       if(hasPools) { 
          rightBarTitle = "Selecteer&nbsp;categorie"; 
       } else {
-         %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,shorty"
-            ><mm:field name="shorty.titel" jspvar="items_name" vartype="String" write="false"><%
+         %><mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst"
+            ><mm:field name="linklijst.naam" jspvar="items_name" vartype="String" write="false"><%
                rightBarTitle = items_name;
             %></mm:field
          ></mm:list><% 

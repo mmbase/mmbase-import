@@ -247,11 +247,11 @@ public String searchResults(TreeSet searchResultList) {
       <%@include file="includes/whiteline.jsp" %>
       <div class="smoelenboeklist" style="height:176px;">
       <table cellpadding="0" cellspacing="0">
-      <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,shorty">
+      <mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst">
          <tr>
              <td style="padding-left:20px;">
-             <mm:node element="shorty"
-               ><mm:related path="posrel,link" orderby="posrel.pos" directions="UP"
+             <mm:node element="linklijst"
+               ><mm:related path="lijstcontenrel,link" orderby="posrel.pos" directions="UP"
                  ><a target="_blank" href="<mm:field name="link.url" />" class="menuItem"><span class="normal"><mm:field name="link.titel" /></span></a><br>
                </mm:related
              ></mm:node>

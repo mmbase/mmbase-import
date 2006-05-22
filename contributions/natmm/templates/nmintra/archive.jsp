@@ -1,10 +1,11 @@
 <%@page import="nl.leocms.util.tools.SearchUtil" %>
-<%@include file="/taglibs.jsp" 
-%><mm:cloud jspvar="cloud"
-><%@include file="includes/templateheader.jsp" 
-%><%@include file="includes/calendar.jsp" 
-%><%@include file="includes/header.jsp" 
-%><%
+<%@include file="/taglibs.jsp" %>
+<mm:cloud jspvar="cloud">
+<%@include file="includes/templateheader.jsp" %>
+<%@include file="includes/cacheparams.jsp" %>
+<%@include file="includes/calendar.jsp" %>
+<%@include file="includes/header.jsp" %>
+<%
 if(!projectId.equals("")) {
    %><%@include file="includes/projectoverview.jsp" %><%
 } else {
@@ -178,5 +179,6 @@ if(!projectId.equals("")) {
       %><%@include file="includes/archivesearch.jsp" 
       %></td><%
 } 
-%><%@include file="includes/footer.jsp" 
-%></mm:cloud>
+%>
+<%@include file="includes/footer.jsp" %>
+</mm:cloud>
