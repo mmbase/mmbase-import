@@ -27,9 +27,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.12 2005-12-13 10:01:00 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.13 2006-05-22 16:31:13 michiel Exp $
  */
-public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
+public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
     private static final Logger log = Logging.getLoggerInstance(ListRelationsContainerTag.class);
     private NodeQuery   query        = null;
@@ -62,6 +62,9 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
 
 
     public Query getQuery() {
+        return getNodeQuery();
+    }
+    public NodeQuery getNodeQuery() {
         if (query.isUsed()) query = (NodeQuery) query.clone();
         return query;
     }
