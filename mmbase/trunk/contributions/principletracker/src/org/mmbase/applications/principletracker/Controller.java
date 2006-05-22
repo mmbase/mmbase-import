@@ -205,6 +205,7 @@ public class Controller {
 	            body += "    <argumentation><![CDATA["+principle.getStringValue("argumentation")+"]]></argumentation>\n";
 	            body += "    <consequence><![CDATA["+principle.getStringValue("consequence")+"]]></consequence>\n";
 	            body += "    <allowedimplementation><![CDATA["+principle.getStringValue("allowedimpl")+"]]></allowedimplementation>\n";
+	            body += "    <source><![CDATA["+principle.getStringValue("source")+"]]></source>\n";
 	            body += "  </principle>\n";
 		}
 	    }
@@ -284,6 +285,7 @@ public class Controller {
 				String argumentation="";
 				String consequence="";
 				String allowedimplementation="";
+				String source="";
                         	org.w3c.dom.Node n2=nm.getNamedItem("number");
                         	if (n2!=null) {
 					try {
@@ -311,6 +313,8 @@ public class Controller {
 						if (n3.getFirstChild()!=null) allowedimplementation = n3.getFirstChild().getNodeValue();
 					} else if (key.equals("consequence")) {
 						if (n3.getFirstChild()!=null) consequence = n3.getFirstChild().getNodeValue();
+					} else if (key.equals("source")) {
+						if (n3.getFirstChild()!=null) source = n3.getFirstChild().getNodeValue();
 					} else if (key.equals("state")) {
 						if (n3.getFirstChild()!=null) state = n3.getFirstChild().getNodeValue();
 					}
