@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.358 2006-05-17 08:48:33 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.359 2006-05-22 16:48:38 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -874,6 +874,15 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         <info>Always cache the result (default)</info>
       </possiblevalue>
       <since>MMBase-1.8</since>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Used in conjuction with 'container' attribute of querycontainerreferrers.
+      </info>
+      <see tag="containerreferrer" attribute="container" />
     </attribute>
     <since>MMBase-1.7</since>
   </taginterface>
@@ -3196,6 +3205,7 @@ transaction was commited, following should result anything:
     <extends>contextreader</extends>
     <extends>fieldreferrer</extends>
     <extends>nodereferrer</extends>
+    <extends>querycontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.FieldProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
