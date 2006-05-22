@@ -2,7 +2,7 @@
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="NatMM" maintainer="mmbase.org" version="1" auto-deploy="false">
    <neededbuilderlist>
-        <!-- NatMM relations -->
+        <!-- LeoCMS relations -->
         <builder version="0" maintainer="mmbase.org">childrel</builder>
         <builder version="0" maintainer="mmbase.org">contentrel</builder>
         <builder version="0" maintainer="mmbase.org">insrel</builder>
@@ -17,7 +17,7 @@
         <builder version="0" maintainer="mmbase.org">partrel</builder>
 		  <builder version="0" maintainer="mmbase.org">pos4rel</builder>
         
-        <!-- NatMM objects -->
+        <!-- LeoCMS objects -->
         <builder version="0" maintainer="mmbase.org">archief</builder>
         <builder version="0" maintainer="mmbase.org">artikel</builder>
         <builder version="0" maintainer="mmbase.org">attachments</builder>
@@ -212,7 +212,7 @@
    </allowedrelationlist>
 
    <datasourcelist>
-        <!-- NatMM objects -->
+        <!-- LeoCMS objects -->
         <datasource builder="archief" path="NatMM/archief.xml"/>
         <datasource builder="artikel" path="NatMM/artikel.xml"/>
         <datasource builder="attachments" path="NatMM/attachments.xml"/>
@@ -278,7 +278,7 @@
     </datasourcelist>
 
    <relationsourcelist>
-      <!-- NatMM relations -->
+      <!-- LeoCMS relations -->
       <relationsource builder="childrel" path="NatMM/childrel.xml"/>
       <relationsource builder="contentrel" path="NatMM/contentrel.xml"/>
       <relationsource builder="insrel" path="NatMM/insrel.xml"/>
