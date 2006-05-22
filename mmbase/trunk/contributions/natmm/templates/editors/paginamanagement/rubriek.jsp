@@ -1,6 +1,8 @@
 <%@page import="com.finalist.tree.*,
    nl.leocms.authorization.forms.*,
-   nl.leocms.util.*, java.util.*,
+   nl.leocms.util.*,
+	nl.mmatch.*,
+	java.util.*,
    org.mmbase.bridge.*,
    nl.leocms.servlets.UrlConverter" %>
 <%@include file="/taglibs.jsp" %>
@@ -8,41 +10,34 @@
 <% UrlConverter.getCache().flushAll(); %>
 <mm:cloud jspvar="cloud" rank="basic user">
 <%
-   // todo: change this hardcode implementation to one based on the styles object.
-
-   // *** note: there is a difference between layout and style: style is always set, layout may have value parent_layout
-   
-   // *** new layouts should be added to /editors/paginamanagement/rubriek.jsp ***
-   int PARENT_LAYOUT = -1;
-   int DEFAULT_LAYOUT = 0;
-   int SUBSITE1_LAYOUT = 1;
-   int SUBSITE2_LAYOUT = 2;
-   int SUBSITE3_LAYOUT = 3;
-
-   
-   // *** default style should be set in top1_params.jsp and new layouts should be added to /editors/paginamanagement/rubriek.jsp ***
-   int PARENT_STYLE = -1;
-   int DEFAULT_STYLE = 7;
-   String [] style1 = {"vereniging","steun" ,"nieuws","natuurin","natuurgebieden","links" ,"fun"   ,"default","zoeken","winkel","vragen","naardermeer" };
-   String [] color1 = {"552500"    ,"990100","4A7934","D71920"  ,"BAC42B"        ,"9C948C","EC008C","1D1E94" ,"00AEEF","F37021","6C6B5C","F37021" }; // color + line leftnavpage
-   String [] color2 = {"E4BFA3"    ,"F7D6C3","B0DF9B","FFBDB7"  ,"EEF584"        ,"EDE9E6","FABFE2","96ADD9" ,"B2E7FA","FED9B2","D6D6D1","F9B790" }; // background leftnavpage_high
-   String [] color3 = {"050080"    ,"050080","050080","050080"  ,"050080"        ,"050080","050080","FFFFFF" ,"050080","050080","050080","FFFFFF"};  // footer links
-
 
    RubriekHelper rubriekHelper = new RubriekHelper(cloud);
-   HashMap leocmsStyles = new HashMap();
-   leocmsStyles.put("hoofdsite/themas/fun.css", "FUN");
-   leocmsStyles.put("hoofdsite/themas/default.css", "HOME");
-   leocmsStyles.put("hoofdsite/themas/links.css", "LINKS");
-   leocmsStyles.put("hoofdsite/themas/natuurin.css", "NATUUR IN");
-   leocmsStyles.put("hoofdsite/themas/natuurgebieden.css",  "NATUURGEBIEDEN");
-   leocmsStyles.put("hoofdsite/themas/nieuws.css", "NIEUWS");
-   leocmsStyles.put("hoofdsite/themas/winkel.css", "WINKEL");
-   leocmsStyles.put("hoofdsite/themas/steun.css", "STEUN ONS");
-   leocmsStyles.put("hoofdsite/themas/vragen.css", "VRAGEN?");
-   leocmsStyles.put("hoofdsite/themas/zoeken.css", "ZOEKEN");
-   leocmsStyles.put("hoofdsite/themas/naardermeer.css", "Naardermeer");
-   
+	int DEFAULT_STYLE = -1;
+	String [] style1 = null;
+	String [] layout = null;
+   String cssPath = "";
+	
+	ApplicationHelper ap = new ApplicationHelper();
+	// todo: create a more generic version for this piece of code
+	if(ap.isInstalled(cloud,"NatMM")) {
+		
+	   DEFAULT_STYLE = NatMMConfig.DEFAULT_STYLE;
+		layout = NatMMConfig.layout;
+   	style1 = NatMMConfig.style1;
+		cssPath = NatMMConfig.cssPath;
+   }
+	if(ap.isInstalled(cloud,"NMIntra")) {
+	
+	   DEFAULT_STYLE = NMIntraConfig.DEFAULT_STYLE;
+	   style1 = NMIntraConfig.style1;
+		cssPath = NMIntraConfig.cssPath;
+   }
+	
+	HashMap leocmsStyles = new HashMap();
+	for(int i=0; i< style1.length; i++) {
+		leocmsStyles.put(cssPath + style1[i] + ".css", style1[i]);
+	}
+	
    String rubriekSubsiteNodeNumber = "";
 %>
 <html>
@@ -104,16 +99,27 @@ Rubriek:<b>
 </logic:equal>
    <tr><td></td><td><b>* Wanneer bij een subsite een taal wordt uitgeschakeld, zal dit voor de hele subsite gelden. Hoewel het nog steeds mogelijk is binnen een subrubriek dezelfde taal aan te zetten zal dit geen effect hebben, zolang bij de subsite de taal uit staat.</b></td></tr>
 --%>
-   <tr><td class="fieldname">Layout</td><td>
-         <html:select property="naam_fra">
-             <html:option value="<%= "" + PARENT_LAYOUT %>">Layout van parent rubriek</html:option>
-             <html:option value="<%= "" + DEFAULT_LAYOUT %>">Natuurmonumenten</html:option>
-             <html:option value="<%= "" + SUBSITE1_LAYOUT %>">Naardermeer</html:option>
-             <html:option value="<%= "" + SUBSITE2_LAYOUT %>">ING-Perspectief</html:option>
-             <html:option value="<%= "" + SUBSITE3_LAYOUT %>">Actiesite</html:option>
-         </html:select>
-      </td>
-   </tr>
+	<% 
+	if(layout!=null && layout.length!=0) { 
+		%>
+		<tr><td class="fieldname">Layout</td><td>
+				<html:select property="naam_fra">
+					 <html:option value="-1">Layout van parent rubriek</html:option>
+					 <%
+					 for(int i=0; i<layout.length; i++) {
+						%>
+						<html:option value="<%= "" + i %>"><%= layout[i] %></html:option>
+						<%
+					} %>
+				</html:select>
+			</td>
+		</tr>
+		<%
+	} else {
+		%>
+		<html:hidden  property="naam_fra" value="-1" />
+		<%
+	} %>
    <tr><td class="fieldname">Style</td>
       <td>
          <html:select property="style">

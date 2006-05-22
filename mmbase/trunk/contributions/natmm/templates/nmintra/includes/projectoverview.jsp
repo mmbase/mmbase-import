@@ -10,7 +10,7 @@
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 		<tr>
 			<td width="80%">
-				<b><span class="pageheader"><span class="dark_<%= cssClassName %>"><mm:field name="name"/></span></span></b>
+				<b><span class="pageheader"><span class="dark"><mm:field name="name"/></span></span></b>
 				<table border="0" cellpadding="0" cellspacing="0" width="100%">
 					<tr>
 						<td style="width:200px;text-align:right;"><span class="black"><b>Type project&nbsp;|&nbsp;</b></span></td>
@@ -48,8 +48,8 @@
 							<td style="width:350px;"></mm:first
 						><mm:first inverse="true">, </mm:first
 							><a href="smoelenboek.jsp?p=wieiswie&employee=<mm:field name="medewerkers.number" 
-								/>"><span style="text-decoration:underline;" class="dark_<%= cssClassName  
-								%>"><mm:field name="medewerkers.firstname"/> <mm:field name="medewerkers.lastname"
+								/>"><span style="text-decoration:underline;" class="dark">
+									<mm:field name="medewerkers.firstname"/> <mm:field name="medewerkers.lastname"
 							/></span></a><mm:last></td>
 					</tr>
 						</mm:last
@@ -107,8 +107,8 @@
 						<td style="width:350px;"></mm:first
 					><mm:first inverse="true">, </mm:first
 						><a href="smoelenboek.jsp?p=wieiswie&employee=<mm:field name="medewerkers.number" 
-							/>"><span style="text-decoration:underline;" class="dark_<%= cssClassName  
-							%>"><mm:field name="medewerkers.firstname"/> <mm:field name="employees.lastname"
+							/>"><span style="text-decoration:underline;" class="dark">
+								<mm:field name="medewerkers.firstname"/> <mm:field name="employees.lastname"
 						/></span></a><mm:last></td>
 				</tr>
 					</mm:last

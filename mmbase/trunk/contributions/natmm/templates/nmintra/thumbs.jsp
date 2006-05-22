@@ -102,7 +102,7 @@ if(employeeFound) {
     } 
     %></tr></table><%
 } else {
-    %><div class="pageheader"><span class="dark_<%= cssClassName %>">Je hebt gezocht op:<ul><% 
+    %><div class="pageheader"><span class="dark">Je hebt gezocht op:<ul><% 
         boolean isFirst = true;
         if(!departmentId.equals("default")) { 
             %><mm:node number="<%= departmentId %>"><li>de afdeling <mm:field name="naam" /></li></mm:node><% 
@@ -123,7 +123,7 @@ if(employeeFound) {
     <%@include file="includes/whiteline.jsp" 
     %><form method="POST" action="<%= requestURL %>thumbs.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt(this);">
 <table cellpadding="0" cellspacing="0"  align="center">
-    <tr><td><select name="department" class="<%=  cssClassName %>" style="width:195px;">
+    <tr><td><select name="department" style="width:195px;">
         <option value="default" <%  if(departmentId.equals("default")) { %>SELECTED<% } 
             %>>alle regios en afdelingen
     <mm:list path="afdelingen" orderby="afdelingen.naam" directions="UP" constraints="afdelingen.importstatus!='-1' AND afdelingen.importstatus!='inactive'"
@@ -134,8 +134,8 @@ if(employeeFound) {
             %></mm:field
             ></mm:field
         ></mm:list
-    ></select>&nbsp;<br><div align="right"><span class="light_<%= cssClassName %>">en</span></div></td></tr>
-    <tr><td><select name="program" class="<%=  cssClassName %>" style="width:195px;">
+    ></select>&nbsp;<br><div align="right"><span class="light">en</span></div></td></tr>
+    <tr><td><select name="program" style="width:195px;">
         <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
             %>>alle lokaties
    <mm:list path="locations" orderby="locations.naam" directions="UP"
@@ -150,8 +150,7 @@ if(employeeFound) {
         ></mm:list
     ></select></td></tr>
     <tr><td><img src="media/spacer.gif" width="1" height="20"></td></tr>
-    <tr><td><div align="right"><input type="submit" name="Submit" value="Zoek" class="<%=  cssClassName 
-        %>"  style="text-align:center;font-weight:bold;">&nbsp;</div>
+    <tr><td><div align="right"><input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;">&nbsp;</div>
     </td></tr>
 </table></form>
 <script>

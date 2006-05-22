@@ -37,14 +37,14 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-05-22 10:08:48 $
  *
  * @struts:action name="RubriekForm"
- *                path="/editors/rubrieken/RubriekInitAction"
+ *                path="/editors/paginamangement/RubriekInitAction"
  *                scope="request"
  *                validate="false"
  *
- * @struts:action-forward name="success" path="/editors/rubrieken/rubriek.jsp"
+ * @struts:action-forward name="success" path="/editors/paginamanagement/rubriek.jsp"
  */
 public class RubriekInitAction extends Action {
 

@@ -1,14 +1,14 @@
 <%@include file="../includes/whiteline.jsp" %>
 <table cellpadding="0" cellspacing="0"  align="center" border="0">
 <form method="POST" name="infoform" action="<%= requestURL %>archive.jsp<%= templateQueryString %>" onSubmit="return postIt();">
-<tr><td class="bold"><span class="light_<%= cssClassName %>">Naam van het project</span></td></tr>
-<tr><td><input type="text" name="projectname" class="<%= cssClassName %>" style="width:172px;" value="<%= projectNameId %>"></td></tr>
+<tr><td class="bold"><span class="light">Naam van het project</span></td></tr>
+<tr><td><input type="text" name="projectname" style="width:172px;" value="<%= projectNameId %>"></td></tr>
 <mm:list path="projects,posrel,projecttypes" orderby="projecttypes.name" directions="UP" 
      distinct="yes" fields="projecttypes.number"
      ><mm:first
-         ><tr><td class="bold"><span class="light_<%= cssClassName %>">Projecttype</span></td></tr>
+         ><tr><td class="bold"><span class="light">Projecttype</span></td></tr>
          <tr><td>
-         <select name="type" class="<%= cssClassName %>" style="width:172px;">
+         <select name="type" style="width:172px;">
      </mm:first
      ><mm:field name="projecttypes.number" jspvar="thistype" vartype="String" write="false"
          ><option value="<%= thistype %>" <% if (typeId.equals(thistype)) { %> selected <% } 
@@ -21,22 +21,22 @@
      </mm:last
 ></mm:list
 ><%-- not used by M. Driessen 10.08.2005
-<tr><td class="bold"><span class="light_<%= cssClassName %>">Doelgroep</span></td></tr>
+<tr><td class="bold"><span class="light">Doelgroep</span></td></tr>
 <tr><td>
-     <select name="group" class="<%= cssClassName %>" style="width:172px;">
+     <select name="group" style="width:172px;">
          <option value="1" <% if (groupId.equals("1")) { %> selected <% } %>>Opdrachtgever</option>
          <option value="2" <% if (groupId.equals("2")) { %> selected <% } %>>Projectleider</option>
          <option value="3" <% if (groupId.equals("3")) { %> selected <% } %>>Projectmedewerker</option>
          <option value="-1" <% if (groupId.equals("-1")) { %> selected <% } %>>Alles</option>
      </select>
 </td></tr> --%>
-<tr><td class="bold"><span class="light_<%= cssClassName %>">Medewerker</span></td></tr>
+<tr><td class="bold"><span class="light">Medewerker</span></td></tr>
 <mm:list path="projects,readmore,medewerkers" orderby="medewerkers.lastname" directions="UP" 
      distinct="yes" fields="medewerkers.number"
      ><mm:first
-       ><tr><td class="bold"><span class="light_<%= cssClassName %>">Medewerker</span></td></tr>
+       ><tr><td class="bold"><span class="light">Medewerker</span></td></tr>
          <tr><td>
-         <select name="employee" class="<%= cssClassName %>" style="width:172px;">
+         <select name="employee" style="width:172px;">
      </mm:first>
      <mm:field name="medewerkers.number" jspvar="thisemployee" vartype="String" write="false"
          ><option value="<%= thisemployee %>" <% if(employeeId.equals(thisemployee)) { %> selected <% } 
@@ -52,9 +52,9 @@
 ><mm:list path="projects,readmore,afdelingen" orderby="afdelingen.naam" directions="UP" 
      distinct="yes" fields="afdelingen.number"
      ><mm:first
-         ><tr><td class="bold"><span class="light_<%= cssClassName %>">Afdeling</span></td></tr>
+         ><tr><td class="bold"><span class="light">Afdeling</span></td></tr>
          <tr><td>
-         <select name="department" class="<%= cssClassName %>" style="width:172px;">
+         <select name="department" style="width:172px;">
      </mm:first
      ><mm:field name="afdelingen.number" jspvar="thisdepartment" vartype="String" write="false"
          ><option value="<%= thisdepartment %>" <% if (departmentId.equals(thisdepartment)) { %> selected <% } 
@@ -70,22 +70,22 @@
 ><tr><td>
    <table cellspacing="0" cellpadding="0" border="0">
    <tr>
-      <td colspan="5" class="bold"><span class="light_<%= cssClassName %>">Vanaf</span></td>
+      <td colspan="5" class="bold"><span class="light">Vanaf</span></td>
    </tr>
    <tr>
-      <td><select name="from_day" class="<%= cssClassName %>"><option value="00">...<%
+      <td><select name="from_day"><option value="00">...<%
               for(int i=1; i<=31; i++) { 
                   %><option value="<% if(i<10){ %>0<% } %><%= i %>" <% 
                   if(fromDay==i) { %>SELECTED<% } %>><%= i %><% 
               } %></select></td>
       <td><img src="media/spacer.gif" alt="" border="0" width="2" height="1"></td>
-      <td><select name="from_month" class="<%= cssClassName %>"><option value="00">...<%
+      <td><select name="from_month"><option value="00">...<%
               for(int i=1; i<=12; i++) { 
                   %><option value="<% if(i<10){ %>0<% } %><%= i %>" <% 
                   if(fromMonth==i) { %>SELECTED<% } %>><%= months_lcase[i-1] %><% 
               } %></select></td>
       <td><img src="media/spacer.gif" alt="" border="0" width="2" height="1"></td>
-      <td><select name="from_year" class="<%= cssClassName %>"><option value="00">...<%
+      <td><select name="from_year"><option value="00">...<%
               for(int i=startYear; i<=thisYear; i++) { 
                   %><option value="<%= i %>" <% 
                   if(fromYear==i) { %>SELECTED<% } %>><%=  i %><% 
@@ -96,22 +96,22 @@
 <tr><td>
    <table cellspacing="0" cellpadding="0" border="0">
    <tr>
-      <td colspan="5" class="bold"><span class="light_<%= cssClassName %>">Tot en met</span></td>
+      <td colspan="5" class="bold"><span class="light">Tot en met</span></td>
    </tr>
    <tr>
-      <td><select name="to_day" class="<%= cssClassName %>"><option value="00">...<%
+      <td><select name="to_day"><option value="00">...<%
               for(int i=1; i<31; i++) { 
                   %><option value="<% if(i<10){ %>0<% } %><%= i %>" <% 
                   if(toDay==i) { %>SELECTED<% } %>><%= i %><% 
               } %></select></td>
       <td><img src="media/spacer.gif" alt="" border="0" width="2" height="1"></td>
-      <td><select name="to_month" class="<%= cssClassName %>"><option value="0000">...<%
+      <td><select name="to_month"><option value="0000">...<%
               for(int i=1; i<=12; i++) { 
                   %><option value="<% if(i<10){ %>0<% } %><%= i %>" <% 
                   if(toMonth==i) { %>SELECTED<% } %>><%= months_lcase[i-1] %><% 
               } %></select></td>
       <td><img src="media/spacer.gif" alt="" border="0" width="2" height="1"></td>
-      <td><select name="to_year"class="<%= cssClassName %>"><option value="0000">...<%
+      <td><select name="to_year"><option value="0000">...<%
               for(int i=startYear; i<=thisYear; i++) { 
                   %><option value="<%= i %>" <% 
                   if(toYear==i) { %>SELECTED<% } %>><%= i %><% 
@@ -119,7 +119,7 @@
    </tr>
    </table>
    <br>
-   <div align="right"><input type="submit" name="submit" value="Zoek" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;"></div>
+   <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;"></div>
 </td></tr>
    </form>
    </table>

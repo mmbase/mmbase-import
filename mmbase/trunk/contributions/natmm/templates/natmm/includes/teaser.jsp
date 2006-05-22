@@ -98,7 +98,7 @@ for (int i =0; i<shortyCnt;i++){
                   if(validLink){ 
                      %><div style="position:relative;left:-20px;top:6px;"><%
 								%><div style="visibility:visible;position:absolute;top:0px;left:0px;"><%
-									%><a href="<%= readmoreURL %>"><img src="media/submit_<%= nl.mmatch.NatMMConfig.style1[iRubriekStyle] %>.gif" border="0" alt="<%= altTXT %>" /></a><%
+									%><a href="<%= readmoreURL %>"><img src="media/submit_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" border="0" alt="<%= altTXT %>" /></a><%
 								%></div><%
 							%></div><%
                   }

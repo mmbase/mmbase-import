@@ -94,8 +94,7 @@
                                 %><mm:field name="projects.number" jspvar="project_number" vartype="String" write="false"><%
                                     readmoreUrl += project_number; 
                                 %></mm:field
-                                ><a href="<%= readmoreUrl %>"><span style="text-decoration:underline;" class="dark_<%= cssClassName  
-                                    %>"> <mm:field name="projects.titel"/></span></a>
+                                ><a href="<%= readmoreUrl %>"><span style="text-decoration:underline;" class="dark"> <mm:field name="projects.titel"/></span></a>
                                 <mm:last>]</mm:last>
                             </mm:related
                             ><mm:related path="rolerel,terms" orderby="terms.name" searchdir="destination"

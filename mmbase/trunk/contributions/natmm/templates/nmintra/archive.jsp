@@ -137,8 +137,7 @@ if(!projectId.equals("")) {
                  %><mm:field name="number" jspvar="project_number" vartype="String" write="false"><%
                      readmoreUrl += project_number; 
                  %></mm:field
-                 ><a href="<%= readmoreUrl %>"><div style="text-decoration:underline;" class="dark_<%= cssClassName  
-                      %>"><mm:field name="titel"/></div>
+                 ><a href="<%= readmoreUrl %>"><div style="text-decoration:underline;" class="dark"><mm:field name="titel"/></div>
                       <%@include file="includes/dateperiod.jsp" %><br/>
                       <% String summary = ""; 
                         %><mm:field name="goal" jspvar="projects_goal" vartype="String" write="false"

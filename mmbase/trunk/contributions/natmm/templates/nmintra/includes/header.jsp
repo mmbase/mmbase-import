@@ -10,7 +10,8 @@ session.setAttribute("pageref",paginaID);
 %>
 <html>
   <head>
-		<link rel="stylesheet" type="text/css" href="css/website.css">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+	   <link rel="stylesheet" type="text/css" href="<%= styleSheet %>" />
 		<title><mm:node number="<%= rootId %>" notfound="skipbody"><mm:field name="naam" /></mm:node
 			 > - <mm:node number="<%= paginaID %>" notfound="skipbody"><mm:field name="titel" /></mm:node></title>
 		<meta http-equiv="imagetoolbar" content="no">
@@ -18,9 +19,9 @@ session.setAttribute("pageref",paginaID);
 		<script language="javascript" src="scripts/cookies.js"></script>
 		<script language="javaScript" src="scripts/screensize.js"></script>
   </head>
-  <body class="<%= cssClassName %>" scroll="auto" onUnLoad="javascript:setScreenSize()">
+  <body scroll="auto" onUnLoad="javascript:setScreenSize()">
   	<%@include file="/editors/paginamanagement/flushlink.jsp" %>
-	<table background="media/<%= cssClassName %>.jpg" cellspacing="0" cellpadding="0">
+	<table background="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>.jpg" cellspacing="0" cellpadding="0">
 	<%@include file="../includes/searchbar.jsp" %>
 	<tr>
 		<td class="black"><img src="media/spacer.gif" width="195" height="1"></td>

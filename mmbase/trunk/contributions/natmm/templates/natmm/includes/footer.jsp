@@ -1,5 +1,5 @@
 <form action="zoek.jsp" style="margin:0px 0px 0px 0px">
-<% if(iRubriekLayout==nl.mmatch.NatMMConfig.DEFAULT_LAYOUT) { 
+<% if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) { 
    %><table style="line-height:90%;width:744;" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
    <tr>
    	<td class="footer" style="width:544px;text-align:center;">
@@ -33,7 +33,7 @@
 } else {
    %><table style="line-height:90%;width:744;" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
       <tr>
-      	<td style="background-color:#<%= nl.mmatch.NatMMConfig.color2[iRubriekStyle] %>;width:173px;padding-left:5px;font-size:70%;text-align:center;">
+      	<td style="background-color:#<%= NatMMConfig.color2[iRubriekStyle] %>;width:173px;padding-left:5px;font-size:70%;text-align:center;">
            	<mm:node number="<%= rootID %>"><mm:field name="naam_eng" /></mm:node>
       	</td>
          <td style="width:1px;"></td>
@@ -48,9 +48,9 @@
          	<td width="196px">
                <table cellspacing="0" cellpadding="0">
                	<tr>
-                  	<td class="footerzoektext" style="background-color:#<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>;"><input type="submit" value="ZOEKEN" style="height:19px;border:0;color:#FFFFFF;background-color:#<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>;text-align:left;padding-left:10px;padding-top:1px;font-weight:bold;font-size:0.9em;" /></td>
-                  	<td class="footerzoekbox" style="background-color:#<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>;"><input type="text" name="query" style="width:100%;height:17px;font-size:12px;border:none;" value="<%= (request.getParameter("query")==null ? "" : request.getParameter("query")) %>"></td>
-                  	<td class="footerzoekbox" style="background-color:#<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>;"><input type="image" src="media/submit_<%= nl.mmatch.NatMMConfig.style1[iRubriekStyle] %>.gif" alt="ZOEK" align="middle" border="0"></td>
+                  	<td class="footerzoektext" style="background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;"><input type="submit" value="ZOEKEN" style="height:19px;border:0;color:#FFFFFF;background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;text-align:left;padding-left:10px;padding-top:1px;font-weight:bold;font-size:0.9em;" /></td>
+                  	<td class="footerzoekbox" style="background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;"><input type="text" name="query" style="width:100%;height:17px;font-size:12px;border:none;" value="<%= (request.getParameter("query")==null ? "" : request.getParameter("query")) %>"></td>
+                  	<td class="footerzoekbox" style="background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;"><input type="image" src="media/submit_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" alt="ZOEK" align="middle" border="0"></td>
                	</tr>
          	   </table>
          	</td>

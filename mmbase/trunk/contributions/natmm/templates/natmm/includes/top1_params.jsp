@@ -31,9 +31,9 @@ Vector breadcrumbs = new Vector();
 String lnRubriekID = "";
 String rootID = "";
 
-int iRubriekStyle = nl.mmatch.NatMMConfig.PARENT_STYLE;
+int iRubriekStyle = NatMMConfig.PARENT_STYLE;
 String styleSheet = "hoofdsite/themas/default.css"; 
-int iRubriekLayout = nl.mmatch.NatMMConfig.PARENT_LAYOUT;
+int iRubriekLayout = NatMMConfig.PARENT_LAYOUT;
 String lnLogoID = "-1";
 String rnImageID = "-1";
 
@@ -65,13 +65,13 @@ if(!ph.isOfType(rubriekID,"rubriek")||!ph.isOfType(paginaID, "pagina")) {
    for(int r=0; r<breadcrumbs.size(); r++) {
       %><mm:node number="<%= (String) breadcrumbs.get(r) %>" jspvar="thisRubriek"><%
  
-            if(iRubriekLayout==nl.mmatch.NatMMConfig.PARENT_LAYOUT) {
+            if(iRubriekLayout==NatMMConfig.PARENT_LAYOUT) {
                try { iRubriekLayout = thisRubriek.getIntValue("naam_fra"); } catch (Exception e) {}
             }
-            if(iRubriekStyle==nl.mmatch.NatMMConfig.PARENT_STYLE){
+            if(iRubriekStyle==NatMMConfig.PARENT_STYLE){
                styleSheet = thisRubriek.getStringValue("style");
-            	for(int s = 0; s< nl.mmatch.NatMMConfig.style1.length; s++) {
-                  if(styleSheet.indexOf(nl.mmatch.NatMMConfig.style1[s])>-1) { iRubriekStyle = s; } 
+            	for(int s = 0; s< NatMMConfig.style1.length; s++) {
+                  if(styleSheet.indexOf(NatMMConfig.style1[s])>-1) { iRubriekStyle = s; } 
                }
             } 
             if(lnLogoID.equals("-1")) {
@@ -91,8 +91,8 @@ if(!ph.isOfType(rubriekID,"rubriek")||!ph.isOfType(paginaID, "pagina")) {
       %></mm:node><%
    }
 
-   if(iRubriekLayout==nl.mmatch.NatMMConfig.PARENT_LAYOUT) { iRubriekLayout = nl.mmatch.NatMMConfig.DEFAULT_LAYOUT; }
-   if(iRubriekStyle==nl.mmatch.NatMMConfig.PARENT_STYLE) { iRubriekStyle = nl.mmatch.NatMMConfig.DEFAULT_STYLE; }
+   if(iRubriekLayout==NatMMConfig.PARENT_LAYOUT) { iRubriekLayout = NatMMConfig.DEFAULT_LAYOUT; }
+   if(iRubriekStyle==NatMMConfig.PARENT_STYLE) { iRubriekStyle = NatMMConfig.DEFAULT_STYLE; }
 } 
 
 String shortyRol = "0";
@@ -104,9 +104,9 @@ if(application.getAttribute("request_url")==null) {
    application.setAttribute("request_url", javax.servlet.http.HttpUtils.getRequestURL(request).toString());
 }
 
-if(!(new java.io.File( nl.mmatch.NatMMConfig.incomingDir )).exists()) {
+if(!(new java.io.File( NatMMConfig.incomingDir )).exists()) {
    %><div style="position:absolute;color:red;font-weight:bold;padding:30px;">
-         WARNING: The settings in NatMMConfig are incorrect: <%= nl.mmatch.NatMMConfig.incomingDir %> is not a directory on this server.
+         WARNING: The settings in NatMMConfig are incorrect: <%= NatMMConfig.incomingDir %> is not a directory on this server.
          Please change the settings and place a new natmm.jar
    </div><%
 }

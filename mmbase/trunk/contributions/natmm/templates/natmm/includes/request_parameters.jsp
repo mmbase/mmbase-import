@@ -1,4 +1,3 @@
-<%@page import="nl.mmatch.NatMMConfig" %>
 <%
 // *** these are the variables used to select a page and content on that page 
 // *** make sure it really is a rubriek that is selected by parameter r

@@ -14,8 +14,7 @@
 			   %><li><mm:node element="pagina">
 							<mm:related path="gebruikt,paginatemplate">
 								<a href="<mm:field name="paginatemplate.url"/>?p=<mm:field name="pagina.number"
-									/>"><span style="text-decoration:underline;" class="dark_<%= cssClassName  
-									%>"><mm:field name="pagina.titel"/></span></a>				
+									/>"><span style="text-decoration:underline;" class="dark"><mm:field name="pagina.titel"/></span></a>				
 							</mm:related>
 						</mm:node>	
 					</li>
@@ -28,8 +27,7 @@
 						/>" <mm:field name="link.target"
 						      ><mm:compare value="1">target="_blank"</mm:compare
 						      ><mm:compare value="2">target="_top"</mm:compare
-						    ></mm:field>><span style="text-decoration:underline;" class="dark_<%= cssClassName  
-						%>"><mm:field name="link.titel"/>
+						    ></mm:field>><span style="text-decoration:underline;" class="dark"><mm:field name="link.titel"/>
 					</span></a></li>
 		</mm:related>
 		<mm:related path="posrel,projects" orderby="posrel.pos" directions="UP"><%
@@ -38,8 +36,7 @@
 			   } 
 			   %><li><a href="archive.jsp?p=<mm:list path="paginatemplate,gebruikt,pagina" constraints="paginatemplate.url LIKE '%archive.jsp'" max="1"><mm:field name="pagina.number" /></mm:list
                               >&project=<mm:field name="projects.number"
-						/>"><span style="text-decoration:underline;" class="dark_<%= cssClassName  
-						%>"><mm:field name="projects.titel"/></span></a></li>
+						/>"><span style="text-decoration:underline;" class="dark"><mm:field name="projects.titel"/></span></a></li>
 	   </mm:related>
 		<%	
 		if (beginUL) { 

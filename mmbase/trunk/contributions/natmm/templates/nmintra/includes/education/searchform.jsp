@@ -21,10 +21,10 @@
    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
    	<tr>
        	<td>
-          	<input type="submit" name="submit" value="Terug" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;width:50px;" onClick="javascript:history.go(-1);">
+          	<input type="submit" name="submit" value="Terug" style="text-align:center;font-weight:bold;width:50px;" onClick="javascript:history.go(-1);">
    		</td>
          <td style="text-align:right;padding-right:10px;">
-            <input type="submit" name="submit" value="Wis" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;width:50px;" onClick="javascript:clearForm();">
+            <input type="submit" name="submit" value="Wis" style="text-align:center;font-weight:bold;width:50px;" onClick="javascript:clearForm();">
    		</td>
       </tr>
    </table>

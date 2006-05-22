@@ -6,10 +6,10 @@ if(hasPools||isArchive) {
    if(isArchive) { 
       %>
       <tr>
-         <td class="bold"><span class="light_<%= cssClassName %>">Zoekterm</span></td>
+         <td class="bold"><span class="light">Zoekterm</span></td>
       </tr>
       <tr>
-         <td class="bold"><input type="text" name="termsearch" value="<%= termSearchId %>" class="<%= cssClassName %>" style="width:170px;" /></td>
+         <td class="bold"><input type="text" name="termsearch" value="<%= termSearchId %>" style="width:170px;" /></td>
       </tr>
       <%
    }
@@ -18,10 +18,10 @@ String lastpool="";
 %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,pools" orderby="pools.name" directions="UP"
      ><mm:first
          ><tr>
-         	<td class="bold"><span class="light_<%= cssClassName %>">Categorie</span></td>
+         	<td class="bold"><span class="light">Categorie</span></td>
 			</tr>
 			<tr><td>
-         <select name="pool" class="<%= cssClassName %>" style="width:172px;" <% if(!isArchive) { %>onChange="javascript:postIt();"<% } %>>
+         <select name="pool" style="width:172px;" <% if(!isArchive) { %>onChange="javascript:postIt();"<% } %>>
      </mm:first
      ><mm:field name="pools.number" jspvar="thispool" vartype="String" write="false"><%
          if(!lastpool.equals(thispool)) { 
@@ -45,11 +45,11 @@ if (lastpool.equals("")){
       <tr><td>
       <table cellspacing="0" cellpadding="0" border="0">
       <tr>
-         <td colspan="5" class="bold"><span class="light_<%= cssClassName %>">Vanaf</span></td>
+         <td colspan="5" class="bold"><span class="light">Vanaf</span></td>
       </tr>
       <tr>
          <td>
-            <select name="from_day" class="<%= cssClassName %>">
+            <select name="from_day">
                <option value="00">...
                <%
                for(int i=1; i<=31; i++) { 
@@ -60,7 +60,7 @@ if (lastpool.equals("")){
          </td>
          <td><img src="media/spacer.gif" alt="" border="0" width="2" height="1"></td>
          <td>
-            <select name="from_month" class="<%= cssClassName %>">
+            <select name="from_month">
               <option value="00">...
               <%
               for(int i=1; i<=12; i++) { 
@@ -71,7 +71,7 @@ if (lastpool.equals("")){
          </td>
          <td><img src="media/spacer.gif" alt="" border="0" width="2" height="1"></td>
          <td>
-            <select name="from_year" class="<%= cssClassName %>">
+            <select name="from_year">
                <option value="00">...
                <%
                for(int i=startYear; i<=thisYear; i++) { 
@@ -86,11 +86,11 @@ if (lastpool.equals("")){
    <tr><td>
       <table cellspacing="0" cellpadding="0" border="0">
       <tr>
-         <td colspan="5" class="bold"><span class="light_<%= cssClassName %>">Tot en met</span></td>
+         <td colspan="5" class="bold"><span class="light">Tot en met</span></td>
       </tr>
       <tr>
          <td>
-            <select name="to_day" class="<%= cssClassName %>">
+            <select name="to_day">
                <option value="00">...<%
                for(int i=1; i<31; i++) { 
                   %><option value="<% if(i<10){ %>0<% } %><%= i %>" <% 
@@ -100,7 +100,7 @@ if (lastpool.equals("")){
          </td>
          <td><img src="media/spacer.gif" alt="" border="0" width="2" height="1"></td>
          <td>
-            <select name="to_month" class="<%= cssClassName %>">
+            <select name="to_month">
                <option value="0000">...<%
                for(int i=1; i<=12; i++) { 
                   %><option value="<% if(i<10){ %>0<% } %><%= i %>" <% 
@@ -110,7 +110,7 @@ if (lastpool.equals("")){
          </td>
          <td><img src="media/spacer.gif" alt="" border="0" width="2" height="1"></td>
          <td>
-            <select name="to_year"class="<%= cssClassName %>">
+            <select name="to_year">
                <option value="0000">...<%
                for(int i=startYear; i<=thisYear; i++) { 
                   %><option value="<%= i %>" <% 
@@ -121,7 +121,7 @@ if (lastpool.equals("")){
       </tr>
       </table>
       <br>
-      <div align="right"><input type="submit" name="submit" value="Zoek" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;"></div>
+      <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;"></div>
    </td></tr>
 <% 
 }
