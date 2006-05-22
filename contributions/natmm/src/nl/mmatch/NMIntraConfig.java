@@ -52,7 +52,7 @@ public class NMIntraConfig {
 
 	public static String cssPath = "css/";
 	
-   public static boolean urlConversion = false;
+   public static boolean urlConversion = true;
    
    public static String fromEmailAddress = "intranet@natuurmonumenten.nl";
    public static String sDocumentsUrl = "/PenO";
