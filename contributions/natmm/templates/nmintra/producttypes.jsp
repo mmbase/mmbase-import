@@ -10,8 +10,7 @@
     <tr>
         <%-- <td><img src="media/rdcorner.gif" style="filter:alpha(opacity=75)"></td> --%>
         <td class="transperant" style="width:100%;"><img src="media/spacer.gif" width="1" height="6"><br>
-        <div align="right"><span class="pageheader"><span class="dark_<%= cssClassName 
-                %>"><mm:node number="<%= paginaID %>">Het dienstenpakket van de afdeling <mm:field name="titel"/></mm:node
+        <div align="right"><span class="pageheader"><span class="dark"><mm:node number="<%= paginaID %>">Het dienstenpakket van de afdeling <mm:field name="titel"/></mm:node
             ></span></span>
 			</div></td>
         <td class="transperant"><img src="media/spacer.gif" width="10" height="28"></td>

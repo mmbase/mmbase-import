@@ -23,23 +23,23 @@ public NodeList getRelated(Cloud cloud, Logger log, String objects, String sourc
                                  null,destination + "." + field,"UP",null,true);
    return nlRelated;
 }
-public String getSelect(Cloud cloud, Logger log, String title, String cssClassName, String nodeId, NodeList related, String destination, String field, String url, String param) {
+public String getSelect(Cloud cloud, Logger log, String title, int iRubriekStyle, String nodeId, NodeList related, String destination, String field, String url, String param) {
    String sSelect = 
             "<table style='width:190px;margin-bottom:3px;' border='0' cellpadding='0' cellspacing='0'>" 
          +     "<tr>"
-         +        "<td class='bold'><div align='left' class='light_" + cssClassName + "'>&nbsp;" + title + "</div></td>"
+         +        "<td class='bold'><div align='left' class='light'>&nbsp;" + title + "</div></td>"
          +     "</tr>"
          +  "</table>";
    if(!nodeId.equals("")) { // a node has been selected 
       sSelect +=
             "<table width='190' height='18' border='0' cellpadding='0' cellspacing='0'>" 
          +     "<tr>"
-         +        "<td class='light_" + cssClassName + "'>&nbsp;" + cloud.getNode(nodeId).getStringValue(field) + "</td>"
+         +        "<td class='light'>&nbsp;" + cloud.getNode(nodeId).getStringValue(field) + "</td>"
          +     "</tr>"
          +  "</table>";
    } else {
       sSelect += 
-            "<select name='menu1' class='" + cssClassName + "' style='width:180px;' onChange=\"MM_jumpMenu('parent',this,0)\">"
+            "<select name='menu1' style='width:180px;' onChange=\"MM_jumpMenu('parent',this,0)\">"
          +     "<option value='" + url + "'>Selecteer</option>";
       int pPos = url.indexOf(param);
       if(pPos!=-1) {

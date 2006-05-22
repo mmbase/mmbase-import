@@ -4,7 +4,7 @@
         <td style="padding-right:10px;"><img src="media/spacer.gif" width="241" height="6"><br>
         <div align="right"><span class="pageheader"><% 
             if(path.indexOf("home")==-1) { 
-                %><span class="light_<%= cssClassName %>"><% 
+                %><span class="light"><% 
             } else {
                 %><span style="color:#FFFFFF;"><%
             } %><%= rightBarTitle %></span></div></td>

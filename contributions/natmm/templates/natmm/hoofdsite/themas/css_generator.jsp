@@ -7,12 +7,12 @@
 <body style="background-color:#FFFFFF;">
 <%= new Date() %>
 <table>
-<% for(int i=0; i< nl.mmatch.NatMMConfig.style1.length; i++ ) { %>
+<% for(int i=0; i< NatMMConfig.style1.length; i++ ) { %>
       <tr>
-         <td><%= nl.mmatch.NatMMConfig.style1[i] %></td>
-         <td style="background-color:<%= nl.mmatch.NatMMConfig.color1[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= nl.mmatch.NatMMConfig.color1[i] %></td>
-         <td style="background-color:<%= nl.mmatch.NatMMConfig.color2[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= nl.mmatch.NatMMConfig.color2[i] %></td>
-         <td style="background-color:<%= nl.mmatch.NatMMConfig.color3[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= nl.mmatch.NatMMConfig.color3[i] %></td>
+         <td><%= NatMMConfig.style1[i] %></td>
+         <td style="background-color:<%= NatMMConfig.color1[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= NatMMConfig.color1[i] %></td>
+         <td style="background-color:<%= NatMMConfig.color2[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= NatMMConfig.color2[i] %></td>
+         <td style="background-color:<%= NatMMConfig.color3[i] %>">&nbsp;&nbsp;&nbsp;</td><td><%= NatMMConfig.color3[i] %></td>
       </tr>
 <% } %>
 </table>
@@ -28,16 +28,16 @@ if(root!=null) {
    BufferedReader srcFileReader = null;
    BufferedWriter destFileWriter = null;
    
-   for(int i= 0; i< nl.mmatch.NatMMConfig.style1.length;i++) {
+   for(int i= 0; i< NatMMConfig.style1.length;i++) {
       srcFileReader = new BufferedReader(new FileReader(sourceFile));
-      destFileWriter  = new BufferedWriter(new FileWriter(root + nl.mmatch.NatMMConfig.style1[i] + ".css"));
+      destFileWriter  = new BufferedWriter(new FileWriter(root + NatMMConfig.style1[i] + ".css"));
    
       String nextLine = srcFileReader.readLine();
       while(nextLine!=null) {
-         nextLine = nextLine.replaceAll("<style1>",nl.mmatch.NatMMConfig.style1[i]);
-         nextLine = nextLine.replaceAll("<color1>",nl.mmatch.NatMMConfig.color1[i]);
-         nextLine = nextLine.replaceAll("<color2>",nl.mmatch.NatMMConfig.color2[i]);   
-         nextLine = nextLine.replaceAll("<color3>",nl.mmatch.NatMMConfig.color3[i]);   
+         nextLine = nextLine.replaceAll("<style1>",NatMMConfig.style1[i]);
+         nextLine = nextLine.replaceAll("<color1>",NatMMConfig.color1[i]);
+         nextLine = nextLine.replaceAll("<color2>",NatMMConfig.color2[i]);   
+         nextLine = nextLine.replaceAll("<color3>",NatMMConfig.color3[i]);   
          destFileWriter.write(nextLine + "\n");
          nextLine = srcFileReader.readLine();
       }

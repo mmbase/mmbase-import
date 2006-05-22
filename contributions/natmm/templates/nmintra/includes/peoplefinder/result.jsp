@@ -94,8 +94,10 @@ if(!action.equals("print")) {
             ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"
             ><mm:first>
                 <div class="smoelenboeklist"><table cellpadding="0" cellspacing="0" align="left">
-                <tr><td colspan="2" style="padding-bottom:10px;padding-left:19px;"><span class="light_<%= cssClassName 
-                        %>"><span class="pageheader">resultaten</span><br>klik op een naam voor details</span></td>
+                <tr>
+					 	<td colspan="2" style="padding-bottom:10px;padding-left:19px;">
+					 		<span class="light"><span class="pageheader">resultaten</span><br>klik op een naam voor details</span>
+						</td>
                 </tr>
             </mm:first>
                 <tr>
@@ -109,7 +111,7 @@ if(!action.equals("print")) {
                             + "&lastname=" +  java.net.URLEncoder.encode(lastnameId)
                             + "&description=" +  java.net.URLEncoder.encode(descriptionId)
                             + "&employee=" +  employees_number 
-                     %>" class="hover"><span class="light_<%= cssClassName %>"><mm:field name="medewerkers.firstname" /> <mm:field name="medewerkers.suffix" /> <mm:field name="medewerkers.lastname" />
+                     %>" class="hover"><span class="light"><mm:field name="medewerkers.firstname" /> <mm:field name="medewerkers.suffix" /> <mm:field name="medewerkers.lastname" />
             <mm:last>
                 </table></div>
             </mm:last
@@ -119,12 +121,14 @@ if(!action.equals("print")) {
         } else { 
 
             %><div class="smoelenboeklist"><table cellpadding="0" cellspacing="0" align="left">
-                <tr><td colspan="2" style="padding-bottom:10px;padding-left:19px;"><span class="light_<%= cssClassName 
-                        %>"><span class="pageheader">resultaten</span></span></td>
+                <tr>
+					 	<td colspan="2" style="padding-bottom:10px;padding-left:19px;">
+							<span class="light"><span class="pageheader">resultaten</span></span>
+						</td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom:5px;padding-left:18px;"><span class="light_<%= cssClassName %>"><li></span></td>
-                    <td style="padding-bottom:5px;padding-left:2px;padding-right:10px;"><span class="light_<%= cssClassName %>">Er zijn geen medewerkers gevonden die aan je selectie voldoen.</span></a></td></tr>
+                    <td style="padding-bottom:5px;padding-left:18px;"><span class="light"><li></span></td>
+                    <td style="padding-bottom:5px;padding-left:2px;padding-right:10px;"><span class="light">Er zijn geen medewerkers gevonden die aan je selectie voldoen.</span></a></td></tr>
                 </table></div><%
         }
     }

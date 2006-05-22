@@ -129,27 +129,26 @@ ads_constraints = "ads.expiredate > " + (cal.getTime().getTime()/1000);
     %><form name="prikbord" method="post" onSubmit="return postIt(this);">
 <table cellspacing="0" cellpadding="0" border="0" align="center">
     <tr>
-        <td><div align="right"><span class="light_<%= cssClassName %>">Uw email adres</span></div></td>
+        <td><div align="right"><span class="light">Uw email adres</span></div></td>
     </tr>
     <tr>
-        <td><div align="right"><input class="<%=  cssClassName %>" type="text" style="width:195px;" name="email"></div></td>
+        <td><div align="right"><input type="text" style="width:195px;" name="email"></div></td>
     </tr>
     <tr>
-        <td><div align="right"><span class="light_<%= cssClassName %>">Titel van uw bericht</span></div></td>
+        <td><div align="right"><span class="light">Titel van uw bericht</span></div></td>
     </tr>
     <tr>
-        <td><div align="right"><input class="<%=  cssClassName %>" type="text" style="width:195px;" name="title"></div></td>
+        <td><div align="right"><input type="text" style="width:195px;" name="title"></div></td>
     </tr>
     <tr>
-        <td><div align="right"><span class="light_<%= cssClassName %>">Uw bericht</span></div></td>
+        <td><div align="right"><span class="light">Uw bericht</span></div></td>
     </tr>
     <tr>
-        <td><div align="right"><textarea class="<%=  cssClassName %>" name="text" style="width:195px;" rows="6"></textarea></div></td> 
+        <td><div align="right"><textarea name="text" style="width:195px;" rows="6"></textarea></div></td> 
     </tr>
     <tr>
         <td><br><br>
-        <div align="right"><input type="submit" name="Submit" value="Plaats uw bericht" class="<%=  cssClassName 
-            %>"  style="text-align:center;font-weight:bold;"></div>
+        <div align="right"><input type="submit" name="Submit" value="Plaats uw bericht" style="text-align:center;font-weight:bold;"></div>
         </td>
     </tr>
 </table>

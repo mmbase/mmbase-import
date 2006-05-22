@@ -140,7 +140,7 @@ String cardID = "-1";
                   <jsp:param name="r" value="<%= rubriekID %>" />
                   <jsp:param name="d" value="<%= dossierID %>" />
                   <jsp:param name="i" value="<%= imgID %>" />
-                  <jsp:param name="msc" value="<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>" />
+                  <jsp:param name="msc" value="<%= NatMMConfig.color1[iRubriekStyle] %>" />
                   <jsp:param name="vc" value="<%= viewCard %>" />
                   <jsp:param name="ie" value="<%= isIE %>" />
                   <jsp:param name="toname" value="<%= toname %>" />

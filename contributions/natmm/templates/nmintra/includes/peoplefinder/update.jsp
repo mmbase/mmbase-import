@@ -2,17 +2,17 @@
 <mm:node number="<%= employeeId %>">
     <table border="0" cellpadding="0" cellspacing="0">
     <tr><td colspan="2"><h4>Vul hier de correcte gegevens in (*)</h4></td></tr>
-    <tr><td>Voornaam:&nbsp;</td>                    <td><input type="text" class="<%=  cssClassName %>" name="firstname" value="<mm:field name="firstname" />" style="width:300px;"></td></tr>
-    <tr><td>Initialen:&nbsp;</td>                   <td><input type="text" class="<%=  cssClassName %>" name="initials" value="<mm:field name="initials" />" style="width:300px;"></td></tr>
-    <tr><td>Tussenvoegsel:&nbsp;</td>               <td><input type="text" class="<%=  cssClassName %>" name="suffix" value="<mm:field name="suffix" />" style="width:300px;"></td></tr>
-    <tr><td>Achternaam:&nbsp;</td>                  <td><input type="text" class="<%=  cssClassName %>" name="lastname" value="<mm:field name="lastname" />" style="width:300px;"></td></tr>
-    <tr><td>Telefoon:&nbsp;</td>                    <td><input type="text" class="<%=  cssClassName %>" name="companyphone" value="<mm:field name="companyphone" />" style="width:300px;"></td></tr>
-    <tr><td>Mobiel:&nbsp;</td>                      <td><input type="text" class="<%=  cssClassName %>" name="cellularphone" value="<mm:field name="cellularphone" />" style="width:300px;"></td></tr>
-    <tr><td>Fax:&nbsp;</td>                         <td><input type="text" class="<%=  cssClassName %>" name="fax" value="<mm:field name="fax" />" style="width:300px;"></td></tr>
-    <tr><td>Email (**):&nbsp;</td>                  <td><input type="text" class="<%=  cssClassName %>" name="email" value="<mm:field name="email" />" style="width:300px;"></td></tr>
-    <tr><td>Regio/afdeling en functie:&nbsp;</td>   <td><textarea class="<%=  cssClassName %>" name="deptdescr" style="width:300px;height:50px;"><%= deptdescrId %></textarea></td></tr>
-    <tr><td>En verder:&nbsp;</td>                   <td><textarea class="<%=  cssClassName %>" name="descrupdate" style="width:300px;height:50px;"><mm:field name="omschrijving" /></textarea></td></tr>
-    <tr><td colspan="2"><div align="right"><input type="submit" name="Submit" value="Verstuur wijzigingen" class="<%=  cssClassName %>"  style="text-align:center;font-weight:bold;">&nbsp;</div></td></tr>
+    <tr><td>Voornaam:&nbsp;</td>                    <td><input type="text" name="firstname" value="<mm:field name="firstname" />" style="width:300px;"></td></tr>
+    <tr><td>Initialen:&nbsp;</td>                   <td><input type="text" name="initials" value="<mm:field name="initials" />" style="width:300px;"></td></tr>
+    <tr><td>Tussenvoegsel:&nbsp;</td>               <td><input type="text" name="suffix" value="<mm:field name="suffix" />" style="width:300px;"></td></tr>
+    <tr><td>Achternaam:&nbsp;</td>                  <td><input type="text" name="lastname" value="<mm:field name="lastname" />" style="width:300px;"></td></tr>
+    <tr><td>Telefoon:&nbsp;</td>                    <td><input type="text" name="companyphone" value="<mm:field name="companyphone" />" style="width:300px;"></td></tr>
+    <tr><td>Mobiel:&nbsp;</td>                      <td><input type="text" name="cellularphone" value="<mm:field name="cellularphone" />" style="width:300px;"></td></tr>
+    <tr><td>Fax:&nbsp;</td>                         <td><input type="text" name="fax" value="<mm:field name="fax" />" style="width:300px;"></td></tr>
+    <tr><td>Email (**):&nbsp;</td>                  <td><input type="text" name="email" value="<mm:field name="email" />" style="width:300px;"></td></tr>
+    <tr><td>Regio/afdeling en functie:&nbsp;</td>   <td><textarea name="deptdescr" style="width:300px;height:50px;"><%= deptdescrId %></textarea></td></tr>
+    <tr><td>En verder:&nbsp;</td>                   <td><textarea name="descrupdate" style="width:300px;height:50px;"><mm:field name="omschrijving" /></textarea></td></tr>
+    <tr><td colspan="2"><div align="right"><input type="submit" name="Submit" value="Verstuur wijzigingen"  style="text-align:center;font-weight:bold;">&nbsp;</div></td></tr>
     <tr><td colspan="2">
      <i>(*) een nieuwe foto kunt u versturen naar <a href="mailto:<%= defaultFromAddress %>"><%= defaultFromAddress %><a></i><br>
      <i>(**) alleen een intern "...@natuurmonumenten.nl" emailadres is toegestaan.</i></td></tr>

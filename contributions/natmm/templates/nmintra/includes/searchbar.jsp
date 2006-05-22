@@ -25,7 +25,7 @@ function startPhone() {
 //-->
 </script><tr>
 <% // *************************************** natuurmonumenten logo ******************************* %>
-<td rowspan="3"><a href="http://www.natuurmonumenten.nl" target="_blank"><img src="media/<%= logoName %>_logo.gif" border="0" title=""></a></td>
+<td rowspan="3"><a href="http://www.natuurmonumenten.nl" target="_blank"><img src="media/styles/<%= NMIntraConfig.style1[iRubriekStyle] %>_logo.gif" border="0" title=""></a></td>
 <td style="width:70%;"><img src="media/spacer.gif" width="1" height="12"></td>
 <% // *************************************** natuurmonumenten intranet ******************************* %>
 <td class="header" style="padding-right:10px;padding-top:5px;text-align:right;width:251px;">Natuurmonumenten <a href="index.jsp" target="_top"><span class="red"><mm:node number="<%= rootId %>"
@@ -42,12 +42,12 @@ function startPhone() {
 	<form name="searchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return startSearch();">
 	<tr>
 	<td><input type="text" name="search" value="<% if(searchId.equals("")){ %>ik zoek op ...<% } else { %><%= searchId %><% } 
-	  %>" class="<%= cssClassName %>" style="text-align:left;width:110px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
+	  %>" style="text-align:left;width:110px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
 	<td style="padding-left:3px;padding-top:1px;">
-	  <input type="submit" name="Submit" value="Zoek" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;"></td>
+	  <input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;"></td>
 	<td style="padding-left:3px;padding-top:1px;">
 	  <input type="hidden" name="adv">
-	  <input type="submit" name="AdvSubmit" value="Uitgebreid Zoeken" class="<%= cssClassName %>" style="text-align:center;font-weight:bold;width:110px;" onClick="document.searchform.adv.value='adv_search';"></td>
+	  <input type="submit" name="AdvSubmit" value="Uitgebreid Zoeken" style="text-align:center;font-weight:bold;width:110px;" onClick="document.searchform.adv.value='adv_search';"></td>
 	<td style="width:80%;text-align:right;">
 	<%
 	String owners = ph.getOwners(cloud,paginaID,breadcrumbs);
@@ -85,10 +85,10 @@ function startPhone() {
 	  <tr>
 	  <td><img src="media/telefoon.gif" alt="Zoeken in het smoelenboek" onclick="startPhone();"></td>
 	  <td><input type="text" name="name" value="<% if(nameId.equals("")){ %><%= nameEntry %><% } else { %><%= nameId %><% } 
-			%>" class="<%= cssClassName %>" style="text-align:left;width:166px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
+			%>" style="text-align:left;width:166px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
 	  <td><img src="media/spacer.gif" width="7" height="1"></td>
 	  <td><img src="media/spacer.gif" width="1" height="1"><br>
-			<input type="submit" name="phone" value="Zoek"  class="<%= cssClassName %>" style="text-align:center;font-weight:bold;"></td>
+			<input type="submit" name="phone" value="Zoek"  style="text-align:center;font-weight:bold;"></td>
 	  </tr>
 	  </form>
 </table>

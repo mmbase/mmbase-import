@@ -40,15 +40,15 @@ import javax.servlet.http.HttpServletResponse;
  * LoginInitAction
  *
  * @author Edwin van der Elst
- * @version $Revision: 1.2 $, $Date: 2006-03-08 22:23:51 $
+ * @version $Revision: 1.3 $, $Date: 2006-05-22 10:08:48 $
  *
  * @struts:action name="RubriekForm"
- *                path="/editors/rubrieken/RubriekAction"
+ *                path="/editors/paginamanagement/RubriekAction"
  *                scope="request"
  *                validate="true"
- *                input="/editors/rubrieken/rubriek.jsp"
+ *                input="/editors/paginamanagement/rubriek.jsp"
  *
- * @struts:action-forward name="success" path="/editors/rubrieken/rubrieken.jsp"
+ * @struts:action-forward name="success" path="/editors/paginamanagement/rubrieken.jsp"
  */
 public class RubriekAction extends Action {
 

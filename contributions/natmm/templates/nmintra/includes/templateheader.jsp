@@ -24,7 +24,7 @@ public String getParameter(String parameterStr, String queryStr) {
 PaginaHelper ph = new PaginaHelper(cloud);
 String path = ph.getTemplate(request);
 
-// Id finding for the following request parameters (only the object types in nl.mmatch.NMIntraConfig can be used)
+// Id finding for the following request parameters (only the object types in NMIntraConfig can be used)
 
 HashMap ids = new HashMap();
 ids.put("object", ID);
@@ -49,20 +49,22 @@ String refererId = request.getParameter("referer"); if(refererId==null){ referer
 Vector breadcrumbs = ph.getBreadCrumbs(cloud, paginaID);
 String rootId = (String) breadcrumbs.get(breadcrumbs.size()-2);
 
-String cssClassName = "";
-String logoName = "nm";
-for(int r=0; r<breadcrumbs.size() && cssClassName.equals(""); r++ ) {
-	%><mm:list nodes="<%= (String) breadcrumbs.get(r) %>" path="rubriek,related,style" fields="style.number" max="1"
-        ><mm:node element="style" jspvar="thisStyle"><%
-		  	if(thisStyle.getStringValue("title")!=null && !thisStyle.getStringValue("title").equals("")) { 
-				cssClassName = thisStyle.getStringValue("title");
+int iRubriekStyle = NMIntraConfig.PARENT_STYLE;
+String styleSheet = "hoofdsite/themas/default.css"; 
+
+// *** determine the rubriek specific setting: style
+for(int r=0; r<breadcrumbs.size(); r++) {
+	%><mm:node number="<%= (String) breadcrumbs.get(r) %>" jspvar="thisRubriek"><%
+
+		if(iRubriekStyle==NMIntraConfig.PARENT_STYLE){
+			styleSheet = thisRubriek.getStringValue("style");
+			for(int s = 0; s< NMIntraConfig.style1.length; s++) {
+				if(styleSheet.indexOf(NMIntraConfig.style1[s])>-1) { iRubriekStyle = s; } 
 			}
-		  	if(thisStyle.getStringValue("style_par1")!=null && !thisStyle.getStringValue("style_par1").equals("")) {
-				logoName= thisStyle.getStringValue("style_par1"); 
-		   }
-			%></mm:node
-    ></mm:list><% 
+		} 
+	%></mm:node><%
 }
+
 
 //String visitorGroup = request.getParameter("vg"); if(visitorGroup==null){ visitorGroup = ""; }
 

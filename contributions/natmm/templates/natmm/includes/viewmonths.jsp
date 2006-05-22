@@ -32,31 +32,31 @@
 </script>
 <style>
    .calGreyLeft {
-       background-color: #<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>;
+       background-color: #<%= NatMMConfig.color1[iRubriekStyle] %>;
        border-top: black 1px solid;
        border-left: black 1px solid;
        border-bottom: black 1px solid;
-       color: #<%= nl.mmatch.NatMMConfig.color3[iRubriekStyle] %>;
+       color: #<%= NatMMConfig.color3[iRubriekStyle] %>;
    }   
    .calGreyCenter {
-       background-color: #<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>;
+       background-color: #<%= NatMMConfig.color1[iRubriekStyle] %>;
        border-top: black 1px solid;
        border-bottom: black 1px solid;
-       color: #<%= nl.mmatch.NatMMConfig.color3[iRubriekStyle] %>;
+       color: #<%= NatMMConfig.color3[iRubriekStyle] %>;
    }   
    .calGreyRight {
-       background-color: #<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>;
+       background-color: #<%= NatMMConfig.color1[iRubriekStyle] %>;
        border-top: black 1px solid;
        border-right: black 1px solid;
        border-bottom: black 1px solid;
-       color: #<%= nl.mmatch.NatMMConfig.color3[iRubriekStyle] %>;
+       color: #<%= NatMMConfig.color3[iRubriekStyle] %>;
    }  
    .calGreyPoint {
-       background-color: #<%= nl.mmatch.NatMMConfig.color1[iRubriekStyle] %>;
+       background-color: #<%= NatMMConfig.color1[iRubriekStyle] %>;
        border: black 1px solid;
        padding-left:1px;
        padding-right:1px;
-       color: #<%= nl.mmatch.NatMMConfig.color3[iRubriekStyle] %>;
+       color: #<%= NatMMConfig.color3[iRubriekStyle] %>;
    }
 </style>
 <mm:cloud jspvar="cloud">

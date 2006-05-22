@@ -10,10 +10,10 @@ if(!owners.equals("")) {
 			<div align="right">
 				Informatie over deze pagina:
 				<a href="mailto:<mm:field name="emailadres" />?subject=<% 
-					%><mm:node number="<%= rootId %>"><mm:field name="title" /></mm:node
-					> - <mm:node number="<%= paginaID %>"><mm:field name="title" /></mm:node
+					%><mm:node number="<%= rootId %>"><mm:field name="naam" /></mm:node
+					> - <mm:node number="<%= paginaID %>"><mm:field name="titel" /></mm:node
 					>">
-					<mm:field name="titel" />
+					<mm:field name="voornaam" /> <mm:field name="tussenvoegsel" /> <mm:field name="achternaam" />
 				</a><% 
 				if(postingStr.equals("|action=print")) { 
 					%> <mm:field name="emailadres" /><% 
