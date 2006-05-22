@@ -1,10 +1,10 @@
 <table cellpadding="0" cellspacing="0" border="0">
-	<mm:list nodes="<%= paginaID %>" path="pagina,contentrel,shorty" fields="shorty.number"
-		orderby="contentrel.pos,contentrel.number" directions="UP,DOWN" offset="<%= "" + thisOffset*10 %>" max="10"
-	><mm:field name="contentrel.pos" jspvar="contentrel_pos" vartype="String" write="false"><%	
+	<mm:list nodes="<%= paginaID %>" path="pagina,lijstcontentrel,linklijst" fields="linklijst.number"
+		orderby="lijstcontentrel.pos,contentrel.number" directions="UP,DOWN" offset="<%= "" + thisOffset*10 %>" max="10"
+	><mm:field name="lijstcontentrel.pos" jspvar="contentrel_pos" vartype="String" write="false"><%	
          if(contentrel_pos.equals("")) contentrel_pos = "1";
 			if(((Integer.parseInt(contentrel_pos)-1) % numberOfColumns) == (colNumber-1)){ 
-			%><mm:field name="shorty.number" jspvar="items_number" vartype="String" write="false"
+			%><mm:field name="linklijst.number" jspvar="items_number" vartype="String" write="false"
 			><mm:node number="<%= items_number %>"
 			><tr>
 				<td rowspan="8" ><div align="center">

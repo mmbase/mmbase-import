@@ -30,7 +30,6 @@
          <option value="-1" <% if (groupId.equals("-1")) { %> selected <% } %>>Alles</option>
      </select>
 </td></tr> --%>
-<tr><td class="bold"><span class="light">Medewerker</span></td></tr>
 <mm:list path="projects,readmore,medewerkers" orderby="medewerkers.lastname" directions="UP" 
      distinct="yes" fields="medewerkers.number"
      ><mm:first
@@ -134,8 +133,10 @@
        if(type != '') href += "&type=" + type;
        //var group = document.infoform.elements["group"].value;
        //if(group != '') href += "&group=" + group;
-       var medewerker = document.infoform.elements["medewerker"].value;
-       if(medewerker != '') href += "&medewerker=" + medewerker;
+       <mm:present referid="employeefound">
+       var employee = document.infoform.elements["employee"].value;
+       if(employee != '') href += "&employee=" + employee;
+		 </mm:present>
        <mm:present referid="departmentfound">
        var department = document.infoform.elements["department"].value;
        if(department != '') href += "&department=" + department;

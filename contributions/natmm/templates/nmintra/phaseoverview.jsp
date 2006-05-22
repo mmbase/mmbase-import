@@ -3,7 +3,6 @@
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<%@include file="includes/searchfunctions.jsp" %>
 <%@include file="includes/header.jsp" %>
 <td colspan="2"><%@include file="includes/pagetitle.jsp" %></td>
 </tr>
