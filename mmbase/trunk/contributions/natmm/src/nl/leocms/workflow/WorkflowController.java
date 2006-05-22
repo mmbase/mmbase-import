@@ -231,7 +231,8 @@ public class WorkflowController {
             acceptContent(element);
          }
       }
-
+		/* hh lijstcontentrel is not used in NatMM version of LeoCMS
+		
       NodeList linklijst = pagina.getRelatedNodes("linklijst", "posrel", "DESTINATION");
       NodeIterator linklijstiter = linklijst.nodeIterator();
       while (linklijstiter.hasNext()) {
@@ -248,6 +249,7 @@ public class WorkflowController {
             }
          }
       }
+		*/
    }
    
    public void rejectContent(Node content, String opmerkingen) {
@@ -358,6 +360,8 @@ public class WorkflowController {
          }
       }
       
+		/* hh lijstcontentrel is not used in NatMM version of LeoCMS
+		
       NodeList linklijst = pagina.getRelatedNodes("linklijst", "posrel", "DESTINATION");
       NodeIterator linklijstiter = linklijst.nodeIterator();
       while (linklijstiter.hasNext()) {
@@ -383,6 +387,7 @@ public class WorkflowController {
             }   
          }
       }
+		*/
    }
 
    public boolean isAllowedToPublish(Node content) {
@@ -437,15 +442,19 @@ public class WorkflowController {
     * @return
     */
    public boolean isContentElementOnPage(Node contentElementNode) {
+		// Note: this function should be implemented by PaginaHelper.pathsFromPageToElements
       if (contentElementNode != null) {
          NodeList paginas = contentElementNode.getRelatedNodes("pagina", "contentrel", "SOURCE");
          if (paginas.size() > 0) {
             return true;
          }
+			/* hh lijstcontentrel is not used in NatMM version of LeoCMS
+			
          NodeList linkLijsten = cloud.getList(""+contentElementNode.getNumber(),"contentelement,lijstcontentrel,linklijst,posrel,pagina", "pagina.number", null, null, null, "SOURCE", true);
          if (linkLijsten.size() > 0) {
             return true;
          }
+			*/ 
          NodeList dossiers = cloud.getList(""+contentElementNode.getNumber(),"artikel,posrel,dossier,related,pagina", "pagina.number", null, null, null, "SOURCE", true);
          if (dossiers.size() > 0) {
             return true;
