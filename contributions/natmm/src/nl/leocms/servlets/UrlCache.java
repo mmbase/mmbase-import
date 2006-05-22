@@ -13,8 +13,12 @@ public class UrlCache {
     cacheURLToJSP = new OSCacheImplementation();
     // set path explicitly, otherwise java.lang.NullPointerException
 	 // at org.mmbase.cache.oscache.OSCacheImplementation.get(OSCacheImplementation.java:135)
+	 String tempdir = System.getProperty("java.io.tmpdir");
+	 if ( !(tempdir.endsWith("/") || tempdir.endsWith("\\")) ) {
+		 tempdir += tempdir + System.getProperty("file.separator");
+	 }
     Map config = new HashMap(); 
-    config.put("path", nl.mmatch.NatMMConfig.tempDir);
+    config.put("path", tempdir);
     ((OSCacheImplementation)cacheJSPToURL).config(config);
     ((OSCacheImplementation)cacheURLToJSP).config(config);
   }
