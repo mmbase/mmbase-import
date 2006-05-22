@@ -190,6 +190,7 @@
       <relation from="pagina" to="link" type="posrel"/> 
       <relation from="pagina" to="mmevents" type="posrel"/>
       <relation from="pagina" to="pagina" type="readmore"/>
+      <relation from="pagina" to="pagina" type="rolerel"/>
       <relation from="pagina" to="paginatemplate" type="gebruikt"/>
       <relation from="pagina" to="producttypes" type="posrel"/>
       <relation from="pagina" to="programs" type="posrel"/>
