@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.bridge.jsp.taglib.containers.*;
 
 import java.io.IOException;
 
@@ -22,9 +23,9 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.51 2006-04-29 12:45:43 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.52 2006-05-22 16:52:39 michiel Exp $
  */
-public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
+public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
     private FieldList     returnList;
     private FieldIterator fieldIterator;
@@ -32,6 +33,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     private int           currentItemIndex= -1;
 
     private Attribute   nodeManagerAtt = Attribute.NULL;
+    private Attribute   container     = Attribute.NULL;
     private NodeProvider nodeProvider = null;
 
     private  Attribute type = Attribute.NULL;
@@ -69,6 +71,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public void setNodetype(String t) throws JspTagException {
         nodeManagerAtt = getAttribute(t);
+    }
+    public void setContainer(String c) throws JspTagException {
+        container = getAttribute(c);
     }
 
     public void setType(String t) throws JspTagException {
@@ -159,8 +164,17 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
 
     /**
-    *
-    **/
+     * @since MMBase-1.8.1
+     */
+    protected NodeManager getNodeManagerFromQuery(String id, boolean exception) throws JspTagException {
+        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, container.getString(this), exception);
+        NodeQuery query = qc.getNodeQuery();
+        return query.getNodeManager();
+    }
+
+    /**
+     *
+     **/
     public int doStartTag() throws JspTagException{
         collector = new ContextCollector(getContextProvider());
 
@@ -179,10 +193,20 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         } else {
             NodeManager nodeManager;
 
-            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
-                Node n = getNodeVar();
-                if (n == null) throw new JspTagException("Fieldlist tag must be used either as node-referrer, or use the nodetype attribute");
-                nodeManager = n.getNodeManager();
+            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer, or Query-referrer
+                if (container != Attribute.NULL) {
+                    nodeManager = getNodeManagerFromQuery(container.getString(this), true);
+                } else {
+                    Node n = getNodeVar();
+                    if (n == null) {
+                        nodeManager = getNodeManagerFromQuery(null, false);
+                        if (nodeManager == null) {
+                            throw new JspTagException("Fieldlist tag must be used either as node-referrer, or use the nodetype attribute, or 'container' attribute.");
+                        }
+                    } else {
+                        nodeManager = n.getNodeManager();
+                    }
+                }
             } else {
                 nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
             }

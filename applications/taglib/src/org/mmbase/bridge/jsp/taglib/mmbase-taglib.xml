@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.359 2006-05-22 16:48:38 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.360 2006-05-22 16:52:39 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3210,10 +3210,14 @@ transaction was commited, following should result anything:
     <teiclass>org.mmbase.bridge.jsp.taglib.FieldProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-      A list of fields. A fieldlist can be inside a NodeProvider in
-      which case the NodeManager is found by means of the parent
-      node. It can also be standalone, then you have to supply the type
-      of the node (the name of the `node manager').
+      <p>
+        A list of fields. A fieldlist can be inside a NodeProvider in which case the NodeManager is
+        found by means of the parent node. It can also be standalone, then you have to supply the type
+        of the node (the name of the `node manager').
+      </p>
+      <p>
+        If the 'container' attribute is used, then it can refer to one of the 'NodeQueryContainers' which also provide a nodeManager.      
+      </p>
     </info>
     <see tag="fieldinfo" />
     <see tag="nodeinfo" />
@@ -3307,6 +3311,21 @@ transaction was commited, following should result anything:
       <since>MMBase-1.7</since>
     </attribute>
     <example>See the example for tag `nodeinfo'.</example>
+    <example><![CDATA[
+      <mm:fieldlist nodetype="insrel" id="insrelfields" type="list" />
+      <table>
+        <mm:listrelationscontainer id="container" role="$role" type="$destination" searchdir="$search">
+          <tr>
+            <th>${search}</th>
+            <th>#</th>                  
+            <mm:fieldlist id="fields" container="container" type="list" remove="insrelfields">
+              <th><mm:fieldinfo type="name" /></th>
+            </mm:fieldlist>
+          </tr>
+        </mm:listrelationscontainer>
+      </table>
+      ]]>
+    </example>
   </tag>
   <tag>
     <name>fieldinfo</name>
