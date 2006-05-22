@@ -119,8 +119,8 @@
          <%
          rubriekNum++;
          styleSheet = thisRubriek.getStringValue("style");
-         for(int s = 0; s< nl.mmatch.NatMMConfig.style1.length; s++) {
-            if(styleSheet.indexOf(nl.mmatch.NatMMConfig.style1[s])>-1) { iRubriekStyle = s; } 
+         for(int s = 0; s< NatMMConfig.style1.length; s++) {
+            if(styleSheet.indexOf(NatMMConfig.style1[s])>-1) { iRubriekStyle = s; } 
          }
          %>
          <mm:relatednodes type="pagina" path="posrel,pagina" orderby="posrel.pos" max="1">
@@ -145,14 +145,14 @@
             </mm:notpresent>
             </a>
             <div style="padding:3px 5px 10px 5px">  
-               <a href="<%= ph.createPaginaUrl(pageNumber,request.getContextPath()) %>" class="hover" style="font:bold 115%;color:#<%=nl.mmatch.NatMMConfig.color1[iRubriekStyle]%>;"><mm:field name="titel"/></a>
+               <a href="<%= ph.createPaginaUrl(pageNumber,request.getContextPath()) %>" class="hover" style="font:bold 115%;color:#<%=NatMMConfig.color1[iRubriekStyle]%>;"><mm:field name="titel"/></a>
                <div style="line-height:110%;padding-bottom:9px;font:bold;"><mm:field name="kortetitel"/></div>
                <mm:field name="omschrijving"/>
                <mm:relatednodes type="artikel" path="contentrel,artikel" max="1"
                   constraints="<%= objectConstraint %>" orderby="<%= objectOrderby %>" directions="<%= objectDirections %>">
                   <span style="font:bold 110%;color:red">></span> 
                   <a href="<%= ph.createPaginaUrl(pageNumber,request.getContextPath()) 
-                     %>" class="hover" style="font-weight:bold;color:#<%=nl.mmatch.NatMMConfig.color1[iRubriekStyle]%>" title="<mm:field name="titel"/>"><mm:field name="titel"/></a><%
+                     %>" class="hover" style="font-weight:bold;color:#<%=NatMMConfig.color1[iRubriekStyle]%>" title="<mm:field name="titel"/>"><mm:field name="titel"/></a><%
                   %><mm:field name="intro" jspvar="text" vartype="String" write="false"><% 
                      if(text!=null) {
                         text = HtmlCleaner.cleanText(text,"<",">");
@@ -177,8 +177,8 @@
                   </mm:field>
                </mm:relatednodes>
                <div style="padding-top:3px;">
-                  <a href="<%= ph.createPaginaUrl(pageNumber,request.getContextPath()) %>" style="font:90%;color:#<%=nl.mmatch.NatMMConfig.color1[iRubriekStyle]%>;"
-							title="<mm:field name="titel"/>"><%= sReadmore %></a> <span style="color:#<%=nl.mmatch.NatMMConfig.color1[iRubriekStyle]%>">></span>
+                  <a href="<%= ph.createPaginaUrl(pageNumber,request.getContextPath()) %>" style="font:90%;color:#<%=NatMMConfig.color1[iRubriekStyle]%>;"
+							title="<mm:field name="titel"/>"><%= sReadmore %></a> <span style="color:#<%=NatMMConfig.color1[iRubriekStyle]%>">></span>
                </div>
             </div>
            </td>

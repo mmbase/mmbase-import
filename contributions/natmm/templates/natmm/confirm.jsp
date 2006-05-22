@@ -1,4 +1,4 @@
-<%@page import="nl.leocms.evenementen.forms.SubscribeForm" %>
+<%@page import="nl.leocms.evenementen.forms.SubscribeForm,nl.mmatch.NatMMConfig" %>
 <%@include file="includes/top0.jsp" %>
 <mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
@@ -35,7 +35,7 @@ if(request.getParameter("memberid")!=null) {
 
          %><%@include file="includes/memberid_set.jsp" %>
          <%
-         String emailAddresses = nl.mmatch.NatMMConfig.toEmailAddress;
+         String emailAddresses = NatMMConfig.toEmailAddress;
          String pages_title = "";
          String subject = "";
          %>
@@ -52,7 +52,7 @@ if(request.getParameter("memberid")!=null) {
             <mm:relatednodes type="email" max="1" constraints="<%= "email.subject ='" + subject + "'" %>" id="emailsent" />
             <mm:notpresent referid="emailsent">
                <mm:createnode type="email" id="mail1">
-                  <mm:setfield name="from"><%= nl.mmatch.NatMMConfig.fromEmailAddress %></mm:setfield>
+                  <mm:setfield name="from"><%= NatMMConfig.fromEmailAddress %></mm:setfield>
                   <mm:setfield name="subject"><%= subject %></mm:setfield>
                   <mm:setfield name="replyto"><%= emailAddresses %></mm:setfield>
                   <mm:setfield name="mailtype">3</mm:setfield>

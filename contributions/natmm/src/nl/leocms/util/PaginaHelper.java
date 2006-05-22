@@ -37,8 +37,7 @@ import org.mmbase.util.logging.Logging;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import nl.mmatch.HtmlCleaner;
-import nl.mmatch.NatMMConfig;
+import nl.mmatch.*;
 
 public class PaginaHelper {
    
@@ -50,24 +49,27 @@ public class PaginaHelper {
    
    Cloud cloud;
    public HashMap pathsFromPageToElements;
-   
+   public boolean urlConversion;
+	
    public PaginaHelper(Cloud cloud) {
       this.cloud = cloud;
       this.pathsFromPageToElements = new HashMap();
 		ApplicationHelper ap = new ApplicationHelper();
 		// todo: create a more generic version for this piece of code
 		if(ap.isInstalled(cloud,"NatMM")) {
-			for(int f = 0; f < nl.mmatch.NatMMConfig.CONTENTELEMENTS.length; f++) {
-				pathsFromPageToElements.put(
-					nl.mmatch.NatMMConfig.CONTENTELEMENTS[f],
-					nl.mmatch.NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+			this.urlConversion = NatMMConfig.urlConversion;
+			for(int f = 0; f < NatMMConfig.CONTENTELEMENTS.length; f++) {
+				this.pathsFromPageToElements.put(
+					NatMMConfig.CONTENTELEMENTS[f],
+					NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
 			}
 		}
 		if(ap.isInstalled(cloud,"NMIntra")) {
-			for(int f = 0; f < nl.mmatch.NMIntraConfig.CONTENTELEMENTS.length; f++) {
-				pathsFromPageToElements.put(
-					nl.mmatch.NMIntraConfig.CONTENTELEMENTS[f],
-					nl.mmatch.NMIntraConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+			this.urlConversion = NMIntraConfig.urlConversion;
+			for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
+				this.pathsFromPageToElements.put(
+					NMIntraConfig.CONTENTELEMENTS[f],
+					NMIntraConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
 			}
       }
    }
@@ -260,7 +262,7 @@ public class PaginaHelper {
       url.append('=');
       url.append(paginaNumber);
 
-      if(UrlConverter.URLCONVERSION) {
+      if(urlConversion) {
    
          UrlCache cache = UrlConverter.getCache();
          String jspURL = url.toString();
@@ -302,7 +304,7 @@ public class PaginaHelper {
       url.append('=');
       url.append(itemNumber);  
      
-      if(UrlConverter.URLCONVERSION) {
+      if(urlConversion) {
    
          UrlCache cache = UrlConverter.getCache();
          String jspURL = url.toString();
@@ -319,7 +321,7 @@ public class PaginaHelper {
       }
 
       if (params != null && !params.equals("")) {
-         if(UrlConverter.URLCONVERSION) {
+         if(urlConversion) {
             url.append('?');
          } else {
             url.append('&');

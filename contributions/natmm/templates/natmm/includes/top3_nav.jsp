@@ -37,7 +37,7 @@ with(style1=new mm_style()){
 }
 with(style2=new mm_style()){
    styleid=1;
-   bordercolor="#<%= nl.mmatch.NatMMConfig.color2[iRubriekStyle] %>";
+   bordercolor="#<%= NatMMConfig.color2[iRubriekStyle] %>";
    borderstyle="solid";
    borderwidth=1;
    fontsize=12;
@@ -45,11 +45,11 @@ with(style2=new mm_style()){
    fontweight="normal";
    fontfamily="Arial";
    padding=1;
-   pagebgcolor="#<%= nl.mmatch.NatMMConfig.color2[iRubriekStyle] %>";
+   pagebgcolor="#<%= NatMMConfig.color2[iRubriekStyle] %>";
    headercolor="#FFFFFF";
    headerbgcolor="#000099";
    offcolor="#050080";
-   offbgcolor="#<%= nl.mmatch.NatMMConfig.color2[iRubriekStyle] %>";
+   offbgcolor="#<%= NatMMConfig.color2[iRubriekStyle] %>";
    oncolor="#050080";
    onbgcolor="#FFFFFF";
 }
@@ -84,7 +84,7 @@ while(depth>-1&&depth<10) {
       if(depth==1) { 
          %>
          with(milonic=new menuname("mainmenu")){
-         top=<%= (iRubriekLayout==nl.mmatch.NatMMConfig.DEFAULT_LAYOUT ? "0" : "76") %>;
+         top=<%= (iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT ? "0" : "76") %>;
          screenposition="center";
          style=style1;
          alwaysvisible=1;

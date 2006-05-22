@@ -32,7 +32,6 @@ import nl.leocms.util.RubriekHelper;
 import nl.leocms.util.PaginaHelper;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.mmatch.HtmlCleaner;
-import nl.mmatch.NatMMConfig;
 
 import javax.servlet.ServletContext;
 import org.mmbase.module.core.MMBaseContext;
@@ -44,12 +43,11 @@ import org.mmbase.module.core.MMBaseContext;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.4 2006-05-07 22:06:46 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.5 2006-05-22 10:08:48 henk Exp $
  */
 public final class UrlConverter {
    // some constants.
 
-   public final static boolean URLCONVERSION = NatMMConfig.urlConversion;
    public final static String PAGE_EXTENSION = ".htm";
    public static String PAGE_PARAM = "p";
    public static String RUBRIEK_PARAM = "r";

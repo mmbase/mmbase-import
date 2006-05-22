@@ -6,19 +6,19 @@ if(!action.equals("print")) {
     %><form method="POST" action="<%= requestURL %>smoelenboek.jsp<%= templateQueryString %>" name="smoelenboek" onSubmit="return postIt('submit');">
         <input type="hidden" name="name" value="<%= nameId %>">
     <table cellpadding="0" cellspacing="0"  align="center">
-        <tr><td class="bold">&nbsp;<span class="light_<%= cssClassName %>">Voornaam:</span></td>
-            <td class="bold"><input type="text" class="<%=  cssClassName %>" style="width:103px;" name="firstname" value="<%= firstnameId %>">
-            &nbsp;<br><div align="right"><span class="light_<%= cssClassName %>"><% if(nameId.equals("")){ %>en<% } else { %>of<% } %></span></div></td></tr>
-        <tr><td class="bold">&nbsp;<span class="light_<%= cssClassName %>">Achternaam:</span>&nbsp;</td>
-            <td class="bold"><input type="text" class="<%=  cssClassName %>" style="width:103px;" name="lastname" value="<%= lastnameId %>">
-            &nbsp;<br><div align="right"><span class="light_<%= cssClassName %>">en</span></div></td></tr><%
+        <tr><td class="bold">&nbsp;<span class="light">Voornaam:</span></td>
+            <td class="bold"><input type="text" style="width:103px;" name="firstname" value="<%= firstnameId %>">
+            &nbsp;<br><div align="right"><span class="light"><% if(nameId.equals("")){ %>en<% } else { %>of<% } %></span></div></td></tr>
+        <tr><td class="bold">&nbsp;<span class="light">Achternaam:</span>&nbsp;</td>
+            <td class="bold"><input type="text" style="width:103px;" name="lastname" value="<%= lastnameId %>">
+            &nbsp;<br><div align="right"><span class="light">en</span></div></td></tr><%
          
     if(thisPrograms.equals("")) {
         
-        %><tr><td class="bold">&nbsp;<span class="light_<%= cssClassName %>">En verder:</span>&nbsp;</td>
-                    <td class="bold"><input type="text" class="<%=  cssClassName %>"  style="width:103px;" name="description" size="13" value="<%= descriptionId %>">
-            &nbsp;<br><div align="right"><span class="light_<%= cssClassName %>">en</span></div></td></tr>
-        <tr><td colspan="2" class="bold"><select name="department" class="<%=  cssClassName %>" style="width:195px;">
+        %><tr><td class="bold">&nbsp;<span class="light">En verder:</span>&nbsp;</td>
+                    <td class="bold"><input type="text" style="width:103px;" name="description" size="13" value="<%= descriptionId %>">
+            &nbsp;<br><div align="right"><span class="light">en</span></div></td></tr>
+        <tr><td colspan="2" class="bold"><select name="department" style="width:195px;">
                 <option value="default" <%  if(departmentId.equals("default")) { %>SELECTED<% } 
                     %>>alle afdelingen en regio's
             <mm:list path="afdelingen" orderby="afdelingen.naam" directions="UP" constraints="afdelingen.omschrijving!='-1'"
@@ -29,8 +29,8 @@ if(!action.equals("print")) {
                 %></mm:field
                 ></mm:field
             ></mm:list
-        ></select>&nbsp;<br><div align="right"><span class="light_<%= cssClassName %>">en</span></div></td></tr>
-        <tr><td colspan="2"><select name="program" class="<%=  cssClassName %>" style="width:195px;">
+        ></select>&nbsp;<br><div align="right"><span class="light">en</span></div></td></tr>
+        <tr><td colspan="2"><select name="program" style="width:195px;">
                 <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
                     %>>alle lokaties
             <mm:list path="locations" orderby="locations.naam" directions="UP"
@@ -47,7 +47,7 @@ if(!action.equals("print")) {
         
      } else if(thisPrograms.indexOf(",")>-1) {
 
-        %><tr><td colspan="2"><select name="program" class="<%=  cssClassName %>" style="width:195px;">
+        %><tr><td colspan="2"><select name="program" style="width:195px;">
                 <option value="default" <%  if(programId.equals("default")) { %>SELECTED<% } 
                     %>>alle teams
             <mm:list nodes="<%= thisPrograms %>" path="programs" orderby="programs.title" directions="UP"
@@ -64,12 +64,10 @@ if(!action.equals("print")) {
      }
         %><tr><td colspan="2"><img src="media/spacer.gif" width="1" height="20"></td></tr>
         <tr><td>
-            <input type="reset" name="clear" value="Wis" class="<%=  cssClassName 
-                    %>" style="text-align:center;font-weight:bold;width:42px;" onClick="postIt('clear');">
+            <input type="reset" name="clear" value="Wis" style="text-align:center;font-weight:bold;width:42px;" onClick="postIt('clear');">
             </td>
             <td>
-                <div align="right"><input type="submit" name="submit" value="Zoek" class="<%=  cssClassName 
-                     %>"  style="text-align:center;font-weight:bold;width:42px;">&nbsp;</div>
+                <div align="right"><input type="submit" name="submit" value="Zoek" style="text-align:center;font-weight:bold;width:42px;">&nbsp;</div>
             </td></tr>
     </table></form>
     <script>

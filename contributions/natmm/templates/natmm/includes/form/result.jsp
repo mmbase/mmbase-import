@@ -29,7 +29,7 @@ if(referer!=null) {
 
    String pages_title = "";
 
-   String defaultEmailAddress = nl.mmatch.NatMMConfig.fromEmailAddress;
+   String defaultEmailAddress = NatMMConfig.fromEmailAddress;
    
    Vector okTitle = new Vector();
    Vector okMessage = new Vector();
@@ -60,7 +60,7 @@ if(referer!=null) {
             if(!thisForm.getStringValue("emailadressen").equals("")) { 
                emailAddress.add(thisForm.getStringValue("emailadressen").trim());
             } else {
-               emailAddress.add(nl.mmatch.NatMMConfig.toEmailAddress);
+               emailAddress.add(NatMMConfig.toEmailAddress);
             }
             String responseText = "<b>" + responseTextDefault + pages_title + "</b><br>"
                   + "<br><br>" + thisForm.getStringValue("titel").toUpperCase()+ "<br>"

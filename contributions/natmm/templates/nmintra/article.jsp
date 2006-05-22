@@ -5,15 +5,15 @@
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/header.jsp" %>
 <%@include file="includes/calendar.jsp" %>
-<td <% if(cssClassName.equals("bibliotheek")) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
-<% if(!cssClassName.equals("bibliotheek")) { 
+<td <% if(NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { %>colspan="2"<% } %>><%@include file="includes/pagetitle.jsp" %></td>
+<% if(!NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { 
    %><td><% String rightBarTitle = "";
    %><%@include file="includes/rightbartitle.jsp" 
    %></td><%
 } %>
 </tr>
 <tr>
-<td class="transperant" <% if(cssClassName.equals("bibliotheek")) { %>colspan="2"<% } %>>
+<td class="transperant" <% if(NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { %>colspan="2"<% } %>>
 <div class="<%= infopageClass %>">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr><td style="padding:10px;padding-top:18px;">
@@ -42,7 +42,7 @@
 </table>
 </div>
 </td>
-<% if(!cssClassName.equals("bibliotheek")) { 
+<% if(!NMIntraConfig.style1[iRubriekStyle].equals("bibliotheek")) { 
    %><td><%
    // *********************************** right bar *******************************
    %><img src="media/spacer.gif" width="10" height="1"></td><%

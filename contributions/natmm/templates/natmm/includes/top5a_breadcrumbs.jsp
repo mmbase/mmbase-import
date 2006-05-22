@@ -1,10 +1,10 @@
 <tr>
-	<td style="width:48%" class="maincolor" style="<%= (iRubriekLayout!=nl.mmatch.NatMMConfig.DEFAULT_LAYOUT ? "background-color: #FFFFFF;" : "" ) %>"><%@include file="/editors/paginamanagement/flushlink.jsp" %></td>
-	<td style="width:744px;height:21px:" class="maincolor" style="<%= (iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE2_LAYOUT ? "background-color: #10086B;" : "" ) %>"><img src="media/trans.gif" width="744px" height="21" border="0" alt=""></td>
-	<td style="width:48%;text-align:center;" class="maincolor" style="<%= (iRubriekLayout!=nl.mmatch.NatMMConfig.DEFAULT_LAYOUT ? "background-color: #FFFFFF;" : "" ) %>"></td>
+	<td style="width:48%" class="maincolor" style="<%= (iRubriekLayout!=NatMMConfig.DEFAULT_LAYOUT ? "background-color: #FFFFFF;" : "" ) %>"><%@include file="/editors/paginamanagement/flushlink.jsp" %></td>
+	<td style="width:744px;height:21px:" class="maincolor" style="<%= (iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT ? "background-color: #10086B;" : "" ) %>"><img src="media/trans.gif" width="744px" height="21" border="0" alt=""></td>
+	<td style="width:48%;text-align:center;" class="maincolor" style="<%= (iRubriekLayout!=NatMMConfig.DEFAULT_LAYOUT ? "background-color: #FFFFFF;" : "" ) %>"></td>
 </tr>
 <% 
-if(iRubriekLayout==nl.mmatch.NatMMConfig.DEFAULT_LAYOUT) { 
+if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) { 
 %><tr>
 	<td style="width:48%;background-color:#000039"></td>
 	<td style="width:744px;height:68px"><div style="background-color: #000098;">		

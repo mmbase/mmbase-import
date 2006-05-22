@@ -296,7 +296,7 @@
 				               bFirst = false;
             				}
 				         %></mm:node>
-				         <div align="right"><a href="#top"><img src="media/<%= cssClassName %>_up.gif" border="0" /></a></div>
+				         <div align="right"><a href="#top"><img src="media/<%= NMIntraConfig.style1[iRubriekStyle] %>_up.gif" border="0" /></a></div>
 				         <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
 				      }
 				   }

@@ -1,4 +1,4 @@
-<%@page import="java.io.*,org.mmbase.bridge.*,nl.mmatch.NatMMConfig" %>
+<%@page import="java.io.*,org.mmbase.bridge.*" %>
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">

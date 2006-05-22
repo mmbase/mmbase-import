@@ -1,5 +1,5 @@
  <%
- if(iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE2_LAYOUT) { %>
+ if(iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT) { %>
    <style>
       span.navbutton {
          background-color:#10086B;
@@ -35,10 +35,10 @@
    <% 
 } %>  
 <table cellspacing="0" cellpadding="0" border="0" style="width:165px;">
-<% if(iRubriekLayout!=nl.mmatch.NatMMConfig.DEFAULT_LAYOUT) { 
+<% if(iRubriekLayout!=NatMMConfig.DEFAULT_LAYOUT) { 
    %><tr>
 	   <td height="1" class="leftnavline" style="<%= 
-	         (iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE1_LAYOUT ? "background-color:#050080;" : "background-color:#F06E23;" ) 
+	         (iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT ? "background-color:#050080;" : "background-color:#F06E23;" ) 
 	      %>"><img src="media/trans.gif" width="165px" height="1" vspace="0" border="0" alt=""></td>
    </tr><% 
 }
@@ -73,7 +73,7 @@ while(!subObjects.isEmpty()) {
       %>
       <tr>
       	<td style="text-align:right;width:165px;line-height:85%;padding:0px;<%= 
-      	      (iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE2_LAYOUT ? "background-color:#10086B;" : "" ) %>"><%
+      	      (iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT ? "background-color:#10086B;" : "" ) %>"><%
       	   if(navCnt==0) {
       	      %><span class="<%= pageClass %>">
       	            <mm:node number="<%= lnRubriekID %>"><mm:field name="naam" /></mm:node></span><% 
@@ -90,9 +90,9 @@ while(!subObjects.isEmpty()) {
       </tr>
       <tr>
       	<td height="1" class="leftnavline" <%
-      	   if(iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE1_LAYOUT) { 
+      	   if(iRubriekLayout==NatMMConfig.SUBSITE1_LAYOUT) { 
       	      %>style="background-color:#050080;"<% 
-      	   } else if(iRubriekLayout==nl.mmatch.NatMMConfig.SUBSITE2_LAYOUT) {
+      	   } else if(iRubriekLayout==NatMMConfig.SUBSITE2_LAYOUT) {
       	      %>style="background-color:#F06E23;"<%  
       	   } %>><img src="media/trans.gif" width="165px" height="1" vspace="0" border="0" alt=""></td>
       </tr>
