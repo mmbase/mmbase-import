@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.121.2.12 2005-09-20 15:26:56 ernst Exp $
+ * @version $Id: Wizard.java,v 1.121.2.13 2006-05-22 11:05:35 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -586,8 +586,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     if (result.equals("date")) {
                         result = buildDate(req, name);
                     }
+                    if (result.equals("time")) {
+                        result = buildTime(req, name);
+                    }
                     if (result.equals("datetime")) {
-                        result = buildDatetime(req, name);
+                        result = buildDateTime(req, name);
                     }
                     if (result.equals("duration")) {
                         result = buildDuration(req, name);
@@ -632,7 +635,23 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
 
-    private String buildDatetime(ServletRequest req, String name) {
+
+    private String buildTime(ServletRequest req, String name) {
+        try {
+            int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
+            int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
+
+            Calendar cal = getCalendar();
+            cal.set(1970, 0, 1, hours, minutes, 0);
+            return "" + cal.getTimeInMillis() / 1000;
+        } catch (RuntimeException e) { //NumberFormat NullPointer
+            log.debug("Failed to parse time for " + name + " "
+                    + e.getMessage());
+            return "";
+        }
+    }
+
+    private String buildDateTime(ServletRequest req, String name) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
             int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
