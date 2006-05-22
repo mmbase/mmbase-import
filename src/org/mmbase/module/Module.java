@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.76 2006-05-17 15:21:37 nklasens Exp $
+ * @version $Id: Module.java,v 1.77 2006-05-22 16:26:39 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -43,8 +43,6 @@ public abstract class Module extends FunctionProvider {
     static Map modules;
 
     private static final Logger log = Logging.getLoggerInstance(Module.class);
-
-    public static final ResourceLoader moduleLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
 
     /**
      * This function returns the Module's version number as an Integer.
@@ -95,14 +93,14 @@ public abstract class Module extends FunctionProvider {
     /**
      * @since MMBase-1.8
      */
-    public ResourceLoader getModuleLoader() {
-        return Module.moduleLoader;
+    public static ResourceLoader getModuleLoader() {
+        return ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
     }
 
     /**
      * @since MMBase-1.8
      */
-    public ModuleReader getModuleReader(String moduleName) {
+    public static ModuleReader getModuleReader(String moduleName) {
         try {
             InputSource is = getModuleLoader().getInputSource(moduleName + ".xml");
             if (is == null) return null;
@@ -405,6 +403,7 @@ public abstract class Module extends FunctionProvider {
      */
     private static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
+        ResourceLoader moduleLoader = getModuleLoader();
         Collection modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
         log.info("In " + moduleLoader + " the following module XML's were found " + modules);
         Iterator i = modules.iterator();
