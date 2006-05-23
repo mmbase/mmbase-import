@@ -435,7 +435,7 @@ public class CSVReader implements Runnable {
             log.info(thisTree);
             log.info(logMessage);
        }
-       logMessage += "\n<br>Organisational structure is read from: " + orgFile + " (lm=" + lastModifiedDate(orgFile) + ")";
+       logMessage += "\n<br>Organisational structure is read from: " + orgFile;
        return logMessage;
     }
 
@@ -454,7 +454,11 @@ public class CSVReader implements Runnable {
               email = getValue(nextLine,"%SMTP:","\"");
           }
           if(!alias.equals("")&&!email.equals("")) { // *** use uppercase on alias for searching ***
-              emails.put(alias.toUpperCase(),email);
+				 if(email.length()>255) {
+					 log.warn("email address " + email + " for alias " + alias + " is longer than 255 characters, therefore it will be truncated.");
+					 email = email.substring(0,255);
+				 }
+             emails.put(alias.toUpperCase(),email);
           }
           nextLine = dataFileReader.readLine();
       }
@@ -578,7 +582,7 @@ public class CSVReader implements Runnable {
           entries++;
       }
       dataFileReader.close();
-      logMessage += "\n<br>Number of NM employees loaded from: " + dataFile + " (lm=" + lastModifiedDate(dataFile) + ") is " + persons + " (number of entries is " + entries + ")"
+      logMessage += "\n<br>Number of NM employees loaded from: " + dataFile + " is " + persons + " (number of entries is " + entries + ")"
          + "\n<br>Number of email addresses parsed: " + emails.size()
          + "\n<br>Number of persons for which no email address could be found: " + noemails;
     } catch(Exception e) {
@@ -593,11 +597,8 @@ public class CSVReader implements Runnable {
     try {
       BufferedReader dataFileReader = getBufferedReader(dataFile);
       String nextLine = dataFileReader.readLine();
-      if(nextLine.indexOf("+-----")==-1) log.info("expecting +----- ... on first line of " + dataFile);
+      if(nextLine.indexOf("Voornaam")==-1) log.info("expecting Voornaam ... on first line of " + dataFile);
       nextLine = dataFileReader.readLine();
-      if(nextLine.indexOf("Voornaam")==-1) log.info("expecting Voornaam ... on second line of " + dataFile);
-      nextLine = dataFileReader.readLine();
-      if(nextLine.indexOf("+-----")==-1) log.info("expecting +----- ... on third line of " + dataFile);
 
       TreeMap thisPerson = new TreeMap();
       Node personsNode = null;
@@ -621,20 +622,19 @@ public class CSVReader implements Runnable {
       int entries=0;
       int noemails=0;
       nextLine = dataFileReader.readLine();
-      while(nextLine!=null&&nextLine.indexOf("+-----")==-1) {
-
-          nextLine = nextLine.substring(1); // skip first '|'
-          thisPerson.clear();
+      while(nextLine!=null) {
+			 thisPerson.clear();
           int v = 0;
+          nextLine += "\t";
           while(nextLine!=null&&v<10) {
-              int cPos = nextLine.indexOf("|");
+              int tPos = nextLine.indexOf("\t");
               String value = "";
-              if(cPos>-1) {
-                  value = nextLine.substring(0,cPos).trim();
+              if(tPos>-1) {
+                  value = nextLine.substring(0,tPos).trim();
                   if(value.equals("NULL")) { value = ""; }
-                  nextLine = nextLine.substring(cPos+1);
+                  nextLine = nextLine.substring(tPos+1);
               } else {
-                  log.info("Line ends before last label for person " + thisPerson.get("Achternaam") + " in " + dataFile);
+                  log.info("Line ends before last label for person " + thisPerson.get("E_NAAM") + " in " + dataFile);
               }
               thisPerson.put(labels[v],value);
               v++;
@@ -688,7 +688,7 @@ public class CSVReader implements Runnable {
           entries++;
       }
       dataFileReader.close();
-      logMessage += "\n<br>Number of NM vrijwilligers loaded from: " + dataFile + " (lm=" + lastModifiedDate(dataFile) + ") is " + persons + " (number of entries is " + entries + ")";
+      logMessage += "\n<br>Number of NM vrijwilligers loaded from: " + dataFile + " is " + persons + " (number of entries is " + entries + ")";
     } catch(Exception e) {
       log.info(e);
     }
@@ -945,10 +945,6 @@ public class CSVReader implements Runnable {
         String membersFile = incoming + "lrscad.zip";
         String zipCodeFile = root + "lrspos.zip";
 
-        Vector files = new Vector();
-        files.addAll(unZip(beauZip,temp));
-        files.addAll(unZip(nmvZip,temp));
-
         String fileList = "";
         if(importType==ONLY_MEMBERLOAD) {
              fileList = membersFile;
@@ -962,31 +958,42 @@ public class CSVReader implements Runnable {
 
             log.info("Started import of: " + fileList);
 
-            String logMessage =  "\n<br>Started at " + new Date() + " import for " +  requestUrl;
-
+            int nodesMarked = 0;
+				int nodesDeleted = 0;
+				int numberOfEmptyDept = 0;
+				String logMessage =  "\n<br>Started at " + new Date() + " import for " +  requestUrl;
+				
             if(importType==FULL_IMPORT) {
-               // *** start with marking all relations as inactive ***
+					
+		        Vector files = new Vector();
+  		        logMessage += "Unzipping " + beauZip + " (lm=" + lastModifiedDate(beauZip) + ")";
+              files.addAll(unZip(beauZip,temp));
+		        logMessage += "Unzipping " + nmvZip + " (lm=" + lastModifiedDate(nmvZip) + ")";
+              files.addAll(unZip(nmvZip,temp));
+
+					
+               // start with marking all relations as inactive
                String [] employeeRelations = {"readmore","afdelingen","readmore","locations"};
                String [] employeeFields = {"importstatus","inactive"};
                String [] departmentRelations = {"posrel","afdelingen"};
                // the importstatus field of afdelingen can be 'inactive' or comma seperated list of descendants
                String [] departmentFields = {"importstatus","inactive"};
-               int nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
+               nodesMarked = markNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
                nodesMarked += markNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
 
 
                TreeMap emails = getEmails(emailFile);
-               logMessage += "\n<br>Emails are imported from: " + emailFile + " (lm=" + lastModifiedDate(emailFile) + ")";
+               logMessage += "\n<br>Emails are imported from: " + emailFile;
                logMessage += updateOrg(cloud,orgFile);
                logMessage += updatePersons(cloud, emails, dataFile);
                logMessage += updateNMV(cloud, nmvFile);
 
-               // *** finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
-               employeeFields[1] = "-1"; // *** prevent employees from being deleted ***
-               departmentFields[1] = "-1";  // *** prevent departments from being deleted ***
-               int nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
+               // finish with deleting all inactive relations; employees and departments are never deleted because then can be created manually
+               employeeFields[1] = "-1"; // prevent employees from being deleted
+               departmentFields[1] = "-1";  // prevent departments from being deleted
+               nodesDeleted = deleteNodesAndRelations(cloud,"medewerkers",employeeRelations,employeeFields);
                nodesDeleted += deleteNodesAndRelations(cloud,"afdelingen",departmentRelations,departmentFields);
-               int numberOfEmptyDept = updateDepartments(cloud);
+               numberOfEmptyDept = updateDepartments(cloud);
                logMessage +=  "\n<br>Number of nodes and relations marked as inactive before update: " + nodesMarked
                    + "\n<br>Number of inactive nodes deleted: " + nodesDeleted
                    + "\n<br>Number of departments without employees: " + numberOfEmptyDept;
