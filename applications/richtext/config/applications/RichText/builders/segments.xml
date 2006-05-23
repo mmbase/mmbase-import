@@ -43,7 +43,7 @@
       <class>org.mmbase.util.functions.IndexFunction</class>
     </function>
 
-    <function name="url" key="{REQUEST.getContextPath}/{INITPARAM.richtext.home}?segment={NODE.number}&amp;template=segment.div.jspx">
+    <function name="url" key="{REQUEST.getContextPath}/{INITPARAM.richtext.home}?segment={NODE.number}&amp;template=segment">
       <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
     </function>
   </functionlist>
