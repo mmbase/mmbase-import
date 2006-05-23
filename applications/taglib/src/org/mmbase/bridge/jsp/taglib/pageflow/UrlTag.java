@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.77 2006-05-18 17:05:05 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.78 2006-05-23 21:12:47 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -157,10 +157,13 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             show.append(port == 80 ? "" : ":" + port);
         } else if (abs.equals("server")) {
             //show.append("/");
+        } else if (abs.equals("context")) {
         } else {
-            throw new JspTagException("Unknown value for 'absolute' attribute '" + abs + "' (must be either 'true', 'false' or 'server')");
+            throw new JspTagException("Unknown value for 'absolute' attribute '" + abs + "' (must be either 'true', 'false', 'server' or 'context')");
         }
-        show.append(req.getContextPath());
+        if (! abs.equals("context")) {
+            show.append(req.getContextPath());
+        }
         char firstChar = page.charAt(0);
         try {
             URI uri;

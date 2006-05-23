@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.360 2006-05-22 16:52:39 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.361 2006-05-23 21:12:47 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4142,6 +4142,10 @@ like the parameter list or the session (where ever it is available) --&gt;
         <value>server</value>
         <info>Makes the URL abslute on the server, so it starts with /.</info>
       </possiblevalue>
+      <possiblevalue>
+        <value>context</value>
+        <info>Makes the URL abslute on the current servlet context, so it starts with /, but it is not prefixed by the context. The result could e.g. be used as an argument for another url-tag.</info>
+      </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
     <example>
@@ -7414,6 +7418,13 @@ The 0 is just counter, which starts at 0 on every page.
       <see tag="list" attribute="directions" />
       <since>MMBase-1.7.1</since>
     </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="max" />
+      <since>MMBase-1.8.1</since>
+    </attribute>
   </tag>
   <tag>
     <name>treecontainer</name>
@@ -7778,4 +7789,10 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   -->
 
+  <!--
+  <tag-file>
+    <name>search</name>
+    <path>/META-INF/tags/mml/search.tagx</path>
+  </tag-file>
+  -->
 </taglib>
