@@ -20,4 +20,11 @@
     <description xml:lang="eo">Kategorioj</description>
   </descriptions>
   <fieldlist />
+
+  <functionlist>
+    <function name="url" key="{REQUEST.getContextPath}/{INITPARAM.richtext.home}?cat={NODE.number}">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+  </functionlist>
+
 </builder>
