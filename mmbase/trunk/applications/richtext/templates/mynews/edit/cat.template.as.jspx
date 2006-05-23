@@ -17,9 +17,8 @@
     &amp;nbsp;
     <mm:field name="editor.wizardjsp">
       <mm:isnotempty>
-        <mm:link  id="wizardjsp" referids="kupu_back" page="${_}" write="false">
+        <mm:link  id="wizardjsp" referids="kupu_back,link_nodetypes" page="${_}" write="false">
           <mm:param name="tools" value="related" />
-          <mm:param name="link_nodetypes" value="urls,attachments,xmlnews" />
         </mm:link>
       </mm:isnotempty>
     </mm:field>
