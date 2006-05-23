@@ -215,7 +215,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("formulier","copyright:titel_de;subtitle:titel_fra;title:titel;" +
       "editors_note:emailadressen;introduction:omschrijving");
       tmRenamingFields.put("images","title:titel;description:omschrijving");
-      tmRenamingFields.put("items","name:titel;description:omschrijving");
+      tmRenamingFields.put("items","name:naam;description:omschrijving");
       tmRenamingFields.put("locations","name:naam;address:bezoekadres;postalcode:bezoekadres_postcode;" +
       "city:plaatsnaam;country:land;address2:postbus;postalcode2:postbus_postcode;" +
       "phone:telefoonnummer;fax:faxnummer;description:omschrijving");
@@ -402,7 +402,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFiles.put("editwizardgroups","menu");
       tmRenamingFiles.put("employees","medewerkers");
       tmRenamingFiles.put("exturls","link");
-      tmRenamingFiles.put("items","shorty");
+      tmRenamingFiles.put("items","linklijst");
       tmRenamingFiles.put("mmbaseusers","users");
       tmRenamingFiles.put("page","pagina");
       tmRenamingFiles.put("paragraph","paragraaf");
@@ -422,8 +422,8 @@ public class NMIntraToNatMMigrator {
 
       sEditwizardsContent = sEditwizardsContent.replaceAll("cleanartikels","cleanarticles");
       sEditwizardsContent = sEditwizardsContent.replaceAll("medewerkers.jsp","employees.jsp");
-      sEditwizardsContent = sEditwizardsContent.replaceAll("shopshorty","items");
-      sEditwizardsContent = sEditwizardsContent.replaceAll("shop_shorty","shop_items");
+      sEditwizardsContent = sEditwizardsContent.replaceAll("shoplinklijst","items");
+      sEditwizardsContent = sEditwizardsContent.replaceAll("shop_linklijst","shop_items");
       sEditwizardsContent = sEditwizardsContent.replaceAll("paginalength","pagelength");
       sEditwizardsContent = sEditwizardsContent.replaceAll("maxpaginacount","maxpagecount");
       sEditwizardsContent = sEditwizardsContent.replaceAll("homepagina","homepage");
