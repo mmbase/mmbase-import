@@ -7,7 +7,7 @@
 
   <mm:url id="kupu_back" write="false" absolute="server" page="" />
 
-  <mm:related path="editor,typedef" orderby="editor.pos" fields="typedef.name,editor.size,editor.name,editor.wizard,editor.wizardjsp">
+  <mm:related path="editor,typedef" orderby="editor.pos" fields="typedef.name,editor.size,editor.name,editor.wizard,editor.wizardjsp,editor.role">
 
     <mm:field name="editor.name">
       <mm:isnotempty>
@@ -34,13 +34,18 @@
       </mm:isnotempty>
     </mm:field>
     
+    <mm:node number="${_node.editor.role}" notfound="skip"><mm:field id="role" name="sname" /></mm:node>
+    <mm:notpresent referid="role">
+      <mm:import id="role">related</mm:import>
+    </mm:notpresent>
+
     <c:choose>
       <c:when test="${_node.editor.size lt -1}">
         <!--
             call a list with objects unrelated to this category. (Template shows all)
         -->
         <mm:link referids="referrer,language,wizard,wizardjsp?" page="${jsps}list.jsp">
-          <mm:param name="nodepath">categories,related,${_node.typedef.name}</mm:param>
+          <mm:param name="nodepath">categories,${role},${_node.typedef.name}</mm:param>
           <mm:param name="orderby">${_node.typedef.name}.number</mm:param>
           <mm:param name="searchdir">destination</mm:param>
           <mm:param name="directions">down</mm:param>
@@ -56,7 +61,7 @@
             call a list with objects related to this category.
         -->
         <mm:link referids="referrer,language,wizard,wizardjsp?" page="${jsps}list.jsp">
-          <mm:param name="nodepath">categories,related,${_node.typedef.name}</mm:param>
+          <mm:param name="nodepath">categories,${role},${_node.typedef.name}</mm:param>
           <mm:param name="orderby">${_node.typedef.name}.number</mm:param>
           <mm:param name="startnodes">${cat}</mm:param>
           <mm:param name="origin">${cat}</mm:param>
