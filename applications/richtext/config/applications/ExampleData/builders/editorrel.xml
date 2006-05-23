@@ -104,5 +104,18 @@
       </db>
     </field>
 
+    <field>
+      <gui>
+        <guiname xml:lang="nl">Rol</guiname>
+        <guiname xml:lang="en">Role</guiname>
+      </gui>
+      <datatype base="reldef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>role</name>
+        <type state="persistent" notnull="false" key="false">NODE</type>
+      </db>
+    </field>
+
+
   </fieldlist>
 </builder>
