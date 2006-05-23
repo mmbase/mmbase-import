@@ -4,9 +4,9 @@
    <title></title>
    <field name="label" dtrequired="true"><prompt>label</prompt></field>
    <field name="label_fra"><prompt>label zichtbaar op site</prompt></field>
-   <field name="label_de" ftype="enum" dttype="enum">
-      <prompt>label gebruikt als afzender</prompt>
-      <optionlist select="ja_nee"></optionlist>
+   <field name="label_de" ftype="enum">
+         <prompt>antwoord wordt als email adres afzender gebruikt</prompt>
+         <optionlist select="ja_nee"></optionlist>
    </field>
    <field name="type" ftype="enum" dttype="enum" dtrequired="true">
       <prompt>type</prompt>
@@ -16,8 +16,12 @@
       <prompt>verplicht</prompt>
       <optionlist select="ja_nee"></optionlist>
    </field>
-   <field name="omschrijving" ftype="line"><prompt>feedback bij niet ingevuld</prompt></field>
-   <!--
+   <field name="label_eng" ftype="enum" dttype="enum">
+      <prompt>voeg "Anders ..." als optie toe</prompt>
+      <optionlist select="ja_nee"></optionlist>
+   </field>
+   <field name="omschrijving" ftype="line"><prompt>feedback bij niet ingevuld ___________________________</prompt></field>
+	<!--
    <field name="rijen" ftype="int" dttype="int" dtmin="-1">
       <prompt>Rijen</prompt>
    </field>
