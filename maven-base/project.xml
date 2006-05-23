@@ -315,32 +315,6 @@ See http://www.MMBase.org/license
     <build>
         <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
         <sourceDirectory>${basedir}/src</sourceDirectory>
-        <sourceModifications>
-            <sourceModification>
-                <className>com.informix.jdbc.IfxCblob</className>
-                <excludes>
-                    <exclude>org/mmbase/module/database/support/MMInformix42Node.java</exclude>
-                </excludes>
-            </sourceModification>
-            <sourceModification>
-                <className>oracle.sql.BLOB</className>
-                <excludes>
-                    <exclude>org/mmbase/module/database/support/MMOracle.java</exclude>
-                </excludes>
-            </sourceModification>
-            <sourceModification>
-                <className>javax.mail.Message</className>
-                <excludes>
-                    <exclude>org/mmbase/module/JMSendMail.java</exclude>
-                </excludes>
-            </sourceModification>
-            <sourceModification>
-                <className>javax.mail.Message</className>
-                <excludes>
-                    <exclude>org/mmbase/module/builders/ConvertJAI.java</exclude>
-                </excludes>
-            </sourceModification>
-        </sourceModifications>
         <!-- J A R  R E S O U R C E S -->
         <!-- Resources that are packaged up inside the JAR file -->
         <resources>
