@@ -39,4 +39,11 @@
       </db>
     </field>
   </fieldlist>
+
+  <functionlist>
+    <function name="url" key="{REQUEST.getContextPath}/{INITPARAM.richtext.home}?article={NODE.number}&amp;template=article">
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+  </functionlist>
+
 </builder>
