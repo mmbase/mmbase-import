@@ -23,5 +23,12 @@
     <name>Search</name>
     <mimetype>text/html</mimetype>
   </node>  
+  <node number="2004" owner="admin">
+    <description></description>
+    <url>lucene.div.jspx</url>
+    <expires></expires>
+    <name>Lucene search</name>
+    <mimetype>text/html</mimetype>
+  </node>  
   
 </templates>
