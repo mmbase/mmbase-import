@@ -9,7 +9,7 @@
    String paginaID = request.getParameter("p");
    boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1);
    
-   String sReferid = "I005";
+   String sReferid = "I007";
    if (request.getParameter("refid")!=null) {
       sReferid = request.getParameter("refid");
    }
