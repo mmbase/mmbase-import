@@ -15,7 +15,7 @@
   <mm:isnotempty referid="search">
     <mm:cloud>
       <mm:listnodescontainer type="content">
-        <mm:typeconstraint name="news,categories" />
+        <mm:typeconstraint name="xmlnews,categories" />
         <mm:composite operator="or">
           <mm:constraint field="title" operator="LIKE" value="%${search}%" />
           <mm:constraint field="subtitle" operator="LIKE" value="%${search}%" />
@@ -30,7 +30,7 @@
           <mm:nodeinfo type="type" write="false" id="type" />
           <div class="listitem">
             <c:choose>
-              <c:when test="${type == 'news'}">
+              <c:when test="${type == 'xmlnews'}">
                 <mm:import id="title">News: <mm:field name="title" /></mm:import>
                 <mm:url id="url" referids="text@article,search" write="false">
                   <mm:param name="template" value="article" />
