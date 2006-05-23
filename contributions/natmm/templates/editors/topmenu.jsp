@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<%@page import="nl.leocms.util.PropertiesUtil,nl.leocms.util.ApplicationHelper" %>
+<%@page import="nl.leocms.util.PropertiesUtil,nl.leocms.util.ApplicationHelper,org.mmbase.bridge.*" %>
 <mm:cloud jspvar='cloud' rank='basic user'>
 <html>
 <head>
@@ -44,7 +44,20 @@
    boolean isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
    String rubriekID = "";
    boolean hasEditwizards = false;
-%>
+	ArrayList alUnusedNodes = (ArrayList) session.getAttribute("unused_items");
+	int iTotalNotUsed = 0;
+	if (alUnusedNodes != null){
+		iTotalNotUsed = alUnusedNodes.size();
+	}	
+	else {
+		String account = cloud.getUser().getIdentifier();
+		ContentHelper contentHelper = new ContentHelper(cloud);
+		ArrayList cTypes = ContentTypeHelper.getContentTypes();
+   	cTypes.add("dossier");
+		alUnusedNodes = contentHelper.getUnusedItems(account);
+		iTotalNotUsed = alUnusedNodes.size();
+      session.setAttribute("unused_items",alUnusedNodes);
+	} %>
 <mm:listnodes type="users" constraints="<%= "[account]='" + cloud.getUser().getIdentifier() + "'" %>" max="1" id="thisuser">
    <mm:related path="rolerel,rubriek" max="1">
       <mm:node element="rubriek">
@@ -88,7 +101,11 @@ if(rubriekID.equals("naardermeer")) {
    <td lass="fieldname"><a href="../workflow/workflow.jsp" target="bottompane" class='menu'>Workflow</a></td>
    --%>
    <td class="fieldname"><a href="/index.jsp" target="_blank" class='menu'>Website</a></td>
-   <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td>
+	<td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a>
+	<% if (iTotalNotUsed>0) {%>
+		<a href="beheerbibliotheek/view_unused_items.jsp" target="bottompane"><img src="img/delete.gif">
+		(<%= iTotalNotUsed %>)</a>
+	<% } %></td>
    <% if(isAdmin&&ap.isInstalled(cloud,"NatMM")) {
       %>
       <td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class='menu'>Activiteiten</a></td>

@@ -1,4 +1,6 @@
-<hr noshade size="3">
+<% if (!show_unused) {%>
+	<hr noshade size="3">
+<% } %>
 <input type="hidden" name="orderColumn" value="<%=orderColumn %>" id="orderColumn">
 <input type="hidden" name="curPage" value="<%=curPage %>">
 <input type="hidden" name="popup" value="<%=popup %>">
@@ -63,7 +65,17 @@ if (searchIsOn) {
       }
       contentElementConstraint += ") ";
    }
-
+	
+	if (show_unused){
+		contentElementConstraint = " contentelement.number IN (0";
+		ArrayList alUnusedNodes = (ArrayList) session.getAttribute("unused_items");
+		Iterator it = alUnusedNodes.iterator();
+		while (it.hasNext()){
+			contentElementConstraint += "," + it.next();
+		}
+		contentElementConstraint += ") ";
+	}
+	
    String objects = "";
    if(contentElementConstraint!=null && !"".equals(contentElementConstraint)) {
       queryLog += ", using cc=" +  contentElementConstraint; 
@@ -131,7 +143,8 @@ if (searchIsOn) {
    // orderby fields: 
    //    -contentelement.titel, contentelement.otype, contentelement.creatiedatum, contentelement.datumlaatstewijziging
    //    -rubriek.naam
-   if(!objects.equals("")) {
+	
+	if(!objects.equals("")) {
       queryLog += ", using path=" +  path + " and rc=" + rubriekConstraint;
       %>
       <mm:list nodes="<%= objects %>" path="<%=path%>" orderby="<%=orderColumn%>" constraints="<%=rubriekConstraint%>" max="250" id="contentresults">
@@ -198,7 +211,7 @@ if (searchIsOn) {
    }
    ArrayList cTypes = ContentTypeHelper.getContentTypes();
    cTypes.add("dossier"); // dossier is not a content element, but content elements can be added to it
-   int counter = 0;
+   int counter = 0; 
    %>
    <mm:import id="pagesString">Pagina's <b> <%= pagesLinkString %> </b></mm:import>
    <mm:list referid="contentresults">
@@ -231,22 +244,35 @@ if (searchIsOn) {
          if( (counter > (curPage-1)*AMOUNT_OF_RESULTS ) && (counter < curPage*AMOUNT_OF_RESULTS+1) ) { 
          String thisType = "";
          String usedIn = "";
-         %>
-         <mm:node element="contentelement">
-             <mm:field name="otype" jspvar="otype" vartype="String" >
+         %><mm:field name="contentelement.number" jspvar="contentelement_number" vartype="String" write="false">
+					<% NodeList nl = contentHelper.usedInItems(contentelement_number);
+						if (nl!=null){
+							for (int i = 0; i < nl.size(); i++){
+								usedIn += nl.getNode(i).getNodeManager().getName() + " " + nl.getNode(i).getStringValue("titel") + "\n";
+							}
+						}
+						// todo: not used content elements can not be opened in the editwizard
+						usedIn = (usedIn.equals("") ? "style=\"color:red;\" title=\"Dit object is niet in gebruik.\"" : "title=\"Gebruikt in: " +  usedIn + "\"" );%>
+				</mm:field>
+				<mm:field name="contentelement.otype" jspvar="otype" vartype="String" >
                <% thisType = (String) contentHelper.getNameWithOtype(otype); %>
-             </mm:field><%
+            </mm:field>
+             <%--mm:field name="otype" jspvar="otype" vartype="String" >
+               <% thisType = (String) contentHelper.getNameWithOtype(otype); %>
+             </mm:field>
+				<% 
              for(int ct=0; ct < cTypes.size(); ct++) {
                String relatedType = ((String) cTypes.get(ct)).toLowerCase();
+
                if(   !(thisType.equals("artikel")&&(relatedType.equals("paragraaf")||relatedType.equals("images")))
                   && !(thisType.equals("evenement")&&relatedType.equals("evenement"))) {
                   NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
                   if(thisTypeNodeManager.getAllowedRelations(relatedType,null,null).size()>0) {
                      %><mm:relatednodescontainer path="<%= relatedType %>">
                            <mm:size id="size" write="false" jspvar="size" vartype="String">
-                           <mm:compare referid="size" value="0" inverse="true">
-                              <% usedIn += "\n" + size + " "+ relatedType; %>
-                           </mm:compare>
+	                           <mm:compare referid="size" value="0" inverse="true">
+   	                           <% usedIn += "\n" + size + " "+ relatedType; %>
+      	                     </mm:compare>
                            </mm:size>
                        </mm:relatednodescontainer>
                        <mm:remove referid="size" /><%
@@ -255,8 +281,7 @@ if (searchIsOn) {
             }
             // todo: not used content elements can not be opened in the editwizard
             usedIn = (usedIn.equals("") ? "style=\"color:red;\" title=\"Dit " + thisType + " is niet in gebruik.\"" : "title=\"Gebruikt in: " +  usedIn + "\"" );
-            %>
-         </mm:node>
+            --%>
          <tr height="11">
             <td valign="top">
                <% 
