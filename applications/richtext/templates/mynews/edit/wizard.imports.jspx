@@ -3,7 +3,8 @@
   <jsp:directive.page contentType="text/plain" />
   <mm:import id="jsps">/mmbase/edit/wizard/jsp/</mm:import>
   <mm:import id="language">en</mm:import>
-  <mm:import id="referrer"><jsp:expression>request.getServletPath() + "?" + request.getQueryString()</jsp:expression></mm:import>
+  <mm:import id="referrer"><jsp:expression>request.getServletPath() + (request.getQueryString() != null ? "?" + request.getQueryString() : "")</jsp:expression></mm:import>
   <mm:import id="loginsessionname">cloud_mmbase</mm:import>
   <mm:import id="args">language,referrer</mm:import>
+  <mm:import id="link_nodetypes">urls,attachments,xmlnews,segments</mm:import>
 </jsp:root>
