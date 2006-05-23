@@ -74,9 +74,8 @@ String p = request.getParameter("p");
                      %></td>
                     </tr>
                     <mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
-                       <tr><td colspan="2" style="height:7px;"></td></tr>
                        <tr>
-                       <td class="maincolor" style="width:177px;line-height:0.80em;text-align:right"><%
+                       <td colspan="2" class="maincolor" style="line-height:0.80em;"><%
                             if(formulierveld_type.equals("4")) {
                                 %><input type="radio" name="q<%= thisFormNumber %>_<%= formulierveld_number
                                    %>" value="<mm:field name="formulierveldantwoord.waarde" />"
@@ -95,12 +94,11 @@ String p = request.getParameter("p");
                                       </mm:field>
                                  ><%
                              }
-                          %></td>
-                       <td class="maincolor" style="width:177px;padding:5px;line-height:0.80em;">
-                              <mm:field name="formulierveldantwoord.waarde" jspvar="waarde" vartype="String" write="false">
-                                    <%= (waarde!=null ? waarde.substring(0,1).toUpperCase()+waarde.substring(1) : "") %>
-                              </mm:field>
-                       </td>
+									  %>
+									  <mm:field name="formulierveldantwoord.waarde" jspvar="waarde" vartype="String" write="false">
+											<%= (waarde!=null ? waarde.substring(0,1).toUpperCase()+waarde.substring(1) : "") %>
+									  </mm:field>
+								</td>
                        <mm:last inverse="true"></tr></mm:last>
                     </mm:related><%
                  }
@@ -173,16 +171,14 @@ String p = request.getParameter("p");
               }
               
 				  if (formulierveld_else.equals("1")) { 
-				  		if (formulierveld_type.equals("3")){ %>
-							</tr><tr><td colspan="2" style="height:7px;"></td>
-						<% } %>
+				  		 %>
 				  		</tr>
 						<tr>
-					  		<td class="maincolor" style="width:177px;padding:5px;line-height:0.80em;" colspan="2">Anders</td>
+					  		<td class="maincolor" style="width:177px;padding:5px;line-height:0.80em;" colspan="2">Anders &hellip;</td>
 						</tr>
 				      <tr>
                     <td colspan="2" class="maincolor" style="<% if(!isIE) { %>padding-right:2px;<% } %>"><textarea rows="4" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_else" wrap="physical" style="width:100%;margin-left:1px;margin-right:1px;border:0;"></textarea></td>
-				  <%}%>
+				  <% } %>
               </tr>     
 				  
               <mm:last><%
