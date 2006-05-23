@@ -41,10 +41,4 @@
   </servlet-mapping>
 
 
-	<!-- MMBase taglibs -->
-	<taglib>
-		<taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
-		<taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
-	</taglib>
-
 </web-app>
