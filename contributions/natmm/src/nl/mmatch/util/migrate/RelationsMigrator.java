@@ -36,28 +36,18 @@ public class RelationsMigrator {
       String sPhaserelContent = mmm.readingFile(sFolder + "phaserel.xml");
       sPhaserelContent = sPhaserelContent.replaceAll("&","&amp;");
 
-      log.info("treating discountrel.xml");
+      log.info("Changing relation page-discountrel-article to pagina-rolerel-artikel");
       String sDiscountrelContent = mmm.readingFile(sFolder + "discountrel.xml");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<dnumber>"," dnumber=\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("</dnumber>","\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<rnumber>"," rnumber=\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("</rnumber>","\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<enddate>"," enddate=\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("</enddate>","\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<snumber>"," snumber=\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("</snumber>","\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<dir>"," dir=\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("</dir>","\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<startdate>"," startdate=\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("</startdate>","\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<type></type>","");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<body></body>","");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<title></title>","");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<threshold>-1</threshold>","");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t\t<amount>-1</amount>","");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("admin\">","admin\"");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\t</node>","/>");
-      sDiscountrelContent = sDiscountrelContent.replaceAll("\n\n","\n");
+      int iBegNodeIndex = sDiscountrelContent.indexOf("<node");
+      int iRNIndex = sDiscountrelContent.indexOf("rnumber=");
+      int iSNBegIndex = sDiscountrelContent.indexOf("snumber=");
+      int iSNEndIndex = sDiscountrelContent.indexOf("\"",iSNBegIndex + 10);
+      String sRolerelAdd = sDiscountrelContent.substring(iBegNodeIndex,iRNIndex) +
+         sDiscountrelContent.substring(iSNBegIndex,iSNEndIndex) +
+         " rtype=\"rolerel\" dir=\"bidirectional\"/>";
+      File file = new File(sFolder + "discountrel.xml");
+      file.delete();
+
 
       log.info("deleting authrel relation");
       String sInsrelContent = mmm.readingFile(sFolder + "insrel.xml");
@@ -91,7 +81,7 @@ public class RelationsMigrator {
       while (it.hasNext()){
          String sBuilderName = (String)it.next();
          int index = sEditwizardsContent.indexOf("/" + sBuilderName + "/");
-         int iBegNodeIndex = sEditwizardsContent.indexOf("<node number=\"",index - 110);
+         iBegNodeIndex = sEditwizardsContent.indexOf("<node number=\"",index - 110);
          int iBegRelNumberIndex = iBegNodeIndex + 14;
          int iEndRelNumberIndex = sEditwizardsContent.indexOf("\"",iBegRelNumberIndex + 1);
          String sNodeNumber = sEditwizardsContent.substring(iBegRelNumberIndex,iEndRelNumberIndex);
@@ -101,7 +91,7 @@ public class RelationsMigrator {
          sEditwizardsContent.substring(iEndNodeIndex);
       }
 
-      File file = new File (sFolder + "editwizards.xml");
+      file = new File (sFolder + "editwizards.xml");
       mmm.writingFile(file,sFolder + "editwizards.xml",sEditwizardsContent);
 
 
@@ -113,7 +103,7 @@ public class RelationsMigrator {
       while (it.hasNext()) {
          String sNodeNumber = (String) it.next();
          int iDNIndex = sPosrelContent.indexOf("dnumber=\"" + sNodeNumber + "\"");
-         int iBegNodeIndex = sPosrelContent.indexOf("<node number=", iDNIndex - 70);
+         iBegNodeIndex = sPosrelContent.indexOf("<node number=", iDNIndex - 70);
          int iEndNodeIndex = sPosrelContent.indexOf("</node>", iBegNodeIndex) +
             9;
          sPosrelContent = sPosrelContent.substring(0, iBegNodeIndex-1) +
@@ -160,12 +150,19 @@ public class RelationsMigrator {
       sPosrelContent = sResultRel[0];
       sContentrelContent += sResultRel[1];
 
-      log.info("changing relation page-posrel-items to pagina-rolerel-shorty");
-      ArrayList alShorty = getNodes(sFolder + "shorty.xml");
-      sResultRel = mmm.movingRelations(alPagina, alShorty, sPosrelContent,
-                                   "posrel", "rolerel");
+      log.info("changing relation page-posrel-items to pagina-lijstcontentrel-linklijst");
+      ArrayList alLinklijst = getNodes(sFolder + "linklijst.xml");
+      sResultRel = mmm.movingRelations(alPagina, alLinklijst, sPosrelContent,
+                                   "posrel", "lijstcontentrel");
       sPosrelContent = sResultRel[0];
-      String sRolerelAdd = sResultRel[1];
+      String sLijstcontentrelContent = sResultRel[1];
+
+      log.info("changing relation items-posrel-exturls to linklijst-posrel-link");
+      ArrayList alLink = getNodes(sFolder + "linklijst.xml");
+      sResultRel = mmm.movingRelations(alLinklijst, alLink, sPosrelContent,
+                                   "posrel", "lijstcontentrel");
+      sPosrelContent = sResultRel[0];
+      sLijstcontentrelContent += sResultRel[1];
 
       log.info("changing relation page-posrel-teasers to pagina-rolerel-teaser");
       ArrayList alTeaser = getNodes(sFolder + "teaser.xml");
@@ -215,9 +212,9 @@ public class RelationsMigrator {
          String sFromNode = (String) it.next();
          int iDNIndex = sInsrelContent.indexOf("dnumber=\"" + sFromNode + "\"");
          while (iDNIndex>-1){
-            int iSNBegIndex = sInsrelContent.indexOf("snumber=\"",
+            iSNBegIndex = sInsrelContent.indexOf("snumber=\"",
                iDNIndex - 25) + 9;
-            int iSNEndIndex = sInsrelContent.indexOf("\"", iSNBegIndex + 1);
+            iSNEndIndex = sInsrelContent.indexOf("\"", iSNBegIndex + 1);
             String sToNode = sInsrelContent.substring(iSNBegIndex, iSNEndIndex);
             if (alUsers.contains(sToNode)) {
                tmEmployeesMMBaseUsers.put(sFromNode, sToNode);
@@ -264,6 +261,7 @@ public class RelationsMigrator {
       tmAllRelations.put("phaserel", sPhaserelContent);
       tmAllRelations.put("readmore", sReadmoreContent);
       tmAllRelations.put("rolerel", sRolerelContent);
+      tmAllRelations.put("lijstcontentrel",sLijstcontentrelContent);
 
       log.info("writing relations files");
       set = tmAllRelations.entrySet();
@@ -273,7 +271,8 @@ public class RelationsMigrator {
          String sContent = (String) me.getValue();
          String sBuilderName = (String) me.getKey();
          if ( (sBuilderName.equals("childrel")) ||
-             (sBuilderName.equals("contentrel")) ) {
+             (sBuilderName.equals("contentrel")) ||
+             (sBuilderName.equals("lijstcontentrel")) ) {
             mmm.creatingNewXML(sBuilderName, sContent);
          }
          else {
