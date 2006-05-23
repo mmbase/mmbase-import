@@ -6,7 +6,7 @@
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.6 2006-04-29 17:56:29 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.7 2006-05-23 19:37:25 michiel Exp $ --&gt;</jsp:text>
   <mm:content type="text/html" expires="0">
     <head>
       <title>MMBase Richtext Application</title>
@@ -52,10 +52,12 @@
         </tr>
         <tr><th class="main" colspan="3">Example site 'My News'</th></tr>
         <tr>
-          <td>The richtext demo 'My Needs' need the 'ExampleData' application to be deployed.</td>
+          <td>The richtext demo 'My News' need the 'ExampleData' application to be deployed.</td>
           <td>
-            Example Data offers the data for a fully functional site, complete with a managable site
-            structure.
+            <p>
+              Example Data offers the data for a fully functional site, complete with a managable site
+              structure.
+            </p>
           </td>
           <td>
             <mm:cloud>
@@ -88,6 +90,32 @@
                 </mm:function>
               </mm:functioncontainer>
             </mm:cloud>
+          </td>
+        </tr>
+        <tr>
+          <td>Defining the location of the 'mynews' site</td>
+          <td>
+            <p>
+              To make cross-links work properly in the mynews site, you need to add to your web.xml, something like:
+              <pre><mm:import id="param"><![CDATA[
+<context-param>
+  <param-name>richtext.home</param-name>
+  <param-value>richtext/mynews/</param-value>
+ </context-param>
+]]></mm:import><mm:write referid="param" />
+              </pre>
+              Depending, of course, on the location where you've placed the mynews templates.
+            </p>
+          </td>
+          <td>
+            <mm:import id="definedlocation"><jsp:expression>pageContext.getServletContext().getInitParameter("richtext.home")</jsp:expression></mm:import>
+            <mm:haspage page="/${definedlocation}">
+              <img src="${ok}" alt="[ok]"  />
+              Seems to be ok. /&amp;lt;richtext.home&amp;gt;=/${definedlocation} does exist.
+            </mm:haspage>
+            <mm:haspage page="/${definedlocation}" inverse="true">
+              Seems not to be ok. /&amp;lt;richtext.home&amp;gt;=/${definedlocation} does not exist.
+            </mm:haspage>
           </td>
         </tr>
         <tr>
