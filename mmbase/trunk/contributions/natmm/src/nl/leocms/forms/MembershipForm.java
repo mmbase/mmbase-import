@@ -810,7 +810,8 @@ public class MembershipForm extends ActionForm {
     NodeList nl = notDownloadedMembersList(cloud);
     if (nl.size()!=0){
        OptionedStats stats = new OptionedStats();
-       String title = stats.dateString(cal.getTime().getTime() / 1000)
+       String title = "LW" 
+		         + stats.dateString(cal.getTime().getTime() / 1000)
                + "_"
                + stats.timeString(cal.getTime().getTime() / 1000)
                + "_leden";
@@ -856,7 +857,13 @@ public class MembershipForm extends ActionForm {
 
              } else if ( (i == 15) || (i == 19)) { // Date
                 sData.append(stats.dateString(nMember.getLongValue( (String) me.getKey())));
-             } else { // String
+             } else if (i==11) { // write spaces instead of country_code
+					 sData.append(
+                   align("",
+                          Integer.parseInt( (String) me.getValue()),
+                          false)
+                   );
+				 } else { // String
                 sData.append(
                    align(nMember.getStringValue( (String) me.getKey()),
                           Integer.parseInt( (String) me.getValue()),
