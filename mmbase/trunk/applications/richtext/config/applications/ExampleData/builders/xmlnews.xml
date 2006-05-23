@@ -19,5 +19,24 @@
     <description xml:lang="nl">Nieuws item zijn om XML velden te demonstreren</description>
     <description xml:lang="eo">Novaĵoj ekzistas por montro de XML-kampoj</description>
   </descriptions>
-  <fieldlist />
+  <fieldlist>
+    <field>
+      <gui>
+        <guiname xml:lang="nl">Datum</guiname>
+        <guiname xml:lang="en">Date</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>10</list>
+        </positions>
+      </editor>
+      <datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="today" />
+      </datatype>
+      <db>
+        <name>date</name>
+        <type key="false" notnull="false" state="persistent">DATETIME</type>
+      </db>
+    </field>
+  </fieldlist>
 </builder>
