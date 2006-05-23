@@ -4,7 +4,7 @@
 <%@include file="../includes/top2_cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="../includes/top4_head.jsp" %>
-<div style="position:absolute"><%@include file="../includes/flushlink.jsp" %></div>
+<div style="position:absolute"><%@include file="/editors/paginamanagement/flushlink.jsp" %></div>
 <table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" valign="top">
    <%@include file="../includes/top5b_pano.jsp" %>
 </table>
