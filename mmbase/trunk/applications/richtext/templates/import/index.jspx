@@ -19,6 +19,7 @@
       </mm:link>
     </head>
     <body>
+      <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
       <jsp:scriptlet>        
         ResourceLoader dir = (ResourceLoader) session.getAttribute("current.dir");
         if (dir == null) dir = ResourceLoader.getSystemRoot();
@@ -85,6 +86,8 @@
             </jsp:scriptlet>
           </pre>
         </mm:present>
+        <hr />
+        <a class="navigate" href=".."><img src="${back}" alt="back" /></a>
     </body>    
   </html>
   </mm:cloud>
