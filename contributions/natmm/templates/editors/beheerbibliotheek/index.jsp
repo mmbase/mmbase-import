@@ -94,6 +94,7 @@
          %>
       &nbsp;&nbsp;<input type="checkbox" name="popupEditWizards" <%=checked%>>Contentelement openen in popup
       </p>
+		<% boolean show_unused = false; %>
       <%@include file="searchresults.jsp" %>
    </form>
    <form action="../../editors/WizardInitAction.eb" method="post" name="callEditwizardForm">
