@@ -14,7 +14,7 @@
         <mm:import externid="visibleoperations">read,write,delete,change context</mm:import>
         
         <mm:notpresent referid="parameters">
-          <mm:import id="extrauserlink">/edit/userlink.jsp</mm:import>
+          <mm:url id="extrauserlink" page="userlink.jspx" absolute="context" write="false" />
           
           <mm:import id="thisparameters">location,tab,extrauserlink,language,visibleoperations</mm:import>
           <mm:include referids="thisparameters@parameters,$thisparameters" page="${location}${url}" />
