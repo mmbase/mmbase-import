@@ -48,56 +48,45 @@ String p = request.getParameter("p");
                     %></mm:size>
                  </mm:related>
                  <% 
-                 // *** radio buttons with only 2 choices  ***
-                 if((formulierveld_type.equals("4")) && (iNumberOfItems < 3)) {
-                 %><td style="width:177px;">
-                      <table cellspacing="0" cellpadding="0" border="0" width="100%">
-                         <tr>
-                         <mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
-                            <td class="maincolor" width="8px;"><input type="radio" name="q<%= thisFormNumber %>_<%= formulierveld_number%>" value="<mm:field name="formulierveldantwoord.waarde" />"
-                               <%@include file="radio_checked.jsp" %>
-                            ></td>
-                            <td class="maincolor" style="padding:5px;line-height:0.80em;">
-                              <mm:field name="formulierveldantwoord.waarde" jspvar="waarde" vartype="String" write="false">
-                                    <%= (waarde!=null ? waarde.substring(0,1).toUpperCase()+waarde.substring(1) : "") %>
-                              </mm:field></td>
-                         </mm:related>
-                         </tr>
-                      </table>
-                   </td>
-                   <td style="width:177px;">&nbsp;</td><%
-                 }
                  // *** radio buttons or checkboxes ****
-                 if( (formulierveld_type.equals("4") && (iNumberOfItems > 2)) || formulierveld_type.equals("5")) {
+                 if( formulierveld_type.equals("4") || formulierveld_type.equals("5")) {
                   %><td colspan="2" class="maincolor" style="padding:5px;line-height:0.80em;"><%=
                          formulierveld_label %>&nbsp;<% if(isRequired) { %>*&nbsp;<% } 
                      %></td>
                     </tr>
                     <mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
                        <tr>
-                       <td colspan="2" class="maincolor" style="line-height:0.80em;"><%
-                            if(formulierveld_type.equals("4")) {
-                                %><input type="radio" name="q<%= thisFormNumber %>_<%= formulierveld_number
-                                   %>" value="<mm:field name="formulierveldantwoord.waarde" />"
-                                   <%@include file="radio_checked.jsp" %>
-                                ><%
-                             } else if(formulierveld_type.equals("5")) {
-                                %><input type="checkbox" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number"/>" value="<mm:field name="formulierveldantwoord.waarde" />"
-                                      <mm:field name="formulierveldantwoord.standaard" jspvar="defaultValue" vartype="Integer">
-                                         <%
-                                            if(defaultValue.intValue() != 0)
-                                            {
-                                               %>checked="checked"<%
-                                               bDefaultIsSet = true;
-                                            }
-                                         %>
-                                      </mm:field>
-                                 ><%
-                             }
-									  %>
-									  <mm:field name="formulierveldantwoord.waarde" jspvar="waarde" vartype="String" write="false">
-											<%= (waarde!=null ? waarde.substring(0,1).toUpperCase()+waarde.substring(1) : "") %>
-									  </mm:field>
+                       <td colspan="2" class="maincolor" style="line-height:0.80em;">
+							  		<table cellspacing="0" cellpadding="0" border="0" style="width:354px">
+										<tr>
+											<td style="width:10px;"><%
+												 if(formulierveld_type.equals("4")) {
+													  %><input type="radio" name="q<%= thisFormNumber %>_<%= formulierveld_number
+														  %>" value="<mm:field name="formulierveldantwoord.waarde" />"
+														  <%@include file="radio_checked.jsp" %>
+													  ><%
+												  } else if(formulierveld_type.equals("5")) {
+													  %><input type="checkbox" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_<mm:field name="formulierveldantwoord.number"/>" value="<mm:field name="formulierveldantwoord.waarde" />"
+															  <mm:field name="formulierveldantwoord.standaard" jspvar="defaultValue" vartype="Integer">
+																  <%
+																	  if(defaultValue.intValue() != 0)
+																	  {
+																		  %>checked="checked"<%
+																		  bDefaultIsSet = true;
+																	  }
+																  %>
+															  </mm:field>
+														><%
+												  }
+											  %>
+											 </td>
+											 <td class="maincolor" style="line-height:0.90em;padding-top:3px;">
+												  <mm:field name="formulierveldantwoord.waarde" jspvar="waarde" vartype="String" write="false">
+														<%= (waarde!=null ? waarde.substring(0,1).toUpperCase()+waarde.substring(1) : "") %>
+												  </mm:field>
+											 </td>
+										</tr>
+									</table>
 								</td>
                        <mm:last inverse="true"></tr></mm:last>
                     </mm:related><%
@@ -106,8 +95,8 @@ String p = request.getParameter("p");
                  // **** dropdown ****
                  if(formulierveld_type.equals("3")) {
                  %>
-                    <td class="maincolor" style="width:177px;padding:5px;line-height:0.80em;"><%= formulierveld_label %>&nbsp;<% if(isRequired) { %>*&nbsp;<% } %></td>
-                    <td style="width:177px;padding:0px;vertical-align:top;">
+                    <td class="maincolor" style="width:177px;padding:5px;line-height:0.90em;"><%= formulierveld_label %>&nbsp;<% if(isRequired) { %>*&nbsp;<% } %></td>
+                    <td class="maincolor" style="width:177px;padding:0px;vertical-align:top;">
                         <select name="q<%= thisFormNumber %>_<%= formulierveld_number %>" style="width:178px;font-size:11px;">
                           <option>...
                           <mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
@@ -144,7 +133,7 @@ String p = request.getParameter("p");
               // *** textarea ***
               if(formulierveld_type.equals("1")) {
                  %>
-                    <td colspan="2" class="maincolor" style="padding:5px;line-height:0.80em;"><%=
+                    <td colspan="2" class="maincolor" style="padding:5px;line-height:0.90em;"><%=
                          formulierveld_label %>&nbsp;<% if(isRequired) { %>*&nbsp;<% } 
                      %></td>
                     </tr>
