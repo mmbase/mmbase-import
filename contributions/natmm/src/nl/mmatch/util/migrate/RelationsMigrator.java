@@ -39,12 +39,17 @@ public class RelationsMigrator {
       log.info("Changing relation page-discountrel-article to pagina-rolerel-artikel");
       String sDiscountrelContent = mmm.readingFile(sFolder + "discountrel.xml");
       int iBegNodeIndex = sDiscountrelContent.indexOf("<node");
-      int iRNIndex = sDiscountrelContent.indexOf("rnumber=");
-      int iSNBegIndex = sDiscountrelContent.indexOf("snumber=");
-      int iSNEndIndex = sDiscountrelContent.indexOf("\"",iSNBegIndex + 10);
-      String sRolerelAdd = sDiscountrelContent.substring(iBegNodeIndex,iRNIndex) +
-         sDiscountrelContent.substring(iSNBegIndex,iSNEndIndex) +
-         " rtype=\"rolerel\" dir=\"bidirectional\"/>";
+      int iInterimIndex = sDiscountrelContent.indexOf("owner=\"admin\"") + 13;
+      int iSNBegIndex = sDiscountrelContent.indexOf("snumber>");
+      int iSNEndIndex = sDiscountrelContent.indexOf("<",iSNBegIndex + 10);
+      int iDNBegIndex = sDiscountrelContent.indexOf("dnumber>");
+      int iDNEndIndex = sDiscountrelContent.indexOf("<",iDNBegIndex + 10);
+
+      String sRolerelAdd = sDiscountrelContent.substring(iBegNodeIndex,iInterimIndex) + " "
+        + sDiscountrelContent.substring(iSNBegIndex,iSNEndIndex) + "\" "
+        + sDiscountrelContent.substring(iDNBegIndex,iDNEndIndex) + "\" " +
+        "rtype=\"rolerel\" dir=\"bidirectional\"/>";
+      sRolerelAdd = sRolerelAdd.replaceAll("number>","number=\"");
       File file = new File(sFolder + "discountrel.xml");
       file.delete();
 
