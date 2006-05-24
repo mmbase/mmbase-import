@@ -21,12 +21,18 @@
 package nl.leocms.util;
 
 import org.mmbase.bridge.*;
+import java.util.*;
+import nl.leocms.util.*;
+import nl.leocms.authorization.AuthorizationHelper;
+import nl.leocms.authorization.UserRole;
+import nl.leocms.authorization.Roles;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * Various utilities for ContentElements
- * 
+ *
  */
 public class ContentHelper {
 
@@ -34,7 +40,7 @@ public class ContentHelper {
    private static Logger log = Logging.getLoggerInstance(ContentHelper.class.getName());
 
    private Cloud cloud;
-   
+
    /**
     * @param cloud
     */
@@ -42,7 +48,7 @@ public class ContentHelper {
       super();
       this.cloud = cloud;
    }
-   
+
    public String getNameWithOtype(String otype) {
       String nodes = "typedef";
       String where = "number='"+otype+"'";
@@ -72,11 +78,11 @@ public class ContentHelper {
       }
       return "onbekend type";
    }
-   
+
    public String getTitleField(NodeManager objectmanager) {
       String titleField = null;
       String [] titleFields = { "titel", "naam", "title", "name" };
-      for(int f=0; f<titleFields.length && titleField==null; f++) { 
+      for(int f=0; f<titleFields.length && titleField==null; f++) {
          if(objectmanager.hasField(titleFields[f])) {
            titleField = titleFields[f];
          }
@@ -90,11 +96,11 @@ public class ContentHelper {
    public String getTitleField(String otype) {
       return getTitleField(cloud.getNodeManager(otype));
    }
-    
+
    public String getTitleField(Node object) {
       return getTitleField(object.getNodeManager());
    }
-	
+
 	/*
 	* return a comma seperated list of owners of this contentelement
 	*/
@@ -109,4 +115,59 @@ public class ContentHelper {
       }
       return sbOwners.toString();
 	}
+
+   public NodeList usedInItems(String sNodeNumber){
+      Node node = cloud.getNode(sNodeNumber);
+      String otype = node.getStringValue("otype");
+      ContentHelper contentHelper = new ContentHelper(cloud);
+      String thisType = (String) contentHelper.getNameWithOtype(otype);
+      ArrayList cTypes = ContentTypeHelper.getContentTypes();
+      cTypes.add("dossier");
+      NodeList nlUnusedItems = null;
+      boolean isList = false;
+      for(int ct=0; ct < cTypes.size(); ct++) {
+         String relatedType = ( (String) cTypes.get(ct)).toLowerCase();
+         if (! (thisType.equals("artikel") &&
+                (relatedType.equals("paragraaf") || relatedType.equals("images")))
+             &&
+             ! (thisType.equals("evenement") && relatedType.equals("evenement"))) {
+            NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
+            if (thisTypeNodeManager.getAllowedRelations(relatedType, null, null).
+                size() > 0) {
+               NodeList nl = node.getRelatedNodes(relatedType);
+               if (nl.size() > 0) {
+                  if (!isList) {
+                     nlUnusedItems = nl;
+                     isList = true;
+                  } else {
+                     nlUnusedItems.addAll(nl);
+                  }
+               }
+            }
+         }
+      }
+      return nlUnusedItems;
+   }
+
+   public ArrayList getUnusedItems(String account){
+      ArrayList alUnusedItems = new ArrayList();
+      NodeList nlRubrieks = cloud.getList("","rubriek","rubriek.number",null,null,null,null,false);
+      for(int i = 0; i < nlRubrieks.size(); i++){
+         String sRubriekNumber = nlRubrieks.getNode(i).getStringValue("rubriek.number");
+         RubriekHelper rubriekHelper = new RubriekHelper(cloud);
+         AuthorizationHelper authHelper = new AuthorizationHelper(cloud);
+         UserRole userRole = authHelper.getRoleForUser(authHelper.getUserNode(account), rubriekHelper.getRubriekNode(sRubriekNumber));
+         if (userRole.getRol() >= Roles.SCHRIJVER) {
+            NodeList nlElements = cloud.getList(sRubriekNumber,"rubriek,creatierubriek,contentelement","rubriek.number,contentelement.number",null,null,null,null,false);
+            for (int j = 0; j < nlElements.size(); j++){
+               if (usedInItems(nlElements.getNode(j).getStringValue("contentelement.number"))==null){
+                  alUnusedItems.add(nlElements.getNode(j).getStringValue("contentelement.number"));
+               }
+            }
+         }
+      }
+      return alUnusedItems;
+   }
+
+
 }
