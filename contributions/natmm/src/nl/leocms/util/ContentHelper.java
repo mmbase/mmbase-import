@@ -116,6 +116,9 @@ public class ContentHelper {
       return sbOwners.toString();
 	}
 
+  /*
+    Returns true if node with number sNodeNumber has no relations to other contentelements
+  */
    public NodeList usedInItems(String sNodeNumber){
       Node node = cloud.getNode(sNodeNumber);
       String otype = node.getStringValue("otype");
@@ -132,8 +135,7 @@ public class ContentHelper {
              &&
              ! (thisType.equals("evenement") && relatedType.equals("evenement"))) {
             NodeManager thisTypeNodeManager = cloud.getNodeManager(thisType);
-            if (thisTypeNodeManager.getAllowedRelations(relatedType, null, null).
-                size() > 0) {
+            if (thisTypeNodeManager.getAllowedRelations(relatedType, null, null).size() > 0) {
                NodeList nl = node.getRelatedNodes(relatedType);
                if (nl.size() > 0) {
                   if (!isList) {
@@ -148,17 +150,19 @@ public class ContentHelper {
       }
       return nlUnusedItems;
    }
-
+	
+  /*
+    Returns ArrayList with contentelements used by user account
+  */
    public ArrayList getUnusedItems(String account){
       ArrayList alUnusedItems = new ArrayList();
-      NodeList nlRubrieks = cloud.getList("","rubriek","rubriek.number",null,null,null,null,false);
+      NodeList nlRubrieks = cloud.getNodeManager("rubriek").getList(null,null,null);
       for(int i = 0; i < nlRubrieks.size(); i++){
-         String sRubriekNumber = nlRubrieks.getNode(i).getStringValue("rubriek.number");
-         RubriekHelper rubriekHelper = new RubriekHelper(cloud);
+			Node rubriek = nlRubrieks.getNode(i);
          AuthorizationHelper authHelper = new AuthorizationHelper(cloud);
-         UserRole userRole = authHelper.getRoleForUser(authHelper.getUserNode(account), rubriekHelper.getRubriekNode(sRubriekNumber));
+         UserRole userRole = authHelper.getRoleForUser(authHelper.getUserNode(account), rubriek);
          if (userRole.getRol() >= Roles.SCHRIJVER) {
-            NodeList nlElements = cloud.getList(sRubriekNumber,"rubriek,creatierubriek,contentelement","rubriek.number,contentelement.number",null,null,null,null,false);
+            NodeList nlElements = cloud.getList(rubriek.getStringValue("number"),"rubriek,creatierubriek,contentelement","contentelement.number",null,null,null,null,false);
             for (int j = 0; j < nlElements.size(); j++){
                if (usedInItems(nlElements.getNode(j).getStringValue("contentelement.number"))==null){
                   alUnusedItems.add(nlElements.getNode(j).getStringValue("contentelement.number"));
