@@ -78,7 +78,7 @@ if(referer!=null) {
                if(omschrijving!=null&&!HtmlCleaner.cleanText(omschrijving,"<",">","").trim().equals("")) {
                   formulierveld_warning = omschrijving;
                }
-               responseText += "<br>" + formulierveld_label + ": ";
+               responseText += "<br><br>" + formulierveld_label + ": ";
 
                if(formulierveld_type.equals("6")) { // *** date ***
 
