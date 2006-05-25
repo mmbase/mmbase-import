@@ -12,7 +12,7 @@ Features of LeoCMS (currently) not used in NatMM:
 3. notification
 4. remote publishing (staging and live clouds)
 
-What is in it for you?
+WHAT IS IN IT FOR YOU?
 
 1. All the other features of LeoCMS, like the 
    (a) page-tree, 
@@ -28,14 +28,15 @@ What is in it for you?
    generate statistics. See templates/natmm/doc/DatamodelCAD.doc for the datamodel and the GebruikershandleidingCAD*.doc
    for the user manuals. Unfortunately the user manuals are in Dutch.
 3. Preview functionality based on OSCache
-4. Image cropping (see natmm\templates\editors\util\image_crop.jsp). Build by C. Brands.
-5. Image bulk upload (see natmm\templates\editors\util\image_upload.jsp). Build by N. Bukharev.
-6. Creating navigation structure from Excel file. Build by A. Zemskov.
-7. Check on email addresses, Dutch zipcodes and bankaccounts (see natmm\src\nl\leocms\forms\MembershipForm.java)
-8. Example templates (see natmm\templates\natmm and nmintra) 
+4. In the NatMM version of LeoCMS paragraph functionality has been added
+5. Image cropping (see natmm\templates\editors\util\image_crop.jsp). Build by C. Brands.
+6. Image bulk upload (see natmm\templates\editors\util\image_upload.jsp). Build by N. Bukharev.
+7. Creating navigation structure from Excel file. Build by A. Zemskov.
+8. Check on email addresses, Dutch zipcodes and bankaccounts (see natmm\src\nl\leocms\forms\MembershipForm.java)
+9. Example templates (see natmm\templates\natmm and nmintra) 
    and the accompanying editwizards (see natmm\templates\mmbase\edit\wizard\data\config)
 
-What is the basic structure of NatMM?
+WHAT IS THE BASIC STRUCTURE OF NATMM?
 
 Underlying NatMM is the LeoCMS objectmodel, which each application in the NatMM application uses.
 This objectmodel can be found in config/application/LeoCMS.xml.
@@ -46,8 +47,9 @@ Each website in the NatMM application, e.g. MySite, should consist of the follow
    IMPORTANT NOTE: in the NatMM application each builder should be stored in CVS only ONCE. So builders reused
    from LeoCMS or any of the other applications should be copied to the config/applications/builders directory
    before install.
-3. a java class with application specific settings in src/nl/mmatch/MySiteConfig.java
-   Important information provided by MySiteConfig.java is  CONTENTELEMENTS and PATHS_FROM_PAGE_TO_ELEMENTS.
+3. a java class with application specific settings in src/nl/mmatch/MySiteConfig.java. See NatNHConfig.java
+	for an example of what this class should at least contain.
+   Important information provided by MySiteConfig.java is CONTENTELEMENTS and PATHS_FROM_PAGE_TO_ELEMENTS.
    These arrays tell LeoCMS how content is related to the pages in the MySite application. This information 
    is used in several places:
    a. to find the page if you only provide the id of a contentelement in the url
@@ -59,7 +61,7 @@ Each website in the NatMM application, e.g. MySite, should consist of the follow
 4. editwizards in templates/mmbase/edit/wizard/data/config
 5. user manuals and technical documentaion in templates/mysite/doc
 
-How to add your own application to NatMM?
+HOW TO ADD YOUR OWN APPLICATION TO NATMM?
 
 The minimal steps you have to carry out to add your own application to NatMM are:
 1. install LeoCMS (see install.txt)
@@ -71,10 +73,31 @@ The minimal steps you have to carry out to add your own application to NatMM are
    (e.g. in a subfolder templates/mysite). Please adhere to the coding-standards as much as possible.
 	
 	One of the most complex parts of your templates will probably the navigation. Because NatMM allows
-	for a website tree of any depth, your navigation should also take this into account. 
+	for a website tree of any depth. In the ideal case, your navigation should also take this into account. 
 	See templates/nmintra/include/nav.jsp and templates/natmm/includes/top3_nav.jsp for examples on how to do this.
 	
 6. add MySiteConfig.java to make sure the editors and url-rewriting work properly
+
+HINTS ON HOW TO DEVELOP WITH NATMM
+
+After installing NatMM you want to quickly develop your templates. The first step is of course to create the object model you
+need, but once you created and tested an application file it comes to building templates and sometimes adding java classes. 
+One way of managing this is explained below. Of course there are other ways of developing, so feel free to add your best practices.
+
+For building you checked out het NatMM contribution from CVS. After installation you can copy the template dirs in which you plan to
+work from the CVS checkout to your Tomcat installation. Most of the time you will only be changing (a) files in these templates dir and (b)
+sources in the /natmm/src tree.
+
+1. For doing an UPDATE FROM CVS in this situation you have to both update the natmm contribution and the template dirs.
+2. For CHANGES IN THE SRC, create a new jar (onlyjar.bat) and place this it in the WEB-INF/lib of the webapp in which NatMM is running
+   (to save you copy and paste time you can add the copy task to the batch job that is starting up your application server)
+3. CHANGES TO THE TEMPLATES can be directly applied to the templates in your Tomcat installation
+4. For CREATING A BUILD carry out the following steps:
+   a. commit the changes from the templating dirs to CVS
+	b. update the NatMM contribution
+	c. create the build (work.bat)
+
+SOME LAST REMARKS
 
 The current verion of NatMM is tested with MMBase 1.7.4 / JDK 1.4 and 1.5 / MySQL 5.1.
 The migration of NatMM to MMBase 1.8.x is planned for Q4, 2006.
