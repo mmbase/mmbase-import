@@ -139,7 +139,14 @@ public class PaginaHelper {
    public static String getRootRubriek(Cloud cloud, String paginaNumber) {
       Vector breadcrumbs = getBreadCrumbs(cloud, paginaNumber);
       log.debug(paginaNumber + "->" + breadcrumbs);
-      return (breadcrumbs.size()>=2 ? (String) breadcrumbs.get(breadcrumbs.size()-2) : null);
+		String rootRubriek = null;
+		if(breadcrumbs.size()>=2) {
+			rootRubriek = (String) breadcrumbs.get(breadcrumbs.size()-2);
+		} else {
+			log.error("Pagina " + paginaNumber + " does not have a root rubriek. Setting root rubriek to 'root'");
+			rootRubriek = "root";
+		}
+      return rootRubriek;
    }
    
    /**
@@ -150,10 +157,6 @@ public class PaginaHelper {
     */
    public static String getSubDir(Cloud cloud, String paginaNumber) {
       String rootRubriek = getRootRubriek(cloud,paginaNumber);
-      if(rootRubriek==null) {
-         log.error("Pagina " + paginaNumber + " does not have a root rubriek. Setting root rubriek to 'root'");
-			rootRubriek = "root";
-      }
       return RubriekHelper.getSubDir(cloud.getNode(rootRubriek));
    }
    
