@@ -228,6 +228,7 @@ public class HtmlCleaner {
        text = text.toLowerCase();
        text = text.replaceAll("&","en");
 	    text = text.replaceAll(" ","_");
+		 text = text.replaceAll("\'","");
        for(int charPos = 0; charPos < text.length(); charPos++){
            char c = text.charAt(charPos);
            if  (   !(('a'<=c)&&(c<='z'))
