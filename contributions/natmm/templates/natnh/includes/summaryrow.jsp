@@ -1,0 +1,40 @@
+<mm:field name="artikel.number" jspvar="artikel_number" vartype="String" write="false"
+><mm:field name="artikel.embargo" jspvar="artikel_tdate" vartype="String" write="false"
+><mm:field name="artikel.verloopdatum" jspvar="artikel_edate" vartype="String" write="false"
+><%	long td = Integer.parseInt(artikel_tdate); td = 1000 * td; Date dd = new Date(td); cal.setTime(dd);
+	String tdateStr =  cal.get(Calendar.DAY_OF_MONTH)+ " " + months_lcase[(cal.get(Calendar.MONTH))] + " " + cal.get(Calendar.YEAR); 
+	td = Integer.parseInt(artikel_edate); td = 1000 * td; dd = new Date(td); cal.setTime(dd);
+	String edateStr =  cal.get(Calendar.DAY_OF_MONTH)+ " " + months_lcase[(cal.get(Calendar.MONTH))] + " " + cal.get(Calendar.YEAR); 
+ 	
+	String summary = ""; 
+%><mm:field name="artikel.intro" jspvar="artikel_intro" vartype="String" write="false"
+	><% summary = artikel_intro; 
+%></mm:field><%
+summary = HtmlCleaner.cleanText(summary,"<",">");
+int spacePos = summary.indexOf(" ",250);
+boolean readMore = false;
+if(spacePos>-1) { 
+	summary =summary.substring(0,spacePos);
+	readMore = true;
+}
+%><mm:field name="artikel.titel" jspvar="artikel_titel" vartype="String" write="false"
+	><% if(readMore) { 
+			%><a target="_top" href="<%= readmoreUrl %>"><%
+		} %>
+		<mm:field name="artikel.titel_zichtbaar"
+		   ><mm:compare value="0" inverse="true"
+		      ><div class="pageheader"><%= artikel_titel %></div
+		   ></mm:compare
+		></mm:field>
+		<% if(readMore) { 
+			%></a><% 
+		} %></mm:field
+><%= tdateStr %><br>
+<%= summary 	
+%><% if(readMore){ 
+	%>...<a target="_top" href="<%= readmoreUrl %>"><span style="text-decoration:none;"> Lees meer >></span></a><% 
+} %><br><br><br>
+</mm:field
+></mm:field
+></mm:field
+>
