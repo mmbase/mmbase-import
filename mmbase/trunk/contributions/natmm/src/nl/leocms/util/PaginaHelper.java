@@ -64,6 +64,14 @@ public class PaginaHelper {
 					NatMMConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
 			}
 		}
+		if(ap.isInstalled(cloud,"NatNH")) {
+			this.urlConversion = NatNHConfig.urlConversion;
+			for(int f = 0; f < NatNHConfig.CONTENTELEMENTS.length; f++) {
+				this.pathsFromPageToElements.put(
+					NatNHConfig.CONTENTELEMENTS[f],
+					NatNHConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
+			}
+      }
 		if(ap.isInstalled(cloud,"NMIntra")) {
 			this.urlConversion = NMIntraConfig.urlConversion;
 			for(int f = 0; f < NMIntraConfig.CONTENTELEMENTS.length; f++) {
@@ -72,6 +80,9 @@ public class PaginaHelper {
 					NMIntraConfig.PATHS_FROM_PAGE_TO_ELEMENTS[f]);
 			}
       }
+		if(this.pathsFromPageToElements.size()==0) {
+			log.error("CONTENTELEMENTS and PATHS_FROM_PAGE_TO_ELEMENTS are not defined by the available applications");
+		}
    }
 
    ////////////// general utilities /////////////
