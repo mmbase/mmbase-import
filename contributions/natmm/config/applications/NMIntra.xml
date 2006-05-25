@@ -261,11 +261,11 @@
       <datasource builder="formulierveldantwoord" path="NMIntra/formulierveldantwoord.xml"/>
       <datasource builder="images" path="NMIntra/images.xml"/>
       <datasource builder="link" path="NMIntra/link.xml"/>
-      <datasource builder="linklijst" path="NatMM/linklijst.xml"/>
+      <datasource builder="linklijst" path="NMIntra/linklijst.xml"/>
       <datasource builder="locations" path="NMIntra/locations.xml"/>
       <datasource builder="medewerkers" path="NMIntra/medewerkers.xml"/>
       <datasource builder="menu" path="NMIntra/menu.xml"/>
-      <datasource builder="organisatie" path="NatMM/organisatie.xml" />
+      <datasource builder="organisatie" path="NMIntra/organisatie.xml" />
       <datasource builder="pagina" path="NMIntra/pagina.xml"/>
       <datasource builder="paginatemplate" path="NMIntra/paginatemplate.xml"/>
       <datasource builder="paragraaf" path="NMIntra/paragraaf.xml"/>
@@ -312,7 +312,7 @@
       <datasource builder="mmservers" path="NMIntra/mmservers.xml"/>
       <datasource builder="natuurgebieden_type" path="NMIntra/natuurgebieden_type.xml"/>
       <datasource builder="oalias" path="NMIntra/oalias.xml"/>
-      <datasource builder="organisatie_type" path="NatMM/organisatie_type.xml" />
+      <datasource builder="organisatie_type" path="NMIntra/organisatie_type.xml" />
       <datasource builder="phases" path="NMIntra/phases.xml"/>
       <!--<datasource builder="phaserel" path="NMIntra/phaserel.xml"/>-->
       <datasource builder="pools" path="NMIntra/pools.xml"/>
