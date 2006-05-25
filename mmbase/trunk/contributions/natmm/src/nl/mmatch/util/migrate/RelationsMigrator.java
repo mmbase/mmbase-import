@@ -163,11 +163,15 @@ public class RelationsMigrator {
       String sLijstcontentrelContent = sResultRel[1];
 
       log.info("changing relation items-posrel-exturls to linklijst-posrel-link");
-      ArrayList alLink = getNodes(sFolder + "linklijst.xml");
+      ArrayList alLink = getNodes(sFolder + "link.xml");
       sResultRel = mmm.movingRelations(alLinklijst, alLink, sPosrelContent,
                                    "posrel", "lijstcontentrel");
       sPosrelContent = sResultRel[0];
       sLijstcontentrelContent += sResultRel[1];
+
+      log.info("deleting relation items-related-style");
+      ArrayList alStyle = getNodes(sFolder + "style.xml");
+      sInsrelContent = mmm.deletingRelation(alLinklijst, alStyle, sInsrelContent);
 
       log.info("changing relation page-posrel-teasers to pagina-rolerel-teaser");
       ArrayList alTeaser = getNodes(sFolder + "teaser.xml");
@@ -260,13 +264,12 @@ public class RelationsMigrator {
 
       tmAllRelations.put("childrel", sParentContent);
       tmAllRelations.put("contentrel", sContentrelContent);
-      tmAllRelations.put("discountrel", sDiscountrelContent);
       tmAllRelations.put("insrel", sInsrelContent);
-      tmAllRelations.put("posrel", sPosrelContent);
+      tmAllRelations.put("lijstcontentrel", sLijstcontentrelContent);
       tmAllRelations.put("phaserel", sPhaserelContent);
+      tmAllRelations.put("posrel", sPosrelContent);
       tmAllRelations.put("readmore", sReadmoreContent);
       tmAllRelations.put("rolerel", sRolerelContent);
-      tmAllRelations.put("lijstcontentrel",sLijstcontentrelContent);
 
       log.info("writing relations files");
       set = tmAllRelations.entrySet();
