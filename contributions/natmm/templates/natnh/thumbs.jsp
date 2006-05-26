@@ -36,7 +36,7 @@ String otherImages = "";
 		%><%@include file="includes/splitimagelist.jsp" 
 		%><mm:node number="<%= thisImage %>"
 			><td>
-				<a href="#" onClick="javascript:launchCenter('slideshow.jsp?r=<%= rubriekId %>&p=<%= paginaID %>&i=<%= imageId %>', 'center', 550, 740,'resizable=1'); setTimeout('newwin.focus();',250); return false;">
+				<a href="#" onClick="javascript:launchCenter('<%= requestURL %>slideshow.jsp?r=<%= rubriekId %>&p=<%= paginaID %>&i=<%= imageId %>', 'center', 550, 740,'resizable=1'); setTimeout('newwin.focus();',250); return false;">
 					<img src="<mm:image template="s(110)" />" width="110" height="71" border="0" title="Klik op de foto om te vergroten" class="thumb">
 				</a></td>
 			</mm:node
