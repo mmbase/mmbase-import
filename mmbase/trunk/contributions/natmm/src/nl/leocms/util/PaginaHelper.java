@@ -29,6 +29,8 @@ import nl.leocms.servlets.UrlConverter;
 
 import nl.leocms.servlets.UrlConverter;
 import nl.leocms.servlets.UrlCache;
+import nl.leocms.applications.*;
+import nl.leocms.util.tools.HtmlCleaner;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
@@ -36,8 +38,6 @@ import org.mmbase.util.logging.Logging;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import nl.mmatch.*;
 
 public class PaginaHelper {
    

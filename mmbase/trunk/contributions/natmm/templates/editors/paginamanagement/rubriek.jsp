@@ -1,7 +1,7 @@
 <%@page import="com.finalist.tree.*,
    nl.leocms.authorization.forms.*,
    nl.leocms.util.*,
-	nl.mmatch.*,
+	nl.leocms.applications.*,
 	java.util.*,
    org.mmbase.bridge.*,
    nl.leocms.servlets.UrlConverter" %>

@@ -5,10 +5,13 @@ import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
+
 import nl.leocms.evenementen.forms.SubscribeAction;
 import nl.leocms.util.DoubleDateNode;
+import nl.leocms.util.ApplicationHelper;
+import nl.leocms.applications.NatMMConfig;
+
 import javax.servlet.*;
-import nl.mmatch.NatMMConfig;
 
 /**
  * Created by Henk Hangyi (MMatch)
@@ -294,9 +297,8 @@ public class EventNotifier implements Runnable {
       return "\n<br>Number of emails for checking accounts is " + nEmailSend + logMessage;
    }
    
-   public void updateEventDB() { 
+   public void updateEventDB(Cloud cloud) { 
    
-      Cloud cloud = CloudFactory.getCloud();
       MMBaseContext mc = new MMBaseContext();
       ServletContext application = mc.getServletContext();
       String requestUrl = (String) application.getAttribute("request_url");
@@ -366,7 +368,11 @@ public class EventNotifier implements Runnable {
    
    public void run () {
       Thread kicker = getKicker();
-      log.info("run(): " + kicker); 
-      updateEventDB();
+      log.info("run(): " + kicker);
+		Cloud	cloud = CloudFactory.getCloud();
+		ApplicationHelper ap = new ApplicationHelper();
+		if(ap.isInstalled(cloud,"NatMM")) {
+			updateEventDB(cloud);
+		}
    }
 }

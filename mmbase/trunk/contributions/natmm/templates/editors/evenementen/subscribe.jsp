@@ -3,9 +3,9 @@
    nl.leocms.evenementen.Evenement,
    nl.leocms.authorization.*,
    nl.leocms.util.DoubleDateNode,
+	nl.leocms.util.tools.HtmlCleaner,
    java.util.*,
-   org.mmbase.bridge.*,
-   nl.mmatch.HtmlCleaner" %>
+   org.mmbase.bridge.*" %>
 <%@include file="/taglibs.jsp" %>
 <%@include file="dateutil.jsp" %>
 <mm:import externid="action" jspvar="actionId" id="actionId">no</mm:import>
@@ -705,7 +705,7 @@ DoubleDateNode ddn = new DoubleDateNode();
                </td>
                <td colspan="5">
                   <mm:compare referid="sticket_office" value="website"
-                     ><img src="<%= nl.mmatch.NatMMConfig.liveUrl[0] %>editors/img/preview.gif" border='0'  align='absmiddle' alt='Aangemeld via de website' />
+                     ><img src="<%= nl.leocms.applications.NatMMConfig.liveUrl[0] %>editors/img/preview.gif" border='0'  align='absmiddle' alt='Aangemeld via de website' />
                   </mm:compare
                   ><mm:remove referid="hascomma" 
                   /><mm:field name="gender" jspvar="sGender" vartype="String" write="false"

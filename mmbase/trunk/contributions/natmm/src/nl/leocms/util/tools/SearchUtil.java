@@ -17,14 +17,14 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.document.Document;
 
 import nl.leocms.util.*;
-import nl.mmatch.HtmlCleaner;
+import nl.leocms.util.tools.HtmlCleaner;
 
 
 /**
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class SearchUtil {
 

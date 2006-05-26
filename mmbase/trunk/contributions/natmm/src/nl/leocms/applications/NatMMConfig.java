@@ -1,4 +1,4 @@
-package nl.mmatch;
+package nl.leocms.applications;
 
 /* This class contains settings specific for the set of templates in the natmm folder
 */

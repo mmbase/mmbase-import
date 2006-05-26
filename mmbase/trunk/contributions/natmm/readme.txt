@@ -1,6 +1,6 @@
 NatMM - readme.txt
 Version: 06.05.19
-Author: H. Hangyi
+Author: H. Hangyi (www.mmatch.nl)
 
 NatMM is an MMBase application which is based on LeoCMS, which is specially geared for use in
 small to medium size organisations. I.e. organisations for which simplicity and ease of publishing, is
@@ -47,7 +47,7 @@ Each website in the NatMM application, e.g. MySite, should consist of the follow
    IMPORTANT NOTE: in the NatMM application each builder should be stored in CVS only ONCE. So builders reused
    from LeoCMS or any of the other applications should be copied to the config/applications/builders directory
    before install.
-3. a java class with application specific settings in src/nl/mmatch/MySiteConfig.java. See NatNHConfig.java
+3. a java class with application specific settings in src/leocms/applications/MySiteConfig.java. See NatNHConfig.java
 	for an example of what this class should at least contain.
    Important information provided by MySiteConfig.java is CONTENTELEMENTS and PATHS_FROM_PAGE_TO_ELEMENTS.
    These arrays tell LeoCMS how content is related to the pages in the MySite application. This information 
@@ -77,6 +77,8 @@ The minimal steps you have to carry out to add your own application to NatMM are
 	See templates/nmintra/include/nav.jsp and templates/natmm/includes/top3_nav.jsp for examples on how to do this.
 	
 6. add MySiteConfig.java to make sure the editors and url-rewriting work properly
+7. if your application uses crontabs (see config/modules/crontab.xml), please make sure that the implementation
+	checks on the applications for which the crontab should apply (see as an example nl.mmatch.CSVReader.java).
 
 HINTS ON HOW TO DEVELOP WITH NATMM
 

@@ -37,7 +37,7 @@ import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.evenementen.forms.SubscribeForm;
 import nl.leocms.evenementen.forms.SubscribeAction;
 import nl.leocms.evenementen.stats.OptionedStats;
-import nl.mmatch.NatMMConfig;
+import nl.leocms.applications.NatMMConfig;
 import nl.mmatch.CSVReader;
 
 public class MembershipForm extends ActionForm {

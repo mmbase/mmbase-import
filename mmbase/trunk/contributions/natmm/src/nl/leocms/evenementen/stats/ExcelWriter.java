@@ -14,10 +14,11 @@ import jxl.write.WritableCellFormat;
 import jxl.write.Label;
 import jxl.write.WriteException;
 
-import nl.mmatch.*;
+import nl.leocms.util.tools.HtmlCleaner;
 import nl.leocms.evenementen.*;
 import nl.leocms.evenementen.forms.*;
 import nl.leocms.util.DoubleDateNode;
+import nl.leocms.applications.NatMMConfig;
 
 public class ExcelWriter {
    private static final Logger log = Logging.getLoggerInstance(ExcelWriter.class);
