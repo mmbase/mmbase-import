@@ -22,7 +22,8 @@
    7. Setting the levels of the rubrieken<br/>
 	8. Changing templates.url from templates/*.jsp to *.jsp<br/>
 	9. Adding alias "natuurherstel_home" to the pagina Natuurherstel in Nederland<br/>
-	<%--
+	10. Adding the editwizards for the pages<br/>
+	<span style="color:red;">Run <a href="/editors/util/fill_empty_par_title.jsp">fill empty par title</a> !!!</span><br/>
 	Processing...<br/>
 	<mm:listnodes type="rubriek" constraints="rubriek.naam='Natuurherstelprojecten in Nederland'">
 		<mm:node id="portal">
@@ -129,12 +130,67 @@
 			<mm:setfield name="url"><%= url.substring(10) %></mm:setfield>
 		</mm:field>
 	</mm:listnodes>
-	--%>
 	<mm:listnodes type="pagina" constraints="pagina.titel='Natuurherstelprojecten in Nederland'">
 		<mm:node>
 			<mm:createalias>natuurherstel_home</mm:createalias>
 		</mm:node>
 	</mm:listnodes>
+	<mm:listnodes type="paginatemplate" constraints="paginatemplate.url='thumbs.jsp'">
+		<mm:node id="thumbs_template">
+			<mm:createnode type="editwizards" id="thumbs_ew">
+				<mm:setfield name="name">foto pagina</mm:setfield>
+				<mm:setfield name="description">Bewerk deze fotopagina</mm:setfield>
+				<mm:setfield name="type">wizard</mm:setfield>
+				<mm:setfield name="wizard">config/pagina/pagina_thumbs</mm:setfield>
+				<mm:setfield name="nodepath">pagina</mm:setfield>
+				<mm:setfield name="fields">pagina.titel,pagina.kortetitel</mm:setfield>
+				<mm:setfield name="orderby">pagina.titel</mm:setfield>
+				<mm:setfield name="directions">UP</mm:setfield>
+				<mm:setfield name="pagelength">50</mm:setfield>
+			</mm:createnode>
+			<mm:createrelation source="thumbs_template" destination="thumbs_ew" role="related" />
+		</mm:node>
+	</mm:listnodes>
+	<mm:listnodes type="editwizards" constraints="editwizards.wizard='config/artikel/artikel' AND editwizards.type='list'">
+		<mm:node id="info_ew">
+			<mm:listnodes type="paginatemplate" constraints="paginatemplate.url='info.jsp'">
+				<mm:node id="this_template">
+					<mm:createrelation source="this_template" destination="info_ew" role="related" />
+				</mm:node>
+			</mm:listnodes>
+		</mm:node>
+	</mm:listnodes>
+	<mm:listnodes type="paginatemplate" constraints="paginatemplate.url='article.jsp' OR paginatemplate.url='homepage.jsp'  OR paginatemplate.url='websites.jsp'">
+		<mm:node id="article_template">
+			<mm:first>
+			<mm:createnode type="editwizards" id="artikel_page_ew">
+				<mm:setfield name="name">artikel pagina</mm:setfield>
+				<mm:setfield name="description">Bewerk deze artikel pagina</mm:setfield>
+				<mm:setfield name="type">wizard</mm:setfield>
+				<mm:setfield name="wizard">config/pagina/pagina_article</mm:setfield>
+				<mm:setfield name="nodepath">pagina</mm:setfield>
+				<mm:setfield name="fields">pagina.titel,pagina.kortetitel</mm:setfield>
+				<mm:setfield name="orderby">pagina.titel</mm:setfield>
+				<mm:setfield name="directions">UP</mm:setfield>
+				<mm:setfield name="pagelength">50</mm:setfield>
+			</mm:createnode>
+			</mm:first>
+			<mm:createrelation source="article_template" destination="artikel_page_ew" role="related" />
+		</mm:node>
+	</mm:listnodes>
+	<mm:listnodes type="paragraaf">
+		<mm:setfield name="tekst"><mm:field name="omschrijving" /></mm:setfield>
+		<mm:setfield name="omschrijving"> </mm:setfield>
+	</mm:listnodes>
+	<mm:listnodes type="artikel">
+		<mm:setfield name="begindatum"><mm:field name="embargo" /></mm:setfield>
+		<mm:setfield name="use_verloopdatum">1</mm:setfield>
+	</mm:listnodes>
+	<mm:list nodes="" path="paginatemplate,gebruikt,pagina,contentrel,artikel" constraints="paginatemplate.url!='info.jsp'">
+		<mm:node element="artikel">
+			<mm:setfield name="use_verloopdatum">0</mm:setfield>
+		</mm:node>
+	</mm:list>
    Done.
    </body>
 </html>

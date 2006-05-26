@@ -53,7 +53,7 @@
 									<% if(!rightAlign){ %><td rowspan="4"><img src="media/spacer.gif" alt="" border="0" width="10" height="1"></td><% } %>
 							  </tr>
 							  <tr><td class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td>
-									<td><a href="#" onClick="javascript:launchCenter('slideshow.jsp?r=<%= rubriekId 
+									<td><a href="#" onClick="javascript:launchCenter('<%= requestURL %>slideshow.jsp?r=<%= rubriekId 
 											  %>&p=<%= paginaID %>&i=<mm:field name="images.number" />', 'center', 550, 740,'resizable=1'); setTimeout('newwin.focus();',250); return false;">
 											  <img src="<%@include file="../includes/imagessource.jsp" %>" alt="" border="0"></a></td>
 									<td class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
@@ -80,7 +80,7 @@
     	  ><div class="pageheader"><mm:field name="paragraaf.titel" /></div
 	   ></mm:compare
 	></mm:field
-	><mm:field name="paragraaf.omschrijving" 
+	><mm:field name="paragraaf.tekst" 
     /><mm:node number="<%= paragraaf_number%>" 
         ><%@include file="attachment.jsp" 
     %></mm:node

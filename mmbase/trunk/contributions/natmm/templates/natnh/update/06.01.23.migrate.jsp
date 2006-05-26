@@ -23,7 +23,7 @@
       -set the max_allowed_packet large enough<br/>
       -running the import might take 1+ hour<br/>
       -check the mmbase.log and wait for the logmessage "Application 'NatNH' deployed succesfully" or see below ...<br/>
-	
+	5. Run the other migration script<br/>
    ------
 		Problem installing application : NatNH.xml, cause: 
 		Cannot sync relation (exportnumber==10239, snumber:1208, dnumber:-1)
