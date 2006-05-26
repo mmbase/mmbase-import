@@ -44,18 +44,21 @@
    boolean isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
    String rubriekID = "";
    boolean hasEditwizards = false;
-	//ArrayList alUnusedNodes = (ArrayList) session.getAttribute("unused_items");
-	HashMap hmUnusedItems = (HashMap)application.getAttribute("UnusedItems");
 	
+	HashMap hmUnusedItems = (HashMap)application.getAttribute("UnusedItems");
 	int iTotalNotUsed = 0;
 	if (hmUnusedItems != null){
 		String account = cloud.getUser().getIdentifier();
-		ArrayList alUnusedNodes = (ArrayList)hmUnusedItems.get(account);
-		iTotalNotUsed = alUnusedNodes.size();
-	}	
-	else {
-		(new nl.leocms.content.UpdateUnusedElements()).run();
-	} %>
+		ArrayList alUnusedNodes = (ArrayList) hmUnusedItems.get(account);
+		if(alUnusedNodes!=null) {
+			iTotalNotUsed = alUnusedNodes.size();
+		}
+	} 
+	String unusedItemsLink = "";
+	if (iTotalNotUsed>0) {
+		unusedItemsLink = "<td><a href='beheerbibliotheek/view_unused_items.jsp' target='bottompane'><img src='img/delete.gif' style='vertical-align:bottom;'>(" + iTotalNotUsed + ")</a><td>";
+	}
+	%>
 <mm:listnodes type="users" constraints="<%= "[account]='" + cloud.getUser().getIdentifier() + "'" %>" max="1" id="thisuser">
    <mm:related path="rolerel,rubriek" max="1">
       <mm:node element="rubriek">
@@ -76,7 +79,7 @@
 if(rubriekID.equals("naardermeer")) { 
    %>
    <td class="fieldname"><a href="/naardermeer" target="_blank" class='menu'>Website</a></td>
-   <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td>
+   <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td><%= unusedItemsLink %>
    <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class='menu'>Pagina-editor</a></td>
    <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
    <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
@@ -99,11 +102,7 @@ if(rubriekID.equals("naardermeer")) {
    <td lass="fieldname"><a href="../workflow/workflow.jsp" target="bottompane" class='menu'>Workflow</a></td>
    --%>
    <td class="fieldname"><a href="/index.jsp" target="_blank" class='menu'>Website</a></td>
-	<td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a>
-	<% if (iTotalNotUsed>0) {%>
-		<a href="beheerbibliotheek/view_unused_items.jsp" target="bottompane"><img src="img/delete.gif">
-		(<%= iTotalNotUsed %>)</a>
-	<% } %></td>
+	<td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td><%= unusedItemsLink %>
    <% if(isAdmin&&ap.isInstalled(cloud,"NatMM")) {
       %>
       <td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class='menu'>Activiteiten</a></td>
