@@ -7,7 +7,8 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 -->
 <project xmlns:j="jelly:core" xmlns:maven="jelly:maven" 
-		xmlns:ant="jelly:ant" xmlns:artifact="artifact">
+		xmlns:ant="jelly:ant" xmlns:artifact="artifact"
+        xmlns:util="jelly:util">
 	<!--
 	 These goals and pre/post goals are inherited by
 	 any subproject that extends the POM in maven-base
@@ -111,4 +112,26 @@ See http://www.MMBase.org/license
 		<attainGoal name="idea:multiproject" />
 	</goal>
 
+
+<!-- This does not work the same way as the ant build does.
+	We have to change more in the build to get it working
+	<preGoal name="jar:jar">
+	    <util:available file="${maven.build.dest}/org/mmbase/config">
+	    <fileScanner var="scanner">
+	    	<fileset dir="${maven.build.dest}/org/mmbase/config"/>
+	    </fileScanner>
+    	<j:forEach var="dir" items="${scanner.directories()}">
+		    <fileScanner var="filescan">
+		    	<fileset dir="${dir.path}" >
+		    		<exclude name="INDEX"/>
+		    		<include name="*"/>
+		    	</fileset>
+		    </fileScanner>
+## Generate INDEX file with each filename on a new line ##
+<echo file="${dir.path}/INDEX"><j:forEach var="file" items="${filescan.iterator()}">${file.name}
+</j:forEach></echo>
+    	</j:forEach>
+    	</util:available>
+	</preGoal>
+-->
 </project>
