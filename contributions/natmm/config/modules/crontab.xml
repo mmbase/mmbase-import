@@ -16,6 +16,8 @@
     -->  
     <property name="import">0 2 * * *|nl.mmatch.CSVReader|read the uploaded import files</property>
     <property name="notify">0 3 * * *|nl.leocms.evenementen.EventNotifier|send reminder emails for the CAD</property>
+	 <property name="sstats">30 3 * * *|nl.leocms.util.tools.SimpleStats|write statistics from application to object cloud</property>
+	 <property name="update">0 4 * * *|nl.leocms.content.UpdateUnusedElements|update the list of unused elements for each user</property>
   </properties>
  
 </module>
