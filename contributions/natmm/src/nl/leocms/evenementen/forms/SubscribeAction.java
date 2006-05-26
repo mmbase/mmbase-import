@@ -33,8 +33,8 @@ import org.mmbase.util.logging.*;
 
 import nl.leocms.evenementen.Evenement;
 import nl.leocms.util.DoubleDateNode;
-import nl.mmatch.NatMMConfig;
-import nl.mmatch.HtmlCleaner;
+import nl.leocms.applications.NatMMConfig;
+import nl.leocms.util.tools.HtmlCleaner;
 
 import com.finalist.mmbase.util.CloudFactory;
 

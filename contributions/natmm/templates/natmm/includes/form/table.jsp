@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@ page import = "java.util.Calendar,nl.mmatch.HtmlCleaner" %>
+<%@ page import = "java.util.Calendar,nl.leocms.util.tools.HtmlCleaner" %>
 <%@include file="../../includes/calendar.jsp" %>
 <%
 boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1);

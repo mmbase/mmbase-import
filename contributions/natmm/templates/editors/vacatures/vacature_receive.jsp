@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="java.util.Enumeration,nl.mmatch.NatMMConfig"%>
+<%@page import="java.util.Enumeration,nl.leocms.applications.NatMMConfig"%>
 <%@include file="/taglibs.jsp" %>
 <html>
 <head>

@@ -1,4 +1,4 @@
-<%@page import="java.util.*,nl.leocms.util.*,nl.mmatch.*" %>
+<%@page import="java.util.*,nl.leocms.util.*,nl.leocms.util.tools.*,nl.leocms.applications.*" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache"%>
 <%@taglib uri="/WEB-INF/tld/struts-html.tld" prefix="html"%>

@@ -31,7 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import nl.leocms.util.RubriekHelper;
 import nl.leocms.util.PaginaHelper;
 import com.finalist.mmbase.util.CloudFactory;
-import nl.mmatch.HtmlCleaner;
+import nl.leocms.util.tools.HtmlCleaner;
 
 import javax.servlet.ServletContext;
 import org.mmbase.module.core.MMBaseContext;
@@ -43,7 +43,7 @@ import org.mmbase.module.core.MMBaseContext;
  * is illegible for conversion in the first place.
  *
  * @author Finalist IT Group / peter
- * @version $Id: UrlConverter.java,v 1.5 2006-05-22 10:08:48 henk Exp $
+ * @version $Id: UrlConverter.java,v 1.6 2006-05-26 09:22:17 henk Exp $
  */
 public final class UrlConverter {
    // some constants.

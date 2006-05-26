@@ -37,7 +37,7 @@ import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.util.logging.*;
 
-import nl.mmatch.HtmlCleaner;
+import nl.leocms.util.tools.HtmlCleaner;
 
 /**
  * @author Edwin van der Elst

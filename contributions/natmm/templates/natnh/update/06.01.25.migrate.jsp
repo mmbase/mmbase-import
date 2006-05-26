@@ -1,4 +1,4 @@
-<%@page import="java.util.*,nl.leocms.util.*,nl.mmatch.HtmlCleaner" %>
+<%@page import="java.util.*,nl.leocms.util.*,nl.leocms.util.tools.HtmlCleaner" %>
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">

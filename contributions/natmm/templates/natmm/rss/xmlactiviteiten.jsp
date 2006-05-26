@@ -1,6 +1,6 @@
 <%@page session="false" contentType="text/xml; charset=utf-8"
 %><% response.setContentType("text/xml; charset=UTF-8"); 
-%><%@page import="java.util.Date,nl.leocms.evenementen.*,nl.mmatch.HtmlCleaner,nl.leocms.evenementen.Evenement"
+%><%@page import="java.util.Date,nl.leocms.evenementen.*,nl.leocms.util.tools.HtmlCleaner,nl.leocms.evenementen.Evenement"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@taglib uri="http://www.opensymphony.com/oscache" prefix="cache"
 %><mm:cloud jspvar="cloud"

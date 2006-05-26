@@ -31,14 +31,14 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import nl.mmatch.HtmlCleaner;
+import nl.leocms.util.tools.HtmlCleaner;
 
 /**
  * @todo javadoc
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 23-okt-2003
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class HtmlBuilder extends MMObjectBuilder {
    /** MMbase logging system */
