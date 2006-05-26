@@ -23,6 +23,7 @@
 	8. Changing templates.url from templates/*.jsp to *.jsp<br/>
 	9. Adding alias "natuurherstel_home" to the pagina Natuurherstel in Nederland<br/>
 	10. Adding the editwizards for the pages<br/>
+	11. Setting all rubrieken to visible<br/>
 	<span style="color:red;">Run <a href="/editors/util/fill_empty_par_title.jsp">fill empty par title</a> !!!</span><br/>
 	Processing...<br/>
 	<mm:listnodes type="rubriek" constraints="rubriek.naam='Natuurherstelprojecten in Nederland'">
@@ -191,6 +192,9 @@
 			<mm:setfield name="use_verloopdatum">0</mm:setfield>
 		</mm:node>
 	</mm:list>
+	<mm:listnodes type="rubriek">
+		<mm:setfield name="url">1</mm:setfield>
+	</mm:listnodes>
    Done.
    </body>
 </html>
