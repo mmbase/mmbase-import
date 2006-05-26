@@ -7,10 +7,12 @@ public class NatNHConfig {
    
    public final static String[] CONTENTELEMENTS = {  
       "artikel",
-     };
+      "images",
+   };
    
    public final static String[] PATHS_FROM_PAGE_TO_ELEMENTS = {  
-      "object,contentrel,pagina",                     // artikel
+      "object,contentrel,pagina",                 // artikel
+      "object,posrel,pagina",                     // images
    };
 	
 	public static int DEFAULT_STYLE = -1;

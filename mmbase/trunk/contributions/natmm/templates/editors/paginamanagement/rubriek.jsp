@@ -15,7 +15,7 @@
 	int DEFAULT_STYLE = -1;
 	String [] style1 = null;
 	String [] layout = null;
-   String cssPath = "";
+   String cssPath = null;
 	
 	ApplicationHelper ap = new ApplicationHelper();
 	// todo: create a more generic version for this piece of code
@@ -26,6 +26,12 @@
    	style1 = NatMMConfig.style1;
 		cssPath = NatMMConfig.cssPath;
    }
+	if(ap.isInstalled(cloud,"NatNH")) {
+	
+	   DEFAULT_STYLE = NatNHConfig.DEFAULT_STYLE;
+	   style1 = NatNHConfig.style1;
+		cssPath = NatNHConfig.cssPath;
+   }
 	if(ap.isInstalled(cloud,"NMIntra")) {
 	
 	   DEFAULT_STYLE = NMIntraConfig.DEFAULT_STYLE;
@@ -33,11 +39,19 @@
 		cssPath = NMIntraConfig.cssPath;
    }
 	
-	HashMap leocmsStyles = new HashMap();
+	String sWarning = "";
+	if(style1==null) {
+		sWarning += "WARNING: style1 is not defined by the available applications<br/>";
+		style1 = new String [1];
+	}
+   if(cssPath==null) {
+		sWarning += "WARNING: cssPath is not defined by the available applications<br/>";
+		cssPath = "";
+	}
+  	HashMap leocmsStyles = new HashMap();
 	for(int i=0; i< style1.length; i++) {
 		leocmsStyles.put(cssPath + style1[i] + ".css", style1[i]);
 	}
-	
    String rubriekSubsiteNodeNumber = "";
 %>
 <html>
@@ -47,7 +61,7 @@
 <title>Rubrieken</title>
 </head>
 <body>
-
+<% if(!sWarning.equals("")) { %><div style="color:red"><%= sWarning %></div><% } %>
 <logic:equal name="RubriekForm" property="node" value="">
 <h1>Rubriek toevoegen</h1>
 De nieuwe rubriek wordt een subrubriek van:
