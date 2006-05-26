@@ -43,7 +43,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  *
  * @author Nico Klasens (Finalist IT Group)
  * @created 23-okt-2003
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class HtmlBuilder extends MMObjectBuilder {
    /** MMbase logging system */
@@ -88,20 +88,21 @@ public class HtmlBuilder extends MMObjectBuilder {
       return node;
    }
 
-   public void delete(MMObjectNode node){
-      System.out.println("in delete");
+   public void removeNode(MMObjectNode node) {
+		
       MMBaseContext mc = new MMBaseContext();
       ServletContext application = mc.getServletContext();
-      HashMap hmUnusedItems = (HashMap)application.getAttribute("UnusedItems");
+      HashMap hmUnusedItems = (HashMap) application.getAttribute("UnusedItems");
       if (hmUnusedItems!=null){
          Set set = hmUnusedItems.entrySet();
          Iterator it = set.iterator();
          while (it.hasNext()) {
             Map.Entry me = (Map.Entry) it.next();
-            ArrayList alUnusedNodes = (ArrayList)me.getValue();
+            ArrayList alUnusedNodes = (ArrayList) me.getValue();
             if (alUnusedNodes.contains(node.getStringValue("number"))){
                alUnusedNodes.remove(node.getStringValue("number"));
                String account = (String) me.getKey();
+			      log.debug("removed node " + node.getNumber() + " from unused items of account " + account);
                if (alUnusedNodes.isEmpty()){
                   hmUnusedItems.remove(account);
                } else {
@@ -110,7 +111,7 @@ public class HtmlBuilder extends MMObjectBuilder {
             }
          }
       }
-      super.delete();
+      super.removeNode(node);
    }
 
    /** Cleans a field if it contains html junk.
