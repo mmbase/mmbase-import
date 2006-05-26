@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<%@page import="java.util.*,java.net.*,java.io.*,java.awt.*,org.mmbase.bridge.*,java.text.*,nl.mmatch.NatMMConfig" %>
+<%@page import="java.util.*,java.net.*,java.io.*,java.awt.*,org.mmbase.bridge.*,java.text.*" %>
 
 <mm:cloud name="mmbase" method="http" rank="basic user" jspvar="cloud">
 <mm:import externid="actie" jspvar="actie" id="actie"></mm:import>
@@ -354,7 +354,11 @@ String imgID = request.getParameter("img");	if (imgID == null || imgID.equals(""
       <body style="overflow:auto;">
       <img src="<mm:image template="<%=imgParams%>" />" alt="" border="0">
       <%
-      String toFile = NatMMConfig.tempDir+imgID+"crop.jpg";
+		String tempdir = System.getProperty("java.io.tmpdir");
+		if ( !(tempdir.endsWith("/") || tempdir.endsWith("\\")) ) {
+			tempdir += tempdir + System.getProperty("file.separator");
+		}
+      String toFile = tempdir+imgID+"crop.jpg";
       String my_imgUrl = "http://"+request.getServerName()+":"+request.getServerPort()+"/mmbase/images?"+icacheID; 
       %><!-- <%= my_imgUrl %> --><%
       URL url = new URL(my_imgUrl);

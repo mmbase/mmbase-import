@@ -6,6 +6,7 @@ import org.mmbase.bridge.*;
 import java.io.PrintWriter;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
+import nl.leocms.applications.NMIntraConfig;
 
 public class DirReader implements Runnable
 {
@@ -19,7 +20,7 @@ public class DirReader implements Runnable
    /***
    * utility function for merging a subtree to one page
    */   
-   public static void mergeSubtree(Cloud cloud, Node thisPage, Node subTreeDoc){
+   public static void mergeSubtree(Cloud cloud, Node thisPage, Node subTreeDoc) {
 
       Stack st = new Stack();
       st.push(subTreeDoc.getStringValue("number"));
@@ -115,8 +116,8 @@ public class DirReader implements Runnable
          documentsList.getNode(i).delete(true);
       }
       
-      String sDocumentRoot = nl.mmatch.NMIntraConfig.sDocumentsRoot;
-      String sDocumentUrl = nl.mmatch.NMIntraConfig.sDocumentsUrl;
+      String sDocumentRoot = NMIntraConfig.sDocumentsRoot;
+      String sDocumentUrl = NMIntraConfig.sDocumentsUrl;
       int iDocuments_rootLength = sDocumentRoot.length();
       File fDir = new File(sDocumentRoot);
       if (fDir.isDirectory()) {

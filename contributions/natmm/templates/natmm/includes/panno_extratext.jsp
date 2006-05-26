@@ -1,4 +1,4 @@
-<%@page import="nl.mmatch.HtmlCleaner,java.util.*" %>
+<%@page import="nl.leocms.util.tools.HtmlCleaner,java.util.*" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@include file="../includes/time.jsp" %>
 <mm:cloud jspvar="cloud">

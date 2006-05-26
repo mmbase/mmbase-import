@@ -9,15 +9,17 @@ import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
+
 import nl.leocms.evenementen.Evenement;
+import nl.leocms.applications.NatMMConfig;
+import nl.leocms.util.ApplicationHelper;
 
 /**
  * @ author Henk Hangyi (MMatch)
  */
-
 public class NatureReservesReader implements Runnable {
-
-   private String superSearchString(String searchText) {
+	
+	private String superSearchString(String searchText) {
      for(int charPos = 0; charPos < searchText.length(); charPos++){
         char c = searchText.charAt(charPos);
         if  (   !(('a'<=c)&&(c<='z'))
@@ -89,10 +91,8 @@ public class NatureReservesReader implements Runnable {
    
    private static final Logger log = Logging.getLoggerInstance(NatureReservesReader.class);
 
-   public void readFiles() { 
+   public void readFiles(Cloud cloud) { 
                 
-        Cloud cloud = CloudFactory.getCloud();
-        
         String logSubject = "Log import website";
 
         String toEmailAddress = NatMMConfig.toEmailAddress;
@@ -148,7 +148,11 @@ public class NatureReservesReader implements Runnable {
     
     public void run () {
       Thread kicker = getKicker();
-      log.info("run(): " + kicker); 
-      readFiles();
+      log.info("run(): " + kicker);
+		Cloud	cloud = CloudFactory.getCloud();
+		ApplicationHelper ap = new ApplicationHelper();
+		if(ap.isInstalled(cloud,"NatMM")) {
+			readFiles(cloud);
+		}
     }
 }

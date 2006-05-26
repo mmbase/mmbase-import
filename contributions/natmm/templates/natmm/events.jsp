@@ -1,7 +1,7 @@
 <%@page import="java.text.SimpleDateFormat,
    java.util.TreeSet,
    java.util.Iterator,
-   nl.mmatch.HtmlCleaner,
+   nl.leocms.util.tools.HtmlCleaner,
    nl.leocms.util.DoubleDateNode,
    nl.leocms.evenementen.forms.SubscribeForm,
    nl.leocms.evenementen.Evenement,

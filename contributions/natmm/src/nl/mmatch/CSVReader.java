@@ -10,6 +10,9 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import com.finalist.mmbase.util.CloudFactory;
 import nl.leocms.evenementen.Evenement;
+import nl.leocms.util.ApplicationHelper;
+import nl.leocms.util.tools.HtmlCleaner;
+import nl.leocms.applications.NatMMConfig;
 
 /**
  * Created by Henk Hangyi (MMatch)
@@ -915,14 +918,13 @@ public class CSVReader implements Runnable {
 
    private static final Logger log = Logging.getLoggerInstance(CSVReader.class);
 
-   public void readCSV(int importType) {
+   public void readCSV(Cloud cloud, int importType) {
 
         // HashMap user = new HashMap();
         // user.put("username","admin");
         // user.put("password","");
         // Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase","name/password",user);
 
-        Cloud cloud = CloudFactory.getCloud();
         MMBaseContext mc = new MMBaseContext();
         ServletContext application = mc.getServletContext();
         String requestUrl = (String) application.getAttribute("request_url");
@@ -1055,6 +1057,10 @@ public class CSVReader implements Runnable {
     public void run () {
       Thread kicker = getKicker();
       log.info("run(): " + kicker);
-      readCSV(this.importType);
+		Cloud cloud = CloudFactory.getCloud();
+		ApplicationHelper ap = new ApplicationHelper();
+		if(ap.isInstalled(cloud,"NatMM") || ap.isInstalled(cloud,"NMIntra")) {
+			readCSV(cloud, this.importType);
+		}
     }
 }

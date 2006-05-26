@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="java.util.*,nl.leocms.util.*,nl.mmatch.HtmlCleaner" %>
+<%@page import="java.util.*,nl.leocms.util.*,nl.leocms.util.tools.HtmlCleaner" %>
 <%@include file="../../includes/time.jsp" %>
 <%
 String dossierID = request.getParameter("d");

@@ -6,7 +6,7 @@ import java.text.*;
 
 import org.mmbase.util.logging.*;
 
-import nl.mmatch.NatNHConfig;
+import nl.leocms.applications.NatNHConfig;
 
 public class NatNHToNatMMigrator {
 

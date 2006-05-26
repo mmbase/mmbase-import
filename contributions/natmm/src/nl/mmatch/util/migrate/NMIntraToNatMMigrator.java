@@ -2,7 +2,7 @@ package nl.mmatch.util.migrate;
 
 import java.io.*;
 import java.util.*;
-import nl.mmatch.NMIntraConfig;
+import nl.leocms.applications.NMIntraConfig;
 import org.mmbase.util.logging.*;
 
 /*

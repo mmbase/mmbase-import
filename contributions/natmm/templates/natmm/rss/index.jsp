@@ -1,6 +1,6 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
-<%@page import="java.util.Date,nl.mmatch.HtmlCleaner" %>
+<%@page import="java.util.Date,nl.leocms.util.tools.HtmlCleaner" %>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <html>
    <head>

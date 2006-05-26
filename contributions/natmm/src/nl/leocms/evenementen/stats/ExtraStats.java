@@ -15,7 +15,7 @@ import jxl.write.Label;
 import jxl.write.WriteException;
 
 
-import nl.mmatch.NatMMConfig;
+import nl.leocms.applications.NatMMConfig;
 
 public class ExtraStats {
 

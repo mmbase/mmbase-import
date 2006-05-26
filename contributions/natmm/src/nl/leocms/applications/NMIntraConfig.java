@@ -1,5 +1,4 @@
-package nl.mmatch;
-
+package nl.leocms.applications;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
