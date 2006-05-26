@@ -137,7 +137,7 @@
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>itype</name>
-        <type state="persistent" size="32" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
       </db>
     </field>
 
