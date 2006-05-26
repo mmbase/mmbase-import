@@ -1,5 +1,5 @@
 NatMM - readme.txt
-Version: 06.05.19
+Version: 06.05.26
 Author: H. Hangyi (www.mmatch.nl)
 
 NatMM is an MMBase application which is based on LeoCMS, which is specially geared for use in
@@ -28,12 +28,13 @@ WHAT IS IN IT FOR YOU?
    generate statistics. See templates/natmm/doc/DatamodelCAD.doc for the datamodel and the GebruikershandleidingCAD*.doc
    for the user manuals. Unfortunately the user manuals are in Dutch.
 3. Preview functionality based on OSCache
-4. In the NatMM version of LeoCMS paragraph functionality has been added
-5. Image cropping (see natmm\templates\editors\util\image_crop.jsp). Build by C. Brands.
-6. Image bulk upload (see natmm\templates\editors\util\image_upload.jsp). Build by N. Bukharev.
-7. Creating navigation structure from Excel file. Build by A. Zemskov.
-8. Check on email addresses, Dutch zipcodes and bankaccounts (see natmm\src\nl\leocms\forms\MembershipForm.java)
-9. Example templates (see natmm\templates\natmm and nmintra) 
+4. In the NatMM version of LeoCMS paragraph functionality has been added. So each article can contain any number of paragraphs.
+5. Carbage can functionality, showing the users which of their contentelements are no longer in use and could be removed.
+6. Image cropping (see natmm\templates\editors\util\image_crop.jsp). Build by C. Brands.
+7. Image bulk upload (see natmm\templates\editors\util\image_upload.jsp). Build by N. Bukharev.
+8. Creating navigation structure from Excel file. Build by A. Zemskov.
+9. Check on email addresses, Dutch zipcodes and bankaccounts (see natmm\src\nl\leocms\forms\MembershipForm.java)
+10. Example templates (the most basic one is templates\natnh) 
    and the accompanying editwizards (see natmm\templates\mmbase\edit\wizard\data\config)
 
 WHAT IS THE BASIC STRUCTURE OF NATMM?
