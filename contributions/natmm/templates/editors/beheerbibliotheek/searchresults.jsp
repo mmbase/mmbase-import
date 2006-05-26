@@ -68,7 +68,9 @@ if (searchIsOn) {
 	
 	if (show_unused){
 		contentElementConstraint = " contentelement.number IN (0";
-		ArrayList alUnusedNodes = (ArrayList) session.getAttribute("unused_items");
+		HashMap hmUnusedItems = (HashMap)application.getAttribute("UnusedItems");
+		String account = cloud.getUser().getIdentifier();
+		ArrayList alUnusedNodes = (ArrayList)hmUnusedItems.get(account);
 		Iterator it = alUnusedNodes.iterator();
 		while (it.hasNext()){
 			contentElementConstraint += "," + it.next();
