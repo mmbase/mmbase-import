@@ -23,11 +23,16 @@ package nl.leocms.builders;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Map;
 import java.util.StringTokenizer;
+import javax.servlet.ServletContext;
 
 // hh: import org.mmbase.applications.wordfilter.WordHtmlCleaner;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -35,10 +40,10 @@ import nl.leocms.util.tools.HtmlCleaner;
 
 /**
  * @todo javadoc
- * 
+ *
  * @author Nico Klasens (Finalist IT Group)
  * @created 23-okt-2003
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class HtmlBuilder extends MMObjectBuilder {
    /** MMbase logging system */
@@ -83,8 +88,33 @@ public class HtmlBuilder extends MMObjectBuilder {
       return node;
    }
 
+   public void delete(MMObjectNode node){
+      System.out.println("in delete");
+      MMBaseContext mc = new MMBaseContext();
+      ServletContext application = mc.getServletContext();
+      HashMap hmUnusedItems = (HashMap)application.getAttribute("UnusedItems");
+      if (hmUnusedItems!=null){
+         Set set = hmUnusedItems.entrySet();
+         Iterator it = set.iterator();
+         while (it.hasNext()) {
+            Map.Entry me = (Map.Entry) it.next();
+            ArrayList alUnusedNodes = (ArrayList)me.getValue();
+            if (alUnusedNodes.contains(node.getStringValue("number"))){
+               alUnusedNodes.remove(node.getStringValue("number"));
+               String account = (String) me.getKey();
+               if (alUnusedNodes.isEmpty()){
+                  hmUnusedItems.remove(account);
+               } else {
+                  hmUnusedItems.put(account, alUnusedNodes);
+               }
+            }
+         }
+      }
+      super.delete();
+   }
+
    /** Cleans a field if it contains html junk.
-    * 
+    *
     * @param node Node of the field to clean
     * @param field Definition of field to clean
     */
@@ -103,9 +133,9 @@ public class HtmlBuilder extends MMObjectBuilder {
                // Edited value: clean.
                // hh: String newValue = WordHtmlCleaner.cleanHtml(originalValue);
                String newValue = HtmlCleaner.cleanHtml(originalValue);
-               
+
                node.setValue(fieldName, newValue);
-      
+
                if (log.isDebugEnabled()) {
                   if (!originalValue.equals(newValue)) {
                      log.debug("Replaced " + fieldName + " value \"" + originalValue + "\"\n \t by \n\"" + newValue + "\"");

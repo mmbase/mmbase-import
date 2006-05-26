@@ -126,7 +126,7 @@ public class ContentHelper {
       String thisType = (String) contentHelper.getNameWithOtype(otype);
       ArrayList cTypes = ContentTypeHelper.getContentTypes();
       cTypes.add("dossier");
-      NodeList nlUnusedItems = null;
+      NodeList nlUsedItems = null;
       boolean isList = false;
       for(int ct=0; ct < cTypes.size(); ct++) {
          String relatedType = ( (String) cTypes.get(ct)).toLowerCase();
@@ -139,18 +139,18 @@ public class ContentHelper {
                NodeList nl = node.getRelatedNodes(relatedType);
                if (nl.size() > 0) {
                   if (!isList) {
-                     nlUnusedItems = nl;
+                     nlUsedItems = nl;
                      isList = true;
                   } else {
-                     nlUnusedItems.addAll(nl);
+                     nlUsedItems.addAll(nl);
                   }
                }
             }
          }
       }
-      return nlUnusedItems;
+      return nlUsedItems;
    }
-	
+
   /*
     Returns ArrayList with contentelements used by user account
   */
