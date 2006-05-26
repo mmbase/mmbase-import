@@ -30,4 +30,7 @@ imageId = (String) ids.get("images");
 String rootId = ph.getRootRubriek(cloud, paginaID);
 String offsetId = request.getParameter("offset"); if(offsetId==null){ offsetId=""; }
 
+String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
+requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")) + "/"; 
+
 %>
