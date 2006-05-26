@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.13 2006-04-18 13:53:23 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.14 2006-05-26 18:32:06 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -463,7 +463,7 @@ public abstract class AbstractNode implements Node {
         Locale locale = getCloud().getLocale();
         while (fi.hasNext()) {
             Field field = fi.nextField();
-            if (! field.isReadOnly()) {
+            if (! field.isReadOnly() && !field.isVirtual()) {
                 // don't validate read-only fields. Users cannot have edited those.  Most noticably,
                 // the _number_ field must not be validated, because for new nodes it does not yet
                 // point to an existing node... I think the number field should not be a NODE field...
