@@ -7,20 +7,27 @@
 <link rel="stylesheet" type="text/css" href="../css/editorstyle.css">
 </head>
 <body style="overflow:auto;padding:5px;">
-<mm:listnodes type="paragraaf" constraints="titel=='' OR titel==' ' OR titel=='  ' OR titel=='    '"
-   ><mm:field name="tekst" jspvar="text" vartype="String" write="false"><% 
-      if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
-         text = HtmlCleaner.cleanText(text,"<",">","").trim();
-         int spacePos = text.indexOf(" ",50); 
-         if(spacePos>-1) { 
-             text = text.substring(0,spacePos);
-         }
-         %><mm:field name="number" /> - <%= text %><br/>
-         <mm:setfield name="titel"><%= text %></mm:setfield
-         ><mm:setfield name="titel_zichtbaar">0</mm:setfield><% 
-      } 
-   %></mm:field
-></mm:listnodes>
+<% 
+String [] otype = {  "paragraaf", "artikel" }; 
+String [] ofield = { "tekst", 	 "intro" };
+for(int i = 0; i<otype.length; i++ ) {
+	%> 
+	<mm:listnodes type="<%= otype[i] %>" constraints="titel=='' OR titel==' ' OR titel=='  ' OR titel=='    '"
+		><mm:field name="<%= ofield[i] %>" jspvar="text" vartype="String" write="false"><% 
+			if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { 
+				text = HtmlCleaner.cleanText(text,"<",">","").trim();
+				int spacePos = text.indexOf(" ",50); 
+				if(spacePos>-1) { 
+					 text = text.substring(0,spacePos);
+				}
+				%><mm:field name="number" /> - <%= text %><br/>
+				<mm:setfield name="titel"><%= text %></mm:setfield
+				><mm:setfield name="titel_zichtbaar">0</mm:setfield><% 
+			} 
+		%></mm:field
+	></mm:listnodes>
+	<%
+} %>
 </table>
 </body>
 </html>
