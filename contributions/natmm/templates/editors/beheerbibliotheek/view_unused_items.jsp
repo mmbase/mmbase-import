@@ -7,7 +7,7 @@
                  java.util.ArrayList,
                  nl.leocms.util.PropertiesUtil,
                  nl.leocms.authorization.*,
-                 org.mmbase.util.logging.*" %>
+                 org.mmbase.util.logging.*,nl.leocms.content.*" %>
 <%@include file="/taglibs.jsp" %>
 <mm:import externid="language">nl</mm:import>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
@@ -39,8 +39,18 @@
       </script>
    </head>
 	<body>
+		<form>
 		<% boolean show_unused = true;
 			searchIsOn = true; %>
 		<%@include file="searchresults.jsp" %>
+		<% String checked = request.getParameter("popupEditWizards");
+         checked = ((checked != null) && (checked.equals("on"))) ? "checked" : ""; %>
+      &nbsp;&nbsp;<input type="checkbox" name="popupEditWizards" <%=checked%>>Contentelement openen in popup
+      </p>
+		</form>
+		<form action="../../editors/WizardInitAction.eb" method="post" name="callEditwizardForm">
+      <input type="hidden" name="objectnumber"/>
+      <input type="hidden" name="returnurl" value="/editors/beheerbibliotheek/view_unused_items.jsp">
+   </form>
 	</body>
 </mm:cloud>

@@ -44,19 +44,17 @@
    boolean isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
    String rubriekID = "";
    boolean hasEditwizards = false;
-	ArrayList alUnusedNodes = (ArrayList) session.getAttribute("unused_items");
+	//ArrayList alUnusedNodes = (ArrayList) session.getAttribute("unused_items");
+	HashMap hmUnusedItems = (HashMap)application.getAttribute("UnusedItems");
+	
 	int iTotalNotUsed = 0;
-	if (alUnusedNodes != null){
+	if (hmUnusedItems != null){
+		String account = cloud.getUser().getIdentifier();
+		ArrayList alUnusedNodes = (ArrayList)hmUnusedItems.get(account);
 		iTotalNotUsed = alUnusedNodes.size();
 	}	
 	else {
-		String account = cloud.getUser().getIdentifier();
-		ContentHelper contentHelper = new ContentHelper(cloud);
-		ArrayList cTypes = ContentTypeHelper.getContentTypes();
-   	cTypes.add("dossier");
-		alUnusedNodes = contentHelper.getUnusedItems(account);
-		iTotalNotUsed = alUnusedNodes.size();
-      session.setAttribute("unused_items",alUnusedNodes);
+		(new nl.leocms.content.UpdateUnusedElements()).run();
 	} %>
 <mm:listnodes type="users" constraints="<%= "[account]='" + cloud.getUser().getIdentifier() + "'" %>" max="1" id="thisuser">
    <mm:related path="rolerel,rubriek" max="1">
@@ -74,7 +72,7 @@
 </mm:listnodes>
 <h1 style="text-align:center;width:100%;">Beheeromgeving <mm:node number="root" notfound="skipbody"><mm:field name="naam" /></mm:node></h1>
 <table class="formcontent" style="background-color:#E4F0F7;width:auto;"><tr>
-<%
+<% 
 if(rubriekID.equals("naardermeer")) { 
    %>
    <td class="fieldname"><a href="/naardermeer" target="_blank" class='menu'>Website</a></td>
