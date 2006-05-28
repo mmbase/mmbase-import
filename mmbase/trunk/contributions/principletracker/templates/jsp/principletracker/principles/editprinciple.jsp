@@ -17,7 +17,7 @@
   <th>Principle information</th>
 </tr>
 <tr>
-  <td width="70%">
+  <td align="left" width="70%">
     <b>Qualification</b><br />
     <select name="newqualification"><mm:field name="qualification"><mm:compare value="Binding"><option>Binding<option>Strong rule<option>Light rule</mm:compare><mm:compare value="Strong rule"><option>Binding<option selected>Strong rule<option>Light rule</mm:compare><mm:compare value="Light rule"><option>Binding<option>Strong rule<option selected>Light rule</mm:compare></mm:field></select><br /><br />
 
@@ -27,7 +27,7 @@
     <b>Explanation</b><br />
     <textarea name="newexplanation" rows="10" style="width: 95%"><mm:field name="explanation" /></textarea><br /><br />
 
-    <b>Argumenation</b><br />
+    <b>Argumentation</b><br />
     <textarea name="newargumentation" rows="10" style="width: 95%"><mm:field name="argumentation" /></textarea><br /></br />
 
     <b>Consequence</b><br />
@@ -39,7 +39,7 @@
     <b>Source</b><br />
     <textarea name="newsource" rows="2" style="width: 95%"><mm:field name="source" /></textarea><br /></br />
   </td>
-  <td valign="top" width="30%">
+  <td align="left" valign="top" width="30%">
       <b>Number : </b><input name="newprinciplenumber" size="4" value="<mm:field name="principlenumber" />" /><br /><br />
        <mm:import id="version"><mm:field name="version" /></mm:import>
       <b>Version : </b><input name="newversion" size="6" value="<mm:field name="version" />" /> autoversion <input type="checkbox" name="autoversion" value="true" checked /> <mm:function set="principletracker" name="getNextPatchLevel" referids="version" /><br /><br />
@@ -60,8 +60,8 @@
 <td align="right" colspan="2">
 <input type="hidden" name="action" value="updateprinciple" />
 save <input type="image" src="images/mmbase-ok.gif" />
-</form>
 &nbsp;&nbsp;&nbsp;cancel <a href="<mm:url page="index.jsp" referids="main,principleid,principlerelid,principleset" ><mm:param name="sub">principle</mm:param></mm:url>"><img src="images/mmbase-cancel.gif" border="0"></a>
+</form>
 </td>
 </tr>
 </table>

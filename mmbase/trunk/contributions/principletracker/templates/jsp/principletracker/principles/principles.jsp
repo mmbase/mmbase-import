@@ -30,7 +30,7 @@
 	    <mm:list>
             <tr>
 	    <td><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.principlenumber" /></a></td>
-	    <td><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.name" /></a></td>
+	    <td align="left"><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.name" /></a></td>
 	    <td width="24"><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><img src="images/mmbase-right.gif" border="0" /></a></td>
             </tr>
 	    </mm:list>
@@ -51,7 +51,7 @@
 	    <mm:list>
             <tr>
 	    <td><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.principlenumber" /></a></td>
-	    <td><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.name" /></a></td>
+	    <td align="left"><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.name" /></a></td>
 	    <td width="24"><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><img src="images/mmbase-right.gif" border="0" /></a></td>
             </tr>
 	    </mm:list>
