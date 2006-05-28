@@ -21,11 +21,11 @@
 <tr>
  <mm:listnodes type="principlesets">
   <tr>
-     <td><a href="<mm:url page="index.jsp"><mm:param name="main">principles</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="name" /></a></td>
-     <td><a href="<mm:url page="index.jsp"><mm:param name="main">principles</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="description" /></a></td>
-     <td><a href="<mm:url page="index.jsp"><mm:param name="main">principles</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><mm:aliaslist><mm:write /></mm:aliaslist></a></td>
-     <td><a href="<mm:url page="index.jsp" referids="main"><mm:param name="sub">editprincipleset</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><img src="images/mmbase-edit.gif" border="0" align="right"></a></td>
-     <td><a href="<mm:url page="index.jsp" referids="main"><mm:param name="sub">deleteprincipleset</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><img src="images/mmbase-delete.gif" border="0" align="right"></a></td>
+     <td align="left"><a href="<mm:url page="index.jsp"><mm:param name="main">principles</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="name" /></a></td>
+     <td align="left"><a href="<mm:url page="index.jsp"><mm:param name="main">principles</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><mm:field name="description" /></a></td>
+     <td align="left"><a href="<mm:url page="index.jsp"><mm:param name="main">principles</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><mm:aliaslist><mm:write /></mm:aliaslist></a></td>
+     <td align="center" width="15"><a href="<mm:url page="index.jsp" referids="main"><mm:param name="sub">editprincipleset</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><img src="images/mmbase-edit.gif" border="0" align="right"></a></td>
+     <td align="center" width="15"><a href="<mm:url page="index.jsp" referids="main"><mm:param name="sub">deleteprincipleset</mm:param><mm:param name="principleset"><mm:field name="number" /></mm:param></mm:url>"><img src="images/mmbase-delete.gif" border="0" align="right"></a></td>
   </tr>
  </mm:listnodes>
 <tr>
@@ -42,7 +42,7 @@
 	</th>
 </tr>
 <tr>
-	<td>
+	<td align="left">
 In most cases you will only have 1 set of principles (for example the princples for the MMBase Opensource Project). <br /><br  />
 This applications allows you to create more for example if you want a test set or are working on a whole new set and don't want to mix them just yet.<br /><br />
  But if you (most likely) only have one (or a prefered one) you can add a alias called 'Principle.default' and this application will open not on this page but on the principles page with that set as the default.<br /><br /><br />

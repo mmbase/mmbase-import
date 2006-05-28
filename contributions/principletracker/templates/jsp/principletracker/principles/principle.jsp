@@ -13,10 +13,10 @@
 <mm:node referid="principleid">
 <tr>
   <th><a href="<mm:url page="index.jsp" referids="main,principleset" />"><img src="images/mmbase-left.gif" border="0" align="left"></a> Principle description</th>
-  <th>Principle information</th>
+  <th>Principle tinformation</th>
 </tr>
 <tr>
-  <td width="70%">
+  <td align="left" width="70%">
     <b>Qualification</b><br />
     <mm:field name="qualification" /><br /><br />
 
@@ -26,7 +26,7 @@
     <b>Explanation</b><br />
     <mm:field name="explanation" escape="p" /><br /><br />
 
-    <b>Argumenation</b><br />
+    <b>Argumentation</b><br />
     <mm:field name="argumentation" escape="p"/><br /></br />
 
     <b>Consequence</b><br />
@@ -38,7 +38,7 @@
     <b>Source</b><br />
     <mm:field name="source" escape="p"/><br /></br />
   </td>
-  <td valign="top" width="30%">
+  <td  align="left" valign="top" width="30%">
       <b>Number : </b><mm:field name="principlenumber" id="principlenumber" /><br /><br />
       <b>Version : </b><mm:field name="version" /><br /><br />
       <b>State : </b><mm:node referid="principlerelid"><mm:field name="state" /></mm:node><br /><br />

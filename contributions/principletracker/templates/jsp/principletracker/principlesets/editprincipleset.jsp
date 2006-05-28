@@ -13,7 +13,7 @@
   <th><a href="<mm:url page="index.jsp" referids="main" />"><img src="images/mmbase-left.gif" align="left" border="0"></a> PrincipleSet description</th>
 </tr>
 <tr>
-  <td>
+  <td align="left">
     <b>Name</b><br />
     <input name="newname" size="20" value="<mm:field name="name" />" /><br /><br />
     <b>Description</b><br />
@@ -29,8 +29,8 @@
 <td align="right" colspan="2">
 <input type="hidden" name="action" value="updateprincipleset" />
 save <input type="image" src="images/mmbase-ok.gif" />
-</form>
 &nbsp;&nbsp;&nbsp;cancel <a href="<mm:url page="index.jsp" referids="main" />"><img src="images/mmbase-cancel.gif" border="0"></a>
+</form>
 </td>
 </tr>
 </table>

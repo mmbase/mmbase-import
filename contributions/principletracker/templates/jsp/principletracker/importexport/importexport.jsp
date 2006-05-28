@@ -11,7 +11,7 @@
   <th><a href="<mm:url page="index.jsp" referids="main" />"><img src="images/mmbase-left.gif" align="left" border="0"></a> Import/Export principlesets</th>
 </tr>
 <tr>
-	<td>
+	<td align="left">
 	The following commands can be used to export and import sets of principles, Use with care. 
 	</td>
 </tr>
@@ -26,7 +26,7 @@
 	<form action="<mm:url page="index.jsp" referids="main" />" method="post">
 	<input name="action" type="hidden" value="exportprincipleset" />
 
-	<td>
+	<td align="left">
 		<br />
 		Export set <select name="exportsetid">
 			<mm:listnodes type="principlesets">
@@ -63,7 +63,7 @@
   <th align="left">Tips :</th>
 </tr>
 <tr>
- <td>
+ <td align="left">
 	<br />
 	On importing if no name is provided we will take the name defined in the xml file you are loading. You can download from 'Resources' if you start with either 'config/' or 'html/' the examples are for example in the mmbase-principletracker.jar.
 	<br /><br />
