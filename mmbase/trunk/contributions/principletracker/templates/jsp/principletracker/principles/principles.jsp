@@ -27,7 +27,7 @@
 	<mm:listcontainer path="principlesets,principlerel,principle" fields="principle.principlenumber,principle.name,principlerel.state,principlesets.number">
 	<mm:constraint field="principlesets.number" operator="EQUAL" value="$principleset" />
 	<mm:constraint field="principlerel.state" operator="EQUAL" value="active" />
-	    <mm:list>
+	    <mm:list orderby="principle.principlenumber">
             <tr>
 	    <td><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.principlenumber" /></a></td>
 	    <td align="left"><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.name" /></a></td>
@@ -48,7 +48,7 @@
 	<mm:listcontainer path="principlesets,principlerel,principle" fields="principle.principlenumber,principle.name,principlerel.state,principlesets.number">
 	<mm:constraint field="principlesets.number" operator="EQUAL" value="$principleset" />
 	<mm:constraint field="principlerel.state" operator="EQUAL" value="active" />
-	    <mm:list>
+	    <mm:list orderby="principle.principlenumber">
             <tr>
 	    <td><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.principlenumber" /></a></td>
 	    <td align="left"><a href="<mm:url page="index.jsp" referids="main,principleset"><mm:param name="sub">principle</mm:param><mm:param name="principleid"><mm:field name="principle.number" /></mm:param><mm:param name="principlerelid"><mm:field name="principlerel.number" /></mm:param></mm:url>"><mm:field name="principle.name" /></a></td>
