@@ -7,7 +7,7 @@
 
     <date>2005-12-09</date>
 
-    <edition>$Id: richtext.xml,v 1.2 2005-12-10 16:38:03 henk Exp $</edition>
+    <edition>$Id: richtext.xml,v 1.3 2006-05-29 11:15:25 michiel Exp $</edition>
 
     <authorgroup>
       <!---->
@@ -113,12 +113,6 @@
         </listitem>
 
         <listitem>
-          <para>the wizard names in the present implementation in the
-          directory /richtext/edit are quite confusing because they contain a
-          comma ",". An example is /richtext/edit/kupu,news.xml</para>
-        </listitem>
-
-        <listitem>
           <para>saving an reference to an image is not picked up correctly in
           Internet Explorer. Sometimes .&lt;img
           src="/richtext/mmbase/images/1183" alt="MMBeest" class="image-right"
@@ -128,10 +122,6 @@
           id="_1134140609"/&gt;.</para>
         </listitem>
 
-        <listitem>
-          <para>the {INITPARAM.npbsales.home} from the example was not used in
-          the urls when the parameter was in inserted in the web.xml.</para>
-        </listitem>
       </orderedlist>
     </note>
   </section>
@@ -294,15 +284,15 @@
           </row>
 
           <row>
-            <entry>&amp;wizard=kupu,news (note the , is part of the filename;
-            this will be change in the final release because it is too
-            confusing)</entry>
+            <entry>&amp;wizard=kupu/news</entry>
 
-            <entry>this is the editwizard definition used by list.jsp. This
-            editwizard are located in the directory of the calling page,
-            /richtext/edit. The only actions in the kupu,news.xml that are
-            relevant when using the richtext editor are the create and delete
-            action.</entry>
+            <entry>
+              This is the editwizard definition used by list.jsp. This
+              editwizard are located in the directory of the calling page,
+              /richtext/edit. The only actions in the kupu/news.xml that are
+              relevant when using the richtext editor are the create and delete
+              action. 
+            </entry>
           </row>
 
           <row>
@@ -490,7 +480,7 @@
       the mmbase-richtext.jar in your distribution. If you have a archiving
       tool which can uncompress jar-files you will find the file in the
       /config/xslt directory of this jar. In the MMBase CVS the file is
-      located in applications\richtext\config\xslt.</para>
+      located in applications/richtext/config/xslt.</para>
 
       <para>The mm:xslt/2xhtml.xslt contains extends from mmxf2xhtml.xslt. In
       the mm:xslt/2xhtml.xslt the link to objects related to the richtext
