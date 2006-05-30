@@ -61,6 +61,18 @@
 		</return> 
 	</function>
 
+
+	<function name="docbookPrincipleSet">
+		<description>write a docbook of a principle set</description>
+		<type>class</type>
+		<class>org.mmbase.applications.principletracker.Controller</class>
+		<method>exportToDocbook</method>
+                <param name="exportsetid" type="String" description="defined setid" />
+                <param name="filepath" type="String" description="file path" />
+		<return type="String"> 
+		</return> 
+	</function>
+
 	<function name="importPrincipleSet">
 		<description>export a set of principles</description>
 		<type>class</type>
