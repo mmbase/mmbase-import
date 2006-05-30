@@ -111,7 +111,7 @@
       <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filename</name>
-        <type state="system" size="255" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
