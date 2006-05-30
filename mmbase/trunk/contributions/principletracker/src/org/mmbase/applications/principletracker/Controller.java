@@ -144,6 +144,7 @@ public class Controller {
       return -1;
     }
 
+
     public String getNextPrincipleNumber(String principleset) {
 	    // since i didn't want to enforce int only numbers
 	    // but to want to help and and guess the next number
@@ -210,6 +211,97 @@ public class Controller {
 		}
 	    }
 	    body += "</principleset>\n";
+            File sfile = new File(filepath);
+            try {
+                DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+                scan.writeBytes(body);
+                scan.flush();
+                scan.close();
+            } catch(Exception e) {
+                log.error(Logging.stackTrace(e));
+            }
+	} else {
+		log.error("Set node found");
+		return "set not found";
+	}
+	return "saved";
+    }
+
+
+    public String exportToDocbook(String setid,String filepath) {
+	org.mmbase.bridge.Node node=cloud.getNode(setid);
+	if (node!=null) {
+	    String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	    body += "<!DOCTYPE article PUBLIC \"-//OASIS//DTS DocBook XML V4.1.2//EN\" \"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd\">\n";
+	    body += "<article>\n";
+	    body += "  <articleinfo>\n";
+	    body += "    <title>MMBase princinples (demo version)</title>\n";
+	    body += "    <date>"+(new Date()).toString()+"</date>\n";
+	    body += "    <edition>$Id: Controller.java,v 1.6 2006-05-30 21:08:11 daniel Exp $</edition>\n";
+	    body += "    <authorgroup>\n";
+	    body += "      <author>\n";
+	    body += "        <firstname>MMBase</firstname><surname>Community</surname>\n";
+	    body += "        <affiliation><orgname>MMBase.org</orgname></affiliation>\n";
+	    body += "      </author>\n";
+	    body += "    </authorgroup>\n";
+	    body += "    <legalnotice>\n";
+	    body += "      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>\n";
+	    body += "      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url=\"http://www.mmbase.org/license\">http://www.mmbase.org/license</ulink></para>\n";
+	    body += "    </legalnotice>\n";
+	    body += "  </articleinfo>\n";
+	    //
+            NodeManager principlesetsmanager = cloud.getNodeManager("principlesets");
+            NodeManager principlerelmanager = cloud.getNodeManager("principlerel");
+            NodeManager principlemanager = cloud.getNodeManager("principle");
+            Query query = cloud.createQuery();
+            Step step1 = query.addStep(principlesetsmanager);
+            RelationStep step2 = query.addRelationStep(principlemanager,"principlerel","BOTH");
+            Step step3 = step2.getNext();
+
+            StepField f1 = query.addField(step1, principlesetsmanager.getField("number"));
+            StepField f3 = query.addField(step2,principlerelmanager.getField("state"));
+            StepField f4 = query.addField(step3, principlemanager.getField("principlenumber"));
+            query.addField(step3, principlemanager.getField("name"));
+
+            query.addSortOrder(f4, SortOrder.ORDER_ASCENDING);
+
+            query.setConstraint(query.createConstraint(f1, new Integer(setid)));
+            NodeIterator i2 = cloud.getList(query).nodeIterator();
+	    int newcount = 0;
+	    int newthreadcount = 0;
+            while (i2.hasNext()) {
+                org.mmbase.bridge.Node n2 = i2.nextNode();
+		String setname = n2.getStringValue("principlesets.name");
+		String state =n2.getStringValue("principlerel.state");
+		String name = n2.getStringValue("principle.name");
+		String principlenumber = n2.getStringValue("principle.principlenumber");
+		String qualification = n2.getStringValue("principle.qualification");
+		String themes = n2.getStringValue("principle.theme");
+		String version = n2.getStringValue("principle.version");
+		String explanation = n2.getStringValue("principle.explanation");
+		String argumentation = n2.getStringValue("principle.argumentation");
+		String consequence = n2.getStringValue("principle.consequence");
+		String allowedimpl = n2.getStringValue("principle.allowedimpl");
+		String source = n2.getStringValue("principle.source");
+		if (state.equals("active")) {
+	            body += "  <section>\n";
+	            body += "    <title>"+principlenumber+") "+name+"</title>\n";
+		    body += "    <para>\n";
+		    body += "    <itemizedlist>\n";
+	            body += "    <listitem><para><![CDATA[State : "+state+"\n\n]]></para></listitem>\n";
+	            body += "    <listitem><para><![CDATA[Version : "+version+"\n\n]]></para></listitem>\n";
+	            body += "    <listitem><para><![CDATA[Themes : "+themes+"\n\n]]></para></listitem>\n";
+	            body += "    <listitem><para><![CDATA[Argumentation : "+argumentation+"\n\n]]></para></listitem>\n";
+	            body += "    <listitem><para><![CDATA[Explenation : "+explanation+"\n\n]]></para></listitem>\n";
+	            body += "    <listitem><para><![CDATA[Consequence : "+consequence+"\n\n]]></para></listitem>\n";
+	            body += "    <listitem><para><![CDATA[Allowed Implementation : "+allowedimpl+"\n\n]]></para></listitem>\n";
+	            body += "    <listitem><para><![CDATA[Source : "+source+"\n\n]]></para></listitem>\n";
+		    body += "    </itemizedlist>\n";
+		    body += "    </para>\n";
+	            body += "  </section>\n";
+		}
+	    }
+	    body += "</article>\n";
             File sfile = new File(filepath);
             try {
                 DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
