@@ -116,7 +116,7 @@
       </editor>
       <db>
         <name>description</name>
-        <type state="persistent" size="1024" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="1024" notnull="false" key="false">STRING</type>
       </db>
     </field>
 
@@ -229,7 +229,7 @@
       <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>filename</name>
-        <type state="system" size="255" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
 
