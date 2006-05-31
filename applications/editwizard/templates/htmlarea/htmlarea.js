@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.13 2006-05-08 20:19:54 michiel Exp $
+// $Id: htmlarea.js,v 1.14 2006-05-31 13:55:37 johannes Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
@@ -1406,7 +1406,6 @@ HTMLArea.prototype._createLink = function(link) {
                 f_title  : link.title,
                 f_target : link.target
         };
-	alert("godverdomme");
         this._popupDialog("link.html", function(param) {
                 if (!param)
                         return false;
