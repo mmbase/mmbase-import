@@ -21,7 +21,7 @@ if(thisEvent.getLongValue("einddatum") * 1000 < (new Date()).getTime()) {
       ticketIcon = "../img/ticket_waitingforconfirm.gif";
       altText = "Deze groepsexcursie moet nog worden bevestigd.";
    } else {
-      ticketIcon = "../img/ticket_no.gif";
+      ticketIcon = "../img/ticket_fully_booked.gif";
       altText = "Het maximum aantal deelnemers voor deze activiteit is bereikt";
    }
 
