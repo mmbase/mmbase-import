@@ -1,12 +1,14 @@
-<%@include file="../../includes/templateheader.jsp" %>
+<%@include file="../../nmintra/includes/templateheader.jsp" %>
 <%@ page import="java.util.*" %>
+<%@ page import="nl.leocms.util.tool.*" %>
 <mm:cloud>
 <html>
 <head><link rel="stylesheet" type="text/css" href="/css/website.css"></head>
 <body>
 
 Saving stats ...<br>
-<%@include file="saveToday.jsp" %>
+<% SimpleStats ss = new SimpleStats();
+	ss.saveLast(application); %>
 pageCount = <%= pageCounter %><br>
 <% HashSet visitorsSessions = (HashSet) application.getAttribute("visitorsSessions"); %>
 visitorsSessions = <%= visitorsSessions %><br>
