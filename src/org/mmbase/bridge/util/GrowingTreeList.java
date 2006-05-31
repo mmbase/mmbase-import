@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.15 2006-03-14 17:49:37 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.16 2006-05-31 13:52:54 johannes Exp $
  * @since   MMBase-1.7
  */
 
@@ -235,7 +235,7 @@ public  class GrowingTreeList extends TreeList {
 
         GrowingTreeList tree = new GrowingTreeList(q, 40, object, "index", "destination");
 
-        String text = "godverdomme";
+        String text = "Exodus 20, vers 7";
         NodeQuery temp = tree.getTemplate();
         Queries.addSortOrders(temp, "index.pos", "up");
         NodeQuery template = tree.getLeafTemplate();
