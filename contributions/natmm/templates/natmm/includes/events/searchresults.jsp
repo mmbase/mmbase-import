@@ -177,9 +177,12 @@ try{
                   <% if(nl.leocms.evenementen.Evenement.isFullyBooked(parentEvent,evenement)) { 
                         %><b>Volgeboekt</b><% 
                      } else if(nl.leocms.evenementen.Evenement.subscriptionClosed(parentEvent,evenement)) {
-                        %><b>Aanmelding is gesloten</b><%
+                        %><b>Aanmelding is gesloten (*)</b><%
+                        containsSubscriptionClosed = true;
                      }
-                     if(evenement.getStringValue("iscanceled").equals("true")) { %><b>Helaas kan deze activiteit niet doorgaan.</b><% } %>
+                     if(evenement.getStringValue("iscanceled").equals("true")) {
+                        %><b>Helaas kan deze activiteit niet doorgaan.</b><% 
+                     } %>
               </mm:node>
               <mm:present referid="imageused"></td></tr></table></mm:present>
             </td>
@@ -194,4 +197,3 @@ try{
    } %>   
 </table>
 <br/>
-   

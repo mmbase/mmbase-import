@@ -78,7 +78,8 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
             }
          
          } else {
-           
+         
+            boolean containsSubscriptionClosed = false;
             if(!evenementID.equals("-1")) { 
             
          	   %><jsp:include page="includes/events/details.jsp">
@@ -116,9 +117,17 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
                   <jsp:param name="rs" value="<%= styleSheet %>" />
    			      <jsp:param name="sr" value="2" />
    			   </jsp:include>
-            </td><%
-            
-          } %>
+   			   <%
+               if(containsSubscriptionClosed) { 
+                  %>
+                  <table class="dotline"><tr><td height="3"></td></tr></table>
+                  <b>(*) Het via internet aanmelden voor deze activiteit is gesloten.
+                  Telefonisch aanmelden is misschien nog wel mogelijk. Zie de beschrijving 
+                  van de activiteit voor meer details en het telefoonnummer.
+                  <%
+               }
+            } %>
+            </td>
    </tr>
 </table>
 <a name="bottom"></a>
