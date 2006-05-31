@@ -1,7 +1,11 @@
-<%@include file="../includes/templateheader.jsp" %>
-<mm:cloud>
-<%@ page import="java.util.*" %>
-<%@ page import="java.text.*" %>
+<%@include file="/taglibs.jsp" %>
+<%@page import="nl.leocms.authorization.*,java.util.*,java.text.*,
+         nl.leocms.authorization.forms.ChangePasswordAction,
+         com.finalist.mmbase.util.CloudFactory,
+         org.mmbase.bridge.Cloud,
+         org.mmbase.bridge.Node" %>
+
+<mm:cloud method="http" rank="basic user" jspvar="cloud">
 
 <%! public Calendar addPeriod(Calendar cal, int period) {
         int offset = 1;
@@ -17,7 +21,7 @@
     }
 %>
 
-<%  Calendar cal = Calendar.getInstance();
+<% Calendar cal = Calendar.getInstance();
     Date dd = new Date();
 
     cal.setTime(dd);
@@ -73,11 +77,15 @@
 %>
 
 <%  String templateTitle = "";
-    pageId = "statistieken";
-    articleId = fromTime + "_" + toTime + "_" + selection;
+    String pageId = "statistieken";
+    String articleId = fromTime + "_" + toTime + "_" + selection;
 %>
 
-<%@include file="../includes/cacheopen.jsp" %>
+<%	int expireTime =  3600*24*365; // cache for one year
+	String cacheKey = templateTitle + "~" + pageId  + "~" + articleId;
+%>
+<!-- cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" -->
+<!-- <%= new java.util.Date() %> -->
 
 <html>
 <head>
@@ -147,23 +155,23 @@
         </td>
         <td>
             <a href="stats.jsp?action=this" onClick="return startSearch(this);"
-                onmouseover="changeImages('this', '../media/go_mo.gif'); window.status=''; return true;"
-                onmouseout="changeImages('this', '../media/go.gif'); window.status=''; return true;">
-                <img alt="Toon deze periode" src="../media/go.gif" border='0' name='this'></a>
+                onmouseover="changeImages('this', 'media/go_mo.gif'); window.status=''; return true;"
+                onmouseout="changeImages('this', 'media/go.gif'); window.status=''; return true;">
+                <img alt="Toon deze periode" src="media/go.gif" border='0' name='this'></a>
         </td>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <% if(period>0) { %>
         <td>
             <a href="stats.jsp?action=previous" onClick="return startSearch(this);"
-                onmouseover="changeImages('previous', '../media/previous_mo.gif'); window.status=''; return true;"
-                onmouseout="changeImages('previous', '../media/previous.gif'); window.status=''; return true;">
-                <img alt="Toon vorige periode" src="../media/previous.gif" border='0' name='previous'></a>
+                onmouseover="changeImages('previous', 'media/previous_mo.gif'); window.status=''; return true;"
+                onmouseout="changeImages('previous', 'media/previous.gif'); window.status=''; return true;">
+                <img alt="Toon vorige periode" src="media/previous.gif" border='0' name='previous'></a>
         </td>
         <td>
             <a href="stats.jsp?action=next" onClick="return startSearch(this);"
-                onmouseover="changeImages('next', '../media/next_mo.gif'); window.status=''; return true;"
-                onmouseout="changeImages('next', '../media/next.gif'); window.status=''; return true;">
-                <img alt="Toon volgende periode" src="../media/next.gif" border='0' name='next'></a>
+                onmouseover="changeImages('next', 'media/next_mo.gif'); window.status=''; return true;"
+                onmouseout="changeImages('next', 'media/next.gif'); window.status=''; return true;">
+                <img alt="Toon volgende periode" src="media/next.gif" border='0' name='next'></a>
         </td>
         <% } %>
     </tr>
@@ -180,134 +188,85 @@
 <br><br>
 
 <%  String timeConstraint =  "mmevents.start > " + fromTime;
-    if(period>0) timeConstraint += " AND mmevents.start < " + toTime ; %>
-
-<%@include file="saveToday.jsp" %>
-
-<%  int maxPageCount = 1;
-    int totalPages = 0; 
-    Hashtable pageCounts = new Hashtable();
-%>
-<%-- the following count does not take care of double and not attached pages,
-    this will lead to minor deviations when using the selection --%>
-<mm:listnodes type="page">
-    <mm:field name="number" jspvar="page_number" vartype="String" write="false">
-        <% int pageCount = 0; %>
-        <mm:list nodes="<%= page_number %>" path="page,posrel,mmevents" fields="posrel.pos" 
-            constraints="<%= timeConstraint %>" >
-            <mm:field name="posrel.pos" jspvar="page_count" vartype="Integer" write="false">
-                <% pageCount += page_count.intValue(); %>
-            </mm:field>
-        </mm:list>
-        <%  if(pageCount>maxPageCount) maxPageCount = pageCount; 
-            Integer numberOfPages = (Integer) pageCounts.get(new Integer(pageCount));
-            if(numberOfPages==null) numberOfPages = new Integer(0);
-            pageCounts.put(new Integer(pageCount),new Integer(numberOfPages.intValue()+1)); 
-            totalPages++;
-        %>
-    </mm:field>
-</mm:listnodes>
-
-<%-- throw away pages untill selection is satisfied --%>
-<%  int pageCountTD = 0;
-    int surplus = totalPages - selection;
-    if(selection==-1) surplus = 0;
-    while(surplus>0) {
-        Integer numberOfPages = (Integer) pageCounts.get(new Integer(pageCountTD));
-        if(numberOfPages==null) {
-            pageCountTD++;
-        } else {
-            int nOP = numberOfPages.intValue();
-            if(surplus>=nOP) {
-                pageCounts.remove(new Integer(pageCountTD));
-                totalPages = totalPages - nOP;
-                pageCountTD++;
-            } else {
-                pageCounts.put(new Integer(pageCountTD),new Integer(nOP-surplus));
-                totalPages = selection;
-            }
-            surplus = totalPages - selection;
-        }
-    }
-%>
-
-<% int visitorsCount = 0; %>
-<mm:list path="mmevents" constraints="<%= timeConstraint %>" >
-    <%-- connected to a page ? --%>
-    <% boolean isStatEvent = false; %>
-    <mm:field name="mmevents.number" jspvar="mmevents_number" vartype="String" write="false">
-        <mm:list nodes="<%= mmevents_number %>" path="mmevents,posrel,page" max="1">
-                <% isStatEvent = true; %>
-        </mm:list>
-    </mm:field>
-    <% if(isStatEvent) {%>
-        <mm:field name="mmevents.name" jspvar="visitors_count" vartype="Integer" write="false">
-            <% visitorsCount += visitors_count.intValue(); %>
-        </mm:field>
-    <% } %>
-</mm:list>
-
-<% int rowCount = 0; %>
+    if(period>0) timeConstraint += " AND mmevents.start < " + toTime ; 
+	 SimpleStats ss = new SimpleStats();
+	 ss.saveLast(application);
+	 int[] res = ss.calculate(cloud,timeConstraint,selection,application);
+	 int maxPageCount = res[0];
+	 int visitorsCount = res[1];
+	
+	 int rowCount = 0; %>
 <table cellpadding="0" cellspacing="0" >
 <tr bgcolor="EEEEEE">
     <td colspan="3">Bezoekers aantal</td>
     <td>
-        <img src="../../media/bar-orange.gif" alt="" width="<%= (100*visitorsCount / maxPageCount) %>" height="5" border=0>&nbsp;(<%= visitorsCount %>)
+        <img src="media/bar-orange.gif" alt="" width="<%= (100*visitorsCount / maxPageCount) %>" height="5" border=0>&nbsp;(<%= visitorsCount %>)
     </td>
 </tr>
-<mm:listnodes type="site" orderby="title" directions="UP">
-    <tr><td class="lightgrey" colspan="4"><mm:field name="title" /></td></tr>
-    <mm:related path="posrel,page" fields="page.number,page.title,posrel.pos"
-                constraints="posrel.pos='1'">
-        <mm:field name="page.number" jspvar="page_number" vartype="String" write="false">
-        <mm:field name="page.title" jspvar="page_title" vartype="String" write="false">
-                <%@include file="pageStats.jsp" %>
-        </mm:field>
-        </mm:field>
-    </mm:related>
-    <mm:related path="posrel,pijler" orderby="posrel.pos" directions="UP"  fields="pijler.number">
-        <tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
-        <td>&nbsp;</td><td><mm:field name="pijler.title" /></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-        <mm:field name="pijler.number" jspvar="pijler_number" vartype="String" write="false">
-            <mm:node number="<%= pijler_number %>">
-                <mm:related path="posrel,page" fields="page.number,page.title,posrel.pos"
-                                orderby="posrel.pos" directions="UP">
-                    <mm:field name="page.number" jspvar="page_number" vartype="String" write="false">
-                    <mm:field name="page.title" jspvar="page_title" vartype="String" write="false">
-                        <%@include file="pageStats.jsp" %>
-                    </mm:field>
-                    </mm:field>
-                    <%-- lets look whether there are subpages under this page --%>
-                <mm:field name="page.number" jspvar="super_page" vartype="String" write="false">
-                <mm:list nodes="<%= super_page %>" path="page1,dposrel,page2" fields="page2.title,page2.number"
-                    orderby="dposrel.pos" directions="UP" >
-                    <mm:field name="page2.number" jspvar="page_number" vartype="String" write="false">
-                    <mm:field name="page2.title" jspvar="page_title" vartype="String" write="false">
-                        <% page_title = "&nbsp;&nbsp;&nbsp;" + page_title; %>
-                        <%@include file="pageStats.jsp" %>
-                    </mm:field>
-                    </mm:field>
-                </mm:list>
-                </mm:field>
-                </mm:related>
-            </mm:node>
-        </mm:field>
-    </mm:related>
-</mm:listnodes>
-<tr><td class="lightgrey" colspan="4">Overig</td></tr>
-<mm:node number="search"> <%-- zoekresultaten --%>
-    <mm:field name="number" jspvar="page_number" vartype="String" write="false">
-    <mm:field name="title" jspvar="page_title" vartype="String" write="false">
-            <%@include file="pageStats.jsp" %>
-    </mm:field>
-    </mm:field>
-</mm:node>
+<tr><td class="lightgrey" colspan="4">
+<mm:node number="home"><mm:field name="naam"/></mm:node>
+</td></tr>      
+      <%// show all subObjects for the rootId, both pages and rubrieken
+      RubriekHelper rubriekHelper = new RubriekHelper(cloud);
+
+      TreeMap [] nodesAtLevel = new TreeMap[10];
+		String rootId = "home";
+      nodesAtLevel[0] = (TreeMap) rubriekHelper.getSubObjects(rootId);
+      int depth = 0;
+      
+      // invariant: depth = level of present leafs (root has level 0)
+      while(depth>-1&&depth<10) { 
+         if(nodesAtLevel[depth].isEmpty()) {
+            
+			   // if this nodesAtLevel is empty, try one level back
+            depth--; 
+         }
+         if(depth>-1&&!nodesAtLevel[depth].isEmpty()) {
+
+			   // show all subObjects, both pages and rubrieken
+				while(! nodesAtLevel[depth].isEmpty()) { 
+
+					Integer thisKey = (Integer) nodesAtLevel[depth].firstKey();
+					String sThisObject = (String) nodesAtLevel[depth].get(thisKey);
+					nodesAtLevel[depth].remove(thisKey);
+					%><mm:node number="<%= sThisObject %>" jspvar="thisObject"
+						><mm:nodeinfo  type="type" write="false" jspvar="nType" vartype="String"><%
+							if(nType.equals("pagina")) { // show page
+								
+								// the page can be a redirect to another page
+								String sThisPage = sThisObject;
+								%><mm:related path="rolerel,pagina" searchdir="destination"
+									><mm:field name="pagina.number" jspvar="pagina_number" vartype="String" write="false"><%
+										sThisPage = pagina_number; 
+									%></mm:field
+								></mm:related>
+								<mm:node number="<%= sThisPage %>">
+									<% String page_number = sThisPage; %>
+									<mm:field name="titel" jspvar="page_title" vartype="String" write="false">
+   					             <%@include file="pageStats.jsp" %>
+						        </mm:field>
+								</mm:node>
+								<%
+								
+							} else { // show rubriek, which is a link to the first page in the rubriek
+								%>
+								<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
+					        <td>&nbsp;</td><td><mm:field name="naam" /></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+								<%
+								depth++;
+								nodesAtLevel[depth] = (TreeMap) rubriekHelper.getSubObjects(sThisObject);
+							} 
+						%></mm:nodeinfo
+					></mm:node><%
+				} 
+         } 
+      } 
+      %>
 </table>
-<%@include file="deleteToday.jsp" %>
 
 </body>
 </html>
-<%@include file="../includes/cacheclose.jsp" %>
+<!-- /cache:cache -->
 
 <%-- flush the statistics if it does not fall in the past --%>
 <% if(!isPast) { %>

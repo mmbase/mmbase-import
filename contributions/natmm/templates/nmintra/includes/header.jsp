@@ -1,4 +1,6 @@
-<%@include file="../includes/pagecounter.jsp" %>
+<%--@include file="../includes/pagecounter.jsp" --%>
+<%@page import="nl.leocms.util.tools.*" %>
+<% (new SimpleStats()).pageCounter(cloud,application,paginaID,request); %>
 <%@include file="../includes/getresponse.jsp" %>
 <%--@include file="../includes/shoppingcartupdate.jsp" --%>
 <% 

@@ -1,4 +1,4 @@
-<%@include file="../includes/templateheader.jsp" %>
+<%@include file="../../nmintra/includes/templateheader.jsp" %>
 <%@page import="java.util.*" %>
 <%@page import="java.text.*" %>
 <%@page import="org.mmbase.bridge.Node" %>
@@ -81,12 +81,12 @@
 %>
 <mm:cloud>
 <% TreeMap ownersMap = new TreeMap(); %>
-<mm:listnodes type="shop_items">
-	<mm:relatednodes type="employees" jspvar="thisEmployee">
+<mm:listnodes type="items">
+	<mm:relatednodes type="medewerkers" jspvar="thisEmployee">
 	   <% ownersMap.put(thisEmployee.getStringValue("number"),getName(thisEmployee)); %>
 	</mm:relatednodes>
-	<mm:related path="posrel,page,posrel,employees">
-		<mm:node element="employees" jspvar="thisEmployee">
+	<mm:related path="posrel,pagina,contentrel,medewerkers">
+		<mm:node element="medewerkers" jspvar="thisEmployee">
 		   <% ownersMap.put(thisEmployee.getStringValue("number"),getName(thisEmployee)); %>
 		</mm:node>
 	</mm:related>
@@ -155,23 +155,23 @@
 		</td>
 		<td>
 			<a href="shopstats.jsp?action=this" onClick="return startSearch(this);"
-				onmouseover="changeImages('this', '../media/go_mo.gif'); window.status=''; return true;"
-				onmouseout="changeImages('this', '../media/go.gif'); window.status=''; return true;">
-				<img alt="Toon deze periode" src="../media/go.gif" border='0' name='this'></a>
+				onmouseover="changeImages('this', 'media/go_mo.gif'); window.status=''; return true;"
+				onmouseout="changeImages('this', 'media/go.gif'); window.status=''; return true;">
+				<img alt="Toon deze periode" src="media/go.gif" border='0' name='this'></a>
 		</td>
 		<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 		<% if(period>0) { %>
 		<td>
 			<a href="shopstats.jsp?action=previous" onClick="return startSearch(this);"
-				onmouseover="changeImages('previous', '../media/previous_mo.gif'); window.status=''; return true;"
-				onmouseout="changeImages('previous', '../media/previous.gif'); window.status=''; return true;">
-				<img alt="Toon vorige periode" src="../media/previous.gif" border='0' name='previous'></a>
+				onmouseover="changeImages('previous', 'media/previous_mo.gif'); window.status=''; return true;"
+				onmouseout="changeImages('previous', 'media/previous.gif'); window.status=''; return true;">
+				<img alt="Toon vorige periode" src="media/previous.gif" border='0' name='previous'></a>
 		</td>
 		<td>
 			<a href="shopstats.jsp?action=next" onClick="return startSearch(this);"
-				onmouseover="changeImages('next', '../media/next_mo.gif'); window.status=''; return true;"
-				onmouseout="changeImages('next', '../media/next.gif'); window.status=''; return true;">
-				<img alt="Toon volgende periode" src="../media/next.gif" border='0' name='next'></a>
+				onmouseover="changeImages('next', 'media/next_mo.gif'); window.status=''; return true;"
+				onmouseout="changeImages('next', 'media/next.gif'); window.status=''; return true;">
+				<img alt="Toon volgende periode" src="media/next.gif" border='0' name='next'></a>
 		</td>
 		<% } %>
 	</tr>
@@ -190,11 +190,11 @@
 		<td>
 		<select name="page">
 			<option value="-1">alles</option>
-		<mm:list nodes="shop" path="pijler,posrel1,page" orderby="posrel1.pos" directions="UP">
+		<mm:list nodes="shop" path="rubriek,posrel,pagina" orderby="posrel.pos" directions="UP">
 		   <mm:last inverse="true"> <% // last page is shopping cart %>
-			<mm:field name="page.number" vartype="String" jspvar="dummy" write="false">
+			<mm:field name="pagina.number" vartype="String" jspvar="dummy" write="false">
 			<option value="<%= dummy %>" <% if(pageId.equals(dummy)) { %> selected <% } 
-			%> ></mm:field><mm:field name="page.title"/></option>
+			%> ></mm:field><mm:field name="pagina.titel"/></option>
 			</mm:last>
 		</mm:list>
 		</select>
@@ -230,9 +230,9 @@
 	if(period>0) timeConstraint += " AND responses.responsedate < " + toTime; 
 	String allConstraint = timeConstraint + " AND responses.title='" + responseTitle + "'"; 
 	String pageConstraint = "";
-	if (!pageId.equals("-1")) pageConstraint = "page.number=" + pageId;
+	if (!pageId.equals("-1")) pageConstraint = "pagina.number=" + pageId;
 	String ownerConstraint = "";
-	if (ownerId!="") ownerConstraint = "employees.number=" + ownerId;
+	if (ownerId!="") ownerConstraint = "medewerkers.number=" + ownerId;
 
 	int maxPageCount = 1;
 	int totalPages = 0; 
@@ -256,12 +256,12 @@
    					boolean isVisible = true;
    			      if (!ownerId.equals("")) {
    				      isVisible = false;
-   				      %><mm:list nodes="<%= shop_itemId %>" path="shop_items,posrel,employees" 
+   				      %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,medewerkers" 
    					      constraints="<%= ownerConstraint %>"><%
    					      	isVisible = true; 
    					   %></mm:list><%
    					   
-   					   %><mm:list nodes="<%= shop_itemId %>" path="shop_items,posrel,page,posrel,employees" 
+   					   %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,pagina,contentrel,medewerkers" 
    					      constraints="<%= ownerConstraint %>"><%
    					      	isVisible = true; 
    					   %></mm:list><%
@@ -269,7 +269,7 @@
    			      
    			      if (isVisible&&!pageId.equals("")) {
    			         isVisible = false;
-   				      %><mm:list nodes="<%= shop_itemId %>" path="shop_items,posrel,page" 
+   				      %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,pagina" 
    					      constraints="<%= pageConstraint %>"><%
    					         isVisible = true;
    					   %></mm:list><%
@@ -337,9 +337,9 @@ if (count>0) {
    		<td><b>Aantal (aantal bestellingen / aantal bestelde producten)</b></td>
    	</tr>
    	<% // *** for all pages related to a selected shop_item *** %>
-      <mm:list nodes="<%= allShopItems %>" path="shop_items,posrel,page"
-            orderby="page.title" directions="UP" distinct="yes" fields="page.number">
-      	<mm:field name="page.number" vartype="String" jspvar="dummy" write="false">
+      <mm:list nodes="<%= allShopItems %>" path="items,posrel,pagina"
+            orderby="pagina.titel" directions="UP" distinct="yes" fields="pagina.number">
+      	<mm:field name="pagina.number" vartype="String" jspvar="dummy" write="false">
       		<%	pageNumber = dummy; %>
       	</mm:field>
       	<% isOutpage = false; 
@@ -347,7 +347,7 @@ if (count>0) {
       	      
       	      shop_itemId = tmp[i][0];
       	      boolean belongsToPage = false;
-      	      %><mm:list nodes="<%= shop_itemId %>" path="shop_items,posrel,page" constraints="<%= "page.number = '" + pageNumber + "'" %>"><%
+      	      %><mm:list nodes="<%= shop_itemId %>" path="items,posrel,pagina" constraints="<%= "pagina.number = '" + pageNumber + "'" %>"><%
       	         belongsToPage = true;
       	      %></mm:list><%
       	      
@@ -362,7 +362,7 @@ if (count>0) {
          				if (thisSumCounts==null) thisSumCounts = new Integer(0);
          			%>
          			<tr <% if(rowCount%2==0) { %> bgcolor="EEEEEE" <% } rowCount++; %>>
-         				<td></td><td><mm:node number="<%= shop_itemId %>"><mm:field name="title" /></mm:node>&nbsp;</td>
+         				<td></td><td><mm:node number="<%= shop_itemId %>"><mm:field name="titel" /></mm:node>&nbsp;</td>
          				<td><img src="../media/bar-orange.gif" alt="" width="<%= maxWidth*thisSumCounts.intValue()/maxSum %>" height="5" border=0>
          					&nbsp;(<%= thisCounts %>/<%= thisSumCounts %>)</td>
          			</tr><% 
