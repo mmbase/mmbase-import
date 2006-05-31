@@ -6,7 +6,7 @@
 	   <field name="waarde" ftype="data">
          <prompt>waarde</prompt>
       </field>
-      <field name="standaard" ftype="enum" dttype="enum" dtrequired="true">
+      <field name="standaard" ftype="enum"> <!-- bug: this user input will not be saved -->
          <prompt>standaard</prompt>
          <optionlist select="ja_nee"></optionlist>
       </field>
