@@ -17,7 +17,7 @@
                     templateQueryString %>&pst=|action=print">print</a></div><%
     } 
     if(articleId.equals("-1")) { 
-     %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="posrel.pos" directions="UP" fields="artikel.number"
+     %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="contentrel.pos" directions="UP" fields="artikel.number"
          ><mm:field name="artikel.number" jspvar="article_number" vartype="String" write="false"><% 
             articleId = article_number; 
          %></mm:field
