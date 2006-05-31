@@ -1,4 +1,4 @@
-<%@include file="../../includes/templateheader.jsp" %>
+<%@include file="../../nmintra/includes/templateheader.jsp" %>
 <mm:cloud>
 <html>
 <head><link rel="stylesheet" type="text/css" href="/css/website.css"></head>

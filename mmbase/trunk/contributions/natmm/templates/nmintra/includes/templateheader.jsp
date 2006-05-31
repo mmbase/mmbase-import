@@ -1,5 +1,5 @@
 <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
-<%@page import="java.text.*,java.io.*,org.mmbase.bridge.*" %><%! 
+<%@page import="java.text.*,java.io.*,org.mmbase.bridge.*,nl.leocms.applications.*,nl.leocms.util.*" %><%! 
 
 public String getParameter(String parameterStr, String queryStr) {
     String parameterValue = null;
@@ -180,4 +180,3 @@ String emailHelpText = "<br><br>N.B. Op sommige computers binnen Natuurmonumente
                     + "<br>3.druk op de \"Enter\" toets";
 
 %>
-
