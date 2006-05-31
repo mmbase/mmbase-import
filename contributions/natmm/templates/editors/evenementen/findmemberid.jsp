@@ -52,13 +52,26 @@ public Vector findKeys(TreeMap thisMap, String thisValue,  Vector fromKeys) {
 
             %><br/><br/>Het zoeken naar lidnummers is op dit moment niet mogelijk.<br/>Neem alstublieft contact op met de webredactie.<br/><%
 
-      } else if(!lastName.equals("")&&(!zipCode.equals("")||!houseNumber.equals(""))) { // ** try to find memberid by starting with lastName
+      } else if(!lastName.equals("")||!zipCode.equals("")) { // only search when at least lastname or zipcode is available
 
-         Vector memberIdVector = (Vector) invLastNameTable.get(lastName);
-         if(memberIdVector==null) { memberIdVector = new Vector(); }
-         memberIdVector = findKeys(zipCodeTable,zipCode,memberIdVector);
-         memberIdVector = findKeys(houseNumberTable,houseNumber,memberIdVector);
-         memberIdVector = findKeys(houseExtTable,houseExt.toUpperCase(),memberIdVector);
+         Vector memberIdVector = null;
+			if(!lastName.equals("")) {
+				memberIdVector = (Vector) invLastNameTable.get(lastName);
+			}
+         if(memberIdVector==null) { // lastname did not return anything, try zipcode
+				if((!zipCode.equals("")) {
+					memberIdVector = (Vector) invZipCodeTable.get(zipCode);
+				}
+				if(memberIdVector==null) { // lastname or zipcode did not return anything, return empty set
+					memberIdVector = new Vector(); 
+				}
+			}
+			if(memberIdVector.size()>1 && !houseNumber.equals("")) { // use housenumber to narrow search down
+	         memberIdVector = findKeys(houseNumberTable,houseNumber,memberIdVector);
+			}
+     		if(memberIdVector.size()>1 && !houseExt.equals("")) { // use housenumber extension to narrow search down
+	         memberIdVector = findKeys(houseExtTable,houseExt.toUpperCase(),memberIdVector);
+			}
          %>
          <table class="formcontent" style="width:auto;">
             <tr><td colspan="2"><h5 style="margin-bottom:0px;">U hebt gezocht op:</h5></td></tr>
@@ -68,9 +81,6 @@ public Vector findKeys(TreeMap thisMap, String thisValue,  Vector fromKeys) {
             <tr><td>Achtervoegsel</td><td><%= houseExt %></td></tr>
             <% if(memberIdVector.isEmpty()) { %>
                <tr><td colspan="2"><h5 style="margin-bottom:0px;margin-top:10px;">Er is geen lidnummer gevonden die voldoet aan deze gegevens.</h5></td></tr>
-               <% if(!zipCode.equals("")&&!houseNumber.equals("")) { %>
-                  <tr><td colspan="2"><a href="findmemberid.jsp?zipcode=<%= zipCode %>&housenumber=<%= houseNumber %>">alleen zoeken op postcode en huisnummer</a></td></tr>
-               <% } %>
             <% } else { %>
                <tr><td colspan="2">
                      <h5 style="margin-bottom:10px;margin-top:10px;">
@@ -104,51 +114,8 @@ public Vector findKeys(TreeMap thisMap, String thisValue,  Vector fromKeys) {
          </table>
          <% 
 
-      } else if(!zipCode.equals("")&&!houseNumber.equals("")) { // ** try to find memberid by starting with zipCode
-            
-       Vector memberIdVector = (Vector) invZipCodeTable.get(zipCode);
-       if(memberIdVector==null) { memberIdVector = new Vector(); }
-       memberIdVector = findKeys(houseNumberTable,houseNumber,memberIdVector);
-       %><table class="formcontent" style="width:auto;">
-            <tr><td colspan="2"><h5 style="margin-bottom:0px;">U hebt gezocht op:</h5></td></tr>
-            <tr><td>Postcode</td><td><%= zipCode %></td></tr>
-            <tr><td>Huisnummer</td><td><%= houseNumber %></td></tr>
-            <% if(memberIdVector.isEmpty()) { %>
-               <tr><td colspan="2"><h5 style="margin-bottom:0px;margin-top:10px;">Er is geen lidnummer gevonden die voldoet aan deze gegevens.</h5></td></tr>
-            <% } else { 
-               %>
-               <tr><td colspan="2">
-                     <h5 style="margin-bottom:10px;margin-top:10px;">
-                        <% if(memberIdVector.size()==1) { %>
-                            Het volgende lidnummer is gevonden.
-                        <% } else { %>
-                            De volgende lidnummers zijn gevonden.
-                        <% } %>
-                     </h5></td></tr>
-               <tr><td colspan="2">
-                  <table class="formcontent" style="width:auto;" cellpadding="2">
-                     <tr><td>Achternaam</td><td>Huisnummer</td><td>Achtervoegsel</td><td>Postcode</td><td>Lidnummer</td></tr>
-                  <% for(int i = 0; i< memberIdVector.size(); i++) { 
-                     String sMemberId = (String) memberIdVector.get(i);
-                     String thisLastName = (String) lastNameTable.get(sMemberId); if(thisLastName==null) { thisLastName = ""; } 
-                     String thisHouseNumber = (String) houseNumberTable.get(sMemberId); if(thisHouseNumber==null) { thisHouseNumber = ""; } 
-                     String thisHouseExt = (String) houseExtTable.get(sMemberId); if(thisHouseExt==null) { thisHouseExt = ""; } 
-                     String thisZipCode = (String) zipCodeTable.get(sMemberId); if(thisZipCode==null) { thisZipCode = ""; } 
-                     %>
-                     <tr>
-                        <td><%= thisLastName %></td>
-                        <td><%= thisHouseNumber %></td>
-                        <td><%= thisHouseExt %></td>
-                        <td><%= thisZipCode %></td>
-                        <td><%= sMemberId %></td>
-                     </tr>
-                  <% } %> 
-                  </table>
-               </td></tr>
-            <% } %>
-         </table>
-       <%
-     } else { %>
+      } else { 
+	  		%>
          <table class="formcontent" style="width:auto;">
             <tr><td colspan="2">
                <h5 style="margin-bottom:0px;margin-top:10px;">Er is geen achternaam, postcode en/of huisnummer ingevuld.</h5>
@@ -156,7 +123,8 @@ public Vector findKeys(TreeMap thisMap, String thisValue,  Vector fromKeys) {
                Sluit dit venster om alsnog een achternaam, postcode en/of huisnummer in te vullen.
             </td></tr>
          </table>
-     <% } %>
+			<%
+		} %>
 </body>
 </html>
 </mm:cloud>
