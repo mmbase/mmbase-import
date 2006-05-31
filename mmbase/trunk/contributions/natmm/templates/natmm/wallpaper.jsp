@@ -41,6 +41,8 @@ if(imgID.equals("-1")){
    	imgParams = "s(1024x768)";
    }
    if(size.equals("small")){ // the intro page
+		String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
+      requestURL = requestURL.substring(0,requestURL.lastIndexOf("/"));
       %><mm:node number="<%= imgID %>">
          <html>
          <head>
@@ -80,7 +82,7 @@ if(imgID.equals("-1")){
 							<nobr>Klik op een van de resoluties om deze wallpaper te downloaden.</nobr>
 						</td>
 						<td width="105">
-							<input type="submit" value="800 x 600" class="submit_image" style="width:105;align:center;" onclick="javascript:OpenWindow('wallpaper.jsp?i=<%= imgID %>&size=medium','','toolbar=no,menubar=no,location=no,height=600,width=800');"/>
+							<input type="submit" value="800 x 600" class="submit_image" style="width:105;align:center;" onclick="javascript:OpenWindow('<%= requestURL + "/" + (isSubDir? "../" : "" ) %>wallpaper.jsp?i=<%= imgID %>&size=medium','','toolbar=no,menubar=no,location=no,height=600,width=800');"/>
 						</td>
 						<td width="5"></td>
 					</tr>	
@@ -98,7 +100,7 @@ if(imgID.equals("-1")){
 					<tr>
 						<td width="7"></td>
 						<td width="105">
-							<input type="submit" value="1024 x 768" class="submit_image" style="width:105;align:center;" onclick="javascript:OpenWindow('wallpaper.jsp?i=<%= imgID %>&size=large','','toolbar=no,menubar=no,location=no,height=768,width=1024');"/>
+							<input type="submit" value="1024 x 768" class="submit_image" style="width:105;align:center;" onclick="javascript:OpenWindow('<%= requestURL + "/" + (isSubDir? "../" : "" ) %>wallpaper.jsp?i=<%= imgID %>&size=large','','toolbar=no,menubar=no,location=no,height=768,width=1024');"/>
 						</td>
 						<td width="5"></td>
                </tr>
