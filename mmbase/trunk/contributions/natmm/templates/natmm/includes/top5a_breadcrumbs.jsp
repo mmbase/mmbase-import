@@ -57,7 +57,7 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) {
 					<% } %>
 				<% } %>			
 			</td>
-			<td width="220" align="right" valign="top"><img src="media/nmlogo.gif" alt="Vereniging Natuurmonumenten" width="209" height="68" hspace="2" vspace="2" border="0">
+			<td width="220" align="right" valign="top"><img src="media/logos/nmlogo.gif" alt="Vereniging Natuurmonumenten" width="209" height="68" hspace="2" vspace="2" border="0">
 		</td></tr></table></div>
 	</td>
 	<td style="width:48%;background-color:#000098;vertical-align:bottom;">

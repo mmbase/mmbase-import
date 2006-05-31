@@ -75,7 +75,7 @@ if(!artikelID.equals("-1")) {
          <table width="100%" border="0" cellspacing="2" cellpadding="2">
             <tr>
                 <td></td>
-                <td rowspan="3" align="right"><img src="media/nm_logo_small.jpg" alt="" border="0"></td>
+                <td rowspan="3" align="right"><img src="media/logos/nmlogo_small.jpg" alt="" border="0"></td>
             </tr>
             <tr>
                 <td rowspan="2"><span style="font-weight: bold;">NATUURROUTES VAN NATUURMONUMENTEN</span></td>
