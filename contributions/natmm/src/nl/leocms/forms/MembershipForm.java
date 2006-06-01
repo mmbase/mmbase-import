@@ -745,7 +745,7 @@ public class MembershipForm extends ActionForm {
         "Met vriendelijke groet," + newline + newline +
         "Jan Jaap de Graeff" + newline +
         "algemeen directeur" + newline + newline;
-     message += "P.s. Heeft u zich bedacht? Stuur dan binnen 3 dagen een mailtje naar ";
+     message += "P.s. Heeft u zich bedacht? Stuur dan binnen 3 dagen een mailtje met uw naam, postcode en huisnummer naar ";
      if(type.equals("html")) {
          message += "<a href='mailto:" + NatMMConfig.toSubscribeAddress + "'>" + NatMMConfig.toSubscribeAddress + "</a>";
      } else {
