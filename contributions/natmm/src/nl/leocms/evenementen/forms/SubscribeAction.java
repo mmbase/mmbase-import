@@ -300,17 +300,15 @@ public class SubscribeAction extends Action {
       message += "Bij deze brief is een overzicht ingesloten met praktische informatie, zoals een routebeschrijving naar de plaats van afvaart, en tips over wat mee te nemen." + newline + newline;
       message += "De prijs van de vaarexcursie bedraagt " + price(costs) + newline + newline;
       message += "U wordt vriendelijk verzocht dit bedrag over te maken naar rekeningnummer ";
-      if(type.equals("html")) {
-         message += "<b><u>32391</u></b>";
-      } else {
-         message += "32391";
-      }
+      message += (type.equals("html") ? "<b><u>" : "") + "32391" + (type.equals("html") ? "</u></b>" : "");
       message += ", ten name van Natuurmonumenten 's-Graveland, onder vermelding van \"";
       nl = thisParent.getRelatedNodes("natuurgebieden","related",null);
       if(nl.size()!=0) {
-         message += nl.getNode(0).getStringValue("titel_de");
+			message += (type.equals("html") ? "<b><u>" : "") + nl.getNode(0).getStringValue("titel_de") + (type.equals("html") ? "</u></b>" : "");
       }
-      message += "\", en de datum van uw excursie.";
+      message += "\" en de ";
+      message += (type.equals("html") ? "<b><u>" : "") + "datum" + (type.equals("html") ? "</u></b>" : "");
+      message += " van uw excursie. ";
       message += "Wij zien uw betaling graag uiterlijk veertien dagen voor de afvaart tegemoet. Bij annulering binnen acht dagen voor vertrek zijn wij genoodzaakt 100% annuleringskosten te berekenen." + newline + newline;
       message += "We wensen u een mooie excursie!";
       return message;

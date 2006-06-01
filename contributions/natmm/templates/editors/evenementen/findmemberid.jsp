@@ -59,7 +59,7 @@ public Vector findKeys(TreeMap thisMap, String thisValue,  Vector fromKeys) {
 				memberIdVector = (Vector) invLastNameTable.get(lastName);
 			}
          if(memberIdVector==null) { // lastname did not return anything, try zipcode
-				if((!zipCode.equals("")) {
+				if(!zipCode.equals("")) {
 					memberIdVector = (Vector) invZipCodeTable.get(zipCode);
 				}
 				if(memberIdVector==null) { // lastname or zipcode did not return anything, return empty set
