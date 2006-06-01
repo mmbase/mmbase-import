@@ -1166,14 +1166,16 @@ public class PaginaHelper {
          } else if(!paginaID.equals("-1")) {
             ID = paginaID;
          } else {
+				String objecttype = null;
             for (Iterator it=pathsFromPageToElements.keySet().iterator();it.hasNext() && ID.equals("-1");) {
-               String objecttype = (String) it.next();
+               objecttype = (String) it.next();
 					ID = (String) ids.get(objecttype.replaceAll("#",""));
 					if(ID==null) { 
-						log.info("Objecttype " + objecttype + " is not found in the list of IDs supplied to findIDs");
+						log.debug("Objecttype " + objecttype + " is not found in the list of IDs supplied to findIDs");
 						ID = "-1";
 					}
             }
+				log.debug("ID is set to " + objecttype + " " + ID); 
          }
       }
 
@@ -1245,22 +1247,17 @@ public class PaginaHelper {
 				ID = "-1";
 			}
          if (!ID.equals("-1")) {
-				// split list in two parts to prevent joints over many tables
-				NodeList nlPages = cloud.getList("",
-															"pagina,gebruikt,template",
-															"pagina.number",
-															"template.url='" + template + "'",
-															null, null, null, false);
+				String currentPath = (String) pathsFromPageToElements.get(objecttype);
+				NodeList nlPages = cloud.getList(ID,
+													currentPath,
+													"pagina.number",
+													null, null, null, null, false);
 				for(int p = 0; p < nlPages.size() && paginaID.equals("-1"); p++) {
-					String currentPath = (String) pathsFromPageToElements.get(objecttype);
-					NodeList nlPathsToPage = cloud.getList(ID,
-															currentPath,
-															"pagina.number",
-															"pagina.number='" + nlPages.getNode(p).getStringValue("pagina.number") + "'",
-															null, null, null, false);
-					if (nlPathsToPage.size() > 0) {
-						paginaID = nlPages.getNode(0).getStringValue("pagina.number");
-						log.debug("found " + paginaID);
+					Node nPage = cloud.getNode(nlPages.getNode(p).getStringValue("pagina.number"));
+					NodeList nlTemplates = nPage.getRelatedNodes("template","gebruikt",null);
+					if (nlTemplates.size() == 1 && nlTemplates.getNode(0).getStringValue("url").equals(template)) {
+						paginaID = nlPages.getNode(p).getStringValue("pagina.number");
+						log.debug("found pagina " + paginaID + " on basis of object " + ID + ", path " + currentPath + ", and template " + template);
 					}					
 				}
          }
