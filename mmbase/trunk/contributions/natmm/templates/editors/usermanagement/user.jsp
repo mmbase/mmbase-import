@@ -20,7 +20,6 @@
 </style>
 <html:form action="/editors/usermanagement/UserAction">
 <html:hidden property="nodeNumber"/>
-<html:hidden property="username"/>
 <div id="user">
 <table class="stepscontent" style="width:200"><tr>
 	<td class="stepcurrent">Gegevens</td>
@@ -34,6 +33,7 @@
         <html:text property="username" size='15' maxlength='15'/> <span class="notvalid"><html:errors bundle="LEOCMS" property="username"/>
     </logic:equal>
     <logic:notEqual name="UserForm" property="nodeNumber" value="-1">
+		  <html:hidden property="username"/>
         <bean:define name="UserForm" id="username" property="username" /> 
         <cache:flush scope="application" key="<%= "pagina_all_" + username %>" />
         <%= username %>
