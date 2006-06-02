@@ -551,7 +551,7 @@ public class SubscribeAction extends Action {
            if(action.indexOf(subscribeForm.OTHER_DATES_ACTION)>-1) {
                subscribeForm.setAction(subscribeForm.SELECT_DATE_ACTION);
            } else if(!(action.indexOf(subscribeForm.FIX_DATE_ACTION)>-1)) {                  // *** leave fix_date unchanged ***
-               subscribeForm.setAction("canceled");
+               subscribeForm.setAction(subscribeForm.CANCELED);
            }
            forwardAction = mapping.findForward("success");
 
@@ -707,6 +707,7 @@ public class SubscribeAction extends Action {
 
                subscribeForm.setSelectedParticipant(thisParticipant.getStringValue("number"));
                subscribeForm.setSubscriptionNumber(thisSubscription.getStringValue("number"));
+	            subscribeForm.resetNumbers(); // reset validateCounter on each new booking
                subscribeForm.setAction(null);
 
             } else {
@@ -726,9 +727,8 @@ public class SubscribeAction extends Action {
                confirmUrl += "?action=confirm&s=" + thisSubscription.getStringValue("datum_inschrijving") + "_" + thisSubscription.getStringValue("number");
                Node thisParent = cloud.getNode(subscribeForm.getParent());
                sendConfirmEmail(cloud, thisEvent, thisParent, thisSubscription, thisParticipant, confirmUrl);
-               subscribeForm.setAction("promptforconfirmation");
+               subscribeForm.setAction(subscribeForm.PROMPT_FOR_CONFIRMATION);
             }
-            subscribeForm.resetNumbers();
             forwardAction = mapping.findForward("continue");
 
        } else if(subscribeForm.getButtons().getConfirmSubscription().pressed()) {               // ******************* Confirm *************************
