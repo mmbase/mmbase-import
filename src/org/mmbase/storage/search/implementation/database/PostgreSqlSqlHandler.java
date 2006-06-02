@@ -36,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.20 2006-02-27 23:55:26 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.21 2006-06-02 13:07:54 pierre Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -193,7 +193,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
 
     /**
      * Optimizes postgresql queries by adding the ONLY keyword to a relation-table, provided that the
-     * role was given (and therefor teh sleection onlky applies to the given table).
+     * role was given (and therefor the selection only applies to the given table).
      *
      * @see org.mmbase.storage.search.implementation.database.BasicSqlHandler#appendTableName(java.lang.StringBuffer, org.mmbase.storage.search.Step)
      */
@@ -207,7 +207,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 sb.append(" ONLY ");
             } else {
                 org.mmbase.module.core.MMBase mmbase = org.mmbase.module.core.MMBase.getMMBase();
-                // no role specified, check if more then one roles on sub tables are possible...
+                // no role specified, check if more than one role on sub tables are possible...
                 int sourceBuilder = mmbase.getBuilder(rs.getPrevious().getTableName()).getObjectType();
                 int destinationBuilder = mmbase.getBuilder(rs.getNext().getTableName()).getObjectType();
                 int directionality = rs.getDirectionality();
@@ -228,8 +228,8 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                         append('_').
                         append((String) tables.iterator().next());
                     appendTableAlias(sb, step);
-                    return;                        
-                } else {                    
+                    return;
+                } else {
                     if (log.isDebugEnabled()) {
                         log.debug("Not adding ONLY to table name because role of " + step + " is null, and the following tables are possible " + tables);
                     }
