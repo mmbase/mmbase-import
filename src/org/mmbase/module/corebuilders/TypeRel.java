@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.70 2006-04-21 17:14:22 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.71 2006-06-02 13:30:53 pierre Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
@@ -539,14 +539,14 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // this is a bit confusing, can the simple cases like explicit 'source'
         // or 'destination' not be handled first?
 
-        boolean sourceToDestination = 
+        boolean sourceToDestination =
             searchDir != RelationStep.DIRECTIONS_SOURCE
             && contains(sourceType, destinationType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
-        boolean destinationToSource = 
+        boolean destinationToSource =
             searchDir != RelationStep.DIRECTIONS_DESTINATION
             && contains(destinationType, sourceType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
 
-        if (destinationToSource && sourceToDestination && (searchDir == RelationStep.DIRECTIONS_EITHER)) { 
+        if (destinationToSource && sourceToDestination && (searchDir == RelationStep.DIRECTIONS_EITHER)) {
             // support old
             destinationToSource = false;
         }
@@ -569,7 +569,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                 relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
             } else {
                 // no results possible, do something any way
-                if (searchDir == RelationStep.DIRECTIONS_SOURCE) { 
+                if (searchDir == RelationStep.DIRECTIONS_SOURCE) {
                     // explicitely asked for source, it would be silly to try destination now
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
                 } else {
@@ -672,7 +672,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      */
     protected class TypeRelSet extends TreeSet {
         protected TypeRelSet() {
-
             super(new Comparator() {
                 // sorted by source, destination, role
                 public int compare(Object o1, Object o2) {
@@ -704,23 +703,23 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
         // find some subsets:
         SortedSet getBySource(MMObjectBuilder source) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber()),
-                                                            new VirtualTypeRelNode(source.getNumber() + 1)));
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber(), 0, 0),
+                                                            new VirtualTypeRelNode(source.getNumber() + 1, 0, 0)));
         }
 
         SortedSet getBySource(int sourceOType) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceOType),
-                                                            new VirtualTypeRelNode(sourceOType + 1)));
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(sourceOType, 0, 0),
+                                                            new VirtualTypeRelNode(sourceOType + 1, 0, 0)));
         }
 
         SortedSet getBySourceDestination(int source, int destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination),
-                                                            new VirtualTypeRelNode(source, destination + 1)));
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, 0),
+                                                            new VirtualTypeRelNode(source, destination + 1, 0)));
         }
 
         SortedSet getBySourceDestination(MMObjectBuilder source, MMObjectBuilder destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber(), destination.getNumber()),
-                                                            new VirtualTypeRelNode(source.getNumber(), destination.getNumber() + 1)));
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber(), destination.getNumber(), 0),
+                                                            new VirtualTypeRelNode(source.getNumber(), destination.getNumber() + 1, 0)));
         }
 
         SortedSet getBySourceDestinationRole(int source, int destination, int role) {
@@ -736,6 +735,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @since MMBase-1.6.2
      */
     protected class InverseTypeRelSet extends TreeSet {
+
         protected InverseTypeRelSet() {
             super(new Comparator() {
                 // sorted by destination, source, role
@@ -765,23 +765,23 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
 
         SortedSet getByDestination(MMObjectBuilder destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(-1, destination.getNumber()),
-                                                            new VirtualTypeRelNode(-1, destination.getNumber() + 1)));
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(0, destination.getNumber(), 0),
+                                                            new VirtualTypeRelNode(0, destination.getNumber() + 1, 0)));
         }
 
         SortedSet getByDestination(int destinationOType) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(-1, destinationOType),
-                                                            new VirtualTypeRelNode(-1, destinationOType + 1)));
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(0, destinationOType, 0),
+                                                            new VirtualTypeRelNode(0, destinationOType + 1, 0)));
         }
 
         SortedSet getByDestinationSource(int source, int destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination),
-                                                            new VirtualTypeRelNode(source + 1, destination)));
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, 0),
+                                                            new VirtualTypeRelNode(source + 1, destination, 0)));
         }
 
         SortedSet getByDestinationSource(MMObjectBuilder source, MMObjectBuilder destination) {
-            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber(), destination.getNumber()),
-                                                            new VirtualTypeRelNode(source.getNumber() + 1, destination.getNumber())));
+            return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source.getNumber(), destination.getNumber(), 0),
+                                                            new VirtualTypeRelNode(source.getNumber() + 1, destination.getNumber(), 0)));
         }
 
         SortedSet getByDestinationSourceRole(int source, int destination, int role) {
