@@ -13,7 +13,7 @@
 <mm:import externid="showpastdates" jspvar="showpastdatesId" id="showpastdatesId">false</mm:import>
 <mm:import externid="orderby" jspvar="orderbyId" id="orderbyId">number</mm:import>
 <mm:import externid="direction" jspvar="directionId" id="directionId">down</mm:import>
-<% String newDirection = "up"; if(directionId.equals("up")) { newDirection = "down"; }  %>
+<% String newDirection = "up"; if(directionId.equals("up")) { newDirection = "down"; } %>
 
 <mm:cloud jspvar="cloud" 
    method="<%= (actionId.equals("printsubscriptions")? "" : "http") %>"
@@ -137,14 +137,22 @@
 <% } %>
 </head>
 <%
-boolean isAdmin = cloud.getUser().getRank().equals("administrator");
-boolean isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
+boolean isAdmin = false;
+boolean isChiefEditor = false;
+boolean isEditor = false;
+if(actionId.indexOf("printsubscriptions")==-1) {
+   isAdmin = cloud.getUser().getRank().equals("administrator");
+	isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
+} %>
+
+<%
 
 String account = cloud.getUser().getIdentifier();
-AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud);
-UserRole role = authorizationHelper.getRoleForUser(authorizationHelper.getUserNode(account), cloud.getNode("natuurin_rubriek"));
-boolean isEditor = (role.getRol()>0);
-
+AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud); 
+if(actionId.indexOf("printsubscriptions")==-1) {
+	UserRole role = authorizationHelper.getRoleForUser(authorizationHelper.getUserNode(account), cloud.getNode("natuurin_rubriek"));
+   isEditor = (role.getRol()>0);
+}
 
 String dateStyle = "width:40px;text-align:right;"; 
 String buttonStyle = "width:90px;";
@@ -228,7 +236,7 @@ DoubleDateNode ddn = new DoubleDateNode();
       %><html:image src="../img/left.gif" property="buttons.goBack" style="width:13px;" alt="Naar overzicht" />
       <a href="SubscribeInitAction.eb?number=<%= nodenr %>&action=printsubscriptions&orderby=lastname&direction=up" target="_blank">
          <img src='../img/print_subscriptions.gif' align='absmiddle' border='0' alt='Print de aanmeldingen voor deze activiteit'></a>
-      <a href="#" onClick="javascript:launchCenter('mailsubscriptions.jsp?event=<%= nodenr %>', 'mail', 300, 400);setTimeout('newwin.focus();',250);">
+      <a href="#" onClick="javascript:launchCenter('mailsubscriptions.jsp?event=<%= nodenr %>&emailto=anna@avantlab.com', 'mail', 300, 400);setTimeout('newwin.focus();',250);">
          <img src='../img/mail_subscriptions.gif' align='absmiddle' border='0' alt='Verstuur de aanmeldingen voor deze activiteit per email'></a>
    	<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=s', 'center', 300, 400,'resizable=1');setTimeout('newwin.focus();',250);">
 			<img src='../img/excel_subscriptions.gif' align='absmiddle' border='0' alt='Download de aanmeldingen voor deze activiteit'></a><%
