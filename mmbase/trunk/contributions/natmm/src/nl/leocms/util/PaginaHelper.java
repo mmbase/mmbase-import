@@ -108,6 +108,10 @@ public class PaginaHelper {
    }
 
    public static Vector getBreadCrumbs(Cloud cloud, String paginaNumber) {
+      if (paginaNumber.equals("-1")){
+         log.error("No such pagina with number: " + paginaNumber + ". Returning null.");
+         return null;
+      }
       Node paginaNode = cloud.getNode(paginaNumber);
       if (paginaNode==null) {
          log.error("No such pagina with number: " + paginaNumber + ". Returning null.");
@@ -140,12 +144,16 @@ public class PaginaHelper {
       Vector breadcrumbs = getBreadCrumbs(cloud, paginaNumber);
       log.debug(paginaNumber + "->" + breadcrumbs);
 		String rootRubriek = null;
-		if(breadcrumbs.size()>=2) {
-			rootRubriek = (String) breadcrumbs.get(breadcrumbs.size()-2);
-		} else {
-			log.error("Pagina " + paginaNumber + " does not have a root rubriek. Setting root rubriek to 'root'");
-			rootRubriek = "root";
-		}
+      if (breadcrumbs!=null){
+         if (breadcrumbs.size() >= 2) {
+            rootRubriek = (String) breadcrumbs.get(breadcrumbs.size() - 2);
+         }
+         else {
+            log.error("Pagina " + paginaNumber +
+               " does not have a root rubriek. Setting root rubriek to 'root'");
+            rootRubriek = "root";
+         }
+      }
       return rootRubriek;
    }
    
@@ -157,7 +165,7 @@ public class PaginaHelper {
     */
    public static String getSubDir(Cloud cloud, String paginaNumber) {
       String rootRubriek = getRootRubriek(cloud,paginaNumber);
-      return RubriekHelper.getSubDir(cloud.getNode(rootRubriek));
+      return (rootRubriek==null) ? null : RubriekHelper.getSubDir(cloud.getNode(rootRubriek));
    }
    
   /**
@@ -289,7 +297,7 @@ public class PaginaHelper {
          if (userURL!=null) {
             log.debug("processed from url cache: " + userURL);
             url = new StringBuffer(userURL);
-         } else {
+         } else if (!paginaNumber.equals("-1")){
             url = new StringBuffer();
             url.append(getUrlPathToRootString(cloud.getNode(paginaNumber), contextPath));
             url.append(UrlConverter.PAGE_EXTENSION);
@@ -568,11 +576,14 @@ public class PaginaHelper {
      * @return
      */
    public Node getPaginaTemplate(String pageNumber) {
-      Node pageNode = cloud.getNode(pageNumber);
-      NodeList ptList =
-         pageNode.getRelatedNodes("paginatemplate", "gebruikt", "DESTINATION");
-      if (ptList.size() == 1) {
-         return ptList.getNode(0);
+      if (!pageNumber.equals("-1")){
+         Node pageNode = cloud.getNode(pageNumber);
+         NodeList ptList =
+            pageNode.getRelatedNodes("paginatemplate", "gebruikt",
+                                     "DESTINATION");
+         if (ptList.size() == 1) {
+            return ptList.getNode(0);
+         }
       }
       return null;
    }
