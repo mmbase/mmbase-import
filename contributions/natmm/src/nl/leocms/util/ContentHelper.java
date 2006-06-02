@@ -117,13 +117,12 @@ public class ContentHelper {
 	}
 
   /*
-    Returns true if node with number sNodeNumber has no relations to other contentelements
+    Returns a list of nodes that are related to this node
   */
    public NodeList usedInItems(String sNodeNumber){
       Node node = cloud.getNode(sNodeNumber);
       String otype = node.getStringValue("otype");
-      ContentHelper contentHelper = new ContentHelper(cloud);
-      String thisType = (String) contentHelper.getNameWithOtype(otype);
+      String thisType = (String) getNameWithOtype(otype);
       ArrayList cTypes = ContentTypeHelper.getContentTypes();
       cTypes.add("dossier");
       NodeList nlUsedItems = null;
@@ -153,6 +152,7 @@ public class ContentHelper {
 
   /*
     Returns ArrayList with contentelements used by user account
+	 See also: UpdateUnusedElements.getUnusedItems()
   */
    public ArrayList getUnusedItems(String account){
       ArrayList alUnusedItems = new ArrayList();
@@ -172,6 +172,5 @@ public class ContentHelper {
       }
       return alUnusedItems;
    }
-
 
 }
