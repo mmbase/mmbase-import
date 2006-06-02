@@ -38,7 +38,8 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
 
    HashSet hsetArticlesNodes = new HashSet();
    HashSet hsetArtDossierNodes = new HashSet();
-   HashSet hsetNatuurgebiedenNodes = new HashSet();
+   HashSet hsetNatuurgebiedenRouteNodes = new HashSet();
+	HashSet hsetNatuurgebiedenNatuurgebiedenNodes = new HashSet();
    HashSet hsetFormulierNodes = new HashSet();
    HashSet hsetEvenementNodes = new HashSet();
 
@@ -180,9 +181,9 @@ String[] META_TAGS = {"dit", "is", "een", "test"};
                      }
                      %></mm:field>
                   </mm:related>
-                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden" fields="natuurgebieden.number">
+                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden,rolerel,artikel" fields="natuurgebieden.number">
                      <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetNatuurgebiedenNodes.contains(sID)){
+                     if((hsetNatuurgebiedenRouteNodes.contains(sID)) || (hsetNatuurgebiedenNatuurgebiedenNodes.contains(sID))){
                         %><li><a href="<%= templateUrl %>?n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
                      }
                      %></mm:field>

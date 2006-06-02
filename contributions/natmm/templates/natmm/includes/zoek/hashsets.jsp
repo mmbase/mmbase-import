@@ -25,10 +25,10 @@
         log.error("Error parsing field 'indexed.text' with value '" + value + "'");
       }
       if (result != null) {
-	BooleanQuery constructedQuery = new BooleanQuery();
-	constructedQuery.add(result, BooleanClause.Occur.MUST);
+			BooleanQuery constructedQuery = new BooleanQuery();
+			constructedQuery.add(result, BooleanClause.Occur.MUST);
 
-        IndexSearcher searcher = new IndexSearcher(ir); 
+	      IndexSearcher searcher = new IndexSearcher(ir); 
        	Hits hits = searcher.search(constructedQuery);
       	TreeSet includedEvents = new TreeSet();
 
@@ -40,8 +40,22 @@
 	            for(int j=0; j<list.size(); j++) {
    	            String paginaNumber = list.getNode(j).getStringValue("pagina.number");
       	         if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
+							if (index==1) {
+								PaginaHelper ph = new PaginaHelper(cloud);
+								if (ph.getPaginaTemplate(paginaNumber).getStringValue("url").equals("routes.jsp")){
+									hsetPagesNodes.add(paginaNumber);
+	   	         	      hsetNodes.add(docNumber);
+								}
+							} else if (index==2) {
+								PaginaHelper ph = new PaginaHelper(cloud);
+								if (ph.getPaginaTemplate(paginaNumber).getStringValue("url").equals("natuurgebieden.jsp")){
+									hsetPagesNodes.add(paginaNumber);
+	   	         	      hsetNodes.add(docNumber);
+								}
+							} else {
 	         	         hsetPagesNodes.add(paginaNumber);
    	         	      hsetNodes.add(docNumber);
+							}
                	}
 	            }
    	      } else { // *** no path implies an Evenement ***
@@ -51,7 +65,7 @@
                	String paginaNumber = cloud.getNode("agenda").getStringValue("number");
 	               if(PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek)) {
    	               hsetNodes.add(docNumber);
-      	            includedEvents.add(sParent);
+  	   	            includedEvents.add(sParent);
          	      }
             	}
 	         }
@@ -85,11 +99,14 @@ if((sCategory != null) && (!sCategory.equals(""))) {
    </mm:list><%
 }
 
-%><mm:log jspvar="log"><%
+%><mm:log jspvar="log"><% 
 
 // this will lead to double results on the natuurgebieden, because artikel,rolerel,natuurgebieden,pos4rel,provincies is used to link routes
-hsetNatuurgebiedenNodes = addPages(cloud, log, cf, sQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
-if(debug) { %><br/>natuurgebiedenHits:<br/><%= hsetNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
+hsetNatuurgebiedenRouteNodes = addPages(cloud, log, cf, sQuery, 1, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+if(debug) { %><br/>natuurgebiedenRoutesHits:<br/><%= hsetNatuurgebiedenRouteNodes %><br/><%= hsetPagesNodes %><% } 
+
+hsetNatuurgebiedenNatuurgebiedenNodes = addPages(cloud, log, cf, sQuery, 2, "natuurgebieden,pos4rel,provincies,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
+if(debug) { %><br/>natuurgebiedenNatuurgebiedenHits:<br/><%= hsetNatuurgebiedenNatuurgebiedenNodes %><br/><%= hsetPagesNodes %><% } 
 
 hsetArticlesNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,contentrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNodes %><% } 
@@ -97,10 +114,10 @@ if(debug) { %><br/>articleHits:<br/><%= hsetArticlesNodes %><br/><%= hsetPagesNo
 hsetArtDossierNodes = addPages(cloud, log, cf, sQuery, 0, "artikel,posrel,dossier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>artByDossierHits:<br/><%= hsetArtDossierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetFormulierNodes = addPages(cloud, log, cf, sQuery, 2, "formulier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
+hsetFormulierNodes = addPages(cloud, log, cf, sQuery, 3, "formulier,posrel,pagina", rootID, nowSec, hsetPagesNodes);
 if(debug) { %><br/>formulierHits:<br/><%= hsetFormulierNodes %><br/><%= hsetPagesNodes %><% } 
 
-hsetEvenementNodes = addPages(cloud, log, cf, sQuery, 3, null, rootID, nowSec, hsetPagesNodes);
+hsetEvenementNodes = addPages(cloud, log, cf, sQuery, 4, null, rootID, nowSec, hsetPagesNodes);
 if(hsetEvenementNodes.size()>0) { 
    %><mm:node number="agenda">
       <mm:field name="number" jspvar="agenda_number" vartype="String" write="false"><%
