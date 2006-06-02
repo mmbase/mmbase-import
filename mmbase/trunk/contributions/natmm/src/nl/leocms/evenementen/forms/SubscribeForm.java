@@ -60,7 +60,9 @@ public class SubscribeForm extends ActionForm {
    public static String OTHER_DATES_ACTION      = "andere data";
    public static String SELECT_DATE_ACTION      = "select_date";
    public static String FIX_DATE_ACTION         = "fix_date";
-
+   public static String PROMPT_FOR_CONFIRMATION = "promptforconfirmation";
+	public static String CANCELED						= "canceled";
+	
    private String action;
    private int validateCounter = 0;
    private String skipValidation;
@@ -685,8 +687,8 @@ public class SubscribeForm extends ActionForm {
             validateCounter++;
          }
       }
-
-      return errors;
+		
+		return errors;
    }
 }
 

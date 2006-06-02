@@ -62,14 +62,14 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
                   <jsp:param name="s" value="<%=  request.getParameter("s") %>" />
    			  </jsp:include><%
 
-   	   } else if(subscribeForm!=null&&!subscribeForm.getAction().equals("canceled")) {
+   	   } else if(subscribeForm!=null&&!subscribeForm.getAction().equals(SubscribeForm.CANCELED)) {
          
             session.setAttribute("pagina",paginaID); 
 
             // *** there is a form in this session, show the user the form
             // *** parameters are already passed by SubscribeInitAction
             
-            if(subscribeForm.getAction().equals("promptforconfirmation")) {
+            if(subscribeForm.getAction().equals(SubscribeForm.PROMPT_FOR_CONFIRMATION)) {
                %><jsp:include page="includes/events/confirm.jsp" /><%            
             } else {
                %><jsp:include page="includes/events/subscribe.jsp">
