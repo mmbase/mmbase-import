@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.144 2006-03-31 08:45:42 pierre Exp $
+ * @version $Id: Wizard.java,v 1.145 2006-06-02 13:07:09 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -906,7 +906,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         // Bad luck, tell the user and try the next list.
                         log.debug("Error during query, proceeding with next list: " + e.toString());
 
-                        Element option = list.getOwnerDocument().createElement("option");
+                        Element option = optionlist.getOwnerDocument().createElement("option");
                         option.setAttribute("id", "-");
                         Utils.storeText(option, "Error: query for '" + listname + "' failed");
                         optionlist.appendChild(option);
