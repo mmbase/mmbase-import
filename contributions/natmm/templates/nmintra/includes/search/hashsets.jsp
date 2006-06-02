@@ -25,12 +25,12 @@ qStr = qStr.trim().replaceAll(SINGLESPACE,"* AND ") + "*";
 log.info("******* Starting search on '" +  qStr + "' *******");
 boolean searchArchive = sArchive.equals("ja");
 hsetArticlesNodes = su.addPages(cloud, cf, qStr, 0, "artikel,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-hsetTeaserNodes = su.addPages(cloud, cf, qStr, 4, "teaser,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-hsetProducctypesNodes = su.addPages(cloud, cf, qStr, 5, "producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-hsetProductsNodes = su.addPages(cloud, cf, qStr, 6, "products,posrel,producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-hsetItemsNodes = su.addPages(cloud, cf, qStr, 7, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-hsetDocumentsNodes = su.addPages(cloud, cf, qStr, 8, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
-hsetVacatureNodes = su.addPages(cloud, cf, qStr, 9, "vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+hsetTeaserNodes = su.addPages(cloud, cf, qStr, 5, "teaser,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+hsetProducctypesNodes = su.addPages(cloud, cf, qStr, 6, "producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+hsetProductsNodes = su.addPages(cloud, cf, qStr, 7, "products,posrel,producttypes,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+hsetItemsNodes = su.addPages(cloud, cf, qStr, 8, "items,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+hsetDocumentsNodes = su.addPages(cloud, cf, qStr, 9, "documents,posrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
+hsetVacatureNodes = su.addPages(cloud, cf, qStr, 10, "vacature,contentrel,pagina", sCategory, sPool, nowSec, fromTime, toTime, searchArchive, hsetPagesNodes);
 
 // *** Create list of categories from list of pages: hSetCategories ***
 // *** Seems to me it is faster than create another index ***
