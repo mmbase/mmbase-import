@@ -30,9 +30,9 @@ import org.mmbase.bridge.NodeList;
 /**
  * The Relation object, holds objects related to a table, these objects are
  * tables also.
- * 
+ *
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DataRelation {
 	private static Log log = LogFactory.getLog(DataRelation.class);
@@ -41,9 +41,9 @@ public class DataRelation {
 
 	private String type;
 
-	private String role = "related";
+	private String role = null;
 
-	private String searchDir = "destination";
+	private String searchDir = null;
 
 	private List fieldList = new ArrayList();
 
@@ -51,7 +51,7 @@ public class DataRelation {
 
 	/**
 	 * Collects all related nodes and their fields
-	 * 
+	 *
 	 * @param doc Lucene Document to put the collected fields in
 	 * @param node Node of the parent, the starting node to find the related
 	 *        nodes from
@@ -86,7 +86,7 @@ public class DataRelation {
 
 	/**
 	 * Adds a field to this relation
-	 * 
+	 *
 	 * @param field DataField object to add
 	 */
 	public void addField(DataField field) {
@@ -150,7 +150,7 @@ public class DataRelation {
 
 	/**
 	 * Sets the role to use for related nodes
-	 * 
+	 *
 	 * @param role
 	 */
 	public void setRole(String role) {
@@ -159,7 +159,7 @@ public class DataRelation {
 
 	/**
 	 * Sets the search direction for related nodes
-	 * 
+	 *
 	 * @param searchDir
 	 */
 	public void setSearchDir(String searchDir) {
