@@ -11,6 +11,7 @@ String shortyRol = "";
 %>
 <mm:import externid="showdate" jspvar="showdateID">false</mm:import>
 <mm:import externid="showpageintro">false</mm:import>
+<mm:import externid="shownav">false</mm:import>
 <mm:cloud jspvar="cloud">
 <%
 boolean hasRightCell = false;
@@ -86,6 +87,13 @@ if(hasRightCell) {
       	<% } %>
       </td>
    	<td style="vertical-align:top;padding-left:10px;width:175px;<jsp:include page="../includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+			<mm:compare referid="shownav" value="true">
+				<jsp:include page="../actie/includes/nav.jsp">
+            	<jsp:param name="a" value="<%= artikelID %>" />
+	            <jsp:param name="p" value="<%= paginaID %>" />
+   	      </jsp:include>
+				<br/>
+			</mm:compare>
          <jsp:include page="../includes/navright.jsp">
             <jsp:param name="s" value="<%= paginaID %>" />
             <jsp:param name="r" value="<%= rubriekID %>" />
