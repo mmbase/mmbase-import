@@ -195,6 +195,15 @@
 	<mm:listnodes type="rubriek">
 		<mm:setfield name="url">1</mm:setfield>
 	</mm:listnodes>
+	<mm:listnodes type="paginatemplate">
+		<mm:field name="naam" jspvar="name" vartype="String" write="false">
+			<mm:setfield name="naam"><%= name + " (natuurherstel)" %></mm:setfield>   
+		</mm:field>
+		<mm:setfield name="systemtemplate">0</mm:setfield>   
+		<mm:setfield name="dynamiclinklijsten">0</mm:setfield>
+		<mm:setfield name="dynamicmenu">0</mm:setfield>
+		<mm:setfield name="contenttemplate">0</mm:setfield>
+	</mm:listnodes>
    Done.
    </body>
 </html>
