@@ -108,7 +108,7 @@ public class PaginaHelper {
    }
 
    public static Vector getBreadCrumbs(Cloud cloud, String paginaNumber) {
-      if (paginaNumber.equals("-1")){
+      if (paginaNumber==null || paginaNumber.equals("-1")){
          log.error("No such pagina with number: " + paginaNumber + ". Returning null.");
          return null;
       }
@@ -144,11 +144,10 @@ public class PaginaHelper {
       Vector breadcrumbs = getBreadCrumbs(cloud, paginaNumber);
       log.debug(paginaNumber + "->" + breadcrumbs);
 		String rootRubriek = null;
-      if (breadcrumbs!=null){
+      if (breadcrumbs!=null) {
          if (breadcrumbs.size() >= 2) {
             rootRubriek = (String) breadcrumbs.get(breadcrumbs.size() - 2);
-         }
-         else {
+         } else {
             log.error("Pagina " + paginaNumber +
                " does not have a root rubriek. Setting root rubriek to 'root'");
             rootRubriek = "root";
@@ -297,7 +296,7 @@ public class PaginaHelper {
          if (userURL!=null) {
             log.debug("processed from url cache: " + userURL);
             url = new StringBuffer(userURL);
-         } else if (!paginaNumber.equals("-1")){
+         } else if (paginaNumber!=null && !paginaNumber.equals("-1")){
             url = new StringBuffer();
             url.append(getUrlPathToRootString(cloud.getNode(paginaNumber), contextPath));
             url.append(UrlConverter.PAGE_EXTENSION);
@@ -576,7 +575,7 @@ public class PaginaHelper {
      * @return
      */
    public Node getPaginaTemplate(String pageNumber) {
-      if (!pageNumber.equals("-1")){
+      if (pageNumber!=null && !pageNumber.equals("-1")){
          Node pageNode = cloud.getNode(pageNumber);
          NodeList ptList =
             pageNode.getRelatedNodes("paginatemplate", "gebruikt",
