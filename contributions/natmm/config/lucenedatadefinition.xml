@@ -31,10 +31,40 @@
       </table>
    </index>
    
-   <index name="natmmIndexNatuurgebieden">
+   <index name="natmmIndexNatuurgebieden_route">
       <table name="natuurgebieden">
          <field name="titel">indexed.text</field>
-         <related name="artikel">
+         <related name="artikel" role="rolerel">
+            <field name="titel">indexed.text</field>
+            <field name="intro">indexed.text</field>
+            <field name="tekst">indexed.text</field>
+            <related name="paragraaf">
+               <field name="titel">indexed.text</field>
+               <field name="tekst">indexed.text</field>
+            </related>
+         </related>
+         <related name="paragraaf">
+            <field name="titel">indexed.text</field>
+            <field name="tekst">indexed.text</field>
+         </related>
+         <related name="shorty">
+            <field name="titel">indexed.text</field>
+            <field name="omschrijving">indexed.text</field>
+         </related>
+         <related name="vertrekpunten">
+            <field name="titel">indexed.text</field>
+            <field name="tekst">indexed.text</field>
+         </related>
+         <related name="provincies">
+            <field name="titel">indexed.text</field>
+         </related>
+      </table>
+   </index>
+   
+   <index name="natmmIndexNatuurgebieden_natuurgebieden">
+      <table name="natuurgebieden">
+         <field name="titel">indexed.text</field>
+         <related name="artikel" role="posrel">
             <field name="titel">indexed.text</field>
             <field name="intro">indexed.text</field>
             <field name="tekst">indexed.text</field>
