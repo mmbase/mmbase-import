@@ -8,7 +8,7 @@
 <!--
 function postIt() {
 	var website = document.selectform.elements["website"].value;
-	document.location = "index.jsp?r=" + website;
+	document.location = "<%= ph.getSubDir(cloud,paginaID) %>index.jsp?r=" + website;
 }
 //-->
 </script>
