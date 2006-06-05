@@ -137,19 +137,15 @@
 <% } %>
 </head>
 <%
+String account = cloud.getUser().getIdentifier();
+AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud); 
+
 boolean isAdmin = false;
 boolean isChiefEditor = false;
 boolean isEditor = false;
 if(actionId.indexOf("printsubscriptions")==-1) {
    isAdmin = cloud.getUser().getRank().equals("administrator");
 	isChiefEditor = cloud.getUser().getRank().equals("chiefeditor");
-} %>
-
-<%
-
-String account = cloud.getUser().getIdentifier();
-AuthorizationHelper authorizationHelper = new AuthorizationHelper(cloud); 
-if(actionId.indexOf("printsubscriptions")==-1) {
 	UserRole role = authorizationHelper.getRoleForUser(authorizationHelper.getUserNode(account), cloud.getNode("natuurin_rubriek"));
    isEditor = (role.getRol()>0);
 }
@@ -217,7 +213,7 @@ DoubleDateNode ddn = new DoubleDateNode();
     
    subscriptions.put(key,subscription_number);
    // *** update the costs for the group excursion booking ***
-   if(isGroupExcursion) { Evenement.updateGroupExcursionCosts(cloud, parent_number, subscription_number); }
+   if(actionId.indexOf("print")==-1 && isGroupExcursion) { Evenement.updateGroupExcursionCosts(cloud, parent_number, subscription_number); }
    %></mm:field
 ></mm:list>
 <!-- ******************************* description of evenement (from parent) ******************************** -->
@@ -236,7 +232,7 @@ DoubleDateNode ddn = new DoubleDateNode();
       %><html:image src="../img/left.gif" property="buttons.goBack" style="width:13px;" alt="Naar overzicht" />
       <a href="SubscribeInitAction.eb?number=<%= nodenr %>&action=printsubscriptions&orderby=lastname&direction=up" target="_blank">
          <img src='../img/print_subscriptions.gif' align='absmiddle' border='0' alt='Print de aanmeldingen voor deze activiteit'></a>
-      <a href="#" onClick="javascript:launchCenter('mailsubscriptions.jsp?event=<%= nodenr %>&emailto=anna@avantlab.com', 'mail', 300, 400);setTimeout('newwin.focus();',250);">
+      <a href="#" onClick="javascript:launchCenter('mailsubscriptions.jsp?event=<%= nodenr %>', 'mail', 300, 400);setTimeout('newwin.focus();',250);">
          <img src='../img/mail_subscriptions.gif' align='absmiddle' border='0' alt='Verstuur de aanmeldingen voor deze activiteit per email'></a>
    	<a href="#" onClick="javascript:launchCenter('download_popup.jsp?event=<%= nodenr %>&type=s', 'center', 300, 400,'resizable=1');setTimeout('newwin.focus();',250);">
 			<img src='../img/excel_subscriptions.gif' align='absmiddle' border='0' alt='Download de aanmeldingen voor deze activiteit'></a><%
@@ -256,7 +252,7 @@ DoubleDateNode ddn = new DoubleDateNode();
          <% 
       }
       String [] altEvent = Evenement.altEventLink(cloud,parent_number,nodenr);
-      if(!altEvent[0].equals("-1")) {
+      if(actionId.indexOf("print")==-1 && !altEvent[0].equals("-1")) {
          %>
          <tr>
             <td class="fieldname" style="<%= fNStyle %>">alternatief</td>
