@@ -10,8 +10,8 @@
    boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1);
    
    String sReferid = "I007";
-   if (request.getParameter("refid")!=null) {
-      sReferid = request.getParameter("refid");
+   if (request.getParameter("referid")!=null) {
+      sReferid = request.getParameter("referid");
    }
    %>
    <script>
