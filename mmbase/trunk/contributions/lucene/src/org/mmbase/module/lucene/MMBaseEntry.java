@@ -32,13 +32,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.7 2006-04-13 11:57:45 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.8 2006-06-06 11:24:36 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
 
     // format for dates to index
-    static private final DateFormat simpleFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 
     private final Collection fields;
     private final Node node;
@@ -150,6 +150,7 @@ public class MMBaseEntry implements IndexEntry {
      * @param cursor the cursor to hold the data
      */
     protected void storeData(Map map) {
+        Cloud cloud = elementManager.getCloud();
         for (Iterator i = fields.iterator(); i.hasNext(); ) {
             IndexFieldDefinition fieldDefinition = (IndexFieldDefinition)i.next();
             String fieldName = fieldDefinition.fieldName;
@@ -159,12 +160,18 @@ public class MMBaseEntry implements IndexEntry {
             if (shouldIndex(fieldName, alias)) {
                 // some hackery
                 int type = org.mmbase.bridge.Field.TYPE_UNKNOWN;
-                if (fieldDefinition.stepField != null) type = fieldDefinition.stepField.getType();
+                if (fieldDefinition.stepField != null) {
+                    org.mmbase.storage.search.StepField sf = fieldDefinition.stepField;
+                    org.mmbase.bridge.Field field = cloud.getNodeManager(sf.getStep().getTableName()).getField(sf.getFieldName());
+                    type = field.getDataType().getBaseType();
+                    // stepField.getType will not do, because this is the actual database type (when multilevel)
+                    // changed especially because of datetimes...
+                }
                 String documentText = null;
                 switch (type) {
                     case org.mmbase.bridge.Field.TYPE_DATETIME : {
                         try {
-                            documentText = simpleFormat.format(node.getDateValue(fieldName));
+                            documentText = DATE_FORMAT.format(node.getDateValue(fieldName));
                         } catch (Exception e) {
                             // can't index dates prior to 1970, pretty dumb if you ask me
                         }
