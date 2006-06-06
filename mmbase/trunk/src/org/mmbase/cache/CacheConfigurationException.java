@@ -1,24 +1,29 @@
 /*
- * Created on 19-jul-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.cache;
 
 /**
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
- * 
+ * @javadoc
+ *
  * @author Ernst Bunders
+ * @since MMBase-1.8
+ * @version $Id: CacheConfigurationException.java,v 1.3 2006-06-06 21:58:47 michiel Exp $
  */
 public class CacheConfigurationException extends Exception {
 
-	/**
-	 * @param string
-	 */
-	public CacheConfigurationException(String string) {
-		super(string);
-	}
+
+    /**
+     * @param string
+     */
+    public CacheConfigurationException(String string) {
+        super(string);
+    }
 
 }
