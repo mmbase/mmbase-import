@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.380 2006-04-21 14:10:28 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.381 2006-06-06 19:44:13 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -1383,12 +1383,18 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         if (locale == null) {
             if ("".equals(field)) {
                 rtn = getGUIIndicator(node);
+                if (rtn == GUI_INDICATOR) { // not overridden
+                    rtn = getNodeGUIIndicator(node, pars);
+                }
             } else {
                 rtn = getGUIIndicator(field, node);
             }
         } else {
             if ("".equals(field)) {
                 rtn = getLocaleGUIIndicator(locale, node);
+                if (rtn == GUI_INDICATOR) { // not overridden
+                    rtn = getNodeGUIIndicator(node, pars);
+                }
             } else {
                 rtn = getLocaleGUIIndicator(locale, field, node);
             }
@@ -1434,16 +1440,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return rtn;
     }
 
-
     /**
-     * What should a GUI display for this node.
-     * Default is the first non system field (first field after owner).
-     * Override this to display your own choice (see Images.java).
-     * @param node The node to display
-     * @return the display of the node as a <code>String</code>
+     * Returns a GUI-indicator for the node itself.
+     * @since MMBase-1.8.1
      */
-    public String getGUIIndicator(MMObjectNode node) {
-        // do the best we can because this method was not implemeted
+    protected String getNodeGUIIndicator(MMObjectNode node, Parameters params) {
+        // do the best we can because this method was not implemented
         // we get the first field in the object and try to make it
         // to a string we can return
         List list = getFields(NodeManager.ORDER_LIST);
@@ -1453,10 +1455,25 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (str.length() > 128) {
                 str =  str.substring(0, 128) + "...";
             }
-            return org.mmbase.util.transformers.Xml.XMLEscape(str);
+            params.set("field", fname);
+            params.set("stringvalue", str);
+            return getGUIIndicator(node, params);
         } else {
             return GUI_INDICATOR;
         }
+    }
+
+
+    /**
+     * What should a GUI display for this node.
+     * Default is the first non system field (first field after owner).
+     * Override this to display your own choice (see Images.java).
+     * You may want to override {@link #getNodeGUIIndicator} for more flexibility.
+     * @param node The node to display
+     * @return the display of the node as a <code>String</code>
+     */
+    public  String getGUIIndicator(MMObjectNode node) {
+        return GUI_INDICATOR;
     }
 
 
@@ -1500,6 +1517,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /**
      * The GUIIndicator can depend on the locale. Override this function
+     * You may want to override {@link #getNodeGUIIndicator} for more flexibility.
      * @since MMBase-1.6
      */
     protected String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
