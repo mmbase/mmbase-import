@@ -46,7 +46,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.61 2006-04-20 17:53:25 michiel Exp $
+ * @version $Id: Lucene.java,v 1.62 2006-06-06 11:28:05 michiel Exp $
  **/
 public class Lucene extends Module implements NodeEventListener, IdEventListener {
 
@@ -91,6 +91,11 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
 
     protected final static Parameter EXTRACONSTRAINTS = new Parameter("extraconstraints", String.class);
     static { EXTRACONSTRAINTS.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
+
+    /*
+    protected final static Parameter EXTRACONSTRAINTSLIST = new Parameter("constraints", List.class);
+    static { EXTRACONSTRAINTSLIST.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
+    */
 
     protected final static Parameter IDENTIFIER = new Parameter("identifier", String.class);
     static { IDENTIFIER.setDescription("Normally a node number, identifier (a number of) lucene document(s) in an index."); }
@@ -313,6 +318,18 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                 Integer maxParameter = (Integer)arguments.get(MAX);
                 if (maxParameter != null) max = maxParameter.intValue();
                 String extraConstraints = arguments.getString(EXTRACONSTRAINTS);
+                /*
+                List moreConstraints = (List) arguments.get(EXTRACONSTRAINTSLIST);
+                if (moreConstraints != null && moreConstraints.size() > 0) {
+                    StringBuffer ec = new StringBuffer(extraConstraints == null ? "" : extraConstraints + " ");
+                    Iterator i = moreConstraints.iterator();
+                    while (i.hasNext()) {
+                        ec.append(i.next().toString());
+                        ec.append(" ");
+                    }
+                    extraConstraints = ec.toString().trim();
+                }
+                */
                 Cloud cloud = (Cloud)arguments.get(Parameter.CLOUD);
                 try {
                     return search(cloud, value, index, extraConstraints, sortFieldList, offset, max);
@@ -384,8 +401,28 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
                     }
 
 
-                    // read only?
-                    readOnly = "true".equals(getInitParameter("readonly"));
+                    String readOnlySetting = getInitParameter("readonly");
+                    while (readOnlySetting != null && readOnlySetting.startsWith("system:")) {
+                        readOnlySetting = System.getProperty(readOnlySetting.substring(7));
+                    }
+                    if (readOnlySetting != null) {
+                        if (readOnlySetting.startsWith("host:")) {
+                            String host = readOnlySetting.substring(5); 
+                            try {
+                                boolean write = 
+                                    java.net.InetAddress.getLocalHost().getHostName().equals(host) ||
+                                    (System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName()).equals(host);
+                                readOnly = ! write;
+                            } catch (java.net.UnknownHostException uhe) {
+                                log.error(uhe);
+                            }
+                        } else {
+                            readOnly = "true".equals(readOnlySetting);
+                        }
+                    }
+                    if (readOnly) {
+                        log.info("Lucene module of this MMBase will be READONLY");
+                    }
 
                     // initial wait time?
                     String time = getInitParameter("initialwaittime");
@@ -712,7 +749,7 @@ public class Lucene extends Module implements NodeEventListener, IdEventListener
             log.service("Start Lucene Scheduler");
             try {
                 if (initialWaitTime > 0) {
-                    log.info("Sleeping for initialisation");
+                    log.info("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
                     Thread.sleep(initialWaitTime);
                 }
             } catch (InterruptedException ie) {
