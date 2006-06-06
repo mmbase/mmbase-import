@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.37 2006-04-29 11:44:42 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.38 2006-06-06 17:47:43 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -139,7 +139,9 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         addExtraAttributes(buffer);
         buffer.append(">");
         Object value  = cast(getFieldValue(node, field, true), node, field);
-        log.info("using value " + (value == null ? "NULL" : value.getClass().getName() + " " + value));
+        if (log.isDebugEnabled()) {
+            log.debug("using value " + (value == null ? "NULL" : value.getClass().getName() + " " + value));
+        }
         if (! field.getDataType().isRequired()) {
             buffer.append("<option value=\"\" ");
             if (value == null) buffer.append("selected=\"selected\" ");
