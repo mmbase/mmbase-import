@@ -264,6 +264,16 @@ public class NMIntraToNatMMigrator {
       "distinct=true&amp;" +
       "orderby=rubriek2.naam&amp;");
 
+      log.info("setting all editwizard titles to lowercase");
+      int iBegIndex = sEditwizardsContent.indexOf("<title>");
+      while (iBegIndex>-1){
+         int iEndIndex = sEditwizardsContent.indexOf("</title>",iBegIndex);
+         String sTitle = sEditwizardsContent.substring(iBegIndex + 7,iEndIndex);
+         sEditwizardsContent = sEditwizardsContent.substring(0,iBegIndex + 7) +
+            sTitle.toLowerCase() + sEditwizardsContent.substring(iEndIndex);
+         iBegIndex = sEditwizardsContent.indexOf("<title>",iEndIndex);
+      }
+
      set = tmRenamingFields.entrySet();
      it = set.iterator();
      while (it.hasNext()){
@@ -297,10 +307,12 @@ public class NMIntraToNatMMigrator {
           tmThisRenamingFields.put(fields.substring(0,iColonIndex),fields.substring(iColonIndex+1));
         }
         sContent = renamingFields(sContent, tmThisRenamingFields);
-
+        if (sBuilderName.equals("editwizards")){
+           sEditwizardsContent = sContent;
+        }
 
         if (!sBuilderName.equals("editwizards")){
-          int iBegIndex = sEditwizardsContent.indexOf("nodepath=" + sBuilderName + "&amp;");
+          iBegIndex = sEditwizardsContent.indexOf("nodepath=" + sBuilderName + "&amp;");
           while (iBegIndex>-1){
             int iEndIndex = sEditwizardsContent.indexOf("</url>",iBegIndex) + 6;
             String sWork =  sEditwizardsContent.substring(iBegIndex,iEndIndex);
