@@ -210,7 +210,7 @@ public class NMIntraToNatMMigrator {
       tmRenamingFields.put("companies","name:naam;description:omschrijving");
       tmRenamingFields.put("departments","name:naam;description:omschrijving");
       tmRenamingFields.put("editwizardgroups","name:naam;description:omschrijving");
-      tmRenamingFields.put("editwizards","title:naam");
+      tmRenamingFields.put("editwizards","title:name");
       tmRenamingFields.put("employees","location:account;birthday:dayofbirth;description:omschrijving");
       tmRenamingFields.put("formulier","copyright:titel_de;subtitle:titel_fra;title:titel;" +
       "editors_note:emailadressen;introduction:omschrijving");
