@@ -24,7 +24,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class SearchUtil {
 
@@ -281,43 +281,100 @@ public class SearchUtil {
             for (int i = 0; i < hits.length(); i++) {
                Document doc = hits.doc(i);
                String docNumber = doc.get("node");
-               if(path!=null) {
-                  String sBuiderName = path.substring(0,path.indexOf(","));
-                  String sConstraints = "";
-                  if (!sBuiderName.equals("producttypes")
-                      && !sBuiderName.equals("documents")) { // exclude builders that do not have embargo and verloopdatum
-                     if (searchArchive) {
-                        sConstraints = "(" + sBuiderName + ".use_verloopdatum='0') OR (" + sBuiderName + ".verloopdatum < '" + nowSec + "')"; 
-                     } else {
-                        sConstraints = "(" + sBuiderName + ".use_verloopdatum='0') OR ( " + sBuiderName + ".verloopdatum > '" + nowSec + "')"; 
-                     }
-                     if (fromTime<toTime) {
-                        sConstraints += " AND ( " + sBuiderName + ".embargo > '" + fromTime + "') AND (" + sBuiderName + ".embargo < '" + toTime + "')";
-                     }
-                     log.info("embargo and verloopdatum constraint " + sConstraints);
-                  }
-                  NodeList list = cloud.getList(docNumber,path,"pagina.number",sConstraints,null,null,null,true);
-                  for(int j=0; j<list.size(); j++) {
-                     String paginaNumber = list.getNode(j).getStringValue("pagina.number");
-                     if(rootRubriek.equals("") || PaginaHelper.getRootRubriek(cloud,paginaNumber).equals(rootRubriek) ) {
-                        log.info("pagina " + paginaNumber + " belongs to root " + rootRubriek);
-                        NodeList nlPools = PoolUtil.getPool(cloud,docNumber);
-                        if (sPoolNumber.equals("") || nlPools.contains(cloud.getNode(sPoolNumber))){
-                           log.info("node " + docNumber + " belongs to pool " + sPoolNumber);
-                           hsetPagesNodes.add(paginaNumber);
-                           hsetNodes.add(docNumber);
-                        }
-                     }
-                  }
+               if (path != null) {
+                  hsetNodes.addAll(calculate(cloud, path, rootRubriek, sPoolNumber,
+                               docNumber, nowSec, fromTime, toTime,
+                               searchArchive, hsetPagesNodes)) ;
                }
             }
-            if(searcher!=null) { searcher.close(); }
-            if(ir!=null) { ir.close(); }
+            if (searcher != null) { searcher.close(); }
+            if (ir != null) { ir.close(); }
          }
          log.info("Searching for " + sQuery + " on " + path + " results in nodes " + hsetNodes + " and pages " + hsetPagesNodes); 
       } catch (Exception e) { 
          log.error("Lucene index " + index + " on query " + sQuery + " throws error " + e); 
       } 
+      return hsetNodes;
+   }
+	
+   public HashSet addPages(
+      Cloud cloud,
+      String path,
+      String rootRubriek,
+      String sPoolNumber,
+      long nowSec,
+      long fromTime,
+      long toTime,
+      boolean searchArchive,
+      HashSet hsetPagesNodes) {
+
+      HashSet hsetNodes = new HashSet();
+      String sBuiderName = path.substring(0, path.indexOf(","));
+      NodeList nl = cloud.getList(null, path, sBuiderName + ".number", null, null, null, null, true);
+      for (int i = 0; i < nl.size(); i++) {
+         String docNumber = nl.getNode(i).getStringValue(sBuiderName +
+            ".number");
+         hsetNodes.addAll(calculate(cloud, path, rootRubriek, sPoolNumber,
+                               docNumber, nowSec, fromTime, toTime,
+                               searchArchive, hsetPagesNodes)) ;
+      }
+
+      return hsetNodes;
+
+   }
+
+   public static HashSet calculate(
+      Cloud cloud,
+      String path,
+      String rootRubriek,
+      String sPoolNumber,
+      String docNumber,
+      long nowSec,
+      long fromTime,
+      long toTime,
+      boolean searchArchive,
+      HashSet hsetPagesNodes) {
+
+      HashSet hsetNodes = new HashSet();
+      String sBuiderName = path.substring(0, path.indexOf(","));
+      String sConstraints = "";
+      if (!sBuiderName.equals("producttypes")
+          && !sBuiderName.equals("documents")) { // exclude builders that do not have embargo and verloopdatum
+         if (!searchArchive) {
+            sConstraints = "(" + sBuiderName + ".use_verloopdatum='0') OR ( " +
+               sBuiderName + ".verloopdatum > '" + nowSec + "')";
+         }
+         if (fromTime < toTime) {
+            if (!sConstraints.equals("")) {
+               sConstraints += " AND ";
+            }
+            sConstraints += "( " + sBuiderName + ".embargo > '" + fromTime +
+               "') AND (" + sBuiderName + ".embargo < '" + toTime + "')";
+         }
+         log.info("embargo and verloopdatum constraint " + sConstraints);
+      }
+      NodeList list = cloud.getList(docNumber, path, "pagina.number," +
+                                    sBuiderName + ".number",
+                                    sConstraints, null, null, null, true);
+      for (int j = 0; j < list.size(); j++) {
+         String paginaNumber = list.getNode(j).getStringValue("pagina.number");
+         if (docNumber.equals("")){
+            docNumber = list.getNode(j).getStringValue(sBuiderName + ".number");
+         }
+         if (rootRubriek.equals("") ||
+             PaginaHelper.getRootRubriek(cloud,
+                                         paginaNumber).equals(rootRubriek)) {
+            log.info("pagina " + paginaNumber + " belongs to root " +
+                     rootRubriek);
+            NodeList nlPools = PoolUtil.getPool(cloud, docNumber);
+            if (sPoolNumber.equals("") ||
+                nlPools.contains(cloud.getNode(sPoolNumber))) {
+               log.info("node " + docNumber + " belongs to pool " + sPoolNumber);
+               hsetPagesNodes.add(paginaNumber);
+               hsetNodes.add(docNumber);
+            }
+         }
+      }
       return hsetNodes;
    }
 }

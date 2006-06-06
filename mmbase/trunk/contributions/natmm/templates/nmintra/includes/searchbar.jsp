@@ -41,8 +41,8 @@ function startPhone() {
 <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
 	<form name="searchform" action="<%= requestURL %>search.jsp?p=search" onSubmit="return startSearch();">
 	<tr>
-	<td><input type="text" name="search" value="<% if(searchId.equals("")){ %>ik zoek op ...<% } else { %><%= searchId %><% } 
-	  %>" style="text-align:left;width:110px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %> /></td>
+	<td><input type="text" name="search" value="<% if(searchId.equals("")||actionId.equals("adv_search")){ %>ik zoek op ...<% } else { %><%= searchId %><% } 
+	  %>" style="text-align:left;width:110px;" <% if(searchId.equals("")||actionId.equals("adv_search")){ %>onClick="this.value='';"<% } %> /></td>
 	<td style="padding-left:3px;padding-top:1px;">
 	  <input type="submit" name="Submit" value="Zoek" style="text-align:center;font-weight:bold;"></td>
 	<td style="padding-left:3px;padding-top:1px;">
