@@ -7,8 +7,8 @@
          <td class="bold"><span class="light">Zoekterm</span></td>
       </tr>
       <tr>
-         <td class="bold"><input type="text" name="search" value="<% if(searchId.equals("")){ %>ik zoek op ...<% } else { %><%= searchId %><% } %>"
-			 style="width:170px;" <% if(searchId.equals("")){ %>onClick="this.value='';"<% } %>/></td>
+         <td class="bold"><input type="text" name="search" value="<% if (searchId.equals("")&&sCategory.equals("")&&sPool.equals("")&&(fromTime==0)&&(toTime==0)){ %>ik zoek op ...<% } else { %><%= searchId %><% } %>"
+			 style="width:170px;" <% if((searchId.indexOf("ik zoek op")>-1)||searchId.equals("")){ %>onClick="this.value='';"<% } %>/></td>
       </tr>
 		<tr>
          <td class="bold"><span class="light">Rubrieken</span></td>
@@ -142,7 +142,9 @@
    	    v = document.advsearchform.elements["to_year"].value;
       	 if(v != '') { period += v; } else { period += '0000'; }
 	       if(period != '0000000000000000') href += "&d=" + period;
-		 }	 
+		 }	else {
+		 	href += "&search=ik%20zoek%20op%20...";
+		 }
 		 href += "&t=adv_search";
        document.location = href;
        return false;
