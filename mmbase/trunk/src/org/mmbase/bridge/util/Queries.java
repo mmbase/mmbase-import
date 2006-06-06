@@ -15,7 +15,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.73 2006-04-28 11:19:01 michiel Exp $
+ * @version $Id: Queries.java,v 1.74 2006-06-06 19:58:21 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -122,14 +121,22 @@ abstract public class Queries {
             searchDir = encoder.encode(searchDir);
         }
         if (constraints != null) {
-            constraints = convertClauseToDBS(constraints);
-            if (!validConstraints(constraints)) {
+            constraints = ConstraintParser.convertClauseToDBS(constraints);
+            if (! ConstraintParser.validConstraints(constraints)) {
                 throw new BridgeException("invalid constraints:" + constraints);
+            }
+            if (! constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
+                /// WHERE is used in org.mmbase.util.QueryConvertor 
+                constraints = "WHERE " + constraints;
             }
         }
 
+
         // create query object
         //TODO: remove this code... classes under org.mmbase.bridge.util must not use the core
+
+        // getMultilevelSearchQuery must perhaps move to a utility container org.mmbase.storage.search.Queries or so.
+
         ClusterBuilder clusterBuilder = MMBase.getMMBase().getClusterBuilder();
         int search = -1;
         if (searchDir != null) {
@@ -152,157 +159,6 @@ abstract public class Queries {
         }
     }
 
-    /**
-     * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing)
-     * This is used by createQuery (i wonder if it still makes sense)
-     * @param constraints constraint to check
-     * @return is valid constraint
-     */
-    static private boolean validConstraints(String constraints) {
-        // first remove all the escaped "'" ('' occurences) chars...
-        String remaining = constraints;
-        while (remaining.indexOf("''") != -1) {
-            int start = remaining.indexOf("''");
-            int stop = start + 2;
-            if (stop < remaining.length()) {
-                String begin = remaining.substring(0, start);
-                String end = remaining.substring(stop);
-                remaining = begin + end;
-            } else {
-                remaining = remaining.substring(0, start);
-            }
-        }
-        // assume we are not escaping... and search the string..
-        // Keep in mind that at this point, the remaining string could contain different information
-        // than the original string. This doesnt matter for the next sequence...
-        // but it is important to realize!
-        while (remaining.length() > 0) {
-            if (remaining.indexOf('\'') != -1) {
-                // we still contain a "'"
-                int start = remaining.indexOf('\'');
-
-                // escaping started, but no stop
-                if (start == remaining.length()) {
-                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints);
-                    return false;
-                }
-
-                String notEscaped = remaining.substring(0, start);
-                if (notEscaped.indexOf(';') != -1) {
-                    log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints + "\nnot excaped:" + notEscaped);
-                    return false;
-                }
-
-                int stop = remaining.substring(start + 1).indexOf('\'');
-                if (stop < 0) {
-                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints + "\nlast escaping:" + remaining.substring(start + 1));
-                    return false;
-                }
-                // we added one to to start, thus also add this one to stop...
-                stop = start + stop + 1;
-
-                // when the last character was the stop of our escaping
-                if (stop == remaining.length()) {
-                    return true;
-                }
-
-                // cut the escaped part from the string, and continue with resting sting...
-                remaining = remaining.substring(stop + 1);
-            } else {
-                if (remaining.indexOf(';') != -1) {
-                    log.warn("found a ';' inside our constrain:" + constraints);
-                    return false;
-                }
-                return true;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Converts a constraint by turning all 'quoted' fields into
-     * database supported fields.
-     * XXX: todo: escape characters for '[' and ']'.
-     * @param constraints constraint to convert
-     * @return Converted constraint
-     */
-    private static String convertClausePartToDBS(String constraints) {
-        StorageManagerFactory factory = MMBase.getMMBase().getStorageManagerFactory();
-        StringBuffer result = new StringBuffer();
-        int posa = constraints.indexOf('[');
-        while (posa > -1) {
-            int posb = constraints.indexOf(']', posa);
-            if (posb == -1) {
-                posa = -1;
-            } else {
-                String fieldName = constraints.substring(posa + 1, posb);
-                int posc = fieldName.indexOf('.');
-                if (posc == -1) {
-                    fieldName = factory != null ? factory.getStorageIdentifier(fieldName).toString() : fieldName;
-                } else {
-                    fieldName = fieldName.substring(0, posc + 1) + (factory !=  null ? factory.getStorageIdentifier(fieldName.substring(posc + 1)) : fieldName.substring(posc + 1));
-                }
-                result.append(constraints.substring(0, posa)).append(fieldName);
-                constraints = constraints.substring(posb + 1);
-                posa = constraints.indexOf('[');
-            }
-        }
-        result.append(constraints);
-        return result.toString();
-    }
-
-    /**
-     * Converts a constraint by turning all 'quoted' fields into
-     * database supported fields.
-     * XXX: todo: escape characters for '[' and ']'.
-     * @param constraints constraints to convert
-     * @return converted constraint
-     */
-    private static String convertClauseToDBS(String constraints) {
-        if (constraints.startsWith("MMNODE")) {
-            //  wil probably not work
-            // @todo check
-            return constraints;
-        } else if (constraints.startsWith("ALTA")) {
-            //  wil probably not work
-            // @todo check
-            return constraints.substring(5);
-        } else if (!constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
-            // Must start with "WHERE "
-            constraints = "WHERE " + constraints;
-        }
-
-        //keesj: here constraints will start with WHERE,ALTA or MMNODE
-
-        //keesj: what does this code do?
-
-        StringBuffer result = new StringBuffer();
-        //if there is a quote in the constraints posa will not be equals -1
-
-        int quoteOpen = constraints.indexOf('\'');
-        while (quoteOpen > -1) {
-            //keesj: posb can be the same a posa maybe the method should read indexOf("\"",posa) ?
-            int quoteClose = constraints.indexOf('\'', quoteOpen + 1);
-            if (quoteClose == -1) {
-                // unmatching quote?
-                log.warn("unbalanced quote in " + constraints);
-                break;
-            }
-
-            //keesj:part is now the first part of the constraints if there is a quote in the query
-            String part = constraints.substring(0, quoteOpen);
-
-            //append to the string buffer "part" the first part
-            result.append(convertClausePartToDBS(part));
-            result.append(constraints.substring(quoteOpen, quoteClose + 1));
-
-            constraints = constraints.substring(quoteClose + 1);
-            quoteOpen = constraints.indexOf('\'');
-
-        }
-        result.append(convertClausePartToDBS(constraints));
-        return result.toString();
-    }
 
     /**
      * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
@@ -316,15 +172,7 @@ abstract public class Queries {
         if (constraints == null || constraints.equals("")) {
             return null;
         }
-        constraints = convertClauseToDBS(constraints);
-        if (!validConstraints(constraints)) {
-            throw new BridgeException("invalid constraints:" + constraints);
-        }
-        // Before converting to legacy constraint,
-        // the leading "WHERE" must be skipped when present.
-        if (constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
-            constraints = constraints.substring(5).trim();
-        }
+
         // (Try to) parse constraints string to Constraint object.
         Constraint newConstraint = new ConstraintParser(query).toConstraint(constraints);
         addConstraint(query, newConstraint);
@@ -1417,7 +1265,7 @@ abstract public class Queries {
     }
 
     public static void main(String[] argv) {
-        System.out.println(convertClauseToDBS("(([cpsettings.status]='[A]' OR [cpsettings.status]='I') AND [users.account] != '') and (lower([users.account]) LIKE '%t[est%' OR lower([users.email]) LIKE '%te]st%' OR lower([users.firstname]) LIKE '%t[e]st%' OR lower([users.lastname]) LIKE '%]test%')"));
+        System.out.println(ConstraintParser.convertClauseToDBS("(([cpsettings.status]='[A]' OR [cpsettings.status]='I') AND [users.account] != '') and (lower([users.account]) LIKE '%t[est%' OR lower([users.email]) LIKE '%te]st%' OR lower([users.firstname]) LIKE '%t[e]st%' OR lower([users.lastname]) LIKE '%]test%')"));
     }
 
 }
