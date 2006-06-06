@@ -19,8 +19,12 @@
     <property name="waittime">5000</property>
     <!--
         If true, no index updates can be done, only existing indices can be used.
+        If false (or empty), it will do updates.
+        If it starts with "host:<hostname>" it will be readonly, unless if <hostname> equals  java.net.InetAddress.getLocalHost().getHostName() 
+                                       or if it cantains a @ System.getProperty("catalina.base")@java.net.InetAddress.getLocalHost().getHostName()
+        If it starts with "system:" then the remaining part will be used as a System property, and it's value is used, to start evaluation again.
     -->
-    <property name="readonly">false</property>
+    <property name="readonly">system:mmbase.lucene.readonly</property>
   </properties>
 
 </module>
