@@ -13,6 +13,7 @@ import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
+import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
@@ -111,16 +112,168 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.27 2006-02-14 22:51:25 michiel Exp $
+ * @version $Id: ConstraintParser.java,v 1.28 2006-06-06 19:58:21 michiel Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
 
-    /** Logger instance. */
     private final static Logger log = Logging.getLoggerInstance(ConstraintParser.class);
 
     /** Logger instance dedicated to logging fallback to legacy constraint. */
     private final static Logger fallbackLog = Logging.getLoggerInstance(ConstraintParser.class.getName() + ".fallback");
+
+
+    /**
+     * Converts a constraint by turning all 'quoted' fields into
+     * database supported fields.
+     * XXX: todo: escape characters for '[' and ']'.
+     * @param constraints constraint to convert
+     * @return Converted constraint
+     * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
+     */
+    private static String convertClausePartToDBS(String constraints) {
+        StorageManagerFactory factory = MMBase.getMMBase().getStorageManagerFactory();
+        StringBuffer result = new StringBuffer();
+        int posa = constraints.indexOf('[');
+        while (posa > -1) {
+            int posb = constraints.indexOf(']', posa);
+            if (posb == -1) {
+                posa = -1;
+            } else {
+                String fieldName = constraints.substring(posa + 1, posb);
+                int posc = fieldName.indexOf('.');
+                if (posc == -1) {
+                    fieldName = factory != null ? factory.getStorageIdentifier(fieldName).toString() : fieldName;
+                } else {
+                    fieldName = fieldName.substring(0, posc + 1) + (factory !=  null ? factory.getStorageIdentifier(fieldName.substring(posc + 1)) : fieldName.substring(posc + 1));
+                }
+                result.append(constraints.substring(0, posa)).append(fieldName);
+                constraints = constraints.substring(posb + 1);
+                posa = constraints.indexOf('[');
+            }
+        }
+        result.append(constraints);
+        return result.toString();
+    }
+
+    /**
+     * Converts a constraint by turning all 'quoted' fields into
+     * database supported fields.
+     * XXX: todo: escape characters for '[' and ']'.
+     * @param constraints constraints to convert
+     * @return converted constraint
+     * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
+     */
+    public static String convertClauseToDBS(String constraints) {
+        if (constraints.startsWith("MMNODE")) {
+            //  wil probably not work
+            // @todo check
+            return constraints;
+        } else if (constraints.startsWith("ALTA")) {
+            //  wil probably not work
+            // @todo check
+            return constraints.substring(5);
+        }
+
+        //keesj: what does this code do?
+
+        StringBuffer result = new StringBuffer();
+        //if there is a quote in the constraints posa will not be equals -1
+
+        int quoteOpen = constraints.indexOf('\'');
+        while (quoteOpen > -1) {
+            //keesj: posb can be the same a posa maybe the method should read indexOf("\"",posa) ?
+            int quoteClose = constraints.indexOf('\'', quoteOpen + 1);
+            if (quoteClose == -1) {
+                // unmatching quote?
+                log.warn("unbalanced quote in " + constraints);
+                break;
+            }
+
+            //keesj:part is now the first part of the constraints if there is a quote in the query
+            String part = constraints.substring(0, quoteOpen);
+
+            //append to the string buffer "part" the first part
+            result.append(convertClausePartToDBS(part));
+            result.append(constraints.substring(quoteOpen, quoteClose + 1));
+
+            constraints = constraints.substring(quoteClose + 1);
+            quoteOpen = constraints.indexOf('\'');
+
+        }
+        result.append(convertClausePartToDBS(constraints));
+        return result.toString();
+    }
+
+    /**
+     * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing)
+     * This is used by createQuery (i wonder if it still makes sense)
+     * @param constraints constraint to check
+     * @return is valid constraint
+     * @since MMBase-1.8.1 (moved from org.mmbase.bridge.util.Queries)
+     */
+    static public boolean validConstraints(String constraints) {
+        // first remove all the escaped "'" ('' occurences) chars...
+        String remaining = constraints;
+        while (remaining.indexOf("''") != -1) {
+            int start = remaining.indexOf("''");
+            int stop = start + 2;
+            if (stop < remaining.length()) {
+                String begin = remaining.substring(0, start);
+                String end = remaining.substring(stop);
+                remaining = begin + end;
+            } else {
+                remaining = remaining.substring(0, start);
+            }
+        }
+        // assume we are not escaping... and search the string..
+        // Keep in mind that at this point, the remaining string could contain different information
+        // than the original string. This doesnt matter for the next sequence...
+        // but it is important to realize!
+        while (remaining.length() > 0) {
+            if (remaining.indexOf('\'') != -1) {
+                // we still contain a "'"
+                int start = remaining.indexOf('\'');
+
+                // escaping started, but no stop
+                if (start == remaining.length()) {
+                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints);
+                    return false;
+                }
+
+                String notEscaped = remaining.substring(0, start);
+                if (notEscaped.indexOf(';') != -1) {
+                    log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints + "\nnot excaped:" + notEscaped);
+                    return false;
+                }
+
+                int stop = remaining.substring(start + 1).indexOf('\'');
+                if (stop < 0) {
+                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints + "\nlast escaping:" + remaining.substring(start + 1));
+                    return false;
+                }
+                // we added one to to start, thus also add this one to stop...
+                stop = start + stop + 1;
+
+                // when the last character was the stop of our escaping
+                if (stop == remaining.length()) {
+                    return true;
+                }
+
+                // cut the escaped part from the string, and continue with resting sting...
+                remaining = remaining.substring(stop + 1);
+            } else {
+                if (remaining.indexOf(';') != -1) {
+                    log.warn("found a ';' inside our constrain:" + constraints);
+                    return false;
+                }
+                return true;
+            }
+        }
+        return true;
+    }
+
+
 
     private SearchQuery query = null;
     private List steps = null;
@@ -150,9 +303,7 @@ public class ConstraintParser {
             result = (String) iTokens.next();
             token = (String) iTokens.next();
             if (!token.equals("'")) {
-                throw new IllegalArgumentException(
-                "Unexpected token (expected \"'\"): \""
-                + token + "\"");
+                throw new IllegalArgumentException("Unexpected token (expected \"'\"): \"" + token + "\"");
              }
 
             int fieldType = field.getType();
@@ -367,10 +518,14 @@ public class ConstraintParser {
                 fallbackLog.service(
                     "Failed to parse Constraint from search condition string: "
                     + "\n     sqlConstraint = " + sqlConstraint
-                    + "\n     exception: " + e + Logging.stackTrace(e)
-                    + "\nFalling back to BasicLegacyConstraint...");
+                    + "\n     exception: " + e.getMessage()
+                    + "\nFalling back to BasicLegacyConstraint...", e);
             }
-            result = new BasicLegacyConstraint(sqlConstraint);
+            String escapedSqlConstraint = convertClauseToDBS(sqlConstraint);
+            if (! validConstraints(escapedSqlConstraint)) {
+                throw new IllegalArgumentException("Invalid constraints: " + sqlConstraint);
+            }
+            result = new BasicLegacyConstraint(escapedSqlConstraint);
         }
 
         if (log.isDebugEnabled()) {
@@ -378,6 +533,7 @@ public class ConstraintParser {
         }
         return result;
     }
+
 
     /**
      * Parses a <em>field</em> string, and produces a corresponding
