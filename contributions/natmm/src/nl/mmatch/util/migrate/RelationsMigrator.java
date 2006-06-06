@@ -180,6 +180,12 @@ public class RelationsMigrator {
       sPosrelContent = sResultRel[0];
       sRolerelAdd += sResultRel[1];
 
+      log.info("changing relation teaser-posrel-link to teaser-readmore-link");
+      sResultRel = mmm.movingRelations(alTeaser, alLink, sPosrelContent,
+                             "posrel", "readmore");
+      sPosrelContent = sResultRel[0];
+      String sReadmoreAdd = sResultRel[1];
+
       log.info("changing relation page-posrel-vacature to pagina-contentrel-vacature");
       ArrayList alVacature = getNodes(sFolder + "vacature.xml");
       sResultRel = mmm.movingRelations(alPagina, alVacature, sPosrelContent,
@@ -261,6 +267,7 @@ public class RelationsMigrator {
       String sRolerelContent = mmm.readingFile(sFolder + "rolerel.xml");
 
       sRolerelContent = mmm.addingContent(sRolerelContent, "rolerel", sRolerelAdd);
+      sReadmoreContent = mmm.addingContent(sReadmoreContent, "readmore", sReadmoreAdd);
 
       tmAllRelations.put("childrel", sParentContent);
       tmAllRelations.put("contentrel", sContentrelContent);
