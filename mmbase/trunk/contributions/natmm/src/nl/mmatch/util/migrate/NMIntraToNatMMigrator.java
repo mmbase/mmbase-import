@@ -796,7 +796,7 @@ public class NMIntraToNatMMigrator {
    }
 
    public static String addingContent (String sContent, String sBuilderName, String sAdd){
-     int iEntryPointIndex = sContent.indexOf("</" + sBuilderName + ">");
+     int iEntryPointIndex = sContent.lastIndexOf("</" + sBuilderName + ">");
      sContent = sContent.substring(0,iEntryPointIndex) + sAdd +
      sContent.substring(iEntryPointIndex);
 
