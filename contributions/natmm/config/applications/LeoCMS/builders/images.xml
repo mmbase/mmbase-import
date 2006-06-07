@@ -80,7 +80,7 @@
       </editor>
       <db>
         <name>description</name>
-        <type state="virtual" size="1024" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="1024" notnull="true" key="false">STRING</type>
       </db>
     </field>
     
