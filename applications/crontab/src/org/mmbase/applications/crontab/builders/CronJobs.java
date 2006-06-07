@@ -66,7 +66,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
         try {
             cronDaemon.add(createCronEntry(node));
         } catch (Exception e) {
-            throw new RuntimeException("error while creating cron entry with id " + node.getNumber() + " error " + e.getMessage());
+            throw new RuntimeException("error while creating cron entry with id " + node.getNumber() + " error " + e.getMessage(), e);
         }
         return number;
     }
