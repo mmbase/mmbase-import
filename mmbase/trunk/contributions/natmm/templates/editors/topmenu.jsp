@@ -56,7 +56,8 @@
 	} 
 	String unusedItemsLink = "";
 	if (iTotalNotUsed>0) {
-		unusedItemsLink = "<td><a href='beheerbibliotheek/view_unused_items.jsp' target='bottompane'><img src='img/delete.gif' style='vertical-align:bottom;'>(" + iTotalNotUsed + ")</a><td>";
+		unusedItemsLink = "<td><a href='beheerbibliotheek/view_unused_items.jsp' target='bottompane' title='bekijk niet gebruikte contentelementen uit de door u beheerde rubrieken'>"
+			+ "<img src='img/delete.gif' style='vertical-align:bottom;'>(" + iTotalNotUsed + ")</a><td>";
 	}
 	%>
 <mm:listnodes type="users" constraints="<%= "[account]='" + cloud.getUser().getIdentifier() + "'" %>" max="1" id="thisuser">
@@ -78,45 +79,45 @@
 <% 
 if(rubriekID.equals("naardermeer")) { 
    %>
-   <td class="fieldname"><a href="/naardermeer" target="_blank" class='menu'>Website</a></td>
-   <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td><%= unusedItemsLink %>
-   <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class='menu'>Pagina-editor</a></td>
-   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
-   <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
+   <td class="fieldname"><a href="/naardermeer" target="_blank" class="menu" title="bekijk de website">Website</a></td>
+   <td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class="menu" title="beheer de contentelementen via de bibliotheek">Bibliotheek</a></td><%= unusedItemsLink %>
+   <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class="menu" title="beheer rubrieken en paginas">Pagina-editor</a></td>
+   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>
+   <td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
    <% 
 } else if(rubriekID.equals("natuurin_rubriek")) {
    %>
-   <td class="fieldname"><a href="/activiteiten" target="_blank" class='menu'>Website</a></td>
-   <td class="fieldname"><a href="evenementen/evenementen.jsp" target="bottompane" class='menu'>Activiteiten</a></td>
+   <td class="fieldname"><a href="/activiteiten" target="_blank" class="menu" title="bekijk de website">Website</a></td>
+   <td class="fieldname"><a href="evenementen/evenementen.jsp" target="bottompane" class="menu" title="beheer activiteiten en boek aanmeldingen">Activiteiten</a></td>
    <% 
    if(hasEditwizards) {
-      %><td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class='menu'>Pagina-editor</a></td><%
+      %><td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class="menu" title="beheer rubrieken en paginas">Pagina-editor</a></td><%
    } %>
-   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
-   <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
+   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>
+   <td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
    <% 
 } else if(!rubriekID.equals("")) {
    %>
    <%--
-   <td class="fieldname"><a href="signalering/takenlijst.jsp" target="bottompane" class='menu'>Takenlijst</a></td>
-   <td lass="fieldname"><a href="../workflow/workflow.jsp" target="bottompane" class='menu'>Workflow</a></td>
+   <td class="fieldname"><a href="signalering/takenlijst.jsp" target="bottompane" class="menu">Takenlijst</a></td>
+   <td lass="fieldname"><a href="../workflow/workflow.jsp" target="bottompane" class="menu">Workflow</a></td>
    --%>
-   <td class="fieldname"><a href="/index.jsp" target="_blank" class='menu'>Website</a></td>
-	<td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class='menu'>Bibliotheek</a></td><%= unusedItemsLink %>
+   <td class="fieldname"><a href="/index.jsp" target="_blank" class="menu" title="bekijk de website">Website</a></td>
+	<td class="fieldname"><a href="beheerbibliotheek/index.jsp?refreshFrame=bottompane" target="bottompane" class="menu" title="beheer de contentelementen via de bibliotheek">Bibliotheek</a></td><%= unusedItemsLink %>
    <% if(isAdmin&&ap.isInstalled(cloud,"NatMM")) {
       %>
-      <td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class='menu'>Activiteiten</a></td>
+      <td class="fieldname"><a href="evenementen/frames.jsp" target="bottompane" class="menu" title="beheer activiteiten en boek aanmeldingen">Activiteiten</a></td>
       <% 
    } %>
-   <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class='menu'>Pagina-editor</a></td>
-   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
-   <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
+   <td class="fieldname"><a href="paginamanagement/frames.jsp" target="bottompane" class="menu" title="beheer rubrieken en paginas">Pagina-editor</a></td>
+   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>
+   <td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
    <%
 } else {
    %>
-   <td class="fieldname"><a href="/index.jsp" target="_blank" class='menu'>Website</a></td>
-   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class='menu'>Wijzig wachtwoord</a></td>
-   <td class="fieldname"><a href="logout.jsp" target="_top" class='menu'>Uitloggen</a></td>
+   <td class="fieldname"><a href="/index.jsp" target="_blank" class="menu" title="bekijk de website">Website</a></td>
+   <td class="fieldname"><a href="usermanagement/changepassword.jsp" target="bottompane" class="menu" title="wijzig uw wachtwoord">Wijzig wachtwoord</a></td>
+   <td class="fieldname"><a href="logout.jsp" target="_top" class="menu" title="log uit als gebruiker">Uitloggen</a></td>
    <td class="menu" style="color:red;">
          Er is geen rubriek voor u geselecteerd. Neem contact op met de webmasters om u een rol op één van de rubrieken te geven.
    </td>
