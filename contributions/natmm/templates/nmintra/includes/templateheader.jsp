@@ -1,18 +1,5 @@
 <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
-<%@page import="java.text.*,java.io.*,org.mmbase.bridge.*,nl.leocms.applications.*,nl.leocms.util.*" %><%! 
-
-public String getParameter(String parameterStr, String queryStr) {
-    String parameterValue = null;
-    int qpos = queryStr.indexOf("&" + parameterStr + "=");
-    if(qpos==-1) { qpos = queryStr.indexOf("?" + parameterStr + "="); }
-    if(qpos>-1) {
-        int vstart = queryStr.indexOf("=",qpos)+1;
-        int vend = queryStr.indexOf("&",vstart);
-        parameterValue = queryStr.substring(vstart,vend);
-    }
-    return parameterValue;
-}
-%>
+<%@page import="java.text.*,java.io.*,org.mmbase.bridge.*" %>
 <mm:import jspvar="ID" externid="id">-1</mm:import>
 <mm:import jspvar="rubriekId" externid="r">-1</mm:import>
 <mm:import jspvar="paginaID" externid="p">-1</mm:import>
@@ -66,6 +53,12 @@ for(int r=0; r<breadcrumbs.size(); r++) {
 }
 
 
+// smoelenboek (and searchbar)
+String nameEntry = "voor- en/of achternaam";
+String nameId = request.getParameter("name"); if(nameId==null) { nameId=""; }
+String departmentId = request.getParameter("department"); if(departmentId==null){ departmentId="default"; }
+String programId = request.getParameter("program"); if(programId==null){ programId="default"; }
+
 //String visitorGroup = request.getParameter("vg"); if(visitorGroup==null){ visitorGroup = ""; }
 
 // IntraShop
@@ -99,33 +92,6 @@ String periodId = request.getParameter("d"); if(periodId==null){ periodId =""; }
 String poolId = request.getParameter("pool"); if(poolId==null){ poolId=""; }
 String productId = request.getParameter("product"); if(productId==null){ productId=""; }
 String locationId = request.getParameter("location"); if(locationId==null){ locationId=""; }
-
-// smoelenboek
-String departmentId = request.getParameter("department"); if(departmentId==null){ departmentId="default"; }
-String programId = request.getParameter("program"); if(programId==null){ programId="default"; }
-String descriptionId = request.getParameter("description"); if(descriptionId==null) { descriptionId=""; }
-
-// smoelenboek update
-String nameId = request.getParameter("name"); if(nameId==null) { nameId=""; }
-String nameEntry = "voor- en/of achternaam";
-String firstnameId = request.getParameter("firstname"); if(firstnameId==null) { firstnameId=""; }
-String initialsId = request.getParameter("initials"); if(initialsId==null) { initialsId=""; }
-String suffixId = request.getParameter("suffix"); if(suffixId==null) { suffixId=""; }
-String lastnameId = request.getParameter("lastname"); if(lastnameId==null) { lastnameId=""; }
-String companyphoneId = request.getParameter("companyphone"); if(companyphoneId==null) { companyphoneId=""; }
-String cellularphoneId = request.getParameter("cellularphone"); if(cellularphoneId==null) { cellularphoneId=""; }
-String faxId = request.getParameter("fax"); if(faxId==null) { faxId=""; }
-String emailId = request.getParameter("email"); if(emailId==null) { emailId=""; }
-String deptdescrId = request.getParameter("deptdescr"); if(deptdescrId==null) { deptdescrId=""; }
-String progdescrId = request.getParameter("progdescr"); if(progdescrId==null) { progdescrId=""; }
-String posdescrId = request.getParameter("posdescr"); if(posdescrId==null) { posdescrId=""; }
-String descrupdateId = request.getParameter("descrupdate"); if(descrupdateId==null) { descrupdateId=""; }
-String introupdateId= request.getParameter("introupdate"); if(introupdateId==null) { introupdateId=""; }
-
-// prikbord (including email from smoelenboek)
-String queryString = request.getQueryString()+"&";
-String titleId = request.getParameter("title"); if(titleId==null) { titleId=""; }
-String textId = getParameter("text",queryString); if(textId==null) { textId=""; }
 
 // searchresults
 String searchId = request.getParameter("search"); if(searchId==null) { searchId=""; }

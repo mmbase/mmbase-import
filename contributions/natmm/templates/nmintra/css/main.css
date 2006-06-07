@@ -8,6 +8,11 @@ body {
     font-family: arial, sans-serif;
     overflow: auto;
 }
+p {
+   padding: 0px;
+   margin: 0px;
+   margin-bottom: 0px;
+}
 input {
     font-size: 11px;
     font-family: arial, sans-serif

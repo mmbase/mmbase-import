@@ -1,6 +1,5 @@
-<mm:node number="<%= paginaID %>"
-	><mm:related path="contentrel,teaser" constraints="contentrel.pos='3'"
-	><p><div class="pageheader"><mm:field name="teaser.titel" /></div>
-	<mm:field name="teaser.omschrijving" /></p>
-	</mm:related
-></mm:node>
+<mm:node number="<%= paginaID %>">
+	<mm:field name="omschrijving" jspvar="text" vartype="String" write="false">
+		<% if(text!=null&&!HtmlCleaner.cleanText(text,"<",">","").trim().equals("")) { %><mm:write /><br/><% } %>
+	</mm:field>
+</mm:node>
