@@ -1,19 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-
 <list role="readmore" destination="locations" minoccurs="0" maxoccurs="*" >
-   <title>
-   locations   </title>
+   <title>locaties</title>
    <item>
       <field ftype="data" name="titel"><prompt>naam</prompt></field>
       <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>positie</prompt></field>
       <field fdatapath="field[@name=&apos;readmore&apos;]" ftype="line"><prompt>readmore</prompt></field>
-
       <field ftype="startwizard" wizardname="config/locations/locations" />
    </item>
-
    <command name="search" nodepath="locations" age="-1" fields="titel" orderby="titel">
-      <prompt>zoek locaties</prompt>
+      <prompt>zoek lokaties</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[titel]</search-fields>
