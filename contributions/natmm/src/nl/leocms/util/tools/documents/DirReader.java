@@ -21,7 +21,8 @@ public class DirReader implements Runnable
    * utility function for merging a subtree to one page
    */   
    public static void mergeSubtree(Cloud cloud, Node thisPage, Node subTreeDoc) {
-
+		
+		log.info("Merge subree " + subTreeDoc.getNumber() + " for page " + thisPage.getNumber());
       Stack st = new Stack();
       st.push(subTreeDoc.getStringValue("number"));
       while(!st.isEmpty()){
@@ -74,6 +75,7 @@ public class DirReader implements Runnable
          posrelNode.setIntValue("pos",d+1);
          posrelNode.commit();
       }
+		log.info("Done.");
    }
 
    public void createNode(Cloud cloud, String sDocumentUrl, String filename, String descr,
