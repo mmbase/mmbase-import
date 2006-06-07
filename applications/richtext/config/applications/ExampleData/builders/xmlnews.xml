@@ -1,6 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="content" maintainer="mmbase.org" name="xmlnews" version="0">
+﻿<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    extends="content" maintainer="mmbase.org" name="xmlnews" version="0">
   <status>active</status>
   <searchage>14</searchage>
   <names>
@@ -19,6 +23,7 @@
     <description xml:lang="nl">Nieuws item zijn om XML velden te demonstreren</description>
     <description xml:lang="eo">Novaĵoj ekzistas por montro de XML-kampoj</description>
   </descriptions>
+
   <fieldlist>
     <field>
       <gui>
