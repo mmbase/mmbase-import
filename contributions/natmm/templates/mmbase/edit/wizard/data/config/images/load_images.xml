@@ -6,7 +6,8 @@
    <field name="omschrijving"/>
    <field name="reageer"/>
    <field name="bron"/>
-   <field name="handle"/>
+   <field name="filename"/>
+	<field name="handle"/>
    <field name="screensize"/>
    <field name="creatiedatum"/>
    <field name="datumlaatstewijziging"/>
