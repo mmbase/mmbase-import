@@ -17,14 +17,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @todo   Should we use java.util.Timer?
  */
-public class CronDaemon implements Runnable {
+public class CronDaemon extends TimerTask {
 
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
 
     private static CronDaemon cronDaemon;
-    private Thread cronThread;
+    private Timer cronTimer;
     private Set cronEntries;
     private Set removedCronEntries;
     private Set addedCronEntries;
@@ -115,10 +114,8 @@ public class CronDaemon implements Runnable {
      */
     public void start() {
         log.info("Starting CronDaemon");
-        cronThread = new Thread(this, "CronDaemon");
-        // some tasks need a decent shutdown (database administration), so depend op 'stop'.
-        cronThread.setDaemon(false);
-        cronThread.start();
+        cronTimer = new Timer(true);
+        cronTimer.scheduleAtFixedRate(this, 0, 60 * 1000);
     }
 
     /**
@@ -126,8 +123,8 @@ public class CronDaemon implements Runnable {
      */
     public void stop() {
         log.info("Stopping CronDaemon");
-        cronThread.interrupt();
-        cronThread = null;
+        cronTimer.cancel();
+        cronTimer = null;
         Iterator i = cronEntries.iterator();
         while (i.hasNext()) {
             CronEntry entry = (CronEntry)i.next();
@@ -136,7 +133,7 @@ public class CronDaemon implements Runnable {
     }
 
     public boolean isAlive() {
-        return cronThread != null && cronThread.isAlive();
+        return cronTimer != null;
     }
 
     /**
@@ -155,63 +152,52 @@ public class CronDaemon implements Runnable {
      * 'Runnable' interface.
      */
     public void run() {
-        Thread thisThread = Thread.currentThread();
+        long now = System.currentTimeMillis();
+        try {
+            Date currentMinute = new Date(now / 60000 * 60000);
 
-        while (thisThread == cronThread) { // run is stopped, by setting cronThread to null.
+            if (log.isDebugEnabled()) {
+                log.debug("Checking for " + currentMinute);
+            }
 
-            long now = System.currentTimeMillis();
-            long next = (now + 60 * 1000) / 60000 * 60000; // next minute, rounded to minute
-
-            try {
-                Thread.sleep(next - now); // sleep until  next minute
-
-                Date currentMinute = new Date(next);
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Checking for " + currentMinute);
+            // remove jobs which were scheduled for removal
+            Iterator z = removedCronEntries.iterator();
+            while (z.hasNext()) {
+                CronEntry entry = (CronEntry)z.next();
+                if (entry.isAlive()) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Job " + entry + " still running, so could not yet be removed");
+                    }
+                } else {
+                    removeEntry(entry);
+                    z.remove();
+                    CronEntry added = getById(addedCronEntries, entry.getId());
+                    if (added != null) {
+                        addEntry(added);
+                        addedCronEntries.remove(added);
+                    }
                 }
-
-                // remove jobs which were scheduled for removal
-                Iterator z = removedCronEntries.iterator();
-                while (z.hasNext()) {
-                    CronEntry entry = (CronEntry)z.next();
-                    if (entry.isAlive()) {
+            }
+            // start jobs which need starting on this minute
+            z = cronEntries.iterator();
+            while (z.hasNext()) {
+                if (Thread.currentThread().isInterrupted()) return;
+                CronEntry entry = (CronEntry)z.next();
+                if (entry.mustRun(currentMinute)) {
+                    if (entry.kick()) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Job " + entry + " still running, so could not yet be removed");
+                            log.debug("Started " + entry);
                         }
                     } else {
-                        removeEntry(entry);
-                        z.remove();
-                        CronEntry added = getById(addedCronEntries, entry.getId());
-                        if (added != null) {
-                            addEntry(added);
-                            addedCronEntries.remove(added);
-                        }
+                        log.warn("Job " + entry + " still running, so not restarting it again.");
                     }
                 }
-                // start jobs which need starting on this minute
-                z = cronEntries.iterator();
-                while (z.hasNext()) {
-                    if (Thread.currentThread().isInterrupted()) return;
-                    CronEntry entry = (CronEntry)z.next();
-                    if (entry.mustRun(currentMinute)) {
-                        if (entry.kick()) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("Started " + entry);
-                            }
-                        } else {
-                            log.warn("Job " + entry + " still running, so not restarting it again.");
-                        }
-                    }
-                }
-            } catch (InterruptedException ie) {
-                log.info("Interrupted: " + ie.getMessage());
-                return;
-            } catch (Throwable t) {
-                log.error(t.getClass().getName() + " " + t.getMessage(), t);
             }
+        } catch (Throwable t) {
+            log.error(t.getClass().getName() + " " + t.getMessage(), t);
         }
     }
+
     /**
      * @since MMBase-1.8
      */
