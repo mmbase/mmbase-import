@@ -4,6 +4,10 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <mm:url write="false" jspvar="url" vartype="string" />
+  <jsp:scriptlet>
+    response.setHeader("Refresh", "30; url=" + url);
+  </jsp:scriptlet>
   <jsp:directive.include file="head.jspx" />
   <mm:content type="text/html" language="en" expires="0">
     <body class="basic">
@@ -64,25 +68,18 @@
           </tr>
           <mm:listfunction id="cronentry" module="crontab" name="list">
             <tr>
-            <td>
-              ${cronentry.id}
-            </td>
-            <td>
-              ${cronentry.type}
-            </td>
-            <td>
-              ${cronentry.cronTime}
-            </td>
-            <td>
-              <mm:write value="${cronentry.alive}">
-                <mm:compare value="false">
+              <td>${cronentry.id}</td>
+              <td>${cronentry.type}</td>
+              <td>${cronentry.cronTime}</td>
+              <td>
+                <c:if test="${not cronentry.alive}">
                   No
                   <mm:link>
                     <mm:param name="kick" value="${cronentry.id}" />
                     <a href="${_}">Kick</a>
                   </mm:link>
-                </mm:compare>
-                <mm:compare value="true">
+                </c:if>
+                <c:if test="${cronentry.alive}">
                   <c:forEach var="thread" items="${cronentry.threads}">
                     Since <mm:time referid="thread.startTime" format="$format" />
                     <mm:link>
@@ -100,17 +97,12 @@
                       </mm:link>
                     </mm:compare>
                   </mm:write>
-                </mm:compare>
-              </mm:write>
-            </td>
-            <td>
-              ${cronentry.className}
-            </td>
-            <td>
-              ${cronentry.configuration}
-            </td>
-          </tr>
-        </mm:listfunction>
+                </c:if>
+              </td>
+              <td>${cronentry.className}</td>
+              <td>${cronentry.configuration}</td>
+            </tr>
+          </mm:listfunction>
         </table>
         <table summary="Misc. options">
           <tr>
