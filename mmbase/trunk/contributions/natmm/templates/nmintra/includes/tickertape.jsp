@@ -1,11 +1,9 @@
-<% String teaserConstraint =  "contentrel.pos = '2' AND teaser.embargo < " + nowSec 
-				+ " AND teaser.verloopdatum > " + nowSec ;
+<% String teaserConstraint = "teaser.embargo < " + nowSec + " AND teaser.verloopdatum > " + nowSec ;
 	String teaser_number = "";
 
 // ** try to find the teaser with valid publication and expiration date 
-%><mm:list nodes="<%= paginaID %>"
-	path="pagina,contentrel,teaser"
-	fields="teaser.titel" constraints="<%= teaserConstraint %>"
+%><mm:list nodes="<%= paginaID %>" path="pagina,rolerel,teaser" fields="teaser.number"
+	orderby="rolerel.pos" directions="DOWN" max="1"
 	><mm:field name="teaser.number" jspvar="dummy" vartype="String" write="false"
 		><% teaser_number = dummy; 
 	%></mm:field
@@ -14,9 +12,8 @@
 if(teaser_number.equals("")) { 
 
    // ** no teaser with valid publication and expiration date, just take one
-   %><mm:list nodes="<%= paginaID %>"
-   	path="pagina,contentrel,teaser"
-   	fields="teaser.titel" constraints="contentrel.pos = '2'"
+   %><mm:list nodes="<%= paginaID %>" path="pagina,rolerel,teaser" fields="teaser.number" 
+   	orderby="rolerel.pos" directions="DOWN" max="1"
    	><mm:field name="teaser.number" jspvar="dummy" vartype="String" write="false"
    		><% teaser_number = dummy; 
    	%></mm:field
@@ -25,7 +22,7 @@ if(teaser_number.equals("")) {
 String url="";
 
 %><mm:node number="<%= teaser_number %>" notfound="skipbody"
-><mm:related path="posrel,link" fields="link.url"
+><mm:related path="readmore,link" fields="link.url"
    ><mm:field name="link.url" jspvar="exturls_url" vartype="String" write="false"><%
       url = exturls_url;
    %></mm:field

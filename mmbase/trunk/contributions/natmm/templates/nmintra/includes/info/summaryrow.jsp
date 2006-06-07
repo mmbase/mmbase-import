@@ -29,7 +29,7 @@
     </td>
     </mm:first>
     <tr>
-    <mm:last></table><br><br></mm:last> 
+    <mm:last></table><br/><br/></mm:last> 
 </mm:relatednodes>
 <mm:notpresent referid="attachmentfound">
    <a href="<%= readmoreUrl %><% if(!postingStr.equals("")) { %>&pst=|action=noprint<% } 
@@ -44,7 +44,7 @@
                summary =summary.substring(0,spacePos);
            } 
    }
-   %><span class="normal"><%= summary   %> ... >></span></a><br><br>
+   %><span class="normal"><%= summary   %> ... >></span></a><br/><br/>
 </mm:notpresent>
 </mm:field>
 </mm:field>

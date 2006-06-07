@@ -6,16 +6,16 @@ if(listSize>objectPerPage) {
    %> In archief: <%= listSize %> artikelen [<%= pagesCount %> pagina's]<br/>
    <% 
    if (thisOffset == 1) {
-      %><<<% 
-   } else { 
+      %><<<%
+   } else {
       %>
       <a href="<%= sTemplateUrl  %><%=  extTemplateQueryString  %>&offset=<%= thisOffset-1 %>"><<</a>
       <a href="<%= sTemplateUrl  %><%=  extTemplateQueryString  %>&offset=1">1</a>
       <%
-   } 
+   }
    if (thisOffset > 3) {
       %>
-      &hellip;                     
+      &hellip;
       <% 
    }
    if (thisOffset > 2) {
@@ -33,7 +33,7 @@ if(listSize>objectPerPage) {
    } 
    if (pagesCount - thisOffset > 2) {
       %>
-      &hellip;                     
+      &hellip;
       <%
    } 
    if (thisOffset == pagesCount) {
@@ -50,7 +50,10 @@ if(listSize>objectPerPage) {
         Ga naar pgn: <input name="offset" style="width:23px;height:17px;font-size:12px;">
         <a href="#" onclick="myform.submit(); return false;">Zoek ></a>
       </form>
-      <% 
-   } 
+      <%
+   }
+	%>
+	<br/>
+	<%
 }
-%><br/>
+%>

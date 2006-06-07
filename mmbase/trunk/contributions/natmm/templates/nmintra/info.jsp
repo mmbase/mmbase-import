@@ -54,7 +54,7 @@ if(!articleId.equals("-1")) {
       ><%@include file="includes/info/movetoarchive.jsp" %><%
       boolean hasPools = false;
       %><mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel,posrel,pools"
-		orderby="artikel.embargo" searchdir="destination" max="1"><%
+			orderby="artikel.embargo" searchdir="destination" max="1"><%
          hasPools = true;
       %></mm:list
       ><%@include file="includes/header.jsp" 
@@ -84,7 +84,7 @@ if(!articleId.equals("-1")) {
                 }
                 if(checkOnPeriod) {
                   if(!articleConstraint.equals("")) articleConstraint += " AND ";
-                  articleConstraint += "(( artikel.embargo > '" + fromTime + "') AND (artikel.embargo < '" + toTime + "'))";
+                  articleConstraint += "(( artikel.begindatum > '" + fromTime + "') AND (artikel.begindatum < '" + toTime + "'))";
                 }
                 if(!termSearchId.equals("")) {
                   if(!articleConstraint.equals("")) articleConstraint += " AND ";

@@ -48,14 +48,7 @@
 			</mm:node>
 		</mm:field>
 	</mm:list>
-	3. Setting the templates to visible in the pagina form<br/>
-	<mm:listnodes type="paginatemplate">
-		<mm:setfield name="systemtemplate">0</mm:setfield>   
-		<mm:setfield name="dynamiclinklijsten">0</mm:setfield>    
-		<mm:setfield name="dynamicmenu">0</mm:setfield>    
-		<mm:setfield name="contenttemplate">0</mm:setfield>   
-	</mm:listnodes>
-	4. Clean up the styles from not used styles<br/>
+	3. Clean up the styles from not used styles<br/>
 	<mm:listnodes type="style">
 		<mm:field name="title" jspvar="title" vartype="String" write="false">
 		<mm:remove referid="isused" />

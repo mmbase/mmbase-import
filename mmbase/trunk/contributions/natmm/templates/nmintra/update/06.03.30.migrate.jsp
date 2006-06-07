@@ -12,10 +12,15 @@
    </head>
    <body style="width:100%;padding:5px;">
 	Changing templates.url from templates/*.jsp to *.jsp<br/>
+	Setting the templates to visible in the pagina form<br/>
 	<mm:listnodes type="paginatemplate">
 		<mm:field name="url" jspvar="url" vartype="String" write="false">
 			<mm:setfield name="url"><%= url.substring(10) %></mm:setfield>
 		</mm:field>
+		<mm:setfield name="systemtemplate">0</mm:setfield>   
+		<mm:setfield name="dynamiclinklijsten">0</mm:setfield>    
+		<mm:setfield name="dynamicmenu">0</mm:setfield>    
+		<mm:setfield name="contenttemplate">0</mm:setfield>   
 	</mm:listnodes>
    Done.
 	</body>
