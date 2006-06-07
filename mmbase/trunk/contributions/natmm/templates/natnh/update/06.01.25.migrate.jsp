@@ -2,6 +2,7 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"%>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
+<mm:log jspvar="log">
 <html>
    <head>
    <LINK rel="stylesheet" type="text/css" href="/editors/css/editorstyle.css">
@@ -24,11 +25,11 @@
 		6. Creating jumpers for rubrieks imported from MicroSite application.<br/>
 		7. Setting the levels of the rubrieken<br/>
 		8. Changing templates.url from templates/*.jsp to *.jsp<br/>
-		9. Adding alias "natuurherstel_home" to the pagina Natuurherstel in Nederland<br/>
-		10. Adding the editwizards for the pages<br/>
-		11. Setting all rubrieken to visible<br/>
+		9. Adding the editwizards for the pages<br/>
+		10. Setting all rubrieken to visible<br/>
 		<span style="color:red;">Run <a href="/editors/util/fill_empty_par_title.jsp">fill empty par title</a> !!!</span><br/>
 		Processing...<br/>
+		<% log.info("1"); %>
 		<mm:listnodes type="rubriek" constraints="rubriek.naam='Natuurherstelprojecten in Nederland'">
 			<mm:node id="portal">
 				<mm:setfield name="naam">Natuurherstel in Nederland</mm:setfield>
@@ -54,10 +55,12 @@
 				</mm:relatednodes>
 			</mm:node>
 		</mm:listnodes>
+		<% log.info("2"); %>
 		<mm:node number="root" id="parent"/>
 		<mm:createrelation role="parent" source="parent" destination="portal">
 			<mm:setfield name="pos">50</mm:setfield>
 		</mm:createrelation>
+   	<% log.info("3"); %>
 		<mm:listnodes type="artikel" constraints="<%= "number > "+ lastNode %>">
 			<mm:field name="titel" jspvar="titel" vartype="String" write="false">
 				<mm:field name="omschrijving" jspvar="body" vartype="String" write="false"><% 
@@ -81,6 +84,7 @@
 				</mm:field>
 			</mm:field>
 		</mm:listnodes>
+   	<% log.info("4"); %>
 		<mm:listnodes type="paragraaf" constraints="<%= "number > "+ lastNode %>">
 			<mm:field name="titel" jspvar="titel" vartype="String" write="false">
 				<mm:field name="omschrijving" jspvar="body" vartype="String" write="false"><% 
@@ -104,6 +108,7 @@
 				</mm:field>
 			</mm:field>
 		</mm:listnodes>
+		<% log.info("5"); %>
 		<mm:listnodes type="images" constraints="<%= "number > "+ lastNode %>">
 			<mm:field name="titel" jspvar="titel" vartype="String" write="false">
 				<mm:field name="omschrijving" jspvar="body" vartype="String" write="false"><% 
@@ -127,16 +132,13 @@
 				</mm:field>
 			</mm:field>
 		</mm:listnodes>
+		<% log.info("6"); %>
 		<mm:listnodes type="paginatemplate"  constraints="<%= "number > "+ lastNode %>">
 			<mm:field name="url" jspvar="url" vartype="String" write="false">
 				<mm:setfield name="url"><%= url.substring(10) %></mm:setfield>
 			</mm:field>
 		</mm:listnodes>
-		<mm:listnodes type="pagina" constraints="pagina.titel='Natuurherstelprojecten in Nederland'">
-			<mm:node>
-				<mm:createalias>natuurherstelprojecten</mm:createalias>
-			</mm:node>
-		</mm:listnodes>
+		<% log.info("7"); %>
 		<mm:listnodes type="paginatemplate" constraints="paginatemplate.url='thumbs.jsp'">
 			<mm:node id="thumbs_template">
 				<mm:createnode type="editwizards" id="thumbs_ew">
@@ -153,6 +155,7 @@
 				<mm:createrelation source="thumbs_template" destination="thumbs_ew" role="related" />
 			</mm:node>
 		</mm:listnodes>
+		<% log.info("8"); %>
 		<mm:listnodes type="editwizards" constraints="editwizards.wizard='config/artikel/artikel' AND editwizards.type='list'">
 			<mm:node id="info_ew">
 				<mm:listnodes type="paginatemplate" constraints="paginatemplate.url='info.jsp'">
@@ -162,6 +165,7 @@
 				</mm:listnodes>
 			</mm:node>
 		</mm:listnodes>
+		<% log.info("9"); %>
 		<mm:listnodes type="paginatemplate" constraints="paginatemplate.url='article.jsp' OR paginatemplate.url='homepage.jsp' OR paginatemplate.url='websites.jsp'">
 			<mm:node id="article_template">
 				<mm:first>
@@ -180,22 +184,28 @@
 				<mm:createrelation source="article_template" destination="artikel_page_ew" role="related" />
 			</mm:node>
 		</mm:listnodes>
+		<% log.info("10"); %>
 		<mm:listnodes type="paragraaf" constraints="<%= "number > "+ lastNode %>">
 			<mm:setfield name="tekst"><mm:field name="omschrijving" /></mm:setfield>
 			<mm:setfield name="omschrijving"> </mm:setfield>
 		</mm:listnodes>
+		<% log.info("11"); %>
 		<mm:listnodes type="artikel" constraints="<%= "number > "+ lastNode %>">
 			<mm:setfield name="begindatum"><mm:field name="embargo" /></mm:setfield>
 			<mm:setfield name="use_verloopdatum">1</mm:setfield>
 		</mm:listnodes>
-		<mm:list nodes="" path="paginatemplate,gebruikt,pagina,contentrel,artikel" constraints="paginatemplate.url!='info.jsp'">
+		<% log.info("12"); %>
+		<mm:list nodes="" path="paginatemplate,gebruikt,pagina,contentrel,artikel" 
+			constraints="<%= "paginatemplate.url!='info.jsp' AND artikel.number > "+ lastNode %>">
 			<mm:node element="artikel">
 				<mm:setfield name="use_verloopdatum">0</mm:setfield>
 			</mm:node>
 		</mm:list>
+		<% log.info("13"); %>
 		<mm:listnodes type="rubriek" constraints="<%= "number > "+ lastNode %>">
 			<mm:setfield name="url">1</mm:setfield>
 		</mm:listnodes>
+		<% log.info("14"); %>
 		<mm:listnodes type="paginatemplate" constraints="<%= "number > "+ lastNode %>">
 			<mm:field name="naam" jspvar="name" vartype="String" write="false">
 				<mm:setfield name="naam"><%= name + " (natuurherstel)" %></mm:setfield>   
@@ -210,4 +220,5 @@
    Done.
    </body>
 </html>
+</mm:log>
 </mm:cloud>
