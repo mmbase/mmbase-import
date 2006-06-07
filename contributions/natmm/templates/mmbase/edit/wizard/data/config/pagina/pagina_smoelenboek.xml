@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>home pagina</title>
+   <title>smoelenboek pagina</title>
    <description>
       <![CDATA[
 	<h1>Home pagina</h1>
@@ -10,7 +10,7 @@
    </description>
    <action include="config/pagina/create_pagina.xml"/>
    <action include="config/pagina/delete_pagina.xml"/>
-   <action include="config/pagina/load_pagina_info.xml"/>
+   <action include="config/pagina/load_pagina_nmintra.xml"/>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/pages_title.xml" />
@@ -26,7 +26,7 @@
       <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
-      <list include="config/linklijst/zoek_pagina_lijstcontentrel_linklijst.xml" />
-      <list include="config/teaser/zoek_pagina_tickertape_teaser.xml" />
+      <list include="config/images/zoek_pagina_posrel_images.xml" />
+      <list include="config/programs/add_teams_posrel.xml" />
    </form-schema> 
 </wizard-schema>
