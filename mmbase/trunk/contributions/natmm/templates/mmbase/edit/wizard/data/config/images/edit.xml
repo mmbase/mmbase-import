@@ -4,7 +4,7 @@
    <title></title>
    <field name="titel" dtrequired="true"><prompt>titel</prompt></field>
    <field name="metatags" ftype="enum" dtrequired="true"><prompt>categorie</prompt><optionlist select="images_metatags"/></field>
-   <field name="titel_fra" ftype="line"><prompt>filenaam (evt. handmatig invoeren)</prompt></field>
+   <field name="filename" ftype="data"><prompt>filenaam</prompt></field>
    <field name="omschrijving"><prompt>omschrijving</prompt></field>
    <field name="alt_tekst"><prompt>alt tekst</prompt></field>
    <field name="bron"><prompt>bron</prompt></field>
