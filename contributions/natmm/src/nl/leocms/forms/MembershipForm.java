@@ -713,15 +713,15 @@ public class MembershipForm extends ActionForm {
         "Om u zo snel mogelijk van dienst te zijn, geven wij u nu een tijdelijk lidmaatschapsnummer, " +
         "waarmee u direct gratis bijzondere fiets- en wandelroutes van onze <a href='http://www.natuurmonumenten.nl/routes'>website</a> kunt dowloaden." + newline + newline;
      message += "Uw voorlopig lidnummer: 9002162" + newline + newline;
-     message += "Binnen enkele weken ontvangt u het welkomstpakket met daarin \"Het Natuurboek\", een prachtig boek," +
-         "boordevol informatie over natuur in Nederland voor jong en oud," +
+     message += "Binnen enkele weken ontvangt u het welkomstpakket met daarin \"Het Natuurboek\", een prachtig boek, " +
+         "boordevol informatie over natuur in Nederland voor jong en oud, " +
     //  message += "Binnen enkele weken ontvangt u het welkomstpakket met daarin de Natuurwijzer, " +
     //  "het prachtige boek, boordevol informatie over natuur in Nederland, " +
         "het kwartaalmagazine Natuurbehoud en uw lidmaatschapspas met daarop uw persoonlijke lidmaatschapsnummer." + newline +
         "Vanaf dat moment kunt u inloggen op de site met uw eigen lidmaatschapsnummer." + newline + newline;
      if (thisMember.getStringValue("payment_type").equals("A")) {
         message += "U heeft aangegeven per acceptgiro te willen betalen, " +
-            " deze sturen we u binnen enkele weken toe. ";
+            " deze sturen wij u binnen enkele weken toe. ";
      } else {
         int iAmount = thisMember.getIntValue("amount");
         String payment_type = thisMember.getStringValue("payment_type");
@@ -745,7 +745,7 @@ public class MembershipForm extends ActionForm {
         "Met vriendelijke groet," + newline + newline +
         "Jan Jaap de Graeff" + newline +
         "algemeen directeur" + newline + newline;
-     message += "P.s. Heeft u zich bedacht? Stuur dan binnen 3 dagen een mailtje met uw naam, postcode en huisnummer naar ";
+     message += "P.S. Heeft u zich bedacht? Stuur dan binnen 3 dagen een mailtje met uw naam, postcode en huisnummer naar ";
      if(type.equals("html")) {
          message += "<a href='mailto:" + NatMMConfig.toSubscribeAddress + "'>" + NatMMConfig.toSubscribeAddress + "</a>";
      } else {
