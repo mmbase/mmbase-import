@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.45 2006-04-27 17:36:44 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.46 2006-06-07 19:22:59 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -286,7 +286,7 @@ public class DateHandler extends AbstractTypeHandler {
             oldValue = node.getDateValue(fieldName);
             cal.setTime((Date) oldValue);
         } else {
-            cal.setTimeInMillis(0);
+            cal.clear();
         }
 
         Calendar newCal = getSpecifiedValue(field, cal);
