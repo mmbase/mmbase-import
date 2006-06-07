@@ -5,7 +5,7 @@
    <field name="titel" dtrequired="true"><prompt>titel</prompt></field>
    <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
    <field name="omschrijving"><prompt>omschrijving</prompt></field>
-   <field name="url" dtrequired="true" dtpattern="\://|javascript\:"><prompt>url</prompt></field>
+   <field name="url" dtrequired="true"><prompt>url</prompt></field>
    <field name="alt_tekst"><prompt>alt_tekst</prompt></field>
    <!-- field name="type" ftype="enum" dtrequired="true"><prompt>type</prompt><optionlist select="linktypes"></optionlist></field -->
    <field name="target" ftype="enum" dtrequired="true"><prompt>target</prompt><optionlist select="targets"></optionlist></field>
