@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import nl.leocms.util.ApplicationHelper;
 import com.finalist.mmbase.util.CloudFactory;
 
 public class SimpleStats
@@ -14,10 +15,16 @@ public class SimpleStats
    private static final Logger log = Logging.getLoggerInstance(SimpleStats.class);
 
    public void run() {
-      MMBaseContext mc = new MMBaseContext();
-      ServletContext application = mc.getServletContext();
-      saveLast(application);
-      resetVariables(application);
+      log.info("run()");
+		Cloud cloud = CloudFactory.getCloud();
+		ApplicationHelper ap = new ApplicationHelper();
+		if(ap.isInstalled(cloud,"NMIntra")) {
+			MMBaseContext mc = new MMBaseContext();
+			ServletContext application = mc.getServletContext();
+			saveLast(application);
+			resetVariables(application);
+		}
+      log.info("done");
    }
 
    public void saveLast(ServletContext application) {
