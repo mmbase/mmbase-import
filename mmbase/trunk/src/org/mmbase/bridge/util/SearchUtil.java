@@ -17,6 +17,9 @@ import org.mmbase.storage.search.*;
 
 public class SearchUtil {
 
+    public static final String SOURCE = "SOURCE";
+    public static final String DESTINATION = "DESTINATION";
+
     private SearchUtil() {
         // Utility
     }
@@ -131,7 +134,11 @@ public class SearchUtil {
     }
 
     public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role, String fieldname, String value, String sortName, String sortDirection) {
-        NodeQuery query = createRelatedNodeListQuery(parent, managerName, role);
+        return createRelatedNodeListQuery(parent, managerName, role, fieldname, value, sortName, sortDirection, DESTINATION);
+    }
+    
+    public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role, String fieldname, String value, String sortName, String sortDirection, String searchdir) {
+        NodeQuery query = createRelatedNodeListQuery(parent, managerName, role, searchdir);
 
         NodeManager manager = parent.getCloud().getNodeManager(managerName);
         if (!isEmptyOrWhitespace(fieldname)) {
@@ -140,7 +147,13 @@ public class SearchUtil {
         if (!isEmptyOrWhitespace(sortName)) {
             if (sortName.startsWith(role + ".")) {
                 String sortField = sortName.substring(role.length() + 1);
-                RelationManager relationManager = parent.getCloud().getRelationManager(parent.getNodeManager(), manager, role);
+                RelationManager relationManager = null;
+                if (SOURCE.equals(searchdir)) {
+                    relationManager = parent.getCloud().getRelationManager(manager, parent.getNodeManager(), role);
+                }
+                else {
+                    relationManager = parent.getCloud().getRelationManager(parent.getNodeManager(), manager, role);
+                }
                 addRelationSortOrder(query, relationManager, sortField, sortDirection);
             }
             else {
@@ -151,24 +164,32 @@ public class SearchUtil {
     }
 
     public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role) {
+        return createRelatedNodeListQuery(parent, managerName, role, DESTINATION);
+    }
+
+    public static NodeQuery createRelatedNodeListQuery(Node parent, String managerName, String role, String searchdir) {
         NodeManager manager = parent.getCloud().getNodeManager(managerName);
 
         NodeQuery query = parent.getCloud().createNodeQuery();
         Step step1 = query.addStep(parent.getNodeManager());
         query.addNode(step1, parent);
 
-        RelationStep step2 = query.addRelationStep(manager, role, "DESTINATION");
+        RelationStep step2 = query.addRelationStep(manager, role, searchdir);
         Step step3 = step2.getNext();
         query.setNodeStep(step3); // makes it ready for use as NodeQuery
         return query;
     }
 
     public static RelationList findRelations(Node parent, String managerName, String role, String sortName, String sortDirection) {
+        return findRelations(parent, managerName, role, sortName, sortDirection, DESTINATION);
+    }
+
+    public static RelationList findRelations(Node parent, String managerName, String role, String sortName, String sortDirection, String searchdir) {
         NodeManager manager = parent.getCloud().getNodeManager(managerName);
         NodeQuery query = parent.getCloud().createNodeQuery();
         Step step1 = query.addStep(parent.getNodeManager());
         query.addNode(step1, parent);
-        RelationStep step = query.addRelationStep(manager, role, "DESTINATION");
+        RelationStep step = query.addRelationStep(manager, role, searchdir);
         query.setNodeStep(step);
 
         if (!isEmptyOrWhitespace(sortName)) {
@@ -245,16 +266,20 @@ public class SearchUtil {
             long compareField1 = (msecondsToCompare < 0) ? date : now;
             long compareField2 = (msecondsToCompare < 0) ? now : date;
 
-            if (field.getType() == Field.TYPE_DATETIME) {
-                FieldValueBetweenConstraint constraint = query.createConstraint(query.getStepField(field),
-                        new Date(compareField1), new Date(compareField2));
-                addConstraint(query, constraint);
-            }
-            else {
-                FieldValueBetweenConstraint constraint = query.createConstraint(query.getStepField(field),
-                        new Long(compareField1), new Long(compareField2));
-                addConstraint(query, constraint);
-            }
+            addDatetimeConstraint(query, field, compareField1, compareField2);
+        }
+    }
+
+    public static void addDatetimeConstraint(NodeQuery query, Field field, long from, long to) {
+        if (field.getType() == Field.TYPE_DATETIME) {
+            FieldValueBetweenConstraint constraint = query.createConstraint(query.getStepField(field),
+                    new Date(from), new Date(to));
+            addConstraint(query, constraint);
+        }
+        else {
+            FieldValueBetweenConstraint constraint = query.createConstraint(query.getStepField(field),
+                    new Long(from), new Long(to));
+            addConstraint(query, constraint);
         }
     }
 
