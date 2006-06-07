@@ -267,8 +267,8 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">Filenaam</guiname>
-            <guiname xml:lang="en">FileName</guiname>
+            <guiname xml:lang="nl">TitelFra</guiname>
+            <guiname xml:lang="en">TitleFra</guiname>
             <guitype>string</guitype>
          </gui>
          <editor>
