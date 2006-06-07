@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMObjectNode;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * @created 18-nov-2003
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ContentImages extends Images {
 
@@ -63,10 +63,6 @@ public class ContentImages extends Images {
       ceb.preCommit(node);
       node.setValue("title", node.getStringValue("titel"));
       node.setValue("description", node.getStringValue("omschrijving"));
-      String filename = node.getStringValue("filename");
-      if(filename!=null&&!filename.equals("")) {
-         node.setValue("titel_fra", filename);
-      }
       return node;
    }
 
