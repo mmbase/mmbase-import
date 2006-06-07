@@ -25,7 +25,7 @@ import java.io.Writer;
 
 import javax.swing.tree.TreeModel;
 
-/** 
+/**
  * Class reponsible for rendering the HTML tree (+/-, lines, scripts etc.)
  * The HTML uses a number of gif's that are located using the ImgBaseUrl.
  * Gifs needed:<UL>
@@ -45,29 +45,27 @@ import javax.swing.tree.TreeModel;
  */
 public class HTMLTree {
    private TreeCellRenderer cellRenderer = new DefaultCellRenderer();
-
-   private boolean expandAll = false;
    private String imgBaseUrl = "editors/img/";
-   private String treeId = "";
 
-   private TreeModel model;
+   public boolean expandAll = false;
+   public String treeId = "";
+
+   public TreeModel model;
 
    public HTMLTree() {
       model = null;
    }
 
    public HTMLTree(TreeModel model) {
-      /* nb: assert model != null; */
       this.model = model;
    }
-   
+
    public HTMLTree(TreeModel model, String treeId) {
-      /* nb: assert model != null; */
       this.model = model;
       this.treeId = treeId;
    }
 
-   private String buildImgUrl(String image) {
+   public String buildImgUrl(String image) {
       return getImgBaseUrl() + image;
    }
 
@@ -84,7 +82,7 @@ public class HTMLTree {
    * @param isLeaf - boolean, true if a node has no children (no + sign in front)
    * @param isLast - boolean, true if a node is the last child of it's parent
    */
-   private String getImage(boolean isLeaf, boolean isLast) {
+   public String getImage(boolean isLeaf, boolean isLast) {
       String img;
       if (isLeaf) {
          if (isLast) {
@@ -131,10 +129,8 @@ public class HTMLTree {
       return expandAll;
    }
 
-   public void render(Writer out) {
-      PrintWriter pw = new PrintWriter(out);
-      pw.println("<script>");
-      pw.println("function saveCookie(name,value,days) {");
+	public void renderCookieScripts(PrintWriter pw) {
+	   pw.println("function saveCookie(name,value,days) {");
       pw.println("   if (days) {");
       pw.println("      var date = new Date();");
       pw.println("      date.setTime(date.getTime()+(days*24*60*60*1000))");
@@ -161,6 +157,12 @@ public class HTMLTree {
       pw.println("      if(lastclicknode!=null) { clickNode(lastclicknode); }");
       pw.println("   }");
       pw.println("}");
+	}
+	
+   public void render(Writer out) {
+      PrintWriter pw = new PrintWriter(out);
+      pw.println("<script>");
+      renderCookieScripts(pw);
       pw.println("function clickNode(node) {");
       pw.println("   var level = node.split('_').length;");
       pw.println("   saveCookie('lastnode" + treeId + "'+level,node,1);");
@@ -242,10 +244,9 @@ public class HTMLTree {
    }
 
    /**
-    * @param imgBaseUrl 
+    * @param imgBaseUrl
     */
    public void setImgBaseUrl(String imgBaseUrl) {
-      /* nb: assert imgBaseUrl.charAt(imgBaseUrl.length() - 1) == '/'; */
       this.imgBaseUrl = imgBaseUrl;
    }
 
@@ -253,7 +254,6 @@ public class HTMLTree {
     * @param model
     */
    public void setModel(TreeModel model) {
-      /* nb: assert model != null; */
       this.model = model;
    }
 
