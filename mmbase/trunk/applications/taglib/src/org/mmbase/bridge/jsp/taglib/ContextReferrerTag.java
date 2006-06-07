@@ -32,7 +32,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.80 2006-04-10 21:41:30 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.81 2006-06-07 14:07:14 nklasens Exp $
  * @see ContextTag
  */
 
@@ -532,6 +532,14 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 return locale;
             }
         }
+        ContextReferrerTag contextReferrerTag = (ContextReferrerTag)findParentTag(ContextReferrerTag.class, null, false);
+        if (contextReferrerTag != null) {
+            Locale locale = contextReferrerTag.getLocale();
+            if (locale != null) {
+                return locale;
+            }
+        }
+
         return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
     }
 
