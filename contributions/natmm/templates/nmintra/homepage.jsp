@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<mm:cloud jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
@@ -61,33 +61,31 @@ if(!articleId.equals("-1")) {
    <td class="transperant">
    <div class="<%= infopageClass %>">
    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-   <tr><td style="padding:10px;padding-top:18px;width:100%;"><%
-   
-   String pageTitle = "";
-   
-   %><table border="0" cellpadding="0" cellspacing="0" width="100%">
+   <tr><td style="padding:10px;padding-top:18px;width:100%;">
+		 <table border="0" cellpadding="0" cellspacing="0" width="100%">
        <tr><td style="padding-bottom:10px;width:100%;">
-           <div class="pageheader"><%= pageTitle %></div><br>
+		 	  <%@include file="includes/relatedteaser.jsp" %>
            <%
              
-                String articleConstraint = "";
                 String articlePath = "pagina,contentrel,artikel";
+                String articleConstraint = "(artikel.embargo < " + nowSec + " )";
                 if(!thisPool.equals("-1")) {
-                    articleConstraint = "( pools.number = '" + thisPool + "' )";
                     articlePath += ",posrel,pools";
+                    articleConstraint = " AND ( pools.number = '" + thisPool + "' )";
                 }
 					 String sTemplateUrl = "homepage.jsp";
                 String extTemplateQueryString = templateQueryString;
                 int listSize = 0; 
-                %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
-					 		orderby="artikel.embargo" searchdir="destination" 
+                %>
+					 <mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" constraints="<%= articleConstraint %>"
+					 	orderby="artikel.embargo" searchdir="destination" 
                   ><mm:first><mm:size jspvar="dummy" vartype="Integer" write="false"><% listSize = dummy.intValue();  %></mm:size></mm:first
                 ></mm:list
                 ><%@include file="includes/info/offsetlinks.jsp" %><%
                 if(listSize>0) {
                    %><mm:list nodes="<%= paginaID %>" path="<%= articlePath %>" 
-                          orderby="artikel.embargo" directions="DOWN" 
-                       offset="<%= "" + thisOffset*10 %>" max="10" constraints="<%= articleConstraint %>"><%
+                          orderby="artikel.begindatum" directions="DOWN" constraints="<%= articleConstraint %>"
+								  offset="<%= "" + (thisOffset-1)*10 %>" max="10"><%
                        String titleClass = "pageheader"; 
                        String readmoreUrl = "homepage.jsp";
                        if(isIPage) readmoreUrl = "ipage.jsp";

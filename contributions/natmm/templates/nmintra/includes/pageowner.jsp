@@ -1,4 +1,4 @@
-<%
+<%--
 if(!owners.equals("")) {
 	String firstOwner = owners;
 	if(firstOwner.indexOf(",")>-1) {
@@ -23,4 +23,4 @@ if(!owners.equals("")) {
 	 </mm:node>
 	 <% 
 }
-%>
+--%>

@@ -6,6 +6,23 @@
 <%@include file="includes/calendar.jsp" %>
 <%
 
+String descriptionId = request.getParameter("description"); if(descriptionId==null) { descriptionId=""; }
+
+// smoelenboek update
+String firstnameId = request.getParameter("firstname"); if(firstnameId==null) { firstnameId=""; }
+String initialsId = request.getParameter("initials"); if(initialsId==null) { initialsId=""; }
+String suffixId = request.getParameter("suffix"); if(suffixId==null) { suffixId=""; }
+String lastnameId = request.getParameter("lastname"); if(lastnameId==null) { lastnameId=""; }
+String companyphoneId = request.getParameter("companyphone"); if(companyphoneId==null) { companyphoneId=""; }
+String cellularphoneId = request.getParameter("cellularphone"); if(cellularphoneId==null) { cellularphoneId=""; }
+String faxId = request.getParameter("fax"); if(faxId==null) { faxId=""; }
+String emailId = request.getParameter("email"); if(emailId==null) { emailId=""; }
+String deptdescrId = request.getParameter("deptdescr"); if(deptdescrId==null) { deptdescrId=""; }
+String progdescrId = request.getParameter("progdescr"); if(progdescrId==null) { progdescrId=""; }
+String posdescrId = request.getParameter("posdescr"); if(posdescrId==null) { posdescrId=""; }
+String descrupdateId = request.getParameter("descrupdate"); if(descrupdateId==null) { descrupdateId=""; }
+String introupdateId= request.getParameter("introupdate"); if(introupdateId==null) { introupdateId=""; }
+
 postingStr += "|";
 String action = getResponseVal("action",postingStr);
 
