@@ -21,7 +21,10 @@
       if(!postingStr.equals("|action=print")) {
         %><div align="right" style="letter-spacing:1px;"><a href="javascript:history.go(-1);">terug</a>&nbsp/&nbsp;<a target="_blank" href="ipage.jsp<%= 
                     templateQueryString %>&pst=|action=print">print</a></div><%
-      } 
+      }
+    %>
+    <%@include file="includes/relatedteaser.jsp" %>
+    <%
       String startnodeId = articleId;
       String articlePath = "artikel";
       String articleOrderby = "";

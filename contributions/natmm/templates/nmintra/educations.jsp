@@ -251,7 +251,7 @@ public String searchResults(TreeSet searchResultList) {
          <tr>
              <td style="padding-left:20px;">
              <mm:node element="linklijst"
-               ><mm:related path="lijstcontenrel,link" orderby="posrel.pos" directions="UP"
+               ><mm:related path="lijstcontentrel,link" orderby="lijstcontentrel.pos" directions="UP"
                  ><a target="_blank" href="<mm:field name="link.url" />" class="menuItem"><span class="normal"><mm:field name="link.titel" /></span></a><br>
                </mm:related
              ></mm:node>
