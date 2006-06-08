@@ -215,6 +215,18 @@
 			<mm:setfield name="dynamicmenu">0</mm:setfield>
 			<mm:setfield name="contenttemplate">0</mm:setfield>
 		</mm:listnodes>
+		<% log.info("15"); %>
+		<mm:listnodes type="pagina" constraints="<%= "number > "+ lastNode %>">
+			<mm:setfield name="verwijderbaar">1</mm:setfield>
+			<mm:setfield name="contentpagina">1</mm:setfield>
+			<% int i = 1; %>
+			<mm:related path="posrel,images" orderby="posrel.pos,images.titel">
+				<mm:node element="posrel">
+					<mm:setfield name="pos"><%= "" + i %></mm:setfield>
+				</mm:node>
+				<% i++; %>
+			</mm:related>
+		</mm:listnodes>
 	<% 
 	} %>
    Done.
