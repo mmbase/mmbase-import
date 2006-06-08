@@ -9,7 +9,7 @@
       <field ftype="startwizard" wizardname="config/locations/locations" />
    </item>
    <command name="search" nodepath="locations" age="-1" fields="titel" orderby="titel">
-      <prompt>zoek lokaties</prompt>
+      <prompt>zoek lokatie</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[titel]</search-fields>

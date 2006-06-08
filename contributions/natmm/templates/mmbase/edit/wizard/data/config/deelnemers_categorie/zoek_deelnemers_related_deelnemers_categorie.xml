@@ -11,7 +11,7 @@
    </item>
 
    <command name="search" nodepath="deelnemers" age="-1" fields="titel,firstname,lastname" orderby="lastname">
-      <prompt>zoek deelnemers</prompt>
+      <prompt>zoek deelnemer</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[titel]</search-fields>

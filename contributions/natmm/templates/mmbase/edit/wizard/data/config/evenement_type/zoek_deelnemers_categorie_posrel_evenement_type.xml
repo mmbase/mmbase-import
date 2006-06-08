@@ -8,7 +8,7 @@
       <field ftype="startwizard" wizardname="config/evenement_type/evenement_type" />
    </item>
    <command name="search" nodepath="evenement_type" age="-1" fields="naam" orderby="naam">
-      <prompt>zoek evenement_type</prompt>
+      <prompt>zoek activiteitstype</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[naam]</search-fields>

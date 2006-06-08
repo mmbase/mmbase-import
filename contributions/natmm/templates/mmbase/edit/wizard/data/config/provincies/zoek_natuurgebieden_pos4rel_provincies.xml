@@ -10,7 +10,7 @@
       <field ftype="startwizard" wizardname="config/provincies/provincies" />
    </item>
    <command name="search" nodepath="provincies" age="-1" fields="naam,metatags" orderby="naam">
-      <prompt>zoek provincies</prompt>
+      <prompt>zoek provincie</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[naam]</search-fields>

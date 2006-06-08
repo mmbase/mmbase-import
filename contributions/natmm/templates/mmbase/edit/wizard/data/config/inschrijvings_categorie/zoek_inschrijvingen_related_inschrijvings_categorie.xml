@@ -7,7 +7,7 @@
       <!-- <field ftype="startwizard" wizardname="config/inschrijvings_categorie/inschrijvings_categorie" /> -->
    </item>
    <command name="search" nodepath="inschrijvings_categorie" age="-1" fields="name" orderby="name">
-      <prompt>zoek aanmeldingscategorieen</prompt>
+      <prompt>zoek aanmeldingscategorie</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[name]</search-fields>

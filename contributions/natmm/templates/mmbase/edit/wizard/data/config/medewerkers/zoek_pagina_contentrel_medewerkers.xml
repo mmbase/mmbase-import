@@ -9,7 +9,7 @@
 	   <field ftype="startwizard" wizardname="config/medewerkers/medewerkers_peopletemplate" />
    </item>
    <command name="search" nodepath="medewerkers" age="-1" fields="titel,firstname,lastname,metatags" orderby="lastname">
-      <prompt>zoek medewerkers</prompt>
+      <prompt>zoek medewerker</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[titel]</search-fields>
