@@ -1,7 +1,7 @@
 // Code to customize the htmlarea toolbar for the editwizards (less buttons,
 // a createlink with a target dropdown and a validate button).
 // Author: Jaco de Groot.
-// Version : $Id: my-htmlarea.js,v 1.9 2006-05-08 19:26:47 michiel Exp $;
+// Version : $Id: my-htmlarea.js,v 1.10 2006-06-08 13:25:34 nklasens Exp $;
 
 
 function getToolTip(id, defaultValue) {
@@ -15,17 +15,18 @@ function getToolTip(id, defaultValue) {
 function customize(editor, editorURL) {
   var config = editor.config;
   config.editorURL = editorURL;
+  _editor_url = editorURL;
   config.registerButton({
     id        : "my-createlink",
     tooltip   : getToolTip("insertweblink","Insert Web Link"),
-    image     : editorURL + "images/ed_link.gif",
+    image     : editorURL + config.imgURL +  "ed_link.gif",
     textMode  : false,
     action    : myCreateLinkAction
   });
   config.registerButton({
     id        : "my-validatesave",
     tooltip   : getToolTip("validatesave", "Validate The Form"),
-    image     : editorURL + "images/ed_validate_save.gif",
+    image     : editorURL + config.imgURL +  "ed_validate_save.gif",
     textMode  : true,
     action    : myValidateSaveAction
   });
