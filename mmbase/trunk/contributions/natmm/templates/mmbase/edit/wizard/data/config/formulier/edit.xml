@@ -22,5 +22,9 @@
    <field name="emailonderwerp">
       <prompt>tekst voor verzend button</prompt>
    </field>
+   <field name="titel_de" ftype="enum">
+      <prompt>extra return tussen de antwoorden in de verstuurde email _______________________________</prompt>
+		<optionlist select="ja_nee"/>
+   </field> 
    <list include="config/formulierveld/zoek_formulier_posrel_formulierveld.xml" />
 </form-schema>
