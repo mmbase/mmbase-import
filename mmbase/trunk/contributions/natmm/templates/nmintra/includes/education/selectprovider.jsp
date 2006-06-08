@@ -21,7 +21,7 @@ if(!providerId.equals("")) { // a provider has been selected
    	   <td class="bold"><div align="left" class="light">&nbsp;<%= providerTitle %></div></td>
       </tr>
    </table>	
-	<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('parent',this,0)">
+	<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('document',this,0)">
       <option value='educations.jsp?p=<%= paginaID %>&k=<%= keywordId %>&pool=<%= poolId %>&c=<%= competenceId %>'>Selecteer</option>
       <% String sProviders = searchResults(providers); %>
       <mm:list nodes="<%= sProviders %>" path="providers,related,educations" orderby="providers.naam" directions="UP"

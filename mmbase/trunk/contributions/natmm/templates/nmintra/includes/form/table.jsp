@@ -147,10 +147,12 @@
 	</mm:list>	<%-- article,questions --%>
 
 
-	<%if(timeFieldIsOpen) {%>
+	<%if(timeFieldIsOpen) {
+			%>
 					</tr></table>
 			</td></tr>
-			<% 	timeFieldIsOpen = false;
+			<%
+			timeFieldIsOpen = false;
 	} %>
 	<tr>
 		<td><img src="media/spacer.gif" width="10" height="1"></td>
@@ -159,8 +161,7 @@
 	<tr>
 		<td><img src="media/spacer.gif" width="10" height="1"></td>
 		<td colspan="3"><div align="right">
-		<a href="formulier.jsp?<%= request.getParameter() %>"
-			onClick="return createPosting(this);"
+		<a href="#"	onClick="return createPosting(this);"
 			>verstuur je bericht</a><img src="media/spacer.gif" width="10" height="1"></div>
 		</td>
 	</tr>
