@@ -46,7 +46,7 @@
 			<% String sNodes = paginaID;
             String sPath = "pagina,contentrel,artikel";
             String sConstraints = "(artikel.embargo < '" + nowSec + "') AND (artikel.use_verloopdatum='0' OR artikel.verloopdatum > '" + nowSec + "' )";
-            objectPerPage = 6; // should correspond to menuType Quote
+            objectPerPage = 6;
             int thisOffset = 1;
             try{
                if(!offsetID.equals("0")){
@@ -54,7 +54,8 @@
                   offsetID ="";
                }
             } catch(Exception e) {} 
-				if (bShowOne){ %>
+				if (bShowOne){
+					%>
 					<%@include file="includes/artikel_show.jsp" %>
    		      <br/>
          		<br/>
@@ -65,35 +66,38 @@
       		      <jsp:param name="sp" value="artikel,rolerel" />
 		            <jsp:param name="sr" value="1" />
       		   </jsp:include>
-				<%	} else { %>
-						<div class="colortitle" style="font:bold 110%;"><mm:field name="titel"/></div>
-	   		      <div style="padding-bottom:5px;"><b><mm:field name="kortetitel"/></b></div>
-            		<mm:list nodes="<%= sNodes %>" path="<%= sPath %>" constraints="<%= sConstraints %>"
-		               offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= "" +  objectPerPage %>" 
-      		         orderby="artikel.begindatum" directions="DOWN">
-            		   <mm:first><table cellspacing="0" cellpadding="0" style="vertical-align:top;width:350px"></mm:first>
-		               <mm:node element="artikel">
-								<mm:field name="number" jspvar="article_number" vartype="String" write="false">
-	         		      <mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false">
-									<tr>
-										<td width="65" valign="top"><mm:time time="<%=artikel_begindatum%>" format="dd-MM-yyyy"/></td>
-										<td width="3" valign="top">&nbsp;&nbsp;<span style="font:bold 110%;color:red">></span>&nbsp;&nbsp;</td>
-										<td>
-										   <strong><a href="<%= pHelper.createItemUrl(article_number,paginaID,"offset="+thisOffset+"&show_one=true",request.getContextPath()) %>" class="maincolor_link"><mm:field name="titel" /></a></strong><br>
-											<mm:field name="intro" jspvar="intro" vartype="String" write="false">
-         									<% if(intro!=null&&!HtmlCleaner.cleanText(intro,"<",">","").trim().equals("")) { %><mm:write /><% } %>
-						   		      </mm:field>
-					   				</td>
-									</tr>
-									<mm:last inverse="true">
-										<tr><td colspan="3"><table class="dotline"><tr><td height="3"></td></tr></table></td></tr>
-									</mm:last>	
-							   </mm:field>
-								</mm:field>
-		               </mm:node>
-      		         <mm:last></table></mm:last>
-            		</mm:list>
-				<% } %>
+					<%	
+				} else { 
+					%>
+					<div class="colortitle" style="font:bold 110%;"><mm:field name="titel"/></div>
+					<div style="padding-bottom:5px;"><b><mm:field name="kortetitel"/></b></div>
+					<mm:list nodes="<%= sNodes %>" path="<%= sPath %>" constraints="<%= sConstraints %>"
+						offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= "" +  objectPerPage %>" 
+						orderby="artikel.begindatum" directions="DOWN">
+						<mm:first><table cellspacing="0" cellpadding="0" style="vertical-align:top;width:350px"></mm:first>
+						<mm:node element="artikel">
+							<mm:field name="number" jspvar="article_number" vartype="String" write="false">
+							<mm:field name="begindatum" jspvar="artikel_begindatum" vartype="String" write="false">
+								<tr>
+									<td width="65" valign="top"><mm:time time="<%=artikel_begindatum%>" format="dd-MM-yyyy"/></td>
+									<td width="3" valign="top">&nbsp;&nbsp;<span style="font:bold 110%;color:red">></span>&nbsp;&nbsp;</td>
+									<td>
+										<strong><a href="<%= pHelper.createItemUrl(article_number,paginaID,"offset="+thisOffset+"&show_one=true",request.getContextPath()) %>" class="maincolor_link"><mm:field name="titel" /></a></strong><br>
+										<mm:field name="intro" jspvar="intro" vartype="String" write="false">
+											<% if(intro!=null&&!HtmlCleaner.cleanText(intro,"<",">","").trim().equals("")) { %><mm:write /><% } %>
+										</mm:field>
+									</td>
+								</tr>
+								<mm:last inverse="true">
+									<tr><td colspan="3"><table class="dotline"><tr><td height="3"></td></tr></table></td></tr>
+								</mm:last>	
+							</mm:field>
+							</mm:field>
+						</mm:node>
+						<mm:last></table></mm:last>
+					</mm:list>
+					<%
+				} %>
       </td>
       <td style="padding-right:10px;padding-left:10px;padding-bottom:10px;padding-top:10px;vertical-align:top;width:190px;">
          <jsp:include page="includes/nav.jsp">
@@ -107,7 +111,7 @@
 				<jsp:param name="object_per_page" value="<%= "" + objectPerPage %>" />
          </jsp:include>
 			<% if (bShowOne){ %>
-				<%@include file="includes/meerneiuwslink.jsp" %>
+				<%@include file="includes/meernieuwslink.jsp" %>
 			<% } %>	
    		<jsp:include page="../includes/shorty.jsp">
    	      <jsp:param name="s" value="<%= paginaID %>" />
