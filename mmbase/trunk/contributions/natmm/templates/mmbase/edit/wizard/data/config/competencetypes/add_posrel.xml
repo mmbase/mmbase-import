@@ -16,7 +16,7 @@
 		</relation>
 	</action>
 	<command name="search" nodepath="competencetypes" fields="name,description" orderby="name" age="-1">
-    	<prompt>zoek competentiegroepen</prompt>
+    	<prompt>zoek competentiegroep</prompt>
 		<search-filter>
 			<name>naam bevat</name>
 			<search-fields>name</search-fields>

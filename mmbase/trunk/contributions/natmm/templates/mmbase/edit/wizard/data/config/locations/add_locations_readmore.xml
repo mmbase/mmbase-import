@@ -19,7 +19,7 @@
         </relation>
     </action>
     <command name="search" nodepath="locations" fields="name" orderby="name" age="-1">
-        <prompt>zoek lokaties</prompt>
+        <prompt>zoek lokatie</prompt>
         <search-filter>
             <name>naam bevat</name>
             <search-fields>name</search-fields>

@@ -14,7 +14,7 @@
    </item>
 
    <command name="search" nodepath="inschrijvingen" age="-1" fields="titel,firstname,lastname,datum_inschrijving" orderby="lastname">
-      <prompt>zoek aanmeldingen</prompt>
+      <prompt>zoek aanmelding</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[titel]</search-fields>

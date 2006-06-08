@@ -12,7 +12,7 @@
    </item>
 
    <command name="search" nodepath="inschrijvingen" age="-1" fields="titel,firstname,lastname,datum_inschrijving" orderby="lastname">
-      <prompt>zoek inschrijvingen</prompt>
+      <prompt>zoek inschrijving</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[titel]</search-fields>

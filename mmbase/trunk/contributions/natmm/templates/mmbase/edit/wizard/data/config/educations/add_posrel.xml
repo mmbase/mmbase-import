@@ -19,7 +19,7 @@
 		</relation>
 	</action>
 	<command name="search" nodepath="educations" fields="titel,omschrijving" orderby="titel" age="-1">
-    	<prompt>zoek opleidingen</prompt>
+    	<prompt>zoek opleiding</prompt>
 		<search-filter>
 			<name>naam bevat</name>
 			<search-fields>titel</search-fields>

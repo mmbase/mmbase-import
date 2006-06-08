@@ -13,7 +13,7 @@
    </item>
 
    <command name="search" nodepath="extra_info" age="-1" fields="naam" orderby="naam">
-      <prompt>zoek extra_info</prompt>
+      <prompt>zoek extra info</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[naam]</search-fields>

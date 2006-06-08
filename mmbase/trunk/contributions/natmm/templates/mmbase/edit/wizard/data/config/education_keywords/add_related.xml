@@ -16,7 +16,7 @@
 		</relation>
 	</action>
 	<command name="search" nodepath="education_keywords" fields="word" orderby="word" age="-1">
-    	<prompt>zoek trefwoorden</prompt>
+    	<prompt>zoek trefwoord</prompt>
 		<search-filter>
 			<name>trefwoord bevat</name>
 			<search-fields>word</search-fields>

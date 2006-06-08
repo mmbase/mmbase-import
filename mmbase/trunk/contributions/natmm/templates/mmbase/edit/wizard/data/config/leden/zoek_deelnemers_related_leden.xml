@@ -10,7 +10,7 @@
    </item>
 
    <command name="search" nodepath="leden" age="-1" fields="naam,lidnummer" orderby="naam">
-      <prompt>zoek leden</prompt>
+      <prompt>zoek lid</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[naam]</search-fields>

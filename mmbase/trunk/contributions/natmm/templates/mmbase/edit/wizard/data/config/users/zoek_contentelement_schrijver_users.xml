@@ -6,7 +6,7 @@
       <field ftype="startwizard" wizardname="config/users/users" />
    </item>
    <command name="search" nodepath="users" age="-1" fields="">
-      <prompt>zoek users</prompt>
+      <prompt>zoek gebruiker</prompt>
    </command>
    <command name="startwizard" inline="true" wizardname="config/users/users" objectnumber="new">
        <prompt></prompt>

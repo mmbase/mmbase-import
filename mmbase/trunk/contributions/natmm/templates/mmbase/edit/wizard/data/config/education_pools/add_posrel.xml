@@ -16,7 +16,7 @@
 		</relation>
 	</action>
 	<command name="search" nodepath="education_pools" fields="name,description" orderby="name" age="-1">
-    	<prompt>zoek categorieen</prompt>
+    	<prompt>zoek categorie</prompt>
 		<search-filter>
 			<name>naam bevat</name>
 			<search-fields>name</search-fields>

@@ -10,7 +10,7 @@
    </item>
 
    <command name="search" nodepath="bevestigings_teksten" age="-1" fields="titel" orderby="titel">
-      <prompt>zoek bevestigings teksten</prompt>
+      <prompt>zoek bevestigings tekst</prompt>
       <search-filter>
          <name>titel bevat</name>
          <search-fields>[titel]</search-fields>
