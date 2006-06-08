@@ -7,5 +7,5 @@
 			} else{ // *** jump to the same page ***
 				%><%= readmoreUrl + number %><%
 			}
-			%></mm:field>" target="_top">
+			%></mm:field>">
 </mm:list>

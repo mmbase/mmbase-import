@@ -4,7 +4,6 @@
 <%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/header.jsp" %>
-<%@include file="includes/searchfunctions.jsp" %>
 <%
 if(!articleId.equals("-1")) { 
     String articleTemplate = "article.jsp" + templateQueryString;
@@ -20,16 +19,10 @@ if(!articleId.equals("-1")) {
    <div class="<%= infopageClass %>">
       <table border="0" cellpadding="0" cellspacing="0"><tr><td style="width:550px;">
       <table border="0" cellpadding="0" cellspacing="0">
-         <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel">
          <tr><td style="padding:10px;padding-top:18px;">
-            <mm:field name="artikel.titel" jspvar="title" vartype="String" write="false"
-            ><span class="black"><b><%= title.toUpperCase() %></b></span></mm:field><br/>
-       	   <span class="black"><mm:field name="artikel.intro"/></span></td>
-	      </tr>
-         </mm:list>
-         <tr><td style="padding:10px;padding-top:18px;">
+         <%@include file="includes/relatedteaser.jsp" %>
 			<% String sUrl = "ipoverview.jsp"; %>
-			<%@include file="includes/relatedimap.jsp" %></td></tr>
+			<%@include file="includes/imap/relatedimap.jsp" %></td></tr>
       </table>
       <mm:node number="<%= paginaID %>">
          <%@include file="includes/contentblocks.jsp" %>

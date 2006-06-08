@@ -6,7 +6,7 @@
 	><div style="position:absolute;left:<%= x1 %>px;top:<%= y1 
 				%>px;width:<%= x2.intValue()-x1.intValue() %>px;height:<%= y2.intValue()-y1.intValue() 
 				%>px;text-align:center;font-size:11px;border:dashed thin #FF0000;color:#FF0000;">
-		<a target="_top" href="<mm:field name="<%= targetObject + ".number" %>" jspvar="number" vartype="String" write="false"><%
+		<a href="<mm:field name="<%= targetObject + ".number" %>" jspvar="number" vartype="String" write="false"><%
 			 if(targetObject.equals("pagina2")) { // *** jump to another page ***
 				%><mm:url page="<%= readmoreUrl + number %>" /><%
 			} else{ // *** jump to the same page ***

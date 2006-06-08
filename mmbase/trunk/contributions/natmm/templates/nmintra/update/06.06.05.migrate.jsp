@@ -97,16 +97,27 @@
 			<mm:createrelation source="bb" destination="this_ad" role="contentrel" />
 		</mm:listnodes>
 	</mm:listnodes>
-	97. Changing editwizards because of change in builder<br/>
+	5. Changing editwizards because of change in builder<br/>
 	Todo: check with last version of db.
 	<mm:listnodes type="editwizards" constraints="wizard = 'config/educations/wizard'">
 		<mm:setfield name="fields">titel</mm:setfield>
 		<mm:setfield name="orderby">titel</mm:setfield>
 	</mm:listnodes>
-	98. Renaming editwizards that should use the default page editor<br/>
-	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_info'">
-		<mm:node id="info_ew" />
-	</mm:listnodes>
+	6. Renaming editwizards that should use the default page editor<br/>
+	<mm:createnode type="editwizards" id="def_ew">
+		<mm:setfield name="name">standaard pagina</mm:setfield>
+		<mm:setfield name="description">Bewerk de basis gegevens van deze pagina</mm:setfield>
+		<mm:setfield name="type">wizard</mm:setfield>
+		<mm:setfield name="wizard">config/pagina/pagina_default</mm:setfield>
+		<mm:setfield name="nodepath"></mm:setfield>
+		<mm:setfield name="fields">pagina.titel</mm:setfield>
+		<mm:setfield name="orderby">pagina.titel</mm:setfield>
+		<mm:setfield name="directions">up</mm:setfield>
+		<mm:setfield name="pagelength">50</mm:setfield>
+		<mm:setfield name="maxpagecount">100</mm:setfield>
+		<mm:setfield name="searchfields">pagina.titel</mm:setfield>
+		<mm:setfield name="search">yes</mm:setfield>
+	</mm:createnode>
 	<%
 	String [] templateToChange = {
 		"documents.jsp",
@@ -120,11 +131,59 @@
 			</mm:related>
 			<mm:remove referid="paginatemplate" />
 			<mm:node id="paginatemplate" />
-			<mm:createrelation source="paginatemplate" destination="info_ew" role="related" />
+			<mm:createrelation source="paginatemplate" destination="def_ew" role="related" />
 		 </mm:listnodes>
 		<%
 		}
 	%>
+	7. rename artikel ew which collapses with the natmm artikel template
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_artikel'">
+		<mm:setfield name="wizard">config/pagina/pagina_artikel_nmintra</mm:setfield>
+	</mm:listnodes>
+	8. move imap ew to overview
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_imap'">
+		<mm:setfield name="name">pagina met hotspots</mm:setfield>
+		<mm:setfield name="description">Bewerk de hotspots op deze pagina</mm:setfield>
+		<mm:setfield name="type">jsp</mm:setfield>
+		<mm:setfield name="wizard">/editors/imap/imap_overview.jsp</mm:setfield>
+		<mm:setfield name="nodepath"></mm:setfield>
+		<mm:setfield name="fields"></mm:setfield>
+		<mm:setfield name="orderby"></mm:setfield>
+		<mm:setfield name="directions"></mm:setfield>
+		<mm:setfield name="pagelength"></mm:setfield>
+		<mm:setfield name="maxpagecount"></mm:setfield>
+		<mm:setfield name="searchfields"></mm:setfield>
+		<mm:setfield name="search"></mm:setfield>
+	</mm:listnodes>
+   9. Change name of page editwizards<br/>
+	<mm:listnodes type="editwizards" constraints="name LIKE 'subr. vh genre %'">
+	   <mm:field name="name" jspvar="name" vartype="String" write="false">
+	      <% name  = name.substring(15) + " pagina"; %>
+		   <mm:setfield name="name"><%= name %></mm:setfield>
+		   <mm:setfield name="description"><%= "Bewerk deze " + name %></mm:setfield>
+		</mm:field>
+	</mm:listnodes>
+   10. Add project overview ew to project archive template<br/>
+	<mm:listnodes type="editwizards" constraints="wizard = '/editors/project_overview.jsp'">
+	   <mm:node id="project_overview">
+	      <mm:setfield name="name">voorbeeld project</mm:setfield>
+   		<mm:setfield name="description">Bewerk de voorbeeld projecten</mm:setfield>
+   		<mm:setfield name="type">jsp</mm:setfield>
+   		<mm:setfield name="wizard">/editors/projects/project_overview.jsp</mm:setfield>
+   		<mm:setfield name="nodepath"></mm:setfield>
+   		<mm:setfield name="fields"></mm:setfield>
+   		<mm:setfield name="orderby"></mm:setfield>
+   		<mm:setfield name="directions"></mm:setfield>
+   		<mm:setfield name="pagelength"></mm:setfield>
+   		<mm:setfield name="maxpagecount"></mm:setfield>
+   		<mm:setfield name="searchfields"></mm:setfield>
+   		<mm:setfield name="search"></mm:setfield>
+   	   <mm:listnodes type="paginatemplate" constraints="url = 'archive.jsp'">
+      	   <mm:node id="project_archive" />
+      	   <mm:createrelation source="project_archive" destination="project_overview" role="related" />
+      	</mm:listnodes>
+      </mm:node>
+	</mm:listnodes>
 	99. Deleting unused editwizards<br/>
 	<%
 	String [] ewToDelete = {
@@ -149,7 +208,10 @@
 		 </mm:listnodes><%
 	}
 	%>
-	Done.
+	Done.<br/>
+	Manual<br/>
+	1. Delete template for "Wat vindt je ervan?" page in P&O<br/>
+	2. Delete double relation for "Zoek een opleiding" page<br/>
 	</body>
   </html>
 </mm:log>
