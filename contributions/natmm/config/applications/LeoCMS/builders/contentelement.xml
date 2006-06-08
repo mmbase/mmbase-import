@@ -37,7 +37,7 @@
            </positions>
         </editor>
         <db>
-           <name xml:lang="nl">titel</name>
+           <name>titel</name>
            <type key="false" notnull="true" size="255" state="persistent">STRING</type>
         </db>
      </field>
@@ -59,7 +59,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">bron</name>
+            <name>bron</name>
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
@@ -81,7 +81,7 @@
                </positions>
             </editor>
             <db>
-               <name xml:lang="nl">titel_zichtbaar</name>
+               <name>titel_zichtbaar</name>
                <type key="false" notnull="false" size="40" state="persistent">STRING</type>
             </db>
       </field>
@@ -103,7 +103,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">omschrijving</name>
+            <name>omschrijving</name>
             <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
          </db>
       </field>
@@ -125,7 +125,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">creatiedatum</name>
+            <name>creatiedatum</name>
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
@@ -147,7 +147,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">datumlaatstewijziging</name>
+            <name>datumlaatstewijziging</name>
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
@@ -157,7 +157,7 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">PubliseerDatum</guiname>
+            <guiname xml:lang="nl">PubliceerDatum</guiname>
             <guiname xml:lang="en">PublishDate</guiname>
             <guitype>eventtime</guitype>
          </gui>
@@ -169,7 +169,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">embargo</name>
+            <name>embargo</name>
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
@@ -191,7 +191,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">verloopdatum</name>
+            <name>verloopdatum</name>
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
@@ -213,7 +213,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">use_verloopdatum</name>
+            <name>use_verloopdatum</name>
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
@@ -257,7 +257,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">reageer</name>
+            <name>reageer</name>
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
@@ -279,7 +279,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">titel_fra</name>
+            <name>titel_fra</name>
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
@@ -301,7 +301,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">titel_eng</name>
+            <name>titel_eng</name>
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
@@ -323,7 +323,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">titel_de</name>
+            <name>titel_de</name>
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
@@ -345,7 +345,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">omschrijving_fra</name>
+            <name>omschrijving_fra</name>
             <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
          </db>
       </field>
@@ -367,7 +367,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">omschrijving_eng</name>
+            <name>omschrijving_eng</name>
             <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
          </db>
       </field>
@@ -389,7 +389,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">omschrijving_de</name>
+            <name>omschrijving_de</name>
             <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
          </db>
       </field>
@@ -411,7 +411,7 @@
             </positions>
          </editor>
          <db>
-            <name xml:lang="nl">status</name>
+            <name>status</name>
             <type key="false" notnull="false" size="1" state="persistent">INTEGER</type>
          </db>
       </field>
