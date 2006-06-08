@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="posrel" destination="attachments"  minoccurs="0" maxoccurs="*" hidecommand="move-up|move-down" >
+    <title>bijlagen</title>
+    <description></description>
+    <command name="search" nodepath="attachments" fields="title,filename" age="-1">
+        <prompt>zoek bijlagen</prompt>
+        <search-filter>
+                <name>titel bevat</name>
+                <search-fields>title</search-fields>
+        </search-filter>
+        <search-filter>
+                <name>filenaam bevat</name>
+                <search-fields>filename</search-fields>
+        </search-filter>     
+    </command>
+    <command name="startwizard" inline="true" wizardname="config/attachments/attachments" objectnumber="new"/>
+    <item displaytype="file">
+        <description></description>
+        <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/attachments/attachments">
+            <prompt></prompt>
+        </field>
+        <field name="filename" ftype="data" />
+    </item>
+    <action type="create">
+        <relation role="posrel" destinationtype="attachments" >
+            <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+        </relation>
+    </action>
+</list>

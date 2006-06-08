@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="evenement">
+   <title>activiteit</title>
+   <!--
+   <description>
+      <![CDATA[
+      	<H1>Bewerken van activiteiten</H1>
+      	Te doen.
+      ]]>
+   </description>
+   -->
+   <action type="create">
+      <object type="evenement_blueprint">
+         <field name="soort">parent</field>
+      </object>
+   </action>
+   <!-- action include="config/evenement/delete_evenement.xml"/ -->
+   <action include="config/evenement/load_evenement.xml"/>
+   <lists>
+      <optionlist include="config/option_lists/ja_nee.xml" />
+      <optionlist include="config/option_lists/aanmelden_vooraf.xml" />
+      <optionlist include="config/option_lists/afdelingen_role.xml" />
+      <optionlist include="config/option_lists/medewerkers_role.xml" />
+      <optionlist include="config/option_lists/evenement_closetime.xml" />
+      <optionlist include="config/option_lists/confirmation_texts.xml" />
+		<optionlist include="config/option_lists/images_position.xml" />
+   </lists>     
+   <steps>   
+      <step form-schema="edit_evenement"/>    
+      <step form-schema="add_related"/>
+      <step form-schema="feedback"/>
+   </steps>     
+   <form-schema id="edit_evenement">
+       <title>Basisgegevens</title>
+       <field name="titel" ftype="line"><prompt>naam</prompt></field>
+       <field name="tekst" ftype="html" rows="20"><prompt>intro</prompt></field>
+       <list include="config/images/add_images_posrel.xml" />
+       <list include="config/paragraph/add_paragraph_posrel.xml" />
+       <field name="omschrijving" ftype="html" rows="14"><prompt>bijzondere aandachtspunten</prompt></field>
+       <field name="omschrijving_eng" ftype="html" rows="14"><prompt>hulpmiddelen</prompt></field>
+       <field name="omschrijving_de" ftype="html" rows="14"><prompt>inzet van de beheereenheid</prompt></field>
+       <field name="omschrijving_fra" ftype="html" rows="14"><prompt>eisen die de activiteit aan het terrein stelt</prompt></field>
+       <field name="min_aantal_deelnemers"><prompt>minimum aantal deelnemers</prompt></field>
+       <field name="max_aantal_deelnemers"><prompt>maximum aantal deelnemers</prompt></field>
+       <list include="config/employees/add_employees_readmore_small.xml" />
+   </form-schema>
+   <form-schema id="add_related">
+       <title>Indeling</title>
+       <field name="titel" ftype="data"><prompt>naam</prompt></field>
+       <list include="config/evenement_type/zoek_evenement_related_evenement_type.xml" />
+       <list include="config/deelnemers_categorie/zoek_evenement_posrel_deelnemers_categorie.xml" />
+       <list include="config/deelnemers_age/zoek_evenement_posrel_deelnemers_age.xml" />
+       <list include="config/natuurgebieden_type/zoek_evenement_related_natuurgebieden_type.xml" />
+       <list include="config/evenement_duration/zoek_evenement_related_evenement_duration.xml" />
+       <list include="config/evenement_distance/zoek_evenement_related_evenement_distance.xml" />
+       <list include="config/departments/add_departments_readmore_small.xml" />
+   </form-schema>
+   <form-schema id="feedback">
+      <title>Feedback</title>
+      <list include="config/feedback/add_related.xml" />
+   </form-schema>
+</wizard-schema>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="pagina">
-   <title>pagina</title>
+   <title>vacature pagina</title>
    <description>
       <![CDATA[
 	<h1>Home pagina</h1>
@@ -10,7 +10,7 @@
    </description>
    <action include="config/pagina/create_pagina.xml"/>
    <action include="config/pagina/delete_pagina.xml"/>
-   <action include="config/pagina/load_pagina_info.xml"/>
+   <action include="config/pagina/load_pagina_nmintra.xml"/>
    <lists>
       <optionlist include="config/option_lists/ja_nee.xml" />
       <optionlist include="config/option_lists/pages_title.xml" />
@@ -26,5 +26,6 @@
       <field name="omschrijving" ftype="html" rows="20"><prompt>omschrijving</prompt></field>
       <field name="creatiedatum" ftype="data"><prompt>creatiedatum</prompt></field>
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
+		<list include="config/vacature/zoek_pagina_contentrel_vacature.xml" />
    </form-schema> 
 </wizard-schema>

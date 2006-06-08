@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="education_pools">
+	<title>categorieen</title>
+	<task-description>Use this wizard to edit a pool.</task-description>
+	<action include="config/education_pools/create.xml" />
+   <action include="config/education_pools/delete.xml" />
+	<action include="config/education_pools/load.xml" />
+	<steps>
+		<step form-schema="edit_education_pools" />
+	</steps>
+	<form-schema id="edit_education_pools">
+		<field name="name">
+			<prompt>naam</prompt>
+			<description></description>
+		</field>
+		<!-- 
+      <field name="description" dtmaxlength="2048">
+	      <prompt>Omschrijving</prompt>
+	      <description></description>
+		</field>
+      -->
+      <list include="config/educations/add_posrel.xml" />
+  </form-schema>
+</wizard-schema>
