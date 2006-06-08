@@ -17,7 +17,6 @@ import org.mmbase.cache.Cache;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.implementation.database.Attributes;
 import org.mmbase.storage.implementation.database.DatabaseStorageManager;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.storage.search.*;
@@ -34,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.49 2006-02-28 08:53:32 nklasens Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.50 2006-06-08 13:24:47 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -343,6 +342,14 @@ public class BasicQueryHandler implements SearchQueryHandler {
             Integer oTypeInteger = new Integer(builderType);
             while (rs.next() && (maxNumber > results.size() || maxNumber==-1)) {
                 try {
+                    /*
+                     * This while statement does not deal with mmbase inheritance
+                     * It creates nodes based on the builder passed in. Nodes with 
+                     * subtypes of this builder are only filled with the field values
+                     * of this builder. Builders of a subtype are not stored in the nodeCache
+                     * to limit the time scope of these nodes, because they are not complete. 
+                     */
+                    
                     MMObjectNode node;
                     if (!isVirtual) {
                         node = new MMObjectNode(builder, false);
