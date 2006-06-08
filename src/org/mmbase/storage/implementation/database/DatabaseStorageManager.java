@@ -18,16 +18,13 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.cache.Cache;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
-import org.mmbase.datatypes.DataTypes;
-import org.mmbase.datatypes.DataType;
-import org.mmbase.datatypes.BasicDataType;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.transformers.*;
-
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.transformers.CharTransformer;
 
 /**
  * A JDBC implementation of an object related storage manager.
@@ -35,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.158 2006-05-12 11:16:04 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.159 2006-06-08 13:24:47 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -665,7 +662,25 @@ public class DatabaseStorageManager implements StorageManager {
             pathBuffer.insert(0, File.separator);
             number /= 100;
         }
-        pathBuffer.insert(0, basePath + factory.getDatabaseName() + File.separator + node.getBuilder().getFullTableName());
+        
+        /*
+         * This method is sometimes called with a node which has a supertype builder 
+         * attached instead of the real subtype builder. A read from the file system will fail,
+         * because binaries are stored based on the subtype.
+         */
+        String builderName = null;
+        int builderType = node.getBuilder().getObjectType();
+        int realOtypeValue = node.getOType();
+        if (builderType != realOtypeValue) {
+            MMBase mmb = factory.getMMBase();
+            builderName = mmb.getTypeDef().getValue(realOtypeValue);
+            builderName = mmb.getBuilder(builderName).getFullTableName();
+        }
+        else {
+            builderName = node.getBuilder().getFullTableName();
+        }
+        
+        pathBuffer.insert(0, basePath + factory.getDatabaseName() + File.separator + builderName);
         return new File(pathBuffer.toString(), "" + node.getNumber() + '.' + fieldName);
     }
 
