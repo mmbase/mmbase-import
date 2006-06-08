@@ -49,7 +49,7 @@
 					<mm:relatednodes type="rubriek" searchdir="destination">
 						<mm:setfield name="level">3</mm:setfield>
 						<mm:relatednodes type="rubriek" searchdir="destination">
-							<mm:setfield name="level">3</mm:setfield>
+							<mm:setfield name="level">4</mm:setfield>
 						</mm:relatednodes>
 					</mm:relatednodes>
 				</mm:relatednodes>
