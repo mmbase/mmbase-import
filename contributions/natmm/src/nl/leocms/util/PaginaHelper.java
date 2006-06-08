@@ -416,7 +416,8 @@ public class PaginaHelper {
                      }
                   }
                } else if(ewType.equals("jsp")) {
-                  ewUrl = editwizardNode.getStringValue("wizard");
+                  ewUrl = editwizardNode.getStringValue("wizard")
+                     + (ewUrl.indexOf("?")==-1 ? "?" : "&" ) + "p=" + pageNumber;
                } else {
                   ewUrl += "/mmbase/edit/wizard/jsp/wizard.jsp?language=nl&wizard=" + editwizardNode.getStringValue("wizard")
                      + "&nodepath=pagina&referrer=/editors/empty.html&objectnumber=" + pageNumber
