@@ -12,7 +12,7 @@
       <prompt>Functienaam</prompt>
    </field>
    <field name="embargo">
-     <prompt>PubliseerDatum</prompt>
+     <prompt>PubliceerDatum</prompt>
    </field>
    <field name="verloopdatum">
      <prompt>VerloopDatum</prompt>
