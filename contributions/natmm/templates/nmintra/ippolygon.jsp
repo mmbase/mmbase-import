@@ -34,10 +34,10 @@ if(!articleId.equals("-1")) {
                   	String readmoreUrl = "ippolygon.jsp?p=" + paginaID; 
                   	if(!refererId.equals("")) { readmoreUrl += "&referer=" + refererId; }
                   	readmoreUrl += "&article=";
-                  	%><%@include file="includes/relatedpolygons.jsp" %><%
+                  	%><%@include file="includes/imap/relatedpolygons.jsp" %><%
                   	readmoreUrl = "ippolygon.jsp?referer=" + paginaID + "&p=";
                   	targetObject = "pagina2";
-                  	%><%@include file="includes/relatedpolygons.jsp" 
+                  	%><%@include file="includes/imap/relatedpolygons.jsp" 
                 %></map><%
             } else {
                String targetObject = "artikel";
