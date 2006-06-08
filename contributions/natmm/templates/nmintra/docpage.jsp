@@ -1,5 +1,5 @@
 <%@include file="/taglibs.jsp" %>
-<mm:cloud jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
@@ -93,18 +93,18 @@ if(listSize>pageSize) {
            <td><img src="media/spacer.gif" width="1" height="1"></td>
            <td><div><%
             if(thisOffset>0) { 
-                %><a target="_top" href="docpage.jsp<%= templateQueryString  %>&offset=<%= thisOffset-1 %>">[<<- vorige ]</a>&nbsp;<%
+                %><a href="docpage.jsp<%= templateQueryString  %>&offset=<%= thisOffset-1 %>">[<<- vorige ]</a>&nbsp;<%
             } 
             for(int i=0; i < numberOfPages; i++) { 
                 if(i==thisOffset) {
                     %>&nbsp;<%= i+1 %>&nbsp;<%
                 } else { 
-                    %>&nbsp;<a target="_top" href="docpage.jsp<%=  templateQueryString  %>&offset=<%= i %>"><%= i+1 %></a>&nbsp;<%
+                    %>&nbsp;<a href="docpage.jsp<%=  templateQueryString  %>&offset=<%= i %>"><%= i+1 %></a>&nbsp;<%
                 } 
                 if(i<(listSize/pageSize)) { %><% } 
             }
             if(thisOffset+1<numberOfPages) { 
-                %><a  target="_top" href="docpage.jsp<%= templateQueryString %>&offset=<%= thisOffset+1 %>">[volgende ->>]</a><%
+                %><a href="docpage.jsp<%= templateQueryString %>&offset=<%= thisOffset+1 %>">[volgende ->>]</a><%
             } 
            %></div>
            </td>

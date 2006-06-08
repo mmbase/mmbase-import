@@ -1,6 +1,6 @@
 <%@page import="com.finalist.tree.*,nl.leocms.util.tools.documents.*" %>
 <%@include file="/taglibs.jsp" %>
-<mm:cloud jspvar="cloud">
+<mm:cloud logon="admin" pwd="<%= (String) com.finalist.mmbase.util.CloudFactory.getAdminUserCredentials().get("password") %>" method="pagelogon" jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
 <cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
@@ -20,7 +20,7 @@
    </mm:related>
    <mm:notpresent referid="page_contains_file">
       <mm:node number="documents_root" jspvar="subtreeDoc">
-            <% DirReader.mergeSubtree(cloud,thisPage,subtreeDoc); %>
+      	<% DirReader.mergeSubtree(cloud,thisPage,subtreeDoc); %>
       </mm:node>
    </mm:notpresent> 
 </mm:node>
@@ -38,7 +38,7 @@
 <div class="<%= infopageClass %>" style="padding-right:10px;padding-left:10px;padding-top:20px;">
 <%@include file="includes/relatedteaser.jsp" %>
 <% DocumentsTreeModel model = new DocumentsTreeModel(cloud);
-   HTMLTree t = new HTMLTree(model,"documents");
+   DocumentsHTMLTree t = new DocumentsHTMLTree(model,"documents");
    t.setCellRenderer(new DocumentsRenderer(cloud,paginaID));
    t.setExpandAll(false);
    t.setImgBaseUrl("media/");
