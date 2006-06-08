@@ -21,6 +21,8 @@ String warningMessage = "";
 int rI = 70000;
 String confirmConstraint = "ads.expiredate > '" + rI + "'";
 
+int objectPerPage = 5;
+
 boolean showOne = false;
 
 boolean isPosting = !(nameID+emailID+titleID+textID).equals("");
@@ -239,7 +241,6 @@ if(adID.equals("-1")) {
             String sNodes = paginaID;
             String sPath = "pagina,contentrel,ads";
             String sConstraints = confirmConstraint;
-            int objectPerPage = 5; // should correspond to menuType Quote
             int thisOffset = 1;
             try{
                if(!offsetID.equals("0")){
@@ -302,6 +303,7 @@ if(adID.equals("-1")) {
             <jsp:param name="object_date" value="postdate" />
             <jsp:param name="extra_constraint" value="<%= confirmConstraint %>" />
             <jsp:param name="show_links" value="<%= "" + showOne %>" />
+				<jsp:param name="object_per_page" value="<%= "" + objectPerPage %>" />
          </jsp:include>
    		<jsp:include page="../includes/shorty.jsp">
    	      <jsp:param name="s" value="<%= paginaID %>" />

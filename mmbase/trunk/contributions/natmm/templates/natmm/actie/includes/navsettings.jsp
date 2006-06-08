@@ -26,14 +26,12 @@ String objectDirections = "UP";
          c.setTime(now);
          c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DATE),0,0);
          menuType = QUOTE;
-         objectPerPage = 5;
          objectOrderby = objecttype + "." + objectdate;
          objectConstraint = objectOrderby + " < '" + c.getTime().getTime()/1000 + "'"; // the begin of today, so start with yesterday
          objectDirections = "DOWN";
       } 
       if(url.indexOf("date")>-1) {
          menuType = DATE;
-         objectPerPage = 7;
          objectOrderby = objecttype + "." + objectdate;
          objectConstraint = objectOrderby + " < '" + nowSec + "'"; 
          objectDirections = "DOWN";
