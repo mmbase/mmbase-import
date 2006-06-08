@@ -84,7 +84,7 @@ public class PaginaUtil {
    public void changeOrder(Node parentNode, String childs) {
 
       StringTokenizer tokenizer = new StringTokenizer(childs, ",");
-      log.info("childs = " + childs);
+      log.debug("childs = " + childs);
       List tokens = new ArrayList();
       while (tokenizer.hasMoreTokens()) {
          tokens.add(tokenizer.nextToken());
