@@ -19,7 +19,7 @@
 <tr><td colspan="2">
      <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td width="274" valign="top"><%@include file="/editors/paginamanagement/flushlink.jsp" %><a href="<mm:url page="/" />"><img src="media/topgraphic.gif" border="0"></a></td>
+            <td width="274" valign="top"><%@include file="/editors/paginamanagement/flushlink.jsp" %><a href="index.jsp"><img src="media/topgraphic.gif" border="0"></a></td>
             <td valign="top" class="topgradient" background="media/bg_topgradient.gif"><img src="media/spacer.gif" width="1" height="7"><br>
                 <div align="right">
 						 <%
