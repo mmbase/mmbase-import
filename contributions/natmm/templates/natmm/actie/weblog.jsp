@@ -94,6 +94,7 @@ long oneDay = 24*60*60;
          <jsp:include page="includes/nav.jsp">
             <jsp:param name="a" value="<%= artikelID %>" />
             <jsp:param name="p" value="<%= paginaID %>" />
+				<jsp:param name="object_per_page" value="5" />
          </jsp:include>
    		<jsp:include page="../includes/shorty.jsp">
    	      <jsp:param name="s" value="<%= paginaID %>" />

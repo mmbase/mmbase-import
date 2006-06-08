@@ -62,6 +62,11 @@ if(referer!=null) {
             } else {
                emailAddress.add(NatMMConfig.toEmailAddress);
             }
+				boolean extraLineBreak = false;
+				if(thisForm.getStringValue("titel_de")!=null&&thisForm.getStringValue("titel_de").equals("1")) {
+					extraLineBreak = true;
+				}
+				
             String responseText = "<b>" + responseTextDefault + pages_title + "</b><br>"
                   + "<br><br>" + thisForm.getStringValue("titel").toUpperCase()+ "<br>"
                   + "--------------------------------------------------------------------------<br>";
@@ -78,7 +83,8 @@ if(referer!=null) {
                if(omschrijving!=null&&!HtmlCleaner.cleanText(omschrijving,"<",">","").trim().equals("")) {
                   formulierveld_warning = omschrijving;
                }
-               responseText += "<br><br>" + formulierveld_label + ": ";
+					if(extraLineBreak) { responseText += "<br>"; }
+               responseText += "<br>" + formulierveld_label + ": ";
 
                if(formulierveld_type.equals("6")) { // *** date ***
 
