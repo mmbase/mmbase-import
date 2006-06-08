@@ -81,19 +81,14 @@
 	   ></mm:compare
 	></mm:field
 	><mm:field name="paragraaf.tekst" 
-    /><mm:node number="<%= paragraaf_number%>" 
+    /><mm:node number="<%= paragraaf_number %>" 
         ><%@include file="attachment.jsp" 
     %></mm:node
     ><mm:list nodes="<%= paragraaf_number %>" path="paragraaf,posrel,link" 
         ><mm:field name="link.omschrijving" />
         <a target="_blank" href="<mm:field name="link.url" />"><mm:field name="link.titel" /></a>
      </mm:list
-    ><mm:list nodes="<%= paragraaf_number %>" path="paragraaf,readmore,pagina" 
-        fields="pagina.number,pagina.titel,readmore.readmore"
-        ><mm:field name="readmore.readmore"
-        /> <a href="index.jsp?p=<mm:field name="pagina.number" />" ><mm:field name="pagina.titel" /></a>
-    </mm:list>
-    <br>
+    ><br/>
 </mm:field
 ></p></td></tr></table>
 </mm:list
