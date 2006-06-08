@@ -4,13 +4,15 @@
 <mm:import externid="object_date" jspvar="objectdate">begindatum</mm:import>
 <mm:import externid="extra_constraint" jspvar="extra_constraint"></mm:import>
 <mm:import externid="show_links" jspvar="show_links">true</mm:import>
+<mm:import externid="object_per_page" jspvar="IobjectPerPage" vartype="Integer">10</mm:import>
+
 <%
 int TITLE = 1;
 int DATE = 2;
 int QUOTE = 3;
 
 int menuType = TITLE;
-int objectPerPage = 10;
+int objectPerPage = IobjectPerPage.intValue();
 
 String objectOrderby = "contentrel.pos";
 String objectConstraint = "";
@@ -41,6 +43,9 @@ String objectDirections = "UP";
 </mm:relatednodes>
 <%
 if(extra_constraint!=null && !extra_constraint.equals("")) {
-   objectConstraint += " AND " + extra_constraint;
+	if (!objectConstraint.equals("")){
+		objectConstraint += " AND ";
+	}
+   objectConstraint += extra_constraint;
 }
 %>
