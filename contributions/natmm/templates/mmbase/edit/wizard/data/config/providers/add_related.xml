@@ -16,7 +16,7 @@
 		</relation>
 	</action>
 	<command name="search" nodepath="providers" fields="naam,omschrijving" orderby="name" age="-1">
-    	<prompt>zoek aanbieders</prompt>
+    	<prompt>zoek aanbieder</prompt>
 		<search-filter>
 			<name>naam bevat</name>
 			<search-fields>name</search-fields>

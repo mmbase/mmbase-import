@@ -8,7 +8,7 @@
    	 <field ftype="startwizard" wizardname="config/vgv/vgv" />
 	</item>
 	<command name="search" nodepath="vgv" age="-1" fields="titel,metatags">
-		<prompt>zoek veel gestelde vraag</prompt>
+		<prompt>zoek veelgestelde vraag</prompt>
 		<search-filter>
 			<name>titel bevat</name>
 			<search-fields>[titel]</search-fields>

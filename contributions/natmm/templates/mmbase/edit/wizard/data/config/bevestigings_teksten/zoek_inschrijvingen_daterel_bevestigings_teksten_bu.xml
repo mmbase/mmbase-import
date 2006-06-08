@@ -6,7 +6,7 @@
       <field ftype="data" name="titel"><prompt>titel</prompt></field>
    </item>
    <command name="search" startnodes="$origin" nodepath="evenement,posrel,bevestigings_teksten" age="-1" fields="bevestigings_teksten.titel" orderby="bevestigings_teksten.titel">
-      <prompt>zoek bevestigings teksten</prompt>
+      <prompt>zoek bevestigings tekst</prompt>
       <search-filter>
          <name>titel bevat</name>
          <search-fields>[bevestigings_teksten.titel]</search-fields>

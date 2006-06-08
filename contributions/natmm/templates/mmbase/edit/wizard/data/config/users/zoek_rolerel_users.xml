@@ -12,7 +12,7 @@
 -->
    </item>
    <command name="search" nodepath="users" age="-1" fields="voornaam,achternaam,account">
-      <prompt>zoek gebruikers</prompt>
+      <prompt>zoek gebruiker</prompt>
       <search-filter>
          <name>gebruikersnaam bevat</name>
          <search-fields>[account]</search-fields>

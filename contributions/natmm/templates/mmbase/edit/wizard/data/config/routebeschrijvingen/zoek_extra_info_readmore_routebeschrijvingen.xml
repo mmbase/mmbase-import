@@ -13,7 +13,7 @@
    </item>
 
    <command name="search" nodepath="routebeschrijvingen" age="-1" fields="titel" orderby="titel">
-      <prompt>zoek routebeschrijvingen</prompt>
+      <prompt>zoek routebeschrijving</prompt>
       <search-filter>
          <name>titel bevat</name>
          <search-fields>[titel]</search-fields>

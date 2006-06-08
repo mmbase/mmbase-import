@@ -8,7 +8,7 @@
       <field ftype="startwizard" wizardname="config/natuurgebieden/natuurgebieden" />
    </item>
    <command name="search" nodepath="natuurgebieden" age="-1" fields="titel,metatags" orderby="titel">
-      <prompt>zoek natuurgebieden</prompt>
+      <prompt>zoek natuurgebied</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[titel]</search-fields>

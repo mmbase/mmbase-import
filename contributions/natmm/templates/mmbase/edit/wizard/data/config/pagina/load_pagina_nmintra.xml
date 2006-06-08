@@ -24,8 +24,19 @@
       </object>
    </relation>
    <relation destination="teaser" role="rolerel"/>
-   <relation destination="images" role="posrel"/>
+   <relation destination="images" role="posrel">
+      <object>
+         <relation destination="artikel" role="pos4rel">
+            <object />
+         </relation>
+         <relation destination="pagina" role="pos4rel">
+            <object />
+         </relation>
+      </object>
+   </relation>
    <relation destination="programs" role="posrel"/>
+   <relation destination="link" role="posrel"/>
+   <relation destination="contentblocks" role="readmore"/>
 	
    <relation destination="dossier" role="posrel">
       <object>

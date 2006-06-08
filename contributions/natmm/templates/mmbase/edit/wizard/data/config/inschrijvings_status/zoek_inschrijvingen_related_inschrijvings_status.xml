@@ -9,7 +9,7 @@
    </item>
 
    <command name="search" nodepath="inschrijvings_status" age="-1" fields="naam" orderby="naam">
-      <prompt>zoek aanmeldings_status</prompt>
+      <prompt>zoek aanmeldings status</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[naam]</search-fields>

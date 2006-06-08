@@ -4,7 +4,7 @@
     <title>bijlagen</title>
     <description></description>
     <command name="search" nodepath="attachments" fields="title,filename" age="-1">
-        <prompt>zoek bijlagen</prompt>
+        <prompt>zoek bijlage</prompt>
         <search-filter>
                 <name>titel bevat</name>
                 <search-fields>title</search-fields>

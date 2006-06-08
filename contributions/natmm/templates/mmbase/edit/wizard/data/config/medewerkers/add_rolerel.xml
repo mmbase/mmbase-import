@@ -27,7 +27,7 @@
         </relation>
     </action>
     <command name="search" nodepath="medewerkers" fields="titel" orderby="titel" age="-1">
-        <prompt>zoek medewerkers</prompt>
+        <prompt>zoek medewerker</prompt>
         <search-filter>
             <name>naam bevat</name>
             <search-fields>titel</search-fields>

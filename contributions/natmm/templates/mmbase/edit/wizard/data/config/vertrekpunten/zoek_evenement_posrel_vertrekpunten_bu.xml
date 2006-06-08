@@ -10,7 +10,7 @@
    </item>
 
    <command name="search" nodepath="vertrekpunten" age="-1" fields="titel" orderby="titel">
-      <prompt>zoek vertrekpunten</prompt>
+      <prompt>zoek vertrekpunt</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[titel]</search-fields>

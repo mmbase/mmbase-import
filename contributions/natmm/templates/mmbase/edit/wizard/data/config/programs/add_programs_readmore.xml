@@ -20,7 +20,7 @@
       </relation>
 	</action>
 	<command name="search" nodepath="programs" fields="title" orderby="title" age="-1">
-    	<prompt>zoek programma's</prompt>
+    	<prompt>zoek programma</prompt>
 		<search-filter>
 			<name>titel bevat</name>
 			<search-fields>title</search-fields>

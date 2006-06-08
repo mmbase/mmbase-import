@@ -8,7 +8,7 @@
       <!-- <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>standaard kosten</prompt></field> -->
    </item>
    <command name="search" nodepath="payment_type" age="-1" fields="naam" orderby="naam">
-      <prompt>zoek payment_type</prompt>
+      <prompt>zoek betaalwijze</prompt>
       <search-filter>
          <name>naam bevat</name>
          <search-fields>[naam]</search-fields>

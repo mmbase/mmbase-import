@@ -8,7 +8,7 @@
 		 <field ftype="startwizard" wizardname="config/attachments/attachments" />
 	</item>
 	<command name="search" nodepath="attachments" age="-1" fields="titel,metatags" orderby="titel">
-		<prompt>zoek bijlagen</prompt>
+		<prompt>zoek bijlage</prompt>
 		<search-filter>
 			<name>titel bevat</name>
 			<search-fields>[titel]</search-fields>
