@@ -8,7 +8,7 @@
     	<td  class="light">&nbsp;<mm:node number="<%= competenceId %>" notfound="skipbody"><mm:field name="name"/></mm:node></td></tr>
 	</table><% 
 } else { %>
-	<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('parent',this,0)">
+	<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('document',this,0)">
       <option value='educations.jsp?p=<%= paginaID %>&k=<%= keywordId %>&pool=<%= poolId %>&pr=<%= providerId %>'>Selecteer</option>
       <% String sCompetencies = searchResults(competencies); %>
       <mm:list nodes="<%= sCompetencies %>" path="competencies" orderby="competencies.name" directions="UP">

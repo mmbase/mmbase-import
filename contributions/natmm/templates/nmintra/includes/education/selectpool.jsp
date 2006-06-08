@@ -12,7 +12,7 @@ if(!poolId.equals("")) { // an education pool has been selected
    <% 
 } else { 
    %>
-	<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('parent',this,0)">
+	<select name="menu1" style="width:180px;" onChange="MM_jumpMenu('document',this,0)">
 	  <option value='educations.jsp?p=<%= paginaID %>&k=<%= keywordId %>&pr=<%= providerId %>&c=<%= competenceId %>'>Selecteer</option>
 	   <% String sPools = searchResults(educationPools); %>
       <mm:list nodes="<%= sPools %>" path="pools" orderby="pools.name" directions="UP">
@@ -22,11 +22,3 @@ if(!poolId.equals("")) { // an education pool has been selected
 	<br>
 	<% 
 } %>
-				
-				
-				
-				
-	
-	
-
-				

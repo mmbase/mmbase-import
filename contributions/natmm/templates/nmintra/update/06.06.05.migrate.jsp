@@ -97,6 +97,34 @@
 			<mm:createrelation source="bb" destination="this_ad" role="contentrel" />
 		</mm:listnodes>
 	</mm:listnodes>
+	97. Changing editwizards because of change in builder<br/>
+	Todo: check with last version of db.
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/educations/wizard'">
+		<mm:setfield name="fields">titel</mm:setfield>
+		<mm:setfield name="orderby">titel</mm:setfield>
+	</mm:listnodes>
+	98. Renaming editwizards that should use the default page editor<br/>
+	<mm:listnodes type="editwizards" constraints="wizard = 'config/pagina/pagina_info'">
+		<mm:node id="info_ew" />
+	</mm:listnodes>
+	<%
+	String [] templateToChange = {
+		"documents.jsp",
+		"docpage.jsp"
+		};
+	for(int i=0; i<templateToChange.length;i++) {
+		%>
+		<mm:listnodes type="paginatemplate" constraints="<%= "url = '" + templateToChange[i]  + "'" %>">
+			<mm:related path="related,editwizards" constraints="wizard LIKE '%pagina_%'">
+				<mm:deletenode element="related" />
+			</mm:related>
+			<mm:remove referid="paginatemplate" />
+			<mm:node id="paginatemplate" />
+			<mm:createrelation source="paginatemplate" destination="info_ew" role="related" />
+		 </mm:listnodes>
+		<%
+		}
+	%>
 	99. Deleting unused editwizards<br/>
 	<%
 	String [] ewToDelete = {
