@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.15 2004-01-09 19:57:36 johannes Exp $;
+ @version $Id: documentation.css,v 1.16 2006-06-09 11:21:42 michiel Exp $;
 */
 
 @import url(../../mmbase/style/css/mmbase.css);
@@ -105,7 +105,8 @@ div.navigation h1 {
   color: black;
   font-size: 1em;
   text-align: right;
-  text-weight: bold;
+  font-weight: bold;
+
 }
 div.navigation h2 {
   color: navy;
