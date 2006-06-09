@@ -100,7 +100,7 @@ try{
          } %>
          <tr>
            <td colspan="2" style="padding-left:15px">
-              In archief: <%= objectCount %> <mm:field name="titel.fr"/> [<%= pagesCount %> pgn]
+              In archief: <%= objectCount %> [<%= pagesCount %> pgn]
              <div style="padding-top:10px;">
                <% if (thisOffset == 1) { %>
                     <img src="../media/arrowleft_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" border="0">
