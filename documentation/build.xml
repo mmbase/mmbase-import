@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.27 2006-03-29 18:14:45 michiel Exp $
+  $Id: build.xml,v 1.28 2006-06-09 10:44:51 andre Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -125,7 +125,7 @@
   <target name="applications.documentation.copy" 
     description="Copies documentation from applications to documentation directory">
     <copy todir="${documentation.src.dir}/applications">
-	  <mapper type="regexp" from="(.*)/documentation(.*)" to="\1\2" />
+      <mapper type="regexp" from="(.*)/documentation(.*)" to="\1\2" />
       <fileset dir="${applications.dir}/">
         <include name="**"/>
       </fileset>
@@ -141,7 +141,7 @@
 
   <!-- compile the XSLTransformer -->
 
-  <target name="xsltransformer" depends="lib.compile">
+  <target name="xsltransformer" depends="jar,lib.compile">
     <mkdir dir="${build.dir}/classes" />
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
@@ -173,8 +173,8 @@
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.resources,applications.documentation.copy,xsltransformer,download"
-          description="Create HTML documentation from the DocBook sources">
+          depends="documentation.resources,applications.documentation.copy,xsltransformer,download,javadocs"
+          description="Create HTML documentation from the DocBook sources and JavaDocs">
 
     <echo message="${documentation.dest.dir}" />
     <java classname="org.mmbase.util.XSLTransformer"
@@ -303,7 +303,14 @@
     <delete file="${documentation.build.dir}/newstyle.xslt"/>
   </target>
 
-
+  <!-- ================================================================================ -->
+  <!-- Generate javadocs                                                                -->
+  <!-- ================================================================================ -->
+  
+  <target name="javadocs">
+    <ant dir="${source.dir}" target="javadocs">
+    </ant>
+  </target>
 
   <!-- ================================================================================ -->
   <!-- Download or build the required binary packages                                   -->
@@ -388,6 +395,13 @@
     <mkdir dir="${destdir}" />
     <unzip src="${download.dir}/file.zip" dest="${destdir}"/>
     <delete file="${download.dir}/file.zip"/>
+  </target>
+  
+  <!-- for some reason the documentation depends on the mmbase.jar, at least
+  	the target xsltransformer i believe -->
+  <target name="jar">
+    <ant dir="${source.dir}" target="jar">
+    </ant>
   </target>
 
 </project>
