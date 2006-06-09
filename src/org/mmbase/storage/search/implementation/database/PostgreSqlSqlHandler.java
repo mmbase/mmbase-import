@@ -36,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.21 2006-06-02 13:07:54 pierre Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.22 2006-06-09 12:20:34 pierre Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -213,9 +213,9 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
                 int directionality = rs.getDirectionality();
                 RelDef reldef = mmbase.getRelDef();
                 Set tables = new HashSet();
-                Enumeration allowed = mmbase.getTypeRel().getAllowedRelations(sourceBuilder, destinationBuilder);
-                while(allowed.hasMoreElements()) {
-                    MMObjectNode typeRel = (MMObjectNode) allowed.nextElement();
+                Iterator allowed = mmbase.getTypeRel().getAllowedRelations(sourceBuilder, destinationBuilder, 0, directionality).iterator();
+                while(allowed.hasNext()) {
+                    MMObjectNode typeRel = (MMObjectNode) allowed.next();
                     int rnumber = typeRel.getIntValue("rnumber");
                     tables.add(reldef.getBuilder(rnumber).getTableName());
                 }
