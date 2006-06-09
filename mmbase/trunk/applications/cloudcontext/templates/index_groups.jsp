@@ -9,7 +9,7 @@
 <mm:cloud loginpage="login.jsp" rank="$rank">
 <mm:import externid="group" vartype="list" />
 <mm:import id="nodetype">mmbasegroups</mm:import>
-<mm:import id="fields">name,description,owner</mm:import>
+<mm:import id="fields" externid="group_fields">name,description,owner</mm:import>
 
 <mm:import externid="search" />
 <mm:import id="current">groups</mm:import>

@@ -6,7 +6,7 @@
 <mm:write session="orderby"    referid="orderby" />
 <mm:write session="directions" referid="directions" />
 
-<mm:import id="fields">username,defaultcontext,status,owner</mm:import>
+  <mm:import id="fields" externid="user_fields">username,defaultcontext,status,owner</mm:import>
   <mm:import externid="search" />
   <mm:import id="nodetype">mmbaseusers</mm:import>
 
