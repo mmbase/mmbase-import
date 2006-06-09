@@ -1,7 +1,7 @@
 <% // include from shorty, teaser, article or paragraph
 %><mm:related path="posrel,images" max="1"
 ><mm:field name="posrel.pos" jspvar="posrel_pos" vartype="String" write="false"
-><mm:field name="images.number" write="false" jspvar="images_number" vartype="String"><%= posrel_pos %><% 
+><mm:field name="images.number" write="false" jspvar="images_number" vartype="String"><% 
 
 if(javax.servlet.http.HttpUtils.getRequestURL(request).indexOf("weblog.jsp")>0) {
 
