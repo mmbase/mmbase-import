@@ -10,7 +10,7 @@
 <mm:import externid="context" vartype="list" />
 <mm:import externid="search" />
 <mm:import id="nodetype">mmbasecontexts</mm:import>
-<mm:import id="fields">name,description,owner</mm:import>
+<mm:import id="fields" externid="context_fields">name,description,owner</mm:import>
 <body>
 <%@include file="you.div.jsp" %>
 <mm:import id="current">contexts</mm:import>
