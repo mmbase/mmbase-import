@@ -197,7 +197,7 @@ public class RelationsMigrator {
       String [] sResultParRel = mmm.movingRelations(alRubriek, alRubriek, sPosrelContent,
                                    "posrel", "parent");
       sPosrelContent = sResultParRel[0];
-      String sParentContent = sResultParRel[1];
+      String sParentAdd = sResultParRel[1];
 
       log.info("changing relation pagina-posrel-ads to pagina-contentrel-ads");
       ArrayList alAds = getNodes(sFolder + "ads.xml");
@@ -268,6 +268,8 @@ public class RelationsMigrator {
 
       sRolerelContent = mmm.addingContent(sRolerelContent, "rolerel", sRolerelAdd);
       sReadmoreContent = mmm.addingContent(sReadmoreContent, "readmore", sReadmoreAdd);
+      String sParentContent = mmm.readingFile(sFolder + "childrel.xml");
+      sParentContent = mmm.addingContent(sParentContent,"childrel",sParentAdd);
 
       tmAllRelations.put("childrel", sParentContent);
       tmAllRelations.put("contentrel", sContentrelContent);
@@ -285,8 +287,7 @@ public class RelationsMigrator {
          Map.Entry me = (Map.Entry) it.next();
          String sContent = (String) me.getValue();
          String sBuilderName = (String) me.getKey();
-         if ( (sBuilderName.equals("childrel")) ||
-             (sBuilderName.equals("contentrel")) ||
+         if ( (sBuilderName.equals("contentrel")) ||
              (sBuilderName.equals("lijstcontentrel")) ) {
             mmm.creatingNewXML(sBuilderName, sContent);
          }
